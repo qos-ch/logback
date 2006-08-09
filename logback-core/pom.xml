@@ -1,12 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback</artifactId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-core</artifactId>
+	<version>${parent.version}</version>
 	<packaging>jar</packaging>
-	<version>0.2-SNAPSHOT</version>
 	<name>Logback Core Module</name>
 
 	<url>http://logback.qos.ch/core</url>
@@ -19,31 +24,17 @@
 		Logback: the generic, reliable, fast and flexible logging library for Java.
 	</description>
 
-	<organization>
-		<name>QOS.ch</name>
-		<url>http://www.qos.ch</url>
-	</organization>
-	<inceptionYear>2005</inceptionYear>
-
 	<dependencies>
 		<dependency>
 			<groupId>janino</groupId>
 			<artifactId>janino</artifactId>
 			<version>2.4.3</version>
 		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -82,7 +73,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<!--
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.1</version>
@@ -99,6 +90,7 @@
 					<outputDirectory>target/site/dist/</outputDirectory>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
@@ -110,45 +102,46 @@
 					</preparationGoals>
 					<goals>site, assembly:assembly site:deploy</goals>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 		</plugins>
-
+		
+		<!--
 		<resources>
 			<resource>
 				<directory>src/site/xdocTemplates</directory>
-				<!-- 
+				
 					We're saving filtered xdocs in a temporary folder
 					and telling the site plug in to get the xdocs there.
-				-->
+				
 				<targetPath>generated-site</targetPath>
 				<filtering>true</filtering>
 			</resource>
-		</resources>
+		</resources> -->
 
 		<testResources>
 			<testResource>
 				<directory>src/test/input</directory>
-				<targetPath>src/test/input</targetPath>
+				<targetPath>input</targetPath>
 			</testResource>
 			<testResource>
 				<directory>src/test/witness</directory>
-				<targetPath>src/test/witness</targetPath>
+				<targetPath>witness</targetPath>
 			</testResource>
 		</testResources>
 
+		<!--
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
 				<version>1.0-beta-1</version>
 			</extension>
-		</extensions>
+		</extensions> -->
 	</build>
 
-
+	<!--
 	<reporting>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -159,7 +152,7 @@
 					</xdocDirectory>
 				</configuration>
 			</plugin>
-			<!-- plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>
 					maven-project-info-reports-plugin
@@ -171,7 +164,7 @@
 						</reports>
 					</reportSet>
 				</reportSets>
-			</plugin -->
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -185,6 +178,7 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	-->
 
 
 
@@ -195,12 +189,13 @@
 		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/core/trunk</developerConnection>
 		<url>http://svn.qos.ch/viewcvs/logback/core/trunk</url>
 	</scm>
-
+	
+	<!--
 	<distributionManagement>
 		<site>
 			<id>pixie</id>
 			<url>scp://pixie/var/www/logback.qos.ch/htdocs/core</url>
 		</site>
-	</distributionManagement>
+	</distributionManagement> -->
 
 </project>
