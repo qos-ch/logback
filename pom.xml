@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>logback</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Logback</name>
+
+	<url>http://logback.qos.ch</url>
+
+	<organization>
+		<name>QOS.ch</name>
+		<url>http://www.qos.ch</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+	<modules>
+		<module>logback-core</module>
+		<module>logback-classic</module>
+		<module>logback-access</module>
+		<module>logback-site</module>
+	</modules>
+
+	<dependencies>
+			<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		
+		<!-- <resources>
+			<resource>
+				<directory>src/site/xdocTemplates</directory>
+				
+					We're saving filtered xdocs in a temporary folder
+					and telling the site plug in to get the xdocs there.
+				
+				<targetPath>generated-site</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources> -->
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-1</version>
+			</extension>
+		</extensions>
+	</build>
+
+	<reporting>
+		<!--
+		<outputDirectory>${basedir}target/site</outputDirectory>
+		-->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+	 
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+        	<aggregate>true</aggregate>
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5.0/docs/api
+						</link>
+					</links>
+				</configuration>
+      </plugin>
+      
+      <plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/main/assembly/source.xml
+						</descriptor>
+					</descriptors>
+					<finalName>
+						logback-${project.version}
+					</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<outputDirectory>target/site/dist/</outputDirectory>
+				</configuration>
+			</plugin>
+			
+    </plugins>
+
+	</reporting>
+	
+	<distributionManagement>
+		<site>
+			<id>pixie</id>
+			<url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
+		</site>
+	</distributionManagement>
+
+</project>
