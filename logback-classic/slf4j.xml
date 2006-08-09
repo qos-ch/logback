@@ -1,0 +1,103 @@
+<project name="slf4j" default="usage" basedir="." >
+
+  <!-- The directory where source files are stored. -->
+  <property name="java.source.dir" value="./src/java/"/>
+
+  <property name="tmp.slf4j" value="tmp/slf4j"/>
+		 
+  <!-- Destination for compiled files -->
+  <property name="javac.dest" value="./classes"/>
+
+  <!-- Deprecation warning? --> 
+  <property name="deprecation" value="on"/>
+	
+  <property name="SLF4J_STEM" value="org/slf4j"/>
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+  <target name="usage">
+    <echo>      
+      These are some of the targets supported by this ANT build scpript:
+ 
+      refresh - copy source files into the log4j source tree
+    </echo>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${tmp.slf4j}"/>
+	<mkdir dir="${java.source.dir}/${SLF4J_STEM}"/>
+  </target>
+	
+  <!-- ================================================================= -->
+  <!-- Remove all generated (compiled) class files.                      -->
+  <!-- ================================================================= -->
+  <target name="clean" description="Delete all compiled SLF4J files.">
+    <delete dir="${javac.dest}/org/slf4j" />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Copy SLF4J files into log4j source tree. This step is necessary for -->
+  <!-- building CLASSIC. However, it needs to be done whenever code in SLF4J -->
+  <!-- changes, that is seldom                                             -->
+  <!-- =================================================================== -->
+  <!--
+UNUSED	<target name="refresh-slf4j" depends="init, svnCheckout">	
+UNUSED  
+UNUSED  	<delete>
+UNUSED		<fileset dir="src/java/org/slf4j" 
+UNUSED 		         includes="**/*.java"
+UNUSED	             excludes="impl/LBLoggerFA.java"/>
+UNUSED 	</delete>
+UNUSED  	
+UNUSED   	<copy todir="src/java">
+UNUSED  	  <fileset dir="src/filtered-java">
+UNUSED  	  	<include name="**/*.java"/>
+UNUSED  	    <exclude name="**/impl/JDK14*.java"/>
+UNUSED  	  </fileset>
+UNUSED  	  <filterset><filter token="IMPL" value="LB"/></filterset>
+UNUSED  	</copy>
+UNUSED  </target>
+-->
+	 
+  <target name="refresh" depends="svnCheckout">
+
+  	<!-- delete any stale copy of SLF4J files but reatain our own 
+	     original files. -->
+	   <delete>
+	      <fileset dir="src/java/org/slf4j" 
+	               includes="**/*.java"
+	               excludes="impl/StaticLoggerBinder.java,
+	      	                 impl/StaticMarkerBinder.java
+	      	                 impl/LBLoggerFactory.java"/>
+	    </delete>
+	    
+   <!-- copy other invariable slf4j files to src/java. Exclude JDK14
+        and Log4j binding files because they will never be used by NLOG4J -->     
+    <copy todir="src/java/org/slf4j/">
+      <fileset dir="${tmp.slf4j}/">
+        <include name="**/*.java"/>
+        <exclude name="**/impl/impl/StaticLoggerBinder.java"/>
+        <exclude name="**/impl/JCL*.java"/>
+      	<exclude name="**/impl/MNOP*.java"/>
+        <exclude name="**/impl/MSimple*.java"/>
+        <exclude name="**/impl/Log4j*.java"/>
+      </fileset>
+    </copy>
+	 	
+  </target>
+	
+  <target name="svnCheckout" depends="init">
+  	<property name="repository.URL" value="http://svn.slf4j.org/repos/slf4j/trunk/src/java/org/slf4j"/>
+	<java classname="org.tmatesoft.svn.cli.SVN" dir="tmp/" fork="true">
+	   <arg value="co"/>
+	   <arg value="${repository.URL}"/>
+	   <arg value="slf4j"/>
+	   <classpath>
+	     <pathelement location="./lib/javasvn.jar" />
+	     <pathelement location="./lib/javasvn-cli.jar" />
+	   </classpath>
+	</java>
+  </target>
+	
+</project>

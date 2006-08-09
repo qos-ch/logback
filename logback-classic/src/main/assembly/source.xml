@@ -1,0 +1,51 @@
+<assembly>
+	<id>src</id>
+	<formats>
+		<format>zip</format>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/site</directory>
+			<outputDirectory>/site</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+				<include>pom.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src</directory>
+		</fileSet>
+		<fileSet>
+			<directory>examples/</directory>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/lib</outputDirectory>
+			<unpack>false</unpack>
+			<scope>test</scope>
+			<excludes>
+				<!--
+					There is little documentation on this format.
+					It is of the form of DefaultArtifact.getDependencyConflictId()
+					which is <groupId>:<artifactId>:<type>:<classifier>
+					or we can use the short form (hard coded into assembly) of
+					<groupId>:<artifactId>
+					This is a String equality match not a pattern match.
+				-->
+				<exclude>ch.qos.logback:logback-classic</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+</assembly>

@@ -1,0 +1,71 @@
+
+<project name="logback-classic-site" default="site" basedir="." >
+
+
+  <!-- The build.properties file defines the parth to local jar files -->
+  <property file="build.properties"/>
+
+  <!-- The base directory relative to which most targets are built -->
+  <property name="base" value="."/>
+
+  <!-- Destination for documentation files -->
+  <property name="docs.dest" value="./target/site"/>
+
+  <!-- Source directory for xml docs -->
+  <property name="xdocs.src" value="./src/site/xdocTemplates/"/>
+
+  <!-- Construct classpath for building the html pages-->
+  <path id="site.classpath">
+    <fileset dir="./anakia-lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+
+  <target name="usage">
+    <echo>
+
+    These are the targets supported by this ANT build scpript:
+
+    site     - build LOGBACK CLASSIC web-site
+    </echo>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Build the site files using Anakia              -->
+  <!-- ============================================== -->
+  <target name="prepareSite">
+    <available classname="org.apache.velocity.anakia.AnakiaTask"
+      property="AnakiaTask.present">
+      <classpath refid="site.classpath"/>
+    </available>
+  </target>
+
+  <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
+    <echo>
+      AnakiaTask is not present! Please check to make sure that
+      velocity.jar is in your classpath.
+    </echo>
+  </target>
+
+  <target name="site" depends="checkSite" if="AnakiaTask.present">
+    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+      <classpath refid="site.classpath"/>
+    </taskdef>
+
+    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
+      extension=".html"
+      style="site.vm"
+      projectFile="stylesheets/project.xml"
+      excludes="**/stylesheets/**"
+      includes="**/*.xml"
+      lastModifiedCheck="true"
+      templatePath="./stylesheets">
+    </anakia>
+  </target>
+</project>
+

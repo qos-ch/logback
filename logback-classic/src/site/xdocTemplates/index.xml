@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} index</title>
+	</properties>
+
+	<body>
+
+		<div class="section">
+			<h2>Logback Classic Module</h2>
+		</div>
+
+		<p>
+			Logback: the generic, reliable, fast and flexible logging
+			library for Java
+		</p>
+
+		<p>
+			The Classic module can be assimilated to an improved version
+			of log4j. Logback Classic natively implements the SLF4J API
+			so that you can readily switch back and forth between
+			logback and other logging systems such as log4j or JDK14
+			Logging.
+		</p>
+
+	</body>
+</document>
