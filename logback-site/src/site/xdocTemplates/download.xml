@@ -3,30 +3,60 @@
 
 	<properties>
 		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-		<title>${pom.name} download</title>
+		<title>Logback project download</title>
 	</properties>
 
 	<body>
-		<h2>Download links</h2>
+
+		<div class="section">
+			<h2>Download links</h2>
+		</div>
 
 		<p>
-			Logback Modules can be downloaded by visiting their specific
-			download pages:
+			Logback modules are available as downloads including full source code, class files
+			and documentation.
 		</p>
 
-		<p>
-			<a href="core/download.html">Core Module download page</a>
-		</p>
-		<p>
-			<a href="classic/download.html">
-				Classic Module download page
-			</a>
-		</p>
-		<p>
-			<a href="access/download.html">
-				Access Module download page
-			</a>
-		</p>
+		<ul>
+			<li>
+				<a href="dist/logback-core-${pom.version}.zip">
+					logback-core-${pom.version}.zip
+				</a>
+			</li>
+
+			<li>
+				<a href="dist/logback-core-${pom.version}.tar.gz">
+					logback-core-${pom.version}.tar.gz
+				</a>
+			</li>
+		</ul>
+				<ul>
+			<li>
+				<a href="dist/logback-classic-${pom.version}.zip">
+					logback-classic-${pom.version}.zip
+				</a>
+			</li>
+
+			<li>
+				<a href="dist/logback-classic-${pom.version}.tar.gz">
+					logback-classic-${pom.version}.tar.gz
+				</a>
+			</li>
+		</ul>
+				<ul>
+			<li>
+				<a href="dist/logback-access-${pom.version}.zip">
+					logback-access-${pom.version}.zip
+				</a>
+			</li>
+
+			<li>
+				<a href="dist/logback-access-${pom.version}.tar.gz">
+					logback-access-${pom.version}.tar.gz
+				</a>
+			</li>
+		</ul>
+
 
 	</body>
 </document>

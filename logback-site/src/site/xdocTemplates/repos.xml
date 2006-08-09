@@ -2,30 +2,82 @@
 <document>
 
 	<properties>
-		Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
-		<title>logback source repositories</title>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>Logback source repository</title>
 	</properties>
 
 	<body>
-		<h2>Download links</h2>
+
+		<div class="section">
+			<h2>Source Repository</h2>
+		</div>
 
 		<p>
-			Logback source repositories can be accessed by visiting their specific pages:
+			To enable logback developers to work together, we
+			keep the source code in revision control systems called
+			Subversion. Developers have write access to the Subversion
+			repository, enabling them to make changes to the source
+			code. Everyone has read access to the repositories, so you
+			may download the most up-to-date development version of the
+			software. Note that the latest version in the Subversion
+			repository many not work as expected, it may not even
+			compile properly. If you are looking for a stable release of
+			the source code, you should download an official
+			distribution instead of the latest version in the Subversion
+			repositories.
+
+			There are several ways to access the Subversion
+			repositories:
 		</p>
 
+		<div class="section">
+			<h2>Web Access</h2>
+		</div>
 		<p>
-			<a href="core/repos.html">Core source repository</a>
+			If you just wish to browse around or download a few
+			individual files, the best tool is the web-based ViewCVS
+			interface for CVS repositories and ViewCVS interface for
+			Subversion or go straight to the public repositories at:
 		</p>
 		<p>
-			<a href="classic/repos.html">
-				Classic source repository
+			<a href="http://svn.qos.ch/viewcvs/logback/core/trunk">
+				Logback core SVN Repository
 			</a>
 		</p>
 		<p>
-			<a href="access/repos.html">
-				Access source repository
+			<a href="http://svn.qos.ch/viewcvs/logback/classic/trunk">
+				Logback classic SVN Repository
+			</a>
+		</p>
+				<p>
+			<a href="http://svn.qos.ch/viewcvs/logback/access/trunk">
+				Logback access SVN Repository
 			</a>
 		</p>
 
+		<div class="section">
+			<h2>Checking out a read-only copy</h2>
+		</div>
+		<p>
+			To access the Subversion repositories anonymously, you will
+			need a Subversion client.
+
+			To check out one of the logback project modules, issue one of the following commands:
+		</p>
+
+		<div class="source">svn co http://svn.qos.ch/repos/logback/core/trunk</div>
+		
+		<div class="source">svn co http://svn.qos.ch/repos/logback/classic/trunk</div>
+				
+		<div class="source">svn co http://svn.qos.ch/repos/logback/access/trunk</div>
+						
+		<div class="section">
+			<p>
+				Note that anonymous access allows read-only access only.
+				For read-write access please contact the logback
+				<a href="../mailinglist.html">developer list</a>
+				.
+			</p>
+		</div>
 	</body>
 </document>

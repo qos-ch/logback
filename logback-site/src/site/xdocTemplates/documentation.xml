@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>Logback project Docs</title>
+	</properties>
+
+	<body>
+
+		<div class="section">
+			<h2>Documentation</h2>
+		</div>
+
+		<p>Here are some documents about the logback project modules.</p>
+		<p>
+			This section is pretty light at the moment, but will grow
+			with the developping of $logback.
+		</p>
+
+		<ul>
+			<li>
+				<a href="apidocs/index.html">Logback Javadoc</a>
+			</li>
+			<li>
+				<a href="shortIntro.html">A short introduction to logback classic</a>
+			</li>
+		</ul>
+
+	</body>
+</document>

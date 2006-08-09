@@ -2,14 +2,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback</artifactId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
-	<artifactId>lb-topLevel</artifactId>
+	<artifactId>site</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1</version>
-	<name>Logback Home</name>
+	<version>${parent.version}</version>
+	<name>Logback Site</name>
 
 	<url>http://logback.qos.ch</url>
 
@@ -18,8 +23,7 @@
 		<url>http://www.qos.ch</url>
 	</organization>
 	<inceptionYear>2005</inceptionYear>
-
-
+	
 	<build>
 		<resources>
 			<resource>
@@ -33,13 +37,6 @@
 			</resource>
 		</resources>
 
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0-beta-1</version>
-			</extension>
-		</extensions>
 	</build>
 
 	<reporting>
@@ -51,9 +48,10 @@
 					<xdocDirectory>
 						${project.build.outputDirectory}/generated-site
 					</xdocDirectory>
+					<outputDirectory>${project.parent.basedir}/target/site</outputDirectory>
 				</configuration>
 			</plugin>
-			<!-- plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>
 					maven-project-info-reports-plugin
@@ -61,19 +59,11 @@
 				<reportSets>
 					<reportSet>
 						<reports>
-							<report>index</report>
 						</reports>
 					</reportSet>
 				</reportSets>
-			</plugin -->
+			</plugin>
 		</plugins>
 	</reporting>
-	
-	<distributionManagement>
-		<site>
-			<id>pixie</id>
-			<url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
-		</site>
-	</distributionManagement>
 
 </project>
