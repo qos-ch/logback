@@ -1,0 +1,206 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>logback-core</artifactId>
+	<packaging>jar</packaging>
+	<version>0.2-SNAPSHOT</version>
+	<name>Logback Core Module</name>
+
+	<url>http://logback.qos.ch/core</url>
+	<description>
+		<!-- 
+			Never _never_ let Eclipse's auto format function add
+			a line return in the description.
+			The generated jar will contain a corrupt MANIFEST file.
+		-->
+		Logback: the generic, reliable, fast and flexible logging library for Java.
+	</description>
+
+	<organization>
+		<name>QOS.ch</name>
+		<url>http://www.qos.ch</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+	<dependencies>
+		<dependency>
+			<groupId>janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>once</forkMode>
+					<reportFormat>plain</reportFormat>
+					<trimStackTrace>false</trimStackTrace>
+					<excludes>
+						<exclude>**/AllTest.java</exclude>
+						<exclude>**/PackageTest.java</exclude>
+						<exclude>**/SizeBasedRollingTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-test-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/main/assembly/source.xml
+						</descriptor>
+					</descriptors>
+					<finalName>
+						logback-core-${project.version}
+					</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<outputDirectory>target/site/dist/</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>
+						https://svn.qos.ch/repos/logback/core/tags
+					</tagBase>
+					<preparationGoals>
+						clean, site, assembly:assembly
+					</preparationGoals>
+					<goals>site, assembly:assembly site:deploy</goals>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/site/xdocTemplates</directory>
+				<!-- 
+					We're saving filtered xdocs in a temporary folder
+					and telling the site plug in to get the xdocs there.
+				-->
+				<targetPath>generated-site</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/input</directory>
+				<targetPath>src/test/input</targetPath>
+			</testResource>
+			<testResource>
+				<directory>src/test/witness</directory>
+				<targetPath>src/test/witness</targetPath>
+			</testResource>
+		</testResources>
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-1</version>
+			</extension>
+		</extensions>
+	</build>
+
+
+	<reporting>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<xdocDirectory>
+						${project.build.outputDirectory}/generated-site
+					</xdocDirectory>
+				</configuration>
+			</plugin>
+			<!-- plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<links>
+						<link>
+							http://java.sun.com/j2se/1.5.0/docs/api
+						</link>
+					</links>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+
+
+	<!-- LOGBack Core Repository ================================================ -->
+
+	<scm>
+		<connection>http://svn.qos.ch/repos/logback/core/trunk</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/core/trunk</developerConnection>
+		<url>http://svn.qos.ch/viewcvs/logback/core/trunk</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>pixie</id>
+			<url>scp://pixie/var/www/logback.qos.ch/htdocs/core</url>
+		</site>
+	</distributionManagement>
+
+</project>

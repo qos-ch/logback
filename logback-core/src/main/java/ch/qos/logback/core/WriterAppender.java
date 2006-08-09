@@ -1,0 +1,279 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+package ch.qos.logback.core;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import ch.qos.logback.core.status.ErrorStatus;
+
+public class WriterAppender extends AppenderBase {
+
+  /**
+   * Immediate flush means that the underlying writer or output stream will be
+   * flushed at the end of each append operation. Immediate flush is slower but
+   * ensures that each append request is actually written. If
+   * <code>immediateFlush</code> is set to <code>false</code>, then there
+   * is a good chance that the last few logs events are not actually written to
+   * persistent media if and when the application crashes.
+   * 
+   * <p>
+   * The <code>immediateFlush</code> variable is set to <code>true</code> by
+   * default.
+   */
+  protected boolean immediateFlush = true;
+
+  /**
+   * The encoding to use when opening an InputStream.
+   * <p>
+   * The <code>encoding</code> variable is set to <code>null</null> by default 
+   * which results in the use of the system's default encoding.
+   */
+  protected String encoding;
+
+  /**
+   * This is the {@link Writer Writer} where we will write to.
+   */
+  protected Writer writer;
+
+  /**
+   * The layout variable does not need to be set if the appender implementation
+   * has its own layout.
+   */
+  protected Layout layout;
+
+  /**
+   * The default constructor does nothing.
+   */
+  public WriterAppender() {
+  }
+
+  /**
+   * If the <b>ImmediateFlush</b> option is set to <code>true</code>, the
+   * appender will flush at the end of each write. This is the default behavior.
+   * If the option is set to <code>false</code>, then the underlying stream
+   * can defer writing to physical medium to a later time.
+   * <p>
+   * Avoiding the flush operation at the end of each append results in a
+   * performance gain of 10 to 20 percent. However, there is safety tradeoff
+   * involved in skipping flushing. Indeed, when flushing is skipped, then it is
+   * likely that the last few log events will not be recorded on disk when the
+   * application exits. This is a high price to pay even for a 20% performance
+   * gain.
+   */
+  public void setImmediateFlush(boolean value) {
+    immediateFlush = value;
+  }
+
+  /**
+   * Returns value of the <b>ImmediateFlush</b> option.
+   */
+  public boolean getImmediateFlush() {
+    return immediateFlush;
+  }
+
+  /**
+   * Checks that requires parameters are set and if everything is in order,
+   * activates this appender.
+   */
+  public void start() {
+    int errors = 0;
+    if (this.layout == null) {
+      addStatus(
+          new ErrorStatus("No layout set for the appender named \"" + name
+              + "\".", this));
+      errors++;
+    }
+
+    if (this.writer == null) {
+      addStatus(
+          new ErrorStatus("No writer set for the appender named \"" + name
+              + "\".", this));
+      errors++;
+    }
+    // only error free appenders should be activated
+    if (errors == 0) {
+      super.start();
+    }
+  }
+
+  protected void append(Object eventObject) {
+    if (!isStarted()) {
+      return;
+    }
+
+    subAppend(eventObject);
+  }
+
+  /**
+   * Stop this appender instance. The underlying stream or writer is also
+   * closed.
+   * 
+   * <p>
+   * Stopped appenders cannot be reused.
+   */
+  public synchronized void stop() {
+    closeWriter();
+    super.stop();
+  }
+
+  /**
+   * Close the underlying {@link java.io.Writer}.
+   */
+  protected void closeWriter() {
+    if (this.writer != null) {
+      try {
+        // before closing we have to output out layout's footer
+        writeFooter();
+        this.writer.close();
+        this.writer = null;
+      } catch (IOException e) {
+        addStatus(
+            new ErrorStatus("Could not close writer for WriterAppener.", this,
+                e));
+      }
+    }
+  }
+
+  /**
+   * Returns an OutputStreamWriter when passed an OutputStream. The encoding
+   * used will depend on the value of the <code>encoding</code> property. If
+   * the encoding value is specified incorrectly the writer will be opened using
+   * the default system encoding (an error message will be printed to the
+   * loglog.
+   */
+  protected OutputStreamWriter createWriter(OutputStream os) {
+    OutputStreamWriter retval = null;
+
+    String enc = getEncoding();
+
+    try {
+      if (enc != null) {
+        retval = new OutputStreamWriter(os, enc);
+      } else {
+        retval = new OutputStreamWriter(os);
+      }
+    } catch (IOException e) {
+      addStatus(new ErrorStatus("Error initializing output writer.", this, e));
+      if (enc != null) {
+        addStatus(new ErrorStatus("Unsupported encoding?", this));
+      }
+    }
+    return retval;
+  }
+
+  public String getEncoding() {
+    return encoding;
+  }
+
+  public void setEncoding(String value) {
+    encoding = value;
+  }
+
+  /**
+   * Set the layout for this appender. Note that some appenders have their own
+   * (fixed) layouts or do not use any.
+   */
+  public void setLayout(Layout layout) {
+    this.layout = layout;
+  }
+
+  /**
+   * Returns the layout of this appender. The value may be null.
+   */
+  public Layout getLayout() {
+    return layout;
+  }
+
+  void writeHeader() {
+    if (layout != null) {
+      String h = layout.getHeader();
+
+      if ((h != null) && (this.writer != null)) {
+        try {
+          this.writer.write(h);
+          // append a line separator. This should be useful in most cases and should 
+          // not hurt. 
+          this.writer.write(Layout.LINE_SEP);
+          this.writer.flush();
+        } catch (IOException ioe) {
+          this.started = false;
+          addStatus(new ErrorStatus(
+              "Failed to write header for appender named [" + name + "].",
+              this, ioe));
+        }
+      }
+    }
+  }
+
+  void writeFooter() {
+    if (layout != null) {
+      String h = layout.getFooter();
+      if ((h != null) && (this.writer != null)) {
+        try {
+          this.writer.write(h);
+          // flushing is mandatory if the writer is not later closed.
+          this.writer.flush();
+        } catch (IOException ioe) {
+          this.started = false;
+          addStatus(new ErrorStatus(
+              "Failed to write footer for appender named [" + name + "].",
+              this, ioe));
+        }
+      }
+    }
+  }
+
+  /**
+   * <p>
+   * Sets the Writer where the log output will go. The specified Writer must be
+   * opened by the user and be writable. The <code>java.io.Writer</code> will
+   * be closed when the appender instance is closed.
+   * 
+   * @param writer
+   *          An already opened Writer.
+   */
+  public synchronized void setWriter(Writer writer) {
+    // close any previously opened writer
+    closeWriter();
+
+    this.writer = writer;
+    writeHeader();
+  }
+
+  /**
+   * Actual writing occurs here.
+   * <p>
+   * Most subclasses of <code>WriterAppender</code> will need to override this
+   * method.
+   * 
+   * @since 0.9.0
+   */
+  protected void subAppend(Object event) {
+    if (!isStarted()) {
+      return;
+    }
+
+    try {
+      this.writer.write(this.layout.doLayout(event));
+      if (this.immediateFlush) {
+        this.writer.flush();
+      }
+    } catch (IOException ioe) {
+      // as soon as an exception occurs, move to non-started state
+      // and add a single ErrorStatus to the SM.
+      this.started = false;
+      addStatus(new ErrorStatus("IO failure in appender", this, ioe));
+    }
+  }
+
+}
