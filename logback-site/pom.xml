@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
-	<artifactId>site</artifactId>
+	<artifactId>logback-site</artifactId>
 	<packaging>jar</packaging>
 	<version>${parent.version}</version>
 	<name>Logback Site</name>
