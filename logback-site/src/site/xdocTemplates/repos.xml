@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+		<title>logback source repositories</title>
+	</properties>
+
+	<body>
+		<h2>Download links</h2>
+
+		<p>
+			Logback source repositories can be accessed by visiting their specific pages:
+		</p>
+
+		<p>
+			<a href="core/repos.html">Core source repository</a>
+		</p>
+		<p>
+			<a href="classic/repos.html">
+				Classic source repository
+			</a>
+		</p>
+		<p>
+			<a href="access/repos.html">
+				Access source repository
+			</a>
+		</p>
+
+	</body>
+</document>

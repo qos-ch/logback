@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<document>
+	<body>
+		<h2>Project Mailing Lists</h2>
+
+		<p>
+			A mailing list is an electronic discussion forum that anyone
+			can subscribe to. When someone sends an email message to the
+			mailing list, a copy of that message is broadcast to
+			everyone who is subscribed to that mailing list. Mailing
+			lists provide a simple and effective communication
+			mechanism. With potentially thousands of subscribers, there
+			is a common set of etiquette guidelines that you should
+			observe. Please keep on reading.
+		</p>
+		<h3>Respect the mailing list type</h3>
+		<p>
+			The "User" lists where you can send questions and comments
+			about configuration, setup, usage and other "user" types of
+			questions. The "Developer" lists where you can send
+			questions and comments about the actual software source code
+			and general "development" types of questions.
+		</p>
+		<p>
+			Some questions are appropriate for posting on both the
+			"user" and the "developer" lists. In this case, pick one and
+			only one. Do not cross post.
+		</p>
+		<p>
+			Please do your best to ensure that you are not sending HTML
+			or "Stylelized" email to the list. If you are using Outlook
+			or Outlook Express or Eudora, chances are that you are
+			sending HTML email by default. There is usually a setting
+			that will allow you to send "Plain Text" email.
+		</p>
+
+
+		<table class="bodyTable">
+			<tr class="a">
+				<th>Name</th>
+				<th>Subscribe</th>
+				<th>Unsubscribe</th>
+				<th>Post</th>
+				<th>Archive</th>
+			</tr>
+			<tr class="b">
+				<td>Logback Announce List</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/listinfo/logback-announce">
+						Subscribe
+					</a>
+				</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/options/logback-announce">
+						Unsubscribe
+					</a>
+				</td>
+				<td>
+					<a href="mailto:logback-announce@qos.ch">Post</a>
+				</td>
+				<td>
+					<a
+						href="http://www.qos.ch/pipermail/logback-announce/">
+						www.qos.ch
+					</a>
+				</td>
+			</tr>
+			<tr class="a">
+				<td>Logback User List</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/listinfo/logback-user">
+						Subscribe
+					</a>
+				</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/options/logback-user">
+						Unsubscribe
+					</a>
+				</td>
+				<td>
+					<a href="mailto:logback-user@qos.ch">Post</a>
+				</td>
+				<td>
+					<a
+						href="http://www.qos.ch/pipermail/logback-user/">
+						www.qos.ch
+					</a>
+				</td>
+			</tr>
+			<tr class="b">
+				<td>Logback Dev List</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/listinfo/logback-dev">
+						Subscribe
+					</a>
+				</td>
+				<td>
+					<a
+						href="http://qos.ch/mailman/options/logback-dev">
+						Unsubscribe
+					</a>
+				</td>
+				<td>
+					<a href="mailto:logback-dev@qos.ch">Post</a>
+				</td>
+				<td>
+					<a
+						href="http://www.qos.ch/pipermail/logback-dev/">
+						www.qos.ch
+					</a>
+				</td>
+			</tr>
+		</table>
+	</body>
+</document>

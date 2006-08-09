@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} download</title>
+	</properties>
+
+	<body>
+		<h2>Logback News</h2>
+
+		<p>Here are the last news about the project.</p>
+
+		<h3>July 26th, 2006 - 0.1 version available</h3>
+		<p>
+			A first 0.1 version of all three modules of logback
+			is now available.
+		</p>
+		<p>
+			The archives containing source code and binaries of all
+			modules are downloadable from the corresponding download
+			pages.
+		</p>
+
+		<hr width="50%" align="center" />
+
+		<h3>February 9th, 2006 - Logback web-site goes live</h3>
+		<p>
+			The logback web-site goes live on the 9th of February. At
+			its present state, it is pretty primitive but updates will
+			follow.
+		</p>
+
+
+	</body>
+</document>

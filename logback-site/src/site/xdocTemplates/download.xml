@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} download</title>
+	</properties>
+
+	<body>
+		<h2>Download links</h2>
+
+		<p>
+			Logback Modules can be downloaded by visiting their specific
+			download pages:
+		</p>
+
+		<p>
+			<a href="core/download.html">Core Module download page</a>
+		</p>
+		<p>
+			<a href="classic/download.html">
+				Classic Module download page
+			</a>
+		</p>
+		<p>
+			<a href="access/download.html">
+				Access Module download page
+			</a>
+		</p>
+
+	</body>
+</document>
