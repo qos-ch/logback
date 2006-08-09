@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} index</title>
+	</properties>
+
+	<body>
+
+		<div class="section">
+			<h2>Logback Access Module</h2>
+		</div>
+
+		<p>
+			Logback: the generic, reliable, fast and flexible logging
+			library for Java
+		</p>
+
+		<p>
+			The Access module integrates with Servlet containers to
+			provide HTPP-access log functionality.
+		</p>
+
+	</body>
+</document>

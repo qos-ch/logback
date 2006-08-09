@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Logback Access Module">
+
+  <skin>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>lb-skin</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </skin>
+  
+  <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>
+
+  <bannerLeft>
+    <name>${project.name}</name>
+    <src>/images/logos/lblogo.jpg</src>
+  </bannerLeft>
+  <!-- bannerRight>
+    <src>/images/lblogo.jpg</src>
+  </bannerRight -->
+  <body>
+    <links>
+      <item name="Logback Home" href="http://logback.qos.ch/" />      
+      <item name="Core Module" href="http://logback.qos.ch/core/"/>
+      <item name="Classic Module" href="http://logback.qos.ch/classic/"/>
+    </links>
+
+    <menu name="${project.name}">
+      <item name="Introduction" href="index.html"/>
+      <item name="Download" href="download.html" />
+      <item name="License" href="license.html" />
+      <item name="Documentation" href="documentation.html" />
+      <item name="Repository" href="repos.html"/>
+    </menu>
+
+  </body>
+</project>

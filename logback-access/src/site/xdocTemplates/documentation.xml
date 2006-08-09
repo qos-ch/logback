@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} Docs</title>
+	</properties>
+
+	<body>
+
+		<div class="section">
+			<h2>Documentation</h2>
+		</div>
+
+		<p>
+			Here are some documents about ${pom.name}.
+		</p>
+		<p>
+			This section is pretty light at the moment, but will grow with the developping
+			of ${pom.name}.
+		</p>
+
+		<ul>
+			<li>
+				<a href="apidocs/index.html">${pom.name} Javadoc</a>
+			</li>
+		</ul>
+
+	</body>
+</document>

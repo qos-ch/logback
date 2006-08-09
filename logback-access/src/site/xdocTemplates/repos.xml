@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>${pom.name} download</title>
+	</properties>
+
+	<body>
+
+		<div class="section">
+			<h2>Source Repository</h2>
+		</div>
+
+		<p>
+			To enable ${pom.name} developers to work together, we
+			keep the source code in revision control systems called
+			Subversion. Developers have write access to the Subversion
+			repository, enabling them to make changes to the source
+			code. Everyone has read access to the repositories, so you
+			may download the most up-to-date development version of the
+			software. Note that the latest version in the Subversion
+			repository many not work as expected, it may not even
+			compile properly. If you are looking for a stable release of
+			the source code, you should download an official
+			distribution instead of the latest version in the Subversion
+			repositories.
+
+			There are several ways to access the Subversion
+			repositories:
+		</p>
+
+		<div class="section">
+			<h2>Web Access</h2>
+		</div>
+		<p>
+			If you just wish to browse around or download a few
+			individual files, the best tool is the web-based ViewCVS
+			interface for CVS repositories and ViewCVS interface for
+			Subversion or go straight to the public repositories at:
+		</p>
+		<p>
+			<a href="${pom.scm.url}">
+				${pom.name} SVN Repository
+			</a>
+		</p>
+
+
+		<div class="section">
+			<h2>Checking out a read-only copy</h2>
+		</div>
+		<p>
+			To access the Subversion repositories anonymously, you will
+			need a Subversion client.
+
+			To check out the ${pom.name}, issue the following command:
+		</p>
+
+		<div class="source">svn co ${pom.scm.connection}</div>
+		<div class="section">
+			<p>
+				Note that anonymous access allows read-only access only.
+				For read-write access please contact the Logback
+				<a href="../mailinglist.html">developer list</a>
+				.
+			</p>
+		</div>
+	</body>
+</document>
