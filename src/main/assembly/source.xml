@@ -38,6 +38,11 @@
 		<fileSet>
 			<directory>logback-core/src/</directory>
 			<outputDirectory>logback-core/src/</outputDirectory>
+			<excludes>
+				<exclude>
+					test/output/
+				</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>logback-classic/src/</directory>
