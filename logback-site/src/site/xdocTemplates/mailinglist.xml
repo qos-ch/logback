@@ -40,7 +40,6 @@
 				<th>Name</th>
 				<th>Subscribe</th>
 				<th>Unsubscribe</th>
-				<th>Post</th>
 				<th>Archive</th>
 			</tr>
 			<tr class="b">
@@ -56,10 +55,7 @@
 						href="http://qos.ch/mailman/options/logback-announce">
 						Unsubscribe
 					</a>
-				</td>
-				<td>
-					<a href="mailto:logback-announce@qos.ch">Post</a>
-				</td>
+				</td>			
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-announce/">
@@ -80,10 +76,7 @@
 						href="http://qos.ch/mailman/options/logback-user">
 						Unsubscribe
 					</a>
-				</td>
-				<td>
-					<a href="mailto:logback-user@qos.ch">Post</a>
-				</td>
+				</td>			
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-user/">
@@ -104,10 +97,7 @@
 						href="http://qos.ch/mailman/options/logback-dev">
 						Unsubscribe
 					</a>
-				</td>
-				<td>
-					<a href="mailto:logback-dev@qos.ch">Post</a>
-				</td>
+				</td>			
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-dev/">
