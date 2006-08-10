@@ -5,6 +5,7 @@
 		<format>tar.gz</format>
 	</formats>
 	<fileSets>
+		<!-- Module POMs -->
 		<fileSet>
 			<directory>logback-core/</directory>
 			<outputDirectory>logback-core/</outputDirectory>
@@ -32,6 +33,8 @@
 				</include>
 			</includes>
 		</fileSet>
+		
+		<!-- Module Source directories -->
 		<fileSet>
 			<directory>logback-core/src/</directory>
 			<outputDirectory>logback-core/src/</outputDirectory>
@@ -44,6 +47,8 @@
 			<directory>logback-access/src/</directory>
 			<outputDirectory>logback-access/src/</outputDirectory>
 		</fileSet>
+		
+		<!-- Module JARs -->
 		<fileSet>
 			<directory>logback-core/target/</directory>
 			<outputDirectory>/</outputDirectory>
@@ -67,22 +72,30 @@
 				<include>logback-access-${project.version}.jar</include>
 			</includes>
 		</fileSet>		
+		
+		<!-- Classic Examples -->
 		<fileSet>
 			<directory>logback-classic/examples/</directory>
 			<outputDirectory>/examples/</outputDirectory>
 		</fileSet>
+		
+		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
 			<outputDirectory>/site</outputDirectory>
 		</fileSet>
+		
+		<!-- Parent files -->
 		<fileSet>
 			<includes>
+				<include>src/</include>
 				<include>README*</include>
 				<include>LICENSE*</include>
 				<include>pom.xml</include>
 			</includes>
 		</fileSet>
 	</fileSets>
+	
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>/lib</outputDirectory>
@@ -96,9 +109,10 @@
 					or we can use the short form (hard coded into assembly) of
 					<groupId>:<artifactId>
 					This is a String equality match not a pattern match.
+				-->
 				
 				<exclude>ch.qos.logback:logback-core</exclude>
-				-->
+				
 			</excludes>
 		</dependencySet>
 	</dependencySets>
