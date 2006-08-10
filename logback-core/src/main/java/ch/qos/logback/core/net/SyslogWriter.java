@@ -9,24 +9,26 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * SyslogWriter is a wrapper around the {@link DatagramSocket} class 
- * so that it behaves like a {@link Writer}.
+ * SyslogWriter is a wrapper around the {@link DatagramSocket} class so that it
+ * behaves like a {@link Writer}.
  */
 class SyslogWriter extends Writer {
+
   /**
-   * The maximum length after which we discard the existing string buffer and 
+   * The maximum length after which we discard the existing string buffer and
    * start anew.
    */
-  static final int MAX_LEN = 1024;
-  
-  static final int SYSLOG_PORT = 514;
-  
+  private static final int MAX_LEN = 1024;
+
   private InetAddress address;
   private DatagramSocket ds;
   private StringBuffer buf = new StringBuffer();
-  
-  public SyslogWriter(String syslogHost) throws UnknownHostException, SocketException  {
+  final private int port;
+
+  public SyslogWriter(String syslogHost, int port) throws UnknownHostException,
+      SocketException {
     this.address = InetAddress.getByName(syslogHost);
+    this.port = port;
     this.ds = new DatagramSocket();
   }
 
@@ -36,19 +38,19 @@ class SyslogWriter extends Writer {
 
   public void write(String str) throws IOException {
     buf.append(str);
-   
+
   }
 
   public void flush() throws IOException {
     byte[] bytes = buf.toString().getBytes();
-    DatagramPacket packet =
-      new DatagramPacket(bytes, bytes.length, address, SYSLOG_PORT);
+    DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address,
+        port);
 
     if (this.ds != null) {
       ds.send(packet);
     }
     // clean up for next round
-    if(buf.length() > MAX_LEN) {
+    if (buf.length() > MAX_LEN) {
       buf = new StringBuffer();
     } else {
       buf.setLength(0);
@@ -59,5 +61,9 @@ class SyslogWriter extends Writer {
     address = null;
     ds = null;
   }
-}
 
+  public int getPort() {
+    return port;
+  }
+
+}

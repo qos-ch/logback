@@ -1,6 +1,8 @@
 package ch.qos.logback.core.net;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
@@ -11,8 +13,9 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   int facility;
   String facilityStr;
   String syslogHost;
+  protected String suffixPattern;
   SyslogWriter sw;
-  //private String localHostname;
+  int port = SyslogConstants.SYSLOG_PORT;
   
   public void start() {
     int errorCount = 0;
@@ -23,14 +26,26 @@ public abstract class SyslogAppenderBase extends AppenderBase {
     
     facility = facilityStringToint(facilityStr);
     
-    layout = getLayout();
+    try {
+      sw = new SyslogWriter(syslogHost, port);
+    } catch (UnknownHostException e) {
+      addError("Could not create SyslogWriter", e);
+      errorCount++;
+    } catch (SocketException e) {
+      errorCount++;
+      addError("Failed to bind to a random datagram socket ", e);
+    }
+    
+    if(layout == null) {
+      layout = buildLayout(facilityStr);
+    }
     
     if(errorCount == 0) {
       super.start();
     }
   }
   
-  abstract public Layout buildLayout(int facility);
+  abstract public Layout buildLayout(String facilityStr);
   
   abstract public int getSeverityForEvent(Object eventObject);
   
@@ -39,14 +54,15 @@ public abstract class SyslogAppenderBase extends AppenderBase {
     if(!isStarted()) {
       return;
     }
+    
     try {
       String msg = layout.doLayout(eventObject);
       sw.write(msg);
       sw.flush();
+    
     } catch(IOException ioe) {
       addError("Failed to send diagram to "+syslogHost, ioe);
       stop();
-      
     }
   }
 
@@ -142,5 +158,57 @@ public abstract class SyslogAppenderBase extends AppenderBase {
       facilityStr = facilityStr.trim();
     }
     this.facilityStr = facilityStr;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public int getPort() {
+    return port;
+  }
+
+  /**
+   * The port number on the syslog server to connect to. Nornally, wou would not
+   * want to change the default value, that is 514.
+   */
+  public void setPort(int port) {
+    this.port = port;
+  }
+
+  /**
+   * You can override 
+   */
+  public Layout getLayout() {
+    return layout;
+  }
+
+  public void setLayout(Layout layout) {
+    this.layout = layout;
+  }
+  
+  @Override
+  public void stop() {
+    sw.close();
+    super.stop();
+  }
+
+  /**
+   * See {@link #setSuffixPattern(String).
+   * 
+   * @return
+   */
+  public String getSuffixPattern() {
+    return suffixPattern;
+  }
+
+  /**
+   * The <b>suffixPattern</b> option specifies the fortmat of the 
+   * non-standardized part the message sent to the syslog server.
+   * 
+   * @param pattern
+   */
+  public void setSuffixPattern(String suffixPattern) {
+    this.suffixPattern = suffixPattern;
   }
 }

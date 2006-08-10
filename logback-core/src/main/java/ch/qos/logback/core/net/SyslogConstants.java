@@ -7,6 +7,9 @@ package ch.qos.logback.core.net;
  **/
 public class SyslogConstants {
   
+  static public final int SYSLOG_PORT = 514;
+  
+  
   // Following constants extracted from RFC 3164, we multiply them by 8
   // in order to precompute the facility part of PRI.
   // See RFC 3164, Section 4.1.1 for exact details.
