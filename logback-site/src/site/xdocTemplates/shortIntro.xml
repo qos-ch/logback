@@ -92,9 +92,7 @@
 
     <p>
     	After you have added the jar files
-    	<em>logback-core.jar</em>
-    	and
-    	<em>logback-classic.jar</em>
+    	<em>logback-core.jar</em>, <em>logback-classic.jar</em> and their dependencies 
     	to your classpath, you can begin experimenting with logback.
     </p>
 
@@ -145,8 +143,7 @@ public class HelloWorld1 {
 
 
 		<p>
-			<b>ceki: compile?</b>
-			You can compile and run this class with the command:
+			Once you're in the examples/classes directory of the logback distribution, you can run this class with the command:
 		</p>
 
 		<div class="source">java chapter1.HelloWorld1</div>
@@ -243,7 +240,7 @@ public class HelloWorld3 {
 			will barely change. Only the configuration process will be
 			different, since you don't need (nor should) configure the
 			logging context in each and every class that will require
-			logging. As well, the LoggerStatusPrinter will certainly not be
+			logging. As well, the <code>LoggerStatusPrinter</code> will certainly not be
 			used after all the logging statements.
 		</p>
 
@@ -316,7 +313,7 @@ public class HelloWorld3 {
 			It is exceptional in a way that is always exists. Like every
 			logger, it can be retrieved by its name, like this:
 		</p>
-		<div class="source">Logger rootLogger = LoggerFactory.getLogger("root");</div>
+		<div class="source">Logger rootLogger = LoggerFactory.getLogger(LoggerContext.<em>ROOT_NAME</em>);</div>
 
 		<p>
 			All other loggers are retrieved with the class static
@@ -360,7 +357,7 @@ public interface Logger {
 		</div>
 		<p>
 			To ensure that all loggers can eventually inherit a level,
-			the root logger always has an assigned level.
+			the root logger always has an assigned level. By default, its level is DEBUG.
 		</p>
 		<p>
 			Below are four examples with various assigned level values
@@ -389,31 +386,31 @@ public interface Logger {
 			</tr>
 			<tr>
 				<td>root</td>
-				<td>L<sub>root</sub></td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
 			</tr>
 			<tr>
 				<td>X</td>
 				<td>none</td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
 			</tr>
 
 			<tr>
 				<td>X.Y</td>
 				<td>none</td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
 			</tr>
 			<tr>
 				<td>X.Y.Z</td>
 				<td>none</td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
 			</tr>
 		</table>
 		<p>
 			In example 1 above, only the root logger is assigned a
 			level.
 		</p>
-		This level value, <code>L<sub>root</sub></code>, is inherited by the other loggers
+		This level value, <code>DEBUG</code>, is inherited by the other loggers
 		<code>X</code>, <code>X.Y</code> and <code>X.Y.Z</code>
 		<table>
 			<tr>
@@ -436,24 +433,24 @@ public interface Logger {
 			</tr>
 			<tr align="left">
 				<td>root</td>
-				<td>L<sub>root</sub></td>
-				<td>L<sub>root</sub></td>
+				<td>ERROR</td>
+				<td>ERROR</td>
 			</tr>
 			<tr align="left">
 				<td>X</td>
-				<td>L<sub>x</sub></td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
+				<td>INFO</td>
 			</tr>
 
 			<tr align="left">
 				<td>X.Y</td>
-				<td>L<sub>xy</sub></td>
-				<td>L<sub>xy</sub></td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
 			</tr>
 			<tr align="left">
 				<td>X.Y.Z</td>
-				<td>L<sub>xyz</sub></td>
-				<td>L<sub>xyz</sub></td>
+				<td>WARN</td>
+				<td>WARN</td>
 			</tr>
 		</table>
 
@@ -482,30 +479,30 @@ public interface Logger {
 			</tr>
 			<tr align="left">
 				<td>root</td>
-				<td>L<sub>root</sub></td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
 			</tr>
 
 			<tr align="left">
 				<td>X</td>
-				<td>L<sub>x</sub></td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
+				<td>INFO</td>
 			</tr>
 			<tr align="left">
 				<td>X.Y</td>
 				<td>none</td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
 			</tr>
 			<tr align="left">
 				<td>X.Y.Z</td>
-				<td>L<sub>xyz</sub></td>
-				<td>L<sub>xyz</sub></td>
+				<td>ERROR</td>
+				<td>ERROR</td>
 			</tr>
 		</table>
 		<p>
 			In example 3, the loggers <code>root</code>, <code>X</code>
-			and <code>X.Y.Z</code> are assigned the levels <code>L<sub>root</sub></code>,
-			<code>L<sub>x</sub></code> and <code>L<sub>xyz</sub></code>
+			and <code>X.Y.Z</code> are assigned the levels <code>DEBUG</code>,
+			<code>INFO</code> and <code>ERROR</code>
 			respectively. The logger <code>X.Y</code>
 			inherits its level value from its parent <code>X</code>.
 		</p>
@@ -530,31 +527,31 @@ public interface Logger {
 			</tr>
 			<tr align="left">
 				<td>root</td>
-				<td>L<sub>root</sub></td>
-				<td>L<sub>root</sub></td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
 			</tr>
 
 			<tr align="left">
 				<td>X</td>
-				<td>L<sub>x</sub></td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
+				<td>INFO</td>
 			</tr>
 			<tr align="left">
 				<td>X.Y</td>
 				<td>none</td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
 			</tr>
 			<tr align="left">
 				<td>X.Y.Z</td>
 				<td>none</td>
-				<td>L<sub>x</sub></td>
+				<td>INFO</td>
 			</tr>
 		</table>
 
 		<p>
 			In example 4, the loggers <code>root</code> and <code>X</code>
-			and are assigned the levels <code>L<sub>root</sub></code> and
-			<code>L<sub>x</sub></code> respectively. The loggers <code>X.Y</code> and
+			and are assigned the levels <code>DEBUG</code> and
+			<code>INFO</code> respectively. The loggers <code>X.Y</code> and
 			<code>X.Y.Z</code> inherits their level value from their nearest
 			parent <code>X</code> having an assigned level.
 		</p>
@@ -848,10 +845,10 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 
 		<p>
 			For example, the PatternLayout with the conversion pattern
-			"%r [%t] %-5p %c - %m%n" will output something akin to:
+			"%-4relative [%thread] %-5level %class - %msg%n" will output something akin to:
 		</p>
 
-		<div class="source">176 [main] INFO org.foo.Bar - Located nearest gas station.</div>
+		<div class="source">176  [main] DEBUG chapter1.HelloWorld3 - Hello world.</div>
 
 		<p>
 			The first field is the number of milliseconds elapsed since
@@ -915,7 +912,8 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 		</p>
 
 
-		<div class="source">Object entry = new SomeObject(); logger.debug("The entry is {}.", entry);</div>
+		<div class="source">Object entry = new SomeObject(); 
+logger.debug("The entry is {}.", entry);</div>
 
 		<p>
 			After evaluting whether to log or not, and only if the
@@ -1064,24 +1062,29 @@ public class MyApp {
 package chapter1;
 
 //Import SLF4J classes.
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
-<b>import ch.qos.logback.classic.joran.JoranConfigurator;</b>
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class MyAppWithConfigFile {
-
-  public static void main(String[] args) throws Exception {
-    Logger logger = (Logger) LoggerFactory.getLogger(MyAppWithConfigFile.class);
-    
+	
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger(MyAppWithConfigFile.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		
     JoranConfigurator configurator = new JoranConfigurator();
-    configurator.setContext(logger.getLoggerContext());
+    configurator.setContext(lc);
     configurator.doConfigure(args[0]);
 
     logger.info("Entering application.");
     Bar bar = new Bar();
     bar.doIt();
     logger.info("Exiting application.");
+	
+    StatusPrinter.print(lc.getStatusManager());
   }
 }</div>	
 	<p>
@@ -1089,6 +1092,8 @@ public class MyAppWithConfigFile {
 	Joran is a XML interpreter, similar to the commons-digester API, but offering several
 	small advantages over commons-digester. Here, it parses the xml file and runs actions depending
 	on the tags it finds.
+	To setup the JoranConfigurator properly, we passed the <code>LoggerContext</code>. A <code>LoggerContext</code>
+	is the class that creates and manages Loggers in logback. It is also the class that implements the org.slf4j.ILoggerFactory.
 	</p>
 	
 	<p>Logging to the console is a rather simple example. Let's now configure logback
