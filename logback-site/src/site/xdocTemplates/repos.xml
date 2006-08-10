@@ -40,18 +40,8 @@
 			Subversion or go straight to the public repositories at:
 		</p>
 		<p>
-			<a href="http://svn.qos.ch/viewcvs/logback/core/trunk">
-				Logback core SVN Repository
-			</a>
-		</p>
-		<p>
-			<a href="http://svn.qos.ch/viewcvs/logback/classic/trunk">
-				Logback classic SVN Repository
-			</a>
-		</p>
-				<p>
-			<a href="http://svn.qos.ch/viewcvs/logback/access/trunk">
-				Logback access SVN Repository
+			<a href="http://svn.qos.ch/viewcvs/logback/trunk/">
+				Logback SVN Repository
 			</a>
 		</p>
 
@@ -61,15 +51,20 @@
 		<p>
 			To access the Subversion repositories anonymously, you will
 			need a Subversion client.
-
-			To check out one of the logback project modules, issue one of the following commands:
 		</p>
-
-		<div class="source">svn co http://svn.qos.ch/repos/logback/core/trunk</div>
 		
-		<div class="source">svn co http://svn.qos.ch/repos/logback/classic/trunk</div>
+		<p>You can check out the entire logback project by using this command:</p>
+		
+		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/</div>
+		
+		<p>If you prefer to check out only one of the logback project modules, make your choice:</p>
+
+		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-core</div>
+		
+		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-classic</div>
 				
-		<div class="source">svn co http://svn.qos.ch/repos/logback/access/trunk</div>
+		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-access</div>
+		
 						
 		<div class="section">
 			<p>

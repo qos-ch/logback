@@ -2,11 +2,10 @@
 <document>
 
 <body>
-<h2>Bug reporting
-</h2>
+<h2>Bug reporting</h2>
 
-
-<p>No bug tracking system is defined yet. Please check back at a later date.</p>
+<p>The logback project uses a bugzilla based management system to track bugs.</p>
+<p>You can report and follow logback bugs by following <a href="http://bugzilla.qos.ch/">this link</a>.</p>
 
 
 

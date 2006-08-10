@@ -8,32 +8,29 @@
 
 	<body>
 
-			<div class="section">
-				<h2>Logback License</h2>
-			</div>
+		<div class="section">
+			<h2>Logback License</h2>
+		</div>
 
-			<p>
-				Logback source code and binaries are distributed
-				under the
-				<a href="http://www.gnu.org/licenses/lgpl.html">
-					GNU Lesser General Public License
-				</a>
-				as published by the Free Software Foundation.
-			</p>
-
-			<div class="source">
-			<p>
-Logback: the reliable, generic, fast and flexible
-logging library for Java.<br/>
-
-Copyright (C) 2000-2006, QOS.ch <br/>
-
-This library is free software, you can redistribute it
-and/or modify it under the terms of the GNU Lesser
-General Public License as published by the Free Software
-Foundation.
+		<p>
+			Logback source code and binaries are distributed under the
+			<a href="http://www.gnu.org/licenses/lgpl.html">
+				GNU Lesser General Public License
+			</a>
+			as published by the Free Software Foundation.
 		</p>
-			</div>
+
+		<div class="source">
+			<p>
+Logback: the reliable, generic, fast and flexible logging library for Java.
+				<br />
+Copyright (C) 2000-2006, QOS.ch
+				<br />
+This library is free software, you can redistribute it and/or modify it 
+under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation.
+			</p>
+		</div>
 
 
 	</body>
