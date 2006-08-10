@@ -13,18 +13,16 @@
 		</div>
 
 		<p>
-			To enable logback developers to work together, we
-			keep the source code in revision control systems called
+			We keep the source code in revision control systems called
 			Subversion. Developers have write access to the Subversion
 			repository, enabling them to make changes to the source
-			code. Everyone has read access to the repositories, so you
-			may download the most up-to-date development version of the
+			code. Everyone has read access to the repositories, so you may
+			download the most up-to-date development version of the
 			software. Note that the latest version in the Subversion
-			repository many not work as expected, it may not even
-			compile properly. If you are looking for a stable release of
-			the source code, you should download an official
-			distribution instead of the latest version in the Subversion
-			repositories.
+			repository many not work as expected, it may not even compile
+			properly. If you are looking for a stable release of the source
+			code, you should download an official distribution instead of
+			the latest version in the Subversion repositories.
 
 			There are several ways to access the Subversion
 			repositories:
@@ -34,44 +32,30 @@
 			<h2>Web Access</h2>
 		</div>
 		<p>
-			If you just wish to browse around or download a few
-			individual files, the best tool is the web-based ViewCVS
-			interface for CVS repositories and ViewCVS interface for
-			Subversion or go straight to the public repositories at:
+			If you just wish to browse around or download a few individual
+			files, you can do so with web-based ViewVC interface:
 		</p>
+
 		<p>
-			<a href="http://svn.qos.ch/viewcvs/logback/trunk/">
-				Logback SVN Repository
-			</a>
+			<a
+			href="http://svn.qos.ch/viewcvs/logback/trunk/">http://svn.qos.ch/viewcvs/logback/trunk/</a>
 		</p>
 
 		<div class="section">
 			<h2>Checking out a read-only copy</h2>
 		</div>
 		<p>
-			To access the Subversion repositories anonymously, you will
-			need a Subversion client.
-		</p>
-		
-		<p>You can check out the entire logback project by using this command:</p>
+			To access the Subversion repositories anonymously, you will need
+			a Subversion client. You can check out the entire logback
+			project with the following command:</p>
 		
 		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/</div>
-		
-		<p>If you prefer to check out only one of the logback project modules, make your choice:</p>
-
-		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-core</div>
-		
-		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-classic</div>
 				
-		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/logback-access</div>
-		
-						
 		<div class="section">
 			<p>
-				Note that anonymous access allows read-only access only.
-				For read-write access please contact the logback
-				<a href="../mailinglist.html">developer list</a>
-				.
+				Note that anonymous access allows read-only access only.  For
+				read-write access please contact the logback <a
+				href="../mailinglist.html">developer list</a> .
 			</p>
 		</div>
 	</body>

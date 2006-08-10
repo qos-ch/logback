@@ -20,17 +20,13 @@
 			as published by the Free Software Foundation.
 		</p>
 
-		<div class="source">
-			<p>
-Logback: the reliable, generic, fast and flexible logging library for Java.
-				<br />
+		<div class="source big">Logback: the reliable, generic, fast and flexible logging library for Java.  
+
 Copyright (C) 2000-2006, QOS.ch
-				<br />
-This library is free software, you can redistribute it and/or modify it 
-under the terms of the GNU Lesser General Public License as 
-published by the Free Software Foundation.
-			</p>
-		</div>
+
+This library is free software, you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation.</div>
 
 
 	</body>

@@ -2,11 +2,14 @@
 <document>
 
 <body>
-<h2>Bug reporting</h2>
+  <h2>Bug reporting</h2>
 
-<p>The logback project uses a bugzilla based management system to track bugs.</p>
-<p>You can report and follow logback bugs by following <a href="http://bugzilla.qos.ch/">this link</a>.</p>
+  <p>The logback project uses a bugzilla based management system to
+  track bugs.</p>
 
+  <p>You can report and follow logback bugs by following <a
+  href="http://bugzilla.qos.ch/">this link</a>.</p>
+  
 
 
 </body>

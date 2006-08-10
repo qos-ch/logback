@@ -3,27 +3,23 @@
 
 	<properties>
 		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-		<title>Logback project Docs</title>
+		<title>Documentaions</title>
 	</properties>
 
 	<body>
 
-		<div class="section">
-			<h2>Documentation</h2>
-		</div>
+    <h2>logback documentation</h2>
 
-		<p>Here are some documents about the logback project modules.</p>
-		<p>
-			This section is pretty light at the moment, but will grow
-			with the developping of $logback.
-		</p>
+		<p>Below is a list of documentaiton currently available for the
+		logback project.</p>
 
 		<ul>
 			<li>
-				<a href="apidocs/index.html">Logback Javadoc</a>
+				<a href="shortIntro.html"><b>A short introduction to logback-classic</b></a>
 			</li>
+
 			<li>
-				<a href="shortIntro.html">A short introduction to logback classic</a>
+				<a href="apidocs/index.html"><b>javadoc</b></a>
 			</li>
 		</ul>
 

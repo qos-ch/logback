@@ -38,12 +38,14 @@
 		<table class="bodyTable">
 			<tr class="a">
 				<th>Name</th>
+        <th>Volume</th>
 				<th>Subscribe</th>
 				<th>Unsubscribe</th>
 				<th>Archive</th>
 			</tr>
 			<tr class="b">
 				<td>Logback Announce List</td>
+				<td>Low</td>
 				<td>
 					<a
 						href="http://qos.ch/mailman/listinfo/logback-announce">
@@ -51,10 +53,7 @@
 					</a>
 				</td>
 				<td>
-					<a
-						href="http://qos.ch/mailman/options/logback-announce">
-						Unsubscribe
-					</a>
+					<a href="http://qos.ch/mailman/options/logback-announce">Unsubscribe</a>
 				</td>			
 				<td>
 					<a
@@ -65,6 +64,7 @@
 			</tr>
 			<tr class="a">
 				<td>Logback User List</td>
+				<td>Medium</td>
 				<td>
 					<a
 						href="http://qos.ch/mailman/listinfo/logback-user">
@@ -86,6 +86,7 @@
 			</tr>
 			<tr class="b">
 				<td>Logback Dev List</td>
+        <td>Medium</td>
 				<td>
 					<a
 						href="http://qos.ch/mailman/listinfo/logback-dev">
