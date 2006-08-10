@@ -10,6 +10,10 @@
 package ch.qos.logback.classic.net;
 
 import junit.framework.TestCase;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.net.SyslogConstants;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest extends TestCase {
 
@@ -25,4 +29,80 @@ public class SyslogAppenderTest extends TestCase {
     super.tearDown();
   }
 
+  public void testBasic() throws InterruptedException {
+    MockSyslogServer mockServer = new MockSyslogServer(1);
+    mockServer.start();
+
+    LoggerContext lc = new LoggerContext();
+    lc.setName("test");
+    SyslogAppender sa = new SyslogAppender();
+    sa.setContext(lc);
+    sa.setSyslogHost("localhost");
+    sa.setFacility("MAIL");
+    sa.setPort(MockSyslogServer.PORT);
+    sa.start();
+    assertTrue(sa.isStarted());
+    
+    String loggerName = this.getClass().getName();
+    Logger logger = lc.getLogger(loggerName);
+    logger.addAppender(sa);
+    String logMsg = "hello";
+    logger.debug(logMsg);
+    StatusPrinter.print(lc.getStatusManager());
+    
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(2000);
+    assertTrue(mockServer.finished);
+    assertEquals(1, mockServer.msgList.size());
+    String msg = mockServer.msgList.get(0);
+   
+    String expected = "<"+(SyslogConstants.LOG_MAIL+SyslogConstants.DEBUG_SEVERITY)+">";
+    assertTrue(msg.startsWith(expected));
+
+    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
+    String threadName = Thread.currentThread().getName();
+   
+    assertTrue(msg.matches(first +"\\["+threadName+"\\] "+ loggerName +" " +logMsg));
+   
+ }
+  
+  public void testExceptoin() throws InterruptedException {
+    MockSyslogServer mockServer = new MockSyslogServer(1);
+    mockServer.start();
+
+    LoggerContext lc = new LoggerContext();
+    lc.setName("test");
+    SyslogAppender sa = new SyslogAppender();
+    sa.setContext(lc);
+    sa.setSyslogHost("localhost");
+    sa.setFacility("MAIL");
+    sa.setPort(MockSyslogServer.PORT);
+    sa.start();
+    assertTrue(sa.isStarted());
+    
+    String loggerName = this.getClass().getName();
+    Logger logger = lc.getLogger(loggerName);
+    logger.addAppender(sa);
+    String logMsg = "hello";
+    logger.debug(logMsg, new Exception("just testing"));
+    StatusPrinter.print(lc.getStatusManager());
+    
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(2000);
+    assertTrue(mockServer.finished);
+    assertEquals(1, mockServer.msgList.size());
+    String msg = mockServer.msgList.get(0);
+   
+    String expected = "<"+(SyslogConstants.LOG_MAIL+SyslogConstants.DEBUG_SEVERITY)+">";
+    assertTrue(msg.startsWith(expected));
+
+    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
+    String threadName = Thread.currentThread().getName();
+    System.out.println(msg);
+    //assertTrue(msg.matches(first +"\\["+threadName+"\\] "+ loggerName +" " +logMsg));
+   
+    //fail("check exceptions");
+  }
 }

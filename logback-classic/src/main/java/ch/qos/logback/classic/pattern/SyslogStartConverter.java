@@ -33,12 +33,12 @@ public class SyslogStartConverter extends ClassicConverter {
     
     String facilityStr = getFirstOption();
     if (facilityStr == null) {
-      //errorCount++;
       addError("was expecting a facility string as an option");
       return;
     }
 
     facility = SyslogAppenderBase.facilityStringToint(facilityStr);
+  
     localHostName = getLocalHostname();
     try {
       simpleFormat = new SimpleDateFormat("MMM dd hh:mm:ss", new DateFormatSymbols(Locale.US));
@@ -57,7 +57,7 @@ public class SyslogStartConverter extends ClassicConverter {
     StringBuilder sb = new StringBuilder();
 
     int pri = facility + LevelToSyslogSeverity.convert(le);
-    System.out.println("" + pri);
+  
     sb.append("<");
     sb.append(pri);
     sb.append(">");

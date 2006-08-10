@@ -33,7 +33,7 @@ public class LevelToSyslogSeverity {
     case Level.INFO_INT:
       return SyslogConstants.INFO_SEVERITY;
     case Level.DEBUG_INT:
-      return SyslogConstants.LOG_ALERT;
+      return SyslogConstants.DEBUG_SEVERITY;
     default:
       throw new IllegalArgumentException("Level " + level
           + " is not a valid level for a printing method");

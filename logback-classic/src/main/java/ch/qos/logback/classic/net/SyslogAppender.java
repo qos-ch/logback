@@ -22,23 +22,24 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
  */
 public class SyslogAppender extends SyslogAppenderBase {
 
-  Layout layout;
-  String pattern;
-  String patternSuffix;
+  String prefixPattern;
   
-  public Layout buildLayout(int facility) {
+  static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %m%exception";
+  
+  public Layout buildLayout(String facilityStr) {
+  
     PatternLayout pl = new PatternLayout();
     pl.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
     
-    if(patternSuffix == null) {
-      patternSuffix = "%syslogStart{"+facility+"}";
+    if(prefixPattern == null) {
+      prefixPattern = "%syslogStart{"+facilityStr+"}";
     }
     
-    if(pattern == null) {
-      pattern = "%m%exception";
+    if(suffixPattern == null) {
+      suffixPattern = DEFAULT_SUFFIX_PATTERN;
     }
     
-    pl.setPattern(patternSuffix+pattern);
+    pl.setPattern(prefixPattern+suffixPattern);
     pl.setContext(getContext());
     pl.start();
     return pl;
@@ -54,24 +55,6 @@ public class SyslogAppender extends SyslogAppenderBase {
   public int getSeverityForEvent(Object eventObject) {
     LoggingEvent event = (LoggingEvent) eventObject;
     return LevelToSyslogSeverity.convert(event);
-  }
-
-  /*
-   * Set the layout directly. Normally, for the user SyslogAppender would want to set 
-   * the patterns and not the layout directly. 
-   * 
-   * @see ch.qos.logback.core.Appender#setLayout(ch.qos.logback.core.Layout)
-   */
-  public void setLayout(Layout layout) {
-    this.layout = layout;
-  }
-
-  /*
-   * 
-   * @see ch.qos.logback.core.Appender#getLayout()
-   */
-  public Layout getLayout() {
-    return layout;
   }
 
 }

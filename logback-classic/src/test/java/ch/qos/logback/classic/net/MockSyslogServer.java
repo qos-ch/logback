@@ -9,27 +9,49 @@
  */
 package ch.qos.logback.classic.net;
 
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
+ * 
  * @author Ceki G&uumllc&uuml;
  */
 public class MockSyslogServer extends Thread {
 
+  static final int PORT = 14805;
+
   final int loopLen;
-  DatagramSocket socket;
+
+  List<String> msgList = new ArrayList<String>();
+  boolean finished = false;
   
   MockSyslogServer(int loopLen) {
     super();
     this.loopLen = loopLen;
-    
   }
-  
+
   @Override
   public void run() {
-     for(int i = 0; i < loopLen; i++) {
-       
-     }
+    DatagramSocket socket = null;
+    try {
+      socket = new DatagramSocket(PORT);
+
+      for (int i = 0; i < loopLen; i++) {
+        byte[] buf = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+        String msg = new String(buf, 0, packet.getLength());
+        msgList.add(msg);
+      }
+    } catch (Exception se) {
+      se.printStackTrace();
+    } finally {
+      if(socket != null) {
+        socket.close();
+      }
+    }
+    finished = true;
   }
 }
