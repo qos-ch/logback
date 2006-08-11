@@ -9,10 +9,8 @@
  */
 package ch.qos.logback.classic;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import junit.framework.*;
+import junit.framework.TestCase;
+import ch.qos.logback.core.status.StatusManager;
 
 public class LoggerContextTest extends TestCase {
   LoggerContext lc;
@@ -110,6 +108,17 @@ public class LoggerContextTest extends TestCase {
     LoggerTestHelper.assertLevels(Level.INFO, wx, Level.INFO);
     LoggerTestHelper.assertLevels(null, lc.getLogger("w.x.y"), Level.INFO);
     LoggerTestHelper.assertLevels(null, wxyz, Level.INFO);
+  }
+  
+  public void testStatusWithUnconfiguredContext() {
+  	Logger logger = lc.getLogger(LoggerContextTest.class);
+  	
+  	for (int i = 0; i < 10; i++) {
+  		logger.debug("test");
+  	}
+
+  	StatusManager sm = lc.getStatusManager();
+  	assertTrue("StatusManager has recieved too many messages", sm.getCount() == 1);
   }
 
 }
