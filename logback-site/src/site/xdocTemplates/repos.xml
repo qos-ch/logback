@@ -55,7 +55,7 @@
 			<p>
 				Note that anonymous access allows read-only access only.  For
 				read-write access please contact the logback <a
-				href="../mailinglist.html">developer list</a> .
+				href="mailinglist.html">developer list</a> .
 			</p>
 		</div>
 	</body>
