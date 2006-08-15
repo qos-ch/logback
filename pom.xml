@@ -6,7 +6,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback</artifactId>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Logback</name>
 
