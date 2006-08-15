@@ -6,7 +6,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 	<name>Logback</name>
 
@@ -36,55 +36,53 @@
 	
 	<dependencyManagement>
 		<dependencies>
-		<!-- Project modules -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+			<!-- Project modules -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${project.version}</version>
-			<classifier>tests</classifier>
-		</dependency>
-		
-		<!-- Core Module Dependencies -->
-		<dependency>
-			<groupId>janino</groupId>
-			<artifactId>janino</artifactId>
-			<version>2.4.3</version>
-		</dependency>
-		
-		<!-- Access Module Dependencies -->
-		<dependency>
-			<groupId>tomcat</groupId>
-			<artifactId>catalina</artifactId>
-			<version>5.5.12</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.0.0beta9</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>resin</artifactId>
-			<version>3.0.9</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>servlet-api-2.5</artifactId>
-			<version>6.0.0beta9</version>
-		</dependency>
-	</dependencies>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${project.version}</version>
+				<classifier>tests</classifier>
+			</dependency>
+			
+			<!-- Core Module Dependencies -->
+			<dependency>
+				<groupId>janino</groupId>
+				<artifactId>janino</artifactId>
+				<version>2.4.3</version>
+			</dependency>
+			
+			<!-- Access Module Dependencies -->
+			<dependency>
+				<groupId>tomcat</groupId>
+				<artifactId>catalina</artifactId>
+				<version>5.5.12</version>
+			</dependency>
 	
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty</artifactId>
+				<version>6.0.0beta9</version>
+			</dependency>
 	
+			<dependency>
+				<groupId>com.caucho</groupId>
+				<artifactId>resin</artifactId>
+				<version>3.0.9</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>servlet-api-2.5</artifactId>
+				<version>6.0.0beta9</version>
+			</dependency>
+		
+		</dependencies>
 	</dependencyManagement>
 
 	<build>
@@ -136,7 +134,7 @@
 				<configuration>
 					<descriptors>
 						<descriptor>
-							src/main/assembly/source.xml
+							src/main/assembly/dist.xml
 						</descriptor>
 					</descriptors>
 					<finalName>

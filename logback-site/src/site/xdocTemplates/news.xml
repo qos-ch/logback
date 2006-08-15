@@ -11,6 +11,20 @@
 
 		<p>Here are the last news about the project.</p>
 
+		<h3>August 15th, 2006 - 0.2 version available</h3>
+		<p>
+			A 0.2 version of all three modules of logback
+			is now available.
+		</p>
+		<p>
+			It offers better tests, a few more functionnalities, and an improved documentation.
+			We also improved the site design to make it simpler and more efficient.
+			An archive containing source code, binaries and docs is available 
+			at the <a href="download.html">download page</a>.
+		</p>
+
+		<hr width="50%" align="center" />
+		
 		<h3>July 26th, 2006 - 0.1 version available</h3>
 		<p>
 			A first 0.1 version of all three modules of logback
