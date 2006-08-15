@@ -1,5 +1,5 @@
 <assembly>
-	<id>src</id>
+	<id>dist</id>
 	<formats>
 		<format>zip</format>
 		<format>tar.gz</format>
@@ -77,7 +77,30 @@
 				<include>logback-access-${project.version}.jar</include>
 			</includes>
 		</fileSet>		
-		
+
+		<!-- Module Source JARs -->
+		<fileSet>
+			<directory>logback-core/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>logback-core-${project.version}-sources.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>logback-classic/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>logback-classic-${project.version}-sources.jar</include>
+			</includes>
+		</fileSet>		
+		<fileSet>
+			<directory>logback-access/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>logback-access-${project.version}-sources.jar</include>
+			</includes>
+		</fileSet>	
+				
 		<!-- Classic Examples -->
 		<fileSet>
 			<directory>logback-classic/examples/</directory>
