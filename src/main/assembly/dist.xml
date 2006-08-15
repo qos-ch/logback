@@ -124,24 +124,25 @@
 		</fileSet>
 	</fileSets>
 	
+	<!--
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>/lib</outputDirectory>
 			<unpack>false</unpack>
 			<scope>test</scope>
 			<excludes>
-				<!--
+
 					There is little documentation on this format.
 					It is of the form of DefaultArtifact.getDependencyConflictId()
 					which is <groupId>:<artifactId>:<type>:<classifier>
 					or we can use the short form (hard coded into assembly) of
 					<groupId>:<artifactId>
 					This is a String equality match not a pattern match.
-				-->
 				
 				<exclude>ch.qos.logback:logback-core</exclude>
 				
 			</excludes>
 		</dependencySet>
 	</dependencySets>
+	-->
 </assembly>
