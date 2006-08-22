@@ -49,13 +49,15 @@ public class PatternLayout extends PatternLayoutBase implements ClassicLayout {
 
     defaultConverterMap.put("level", LevelConverter.class.getName());
     defaultConverterMap.put("le", LevelConverter.class.getName());
-
+    defaultConverterMap.put("p", LevelConverter.class.getName());
+    
     defaultConverterMap.put("t", ThreadConverter.class.getName());
     defaultConverterMap.put("thread", ThreadConverter.class.getName());
 
     defaultConverterMap.put("lo", LoggerConverter.class.getName());
     defaultConverterMap.put("logger", LoggerConverter.class.getName());
-
+    defaultConverterMap.put("c", LoggerConverter.class.getName());
+    
     defaultConverterMap.put("m", MessageConverter.class.getName());
     defaultConverterMap.put("msg", MessageConverter.class.getName());
     defaultConverterMap.put("message", MessageConverter.class.getName());

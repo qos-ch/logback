@@ -88,6 +88,19 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
   }
   
+  public void testWithLettersComingFromLog4j() {
+    PatternLayout pl = new PatternLayout();
+    //Letters: p = level and c = logger
+    pl.setPattern("%d %p [%t] %c{30} - %m%n");
+    Context context = new LoggerContext();
+    pl.setContext(context);
+    pl.start();
+    String val = pl.doLayout(getEventObject());
+    // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
+    String regex = Contants4T.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
+    assertTrue(val.matches(regex));
+  }
+  
   static public Test suite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new PatternLayoutTest("testNopExeptionHandler"));
