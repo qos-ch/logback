@@ -7,7 +7,7 @@ public class HelloWorld1 {
 
 	public static void main(String[] args) {
 
-    Logger logger = LoggerFactory.getLogger(HelloWorld1.class);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld1");
 		logger.debug("Hello world.");
 	}
 }

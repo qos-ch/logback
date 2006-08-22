@@ -9,7 +9,7 @@ import ch.qos.logback.classic.util.LoggerStatusPrinter;
 public class HelloWorld3 {
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(HelloWorld3.class);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld3");
 
 		BasicConfigurator.configureDefaultContext();
 		logger.debug("Hello world.");
