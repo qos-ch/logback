@@ -47,20 +47,20 @@
     	Logback is intended as a successor to the popular log4j project.
     	It was designed by Ceki G&#252;lc&#252;, the founder of the
     	log4j project. It builds upon a decade long experience gained in
-    	designing industrial-strength logging systems. The resulting
-    	product is at faster and has a smaller footprint than all the
+    	designing industrial-strength logging systems. The resulting product, 
+    	logback is faster with a smaller footprint than all
     	existing logging systems, sometimes by a wide margin. Logback
     	also offers unique and rather useful features such as Markers,
     	parameterized logging statements, conditional stack tracing and
     	powerful event filtering, to cite a few. For its own error
     	reporting, logback relies on
     	<code>Status</code>
-    	objects which come in handy in contexts other than logging.
+    	objects which you may wish to use in contexts other than logging.
     </p>
 
     <p>
     	This document presents the more basic concepts in logback,
-    	probably just enough to get you started.
+    	enough to get you started.
     </p>
 
     <h2>Logback architecture</h2>
@@ -80,11 +80,11 @@
     	so that you can readily switch back and forth between logback
     	and other logging systems such as log4j or JDK14 Logging. The
     	Access module integrates with Servlet containers to provide
-    	HTPP-access log functionality. The Access module will be covered
+    	HTTP-access log functionality. The Access module will be covered
     	in a separate document.
     </p>
     <p>
-    	In this document, we will use the word logback to refer to the
+    	In this document, we will use the term logback to refer to the
     	logback classic module.
     </p>
 
@@ -96,8 +96,8 @@
     	to your classpath, you can begin experimenting with logback.
     </p>
 
-<div class="source"><em>Example 1.1: Basic template for logging (examples/chapter1/HelloWorld1.java)</em>
-package chapter1;
+<em>Example 1.1: Basic template for logging (examples/chapter1/HelloWorld1.java)</em>
+<div class="source">package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +106,7 @@ public class HelloWorld1 {
 
   public static void main(String[] args) {
 
-    Logger logger = LoggerFactory.getLogger(HelloWorld1.class);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld1");
     logger.debug("Hello world.");
 
   }
@@ -116,19 +116,20 @@ public class HelloWorld1 {
 			The <code>HelloWorld</code> class is defined in the
 			<code>chapter1</code> package. It starts by importing the <code>Logger</code>
 			and <code>LoggerFactory</code>
-			classes as defined in the SLF4J API, more specifically in the <code>org.slf4j</code>
+			classes defined in the SLF4J API, more specifically within the <code>org.slf4j</code>
 			package.
 		</p>
 
 
 		<p>
-			On line 10, the variable named <code>logger</code>
+			On the first line of the main() method, the variable named <code>logger</code>
 			is assigned a <code>Logger</code>
 			instance retreived by invoking the static method <code>getLogger</code>
 			in the <code>LoggerFactory</code> class. 
-			This logger is named "chapter1/HelloWorld1". The main method proceeds to call its
-			<code>debug</code> method with the argument "Hello world." We say that the main
-			method contains a logging statement of level debug containing the message “Hello world”.
+			This logger is named "chapter1.HelloWorld1". The main method proceeds to call the
+			<code>debug</code> method of this logger passing "Hello World" as an argument. 
+			We say that the main
+			method contains a logging statement of level debug with the message "Hello world".
 		</p>
 
 		<p>
@@ -143,7 +144,7 @@ public class HelloWorld1 {
 
 
 		<p>
-			Once you're in the examples/classes directory of the logback distribution, you can run this class with the command:
+			Once you're in the <em>examples/classes</em> directory of the logback distribution, you can run this class with the command:
 		</p>
 
 		<div class="source">java chapter1.HelloWorld1</div>
@@ -151,22 +152,22 @@ public class HelloWorld1 {
 		<p>
 			Suprisingly enough, launching the <code>HelloWorld1</code>
 			application will not produce <em>any</em> output. 
-			Logback does not posses a default configuration.
-			Without a valid configuration, logback will be as silent as a mummy.
+			Indeed, logback does not posses a default configuration.
+			Without a valid configuration, logback will be as silent as a grave.
 		</p>
 
 		<p>
 			Logback can report information about its internal state
 			using a built-in status system. Important events occuring
 			during logback's lifetime can be accessed through a
-			<code>StatusManager</code>. For the time being, let us tell logback to print its
+			<code>StatusManager</code>. For the time being, let us instruct logback to print its
 			internal state. This is accomplished by a static method in
 			the <code>LoggerStatusPrinter</code>
 			class.
 		</p>
 
-<div class="source"><em>Example 1.2: Printing Logger Status (examples/chapter1/HelloWorld2.java)</em>
-package chapter1;
+<em>Example 1.2: Printing Logger Status (examples/chapter1/HelloWorld2.java)</em>
+<div class="source">package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +176,7 @@ import org.slf4j.LoggerFactory;
 public class HelloWorld2 {
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(HelloWorld2.class);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld2");
     logger.debug("Hello world.");
     <b>LoggerStatusPrinter.printStatusInDefaultContext();</b>
   }
@@ -185,28 +186,28 @@ public class HelloWorld2 {
    <p>Running the <code>HelloWorld2</code> application will produce
    the following output:</p>
 
-<div class="source">ERROR in Logger[chapter1.HelloWorld2] - \
-No appenders present in context [default] for logger [chapter1.HelloWorld2].</div>
+<div class="source">ERROR in Logger[chapter1.HelloWorld2] - No appenders present in \ 
+context [default] for logger [chapter1.HelloWorld2].</div>
 
 
   <!-- =========  CEKI: STOPPED HERE =================== -->
 
   <p>
-  	Logback is complaining that no appenders were configured for the
-  	default context. An Appender is a class that can be seen as an
+  	Logback complains that no appenders were configured for the
+  	default context. An <code>Appender</code> is a class that can be seen as an
   	output destination. Appenders exist for many different
-  	destinations including the console, files, and many more. Users
+  	destinations including the console, files, Syslog, Socket, JMS and many more. Users
   	can also easily create their own Appenders for any specific
   	situation.
   </p>
 
   <p>
-  	Configuring logback can be done a different ways. The
-  	simplest but less flexible way is by calling the
+  	Configuring logback can be done in different ways. The
+  	simplest but least flexible way is by calling the
   	<code>BasicConfigurator</code> class, like in the following code snippet.
   </p>
-  <div class="source"><em>Example 1.3: Configuring before logging (examples/chapter1/HelloWorld3.java)</em>
-package chapter1;
+  <em>Example 1.3: Configuring before logging (examples/chapter1/HelloWorld3.java)</em>
+  <div class="source">package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,7 +218,7 @@ import ch.qos.logback.classic.util.LoggerStatusPrinter;
 public class HelloWorld3 {
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(HelloWorld3.class);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld3");
     <b>BasicConfigurator.configureDefaultContext();</b>
     logger.debug("Hello world.");
     LoggerStatusPrinter.printStatusInDefaultContext();
@@ -227,40 +228,42 @@ public class HelloWorld3 {
 
 		<p>
 			Let's run the <code>HelloWorld3</code>
-			application again. Now, the <code>BasicConfigurator</code>
+			application. Now, the <code>BasicConfigurator</code>
 			will create a simple <code>ConsoleAppender</code>. 
 			The logging request will then be propagated to the
-			Appender and the console will output the following:
+			<code>Appender</code> and the console will output the following:
 		</p>
 <div class="source">0    [main] DEBUG chapter1.HelloWorld3 - Hello world.</div>
 
 		<p>
-			This example is very simple. However, actual logging in a larger
-			application is not much more complicated. The logging statement
+			This example is rather simple. However, actual logging in a larger
+			application would not be that different. The general pattern logging statements
 			will barely change. Only the configuration process will be
-			different, since you don't need (nor should) configure the
+			different since you don't need (nor should) configure the
 			logging context in each and every class that will require
-			logging. As well, the <code>LoggerStatusPrinter</code> will certainly not be
+			logging. As you will see later on in this document, configuring logback can be done
+			in different flexible and powerfull manners.
+			As well, the <code>LoggerStatusPrinter</code> will certainly not be
 			used after all the logging statements.
 		</p>
 
 		<p>	
-			These are the three steps that are required to allow full logging in any application.
+			These are the three steps that are required to enable logging in your application.
 		</p>
 
 		<ol>
 			<li>Configure the logback environment. You can do it using several 
-			sophisticated ways. The BasicConfigurator is the simplest but also least flexible.</li>
+			sophisticated ways. The BasicConfigurator is the simplest but also least flexible. More on this later.</li>
 			<li>In every class where you wish to perform logging, retrieve a Logger 
 			instance by invoking the LoggerFactory and passing the current class as the parameter.</li>
 			<li>Use this logger instance by invoking its printing methods, namely 
-			the debug(), info(), warn() and error() methods. This will produce logging on the 
-			configured devices.</li>
+			the debug(), info(), warn() and error() methods. Produce logging output on the 
+			configured appenders.</li>
 		</ol>
 
-		<div class="section">
-			<h2>Logger, Appenders and Layouts</h2>
-		</div>
+		
+		<h2>Logger, Appenders and Layouts</h2>
+		
 		<p>
 			Logback has three main components: Loggers,
 			Appenders and Layouts. These three types of components work
@@ -278,19 +281,20 @@ public class HelloWorld3 {
 
 		<p>
 			The first and foremost advantage of any logging API over
-			plain System.out.println resides in its ability to disable
+			plain <code>System.out.println</code> resides in its ability to disable
 			certain log statements while allowing others to print
 			unhindered. This capability assumes that the logging space,
 			that is, the space of all possible logging statements, is
-			categorized according to some developer-chosen criteria.
+			categorized according to some developer-chosen criteria. 
+			This categorization is an inherent part of loggers.
 		</p>
 			
 		<p>
-			In logback, Loggers are named entities. Their names are case-sensitive and they follow the
-			contextual naming rule:
+			Loggers are named entities. Their names are case-sensitive and they follow the
+			hierarchical naming rule:
 		</p>
 		<div class="definition">
-			<div class="deftitle">Named Context</div>
+			<div class="deftitle">Named Hierarchy</div>
 			<p>
 				A logger is said to be an ancestor of another logger if
 				its name followed by a dot is a prefix of the descendant
@@ -309,35 +313,35 @@ public class HelloWorld3 {
 			This naming scheme should be familiar to most developers.
 		</p>
 		<p>
-			The root logger resides at the top of the logger context.
-			It is exceptional in a way that is always exists. Like every
+			The root logger resides at the top of the logger hierarchy.
+			It is exceptional in that it always exists. Like every
 			logger, it can be retrieved by its name, like this:
 		</p>
 		<div class="source">Logger rootLogger = LoggerFactory.getLogger(LoggerContext.<em>ROOT_NAME</em>);</div>
 
 		<p>
-			All other loggers are retrieved with the class static
-			LoggerFactory.getLogger method. This method takes the name
+			All other loggers are also retrieved with the class static
+			<code>LoggerFactory.getLogger</code> method. This method takes the name
 			of the desired logger as a parameter. Some of the basic
-			methods in the Logger interface are listed below.
+			methods in the <code>Logger</code> interface are listed below.
 		</p>
 
 		<div class="source">package org.slf4j; 
 public interface Logger {
 
   // Printing methods: 
-  public void debug(Object message);
-  public void info(Object message); 
-  public void warn(Object message); 
-  public void error(Object message); 
-  public void fatal(Object message); 
+  public void debug(String message);
+  public void info(String message); 
+  public void warn(String message); 
+  public void error(String message); 
+  public void fatal(String message); 
 }</div>
 
 		<p>
 			Loggers may be assigned levels. The set of possible levels,
 			that is DEBUG, INFO, WARN and ERROR are defined in the
-			<em>ch.qos.logback.classic.Level</em> class. The level class cannot
-			be sub-classed as a much better approach exist in the form
+			<em>ch.qos.logback.classic.Level</em> class. In logback, the level class cannot
+			be sub-classed, because a much better approach exist in the form
 			of Marker objects.
 		</p>
 
@@ -356,15 +360,21 @@ public interface Logger {
 			</p>
 		</div>
 		<p>
+			In a <code>Logger</code> object, the situation where no level was assigned
+			means that the <code>level</code> attribute of that logger is null. It is then 
+			its <em>effective level</em> attribute that shows the inherited value.
+		</p>
+		<p>
 			To ensure that all loggers can eventually inherit a level,
 			the root logger always has an assigned level. By default, its level is DEBUG.
 		</p>
 		<p>
 			Below are four examples with various assigned level values
-			and the resulting inherited levels according to the above
+			and the resulting inherited levels according to the level inheritance
 			rule.
 		</p>
 
+		<em>Example 1</em>
 		<table>
 			<tr>
 				<th>
@@ -409,9 +419,10 @@ public interface Logger {
 		<p>
 			In example 1 above, only the root logger is assigned a
 			level.
-		</p>
 		This level value, <code>DEBUG</code>, is inherited by the other loggers
 		<code>X</code>, <code>X.Y</code> and <code>X.Y.Z</code>
+		</p>
+		<em>Example 2</em>
 		<table>
 			<tr>
 				<th>
@@ -455,10 +466,11 @@ public interface Logger {
 		</table>
 
 		<p>
-			In example 2, all loggers have an assigned level value.
+			In example 2 above, all loggers have an assigned level value.
 			There is no need for level inheritence.
 		</p>
 
+		<em>Example 3</em>
 		<table>
 			<tr>
 				<th>
@@ -500,12 +512,13 @@ public interface Logger {
 			</tr>
 		</table>
 		<p>
-			In example 3, the loggers <code>root</code>, <code>X</code>
+			In example 3 above, the loggers <code>root</code>, <code>X</code>
 			and <code>X.Y.Z</code> are assigned the levels <code>DEBUG</code>,
 			<code>INFO</code> and <code>ERROR</code>
-			respectively. The logger <code>X.Y</code>
+			respectively. Logger <code>X.Y</code>
 			inherits its level value from its parent <code>X</code>.
 		</p>
+		<em>Example 4</em>
 		<table>
 
 			<tr>
@@ -549,11 +562,11 @@ public interface Logger {
 		</table>
 
 		<p>
-			In example 4, the loggers <code>root</code> and <code>X</code>
+			In example 4 above, the loggers <code>root</code> and <code>X</code>
 			and are assigned the levels <code>DEBUG</code> and
 			<code>INFO</code> respectively. The loggers <code>X.Y</code> and
 			<code>X.Y.Z</code> inherits their level value from their nearest
-			parent <code>X</code> having an assigned level.
+			parent <code>X</code>, which has an assigned level.
 		</p>
 
     <h3>Printing methods</h3>
@@ -579,12 +592,11 @@ public interface Logger {
 				whichever is appropriate) level <em>q</em>, is enabled if
 				<em>p &gt;= q</em>.
 			</p>
-
 		</div>
 
 		<p>
 			This rule is at the heart of logback. It assumes
-			that levels are ordered. For the standard levels, we have
+			that levels are ordered as follows: 
 			<code>DEBUG &lt; INFO &lt; WARN &lt; ERROR</code>.
 		</p>
 				
@@ -632,10 +644,12 @@ public interface Logger {
 			</tr>		
 		</table>
 		
-		<p>Here is an example of this rule.</p>
+		<p>Here is an example of the basic selection rule.</p>
 
-		<div class="source">// get a logger instance named "com.foo", with an <span class="blue">INFO</span>level. 
+		<div class="source">// get a logger instance named "com.foo", with an <span class="blue">INFO</span> level. 
 Logger logger = LoggerFactory.getLogger("com.foo");
+//set its Level to <span class="blue">INFO</span>
+logger.setLevel(Level.INFO);
 Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
 
 // This request is enabled, because <span class="green">WARN</span> &gt;= <span class="blue">INFO</span>
@@ -653,6 +667,7 @@ barlogger.<span class="green">info</span>("Located nearest gas station.");
 // This request is disabled, because<span class="green">DEBUG</span> &lt; <span class="blue">INFO</span>. 
 barlogger.<span class="green">debug</span>("Exiting gas station search");</div>
 
+		<h3>Retrieving Loggers</h3>
 		<p>
 			Calling the <code>getLogger</code>
 			method with the same name will always return a reference to
@@ -687,7 +702,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 		<p>
 			Logback makes it easy to name loggers by
 			<em>software component</em>. 
-			This can be accomplished by statically instantiating a
+			This can be accomplished by instantiating a
 			logger in each class, with the logger name equal to the
 			fully qualified name of the class. This is a useful and
 			straightforward method of defining loggers. As the log
@@ -696,7 +711,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			message. However, this is only one possible, albeit common,
 			strategy for naming loggers. Logback does not restrict the
 			possible set of loggers. The developer is free to name the
-			loggers as desired.
+			loggers she desires.
 		</p>
 		<p>
 			Nevertheless, naming loggers after the class where they are
@@ -717,7 +732,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 
 		<p>More than one appender can be attached to a logger.</p>
 		<p>
-			The addAppender method adds an appender to a given logger.
+			The <code>addAppender</code> method adds an appender to a given logger.
 			Each enabled logging request for a given logger will be
 			forwarded to all the appenders in that logger as well as the
 			appenders higher in the context. In other words, appenders
@@ -726,7 +741,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			then all enabled logging requests will at least print on the
 			console. If in addition a file appender is added to a
 			logger, say <em>L</em>, then enabled logging requests for
-			<em>L</em> and <em>L</em>'s children will print on a file and on the console. 
+			<em>L</em> and <em>L</em>'s children will print on a file <em>and</em> on the console. 
 			It is possible to override this default behavior so that appender
 			accumulation is no longer additive by setting the additivity
 			flag to false.
@@ -778,8 +793,8 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 				<td>not applicable</td>
 				<td>A1</td>
 				<td>
-					The root logger is anonymous but can be accessed
-					with the Logger.getRootLogger() method. There is no
+					The root logger can be accessed
+					with the LoggerFactory.getLogger("root") method. There is no
 					default appender attached to root.
 				</td>
 			</tr>
@@ -788,21 +803,21 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 				<td>A-x1, A-x2</td>
 				<td>true</td>
 				<td>A1, A-x1, A-x2</td>
-				<td>Appenders of "x" and root.</td>
+				<td>Appenders of "x" and of root.</td>
 			</tr>
 			<tr>
 				<td>x.y</td>
 				<td>none</td>
 				<td>true</td>
 				<td>A1, A-x1, A-x2</td>
-				<td>Appenders of "x" and root.</td>
+				<td>Appenders of "x" and of root.</td>
 			</tr>
 			<tr>
 				<td>x.y.z</td>
 				<td>A-xyz1</td>
 				<td>true</td>
 				<td>A1, A-x1, A-x2, A-xyz1</td>
-				<td>Appenders in "x.y.z", "x" and root.</td>
+				<td>Appenders of "x.y.z", "x" and of root.</td>
 			</tr>
 			<tr>
 				<td>security</td>
@@ -812,14 +827,13 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 				<td>
 					No appender accumulation since the additivity flag
 					is set to
-					<code>false</code>.
+					<code>false</code>. Only appender A-sec will be used.
 				</td>
 			</tr>
 			<tr>
 				<td>security.access</td>
 				<td>none</td>
-				<td>true</td>
-				<td>A-sec</td>
+				<td>true</td>				<td>A-sec</td>
 				<td>
 					Only appenders of "security" because the additivity
 					flag in "security" is set to
@@ -836,7 +850,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			with an appender. The layout is responsible for formatting
 			the logging request according to the user's wishes, whereas
 			an appender takes care of sending the formatted output to
-			its destination. The PatternLayout, part of the standard
+			its destination. The <code>PatternLayout</code>, part of the standard
 			logback distribution, lets the user specify the output
 			format according to conversion patterns similar to the C
 			language <code>printf</code>
@@ -859,13 +873,12 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			the message of the statement.
 		</p>
 
-		<h4>More sophitsicated ways of logging</h4>
+		<h4>Parametrized logging</h4>
 
 		<p>
-			If you are a SLF4J user (if not, you should be...), you'll
+			If you are a SLF4J user, you'll
 			notice that the methods used to request logging do not only
-			take a String as a parameter. Some methods allow more
-			sophisticated parameter configurations.
+			take a String as a parameter. Some methods accept further parameters.
 		</p>
 
 		<p>
@@ -904,7 +917,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			log a statement.
 		</p>
 
-		<h4>Better alternative based on format messages</h4>
+		<h4>Better alternative</h4>
 
 		<p>
 			There exists a very convenient alternative based on message
@@ -920,7 +933,7 @@ logger.debug("The entry is {}.", entry);</div>
 			decision is affirmative, will the logger implementation
 			format the message and replace the '{}' pair with the string
 			value of <code>entry</code>. 
-			In other words, tis form does not incur the cost of
+			In other words, this form does not incur the cost of
 			parameter construction in case the log statement is
 			disabled.
 		</p>
@@ -928,9 +941,9 @@ logger.debug("The entry is {}.", entry);</div>
 
 		<p>
 			The following two lines will yield the exact same output.
-			However, the second form will outperform the first form by a
-			factor of at least 30, in case of a <em>disabled</em>
-			logging statement.
+			However, in case of a <em>disabled</em>
+			logging statement, the second variant will outperform the first variant by a
+			factor of at least 30.
 		</p>
 
 		<div class="source">logger.debug("The new entry is "+entry+".");
@@ -966,15 +979,15 @@ logger.debug("The new entry is {}.", entry);</div>
 		<p>
 			The logback environment is fully configurable programmatically. 
 			However, it is far more flexible to configure logback using 
-			configuration files. Currently, configuration files must be written in 
+			configuration files. In logback, configuration files must be written in 
 			XML format.
 		</p>
 		<p>
 			Let us give a taste of how this is done with the help of an 
 			imaginary application MyApp that uses logback. 
 		</p>
-<div class="source"><em>Example 1.4: Basic configuration (examples/chapter1/MyApp.java)</em>
-package chapter1;
+		<em>Example 1.4: Basic configuration (examples/chapter1/MyApp.java)</em>
+<div class="source">package chapter1;
 
 // Import SLF4J classes.
 import org.slf4j.LoggerFactory;
@@ -989,7 +1002,7 @@ public class MyApp {
     // Set up a simple configuration that logs on the console.
     BasicConfigurator.configureDefaultContext();
 
-	Logger logger = LoggerFactory.getLogger(MyApp.class);
+    Logger logger = LoggerFactory.getLogger(MyApp.class);
 	
     logger.info("Entering application.");
     Bar bar = new Bar();
@@ -998,9 +1011,10 @@ public class MyApp {
   }
 }</div>
 		<p>
-			This class begins by defining a static logger instance variable 
+			This class defines a logger instance variable 
 			with the name MyApp. It then uses the Bar class, defined as shown below:
 		</p>
+		<em>Example 1.4: Basic configuration (examples/chapter1/Bar.java)</em>
 <div class="source">class Bar {
 
   Logger logger = LoggerFactory.getLogger(Bar.class);	
@@ -1015,7 +1029,7 @@ public class MyApp {
 			the root Logger is assigned to Level.DEBUG.
 		</p>
 		<p>The BasicConfigurator has to be called only once. Any other class that wishes to
-		issue log statements only has to import the <em>Logger class</em> and use it.</p>
+		issue log statements only has to import the <em>Logger</em> class and use it.</p>
 		<p>
 			The output of MyApp is:
 		</p>
@@ -1025,7 +1039,7 @@ public class MyApp {
 		
 	<p>Let's configure logback to do exactly the same output, this time 
 	with an XML configuration file.</p>
-	
+	<em>Example 1.4: Basic configuration (examples/chapter1/sample-config-1.xml)</em>	
 <div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
@@ -1044,22 +1058,22 @@ public class MyApp {
   &lt;/root&gt;
 &lt;/configuration&gt;</div>
 	
-	<p>We first created an Appender, named <em>STDOUT</em> that is of ConsoleAppender tye. Its layout
+	<p>We first created an <code>Appender</code>, named <em>STDOUT</em> that is of <code>ConsoleAppender</code> tye. Its layout
 	is managed by a PatternLayout, that uses the value of the "pattern" parameter to generate 
 	the logging statement. We then configured the root logger, set its level to DEBUG, 
-	and linked the newly configured ConsoleAppender to the root logger.</p>
+	and linked the newly configured <code>ConsoleAppender</code> to the root logger.</p>
 	<p>Note that we've set the root logger level explicitly. Since root logger have a DEBUG level
 	by default we could have omitted this.</p>
 	
 	<p>To run this examle, use this command:</p>
 	
-<div class="source">java MyApp sample-config-1.xml</div>
+<div class="source">java chapter1.MyApp sample-config-1.xml</div>
 
 	<p>The console output will be exactly the same as before. However, this time, we didn't need
 	to import and call the BasicConfigurator class, as you can see in the following code section: 
 	</p>
-<div class="source"><em>Example 1.5: Logback configuration from file (examples/chapter1/MyAppWithConfigFile.java)</em>
-package chapter1;
+	<em>Example 1.5: Logback configuration from file (examples/chapter1/MyAppWithConfigFile.java)</em>
+<div class="source">package chapter1;
 
 //Import SLF4J classes.
 import org.slf4j.Logger;
@@ -1090,15 +1104,16 @@ public class MyAppWithConfigFile {
 	<p>
 	We used the JoranConfigurator class to parse the configuration file we just created.
 	Joran is a XML interpreter, similar to the commons-digester API, but offering several
-	small advantages over commons-digester. Here, it parses the xml file and runs actions depending
+	advantages over commons-digester. Here, it parses the xml file and runs actions depending
 	on the tags it finds.
 	To setup the JoranConfigurator properly, we passed the <code>LoggerContext</code>. A <code>LoggerContext</code>
-	is the class that creates and manages Loggers in logback. It is also the class that implements the org.slf4j.ILoggerFactory.
+	is the class that creates and manages Loggers in logback. 
+	It is also the class that implements the <code>org.slf4j.ILoggerFactory</code> interface.
 	</p>
 	
 	<p>Logging to the console is a rather simple example. Let's now configure logback
 	so that it logs to the console, but also to a custom file.</p>
-
+<em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-2.xml)</em>
 <div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
@@ -1129,13 +1144,48 @@ public class MyAppWithConfigFile {
 &lt;/configuration&gt;</div>
 	
 	<p>Now, all the logging statements are directed to the console and to a file named <em>sample-log.txt</em>.
-	As you can see, the configuration needed to add an Appender is very small. The param element, in either
+	As you can see, the configuration needed to add an Appender is rather small. The param element, in either
 	Appender configuration, reads the <em>name</em> attribute and assigns its value to the corresponding attribute
 	in the specified java class.
 	</p>
 	
 	<p>Suppose that we do not want to see the DEBUG level statements in the chapter1 package anymore.
-	This is done by adding a <em>logger</em> element, with a nested element specifying its level value.</p>
+	This is done by adding the following xml snippet to the configuration file, right before
+	the <code>&lt;root&gt;</code> element.</p>
+<em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-3.xml)</em>	
+<div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+
+&lt;configuration&gt;
+
+  &lt;appender name="STDOUT"
+      class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+      &lt;param name="pattern"
+          value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+
+  &lt;appender name="FILE"
+      class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+      &lt;param name="pattern"
+          value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
+    &lt;/layout&gt;
+      &lt;param name="File"
+          value="sample-log.txt" /&gt;
+  &lt;/appender&gt;
+<b>
+  &lt;logger name="chapter1"&gt;
+    &lt;level value="info" /&gt;
+  &lt;/logger&gt;
+</b>
+  &lt;root&gt;
+    &lt;level value="debug" /&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;
+</div>	
 	
 	<p>This done, the output is modified to show only statements of level INFO and higher.</p>
 	
@@ -1144,7 +1194,7 @@ public class MyAppWithConfigFile {
 
 	<p>Note that to obtain these different logging behaviors we did not need to recompile code. 
 	We could just as easily have logged to a UNIX Syslog daemon, redirected all chapter1 output 
-	to an NT Event logger, or forwarded logging events to a remote logback server, 
+	to a log visualizer, or forwarded logging events to a remote logback server, 
 	which would log according to local server policy, for example by forwarding the log event 
 	to a second logback server.</p>
 	
