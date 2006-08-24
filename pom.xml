@@ -57,6 +57,14 @@
 				<version>2.4.3</version>
 			</dependency>
 			
+			<!-- Classic Module Dependencies -->
+			<dependency>
+			  <groupId>javax.mail</groupId>
+			  <artifactId>mail</artifactId>
+			  <version>1.4</version>
+		  </dependency>
+
+			
 			<!-- Access Module Dependencies -->
 			<dependency>
 				<groupId>tomcat</groupId>
