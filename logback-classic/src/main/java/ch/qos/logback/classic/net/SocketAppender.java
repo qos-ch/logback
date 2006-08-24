@@ -124,8 +124,6 @@ public class SocketAppender extends AppenderBase {
 
 	int counter = 0;
 
-	Layout layout;
-	
 	// reset the ObjectOutputStream every 70 calls
 	// private static final int RESET_FREQUENCY = 70;
 	private static final int RESET_FREQUENCY = 1;
@@ -140,7 +138,7 @@ public class SocketAppender extends AppenderBase {
 		this.address = address;
 		this.remoteHost = address.getHostName();
 		this.port = port;
-		connect(address, port);
+		//connect(address, port);
 	}
 
 	/**
@@ -150,24 +148,37 @@ public class SocketAppender extends AppenderBase {
 		this.port = port;
 		this.address = getAddressByName(host);
 		this.remoteHost = host;
-		connect(address, port);
+		//connect(address, port);
 	}
 
+	//	/**
+	//	 * Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
+	//	 */
+	//	public void activateOptions() {
+	//		connect(address, port);
+	//	}
+
 	/**
-	 * Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
-	 */
-	public void activateOptions() {
-		connect(address, port);
-	}
-	
-	/**
-	 * Start this appender
+	 * Start this appender.
 	 */
 	public void start() {
-		//TODO More tests before starting the Appender.
-		this.started = true;
+		int errorCount = 0;
+		if (port == 0) {
+			errorCount++;
+			addError("No port was configured for appender" + name);
+		}
+
+		if (address == null) {
+			errorCount++;
+			addError("No remote address was configured for appender" + name);
+		}
+
+		connect(address, port);
+
+		if (errorCount == 0) {
+			this.started = true;
+		}
 	}
-	
 
 	/**
 	 * Strop this appender.
@@ -226,7 +237,7 @@ public class SocketAppender extends AppenderBase {
 
 	@Override
 	protected void append(Object event) {
-		
+
 		if (event == null)
 			return;
 
@@ -337,11 +348,10 @@ public class SocketAppender extends AppenderBase {
 	}
 
 	public Layout getLayout() {
-		return layout;
+		return null;
 	}
 
 	public void setLayout(Layout layout) {
-		this.layout = layout;
 	}
 
 	/**

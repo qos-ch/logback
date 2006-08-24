@@ -13,10 +13,7 @@
 	<appender name="SOCKET"
 		class="ch.qos.logback.classic.net.SocketAppender">
 		<param name="remoteHost" value="127.0.0.1" />
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<param name="pattern"
-				value="SO: %-4relative [%thread] %-5level %class - %msg%n" />
-		</layout>
+		<param name="port" value="4560" />
 	</appender>
 
 	<root>

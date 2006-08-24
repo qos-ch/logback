@@ -9,7 +9,7 @@
 		</layout>
 	</appender>
 
-	<appender name="Rolling"
+	<appender name="rolling"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<triggeringPolicy
 			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -24,6 +24,6 @@
 	<root>
 		<level value="debug" />
 		<appender-ref ref="stdout" />
-		<appender-ref ref="Rolling" />
+		<appender-ref ref="rolling" />
 	</root>
 </configuration>
