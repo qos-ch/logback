@@ -77,7 +77,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable {
     instanceCount++;
   }
 
-  final Level getEffectiveLevel() {
+  public final Level getEffectiveLevel() {
     return Level.toLevel(effectiveLevelInt);
   }
 
