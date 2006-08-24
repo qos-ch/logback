@@ -4,12 +4,13 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 
 public class SocketAppenderTest {
 
-
 	public static void main(String[] args) {
-		
+
 		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTest.class);
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		SocketAppender appender = new SocketAppender("localhost", 4560);
@@ -19,8 +20,12 @@ public class SocketAppenderTest {
 
 		logger.addAppender(appender);
 
-		logger.debug("************* Hello world.");
+		for (int i = 0; i <= 1000; i++) {
+			logger.debug("** Hello world. n=" + i);
+		}
+		
+		
+		StatusPrinter.print(lc.getStatusManager());
 
 	}
-
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Calendar;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -249,7 +250,10 @@ public class SocketAppender extends AppenderBase {
 
 		if (oos != null) {
 			try {
+				Long t1 = Calendar.getInstance().getTimeInMillis();
 				oos.writeObject(event);
+				Long t2 = Calendar.getInstance().getTimeInMillis();
+				addInfo("=========Writing time: " + Long.toString(t2-t1));
 				addInfo("=========Flushing.");
 				oos.flush();
 				if (++counter >= RESET_FREQUENCY) {

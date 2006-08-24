@@ -9,18 +9,6 @@
 		</layout>
 	</appender>
 
-	<appender name="rolling"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<triggeringPolicy
-			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<param name="maxFileSize" value="100" />
-		</triggeringPolicy>
-		<param name="file" value="example.log" />
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<param name="pattern" value="SERV: %p %t %c - %m%n" />
-		</layout>
-	</appender>
-
 	<root>
 		<level value="debug" />
 		<appender-ref ref="stdout" />

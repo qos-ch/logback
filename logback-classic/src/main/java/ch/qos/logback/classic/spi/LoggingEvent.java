@@ -1,15 +1,17 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2005, QOS.ch, LOGBack.com
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 
 package ch.qos.logback.classic.spi;
 
+
+import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -19,9 +21,9 @@ import ch.qos.logback.classic.Level;
 /**
  * The internal representation of logging events. When an affirmative decision
  * is made to log then a <code>LoggingEvent</code> instance is created. This
- * instance is passed around to the different LogBack components.
+ * instance is passed around to the different Logback components.
  *
- * <p>Writers of LogBack components such as appenders should be 
+ * <p>Writers of Logback components such as appenders should be 
  * aware of that some of the LoggingEvent fields are initialized lazily. 
  * Therefore, an appender wishing to output data to be later correctly read
  * by a receiver, must initialize "lazy" fields prior to writing them out.   
@@ -29,10 +31,15 @@ import ch.qos.logback.classic.Level;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class LoggingEvent {
+public class LoggingEvent implements Serializable {
 
   
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7298433437463204531L;
+
+	/**
    * 
    */
   private static long startTime = System.currentTimeMillis();
@@ -166,7 +173,7 @@ public class LoggingEvent {
 
   public void setMessage(String message) {
     if (this.message != null) {
-      throw new IllegalStateException("The message for this event has been set alredy.");
+      throw new IllegalStateException("The message for this event has been set already.");
     }
     this.message = message;
   }
@@ -227,5 +234,7 @@ public class LoggingEvent {
     }
     this.marker = marker;
   }
+  
+  
 
 }

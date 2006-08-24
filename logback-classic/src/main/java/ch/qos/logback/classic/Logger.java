@@ -10,6 +10,7 @@
 
 package ch.qos.logback.classic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,9 +25,14 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 
 
-public final class Logger implements org.slf4j.Logger, AppenderAttachable {
+public final class Logger implements org.slf4j.Logger, AppenderAttachable, Serializable {
 
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5454405123156820674L;
+
+	/**
    * The fully qualified name of this class. Used in gathering caller
    * information.
    */
@@ -57,7 +63,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable {
    */
   private List<Logger> childrenList;
 
-  private AppenderAttachableImpl aai;
+  private transient AppenderAttachableImpl aai;
   /**
    * Additivity is set to true by default, that is children inherit the
    * appenders of their ancestors by default. If this variable is set to
@@ -68,7 +74,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable {
    */
   private boolean additive = true;
 
-  final LoggerContext loggerContext;
+  final transient LoggerContext loggerContext;
 
   Logger(String name, Logger parent, LoggerContext loggerContext) {
     this.name = name;
