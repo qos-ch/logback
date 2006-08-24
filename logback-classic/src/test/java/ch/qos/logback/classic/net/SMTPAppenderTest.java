@@ -12,7 +12,7 @@ public class SMTPAppenderTest {
 
 	public static void main(String[] args) {
 
-		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTest.class);
+		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTestApp.class);
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		SMTPAppender appender = new SMTPAppender();
 		appender.setContext(lc);

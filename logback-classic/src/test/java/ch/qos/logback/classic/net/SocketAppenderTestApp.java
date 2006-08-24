@@ -7,11 +7,11 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
-public class SocketAppenderTest {
+public class SocketAppenderTestApp {
 
 	public static void main(String[] args) {
 
-		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTest.class);
+		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTestApp.class);
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		SocketAppender appender = new SocketAppender("localhost", 4560);
 		appender.setContext(lc);
