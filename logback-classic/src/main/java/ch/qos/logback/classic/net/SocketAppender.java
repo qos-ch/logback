@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Calendar;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -139,7 +138,7 @@ public class SocketAppender extends AppenderBase {
 		this.address = address;
 		this.remoteHost = address.getHostName();
 		this.port = port;
-		//connect(address, port);
+		// connect(address, port);
 	}
 
 	/**
@@ -149,15 +148,15 @@ public class SocketAppender extends AppenderBase {
 		this.port = port;
 		this.address = getAddressByName(host);
 		this.remoteHost = host;
-		//connect(address, port);
+		// connect(address, port);
 	}
 
-	//	/**
-	//	 * Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
-	//	 */
-	//	public void activateOptions() {
-	//		connect(address, port);
-	//	}
+	// /**
+	// * Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
+	// */
+	// public void activateOptions() {
+	// connect(address, port);
+	// }
 
 	/**
 	 * Start this appender.
@@ -226,7 +225,7 @@ public class SocketAppender extends AppenderBase {
 			oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
 		} catch (IOException e) {
 
-			String msg = "Could not connect to remote log4j server at ["
+			String msg = "Could not connect to remote logback server at ["
 					+ address.getHostName() + "].";
 			if (reconnectionDelay > 0) {
 				msg += " We will try again later.";
@@ -236,6 +235,9 @@ public class SocketAppender extends AppenderBase {
 		}
 	}
 
+	
+	int count = 0;
+	long total = 0;
 	@Override
 	protected void append(Object event) {
 
@@ -250,11 +252,13 @@ public class SocketAppender extends AppenderBase {
 
 		if (oos != null) {
 			try {
-				Long t1 = Calendar.getInstance().getTimeInMillis();
+				Long t1 = System.nanoTime();
 				oos.writeObject(event);
-				Long t2 = Calendar.getInstance().getTimeInMillis();
-				addInfo("=========Writing time: " + Long.toString(t2-t1));
-				addInfo("=========Flushing.");
+				Long t2 = System.nanoTime();
+				long delta = t2-t1;
+				total += delta;
+				addInfo("** Writing time: " + Long.toString(delta) + " total: " + ++count + " median: " + total/count);
+				//addInfo("=========Flushing.");
 				oos.flush();
 				if (++counter >= RESET_FREQUENCY) {
 					counter = 0;
@@ -290,14 +294,6 @@ public class SocketAppender extends AppenderBase {
 			// addError("Could not find address of [" + host + "].", e);
 			return null;
 		}
-	}
-
-	/**
-	 * The SocketAppender does not use a layout. Hence, this method returns
-	 * <code>false</code>.
-	 */
-	public boolean requiresLayout() {
-		return false;
 	}
 
 	/**

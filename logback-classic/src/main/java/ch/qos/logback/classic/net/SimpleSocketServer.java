@@ -22,17 +22,17 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
  * A simple {@link SocketNode} based server.
  * 
  * <pre>
- *   &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
- *  
- *   where
+ *    &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
+ *   
+ *    where
  * <em>
  * port
  * </em>
- *   is a part number where the server listens and
+ *    is a part number where the server listens and
  * <em>
  * configFile
  * </em>
- *   is an xml configuration file fed to {@link JoranConfigurator}.
+ *    is an xml configuration file fed to {@link JoranConfigurator}.
  * </pre>
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -53,6 +53,10 @@ public class SimpleSocketServer {
 			usage("Wrong number of arguments.");
 		}
 
+		runServer();
+	}
+
+	static void runServer() {
 		try {
 			logger.info("Listening on port " + port);
 			ServerSocket serverSocket = new ServerSocket(port);
@@ -61,9 +65,8 @@ public class SimpleSocketServer {
 				Socket socket = serverSocket.accept();
 				logger.info("Connected to client at " + socket.getInetAddress());
 				logger.info("Starting new socket node.");
-				LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();	
-				new Thread(new SocketNode(socket, lc))
-						.start();
+				LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+				new Thread(new SocketNode(socket, lc)).start();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,7 +89,7 @@ public class SimpleSocketServer {
 		}
 
 		if (configFile.endsWith(".xml")) {
-			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();	
+			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			JoranConfigurator configurator = new JoranConfigurator();
 			configurator.setContext(lc);
 			configurator.doConfigure(configFile);

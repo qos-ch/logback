@@ -23,8 +23,7 @@ public class SocketAppenderTestApp {
 		for (int i = 0; i <= 1000; i++) {
 			logger.debug("** Hello world. n=" + i);
 		}
-		
-		
+
 		StatusPrinter.print(lc.getStatusManager());
 
 	}
