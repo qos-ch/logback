@@ -191,15 +191,7 @@ public class SMTPAppender extends AppenderBase {
 	public String getTo() {
 		return to;
 	}
-
-	/**
-	 * The <code>SMTPAppender</code> requires a {@link org.apache.log4j.Layout
-	 * layout}.
-	 */
-	public boolean requiresLayout() {
-		return true;
-	}
-
+	
 	/**
 	 * Send the contents of the cyclic buffer as an e-mail message.
 	 */
