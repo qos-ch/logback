@@ -44,7 +44,7 @@ public class EvaluatorJoranTest extends TestCase {
     assertNotNull(evaluator);
     
     Logger logger = loggerContext.getLogger("xx");
-    LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world",null);
+    LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
     StatusPrinter.print(loggerContext.getStatusManager());
     assertTrue(evaluator.evaluate(event));
     

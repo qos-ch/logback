@@ -358,34 +358,33 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
     return childLogger;
   }
 
+  /**
+   * The next three methods could be merged. 
+   * However, we decided not to merge them to make the calls to
+   * these methods more easily understandable, avoiding many instances
+   * of passing null parameters.
+   */
   private void filterAndLog(String caller, Level level, String format,
       Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t);
+    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, null);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-    	le.setFormattedMessage(format);
       callAppenders(le);
     }
   }
 
   private void filterAndLog(String caller, Level level, String format,
       Object[] argArray, Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t);
-    le.setArgumentArray(argArray);
+    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, argArray);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-    	String formattedMessage = MessageFormatter.arrayFormat(format, argArray);
-    	le.setFormattedMessage(formattedMessage);
       callAppenders(le);
     }
   }
 
   private void filterAndLog(String caller, Level level, Marker marker,
       String format, Object[] argArray, Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t);
+    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, argArray);
     le.setMarker(marker);
-    le.setArgumentArray(argArray);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-    	String formattedMessage = MessageFormatter.arrayFormat(format, argArray);
-    	le.setFormattedMessage(formattedMessage);
       callAppenders(le);
     }
   }

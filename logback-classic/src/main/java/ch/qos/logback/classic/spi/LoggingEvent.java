@@ -18,6 +18,7 @@ import java.io.ObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 
@@ -97,7 +98,7 @@ public class LoggingEvent implements Externalizable {
 	}
 
 	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
-			Throwable throwable) {
+			Throwable throwable, Object[] argArray) {
 		this.fqnOfLoggerClass = fqcn;
 		this.logger = logger;
 		this.level = level;
@@ -106,14 +107,13 @@ public class LoggingEvent implements Externalizable {
 		if (throwable != null) {
 			this.throwableInfo = new ThrowableInformation(throwable);
 		}
-		timeStamp = System.currentTimeMillis();
-	}
-
-	public void setArgumentArray(Object[] argArray) {
-		if (this.argumentArray != null) {
-			throw new IllegalStateException("argArray has been already set");
+		
+		if (argArray != null) {
+			formattedMessage = MessageFormatter.arrayFormat(message, argArray);
+		} else {
+			formattedMessage = message;
 		}
-		this.argumentArray = argArray;
+		timeStamp = System.currentTimeMillis();
 	}
 
 	public Object[] getArgumentArray() {
@@ -255,14 +255,6 @@ public class LoggingEvent implements Externalizable {
 
 	public String getFormattedMessage() {
 		return formattedMessage;
-	}
-
-	public void setFormattedMessage(String formattedMessage) {
-		if (this.formattedMessage != null) {
-			throw new IllegalStateException(
-					"The formatted message has been already set for this event.");
-		}
-		this.formattedMessage = formattedMessage;
 	}
 
 	public void readExternal(ObjectInput in) throws IOException,

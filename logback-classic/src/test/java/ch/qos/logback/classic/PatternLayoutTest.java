@@ -45,7 +45,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   
   LoggingEvent makeLoggingEvent(Exception ex) {
     return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class
-        .getName(), logger, Level.INFO, "Some message", ex);
+        .getName(), logger, Level.INFO, "Some message", ex, null);
   }
 
   public Object getEventObject() {

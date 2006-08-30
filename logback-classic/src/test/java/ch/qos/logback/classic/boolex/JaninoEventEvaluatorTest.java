@@ -32,7 +32,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
 
   LoggingEvent makeLoggingEvent(Exception ex) {
     LoggingEvent e = new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class
-        .getName(), logger, Level.INFO, "Some message", ex);
+        .getName(), logger, Level.INFO, "Some message", ex, null);
     return e;
   }
 
