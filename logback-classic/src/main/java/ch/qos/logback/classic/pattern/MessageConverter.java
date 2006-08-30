@@ -20,7 +20,7 @@ public class MessageConverter extends ClassicConverter {
 
   public String convert(Object event) {
     LoggingEvent le = (LoggingEvent) event;
-    return le.getMessage();
+    return le.getFormattedMessage();
   }
 
 }

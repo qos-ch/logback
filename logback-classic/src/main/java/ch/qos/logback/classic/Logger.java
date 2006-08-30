@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Marker;
+import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -83,7 +84,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
     instanceCount++;
   }
 
-  public final Level getEffectiveLevel() {
+  final Level getEffectiveLevel() {
     return Level.toLevel(effectiveLevelInt);
   }
 
@@ -360,8 +361,8 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
   private void filterAndLog(String caller, Level level, String format,
       Throwable t) {
     LoggingEvent le = new LoggingEvent(caller, this, level, format, t);
-    loggerContext.getFilterChainDecision(le);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
+    	le.setFormattedMessage(format);
       callAppenders(le);
     }
   }
@@ -371,6 +372,8 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
     LoggingEvent le = new LoggingEvent(caller, this, level, format, t);
     le.setArgumentArray(argArray);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
+    	String formattedMessage = MessageFormatter.arrayFormat(format, argArray);
+    	le.setFormattedMessage(formattedMessage);
       callAppenders(le);
     }
   }
@@ -381,6 +384,8 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
     le.setMarker(marker);
     le.setArgumentArray(argArray);
     if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
+    	String formattedMessage = MessageFormatter.arrayFormat(format, argArray);
+    	le.setFormattedMessage(formattedMessage);
       callAppenders(le);
     }
   }
@@ -601,6 +606,10 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public boolean isWarnEnabled(Marker marker) {
     return isWarnEnabled();
+  }
+  
+  public boolean isEnabledFor(Level level) {
+  	return (effectiveLevelInt <= level.levelInt);
   }
 
   public void warn(String msg) {
