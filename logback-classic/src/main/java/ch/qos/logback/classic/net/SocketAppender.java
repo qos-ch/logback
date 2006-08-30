@@ -235,9 +235,6 @@ public class SocketAppender extends AppenderBase {
 		}
 	}
 
-	
-	int count = 0;
-	long total = 0;
 	@Override
 	protected void append(Object event) {
 
@@ -252,12 +249,7 @@ public class SocketAppender extends AppenderBase {
 
 		if (oos != null) {
 			try {
-				Long t1 = System.nanoTime();
 				oos.writeObject(event);
-				Long t2 = System.nanoTime();
-				long delta = t2-t1;
-				total += delta;
-				addInfo("** Writing time: " + Long.toString(delta) + " total: " + ++count + " median: " + total/count);
 				//addInfo("=========Flushing.");
 				oos.flush();
 				if (++counter >= RESET_FREQUENCY) {

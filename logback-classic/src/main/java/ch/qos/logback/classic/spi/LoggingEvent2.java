@@ -10,10 +10,10 @@
 
 package ch.qos.logback.classic.spi;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +35,8 @@ import ch.qos.logback.classic.Level;
  * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
- * @author S&eacute;bastien Pennec
  */
-public class LoggingEvent implements Externalizable {
+public class LoggingEvent2 implements Serializable {
 
 	/**
 	 * 
@@ -72,14 +71,12 @@ public class LoggingEvent implements Externalizable {
 	 * </p>
 	 * 
 	 */
-	private Level level;
+	private transient Level level;
 
 	private String message;
-	private String formattedMessage;
-
 	private Object[] argumentArray;
 
-	private Logger logger;
+	private transient Logger logger;
 
 	private ThrowableInformation throwableInfo;
 
@@ -93,10 +90,10 @@ public class LoggingEvent implements Externalizable {
 	 */
 	private long timeStamp;
 
-	public LoggingEvent() {
+	public LoggingEvent2() {
 	}
 
-	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
+	public LoggingEvent2(String fqcn, Logger logger, Level level, String message,
 			Throwable throwable) {
 		this.fqnOfLoggerClass = fqcn;
 		this.logger = logger;
@@ -252,43 +249,20 @@ public class LoggingEvent implements Externalizable {
 		}
 		this.marker = marker;
 	}
-
-	public String getFormattedMessage() {
-		return formattedMessage;
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		out.writeObject(logger.getName());
+		out.writeObject(level.levelInt);
 	}
 
-	public void setFormattedMessage(String formattedMessage) {
-		if (this.formattedMessage != null) {
-			throw new IllegalStateException(
-					"The formatted message has been already set for this event.");
-		}
-		this.formattedMessage = formattedMessage;
-	}
-
-	public void readExternal(ObjectInput in) throws IOException,
-			ClassNotFoundException {
-		threadName = (String) in.readObject();
-		message = (String) in.readObject();
-		formattedMessage = (String)in.readObject();
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		String loggerName = (String)in.readObject();
+		logger = LoggerFactory.getLogger(loggerName);
 		int levelInt = in.readInt();
 		level = Level.toLevel(levelInt);
-		String loggerName = (String) in.readObject();
-		logger = LoggerFactory.getLogger(loggerName);
 	}
-
-	public void writeExternal(ObjectOutput out) throws IOException {
-		if (threadName != null) {
-			out.writeObject(threadName);
-		} else {
-			out.writeObject("noThreadName");
-		}
-		out.writeObject(message);
-		out.writeObject(formattedMessage);
-		out.writeInt(level.levelInt);
-		out.writeObject(logger.getName());
-		// out.writeObject(throwableInfo);
-		// out.writeObject(callerDataArray);
-		// out.writeObject(marker);
-	}
-
+	
+	
 }

@@ -3,13 +3,9 @@ package ch.qos.logback.classic.net;
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.appender.ListAppender;
 
-public class SocketAppenderTest extends TestCase{
-	
-	LoggerContext lc;
-	ListAppender remoteListAppender;
-	
+public class SocketAppenderTest extends TestCase {
+
 	public void testStartFailNoRemoteHost() {
 		LoggerContext lc = new LoggerContext();
 		SocketAppender appender = new SocketAppender();
@@ -18,35 +14,30 @@ public class SocketAppenderTest extends TestCase{
 		appender.start();
 		assertEquals(1, lc.getStatusManager().getCount());
 	}
-	
-	public void testRecieveMessage() {
+
+	public void testRecieveMessage() throws InterruptedException {
+		MockSocketServer mockServer = new MockSocketServer(1);
+		mockServer.start();
+		mockServer.join(1000);
+		
+		// client configuration
+		LoggerContext lc = new LoggerContext();
+		Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+		SocketAppender socketAppender = new SocketAppender();
+		socketAppender.setContext(lc);
+		socketAppender.setName("socket");
+		socketAppender.setPort(4560);
+		socketAppender.setRemoteHost("localhost");
+		root.addAppender(socketAppender);
+		socketAppender.start();
+		
 		Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
 		logger.debug("test");
-		assertEquals(1, remoteListAppender.list.size());
-	}
-	
-	public void setUp() {
-		//client configuration
-		lc = new LoggerContext();
-		Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
-		SocketAppender socket = new SocketAppender();
-		socket.setContext(lc);
-		socket.setName("socket");
-		socket.setPort(4560);
-		socket.setRemoteHost("localhost");
-		root.addAppender(socket);
-		
-		//server configuration
-		LoggerContext remoteLc = ((Logger)SimpleSocketServer.logger).getLoggerContext();
-		Logger remoteRoot = remoteLc.getLogger(LoggerContext.ROOT_NAME);
-		remoteListAppender = new ListAppender();
-		remoteListAppender.setContext(remoteLc);
-		remoteListAppender.setName("list");
-		remoteRoot.addAppender(remoteListAppender);
-		SimpleSocketServer.runServer();
-	}
-	
-	public void tearDown() {
-		lc = null;
+
+    // Wait max 2 seconds for mock server to finish. However, it should
+    // finish much sooner than that.		
+		mockServer.join(2000);
+		assertTrue(mockServer.finished);
+		assertNotNull(mockServer.msgList.get(0));
 	}
 }

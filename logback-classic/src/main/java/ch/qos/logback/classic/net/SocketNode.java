@@ -74,7 +74,7 @@ public class SocketNode implements Runnable {
 				// be the name contained in the event.
 				remoteLogger = context.getLogger(event.getLogger().getName());
 				// apply the logger-level filter
-				if (event.getLevel().isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+				if (remoteLogger.isEnabledFor(event.getLevel())) {
 					// finally log the event as if was generated locally
 					remoteLogger.callAppenders(event);
 				}

@@ -15,7 +15,7 @@ public class ThrowableInformation implements java.io.Serializable {
 
   private static final long serialVersionUID = 6307784764626694851L;
   private String[] sa;
-  private final Throwable throwable;
+  private transient final Throwable throwable;
 
   public ThrowableInformation(Throwable throwable) {
     this.throwable = throwable;
