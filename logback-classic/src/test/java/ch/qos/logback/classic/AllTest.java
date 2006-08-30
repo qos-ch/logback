@@ -18,11 +18,12 @@ public class AllTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
  
-    suite.addTest(ch.qos.logback.classic.control.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.pattern.PackageTest.suite());
+    suite.addTest(ch.qos.logback.classic.control.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.joran.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.net.PackageTest.suite());
+    suite.addTest(ch.qos.logback.classic.pattern.PackageTest.suite()); 
+    
     return suite;
   }
 }
