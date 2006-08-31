@@ -9,10 +9,14 @@
  */
 package ch.qos.logback.classic.net;
 
+import java.io.BufferedInputStream;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.qos.logback.classic.spi.LoggingEvent;
 
 /**
  * 
@@ -38,12 +42,16 @@ public class MockSocketServer extends Thread {
 		try {
 			System.out.println("Listening on port " + PORT);
 			ServerSocket serverSocket = new ServerSocket(PORT);
-			
+			ObjectInputStream ois;
+			LoggingEvent event;
 			for (int i = 0; i < loopLen; i++) {
 				System.out.println("Waiting to accept a new client.");
 				Socket socket = serverSocket.accept();
 				System.out.println("Connected to client at " + socket.getInetAddress());
-				msgList.add(socket.toString());
+				ois = new ObjectInputStream(new BufferedInputStream(socket
+						.getInputStream()));
+				event = (LoggingEvent) ois.readObject();
+				msgList.add(event.getMessage());
 			}
 		} catch (Exception se) {
 			se.printStackTrace();

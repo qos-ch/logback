@@ -18,7 +18,7 @@ public class SocketAppenderTest extends TestCase {
 	public void testRecieveMessage() throws InterruptedException {
 		MockSocketServer mockServer = new MockSocketServer(1);
 		mockServer.start();
-		mockServer.join(1000);
+		//mockServer.join(1000);
 		
 		// client configuration
 		LoggerContext lc = new LoggerContext();
@@ -38,6 +38,7 @@ public class SocketAppenderTest extends TestCase {
     // finish much sooner than that.		
 		mockServer.join(2000);
 		assertTrue(mockServer.finished);
-		assertNotNull(mockServer.msgList.get(0));
+		assertEquals("test", mockServer.msgList.get(0));
+		
 	}
 }
