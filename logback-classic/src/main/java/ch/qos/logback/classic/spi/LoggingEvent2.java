@@ -253,7 +253,7 @@ public class LoggingEvent2 implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeObject(logger.getName());
-		out.writeObject(level.levelInt);
+		out.writeInt(level.levelInt);
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
