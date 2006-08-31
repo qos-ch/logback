@@ -16,14 +16,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
-
 /**
  * 
  * 
  * @author S&eacute;bastien Pennec
  */
 public class MockSocketServer extends Thread {
+
+	static final String LOGGINGEVENT = "LoggingEvent";
+	static final String LOGGINGEVENT2 = "LoggingEvent2";
+	static final String MINIMALEXT = "MinimalExt";
+	static final String MINIMALSER = "MinimalSer";
 
 	static final int PORT = 4560;
 
@@ -32,6 +35,8 @@ public class MockSocketServer extends Thread {
 	List<String> msgList = new ArrayList<String>();
 	boolean finished = false;
 
+	String className = LOGGINGEVENT;
+
 	MockSocketServer(int loopLen) {
 		super();
 		this.loopLen = loopLen;
@@ -39,24 +44,25 @@ public class MockSocketServer extends Thread {
 
 	@Override
 	public void run() {
+		ObjectInputStream ois;
+		Object readObject;
 		try {
-			System.out.println("Listening on port " + PORT);
+			//System.out.println("Listening on port " + PORT);
 			ServerSocket serverSocket = new ServerSocket(PORT);
-			ObjectInputStream ois;
-			LoggingEvent event;
+			//System.out.println("Waiting to accept a new client.");
+			Socket socket = serverSocket.accept();
+			//System.out.println("Connected to client at " + socket.getInetAddress());
+			ois = new ObjectInputStream(new BufferedInputStream(socket
+					.getInputStream()));
 			for (int i = 0; i < loopLen; i++) {
-				System.out.println("Waiting to accept a new client.");
-				Socket socket = serverSocket.accept();
-				System.out.println("Connected to client at " + socket.getInetAddress());
-				ois = new ObjectInputStream(new BufferedInputStream(socket
-						.getInputStream()));
-				event = (LoggingEvent) ois.readObject();
-				msgList.add(event.getMessage());
+				readObject = ois.readObject();
+				msgList.add(readObject.toString());
 			}
+			ois.close();
+			serverSocket.close();
 		} catch (Exception se) {
 			se.printStackTrace();
 		}
 		finished = true;
 	}
-
 }

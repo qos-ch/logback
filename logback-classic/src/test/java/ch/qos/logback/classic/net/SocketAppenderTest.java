@@ -38,7 +38,7 @@ public class SocketAppenderTest extends TestCase {
     // finish much sooner than that.		
 		mockServer.join(2000);
 		assertTrue(mockServer.finished);
-		assertEquals("test", mockServer.msgList.get(0));
+		assertTrue(mockServer.msgList.get(0).startsWith("ch.qos.logback.classic.spi.LoggingEvent@"));
 		
 	}
 }

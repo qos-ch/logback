@@ -20,6 +20,10 @@ class MinimalExt implements Externalizable {
 
 	String message;
 
+	//public no-args constructor is needed for Externalization
+	public MinimalExt() {		
+	}
+	
 	public MinimalExt(int i) {
 		// 45 characters message
 		message = "aaaaabbbbbcccccdddddaaaaabbbbbcccccdddddaaaa" + i;
