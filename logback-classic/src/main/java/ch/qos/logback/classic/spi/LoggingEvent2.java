@@ -78,9 +78,9 @@ public class LoggingEvent2 implements Serializable {
 
 	private transient Logger logger;
 
-	private ThrowableInformation throwableInfo;
+	transient private ThrowableInformation throwableInfo;
 
-	private CallerData[] callerDataArray;
+	transient private CallerData[] callerDataArray;
 
 	private Marker marker;
 
