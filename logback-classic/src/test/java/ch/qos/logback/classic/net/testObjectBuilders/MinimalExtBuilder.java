@@ -25,7 +25,6 @@ class MinimalExt implements Externalizable {
 	}
 	
 	public MinimalExt(int i) {
-		// 45 characters message
 		message = Builder.MSG_PREFIX + i;
 	}
 

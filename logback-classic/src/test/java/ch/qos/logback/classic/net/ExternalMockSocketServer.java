@@ -1,7 +1,6 @@
 package ch.qos.logback.classic.net;
 
-import java.io.BufferedInputStream;
-import java.io.ObjectInputStream;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class ExternalMockSocketServer {
 
 	static final int PORT = 4560;
 
-	static int loopLen;
+	//static int loopLen;
 	static int clientNumber;
 
 	static List<String> msgList = new ArrayList<String>();
@@ -25,10 +24,9 @@ public class ExternalMockSocketServer {
 	String className = LOGGINGEVENT;
 
 	public static void main(String[] args) {
-		if (args.length == 2) {
+		if (args.length == 1) {
 			clientNumber = Integer.parseInt(args[0]);
-			loopLen = Integer.parseInt((args[1]));
-			System.out.println("Starting Server...");
+			//loopLen = Integer.parseInt((args[1]));
 			runServer();
 		} else {
 			usage("Wrong number of arguments.");
@@ -37,29 +35,39 @@ public class ExternalMockSocketServer {
 
 	static void usage(String msg) {
 		System.err.println(msg);
-		System.err.println("Usage: java "
-				+ ExternalMockSocketServer.class.getName() + " clientNumber loopNumber");
+		System.err
+				.println("Usage: java " + ExternalMockSocketServer.class.getName()
+						+ " loopNumber");
 		System.exit(1);
 	}
 
 	static void runServer() {
-		ObjectInputStream ois;
-		Object readObject;
+
 		try {
-			System.out.println("Listening on port " + PORT);
+			System.out.println("Starting Server...");
 			ServerSocket serverSocket = new ServerSocket(PORT);
+			System.out.println("Listening on port " + PORT);
 			for (int j = 0; j < clientNumber; j++) {
 				Socket socket = serverSocket.accept();
 				System.out.println("New client accepted.");
 				System.out.println("Connected to client at " + socket.getInetAddress());
-				ois = new ObjectInputStream(new BufferedInputStream(socket
-						.getInputStream()));
-				for (int i = 0; i < loopLen; i++) {
-					readObject = ois.readObject();
-					//msgList.add(readObject.toString());
+
+				InputStream is = socket.getInputStream();
+				long sum = 0;
+			
+				while (true) {
+					// this call is blocking
+					int val = is.read();
+					if(val == -1) {
+						break;
+					}
+					// if a byte is available, we skip it.
+					// this allows to pass all available bytes in a quick manner.
+					int a = is.available();
+					sum += a + 1;
+					is.skip(a);
 				}
-				ois.close();
-				System.out.println("Finished with this client.");
+			  System.out.println(sum);
 			}
 			serverSocket.close();
 		} catch (Exception se) {

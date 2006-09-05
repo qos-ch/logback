@@ -18,7 +18,6 @@ class MinimalSer implements Serializable {
 	String message;
 
 	public MinimalSer(int i) {
-		// 45 characters message
 		message = Builder.MSG_PREFIX + i;
 	}
 }

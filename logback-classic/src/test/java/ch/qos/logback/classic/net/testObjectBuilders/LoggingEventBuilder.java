@@ -10,7 +10,6 @@ public class LoggingEventBuilder implements Builder {
 		LoggingEvent le = new LoggingEvent();
 		le.setLevel(Level.DEBUG);
 		le.setLogger(new LoggerContext().getLogger(LoggerContext.ROOT_NAME));
-		// 45 characters message
 		le.setMessage(MSG_PREFIX + i);
 		le.setThreadName("threadName");
 		return le;
