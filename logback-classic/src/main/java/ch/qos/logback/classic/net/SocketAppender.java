@@ -125,8 +125,7 @@ public class SocketAppender extends AppenderBase {
 	int counter = 0;
 
 	// reset the ObjectOutputStream every 70 calls
-	// private static final int RESET_FREQUENCY = 70;
-	private static final int RESET_FREQUENCY = 1;
+	private static final int RESET_FREQUENCY = 70;
 
 	public SocketAppender() {
 	}
