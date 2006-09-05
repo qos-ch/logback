@@ -22,7 +22,7 @@ public class SMTPAppenderTest extends TestCase {
 		appender.setName("smtp");
 		appender.setFrom("user@host.dom");
 		appender.setLayout(buildLayout(lc));
-		appender.setSMTPHost("mail.qos.ch");
+		appender.setSMTPHost("mail2.qos.ch");
 		appender.setSubject("logging report");
 		appender.setTo("sebastien.nospam@qos.ch");
 		appender.start();
