@@ -26,7 +26,7 @@ class MinimalExt implements Externalizable {
 	
 	public MinimalExt(int i) {
 		// 45 characters message
-		message = "aaaaabbbbbcccccdddddaaaaabbbbbcccccdddddaaaa" + i;
+		message = Builder.MSG_PREFIX + i;
 	}
 
 	public void readExternal(ObjectInput in) throws IOException,
