@@ -18,8 +18,8 @@ public class SerializationPerfsTest extends TestCase {
 
 	int loopNumber = 10000;
 	int resetFrequency = 100;
-	int pauseFrequency = 200;
-	long pauseLengthInMillis = 50;
+	int pauseFrequency = 100;
+	long pauseLengthInMillis = 20;
 	
 	/**
 	 * Run the test with a MockSocketServer or with a NOPOutputStream
@@ -112,7 +112,7 @@ public class SerializationPerfsTest extends TestCase {
 				oos.flush();
 				if (++resetCounter >= resetFrequency) {
 					oos.reset();
-					//resetCounter = 0;
+					resetCounter = 0;
 				}
 				if (++pauseCounter >= pauseFrequency) {
 					Thread.sleep(pauseLengthInMillis);
@@ -139,7 +139,7 @@ public class SerializationPerfsTest extends TestCase {
 				total += (t2 - t1);
 				if (++resetCounter >= resetFrequency) {
 					oos.reset();
-					//resetCounter = 0;
+					resetCounter = 0;
 				}
 				if (++pauseCounter >= pauseFrequency) {
 					Thread.sleep(pauseLengthInMillis);
