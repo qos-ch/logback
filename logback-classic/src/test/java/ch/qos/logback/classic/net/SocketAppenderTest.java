@@ -5,6 +5,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.LoggerContextSer;
+import ch.qos.logback.classic.LoggerSer;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class SocketAppenderTest extends TestCase {
@@ -45,9 +47,11 @@ public class SocketAppenderTest extends TestCase {
 		assertTrue(mockServer.finished);
 		assertEquals(1, mockServer.loggingEventList.size());
 		LoggingEvent remoteEvent = mockServer.loggingEventList.get(0);
-		assertEquals("test", remoteEvent.getLogger().getLoggerContext().getName());
-		assertEquals("root", remoteEvent.getLogger().getName());
-		Map<String, String> props = remoteEvent.getLogger().getLoggerContext().getPropertyMap();
+		LoggerSer loggerSer = (LoggerSer)remoteEvent.getLogger();
+		LoggerContextSer loggerContextSer = (LoggerContextSer)loggerSer.getLoggerContext();
+		assertEquals("test", loggerContextSer.getName());
+		assertEquals("root", loggerSer.getName());
+		Map<String, String> props = loggerContextSer.getPropertyMap();
 		assertEquals("testValue", props.get("testKey"));
 	}
 }
