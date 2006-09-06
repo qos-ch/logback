@@ -18,7 +18,7 @@ public class SerializationPerfsTest extends TestCase {
 
 	int loopNumber = 10000;
 	int resetFrequency = 100;
-	int pauseFrequency = 100;
+	int pauseFrequency = 500;
 	long pauseLengthInMillis = 20;
 	
 	/**
@@ -77,6 +77,15 @@ public class SerializationPerfsTest extends TestCase {
 	 *   | LoggEvent Ext  | 10000 | 106442   |  649984   |
 	 *   | LoggEvent Ser  | 10000 |  93467   |  855984   |
 	 *	 pauseFrequency = 200 and pauseLengthInMillis = 50
+	 *
+	 * External MockServer with 45 letters-long message:
+	 * WARNING: This test was done by sending _always the same_ logger object.
+	 * 	 |                |  Runs | Avg time | Data sent |
+	 *   | MinimalObj Ext | 10000 |  28739   |  123604   |
+	 *   | MinimalObj Ser | 10000 |  27431   |  129604   |
+	 *   | LoggEvent Ext  | 10000 |  30112   |  125604   |
+	 *   | LoggEvent Ser  | 10000 |  26059   |  153404   |
+	 *	 pauseFrequency = 500 and pauseLengthInMillis = 50
 	 */
 
 	public void setUp() throws Exception {
@@ -103,12 +112,14 @@ public class SerializationPerfsTest extends TestCase {
 	public void runPerfTest(Builder builder, String label) throws Exception {
 		//long time1 = System.nanoTime();
 
+		Object builtObject = builder.build(1);
+		
 		// first run for just in time compiler
 		int resetCounter = 0;
 		int pauseCounter = 0;
 		for (int i = 0; i < loopNumber; i++) {
 			try {
-				oos.writeObject(builder.build(i));
+				oos.writeObject(builtObject);
 				oos.flush();
 				if (++resetCounter >= resetFrequency) {
 					oos.reset();
@@ -133,7 +144,7 @@ public class SerializationPerfsTest extends TestCase {
 		for (int i = 0; i < loopNumber; i++) {
 			try {
 				t1 = System.nanoTime();
-				oos.writeObject(builder.build(i));
+				oos.writeObject(builtObject);
 				oos.flush();
 				t2 = System.nanoTime();
 				total += (t2 - t1);
