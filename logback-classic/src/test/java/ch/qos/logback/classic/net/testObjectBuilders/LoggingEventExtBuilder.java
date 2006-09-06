@@ -2,12 +2,12 @@ package ch.qos.logback.classic.net.testObjectBuilders;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggingEvent2;
+import ch.qos.logback.classic.spi.LoggingEventExt;
 
-public class LoggingEvent2Builder implements Builder {
+public class LoggingEventExtBuilder implements Builder {
 
 	public Object build(int i) {
-		LoggingEvent2 le = new LoggingEvent2();
+		LoggingEventExt le = new LoggingEventExt();
 		le.setLevel(Level.DEBUG);
 		le.setLogger(new LoggerContext().getLogger(LoggerContext.ROOT_NAME));
 		le.setMessage(MSG_PREFIX + i);

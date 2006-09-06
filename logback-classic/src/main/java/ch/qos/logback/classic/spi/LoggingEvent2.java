@@ -35,6 +35,7 @@ import ch.qos.logback.classic.Level;
  * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
  */
 public class LoggingEvent2 implements Serializable {
 

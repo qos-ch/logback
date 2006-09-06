@@ -38,7 +38,7 @@ import ch.qos.logback.classic.Level;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LoggingEvent implements Externalizable {
+public class LoggingEventExt implements Externalizable {
 
 	/**
 	 * 
@@ -94,10 +94,10 @@ public class LoggingEvent implements Externalizable {
 	 */
 	private long timeStamp;
 
-	public LoggingEvent() {
+	public LoggingEventExt() {
 	}
 
-	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
+	public LoggingEventExt(String fqcn, Logger logger, Level level, String message,
 			Throwable throwable, Object[] argArray) {
 		this.fqnOfLoggerClass = fqcn;
 		this.logger = logger;
