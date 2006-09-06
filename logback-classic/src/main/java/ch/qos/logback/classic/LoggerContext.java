@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 /**
  * @author ceki
  */
-public class LoggerContext extends ContextBase implements ILoggerFactory {
+public class LoggerContext extends ContextBase implements ILoggerFactory, LoggerContextView {
 
 	public static final String ROOT_NAME = "root";
 	
@@ -113,5 +113,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   	      getStatusManager().add(new ErrorStatus(
 	        "No appenders present in context ["+ getName() +"] for logger [" + logger.getName() + "].", logger));
   	 }
+  }
+  
+  public LoggerContextSer getLoggerContextSer() {
+  	LoggerContextSer loggerContextSer = new LoggerContextSer();
+  	loggerContextSer.name = this.getName();
+  	loggerContextSer.propertyMap = this.getPropertyMap();
+  	return loggerContextSer;
   }
 }

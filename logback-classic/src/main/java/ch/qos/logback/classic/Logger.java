@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Marker;
-import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -26,7 +25,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 
 
-public final class Logger implements org.slf4j.Logger, AppenderAttachable, Serializable {
+public final class Logger implements org.slf4j.Logger, LoggerView, AppenderAttachable, Serializable {
 
   /**
 	 * 
@@ -689,7 +688,15 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
    * Return the context for this logger.
    * @return
    */
-	public LoggerContext getLoggerContext() {
+	public LoggerContextView getLoggerContext() {
 		return loggerContext;
+	}
+	
+	public LoggerSer getLoggerSer() {
+		LoggerSer loggerSer = new LoggerSer();
+		loggerSer.level = level;
+		loggerSer.name = name;
+		loggerSer.loggerContext = loggerContext.getLoggerContextSer();
+		return loggerSer;
 	}
 }

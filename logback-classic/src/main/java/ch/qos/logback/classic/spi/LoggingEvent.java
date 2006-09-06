@@ -16,11 +16,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerView;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -80,9 +80,9 @@ public class LoggingEvent implements Serializable {
 
 	private Object[] argumentArray;
 
-	private transient Logger logger;
+	private transient LoggerView logger;
 
-  private transient ThrowableInformation throwableInfo;
+	private transient ThrowableInformation throwableInfo;
 
 	private transient CallerData[] callerDataArray;
 
@@ -100,7 +100,7 @@ public class LoggingEvent implements Serializable {
 	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
 			Throwable throwable, Object[] argArray) {
 		this.fqnOfLoggerClass = fqcn;
-		this.logger = logger;
+		this.logger = (ch.qos.logback.classic.Logger)logger;
 		this.level = level;
 		this.message = message;
 
@@ -179,11 +179,11 @@ public class LoggingEvent implements Serializable {
 		this.getThreadName();
 	}
 
-	public Logger getLogger() {
+	public LoggerView getLogger() {
 		return logger;
 	}
 
-	public void setLogger(Logger logger) {
+	public void setLogger(LoggerView logger) {
 		this.logger = logger;
 	}
 
@@ -266,15 +266,16 @@ public class LoggingEvent implements Serializable {
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
-		out.writeObject(logger.getName());
+		out.writeObject(logger.getLoggerSer());
 		out.writeInt(level.levelInt);
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException,
 			ClassNotFoundException {
 		in.defaultReadObject();
-		String loggerName = (String) in.readObject();
-		logger = LoggerFactory.getLogger(loggerName);
+		//String loggerName = (String) in.readObject();
+		//logger = LoggerFactory.getLogger(loggerName);
+		logger = (LoggerView)in.readObject();
 		int levelInt = in.readInt();
 		level = Level.toLevel(levelInt);
 	}

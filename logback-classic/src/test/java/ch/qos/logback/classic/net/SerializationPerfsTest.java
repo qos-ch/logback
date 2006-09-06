@@ -14,28 +14,25 @@ import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
 public class SerializationPerfsTest extends TestCase {
 
 	ObjectOutputStream oos;
-	MockSocketServer mockServer;
 
 	int loopNumber = 10000;
 	int resetFrequency = 100;
-	int pauseFrequency = 500;
+	int pauseFrequency = 200;
 	long pauseLengthInMillis = 20;
-	
-	/**
-	 * Run the test with a MockSocketServer or with a NOPOutputStream
-	 */
-	boolean runWithMockServer = true;
+
 	/**
 	 * <p>
-	 * Run with external mock can be done using the
-	 * ExternalMockSocketServer. It needs to be launched
-	 * from a separate JVM. The ExternalMockSocketServer does not
-	 * consume the events but passes through the available bytes
-	 * that it is recieving.
+	 * Run the test with a MockSocketServer or with a NOPOutputStream
 	 * </p>
 	 * <p>
-	 * For example, with 4 test methods,
-	 * you can launch the ExternalMockSocketServer this way:
+	 * Run with external mock can be done using the ExternalMockSocketServer. It
+	 * needs to be launched from a separate JVM. The ExternalMockSocketServer does
+	 * not consume the events but passes through the available bytes that it is
+	 * recieving.
+	 * </p>
+	 * <p>
+	 * For example, with 4 test methods, you can launch the
+	 * ExternalMockSocketServer this way:
 	 * </p>
 	 * <p>
 	 * <code>java ch.qos.logback.classic.net.ExternalMockSocketServer 4</code>
@@ -54,13 +51,6 @@ public class SerializationPerfsTest extends TestCase {
 	 *   | MinimalObj Ser | 10000 |  7883    |           |
 	 *   | LoggEvent Ext  | 10000 |  9641    |           |
 	 *   | LoggEvent Ser  | 10000 | 25729    |           |
-	 * 
-	 * Internal MockServer: 
-	 * 	 |                |  Runs | Avg time | Data sent |
-	 *   | MinimalObj Ext | 10000 |  62040   |           |
-	 *   | MinimalObj Ser | 10000 |  76237   |           |
-	 *   | LoggEvent Ext  | 10000 | 122714   |           |
-	 *   | LoggEvent Ser  | 10000 | 121711   |           |
 	 * 
 	 * External MockServer with 45 letters-long message: 
 	 * 	 |                |  Runs | Avg time | Data sent |
@@ -90,13 +80,9 @@ public class SerializationPerfsTest extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		if (runWithMockServer) {
-			if (!runWithExternalMockServer) {
-				mockServer = new MockSocketServer(loopNumber * 2);
-				mockServer.start();
-			}
+		if (runWithExternalMockServer) {
 			oos = new ObjectOutputStream(new Socket("localhost",
-					MockSocketServer.PORT).getOutputStream());
+					ExternalMockSocketServer.PORT).getOutputStream());
 		} else {
 			oos = new ObjectOutputStream(new NOPOutputStream());
 		}
@@ -106,20 +92,19 @@ public class SerializationPerfsTest extends TestCase {
 		super.tearDown();
 		oos.close();
 		oos = null;
-		mockServer = null;
 	}
 
 	public void runPerfTest(Builder builder, String label) throws Exception {
-		//long time1 = System.nanoTime();
+		// long time1 = System.nanoTime();
 
-		Object builtObject = builder.build(1);
-		
+		// Object builtObject = builder.build(1);
+
 		// first run for just in time compiler
 		int resetCounter = 0;
 		int pauseCounter = 0;
 		for (int i = 0; i < loopNumber; i++) {
 			try {
-				oos.writeObject(builtObject);
+				oos.writeObject(builder.build(i));
 				oos.flush();
 				if (++resetCounter >= resetFrequency) {
 					oos.reset();
@@ -129,6 +114,7 @@ public class SerializationPerfsTest extends TestCase {
 					Thread.sleep(pauseLengthInMillis);
 					pauseCounter = 0;
 				}
+
 			} catch (IOException ex) {
 				fail(ex.getMessage());
 			}
@@ -136,15 +122,15 @@ public class SerializationPerfsTest extends TestCase {
 
 		// second run
 		Long t1;
-		Long t2 ;
+		Long t2;
 		Long total = 0L;
 		resetCounter = 0;
 		pauseCounter = 0;
-		//System.out.println("Beginning mesured run");
+		// System.out.println("Beginning mesured run");
 		for (int i = 0; i < loopNumber; i++) {
 			try {
 				t1 = System.nanoTime();
-				oos.writeObject(builtObject);
+				oos.writeObject(builder.build(i));
 				oos.flush();
 				t2 = System.nanoTime();
 				total += (t2 - t1);
@@ -163,13 +149,9 @@ public class SerializationPerfsTest extends TestCase {
 		System.out.println(label + " : average time = " + total / loopNumber
 				+ " after " + loopNumber + " writes.");
 
-		if (runWithMockServer && !runWithExternalMockServer) {
-			mockServer.join(1000);
-			assertTrue(mockServer.finished);
-		}
-		
-		//long time2 = System.nanoTime();
-		//System.out.println("********* -> Time needed to run the test method: " + Long.toString(time2-time1));
+		// long time2 = System.nanoTime();
+		// System.out.println("********* -> Time needed to run the test method: " +
+		// Long.toString(time2-time1));
 	}
 
 	public void testWithMinimalExternalization() throws Exception {

@@ -16,6 +16,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
+
 /**
  * 
  * 
@@ -23,19 +25,12 @@ import java.util.List;
  */
 public class MockSocketServer extends Thread {
 
-	static final String LOGGINGEVENT = "LoggingEvent";
-	static final String LOGGINGEVENT2 = "LoggingEvent2";
-	static final String MINIMALEXT = "MinimalExt";
-	static final String MINIMALSER = "MinimalSer";
-
 	static final int PORT = 4560;
 
 	final int loopLen;
 
-	List<String> msgList = new ArrayList<String>();
+	List<LoggingEvent> loggingEventList = new ArrayList<LoggingEvent>();
 	boolean finished = false;
-
-	String className = LOGGINGEVENT;
 
 	MockSocketServer(int loopLen) {
 		super();
@@ -45,7 +40,8 @@ public class MockSocketServer extends Thread {
 	@Override
 	public void run() {
 		ObjectInputStream ois;
-		Object readObject;
+		//Object readObject;
+		LoggingEvent event;
 		try {
 			//System.out.println("Listening on port " + PORT);
 			ServerSocket serverSocket = new ServerSocket(PORT);
@@ -55,8 +51,10 @@ public class MockSocketServer extends Thread {
 			ois = new ObjectInputStream(new BufferedInputStream(socket
 					.getInputStream()));
 			for (int i = 0; i < loopLen; i++) {
-				readObject = ois.readObject();
-				msgList.add(readObject.toString());
+				event = (LoggingEvent)ois.readObject();
+//				System.out.println("* LoggerName:" + event.getLogger().getName());
+//				System.out.println("* Context Name: " + event.getLogger().getLoggerContext().getName());
+				loggingEventList.add(event);
 			}
 			ois.close();
 			serverSocket.close();
