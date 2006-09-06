@@ -20,8 +20,6 @@ public interface LoggerView {
 
 	public String getName();
 
-	public Level getLevel();
-
 	public LoggerContextView getLoggerContext();
 
 	public LoggerSer getLoggerSer();
