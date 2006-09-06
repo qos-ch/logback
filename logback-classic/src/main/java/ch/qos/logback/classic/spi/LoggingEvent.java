@@ -18,6 +18,7 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 
@@ -37,7 +38,7 @@ import ch.qos.logback.classic.Level;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LoggingEvent2 implements Serializable {
+public class LoggingEvent implements Serializable {
 
 	/**
 	 * 
@@ -75,13 +76,15 @@ public class LoggingEvent2 implements Serializable {
 	private transient Level level;
 
 	private String message;
+	private String formattedMessage;
+
 	private Object[] argumentArray;
 
 	private transient Logger logger;
 
-	transient private ThrowableInformation throwableInfo;
+  private transient ThrowableInformation throwableInfo;
 
-	transient private CallerData[] callerDataArray;
+	private transient CallerData[] callerDataArray;
 
 	private Marker marker;
 
@@ -91,11 +94,11 @@ public class LoggingEvent2 implements Serializable {
 	 */
 	private long timeStamp;
 
-	public LoggingEvent2() {
+	public LoggingEvent() {
 	}
 
-	public LoggingEvent2(String fqcn, Logger logger, Level level, String message,
-			Throwable throwable) {
+	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
+			Throwable throwable, Object[] argArray) {
 		this.fqnOfLoggerClass = fqcn;
 		this.logger = logger;
 		this.level = level;
@@ -103,6 +106,12 @@ public class LoggingEvent2 implements Serializable {
 
 		if (throwable != null) {
 			this.throwableInfo = new ThrowableInformation(throwable);
+		}
+
+		if (argArray != null) {
+			formattedMessage = MessageFormatter.arrayFormat(message, argArray);
+		} else {
+			formattedMessage = message;
 		}
 		timeStamp = System.currentTimeMillis();
 	}
@@ -250,20 +259,24 @@ public class LoggingEvent2 implements Serializable {
 		}
 		this.marker = marker;
 	}
-	
+
+	public String getFormattedMessage() {
+		return formattedMessage;
+	}
+
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
 		out.writeObject(logger.getName());
 		out.writeInt(level.levelInt);
 	}
 
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream in) throws IOException,
+			ClassNotFoundException {
 		in.defaultReadObject();
-		String loggerName = (String)in.readObject();
+		String loggerName = (String) in.readObject();
 		logger = LoggerFactory.getLogger(loggerName);
 		int levelInt = in.readInt();
 		level = Level.toLevel(levelInt);
 	}
-	
-	
+
 }
