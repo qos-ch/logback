@@ -39,12 +39,13 @@ public class MockSocketServer extends Thread {
 
 	@Override
 	public void run() {
-		ObjectInputStream ois;
+		ObjectInputStream ois = null;
+		ServerSocket serverSocket = null;
 		//Object readObject;
 		LoggingEvent event;
 		try {
 			//System.out.println("Listening on port " + PORT);
-			ServerSocket serverSocket = new ServerSocket(PORT);
+			serverSocket = new ServerSocket(PORT);
 			//System.out.println("Waiting to accept a new client.");
 			Socket socket = serverSocket.accept();
 			//System.out.println("Connected to client at " + socket.getInetAddress());
@@ -56,11 +57,17 @@ public class MockSocketServer extends Thread {
 //				System.out.println("* Context Name: " + event.getLogger().getLoggerContext().getName());
 				loggingEventList.add(event);
 			}
-			ois.close();
-			serverSocket.close();
 		} catch (Exception se) {
 			se.printStackTrace();
-		}
+		} finally {
+		    
+		    if(ois != null) {
+			try{ois.close(); } catch(Exception e) {}
+		    }
+		    if(serverSocket != null) {
+  		      try{ serverSocket.close(); } catch(Exception e) {}
+                    }
+                }
 		finished = true;
 	}
 }

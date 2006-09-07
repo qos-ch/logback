@@ -39,9 +39,11 @@ public class MockSyslogServer extends Thread {
       socket = new DatagramSocket(PORT);
 
       for (int i = 0; i < loopLen; i++) {
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[2048];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
+	System.out.println("Waiting for message");
         socket.receive(packet);
+	System.out.println("Got message");
         String msg = new String(buf, 0, packet.getLength());
         msgList.add(msg);
       }
@@ -49,7 +51,7 @@ public class MockSyslogServer extends Thread {
       se.printStackTrace();
     } finally {
       if(socket != null) {
-        socket.close();
+	  try {socket.close();} catch(Exception e) {}
       }
     }
     finished = true;

@@ -52,7 +52,7 @@ public class SyslogAppenderTest extends TestCase {
     
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
-    mockServer.join(2000);
+    mockServer.join(8000);
     assertTrue(mockServer.finished);
     assertEquals(1, mockServer.msgList.size());
     String msg = mockServer.msgList.get(0);
@@ -90,7 +90,7 @@ public class SyslogAppenderTest extends TestCase {
     
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
-    mockServer.join(2000);
+    mockServer.join(8000);
     assertTrue(mockServer.finished);
     assertEquals(1, mockServer.msgList.size());
     String msg = mockServer.msgList.get(0);
