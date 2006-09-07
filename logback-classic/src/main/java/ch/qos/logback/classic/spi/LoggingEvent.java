@@ -15,12 +15,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.impl.MessageFormatter;
 
+
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerView;
+import ch.qos.logback.classic.LoggerRemoteView;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -80,12 +81,11 @@ public class LoggingEvent implements Serializable {
 
 	private Object[] argumentArray;
 
-	private transient LoggerView logger;
+	private ThrowableInformation throwableInfo;
 
-	private transient ThrowableInformation throwableInfo;
-
-	private transient CallerData[] callerDataArray;
-
+	private CallerData[] callerDataArray;
+	private LoggerRemoteView loggerRemoteView;
+	
 	private Marker marker;
 
 	/**
@@ -100,7 +100,7 @@ public class LoggingEvent implements Serializable {
 	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
 			Throwable throwable, Object[] argArray) {
 		this.fqnOfLoggerClass = fqcn;
-		this.logger = (ch.qos.logback.classic.Logger)logger;
+		this.loggerRemoteView = logger.getLoggerRemoteView();
 		this.level = level;
 		this.message = message;
 
@@ -179,12 +179,12 @@ public class LoggingEvent implements Serializable {
 		this.getThreadName();
 	}
 
-	public LoggerView getLogger() {
-		return logger;
+	public LoggerRemoteView getLoggerRemoteView() {
+		return loggerRemoteView;
 	}
 
-	public void setLogger(LoggerView logger) {
-		this.logger = logger;
+	public void setLoggerRemoteView(LoggerRemoteView loggerRemoteView) {
+		this.loggerRemoteView = loggerRemoteView;
 	}
 
 	public String getMessage() {
@@ -266,7 +266,8 @@ public class LoggingEvent implements Serializable {
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
-		out.writeObject(logger.getLoggerSer());
+		//out.writeObject(loggerView);
+		
 		out.writeInt(level.levelInt);
 	}
 
@@ -275,7 +276,7 @@ public class LoggingEvent implements Serializable {
 		in.defaultReadObject();
 		//String loggerName = (String) in.readObject();
 		//logger = LoggerFactory.getLogger(loggerName);
-		logger = (LoggerView)in.readObject();
+		//loggerView = (LoggerView)in.readObject();
 		int levelInt = in.readInt();
 		level = Level.toLevel(levelInt);
 	}

@@ -15,9 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
@@ -30,7 +28,8 @@ import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
-  Logger logger = LoggerFactory.getLogger(ConverterTest.class);
+	LoggerContext lc = new LoggerContext();
+  Logger logger = lc.getLogger(ConverterTest.class);
   LoggingEvent le;
   List optionList = new ArrayList();
 

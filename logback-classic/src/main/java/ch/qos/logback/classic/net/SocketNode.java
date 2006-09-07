@@ -72,7 +72,7 @@ public class SocketNode implements Runnable {
 				event = (LoggingEvent) ois.readObject();
 				// get a logger from the hierarchy. The name of the logger is taken to
 				// be the name contained in the event.
-				remoteLogger = context.getLogger(event.getLogger().getName());
+				remoteLogger = context.getLogger(event.getLoggerRemoteView().getName());
 				// apply the logger-level filter
 				if (remoteLogger.isEnabledFor(event.getLevel())) {
 					// finally log the event as if was generated locally

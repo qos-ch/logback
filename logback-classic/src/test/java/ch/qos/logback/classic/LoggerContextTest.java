@@ -18,6 +18,7 @@ public class LoggerContextTest extends TestCase {
   protected void setUp() throws Exception {
    Logger.instanceCount = 0;
    lc = new LoggerContext();
+   lc.setName("x");
   }
 
   public void testRootGetLogger()  {

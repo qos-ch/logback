@@ -12,7 +12,7 @@ public class LoggerStatusPrinter {
 	
 	public static void printStatusInDefaultContext() {
 		Logger logger = (Logger)LoggerFactory.getLogger(LoggerStatusPrinter.class);
-		LoggerContext lc = (LoggerContext)logger.getLoggerContext();
+		LoggerContext lc = logger.getLoggerContext();
 		StatusManager sm = lc.getStatusManager();
     StatusPrinter.print(sm);
 	}

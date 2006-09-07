@@ -29,7 +29,7 @@ import ch.qos.logback.core.boolex.EventEvaluator;
 public class CallerDataConverter extends ClassicConverter {
 
   int depth = 5;
-  List<EventEvaluator> evaluatorList;
+  List<EventEvaluator> evaluatorList = null;
 
   public void start() {
     String depthStr = getFirstOption();

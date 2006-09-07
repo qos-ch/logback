@@ -12,7 +12,7 @@ public class LoggingEventBuilder implements Builder {
 	public Object build(int i) {
 		LoggingEvent le = new LoggingEvent();
 		le.setLevel(Level.DEBUG);
-		le.setLogger(logger);
+		le.setLoggerRemoteView(logger.getLoggerRemoteView());
 		//le.setLogger(new LoggerContext().getLogger(LoggerContext.ROOT_NAME));
 		le.setMessage(MSG_PREFIX + i);
 		le.setThreadName("threadName");

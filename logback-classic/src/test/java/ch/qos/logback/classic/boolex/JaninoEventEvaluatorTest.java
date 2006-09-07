@@ -2,9 +2,9 @@ package ch.qos.logback.classic.boolex;
 
 import junit.framework.TestCase;
 
-import org.slf4j.Logger;
 import org.slf4j.MarkerFactory;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;

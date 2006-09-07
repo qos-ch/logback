@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 /**
  * @author ceki
  */
-public class LoggerContext extends ContextBase implements ILoggerFactory, LoggerContextView {
+public class LoggerContext extends ContextBase implements ILoggerFactory {
 
 	public static final String ROOT_NAME = "root";
 	
@@ -36,19 +36,40 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, Logger
   // cost of a very slightly higher memory footprint.
   private Hashtable<String, Logger> loggerCache;
 
-  
+	LoggerContextRemoteView loggerContextRemoteView;
+	
   public LoggerContext() {
     super();
-    this.root = new Logger("root", null, this);
-    this.root.setLevel(Level.DEBUG);
     this.loggerCache = new Hashtable<String, Logger>();
-    size = 1;
+    this.loggerContextRemoteView = new LoggerContextRemoteView(getName(), getPropertyMap());
+    this.root = new Logger(ROOT_NAME, null, this);
+    this.root.setLevel(Level.DEBUG);
+    loggerCache.put(ROOT_NAME, root);
     putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
+    size = 1;
+  }
+  
+  /**
+   * A new instance of LoggerContextRemoteView needs to be created each time
+   * the name or propertyMap (including keys or values) changes.
+   */
+  private void syncRemoteView() {
+  	loggerContextRemoteView = new LoggerContextRemoteView(getName(), getPropertyMap());
+  	for(Logger logger : loggerCache.values()) {
+  		logger.buildRemoteView();
+  	}
+  }
+  
+  @Override
+  public void setName(String name) {
+	  	super.setName(name);
+	    syncRemoteView();
   }
 
   public final Logger getLogger(final Class clazz) {
     return getLogger(clazz.getName());
   }
+  
   public final Logger getLogger(final String name) {
 
     //if we are asking for the root logger, then let us return it without wasting time
@@ -59,12 +80,16 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, Logger
     int i = 0;
     Logger logger = root;
     
+    // check if the desired logger exists, if it does, return it
+    // without further ado.
     Logger childLogger = (Logger) loggerCache.get(name);
     // if we have the child, then let us return it without wasting time
     if (childLogger != null) {
       return childLogger;
     }
 
+    // if the desired logger does not exist, them create all the loggers
+    // in between as well (if they don't already exist)
     String childName;
     while (true) {
       int h = name.indexOf('.', i);
@@ -115,10 +140,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, Logger
   	 }
   }
   
-  public LoggerContextSer getLoggerContextSer() {
-  	LoggerContextSer loggerContextSer = new LoggerContextSer();
-  	loggerContextSer.name = this.getName();
-  	loggerContextSer.propertyMap = this.getPropertyMap();
-  	return loggerContextSer;
+  public LoggerContextRemoteView getLoggerContextRemoteView() {
+  	return loggerContextRemoteView;
   }
 }

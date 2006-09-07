@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
@@ -44,7 +44,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     
     DEFAULT_PARAM_TYPE_LIST.add(LoggingEvent.class);
     DEFAULT_PARAM_TYPE_LIST.add(String.class);
-    DEFAULT_PARAM_TYPE_LIST.add(Logger.class);
+    DEFAULT_PARAM_TYPE_LIST.add(LoggerRemoteView.class);
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
     DEFAULT_PARAM_TYPE_LIST.add(long.class);
     DEFAULT_PARAM_TYPE_LIST.add(Marker.class);
@@ -89,7 +89,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     
     values[i++] = loggingEvent;
     values[i++] = loggingEvent.getMessage();    
-    values[i++] = loggingEvent.getLogger();
+    values[i++] = loggingEvent.getLoggerRemoteView();
     values[i++] = loggingEvent.getLevel().toInteger();
     values[i++] = new Long(loggingEvent.getTimeStamp());
     values[i++] = loggingEvent.getMarker();

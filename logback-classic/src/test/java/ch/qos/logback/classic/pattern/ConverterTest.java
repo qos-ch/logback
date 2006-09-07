@@ -14,11 +14,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.net.SyslogConstants;
@@ -28,7 +28,8 @@ import ch.qos.logback.core.pattern.FormatInfo;
 
 public class ConverterTest extends TestCase {
 
-  Logger logger = LoggerFactory.getLogger(ConverterTest.class);
+	LoggerContext lc = new LoggerContext();
+  Logger logger = lc.getLogger(ConverterTest.class);
   LoggingEvent le;
   List<String> optionList = new ArrayList<String>();
 
@@ -71,7 +72,7 @@ public class ConverterTest extends TestCase {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("72", buf.toString());
+      assertEquals("73", buf.toString());
     }
   }
 

@@ -5,14 +5,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import junit.framework.TestCase;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
-import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventExtBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventBuilder;
-import ch.qos.logback.classic.net.testObjectBuilders.MinimalExtBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
-import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class SerializationPerfsTest extends TestCase {
 

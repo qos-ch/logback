@@ -25,7 +25,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 
 
-public final class Logger implements org.slf4j.Logger, LoggerView, AppenderAttachable, Serializable {
+public final class Logger implements org.slf4j.Logger, AppenderAttachable, Serializable {
 
   /**
 	 * 
@@ -75,11 +75,15 @@ public final class Logger implements org.slf4j.Logger, LoggerView, AppenderAttac
   private boolean additive = true;
 
   final transient LoggerContext loggerContext;
-
+  // loggerRemoteView cannot be final because it may change as a consequence
+  // of changes in LoggerContext
+  LoggerRemoteView loggerRemoteView;
+  
   Logger(String name, Logger parent, LoggerContext loggerContext) {
     this.name = name;
     this.parent = parent;
     this.loggerContext = loggerContext;
+    buildRemoteView();
     instanceCount++;
   }
 
@@ -688,15 +692,16 @@ public final class Logger implements org.slf4j.Logger, LoggerView, AppenderAttac
    * Return the context for this logger.
    * @return
    */
-	public LoggerContextView getLoggerContext() {
+	public LoggerContext getLoggerContext() {
 		return loggerContext;
 	}
+
 	
-	public LoggerSer getLoggerSer() {
-		LoggerSer loggerSer = new LoggerSer();
-		loggerSer.level = level;
-		loggerSer.name = name;
-		loggerSer.loggerContext = loggerContext.getLoggerContextSer();
-		return loggerSer;
+	public LoggerRemoteView getLoggerRemoteView() {
+		return loggerRemoteView;
+	}
+	
+	void buildRemoteView() {
+	  this.loggerRemoteView = new LoggerRemoteView(name, loggerContext);
 	}
 }

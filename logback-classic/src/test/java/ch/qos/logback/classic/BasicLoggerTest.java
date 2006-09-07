@@ -59,7 +59,7 @@ public class BasicLoggerTest extends TestCase {
   
   public void testRootLogger() {
   	Logger logger = (Logger)LoggerFactory.getLogger(LoggerContext.ROOT_NAME);
-  	LoggerContext lc = (LoggerContext)logger.getLoggerContext();
+  	LoggerContext lc = logger.getLoggerContext();
 		
   	assertNotNull("Returned logger is null", logger);
   	assertEquals("Return logger isn't named root", logger.getName(), LoggerContext.ROOT_NAME);
