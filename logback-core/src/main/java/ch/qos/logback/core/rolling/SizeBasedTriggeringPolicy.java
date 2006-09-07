@@ -26,27 +26,59 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
    */
   public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   
-  long maxFileSize = DEFAULT_MAX_FILE_SIZE; 
+  String maxFileSize = Long.toString(DEFAULT_MAX_FILE_SIZE); 
+  long maxFileSizeAsLong;
 
   public SizeBasedTriggeringPolicy() {
   }
 
-  public SizeBasedTriggeringPolicy(final long maxFileSize) {
-      this.maxFileSize = maxFileSize;
+  public SizeBasedTriggeringPolicy(final String maxFileSize) {
+      setMaxFileSize(maxFileSize);
   }
-
 
   public boolean isTriggeringEvent(final File file, final Object event) {
     //System.out.println("Size"+file.length());
-    return (file.length() >= maxFileSize);
+    return (file.length() >= maxFileSizeAsLong);
   }
 
-  public long getMaxFileSize() {
+  public String getMaxFileSize() {
     return maxFileSize;
   }
 
-  public void setMaxFileSize(long l) {
-    maxFileSize = l;
+  public void setMaxFileSize(String maxFileSize) {
+    this.maxFileSize = maxFileSize;
+    this.maxFileSizeAsLong = toFileSize(maxFileSize);
   }
   
+  long toFileSize(String value) {
+    if(value == null)
+      return DEFAULT_MAX_FILE_SIZE;
+
+    String s = value.trim().toUpperCase();
+    long multiplier = 1;
+    int index;
+
+    if((index = s.indexOf("KB")) != -1) {
+      multiplier = 1024;
+      s = s.substring(0, index);
+    }
+    else if((index = s.indexOf("MB")) != -1) {
+      multiplier = 1024*1024;
+      s = s.substring(0, index);
+    }
+    else if((index = s.indexOf("GB")) != -1) {
+      multiplier = 1024*1024*1024;
+      s = s.substring(0, index);
+    }
+    if(s != null) {
+      try {
+        return Long.valueOf(s).longValue() * multiplier;
+      }
+      catch (NumberFormatException e) {
+        addError("[" + s + "] is not in proper int form.");
+        addError("[" + value + "] not in expected format.", e);
+      }
+    }
+    return DEFAULT_MAX_FILE_SIZE;
+  } 
 }

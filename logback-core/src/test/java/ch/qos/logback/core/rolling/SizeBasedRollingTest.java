@@ -21,6 +21,8 @@ import java.io.File;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.util.Compare;
@@ -29,9 +31,10 @@ import ch.qos.logback.core.util.Constants;
 
 /**
  * 
- * Do not forget to call activateOptions when configuring programatically.
+ * Do not forget to call start() when configuring programatically.
  * 
  * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
  * 
  */
 public class SizeBasedRollingTest extends TestCase {
@@ -42,14 +45,14 @@ public class SizeBasedRollingTest extends TestCase {
   
   public void setUp() {
 	  {
-		File target = new File(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.log");
-		target.mkdirs();
-		target.delete();
+			File target = new File(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.log");
+			target.mkdirs();
+			target.delete();
 	  }
 	  {
-		File target = new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
-		target.mkdirs();
-		target.delete();
+			File target = new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
+			target.mkdirs();
+			target.delete();
 	  }
   }
 
@@ -63,13 +66,18 @@ public class SizeBasedRollingTest extends TestCase {
   public void test1() throws Exception {
     // We purposefully use the \n as the line separator.
     // This makes the regression test system independent.
+  	Context context = new ContextBase();
     Layout layout = new DummyLayout();
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
+    rfa.setContext(new ContextBase());
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
+    fwrp.setContext(context);
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
-    sbtp.setMaxFileSize(100);
+    sbtp.setContext(context);
+    
+    sbtp.setMaxFileSize("100");
     sbtp.start();
     fwrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/sizeBased-test1.%i");
     try {
@@ -78,22 +86,28 @@ public class SizeBasedRollingTest extends TestCase {
     } catch (IllegalStateException e) {
       return;
     }
+    
+    //StatusPrinter.print(context.getStatusManager()); 
   }
 
   /**
    * Test basic rolling functionality.
    */
   public void test2() throws Exception {
-
+  	Context context = new ContextBase();
+  	
     DummyLayout layout = new DummyLayout();
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setName("ROLLING");
     rfa.setLayout(layout);
-
+    rfa.setContext(context);
+    
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
+    swrp.setContext(context);
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
+    sbtp.setContext(context);
 
-    sbtp.setMaxFileSize(100);
+    sbtp.setMaxFileSize("100");
     swrp.setMinIndex(0);
     swrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.log");
 
@@ -136,20 +150,26 @@ public class SizeBasedRollingTest extends TestCase {
       assertTrue(Compare.compare(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.1",
     		  Constants.TEST_DIR_PREFIX + "witness/rolling/sbr-test2.1"));
     }
+    
+    //StatusPrinter.print(context.getStatusManager());
   }
 
   /**
    * Same as testBasic but also with GZ compression.
    */
   public void test3() throws Exception {
+  	Context context = new ContextBase();
     DummyLayout layout = new DummyLayout();
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
-
+    rfa.setContext(context);
+    
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
+    fwrp.setContext(context);
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
-
-    sbtp.setMaxFileSize(100);
+    sbtp.setContext(context);
+    
+    sbtp.setMaxFileSize("100");
     fwrp.setMinIndex(0);
     fwrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
     fwrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/sbr-test3.%i.gz");
@@ -189,6 +209,7 @@ public class SizeBasedRollingTest extends TestCase {
     		  Constants.TEST_DIR_PREFIX + "witness/rolling/sbr-test3.1.gz"));
     }
 
+    //StatusPrinter.print(context.getStatusManager());
   }
 
   boolean isWindows() {

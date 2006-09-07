@@ -10,6 +10,8 @@
 
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being
@@ -18,7 +20,7 @@ package ch.qos.logback.core.rolling;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-abstract public class TriggeringPolicyBase implements TriggeringPolicy {
+abstract public class TriggeringPolicyBase extends ContextAwareBase implements TriggeringPolicy {
   
   private boolean start;
 
