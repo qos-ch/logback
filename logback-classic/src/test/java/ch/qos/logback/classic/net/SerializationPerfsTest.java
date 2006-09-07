@@ -14,8 +14,8 @@ public class SerializationPerfsTest extends TestCase {
 	ObjectOutputStream oos;
 
 	int loopNumber = 10000;
-	int resetFrequency = 500;
-	int pauseFrequency = 500;
+	int resetFrequency = 100;
+	int pauseFrequency = 10;
 	long pauseLengthInMillis = 20;
 
 	/**
@@ -40,46 +40,58 @@ public class SerializationPerfsTest extends TestCase {
 
 	/**
 	 * Last results:
-	 * Data sent mesured in bytes.
-	 * Avg time mesured in nanos.
+	 * Data sent mesured in kilobytes.
+	 * Avg time mesured in microsecs.
 	 * 
 	 * NOPOutputStream: 
 	 *   |                |  Runs | Avg time | Data sent |
-	 *   | MinimalObj Ext | 10000 |  6511    |           |
-	 *   | MinimalObj Ser | 10000 |  7883    |           |
-	 *   | LoggEvent Ext  | 10000 |  9641    |           |
-	 *   | LoggEvent Ser  | 10000 | 25729    |           |
+	 *   | MinimalObj Ext | 10000 |          |           |
+	 *   | MinimalObj Ser | 10000 |          |           |
+	 *   | LoggEvent Ext  | 10000 |          |           |
+	 *   | LoggEvent Ser  | 10000 |          |           |
 	 * 
-	 * External MockServer with 45 letters-long message: 
+	 * External MockServer with 45 letters-long message: on localhost
+	 * (always the same message)
 	 * 	 |                |  Runs | Avg time | Data sent |
-	 *   | MinimalObj Ext | 10000 |  70240   | 1171384   |
-	 *   | MinimalObj Ser | 10000 |  62754   | 1157584   |
-	 *   | LoggEvent Ext  | 10000 | 198910   | 1509984   |
-	 *   | LoggEvent Ser  | 10000 | 189970   | 1715984   |
-	 *	 pauseFrequency = 200 and pauseLengthInMillis = 50
+	 *   | MinimalObj Ext | 10000 |      -   |       -   |
+	 *   | MinimalObj Ser | 10000 |     74   |     248   |
+	 *   | LoggEvent Ext  | 10000 |      -   |       -   |
+	 *   | LoggEvent Ser  | 10000 |    156   |     835   |
+	 *	 pauseFrequency = 10 and pauseLengthInMillis = 20
 	 *
-	 * External MockServer with 2 letters-long message: 
+	 * External MockServer with 45 letters-long message: on localhost
+	 * (different message each time)
 	 * 	 |                |  Runs | Avg time | Data sent |
-	 *   | MinimalObj Ext | 10000 |  43234   |  311384   |
-	 *   | MinimalObj Ser | 10000 |  31603   |  297584   |
-	 *   | LoggEvent Ext  | 10000 | 106442   |  649984   |
-	 *   | LoggEvent Ser  | 10000 |  93467   |  855984   |
-	 *	 pauseFrequency = 200 and pauseLengthInMillis = 50
+	 *   | MinimalObj Ext | 10000 |          |           |
+	 *   | MinimalObj Ser | 10000 |     73   |    1139   |
+	 *   | LoggEvent Ext  | 10000 |          |           |
+	 *   | LoggEvent Ser  | 10000 |    162   |    1752   |
+	 *	 pauseFrequency = 10 and pauseLengthInMillis = 20
 	 *
-	 * External MockServer with 45 letters-long message:
-	 * This test was done by sending always the _same_ loggerEvent object.
+	 * External MockServer with 45 letters-long message: on PIXIE
+	 * (always the same message)
 	 * 	 |                |  Runs | Avg time | Data sent |
-	 *   | MinimalObj Ext | 10000 |  28739   |  123604   |
-	 *   | MinimalObj Ser | 10000 |  27431   |  129604   |
-	 *   | LoggEvent Ext  | 10000 |  30112   |  125604   |
-	 *   | LoggEvent Ser  | 10000 |  26059   |  153404   |
-	 *	 pauseFrequency = 500 and pauseLengthInMillis = 50
+	 *   | MinimalObj Ext | 10000 |      -   |       -   |
+	 *   | MinimalObj Ser | 10000 |     29   |     248   |
+	 *   | LoggEvent Ext  | 10000 |      -   |       -   |
+	 *   | LoggEvent Ser  | 10000 |     42   |     835   |
+	 *	 pauseFrequency = 10 and pauseLengthInMillis = 20
+	 *
+	 * External MockServer with 45 letters-long message: on PIXIE
+	 * (different message each time)
+	 * 	 |                |  Runs | Avg time | Data sent |
+	 *   | MinimalObj Ext | 10000 |          |           |
+	 *   | MinimalObj Ser | 10000 |     27   |    1139   |
+	 *   | LoggEvent Ext  | 10000 |          |           |
+	 *   | LoggEvent Ser  | 10000 |     44   |    1752   |
+	 *	 pauseFrequency = 10 and pauseLengthInMillis = 20
+	 *
 	 */
 
 	public void setUp() throws Exception {
 		super.setUp();
 		if (runWithExternalMockServer) {
-			oos = new ObjectOutputStream(new Socket("localhost",
+			oos = new ObjectOutputStream(new Socket("pixie",
 					ExternalMockSocketServer.PORT).getOutputStream());
 		} else {
 			oos = new ObjectOutputStream(new NOPOutputStream());
@@ -144,8 +156,9 @@ public class SerializationPerfsTest extends TestCase {
 				fail(ex.getMessage());
 			}
 		}
+		total /= 1000;
 		System.out.println(label + " : average time = " + total / loopNumber
-				+ " after " + loopNumber + " writes.");
+				+ " microsecs after " + loopNumber + " writes.");
 
 		// long time2 = System.nanoTime();
 		// System.out.println("********* -> Time needed to run the test method: " +
@@ -156,7 +169,7 @@ public class SerializationPerfsTest extends TestCase {
 //		Builder builder = new MinimalExtBuilder();
 //		runPerfTest(builder, "Minimal object externalization");
 //	}
-
+	
 	public void testWithMinimalSerialization() throws Exception {
 		Builder builder = new MinimalSerBuilder();
 		runPerfTest(builder, "Minimal object serialization");
@@ -166,7 +179,7 @@ public class SerializationPerfsTest extends TestCase {
 //		Builder builder = new LoggingEventExtBuilder();
 //		runPerfTest(builder, "LoggingEvent object externalization");
 //	}
-
+	
 	public void testWithSerialization() throws Exception {
 		Builder builder = new LoggingEventBuilder();
 		runPerfTest(builder, "LoggingEvent object serialization");

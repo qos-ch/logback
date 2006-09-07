@@ -18,6 +18,6 @@ class MinimalSer implements Serializable {
 	String message;
 
 	public MinimalSer(int i) {
-		message = Builder.MSG_PREFIX + i;
+		message = Builder.MSG_PREFIX;
 	}
 }

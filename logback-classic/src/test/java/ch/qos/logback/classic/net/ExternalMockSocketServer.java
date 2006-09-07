@@ -67,7 +67,7 @@ public class ExternalMockSocketServer {
 					sum += a + 1;
 					is.skip(a);
 				}
-			  System.out.println(sum);
+			  System.out.println(sum/1000 + " KB");
 			}
 			serverSocket.close();
 		} catch (Exception se) {

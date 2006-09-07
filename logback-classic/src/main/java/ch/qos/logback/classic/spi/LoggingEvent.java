@@ -21,7 +21,6 @@ import org.slf4j.impl.MessageFormatter;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerRemoteView;
 
 /**
  * The internal representation of logging events. When an affirmative decision

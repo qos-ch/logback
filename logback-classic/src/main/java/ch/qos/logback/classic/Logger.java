@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.slf4j.Marker;
 
+import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.filter.Filter;

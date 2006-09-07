@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerRemoteView;
+import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;

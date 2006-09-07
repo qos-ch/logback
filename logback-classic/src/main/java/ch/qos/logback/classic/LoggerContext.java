@@ -15,6 +15,7 @@ import java.util.Hashtable;
 
 import org.slf4j.ILoggerFactory;
 
+import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -41,7 +42,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
-    this.loggerContextRemoteView = new LoggerContextRemoteView(getName(), getPropertyMap());
+    this.loggerContextRemoteView = new LoggerContextRemoteView(this);
     this.root = new Logger(ROOT_NAME, null, this);
     this.root.setLevel(Level.DEBUG);
     loggerCache.put(ROOT_NAME, root);
@@ -54,7 +55,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
    * the name or propertyMap (including keys or values) changes.
    */
   private void syncRemoteView() {
-  	loggerContextRemoteView = new LoggerContextRemoteView(getName(), getPropertyMap());
+  	loggerContextRemoteView = new LoggerContextRemoteView(this);
   	for(Logger logger : loggerCache.values()) {
   		logger.buildRemoteView();
   	}

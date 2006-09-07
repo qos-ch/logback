@@ -5,8 +5,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.LoggerContextRemoteView;
-import ch.qos.logback.classic.LoggerRemoteView;
+import ch.qos.logback.classic.spi.LoggerContextRemoteView;
+import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class SocketAppenderTest extends TestCase {

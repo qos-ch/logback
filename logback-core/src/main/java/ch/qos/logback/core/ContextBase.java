@@ -21,7 +21,9 @@ public class ContextBase implements Context {
 
 	private String name;
   StatusManager sm = new BasicStatusManager();
-  // FIXME must be observable
+  // TODO propertyMap should be observable so that we can be notified
+  // when it changes so that a new instance of propertyMap can be
+  // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
   Map<String, String> converterMap = new HashMap<String, String>();
@@ -31,7 +33,6 @@ public class ContextBase implements Context {
     return sm;
   }
   
-  // FIXME
   public Map<String, String> getPropertyMap() {
     return propertyMap;
   }

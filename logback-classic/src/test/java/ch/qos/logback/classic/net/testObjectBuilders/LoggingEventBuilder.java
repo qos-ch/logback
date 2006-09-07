@@ -14,7 +14,7 @@ public class LoggingEventBuilder implements Builder {
 		le.setLevel(Level.DEBUG);
 		le.setLoggerRemoteView(logger.getLoggerRemoteView());
 		//le.setLogger(new LoggerContext().getLogger(LoggerContext.ROOT_NAME));
-		le.setMessage(MSG_PREFIX + i);
+		le.setMessage(MSG_PREFIX);
 		le.setThreadName("threadName");
 		return le;
 	}
