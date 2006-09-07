@@ -23,7 +23,9 @@ public class SocketAppenderTest extends TestCase {
 	public void testRecieveMessage() throws InterruptedException {
 		MockSocketServer mockServer = new MockSocketServer(1);
 		mockServer.start();
-		//mockServer.join(1000);
+		// give MockSyslogServer head start
+		Thread.sleep(100);
+
 		
 		// client configuration
 		LoggerContext lc = new LoggerContext();
