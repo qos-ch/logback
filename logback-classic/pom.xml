@@ -88,6 +88,7 @@
 					<excludes>
 						<exclude>**/AllTest.java</exclude>
 						<exclude>**/PackageTest.java</exclude>
+						<exclude>**/SerializationPerfsTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
