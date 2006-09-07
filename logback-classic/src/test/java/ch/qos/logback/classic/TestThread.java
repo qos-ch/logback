@@ -3,10 +3,12 @@ package ch.qos.logback.classic;
 class TestThread extends Thread {
   
   String val;
-  TestThread(String val) {
+  
+  public TestThread(String val) {
     super();
     this.val = val;
   }
+  
   String x0;
   String x1;
   String x2;
