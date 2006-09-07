@@ -30,8 +30,12 @@ public class SyslogAppenderTest extends TestCase {
   }
 
   public void testBasic() throws InterruptedException {
-    MockSyslogServer mockServer = new MockSyslogServer(1);
+      int port = MockSyslogServer.PORT+1;
+
+    MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
+    // give MockSyslogServer head start
+    Thread.sleep(100);
 
     LoggerContext lc = new LoggerContext();
     lc.setName("test");
@@ -39,7 +43,7 @@ public class SyslogAppenderTest extends TestCase {
     sa.setContext(lc);
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
-    sa.setPort(MockSyslogServer.PORT);
+    sa.setPort(port);
     sa.start();
     assertTrue(sa.isStarted());
     
@@ -68,8 +72,11 @@ public class SyslogAppenderTest extends TestCase {
  }
   
   public void testExceptoin() throws InterruptedException {
-    MockSyslogServer mockServer = new MockSyslogServer(1);
+      int port = MockSyslogServer.PORT+2;
+    MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
+    // give MockSyslogServer head start
+    Thread.sleep(100);
 
     LoggerContext lc = new LoggerContext();
     lc.setName("test");
@@ -77,7 +84,7 @@ public class SyslogAppenderTest extends TestCase {
     sa.setContext(lc);
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
-    sa.setPort(MockSyslogServer.PORT);
+    sa.setPort(port);
     sa.start();
     assertTrue(sa.isStarted());
     

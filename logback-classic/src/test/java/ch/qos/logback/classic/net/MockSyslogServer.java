@@ -20,23 +20,26 @@ import java.util.List;
  */
 public class MockSyslogServer extends Thread {
 
-  static final int PORT = 14805;
+  static final int PORT = 14500;
 
   final int loopLen;
-
+    final int port;
+  
   List<String> msgList = new ArrayList<String>();
   boolean finished = false;
   
-  MockSyslogServer(int loopLen) {
+  MockSyslogServer(int loopLen, int port) {
     super();
     this.loopLen = loopLen;
+    this.port = port;
   }
 
   @Override
   public void run() {
+      System.out.println("MockSyslogServer listening on port "+port);
     DatagramSocket socket = null;
     try {
-      socket = new DatagramSocket(PORT);
+      socket = new DatagramSocket(port);
 
       for (int i = 0; i < loopLen; i++) {
         byte[] buf = new byte[2048];
