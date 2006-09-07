@@ -1,6 +1,6 @@
 package ch.qos.logback.classic;
 
-class TestThread extends Thread {
+public class TestThread extends Thread {
   
   String val;
   
