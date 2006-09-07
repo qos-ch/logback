@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<document>
+
+  <body>
+
+  <faqs title="Logback error messages and their meanings">
+      
+  <part id="Generalities">
+    <title>Generalities</title>
+
+    <faq id="tbr_fnp_not_set">
+
+      <question>The <b>FileNamePattern</b> option must be set before
+      using <code>TimeBasedRollingPolicy</code> or
+      <code>FixedWindowRollingPolicy</code>.
+      </question>
+      
+      <answer>
+        <p>The <b>FileNamePattern</b> option for both
+        <code>TimeBasedRollingPolicy</code> and
+        <code>FixedWindowRollingPolicy</code> is mandatory.
+        </p>
+      </answer>
+
+    </faq>
+    </part>
+    </faqs>
+  </body>
+</document>
