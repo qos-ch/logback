@@ -6,10 +6,10 @@ public class MDCTest extends TestCase {
 
 
   public void test() throws InterruptedException {
-    TestThread threadA = new TestThread("a");
+    MDCTestThread threadA = new MDCTestThread("a");
     threadA.start();
     
-    TestThread threadB = new TestThread("b");
+    MDCTestThread threadB = new MDCTestThread("b");
     threadB.start();
     
     threadA.join();
