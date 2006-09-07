@@ -20,6 +20,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(PatternLayoutTest.class);
     suite.addTestSuite(BasicLoggerTest.class);
     suite.addTestSuite(MessageFormattingTest.class);
+    suite.addTestSuite(MDCTest.class);
     return suite;
   }
 }
