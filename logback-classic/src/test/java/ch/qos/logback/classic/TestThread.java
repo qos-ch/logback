@@ -4,6 +4,7 @@ class TestThread extends Thread {
   
   String val;
   TestThread(String val) {
+    super();
     this.val = val;
   }
   String x0;
