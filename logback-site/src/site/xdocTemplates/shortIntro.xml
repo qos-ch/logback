@@ -983,7 +983,11 @@ logger.debug("The new entry is {}.", entry);</div>
 			XML format.
 		</p>
 		<p>
-			Let us give a taste of how this is done with the help of an 
+			Log4j users can convert their <code>log4j.properties</code> files to logback xml configration files using
+			our <a href="http://logback.qos.ch/PropertiesTranslator/">PropertiesTranslator</a> webapp.
+		</p>
+		<p>
+			Let us give a taste of how logback configuration is done with the help of an 
 			imaginary application MyApp that uses logback. 
 		</p>
 		<em>Example 1.4: Basic configuration (examples/chapter1/MyApp.java)</em>
