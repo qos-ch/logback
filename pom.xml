@@ -23,6 +23,7 @@
 		<module>logback-classic</module>
 		<module>logback-access</module>
 		<module>logback-site</module>
+		<module>logback-skin</module>
 	</modules>
 
 	<dependencies>

@@ -2,21 +2,28 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback</artifactId>
+		<version>0.3-SNAPSHOT</version>
+	</parent>
+	
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
-	<artifactId>lb-skin</artifactId>
+	<artifactId>logback-skin</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
-	<name>Logback Website Skin</name>
+	<version>${parent.version}</version>
+	<name>Logback Skin</name>
 
 	<url>http://logback.qos.ch</url>
-	
+
 	<organization>
 		<name>QOS.ch</name>
 		<url>http://www.qos.ch</url>
 	</organization>
+	<inceptionYear>2005</inceptionYear>
 
 
 	<build>		
