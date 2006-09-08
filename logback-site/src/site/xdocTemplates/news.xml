@@ -13,15 +13,19 @@
 		
 		<h3>September 8th, 2006 - 0.3 version available</h3>
 		<p>
-			A 0.3 version of all three modules of logback
-			is now available.
+			Version 0.3 for all three logback modules is now available.
 		</p>
 		<p>
 			This release offers several new Appenders, support for Mapped Diagnostic Context, 
-			improved tests, updated documentation and bug fixes.<br />
-			
+			improved tests and documentation<br />
+		</p>
+		<p>	
+			In response to a bug report by Rickard Nilsson on the logback mailing list, 
+			a bug affecting parametrized logging was fixed.
+		</p>
+		<p>	
 			We also released a <a href="http://logback.qos.ch/translator/">PropertiesTranslator</a> 
-			webapp that converts log4j.properties files to logback xml configuration files.<br />
+			webapp that converts <em>log4j.properties</em> files to joran configuration files (in XML format).<br />
 		</p>
 		<p>
 			An archive containing source code, binaries and docs is available 
@@ -32,11 +36,10 @@
 		
 		<h3>August 23th, 2006 - 0.2.5 version available</h3>
 		<p>
-			A 0.2.5 version of all three modules of logback
-			is now available.
+			Version 0.2.5 for all three logback modules is now available.
 		</p>
 		<p>
-			This release offers a better documentation. The introduction to logback classic
+			This release offers a better documentation. The introduction document to logback classic
 			was corrected and improved.
 			An archive containing source code, binaries and docs is available 
 			at the <a href="download.html">download page</a>.
@@ -47,11 +50,10 @@
 		
 		<h3>August 15th, 2006 - 0.2 version available</h3>
 		<p>
-			A 0.2 version of all three modules of logback
-			is now available.
+			Version 0.2 for all three logback modules is now available.
 		</p>
 		<p>
-			It offers better tests, a few more functionalities, and an improved documentation.
+			It offers better tests, a few more functionalities, and enhanced documentation.
 			We also improved the site design to make it simpler and more efficient.
 		</p>
 
@@ -59,8 +61,7 @@
 		
 		<h3>July 26th, 2006 - 0.1 version available</h3>
 		<p>
-			A first 0.1 version of all three modules of logback
-			is now available.
+			A first version 0.1 for all three logback modules is now available.
 		</p>
 		<p>
 			The archives containing source code and binaries of all
