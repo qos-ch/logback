@@ -20,6 +20,7 @@ import ch.qos.logback.classic.pattern.LevelConverter;
 import ch.qos.logback.classic.pattern.LineOfCallerConverter;
 import ch.qos.logback.classic.pattern.LineSeparatorConverter;
 import ch.qos.logback.classic.pattern.LoggerConverter;
+import ch.qos.logback.classic.pattern.MDCConverter;
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
@@ -73,6 +74,8 @@ public class PatternLayout extends PatternLayoutBase implements ClassicLayout {
 
     defaultConverterMap.put("F", FileOfCallerConverter.class.getName());
     defaultConverterMap.put("file", FileOfCallerConverter.class.getName());
+    
+    defaultConverterMap.put("X", MDCConverter.class.getName());
 
     defaultConverterMap
         .put("ex", ThrowableInformationConverter.class.getName());
