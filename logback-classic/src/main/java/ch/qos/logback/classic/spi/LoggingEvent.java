@@ -88,7 +88,7 @@ public class LoggingEvent implements Serializable {
 
 	private Marker marker;
 	
-	private Map<String, String> MDCPropertyMap;
+	private Map<String, String> mdcPropertyMap;
 
 	/**
 	 * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -116,6 +116,8 @@ public class LoggingEvent implements Serializable {
 			formattedMessage = message;
 		}
 		timeStamp = System.currentTimeMillis();
+
+		mdcPropertyMap = MDC.getPropertyMap();
 	}
 
 	public void setArgumentArray(Object[] argArray) {
@@ -267,10 +269,7 @@ public class LoggingEvent implements Serializable {
 	}
 	
 	public Map<String, String> getMDCPropertyMap() {
-		//no lazy init since the MDC might
-		//change its map instance.
-		this.MDCPropertyMap = MDC.getPropertyMap();
-		return MDCPropertyMap;
+		return mdcPropertyMap;
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
