@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
 
 import org.slf4j.Marker;
 import org.slf4j.impl.MessageFormatter;
 
-
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.MDC;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -84,8 +85,10 @@ public class LoggingEvent implements Serializable {
 
 	private CallerData[] callerDataArray;
 	private LoggerRemoteView loggerRemoteView;
-	
+
 	private Marker marker;
+	
+	private Map<String, String> MDCPropertyMap;
 
 	/**
 	 * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -262,20 +265,22 @@ public class LoggingEvent implements Serializable {
 	public String getFormattedMessage() {
 		return formattedMessage;
 	}
+	
+	public Map<String, String> getMDCPropertyMap() {
+		//no lazy init since the MDC might
+		//change its map instance.
+		this.MDCPropertyMap = MDC.getPropertyMap();
+		return MDCPropertyMap;
+	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.defaultWriteObject();
-		//out.writeObject(loggerView);
-		
 		out.writeInt(level.levelInt);
 	}
 
 	private void readObject(ObjectInputStream in) throws IOException,
 			ClassNotFoundException {
 		in.defaultReadObject();
-		//String loggerName = (String) in.readObject();
-		//logger = LoggerFactory.getLogger(loggerName);
-		//loggerView = (LoggerView)in.readObject();
 		int levelInt = in.readInt();
 		level = Level.toLevel(levelInt);
 	}

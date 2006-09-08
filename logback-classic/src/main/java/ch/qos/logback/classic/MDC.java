@@ -30,16 +30,23 @@ public class MDC {
    * <p>
    * If the current thread does not have a context map it is created as a side
    * effect of this call.
+   * 
+   * <p>
+   * Each time a value is added, a new instance of the map is created. This is
+   * to be certain that the serialization process will operate on the updated map
+   * and not send a reference to the old map, thus not allowing the remote logback
+   * component to see the latest changes.
    */
   public static void put(String key, String val) {
-    HashMap<String, String> hashMap = threadLocal.get();
+    HashMap<String, String> oldMap = threadLocal.get();
 
-    if (hashMap == null) {
-      hashMap = new HashMap<String, String>();
-      threadLocal.set(hashMap);
+    HashMap<String, String> newMap = new HashMap<String, String>();
+    if (oldMap != null) {
+    	newMap.putAll(oldMap);
     }
-
-    hashMap.put(key, val);
+    threadLocal.set(newMap);
+    
+    newMap.put(key, val);
   }
 
   /**
@@ -60,13 +67,22 @@ public class MDC {
 
   /**
    * Remove the the context identified by the <code>key</code> parameter.
+   * 
+   * <p>
+   * Each time a value is removed, a new instance of the map is created. This is
+   * to be certain that the serialization process will operate on the updated map
+   * and not send a reference to the old map, thus not allowing the remote logback
+   * component to see the latest changes.
    */
   public static void remove(String key) {
-    HashMap<String, String> hashMap = threadLocal.get();
+    HashMap<String, String> oldMap = threadLocal.get();
 
-    if (hashMap != null) {
-      hashMap.remove(key);
+    HashMap<String, String> newMap = new HashMap<String, String>();
+    if (oldMap != null) {
+    	newMap.putAll(oldMap);
     }
+    
+    newMap.remove(key);
   }
 
   /**
@@ -85,7 +101,7 @@ public class MDC {
    * Get the current thread's MDC as a map. This method is intended to be used
    * internally.
    */
-  public static Map<String, String> getContext() {
+  public static Map<String, String> getPropertyMap() {
     return threadLocal.get();
   }
 
