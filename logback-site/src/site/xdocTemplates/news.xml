@@ -18,7 +18,8 @@
 		</p>
 		<p>
 			This release offers several new Appenders, support for Mapped Diagnostic Context, 
-			improved tests and updated documentation.<br />
+			improved tests, updated documentation and bug fixes.<br />
+			
 			We also released a <a href="http://logback.qos.ch/translator/">PropertiesTranslator</a> 
 			webapp that converts log4j.properties files to logback xml configuration files.<br />
 		</p>
