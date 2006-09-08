@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the reliable, generic, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -27,21 +27,20 @@ import ch.qos.logback.core.FileAppender;
  * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
  * 
  * <p><code>RollingFileAppender</code> can be configured programattically or
- * using {@link org.apache.log4j.joran.JoranConfigurator}. Here is a sample
+ * using {@link ch.qos.logback.classic.joran.JoranConfigurator}. Here is a sample
  * configration file:
 
 <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
-&lt;!DOCTYPE log4j:configuration>
 
-&lt;log4j:configuration debug="true">
+&lt;configuration debug="true">
 
-  &lt;appender name="ROLL" class="org.apache.log4j.rolling.RollingFileAppender">
-    <b>&lt;rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+  &lt;appender name="ROLL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;param name="FileNamePattern" value="/wombat/foo.%d{yyyy-MM}.gz"/>
     &lt;/rollingPolicy></b>
 
-    &lt;layout class="org.apache.log4j.PatternLayout">
-      &lt;param name="ConversionPattern" value="%c{1} - %m%n"/>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;param name="Pattern" value="%c{1} - %m%n"/>
     &lt;/layout>     
   &lt;/appender>
 
@@ -49,7 +48,7 @@ import ch.qos.logback.core.FileAppender;
     &lt;appender-ref ref="ROLL"/>
   &lt;/root>
  
-&lt;/log4j:configuration>
+&lt;/configuration>
 </pre>
 
  *<p>This configuration file specifies a monthly rollover schedule including

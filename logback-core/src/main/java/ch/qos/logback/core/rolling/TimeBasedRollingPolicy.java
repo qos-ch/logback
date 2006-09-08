@@ -117,6 +117,32 @@ import ch.qos.logback.core.rolling.helper.RollingCalendar;
  *   </tr>
  * </table>
  * <p>
+ * <h2>Configuration example</h2>
+ * <p>Here is a complete logback configuration xml file that uses TimeBasedTriggeringPolicy.
+ * <p>
+ * <pre>
+ * &lt;configuration&gt;
+ *  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+ *    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
+ *      &lt;param name="FileNamePattern" value="foo_%d{yyyy-MM}.log" /&gt;
+ *      &lt;param name="ActiveFileName" value="foo.log" /&gt;
+ *    &lt;/rollingPolicy&gt;</b>
+ *    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+ *      &lt;param name="Pattern" value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
+ *    &lt;/layout&gt;
+ *  &lt;/appender&gt;
+ * 
+ *  &lt;root&gt;
+ *    &lt;level value="debug" /&gt;
+ *    &lt;appender-ref ref="FILE" /&gt;
+ *  &lt;/root&gt;
+ * &lt;/configuration&gt;
+ * </pre>
+ * <p>
+ * This configuration will produce output to a file called <code>foo.log</code>. For example, at the end of the month 
+ * of September 2006, the file will be renamed to <code>foo_2006-09.log</code> and a new <code>foo.log</code> file 
+ * will be created and used for actual logging.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class TimeBasedRollingPolicy extends RollingPolicyBase implements TriggeringPolicy {
