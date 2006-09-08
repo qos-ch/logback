@@ -151,7 +151,7 @@ p {
 	border: 1px solid #999;
 	/*background-color: #eee;*/ /*background-color: rgb(144,223,144);*/
 	background-color: #ddd;
-	width: 15em; /* was: 170/190 */
+	width: 16em; /* was: 170/190 */
 	float: left;
 	overflow: auto;
 }
@@ -167,7 +167,7 @@ p {
 #bodyColumn {
 	max-width: 60em;
 	margin-right: 1.5em;
-	margin-left: 217px; /*was: 197*/
+	margin-left: 223px; /*was: 197*/
 }
 
 #legend {

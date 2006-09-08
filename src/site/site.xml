@@ -3,8 +3,8 @@
 
   <skin>
     <groupId>ch.qos.logback</groupId>
-    <artifactId>lb-skin</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <artifactId>logback-skin</artifactId>
+    <version>0.3-SNAPSHOT</version>
   </skin>
   <!--
   <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>

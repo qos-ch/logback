@@ -3,8 +3,8 @@
 
   <skin>
     <groupId>ch.qos.logback</groupId>
-    <artifactId>lb-skin</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <artifactId>logback-skin</artifactId>
+    <version>0.3-SNAPSHOT</version>
   </skin>
   
   <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>
@@ -31,7 +31,8 @@
       <item name="Mailing Lists" href="mailinglist.html" />
       <item name="Source Repository" href="repos.html" />
       <item name="Bug Report" href="bugreport.html"/>
-      <item name="License" href="license.html" />      
+      <item name="License" href="license.html" />     
+      <item name="Log4j Properties Translator" href="http://logback.qos.ch/PropertiesTranslator/" /> 
     </menu>
   </body>
 </project>
