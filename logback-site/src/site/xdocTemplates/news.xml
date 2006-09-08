@@ -10,7 +10,25 @@
 		<h2>Logback News</h2>
 
 		<p>Here are the last news about the project.</p>
+		
+		<h3>September 8th, 2006 - 0.3 version available</h3>
+		<p>
+			A 0.3 version of all three modules of logback
+			is now available.
+		</p>
+		<p>
+			This release offers several new Appenders, support for Mapped Diagnostic Context, 
+			improved tests and updated documentation.<br />
+			We also released a <a href="http://logback.qos.ch/translator/">PropertiesTranslator</a> 
+			webapp that converts log4j.properties files to logback xml configuration files.<br />
+		</p>
+		<p>
+			An archive containing source code, binaries and docs is available 
+			at the <a href="download.html">download page</a>.
+		</p>
 
+		<hr width="50%" align="center" />
+		
 		<h3>August 23th, 2006 - 0.2.5 version available</h3>
 		<p>
 			A 0.2.5 version of all three modules of logback
