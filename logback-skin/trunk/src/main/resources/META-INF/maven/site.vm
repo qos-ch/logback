@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+#macro ( banner $banner $id )
+  #if ( $banner )
+    #if( $banner.href )
+      <a href="$banner.href" id="$id">
+    #else
+        <span id="$id">
+    #end
+
+    #if( $banner.src )
+        #set ( $src = $banner.src )
+        #if ( ! ( $src.toLowerCase().startsWith("http") || $src.toLowerCase().startsWith("https") ) )
+            #set ( $src = $PathTool.calculateLink( $src, $relativePath ) )
+            #set ( $src = $src.replaceAll( "\\", "/" ) )
+        #end
+        #if ( $banner.alt )
+            #set ( $alt = $banner.alt )
+        #else
+            #set ( $alt = "" )
+        #end
+        <img src="$src" alt="$alt" />
+    #else
+        $banner.name
+    #end
+
+    #if( $banner.href )
+        </a>
+    #else
+        </span>
+    #end
+  #end
+#end
+
+#macro ( links $links )
+  #set ( $counter = 0 )
+  #foreach( $item in $links )
+    #set ( $counter = $counter + 1 )
+    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+    #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+    <a href="$currentItemHref">$item.name</a>
+    #if ( $links.size() > $counter )
+      |
+    #end
+  #end
+#end
+
+#macro ( breadcrumbs $breadcrumbs )
+  #set ( $counter = 0 )
+  #foreach( $item in $breadcrumbs )
+    #set ( $counter = $counter + 1 )
+    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+    #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+
+    #if ( $currentItemHref == $alignedFileName || $currentItemHref == "" )
+      $item.name
+    #else
+      <a href="$currentItemHref">$item.name</a>
+    #end
+    #if ( $breadcrumbs.size() > $counter )
+      &gt;
+    #end
+  #end
+#end
+
+#macro ( displayTree $display $item )
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #foreach( $subitem in $item.items )
+      #set ( $subitemHref = $PathTool.calculateLink( $subitem.href, $relativePath ) )
+      #set ( $subitemHref = $subitemHref.replaceAll( "\\", "/" ) )
+
+      #if ( $alignedFileName == $subitemHref )
+        #set ( $display = true )
+      #end
+
+      #displayTree( $display $subitem )
+    #end
+  #end
+#end
+
+#macro ( menuItem $item )
+  #set ( $collapse = "none" )
+  #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+  #set ( $currentItemHref = $currentItemHref.replaceAll( "\\", "/" ) )
+
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #if ( $item.collapse == false )
+      #set ( $collapse = "expanded" )
+    #else
+      ## By default collapsed
+      #set ( $collapse = "collapsed" )
+    #end
+
+    #set ( $display = false )
+    #displayTree( $display $item )
+
+    #if ( $alignedFileName == $currentItemHref || $display )
+      #set ( $collapse = "expanded" )
+    #end
+  #end
+  <li class="$collapse">
+    #if ( $item.img )
+      #if ( ! ( $item.img.toLowerCase().startsWith("http") || $item.img.toLowerCase().startsWith("https") ) )
+        #set ( $src = $PathTool.calculateLink( $item.img, $relativePath ) )
+        #set ( $src = $item.img.replaceAll( "\\", "/" ) )
+        <img src="$src"/>
+      #else
+        <img src="$item.img" align="absbottom" style="border-width: 0"/>
+      #end
+    #end
+    #if ( $alignedFileName == $currentItemHref )
+      <strong>$item.name</strong>
+    #else
+      <a href="$currentItemHref">$item.name</a>
+    #end
+  #if ( $item && $item.items && $item.items.size() > 0 )
+    #if ( $collapse == "expanded" )
+      <ul>
+        #foreach( $subitem in $item.items )
+          #menuItem( $subitem )
+        #end
+      </ul>
+    #end
+  #end
+  </li>
+#end
+
+#macro ( mainMenu $menus )
+  #foreach( $menu in $menus )
+    #if ( $menu.name )
+    <h5>$menu.name</h5>
+    #end
+    <ul>
+      #foreach( $item in $menu.items )
+        #menuItem( $item )
+      #end
+    </ul>
+  #end
+#end
+
+#macro ( copyright )
+  #if ( $project )
+    #set ( $currentYear = ${currentDate.year} + 1900 )
+
+    #if ( ${project.inceptionYear} && ( ${project.inceptionYear} != ${currentYear.toString()} ) )
+      ${project.inceptionYear}-${currentYear}
+    #else
+      ${currentYear}
+    #end
+
+    #if ( ${project.organization} && ${project.organization.name} )
+      ${project.organization.name}
+    #end
+  #end
+#end
+
+#macro ( publishDate $position $publishDate $version )
+  #if ( $publishDate && $publishDate.format )
+    #set ( $format = $publishDate.format )
+  #else
+    #set ( $format = "MM/dd/yyyy" )
+  #end
+
+  $dateFormat.applyPattern( $format )
+
+  #set ( $dateToday = $dateFormat.format( $currentDate ) )
+
+  #if ( $publishDate && $publishDate.position )
+    #set ( $datePosition = $publishDate.position )
+  #else
+    #set ( $datePosition = "left" )
+  #end
+
+  #if ( $version )
+    #if ( $version.position )
+      #set ( $versionPosition = $version.position )
+    #else
+      #set ( $versionPosition = "left" )
+    #end
+  #end
+
+  #set ( $breadcrumbs = $decoration.body.breadcrumbs )
+
+  #if ( $datePosition.equalsIgnoreCase( $position ) )
+    #if ( ( $datePosition.equalsIgnoreCase( "right" ) ) || ( $datePosition.equalsIgnoreCase( "bottom" ) ) )
+      &nbsp;| $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+      #if ( $versionPosition.equalsIgnoreCase( $position ) )
+        &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+      #end
+    #elseif ( ( $datePosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $datePosition.equalsIgnoreCase( "navigation-top" ) ) )
+      <div id="lastPublished">
+        $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+        #if ( $versionPosition.equalsIgnoreCase( $position ) )
+          &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #end
+      </div>
+    #elseif ( $datePosition.equalsIgnoreCase("left") )
+      <div class="xleft">
+        $i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateToday
+        #if ( $versionPosition.equalsIgnoreCase( $position ) )
+          &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #end
+        #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+          | #breadcrumbs( $breadcrumbs )
+        #end
+      </div>
+    #end
+  #elseif ( $versionPosition.equalsIgnoreCase( $position ) )
+    #if ( ( $versionPosition.equalsIgnoreCase( "right" ) ) || ( $versionPosition.equalsIgnoreCase( "bottom" ) ) )
+      &nbsp;| $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+    #elseif ( ( $versionPosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $versionPosition.equalsIgnoreCase( "navigation-top" ) ) )
+      <div id="lastPublished">
+        $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+      </div>
+    #elseif ( $versionPosition.equalsIgnoreCase("left") )
+      <div class="xleft">
+        $i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}
+        #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+          | #breadcrumbs( $breadcrumbs )
+        #end
+      </div>
+    #end
+  #elseif ( $position.equalsIgnoreCase( "left" ) )
+    #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+      <div class="xleft">
+        #breadcrumbs( $breadcrumbs )
+      </div>
+    #end
+  #end
+#end
+
+#macro ( poweredByLogo $poweredBy )
+    #if( $poweredBy )
+        #foreach ($item in $poweredBy)
+            #if( $item.href )
+                #set ( $href = $PathTool.calculateLink( $item.href, $relativePath ) )
+                #set ( $href = $href.replaceAll( "\\", "/" ) )
+            #else
+                #set ( $href="http://www.qos.ch/" )
+            #end
+
+            #if( $item.name )
+                #set ( $name = $item.name )
+            #else
+                #set ( $name = $i18n.getString( "site-renderer", $locale, "template.builtby" )  )
+                #set ( $name = "${name}"  )
+            #end
+
+            #if( $item.img )
+                #set ( $img = $item.img )
+            #else
+                #set ( $img = "images/logos/qosLogo.png" )
+            #end
+
+            <a href="$href" title="$name" id="poweredBy">
+              #set ( $img = $PathTool.calculateLink( $img, $relativePath ) )
+              #set ( $img = $img.replaceAll( "\\", "/" ) )
+              <img alt="$name" src="$img" />
+            </a>
+        #end
+        #if( $poweredBy.isEmpty() )
+          <a href="http://www.qos.ch/" title="QOS.ch" id="poweredBy">
+          	<img alt="QOS.ch" src="$relativePath/images/logos/qosLogo.png"></img>
+        	</a>
+        #end
+    #else
+        <a href="http://www.qos.ch/" title="QOS.ch" id="poweredBy">
+          <img alt="QOS.ch" src="$relativePath/images/logos/qosLogo.png"></img>
+        </a>
+    #end
+#end
+
+<html>
+  <head>
+    <title>$title</title>
+    <style type="text/css" media="all">
+      @import url("$relativePath/css/site.css");
+    </style>
+    <link rel="stylesheet" href="$relativePath/css/print.css" type="text/css" media="print" />
+    #foreach( $author in $authors )
+      <meta name="author" content="$author" />
+    #end
+    <meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
+    #if ( $decoration.body.head )
+      #foreach( $item in $decoration.body.head.getChildren() )
+        #if ( $item.name == "script" )
+          $item.toUnescapedString()
+        #else
+          $item.toString()
+        #end
+      #end
+    #end
+  </head>
+  <body class="composite">
+    <div id="banner">
+      #banner( $decoration.bannerLeft "bannerLeft" )
+      #banner( $decoration.bannerRight "bannerRight" )
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+      #publishDate( "left" $decoration.publishDate $decoration.version )
+      <div class="xright">#links( $decoration.body.links )#publishDate( "right" $decoration.publishDate $decoration.version )</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+       #publishDate( "navigation-top" $decoration.publishDate $decoration.version )
+       #mainMenu( $decoration.body.menus )
+       #poweredByLogo( $decoration.poweredBy )
+       #publishDate( "navigation-bottom" $decoration.publishDate $decoration.version )
+      </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        $bodyContent
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">
+      &#169;#copyright()#publishDate( "bottom" $decoration.publishDate $decoration.version )</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
