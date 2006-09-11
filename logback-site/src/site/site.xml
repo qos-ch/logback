@@ -32,7 +32,7 @@
       <item name="Source Repository" href="repos.html" />
       <item name="Bug Report" href="bugreport.html"/>
       <item name="License" href="license.html" />     
-      <item name="Log4j Properties Translator" href="http://logback.qos.ch/PropertiesTranslator/" /> 
+      <item name="Log4j Properties Translator" href="http://logback.qos.ch/translator/" /> 
     </menu>
   </body>
 </project>
