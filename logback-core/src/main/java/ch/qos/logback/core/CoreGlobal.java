@@ -8,7 +8,7 @@ public class CoreGlobal {
   public static final int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
  
   
-  public static final String CODES_HREF = "http://www.logback.com/docs/codes.html";
+  public static final String CODES_HREF = "http://logback.qos.ch/codes.html";
   
   /**
    * Customized pattern conversion rules are stored under this key in the
