@@ -28,6 +28,10 @@ This library is free software, you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation.</div>
 
+    <p>Please note that logback is intended to be used behind the
+    SLF4J API, which is licensed under <a
+    href="http://www.slf4j.org/license.html">an X11 type license</a>.
+    </p>
 
 	</body>
 </document>
