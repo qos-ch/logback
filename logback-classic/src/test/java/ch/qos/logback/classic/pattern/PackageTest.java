@@ -20,6 +20,7 @@ public class PackageTest extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(ConverterTest.class);
     suite.addTestSuite(ClassNameAbbreviatorTest.class);
+    suite.addTestSuite(MDCConverterTest.class);
     return suite;
   }
 }

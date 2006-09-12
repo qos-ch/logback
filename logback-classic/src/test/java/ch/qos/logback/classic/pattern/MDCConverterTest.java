@@ -24,6 +24,7 @@ public class MDCConverterTest extends TestCase {
   }
   
   public void testConverWithOneEntry() {
+    MDC.clear();
     MDC.put("testKey", "testValue");
     LoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
@@ -31,6 +32,8 @@ public class MDCConverterTest extends TestCase {
   }
 
   public void testConverWithMultipleEntries() {
+    MDC.clear();
+    MDC.put("testKey", "testValue");
     MDC.put("testKey2", "testValue2");
     LoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
