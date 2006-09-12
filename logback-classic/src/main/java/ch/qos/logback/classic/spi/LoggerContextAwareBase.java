@@ -9,10 +9,6 @@
  */
 package ch.qos.logback.classic.spi;
 
-import org.slf4j.Logger;
-import org.slf4j.impl.SimpleLogger;
-import org.slf4j.impl.SimpleLoggerFactory;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -20,8 +16,6 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class LoggerContextAwareBase extends ContextAwareBase implements LoggerContextAware {
   
-  private Logger logger;
-
   /**
    * Set the owning context. The owning context cannot be set more than
    * once.
@@ -48,43 +42,5 @@ public class LoggerContextAwareBase extends ContextAwareBase implements LoggerCo
   public LoggerContext getLoggerContext() {
     return (LoggerContext) context;
   }
-  
-  /**
-   * Return an instance specific logger to be used by the component itself.
-   * This logger is not intended to be accessed by the end-user, hence the 
-   * protected keyword.
-   * 
-   * <p>In case the context for this component is not set,
-   * this implementations returns a {@link SimpleLogger} instance.
-   * 
-   * @return A Logger instance.
-   */
-  protected Logger getLogger() {
-    return getLogger(this);
-  } 
-
-  /**
-   * Return an instance specific logger to be used by the calling component.
-   * This logger is not intended to be accessed by the end-user but by LOGBack
-   * components.
-   *  
-   * <p>In case the context for this component is not set,
-   * this implementations returns a {@link SimpleLogger} instance.
-   * 
-   * @return A Logger instance.
-   */
-
-  public Logger getLogger(Object component) {
-    if(logger == null) {
-      if(context != null) {
-        logger = ((LoggerContext) context).getLogger(component.getClass().getName());
-      } else {
-        logger = SimpleLoggerFactory.INSTANCE.getLogger(component.getClass().getName());
-      }
-    } 
-    return logger;
-  }
-
-
   
 }

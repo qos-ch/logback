@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import org.slf4j.Logger;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextAware;
 import ch.qos.logback.classic.spi.LoggerContextAwareBase;
@@ -32,10 +30,6 @@ abstract public class ClassicConverter extends DynamicConverter implements
 
   public void setLoggerContext(LoggerContext lc) {
     lcab.setLoggerContext(lc);
-  }
-
-  public Logger getLogger() {
-    return lcab.getLogger(this);
   }
 
   public void setContext(Context context) {

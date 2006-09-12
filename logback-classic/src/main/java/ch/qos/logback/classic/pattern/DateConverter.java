@@ -36,8 +36,7 @@ public class DateConverter extends ClassicConverter {
       simpleFormat = new SimpleDateFormat(datePattern);
       //maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
-      getLogger().warn(
-        "Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
+      addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
       // default to the ISO8601 format
       simpleFormat = new SimpleDateFormat(CoreGlobal.ISO8601_PATTERN);
     }
