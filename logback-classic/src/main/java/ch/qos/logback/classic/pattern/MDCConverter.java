@@ -1,8 +1,8 @@
 package ch.qos.logback.classic.pattern;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 
@@ -38,13 +38,16 @@ public class MDCConverter extends ClassicConverter {
     if (key == null) {
       // if no key is specified, return all the
       // values present in the MDC, separated with a single space.
-      StringBuffer buf = new StringBuffer();
-      Collection<String> values = mdcPropertyMap.values();
-      Iterator it = values.iterator();
-      String value;
+      StringBuffer buf = new StringBuffer("{");
+      Set<String> keys = mdcPropertyMap.keySet();
+      Iterator it = keys.iterator();
+      String tmpKey;
+      String tmpValue;
       while (it.hasNext()) {
-        value = (String)it.next();
-        buf.append(value).append(' ');
+        tmpKey = (String)it.next();
+        tmpValue = (String)mdcPropertyMap.get(tmpKey);
+        //format: {testeKey=testValue, testKey2=testValue2}
+        buf.append(tmpKey).append('=').append(tmpValue).append(", ");
       }
       return buf.toString();
     }
