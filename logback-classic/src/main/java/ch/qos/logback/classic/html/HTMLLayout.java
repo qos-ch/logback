@@ -54,8 +54,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   private String title = "Logback Log Messages";
 
   private CssBuilder cssBuilder;
-  private boolean internalCSS = false;
-  private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
 
   // Does our PatternConverter chain handle throwable on its own?
   private boolean chainHandlesThrowable;
