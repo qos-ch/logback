@@ -42,7 +42,13 @@
 			<artifactId>mail</artifactId>
 			<scope>compile</scope>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>

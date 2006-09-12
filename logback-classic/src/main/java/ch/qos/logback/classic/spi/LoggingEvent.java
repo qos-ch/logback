@@ -41,247 +41,247 @@ import ch.qos.logback.classic.MDC;
  */
 public class LoggingEvent implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3022264832697160750L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 3022264832697160750L;
 
-	/**
-	 * 
-	 */
-	private static long startTime = System.currentTimeMillis();
+  /**
+   * 
+   */
+  private static long startTime = System.currentTimeMillis();
 
-	/**
-	 * Fully qualified name of the calling Logger class. This field does not
-	 * survive serialization.
-	 * 
-	 * <p>
-	 * Note that the getCallerInformation() method relies on this fact.
-	 */
-	transient String fqnOfLoggerClass;
+  /**
+   * Fully qualified name of the calling Logger class. This field does not
+   * survive serialization.
+   * 
+   * <p>
+   * Note that the getCallerInformation() method relies on this fact.
+   */
+  transient String fqnOfLoggerClass;
 
-	/**
-	 * The name of thread in which this logging event was generated.
-	 */
-	private String threadName;
+  /**
+   * The name of thread in which this logging event was generated.
+   */
+  private String threadName;
 
-	/**
-	 * Level of logging event.
-	 * 
-	 * <p>
-	 * This field should not be accessed directly. You shoud use the {@link
-	 * #getLevel} method instead.
-	 * </p>
-	 * 
-	 */
-	private transient Level level;
+  /**
+   * Level of logging event.
+   * 
+   * <p>
+   * This field should not be accessed directly. You shoud use the {@link
+   * #getLevel} method instead.
+   * </p>
+   * 
+   */
+  private transient Level level;
 
-	private String message;
-	private String formattedMessage;
+  private String message;
+  private String formattedMessage;
 
-	private Object[] argumentArray;
+  private Object[] argumentArray;
 
-	private ThrowableInformation throwableInfo;
+  private ThrowableInformation throwableInfo;
 
-	private CallerData[] callerDataArray;
-	private LoggerRemoteView loggerRemoteView;
+  private CallerData[] callerDataArray;
+  private LoggerRemoteView loggerRemoteView;
 
-	private Marker marker;
-	
-	private Map<String, String> mdcPropertyMap;
+  private Marker marker;
 
-	/**
-	 * The number of milliseconds elapsed from 1/1/1970 until logging event was
-	 * created.
-	 */
-	private long timeStamp;
+  private Map<String, String> mdcPropertyMap;
 
-	public LoggingEvent() {
-	}
+  /**
+   * The number of milliseconds elapsed from 1/1/1970 until logging event was
+   * created.
+   */
+  private long timeStamp;
 
-	public LoggingEvent(String fqcn, Logger logger, Level level, String message,
-			Throwable throwable, Object[] argArray) {
-		this.fqnOfLoggerClass = fqcn;
-		this.loggerRemoteView = logger.getLoggerRemoteView();
-		this.level = level;
-		this.message = message;
+  public LoggingEvent() {
+  }
 
-		if (throwable != null) {
-			this.throwableInfo = new ThrowableInformation(throwable);
-		}
+  public LoggingEvent(String fqcn, Logger logger, Level level, String message,
+      Throwable throwable, Object[] argArray) {
+    this.fqnOfLoggerClass = fqcn;
+    this.loggerRemoteView = logger.getLoggerRemoteView();
+    this.level = level;
+    this.message = message;
 
-		if (argArray != null) {
-			formattedMessage = MessageFormatter.arrayFormat(message, argArray);
-		} else {
-			formattedMessage = message;
-		}
-		timeStamp = System.currentTimeMillis();
+    if (throwable != null) {
+      this.throwableInfo = new ThrowableInformation(throwable);
+    }
 
-		mdcPropertyMap = MDC.getPropertyMap();
-	}
+    if (argArray != null) {
+      formattedMessage = MessageFormatter.arrayFormat(message, argArray);
+    } else {
+      formattedMessage = message;
+    }
+    timeStamp = System.currentTimeMillis();
 
-	public void setArgumentArray(Object[] argArray) {
-		if (this.argumentArray != null) {
-			throw new IllegalStateException("argArray has been already set");
-		}
-		this.argumentArray = argArray;
-	}
+    mdcPropertyMap = MDC.getPropertyMap();
+  }
 
-	public Object[] getArgumentArray() {
-		return this.argumentArray;
-	}
+  public void setArgumentArray(Object[] argArray) {
+    if (this.argumentArray != null) {
+      throw new IllegalStateException("argArray has been already set");
+    }
+    this.argumentArray = argArray;
+  }
 
-	public Level getLevel() {
-		return level;
-	}
+  public Object[] getArgumentArray() {
+    return this.argumentArray;
+  }
 
-	public String getThreadName() {
-		if (threadName == null) {
-			threadName = (Thread.currentThread()).getName();
-		}
-		return threadName;
-	}
+  public Level getLevel() {
+    return level;
+  }
 
-	/**
-	 * @param threadName
-	 *          The threadName to set.
-	 * @throws IllegalStateException
-	 *           If threadName has been already set.
-	 */
-	public void setThreadName(String threadName) throws IllegalStateException {
-		if (this.threadName != null) {
-			throw new IllegalStateException("threadName has been already set");
-		}
-		this.threadName = threadName;
-	}
+  public String getThreadName() {
+    if (threadName == null) {
+      threadName = (Thread.currentThread()).getName();
+    }
+    return threadName;
+  }
 
-	/**
-	 * Returns the throwable information contained within this event. May be
-	 * <code>null</code> if there is no such information.
-	 */
-	public ThrowableInformation getThrowableInformation() {
-		return throwableInfo;
-	}
+  /**
+   * @param threadName
+   *          The threadName to set.
+   * @throws IllegalStateException
+   *           If threadName has been already set.
+   */
+  public void setThreadName(String threadName) throws IllegalStateException {
+    if (this.threadName != null) {
+      throw new IllegalStateException("threadName has been already set");
+    }
+    this.threadName = threadName;
+  }
 
-	/**
-	 * Set this event's throwable information.
-	 */
-	public void setThrowableInformation(ThrowableInformation ti) {
-		if (throwableInfo != null) {
-			throw new IllegalStateException(
-					"ThrowableInformation has been already set.");
-		} else {
-			throwableInfo = ti;
-		}
-	}
+  /**
+   * Returns the throwable information contained within this event. May be
+   * <code>null</code> if there is no such information.
+   */
+  public ThrowableInformation getThrowableInformation() {
+    return throwableInfo;
+  }
 
-	/**
-	 * This method should be called prior to serializing an event. It should also
-	 * be called when using asynchronous logging.
-	 */
-	public void prepareForDeferredProcessing() {
-		this.getThreadName();
-	}
+  /**
+   * Set this event's throwable information.
+   */
+  public void setThrowableInformation(ThrowableInformation ti) {
+    if (throwableInfo != null) {
+      throw new IllegalStateException(
+          "ThrowableInformation has been already set.");
+    } else {
+      throwableInfo = ti;
+    }
+  }
 
-	public LoggerRemoteView getLoggerRemoteView() {
-		return loggerRemoteView;
-	}
+  /**
+   * This method should be called prior to serializing an event. It should also
+   * be called when using asynchronous logging.
+   */
+  public void prepareForDeferredProcessing() {
+    this.getThreadName();
+  }
 
-	public void setLoggerRemoteView(LoggerRemoteView loggerRemoteView) {
-		this.loggerRemoteView = loggerRemoteView;
-	}
+  public LoggerRemoteView getLoggerRemoteView() {
+    return loggerRemoteView;
+  }
 
-	public String getMessage() {
-		return message;
-	}
+  public void setLoggerRemoteView(LoggerRemoteView loggerRemoteView) {
+    this.loggerRemoteView = loggerRemoteView;
+  }
 
-	public void setMessage(String message) {
-		if (this.message != null) {
-			throw new IllegalStateException(
-					"The message for this event has been set already.");
-		}
-		this.message = message;
-	}
+  public String getMessage() {
+    return message;
+  }
 
-	public long getTimeStamp() {
-		return timeStamp;
-	}
+  public void setMessage(String message) {
+    if (this.message != null) {
+      throw new IllegalStateException(
+          "The message for this event has been set already.");
+    }
+    this.message = message;
+  }
 
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+  public long getTimeStamp() {
+    return timeStamp;
+  }
 
-	public void setLevel(Level level) {
-		if (this.level != null) {
-			throw new IllegalStateException(
-					"The level has been already set for this event.");
-		}
-		this.level = level;
-	}
+  public void setTimeStamp(long timeStamp) {
+    this.timeStamp = timeStamp;
+  }
 
-	/**
-	 * The time at which this class was loaded into memory, expressed in
-	 * millisecond elapsed since the epoch (1.1.1970).
-	 * 
-	 * @return The time as measured when this class was loaded into memory.
-	 */
-	public static final long getStartTime() {
-		return startTime;
-	}
+  public void setLevel(Level level) {
+    if (this.level != null) {
+      throw new IllegalStateException(
+          "The level has been already set for this event.");
+    }
+    this.level = level;
+  }
 
-	/**
-	 * Get the caller information for this logging event. If caller information is
-	 * null at the time of its invocation, this method extracts location
-	 * information. The collected information is cached for future use.
-	 * 
-	 * <p>
-	 * Note that after serialization it is impossible to correctly extract caller
-	 * information.
-	 * </p>
-	 */
-	public CallerData[] getCallerData() {
-		// we rely on the fact that fqnOfLoggerClass does not survive
-		// serialization
-		if (callerDataArray == null && fqnOfLoggerClass != null) {
-			callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass);
-		}
-		return callerDataArray;
-	}
+  /**
+   * The time at which this class was loaded into memory, expressed in
+   * millisecond elapsed since the epoch (1.1.1970).
+   * 
+   * @return The time as measured when this class was loaded into memory.
+   */
+  public static final long getStartTime() {
+    return startTime;
+  }
 
-	public void setCallerInformation(CallerData[] callerDataArray) {
-		this.callerDataArray = callerDataArray;
-	}
+  /**
+   * Get the caller information for this logging event. If caller information is
+   * null at the time of its invocation, this method extracts location
+   * information. The collected information is cached for future use.
+   * 
+   * <p>
+   * Note that after serialization it is impossible to correctly extract caller
+   * information.
+   * </p>
+   */
+  public CallerData[] getCallerData() {
+    // we rely on the fact that fqnOfLoggerClass does not survive
+    // serialization
+    if (callerDataArray == null && fqnOfLoggerClass != null) {
+      callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass);
+    }
+    return callerDataArray;
+  }
 
-	public Marker getMarker() {
-		return marker;
-	}
+  public void setCallerInformation(CallerData[] callerDataArray) {
+    this.callerDataArray = callerDataArray;
+  }
 
-	public void setMarker(Marker marker) {
-		if (this.marker != null) {
-			throw new IllegalStateException(
-					"The marker has been already set for this event.");
-		}
-		this.marker = marker;
-	}
+  public Marker getMarker() {
+    return marker;
+  }
 
-	public String getFormattedMessage() {
-		return formattedMessage;
-	}
-	
-	public Map<String, String> getMDCPropertyMap() {
-		return mdcPropertyMap;
-	}
+  public void setMarker(Marker marker) {
+    if (this.marker != null) {
+      throw new IllegalStateException(
+          "The marker has been already set for this event.");
+    }
+    this.marker = marker;
+  }
 
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.defaultWriteObject();
-		out.writeInt(level.levelInt);
-	}
+  public String getFormattedMessage() {
+    return formattedMessage;
+  }
 
-	private void readObject(ObjectInputStream in) throws IOException,
-			ClassNotFoundException {
-		in.defaultReadObject();
-		int levelInt = in.readInt();
-		level = Level.toLevel(levelInt);
-	}
+  public Map<String, String> getMDCPropertyMap() {
+    return mdcPropertyMap;
+  }
+
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    out.writeInt(level.levelInt);
+  }
+
+  private void readObject(ObjectInputStream in) throws IOException,
+      ClassNotFoundException {
+    in.defaultReadObject();
+    int levelInt = in.readInt();
+    level = Level.toLevel(levelInt);
+  }
 
 }

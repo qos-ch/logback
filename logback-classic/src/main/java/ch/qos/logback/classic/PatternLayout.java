@@ -38,7 +38,7 @@ public class PatternLayout extends PatternLayoutBase implements ClassicLayout {
 
   // FIXME fix exception handling
 
-  static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
+  public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
   static {
 
