@@ -42,4 +42,11 @@ public interface Layout extends ContextAware, LifeCycle {
    */
   String getFooter();
   
+  /**
+   * Returns the content type as appropriate for the implementation.
+   *  
+   * @return
+   */
+  String getContentType();
+  
 }

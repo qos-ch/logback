@@ -13,8 +13,10 @@ package ch.qos.logback.classic.net;
 import java.io.File;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.helpers.CyclicBuffer;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SMTPAppenderBase;
 import ch.qos.logback.core.rolling.TriggeringPolicy;
 
@@ -35,6 +37,8 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
  */
 public class SMTPAppender extends SMTPAppenderBase {
 
+  static final String DEFAULT_SUBJECT_PATTERN = "%m";
+  
   private int bufferSize = 512;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
 
@@ -72,16 +76,8 @@ public class SMTPAppender extends SMTPAppenderBase {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
       // sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
-      LoggingEvent event = cb.get();
+      Object event = cb.get();
       sbuf.append(layout.doLayout(event));
-      // if (layout.ignoresThrowable()) {
-      // String[] s = event.getThrowableStrRep();
-      // if (s != null) {
-      // for (int j = 0; j < s.length; j++) {
-      // sbuf.append(s[j]);
-      // }
-      // }
-      // }
     }
   }
 
@@ -102,6 +98,17 @@ public class SMTPAppender extends SMTPAppenderBase {
    */
   public int getBufferSize() {
     return bufferSize;
+  }
+
+  @Override
+  protected Layout makeSubjectLayout(String subjectStr) {
+    if(subjectStr == null) {
+      subjectStr = DEFAULT_SUBJECT_PATTERN;
+    }
+    PatternLayout pl = new PatternLayout();
+    pl.setPattern(subjectStr);
+    pl.start();
+    return pl;
   }
 }
 

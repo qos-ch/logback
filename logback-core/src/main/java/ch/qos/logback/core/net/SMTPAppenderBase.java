@@ -38,17 +38,31 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  */
 public abstract class SMTPAppenderBase extends AppenderBase {
+  
+  
   protected Layout layout;
+  protected Layout subjectLayout;
 
   private String to;
   private String from;
-  private String subject;
+  private String subjectStr = null;
   private String smtpHost;
 
   protected Message msg;
 
   protected TriggeringPolicy evaluator;
 
+  /**
+   * return a layout for the subjet string as appropriate for the
+   * module. If the subjectStr parameter is null, then a default
+   * value for subjectStr should be used.
+   * 
+   * @param subjectStr
+   * 
+   * @return a layout as appropriate for the module
+   */
+  abstract protected Layout makeSubjectLayout(String subjectStr);
+  
   /**
    * Start the appender
    */
@@ -70,10 +84,9 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       }
 
       msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
-      if (subject != null) {
-        msg.setSubject(subject);
-      }
-
+      
+      subjectLayout = makeSubjectLayout(subjectStr);
+      
       started = true;
 
     } catch (MessagingException e) {
@@ -94,7 +107,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     subAppend(eventObject);
 
     if (evaluator.isTriggeringEvent(null, eventObject)) {
-      sendBuffer();
+      sendBuffer(eventObject);
     }
   }
   
@@ -158,7 +171,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   /**
    * Send the contents of the cyclic buffer as an e-mail message.
    */
-  protected void sendBuffer() {
+  protected void sendBuffer(Object lastEventObject) {
 
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
@@ -166,12 +179,22 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       MimeBodyPart part = new MimeBodyPart();
 
       StringBuffer sbuf = new StringBuffer();
-      String t = layout.getHeader();
+      
+      String header = layout.getHeader();
+      if (header != null) {
+        sbuf.append(header);
+      }
       fillBuffer(sbuf);
-      t = layout.getFooter();
-      if (t != null)
-        sbuf.append(t);
-      part.setContent(sbuf.toString(), "text/plain");
+      String footer = layout.getFooter();
+      if (footer != null) {
+        sbuf.append(footer);
+      }
+      
+      if (subjectLayout != null) {
+        msg.setSubject(subjectLayout.doLayout(lastEventObject));
+      }
+      
+      part.setContent(sbuf.toString(), layout.getContentType());
 
       Multipart mp = new MimeMultipart();
       mp.addBodyPart(part);
@@ -204,9 +227,9 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * Returns value of the <b>Subject</b> option.
    */
   public String getSubject() {
-    return subject;
+    return subjectStr;
   }
-
+  
   /**
    * The <b>From</b> option takes a string value which should be a e-mail
    * address of the sender.
@@ -220,9 +243,9 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * subject of the e-mail message.
    */
   public void setSubject(String subject) {
-    this.subject = subject;
+    this.subjectStr = subject;
   }
-
+  
   /**
    * The <b>SMTPHost</b> option takes a string value which should be a the host
    * name of the SMTP server that will send the e-mail message.

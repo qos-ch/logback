@@ -47,6 +47,10 @@ abstract public class LayoutBase extends ContextAwareBase implements Layout  {
     return footer;
   }
 
+  public String getContentType() {
+    return "text/plain";
+  }
+  
   public void setHeader(String header) {
     this.header = header;
   }

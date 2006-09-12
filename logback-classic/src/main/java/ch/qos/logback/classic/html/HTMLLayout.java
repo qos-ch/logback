@@ -120,6 +120,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     while (c != null) {
       if (c instanceof ThrowableHandlingConverter) {
         chainHandlesThrowable = true;
+        return;
       }
       c = c.getNext();
     }
@@ -147,6 +148,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   /**
    * Returns the content type output by this layout, i.e "text/html".
    */
+  @Override
   public String getContentType() {
     return "text/html";
   }
@@ -172,8 +174,9 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   public String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"");
-    sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+
+    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
+    sbuf.append(" SYSTEM \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
     sbuf.append(LINE_SEP);
     sbuf.append("<html>");
     sbuf.append(LINE_SEP);
@@ -217,6 +220,10 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append("<tr class=\"header\">");
     sbuf.append(LINE_SEP);
     while (c != null) {
+      if (c instanceof ThrowableHandlingConverter) {
+        c = c.getNext();
+        continue;
+      }
       name = computeConverterName(c);
       if (name == null) {
         c = c.getNext();
@@ -247,14 +254,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append(LINE_SEP);
     sbuf.append("</body></html>");
     return sbuf.toString();
-  }
-
-  /**
-   * The HTML layout handles the throwable contained in logging events. Hence,
-   * this method return <code>false</code>.
-   */
-  public boolean ignoresThrowable() {
-    return false;
   }
 
   public String doLayout(Object event) {
@@ -289,8 +288,9 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
         ThrowableHandlingConverter converter = (ThrowableHandlingConverter)c;
         if (converter.onNewLine(event)) {
           buf.append("</tr>");
-          buf.append("<tr>");
-          appendEventToBuffer(buf, c, event);
+          buf.append("<tr colspan=\"6\">");
+          appendThrowableAsHTML(event.getThrowableInformation().getThrowableStrRep(), buf);
+          //appendEventToBuffer(buf, c, event);
           if (c.getNext() != null) {
             //here we assume that when we exist the while loop,
             //a </tr> tag is added.
