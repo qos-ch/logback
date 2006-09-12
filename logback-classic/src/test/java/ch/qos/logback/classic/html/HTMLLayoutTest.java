@@ -131,7 +131,7 @@ public class HTMLLayoutTest extends TestCase {
   }
   
 //  public void testLog() {
-//    for (int i = 1; i <= 100000; i++) {
+//    for (int i = 1; i <= 1000; i++) {
 //      logger.debug("test message" + i);
 //    }
 //  }
