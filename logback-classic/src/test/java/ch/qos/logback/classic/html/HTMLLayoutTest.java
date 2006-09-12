@@ -32,7 +32,6 @@ public class HTMLLayoutTest extends TestCase {
     layout = new HTMLLayout();
     layout.setContext(lc);
     layout.setPattern("%level %thread %msg");
-    layout.setInternalCSS(true);
     layout.start();
     appender.setLayout(layout);
     logger = lc.getLogger(LoggerContext.ROOT_NAME);

@@ -12,6 +12,7 @@ package ch.qos.logback.classic.html;
 
 import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.helpers.CssBuilder;
 import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.pattern.ThrowableHandlingConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -52,6 +53,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   //private String timezone;
   private String title = "Logback Log Messages";
 
+  private CssBuilder cssBuilder;
   private boolean internalCSS = false;
   private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
 
@@ -86,6 +88,14 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   public String getPattern() {
     return pattern;
+  }
+  
+  public CssBuilder getCssBuilder() {
+    return cssBuilder;
+  }
+  
+  public void setCssBuilder(CssBuilder cssBuilder) {
+    this.cssBuilder = cssBuilder;
   }
 
   /**
@@ -137,50 +147,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   }
 
   /**
-   * Returns the value of the internalCSS option. See {@link #setInternalCSS}
-   * method for details about the meaning of this option.
-   * 
-   * @return boolean Value of internalCSS option
-   */
-  public boolean isInternalCSS() {
-    return internalCSS;
-  }
-
-  /**
-   * Set the value of the internalCSS option. If set to true, the generated HTML
-   * ouput will include an internal cascading style sheet. Otherwise, the
-   * generated HTML output will include a reference to an external CSS.
-   * <p>
-   * By default, <code>internalCSS</code> value is set to false, that is, by
-   * default, only a link to an external CSS file will be generated.
-   * 
-   * @see #setURL2ExternalCSS
-   * 
-   * @param internalCSS
-   */
-  public void setInternalCSS(boolean internalCSS) {
-    this.internalCSS = internalCSS;
-  }
-
-  /**
-   * Return the URL to the external CSS file. See {@link #setURL2ExternalCSS}
-   * method for details about the meaning of this option.
-   * 
-   * @return URL to the external CSS file.
-   */
-  public String getURL2ExternalCSS() {
-    return url2ExternalCSS;
-  }
-
-  /**
-   * Set the URL for the external CSS file. By default, the external CSS file is
-   * set to "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css".
-   */
-  public void setURL2ExternalCSS(String url2ExternalCSS) {
-    this.url2ExternalCSS = url2ExternalCSS;
-  }
-
-  /**
    * Returns the content type output by this layout, i.e "text/html".
    */
   public String getContentType() {
@@ -219,12 +185,10 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append(title);
     sbuf.append("</title>");
     sbuf.append(LINE_SEP);
-    if (internalCSS) {
-      getInternalCSS(sbuf);
+    if (cssBuilder == null) {
+      CssBuilder.addDefaultCSS(sbuf);
     } else {
-      sbuf.append("<LINK REL=StyleSheet HREF=\"");
-      sbuf.append(url2ExternalCSS);
-      sbuf.append("\" TITLE=\"Basic\" />");
+      cssBuilder.addExternalCSS(sbuf);
     }
     sbuf.append(LINE_SEP);
     sbuf.append("</head>");
