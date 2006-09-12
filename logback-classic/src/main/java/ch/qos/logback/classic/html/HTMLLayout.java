@@ -13,9 +13,7 @@ package ch.qos.logback.classic.html;
 import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.helpers.Transform;
-import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
 import ch.qos.logback.classic.pattern.ThrowableHandlingConverter;
-import ch.qos.logback.classic.pattern.ThrowableInformationConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableInformation;
 import ch.qos.logback.core.LayoutBase;
@@ -53,7 +51,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   
   //private String timezone;
   private String title = "Logback Log Messages";
-  private boolean locationInfo;
 
   private boolean internalCSS = false;
   private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
@@ -63,6 +60,8 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
   // counter keeping track of the rows output
   private long counter = 0;
+  //max number of rows before we close the table and create a new one
+  private static final int ROW_LIMIT = 10000;
 
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -209,8 +208,8 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   public String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"");
-    sbuf.append(" \"http://www.w3.org/TR/html4/loose.dtd\">");
+    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"");
+    sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
     sbuf.append(LINE_SEP);
     sbuf.append("<html>");
     sbuf.append(LINE_SEP);
@@ -225,7 +224,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     } else {
       sbuf.append("<LINK REL=StyleSheet HREF=\"");
       sbuf.append(url2ExternalCSS);
-      sbuf.append("\" TITLE=\"Basic\">");
+      sbuf.append("\" TITLE=\"Basic\" />");
     }
     sbuf.append(LINE_SEP);
     sbuf.append("</head>");
@@ -233,23 +232,28 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append("<body>");
     sbuf.append(LINE_SEP);
 
-    sbuf.append("<hr size=\"1\" noshade>");
+    sbuf.append("<hr size=\"1\" noshade=\"true\" />");
     sbuf.append(LINE_SEP);
 
     sbuf.append("Log session start time ");
     sbuf.append(new java.util.Date());
-    sbuf.append("<br>");
+    sbuf.append("<br />");
     sbuf.append(LINE_SEP);
-    sbuf.append("<br>");
+    sbuf.append("<br />");
     sbuf.append(LINE_SEP);
     sbuf.append("<table cellspacing=\"0\">");
     sbuf.append(LINE_SEP);
-
-    sbuf.append("<tr class=\"header\">");
-    sbuf.append(LINE_SEP);
     
+    createTableHeader(sbuf);
+
+    return sbuf.toString();
+  }
+
+  private void createTableHeader(StringBuffer sbuf) {
     Converter c = head;
     String name;
+    sbuf.append("<tr class=\"header\">");
+    sbuf.append(LINE_SEP);
     while (c != null) {
       name = computeConverterName(c);
       if (name == null) {
@@ -259,7 +263,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       sbuf.append("<td class=\"");
       sbuf.append(computeConverterName(c));
       sbuf.append("\">");
-      sbuf.append("<td>");
       sbuf.append(computeConverterName(c));
       sbuf.append("</td>");
       sbuf.append(LINE_SEP);  
@@ -267,9 +270,9 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     }
     sbuf.append("</tr>");
     sbuf.append(LINE_SEP);
-
-    return sbuf.toString();
   }
+  
+  
 
   /**
    * Returns the appropriate HTML footers.
@@ -297,7 +300,9 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   }
 
   public String doLayout(LoggingEvent event) {
-
+    StringBuffer buf = new StringBuffer();
+    handleTableClosing(buf);
+     
     boolean odd = true;
     if (((counter++) & 1) == 0) {
       odd = false;
@@ -305,7 +310,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
     String level = event.getLevel().toString().toLowerCase();
 
-    StringBuffer buf = new StringBuffer();
+    
     buf.append(LINE_SEP);
     buf.append("<tr class=\"");
     buf.append(level);
@@ -353,6 +358,18 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       }
     }
     return buf.toString();
+  }
+  
+  private void handleTableClosing(StringBuffer sbuf) {
+    if (this.counter >= ROW_LIMIT) {
+      counter = 0;
+      sbuf.append("</table>");
+      sbuf.append(LINE_SEP);
+      sbuf.append("<br />");
+      sbuf.append("<table cellspacing=\"0\">");
+      sbuf.append(LINE_SEP);
+      createTableHeader(sbuf);
+    }
   }
   
   private void appendEventToBuffer(StringBuffer buf, Converter c, LoggingEvent event) {

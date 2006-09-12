@@ -1,5 +1,7 @@
 package ch.qos.logback.classic.html;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.dom4j.Document;
@@ -30,6 +32,7 @@ public class HTMLLayoutTest extends TestCase {
     layout = new HTMLLayout();
     layout.setContext(lc);
     layout.setPattern("%level %thread %msg");
+    layout.setInternalCSS(true);
     layout.start();
     appender.setLayout(layout);
     logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -44,14 +47,22 @@ public class HTMLLayoutTest extends TestCase {
     layout = null;
   }
 
+  @SuppressWarnings("unchecked")
   public void testHeader() throws Exception {
     String header = layout.getHeader();
-    // System.out.println(header);
-    assertTrue(header.indexOf("Level") == 422);
-    assertTrue(header.indexOf("Literal") == 456);
-    assertTrue(header.indexOf("Thread") == 494);
-    assertTrue(header.lastIndexOf("Literal") == 543);
-    assertTrue(header.indexOf("Message") == 139);
+    //System.out.println(header);
+    
+    Document doc = parseOutput(header + "</table></body></html>");
+    Element rootElement = doc.getRootElement();
+    Element bodyElement = rootElement.element("body");
+    Element tableElement = bodyElement.element("table");
+    Element trElement = tableElement.element("tr");
+    List<Element> elementList = trElement.elements();
+    assertEquals("Level", elementList.get(0).getText());
+    assertEquals("Literal", elementList.get(1).getText());
+    assertEquals("Thread", elementList.get(2).getText());
+    assertEquals("Literal", elementList.get(3).getText());
+    assertEquals("Message", elementList.get(4).getText());
   }
 
   public void testAppendThrowable() throws Exception {
@@ -93,6 +104,7 @@ public class HTMLLayoutTest extends TestCase {
     // System.out.println(result);
   }
 
+  @SuppressWarnings("unchecked")
   public void testDoLayoutWithException() throws Exception {
     layout.setPattern("%level %thread %msg %ex");
     LoggingEvent le = createLoggingEvent();
@@ -100,44 +112,29 @@ public class HTMLLayoutTest extends TestCase {
         "test Exception")));
     String result = layout.doLayout(le);
 
-    //System.out.println(result);
+    String stringToParse = layout.getHeader();
+    stringToParse += result;
+    stringToParse += "</table></body></html>";
 
-    Document doc = parseOutput(result);
-    Element trElement = doc.getRootElement();
-    assertEquals(6, trElement.elements().size());
-    {
-      Element tdElement = (Element) trElement.elements().get(0);
-      assertEquals("DEBUG", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(1);
-      assertEquals(" ", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(2);
-      assertEquals("main", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(3);
-      assertEquals(" ", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(4);
-      assertEquals("test message", tdElement.getText());
-    }
-//    {
-//      Element trElement2 = (Element) trElement.elements().get(5);
-//      Element tdElement = (Element) trElement2.elements().get(0);
-//      assertTrue(tdElement.getText().contains(
-//          "java.lang.Exception: test Exception"));
-//    }
+    System.out.println(stringToParse);
+        
+    Document doc = parseOutput(stringToParse);
+    Element rootElement = doc.getRootElement();
+    Element bodyElement = rootElement.element("body");
+    Element tableElement = bodyElement.element("table");
+    List<Element> trElementList = tableElement.elements();
+    Element exceptionRowElement = trElementList.get(2);
+    Element exceptionElement = exceptionRowElement.element("td");
+    
+    assertEquals(3, tableElement.elements().size());
+    assertTrue(exceptionElement.getText().contains("java.lang.Exception: test Exception"));
   }
   
-  public void testLog() {
-    for (int i = 0; i < 2000; i++) {
-      logger.debug("test message");
-    }
-  }
+//  public void testLog() {
+//    for (int i = 1; i <= 100000; i++) {
+//      logger.debug("test message" + i);
+//    }
+//  }
 
   private LoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
