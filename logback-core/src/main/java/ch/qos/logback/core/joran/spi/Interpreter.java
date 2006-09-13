@@ -102,8 +102,7 @@ public class Interpreter extends DefaultHandler {
 
     String tagName = getTagName(localName, qName);
 
-    System.out.println("startElement [" + tagName + "]");
-    // LogLog.debug("in startElement <" + tagName + ">");
+    //System.out.println("startElement [" + tagName + "]");
 
     pattern.push(tagName);
 
