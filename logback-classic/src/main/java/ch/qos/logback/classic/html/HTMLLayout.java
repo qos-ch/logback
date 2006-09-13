@@ -23,10 +23,45 @@ import ch.qos.logback.core.pattern.parser.ScanException;
 
 /**
  * 
- * HTMLLayout outputs events in an HTML table. The content of the table columns
- * are specified using a conversion pattern. See
- * {@link ch.qos.logback.classic.PatternLayout} for documentation on the
+ * HTMLLayout outputs events in an HTML table. 
+ * <p>
+ * The content of the table columns are specified using a conversion pattern. 
+ * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns.
+ * Note that the pattern <em>%ex</em> used to display an Exception does not need
+ * to be specified with this layout. An internal {@link ch.qos.logback.classic.html.ThrowableRenderer} is 
+ * called to render the throwable.
+ * <p>
+ * A user-specified external CSS file can be link to the html page. 
+ * In case one does not want to custom the html output, an internal CSS
+ * is used.
+ * 
+ * The HTMLLayout is often used in conjunction with a SMTPAppender, to
+ * send a nicely formatted html email. Of course, it can be used with any
+ * other Appender.
+ * 
+ * In case on wants to use the HTMLLayout with a SMTPAppender, here is a sample
+ * configuration file that can be used.
+ * 
+ * <pre>
+ * &lt;configuration&gt;
+ *   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
+ *     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+ *       &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
+ *     &lt;/layout&gt;
+ *    &lt;param name="From" value="sender.email@domain.net" /&gt;
+ *    &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
+ *    &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
+ *    &lt;param name="To" value="destination.email@domain.net" /&gt;
+ *   &lt;/appender&gt;
+ *
+ *   &lt;root&gt;
+ *     &lt;level value="debug" /&gt;
+ *     &lt;appender-ref ref="SMTP" /&gt;
+ *   &lt;/root&gt;
+ * &lt;/configuration&gt;
+ *</pre>
+ * 
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -39,14 +74,10 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
 
-  protected final int BUF_SIZE = 256;
-  protected final int MAX_CAPACITY = 1024;
-
   private String pattern;
 
   private Converter head;
 
-  // private String timezone;
   private String title = "Logback Log Messages";
 
   private CssBuilder cssBuilder;
@@ -94,6 +125,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   /**
    * Parses the pattern and creates the Converter linked list.
    */
+  @Override
   public void start() {
     try {
       Parser p = new Parser(pattern);
@@ -139,10 +171,9 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   /**
    * Returns appropriate HTML headers.
    */
+  @Override
   public String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    // PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    // SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
     sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
     sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
     sbuf.append(LINE_SEP);
@@ -212,6 +243,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   /**
    * Returns the appropriate HTML footers.
    */
+  @Override
   public String getFooter() {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append("</table>");
