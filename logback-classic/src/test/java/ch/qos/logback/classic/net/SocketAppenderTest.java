@@ -1,5 +1,10 @@
 package ch.qos.logback.classic.net;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -13,126 +18,130 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class SocketAppenderTest extends TestCase {
 
-	private LoggerContext lc;
-	private MockSocketServer mockSocketServer;
-	
-	public void testStartFailNoRemoteHost() {
-		lc = new LoggerContext();
-		SocketAppender appender = new SocketAppender();
-		appender.setContext(lc);
-		appender.setPort(123);
-		appender.start();
-		assertEquals(1, lc.getStatusManager().getCount());
-	}
+  ByteArrayOutputStream bos;
+  ObjectInputStream inputStream;
+  SocketAppender appender;
+  Logger logger;
 
-	public void testRecieveMessage() throws InterruptedException {
-		startServer(1);
-		configureClient();
-		
-		Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-		logger.debug("test msg");
+  LoggerContext lc;
+  MockSocketServer mockSocketServer;
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.		
-		mockSocketServer.join(2000);
-		assertTrue(mockSocketServer.finished);
-		assertEquals(1, mockSocketServer.loggingEventList.size());
-		
-		LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
-		assertEquals("test msg", remoteEvent.getMessage());
-		assertEquals(Level.DEBUG, remoteEvent.getLevel());
-	}
-	
-	public void testRecieveWithContext() throws InterruptedException {
-		startServer(1);
-		configureClient();
-		
-		Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-		logger.debug("test msg");
+  public void setUp() throws Exception {
+    lc = new LoggerContext();
+    lc.setName("test");
+    lc.setProperty("testKey", "testValue");
+    appender = new SocketAppender();
+    appender.setPort(123);
+    appender.setContext(lc);
+    appender.setRemoteHost("localhost");
+    appender.start();
+    logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    logger.addAppender(appender);
+  }
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.		
-		mockSocketServer.join(2000);
-		assertTrue(mockSocketServer.finished);
-		assertEquals(1, mockSocketServer.loggingEventList.size());
-		
-		LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
-		
-		LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
-		assertNotNull(loggerRemoteView);
-		assertEquals("root", loggerRemoteView.getName());
+  public void testStartFailNoRemoteHost() {
+    lc = new LoggerContext();
+    SocketAppender appender = new SocketAppender();
+    appender.setContext(lc);
+    appender.setPort(123);
+    appender.start();
+    assertEquals(1, lc.getStatusManager().getCount());
+  }
 
-		LoggerContextRemoteView loggerContextRemoteView = loggerRemoteView.getLoggerContextView();
-		assertNotNull(loggerContextRemoteView);
-		assertEquals("test", loggerContextRemoteView.getName());
-		Map<String, String> props = loggerContextRemoteView.getPropertyMap();
-		assertEquals("testValue", props.get("testKey"));
-	}
-	
-	
-	public void testMessageWithMDC() throws InterruptedException {
-		startServer(1);
-		configureClient();
-		
-		Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-		
-		MDC.put("key", "testValue");
-		logger.debug("test msg");
+  public void testRecieveMessage() throws InterruptedException, IOException,
+      ClassNotFoundException {
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.		
-		mockSocketServer.join(2000);
-		assertTrue(mockSocketServer.finished);
-		assertEquals(1, mockSocketServer.loggingEventList.size());
-		
-		LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
-		Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
-		assertEquals("testValue", MDCPropertyMap.get("key"));
-	}
-	
-	public void testMessageWithUpdatedMDC() throws InterruptedException {
-		startServer(2);
-		configureClient();
-		
-		Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-		
-		MDC.put("key", "testValue");
-		logger.debug("test msg");
-		
-		MDC.put("key", "updatedTestValue");
-		logger.debug("test msg 2");
+    //create the byte output stream
+    bos = new ByteArrayOutputStream() ;
+    appender.oos = new ObjectOutputStream(bos);
+    
+    LoggingEvent event = createLoggingEvent();
+    appender.append(event);
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.		
-		mockSocketServer.join(2000);
-		assertTrue(mockSocketServer.finished);
-		assertEquals(2, mockSocketServer.loggingEventList.size());
-		
-		//We observe the second logging event. It should provide us with
-		//the updated MDC property.
-		LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(1);
-		Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
-		assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
-	}
-	
-	private void startServer(int expectedEventNumber) throws InterruptedException {
-		mockSocketServer = new MockSocketServer(expectedEventNumber);
-		mockSocketServer.start();
-		// give MockSocketServer head start
-		Thread.sleep(100);
-	}
-	
-	private void configureClient() {
-		lc = new LoggerContext();
-		lc.setName("test");
-		lc.setProperty("testKey", "testValue");
-		Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
-		SocketAppender socketAppender = new SocketAppender();
-		socketAppender.setContext(lc);
-		socketAppender.setName("socket");
-		socketAppender.setPort(4560);
-		socketAppender.setRemoteHost("localhost");
-		root.addAppender(socketAppender);
-		socketAppender.start();
-	}
+    //create the input stream based on the ouput stream
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+    
+    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();
+
+    assertEquals("test message", remoteEvent.getMessage());
+    assertEquals(Level.DEBUG, remoteEvent.getLevel());
+  }
+
+  public void testRecieveWithContext() throws InterruptedException, IOException, ClassNotFoundException {
+
+    //create the byte output stream
+    bos = new ByteArrayOutputStream() ;
+    appender.oos = new ObjectOutputStream(bos);
+    
+    LoggingEvent event = createLoggingEvent();
+    appender.append(event);
+
+    //create the input stream based on the ouput stream
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+    
+    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();
+
+    LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
+    assertNotNull(loggerRemoteView);
+    assertEquals("root", loggerRemoteView.getName());
+
+    LoggerContextRemoteView loggerContextRemoteView = loggerRemoteView
+        .getLoggerContextView();
+    assertNotNull(loggerContextRemoteView);
+    assertEquals("test", loggerContextRemoteView.getName());
+    Map<String, String> props = loggerContextRemoteView.getPropertyMap();
+    assertEquals("testValue", props.get("testKey"));
+  }
+
+  public void testMessageWithMDC() throws InterruptedException, IOException, ClassNotFoundException {
+    //create the byte output stream
+    bos = new ByteArrayOutputStream() ;
+    appender.oos = new ObjectOutputStream(bos);
+
+    MDC.put("key", "testValue");
+    LoggingEvent event = createLoggingEvent();
+    appender.append(event);
+
+    //create the input stream based on the ouput stream
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+    
+    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();
+    
+    Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
+    assertEquals("testValue", MDCPropertyMap.get("key"));
+  }
+
+  public void testMessageWithUpdatedMDC() throws InterruptedException, IOException, ClassNotFoundException {
+    //create the byte output stream
+    bos = new ByteArrayOutputStream() ;
+    appender.oos = new ObjectOutputStream(bos);
+
+    MDC.put("key", "testValue");
+    LoggingEvent event = createLoggingEvent();
+    appender.append(event);
+
+    MDC.put("key", "updatedTestValue");
+    event = createLoggingEvent();
+    appender.append(event);
+
+    //create the input stream based on the ouput stream
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+    
+    @SuppressWarnings("unused")
+    LoggingEvent remoteEvent1 = (LoggingEvent) inputStream.readObject();
+    LoggingEvent remoteEvent2 = (LoggingEvent) inputStream.readObject();
+
+    Map<String, String> MDCPropertyMap = remoteEvent2.getMDCPropertyMap();
+    assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
+  }
+
+  private LoggingEvent createLoggingEvent() {
+    LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
+        Level.DEBUG, "test message", null, null);
+    return le;
+  }
 }
