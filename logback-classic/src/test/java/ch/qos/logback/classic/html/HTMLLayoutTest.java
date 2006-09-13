@@ -30,6 +30,7 @@ public class HTMLLayoutTest extends TestCase {
     ListAppender appender = new ListAppender();
     appender.setContext(lc);
     layout = new HTMLLayout();
+    layout.setThrowableRenderer(new DefaultThrowableRenderer());
     layout.setContext(lc);
     layout.setPattern("%level%thread%msg");
     layout.start();
@@ -65,11 +66,12 @@ public class HTMLLayoutTest extends TestCase {
   public void testAppendThrowable() throws Exception {
     StringBuffer buf = new StringBuffer();
     String[] strArray = { "test1", "test2" };
-    layout.throwableRenderer.render(buf, strArray);
-    // System.out.println(buf.toString());
+    DefaultThrowableRenderer renderer = (DefaultThrowableRenderer)layout.throwableRenderer;
+    renderer.render(buf, strArray);
+    System.out.println(buf.toString());
     String[] result = buf.toString().split(HTMLLayout.LINE_SEP);
-    assertEquals("test1", result[0]);
-    assertEquals(ThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
+    assertEquals("<tr><td class=\"Exception\" colspan=\"6\">test1", result[0]);
+    assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
   }
 
   public void testDoLayout() throws Exception {

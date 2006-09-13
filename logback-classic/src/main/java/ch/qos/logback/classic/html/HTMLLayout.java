@@ -28,19 +28,25 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  * The content of the table columns are specified using a conversion pattern. 
  * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns.
+ * 
  * Note that the pattern <em>%ex</em> used to display an Exception is not the only way
  * to display an Exception with this layout. 
- * An internal {@link ch.qos.logback.classic.html.ThrowableRenderer} can be called 
- * to render the throwable. If a ThrowableRenderer is specified, it is used to render
- * the Exception on a new line. 
- * If no such object is specified to the HTMLLayout, then one must add <em>%ex</em> 
+ * 
+ * An internal {@link ch.qos.logback.classic.html.IThrowableRenderer} can be called 
+ * to render the throwable. 
+ * By default, a {@link ch.qos.logback.classic.html.DefaultThrowableRenderer} 
+ * is assigned to the HTMLLayout. It writes the Exception on a new table row. 
+ * 
+ * FIXME WRITE MORE ABOUT THIS.
+ * 
+ * In that case, then one must add <em>%ex</em> 
  * to the pattern to display Exceptions.
  * <p>
- * A user-specified external CSS file can be link to the html page. 
- * In case one does not want to custom the html output, an internal CSS
+ * A user-specified external CSS file can be linked to the html page. 
+ * In case one does not want to customize the html output, an internal CSS style
  * is used.
  * 
- * The HTMLLayout is often used in conjunction with a SMTPAppender, to
+ * The HTMLLayout is often used in conjunction with SMTPAppender, to
  * send a nicely formatted html email. Of course, it can be used with any
  * other Appender.
  * 
@@ -87,7 +93,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
   private CssBuilder cssBuilder;
 
-  ThrowableRenderer throwableRenderer;
+  IThrowableRenderer throwableRenderer = new DefaultThrowableRenderer();
 
   // counter keeping track of the rows output
   private long counter = 0;
@@ -132,6 +138,13 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   @Override
   public void start() {
+    int errorCount = 0;
+    
+    if (throwableRenderer == null) {
+      addError("ThrowableRender cannot be null.");
+      errorCount++;
+    }
+    
     try {
       Parser p = new Parser(pattern);
       if (getContext() != null) {
@@ -142,9 +155,12 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       DynamicConverter.startConverters(this.head);
     } catch (ScanException ex) {
       addError("Incorrect pattern found", ex);
+      errorCount++;
     }
 
-    started = true;
+    if (errorCount == 0) {
+      started = true;
+    }
   }
 
   /**
@@ -288,10 +304,8 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     buf.append("</tr>");
     buf.append(LINE_SEP);
 
-    if (throwableRenderer != null && event.getThrowableInformation() != null) {
-      buf.append("<tr><td class=\"Exception\" colspan=\"6\">");
+    if (event.getThrowableInformation() != null) {
       throwableRenderer.render(buf, event);
-      buf.append("</td></tr>");
     }
     return buf.toString();
   }
@@ -328,11 +342,11 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     }
   }
 
-  public ThrowableRenderer getThrowableRenderer() {
+  public IThrowableRenderer getThrowableRenderer() {
     return throwableRenderer;
   }
 
-  public void setThrowableRenderer(ThrowableRenderer throwableRenderer) {
+  public void setThrowableRenderer(IThrowableRenderer throwableRenderer) {
     this.throwableRenderer = throwableRenderer;
   }
   

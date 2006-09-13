@@ -3,14 +3,15 @@ package ch.qos.logback.classic.html;
 import static ch.qos.logback.core.Layout.LINE_SEP;
 import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableInformation;
 
-public class ThrowableRenderer {
+public class DefaultThrowableRenderer implements IThrowableRenderer {
   
   static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
   
   Throwable throwable;
   
-  public ThrowableRenderer() {
+  public DefaultThrowableRenderer() {
     
   }
   
@@ -24,6 +25,7 @@ public class ThrowableRenderer {
       if (len == 0) {
         return;
       }
+      sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
       sbuf.append(Transform.escapeTags(s[0]));
       sbuf.append(LINE_SEP);
       for (int i = 1; i < len; i++) {
@@ -31,10 +33,14 @@ public class ThrowableRenderer {
         sbuf.append(Transform.escapeTags(s[i]));
         sbuf.append(LINE_SEP);
       }
-    }    
+      sbuf.append("</td></tr>");
+    }
   }
   
   public void render(StringBuffer sbuf, LoggingEvent event) {
-    render(sbuf, event.getThrowableInformation().getThrowableStrRep());
+    ThrowableInformation ti = event.getThrowableInformation();
+    if (ti != null) {
+      render(sbuf, ti.getThrowableStrRep());
+    }
   }
 }
