@@ -13,10 +13,7 @@ package ch.qos.logback.classic.html;
 import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.helpers.CssBuilder;
-import ch.qos.logback.classic.helpers.Transform;
-import ch.qos.logback.classic.pattern.ThrowableHandlingConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableInformation;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.DynamicConverter;
@@ -42,25 +39,23 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
    */
   static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
 
-  static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
   protected final int BUF_SIZE = 256;
   protected final int MAX_CAPACITY = 1024;
-  
+
   private String pattern;
-  
+
   private Converter head;
-  
-  //private String timezone;
+
+  // private String timezone;
   private String title = "Logback Log Messages";
 
   private CssBuilder cssBuilder;
 
-  // Does our PatternConverter chain handle throwable on its own?
-  private boolean chainHandlesThrowable;
+  ThrowableRenderer throwableRenderer = new ThrowableRenderer();
 
   // counter keeping track of the rows output
   private long counter = 0;
-  //max number of rows before we close the table and create a new one
+  // max number of rows before we close the table and create a new one
   private static final int ROW_LIMIT = 10000;
 
   /**
@@ -87,11 +82,11 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   public String getPattern() {
     return pattern;
   }
-  
+
   public CssBuilder getCssBuilder() {
     return cssBuilder;
   }
-  
+
   public void setCssBuilder(CssBuilder cssBuilder) {
     this.cssBuilder = cssBuilder;
   }
@@ -107,24 +102,12 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       }
       Node t = p.parse();
       this.head = p.compile(t, PatternLayout.defaultConverterMap);
-      postCompileProcessing(head);
       DynamicConverter.startConverters(this.head);
-    }  catch (ScanException ex) {
+    } catch (ScanException ex) {
       addError("Incorrect pattern found", ex);
     }
-    
+
     started = true;
-  }
-  
-  private void postCompileProcessing(Converter c) {
-    while (c != null) {
-      if (c instanceof ThrowableHandlingConverter) {
-        chainHandlesThrowable = true;
-        return;
-      }
-      c = c.getNext();
-    }
-    chainHandlesThrowable = false;
   }
 
   /**
@@ -153,30 +136,15 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     return "text/html";
   }
 
-  void appendThrowableAsHTML(final String[] s, final StringBuffer sbuf) {
-    if (s != null) {
-      int len = s.length;
-      if (len == 0) {
-        return;
-      }
-      sbuf.append(Transform.escapeTags(s[0]));
-      sbuf.append(LINE_SEP);
-      for (int i = 1; i < len; i++) {
-        sbuf.append(TRACE_PREFIX);
-        sbuf.append(Transform.escapeTags(s[i]));
-        sbuf.append(LINE_SEP);
-      }
-    }
-  }
-
   /**
    * Returns appropriate HTML headers.
    */
   public String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-
+    // PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    // SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
     sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
-    sbuf.append(" SYSTEM \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+    sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
     sbuf.append(LINE_SEP);
     sbuf.append("<html>");
     sbuf.append(LINE_SEP);
@@ -208,7 +176,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append(LINE_SEP);
     sbuf.append("<table cellspacing=\"0\">");
     sbuf.append(LINE_SEP);
-    
+
     createTableHeader(sbuf);
 
     return sbuf.toString();
@@ -220,10 +188,10 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append("<tr class=\"header\">");
     sbuf.append(LINE_SEP);
     while (c != null) {
-      if (c instanceof ThrowableHandlingConverter) {
-        c = c.getNext();
-        continue;
-      }
+      // if (c instanceof ThrowableHandlingConverter) {
+      // c = c.getNext();
+      // continue;
+      // }
       name = computeConverterName(c);
       if (name == null) {
         c = c.getNext();
@@ -234,14 +202,12 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       sbuf.append("\">");
       sbuf.append(computeConverterName(c));
       sbuf.append("</td>");
-      sbuf.append(LINE_SEP);  
+      sbuf.append(LINE_SEP);
       c = c.getNext();
     }
     sbuf.append("</tr>");
     sbuf.append(LINE_SEP);
   }
-  
-  
 
   /**
    * Returns the appropriate HTML footers.
@@ -263,7 +229,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
   public String doLayout(LoggingEvent event) {
     StringBuffer buf = new StringBuffer();
     handleTableClosing(buf);
-     
+
     boolean odd = true;
     if (((counter++) & 1) == 0) {
       odd = false;
@@ -271,7 +237,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
     String level = event.getLevel().toString().toLowerCase();
 
-    
     buf.append(LINE_SEP);
     buf.append("<tr class=\"");
     buf.append(level);
@@ -284,44 +249,20 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
     Converter c = head;
     while (c != null) {
-      if (c instanceof ThrowableHandlingConverter) {
-        ThrowableHandlingConverter converter = (ThrowableHandlingConverter)c;
-        if (converter.onNewLine(event)) {
-          buf.append("</tr>");
-          buf.append("<tr colspan=\"6\">");
-          appendThrowableAsHTML(event.getThrowableInformation().getThrowableStrRep(), buf);
-          //appendEventToBuffer(buf, c, event);
-          if (c.getNext() != null) {
-            //here we assume that when we exist the while loop,
-            //a </tr> tag is added.
-            buf.append("</tr>");
-            buf.append("<tr>");
-          }
-        }
-      } else {
-        appendEventToBuffer(buf, c, event);
-      }
+      appendEventToBuffer(buf, c, event);
       c = c.getNext();
     }
     buf.append("</tr>");
     buf.append(LINE_SEP);
 
-    // if the pattern chain handles throwables then no need to do it again here.
-    if (!chainHandlesThrowable) {
-      ThrowableInformation ti = event.getThrowableInformation();
-      if (ti != null) {
-        String[] s = ti.getThrowableStrRep();
-        if (s != null) {
-          buf.append("<tr><td class=\"Exception\" colspan=\"6\">");
-          appendThrowableAsHTML(s, buf);
-          buf.append("</td></tr>");
-          buf.append(LINE_SEP);
-        }
-      }
+    if (throwableRenderer.newLineRequired(event)) {
+      buf.append("<tr><td class=\"Exception\" colspan=\"6\">");
+      throwableRenderer.render(buf, event);
+      buf.append("</td></tr>");
     }
     return buf.toString();
   }
-  
+
   private void handleTableClosing(StringBuffer sbuf) {
     if (this.counter >= ROW_LIMIT) {
       counter = 0;
@@ -333,64 +274,18 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
       createTableHeader(sbuf);
     }
   }
-  
-  private void appendEventToBuffer(StringBuffer buf, Converter c, LoggingEvent event) {
+
+  private void appendEventToBuffer(StringBuffer buf, Converter c,
+      LoggingEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));
     buf.append("\">");
     buf.append(c.convert(event));
     buf.append("</td>");
-    buf.append(LINE_SEP);    
+    buf.append(LINE_SEP);
   }
 
-  /**
-   * Generate an internal CSS file.
-   * 
-   * @param buf The StringBuffer where the CSS file will be placed.
-   */
-  void getInternalCSS(StringBuffer buf) {
-
-    buf.append("<STYLE  type=\"text/css\">");
-    buf.append(LINE_SEP);
-    buf.append("table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TR.even { background: #FFFFFF; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TR.odd { background: #DADADA; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TR.warn TD.level, TR.error TD.level, TR.fatal TD.level {font-weight: bold; color: #FF4040 }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD.Thread { text-align: left; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD.Level { text-align: right; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD.Logger { text-align: left; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TR.header { background: #9090FF; color: #FFF; font-weight: bold; font-size: larger; }");
-    buf.append(LINE_SEP);
-
-    buf.append("TD.Exception { background: #C0C0F0; font-family: courier, monospace;}");
-    buf.append(LINE_SEP);
-
-    buf.append("</STYLE>");
-    buf.append(LINE_SEP);
-
-  }
-  
-  private String computeConverterName(Converter c) {    
+  private String computeConverterName(Converter c) {
     String className = c.getClass().getSimpleName();
     int index = className.indexOf("Converter");
     if (index == -1) {

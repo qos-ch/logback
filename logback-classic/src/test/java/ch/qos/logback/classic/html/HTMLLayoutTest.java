@@ -31,7 +31,7 @@ public class HTMLLayoutTest extends TestCase {
     appender.setContext(lc);
     layout = new HTMLLayout();
     layout.setContext(lc);
-    layout.setPattern("%level %thread %msg");
+    layout.setPattern("%level%thread%msg");
     layout.start();
     appender.setLayout(layout);
     logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -58,20 +58,18 @@ public class HTMLLayoutTest extends TestCase {
     Element trElement = tableElement.element("tr");
     List<Element> elementList = trElement.elements();
     assertEquals("Level", elementList.get(0).getText());
-    assertEquals("Literal", elementList.get(1).getText());
-    assertEquals("Thread", elementList.get(2).getText());
-    assertEquals("Literal", elementList.get(3).getText());
-    assertEquals("Message", elementList.get(4).getText());
+    assertEquals("Thread", elementList.get(1).getText());
+    assertEquals("Message", elementList.get(2).getText());
   }
 
   public void testAppendThrowable() throws Exception {
     StringBuffer buf = new StringBuffer();
     String[] strArray = { "test1", "test2" };
-    layout.appendThrowableAsHTML(strArray, buf);
+    layout.throwableRenderer.render(buf, strArray);
     // System.out.println(buf.toString());
     String[] result = buf.toString().split(HTMLLayout.LINE_SEP);
     assertEquals("test1", result[0]);
-    assertEquals(HTMLLayout.TRACE_PREFIX + "test2", result[1]);
+    assertEquals(ThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
   }
 
   public void testDoLayout() throws Exception {
@@ -79,25 +77,17 @@ public class HTMLLayoutTest extends TestCase {
     String result = layout.doLayout(le);
     Document doc = parseOutput(result);
     Element trElement = doc.getRootElement();
-    assertEquals(5, trElement.elements().size());
+    assertEquals(3, trElement.elements().size());
     {
       Element tdElement = (Element) trElement.elements().get(0);
       assertEquals("DEBUG", tdElement.getText());
     }
     {
       Element tdElement = (Element) trElement.elements().get(1);
-      assertEquals(" ", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(2);
       assertEquals("main", tdElement.getText());
     }
     {
-      Element tdElement = (Element) trElement.elements().get(3);
-      assertEquals(" ", tdElement.getText());
-    }
-    {
-      Element tdElement = (Element) trElement.elements().get(4);
+      Element tdElement = (Element) trElement.elements().get(2);
       assertEquals("test message", tdElement.getText());
     }
     // System.out.println(result);
@@ -130,8 +120,12 @@ public class HTMLLayoutTest extends TestCase {
   }
   
 //  public void testLog() {
-//    for (int i = 1; i <= 1000; i++) {
-//      logger.debug("test message" + i);
+//    for (int i = 1; i <= 10; i++) {
+//      if (i == 5 || i == 8) {
+//        logger.debug("test", new Exception("test exception"));
+//      } else {
+//        logger.debug("test message" + i);
+//      }
 //    }
 //  }
 
