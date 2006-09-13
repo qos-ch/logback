@@ -28,9 +28,13 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  * The content of the table columns are specified using a conversion pattern. 
  * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns.
- * Note that the pattern <em>%ex</em> used to display an Exception does not need
- * to be specified with this layout. An internal {@link ch.qos.logback.classic.html.ThrowableRenderer} is 
- * called to render the throwable.
+ * Note that the pattern <em>%ex</em> used to display an Exception is not the only way
+ * to display an Exception with this layout. 
+ * An internal {@link ch.qos.logback.classic.html.ThrowableRenderer} can be called 
+ * to render the throwable. If a ThrowableRenderer is specified, it is used to render
+ * the Exception on a new line. 
+ * If no such object is specified to the HTMLLayout, then one must add <em>%ex</em> 
+ * to the pattern to display Exceptions.
  * <p>
  * A user-specified external CSS file can be link to the html page. 
  * In case one does not want to custom the html output, an internal CSS
@@ -49,6 +53,7 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  *     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
  *       &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
  *     &lt;/layout&gt;
+ *     &lt;throwableRenderer class="ch.qos.logback.classic.html.ThrowableRenderer" /&gt;
  *    &lt;param name="From" value="sender.email@domain.net" /&gt;
  *    &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
  *    &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
@@ -82,7 +87,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
 
   private CssBuilder cssBuilder;
 
-  ThrowableRenderer throwableRenderer = new ThrowableRenderer();
+  ThrowableRenderer throwableRenderer;
 
   // counter keeping track of the rows output
   private long counter = 0;
@@ -219,10 +224,6 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     sbuf.append("<tr class=\"header\">");
     sbuf.append(LINE_SEP);
     while (c != null) {
-      // if (c instanceof ThrowableHandlingConverter) {
-      // c = c.getNext();
-      // continue;
-      // }
       name = computeConverterName(c);
       if (name == null) {
         c = c.getNext();
@@ -287,7 +288,7 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     buf.append("</tr>");
     buf.append(LINE_SEP);
 
-    if (throwableRenderer.newLineRequired(event)) {
+    if (throwableRenderer != null && event.getThrowableInformation() != null) {
       buf.append("<tr><td class=\"Exception\" colspan=\"6\">");
       throwableRenderer.render(buf, event);
       buf.append("</td></tr>");
@@ -327,4 +328,13 @@ public class HTMLLayout extends LayoutBase implements ClassicLayout {
     }
   }
 
+  public ThrowableRenderer getThrowableRenderer() {
+    return throwableRenderer;
+  }
+
+  public void setThrowableRenderer(ThrowableRenderer throwableRenderer) {
+    this.throwableRenderer = throwableRenderer;
+  }
+  
+  
 }

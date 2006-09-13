@@ -17,10 +17,6 @@ public class ThrowableRenderer {
   public void setThrowable(Throwable t) {
     this.throwable = t;
   }
-
-  public boolean newLineRequired(LoggingEvent event) {
-    return event.getThrowableInformation() != null;
-  }
   
   public void render(StringBuffer sbuf, String[] s) {
     if (s != null) {
