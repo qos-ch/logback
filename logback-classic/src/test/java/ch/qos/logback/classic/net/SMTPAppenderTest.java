@@ -46,7 +46,7 @@ public class SMTPAppenderTest extends TestCase {
       address = addressArray[0];
       assertEquals("sebastien.nospam@qos.ch", address.toString());
 
-      assertEquals("logging report", appender.getMessage().getSubject());
+      assertEquals("logging report", appender.getSubject());
 
       assertTrue(appender.isStarted());
 
