@@ -49,13 +49,11 @@
 							You can specify the remote host in the
 							configuration file like this:
 						</p>
-						<pre>
-&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
   ... 
-  &lt;param name="remoteHost" value="127.0.0.1" /&gt; 
+  <param name="remoteHost" value="127.0.0.1" /> 
   ...
-&lt;/appender&gt;
-						</pre>
+</appender></source> 
 					</answer>
 				</faq>
 				<faq id="socket_no_port">
@@ -74,13 +72,11 @@
 							You can specify the remote port in the
 							configuration file like this:
 						</p>
-						<pre>
-&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
   ... 
-  &lt;param name="port" value="4560" /&gt; 
+  <param name="port" value="4560" /> 
   ... 
-&lt;/appender&gt;
-						</pre>
+</appender></source>
 					</answer>
 				</faq>
 				<faq id="smtp_no_tp">
@@ -104,13 +100,11 @@
 							<code>TriggeringPolicy</code>
 							in the configuration file like this:
 						</p>
-						<pre>
-&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
   ... 
-  &lt;param name="port" value="4560"/&gt; 
+  <param name="port" value="4560"/> 
   ... 
-&lt;/appender&gt;
-						</pre>
+</appender></source>
 					</answer>
 				</faq>
 				<faq id="smtp_no_layout">
@@ -141,15 +135,13 @@
 							<code>Layout</code>
 							in the configuration file like this:
 						</p>
-						<pre>
-&lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
+						<source><appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
   ... 
-  &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-    &lt;param name="pattern" value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-  &lt;/layout&gt; 
+  <layout class="ch.qos.logback.classic.PatternLayout">
+    <param name="pattern" value="%-4relative [%thread] %-5level %class - %msg%n" />
+  </layout> 
   ... 
-&lt;/appender&gt;
-						</pre>
+</appender></source>
 					</answer>
 				</faq>
 				<faq id="sbtp_size_format">
