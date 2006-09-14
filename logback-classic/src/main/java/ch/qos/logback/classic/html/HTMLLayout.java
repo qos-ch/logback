@@ -28,19 +28,22 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  * The content of the table columns are specified using a conversion pattern. 
  * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns.
- * 
+ * <p>
  * Note that the pattern <em>%ex</em> used to display an Exception is not the only way
- * to display an Exception with this layout. 
- * 
- * An internal {@link ch.qos.logback.classic.html.IThrowableRenderer} can be called 
- * to render the throwable. 
+ * to display an Exception with this layout. If you use this pattern, a table column will
+ * be created to display the potential Exception's stacktrace.
+ * <p>
+ * However, a better solution is available in the form of implementations of the 
+ * {@link ch.qos.logback.classic.html.IThrowableRenderer}  interface.
+ * These implementations can be called and assigned to HTMLLayout to manage the display
+ * of anything related to Exceptions.
+ * <p>
  * By default, a {@link ch.qos.logback.classic.html.DefaultThrowableRenderer} 
- * is assigned to the HTMLLayout. It writes the Exception on a new table row. 
- * 
- * FIXME WRITE MORE ABOUT THIS.
- * 
- * In that case, then one must add <em>%ex</em> 
- * to the pattern to display Exceptions.
+ * is assigned to the HTMLLayout. It writes the Exception on a new table row, along
+ * with its stacktrace, in a easily readable manner.
+ * <p>
+ * If one wants to use the <em>&ex</em> pattern anyway, then a NOPThrowableRenderer
+ * can be specified in the configuration file.
  * <p>
  * A user-specified external CSS file can be linked to the html page. 
  * In case one does not want to customize the html output, an internal CSS style
@@ -59,7 +62,7 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  *     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
  *       &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
  *     &lt;/layout&gt;
- *     &lt;throwableRenderer class="ch.qos.logback.classic.html.ThrowableRenderer" /&gt;
+ *     &lt;throwableRenderer class="ch.qos.logback.classic.html.DefaultThrowableRenderer" /&gt;
  *    &lt;param name="From" value="sender.email@domain.net" /&gt;
  *    &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
  *    &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
@@ -72,8 +75,11 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  *   &lt;/root&gt;
  * &lt;/configuration&gt;
  *</pre>
- * 
- * 
+ * <p>
+ * In this configuration file, the <em>throwableRenderer</em> element specifies the default
+ * implementation of IThrowableRenderer. It could be omitted, but is showed for educationnal
+ * purposes.
+ * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
