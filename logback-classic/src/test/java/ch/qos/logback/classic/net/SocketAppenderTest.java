@@ -24,7 +24,6 @@ public class SocketAppenderTest extends TestCase {
   Logger logger;
 
   LoggerContext lc;
-  MockSocketServer mockSocketServer;
 
   public void setUp() throws Exception {
     lc = new LoggerContext();
