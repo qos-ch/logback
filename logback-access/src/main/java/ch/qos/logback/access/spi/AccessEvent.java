@@ -236,7 +236,7 @@ public class AccessEvent implements Serializable {
     if (contentLength == SENTINEL) {
       if (httpResponse != null) {
         if (httpResponse instanceof org.mortbay.jetty.Response) {
-          // NA
+          // TODO
         } else if (httpResponse instanceof com.caucho.server.connection.AbstractHttpResponse) {
           contentLength = ((com.caucho.server.connection.AbstractHttpResponse) httpResponse)
               .getContentLength();
