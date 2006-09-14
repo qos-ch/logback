@@ -75,7 +75,7 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
         return Long.valueOf(s).longValue() * multiplier;
       }
       catch (NumberFormatException e) {
-        addError("[" + s + "] is not in proper int form.");
+        addError("[" + s + "] is not in proper int form. For more info, please visit http://logback.qos.ch/codes.html#sbtp_size_format");
         addError("[" + value + "] not in expected format.", e);
       }
     }

@@ -1,30 +1,183 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
 
 <document>
 
-  <body>
+	<body>
 
-  <faqs title="Logback error messages and their meanings">
-      
-  <part id="Generalities">
-    <title>Generalities</title>
+		<faqs title="Logback error messages and their meanings">
+			<part id="Generalities">
+				<title>Generalities</title>
 
-    <faq id="tbr_fnp_not_set">
+				<faq id="tbr_fnp_not_set">
 
-      <question>The <b>FileNamePattern</b> option must be set before
-      using <code>TimeBasedRollingPolicy</code> or
-      <code>FixedWindowRollingPolicy</code>.
-      </question>
-      
-      <answer>
-        <p>The <b>FileNamePattern</b> option for both
-        <code>TimeBasedRollingPolicy</code> and
-        <code>FixedWindowRollingPolicy</code> is mandatory.
-        </p>
-      </answer>
+					<question>
+						The
+						<b>FileNamePattern</b>
+						option must be set before using
+						<code>TimeBasedRollingPolicy</code>
+						or
+						<code>FixedWindowRollingPolicy</code>
+						.
+					</question>
 
-    </faq>
-    </part>
-    </faqs>
-  </body>
+					<answer>
+						<p>
+							The
+							<b>FileNamePattern</b>
+							option for both
+							<code>TimeBasedRollingPolicy</code>
+							and
+							<code>FixedWindowRollingPolicy</code>
+							is mandatory.
+						</p>
+					</answer>
+
+				</faq>
+				<faq id="socket_no_host">
+					<question>
+						No remote host or address is set for
+						<code>SocketAppender</code>
+						.
+					</question>
+
+					<answer>
+						<p>
+							A remote host or address is mandatory for
+							SocketAppender.
+						</p>
+						<p>
+							You can specify the remote host in the
+							configuration file like this:
+						</p>
+						<pre>
+&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+  ... 
+  &lt;param name="remoteHost" value="127.0.0.1" /&gt; 
+  ...
+&lt;/appender&gt;
+						</pre>
+					</answer>
+				</faq>
+				<faq id="socket_no_port">
+					<question>
+						No remote port is set for
+						<code>SocketAppender</code>
+						.
+					</question>
+
+					<answer>
+						<p>
+							A remote port is mandatory for
+							SocketAppender.
+						</p>
+						<p>
+							You can specify the remote port in the
+							configuration file like this:
+						</p>
+						<pre>
+&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+  ... 
+  &lt;param name="port" value="4560" /&gt; 
+  ... 
+&lt;/appender&gt;
+						</pre>
+					</answer>
+				</faq>
+				<faq id="smtp_no_tp">
+					<question>
+						No
+						<code>TriggeringPolicy</code>
+						is set for appender
+					</question>
+
+					<answer>
+						<p>
+							A
+							<code>TriggeringPolicy</code>
+							is mandatory for
+							<code>SMTPAppender</code>
+							. It allows the appender to know when to
+							send the email to the specified address.
+						</p>
+						<p>
+							You can specify the
+							<code>TriggeringPolicy</code>
+							in the configuration file like this:
+						</p>
+						<pre>
+&lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"&gt;
+  ... 
+  &lt;param name="port" value="4560"/&gt; 
+  ... 
+&lt;/appender&gt;
+						</pre>
+					</answer>
+				</faq>
+				<faq id="smtp_no_layout">
+					<question>
+						No
+						<code>Layout</code>
+						is set for appender
+					</question>
+
+					<answer>
+						<p>
+							A
+							<code>Layout</code>
+							is mandatory for
+							<code>SMTPAppender</code>
+							. It allows the appender format the logging
+							events before sending the email. Two layouts
+							are often used with
+							<code>SMTPAppender</code>
+							:
+							<code>PatternLayout</code>
+							and
+							<code>HTMLLayout</code>
+							.
+						</p>
+						<p>
+							You can specify the
+							<code>Layout</code>
+							in the configuration file like this:
+						</p>
+						<pre>
+&lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
+  ... 
+  &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+    &lt;param name="pattern" value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
+  &lt;/layout&gt; 
+  ... 
+&lt;/appender&gt;
+						</pre>
+					</answer>
+				</faq>
+				<faq id="sbtp_size_format">
+					<question>
+						Specified number is not in proper int form, or
+						not expected format.
+					</question>
+
+					<answer>
+						<p>
+							When you specify the MaxFileSize to be used
+							by the SizeBasedRollingPolicy, logback
+							expects a rather precise format:
+						</p>
+						<ul>
+							<li>The number has to be an integer</li>
+							<li>
+								You can add 'KB', 'MB' or 'GB' after the
+								number.
+							</li>
+						</ul>
+						<p>
+							Here are some correct values: 500KB, 15MB,
+							2GB.
+						</p>
+					</answer>
+				</faq>
+			</part>
+		</faqs>
+	</body>
 </document>

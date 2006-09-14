@@ -164,12 +164,12 @@ public class SocketAppender extends AppenderBase {
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for appender" + name);
+      addError("No port was configured for appender" + name + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
     }
 
     if (address == null) {
       errorCount++;
-      addError("No remote address was configured for appender" + name);
+      addError("No remote address was configured for appender" + name + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
     }
 
     connect(address, port);
@@ -242,7 +242,7 @@ public class SocketAppender extends AppenderBase {
 
     if (address == null) {
       addError("No remote host is set for SocketAppender named \"" + this.name
-          + "\".");
+          + "\". For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
       return;
     }
 

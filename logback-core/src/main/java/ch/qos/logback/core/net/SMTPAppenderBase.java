@@ -133,7 +133,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     }
 
     if (this.layout == null) {
-      addError("No layout set for appender named [" + name + "].");
+      addError("No layout set for appender named [" + name + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
       return false;
     }
     return true;
