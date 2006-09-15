@@ -64,6 +64,7 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
     defaultConverterMap.put("l", NAConverter.class.getName());
     
     defaultConverterMap.put("m", RequestMethodConverter.class.getName());
+    defaultConverterMap.put("requestMethod", RequestMethodConverter.class.getName());
     
     defaultConverterMap.put("r", RequestURLConverter.class.getName());
     defaultConverterMap.put("requestURL", RequestURLConverter.class.getName());
@@ -73,12 +74,16 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
 
 
     defaultConverterMap.put("t", DateConverter.class.getName());
+    defaultConverterMap.put("date", DateConverter.class.getName());
 
     defaultConverterMap.put("u", RemoteUserConverter.class.getName());
+    defaultConverterMap.put("user", RemoteUserConverter.class.getName());
     
     defaultConverterMap.put("U", RequestURIConverter.class.getName());
+    defaultConverterMap.put("requestURI", RequestURIConverter.class.getName());
     
     defaultConverterMap.put("v", ServerNameConverter.class.getName());
+    defaultConverterMap.put("server", ServerNameConverter.class.getName());
     
   }
   
@@ -90,7 +95,7 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
   /**
    * Returns the default converter map for this instance.
    */
-  public Map getDefaultConverterMap() {
+  public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
   }
 
