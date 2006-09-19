@@ -24,13 +24,13 @@ import java.io.File;
  * &lt;configuration&gt;
  *    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
  *    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"&gt;
- *      &lt;param name="ActiveFile" value="outputFile.log" /&gt;
+ *      &lt;param name="ActiveFileName" value="outputFile.log" /&gt;
  *      &lt;param name="FileNamePattern" value="logFile.%i.log" /&gt;
  *      &lt;param name="MinIndex" value="1" /&gt;
  *      &lt;param name="MaxIndex" value="3" /&gt;
  *    &lt;/rollingPolicy&gt;
  *
- *    <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedRollingPolicy"&gt;
+ *    <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"&gt;
  *      &lt;param name="MaxFileSize" value="5MB" /&gt;
  *    &lt;/triggeringPolicy&gt;</b>
  *
