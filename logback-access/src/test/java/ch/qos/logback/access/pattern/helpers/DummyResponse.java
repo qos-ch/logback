@@ -2,8 +2,9 @@ package ch.qos.logback.access.pattern.helpers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -11,19 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DummyResponse implements HttpServletResponse {
 
-  Hashtable<String, String> headerNames;
-  
+  Map<String, String> headerMap;
   public DummyResponse() {
-    headerNames = new Hashtable<String, String>();
-    headerNames.put("headerName1", "headerValue1");
-    headerNames.put("headerName2", "headerValue2");
-  }
-  
-  public void addCookie(Cookie arg0) {
-    
+    headerMap = new HashMap<String, String>();
+    headerMap.put("headerName1", "headerValue1");
+    headerMap.put("headerName2", "headerValue2");
   }
 
-  public void addDateHeader(String arg0, long arg1) {   
+  public void addCookie(Cookie arg0) {
+
+  }
+
+  public void addDateHeader(String arg0, long arg1) {
   }
 
   public void addHeader(String arg0, String arg1) {
@@ -52,7 +52,7 @@ public class DummyResponse implements HttpServletResponse {
     return null;
   }
 
-  public void sendError(int arg0) throws IOException {   
+  public void sendError(int arg0) throws IOException {
   }
 
   public void sendError(int arg0, String arg1) throws IOException {
@@ -64,19 +64,19 @@ public class DummyResponse implements HttpServletResponse {
   public void setDateHeader(String arg0, long arg1) {
   }
 
-  public void setHeader(String arg0, String arg1) { 
+  public void setHeader(String arg0, String arg1) {
   }
 
-  public void setIntHeader(String arg0, int arg1) { 
+  public void setIntHeader(String arg0, int arg1) {
   }
 
-  public void setStatus(int arg0) { 
+  public void setStatus(int arg0) {
   }
 
-  public void setStatus(int arg0, String arg1) { 
+  public void setStatus(int arg0, String arg1) {
   }
 
-  public void flushBuffer() throws IOException { 
+  public void flushBuffer() throws IOException {
   }
 
   public int getBufferSize() {
@@ -110,10 +110,10 @@ public class DummyResponse implements HttpServletResponse {
   public void reset() {
   }
 
-  public void resetBuffer() { 
+  public void resetBuffer() {
   }
 
-  public void setBufferSize(int arg0) { 
+  public void setBufferSize(int arg0) {
   }
 
   public void setCharacterEncoding(String arg0) {
@@ -122,10 +122,14 @@ public class DummyResponse implements HttpServletResponse {
   public void setContentLength(int arg0) {
   }
 
-  public void setContentType(String arg0) {  
+  public void setContentType(String arg0) {
   }
 
   public void setLocale(Locale arg0) {
+  }
+  
+  public String getHeader(String key) {
+    return headerMap.get(key);
   }
 
 }

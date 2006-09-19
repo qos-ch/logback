@@ -22,7 +22,8 @@ public class ResponseHeaderConverter extends AccessConverter {
       return "INACTIVE_REPONSE_HEADER_CONV";
     }
     
-    return null;
+    return accessEvent.getResponseHeader(key);
+    //return null;
     
 //    HttpServletResponse response = accessEvent.getHttpResponse();
 //

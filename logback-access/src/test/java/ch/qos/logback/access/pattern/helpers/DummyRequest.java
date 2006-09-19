@@ -18,13 +18,13 @@ import javax.servlet.http.HttpSession;
 public class DummyRequest implements HttpServletRequest {
 
   Hashtable<String, String> headerNames;
-  
+
   public DummyRequest() {
     headerNames = new Hashtable<String, String>();
     headerNames.put("headerName1", "headerValue1");
     headerNames.put("headerName2", "headerValue2");
   }
-  
+
   public String getAuthType() {
     return null;
   }
@@ -35,7 +35,7 @@ public class DummyRequest implements HttpServletRequest {
 
   public Cookie[] getCookies() {
     Cookie cookie = new Cookie("testName", "testCookie");
-    return new Cookie[] {cookie};
+    return new Cookie[] { cookie };
   }
 
   public long getDateHeader(String arg0) {

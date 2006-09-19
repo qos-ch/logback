@@ -22,7 +22,7 @@ public class RequestHeaderConverter extends AccessConverter {
       return "INACTIVE_HEADER_CONV";
     }
     
-    return accessEvent.getHeader(key);
+    return accessEvent.getRequestHeader(key);
   }
 
 }

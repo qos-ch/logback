@@ -133,14 +133,13 @@ public class ConverterTest extends TestCase {
   }
 
   public void testResponseHeaderConverter() {
-    // TODO
-    // ResponseHeaderConverter converter = new ResponseHeaderConverter();
-    // List<String> optionList = new ArrayList<String>();
-    // optionList.add("headerName1");
-    // converter.setOptionList(optionList);
-    // converter.start();
-    // String result = converter.convert(event);
-    // assertEquals(request.getHeader("headerName1"), result);
+     ResponseHeaderConverter converter = new ResponseHeaderConverter();
+     List<String> optionList = new ArrayList<String>();
+     optionList.add("headerName1");
+     converter.setOptionList(optionList);
+     converter.start();
+     String result = converter.convert(event);
+     assertEquals(request.getHeader("headerName1"), result);
   }
 
   public void testServerNameConverter() {

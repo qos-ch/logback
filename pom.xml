@@ -85,7 +85,7 @@
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty</artifactId>
-				<version>6.0.0beta9</version>
+				<version>6.0.0</version>
 			</dependency>
 	
 			<dependency>
@@ -97,7 +97,7 @@
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>servlet-api-2.5</artifactId>
-				<version>6.0.0beta9</version>
+				<version>6.0.0</version>
 			</dependency>
 		
 		</dependencies>

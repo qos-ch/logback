@@ -9,6 +9,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mortbay.jetty.Response;
+
 import ch.qos.logback.access.pattern.AccessConverter;
 
 public class AccessEvent implements Serializable {
@@ -30,7 +32,7 @@ public class AccessEvent implements Serializable {
   String method;
   String serverName;
   
-  Map headerMap;
+  Map requestHeaderMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
@@ -169,15 +171,15 @@ public class AccessEvent implements Serializable {
     return remoteAddr;
   }
 
-  public String getHeader(String key) {
+  public String getRequestHeader(String key) {
     String result = null;
-    if (headerMap == null) {
+    if (requestHeaderMap == null) {
       if (httpRequest != null) {
-        buildHeaderMap();
-        result = (String) headerMap.get(key);
+        buildRequestHeaderMap();
+        result = (String) requestHeaderMap.get(key);
       }
     } else {
-      result = (String) headerMap.get(key);
+      result = (String) requestHeaderMap.get(key);
     }
 
     if (result != null) {
@@ -187,15 +189,26 @@ public class AccessEvent implements Serializable {
     }
   }
 
-  public void buildHeaderMap() {
-    headerMap = new HashMap();
+  public void buildRequestHeaderMap() {
+    requestHeaderMap = new HashMap();
     Enumeration e = httpRequest.getHeaderNames();
     while(e.hasMoreElements()) {
       String key = (String) e.nextElement();
-      headerMap.put(key, httpRequest.getHeader(key));
+      requestHeaderMap.put(key, httpRequest.getHeader(key));
     }
   }
-
+  
+  public String getResponseHeader(String key) {
+    //TODO buildMap
+    if (httpResponse instanceof org.mortbay.jetty.Response) {
+      return ((org.mortbay.jetty.Response)httpResponse).getHeader(key);
+    }
+    if (httpResponse instanceof ch.qos.logback.access.pattern.helpers.DummyResponse) {
+      return ((ch.qos.logback.access.pattern.helpers.DummyResponse)httpResponse).getHeader(key);
+    }
+    
+    return null;
+  }
   /**
    * Attributes are not serialized
    * 
