@@ -9,8 +9,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.jetty.Response;
-
 import ch.qos.logback.access.pattern.AccessConverter;
 
 public class AccessEvent implements Serializable {
@@ -31,12 +29,14 @@ public class AccessEvent implements Serializable {
   String protocol;
   String method;
   String serverName;
-  
-  Map requestHeaderMap;
+
+  Map<String, Object> requestHeaderMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
   int localPort = SENTINEL;
+
+  ServerAdapter serverAdapter;
 
   /**
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -44,13 +44,12 @@ public class AccessEvent implements Serializable {
    */
   private long timeStamp = 0;
 
- 
-
   public AccessEvent(HttpServletRequest httpRequest,
-      HttpServletResponse httpResponse) {
+      HttpServletResponse httpResponse, ServerAdapter adapter) {
     this.httpRequest = httpRequest;
     this.httpResponse = httpResponse;
     this.timeStamp = System.currentTimeMillis();
+    this.serverAdapter = adapter;
   }
 
   public long getTimeStamp() {
@@ -159,7 +158,6 @@ public class AccessEvent implements Serializable {
     return serverName;
   }
 
-
   public String getRemoteAddr() {
     if (remoteAddr == null) {
       if (httpRequest != null) {
@@ -190,25 +188,18 @@ public class AccessEvent implements Serializable {
   }
 
   public void buildRequestHeaderMap() {
-    requestHeaderMap = new HashMap();
+    requestHeaderMap = new HashMap<String, Object>();
     Enumeration e = httpRequest.getHeaderNames();
-    while(e.hasMoreElements()) {
+    while (e.hasMoreElements()) {
       String key = (String) e.nextElement();
       requestHeaderMap.put(key, httpRequest.getHeader(key));
     }
   }
-  
+
   public String getResponseHeader(String key) {
-    //TODO buildMap
-    if (httpResponse instanceof org.mortbay.jetty.Response) {
-      return ((org.mortbay.jetty.Response)httpResponse).getHeader(key);
-    }
-    if (httpResponse instanceof ch.qos.logback.access.pattern.helpers.DummyResponse) {
-      return ((ch.qos.logback.access.pattern.helpers.DummyResponse)httpResponse).getHeader(key);
-    }
-    
-    return null;
+    return serverAdapter.getResponseHeader(key);
   }
+
   /**
    * Attributes are not serialized
    * 
@@ -248,15 +239,20 @@ public class AccessEvent implements Serializable {
   public long getContentLength() {
     if (contentLength == SENTINEL) {
       if (httpResponse != null) {
-        if (httpResponse instanceof org.mortbay.jetty.Response) {
-          // TODO
-        } else if (httpResponse instanceof com.caucho.server.connection.AbstractHttpResponse) {
-          contentLength = ((com.caucho.server.connection.AbstractHttpResponse) httpResponse)
-              .getContentLength();
-        } else if (httpResponse instanceof org.apache.catalina.connector.Response) {
-          contentLength = ((org.apache.catalina.connector.Response) httpResponse)
-              .getContentLength();
-        }
+        return serverAdapter.getContentLength();
+        // if (httpResponse instanceof org.mortbay.jetty.Response) {
+        // // TODO
+        // } else if (httpResponse instanceof
+        // com.caucho.server.connection.AbstractHttpResponse) {
+        // contentLength = ((com.caucho.server.connection.AbstractHttpResponse)
+        // httpResponse)
+        // .getContentLength();
+        // } else if (httpResponse instanceof
+        // org.apache.catalina.connector.Response) {
+        // contentLength = ((org.apache.catalina.connector.Response)
+        // httpResponse)
+        // .getContentLength();
+        // }
       }
     }
     return contentLength;
@@ -265,15 +261,19 @@ public class AccessEvent implements Serializable {
   public int getStatusCode() {
     if (statusCode == SENTINEL) {
       if (httpResponse != null) {
-        if (httpResponse instanceof org.mortbay.jetty.Response) {
-          statusCode = ((org.mortbay.jetty.Response) httpResponse).getStatus();
-        } else if (httpResponse instanceof com.caucho.server.connection.AbstractHttpResponse) {
-          statusCode = ((com.caucho.server.connection.AbstractHttpResponse) httpResponse)
-              .getStatusCode();
-        } else if (httpResponse instanceof org.apache.catalina.connector.Response) {
-          statusCode = ((org.apache.catalina.connector.Response) httpResponse)
-              .getStatus();
-        }
+        return serverAdapter.getStatusCode();
+        // if (httpResponse instanceof org.mortbay.jetty.Response) {
+        // statusCode = ((org.mortbay.jetty.Response) httpResponse).getStatus();
+        // } else if (httpResponse instanceof
+        // com.caucho.server.connection.AbstractHttpResponse) {
+        // statusCode = ((com.caucho.server.connection.AbstractHttpResponse)
+        // httpResponse)
+        // .getStatusCode();
+        // } else if (httpResponse instanceof
+        // org.apache.catalina.connector.Response) {
+        // statusCode = ((org.apache.catalina.connector.Response) httpResponse)
+        // .getStatus();
+        // }
       }
     }
     return statusCode;
@@ -287,5 +287,9 @@ public class AccessEvent implements Serializable {
 
     }
     return localPort;
+  }
+
+  public ServerAdapter getServerAdapter() {
+    return serverAdapter;
   }
 }

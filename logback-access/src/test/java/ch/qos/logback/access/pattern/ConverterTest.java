@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 import ch.qos.logback.access.pattern.helpers.DummyRequest;
 import ch.qos.logback.access.pattern.helpers.DummyResponse;
+import ch.qos.logback.access.pattern.helpers.DummyValuesAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 
 public class ConverterTest extends TestCase {
@@ -33,7 +34,10 @@ public class ConverterTest extends TestCase {
   }
 
   public void testContentLengthConverter() {
-    // TODO when AccessEvent has been modified
+    ContentLengthConverter converter = new ContentLengthConverter();
+    converter.start();
+    String result = converter.convert(event);
+    assertEquals(Long.toString(event.getServerAdapter().getContentLength()), result);
   }
 
   public void testDateConverter() {
@@ -150,11 +154,15 @@ public class ConverterTest extends TestCase {
   }
   
   public void testStatusCodeConverter() {
-    //TODO 
+    StatusCodeConverter converter = new StatusCodeConverter();
+    converter.start();
+    String result = converter.convert(event);
+    assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
   }
 
   private AccessEvent createEvent() {
-    AccessEvent ae = new AccessEvent(request, response);
+    DummyValuesAdapter dummyAdapter = new DummyValuesAdapter(request, response);
+    AccessEvent ae = new AccessEvent(request, response, dummyAdapter);
     return ae;
   }
 

@@ -27,7 +27,8 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   String filename;
 
   public void log(Request jettyRequest, Response jettyResponse) {
-    AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse);
+    JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest, jettyResponse);
+    AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse, adapter);
     // TODO better exception handling
     aai.appendLoopOnAppenders(accessEvent);
   }
