@@ -4,6 +4,7 @@ import static ch.qos.logback.core.Layout.LINE_SEP;
 import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableInformation;
+import ch.qos.logback.core.html.IThrowableRenderer;
 
 public class DefaultThrowableRenderer implements IThrowableRenderer {
   
@@ -37,7 +38,8 @@ public class DefaultThrowableRenderer implements IThrowableRenderer {
     }
   }
   
-  public void render(StringBuffer sbuf, LoggingEvent event) {
+  public void render(StringBuffer sbuf, Object eventObject) {
+    LoggingEvent event = (LoggingEvent)eventObject;
     ThrowableInformation ti = event.getThrowableInformation();
     if (ti != null) {
       render(sbuf, ti.getThrowableStrRep());

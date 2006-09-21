@@ -66,7 +66,7 @@ public class HTMLLayoutTest extends TestCase {
   public void testAppendThrowable() throws Exception {
     StringBuffer buf = new StringBuffer();
     String[] strArray = { "test1", "test2" };
-    DefaultThrowableRenderer renderer = (DefaultThrowableRenderer)layout.throwableRenderer;
+    DefaultThrowableRenderer renderer = (DefaultThrowableRenderer)layout.getThrowableRenderer();
     renderer.render(buf, strArray);
     System.out.println(buf.toString());
     String[] result = buf.toString().split(HTMLLayout.LINE_SEP);

@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.helpers;
+package ch.qos.logback.core.helpers;
 
 import static ch.qos.logback.core.Layout.LINE_SEP;
 
