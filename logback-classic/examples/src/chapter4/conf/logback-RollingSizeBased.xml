@@ -1,0 +1,30 @@
+<configuration>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<param name="ActiveFileName" value="testFile.log" />
+			<param name="FileNamePattern" value="testFile.%i.log" />
+			<param name="MinIndex" value="1" />
+			<param name="MaxIndex" value="3" />
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<param name="MaxFileSize" value="5MB" />
+		</triggeringPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<param name="Pattern"
+				value="%-4relative [%thread] %-5level %class - %msg%n" />
+		</layout>
+	</appender>
+
+
+
+	<root>
+		<level value="debug" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
+
