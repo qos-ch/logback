@@ -30,6 +30,14 @@
 							<code>FixedWindowRollingPolicy</code>
 							is mandatory.
 						</p>
+						<p>
+							See the
+							<a
+								href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+								FixedWindowRollingPolicy javadoc
+							</a>
+							for more information.
+						</p>
 					</answer>
 
 				</faq>
@@ -49,11 +57,15 @@
 							You can specify the remote host in the
 							configuration file like this:
 						</p>
-						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
-  ... 
-  <param name="remoteHost" value="127.0.0.1" /> 
+						<source>
+<appender name="SOCKET"
+  class="ch.qos.logback.classic.net.SocketAppender">
   ...
-</appender></source> 
+  <param name="remoteHost"
+    value="127.0.0.1" />
+  ...
+</appender>
+						</source>
 					</answer>
 				</faq>
 				<faq id="socket_no_port">
@@ -72,39 +84,14 @@
 							You can specify the remote port in the
 							configuration file like this:
 						</p>
-						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
-  ... 
-  <param name="port" value="4560" /> 
-  ... 
-</appender></source>
-					</answer>
-				</faq>
-				<faq id="smtp_no_tp">
-					<question>
-						No
-						<code>TriggeringPolicy</code>
-						is set for appender
-					</question>
-
-					<answer>
-						<p>
-							A
-							<code>TriggeringPolicy</code>
-							is mandatory for
-							<code>SMTPAppender</code>
-							. It allows the appender to know when to
-							send the email to the specified address.
-						</p>
-						<p>
-							You can specify the
-							<code>TriggeringPolicy</code>
-							in the configuration file like this:
-						</p>
-						<source><appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
-  ... 
-  <param name="port" value="4560"/> 
-  ... 
-</appender></source>
+						<source>
+<appender name="SOCKET"
+  class="ch.qos.logback.classic.net.SocketAppender">
+  ...
+  <param name="port" value="4560" />
+  ...
+</appender>
+						</source>
 					</answer>
 				</faq>
 				<faq id="smtp_no_layout">
@@ -135,13 +122,31 @@
 							<code>Layout</code>
 							in the configuration file like this:
 						</p>
-						<source><appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
-  ... 
-  <layout class="ch.qos.logback.classic.PatternLayout">
-    <param name="pattern" value="%-4relative [%thread] %-5level %class - %msg%n" />
-  </layout> 
-  ... 
-</appender></source>
+						<source>
+<appender name="SMTP"
+    class="ch.qos.logback.classic.net.SMTPAppender">
+  ...
+  <layout
+    class="ch.qos.logback.classic.PatternLayout">
+  <param name="pattern"
+    value="%-4relative [%thread] %-5level %class - %msg%n" />
+  </layout>
+  ...
+</appender>
+						</source>
+						<p>
+							You can see more examples in the
+							<a
+								href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/html/HTMLLayout.html">
+								HTMLLayout javadoc
+							</a>
+							and the
+							<a
+								href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/PatternLayout.html">
+								PatternLayout javadoc
+							</a>
+							.
+						</p>
 					</answer>
 				</faq>
 				<faq id="sbtp_size_format">
@@ -166,6 +171,84 @@
 						<p>
 							Here are some correct values: 500KB, 15MB,
 							2GB.
+						</p>
+					</answer>
+				</faq>
+				<faq id="rfa_no_tp">
+					<question>
+						No <code>TriggeringPolicy</code> was set for the
+						<code>RollingFileAppender</code>.
+					</question>
+
+					<answer>
+						<p>
+							The <code>RollingFileAppender</code> must be set up with
+							a <code>TriggeringPolicy</code>. It permits the Appender
+							to know when the rollover must be activated.
+						</p>
+						<p>
+							To find more information about
+							<code>TriggeringPolicy</code> objects, please read the
+							following javadocs:
+						</p>
+						<ul>
+							<li>
+								<a
+									href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
+									<code>SizeBasedTriggeringPolicy</code>
+								</a>
+							</li>
+							<li>
+								<a
+									href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+									<code>TimeBasedRollingPolicy</code>
+								</a>
+							</li>
+						</ul>
+						<p>
+							Please note that the <code>TimeBasedRollingPolicy</code>
+							is a TriggeringPolicy
+							<em>and</em>
+							and <code>RollingPolicy</code> at the same time.
+						</p>
+					</answer>
+				</faq>
+				<faq id="rfa_no_rp">
+					<question>
+						No <code>RollingPolicy</code> was set for the
+						<code>RollingFileAppender</code>.
+					</question>
+
+					<answer>
+						<p>
+							The <code>RollingFileAppender</code> must be set up with
+							a <code>RollingPolicy</code>. It permits the Appender
+							to know what to do when a rollover is requested.
+						</p>
+						<p>
+							To find more information about
+							<code>RollingPolicy</code> objects, please read the
+							following javadocs:
+						</p>
+						<ul>
+							<li>
+								<a
+									href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+									<code>FixedWindowRollingPolicy</code>
+								</a>
+							</li>
+							<li>
+								<a
+									href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+									<code>TimeBasedRollingPolicy</code>
+								</a>
+							</li>
+						</ul>
+						<p>
+							Please note that the <code>TimeBasedRollingPolicy</code>
+							is a <code>TriggeringPolicy</code>
+							<em>and</em>
+							and RollingPolicy at the same time.
 						</p>
 					</answer>
 				</faq>

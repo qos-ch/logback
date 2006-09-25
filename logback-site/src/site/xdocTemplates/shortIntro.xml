@@ -963,7 +963,8 @@ logger.debug("The new entry is {}.", entry);</div>
 		</p>
 
 
-		<div class="source">logger.debug("Value {} was inserted between {} and {}.", new Object[] {newVal, below, above});</div>
+		<div class="source">Object[] paramArray = {newVal, below, above};
+logger.debug("Value {} was inserted between {} and {}.", paramArray);</div>
 
     <h3>Configuration</h3>
 
