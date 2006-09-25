@@ -95,6 +95,7 @@ public class HTMLLayout extends HTMLLayoutBase implements ClassicLayout {
    */
   public HTMLLayout() {
     pattern = DEFAULT_CONVERSION_PATTERN;
+    throwableRenderer = new DefaultThrowableRenderer();
   }
   
   protected Map<String, String> getDefaultConverterMap() {
