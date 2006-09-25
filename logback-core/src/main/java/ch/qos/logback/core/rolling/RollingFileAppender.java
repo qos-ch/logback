@@ -73,7 +73,8 @@ public class RollingFileAppender extends FileAppender {
 
   public void start() {
     if (triggeringPolicy == null) {
-      addWarn("Please set a TriggeringPolicy for the RollingFileAppender named "+ getName());
+      addWarn("No TriggeringPolicy was set for the RollingFileAppender named "+ getName());
+      addWarn("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_tp");
       return;
     }
 
@@ -87,7 +88,8 @@ public class RollingFileAppender extends FileAppender {
       activeFile = new File(afn);
       super.start();
     } else {
-      addWarn("Please set a rolling policy");
+      addWarn("No RollingPolicy was set for the RollingFileAppender named "+ getName());
+      addWarn("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_rp");
     }
   }
 

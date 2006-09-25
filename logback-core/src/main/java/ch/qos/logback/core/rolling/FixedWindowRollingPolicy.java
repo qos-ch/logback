@@ -53,7 +53,7 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
   static final String FNP_NOT_SET = "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
-  static final String SEE_FNP_NOT_SET = "See also http://www.logback.com/doc/codes.html#tbr_fnp_not_set";
+  static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   int maxIndex;
   int minIndex;
   RenameUtil util = new RenameUtil();
