@@ -10,10 +10,6 @@
 
 package ch.qos.logback.classic.db;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 /**
@@ -48,25 +44,5 @@ public class DBHelper {
       }
     }
     return mask;
-  }
-
-  static public void closeConnection(Connection connection) {
-    if (connection != null) {
-      try {
-        connection.close();
-      } catch (SQLException sqle) {
-        // static utility classes should not log without an explicit repository
-        // reference
-      }
-    }
-  }
-
-  public static void closeStatement(Statement statement) {
-    if (statement != null) {
-      try {
-        statement.close();
-      } catch (SQLException sqle) {
-      }
-    }
   }
 }
