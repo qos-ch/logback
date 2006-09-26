@@ -53,7 +53,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
   }
 
   /**
-   * @see org.apache.log4j.db.ConnectionSource#getConnection()
+   * @see ch.qos.logback.classic.db.ConnectionSource#getConnection()
    */
   public Connection getConnection() throws SQLException {
     if (dataSource == null) {

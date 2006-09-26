@@ -23,7 +23,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 /**
  *  The <id>ConnectionSource</id> interface provides a pluggable means of
- *  transparently obtaining JDBC {@link java.sql.Connection}s for log4j classes
+ *  transparently obtaining JDBC {@link java.sql.Connection}s for logback classes
  *  that require the use of a {@link java.sql.Connection}.
  *
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>

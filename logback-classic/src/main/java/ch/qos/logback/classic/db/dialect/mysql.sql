@@ -1,7 +1,6 @@
-# This SQL script creates the required tables by org.apache.log4j.db.DBAppender and 
-# org.apache.log4j.db.DBReceiver.
+# This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender.
 #
-# It is intended for MySQL databases. It has been tested on MySQL 4.1.1 with 
+# It is intended for MySQL databases. It has been tested on MySQL 5.0.22 with 
 # INNODB tables.
 
 
@@ -15,12 +14,10 @@ COMMIT;
 BEGIN;
 CREATE TABLE logging_event 
   (
-    sequence_number BIGINT NOT NULL,
-    timestamp         BIGINT NOT NULL,
-    rendered_message  TEXT NOT NULL,
+    timestmp         BIGINT NOT NULL,
+   	formatted_message  TEXT NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
-    ndc               TEXT,
     thread_name       VARCHAR(254),
     reference_flag    SMALLINT,
     caller_filename   VARCHAR(254) NOT NULL,

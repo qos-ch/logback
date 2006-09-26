@@ -1,5 +1,5 @@
 // This SQL script creates the required tables by
-// org.apache.log4j.db.DBAppender and org.apache.log4j.db.DBReceiver.
+// ch.qos.logback.classic.db.DBAppender.
 //
 // It is intended for HSQLDB. 
 //
@@ -11,17 +11,15 @@ DROP TABLE logging_event IF EXISTS;
 
 CREATE TABLE logging_event 
   (
-    sequence_number   BIGINT NOT NULL,
-    timestamp         BIGINT NOT NULL,
-    rendered_message  LONGVARCHAR NOT NULL,
-    logger_name       VARCHAR NOT NULL,
-    level_string      VARCHAR NOT NULL,
-    ndc               LONGVARCHAR,
-    thread_name       VARCHAR,
+    timestmp         BIGINT NOT NULL,
+    formatted_message  LONGVARCHAR NOT NULL,
+    logger_name       VARCHAR(256) NOT NULL,
+    level_string      VARCHAR(256) NOT NULL,
+    thread_name       VARCHAR(256),
     reference_flag    SMALLINT,
-    caller_filename   VARCHAR, 
-    caller_class      VARCHAR, 
-    caller_method     VARCHAR, 
+    caller_filename   VARCHAR(256), 
+    caller_class      VARCHAR(256), 
+    caller_method     VARCHAR(256), 
     caller_line       CHAR(4), 
     event_id          INT NOT NULL IDENTITY
   );
@@ -40,7 +38,7 @@ CREATE TABLE logging_event_exception
   (
     event_id         INT NOT NULL,
     i                SMALLINT NOT NULL,
-    trace_line       VARCHAR NOT NULL,
+    trace_line       VARCHAR(256) NOT NULL,
     PRIMARY KEY(event_id, i),
     FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );

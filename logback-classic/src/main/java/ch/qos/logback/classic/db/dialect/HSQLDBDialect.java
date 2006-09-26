@@ -12,7 +12,7 @@ package ch.qos.logback.classic.db.dialect;
 /** 
  * The HSQLDB dialect. 
  * 
- * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
+ * @author Ceki G&uuml;lc&uuml;
 */ 
 public class HSQLDBDialect implements SQLDialect { 
  public static final String SELECT_CURRVAL = "CALL IDENTITY()"; 

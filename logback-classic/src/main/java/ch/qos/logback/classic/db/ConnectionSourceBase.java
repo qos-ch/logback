@@ -48,7 +48,7 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
     try {
       Connection connection = getConnection();
       if (connection == null) {
-        addWarn("Could not get a conneciton");
+        addWarn("Could not get a connection");
         return;
       }
       DatabaseMetaData meta = connection.getMetaData();

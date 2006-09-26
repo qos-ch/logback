@@ -147,7 +147,6 @@ public class DBAppender extends AppenderBase {
   boolean cnxSupportsGetGeneratedKeys = false;
   boolean cnxSupportsBatchUpdates = false;
   SQLDialect sqlDialect;
-  boolean locationInfo = false;
 
   public DBAppender() {
   }

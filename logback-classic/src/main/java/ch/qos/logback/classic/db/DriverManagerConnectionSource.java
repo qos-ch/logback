@@ -71,7 +71,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
         Class.forName(driverClass);
         discoverConnnectionProperties();
       } else {
-        addError("WARNING: No JDBC driver specified for log4j DriverManagerConnectionSource.");
+        addError("WARNING: No JDBC driver specified for logback DriverManagerConnectionSource.");
       }
     } catch (final ClassNotFoundException cnfe) {
       addError("Could not load JDBC driver class: " + driverClass, cnfe);
@@ -79,7 +79,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
   }
 
   /**
-   * @see org.apache.log4j.db.ConnectionSource#getConnection()
+   * @see ch.qos.logback.classic.db.ConnectionSource#getConnection()
    */
   public Connection getConnection() throws SQLException {
     if (getUser() == null) {
