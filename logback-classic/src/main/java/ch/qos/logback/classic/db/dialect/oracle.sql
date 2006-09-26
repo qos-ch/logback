@@ -1,5 +1,4 @@
--- This SQL script creates the required tables by org.apache.log4j.db.DBAppender and 
--- org.apache.log4j.db.DBReceiver.
+-- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 --
 -- It is intended for Oracle databases.
 
