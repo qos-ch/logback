@@ -31,5 +31,4 @@ public class JettyServerAdapter implements ServerAdapter {
   public String getResponseHeader(String key) {
     return response.getHeader(key);
   }
-
 }

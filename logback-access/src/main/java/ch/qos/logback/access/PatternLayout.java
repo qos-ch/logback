@@ -17,6 +17,7 @@ import ch.qos.logback.access.pattern.DateConverter;
 import ch.qos.logback.access.pattern.LineSeparatorConverter;
 import ch.qos.logback.access.pattern.LocalIPAddressConverter;
 import ch.qos.logback.access.pattern.NAConverter;
+import ch.qos.logback.access.pattern.PostContentConverter;
 import ch.qos.logback.access.pattern.RemoteHostConverter;
 import ch.qos.logback.access.pattern.RemoteIPAddressConverter;
 import ch.qos.logback.access.pattern.RemoteUserConverter;
@@ -49,8 +50,6 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
     defaultConverterMap.put("b", ContentLengthConverter.class.getName());
     defaultConverterMap.put("B", ContentLengthConverter.class.getName());
     defaultConverterMap.put("bytesSent", ContentLengthConverter.class.getName());
-    
-    
 
     defaultConverterMap.put("h", RemoteHostConverter.class.getName());
     defaultConverterMap.put("clientHost", RemoteHostConverter.class.getName());
@@ -84,6 +83,9 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
     
     defaultConverterMap.put("v", ServerNameConverter.class.getName());
     defaultConverterMap.put("server", ServerNameConverter.class.getName());
+    
+    defaultConverterMap.put("p", PostContentConverter.class.getName());
+    defaultConverterMap.put("post", PostContentConverter.class.getName());
     
   }
   

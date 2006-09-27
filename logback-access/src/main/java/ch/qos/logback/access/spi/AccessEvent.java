@@ -279,6 +279,20 @@ public class AccessEvent implements Serializable {
     return statusCode;
   }
 
+  public String getPostContent() {
+    String content = null;
+    try {
+      content = Util.readToString(httpRequest.getInputStream());
+    } catch (Exception ex) {
+      // do nothing
+    }
+    if (content != null && content.length() > 0) {
+      return content;
+    } else {
+      return NA;
+    }
+  }
+
   public int getLocalPort() {
     if (localPort == SENTINEL) {
       if (httpRequest != null) {
