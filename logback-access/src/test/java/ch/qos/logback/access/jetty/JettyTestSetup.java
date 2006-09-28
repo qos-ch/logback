@@ -27,7 +27,6 @@ import ch.qos.logback.core.appender.ListAppender;
 
 public class JettyTestSetup extends TestSetup {
 
-  ListAppender appender;
   RequestLogImpl requestLogImpl;
 
   public JettyTestSetup(Test suite, RequestLogImpl impl) {
@@ -68,32 +67,30 @@ public class JettyTestSetup extends TestSetup {
     System.out.println("into tearDown");
     super.tearDown();
     server.stop();
-//    Thread.sleep(1000);
-//    server = null;
-//    appender = null;
-//    requestLogImpl = null;
+    Thread.sleep(1000);
+    server = null;
+    requestLogImpl = null;
   }
 
   private void buildContext() {
 
-    appender = new ListAppender();
+    ListAppender appender = new ListAppender();
     appender.setContext(requestLogImpl);
     appender.setName("list");
     appender.start();
 
-//    ConsoleAppender console = new ConsoleAppender();
-//    console.setContext(requestLogImpl);
-//    console.setName("console");
-//    PatternLayout layout = new PatternLayout();
-//    layout.setContext(requestLogImpl);
-//    layout
-//        .setPattern("%date %server %remoteIP %clientHost %user %requestURL %post");
-//    console.setLayout(layout);
-//    layout.start();
-//    console.start();
+    ConsoleAppender console = new ConsoleAppender();
+    console.setContext(requestLogImpl);
+    console.setName("console");
+    PatternLayout layout = new PatternLayout();
+    layout.setContext(requestLogImpl);
+    layout.setPattern("%date %server %clientHost %post");
+    console.setLayout(layout);
+    layout.start();
+    console.start();
 
-    //requestLogImpl.addAppender(console);
     requestLogImpl.addAppender(appender);
+    requestLogImpl.addAppender(console);
   }
 
 }
@@ -102,6 +99,9 @@ class BasicHandler extends AbstractHandler {
   public void handle(String target, HttpServletRequest request,
       HttpServletResponse response, int dispatch) throws IOException,
       ServletException {
+
+    // String requestContent = Util.readToString(request.getInputStream());
+    // System.out.println("request content: " + requestContent);
 
     OutputStream out = response.getOutputStream();
     ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();

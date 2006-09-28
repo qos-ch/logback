@@ -11,6 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.access.pattern.AccessConverter;
 
+/**
+ * The Access module's internal representation of logging events. When the
+ * RequestLogImpl instance is called to log then a <code>AccessEvent</code>
+ * instance is created. This instance is passed around to the different logback
+ * components.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
+ */
 public class AccessEvent implements Serializable {
 
   private static final long serialVersionUID = -3118194368414470960L;
@@ -29,6 +38,7 @@ public class AccessEvent implements Serializable {
   String protocol;
   String method;
   String serverName;
+  String postContent;
 
   Map<String, Object> requestHeaderMap;
 
@@ -280,17 +290,20 @@ public class AccessEvent implements Serializable {
   }
 
   public String getPostContent() {
-    String content = null;
+    if (postContent != null) {
+      return postContent;
+    }
+
     try {
-      content = Util.readToString(httpRequest.getInputStream());
+      postContent = Util.readToString(httpRequest.getInputStream());
     } catch (Exception ex) {
       // do nothing
     }
-    if (content != null && content.length() > 0) {
-      return content;
-    } else {
-      return NA;
+    if (postContent == null || postContent.length() == 0) {
+      postContent = NA;
     }
+
+    return postContent;
   }
 
   public int getLocalPort() {

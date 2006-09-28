@@ -39,6 +39,17 @@ import ch.qos.logback.core.util.StatusPrinter;
  * Layouts are declared the exact same way. However, loggers elements are not
  * allowed.
  * <p>
+ * It is possible to put the logback configuration file anywhere, as long as it's path is
+ * specified. Here is another example, with a path to the logback.xml file.
+ * <pre>
+ * &lt;Ref id="requestLog"&gt; 
+ *   &lt;Set name="requestLog"&gt; 
+ *     &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;&lt;/New&gt;
+ *       &lt;Set name="fileName"&gt;path/to/logback.xml&lt;/Set&gt;
+ *   &lt;/Set&gt; 
+ * &lt;/Ref&gt;
+ * </pre>
+ * <p>
  * Here is a sample logback.xml file that can be used right away:
  * <pre>
  * &lt;configuration&gt; 
@@ -51,6 +62,9 @@ import ch.qos.logback.core.util.StatusPrinter;
  *   &lt;appender-ref ref="STDOUT" /&gt; 
  * &lt;/configuration&gt;
  * </pre>
+ * 
+ * 
+ * <p>
  * A special, module-specific implementation of PatternLayout was implemented to allow
  * http-specific patterns to be used. The {@link ch.qos.logback.access.PatternLayout} provides
  * a way to format the logging output that is just as easy and flexible as the usual 
