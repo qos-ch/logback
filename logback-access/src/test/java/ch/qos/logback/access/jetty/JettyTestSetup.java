@@ -38,7 +38,7 @@ public class JettyTestSetup extends TestSetup {
   String url = "http://localhost:8080/";
 
   public void setUp() throws Exception {
-    System.out.println("into setUp");
+    //System.out.println("into setUp");
     super.setUp();
 
     server = new Server();
@@ -64,7 +64,7 @@ public class JettyTestSetup extends TestSetup {
   }
 
   public void tearDown() throws Exception {
-    System.out.println("into tearDown");
+    //System.out.println("into tearDown");
     super.tearDown();
     server.stop();
     Thread.sleep(1000);

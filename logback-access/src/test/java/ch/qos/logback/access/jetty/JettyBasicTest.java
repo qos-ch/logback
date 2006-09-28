@@ -54,41 +54,32 @@ public class JettyBasicTest extends TestCase {
   }
 
   public void testPostContentConverter() throws Exception {
-    System.out.println("into test");
+    //System.out.println("into test");
     URL url = new URL("http://localhost:8080/");
+    String msg = "test message";
+    
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    //this line is necessary to make the stream aware of when the message is over.
+    connection.setFixedLengthStreamingMode(msg.getBytes().length);
     ((HttpURLConnection) connection).setRequestMethod("POST");
-
     connection.setDoOutput(true);
     connection.setDoInput(true);
     connection.setUseCaches(false);
     connection.setRequestProperty("Content-Type", "text/plain");
-    // connection.setRequestProperty("Content-Type",
-    // "application/x-www-form-urlencoded");
 
-    String msg = "test message";
+   
     PrintWriter output = new PrintWriter(new OutputStreamWriter(connection
         .getOutputStream()));
     output.print(msg);
     output.flush();
     output.close();
-    // System.out.println("length: " + connection.getContentLength());
-
-    // Reading the response
-    String result = Util.readToString(connection.getInputStream());
-    assertEquals("hello world", result);
 
     // StatusPrinter.print(requestLogImpl.getStatusManager());
 
     ListAppender listAppender = (ListAppender) requestLogImpl
         .getAppender("list");
+    Thread.sleep(100);
     AccessEvent event = (AccessEvent) listAppender.list.get(0);
     assertEquals(msg, event.getPostContent());
-    
-    Iterator it = listAppender.list.iterator();
-    while (it.hasNext()) {
-      AccessEvent event2 = (AccessEvent) it.next();
-      System.out.println("Event PostContent: " + event2.getPostContent());
-    }
   }
 }
