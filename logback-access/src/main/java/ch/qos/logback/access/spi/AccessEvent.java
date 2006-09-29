@@ -1,5 +1,6 @@
 package ch.qos.logback.access.spi;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -229,6 +230,19 @@ public class AccessEvent implements Serializable {
     }
   }
 
+  public String getRequestParameter(String key) {
+    if (httpRequest != null) {
+      Object value = httpRequest.getParameter(key);
+      if (value == null) {
+        return AccessEvent.NA;
+      } else {
+        return value.toString();
+      }
+    } else {
+      return AccessEvent.NA;
+    }
+  }
+
   public String getCookie(String key) {
 
     if (httpRequest != null) {
@@ -249,7 +263,8 @@ public class AccessEvent implements Serializable {
   public long getContentLength() {
     if (contentLength == SENTINEL) {
       if (httpResponse != null) {
-        return serverAdapter.getContentLength();
+        contentLength = serverAdapter.getContentLength();
+        return contentLength;
         // if (httpResponse instanceof org.mortbay.jetty.Response) {
         // // TODO
         // } else if (httpResponse instanceof
@@ -271,7 +286,7 @@ public class AccessEvent implements Serializable {
   public int getStatusCode() {
     if (statusCode == SENTINEL) {
       if (httpResponse != null) {
-        return serverAdapter.getStatusCode();
+        statusCode = serverAdapter.getStatusCode();
         // if (httpResponse instanceof org.mortbay.jetty.Response) {
         // statusCode = ((org.mortbay.jetty.Response) httpResponse).getStatus();
         // } else if (httpResponse instanceof
@@ -295,7 +310,9 @@ public class AccessEvent implements Serializable {
     }
 
     try {
-      postContent = Util.readToString(httpRequest.getInputStream());
+      InputStream in = httpRequest.getInputStream();
+      System.out.println("********InputStream: " + in.toString());
+      postContent = Util.readToString(in);
     } catch (Exception ex) {
       // do nothing
     }

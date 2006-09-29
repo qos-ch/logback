@@ -147,7 +147,6 @@ public class LogbackValve extends ContextBase implements Valve,
   }
 
   public void backgroundProcess() {
-    // TODO Auto-generated method stub
   }
 
   public String getInfo() {

@@ -21,7 +21,7 @@ public class TomcatServerAdapter implements ServerAdapter {
   }
   
   public long getContentLength() {
-    return response.getContentCount();
+    return response.getContentLength();
   }
 
   public int getStatusCode() {
