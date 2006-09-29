@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import javax.servlet.ServletException;
 
+import org.apache.catalina.Contained;
+import org.apache.catalina.Container;
 import org.apache.catalina.Valve;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
@@ -25,8 +27,8 @@ import ch.qos.logback.core.status.ErrorStatus;
  * directly to LogbackValve and LogbackValve uses the same StatusManager as
  * LoggerContext does. It also provides containers for properties.
  * <p>
- * To configure tomcat in order to use LogbackValve, the following lines must
- * be added to the tomcat's server.xml:
+ * To configure tomcat in order to use LogbackValve, the following lines must be
+ * added to the tomcat's server.xml:
  * 
  * &lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/&gt;
  * 
@@ -40,15 +42,15 @@ import ch.qos.logback.core.status.ErrorStatus;
  * Here is a sample logback.xml file that can be used right away:
  * 
  * <pre>
- *    &lt;configuration&gt; 
- *      &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *        &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *          &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
- *        &lt;/layout&gt; 
- *      &lt;/appender&gt; 
- *      
- *      &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- *    &lt;/configuration&gt;
+ *     &lt;configuration&gt; 
+ *       &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *         &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *           &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
+ *         &lt;/layout&gt; 
+ *       &lt;/appender&gt; 
+ *       
+ *       &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ *     &lt;/configuration&gt;
  * </pre>
  * 
  * A special, module-specific implementation of PatternLayout was implemented to
@@ -64,7 +66,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LogbackValve extends ContextBase implements Valve,
+public class LogbackValve extends ContextBase implements Valve, Contained,
     AppenderAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
@@ -74,6 +76,7 @@ public class LogbackValve extends ContextBase implements Valve,
   String filename;
   boolean started;
 
+  Container container;
   Valve nextValve;
 
   public LogbackValve() {
@@ -106,6 +109,9 @@ public class LogbackValve extends ContextBase implements Valve,
 
   public void invoke(Request request, Response response) throws IOException,
       ServletException {
+
+    nextValve.invoke(request, response);
+
     // System.out.println("**** LogbackValve invoke called");
     TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
     AccessEvent accessEvent = new AccessEvent(request, response, adapter);
@@ -163,5 +169,13 @@ public class LogbackValve extends ContextBase implements Valve,
 
   public void setFileName(String fileName) {
     this.filename = fileName;
+  }
+
+  public Container getContainer() {
+    return container;
+  }
+
+  public void setContainer(Container container) {
+    this.container = container;
   }
 }
