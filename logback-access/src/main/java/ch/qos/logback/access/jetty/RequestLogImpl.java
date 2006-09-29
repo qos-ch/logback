@@ -14,7 +14,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * This class is logback's implementation of jetty's RequestLog interface.
@@ -55,7 +54,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * &lt;configuration&gt; 
  *   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt; 
  *     &lt;layout class="ch.qos.logback.access.PatternLayout"&gt; 
- *       &lt;param name="Pattern" value="%date %server %remoteIP %clientHost %user %requestURL %post" /&gt;
+ *       &lt;param name="Pattern" value="%date %server %remoteIP %clientHost %user %requestURL" /&gt;
  *     &lt;/layout&gt; 
  *   &lt;/appender&gt; 
  *   
@@ -108,7 +107,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(this);
       jc.doConfigure(filename);
-      StatusPrinter.print(getStatusManager());
+      //StatusPrinter.print(getStatusManager());
     } else {
       getStatusManager().add(
           new ErrorStatus("[" + filename + "] does not exist", this));
