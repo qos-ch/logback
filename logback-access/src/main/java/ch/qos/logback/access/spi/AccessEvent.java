@@ -311,7 +311,6 @@ public class AccessEvent implements Serializable {
 
     try {
       InputStream in = httpRequest.getInputStream();
-      System.out.println("********InputStream: " + in.toString());
       postContent = Util.readToString(in);
     } catch (Exception ex) {
       // do nothing

@@ -70,9 +70,6 @@ public abstract class DBAppenderBase extends AppenderBase {
   protected boolean cnxSupportsBatchUpdates = false;
   protected SQLDialect sqlDialect;
 
-  public DBAppenderBase() {
-  }
-
   @Override
   public void start() {
 
