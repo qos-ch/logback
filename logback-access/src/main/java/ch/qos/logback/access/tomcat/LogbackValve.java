@@ -2,36 +2,31 @@ package ch.qos.logback.access.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-import javax.management.MBeanRegistration;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
 import javax.servlet.ServletException;
 
-import org.apache.catalina.Contained;
-import org.apache.catalina.Container;
-import org.apache.catalina.Context;
-import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
-import org.apache.catalina.Pipeline;
-import org.apache.catalina.Valve;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
-import org.apache.catalina.core.ContainerBase;
+import org.apache.catalina.valves.ValveBase;
 
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.BasicStatusManager;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.StatusManager;
 
 /**
- * This class is an implementation of tomcat's Valve interface.
+ * This class is an implementation of tomcat's Valve interface, by extending
+ * ValveBase.
  * 
  * It can be seen as logback classic's LoggerContext. Appenders can be attached
  * directly to LogbackValve and LogbackValve uses the same StatusManager as
@@ -52,15 +47,15 @@ import ch.qos.logback.core.status.ErrorStatus;
  * Here is a sample logback.xml file that can be used right away:
  * 
  * <pre>
- *        &lt;configuration&gt; 
- *          &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *            &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *              &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
- *            &lt;/layout&gt; 
- *          &lt;/appender&gt; 
- *          
- *          &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- *        &lt;/configuration&gt;
+ * &lt;configuration&gt; 
+ *   &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *     &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *       &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
+ *     &lt;/layout&gt; 
+ *   &lt;/appender&gt; 
+ *             
+ *   &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ * &lt;/configuration&gt;
  * </pre>
  * 
  * A special, module-specific implementation of PatternLayout was implemented to
@@ -73,26 +68,29 @@ import ch.qos.logback.core.status.ErrorStatus;
  * it's javadoc.
  * <p>
  * 
- * <p>
- * MBean registration parts of this class come from tomcat's ValveBase
- * implementation.
- * <p>
- * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LogbackValve extends ContextBase implements Valve, Contained,
-    AppenderAttachable, MBeanRegistration {
+public class LogbackValve extends ValveBase implements Context,
+    AppenderAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback.xml";
 
+  // Attributes from ContextBase:
+  private String name;
+  StatusManager sm = new BasicStatusManager();
+  // TODO propertyMap should be observable so that we can be notified
+  // when it changes so that a new instance of propertyMap can be
+  // serialized. For the time being, we ignore this shortcoming.
+  Map<String, String> propertyMap = new HashMap<String, String>();
+  Map<String, Object> objectMap = new HashMap<String, Object>();
+  Map<String, String> converterMap = new HashMap<String, String>();
+  private FilterAttachableImpl fai = new FilterAttachableImpl();
+
   AppenderAttachableImpl aai = new AppenderAttachableImpl();
   String filename;
   boolean started;
-
-  Container container;
-  Valve nextValve;
 
   public LogbackValve() {
     // System.out.println("LogbackValve constructor called");
@@ -125,7 +123,7 @@ public class LogbackValve extends ContextBase implements Valve, Contained,
   public void invoke(Request request, Response response) throws IOException,
       ServletException {
 
-    nextValve.invoke(request, response);
+    getNext().invoke(request, response);
 
     // System.out.println("**** LogbackValve invoke called");
     TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
@@ -167,155 +165,64 @@ public class LogbackValve extends ContextBase implements Valve, Contained,
     return aai.detachAppender(name);
   }
 
-  public void backgroundProcess() {
-  }
-
   public String getInfo() {
-    return "logback's valve";
+    return "Logback's implementation of ValveBase";
   }
 
-  public Valve getNext() {
-    return nextValve;
+  // Methods from ContextBase:
+  public StatusManager getStatusManager() {
+    return sm;
   }
 
-  public void setNext(Valve next) {
-    this.nextValve = next;
+  public Map<String, String> getPropertyMap() {
+    return propertyMap;
   }
 
-  public void setFileName(String fileName) {
-    this.filename = fileName;
+  public void setProperty(String key, String val) {
+    this.propertyMap.put(key, val);
   }
 
-  public Container getContainer() {
-    return container;
+  public String getProperty(String key) {
+    return (String) this.propertyMap.get(key);
   }
 
-  public void setContainer(Container container) {
-    this.container = container;
+  public Object getObject(String key) {
+    return objectMap.get(key);
   }
 
-  // -------------------- JMX and Registration --------------------
-  // MBean descriptions for custom components needed
-  // in order to avoid a "ManagedBean is not found" exception.
-
-  protected String domain;
-  protected ObjectName oname;
-  protected MBeanServer mserver;
-  protected ObjectName controller;
-
-  public ObjectName getObjectName() {
-    return oname;
+  public void putObject(String key, Object value) {
+    objectMap.put(key, value);
   }
 
-  public void setObjectName(ObjectName oname) {
-    this.oname = oname;
+  public Map<String, String> getConverterMap() {
+    return converterMap;
   }
 
-  public String getDomain() {
-    return domain;
+  public void addFilter(Filter newFilter) {
+    fai.addFilter(newFilter);
   }
 
-  public ObjectName preRegister(MBeanServer server, ObjectName name)
-      throws Exception {
-    oname = name;
-    mserver = server;
-    domain = name.getDomain();
+  public Filter getFirstFilter() {
+    return fai.getFirstFilter();
+  }
 
+  public void clearAllFilters() {
+    fai.clearAllFilters();
+  }
+
+  public int getFilterChainDecision(Object event) {
+    return fai.getFilterChainDecision(event);
+  }
+
+  public String getName() {
     return name;
   }
 
-  public void postRegister(Boolean registrationDone) {
-  }
-
-  public void preDeregister() throws Exception {
-  }
-
-  public void postDeregister() {
-  }
-
-  public ObjectName getController() {
-    return controller;
-  }
-
-  public void setController(ObjectName controller) {
-    this.controller = controller;
-  }
-
-  /**
-   * From the name, extract the parent object name
-   * 
-   * @param valveName
-   *          The valve name
-   * @return ObjectName The parent name
-   */
-  public ObjectName getParentName(ObjectName valveName) {
-
-    return null;
-  }
-
-  public ObjectName createObjectName(String domain, ObjectName parent)
-      throws MalformedObjectNameException {
-    Container container = this.getContainer();
-    if (container == null || !(container instanceof ContainerBase))
-      return null;
-    ContainerBase containerBase = (ContainerBase) container;
-    Pipeline pipe = containerBase.getPipeline();
-    Valve valves[] = pipe.getValves();
-
-    /* Compute the "parent name" part */
-    String parentName = "";
-    if (container instanceof Engine) {
-    } else if (container instanceof Host) {
-      parentName = ",host=" + container.getName();
-    } else if (container instanceof Context) {
-      String path = ((Context) container).getPath();
-      if (path.length() < 1) {
-        path = "/";
-      }
-      Host host = (Host) container.getParent();
-      parentName = ",path=" + path + ",host=" + host.getName();
-    } else if (container instanceof Wrapper) {
-      Context ctx = (Context) container.getParent();
-      String path = ctx.getPath();
-      if (path.length() < 1) {
-        path = "/";
-      }
-      Host host = (Host) ctx.getParent();
-      parentName = ",servlet=" + container.getName() + ",path=" + path
-          + ",host=" + host.getName();
+  public void setName(String name) {
+    if (this.name != null) {
+      throw new IllegalStateException(
+          "LogbackValve has been already given a name");
     }
-
-    String className = this.getClass().getName();
-    int period = className.lastIndexOf('.');
-    if (period >= 0)
-      className = className.substring(period + 1);
-
-    int seq = 0;
-    for (int i = 0; i < valves.length; i++) {
-      // Find other valves with the same name
-      if (valves[i] == this) {
-        break;
-      }
-      if (valves[i] != null && valves[i].getClass() == this.getClass()) {
-
-        seq++;
-      }
-    }
-    String ext = "";
-    if (seq > 0) {
-      ext = ",seq=" + seq;
-    }
-
-    ObjectName objectName = new ObjectName(domain + ":type=Valve,name="
-        + className + ext + parentName);
-    return objectName;
-  }
-
-  // -------------------- JMX data --------------------
-
-  public ObjectName getContainerName() {
-    if (container == null)
-      return null;
-    return ((ContainerBase) container).getJmxName();
+    this.name = name;
   }
 }
