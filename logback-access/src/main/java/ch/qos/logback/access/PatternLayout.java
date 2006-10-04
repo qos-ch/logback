@@ -88,9 +88,6 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
     defaultConverterMap.put("v", ServerNameConverter.class.getName());
     defaultConverterMap.put("server", ServerNameConverter.class.getName());
     
-    defaultConverterMap.put("p", PostContentConverter.class.getName());
-    defaultConverterMap.put("postContent", PostContentConverter.class.getName());
-    
     defaultConverterMap.put("localPort", LocalPortConverter.class.getName());
     defaultConverterMap.put("reqAttribute", RequestAttributeConverter.class.getName());
     defaultConverterMap.put("reqCookie", RequestCookieConverter.class.getName());
