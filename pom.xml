@@ -148,6 +148,24 @@
 							http://java.sun.com/j2se/1.5.0/docs/api
 						</link>
 					</links>
+					<groups>
+            <group>
+              <title>Logback Core</title>
+              <packages>ch.qos.logback.core:ch.qos.logback.core.*</packages>
+            </group>
+            <group>
+              <title>Logback Classic</title>
+              <packages>ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*</packages>
+            </group>
+            <group>
+              <title>Logback Access</title>
+              <packages>ch.qos.logback.access:ch.qos.logback.access.*</packages>
+            </group>
+            <group>
+              <title>SLF4J</title>
+              <packages>org.slf4j:org.slf4j.*</packages>
+            </group>
+          </groups>
 				</configuration>
       </plugin>
       
