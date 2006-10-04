@@ -6,13 +6,17 @@
   </head>
   
   <body>
-    
-    <p>Contains the base classes that are used by logback to append LoggingEvent objects
-    to a database.</p>
+<p>The ch.qos.logback.core.db package provides bases classes to append objects 
+into various databases.
+</p>
 
-    <p>It also contains helper classes and dialect classes, to allow logback
-    to log to different database types.
-    </p>
+<p>Most popular database systems, such as PostgreSQL, MySQL, Oracle, DB2 and MsSQL
+are supported.
+</p>
 
+<p>Just as importantly, the way for obtaining JDBC connections is pluggable. Connections can
+be obtained through the tradinal way of DriverManager, or alternatively as a DataSource. 
+A DataSource can be instantiated directly or it can obtained through JNDI.
+</p>
   </body> 
 </html>
