@@ -8,29 +8,31 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.classic.net;
+package ch.qos.logback.access.net;
 
 import java.io.File;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.core.helpers.CyclicBuffer;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SMTPAppenderBase;
 import ch.qos.logback.core.rolling.TriggeringPolicy;
 
 /**
- * Send an e-mail when a specific logging event occurs, typically on errors or
+ * Send an e-mail when a specific access event occurs, typically on errors or
  * fatal errors.
  * 
  * <p>
- * The number of logging events delivered in this e-mail depend on the value of
+ * The number of access events delivered in this e-mail depend on the value of
  * <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the
- * last <code>BufferSize</code> logging events in its cyclic buffer. This
+ * last <code>BufferSize</code> access events in its cyclic buffer. This
  * keeps memory requirements at a reasonable level while still delivering useful
  * application context.
- * 
+ * <p> 
+ * By default, the email is sent everything an event has a status code of 
+ * 500 (server error) or higher.
+ * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
@@ -64,9 +66,8 @@ public class SMTPAppender extends SMTPAppenderBase {
    * a cyclic buffer.
    */
   protected void subAppend(Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
+    AccessEvent event = (AccessEvent) eventObject;
 
-    event.getThreadName();
     cb.add(event);
     // addInfo("Added event to the cyclic buffer: " + event.getMessage());
   }
@@ -116,16 +117,17 @@ class DefaultEvaluator implements TriggeringPolicy {
 
   private boolean started;
 
+  private static final Integer TRIGGERING_STATUS_CODE = 500;
   /**
    * Is this <code>event</code> the e-mail triggering event?
    * 
    * <p>
-   * This method returns <code>true</code>, if the event level has ERROR
-   * level or higher. Otherwise it returns <code>false</code>.
+   * This method returns <code>true</code>, if the event status code
+   * is 500 (server error) or higher. Otherwise it returns <code>false</code>.
    */
   public boolean isTriggeringEvent(File file, Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
-    return event.getLevel().isGreaterOrEqual(Level.ERROR);
+    AccessEvent event = (AccessEvent) eventObject;
+    return TRIGGERING_STATUS_CODE.compareTo(event.getStatusCode()) <= 0;
   }
 
   public boolean isStarted() {

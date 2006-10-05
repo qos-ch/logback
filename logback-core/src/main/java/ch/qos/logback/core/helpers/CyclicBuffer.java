@@ -8,14 +8,13 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.classic.helpers;
+package ch.qos.logback.core.helpers;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
 
 /**
  * 
  * CyclicBuffer is used by other appenders to hold
- * {@link LoggingEvent LoggingEvents} for immediate or differed display.
+ * objects for immediate or differed display.
  * <p>
  * This buffer gives read access to any element in the buffer not just the first
  * or last element.
@@ -44,7 +43,7 @@ public class CyclicBuffer {
           + ") is not a positive integer.");
     }
     this.maxSize = maxSize;
-    ea = new LoggingEvent[maxSize];
+    ea = new Object[maxSize];
     first = 0;
     last = 0;
     numElems = 0;
@@ -54,7 +53,7 @@ public class CyclicBuffer {
    * Add an <code>event</code> as the last event in the buffer.
    * 
    */
-  public void add(LoggingEvent event) {
+  public void add(Object event) {
     ea[last] = event;
     if (++last == maxSize)
       last = 0;
