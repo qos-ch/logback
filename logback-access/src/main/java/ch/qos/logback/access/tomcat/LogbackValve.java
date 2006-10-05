@@ -23,6 +23,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * This class is an implementation of tomcat's Valve interface, by extending
@@ -112,7 +113,7 @@ public class LogbackValve extends ValveBase implements Context,
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(this);
       jc.doConfigure(filename);
-      // StatusPrinter.print(getStatusManager());
+      StatusPrinter.print(getStatusManager());
     } else {
       getStatusManager().add(
           new ErrorStatus("[" + filename + "] does not exist", this));
