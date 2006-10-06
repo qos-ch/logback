@@ -29,8 +29,12 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
  * keeps memory requirements at a reasonable level while still delivering useful
  * application context.
  * <p> 
- * By default, the email is sent everything an event has a status code of 
- * <em>500 (server error) or higher</em>.
+ * By default, the email is sent everytime an event has a status code of 
+ * <em>500 (server error) or higher</em>. In order not to flood one's mailbox, 
+ * an email will be sent only if the previous email was sent more that 24 hours ago.
+ * <p>
+ * This behaviour can be easily bypassed either by modifying this class, or by
+ * imlementing a new <code>TriggeringPolicy</code>.
  * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -117,16 +121,30 @@ class DefaultEvaluator implements TriggeringPolicy {
   private boolean started;
 
   private static final Integer TRIGGERING_STATUS_CODE = 500;
+  private static final long ONE_DAY = 1000*60*60*24;
+  private static long LAST_TRIGGER_DATE = 0L;
+  
+  
   /**
    * Is this <code>event</code> the e-mail triggering event?
    * 
    * <p>
    * This method returns <code>true</code>, if the event status code
    * is 500 (server error) or higher. Otherwise it returns <code>false</code>.
+   * 
+   * Once an email is sent, the next one will not be sent unless a certain amount
+   * of time passed.
    */
   public boolean isTriggeringEvent(File file, Object eventObject) {
     AccessEvent event = (AccessEvent) eventObject;
-    return TRIGGERING_STATUS_CODE.compareTo(event.getStatusCode()) <= 0;
+
+    if (TRIGGERING_STATUS_CODE.compareTo(event.getStatusCode()) <= 0) {
+      if (System.currentTimeMillis() >= LAST_TRIGGER_DATE + ONE_DAY) {
+        LAST_TRIGGER_DATE = System.currentTimeMillis();
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isStarted() {
