@@ -54,10 +54,6 @@ import ch.qos.logback.core.pattern.Converter;
  * &lt;/configuration&gt;
  *</pre>
  * <p>
- * In this configuration file, the <em>throwableRenderer</em> element specifies the default
- * implementation of IThrowableRenderer. It could be omitted, but is showed for educationnal
- * purposes.
- * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -67,7 +63,7 @@ public class HTMLLayout extends HTMLLayoutBase implements AccessLayout {
    * Default pattern string for log output. Currently set to the string <b>"%m"
    * </b> which just prints the application supplied message.
    */
-  static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
+  static final String DEFAULT_CONVERSION_PATTERN = "%remoteIP%date%requestURL%statusCode%bytesSent";
 
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
