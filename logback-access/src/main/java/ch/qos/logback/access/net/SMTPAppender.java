@@ -30,7 +30,7 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
  * application context.
  * <p> 
  * By default, the email is sent everything an event has a status code of 
- * 500 (server error) or higher.
+ * <em>500 (server error) or higher</em>.
  * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

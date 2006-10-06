@@ -212,7 +212,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  */
 public class PatternLayout extends PatternLayoutBase implements AccessLayout {
 
-  static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
+  public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
   public static String CLF_PATTERN = "%h %l %u %t \"%r\" %s %b";
 
