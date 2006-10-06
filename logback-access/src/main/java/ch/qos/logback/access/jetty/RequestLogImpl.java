@@ -24,56 +24,80 @@ import ch.qos.logback.core.util.StatusPrinter;
  * LoggerContext does. It also provides containers for properties.
  * <p>
  * To configure jetty in order to use RequestLogImpl, the following lines must
- * be added to the jetty configuration file:
+ * be added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
+ * 
  * <pre>
- * &lt;Ref id="requestLog"&gt; 
- *   &lt;Set name="requestLog"&gt; 
- *     &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;&lt;/New&gt;
- *   &lt;/Set&gt; 
- * &lt;/Ref&gt;
+ *  &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *    &lt;Set name=&quot;requestLog&quot;&gt; 
+ *      &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *    &lt;/Set&gt; 
+ *  &lt;/Ref&gt;
  * </pre>
+ * 
  * By default, RequestLogImpl looks for a logback configuration file called
  * logback.xml, in the same folder where jetty.xml is located, that is
- * /etc/logback.xml. The logback.xml file is slightly different than the usual
+ * <em>etc/logback.xml</em>. The logback.xml file is slightly different than the usual
  * logback classic configuration file. Most of it is the same: Appenders and
  * Layouts are declared the exact same way. However, loggers elements are not
  * allowed.
  * <p>
- * It is possible to put the logback configuration file anywhere, as long as it's path is
- * specified. Here is another example, with a path to the logback.xml file.
+ * It is possible to put the logback configuration file anywhere, as long as
+ * it's path is specified. Here is another example, with a path to the
+ * logback.xml file.
+ * 
  * <pre>
- * &lt;Ref id="requestLog"&gt; 
- *   &lt;Set name="requestLog"&gt; 
- *     &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;&lt;/New&gt;
- *       &lt;Set name="fileName"&gt;path/to/logback.xml&lt;/Set&gt;
- *   &lt;/Set&gt; 
- * &lt;/Ref&gt;
+ *  &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *    &lt;Set name=&quot;requestLog&quot;&gt; 
+ *      &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *        &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
+ *    &lt;/Set&gt; 
+ *  &lt;/Ref&gt;
  * </pre>
+ * 
  * <p>
  * Here is a sample logback.xml file that can be used right away:
+ * 
  * <pre>
- * &lt;configuration&gt; 
- *   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt; 
- *     &lt;layout class="ch.qos.logback.access.PatternLayout"&gt; 
- *       &lt;param name="Pattern" value="%date %server %remoteIP %clientHost %user %requestURL" /&gt;
- *     &lt;/layout&gt; 
- *   &lt;/appender&gt; 
- *   
- *   &lt;appender-ref ref="STDOUT" /&gt; 
- * &lt;/configuration&gt;
+ *  &lt;configuration&gt; 
+ *    &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *        &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
+ *      &lt;/layout&gt; 
+ *    &lt;/appender&gt; 
+ *    
+ *    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ *  &lt;/configuration&gt;
  * </pre>
  * 
- * 
  * <p>
- * A special, module-specific implementation of PatternLayout was implemented to allow
- * http-specific patterns to be used. The {@link ch.qos.logback.access.PatternLayout} provides
- * a way to format the logging output that is just as easy and flexible as the usual 
- * PatternLayout.
- * For more information about the general use of a PatternLayout, please refer to logback
- * classic's {@link ch.qos.logback.classic.PatternLayout}. For information about logback
- * access' specific PatternLayout, please refer to it's javadoc.
+ * Another configuration file, using SMTPAppender, could be:
+ * 
+ * <pre>
+ *  &lt;configuration&gt; 
+ *    &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
+ *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+ *        &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
+ *      &lt;/layout&gt;
+ *      &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
+ *      &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
+ *       &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
+ *       &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
+ *    &lt;/appender&gt;
+ *    &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
+ *  &lt;/configuration&gt;
+ * </pre>
+ * <p>
+ * A special, module-specific implementation of PatternLayout was implemented to
+ * allow http-specific patterns to be used. The
+ * {@link ch.qos.logback.access.PatternLayout} provides a way to format the
+ * logging output that is just as easy and flexible as the usual PatternLayout.
+ * For more information about the general use of a PatternLayout, please refer
+ * to logback classic's {@link ch.qos.logback.classic.PatternLayout}. For
+ * information about logback access' specific PatternLayout, please refer to
+ * it's javadoc.
  * 
  * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
     AppenderAttachable {

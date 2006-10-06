@@ -20,8 +20,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
 import ch.qos.logback.core.rolling.TriggeringPolicy;
 
 /**
- * Send an e-mail when a specific access event occurs, typically on errors or
- * fatal errors.
+ * Send an e-mail when a specific access event occurs, typically on server errors.
  * 
  * <p>
  * The number of access events delivered in this e-mail depend on the value of
