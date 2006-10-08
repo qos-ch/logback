@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<document>
+
+<body>
+<h2>Introduction to Joran (DRAFT)</h2>
+
+
+<h3>Ceki G&#252;lc&#252;, 2003-2006, All rights reserved </h3>
+
+<p>Joran stands for a cold north-west wind which, every now and then,
+blows force-fully on Lake Leman, a.k.a lake Geneva. Located right in
+the middle of Europe, the Leman happens to be the continent's largest
+sweet water reserve.
+</p>
+
+<h2>Introduction</h2>
+
+<p>One of the most powerful features of the Java language is
+reflection. Reflection makes it possible to configure software systems
+declaratively. For example, many important properties of an EJB are
+configured with the ejb.xml file. While EJBs are written in Java, many
+of their properties are specified within the ejb.xml file. Similarly,
+logback settings can be specified in a configuration file, expressed
+in XML format.
+</p>
+
+<p>In log4j, logback's predecessor, DOMConfigurator that shipped with
+log4j version 1.2.x can parse configuration files written in XML. The
+DOMConfigurator is written in Java such that each time the structure
+of the configuration file changes the DOMConfigurator must be tweaked
+accordingly. Moreover, the modified code must be recompiled and
+re-deployed. Just as importantly, the code of the DOMConfigurator
+consists of loops dealing with children elements containing many
+interspersed if/else statements. One can't help but notice that that
+particular code reeks of redundancy.  The <a
+href="http://jakarta.apache.org/commons/digester/">digester
+project</a> has shown that it is possible to parse XML files using
+pattern matching rules. At parse time, digester will apply the rules
+that match previously stated patterns. Rule classes are usually quite
+small and specialized. Consequently, they are relatively easy to
+understand and to maintain.
+</p>
+
+<p>Joran is heavily inspired by the commons-digester project but uses
+a slightly different terminology. In commons-digester, a rule can be
+seen as consisting of a pattern and a rule, as shown by the
+<code>Digester.addRule(String pattern, Rule rule)</code> method. We
+find it unnecessarily confusing to have a rule to consist of itself,
+not recursively but with a different meaning. In Joran, a rule
+consists of a pattern and an action. An action is invoked when a match
+occurs for the corresponding pattern. This relation between patterns
+and actions lies at the core of Joran.  Quite remarkably, one can deal
+with quite complex requirements by using simple patterns, or more
+precisely with exact matches and wildcard matches. For example, the
+pattern "a/b" will match a <code>&lt;b></code> element nested within
+an <code>&lt;a></code> element but not a <code>&lt;c></code> element,
+even if nested within a <code>&lt;b></code> element. It is also
+possible to match a particular XML element, regardless of its nesting
+level, by using the "*" wildcard character. For example, the pattern
+"*/a" will match an <code>&lt;a></code> element at any nesting
+position within the document. Other types of patterns, for example
+"a/*", are not currently supported by Joran.
+</p>
+
+<h2>SAX or DOM?</h2>
+
+<p>Due to the event-based architecture of the SAX API, a tool based on
+SAX cannot easily deal with forward references, that is, references to
+elements which are defined later than the current element being
+processed. Elements with cyclical references are equally
+problematic. More generally, the DOM API allows the user to perform
+searches on all the elements and make forward jumps.
+</p>
+
+<p>This extra flexibility initially led us to choose the DOM API as
+the underlying parsing API for Joran. After some experimentation, it
+quickly became clear that dealing with jumps to distant elements while
+parsing the DOM tree did not make sense when the interpretation rules
+were expressed in the form of patterns and actions. <em>Joran only
+needs to be given the elements in the XML document in a sequential,
+depth-first order.</em>
+</p>
+
+<p>Joran was first implemented in DOM. However, the author migrated to
+SAX in order to benefit form the location information provided to the
+user, that is, to an org.w3.sax.ContentHandler. With the help of
+location information, it becomes possible to display essential error
+reports to the user which include exact line and column. This extra
+information turns out to be handy in hunting down problems.
+</p>
+
+<h2>Actions</h2>
+
+<p>Actions extend the
+<code>ch.qos.logback.core.joran.action.Action</code> class which
+consists of the following abstract methods.
+</p>
+
+
+<div class="source">package ch.qos.logback.core.joran.action;
+
+import org.xml.sax.Attributes;
+import ch.qos.logback.core.joran.spi.ExecutionContext;
+
+public abstract class Action {
+  
+
+ /**
+  * Called when the parser first encounters an element.
+  */
+  public abstract void begin(ExecutionContext ec, 
+                             String name, 
+                             Attributes attributes);
+
+ /**
+  * Called when the parser encounters the element end. At 
+  * this stage, we can assume that child elements, if any,
+  * have been processed. 
+  */
+  public abstract void end(ExecutionContext ec, String name);
+}
+</div>
+
+<p>Thus, every action must implement the begin and end methods.</p>
+
+
+<h2>Execution context</h2>
+
+<p>To allow various actions to collaborate, the invocation of begin
+and end methods include an execution context as the first
+parameter. The execution context includes an object stack, an object
+map, an error list and a reference to the Joran interpreter invoking
+the action. Please see the
+<code>ch.qos.logback.core.joran.spi.ExecutionContext</code> class for
+the exact list of fields contained in the execution context.
+</p>
+
+<p>Actions can collaborate together by fetching, pushing or popping
+objects from the common object stack, or by putting and fetching keyed
+objects on the common object map. Actions can report any error
+conditions by adding error items on the execution context's
+<code>StatusManager</code>.
+</p>
+
+<h3>A hello world example</h3>
+
+<p>The <em>examples/src/joran/helloWorld/</em> directory includes a
+trivial action and Joran interpreter setup which just diaplays "hello
+world" when a &lt;hello-world> element is encountered in an XML file.
+Look into this example to learn about the basic steps which are
+necessary to set up and invoke a Joran interpreter.
+</p>
+
+<h3>Collaborating actions</h3>
+
+The examples/src/joran/calculator/ directory includes several actions
+which collaborate together through the common object stack in order
+to accomplish simple computations.
+
+<h3>New-rule action</h3>
+
+<p>Joran includes an action which allows the Joran interpreter to lean
+new rules on the fly while interpreting the XML file containing the
+new rules.  See the <em>logback-core/examples/src/joran/newRule/</em>
+directory for sample code.
+</p>
+
+<h3>Implicit actions </h3>
+
+<p>The rules defined thus far are called explicit rules because they
+require an explicit pattern, hence fixing the tag name of the elements
+for which they apply.
+</p>
+
+<p>In highly extensible systems, the number and type of components to
+handle are innumerable so that it would become very tedious or even
+impossible to list all the applicable patterns by name.
+</p>
+
+<p>At the same time, even in highly extensible systems one can observe
+well-defined patterns linking the various parts together. Implicit
+rules come in very handy when processing components composed of
+sub-components unknown ahead of time. For example, Apache Ant is
+capable of handling tasks which contain tags unknown at compile time
+by looking at methods whose names start with add, as in addFile, or
+addClassPath.  When Ant encounters an embedded tag within a task, it
+simply instantiates an object that matches the signature of the task
+class' add method and attaches the resulting object to the parent.
+</p>
+
+<p>Joran includes similar capability in the form of implicit
+actions. Joran keeps a list of implicit actions which can be applied
+if no explicit pattern matches the current XML element.  However,
+applying an implicit action may not be always appropriate. Before
+executing the implicit action, Joran asks an implicit action whether
+it is appropriate in the current context. Only if the action replies
+affirmatively does Joran interpreter invoke the (implicit)
+action. This extra step makes it possible to support multiple implicit
+actions or obviously none, if no implicit action is appropriate for a
+given situation.
+</p>
+
+<p>For example, the NestedComponentIA extending ImplicitAction , will
+instantiate the class specified in a nested component and attach it
+to the parent component by using setter method of the parent
+component and the nested element's name. Under certain circumstances,
+a nested action needs to be applied to an element say &lt;a> and also
+to another element &lt;b> nested within &lt;a>. The current
+implementation of <code>NestedComponentIA</code> is capable of
+handling multiply nested elements requiring intervention by the same
+implicit action.
+</p>
+
+<p>Refer to the <em>logback-core/examples/src/joran/implicit</em>
+directory for an example of an implicit action.
+</p>
+
+<h3>Non goals</h3>
+
+<p>The Joran API is not intended to be used to parse documents with
+thousands of elements.
+</p>
+
+</body>
+</document>
