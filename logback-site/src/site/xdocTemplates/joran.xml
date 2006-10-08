@@ -15,6 +15,26 @@ sweet water reserve.
 
 <h2>Introduction</h2>
 
+<p>This document is intended to serve as an introduction to Joran, a
+mature, flexible and powerful configuration framework. Many of the
+capabilities offered by logback modules are possible thanks to Joran.
+</p>
+
+<p>Joran is actually a generic configuration system which can be used
+independently of logging. To emphaises this point, I should mention
+that the logback-core module does not have a notion of loggers. In
+that sprit, many of the examples related to this tutorial, have
+nothing to do with loggers, appenders or layouts.
+</p>
+
+<p>The examples for this tutorial can be found under
+<em>LOGBACK_HOME/logback-core/examples/src/joran</em>.
+</p>
+
+<p>Missing: setup instructions</p>
+
+<h2>Historical perspective</h2>
+
 <p>One of the most powerful features of the Java language is
 reflection. Reflection makes it possible to configure software systems
 declaratively. For example, many important properties of an EJB are
@@ -24,15 +44,15 @@ logback settings can be specified in a configuration file, expressed
 in XML format.
 </p>
 
-<p>In log4j, logback's predecessor, DOMConfigurator that shipped with
-log4j version 1.2.x can parse configuration files written in XML. The
-DOMConfigurator is written in Java such that each time the structure
-of the configuration file changes the DOMConfigurator must be tweaked
-accordingly. Moreover, the modified code must be recompiled and
-re-deployed. Just as importantly, the code of the DOMConfigurator
-consists of loops dealing with children elements containing many
-interspersed if/else statements. One can't help but notice that that
-particular code reeks of redundancy.  The <a
+<p>In log4j, logback's predecessor, <code>DOMConfigurator</code> that
+shipped with log4j version 1.2.x can parse configuration files written
+in XML. The <code>DOMConfigurator</code> was written in a way that
+forced to tweak it each time the structure of the configuration file
+changed. The modified code had to be recompiled and redeployed. Just
+as importantly, the code of the DOMConfigurator consists of loops
+dealing with children elements containing many interspersed if/else
+statements. One could not help but notice that that particular code
+reeked of redundancy.  The <a
 href="http://jakarta.apache.org/commons/digester/">digester
 project</a> has shown that it is possible to parse XML files using
 pattern matching rules. At parse time, digester will apply the rules
@@ -83,11 +103,12 @@ depth-first order.</em>
 
 <p>Joran was first implemented in DOM. However, the author migrated to
 SAX in order to benefit form the location information provided to the
-user, that is, to an org.w3.sax.ContentHandler. With the help of
-location information, it becomes possible to display essential error
-reports to the user which include exact line and column. This extra
-information turns out to be handy in hunting down problems.
+user, that is, to an <code>org.w3.sax.ContentHandler</code>. With the
+help of location information, it becomes possible to display essential
+error reports to the user which include exact line and column. This
+extra information turns out to be handy in hunting down problems.
 </p>
+
 
 <h2>Actions</h2>
 
