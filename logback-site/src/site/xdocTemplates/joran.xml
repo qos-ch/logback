@@ -232,6 +232,10 @@ handling multiply nested elements requiring intervention by the same
 implicit action.
 </p>
 
+<p>Both ImplicitAction and NestedComponentIA are located in the
+<code>ch.qos.logback.core.joran.action</code> package.
+</p>
+
 <p>Refer to the <em>logback-core/examples/src/joran/implicit</em>
 directory for an example of an implicit action.
 </p>
