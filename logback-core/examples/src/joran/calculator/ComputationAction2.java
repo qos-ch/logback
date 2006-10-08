@@ -58,7 +58,7 @@ import ch.qos.logback.core.util.OptionHelper;
 public class ComputationAction2 extends Action {
   public static String NAME_ATR = "name";
 
-  Stack nameStrStack = new Stack();
+  Stack<String> nameStrStack = new Stack<String>();
   
   
   public void begin(ExecutionContext ec, String name, Attributes attributes) {

@@ -14,6 +14,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.spi.ExecutionContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -25,7 +26,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
  * 
- * It differs from Calculator1 in that it supoorts arbitrary nesting of 
+ * It differs from Calculator1 in that it supports arbitrary nesting of 
  * computation elements.
  * 
  * You can test this application with the sample XML file <em>calculator3.xml</em>.
@@ -48,7 +49,11 @@ public class Calculator2 {
     
     // Create a new Joran Interpreter and hand it our simple rule store.
     Interpreter ji = new Interpreter(ruleStore);
+    // set the context for the interpreter's execution context
+    ExecutionContext ec = ji.getExecutionContext();
+    ec.setContext(context);
 
+    
     // Create a SAX parser
     SAXParserFactory spf = SAXParserFactory.newInstance();
     SAXParser saxParser = spf.newSAXParser();
