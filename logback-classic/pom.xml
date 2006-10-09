@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-	  <version>0.5-SNAPSHOT</version>
+	  <version>0.5</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-classic</artifactId>
-	<version>${parent.version}</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 	<name>Logback Classic Module</name>
 
@@ -206,13 +206,9 @@
 	<!-- LOGBack Classic Repository ================================================ -->
 
 	<scm>
-		<connection>
-			http://svn.qos.ch/repos/logback/classic/trunk/
-		</connection>
-		<developerConnection>
-			scm:svn:https://svn.qos.ch/repos/logback/classic/trunk/
-		</developerConnection>
-		<url>http://svn.qos.ch/viewcvs/logback/classic/trunk/</url>
+		<connection>http://svn.qos.ch/repos/logback/classic/tags/release-test</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/classic/tags/release-test</developerConnection>
+		<url>http://svn.qos.ch/viewcvs/logback/classic/tags/release-test</url>
 	</scm>
 
 	<!--

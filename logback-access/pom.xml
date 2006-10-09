@@ -1,18 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-	  <version>0.5-SNAPSHOT</version>
+	  <version>0.5</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-access</artifactId>
-	<version>${parent.version}</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 	<name>Logback Access Module</name>
 
@@ -176,13 +174,9 @@
 	<!-- LOGBack Access Repository ================================================ -->
 
 	<scm>
-		<connection>
-			http://svn.qos.ch/repos/logback/access/trunk/
-		</connection>
-		<developerConnection>
-			https://svn.qos.ch/repos/logback/access/trunk/
-		</developerConnection>
-		<url>http://svn.qos.ch/viewcvs/logback/access/trunk/</url>
+		<connection>http://svn.qos.ch/repos/logback/access/tags/release-test</connection>
+		<developerConnection>https://svn.qos.ch/repos/logback/access/tags/release-test</developerConnection>
+		<url>http://svn.qos.ch/viewcvs/logback/access/tags/release-test</url>
 	</scm>
 
 	<!--
