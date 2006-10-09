@@ -10,7 +10,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-access</artifactId>
-	<version>${project.version}</version>
+	<version>${parent.version}</version>
 	<packaging>jar</packaging>
 	<name>Logback Access Module</name>
 

@@ -12,7 +12,7 @@
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-skin</artifactId>
 	<packaging>jar</packaging>
-	<version>${project.version}</version>
+	<version>${parent.version}</version>
 	<name>Logback Skin</name>
 
 	<url>http://logback.qos.ch</url>

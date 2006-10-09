@@ -11,7 +11,7 @@
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-site</artifactId>
 	<packaging>jar</packaging>
-	<version>${project.version}</version>
+	<version>${parent.version}</version>
 	<name>Logback Site</name>
 
 	<url>http://logback.qos.ch</url>
