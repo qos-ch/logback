@@ -10,7 +10,31 @@
 		<h2>Logback News</h2>
 
 		<p>Here are the last news about the project.</p>
-		
+
+		<h3>October 9th, 2006 - 0.4 version available</h3>
+		<p>
+			Version 0.4 for all three logback modules is now available.
+		</p>
+		<p>
+			This release offers a much improved access module, with specific implementations
+			for the Jetty and Tomcat servers. Documentation was also added to show how
+			to integrate logback access with Jetty.
+		</p>
+		<p>	
+			Outside of the access module, several appenders and layouts have been added or improved.
+			The error reporting of logback is also improved, prompting the user with
+			a link to an online page presenting possible reasons for the error.
+		</p>
+		<p>	
+			A joran documentation was added, with examples in the core module.		
+		</p>
+		<p>
+			An archive containing source code, binaries and docs is available 
+			at the <a href="download.html">download page</a>.
+		</p>
+
+		<hr width="50%" align="center" />
+				
 		<h3>September 8th, 2006 - 0.3 version available</h3>
 		<p>
 			Version 0.3 for all three logback modules is now available.

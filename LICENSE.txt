@@ -1,8 +1,8 @@
  
-Logback Core Module LICENSE
+Logback LICENSE
 ---------------------------
 
-Logback Core Module source code and binaries are distributed under the  
+Logback source code and binaries are distributed under the  
 GNU Lesser General Public License  as published by the Free Software Foundation.
 
 Logback: the generic, reliable, fast and flexible logging library for Java. 
