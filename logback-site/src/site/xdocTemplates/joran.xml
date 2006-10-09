@@ -284,16 +284,27 @@ only by the matching end() method.</p>
 
 <a name="newRule" />
 <h3>New-rule action</h3>
-<p><em>More in-depths text to come</em></p>
 <p>Joran includes an action which allows the Joran interpreter to lean
 new rules on the fly while interpreting the XML file containing the
 new rules.  See the <em>logback-core/examples/src/joran/newRule/</em>
 directory for sample code.
 </p>
+<p>In this package, the <code>NewRuleCalculator</code> class contains 
+the same setup as we have seen so far, but for one line:</p>
+
+<source>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</source>
+
+<p>By adding this line, we ask Joran to allow new rules to be learnt
+at parsing time. It works pretty much like the other rules: it has a
+<code>begin()</code> and <code>end()</code> method, and is called each time
+the parser finds a <em>new-rule</em> element.</p>
+
+<p>When called, the <code>begin()</code> method looks for a <em>pattern</em>
+and a <em>actionClass</em> attribute. The action class is then instanciated
+and added to the <code>RuleStore</code>, along with its corresponding pattern.</p>
 
 <a name="implicit" />
 <h3>Implicit actions </h3>
-<p><em>More in-depths text to come</em></p>
 <p>The rules defined thus far are called explicit rules because they
 require an explicit pattern, hence fixing the tag name of the elements
 for which they apply.
@@ -345,6 +356,48 @@ implicit action.
 <p>Refer to the <em>logback-core/examples/src/joran/implicit</em>
 directory for an example of an implicit action.
 </p>
+
+<p>In that directory, you will find two actions, one xml file and one
+class containing the setup of Joran.</p>
+
+<p>The <code>NOPAction</code> class does nothing. It is used to set
+the context of the <em>foo</em> element, using that line:</p>
+
+<source>ruleStore.addRule(new Pattern("*/foo"), new NOPAction());</source>
+
+<p>After that, the implicit action, namely <code>PrintMeImplicitAction</code>, 
+is added to the <code>RuleStore</code>. This is done by simply adding a new
+instance of the action to the <code>Joran interpreter</code></p>
+
+<source>ji.addImplicitAction(new PrintMeImplicitAction());</source>
+
+<p>When called, the <code>isApplicable()</code> method of <code>PrintMeImplicitAction</code>
+checks the value of the <em>printme</em> attribute. If the value is <code>true</code>, 
+the implicit action is applicable: its <code>begin()</code> method will be called.</p>
+
+<p>The <em>implicit1.xml</em> file contains the following lines:</p>
+
+<source>&lt;foo&gt;
+
+  &lt;xyz printme="true"&gt;
+    &lt;abc printme="true"/&gt;
+  &lt;/xyz&gt;
+
+  &lt;xyz/&gt;
+
+  &lt;foo printme="true"/&gt;
+
+&lt;/foo&gt;</source>
+
+<p>As one can see, the first element will be printed, since it has a <em>printme</em>
+attribute, which bears the value <code>true</code>.</p>
+
+<p>The second element will not be printed, because no <em>printme</em> attibute is present.</p>
+
+<p>The last element will not be printed, although the required attribute is present.
+This is because implicit rules are called only if no explicit rules are defined. Since
+we added a <code>NOPAction</code> with the <em>*/foo</em> pattern, it will be used instead
+of the <code>PrintMeImplicitAction</code>.</p>
 
 <h3>Non goals</h3>
 
