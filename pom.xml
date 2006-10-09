@@ -4,7 +4,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback</artifactId>
-	<version>0.5</version>
+	<version>0.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Logback</name>
 
@@ -189,9 +189,9 @@
 	</reporting>
 	
 	<scm>
-		<connection>http://svn.qos.ch/repos/logback/tags/release-test</connection>
-		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/tags/release-test</developerConnection>
-		<url>http://svn.qos.ch/viewvc/logback/tags/release-test</url>
+		<connection>http://svn.qos.ch/repos/logback/</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/</developerConnection>
+		<url>http://svn.qos.ch/viewvc/logback/</url>
 	</scm>
 	
 	<distributionManagement>

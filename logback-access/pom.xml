@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-	  <version>0.5</version>
+	  <version>0.6-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-access</artifactId>
-	<version>0.5</version>
+	<version>0.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Logback Access Module</name>
 
@@ -174,9 +174,9 @@
 	<!-- LOGBack Access Repository ================================================ -->
 
 	<scm>
-		<connection>http://svn.qos.ch/repos/logback/access/tags/release-test</connection>
-		<developerConnection>https://svn.qos.ch/repos/logback/access/tags/release-test</developerConnection>
-		<url>http://svn.qos.ch/viewcvs/logback/access/tags/release-test</url>
+		<connection>http://svn.qos.ch/repos/logback/access/trunk/</connection>
+		<developerConnection>https://svn.qos.ch/repos/logback/access/trunk/</developerConnection>
+		<url>http://svn.qos.ch/viewcvs/logback/access/trunk/</url>
 	</scm>
 
 	<!--
