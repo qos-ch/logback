@@ -4,7 +4,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback</artifactId>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Logback</name>
 
@@ -193,12 +193,23 @@
 		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/</developerConnection>
 		<url>http://svn.qos.ch/viewvc/logback/</url>
 	</scm>
-	
-	<distributionManagement>
-		<site>
-			<id>pixie</id>
-			<url>scp://pixie/var/www/logback.qos.ch/htdocs/kidding/</url>
-		</site>
-	</distributionManagement>
 
+ <distributionManagement>
+   <site>
+		 <id>pixie</id>
+		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/kidding/</url>
+	 </site>
+<!--
+   <repository>
+     <id>repo</id>
+     <name>Repository Name</name>
+     <url>file://c:/tmp/</url>
+   </repository>
+  <snapshotRepository>
+   <id>repoSnap</id>
+   <name>Snap Repository Name</name>
+   <url>file://c:/temp/</url>
+ </snapshotRepository>
+ -->
+ </distributionManagement>
 </project>

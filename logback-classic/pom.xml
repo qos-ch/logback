@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-	  <version>0.6-SNAPSHOT</version>
+	  <version>0.5-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-classic</artifactId>
-	<version>0.6-SNAPSHOT</version>
+	<version>${project.version}</version>
 	<packaging>jar</packaging>
 	<name>Logback Classic Module</name>
 
@@ -107,25 +107,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			
-			<!--
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>
-							src/main/assembly/source.xml
-						</descriptor>
-					</descriptors>
-					<finalName>
-						logback-classic-${project.version}
-					</finalName>
-					<appendAssemblyId>false</appendAssemblyId>					
-					<outputDirectory>target/site/dist/</outputDirectory>
-				</configuration>
-			</plugin>
-			-->
+
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
@@ -142,18 +124,6 @@
 			</plugin>
 		</plugins>
 
-		<!--
-		<resources>
-			<resource>
-				<directory>src/site/xdocTemplates</directory>
-				
-					We're saving filtered xdocs in a temporary folder
-					and telling the site plug in to get the xdocs there.
-				
-				<targetPath>generated-site</targetPath>
-				<filtering>true</filtering>
-			</resource>
-		</resources> -->
 
 		<testResources>
 			<testResource>
@@ -162,60 +132,5 @@
 			</testResource>
 		</testResources>
 	</build>
-	<!--
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-					<xdocDirectory>
-						${project.build.outputDirectory}/generated-site
-					</xdocDirectory>
-				</configuration>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>
-					maven-project-info-reports-plugin
-				</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<links>
-						<link>
-							http://java.sun.com/j2se/1.5.0/docs/api
-						</link>
-					</links>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-	-->
-	
-	<!-- LOGBack Classic Repository ================================================ -->
-
-	<scm>
-		<connection>http://svn.qos.ch/repos/logback/classic/trunk/</connection>
-		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/classic/trunk/</developerConnection>
-		<url>http://svn.qos.ch/viewcvs/logback/classic/trunk/</url>
-	</scm>
-
-	<!--
-	<distributionManagement>
-		<site>
-			<id>pixie</id>
-			<url>scp://pixie/var/www/logback.qos.ch/htdocs/classic</url>
-		</site>
-	</distributionManagement> -->
 </project>
