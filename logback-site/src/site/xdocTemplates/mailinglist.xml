@@ -38,10 +38,10 @@
 		<table class="bodyTable">
 			<tr class="a">
 				<th>Name</th>
-        <th>Volume</th>
+				<th>Volume</th>
 				<th>Subscribe</th>
 				<th>Unsubscribe</th>
-				<th>Archive</th>
+				<th>Archives</th>
 			</tr>
 			<tr class="b">
 				<td>Logback Announce List</td>
@@ -53,12 +53,23 @@
 					</a>
 				</td>
 				<td>
-					<a href="http://qos.ch/mailman/options/logback-announce">Unsubscribe</a>
-				</td>			
+					<a
+						href="http://qos.ch/mailman/options/logback-announce">
+						Unsubscribe
+					</a>
+				</td>
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-announce/">
-						www.qos.ch
+						qos.ch
+					</a>
+					<a
+						href="http://marc.theaimsgroup.com/?l=logback-announce">
+						MARC
+					</a>
+					<a
+						href="http://www.nabble.com/Logback-Announce-f16251.html">
+						Nabble
 					</a>
 				</td>
 			</tr>
@@ -76,17 +87,26 @@
 						href="http://qos.ch/mailman/options/logback-user">
 						Unsubscribe
 					</a>
-				</td>			
+				</td>
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-user/">
-						www.qos.ch
+						qos.ch
+					</a>
+					<a
+						href="http://marc.theaimsgroup.com/?l=logback-user">
+						MARC
+					</a>
+
+					<a
+						href="http://www.nabble.com/Logback-User-f16252.html">
+						Nabble
 					</a>
 				</td>
 			</tr>
 			<tr class="b">
 				<td>Logback Dev List</td>
-        <td>Medium</td>
+				<td>Medium</td>
 				<td>
 					<a
 						href="http://qos.ch/mailman/listinfo/logback-dev">
@@ -98,11 +118,19 @@
 						href="http://qos.ch/mailman/options/logback-dev">
 						Unsubscribe
 					</a>
-				</td>			
+				</td>
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-dev/">
-						www.qos.ch
+						qos.ch
+					</a>
+					<a
+						href="http://marc.theaimsgroup.com/?l=logback-dev">
+						MARC
+					</a>
+					<a
+						href="http://www.nabble.com/Logback-Dev-f16253.html">
+						Nabble
 					</a>
 				</td>
 			</tr>

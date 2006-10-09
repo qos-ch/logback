@@ -120,9 +120,9 @@ class DefaultEvaluator implements TriggeringPolicy {
 
   private boolean started;
 
-  private static final Integer TRIGGERING_STATUS_CODE = 500;
+  private static final int TRIGGERING_STATUS_CODE = 500;
   private static final long ONE_DAY = 1000*60*60*24;
-  private static long LAST_TRIGGER_DATE = 0L;
+  private long LAST_TRIGGER_DATE = 0L;
   
   
   /**
@@ -138,7 +138,7 @@ class DefaultEvaluator implements TriggeringPolicy {
   public boolean isTriggeringEvent(File file, Object eventObject) {
     AccessEvent event = (AccessEvent) eventObject;
 
-    if (TRIGGERING_STATUS_CODE.compareTo(event.getStatusCode()) <= 0) {
+    if (TRIGGERING_STATUS_CODE <= event.getStatusCode()) {
       if (System.currentTimeMillis() >= LAST_TRIGGER_DATE + ONE_DAY) {
         LAST_TRIGGER_DATE = System.currentTimeMillis();
         return true;

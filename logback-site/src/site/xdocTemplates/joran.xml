@@ -31,7 +31,8 @@ nothing to do with loggers, appenders or layouts.
 <em>LOGBACK_HOME/logback-core/examples/src/joran</em>.
 </p>
 
-<p>Missing: setup instructions</p>
+<p>To install joran, simply <a href="download.html">download</a> 
+logback and add logback core module to your classpath.</p>
 
 <h2>Historical perspective</h2>
 
@@ -163,31 +164,70 @@ conditions by adding error items on the execution context's
 <code>StatusManager</code>.
 </p>
 
+<a name="helloWorld" />
 <h3>A hello world example</h3>
 
 <p>The <em>examples/src/joran/helloWorld/</em> directory includes a
-trivial action and Joran interpreter setup which just diaplays "hello
-world" when a &lt;hello-world> element is encountered in an XML file.
-Look into this example to learn about the basic steps which are
+trivial action and Joran interpreter setup which just diaplays "Hello
+World" when a &lt;hello-world&gt; element is encountered in an XML file.
+It also includes the basic steps which are
 necessary to set up and invoke a Joran interpreter.
 </p>
+<p>
+The <em>hello.xml</em> file contains only one element, without any
+other nested elements. The <code>HelloWorldAction</code> class is 
+a trivial implementation: it only prints "Hello World" in the console when
+it's <code>begin()</code> method is called.
+</p>
+<p>
+<code>HelloWorld</code> is a class that sets up the Joran interpreter,
+with the minimal steps necessary:
+</p>
 
+<ul>
+	<!-- Pretty dirty, thanks site-generation... -->
+	<p>It creates a <code>RuleStore</code> and a <code>Context</code></p>
+	<p>It adds the <em>hello-world</em> pattern, with it's corresponding action</p>
+	<p>It creates a Joran interpreted, and passes the <code>RuleStore</code></p>
+	<p>It creates a SAX parser and parses the given file, specifying the newly created
+	Joran interpreter as the <code>ContentHandler</code></p>
+</ul>
+
+<p>
+It's last step is to print the content of the <code>Context</code>. 
+Since Joran uses logback's powerfull <code>Status</code> objects for 
+error reporting, one can have a good feedback on  what happened during 
+the parsing.
+</p>
+
+<p>
+In this example, the parsing is rather simple. The <em>hello-world</em> element 
+will activate <code>HelloWorldAction</code>'s <code>begin()</code> and 
+<code>end()</code> methods.
+In the first method, a simple call to <code>System.out.println()</code> 
+will be issued, displaying "Hello World" in the console.
+</p>
+
+<a name="calculator" />
 <h3>Collaborating actions</h3>
-
+<p><em>More in-depths text to come</em></p>
+<p>
 The examples/src/joran/calculator/ directory includes several actions
 which collaborate together through the common object stack in order
 to accomplish simple computations.
-
+</p>
+<a name="newRule" />
 <h3>New-rule action</h3>
-
+<p><em>More in-depths text to come</em></p>
 <p>Joran includes an action which allows the Joran interpreter to lean
 new rules on the fly while interpreting the XML file containing the
 new rules.  See the <em>logback-core/examples/src/joran/newRule/</em>
 directory for sample code.
 </p>
 
+<a name="implicit" />
 <h3>Implicit actions </h3>
-
+<p><em>More in-depths text to come</em></p>
 <p>The rules defined thus far are called explicit rules because they
 require an explicit pattern, hence fixing the tag name of the elements
 for which they apply.
