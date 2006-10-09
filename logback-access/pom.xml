@@ -40,6 +40,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<classifier>tests</classifier>			
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
 			<groupId>tomcat</groupId>
 			<artifactId>catalina</artifactId>
 			<scope>compile</scope>
