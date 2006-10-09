@@ -1,7 +1,5 @@
 package ch.qos.logback.access.jetty;
 
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -52,33 +50,33 @@ public class JettyBasicTest extends TestCase {
     appender.list.clear();
   }
 
-  public void testPostContentConverter() throws Exception {
-    //System.out.println("into test");
-    URL url = new URL("http://localhost:8080/");
-    String msg = "test message";
-    
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    //this line is necessary to make the stream aware of when the message is over.
-    connection.setFixedLengthStreamingMode(msg.getBytes().length);
-    ((HttpURLConnection) connection).setRequestMethod("POST");
-    connection.setDoOutput(true);
-    connection.setDoInput(true);
-    connection.setUseCaches(false);
-    connection.setRequestProperty("Content-Type", "text/plain");
-
-   
-    PrintWriter output = new PrintWriter(new OutputStreamWriter(connection
-        .getOutputStream()));
-    output.print(msg);
-    output.flush();
-    output.close();
-
-    // StatusPrinter.print(requestLogImpl.getStatusManager());
-
-    ListAppender listAppender = (ListAppender) requestLogImpl
-        .getAppender("list");
-    Thread.sleep(100);
-    AccessEvent event = (AccessEvent) listAppender.list.get(0);
-    assertEquals(msg, event.getPostContent());
-  }
+//  public void testPostContentConverter() throws Exception {
+//    //System.out.println("into test");
+//    URL url = new URL("http://localhost:8080/");
+//    String msg = "test message";
+//    
+//    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//    //this line is necessary to make the stream aware of when the message is over.
+//    connection.setFixedLengthStreamingMode(msg.getBytes().length);
+//    ((HttpURLConnection) connection).setRequestMethod("POST");
+//    connection.setDoOutput(true);
+//    connection.setDoInput(true);
+//    connection.setUseCaches(false);
+//    connection.setRequestProperty("Content-Type", "text/plain");
+//
+//   
+//    PrintWriter output = new PrintWriter(new OutputStreamWriter(connection
+//        .getOutputStream()));
+//    output.print(msg);
+//    output.flush();
+//    output.close();
+//
+//    // StatusPrinter.print(requestLogImpl.getStatusManager());
+//
+//    ListAppender listAppender = (ListAppender) requestLogImpl
+//        .getAppender("list");
+//    Thread.sleep(100);
+//    AccessEvent event = (AccessEvent) listAppender.list.get(0);
+//    assertEquals(msg, event.getPostContent());
+//  }
 }
