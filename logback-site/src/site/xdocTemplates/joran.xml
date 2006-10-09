@@ -5,7 +5,7 @@
 <h2>Introduction to Joran (DRAFT)</h2>
 
 
-<h3>Ceki G&#252;lc&#252;, 2003-2006, All rights reserved </h3>
+<h3>Ceki G&#252;lc&#252;, S&#233;bastien Pennec, 2003-2006, All rights reserved </h3>
 
 <p>Joran stands for a cold north-west wind which, every now and then,
 blows force-fully on Lake Leman, a.k.a lake Geneva. Located right in
@@ -210,12 +210,78 @@ will be issued, displaying "Hello World" in the console.
 
 <a name="calculator" />
 <h3>Collaborating actions</h3>
-<p><em>More in-depths text to come</em></p>
 <p>
 The examples/src/joran/calculator/ directory includes several actions
 which collaborate together through the common object stack in order
 to accomplish simple computations.
 </p>
+<p>
+The <em>calculator1.xml</em> file contains a <code>computation</code> element, 
+with a nested <code>literal</code> element.
+</p>
+<p>
+In the <code>Calculator1</code> class, we declare various patterns and actions,
+that will collaborate and calculate a result based on the xml file. The simple
+<em>calculator1.xml</em> file only creates a computation and declares a literal
+value. The resulting parsing is pretty simple:
+</p>
+<ul>
+	<p>The <code>ComputationAction1</code> class' <code>begin()</code> method
+	is called</p>
+	<p>The <code>LiteralAction</code> class' <code>begin()</code> and <code>end()</code> 
+	methods are called</p>
+	<p>The <code>ComputationAction1</code> class' <code>end()</code> method
+	is called</p>
+</ul>
+<p>
+What is interesting here is the way that the Actions collaborate.
+The <code>LiteralAction</code> reads a literal value and pushes it in the
+object stack maintained by the <code>ExecutionContext</code>. Once done,
+any other action can pop the value back to read or modify it. Here, the
+<code>end()</code> method of the <code>ComputationAction1</code> class pops
+the value from the stack and prints it.
+</p>
+<p>The <em>calculator2.xml</em> file is a bit more complex, and much more interesting.</p>
+<p>It contains the following elements:</p>
+<source>&lt;computation name="toto"&gt;
+  &lt;literal value="7"/&gt;
+  &lt;literal value="3"/&gt;
+  &lt;add/&gt;
+  &lt;literal value="3"/&gt;
+  &lt;multiply/&gt;
+&lt;/computation&gt;</source>
+<p>
+Here, there are obviously more actions that will be part of the computation.
+</p>
+<p>When called, the <code>AddAction</code> class will remove the two integers at
+the bottom of the stack, add them and push the resulting integer at the
+top of the stack, for further use.</p>
+<p>Later in the computation, the <code>MultiplyAction</code> class will be called.
+It will take the last two integers from the stack, multiply them and
+push the result in the stack.</p>
+<p>We have here two examples of action whose <code>begin()</code> method behaves in 
+a certain, predictable way, but whose <code>end()</code> methods are empty.</p>
+
+<p>Finally, a <em>calculator3.xml</em> is also provided, to demonstrate the possibility
+elements that contain instances of the same element. Here's the content of
+<em>calculator3.xml</em>:</p>
+<source>&lt;computation name="toto"&gt;
+  &lt;computation&gt;
+    &lt;literal value="7"/&gt;
+    &lt;literal value="3"/&gt;
+    &lt;add/&gt;
+  &lt;/computation&gt;   
+ 
+  &lt;literal value="3"/&gt;
+  &lt;multiply/&gt;
+&lt;/computation&gt;</source>
+
+<p>Much like the use of parentheses in an algebrical equation, the presence of
+a <code>computation</code> element nested in another is managed by the 
+<code>ComputationAction2</code> class using an internal stack. The well-formedness 
+of XML will guarantee that a value saved by one begin() will be consumed 
+only by the matching end() method.</p>
+
 <a name="newRule" />
 <h3>New-rule action</h3>
 <p><em>More in-depths text to come</em></p>

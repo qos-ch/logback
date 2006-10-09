@@ -106,7 +106,13 @@
 			<directory>logback-classic/examples/</directory>
 			<outputDirectory>/examples/</outputDirectory>
 		</fileSet>
-		
+
+		<!-- Core Examples -->
+		<fileSet>
+			<directory>logback-core/examples/</directory>
+			<outputDirectory>/examples/</outputDirectory>
+		</fileSet>
+				
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
