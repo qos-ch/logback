@@ -35,15 +35,15 @@ import ch.qos.logback.core.util.StatusPrinter;
  * </pre>
  * 
  * By default, RequestLogImpl looks for a logback configuration file called
- * logback.xml, in the same folder where jetty.xml is located, that is
- * <em>etc/logback.xml</em>. The logback.xml file is slightly different than the usual
+ * logback-access.xml, in the same folder where jetty.xml is located, that is
+ * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly different than the usual
  * logback classic configuration file. Most of it is the same: Appenders and
  * Layouts are declared the exact same way. However, loggers elements are not
  * allowed.
  * <p>
  * It is possible to put the logback configuration file anywhere, as long as
  * it's path is specified. Here is another example, with a path to the
- * logback.xml file.
+ * logback-access.xml file.
  * 
  * <pre>
  *  &lt;Ref id=&quot;requestLog&quot;&gt; 
@@ -55,7 +55,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * </pre>
  * 
  * <p>
- * Here is a sample logback.xml file that can be used right away:
+ * Here is a sample logback-access.xml file that can be used right away:
  * 
  * <pre>
  *  &lt;configuration&gt; 
@@ -103,7 +103,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     AppenderAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
-      + "logback.xml";
+      + "logback-access.xml";
 
   AppenderAttachableImpl aai = new AppenderAttachableImpl();
   String filename;
