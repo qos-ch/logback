@@ -107,6 +107,14 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * </td>
  * </tr>
  * <tr>
+ * <td align="center"><b>l</b></td>
+ * <td>
+ * <p>Remote user. In logback-access, this converter always returns 
+ * the value "-".
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
  * <td align="center"><b>m / requestMethod</b></td>
  * <td>
  * <p>
