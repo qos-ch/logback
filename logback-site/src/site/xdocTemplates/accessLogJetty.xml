@@ -54,18 +54,28 @@
 			HTTP-access log functionality.
 		</p>
 		<p>
-			Integrating logback into Jetty is very simple. Once done, one can benefit of many of
-			logback's flexibility and reliability.
+			Integrating logback into Jetty is very simple. Once done, one can benefit from the power 
+			and flexibility found only in fully-fledged logging systems.
+		</p>
+		
+		<p>
+			To use logback access with Jetty, first download the files, then place the
+			<em>logback-core-VERSION.jar</em> and <em>logback-access-VERSION.jar</em> files
+			in the Jetty classpath.
 		</p>
 
 		<h2>Logback's RequestLog implementation</h2>
 
 		<p>
 			Logback's <code>ch.qos.logback.access.jetty.RequestLogImpl</code> is an
-			implementation of jetty's <code>RequestLog</code> interface.
+			implementation of jetty's <code>RequestLog</code> interface. This interface
+			is used by Jetty to allow external components to manage request logging.
 		</p>
 		<p>
-			It can be seen as logback classic's <code>LoggerContext</code>. 
+			<code>RequestLogImpl</code> can be seen as logback classic's 
+			<a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/LoggerContext.html">
+			<code>LoggerContext</code></a>. It is the central component of the logging
+			environnement.
 		</p>
 		<p>
 			In logback, logging destinations are called Appenders. These classes
@@ -73,7 +83,7 @@
 		</p>
 		<p>Logback's internal error reporting system is based on Status objects.
 			<code>RequestLogImpl</code> uses the same <code>StatusManager</code> 
-			as <code>LoggerContext</code> does. It also provides containers for properties.
+			as <code>LoggerContext</code> does.
 		</p>
 		<p>
 			To configure jetty in order to use <code>RequestLogImpl</code>, the
@@ -90,17 +100,28 @@
 &lt;/Ref&gt;
 		</pre>
 		<p>
+			These lines reference the requestLog functionnality of Jetty, setting
+			the actual class that will be called at each logging request.
+		</p>
+		<p>
 			By default, <code>RequestLogImpl</code> looks for a logback configuration
-			file called logback.xml, in the same folder where jetty.xml
-			is located, that is <em>etc/logback.xml</em>. The logback.xml file
+			file called <em>logback.xml</em>, in the same folder where jetty.xml
+			is located, that is <em>etc/logback.xml</em>. This configuration file 
+			contains declarations of logback components. There, one can specify,
+			at runtime, the destinations where the logging requests will be sent, 
+			and the format that logback will use to display the logging events.
+	</p>
+	<p> The logback.xml file
 			is slightly different than the usual logback classic
 			configuration file. Most of it is the same: Appenders and
 			Layouts (which are logback components to format logging output)
 			are declared the exact same way. However, loggers
-			elements are not allowed. It is possible to put the logback
+			elements are not allowed.
+	</p>
+	<p> It is possible to put the logback
 			configuration file anywhere, as long as it's path is
-			specified. Here is another example, with a path to the
-			logback.xml file.
+			specified. Here is another example of declaration of the logback
+			component in the jetty configuration file, with a path to the logback.xml file.
 		</p>
 		<pre>
 &lt;Ref id="requestLog"&gt;
@@ -130,6 +151,12 @@
   &lt;appender-ref ref="STDOUT" /&gt;
 &lt;/configuration&gt;
 		</pre>
+		<p>
+		This file declares a logging destination (in the <em>appender</em> element). The
+		appender used is the ConsoleAppender which obviously logs events to the console.
+		A PatternLayout is also declared, to format the output. More informations about this
+		layout later on in this document.
+		</p>
 		<p>Another configuration file, using logback access <code>SMTPAppender</code>, could be:</p>
 		<pre>
 &lt;configuration&gt;
@@ -150,16 +177,31 @@
 &lt;/configuration&gt;
 		</pre>
 		<p>
+			Here, there is no output to the console. Instead, logback access builds a buffer with
+			the logging events, and in case of an events that meets a certain condition, 
+			an email is sent to the specified address, using the declared informations. 
+			By default, an event that would cause an email to be sent is when a status 
+			code of 500 or more occurs, which means that an error occured on the server. 
+		</p>
+		<p>
+			These two configuration example should give you an idea of the
+			existing possibilities when having at hand the flexibility of a logging framework 
+			like logback. Most of the things that you can do with the classic module of logback is
+			available for access logging.
+		</p>
+		<p>
 			A special, module-specific implementation of <code>PatternLayout</code>
 			was implemented to allow http-specific patterns to be used.
-			The <code>ch.qos.logback.access.PatternLayout</code> provides a way to
+			The <a href="http://logback.qos.ch/apidocs/ch/qos/logback/access/PatternLayout.html">
+			<code>ch.qos.logback.access.PatternLayout</code></a> provides a way to
 			format the logging output that is just as easy and flexible
 			as the usual <code>PatternLayout</code>. 
 		</p>
 		<p>	
 			For more information about the
 			general use of a <code>PatternLayout</code>, please refer to logback
-			classic's <code>ch.qos.logback.classic.PatternLayout</code>.
+			classic's <a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/PatternLayout.html">
+			<code>ch.qos.logback.classic.PatternLayout</code></a>.
 		</p>
 		<p>
 		  Logback access <code>PatternLayout</code> offers the following possibilities:
@@ -207,13 +249,23 @@
 					Request protocol.
 				</p>
 			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>reqParameter</b></td>
+			<td>
+				<p>
+					Parameter of the response. This conversion word can be followed by a key 
+					whose corresponding data will be extracted from the header information.
+				</p>
+				<p>Example: <em>%reqParameter{userName}</em></p>
+			</td>
 		</tr>		
 		<tr>
 			<td align="center"><b>i / header</b></td>
 			<td>
 				<p>
-					Request header. This conversion word can be followed by a key 
-					whose corresponding data will be extracted from the header information.
+					Request header. Just like the reqParameter
+					conversion word, reqParameter can be followed by a key.
 				</p>
 			</td>
 		</tr>	
@@ -285,7 +337,7 @@
 			<td align="center"><b>reqAttribute</b></td>
 			<td>
 				<p>
-					Attribute of the request. Just like the request header
+					Attribute of the request. Just like the reqParameter
 					conversion word, reqAttribute can be followed by a key.
 				</p>
 			</td>
@@ -294,7 +346,7 @@
 			<td align="center"><b>reqCookie</b></td>
 			<td>
 				<p>
-					Request cookie. Just like the request header
+					Request cookie. Just like the reqParameter
 					conversion word, reqCookie can be followed by a key.
 				</p>
 			</td>
@@ -303,17 +355,8 @@
 			<td align="center"><b>responseHeader</b></td>
 			<td>
 				<p>
-					Header of the response. Just like the request header
+					Header of the response. Just like the reqParameter
 					conversion word, responseHeader can be followed by a key.
-				</p>
-			</td>
-		</tr>
-		<tr>
-			<td align="center"><b>reqParameter</b></td>
-			<td>
-				<p>
-					Parameter of the response. Just like the request header
-					conversion word, reqParameter can be followed by a key.
 				</p>
 			</td>
 		</tr>
