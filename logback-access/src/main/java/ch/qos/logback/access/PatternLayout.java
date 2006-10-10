@@ -215,6 +215,10 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
   public static String CLF_PATTERN = "%h %l %u %t \"%r\" %s %b";
+  public static String CLF_PATTERN_NAME = "common";
+  public static String CLF_PATTERN_NAME_2 = "clf";
+  public static String COMBINED_PATTERN = "%h %l %u %t \"%r\" %>s %b \"%i{Referer}\" \"%i{User-Agent}";
+  public static String COMBINED_PATTERN_NAME = "combined";
 
   static {
 
@@ -314,6 +318,17 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
 
   public String doLayout(Object o) {
     return doLayout((AccessEvent) o);
+  }
+
+  @Override
+  public void start() {
+    if (getPattern().equalsIgnoreCase(CLF_PATTERN_NAME)
+        || getPattern().equalsIgnoreCase(CLF_PATTERN_NAME_2)) {
+      setPattern(CLF_PATTERN);
+    } else if (getPattern().equalsIgnoreCase(COMBINED_PATTERN_NAME)) {
+      setPattern(COMBINED_PATTERN);
+    }
+    super.start();
   }
 
 }
