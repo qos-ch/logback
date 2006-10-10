@@ -10,35 +10,40 @@
 
 package ch.qos.logback.classic;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.slf4j.ILoggerFactory;
 
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.status.ErrorStatus;
-
+import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * @author ceki
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory {
 
-	public static final String ROOT_NAME = "root";
-	
+  public static final String ROOT_NAME = "root";
+
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
-  
-  // We want loggerCache to be synchronized so Hashtable is a good choice. In practice, it 
-  // performs a little faster than the map returned by Collections.synchronizedMap at the 
+
+  // We want loggerCache to be synchronized so Hashtable is a good choice. In
+  // practice, it
+  // performs a little faster than the map returned by
+  // Collections.synchronizedMap at the
   // cost of a very slightly higher memory footprint.
   private Hashtable<String, Logger> loggerCache;
 
-	LoggerContextRemoteView loggerContextRemoteView;
-	
+  LoggerContextRemoteView loggerContextRemoteView;
+
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
@@ -49,38 +54,39 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
     putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
     size = 1;
   }
-  
+
   /**
-   * A new instance of LoggerContextRemoteView needs to be created each time
-   * the name or propertyMap (including keys or values) changes.
+   * A new instance of LoggerContextRemoteView needs to be created each time the
+   * name or propertyMap (including keys or values) changes.
    */
   private void syncRemoteView() {
-  	loggerContextRemoteView = new LoggerContextRemoteView(this);
-  	for(Logger logger : loggerCache.values()) {
-  		logger.buildRemoteView();
-  	}
+    loggerContextRemoteView = new LoggerContextRemoteView(this);
+    for (Logger logger : loggerCache.values()) {
+      logger.buildRemoteView();
+    }
   }
-  
+
   @Override
   public void setName(String name) {
-	  	super.setName(name);
-	    syncRemoteView();
+    super.setName(name);
+    syncRemoteView();
   }
 
   public final Logger getLogger(final Class clazz) {
     return getLogger(clazz.getName());
   }
-  
+
   public final Logger getLogger(final String name) {
 
-    //if we are asking for the root logger, then let us return it without wasting time
+    // if we are asking for the root logger, then let us return it without
+    // wasting time
     if (ROOT_NAME.equalsIgnoreCase(name)) {
-    	return root;
+      return root;
     }
-    
+
     int i = 0;
     Logger logger = root;
-    
+
     // check if the desired logger exists, if it does, return it
     // without further ado.
     Logger childLogger = (Logger) loggerCache.get(name);
@@ -125,23 +131,25 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   }
 
   /**
-   * Check if the named logger exists in the hierarchy. If so return
-   * its reference, otherwise returns <code>null</code>.
-   *
-   * @param name the name of the logger to search for.
+   * Check if the named logger exists in the hierarchy. If so return its
+   * reference, otherwise returns <code>null</code>.
+   * 
+   * @param name
+   *          the name of the logger to search for.
    */
   Logger exists(String name) {
     return (Logger) loggerCache.get(name);
   }
-  
+
   final void noAppenderDefinedWarning(final Logger logger) {
-  	 if (noAppenderWarning++ == 0) {
-  	      getStatusManager().add(new ErrorStatus(
-	        "No appenders present in context ["+ getName() +"] for logger [" + logger.getName() + "].", logger));
-  	 }
+    if (noAppenderWarning++ == 0) {
+      getStatusManager().add(
+          new ErrorStatus("No appenders present in context [" + getName()
+              + "] for logger [" + logger.getName() + "].", logger));
+    }
   }
-  
+
   public LoggerContextRemoteView getLoggerContextRemoteView() {
-  	return loggerContextRemoteView;
+    return loggerContextRemoteView;
   }
 }

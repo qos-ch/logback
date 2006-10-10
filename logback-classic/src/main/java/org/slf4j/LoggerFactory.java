@@ -32,8 +32,15 @@
  */
 package org.slf4j;
 
+import java.net.URL;
+
 import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.impl.Util;
+
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * The <code>LoggerFactory</code> is a utility class producing Loggers for
@@ -63,6 +70,16 @@ public final class LoggerFactory {
   static {
     try { 
       loggerFactory = StaticLoggerBinder.SINGLETON.getLoggerFactory();
+      URL url = Loader.getResource("logback-classic.xml");
+      System.out.println("URL = " + url);
+      if (url != null) {
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext((Context)loggerFactory);
+        configurator.doConfigure(url);
+        StatusPrinter.print((Context)loggerFactory);
+      } else {
+        //TODO basic configuration??
+      }
     } catch (Exception e) {
       // we should never get here
       Util.reportFailure("Failed to instantiate logger ["
