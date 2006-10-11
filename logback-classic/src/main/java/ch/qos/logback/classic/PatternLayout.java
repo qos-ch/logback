@@ -104,7 +104,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * logger name is printed in full.
  * 
  * <p>
- * For example, for the category name "a.b.c" the pattern <b>%logger{2}</b>
+ * For example, for the logger name "a.b.c" the pattern <b>%logger{2}</b>
  * will output "b.c". See more examples of name abbreviations further down this
  * document.
  * 
@@ -124,7 +124,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * name is output in fully qualified form.
  * 
  * <p>
- * For example, for the class name "org.apache.xyz.SomeClass", the pattern
+ * For example, for the class name "ch.logback.xyz.SomeClass", the pattern
  * <b>%class{1}</b> will output "SomeClass". See more examples of name
  * abbreviations further down this document.
  * 
@@ -153,7 +153,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * <p>
  * <b>WARNING</b> Generating caller file information is extremely slow. Its use
  * should be avoided unless execution speed is not an issue.
- * 
+ * </td>
  * </tr>
  * 
  * <tr>
@@ -184,7 +184,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * <p>
  * <b>WARNING</b> Generating caller location information is extremely slow.
  * It's use should be avoided unless execution speed is not an issue.
- * 
+ * </td>
  * </tr>
  * 
  * 
@@ -202,7 +202,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * <p>
  * <b>WARNING</b> Generating caller location information is extremely slow.
  * It's use should be avoided unless execution speed is not an issue.
- * 
+ * </td>
  * </tr>
  * 
  * <tr>
@@ -215,7 +215,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * non-portable line separator strings such as "\n", or "\r\n". Thus, it is the
  * preferred way of specifying a line separator.
  * 
- * 
+ * </td>
  * </tr>
  * 
  * <tr>
@@ -394,7 +394,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * characters and truncated if longer.
  * 
  * </dl>
- * <p> Here are a few more examples of the format modifier behaviour, with emphasis on 
+ * <p> Here are a few more examples of the precision specifier behaviour, with emphasis on 
  * the way it affects class names.
  * <p>
  * 

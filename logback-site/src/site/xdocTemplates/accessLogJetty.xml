@@ -303,17 +303,16 @@
 		</tr>
 
 		<tr>
-			<td align="center"><b>reqParameter</b></td>
+			<td align="center"><b>reqParameter{paramName}</b></td>
 			<td>
 				<p>
 					Parameter of the response. This conversion word can be followed by a key 
 					whose corresponding data will be extracted from the header information.
 				</p>
-				<p>Example: <em>%reqParameter{userName}</em></p>
 			</td>
 		</tr>		
 		<tr>
-			<td align="center"><b>i / header</b></td>
+			<td align="center"><b>i{header} / header{header}</b></td>
 			<td>
 				<p>
 					Request header. Just like the reqParameter
@@ -386,7 +385,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="center"><b>reqAttribute</b></td>
+			<td align="center"><b>reqAttribute{attributeName}</b></td>
 			<td>
 				<p>
 					Attribute of the request. Just like the reqParameter
@@ -395,7 +394,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="center"><b>reqCookie</b></td>
+			<td align="center"><b>reqCookie{cookie}</b></td>
 			<td>
 				<p>
 					Request cookie. Just like the reqParameter
@@ -404,7 +403,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="center"><b>responseHeader</b></td>
+			<td align="center"><b>responseHeader{header}</b></td>
 			<td>
 				<p>
 					Header of the response. Just like the reqParameter

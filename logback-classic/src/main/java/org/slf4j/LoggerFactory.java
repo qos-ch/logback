@@ -71,7 +71,6 @@ public final class LoggerFactory {
     try { 
       loggerFactory = StaticLoggerBinder.SINGLETON.getLoggerFactory();
       URL url = Loader.getResource("logback-classic.xml");
-      System.out.println("URL = " + url);
       if (url != null) {
         JoranConfigurator configurator = new JoranConfigurator();
         configurator.setContext((Context)loggerFactory);

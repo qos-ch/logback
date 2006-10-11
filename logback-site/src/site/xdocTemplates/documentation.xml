@@ -17,11 +17,14 @@
 			<li>
 				<a href="shortIntro.html"><b>A short introduction to logback-classic</b></a>
 			</li>
-
 			<li>
 				<a href="accessLogJetty.html"><b>A short introduction to access logging with logback-access and Jetty</b></a>
 			</li>
 
+			<li>
+				<a href="layouts.html"><b>Layout reference</b></a>
+			</li>
+			
 			<li>
 				<a href="apidocs/index.html"><b>Javadoc</b></a>
 			</li>

@@ -21,7 +21,7 @@ capabilities offered by logback modules are possible thanks to Joran.
 </p>
 
 <p>Joran is actually a generic configuration system which can be used
-independently of logging. To emphaises this point, I should mention
+independently of logging. To emphaises this point, We should mention
 that the logback-core module does not have a notion of loggers. In
 that sprit, many of the examples related to this tutorial, have
 nothing to do with loggers, appenders or layouts.
@@ -188,7 +188,7 @@ with the minimal steps necessary:
 	<!-- Pretty dirty, thanks site-generation... -->
 	<p>It creates a <code>RuleStore</code> and a <code>Context</code></p>
 	<p>It adds the <em>hello-world</em> pattern, with it's corresponding action</p>
-	<p>It creates a Joran interpreted, and passes the <code>RuleStore</code></p>
+	<p>It creates a Joran interpreter, and passes the <code>RuleStore</code></p>
 	<p>It creates a SAX parser and parses the given file, specifying the newly created
 	Joran interpreter as the <code>ContentHandler</code></p>
 </ul>
