@@ -183,12 +183,13 @@
 
   <div class="source">&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
   &lt;Pattern>%h %l %u %t "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/Pattern&gt;
-  &lt;/layout&gt;</div>
+&lt;/layout&gt;</div>
 
   <p>is equivalent to:</p>
 
   <div class="source">&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
-  &lt;Pattern>combined&lt;/Pattern&gt;&lt;/layout&gt;
+  &lt;Pattern>combined&lt;/Pattern&gt;
+&lt;/layout&gt;
   </div>
 
 
@@ -198,32 +199,31 @@
 		<code>SMTPAppender</code>, could be:</p>
 		<pre>
 &lt;configuration&gt;
-  &lt;appender name="SMTP"
-    class="ch.qos.logback.access.net.SMTPAppender"&gt;
-    &lt;layout
-      class="ch.qos.logback.access.PatternLayout"&gt;
-      &lt;param name="pattern"
-        value="%remoteIP [%date] %requestURL %statusCode %bytesSent" /&gt;
-    &lt;/layout&gt;
-    &lt;param name="From" value="sender@domaine.org" /&gt;
-    &lt;param name="SMTPHost" value="mail.domain.org" /&gt;
-    &lt;param name="Subject"
-      value="Last Event: %statusCode %requestURL" /&gt;
-    &lt;param name="To" value="server_admin@domain.org" /&gt;
-    &lt;/appender&gt;
-  &lt;appender-ref ref="SMTP" /&gt;
+  &lt;appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+		&lt;rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
+     &lt;param name="ActiveFileName" value="access.log" /&gt;
+     &lt;param name="FileNamePattern" value="access.%d{yyyy-MM-dd}.log.zip" /&gt;
+		&lt;/rollingPolicy&gt;
+
+		&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+			&lt;param name="Pattern"
+				value="combined" /&gt;
+		&lt;/layout&gt;
+	&lt;/appender&gt;
+ 
+  &lt;appender-ref ref="FILE" /&gt;
 &lt;/configuration&gt;
 		</pre>
 
-
 		<p>
 			Here, there is no output to the console. Instead, logback access
-			builds a buffer with the logging events, and in case of an
-			events that meets a certain condition, an email is sent to the
-			specified address, using the declared informations.  By default,
-			an event that would cause an email to be sent is when a status
-			code of 500 or more occurs, which means that an error occured on
-			the server.
+			logs to the file named access.log. This file will be rolled over
+			every 24 hours. We specify in the configuration the name of the file
+			where the actual logging is added, and the pattern that the archived
+			files must match.
+			The newly archived file will be automatically compressed.
 		</p>
 		
     <p>
