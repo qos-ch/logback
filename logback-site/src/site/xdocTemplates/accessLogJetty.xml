@@ -203,13 +203,12 @@
 		class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
 		&lt;rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
-     &lt;param name="ActiveFileName" value="access.log" /&gt;
-     &lt;param name="FileNamePattern" value="access.%d{yyyy-MM-dd}.log.zip" /&gt;
+     &lt;ActiveFileName&gt;access.log"&lt;/ActiveFileName&gt;
+     &lt;FileNamePattern&gt;access.%d{yyyy-MM-dd}.log.zip&lt;/FileNamePattern&gt;
 		&lt;/rollingPolicy&gt;
 
 		&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
-			&lt;param name="Pattern"
-				value="combined" /&gt;
+			&lt;Pattern"&gt;combined&lt;/Pattern"&gt;
 		&lt;/layout&gt;
 	&lt;/appender&gt;
  
