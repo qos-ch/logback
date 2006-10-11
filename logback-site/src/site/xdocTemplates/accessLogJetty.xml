@@ -195,22 +195,22 @@
 
     <h2>Example 2: RollingFileAppender</h2>
 
-		<p>In the next configuration file, using logback access
-		<code>SMTPAppender</code>, could be:</p>
+		<p>Another configuration file, using logback'
+		<code>RollingFileAppender</code>, could be:</p>
 		<pre>
 &lt;configuration&gt;
   &lt;appender name="FILE"
-		class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
-		&lt;rollingPolicy
-			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
-     &lt;ActiveFileName&gt;access.log"&lt;/ActiveFileName&gt;
-     &lt;FileNamePattern&gt;access.%d{yyyy-MM-dd}.log.zip&lt;/FileNamePattern&gt;
-		&lt;/rollingPolicy&gt;
+    class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
+      &lt;ActiveFileName&gt;access.log"&lt;/ActiveFileName&gt;
+      &lt;FileNamePattern&gt;access.%d{yyyy-MM-dd}.log.zip&lt;/FileNamePattern&gt;
+    &lt;/rollingPolicy&gt;
 
-		&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
-			&lt;Pattern"&gt;combined&lt;/Pattern"&gt;
-		&lt;/layout&gt;
-	&lt;/appender&gt;
+    &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+      &lt;Pattern"&gt;combined&lt;/Pattern"&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
  
   &lt;appender-ref ref="FILE" /&gt;
 &lt;/configuration&gt;
