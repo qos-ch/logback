@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<title>Documentations</title>
+	</properties>
+
+	<body>
+
+    <h2>Logback manual</h2>
+
+		<p>Welcome to the main page of the logback manual.</p>
+		
+		<p>At the moment, only one chapter is available. More to come.</p>
+
+		<ul>
+			<li>
+				<a href="layouts.html"><b>Manual Chapter 5: Layout reference</b></a>
+			</li>
+		</ul>
+
+	</body>
+</document>

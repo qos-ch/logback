@@ -128,7 +128,7 @@ public class Interpreter extends DefaultHandler {
       body = body.trim();
     }
     if(body.length() > 0) {
-      System.out.println("calling body method with ["+body+ "]");
+      //System.out.println("calling body method with ["+body+ "]");
       callBodyAction(applicableActionList, body);
     }
   }

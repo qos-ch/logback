@@ -8,7 +8,7 @@
 
 	<body>
 
-    <h2>logback documentation</h2>
+    <h2>Logback documentation</h2>
 
 		<p>Below is a list of documentaiton currently available for the
 		logback project.</p>
@@ -20,18 +20,20 @@
 			<li>
 				<a href="accessLogJetty.html"><b>A short introduction to access logging with logback-access and Jetty</b></a>
 			</li>
-
-			<li>
-				<a href="layouts.html"><b>Layout reference</b></a>
-			</li>
-			
 			<li>
 				<a href="apidocs/index.html"><b>Javadoc</b></a>
 			</li>
-
       <li>
         <a href="joran.html"><b>A introduction to Joran</b></a>
       </li>
+		</ul>
+		
+		<p>A complete manual about logback is in the works at the moment. Each chapter will be
+		put online as soon as it's complete. You can access the manual page by following the link
+		below.</p>
+		
+		<ul>
+			<li><a href="manual/index.html"><b>Complete logback manual</b></a></li>
 		</ul>
 
 	</body>

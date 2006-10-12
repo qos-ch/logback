@@ -240,7 +240,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * </tr>
  * 
  * <tr>
- * <td align=center><b>X</b></td>
+ * <td align=center><b>X / mdc</b></td>
  * 
  * <td>
  * 
@@ -402,7 +402,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * 
  * <tr>
  * <th>Conversion Pattern</th>
- * <th>Class name</th>
+ * <th>Logger name</th>
  * <th>Result</th>
  * </tr>
  * 

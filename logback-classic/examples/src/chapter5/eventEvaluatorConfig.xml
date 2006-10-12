@@ -1,0 +1,20 @@
+<configuration>
+
+	<evaluator name="DISPLAY_CALLER_EVAL">
+		<!-- >Expression>(logger.name.contains("chapter5"))</Expression-->
+		<Expression>message.contains("stacktrace") && message.contains("logging")</Expression>
+	</evaluator>
+	
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <param name="Pattern"
+        value="%-4relative [%thread] %-5level - %msg %caller{2, DISPLAY_CALLER_EVAL}%n" />
+    </layout>
+  </appender>
+
+  <root>
+    <level value="debug" />
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

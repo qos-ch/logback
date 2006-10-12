@@ -9,7 +9,7 @@
 
 
 	<body>
-		<h2>Layouts</h2>
+		<h2>Chapter 5: Layouts</h2>
 		<div class="author">
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
@@ -48,10 +48,10 @@
 			While appenders are responsible for writing logging output
 			to an appender dependent device, layouts are responsible for
 			the format of the output. In case you were wondering,
-			lay-outs have nothing to do with large estates in Florida.
+			layouts have nothing to do with large estates in Florida.
 			The
 			<code>format()</code>
-			method in the Layout class takes in a object that represents
+			method in the Layout class takes a object that represents
 			the logging event and returns a String. A synopsis of the
 			Layout interface is shown below.
 		</p>
@@ -79,7 +79,7 @@
 			As we've seen, a Layout implementation takes as a parameter
 			an object that represents a logging event. The typing of the
 			parameter to <code>Object</code>
-			is because logging events may have different way of being
+			is because logging events may have different ways of being
 			designed. In logback classic, a logging event is represented
 			by the <code>ch.qos.logback.classic.LoggingEvent</code>
 			class. Therefore, all layouts in logback classic implement a
@@ -104,8 +104,8 @@
 
 		<p>
 			Logback ships with a flexible layout called <code>PatternLayout</code>. 
-			As all layouts, <code>PatternLayout</code>
-			takes in a logging event and returns a String. However, the
+			As all classic layouts, <code>PatternLayout</code>
+			takes a logging event and returns a String. However, the
 			returned String can be modified at will by tweaking its
 			conversion pattern. 
 		</p>
@@ -238,7 +238,7 @@ WARN  [main]: Message 2</div>
 					<b>d / date</b>
 				</td>
 				<td>
-					Used to output the date of the logging event. The
+					<p>Used to output the date of the logging event. The
 					date conversion specifier may be followed by a set
 					of braces containing a date and time pattern strings
 					{@link java.text.SimpleDateFormat},
@@ -247,7 +247,9 @@ WARN  [main]: Message 2</div>
 					<em>DATE</em>
 					or
 					<em>ISO8601</em>
-					. For example,
+					. 
+					</p>
+					<p>For example,
 					<b>%d{HH:mm:ss,SSS}</b>
 					,
 					<b>%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}</b>
@@ -255,6 +257,7 @@ WARN  [main]: Message 2</div>
 					<b>%d{DATE}</b>
 					. If no date format specifier is given then ISO8601
 					format is assumed.
+					</p>
 				</td>
 			</tr>
 
@@ -300,6 +303,10 @@ WARN  [main]: Message 2</div>
 						<em>extremely</em>
 						slow. It's use should be avoided unless
 						execution speed is not an issue.
+					</p>
+					<p>
+						A precision specifier can be appended to the <em>caller</em> conversion
+						specifier to configure the depth of the information to be displayed.
 					</p>
 				</td>
 			</tr>
@@ -409,7 +416,7 @@ WARN  [main]: Message 2</div>
 
 			<tr>
 				<td align="center">
-					<b>X</b>
+					<b>X / mdc</b>
 				</td>
 
 				<td>
@@ -417,7 +424,10 @@ WARN  [main]: Message 2</div>
 					<p>
 						Used to output the MDC (mapped diagnostic
 						context) associated with the thread that
-						generated the logging event. The
+						generated the logging event. 
+					</p>
+					<p>
+						The
 						<b>X</b>
 						conversion character can be followed by the key
 						for the map placed between braces, as in
@@ -425,7 +435,10 @@ WARN  [main]: Message 2</div>
 						where
 						<code>clientNumber</code>
 						is the key. The value in the MDC corresponding
-						to the key will be output. If no additional
+						to the key will be output. 
+					</p>
+					<p>
+						If no additional
 						sub-option is specified, then the entire
 						contents of the MDC key value pair set is output
 						using a format key1=val1, key2=val2
@@ -579,18 +592,150 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 		</table>
+		
+		
+		<h3>Option handling</h3>
+		
+		<p>A conversion specifier can be followed by options between curled brackets.
+			 We have already seen some of the possibilities offered by logback's option handling
+			 with, for example, the MDC conversion specifier: <em>%mdc{someKey}</em>.
+		</p>
+		<p>
+			However, there is much more to it than that.
+		</p>
+		<p>
+			The logger name conversion specifier can take an integer as a first option.
+			This will use logback's abbreviation mechanism to display a shorter logger name, 
+			without loosing it's meaning.
+		</p>
+		
+		<p>
+			The next table should clear things up.
+		</p>
 
+		<table BORDER="1" CELLPADDING="8">
 
+			<tr>
+				<th>Conversion Pattern</th>
+				<th>Logger name</th>
+				<th>Result</th>
+			</tr>
 
+			<tr>
+				<td>%logger{10}</td>
+				<td>mainPackage.sub.sample.Bar</td>
+				<td>m.s.s.Bar</td>
+			</tr>
 
+			<tr>
+				<td>%logger{15}</td>
+				<td>mainPackage.sub.sample.Bar</td>
+				<td>m.s.sample.Bar</td>
+			</tr>
 
+			<tr>
+				<td>%logger{16}</td>
+				<td>mainPackage.sub.sample.Bar</td>
+				<td>m.sub.sample.Bar</td>
+			</tr>
 
+			<tr>
+				<td>%logger{26}</td>
+				<td>mainPackage.sub.sample.Bar</td>
+				<td>mainPackage.sub.sample.Bar</td>
+			</tr>
+		</table>
+		
+		<p>
+			Another very useful way of adding options to a conversion specifier is
+			when <code>PatternLayout</code> is used with <code>EventEvaluators</code>.
+		</p>
+		<p>
+			<code>EventEvaluators</code> have the responsability to check wether a give event
+			matches a give criteria. 
+		</p>
+		<p>
+			Let's look at an example using <code>EventEvaluators</code>. The following
+			configuration file outputs the logging events to the console, displaying 
+			date, thread, level, message and caller data. 
+		</p>
+		<p>
+			Since displaying the caller data of a logging event is very expensive, this
+			information will be displayed only when the logging request is combined with
+			a specific marker. By doing that, we make sure that only the most important
+			logging requests will have their caller information generated and displayed,
+			without penalizing application performance.
+		</p>
 
+		<p>
+			Here is how to configure logback to behave like we described:
+		</p>
+<em>Example 5.2: Sample usage of EventEvaluators (examples/chapter5/eventEvaluatorConfig.xml)</em>
+<div class="source">
+&lt;configuration>
 
+	<b>&lt;evaluator name="DISPLAY_EVAL">
+		&lt;Expression>(marker.contains("DISPLAY"))&lt;/Expression>
+	&lt;/evaluator></b>
+	
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;param name="Pattern"
+        value="%-4relative [%thread] %-5level - %msg <b>%caller{2, DISPLAY_EVAL}</b>%n" />
+    &lt;/layout>
+  &lt;/appender>
 
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration>
+</div>
+		<p>
+			Let's test this configuration with the following code:
+		</p>
+<em>Example 5.2: Sample usage of EventEvaluators (examples/chapter5/EventEvaluatorExample.java)</em>
+<div class="source">public class EventEvaluatorExample {
 
+  public static void main(String[] args) throws InterruptedException {
+    Logger logger = (Logger) LoggerFactory.getLogger(EventEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
+    JoranConfigurator configurator = new JoranConfigurator();
+    configurator.setContext(lc);
+    configurator.doConfigure(args[0]);
 
+    for (int i = 0; i &lt; 5; i++) {
+      if (i == 3) {
+        Marker displayMarker = MarkerFactory.getMarker("DISPLAY");
+        logger.debug(displayMarker, "logging statement" + i);
+      } else {
+        logger.debug("logging statement" + i);
+      }
+    }
+  }
+}</div>
+		<p>
+			This class configures logback with the file given as an argument of
+			<code>main()</code> and sends 5 logging requests. The third one
+			is associated with a marker named <em>DISPLAY</em>.
+		</p>
+		<p>
+			When a logging request is sent, the corresponding logging event 
+			will pass through the evaluation process. Here, obviously, the
+			third request will match the evaluation, causing its caller data
+			to be displayed.
+		</p>
+		<p>
+			Here is the output of the <code>EventEvaluatorExample</code> class.
+		</p>
+<div class="source">0    [main] DEBUG - logging statement0 
+0    [main] DEBUG - logging statement1 
+0    [main] DEBUG - logging statement2 
+0    [main] DEBUG - logging statement3 Caller+0	 at chapter5.EventEvaluatorExample.main(EventEvaluatorExample.java:25)
+
+16   [main] DEBUG - logging statement4 </div>
 
 
 
