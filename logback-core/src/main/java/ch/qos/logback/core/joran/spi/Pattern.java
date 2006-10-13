@@ -129,6 +129,7 @@ public class Pattern {
     return match;
   }
 
+  @Override
   public boolean equals(Object o) {
     //System.out.println("in equals:" +this+ " vs. " + o);
     if ((o == null) || !(o instanceof Pattern)) {
@@ -155,6 +156,7 @@ public class Pattern {
     return true;
   }
 
+  @Override
   public int hashCode() {
     int hc = 0;
     int len = size();
@@ -168,6 +170,7 @@ public class Pattern {
     return hc;
   }
 
+  @Override
   public String toString() {
     int size = components.size();
     String result = "";
