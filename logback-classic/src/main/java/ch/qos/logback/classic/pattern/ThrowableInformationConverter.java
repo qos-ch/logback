@@ -21,6 +21,10 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
 
   int lengthOption;
   List<EventEvaluator> evaluatorList = null;
+  
+  final int MAX_ERROR_COUNT = 2;
+  int errorCount = 0;
+  
 
   public void start() {
 
@@ -96,7 +100,9 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
             break;
           }
         } catch (EvaluationException eex) {
-          addError("Exception thrown for evaluator named ["+ee.getName()+"]", eex);
+          if (++errorCount <= MAX_ERROR_COUNT) {
+            addError("Exception thrown for evaluator named ["+ee.getName()+"]", eex);
+          }
         }
       }
 
