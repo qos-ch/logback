@@ -55,17 +55,15 @@
 			the logging event and returns a String. A synopsis of the
 			Layout interface is shown below.
 		</p>
-		<div class="source">
-			public interface Layout extends ContextAware, LifeCycle {
+		<div class="source">public interface Layout extends ContextAware, LifeCycle {
 
-			String doLayout(Object event);
+  String doLayout(Object event);
 
-			String getHeader();
+  String getHeader();
 
-			String getFooter();
+  String getFooter();
 
-			String getContentType();
-		</div>
+  String getContentType();</div>
 		<p>
 			This interface is really simple and yet is sufficent for
 			many formatting needs.
@@ -78,12 +76,18 @@
 		<p>
 			As we've seen, a Layout implementation takes as a parameter
 			an object that represents a logging event. The typing of the
-			parameter to <code>Object</code>
+			parameter to
+			<code>Object</code>
 			is because logging events may have different ways of being
 			designed. In logback classic, a logging event is represented
-			by the <code>ch.qos.logback.classic.LoggingEvent</code>
+			by the
+			<code>ch.qos.logback.classic.LoggingEvent</code>
 			class. Therefore, all layouts in logback classic implement a
-			sub-interface of <code>Layout</code> named <code>ClassicLayout</code>.
+			sub-interface of
+			<code>Layout</code>
+			named
+			<code>ClassicLayout</code>
+			.
 		</p>
 
 		<p>
@@ -92,78 +96,83 @@
 			looks like:
 		</p>
 
-		<div class="source">
-			public interface ClassicLayout extends Layout {
+		<div class="source">public interface ClassicLayout extends Layout {
 
-			String doLayout(LoggingEvent event);
+  String doLayout(LoggingEvent event);
 
-			}
-		</div>
+}</div>
 
 		<h3>PatternLayout</h3>
 
 		<p>
-			Logback ships with a flexible layout called <code>PatternLayout</code>. 
-			As all classic layouts, <code>PatternLayout</code>
+			Logback ships with a flexible layout called
+			<code>PatternLayout</code>
+			. As all classic layouts,
+			<code>PatternLayout</code>
 			takes a logging event and returns a String. However, the
 			returned String can be modified at will by tweaking its
-			conversion pattern. 
+			conversion pattern.
 		</p>
 		<p>
-			The conversion pattern of <code>PatternLayout</code>
+			The conversion pattern of
+			<code>PatternLayout</code>
 			is closely related to the conversion pattern of the
-			<code>printf()</code> function in the C programming language. 
-			A conversion pattern is composed of literal text and format 
-			control expressions called conversion specifiers. 
-			You are free to insert any literal text within the conversion pattern. 
-			Each conversion specifier starts with a percent sign (%) and is followed by
+			<code>printf()</code>
+			function in the C programming language. A conversion pattern
+			is composed of literal text and format control expressions
+			called conversion specifiers. You are free to insert any
+			literal text within the conversion pattern. Each conversion
+			specifier starts with a percent sign (%) and is followed by
 			optional format modifiers and a conversion character. The
 			conversion character controls the type of data to use, e.g.
 			logger name, level, date, thread name. The format modifiers
 			control such things as field width, padding, and left or
 			right justification. The following is a simple example.
 		</p>
-<em>Example 5.1: Sample usage of a PatternLayout (examples/chapter5/PatternSample.java)</em>
-<div class="source">public class PatternSample {
+		<em>
+			Example 5.1: Sample usage of a PatternLayout
+			(examples/chapter5/PatternSample.java)
+		</em>
+		<div class="source">public class PatternSample {
 
   static public void main(String[] args) throws Exception {
-    Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
-    
+    Logger rootLogger = (Logger)
+    LoggerFactory.getLogger("root");
+
     <b>PatternLayout layout = new PatternLayout();
     layout.setPattern("%-5level [%thread]: %message%n");
     layout.start();</b>
-    
+
     ConsoleAppender appender = new ConsoleAppender();
     appender.setContext(rootLogger.getLoggerContext());
-    appender.setLayout(layout);
-    appender.start();
-    
+    appender.setLayout(layout); appender.start();
+
     rootLogger.addAppender(appender);
 
-    rootLogger.debug("Message 1");
-    rootLogger.warn("Message 2");
-  }
+    rootLogger.debug("Message 1"); rootLogger.warn("Message 2");
+  } 
 }</div>
 
 		<p>
-			The conversion pattern is set to be "%-5level [%thread]: %message%n". 
-			Running PatternSample will yield the following output on the console. 
+			The conversion pattern is set to be "%-5level [%thread]:
+			%message%n". Running PatternSample will yield the following
+			output on the console.
 		</p>
-<div class="source">DEBUG [main]: Message 1
-WARN  [main]: Message 2</div>
+		<div class="source">DEBUG [main]: Message 1 WARN [main]: Message 2</div>
 		<p>
-				Note that in the conversion pattern "%-5level [%thread]: %message%n" 
-				there is no explicit separator between literal text and conversion 
-				specifiers. When parsing a conversion pattern, <code>PatternLayout</code> 
-				is capable of differentiating between literal text (space characters, the brackets, 
-				colon character) and conversion specifiers. In the example above, 
-				the conversion specifier %-5level means the level of the logging event 
-				should be left justified to a width of five characters. 
-				Format specifiers will be explained in a short moment.
+			Note that in the conversion pattern "%-5level [%thread]:
+			%message%n" there is no explicit separator between literal
+			text and conversion specifiers. When parsing a conversion
+			pattern,
+			<code>PatternLayout</code>
+			is capable of differentiating between literal text (space
+			characters, the brackets, colon character) and conversion
+			specifiers. In the example above, the conversion specifier
+			%-5level means the level of the logging event should be left
+			justified to a width of five characters. Format specifiers
+			will be explained in a short moment.
 		</p>
-		<p>
-				The recognized conversion characters and words are
-		</p>
+		<p>The recognized conversion characters and words are</p>
 		<table border="1" CELLPADDING="8">
 			<th>Conversion Character or Word</th>
 			<th>Effect</th>
@@ -238,25 +247,30 @@ WARN  [main]: Message 2</div>
 					<b>d / date</b>
 				</td>
 				<td>
-					<p>Used to output the date of the logging event. The
-					date conversion specifier may be followed by a set
-					of braces containing a date and time pattern strings
-					{@link java.text.SimpleDateFormat},
-					<em>ABSOLUTE</em>
-					,
-					<em>DATE</em>
-					or
-					<em>ISO8601</em>
-					. 
+					<p>
+						Used to output the date of the logging event.
+						The date conversion specifier may be followed by
+						a set of braces containing a date and time
+						pattern strings {@link
+						java.text.SimpleDateFormat},
+						<em>ABSOLUTE</em>
+						,
+						<em>DATE</em>
+						or
+						<em>ISO8601</em>
+						.
 					</p>
-					<p>For example,
-					<b>%d{HH:mm:ss,SSS}</b>
-					,
-					<b>%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}</b>
-					or
-					<b>%d{DATE}</b>
-					. If no date format specifier is given then ISO8601
-					format is assumed.
+					<p>
+						For example,
+						<b>%d{HH:mm:ss,SSS}</b>
+						,
+						<b>
+							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
+						</b>
+						or
+						<b>%d{DATE}</b>
+						. If no date format specifier is given then
+						ISO8601 format is assumed.
 					</p>
 				</td>
 			</tr>
@@ -305,8 +319,10 @@ WARN  [main]: Message 2</div>
 						execution speed is not an issue.
 					</p>
 					<p>
-						A precision specifier can be appended to the <em>caller</em> conversion
-						specifier to configure the depth of the information to be displayed.
+						A precision specifier can be appended to the
+						<em>caller</em>
+						conversion specifier to configure the depth of
+						the information to be displayed.
 					</p>
 				</td>
 			</tr>
@@ -424,7 +440,7 @@ WARN  [main]: Message 2</div>
 					<p>
 						Used to output the MDC (mapped diagnostic
 						context) associated with the thread that
-						generated the logging event. 
+						generated the logging event.
 					</p>
 					<p>
 						The
@@ -435,13 +451,13 @@ WARN  [main]: Message 2</div>
 						where
 						<code>clientNumber</code>
 						is the key. The value in the MDC corresponding
-						to the key will be output. 
+						to the key will be output.
 					</p>
 					<p>
-						If no additional
-						sub-option is specified, then the entire
-						contents of the MDC key value pair set is output
-						using a format key1=val1, key2=val2
+						If no additional sub-option is specified, then
+						the entire contents of the MDC key value pair
+						set is output using a format key1=val1,
+						key2=val2
 					</p>
 
 					<p>
@@ -592,26 +608,27 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 		</table>
-		
-		
+
+
 		<h3>Option handling</h3>
-		
-		<p>A conversion specifier can be followed by options between curled brackets.
-			 We have already seen some of the possibilities offered by logback's option handling
-			 with, for example, the MDC conversion specifier: <em>%mdc{someKey}</em>.
-		</p>
+
 		<p>
-			However, there is much more to it than that.
+			A conversion specifier can be followed by options between
+			curled brackets. We have already seen some of the
+			possibilities offered by logback's option handling with, for
+			example, the MDC conversion specifier:
+			<em>%mdc{someKey}</em>
+			.
 		</p>
+		<p>However, there is much more to it than that.</p>
 		<p>
-			The logger name conversion specifier can take an integer as a first option.
-			This will use logback's abbreviation mechanism to display a shorter logger name, 
-			without loosing it's meaning.
+			The logger name conversion specifier can take an integer as
+			a first option. This will use logback's abbreviation
+			mechanism to display a shorter logger name, without loosing
+			it's meaning.
 		</p>
-		
-		<p>
-			The next table should clear things up.
-		</p>
+
+		<p>The next table should clear things up.</p>
 
 		<table BORDER="1" CELLPADDING="8">
 
@@ -645,115 +662,234 @@ WARN  [main]: Message 2</div>
 				<td>mainPackage.sub.sample.Bar</td>
 			</tr>
 		</table>
-		
+
+		<h4>Evaluators</h4>
 		<p>
-			Another very useful way of adding options to a conversion specifier is
-			when <code>PatternLayout</code> is used with <code>EventEvaluators</code>.
+			Another very useful way of adding options to a conversion
+			specifier is when
+			<code>PatternLayout</code>
+			is used with
+			<code>EventEvaluators</code>
+			.
 		</p>
 		<p>
-			<code>EventEvaluators</code> have the responsability to check wether a give event
-			matches a give criteria. 
+			<code>EventEvaluators</code>
+			have the responsability to check wether a given event
+			matches a given criteria.
 		</p>
 		<p>
-			Let's look at an example using <code>EventEvaluators</code>. The following
-			configuration file outputs the logging events to the console, displaying 
-			date, thread, level, message and caller data. 
+			Let's look at an example using
+			<code>EventEvaluators</code>
+			. The following configuration file outputs the logging
+			events to the console, displaying date, thread, level,
+			message and caller data.
 		</p>
 		<p>
-			Since displaying the caller data of a logging event is very expensive, this
-			information will be displayed only when the logging request is combined with
-			a specific marker. By doing that, we make sure that only the most important
-			logging requests will have their caller information generated and displayed,
-			without penalizing application performance.
+			Since displaying the caller data of a logging event is very
+			expensive, this information will be displayed only when the
+			logging request comes from a specific logger, and whose
+			message contains a certain string. By doing that, we make
+			sure that only the most important logging requests will have
+			their caller information generated and displayed, without
+			penalizing application performance.
 		</p>
 
 		<p>
-			Here is how to configure logback to behave like we described:
+			Here is how to configure logback to behave like we
+			described:
 		</p>
-<em>Example 5.2: Sample usage of EventEvaluators (examples/chapter5/eventEvaluatorConfig.xml)</em>
-<div class="source">
-&lt;configuration>
+		<em>
+			Example 5.2: Sample usage of EventEvaluators
+			(examples/chapter5/callerEvaluatorConfig.xml)
+		</em>
+		<div class="source">&lt;configuration>
+  <b>&lt;evaluator name="DISP_CALLER_EVAL">
+    &lt;Expression>logger.getName().contains("chapter5") &#38;&#38; \
+      message.contains("stacktrace")&lt;/Expression>
+  &lt;/evaluator></b>
 
-	<b>&lt;evaluator name="DISPLAY_EVAL">
-		&lt;Expression>(marker.contains("DISPLAY"))&lt;/Expression>
-	&lt;/evaluator></b>
-	
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;param name="Pattern"
-        value="%-4relative [%thread] %-5level - %msg <b>%caller{2, DISPLAY_EVAL}</b>%n" />
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg \
+        <b>%caller{2, DISP_CALLER_EVAL}</b>%n" /> 
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
-    &lt;appender-ref ref="STDOUT" />
+  &lt;root> 
+    &lt;level value="debug" /> 
+    &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
-&lt;/configuration>
-</div>
-		<p>
-			Let's test this configuration with the following code:
-		</p>
-<em>Example 5.2: Sample usage of EventEvaluators (examples/chapter5/EventEvaluatorExample.java)</em>
-<div class="source">public class EventEvaluatorExample {
+&lt;/configuration></div>
+		<p>Let's test this configuration with the following code.</p>
+		<em>
+			Example 5.2: Sample usage of EventEvaluators
+			(examples/chapter5/EventEvaluatorExample.java)
+		</em>
+		<div class="source">public class CallerEvaluatorExample {
 
-  public static void main(String[] args) throws InterruptedException {
-    Logger logger = (Logger) LoggerFactory.getLogger(EventEvaluatorExample.class);
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+  public static void main(String[] args) throws InterruptedException { 
+    Logger logger = (Logger)
+    LoggerFactory.getLogger(CallerEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext)
+    LoggerFactory.getILoggerFactory();
 
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
     configurator.doConfigure(args[0]);
 
-    for (int i = 0; i &lt; 5; i++) {
-      if (i == 3) {
-        Marker displayMarker = MarkerFactory.getMarker("DISPLAY");
-        logger.debug(displayMarker, "logging statement" + i);
-      } else {
-        logger.debug("logging statement" + i);
-      }
-    }
-  }
+    for (int i = 0; i &lt; 5; i++) { if (i == 3) {
+      logger.debug("stacktrace logging statement" + i); 
+    } else {
+      logger.debug("logging statement" + i); 
+    } 
+  } 
 }</div>
 		<p>
-			This class configures logback with the file given as an argument of
-			<code>main()</code> and sends 5 logging requests. The third one
-			is associated with a marker named <em>DISPLAY</em>.
+			This excerpt does nothing very fancy. Five logging requests
+			are issued, the third one being different from the others.
 		</p>
 		<p>
-			When a logging request is sent, the corresponding logging event 
-			will pass through the evaluation process. Here, obviously, the
-			third request will match the evaluation, causing its caller data
+			When a logging request is sent, the corresponding logging
+			event will pass through the evaluation process. Here,
+			obviously, the third request will match the evaluation,
+			causing its caller data to be displayed.
+		</p>
+		<p>
+			Here is the output of the
+			<code>EventEvaluatorExample</code>
+			class.
+		</p>
+		<div class="source">0 [main] DEBUG - logging statement0 
+0 [main] DEBUG - logging statement1 
+0 [main] DEBUG - logging statement2
+0 [main] DEBUG - logging statement3 Caller+0 at chapter5.CallerEvaluatorExample.main \ 
+  (CallerEvaluatorExample.java:25)
+
+16 [main] DEBUG - logging statement4</div>
+
+		<p>
+			Of course, one can change the expression to match one's
+			specific situation. An expression testing logger name and
+			request level could also be meaningful.
+		</p>
+		<p>
+			Let's look at a different situation. When exceptions are
+			added to a logging request, they are usually displayed. But
+			one can easily imagine that, for the sake of readability of
+			a log file, one would want only a certain type of exceptions
 			to be displayed.
 		</p>
+		<p>The following configuration will allow that.</p>
+		<em>
+			Example 5.3: Sample usage of EventEvaluators
+			(examples/chapter5/exceptionEvaluatorConfig.xml)
+		</em>
+		<div class="source">&lt;configuration>
+
+	&lt;evaluator name="DISPLAY_EX_EVAL">
+		&lt;Expression>marker.contains("IGNORE")&lt;/Expression>
+	&lt;/evaluator>
+
+	&lt;appender name="STDOUT"
+	  class="ch.qos.logback.core.ConsoleAppender"> 
+		&lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+		  &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \ 
+		    %ex{full, DISPLAY_EX_EVAL}%n" /> 
+		&lt;/layout>
+	&lt;/appender>
+
+  &lt;root> 
+    &lt;level value="debug" /> 
+    &lt;appender-ref ref="STDOUT" /> 
+  &lt;/root>
+&lt;/configuration></div>
+
 		<p>
-			Here is the output of the <code>EventEvaluatorExample</code> class.
+			With this configuration, each time a marker named
+			<em>IGNORE</em>
+			will be associated with a logging request containing an
+			exception, no information will be displayed about the
+			exception.
 		</p>
-<div class="source">0    [main] DEBUG - logging statement0 
-0    [main] DEBUG - logging statement1 
-0    [main] DEBUG - logging statement2 
-0    [main] DEBUG - logging statement3 Caller+0	 at chapter5.EventEvaluatorExample.main(EventEvaluatorExample.java:25)
-
-16   [main] DEBUG - logging statement4 </div>
-
-
 
 
 		<h3>HTMLLayout</h3>
+		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to an event.</p>
+		<p>
+			The content of the table columns are specified using a
+			conversion pattern. See <code>PatternLayout</code> for documentation on
+			the available patterns.
+		</p>
+		<p>
+			Note that the pattern
+			<em>%ex</em>
+			used to display an Exception is not the only way to display
+			an Exception with this layout. If you use this pattern, a
+			table column will be created to display the potential
+			Exception's stacktrace.
+		</p>
+		<p>
+			However, a better solution is available in the form of
+			implementations of the <code>IThrowableRenderer</code> interface.
+			These implementations can be called and assigned to
+			HTMLLayout to manage the display of anything related to
+			Exceptions.
+		</p>
+		<p>
+			By default, a <code>DefaultThrowableRenderer</code> is
+			assigned to the HTMLLayout. It writes the Exception on a new
+			table row, along with its stacktrace, in a easily readable
+			manner.
+		</p>
+		<p>
+			If one wants to use the
+			<em>&amp;ex</em>
+			pattern anyway, then a <code>NOPThrowableRenderer</code> can be specified
+			in the configuration file.
+		</p>
+		<p>
+			A user-specified external CSS file can be linked to the html
+			page. In case one does not want to customize the html
+			output, an internal CSS style is used.
+		</p>
+		<p>
+			The HTMLLayout is often used in conjunction with
+			SMTPAppender, to send a nicely formatted html email. Of
+			course, it can be used with any other Appender.
+		</p>
+		<p>
+			In case on wants to use the HTMLLayout with a SMTPAppender,
+			here is a sample configuration file that can be used.
+		</p>
+		<div class="source">&lt;configuration&gt;
+  &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+      &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
+    &lt;/layout&gt;
+    &lt;throwableRenderer class="ch.qos.logback.classic.html.DefaultThrowableRenderer" /&gt;
+   &lt;param name="From" value="sender.email@domain.net" /&gt;
+   &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
+   &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
+   &lt;param name="To" value="destination.email@domain.net" /&gt;
+  &lt;/appender&gt;
 
-			<em>
-				Example 1.1: Basic template for logging
-				(examples/chapter1/HelloWorld1.java)
-			</em>
+  &lt;root&gt;
+    &lt;level value="debug" /&gt;
+    &lt;appender-ref ref="SMTP" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</div>
+		<p>
+			In this configuration file, the
+			<em>throwableRenderer</em>
+			element specifies the default implementation of
+			IThrowableRenderer. It could be omitted, but is showed for
+			educationnal purposes.
+		</p>
 
 
+		<h2>Logback access</h2>
+		<h3>PatternLayout</h3>
+		<h3>HTMLLayout</h3>
 
-
-
-			<h2>Logback access</h2>
-			<h3>PatternLayout</h3>
-			<h3>HTMLLayout</h3>
-
-</body>
+	</body>
 </document>

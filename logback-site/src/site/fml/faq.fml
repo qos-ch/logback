@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<document>
+
+	<body>
+
+		<faqs title="Logback Frequently Asked Questions">
+			<part id="Logback Classic">
+				<title>Logback Classic</title>
+
+				<faq id="setup_jetty">
+
+					<question>
+						How can I use logback with Jetty ?
+					</question>
+
+					<answer>
+						<p>
+							A few jars must be present in the
+							<em>JETTY_HOME/lib</em>
+							directory.
+						</p>
+						<p>
+							Logback uses the SLF4J api. Therefore, the
+							<em>slf4j-api-VERSION.jar</em>
+							jar must be present. This jar can be found
+							by <a href="http://www.slf4j.org">downloading SLF4J</a>.
+						</p>
+						<p>
+							Logback's own jars must also be present.
+							These are
+							<em>logback-classic-VERSION.jar</em>
+							and
+							<em>logback-core-VERSION.jar</em>
+							.
+						</p>
+						<p>
+							To configure logback classic, a file called
+							<em>logback-classic.xml</em>
+							must be placed at the root directory of
+							Jetty, that is the
+							<em>JETTY_HOME</em>
+							directory. You can find configuration
+							samples in the
+							<em>examples/src/chapter4/conf/</em>
+							directory, in the distribution of logback.
+						</p>
+					</answer>
+				</faq>
+			</part>
+		</faqs>
+	</body>
+</document>

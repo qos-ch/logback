@@ -1,0 +1,19 @@
+<configuration>
+
+	<evaluator name="DISPLAY_EX_EVAL">
+		<Expression>marker.contains("IGNORE")</Expression>
+	</evaluator>
+	
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <param name="Pattern"
+        value="%-4relative [%thread] %-5level - %msg %ex{full, DISPLAY_EX_EVAL}%n" />
+    </layout>
+  </appender>
+
+  <root>
+    <level value="debug" />
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
