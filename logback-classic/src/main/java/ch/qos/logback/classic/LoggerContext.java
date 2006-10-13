@@ -10,19 +10,15 @@
 
 package ch.qos.logback.classic;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.slf4j.ILoggerFactory;
 
-import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * @author ceki
