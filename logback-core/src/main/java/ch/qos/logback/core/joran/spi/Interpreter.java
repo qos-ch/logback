@@ -66,6 +66,9 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
+  public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
+
+  
   /**
    * The <id>actionListStack</id> contains a list of actions that are executing
    * for the given XML element.
@@ -100,7 +103,8 @@ public class Interpreter extends DefaultHandler {
   public void startElement(String namespaceURI, String localName, String qName,
       Attributes atts) {
 
-    String tagName = getTagName(localName, qName);
+	
+   String tagName = getTagName(localName, qName);
 
     //System.out.println("startElement [" + tagName + "]");
 
@@ -121,9 +125,10 @@ public class Interpreter extends DefaultHandler {
   }
 
   public void characters(char[] ch, int start, int length) {
+    
+    String body = new String(ch, start, length);    
     List applicableActionList = (List) actionListStack.peek();
 
-    String body = new String(ch, start, length);
     if(body != null) {
       body = body.trim();
     }
@@ -134,6 +139,8 @@ public class Interpreter extends DefaultHandler {
   }
 
   public void endElement(String namespaceURI, String localName, String qName) {
+    saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
+    
     List applicableActionList = (List) actionListStack.pop();
     // System.out.println("endElement ["+getTagName(localName, qName)+"]");
 
