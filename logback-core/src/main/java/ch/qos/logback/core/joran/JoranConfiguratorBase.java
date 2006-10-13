@@ -59,8 +59,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 abstract public class JoranConfiguratorBase extends ContextAwareBase {
   Interpreter joranInterpreter;
-  boolean listAppnderAttached = false;
-
+ 
   
   final public void doConfigure(URL url) {
     try {
