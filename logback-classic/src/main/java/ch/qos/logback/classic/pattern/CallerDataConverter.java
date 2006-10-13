@@ -19,6 +19,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.status.ErrorStatus;
 
 
 /**
@@ -31,6 +32,9 @@ public class CallerDataConverter extends ClassicConverter {
   int depth = 5;
   List<EventEvaluator> evaluatorList = null;
 
+  final int MAX_ERROR_COUNT = 4;
+  int errorCount = 0;
+  
   public void start() {
     String depthStr = getFirstOption();
     if (depthStr == null) {
@@ -84,7 +88,19 @@ public class CallerDataConverter extends ClassicConverter {
             break;
           }
         } catch (EvaluationException eex) {
-          // just ignore evaluation exception
+          errorCount++;
+          if (errorCount < MAX_ERROR_COUNT) {
+            addError("Exception thrown for evaluator named [" + ee.getName()
+                + "]", eex);
+          } else if (errorCount == MAX_ERROR_COUNT) {
+            ErrorStatus errorStatus = new ErrorStatus(
+                "Exception thrown for evaluator named [" + ee.getName() + "].",
+                this, eex);
+            errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors." +
+                                "We don't want the StatusManager to get flooded.", this));
+            addStatus(errorStatus);
+          }
+
         }
       }
 

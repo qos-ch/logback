@@ -10,7 +10,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
-
+import ch.qos.logback.core.status.ErrorStatus;
 
 /**
  * Add a stack trace i case the event contains a Throwable.
@@ -21,10 +21,9 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
 
   int lengthOption;
   List<EventEvaluator> evaluatorList = null;
-  
-  final int MAX_ERROR_COUNT = 2;
+
+  final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
-  
 
   public void start() {
 
@@ -43,7 +42,7 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
           // we add one because, printing starts at offset 1
           lengthOption = Integer.parseInt(lengthStr) + 1;
         } catch (NumberFormatException nfe) {
-          addError("Could not parser ["+lengthStr+" as an integer");
+          addError("Could not parser [" + lengthStr + " as an integer");
           lengthOption = Integer.MAX_VALUE;
         }
       }
@@ -88,7 +87,8 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
 
     String[] stringRep = information.getThrowableStrRep();
 
-    int length =  (lengthOption > stringRep.length) ? stringRep.length : lengthOption;
+    int length = (lengthOption > stringRep.length) ? stringRep.length
+        : lengthOption;
 
     if (evaluatorList != null) {
       boolean printStack = true;
@@ -100,8 +100,17 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
             break;
           }
         } catch (EvaluationException eex) {
-          if (++errorCount <= MAX_ERROR_COUNT) {
-            addError("Exception thrown for evaluator named ["+ee.getName()+"]", eex);
+          errorCount++;
+          if (errorCount < MAX_ERROR_COUNT) {
+            addError("Exception thrown for evaluator named [" + ee.getName()
+                + "]", eex);
+          } else if (errorCount == MAX_ERROR_COUNT) {
+            ErrorStatus errorStatus = new ErrorStatus(
+                "Exception thrown for evaluator named [" + ee.getName() + "].",
+                this, eex);
+            errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors." +
+                                "We don't want the StatusManager to get flooded.", this));
+            addStatus(errorStatus);
           }
         }
       }
