@@ -32,7 +32,9 @@ public class JoranConfigurator extends JoranConfiguratorBase {
   public JoranConfigurator() {
   }
 
+  @Override
   public void addInstanceRules(RuleStore rs) {
+    super.addInstanceRules(rs);
 
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
 

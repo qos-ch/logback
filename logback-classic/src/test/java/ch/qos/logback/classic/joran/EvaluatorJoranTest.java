@@ -24,12 +24,13 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
 public class EvaluatorJoranTest extends TestCase {
 
-  public void xtest() throws NullPointerException, EvaluationException {
+  public void xtest() throws NullPointerException, EvaluationException, JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -50,13 +51,13 @@ public class EvaluatorJoranTest extends TestCase {
     //StatusPrinter.print(loggerContext.getStatusManager());
   }
   
-  public void testIgnoreMarker() throws NullPointerException, EvaluationException {
+  public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/ignore.xml");
     
-    
+    StatusPrinter.print(loggerContext.getStatusManager());
     
     Map evalMap = (Map) loggerContext.getObject(CoreGlobal.EVALUATOR_MAP);
     assertNotNull(evalMap);

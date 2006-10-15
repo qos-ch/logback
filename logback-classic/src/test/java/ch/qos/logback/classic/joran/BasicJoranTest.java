@@ -17,6 +17,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class BasicJoranTest extends TestCase {
@@ -25,7 +26,7 @@ public class BasicJoranTest extends TestCase {
     super(name);
   }
   
-  public void testSimpleList() {
+  public void testSimpleList() throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -44,7 +45,7 @@ public class BasicJoranTest extends TestCase {
     assertEquals(msg, le.getMessage());
   }
   
-  public void testLevel() {
+  public void testLevel() throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -63,7 +64,7 @@ public class BasicJoranTest extends TestCase {
     //assertEquals(msg, le.getMessage());
   }
   
-  public void testEval() {
+  public void testEval() throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -78,6 +79,7 @@ public class BasicJoranTest extends TestCase {
   }
   
   
+  // COMMENTED_OUT_
   public static Test COMMENTED_OUT_suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new BasicJoranTest("testLevel"));

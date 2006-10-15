@@ -39,7 +39,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     if(OptionHelper.isEmpty(className)) {
       className = defaultClassName();
-      addError("Assuming default evaluator class ["+className+"]");
+      addWarn("Assuming default evaluator class ["+className+"]");
     }
 
     if(OptionHelper.isEmpty(className)) {

@@ -55,6 +55,7 @@ public class NestedComponentIA extends ImplicitAction {
 
     switch (containmentType) {
     case PropertySetter.NOT_FOUND:
+    case PropertySetter.AS_PROPERTY:
       return false;
 
     // we only push action data if NestComponentIA is applicable

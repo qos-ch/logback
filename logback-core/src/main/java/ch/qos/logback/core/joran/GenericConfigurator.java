@@ -7,18 +7,23 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.InputSource;
 
+import ch.qos.logback.core.joran.spi.EventPlayer;
+import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEvent;
 import ch.qos.logback.core.joran.spi.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class GenericConfigurator extends ContextAwareBase {
+public abstract class GenericConfigurator extends ContextAwareBase {
 
+  List<SaxEvent> saxEventList;
+  Interpreter interpreter;
+  
   final public void doConfigure(URL url) throws JoranException {
     try {
       InputStream in = url.openStream();
@@ -61,42 +66,31 @@ public class GenericConfigurator extends ContextAwareBase {
     doConfigure(new InputSource(inputStream));
   }
 
-  List<SaxEvent> recordEvents(InputSource inputSource) throws JoranException {
-    SAXParser saxParser = null;
-    SaxEventRecorder saxEventRecorder = new SaxEventRecorder();
-    try {
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-      spf.setValidating(false);
-      spf.setNamespaceAware(true);
-      saxParser = spf.newSAXParser();
-    } catch (Exception pce) {
-      String errMsg = "Parser configuration error occured";
-      addError(errMsg, pce);
-      throw new JoranException(errMsg, pce);
-    }
-
-    try {
-      saxParser.parse(inputSource, saxEventRecorder);
-      return saxEventRecorder.saxEventList;
-
-    } catch (IOException ie) {
-      String errMsg = "I/O error occurred while parsing xml file";
-      addError(errMsg, ie);
-      throw new JoranException(errMsg, ie);
-    } catch (Exception ex) {
-      String errMsg = "Problem parsing XML document. See previously reported errors. Abandoning all further processing.";
-      addError(errMsg, ex);
-      throw new JoranException(errMsg, ex);
-    }
-
+  abstract protected void addInstanceRules(RuleStore rs);
+  abstract protected void addImpliciutRules(Interpreter interpreter);
+  
+  protected void buildInterpreter() {
+    RuleStore rs = new SimpleRuleStore(context);
+    addInstanceRules(rs);
+    this.interpreter = new Interpreter(rs);
+    ExecutionContext ec = interpreter.getExecutionContext();
+    ec.setContext(context);
+    addImpliciutRules(interpreter);
+    
   }
-
+  
   final public void doConfigure(final InputSource inputSource)
       throws JoranException {
-    
-    List<SaxEvent> saxEventList;
-    saxEventList = recordEvents(inputSource);
-    
+    SaxEventRecorder recorder = new SaxEventRecorder();
+    recorder.setContext(context);
+    saxEventList = recorder.recordEvents(inputSource);
+    buildInterpreter();
+    EventPlayer player = new EventPlayer(interpreter);
+    player.play(recorder.saxEventList);
+  }
+
+  public List<SaxEvent> getSaxEventList() {
+    return saxEventList;
   }
 
 }

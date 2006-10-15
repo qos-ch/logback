@@ -66,10 +66,7 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
-  public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
-
-  
-  /**
+   /**
    * The <id>actionListStack</id> contains a list of actions that are executing
    * for the given XML element.
    * 
@@ -100,13 +97,17 @@ public class Interpreter extends DefaultHandler {
   public void startDocument() {
   }
 
+  public void startElement(StartEvent se) {
+    setDocumentLocator(se.getLocator());
+    startElement(se.namespaceURI, se.localName, se.qName, se.attributes);
+  }
+  
   public void startElement(String namespaceURI, String localName, String qName,
       Attributes atts) {
 
-	
-   String tagName = getTagName(localName, qName);
+    String tagName = getTagName(localName, qName);
 
-    //System.out.println("startElement [" + tagName + "]");
+    // System.out.println("startElement [" + tagName + "]");
 
     pattern.push(tagName);
 
@@ -124,23 +125,28 @@ public class Interpreter extends DefaultHandler {
     }
   }
 
-  public void characters(char[] ch, int start, int length) {
+  public void characters(BodyEvent be) {
+
+    setDocumentLocator(be.locator);
     
-    String body = new String(ch, start, length);    
+    String body = be.getText();
     List applicableActionList = (List) actionListStack.peek();
 
-    if(body != null) {
+    if (body != null) {
       body = body.trim();
     }
-    if(body.length() > 0) {
-      //System.out.println("calling body method with ["+body+ "]");
+    if (body.length() > 0) {
+      // System.out.println("calling body method with ["+body+ "]");
       callBodyAction(applicableActionList, body);
     }
   }
 
+  public void endElement(EndEvent endEvent) {
+    setDocumentLocator(endEvent.locator);
+    endElement(endEvent.namespaceURI, endEvent.localName, endEvent.qName);
+  }
+
   public void endElement(String namespaceURI, String localName, String qName) {
-    saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
-    
     List applicableActionList = (List) actionListStack.pop();
     // System.out.println("endElement ["+getTagName(localName, qName)+"]");
 
@@ -275,7 +281,8 @@ public class Interpreter extends DefaultHandler {
       try {
         action.body(ec, body);
       } catch (ActionException ae) {
-        ec.addError("Exception in end() methd for action [" + action+ "]", this, ae);
+        ec.addError("Exception in end() methd for action [" + action + "]",
+            this, ae);
       }
     }
   }

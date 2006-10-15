@@ -33,9 +33,4 @@ public class SaxEvent {
   public String getQName() {
     return qName;
   }
-
-  @Override
-  public String toString() {
-    return this.getClass().getName()+", "+locator.getLineNumber()+","+locator.getColumnNumber();
-  }
 }

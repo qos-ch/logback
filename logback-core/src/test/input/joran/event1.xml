@@ -9,6 +9,6 @@
     <touch/>
   </badBegin>  
 
-  <hello name="John Doe">XXX</hello>
+  <hello name="John Doe">XXX&amp;</hello>
   
 </test>
