@@ -6,7 +6,7 @@ import junit.framework.TestSuite;
 
 public class PackageTest extends TestCase {
 
-	public static Test suite() {
+  public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(RenamingTest.class);
     suite.addTestSuite(SizeBasedRollingTest.class);
