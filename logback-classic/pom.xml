@@ -130,6 +130,10 @@
 				<directory>src/test/input</directory>
 				<targetPath>input</targetPath>
 			</testResource>
+						<testResource>
+				<directory>src/test/resources</directory>
+				<targetPath>resources</targetPath>
+			</testResource>
 		</testResources>
 	</build>
 
