@@ -1,5 +1,5 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -18,18 +18,21 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.xml.sax.Attributes;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.BodyEvent;
 import ch.qos.logback.core.joran.spi.SaxEvent;
 import ch.qos.logback.core.joran.spi.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.StartEvent;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Constants;
 
 /**
- * Test the way Interpreter skips elements in case of exceptions thrown by
- * Actions.
+ * Test whether SaxEventRecorder does a good job.
  * 
  * @author Ceki Gulcu
  */
@@ -92,11 +95,24 @@ public class EventRecorderTest extends TestCase {
     List<SaxEvent> seList = doTest("ampEvent.xml");
     StatusManager sm = context.getStatusManager();
     assertTrue(sm.getLevel() == Status.INFO);
-    dump(seList);  
+    //dump(seList);  
     assertEquals(3, seList.size());
     
     BodyEvent be = (BodyEvent) seList.get(1);
     assertEquals("xxx & yyy", be.getText());
+  }
+
+  public void test3() throws Exception {
+    List<SaxEvent> seList = doTest("inc.xml");
+    StatusManager sm = context.getStatusManager();
+    assertTrue(sm.getLevel() == Status.INFO);
+    //dump(seList);  
+    assertEquals(4, seList.size());
+    
+    StartEvent se = (StartEvent) seList.get(1);
+    Attributes attr = se.getAttributes();
+    assertNotNull(attr);
+    assertEquals("1", attr.getValue("increment"));
   }
 
   public static Test XXXsuite() {

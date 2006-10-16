@@ -98,7 +98,8 @@ public class SkippingInInterpreterTest extends TestCase {
 
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
-
+    ec.setContext(new ContextBase());
+    
     SAXParser saxParser = createParser();
     saxParser.parse("file:" + Constants.TEST_DIR_PREFIX + "input/joran/badEnd1.xml", jp);
     
@@ -118,7 +119,8 @@ public class SkippingInInterpreterTest extends TestCase {
 
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
-
+    ec.setContext(new ContextBase());
+    
     SAXParser saxParser = createParser();
     saxParser.parse("file:" + Constants.TEST_DIR_PREFIX + "input/joran/badEnd2.xml", jp);
     

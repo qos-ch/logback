@@ -33,10 +33,11 @@ public class TrivialcConfiguratorTest extends TestCase {
   public void test() throws Exception {
     int oldBeginCount = IncAction.beginCount;
     int oldEndCount = IncAction.endCount;
+    int oldErrorCount = IncAction.errorCount;
     doTest("inc.xml");
+    assertEquals(oldErrorCount, IncAction.errorCount);
     assertEquals(oldBeginCount+1, IncAction.beginCount);
     assertEquals(oldEndCount+1, IncAction.endCount);
-
   }
 
 }

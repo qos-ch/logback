@@ -1,5 +1,5 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -10,15 +10,9 @@
 
 package ch.qos.logback.core.joran;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.InputSource;
 
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
@@ -50,40 +44,6 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  */
 abstract public class JoranConfiguratorBase extends GenericConfigurator {
   
-
-  final public void xdoConfigure(final InputSource inputSource) {
-    // This line is needed here because there is logging from inside this
-    // method.
-    buildInterpreter();
-
-    ExecutionContext ec = interpreter.getExecutionContext();
-
-    SAXParser saxParser = null;
-    try {
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-      spf.setValidating(false);
-      spf.setNamespaceAware(true);
-      saxParser = spf.newSAXParser();
-    } catch (Exception pce) {
-      String errMsg = "Parser configuration error occured";
-      ec.addError(errMsg, pce);
-      return;
-    }
-
-    try {
-      // attachListAppender(context);
-      saxParser.parse(inputSource, interpreter);
-    } catch (IOException ie) {
-      final String errMsg = "I/O error occurred while parsing xml file";
-      ec.addError(errMsg, ie);
-    } catch (Exception ex) {
-      final String errMsg = "Problem parsing XML document. See previously reported errors. Abandoning all further processing.";
-      addError(errMsg, ex);
-      return;
-    } finally {
-      // detachListAppender(repository);
-    }
-  }
 
   public List getErrorList() {
     return null;
