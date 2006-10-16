@@ -10,7 +10,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class CallerEvaluatorExample {
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args)  {
     Logger logger = (Logger) LoggerFactory
         .getLogger(CallerEvaluatorExample.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();

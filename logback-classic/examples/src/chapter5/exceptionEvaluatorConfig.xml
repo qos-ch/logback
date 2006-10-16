@@ -1,7 +1,7 @@
 <configuration>
 
 	<evaluator name="DISPLAY_EX_EVAL">
-		<Expression>marker.contains("IGNORE")</Expression>
+		<Expression>throwable != null &amp;&amp; throwable instanceof chapter5.TestException</Expression>
 	</evaluator>
 	
   <appender name="STDOUT"

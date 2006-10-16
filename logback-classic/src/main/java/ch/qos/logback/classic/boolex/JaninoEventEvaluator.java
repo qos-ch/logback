@@ -34,7 +34,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     DEFAULT_PARAM_NAME_LIST.add("level");
     DEFAULT_PARAM_NAME_LIST.add("timeStamp");
     DEFAULT_PARAM_NAME_LIST.add("marker");
-    
+    DEFAULT_PARAM_NAME_LIST.add("throwable");
 
     
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
@@ -48,6 +48,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
     DEFAULT_PARAM_TYPE_LIST.add(long.class);
     DEFAULT_PARAM_TYPE_LIST.add(Marker.class);
+    DEFAULT_PARAM_TYPE_LIST.add(Throwable.class);
   }
   
   protected String getDecoratedExpression() {
@@ -93,7 +94,11 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     values[i++] = loggingEvent.getLevel().toInteger();
     values[i++] = new Long(loggingEvent.getTimeStamp());
     values[i++] = loggingEvent.getMarker();
-    
+    if (loggingEvent.getThrowableInformation() != null) {
+      values[i++] = loggingEvent.getThrowableInformation().getThrowable();
+    } else {
+      values[i++] = null;
+    }
     
     for(int j = 0; j < matcherListSize; j++) {
       values[i++] = (Matcher) matcherList.get(j);

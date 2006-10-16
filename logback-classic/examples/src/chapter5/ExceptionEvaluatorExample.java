@@ -1,8 +1,6 @@
 package chapter5;
 
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -12,7 +10,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class ExceptionEvaluatorExample {
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     Logger logger = (Logger) LoggerFactory
         .getLogger(ExceptionEvaluatorExample.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -26,11 +24,10 @@ public class ExceptionEvaluatorExample {
     }
     for (int i = 0; i < 5; i++) {
       if (i == 3) {
-        Marker ignoreMarker = MarkerFactory.getMarker("IGNORE");
-        logger.debug(ignoreMarker, "logging statement" + i, new Exception(
-            "test"));
+        logger.debug("logging statement " + i, new TestException(
+            "do not display this"));
       } else {
-        logger.debug("logging statement" + i, new Exception("test"));
+        logger.debug("logging statement " + i, new Exception("display"));
       }
     }
 

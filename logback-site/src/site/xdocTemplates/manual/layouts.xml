@@ -149,7 +149,8 @@
 
     rootLogger.addAppender(appender);
 
-    rootLogger.debug("Message 1"); rootLogger.warn("Message 2");
+    rootLogger.debug("Message 1"); 
+    rootLogger.warn("Message 2");
   } 
 }</div>
 
@@ -158,7 +159,8 @@
 			%message%n". Running PatternSample will yield the following
 			output on the console.
 		</p>
-		<div class="source">DEBUG [main]: Message 1 WARN [main]: Message 2</div>
+		<div class="source">DEBUG [main]: Message 1 
+WARN  [main]: Message 2</div>
 		<p>
 			Note that in the conversion pattern "%-5level [%thread]:
 			%message%n" there is no explicit separator between literal
@@ -720,7 +722,7 @@
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
 &lt;/configuration></div>
-		<p>Please note that &amp; value cannot be written like one would in a java
+		<p>Please note that the &amp; value cannot be written like one would do in a java
 		class, because of XML format encoding.</p>
 		<p>Let's test this configuration with the following code.</p>
 		<em>
@@ -729,22 +731,27 @@
 		</em>
 		<div class="source">public class CallerEvaluatorExample {
 
-  public static void main(String[] args) throws InterruptedException { 
-    Logger logger = (Logger)
-    LoggerFactory.getLogger(CallerEvaluatorExample.class);
-    LoggerContext lc = (LoggerContext)
-    LoggerFactory.getILoggerFactory();
+  public static void main(String[] args)  {
+    Logger logger = (Logger) LoggerFactory
+        .getLogger(CallerEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    JoranConfigurator configurator = new JoranConfigurator();
-    configurator.setContext(lc);
-    configurator.doConfigure(args[0]);
+    try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(lc);
+      configurator.doConfigure(args[0]);
+    } catch (JoranException je) {
+      StatusPrinter.print(lc);
+    }
 
-    for (int i = 0; i &lt; 5; i++) { if (i == 3) {
-      logger.debug("stacktrace logging statement" + i); 
-    } else {
-      logger.debug("logging statement" + i); 
-    } 
-  } 
+    <b>for (int i = 0; i &lt; 5; i++) {
+      if (i == 3) {
+        logger.debug("stacktrace logging statement" + i);
+      } else {
+        logger.debug("logging statement" + i);
+      }
+    }</b>
+  }
 }</div>
 		<p>
 			This excerpt does nothing very fancy. Five logging requests
@@ -761,26 +768,56 @@
 			<code>EventEvaluatorExample</code>
 			class.
 		</p>
-		<div class="source">0 [main] DEBUG - logging statement0 
-0 [main] DEBUG - logging statement1 
-0 [main] DEBUG - logging statement2
-0 [main] DEBUG - logging statement3 Caller+0 at chapter5.CallerEvaluatorExample.main \ 
-  (CallerEvaluatorExample.java:25)
+		<div class="source">0    [main] DEBUG - logging statement0 
+0    [main] DEBUG - logging statement1 
+0    [main] DEBUG - logging statement2 
+0    [main] DEBUG - stacktrace logging statement3 Caller+0	 \
+  at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
 
-16 [main] DEBUG - logging statement4</div>
+0    [main] DEBUG - logging statement4 
+</div>
 
 		<p>
 			Of course, one can change the expression to match one's
 			specific situation. An expression testing logger name and
 			request level could also be meaningful.
 		</p>
+		<p><b>Important:</b> With the <em>caller</em> conversion specifier, the data is
+		displayed when <em>the expression passed to the evaluator is <b>true</b>.</em></p>
 		<p>
 			Let's look at a different situation. When exceptions are
-			added to a logging request, they are usually displayed. But
-			one can easily imagine that, for the sake of readability of
-			a log file, one would want only a certain type of exceptions
-			to be displayed.
+			added to a logging request, they are usually displayed. However, in some cases,
+			one might want some exceptions never to be displayed.
 		</p>
+		<p>The java code shown below is creating five log requests, each one
+		with an exception. However, we do not want request number 3 to display
+		its exception in the logging output.</p>
+
+<div class="source">public class ExceptionEvaluatorExample {
+
+  public static void main(String[] args) {
+    Logger logger = (Logger) LoggerFactory
+        .getLogger(ExceptionEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(lc);
+      configurator.doConfigure(args[0]);
+    } catch (JoranException je) {
+      StatusPrinter.print(lc);
+    }
+    <b>for (int i = 0; i &lt; 5; i++) {
+      if (i == 3) {
+        logger.debug("logging statement " + i, new TestException(
+            "do not display this"));
+      } else {
+        logger.debug("logging statement " + i, new Exception("display"));
+      }
+    }</b>
+  }
+}</div>
+		
 		<p>The following configuration will allow that.</p>
 		<em>
 			Example 5.3: Sample usage of EventEvaluators
@@ -788,32 +825,35 @@
 		</em>
 		<div class="source">&lt;configuration>
 
-	&lt;evaluator name="DISPLAY_EX_EVAL">
-		&lt;Expression>marker.contains("IGNORE")&lt;/Expression>
-	&lt;/evaluator>
+  <b>&lt;evaluator name="DISPLAY_EX_EVAL">
+    &lt;Expression>throwable != null &amp;&amp; throwable instanceof  \
+      chapter5.TestException&lt;/Expression>
+  &lt;/evaluator></b>
+	
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;param name="Pattern"
+        value="%-4relative [%thread] %-5level - %msg \
+          <b>%ex{full, DISPLAY_EX_EVAL}</b>%n" />
+    &lt;/layout>
+  &lt;/appender>
 
-	&lt;appender name="STDOUT"
-	  class="ch.qos.logback.core.ConsoleAppender"> 
-		&lt;layout class="ch.qos.logback.classic.PatternLayout"> 
-		  &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \ 
-		    %ex{full, DISPLAY_EX_EVAL}%n" /> 
-		&lt;/layout>
-	&lt;/appender>
-
-  &lt;root> 
-    &lt;level value="debug" /> 
-    &lt;appender-ref ref="STDOUT" /> 
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></div>
 
 		<p>
-			With this configuration, each time a marker named
-			<em>IGNORE</em>
+			With this configuration, each time an instance of the
+			<em>chapter5.TestException</em>
 			will be associated with a logging request containing an
 			exception, no information will be displayed about the
 			exception.
 		</p>
-
+		<p><b>Important:</b> With the <em>ex</em> conversion specifier, the data is
+		displayed when <em>the expression passed to the evaluator is <b>false</b>.</em></p>
 
 		<h3>HTMLLayout</h3>
 		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to an event.</p>
@@ -860,8 +900,8 @@
 			course, it can be used with any other Appender.
 		</p>
 		<p>
-			In case on wants to use the HTMLLayout with a SMTPAppender,
-			here is a sample configuration file that can be used.
+			When one wants to use the HTMLLayout with a SMTPAppender,
+			the following configuration is typically used.
 		</p>
 		<div class="source">&lt;configuration&gt;
   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
@@ -890,7 +930,199 @@
 
 
 		<h2>Logback access</h2>
+		<p>Just like <code>ClassicLayout</code> represents the <code>Layout</code> interface
+		for the classic module, the <code>AccessLayout</code> exists for the access module. It's
+		implementation is very straight-forward.</p>
+		
+		<div class="source">public interface AccessLayout extends Layout {
+
+  String doLayout(AccessEvent event);
+
+}</div>
+
+		<p>Many access layouts are actually adaptations of classic layouts. Logback
+		modules classic and access address pretty different needs, but offer the same power
+		and flexibility to the user.</p>
+		
 		<h3>PatternLayout</h3>
+		<p>Access' <code>PatternLayout</code> work the exact same way as it's classic counterpart.
+		</p>
+		<p>However, the conversion specifier are different, giving specific access to request
+		and response objects' attributes.</p>
+		<p>Here are the conversion specifier one can use with logback access 
+		<code>PatternLayout</code>.</p>
+		
+		<table border="1" CELLPADDING="8">
+			<th align="center">Conversion Character or Word</th>
+			<th align="center">Effect</th>
+
+		<tr>
+			<td align="center"><b>a / remoteIP</b></td>
+			<td>
+				<p>
+					Remote IP address.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>A / localIP</b></td>
+			<td>
+				<p>
+					Local IP address.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>b / B / byteSent</b></td>
+			<td>
+				<p>
+					Response's content length.
+				</p>
+			</td>
+		</tr>				
+		<tr>
+			<td align="center"><b>h / clientHost</b></td>
+			<td>
+				<p>
+					Remote host.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>H / protocol</b></td>
+			<td>
+				<p>
+					Request protocol.
+				</p>
+			</td>
+		</tr>
+    <tr>
+      <td align="center"><b>l</b></td>
+			<td>
+				<p>
+					Remote log name. In logback-access, this converter always
+					returns the value "-".
+				</p>
+			</td>
+		</tr>
+
+		<tr>
+			<td align="center"><b>reqParameter{paramName}</b></td>
+			<td>
+				<p>
+					Parameter of the response. This conversion word can be followed by a key 
+					whose corresponding data will be extracted from the header information.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>i{header} / header{header}</b></td>
+			<td>
+				<p>
+					Request header. Just like the reqParameter
+					conversion word, reqParameter can be followed by a key.
+				</p>
+			</td>
+		</tr>	
+		<tr>
+			<td align="center"><b>m / requestMethod</b></td>
+			<td>
+				<p>
+					Request method.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>r / requestURL</b></td>
+			<td>
+				<p>
+					URL requested.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>s / statusCode</b></td>
+			<td>
+				<p>
+					Status code of the request.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>t / date</b></td>
+			<td>
+				<p>
+					Date of the event.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>u / user</b></td>
+			<td>
+				<p>
+					Remote user.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>U / requestURI</b></td>
+			<td>
+				<p>
+					Requested URI.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td align="center"><b>v / server</b></td>
+			<td>
+				<p>
+					Server name.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>localPort</b></td>
+			<td>
+				<p>
+					Local port.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>reqAttribute{attributeName}</b></td>
+			<td>
+				<p>
+					Attribute of the request. Just like the reqParameter
+					conversion word, reqAttribute can be followed by a key.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>reqCookie{cookie}</b></td>
+			<td>
+				<p>
+					Request cookie. Just like the reqParameter
+					conversion word, reqCookie can be followed by a key.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center"><b>responseHeader{header}</b></td>
+			<td>
+				<p>
+					Header of the response. Just like the reqParameter
+					conversion word, responseHeader can be followed by a key.
+				</p>
+			</td>
+		</tr>
+		</table>
+
+
+
+
+
+
+
 		<h3>HTMLLayout</h3>
 
 	</body>
