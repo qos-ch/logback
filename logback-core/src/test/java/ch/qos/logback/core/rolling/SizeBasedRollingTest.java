@@ -134,7 +134,7 @@ public class SizeBasedRollingTest extends TestCase {
     // }
 
     for (int i = 0; i < 45; i++) {
-      Thread.sleep(100);
+      Thread.sleep(10);
       rfa.doAppend("hello");
     }
 
@@ -201,7 +201,7 @@ public class SizeBasedRollingTest extends TestCase {
     // }
 
     for (int i = 0; i < 45; i++) {
-      Thread.sleep(100);
+      Thread.sleep(10);
       rfa.doAppend("hello");
     }
 

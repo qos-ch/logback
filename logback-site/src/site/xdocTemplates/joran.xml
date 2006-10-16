@@ -237,7 +237,7 @@ value. The resulting parsing is pretty simple:
 What is interesting here is the way that the Actions collaborate.
 The <code>LiteralAction</code> reads a literal value and pushes it in the
 object stack maintained by the <code>ExecutionContext</code>. Once done,
-any other action can pop the value back to read or modify it. Here, the
+any other action can pop the value to read or modify it. Here, the
 <code>end()</code> method of the <code>ComputationAction1</code> class pops
 the value from the stack and prints it.
 </p>
@@ -303,6 +303,31 @@ the parser finds a <em>new-rule</em> element.</p>
 and a <em>actionClass</em> attribute. The action class is then instanciated
 and added to the <code>RuleStore</code>, along with its corresponding pattern.</p>
 
+<p>Here is how new rules can be declared in an xml file:</p>
+
+<div class="source">&lt;new-rule pattern="*/computation/literal" actionClass="joran.calculator.LiteralAction"/&gt;</div>
+
+<p>Using new rule declarations, the preceding example, involving the calculation, could be
+expressed this way:</p>
+
+<div class="source">&lt;computation name="toto"&gt;
+  &lt;new-rule pattern="*/computation/literal" 
+            actionClass="joran.calculator.LiteralAction"/&gt;
+  &lt;new-rule pattern="*/computation/add" 
+            actionClass="joran.calculator.AddAction"/&gt;
+  &lt;new-rule pattern="*/computation/multiply" 
+            actionClass="joran.calculator.MultiplyAction"/&gt;
+
+  &lt;computation&gt;
+    &lt;literal value="7"/&gt;
+    &lt;literal value="3"/&gt;
+    &lt;add/&gt;
+  &lt;/computation&gt;   
+ 
+  &lt;literal value="3"/&gt;
+  &lt;multiply/&gt;
+&lt;/computation&gt;</div>
+
 <a name="implicit" />
 <h3>Implicit actions </h3>
 <p>The rules defined thus far are called explicit rules because they
@@ -357,11 +382,11 @@ implicit action.
 directory for an example of an implicit action.
 </p>
 
-<p>In that directory, you will find two actions, one xml file and one
+<p>In that directory, you will find two actions classes, one xml file and one
 class containing the setup of Joran.</p>
 
 <p>The <code>NOPAction</code> class does nothing. It is used to set
-the context of the <em>foo</em> element, using that line:</p>
+the context of the <em>foo</em> element, using this line:</p>
 
 <source>ruleStore.addRule(new Pattern("*/foo"), new NOPAction());</source>
 
@@ -398,6 +423,16 @@ attribute, which bears the value <code>true</code>.</p>
 This is because implicit rules are called only if no explicit rules are defined. Since
 we added a <code>NOPAction</code> with the <em>*/foo</em> pattern, it will be used instead
 of the <code>PrintMeImplicitAction</code>.</p>
+
+<p>Running the example yields the following output:</p>
+
+<div class="source">Element &lt;xyz> asked to be printed.
+Element &lt;abc> asked to be printed.
+ERROR in ch.qos.logback.core.joran.spi.ExecutionContext@1c5c1 - no applicable action \
+for &lt;xyz>, current pattern is [/foo/xyz]</div>
+
+<p>The last line was printed because of a call to <code>StatusPrinter</code> at the end
+of the main class.</p>
 
 <h3>Non goals</h3>
 

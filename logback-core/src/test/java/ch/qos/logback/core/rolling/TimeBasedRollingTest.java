@@ -91,11 +91,11 @@ public class TimeBasedRollingTest extends TestCase {
     rfa.start();
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-    String[] filenames = new String[4];
+    String[] filenames = new String[3];
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test1-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
@@ -105,16 +105,16 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 20; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
-    for (int i = 0; i < 4; i++) {
-      // System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
+//    for (int i = 0; i < 3; i++) {
+//      System.out.println(i + " expected filename [" + filenames[i] + "].");
+//    }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test1." + i));
     }
@@ -135,11 +135,11 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.start();
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-    String[] filenames = new String[4];
+    String[] filenames = new String[3];
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test2-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
@@ -149,9 +149,9 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i <= 10; i++) {
       rfa1.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
     rfa1.stop();
@@ -166,12 +166,12 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
 
-    for (int i = 3; i <= 4; i++) {
+    for (int i = 3; i <= 10; i++) {
       rfa2.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test2." + i));
     }
@@ -196,7 +196,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test3-"
           + sdf.format(cal.getTime()) + ".gz";
       cal.add(Calendar.SECOND, 1);
@@ -208,22 +208,22 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 20; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
-    for (int i = 0; i < 4; i++) {
-      // System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
+//    for (int i = 0; i < 3; i++) {
+//      System.out.println(i + " expected filename [" + filenames[i] + "].");
+//    }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test3." + i + ".gz"));
     }
 
     assertTrue(Compare.compare(filenames[3], Constants.TEST_DIR_PREFIX
-        + "witness/rolling/tbr-test3.3"));
+        + "witness/rolling/tbr-test3.2"));
   }
 
   /**
@@ -242,24 +242,24 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.start();
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-    String[] filenames = new String[4];
+    String[] filenames = new String[3];
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test4-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
-    filenames[3] = Constants.TEST_DIR_PREFIX + "output/test4.log";
+    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test4.log";
 
     System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i <= 22; i++) {
       rfa1.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
     rfa1.stop();
@@ -275,12 +275,12 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
 
-    for (int i = 3; i <= 4; i++) {
+    for (int i = 3; i <= 5; i++) {
       rfa2.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(20);
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test4." + i));
     }
@@ -306,24 +306,24 @@ public class TimeBasedRollingTest extends TestCase {
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test5-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[3] = Constants.TEST_DIR_PREFIX + "output/test5.log";
+    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test5.log";
 
     System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 20; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test5." + i));
     }
@@ -349,34 +349,34 @@ public class TimeBasedRollingTest extends TestCase {
 
     Calendar cal = Calendar.getInstance();
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       filenames[i] = Constants.TEST_DIR_PREFIX + "output/test6-"
           + sdf.format(cal.getTime()) + ".gz";
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[3] = Constants.TEST_DIR_PREFIX + "output/test6.log";
+    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test6.log";
 
     System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 20; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(500);
+      Thread.sleep(50);
     }
 
     for (int i = 0; i < 4; i++) {
       // System.out.println(i + " expected filename [" + filenames[i] + "].");
     }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test6." + i + ".gz"));
     }
 
-    assertTrue(Compare.compare(filenames[3], Constants.TEST_DIR_PREFIX
-        + "witness/rolling/tbr-test6.3"));
+    assertTrue(Compare.compare(filenames[2], Constants.TEST_DIR_PREFIX
+        + "witness/rolling/tbr-test6.2"));
   }
 
   // public void testWithJoran1() throws Exception {

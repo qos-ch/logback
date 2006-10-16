@@ -704,7 +704,7 @@
 		</em>
 		<div class="source">&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
-    &lt;Expression>logger.getName().contains("chapter5") &#38;&#38; \
+    &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
       message.contains("stacktrace")&lt;/Expression>
   &lt;/evaluator></b>
 
@@ -720,6 +720,8 @@
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
 &lt;/configuration></div>
+		<p>Please note that &amp; value cannot be written like one would in a java
+		class, because of XML format encoding.</p>
 		<p>Let's test this configuration with the following code.</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
