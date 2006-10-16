@@ -118,7 +118,8 @@ public class LoggingEventSerializationTest extends TestCase {
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     inputStream = new ObjectInputStream(bis);
 
-    LoggingEvent remoteEvent1 = (LoggingEvent) inputStream.readObject();      
+    // skip over one object
+    inputStream.readObject();      
     LoggingEvent remoteEvent2 = (LoggingEvent) inputStream.readObject();  
     
     // We observe the second logging event. It should provide us with
