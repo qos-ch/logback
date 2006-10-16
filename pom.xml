@@ -115,27 +115,6 @@
 				<version>1.0-beta-1</version>
 			</extension>
 		</extensions>
-
-    <plugins>
-			<!-- automatic deployment on maven1 remote repository -->
-			<plugin>
-		        <artifactId>maven-one-plugin</artifactId>
-		        <executions>
-		          <execution>
-		            <configuration>
-		              <remoteRepositoryUrl>file:////magma/maven/remote_repository</remoteRepositoryUrl>
-		            </configuration>
-		            <goals>
-		              <goal>deploy-maven-one-repository</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-			</plugin>
-		</plugins>
-
-
-
-
 	</build>
 
 	<reporting>
@@ -219,19 +198,5 @@
 		 <id>pixie</id>
 		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/kidding/</url>
 	 </site>
-
-   <repository>
-			<id>lodh-release-repository</id>
-			<name>LODH repository</name>
-			<url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-release-repository</url>
-		</repository>
-		<snapshotRepository>
-			<id>lodh-snapshot-repository</id>
-			<name>LODH repository</name>
-			<url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-snapshot-repository</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-
-
  </distributionManagement>
 </project>
