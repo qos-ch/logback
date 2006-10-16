@@ -18,6 +18,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
@@ -48,15 +49,15 @@ import ch.qos.logback.core.util.StatusPrinter;
  * Here is a sample logback.xml file that can be used right away:
  * 
  * <pre>
- * &lt;configuration&gt; 
- *   &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *     &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *       &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
- *     &lt;/layout&gt; 
- *   &lt;/appender&gt; 
- *             
- *   &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- * &lt;/configuration&gt;
+ *  &lt;configuration&gt; 
+ *    &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *        &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
+ *      &lt;/layout&gt; 
+ *    &lt;/appender&gt; 
+ *              
+ *    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ *  &lt;/configuration&gt;
  * </pre>
  * 
  * A special, module-specific implementation of PatternLayout was implemented to
@@ -110,10 +111,13 @@ public class LogbackValve extends ValveBase implements Context,
     }
     File configFile = new File(filename);
     if (configFile.exists()) {
-      JoranConfigurator jc = new JoranConfigurator();
-      jc.setContext(this);
-      jc.doConfigure(filename);
-      StatusPrinter.print(getStatusManager());
+      try {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(this);
+        jc.doConfigure(filename);
+      } catch (JoranException e) {
+        StatusPrinter.print(getStatusManager());
+      }
     } else {
       getStatusManager().add(
           new ErrorStatus("[" + filename + "] does not exist", this));
