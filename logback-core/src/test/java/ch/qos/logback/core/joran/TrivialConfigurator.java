@@ -8,7 +8,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 public class TrivialConfigurator extends GenericConfigurator {
 
   @Override
-  protected void addImpliciutRules(Interpreter interpreter) {
+  protected void addImplicitRules(Interpreter interpreter) {
   }
 
   @Override

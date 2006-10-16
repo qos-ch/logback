@@ -66,7 +66,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   }
 
   @Override
-  protected void addImpliciutRules(Interpreter interpreter) {
+  protected void addImplicitRules(Interpreter interpreter) {
     // The following line adds the capability to parse nested components
     NestedComponentIA nestedIA = new NestedComponentIA();
     nestedIA.setContext(context);

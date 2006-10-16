@@ -77,7 +77,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   }
 
   abstract protected void addInstanceRules(RuleStore rs);
-  abstract protected void addImpliciutRules(Interpreter interpreter);
+  abstract protected void addImplicitRules(Interpreter interpreter);
   
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
@@ -85,7 +85,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     this.interpreter = new Interpreter(rs);
     ExecutionContext ec = interpreter.getExecutionContext();
     ec.setContext(context);
-    addImpliciutRules(interpreter);
+    addImplicitRules(interpreter);
     
   }
   
