@@ -10,20 +10,19 @@
 package ch.qos.logback.core.status;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-
 abstract public class StatusBase implements Status {
 
+  static private final List<Status> EMPTY_LIST = new ArrayList<Status>(0);
+  
   int level;
   final String message;
   final Object origin;
   List<Status> childrenList;
   Throwable throwable;
 
-  
   StatusBase(int level, String msg, Object origin) {
     this(level, msg, origin, null);
   }
@@ -37,25 +36,23 @@ abstract public class StatusBase implements Status {
 
   public synchronized void add(Status child) {
     if (child == null) {
-      throw new NullPointerException(
-        "Null values are not valid Status.");
+      throw new NullPointerException("Null values are not valid Status.");
     }
     if (childrenList == null) {
       childrenList = new ArrayList<Status>();
     }
     childrenList.add(child);
   }
-  
 
   public synchronized boolean hasChildren() {
     return ((childrenList != null) && (childrenList.size() > 0));
   }
 
-  public synchronized Iterator iterator() {
+  public synchronized Iterator<Status> iterator() {
     if (childrenList != null) {
       return childrenList.iterator();
     } else {
-      return Collections.EMPTY_LIST.iterator();
+      return EMPTY_LIST.iterator();
     }
   }
 
@@ -64,7 +61,7 @@ abstract public class StatusBase implements Status {
       return false;
     }
 
-    //TODO also search in childrens' childrens
+    // TODO also search in childrens' childrens
     return childrenList.remove(statusToRemove);
 
   }
@@ -72,22 +69,22 @@ abstract public class StatusBase implements Status {
   public int getLevel() {
     return level;
   }
-  
+
   public int getEffectiveLevel() {
-  	int result = level;
-  	int effLevel;
-  	
-  	Iterator it = iterator();
-  	Status s;
-  	while(it.hasNext()) {
-  		s = (Status)it.next();
-  		effLevel = s.getEffectiveLevel();
-  		if (effLevel > result) {
-  			result = effLevel;
-  		}
-  	}
-  	
-  	return result;
+    int result = level;
+    int effLevel;
+
+    Iterator it = iterator();
+    Status s;
+    while (it.hasNext()) {
+      s = (Status) it.next();
+      effLevel = s.getEffectiveLevel();
+      if (effLevel > result) {
+        result = effLevel;
+      }
+    }
+
+    return result;
   }
 
   public String getMessage() {
@@ -101,24 +98,24 @@ abstract public class StatusBase implements Status {
   public Throwable getThrowable() {
     return throwable;
   }
-  
+
   /**
    * @Override
    */
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    switch(level) {
-    case INFO: 
+    switch (level) {
+    case INFO:
       buf.append("INFO");
       break;
-    case WARN: 
+    case WARN:
       buf.append("WARN");
       break;
-    case ERROR: 
+    case ERROR:
       buf.append("ERROR");
       break;
     }
-    if(origin != null) {
+    if (origin != null) {
       buf.append(" in ");
       buf.append(origin);
       buf.append(" -");
@@ -126,14 +123,13 @@ abstract public class StatusBase implements Status {
 
     buf.append(" ");
     buf.append(message);
-    
-    if(throwable != null) {
+
+    if (throwable != null) {
       buf.append(" ");
       buf.append(throwable);
     }
-    
+
     return buf.toString();
   }
-  
-  
+
 }

@@ -37,10 +37,30 @@ public class StatusPrinter {
     Iterator it = sm.iterator();
     while (it.hasNext()) {
       Status s = (Status) it.next();
-      System.out.println(s);
-      if (s.getThrowable() != null) {
-        s.getThrowable().printStackTrace(System.out);
-      }
+      print("", s);
+     
     }
   }
+  
+  private static void print(String indentation, Status s) {
+    String prefix;
+    if(s.hasChildren()) {
+       prefix = indentation + "+ ";
+    } else {
+      prefix = indentation + "|-";
+    }
+    System.out.println(prefix+s);
+    if (s.getThrowable() != null) {
+      s.getThrowable().printStackTrace(System.out);
+    }
+    if(s.hasChildren()) {
+      Iterator<Status> ite = s.iterator();
+      while(ite.hasNext()) {
+        Status child = ite.next();
+        print(indentation+"  ", child);
+      }
+      
+    }
+  }
+  
 }
