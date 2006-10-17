@@ -257,7 +257,7 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 22; i++) {
+    for (int i = 0; i <= 20; i++) {
       rfa1.doAppend("Hello---" + i);
       Thread.sleep(50);
     }
@@ -275,7 +275,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
 
-    for (int i = 3; i <= 5; i++) {
+    for (int i = 1; i <= 5; i++) {
       rfa2.doAppend("Hello---" + i);
       Thread.sleep(20);
     }
