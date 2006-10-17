@@ -33,6 +33,10 @@ public class JettyTestSetup extends TestSetup {
     super(suite);
     requestLogImpl = impl;
   }
+  
+  public String getName() {
+    return "Jetty Test Setup";
+  }
 
   Server server;
   String url = "http://localhost:8080/";
