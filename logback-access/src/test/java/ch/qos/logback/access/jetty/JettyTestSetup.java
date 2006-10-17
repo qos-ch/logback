@@ -26,28 +26,29 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.appender.ListAppender;
 
 public class JettyTestSetup extends TestSetup {
-
   RequestLogImpl requestLogImpl;
 
+  public static final int PORT = 8088;
+  
   public JettyTestSetup(Test suite, RequestLogImpl impl) {
     super(suite);
     requestLogImpl = impl;
   }
-  
+
   public String getName() {
     return "Jetty Test Setup";
   }
 
   Server server;
-  String url = "http://localhost:8080/";
+  String url = "http://localhost:" + PORT + "/";
 
   public void setUp() throws Exception {
-    //System.out.println("into setUp");
+    // System.out.println("into setUp");
     super.setUp();
 
     server = new Server();
     Connector connector = new SelectChannelConnector();
-    connector.setPort(8080);
+    connector.setPort(PORT);
     server.setConnectors(new Connector[] { connector });
 
     ContextHandler context = new ContextHandler();
@@ -68,7 +69,7 @@ public class JettyTestSetup extends TestSetup {
   }
 
   public void tearDown() throws Exception {
-    //System.out.println("into tearDown");
+    // System.out.println("into tearDown");
     super.tearDown();
     server.stop();
     Thread.sleep(1000);
@@ -88,7 +89,7 @@ public class JettyTestSetup extends TestSetup {
     console.setName("console");
     PatternLayout layout = new PatternLayout();
     layout.setContext(requestLogImpl);
-    layout.setPattern("%date %server %clientHost %post");
+    layout.setPattern("%date %server %clientHost");
     console.setLayout(layout);
     layout.start();
     console.start();

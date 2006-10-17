@@ -22,7 +22,7 @@ public class JettyBasicTest extends TestCase {
   }
 
   public void testGetRequest() throws Exception {
-    URL url = new URL("http://localhost:8080/");
+    URL url = new URL("http://localhost:"+ JettyTestSetup.PORT + "/");
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
 
@@ -35,7 +35,7 @@ public class JettyBasicTest extends TestCase {
   }
 
   public void testEventGoesToAppenders() throws Exception {
-    URL url = new URL("http://localhost:8080/");
+    URL url = new URL("http://localhost:"+ JettyTestSetup.PORT + "/");
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
 
