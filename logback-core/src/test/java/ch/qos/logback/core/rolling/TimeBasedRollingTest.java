@@ -100,19 +100,22 @@ public class TimeBasedRollingTest extends TestCase {
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
-
+    
     System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
-
+    
+    long now = System.currentTimeMillis();
     for (int i = 0; i < 20; i++) {
       rfa.doAppend("Hello---" + i);
       Thread.sleep(50);
     }
-
-//    for (int i = 0; i < 3; i++) {
-//      System.out.println(i + " expected filename [" + filenames[i] + "].");
-//    }
+    long newNow = System.currentTimeMillis();
+    System.out.println("Done waiting. Waited: " + (newNow - now));
+    
+    for (int i = 0; i < 3; i++) {
+      System.out.println(i + " expected filename [" + filenames[i] + "].");
+    }
 
     for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
