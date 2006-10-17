@@ -24,6 +24,7 @@ public interface Status {
   String getMessage();
   Throwable getThrowable();
   
+  public boolean hasChildren();
   public void add(Status child);
   public boolean remove(Status child);
   public Iterator iterator();
