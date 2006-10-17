@@ -63,7 +63,8 @@
 
   String getFooter();
 
-  String getContentType();</div>
+  String getContentType();
+}</div>
 		<p>
 			This interface is really simple and yet is sufficent for
 			many formatting needs.
@@ -155,15 +156,15 @@
 }</div>
 
 		<p>
-			The conversion pattern is set to be "%-5level [%thread]:
-			%message%n". Running PatternSample will yield the following
+			The conversion pattern is set to be <em>%-5level [%thread]:
+			%message%n</em>. Running PatternSample will yield the following
 			output on the console.
 		</p>
 		<div class="source">DEBUG [main]: Message 1 
 WARN  [main]: Message 2</div>
 		<p>
-			Note that in the conversion pattern "%-5level [%thread]:
-			%message%n" there is no explicit separator between literal
+			Note that in the conversion pattern <em>%-5level [%thread]:
+			%message%n</em> there is no explicit separator between literal
 			text and conversion specifiers. When parsing a conversion
 			pattern,
 			<code>PatternLayout</code>
@@ -253,8 +254,7 @@ WARN  [main]: Message 2</div>
 						Used to output the date of the logging event.
 						The date conversion specifier may be followed by
 						a set of braces containing a date and time
-						pattern strings {@link
-						java.text.SimpleDateFormat},
+						pattern strings following <code>java.text.SimpleDateFormat</code>,
 						<em>ABSOLUTE</em>
 						,
 						<em>DATE</em>
@@ -556,7 +556,7 @@ WARN  [main]: Message 2</div>
 			<th>Comment</th>
 
 			<tr>
-				<td align="center">%20c</td>
+				<td align="center">%20l</td>
 				<td align="center">false</td>
 				<td align="center">20</td>
 				<td align="center">none</td>
@@ -566,7 +566,7 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%-20c</td>
+				<td align="center">%-20l</td>
 				<td align="center">true</td>
 				<td align="center">20</td>
 				<td align="center">none</td>
@@ -576,7 +576,7 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%.30c</td>
+				<td align="center">%.30l</td>
 				<td align="center">NA</td>
 				<td align="center">none</td>
 				<td align="center">30</td>
@@ -586,7 +586,7 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%20.30c</td>
+				<td align="center">%20.30l</td>
 				<td align="center">false</td>
 				<td align="center">20</td>
 				<td align="center">30</td>
@@ -598,7 +598,7 @@ WARN  [main]: Message 2</div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%-20.30c</td>
+				<td align="center">%-20.30l</td>
 				<td align="center">true</td>
 				<td align="center">20</td>
 				<td align="center">30</td>
@@ -780,7 +780,9 @@ WARN  [main]: Message 2</div>
 		<p>
 			Of course, one can change the expression to match one's
 			specific situation. An expression testing logger name and
-			request level could also be meaningful.
+			request level could also be meaningful: all logging requests of
+			level <em>WARN</em> and up, coming from a sensible part of an application
+			like a financial transaction module, would have their caller data displayed.
 		</p>
 		<p><b>Important:</b> With the <em>caller</em> conversion specifier, the data is
 		displayed when <em>the expression passed to the evaluator is <b>true</b>.</em></p>
@@ -862,9 +864,11 @@ WARN  [main]: Message 2</div>
 			conversion pattern. See <code>PatternLayout</code> for documentation on
 			the available patterns.
 		</p>
+		<p>One notable point about the use of <code>PatternLayout</code> with <code>HTMLLayout</code>
+		is that conversion specifiers should not be separated by a space. Each specifier found in the
+		pattern will result in a separate column, meaning that spaces will create empty columns.</p>
 		<p>
-			Note that the pattern
-			<em>%ex</em>
+			The pattern <em>%ex</em>
 			used to display an Exception is not the only way to display
 			an Exception with this layout. If you use this pattern, a
 			table column will be created to display the potential
@@ -892,8 +896,17 @@ WARN  [main]: Message 2</div>
 		<p>
 			A user-specified external CSS file can be linked to the html
 			page. In case one does not want to customize the html
-			output, an internal CSS style is used.
+			output, an internal CSS style is used. In that case, the following
+			xml element can be nested into the <code>&lt;layout&gt;</code> element.
 		</p>
+<div class="source">&lt;layout>
+  ...
+  &lt;cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
+    &lt;param name="url" value="path_to_StyleFile.css" />
+  &lt;/cssBuilder>	
+  ...
+&lt;/layout></div>
+		
 		<p>
 			The HTMLLayout is often used in conjunction with
 			SMTPAppender, to send a nicely formatted html email. Of
@@ -928,7 +941,6 @@ WARN  [main]: Message 2</div>
 			educationnal purposes.
 		</p>
 
-
 		<h2>Logback access</h2>
 		<p>Just like <code>ClassicLayout</code> represents the <code>Layout</code> interface
 		for the classic module, the <code>AccessLayout</code> exists for the access module. It's
@@ -949,6 +961,7 @@ WARN  [main]: Message 2</div>
 		</p>
 		<p>However, the conversion specifier are different, giving specific access to request
 		and response objects' attributes.</p>
+		
 		<p>Here are the conversion specifier one can use with logback access 
 		<code>PatternLayout</code>.</p>
 		
@@ -1116,14 +1129,28 @@ WARN  [main]: Message 2</div>
 			</td>
 		</tr>
 		</table>
+		
+		<p>Logback access' <code>PatternLayout</code> also recognize three keywords, which
+		act like shortcuts to a certain pattern.</p>
 
-
-
-
-
-
+	 <ul>
+	 	<p><em>common</em> or <em>CLF</em></p>
+	 	<p><em>combined</em></p>
+	 	</ul>
+	 	
+	 	<p>The <em>common</em> keyword corresponds to the pattern <em>%h %l %u %t \"%r\" %s %b</em>
+	 	which displays client host, remote log name, user, date, requested URL, status code 
+	 	and response's content length</p>
+	 	
+	 	<p>The <em>combined</em> keyword is a shortcut to 
+	 	<em>%h %l %u %t \"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em>. This pattern begins
+	 	much like the <em>common</em> pattern but also displays two request headers, namely
+	 	 referer, and user-agent.</p>
 
 		<h3>HTMLLayout</h3>
+		
+		<p>The access version of <code>HTMLLayout</code> works like logback classic's
+		version.</p>
 
 	</body>
 </document>
