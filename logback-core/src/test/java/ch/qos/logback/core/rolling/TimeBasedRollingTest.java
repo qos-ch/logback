@@ -105,17 +105,14 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
     
-    long now = System.currentTimeMillis();
-    for (int i = 0; i < 20; i++) {
-      rfa.doAppend("Hello---" + i);
-      Thread.sleep(50);
-    }
-    long newNow = System.currentTimeMillis();
-    System.out.println("Done waiting. Waited: " + (newNow - now));
-    
     for (int i = 0; i < 3; i++) {
-      System.out.println(i + " expected filename [" + filenames[i] + "].");
+      rfa.doAppend("Hello---" + i);
+      Thread.sleep(500);
     }
+    
+//    for (int i = 0; i < 3; i++) {
+//      System.out.println(i + " expected filename [" + filenames[i] + "].");
+//    }
 
     for (int i = 0; i < 3; i++) {
       assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
@@ -152,9 +149,9 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 10; i++) {
+    for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(500);
     }
 
     rfa1.stop();
@@ -169,9 +166,9 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
 
-    for (int i = 3; i <= 10; i++) {
+    for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(100);
     }
 
     for (int i = 0; i < 3; i++) {
@@ -211,9 +208,9 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 3; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(500);
     }
 
 //    for (int i = 0; i < 3; i++) {
@@ -260,9 +257,9 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 20; i++) {
+    for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(500);
     }
 
     rfa1.stop();
@@ -278,9 +275,9 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
 
-    for (int i = 1; i <= 5; i++) {
+    for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("Hello---" + i);
-      Thread.sleep(20);
+      Thread.sleep(100);
     }
 
     for (int i = 0; i < 3; i++) {
@@ -321,9 +318,9 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 3; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(500);
     }
 
     for (int i = 0; i < 3; i++) {
@@ -364,14 +361,14 @@ public class TimeBasedRollingTest extends TestCase {
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 3; i++) {
       rfa.doAppend("Hello---" + i);
-      Thread.sleep(50);
+      Thread.sleep(500);
     }
 
-    for (int i = 0; i < 4; i++) {
-      // System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
+//    for (int i = 0; i < 4; i++) {
+//      System.out.println(i + " expected filename [" + filenames[i] + "].");
+//    }
 
     for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
