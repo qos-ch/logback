@@ -114,6 +114,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
     // TODO better exception handling
+    //check filter decision see AppenderBase
     aai.appendLoopOnAppenders(accessEvent);
   }
 

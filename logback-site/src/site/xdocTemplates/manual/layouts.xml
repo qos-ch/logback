@@ -18,25 +18,27 @@
 		<table>
 			<tr>
 				<td valign="top" align="top">
-					<a rel="license"
-						href="http://creativecommons.org/licenses/by-nc-nd/2.5/">
-						<img alt="Creative Commons License" border="0"
-							valign="top" align="top"
-							src="http://creativecommons.org/images/public/somerights20.png" />
-					</a>
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
 				</td>
 				<td>
 					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
+						<!--Creative Commons License-->
 						This work is licensed under a
 						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-nd/2.5/">
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
-							Attribution-Noncommercial-No Derivative
-							Works 2.5 License
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
 						</a>
 						.
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -124,8 +126,8 @@
 			called conversion specifiers. You are free to insert any
 			literal text within the conversion pattern. Each conversion
 			specifier starts with a percent sign (%) and is followed by
-			optional format modifiers and a conversion character. The
-			conversion character controls the type of data to use, e.g.
+			optional format modifiers and a conversion word. The
+			conversion word controls the type of data to use, e.g.
 			logger name, level, date, thread name. The format modifiers
 			control such things as field width, padding, and left or
 			right justification. The following is a simple example.
@@ -175,9 +177,15 @@ WARN  [main]: Message 2</div>
 			justified to a width of five characters. Format specifiers
 			will be explained in a short moment.
 		</p>
-		<p>The recognized conversion characters and words are</p>
+		<p>
+			Some conversion words can handle options. These are informations
+			added to the conversion word between braces. A sample conversion
+			word with options could be <em>%word{option}</em>. The options that
+			are specific to a conversion word will be explained shortly, along with
+			the conversion word's definition.
+		</p>
 		<table border="1" CELLPADDING="8">
-			<th>Conversion Character or Word</th>
+			<th>Conversion Word</th>
 			<th>Effect</th>
 
 			<tr>
@@ -188,27 +196,51 @@ WARN  [main]: Message 2</div>
 				<td>
 					<p>
 						Used to output the logger of the logging event.
-						The logger conversion specifier can be
-						optionally followed by
-						<em>precision specifier</em>
-						, that is a decimal constant in brackets.
 					</p>
 					<p>
-						If a precision specifier is given, then only the
-						corresponding number of right most components of
-						the logger name will be printed. By default the
-						logger name is printed in full.
+						The logger name conversion word can take an
+						integer as a first option. This will use
+						logback's abbreviation mechanism to display a
+						shorter logger name, without loosing it's
+						meaning.
 					</p>
-					<p>
-						For example, for the category name "a.b.c" the
-						pattern
-						<b>%logger{2}</b>
-						will output "b.c". See more examples of name
-						abbreviations further down this document.
-					</p>
+
+					<p>The next table should clear things up.</p>
+
+					<table BORDER="1" CELLPADDING="8">
+
+						<tr>
+							<th>Conversion Pattern</th>
+							<th>Logger name</th>
+							<th>Result</th>
+						</tr>
+
+						<tr>
+							<td>%logger{10}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>m.s.s.Bar</td>
+						</tr>
+
+						<tr>
+							<td>%logger{15}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>m.s.sample.Bar</td>
+						</tr>
+
+						<tr>
+							<td>%logger{16}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>m.sub.sample.Bar</td>
+						</tr>
+
+						<tr>
+							<td>%logger{26}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>mainPackage.sub.sample.Bar</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
-
 			<tr>
 				<td align="center">
 					<b>C / class</b>
@@ -217,24 +249,17 @@ WARN  [main]: Message 2</div>
 				<td>
 					<p>
 						Used to output the fully qualified class name of
-						the caller issuing the logging request. This
-						conversion specifier can be optionally followed
-						by
-						<em>precision specifier</em>
-						, that is a decimal constant in brackets.
+						the caller issuing the logging request.
 					</p>
 					<p>
-						If a precision specifier is given, then only the
-						corresponding number of right most components of
-						the class name will be printed. By default the
-						class name is output in fully qualified form.
+						Just like the previous conversion word, this
+						word can take an interger as it's first option
+						and use logback's abbreviation mechanisme to
+						shorten its output.
 					</p>
 					<p>
-						For example, for the class name
-						"ch.logback.xyz.SomeClass", the pattern
-						<b>%class{1}</b>
-						will output "SomeClass". See more examples of
-						name abbreviations further down this document.
+						By default the class name is output in fully
+						qualified form.
 					</p>
 					<p>
 						<b>WARNING</b>
@@ -254,13 +279,15 @@ WARN  [main]: Message 2</div>
 						Used to output the date of the logging event.
 						The date conversion specifier may be followed by
 						a set of braces containing a date and time
-						pattern strings following <code>java.text.SimpleDateFormat</code>,
+						pattern strings used by
+						<code>java.text.SimpleDateFormat</code>
+						.
 						<em>ABSOLUTE</em>
 						,
 						<em>DATE</em>
 						or
 						<em>ISO8601</em>
-						.
+						can also be used.
 					</p>
 					<p>
 						For example,
@@ -314,17 +341,28 @@ WARN  [main]: Message 2</div>
 						number between parentheses.
 					</p>
 					<p>
+						A integer can be added to the
+						<em>caller</em>
+						conversion specifier's options to configure the depth of
+						the information to be displayed.
+					</p>
+					<p>For example, <em>%caller{2}</em> would display the following excerpt:</p>
+					
+<div class="source">0    [main] DEBUG - logging statement Caller+0	 \
+at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</div>
+					<p>And <em>%caller{3}</em> would display this other excerpt:</p>
+<div class="source">16   [main] DEBUG - logging statement Caller+0	 \
+at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
+Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
+					
+					<p>
 						The location information can be very useful.
 						However, it's generation is
 						<em>extremely</em>
 						slow. It's use should be avoided unless
 						execution speed is not an issue.
-					</p>
-					<p>
-						A precision specifier can be appended to the
-						<em>caller</em>
-						conversion specifier to configure the depth of
-						the information to be displayed.
 					</p>
 				</td>
 			</tr>
@@ -389,7 +427,7 @@ WARN  [main]: Message 2</div>
 						character or characters.
 					</p>
 					<p>
-						This conversion character offers practically the
+						This conversion word offers practically the
 						same performance as using non-portable line
 						separator strings such as "\n", or "\r\n". Thus,
 						it is the preferred way of specifying a line
@@ -447,7 +485,7 @@ WARN  [main]: Message 2</div>
 					<p>
 						The
 						<b>X</b>
-						conversion character can be followed by the key
+						conversion word can be followed by the key
 						for the map placed between braces, as in
 						<b>%X{clientNumber}</b>
 						where
@@ -475,7 +513,7 @@ WARN  [main]: Message 2</div>
 			</tr>
 			<tr>
 				<td align="center">
-					<b>throwable</b>
+					<b>ex / throwable</b>
 				</td>
 
 				<td>
@@ -623,47 +661,7 @@ WARN  [main]: Message 2</div>
 			.
 		</p>
 		<p>However, there is much more to it than that.</p>
-		<p>
-			The logger name conversion specifier can take an integer as
-			a first option. This will use logback's abbreviation
-			mechanism to display a shorter logger name, without loosing
-			it's meaning.
-		</p>
 
-		<p>The next table should clear things up.</p>
-
-		<table BORDER="1" CELLPADDING="8">
-
-			<tr>
-				<th>Conversion Pattern</th>
-				<th>Logger name</th>
-				<th>Result</th>
-			</tr>
-
-			<tr>
-				<td>%logger{10}</td>
-				<td>mainPackage.sub.sample.Bar</td>
-				<td>m.s.s.Bar</td>
-			</tr>
-
-			<tr>
-				<td>%logger{15}</td>
-				<td>mainPackage.sub.sample.Bar</td>
-				<td>m.s.sample.Bar</td>
-			</tr>
-
-			<tr>
-				<td>%logger{16}</td>
-				<td>mainPackage.sub.sample.Bar</td>
-				<td>m.sub.sample.Bar</td>
-			</tr>
-
-			<tr>
-				<td>%logger{26}</td>
-				<td>mainPackage.sub.sample.Bar</td>
-				<td>mainPackage.sub.sample.Bar</td>
-			</tr>
-		</table>
 
 		<h4>Evaluators</h4>
 		<p>
@@ -966,7 +964,7 @@ WARN  [main]: Message 2</div>
 		<code>PatternLayout</code>.</p>
 		
 		<table border="1" CELLPADDING="8">
-			<th align="center">Conversion Character or Word</th>
+			<th align="center">Conversion Word</th>
 			<th align="center">Effect</th>
 
 		<tr>
