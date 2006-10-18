@@ -30,9 +30,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-  List<SaxEvent> saxEventList;
   Interpreter interpreter;
-  
+
   final public void doConfigure(URL url) throws JoranException {
     try {
       InputStream in = url.openStream();
@@ -65,7 +64,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         } catch (java.io.IOException ioe) {
           String errMsg = "Could not close [" + file.getName() + "].";
           addError(errMsg, ioe);
-          throw new JoranException(errMsg,ioe);
+          throw new JoranException(errMsg, ioe);
         }
       }
     }
@@ -76,8 +75,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   }
 
   abstract protected void addInstanceRules(RuleStore rs);
+
   abstract protected void addImplicitRules(Interpreter interpreter);
-  
+
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
@@ -85,21 +85,23 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     ExecutionContext ec = interpreter.getExecutionContext();
     ec.setContext(context);
     addImplicitRules(interpreter);
-    
+
   }
-  
+
   final public void doConfigure(final InputSource inputSource)
       throws JoranException {
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
-    saxEventList = recorder.recordEvents(inputSource);
+    recorder.recordEvents(inputSource);
     buildInterpreter();
     EventPlayer player = new EventPlayer(interpreter);
     player.play(recorder.saxEventList);
   }
 
-  public List<SaxEvent> getSaxEventList() {
-    return saxEventList;
+  final public void doConfigure(final List<SaxEvent> eventList)
+      throws JoranException {
+    buildInterpreter();
+    EventPlayer player = new EventPlayer(interpreter);
+    player.play(eventList);
   }
-
 }

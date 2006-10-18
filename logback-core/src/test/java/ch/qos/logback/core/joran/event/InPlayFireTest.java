@@ -34,10 +34,14 @@ public class InPlayFireTest extends TestCase {
     gc.setContext(context);
     gc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
     
-    assertEquals(3, listenAction.getSeList().size());
+    for(SaxEvent se: listenAction.getSeList()) {
+      System.out.println(se);
+    }
+    assertEquals(5, listenAction.getSeList().size());
     assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
-    assertTrue(listenAction.getSeList().get(1) instanceof BodyEvent);
-    assertTrue(listenAction.getSeList().get(2) instanceof EndEvent);
+    assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
+    assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
+    assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
     
   }
 }

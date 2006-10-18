@@ -28,9 +28,9 @@ public class EventPlayer {
     
     for(SaxEvent se : seList) {
       if(se instanceof StartEvent) {
-        // invoke fireInPlay before  startElement processing
-        interpreter.getExecutionContext().fireInPlay(se);
         interpreter.startElement((StartEvent) se);
+        // invoke fireInPlay after startElement processing
+        interpreter.getExecutionContext().fireInPlay(se);
       }
       if(se instanceof BodyEvent) {
         // invoke fireInPlay before  characters processing
@@ -38,9 +38,9 @@ public class EventPlayer {
         interpreter.characters((BodyEvent) se);
       }
       if(se instanceof EndEvent) {
-        interpreter.endElement((EndEvent) se);
-        // invoke fireInPlay after endElement processing
+        // invoke fireInPlay before endElement processing
         interpreter.getExecutionContext().fireInPlay(se);
+        interpreter.endElement((EndEvent) se);
       }
     
     }
