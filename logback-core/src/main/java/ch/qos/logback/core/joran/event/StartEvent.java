@@ -1,13 +1,25 @@
-package ch.qos.logback.core.joran.spi;
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
+ * 
+ * Copyright (C) 2000-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+
+package ch.qos.logback.core.joran.event;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
+import ch.qos.logback.core.joran.spi.Pattern;
+
 public class StartEvent extends SaxEvent {
 
-  final Attributes attributes;
-  final Pattern pattern;
+  final public Attributes attributes;
+  final public Pattern pattern;
   
   StartEvent(Pattern pattern, String namespaceURI, String localName, String qName,
       Attributes attributes, Locator locator) {

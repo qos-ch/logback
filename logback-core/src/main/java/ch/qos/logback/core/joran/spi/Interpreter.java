@@ -1,13 +1,12 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2006, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
@@ -21,6 +20,9 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
+import ch.qos.logback.core.joran.event.BodyEvent;
+import ch.qos.logback.core.joran.event.EndEvent;
+import ch.qos.logback.core.joran.event.StartEvent;
 
 /**
  * <id>Interpreter</id> is Joran's main driving class. It extends SAX
@@ -57,9 +59,10 @@ import ch.qos.logback.core.joran.action.ImplicitAction;
  */
 public class Interpreter {
   private static List EMPTY_LIST = new Vector(0);
-  private RuleStore ruleStore;
-  private ExecutionContext ec;
-  private ArrayList<ImplicitAction> implicitActions;
+  
+  final private RuleStore ruleStore;
+  final private ExecutionContext ec;
+  final private ArrayList<ImplicitAction> implicitActions;
   Pattern pattern;
   Locator locator;
 
@@ -321,10 +324,4 @@ public class Interpreter {
   public RuleStore getRuleStore() {
     return ruleStore;
   }
-
-  public void setRuleStore(RuleStore ruleStore) {
-    this.ruleStore = ruleStore;
-  }
-
-
 }

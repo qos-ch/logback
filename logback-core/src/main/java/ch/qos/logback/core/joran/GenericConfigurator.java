@@ -1,13 +1,12 @@
 /**
- * Logback: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2006, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package ch.qos.logback.core.joran;
 
 import java.io.File;
@@ -19,13 +18,13 @@ import java.util.List;
 
 import org.xml.sax.InputSource;
 
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.spi.SaxEvent;
-import ch.qos.logback.core.joran.spi.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.spi.ContextAwareBase;
 

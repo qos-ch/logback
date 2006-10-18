@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2006, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -9,8 +9,10 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -18,6 +20,8 @@ import java.util.Stack;
 import org.xml.sax.Locator;
 
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.event.InPlayListener;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -38,7 +42,8 @@ public class ExecutionContext extends ContextAwareBase {
   Map<String, Object> objectMap;
   Properties substitutionProperties;
   Interpreter joranInterpreter;
-
+  final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
+  
   public ExecutionContext(Interpreter joranInterpreter) {
     this.joranInterpreter = joranInterpreter;
     objectStack = new Stack<Object> ();
@@ -164,5 +169,23 @@ public class ExecutionContext extends ContextAwareBase {
       return null;
     }
     return OptionHelper.substVars(value, substitutionProperties);
+  }
+  
+  public void addInPlayListener(InPlayListener ipl) {
+    if(listenerList.contains(ipl)) {
+      System.out.println("InPlayListener "+ipl+" has been already registered");
+    } else {
+      listenerList.add(ipl);
+    }
+  }
+  
+  public boolean removeInPlayListener(InPlayListener ipl) {
+    return listenerList.remove(ipl);
+  }
+  
+  void fireInPlay(SaxEvent event) {
+    for(InPlayListener ipl: listenerList) {
+      ipl.inPlay(event);
+    }
   }
 }

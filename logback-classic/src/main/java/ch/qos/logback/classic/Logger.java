@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2005, QOS.ch, LOGBack.com
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
+ * 
+ * Copyright (C) 2000-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 
 package ch.qos.logback.classic;
@@ -25,19 +25,20 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 
-
-public final class Logger implements org.slf4j.Logger, AppenderAttachable, Serializable {
+public final class Logger implements org.slf4j.Logger, AppenderAttachable,
+    Serializable {
 
   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 5454405123156820674L;
+   * 
+   */
+  private static final long serialVersionUID = 5454405123156820674L;
 
-	/**
+  /**
    * The fully qualified name of this class. Used in gathering caller
    * information.
    */
-  public static final String FQCN = ch.qos.logback.classic.Logger.class.getName();
+  public static final String FQCN = ch.qos.logback.classic.Logger.class
+      .getName();
 
   static int instanceCount = 0;
 
@@ -79,7 +80,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
   // loggerRemoteView cannot be final because it may change as a consequence
   // of changes in LoggerContext
   LoggerRemoteView loggerRemoteView;
-  
+
   Logger(String name, Logger parent, LoggerContext loggerContext) {
     this.name = name;
     this.parent = parent;
@@ -275,7 +276,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
     // No appenders in hierarchy
     if (writes == 0) {
-    	loggerContext.noAppenderDefinedWarning(this);
+      loggerContext.noAppenderDefinedWarning(this);
     }
   }
 
@@ -363,10 +364,9 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
   }
 
   /**
-   * The next three methods could be merged. 
-   * However, we decided not to merge them to make the calls to
-   * these methods more easily understandable, avoiding many instances
-   * of passing null parameters.
+   * The next three methods could be merged. However, we decided not to merge
+   * them to make the calls to these methods more easily understandable,
+   * avoiding many instances of passing null parameters.
    */
   private void filterAndLog(String caller, Level level, String format,
       Throwable t) {
@@ -401,19 +401,19 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void debug(String format, Object arg) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { arg }, null);
     }
   }
 
   public void debug(String format, Object arg1, Object arg2) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] {arg1, arg2}, null);
+      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void debug(String format, Object[] argArray) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] {argArray}, null);
+      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { argArray }, null);
     }
   }
 
@@ -431,21 +431,22 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void debug(Marker marker, String format, Object arg) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.DEBUG, marker, format, new Object[] { arg },
+          null);
     }
   }
 
   public void debug(Marker marker, String format, Object arg1, Object arg2) {
     if (isDebugEnabled()) {
       filterAndLog(FQCN, Level.DEBUG, marker, format,
-          new Object[] {arg1, arg2}, null);
+          new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void debug(Marker marker, String format, Object[] argArray) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, format, new Object[] {argArray},
-          null);
+      filterAndLog(FQCN, Level.DEBUG, marker, format,
+          new Object[] { argArray }, null);
     }
   }
 
@@ -463,19 +464,19 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void error(String format, Object arg) {
     if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.ERROR, format, new Object[] { arg }, null);
     }
   }
 
   public void error(String format, Object arg1, Object arg2) {
     if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] {arg1, arg2}, null);
+      filterAndLog(FQCN, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void error(String format, Object[] argArray) {
     if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] {argArray}, null);
+      filterAndLog(FQCN, Level.ERROR, format, new Object[] { argArray }, null);
     }
   }
 
@@ -493,21 +494,22 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void error(Marker marker, String format, Object arg) {
     if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.ERROR, marker, format, new Object[] { arg },
+          null);
     }
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
     if (isErrorEnabled()) {
       filterAndLog(FQCN, Level.ERROR, marker, format,
-          new Object[] {arg1, arg2}, null);
+          new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
     if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, format, new Object[] {argArray},
-          null);
+      filterAndLog(FQCN, Level.ERROR, marker, format,
+          new Object[] { argArray }, null);
     }
   }
 
@@ -525,19 +527,19 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void info(String format, Object arg) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.INFO, format, new Object[] { arg }, null);
     }
   }
 
   public void info(String format, Object arg1, Object arg2) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] {arg1, arg2}, null);
+      filterAndLog(FQCN, Level.INFO, format, new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void info(String format, Object[] argArray) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] {argArray}, null);
+      filterAndLog(FQCN, Level.INFO, format, new Object[] { argArray }, null);
     }
   }
 
@@ -555,20 +557,20 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void info(Marker marker, String format, Object arg) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] { arg }, null);
     }
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] {arg1, arg2},
-          null);
+      filterAndLog(FQCN, Level.INFO, marker, format,
+          new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void info(Marker marker, String format, Object[] argArray) {
     if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] {argArray},
+      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] { argArray },
           null);
     }
   }
@@ -610,9 +612,9 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
   public boolean isWarnEnabled(Marker marker) {
     return isWarnEnabled();
   }
-  
+
   public boolean isEnabledFor(Level level) {
-  	return (effectiveLevelInt <= level.levelInt);
+    return (effectiveLevelInt <= level.levelInt);
   }
 
   public void warn(String msg) {
@@ -629,19 +631,19 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void warn(String format, Object arg) {
     if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.WARN, format, new Object[] { arg }, null);
     }
   }
 
   public void warn(String format, Object arg1, Object arg2) {
     if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] {arg1, arg2}, null);
+      filterAndLog(FQCN, Level.WARN, format, new Object[] { arg1, arg2 }, null);
     }
   }
 
   public void warn(String format, Object[] argArray) {
     if (effectiveLevelInt <= Level.WARN_INT) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] {argArray}, null);
+      filterAndLog(FQCN, Level.WARN, format, new Object[] { argArray }, null);
     }
   }
 
@@ -653,21 +655,21 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   public void warn(Marker marker, String format, Object arg) {
     if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] {arg}, null);
+      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] { arg }, null);
     }
   }
 
   public void warn(Marker marker, String format, Object[] argArray) {
     if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] {argArray},
+      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] { argArray },
           null);
     }
   }
 
   public void warn(Marker marker, String format, Object arg1, Object arg2) {
     if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] {arg1, arg2},
-          null);
+      filterAndLog(FQCN, Level.WARN, marker, format,
+          new Object[] { arg1, arg2 }, null);
     }
   }
 
@@ -691,18 +693,18 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable, Seria
 
   /**
    * Return the context for this logger.
+   * 
    * @return
    */
-	public LoggerContext getLoggerContext() {
-		return loggerContext;
-	}
+  public LoggerContext getLoggerContext() {
+    return loggerContext;
+  }
 
-	
-	public LoggerRemoteView getLoggerRemoteView() {
-		return loggerRemoteView;
-	}
-	
-	void buildRemoteView() {
-	  this.loggerRemoteView = new LoggerRemoteView(name, loggerContext);
-	}
+  public LoggerRemoteView getLoggerRemoteView() {
+    return loggerRemoteView;
+  }
+
+  void buildRemoteView() {
+    this.loggerRemoteView = new LoggerRemoteView(name, loggerContext);
+  }
 }

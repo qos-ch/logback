@@ -1,5 +1,5 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 

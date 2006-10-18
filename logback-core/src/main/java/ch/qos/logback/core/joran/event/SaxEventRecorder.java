@@ -1,4 +1,14 @@
-package ch.qos.logback.core.joran.spi;
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
+ * 
+ * Copyright (C) 2000-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+
+package ch.qos.logback.core.joran.event;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +26,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.Status;
