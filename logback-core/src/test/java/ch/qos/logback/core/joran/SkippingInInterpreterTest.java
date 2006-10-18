@@ -9,22 +9,22 @@
  */
 package ch.qos.logback.core.joran;
 
+import java.util.HashMap;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.BadBeginAction;
 import ch.qos.logback.core.joran.action.BadEndAction;
 import ch.qos.logback.core.joran.action.HelloAction;
 import ch.qos.logback.core.joran.action.TouchAction;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.util.Constants;
 
 
@@ -36,8 +36,12 @@ import ch.qos.logback.core.util.Constants;
  */
 public class SkippingInInterpreterTest extends TestCase {
 
+  HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+  Context context = new ContextBase();
+  
   public SkippingInInterpreterTest(String name) {
     super(name);
+    
   }
 
   protected void setUp() throws Exception {
@@ -63,22 +67,21 @@ public class SkippingInInterpreterTest extends TestCase {
    * @throws Exception
    */
   public void testChildrenSkipping() throws Exception {
-    RuleStore rs = new SimpleRuleStore(new ContextBase());
-    rs.addRule(new Pattern("test"), new NOPAction());
-    rs.addRule(new Pattern("test/badBegin"), new BadBeginAction());
-    rs.addRule(new Pattern("test/badBegin/touch"), new TouchAction());
-    rs.addRule(new Pattern("test/hello"), new HelloAction());
-
-    Interpreter jp = new Interpreter(rs);
-    ExecutionContext ec = jp.getExecutionContext();
-    ec.setContext(new ContextBase());
     
-    SAXParser saxParser = createParser();
-    saxParser.parse("file:" + Constants.TEST_DIR_PREFIX + "input/joran/exception1.xml", jp);
-    String str = (String) ec.getObjectMap().get("hello");
+    rulesMap.put(new Pattern("test"), new NOPAction());
+    rulesMap.put(new Pattern("test/badBegin"), new BadBeginAction());
+    rulesMap.put(new Pattern("test/badBegin/touch"), new TouchAction());
+    rulesMap.put(new Pattern("test/hello"), new HelloAction());
+    
+    TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+    tc.setContext(context);
+    
+    tc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/exception1.xml");
+
+    String str = context.getProperty("hello");
     assertEquals("Hello John Doe.", str);
 
-    Object i = ec.getObjectMap().get(TouchAction.KEY);
+    Object i = (String) context.getObject(TouchAction.KEY);
     assertNull(i);
   }
 
@@ -90,43 +93,38 @@ public class SkippingInInterpreterTest extends TestCase {
    */
   public void testSkipSiblings() throws Exception {
 
-    RuleStore rs = new SimpleRuleStore(new ContextBase());
-    rs.addRule(new Pattern("test"), new NOPAction());
-    rs.addRule(new Pattern("test/badEnd"), new BadEndAction());
-    rs.addRule(new Pattern("test/badEnd/touch"), new TouchAction());
-    rs.addRule(new Pattern("test/hello"), new HelloAction());
+    rulesMap.put(new Pattern("test"), new NOPAction());
+    rulesMap.put(new Pattern("test/badEnd"), new BadEndAction());
+    rulesMap.put(new Pattern("test/badEnd/touch"), new TouchAction());
+    rulesMap.put(new Pattern("test/hello"), new HelloAction());
 
-    Interpreter jp = new Interpreter(rs);
-    ExecutionContext ec = jp.getExecutionContext();
-    ec.setContext(new ContextBase());
+    TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+    tc.setContext(context);
     
-    SAXParser saxParser = createParser();
-    saxParser.parse("file:" + Constants.TEST_DIR_PREFIX + "input/joran/badEnd1.xml", jp);
+    tc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/badEnd1.xml");
+
     
-    String str = (String) ec.getObjectMap().get("hello");
+    String str = context.getProperty("hello");
     assertNull(str);
-    Integer i = (Integer) ec.getObjectMap().get(TouchAction.KEY);
+    Integer i = (Integer) context.getObject(TouchAction.KEY);
     assertEquals(2, i.intValue());
   }
 
   public void testSkipSiblings2() throws Exception {
 
-    RuleStore rs = new SimpleRuleStore(new ContextBase());
-    rs.addRule(new Pattern("test"), new NOPAction());
-    rs.addRule(new Pattern("test/isolate/badEnd"), new BadEndAction());
-    rs.addRule(new Pattern("*/touch"), new TouchAction());
-    rs.addRule(new Pattern("test/hello"), new HelloAction());
+    rulesMap.put(new Pattern("test"), new NOPAction());
+    rulesMap.put(new Pattern("test/isolate/badEnd"), new BadEndAction());
+    rulesMap.put(new Pattern("*/touch"), new TouchAction());
+    rulesMap.put(new Pattern("test/hello"), new HelloAction());
 
-    Interpreter jp = new Interpreter(rs);
-    ExecutionContext ec = jp.getExecutionContext();
-    ec.setContext(new ContextBase());
+    TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+    tc.setContext(context);
     
-    SAXParser saxParser = createParser();
-    saxParser.parse("file:" + Constants.TEST_DIR_PREFIX + "input/joran/badEnd2.xml", jp);
+    tc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/badEnd2.xml");
     
-    String str = (String) ec.getObjectMap().get("hello");
+    String str = context.getProperty("hello");
     assertEquals("Hello John Doe.", str);
-    Integer i = (Integer) ec.getObjectMap().get(TouchAction.KEY);
+    Integer i = (Integer) context.getObject(TouchAction.KEY);
     assertEquals(1, i.intValue());
   }
 

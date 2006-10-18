@@ -27,7 +27,7 @@ public class HelloAction extends Action {
    */
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     String str = "Hello "+attributes.getValue("name")+".";
-    ec.getObjectMap().put("hello", str);
+    ec.getContext().setProperty("hello", str);
   }
 
   /**

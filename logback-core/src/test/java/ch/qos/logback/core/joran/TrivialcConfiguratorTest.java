@@ -1,9 +1,13 @@
 package ch.qos.logback.core.joran;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.IncAction;
+import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 
 public class TrivialcConfiguratorTest extends TestCase {
@@ -24,7 +28,11 @@ public class TrivialcConfiguratorTest extends TestCase {
   
   public void doTest(String filename) throws Exception {
 
-    TrivialConfigurator gc = new TrivialConfigurator();
+    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+    rulesMap.put(new Pattern("x/inc"), new IncAction());
+
+    TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+    
     gc.setContext(context);
     gc.doConfigure(Constants.TEST_DIR_PREFIX
         + "input/joran/"+ filename);

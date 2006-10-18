@@ -29,11 +29,11 @@ public class TouchAction extends Action {
    *
    */
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    Integer i = (Integer) ec.getObjectMap().get(KEY);
+    Integer i = (Integer) ec.getContext().getObject(KEY);
     if(i == null) {
-      ec.getObjectMap().put(KEY, new Integer(1));
+      ec.getContext().putObject(KEY, new Integer(1));
     } else {
-      ec.getObjectMap().put(KEY, new Integer(i.intValue()+1));
+      ec.getContext().putObject(KEY, new Integer(i.intValue()+1));
     }
   }
 

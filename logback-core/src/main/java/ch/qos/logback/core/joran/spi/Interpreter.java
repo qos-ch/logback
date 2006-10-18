@@ -18,9 +18,6 @@ import java.util.Vector;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
@@ -58,7 +55,7 @@ import ch.qos.logback.core.joran.action.ImplicitAction;
  * @author Ceki G&uuml;lcu&uuml;
  * 
  */
-public class Interpreter extends DefaultHandler {
+public class Interpreter {
   private static List EMPTY_LIST = new Vector(0);
   private RuleStore ruleStore;
   private ExecutionContext ec;
@@ -102,7 +99,7 @@ public class Interpreter extends DefaultHandler {
     startElement(se.namespaceURI, se.localName, se.qName, se.attributes);
   }
   
-  public void startElement(String namespaceURI, String localName, String qName,
+  private void startElement(String namespaceURI, String localName, String qName,
       Attributes atts) {
 
     String tagName = getTagName(localName, qName);
@@ -146,7 +143,7 @@ public class Interpreter extends DefaultHandler {
     endElement(endEvent.namespaceURI, endEvent.localName, endEvent.qName);
   }
 
-  public void endElement(String namespaceURI, String localName, String qName) {
+  private void endElement(String namespaceURI, String localName, String qName) {
     List applicableActionList = (List) actionListStack.pop();
     // System.out.println("endElement ["+getTagName(localName, qName)+"]");
 
@@ -270,7 +267,7 @@ public class Interpreter extends DefaultHandler {
     }
   }
 
-  void callBodyAction(List applicableActionList, String body) {
+  private void callBodyAction(List applicableActionList, String body) {
     if (applicableActionList == null) {
       return;
     }
@@ -287,7 +284,7 @@ public class Interpreter extends DefaultHandler {
     }
   }
 
-  void callEndAction(List applicableActionList, String tagName) {
+  private void callEndAction(List applicableActionList, String tagName) {
     if (applicableActionList == null) {
       return;
     }
@@ -329,95 +326,5 @@ public class Interpreter extends DefaultHandler {
     this.ruleStore = ruleStore;
   }
 
-  // /**
-  // * Call the finish methods for all actions. Unfortunately, the endDocument
-  // * method is not called in case of errors in the XML document, which
-  // * makes endDocument() pretty damn useless.
-  // */
-  // public void endDocument() {
-  // Set arrayListSet = ruleStore.getActionSet();
-  // Iterator iterator = arrayListSet.iterator();
-  // while(iterator.hasNext()) {
-  // ArrayList al = (ArrayList) iterator.next();
-  // for(int i = 0; i < al.size(); i++) {
-  // Action a = (Action) al.get(i);
-  // a.endDocument(ec);
-  // }
-  // }
-  // }
 
-  public void error(SAXParseException spe) throws SAXException {
-    ec.addError("Parsing error", this, spe);
-    ec.addError("Parsing problem on line " + spe.getLineNumber()
-        + " and column " + spe.getColumnNumber(), this, spe);
-  }
-
-  public void fatalError(SAXParseException spe) throws SAXException {
-    ec.addError("Parsing fatal error", this, spe);
-    ec.addError("Parsing problem on line " + spe.getLineNumber()
-        + " and column " + spe.getColumnNumber(), this, spe);
-  }
-
-  public void warning(SAXParseException spe) throws SAXException {
-    ec.addWarn("Parsing warning", this, spe);
-    ec.addWarn("Parsing problem on line " + spe.getLineNumber()
-        + " and column " + spe.getColumnNumber(), this, spe);
-  }
-
-  public void endPrefixMapping(java.lang.String prefix) {
-  }
-
-  public void ignorableWhitespace(char[] ch, int start, int length) {
-  }
-
-  public void processingInstruction(java.lang.String target,
-      java.lang.String data) {
-  }
-
-  public void skippedEntity(java.lang.String name) {
-  }
-
-  public void startPrefixMapping(java.lang.String prefix, java.lang.String uri) {
-  }
-
-  // public EntityResolver getEntityResolver() {
-  // return entityResolver;
-  // }
-  //  
-  // public void setEntityResolver(EntityResolver entityResolver) {
-  // this.entityResolver = entityResolver;
-  // }
-
-  /**
-   * If a specific entityResolver is set for this Interpreter instance, then we
-   * use it to resolve entities. Otherwise, we use the default implementation
-   * offered by the super class.
-   * 
-   * <p>
-   * Due to inexplicable voodoo, the original resolveEntity method in
-   * org.xml.sax.helpers.DefaultHandler declares throwing an IOException,
-   * whereas the org.xml.sax.helpers.DefaultHandler class included in JDK 1.4
-   * masks this exception.
-   * 
-   * <p>
-   * In order to compile under JDK 1.4, we are forced to mask the IOException as
-   * well. Since its signatures varies, we cannot call our super class'
-   * resolveEntity method. We are forced to implement the default behavior
-   * ourselves, which in this case, is just returning null.
-   * 
-   */
-  // public InputSource resolveEntity(String publicId, String systemId) throws
-  // SAXException {
-  // if(entityResolver == null) {
-  // // the default implementation is to return null
-  // return null;
-  // } else {
-  // try {
-  // return entityResolver.resolveEntity(publicId, systemId);
-  // } catch(IOException ioe) {
-  // // fall back to the default "implementation"
-  // return null;
-  // }
-  // }
-  // }
 }
