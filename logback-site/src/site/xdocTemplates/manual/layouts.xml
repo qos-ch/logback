@@ -346,17 +346,30 @@ WARN  [main]: Message 2</div>
 						conversion specifier's options to configure the depth of
 						the information to be displayed.
 					</p>
-					<p>For example, <em>%caller{2}</em> would display the following excerpt:</p>
+					<p>For example, <b>%caller{2}</b> would display the following excerpt:</p>
 					
 <div class="source">0    [main] DEBUG - logging statement Caller+0	 \
 at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
 Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</div>
-					<p>And <em>%caller{3}</em> would display this other excerpt:</p>
+					<p>And <b>%caller{3}</b> would display this other excerpt:</p>
 <div class="source">16   [main] DEBUG - logging statement Caller+0	 \
 at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
 Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
 Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 					
+					<p>
+						This conversion word can also use evaluators to test logging events
+						against a given criteria before creating the output. For example, 
+						using <b>%caller{3, CALLER_DISPLAY_EVAL}</b> will display three lines
+						of stacktrace, only if the evaluator called <em>CALLER_DISPLAY_EVAL</em>
+						returns a <b>positive</b> answer. 
+						This behaviour comes from the fact that displaying
+						caller data is very expensive, and one should generally not display it
+						unless the evaluator would return a positive value.
+				</p>
+				 <p>Evaluators are described
+						further down this document.
+					</p>
 					<p>
 						The location information can be very useful.
 						However, it's generation is
@@ -497,7 +510,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 						If no additional sub-option is specified, then
 						the entire contents of the MDC key value pair
 						set is output using a format key1=val1,
-						key2=val2
+						key2=val2.
 					</p>
 
 					<p>
@@ -521,12 +534,25 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 						Used to output the Throwable trace that has been
 						bound to the LoggingEvent, by default this will
 						output the full trace as one would normally find
-						by a call to Throwable.printStackTrace(). The
+						by a call to Throwable.printStackTrace(). 
+				 </p>
+				 <p>The
 						throwable conversion word can be followed by an
 						option in the form
 						<b>%throwable{short}</b>
 						which will only output the first line of the
 						ThrowableInformation.
+					</p>
+					
+					<p>
+						This conversion word can also use evaluators to test logging events
+						against a given criteria before creating the output. For example, 
+						using <b>%ex{full, EX_DISPLAY_EVAL}</b> will display the full 
+						stacktrace of the exception, only if the evaluator called <em>EX_DISPLAY_EVAL</em>
+						returns a <b>negative</b> answer. This behaviour comes from the fact that
+						throwable data is generally displayed unless the evaluator would 
+						return a positive value. Evaluators are described
+						further down this document. 
 					</p>
 				</td>
 			</tr>
@@ -654,14 +680,15 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
 		<p>
 			A conversion specifier can be followed by options between
-			curled brackets. We have already seen some of the
+			braces. We have already seen some of the
 			possibilities offered by logback's option handling with, for
 			example, the MDC conversion specifier:
 			<em>%mdc{someKey}</em>
 			.
 		</p>
-		<p>However, there is much more to it than that.</p>
+		<p>However, there is more to it than that.</p>
 
+		<p><b>ADD OPTIONS EXAMPLES</b></p>
 
 		<h4>Evaluators</h4>
 		<p>
@@ -1021,18 +1048,23 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			<td align="center"><b>reqParameter{paramName}</b></td>
 			<td>
 				<p>
-					Parameter of the response. This conversion word can be followed by a key 
-					whose corresponding data will be extracted from the header information.
+					Parameter of the response.
 				</p>
+				<p>This conversion word takes the first option in braces and looks
+				for the corresponding parameter in the request.</p>
+				<p><b>%reqParameter{input_data}</b> 
+				displays the corresponding parameter.</p>
 			</td>
 		</tr>		
 		<tr>
 			<td align="center"><b>i{header} / header{header}</b></td>
 			<td>
 				<p>
-					Request header. Just like the reqParameter
-					conversion word, reqParameter can be followed by a key.
+					Request header.
 				</p>
+				<p>This conversion word takes the first option in braces and looks
+				for the corresponding header in the request.</p>
+				<p><b>%header{Referer}</b> displays the referer of the request.</p>
 			</td>
 		</tr>	
 		<tr>
@@ -1062,9 +1094,32 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 		<tr>
 			<td align="center"><b>t / date</b></td>
 			<td>
-				<p>
-					Date of the event.
-				</p>
+					<p>
+						Used to output the date of the logging event.
+						The date conversion specifier may be followed by
+						a set of braces containing a date and time
+						pattern strings used by
+						<code>java.text.SimpleDateFormat</code>
+						.
+						<em>ABSOLUTE</em>
+						,
+						<em>DATE</em>
+						or
+						<em>ISO8601</em>
+						can also be used.
+					</p>
+					<p>
+						For example,
+						<b>%d{HH:mm:ss,SSS}</b>
+						,
+						<b>
+							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
+						</b>
+						or
+						<b>%d{DATE}</b>
+						. If no date format specifier is given then
+						ISO8601 format is assumed.
+					</p>
 			</td>
 		</tr>
 		<tr>
@@ -1103,27 +1158,34 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			<td align="center"><b>reqAttribute{attributeName}</b></td>
 			<td>
 				<p>
-					Attribute of the request. Just like the reqParameter
-					conversion word, reqAttribute can be followed by a key.
-				</p>
+					Attribute of the request.
+				</p>^
+				<p>This conversion word takes the first option in braces and looks
+				for the corresponding attribute in the request.</p>
+				<p><b>%reqAttribute{SOME_ATTRIBUTE}</b> 
+				displays the corresponding attribute.</p>
 			</td>
 		</tr>
 		<tr>
 			<td align="center"><b>reqCookie{cookie}</b></td>
 			<td>
 				<p>
-					Request cookie. Just like the reqParameter
-					conversion word, reqCookie can be followed by a key.
+					Request cookie.
 				</p>
+				<p>This conversion word takes the first option in braces and looks
+				for the corresponding cookie in the request.</p>
+				<p><b>%cookie{COOKIE_NAME}</b> displays corresponding cookie.</p>
 			</td>
 		</tr>
 		<tr>
 			<td align="center"><b>responseHeader{header}</b></td>
 			<td>
 				<p>
-					Header of the response. Just like the reqParameter
-					conversion word, responseHeader can be followed by a key.
+					Header of the response.
 				</p>
+				<p>This conversion word takes the first option in braces and looks
+				for the corresponding header in the response.</p>
+				<p><b>%header{Referer}</b> displays the referer of the response.</p>
 			</td>
 		</tr>
 		</table>
