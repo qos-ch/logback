@@ -32,11 +32,11 @@ public class FruitConfigurationTest extends TestCase {
     rulesMap.put(new Pattern("group/fruitShell"), new FruitShellAction());
     rulesMap.put(new Pattern("group/fruitShell/fruit"), new FruitFactoryAction());
     rulesMap.put(new Pattern("group/fruitShell/fruit/*"), new NOPAction());
-    SimpleConfigurator gc = new SimpleConfigurator(rulesMap);
+    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
 
-    gc.setContext(fruitContext);
+    simpleConfigurator.setContext(fruitContext);
 
-    gc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/" + filename);
+    simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/" + filename);
 
     StatusPrinter.print(fruitContext);
     return fruitContext.getFruitShellList();

@@ -18,7 +18,7 @@ public class FruitFactory {
 
   public Fruit buildFruit() {
     for (SaxEvent se : eventList) {
-      System.out.println(se);
+      System.out.println("Event to replay: "+se);
     }
     Context context = new ContextBase();
     this.fruit = null;
