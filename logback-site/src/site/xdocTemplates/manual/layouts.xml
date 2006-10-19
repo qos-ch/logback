@@ -53,21 +53,19 @@
 			layouts have nothing to do with large estates in Florida.
 			The
 			<code>format()</code>
-			method in the Layout class takes a object that represents
-			the logging event and returns a String. A synopsis of the
+			method in the Layout class takes an object that represents
+			an event (of any type) and returns a String. A synopsis of the
 			Layout interface is shown below.
 		</p>
 		<div class="source"><pre>public interface Layout extends ContextAware, LifeCycle {
+
   String doLayout(Object event);
-
   String getHeader();
-
   String getFooter();
-
   String getContentType();
 }</pre></div>
 		<p>
-			This interface is really simple and yet is sufficent for
+			This interface is rather simple and yet is sufficent for
 			many formatting needs.
 		</p>
 
@@ -76,26 +74,15 @@
 		<h2>Logback classic</h2>
 
 		<p>
-			As we've seen, a Layout implementation takes as a parameter
-			an object that represents a logging event. The typing of the
-			parameter to
-			<code>Object</code>
-			is because logging events may have different ways of being
-			designed. In logback classic, a logging event is represented
-			by the
-			<code>ch.qos.logback.classic.LoggingEvent</code>
-			class. Therefore, all layouts in logback classic implement a
-			sub-interface of
-			<code>Layout</code>
-			named
-			<code>ClassicLayout</code>
-			.
+			Logback classic only processes events of type
+			<code>ch.qos.logback.classic.LoggingEvent</code>. 
+			Therefore, classic extends <code>Layout</code> 
+			to accept only <code>LoggingEvent</code> objects.
 		</p>
 
 		<p>
-			Here is what a
-			<code>ClassicLayout</code>
-			looks like:
+			The extending interface is called
+			<code>ClassicLayout</code>, as shown below.
 		</p>
 
 		<div class="source"><pre>public interface ClassicLayout extends Layout {
@@ -107,14 +94,16 @@
 		<h3>PatternLayout</h3>
 
 		<p>
-			Logback ships with a flexible layout called
+			Logback classic ships with a flexible layout called
+			<code>PatternLayout</code>, which implements the 
+			<code>ClassicLayout</code> interface. 
+			As all classic layouts,
 			<code>PatternLayout</code>
-			. As all classic layouts,
-			<code>PatternLayout</code>
+			
 			takes a logging event and returns a String. However, the
 			returned String can be modified at will by tweaking its
 			conversion pattern.
-		</p>
+		</p>   
 		<p>
 			The conversion pattern of
 			<code>PatternLayout</code>
@@ -125,7 +114,8 @@
 			called conversion specifiers. You are free to insert any
 			literal text within the conversion pattern. Each conversion
 			specifier starts with a percent sign (%) and is followed by
-			optional format modifiers and a conversion word. The
+			optional format modifiers, a conversion word and optional 
+			parameters between braces. The
 			conversion word controls the type of data to use, e.g.
 			logger name, level, date, thread name. The format modifiers
 			control such things as field width, padding, and left or
@@ -157,15 +147,15 @@
 }</pre></div>
 
 		<p>
-			The conversion pattern is set to be <em>%-5level [%thread]:
-			%message%n</em>. Running PatternSample will yield the following
+			The conversion pattern is set to be <b>"%-5level [%thread]:
+			%message%n"</b>. Running PatternSample will yield the following
 			output on the console.
 		</p>
 		<div class="source"><pre>DEBUG [main]: Message 1 
 WARN  [main]: Message 2</pre></div>
 		<p>
-			Note that in the conversion pattern <em>%-5level [%thread]:
-			%message%n</em> there is no explicit separator between literal
+			Note that in the conversion pattern <b>"%-5level [%thread]:
+			%message%n"</b> there is no explicit separator between literal
 			text and conversion specifiers. When parsing a conversion
 			pattern,
 			<code>PatternLayout</code>
@@ -177,43 +167,53 @@ WARN  [main]: Message 2</pre></div>
 			will be explained in a short moment.
 		</p>
 		<p>
-			Some conversion words can handle options. These are informations
-			added to the conversion word between braces. A sample conversion
-			word with options could be <em>%word{option}</em>. The options that
-			are specific to a conversion word will be explained shortly, along with
-			the conversion word's definition.
+			As mentionned previously, certain conversion specifiers can include 
+			optional parameters which are declared
+			between braces following the conversion word. A sample conversion
+			specifier with options could be <em>%logger{10}</em>. 
 		</p>
+		
+		<p>The recognized conversions words along with their options are
+		described below. When multiple conversion words are listed on the left
+		column, they should be considered as aliases.
+		</p>
+		
 		<table border="1" CELLPADDING="8">
 			<th>Conversion Word</th>
 			<th>Effect</th>
 
 			<tr>
 				<td align="center">
-					<b>c / l / lo / logger</b>
+					<b>c</b>{<em>length</em>} <br /> 
+					<b>l</b>{<em>length</em>} <br />
+					<b>lo</b>{<em>length</em>} <br />
+					<b>logger</b>{<em>length</em>} <br />
 				</td>
 
 				<td>
 					<p>
-						Used to output the logger of the logging event.
+						Used to output the logger name of the logging event.
 					</p>
 					<p>
 						The logger name conversion word can take an
-						integer as a first option. This will use
-						logback's abbreviation mechanism to display a
-						shorter logger name, without loosing it's
-						meaning.
+						integer as a first option. The
+						converter's abbreviation algorithm will shorten the logger name
+						without significant loss of meaning.
 					</p>
 
 					<p>The next table should clear things up.</p>
 
 					<table BORDER="1" CELLPADDING="8">
-
 						<tr>
 							<th>Conversion Pattern</th>
 							<th>Logger name</th>
 							<th>Result</th>
 						</tr>
-
+						<tr>
+							<td>%logger</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>mainPackage.sub.sample.Bar</td>
+						</tr>
 						<tr>
 							<td>%logger{10}</td>
 							<td>mainPackage.sub.sample.Bar</td>
@@ -242,7 +242,8 @@ WARN  [main]: Message 2</pre></div>
 			</tr>
 			<tr>
 				<td align="center">
-					<b>C / class</b>
+					<b>C</b>{<em>length</em>} <br /> 
+					<b>class</b>{<em>length</em>} <br />
 				</td>
 
 				<td>
@@ -251,18 +252,16 @@ WARN  [main]: Message 2</pre></div>
 						the caller issuing the logging request.
 					</p>
 					<p>
-						Just like the previous conversion word, this
+						Just like the <em>logger</em> conversion word, this
 						word can take an interger as it's first option
-						and use logback's abbreviation mechanisme to
-						shorten its output.
+						and use its abbreviation algorithm to
+						shorten the class name.
 					</p>
 					<p>
-						By default the class name is output in fully
-						qualified form.
+						By default the class name is output in full.
 					</p>
 					<p>
-						<b>WARNING</b>
-						Generating the caller class information is slow.
+						Generating the caller class information is not particularly fast.
 						Thus, it's use should be avoided unless
 						execution speed is not an issue.
 					</p>
@@ -271,34 +270,28 @@ WARN  [main]: Message 2</pre></div>
 
 			<tr>
 				<td align="center">
-					<b>d / date</b>
+					<b>d</b>{<em>pattern</em>} <br /> 
+					<b>date</b>{<em>pattern</em>} <br />
 				</td>
 				<td>
 					<p>
 						Used to output the date of the logging event.
-						The date conversion specifier may be followed by
+						The date conversion word may be followed by
 						a set of braces containing a date and time
 						pattern strings used by
-						<code>java.text.SimpleDateFormat</code>
-						.
-						<em>ABSOLUTE</em>
-						,
-						<em>DATE</em>
-						or
-						<em>ISO8601</em>
-						can also be used.
+						<code>java.text.SimpleDateFormat</code>,
+						<em>ABSOLUTE</em>, <em>DATE</em> or
+						<em>ISO8601</em> can also be used.
 					</p>
+					<b>Tableau 2 colonnes, pattern -> result, date fixée.</b>
 					<p>
-						For example,
-						<b>%d{HH:mm:ss,SSS}</b>
-						,
+					For example,
+						<b>%d{HH:mm:ss,SSS}</b>,
 						<b>
 							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
 						</b>
-						or
-						<b>%d{DATE}</b>
-						. If no date format specifier is given then
-						ISO8601 format is assumed.
+						or <b>%d{DATE}</b>. If no date format specifier is given then
+						ISO8601 format is assumed. <b>Reprendre du texte du livre.</b>
 					</p>
 				</td>
 			</tr>
@@ -362,19 +355,11 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 						using <b>%caller{3, CALLER_DISPLAY_EVAL}</b> will display three lines
 						of stacktrace, only if the evaluator called <em>CALLER_DISPLAY_EVAL</em>
 						returns a <b>positive</b> answer. 
-						This behaviour comes from the fact that displaying
-						caller data is very expensive, and one should generally not display it
-						unless the evaluator would return a positive value.
+						This behaviour is justified by the fact that displaying
+						caller data is rather expensive, and one should generally not want to display it.
 				</p>
 				 <p>Evaluators are described
 						further down this document.
-					</p>
-					<p>
-						The location information can be very useful.
-						However, it's generation is
-						<em>extremely</em>
-						slow. It's use should be avoided unless
-						execution speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -484,7 +469,8 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
 			<tr>
 				<td align="center">
-					<b>X / mdc</b>
+					<b>X</b>{<em>key</em>} <br /> 
+					<b>mdc</b>{<em>key</em>} <br />
 				</td>
 
 				<td>
@@ -495,21 +481,17 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 						generated the logging event.
 					</p>
 					<p>
-						The
-						<b>X</b>
-						conversion word can be followed by the key
-						for the map placed between braces, as in
-						<b>%X{clientNumber}</b>
-						where
-						<code>clientNumber</code>
-						is the key. The value in the MDC corresponding
+						If
+						<b>mdc</b>
+						conversion word is followed by a key
+						between braces, as in <b>%mdc{clientNumber}</b>,
+						then the value in the MDC corresponding
 						to the key will be output.
 					</p>
 					<p>
-						If no additional sub-option is specified, then
-						the entire contents of the MDC key value pair
-						set is output using a format key1=val1,
-						key2=val2.
+						If no option is given, then
+						the entire content of the MDC will be output in the format 
+						"key1=val1, key2=val2".
 					</p>
 
 					<p>
@@ -530,13 +512,12 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
 				<td>
 					<p>
-						Used to output the Throwable trace that has been
-						bound to the LoggingEvent, by default this will
-						output the full trace as one would normally find
-						by a call to Throwable.printStackTrace(). 
+						Used to output the stack trace of the exception associated
+						with the logging event, if any. By default the full stack trace 
+						will be output. 
 				 </p>
-				 <p>The
-						throwable conversion word can be followed by an
+				 <p>If
+						<em>throwable</em> conversion word is followed by an
 						option in the form
 						<b>%throwable{short}</b>
 						which will only output the first line of the
