@@ -21,6 +21,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(TrivialcConfiguratorTest.class);
     suite.addTest(ch.qos.logback.core.joran.event.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.spi.PackageTest.suite());
+    suite.addTest(ch.qos.logback.core.joran.replay.PackageTest.suite());
     return suite;
   }
 }

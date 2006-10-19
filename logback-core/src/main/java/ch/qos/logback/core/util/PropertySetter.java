@@ -17,7 +17,6 @@
 // Contributors:  Georg Lundesgaard
 package ch.qos.logback.core.util;
 
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -31,46 +30,46 @@ import java.util.*;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-
-
 /**
- * General purpose Object property setter. Clients repeatedly invokes 
- * {@link #setProperty setProperty(name,value)} in order to invoke setters 
- * on the Object specified in the constructor. This class relies on the
- * JavaBeans {@link Introspector} to analyze the given Object Class using
- * reflection.
+ * General purpose Object property setter. Clients repeatedly invokes
+ * {@link #setProperty setProperty(name,value)} in order to invoke setters on
+ * the Object specified in the constructor. This class relies on the JavaBeans
+ * {@link Introspector} to analyze the given Object Class using reflection.
  * 
- * <p>Usage:
-   <pre>
-     PropertySetter ps = new PropertySetter(anObject);
-     ps.set("name", "Joe");
-     ps.set("age", "32");
-     ps.set("isMale", "true");
-   </pre>
-   
-   * will cause the invocations anObject.setName("Joe"), anObject.setAge(32), 
-   * and setMale(true) if such methods exist with those signatures. 
-   * Otherwise an {@link IntrospectionException} are thrown.
-
-   @author Anders Kristensen
-   @author Ceki Gulcu
+ * <p>
+ * Usage:
+ * 
+ * <pre>
+ * PropertySetter ps = new PropertySetter(anObject);
+ * ps.set(&quot;name&quot;, &quot;Joe&quot;);
+ * ps.set(&quot;age&quot;, &quot;32&quot;);
+ * ps.set(&quot;isMale&quot;, &quot;true&quot;);
+ * </pre>
+ * 
+ * will cause the invocations anObject.setName("Joe"), anObject.setAge(32), and
+ * setMale(true) if such methods exist with those signatures. Otherwise an
+ * {@link IntrospectionException} are thrown.
+ * 
+ * @author Anders Kristensen
+ * @author Ceki Gulcu
  */
 public class PropertySetter extends ContextAwareBase {
   public static final int NOT_FOUND = 0;
   public static final int AS_COMPONENT = 1;
   public static final int AS_PROPERTY = 2;
   public static final int AS_COLLECTION = 3;
-  
+
   protected Object obj;
   protected Class objClass;
   protected PropertyDescriptor[] propertyDescriptors;
   protected MethodDescriptor[] methodDescriptors;
 
   /**
-    Create a new PropertySetter for the specified Object. This is done
-    in preparation for invoking {@link #setProperty} one or more times.
-
-    @param obj  the object for which to set properties
+   * Create a new PropertySetter for the specified Object. This is done in
+   * preparation for invoking {@link #setProperty} one or more times.
+   * 
+   * @param obj
+   *          the object for which to set properties
    */
   public PropertySetter(Object obj) {
     this.obj = obj;
@@ -78,8 +77,8 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   /**
-     Uses JavaBeans {@link Introspector} to computer setters of object to be
-     configured.
+   * Uses JavaBeans {@link Introspector} to computer setters of object to be
+   * configured.
    */
   protected void introspect() {
     try {
@@ -87,15 +86,14 @@ public class PropertySetter extends ContextAwareBase {
       propertyDescriptors = bi.getPropertyDescriptors();
       methodDescriptors = bi.getMethodDescriptors();
     } catch (IntrospectionException ex) {
-      addError(
-        "Failed to introspect " + obj + ": " + ex.getMessage());
+      addError("Failed to introspect " + obj + ": " + ex.getMessage());
       propertyDescriptors = new PropertyDescriptor[0];
       methodDescriptors = new MethodDescriptor[0];
     }
   }
 
   /**
-   * Set the properties for the object that match the <code>prefix</code> 
+   * Set the properties for the object that match the <code>prefix</code>
    * passed as parameter.
    */
   public void setProperties(Properties properties, String prefix) {
@@ -108,13 +106,13 @@ public class PropertySetter extends ContextAwareBase {
       if (key.startsWith(prefix)) {
         // ignore key if it contains dots after the prefix
         if (key.indexOf('.', len + 1) > 0) {
-          //System.err.println("----------Ignoring---["+key
-          //	     +"], prefix=["+prefix+"].");
+          // System.err.println("----------Ignoring---["+key
+          // +"], prefix=["+prefix+"].");
           continue;
         }
 
         String value = OptionHelper.findAndSubst(key, properties);
-        
+
         key = key.substring(len);
 
         if ("layout".equals(key) && obj instanceof Appender) {
@@ -127,19 +125,22 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   /**
-     Set a property on this PropertySetter's Object. If successful, this
-     method will invoke a setter method on the underlying Object. The
-     setter is the one for the specified property name and the value is
-     determined partly from the setter argument type and partly from the
-     value specified in the call to this method.
-
-     <p>If the setter expects a String no conversion is necessary.
-     If it expects an int, then an attempt is made to convert 'value'
-     to an int using new Integer(value). If the setter expects a boolean,
-     the conversion is by new Boolean(value).
-
-     @param name    name of the property
-     @param value   String value of the property
+   * Set a property on this PropertySetter's Object. If successful, this method
+   * will invoke a setter method on the underlying Object. The setter is the one
+   * for the specified property name and the value is determined partly from the
+   * setter argument type and partly from the value specified in the call to
+   * this method.
+   * 
+   * <p>
+   * If the setter expects a String no conversion is necessary. If it expects an
+   * int, then an attempt is made to convert 'value' to an int using new
+   * Integer(value). If the setter expects a boolean, the conversion is by new
+   * Boolean(value).
+   * 
+   * @param name
+   *          name of the property
+   * @param value
+   *          String value of the property
    */
   public void setProperty(String name, String value) {
     if (value == null) {
@@ -150,35 +151,37 @@ public class PropertySetter extends ContextAwareBase {
 
     PropertyDescriptor prop = getPropertyDescriptor(name);
 
-    //LogLog.debug("---------Key: "+name+", type="+prop.getPropertyType());
+    // LogLog.debug("---------Key: "+name+", type="+prop.getPropertyType());
     if (prop == null) {
-      addWarn(
-        "No such property [" + name + "] in " + objClass.getName() + ".");
+      addWarn("No such property [" + name + "] in " + objClass.getName() + ".");
     } else {
       try {
         setProperty(prop, name, value);
       } catch (PropertySetterException ex) {
-        addWarn(
-          "Failed to set property [" + name + "] to value \"" + value + "\". ", ex);
+        addWarn("Failed to set property [" + name + "] to value \"" + value
+            + "\". ", ex);
       }
     }
   }
 
   /**
-      Set the named property given a {@link PropertyDescriptor}.
-
-      @param prop A PropertyDescriptor describing the characteristics
-      of the property to set.
-      @param name The named of the property to set.
-      @param value The value of the property.
+   * Set the named property given a {@link PropertyDescriptor}.
+   * 
+   * @param prop
+   *          A PropertyDescriptor describing the characteristics of the
+   *          property to set.
+   * @param name
+   *          The named of the property to set.
+   * @param value
+   *          The value of the property.
    */
   public void setProperty(PropertyDescriptor prop, String name, String value)
-    throws PropertySetterException {
+      throws PropertySetterException {
     Method setter = prop.getWriteMethod();
 
     if (setter == null) {
-      throw new PropertySetterException(
-        "No setter for property [" + name + "].");
+      throw new PropertySetterException("No setter for property [" + name
+          + "].");
     }
 
     Class[] paramTypes = setter.getParameterTypes();
@@ -192,16 +195,16 @@ public class PropertySetter extends ContextAwareBase {
     try {
       arg = convertArg(value, paramTypes[0]);
     } catch (Throwable t) {
-      throw new PropertySetterException(
-        "Conversion to type [" + paramTypes[0] + "] failed. ", t);
+      throw new PropertySetterException("Conversion to type [" + paramTypes[0]
+          + "] failed. ", t);
     }
 
     if (arg == null) {
-      throw new PropertySetterException(
-        "Conversion to type [" + paramTypes[0] + "] failed.");
+      throw new PropertySetterException("Conversion to type [" + paramTypes[0]
+          + "] failed.");
     }
 
-    //getLogger().debug("Setting property [{}] to [{}].", name, arg);
+    // getLogger().debug("Setting property [{}] to [{}].", name, arg);
 
     try {
       setter.invoke(obj, new Object[] { arg });
@@ -216,33 +219,32 @@ public class PropertySetter extends ContextAwareBase {
     Method method = getMethod("add" + cName);
 
     if (method != null) {
-      //getLogger().debug(
-      //  "Found add {} method in class {}", cName, objClass.getName());
+      // getLogger().debug(
+      // "Found add {} method in class {}", cName, objClass.getName());
 
       return AS_COLLECTION;
     }
 
     String dName = Introspector.decapitalize(name);
-    
+
     PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
 
     if (propertyDescriptor != null) {
       Method setterMethod = propertyDescriptor.getWriteMethod();
 
-      
       if (setterMethod != null) {
-        //getLogger().debug(
-        //  "Found setter method for property [{}] in class {}", name,
-        //  objClass.getName());
+        // getLogger().debug(
+        // "Found setter method for property [{}] in class {}", name,
+        // objClass.getName());
         Class[] classArray = setterMethod.getParameterTypes();
-        if(classArray.length != 1) {
+        if (classArray.length != 1) {
           return NOT_FOUND;
         } else {
           Class clazz = classArray[0];
           Package p = clazz.getPackage();
-          if(clazz.isPrimitive()) {
+          if (clazz.isPrimitive()) {
             return AS_PROPERTY;
-          } else if("java.lang".equals(p.getName())) {
+          } else if ("java.lang".equals(p.getName())) {
             return AS_PROPERTY;
           } else {
             return AS_COMPONENT;
@@ -255,8 +257,6 @@ public class PropertySetter extends ContextAwareBase {
     return NOT_FOUND;
   }
 
-  
-  
   public Class getObjClass() {
     return objClass;
   }
@@ -277,28 +277,24 @@ public class PropertySetter extends ContextAwareBase {
           try {
             method.invoke(this.obj, new Object[] { childComponent });
           } catch (Exception e) {
-            addError(
-              "Could not invoke method " + method.getName() + " in class "
-              + obj.getClass().getName() + " with parameter of type "
-              + ccc.getName(), e);
+            addError("Could not invoke method " + method.getName()
+                + " in class " + obj.getClass().getName()
+                + " with parameter of type " + ccc.getName(), e);
           }
         } else {
-          addError(
-            "A \"" + ccc.getName() + "\" object is not assignable to a \""
-            + params[0].getName() + "\" variable.");
-          addError(
-            "The class \"" + params[0].getName() + "\" was loaded by ");
-          addError(
-            "[" + params[0].getClassLoader() + "] whereas object of type ");
-          addError(
-            "\"" + ccc.getName() + "\" was loaded by [" + ccc.getClassLoader()
-            + "].");
+          addError("A \"" + ccc.getName()
+              + "\" object is not assignable to a \"" + params[0].getName()
+              + "\" variable.");
+          addError("The class \"" + params[0].getName() + "\" was loaded by ");
+          addError("[" + params[0].getClassLoader()
+              + "] whereas object of type ");
+          addError("\"" + ccc.getName() + "\" was loaded by ["
+              + ccc.getClassLoader() + "].");
         }
       }
     } else {
-      addError(
-        "Could not find method [" + "add" + name + "] in class ["
-        + objClass.getName() + "].");
+      addError("Could not find method [" + "add" + name + "] in class ["
+          + objClass.getName() + "].");
     }
   }
 
@@ -306,9 +302,8 @@ public class PropertySetter extends ContextAwareBase {
     PropertyDescriptor propertyDescriptor = getPropertyDescriptor(name);
 
     if (propertyDescriptor == null) {
-      addWarn(
-        "Could not find PropertyDescriptor for [" + name + "] in "
-        + objClass.getName());
+      addWarn("Could not find PropertyDescriptor for [" + name + "] in "
+          + objClass.getName());
 
       return;
     }
@@ -316,9 +311,8 @@ public class PropertySetter extends ContextAwareBase {
     Method setter = propertyDescriptor.getWriteMethod();
 
     if (setter == null) {
-      addWarn(
-        "Not setter method for property [" + name + "] in "
-        + obj.getClass().getName());
+      addWarn("Not setter method for property [" + name + "] in "
+          + obj.getClass().getName());
 
       return;
     }
@@ -326,21 +320,20 @@ public class PropertySetter extends ContextAwareBase {
     Class[] paramTypes = setter.getParameterTypes();
 
     if (paramTypes.length != 1) {
-      addError(
-        "Wrong number of parameters in setter method for property [" + name
-        + "] in " + obj.getClass().getName());
+      addError("Wrong number of parameters in setter method for property ["
+          + name + "] in " + obj.getClass().getName());
 
       return;
     }
 
     try {
       setter.invoke(obj, new Object[] { childComponent });
-      //getLogger().debug(
-      //  "Set child component of type [{}] for [{}].", objClass.getName(),
-      //  childComponent.getClass().getName());
+      // getLogger().debug(
+      // "Set child component of type [{}] for [{}].", objClass.getName(),
+      // childComponent.getClass().getName());
     } catch (Exception e) {
-      addError(
-        "Could not set component " + obj + " for parent component " + obj, e);
+      addError("Could not set component " + obj + " for parent component "
+          + obj, e);
     }
   }
 
@@ -349,9 +342,8 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   /**
-     Convert <code>val</code> a String parameter to an object of a
-     given type.
-  */
+   * Convert <code>val</code> a String parameter to an object of a given type.
+   */
   protected Object convertArg(String val, Class type) {
     if (val == null) {
       return null;
@@ -365,6 +357,10 @@ public class PropertySetter extends ContextAwareBase {
       return new Integer(v);
     } else if (Long.TYPE.isAssignableFrom(type)) {
       return new Long(v);
+    } else if (Float.TYPE.isAssignableFrom(type)) {
+      return new Float(v);
+    } else if (Double.TYPE.isAssignableFrom(type)) {
+      return new Double(v);
     } else if (Boolean.TYPE.isAssignableFrom(type)) {
       if ("true".equalsIgnoreCase(v)) {
         return Boolean.TRUE;

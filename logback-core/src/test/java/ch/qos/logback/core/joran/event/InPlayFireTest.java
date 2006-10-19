@@ -42,6 +42,27 @@ public class InPlayFireTest extends TestCase {
     assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
     assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
     assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
-    
   }
+
+  public void testReplay() throws JoranException {
+    ListenAction listenAction = new ListenAction();
+    
+    rulesMap.put(new Pattern("fire"), listenAction);
+    TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+
+    gc.setContext(context);
+    gc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
+    
+    for(SaxEvent se: listenAction.getSeList()) {
+      System.out.println(se);
+    }
+    assertEquals(5, listenAction.getSeList().size());
+    assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
+    assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
+    assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
+    assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
+  }
+  
+  
+  
 }

@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.core.joran.event;
+package ch.qos.logback.core.joran.replay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,12 @@ import java.util.List;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.event.InPlayListener;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
 
-public class FruitConfigAction extends Action implements InPlayListener {
+public class FruitFactoryAction extends Action implements InPlayListener {
 
   List<SaxEvent> seList = new ArrayList<SaxEvent>();
 
@@ -32,7 +34,14 @@ public class FruitConfigAction extends Action implements InPlayListener {
   @Override
   public void end(ExecutionContext ec, String name) throws ActionException {
     ec.removeInPlayListener(this);
-
+    
+    Object o = ec.peekObject();
+    if(o instanceof FruitShell) {
+      FruitShell fs = (FruitShell) o;
+      FruitFactory fruitFactory = new FruitFactory();
+      fruitFactory.eventList = new ArrayList<SaxEvent>(seList);
+      fs.setFruitFactory(fruitFactory);
+    }
   }
 
   public void inPlay(SaxEvent event) {

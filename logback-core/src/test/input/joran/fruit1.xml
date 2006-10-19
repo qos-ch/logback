@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<group>
+  <fruitShell name="fs0">
+    <fruit class="ch.qos.logback.core.joran.replay.Fruit">
+      <name>blue</name>
+    </fruit> 
+  </fruitShell>
+</group>

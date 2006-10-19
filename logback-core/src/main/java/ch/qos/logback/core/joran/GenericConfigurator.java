@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-  Interpreter interpreter;
+  protected Interpreter interpreter;
 
   final public void doConfigure(URL url) throws JoranException {
     try {
@@ -98,7 +98,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     player.play(recorder.saxEventList);
   }
 
-  final public void doConfigure(final List<SaxEvent> eventList)
+  public void doConfigure(final List<SaxEvent> eventList)
       throws JoranException {
     buildInterpreter();
     EventPlayer player = new EventPlayer(interpreter);

@@ -13,7 +13,6 @@ package ch.qos.logback.core.joran.spi;
 import ch.qos.logback.core.joran.spi.Pattern;
 import junit.framework.TestCase;
 
- 
 /**
  * Test pattern manipulation code.
  * 
@@ -22,6 +21,7 @@ import junit.framework.TestCase;
 public class PatternTest extends TestCase {
   /**
    * Constructor for PatternTestCase.
+   * 
    * @param name
    */
   public PatternTest(String name) {
@@ -85,6 +85,67 @@ public class PatternTest extends TestCase {
     assertEquals("a", p.get(0));
     assertEquals("b", p.get(1));
   }
+
   
+  // test tail matching
+  public void testTailMatch() {
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("*");
+      assertEquals(0, p.getTailMatchLength(rulePattern));
+    }
+
+    {
+      Pattern p = new Pattern("/a");
+      Pattern rulePattern = new Pattern("*/a");
+      assertEquals(1, p.getTailMatchLength(rulePattern));
+    }
+    
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("*/b");
+      assertEquals(1, p.getTailMatchLength(rulePattern));
+    }
+    
+    
+    {
+      Pattern p = new Pattern("/a/b/c");
+      Pattern rulePattern = new Pattern("*/b/c");
+      assertEquals(2, p.getTailMatchLength(rulePattern));
+    }
+  }
+  
+  // test prefix matching
+  public void testPrefixMatch() {
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/x/*");
+      assertEquals(0, p.getPrefixMatchLength(rulePattern));
+    }
+
+    {
+      Pattern p = new Pattern("/a");
+      Pattern rulePattern = new Pattern("/x/*");
+      assertEquals(0, p.getPrefixMatchLength(rulePattern));
+    }
+
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/a/*");
+      assertEquals(2, p.getPrefixMatchLength(rulePattern));
+    }
+    
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/a/b/*");
+      assertEquals(2, p.getPrefixMatchLength(rulePattern));
+    }
+    
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/*");
+      assertEquals(1, p.getPrefixMatchLength(rulePattern));
+    }
+  }
 
 }

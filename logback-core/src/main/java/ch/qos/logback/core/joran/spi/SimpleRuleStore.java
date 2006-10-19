@@ -12,7 +12,6 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import ch.qos.logback.core.Context;
@@ -67,38 +66,77 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
       }
   }
 
-  public List matchActions(Pattern pattern) {
+  // exact match has highest priority
+  // if no exact match, check for tail match, i.e matches of type */x/y
+  // tail match for */x/y has higher priority than match for */x
+  // if no tail match, check for prefix match, i.e. matches for x/*
+  // match for x/y/* has higher priority than matches for x/*
+  
+  public List matchActions(Pattern currentPattern) {
     //System.out.println("pattern to search for:" + pattern + ", hashcode: " + pattern.hashCode());
     //System.out.println("rules:" + rules);
-    ArrayList a4p = (ArrayList) rules.get(pattern);
+    List actionList;
 
-    if (a4p != null) {
-      return a4p;
+    if ((actionList = rules.get(currentPattern)) != null) {
+      return actionList;
+    } else if ( (actionList = tailMatch(currentPattern)) != null){
+        return actionList;
+    } else if ((actionList = prefixMatch(currentPattern)) != null) {
+      return actionList;
     } else {
-      Iterator patternsIterator = rules.keySet().iterator();
-      int max = 0;
-      Pattern longestMatch = null;
-
-      while (patternsIterator.hasNext()) {
-        Pattern p = (Pattern) patternsIterator.next();
-
-        if ((p.size() > 1) && p.get(0).equals("*")) {
-          int r = pattern.tailMatch(p);
-
-          //System.out.println("tailMatch " +r);
-          if (r > max) {
-            //System.out.println("New longest match "+p);
-            max = r;
-            longestMatch = p;
-          }
-        }
-      }
-
-      if (longestMatch != null) {
-        return (ArrayList) rules.get(longestMatch);
-      } else {
-        return null;
-      }
+      return null;
     }
   }
+  
+  List tailMatch(Pattern currentPattern) {
+    int max = 0;
+    Pattern longestMatchingPattern = null;
+
+    for (Pattern p: rules.keySet()) {
+
+      if ((p.size() > 1) && p.get(0).equals("*")) {
+        int r = currentPattern.getTailMatchLength(p);
+
+        //System.out.println("tailMatch " +r);
+        if (r > max) {
+          //System.out.println("New longest tailMatch "+p);
+          max = r;
+          longestMatchingPattern = p;
+        }
+      }
+    }
+
+    if (longestMatchingPattern != null) {
+      return rules.get(longestMatchingPattern);
+    } else {
+      return null;
+    }
+  }
+  
+  List prefixMatch(Pattern currentPattern) {
+    int max = 0;
+    Pattern longestMatchingPattern = null;
+
+    for (Pattern p: rules.keySet()) {
+      String last = p.peekLast();
+      if("*".equals(last)) {
+        int r = currentPattern.getPrefixMatchLength(p);
+
+        //System.out.println("prefixMatch " +r);
+        if (r > max) {
+          //System.out.println("New longest prefixMatch "+p);
+          max = r;
+          longestMatchingPattern = p;
+        }
+      }
+    }
+
+    if (longestMatchingPattern != null) {
+      //System.out.println("prefixMatch will return" +rules.get(longestMatchingPattern));
+      return rules.get(longestMatchingPattern);
+    } else {
+      return null;
+    }
+  }
+    
 }

@@ -98,7 +98,7 @@ public class Pattern {
    * with the pattern p passed as parameter. By "tail" components we mean the
    * components at the end of the pattern.
    */
-  public int tailMatch(Pattern p) {
+  public int getTailMatchLength(Pattern p) {
     if (p == null) {
       return 0;
     }
@@ -129,6 +129,43 @@ public class Pattern {
     return match;
   }
 
+  /**
+   * Returns the number of "prefix" components that this pattern has in common
+   * with the pattern p passed as parameter. By "prefix" components we mean the
+   * components at the beginning of the pattern.
+   */
+  public int getPrefixMatchLength(Pattern p) {
+    if (p == null) {
+      return 0;
+    }
+
+    int lSize = this.components.size();
+    int rSize = p.components.size();
+
+    // no match possible for empty sets
+    if ((lSize == 0) || (rSize == 0)) {
+      return 0;
+    }
+
+    int minLen = (lSize <= rSize) ? lSize : rSize;
+    int match = 0;
+
+    for (int i = 0; i < minLen; i++) {
+      String l = (String) this.components.get(i);
+      String r = (String) p.components.get(i);
+
+      if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
+        match++;
+      } else {
+        break;
+      }
+    }
+
+    return match;
+  }
+
+  
+  
   @Override
   public boolean equals(Object o) {
     //System.out.println("in equals:" +this+ " vs. " + o);

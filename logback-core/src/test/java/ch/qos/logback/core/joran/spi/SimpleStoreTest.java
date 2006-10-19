@@ -10,22 +10,14 @@
 
 package ch.qos.logback.core.joran.spi;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
-import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
-import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.joran.spi.SimpleRuleStore;
-
-
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * 
@@ -58,7 +50,7 @@ public class SimpleStoreTest extends TestCase {
     assertEquals(1, r.size());
 
     if (!(r.get(0) instanceof XAction)) {
-      fail("Wring type");
+      fail("Wrong type");
     }
 
     srs = new SimpleRuleStore(new ContextBase());
@@ -91,7 +83,7 @@ public class SimpleStoreTest extends TestCase {
     assertEquals(1, r.size());
 
     if (!(r.get(0) instanceof XAction)) {
-      fail("Wring type");
+      fail("Wrong type");
     }
   }
 
@@ -107,7 +99,7 @@ public class SimpleStoreTest extends TestCase {
     assertEquals(1, r.size());
 
     if (!(r.get(0) instanceof YAction)) {
-      fail("Wring type");
+      fail("Wrong type");
     }
   }
 
@@ -124,19 +116,25 @@ public class SimpleStoreTest extends TestCase {
     assertEquals(1, r.size());
 
     if (!(r.get(0) instanceof ZAction)) {
-      fail("Wring type");
+      fail("Wrong type");
     }
   }
+  
+  public void testSuffix() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    srs.addRule(new Pattern("a"), new XAction());
+    srs.addRule(new Pattern("a/*"), new YAction());
 
-  Document getW3Document(String file) throws Exception {
-    DocumentBuilderFactory dbf = null;
-    dbf = DocumentBuilderFactory.newInstance();
+    List r = srs.matchActions(new Pattern("a/b"));
+    assertNotNull(r);
 
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+    assertEquals(1, r.size());
 
-    // inputSource.setSystemId("dummy://log4j.dtd");
-    return docBuilder.parse(file);
+    if (!(r.get(0) instanceof YAction)) {
+      fail("Wrong type");
+    }
   }
+  
 
   class XAction extends Action {
     public void begin(ExecutionContext ec, String name, Attributes attributes) {
