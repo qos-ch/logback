@@ -57,8 +57,7 @@
 			the logging event and returns a String. A synopsis of the
 			Layout interface is shown below.
 		</p>
-		<div class="source">public interface Layout extends ContextAware, LifeCycle {
-
+		<div class="source"><pre>public interface Layout extends ContextAware, LifeCycle {
   String doLayout(Object event);
 
   String getHeader();
@@ -66,7 +65,7 @@
   String getFooter();
 
   String getContentType();
-}</div>
+}</pre></div>
 		<p>
 			This interface is really simple and yet is sufficent for
 			many formatting needs.
@@ -99,11 +98,11 @@
 			looks like:
 		</p>
 
-		<div class="source">public interface ClassicLayout extends Layout {
+		<div class="source"><pre>public interface ClassicLayout extends Layout {
 
   String doLayout(LoggingEvent event);
 
-}</div>
+}</pre></div>
 
 		<h3>PatternLayout</h3>
 
@@ -136,7 +135,7 @@
 			Example 5.1: Sample usage of a PatternLayout
 			(examples/chapter5/PatternSample.java)
 		</em>
-		<div class="source">public class PatternSample {
+		<div class="source"><pre>public class PatternSample {
 
   static public void main(String[] args) throws Exception {
     Logger rootLogger = (Logger)
@@ -155,15 +154,15 @@
     rootLogger.debug("Message 1"); 
     rootLogger.warn("Message 2");
   } 
-}</div>
+}</pre></div>
 
 		<p>
 			The conversion pattern is set to be <em>%-5level [%thread]:
 			%message%n</em>. Running PatternSample will yield the following
 			output on the console.
 		</p>
-		<div class="source">DEBUG [main]: Message 1 
-WARN  [main]: Message 2</div>
+		<div class="source"><pre>DEBUG [main]: Message 1 
+WARN  [main]: Message 2</pre></div>
 		<p>
 			Note that in the conversion pattern <em>%-5level [%thread]:
 			%message%n</em> there is no explicit separator between literal
@@ -348,14 +347,14 @@ WARN  [main]: Message 2</div>
 					</p>
 					<p>For example, <b>%caller{2}</b> would display the following excerpt:</p>
 					
-<div class="source">0    [main] DEBUG - logging statement Caller+0	 \
+<div class="source"><pre>0    [main] DEBUG - logging statement Caller+0	 \
 at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
-Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</div>
+Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre></div>
 					<p>And <b>%caller{3}</b> would display this other excerpt:</p>
-<div class="source">16   [main] DEBUG - logging statement Caller+0	 \
+<div class="source"><pre>16   [main] DEBUG - logging statement Caller+0	 \
 at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
 Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
-Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
+Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					
 					<p>
 						This conversion word can also use evaluators to test logging events
@@ -729,7 +728,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			Example 5.2: Sample usage of EventEvaluators
 			(examples/chapter5/callerEvaluatorConfig.xml)
 		</em>
-		<div class="source">&lt;configuration>
+		<div class="source"><pre>&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
     &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
       message.contains("stacktrace")&lt;/Expression>
@@ -746,7 +745,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     &lt;level value="debug" /> 
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
-&lt;/configuration></div>
+&lt;/configuration></pre></div>
 		<p>Please note that the &amp; value cannot be written like one would do in a java
 		class, because of XML format encoding.</p>
 		<p>Let's test this configuration with the following code.</p>
@@ -754,7 +753,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			Example 5.2: Sample usage of EventEvaluators
 			(examples/chapter5/EventEvaluatorExample.java)
 		</em>
-		<div class="source">public class CallerEvaluatorExample {
+		<div class="source"><pre>public class CallerEvaluatorExample {
 
   public static void main(String[] args)  {
     Logger logger = (Logger) LoggerFactory
@@ -777,7 +776,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
       }
     }</b>
   }
-}</div>
+}</pre></div>
 		<p>
 			This excerpt does nothing very fancy. Five logging requests
 			are issued, the third one being different from the others.
@@ -793,14 +792,13 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			<code>EventEvaluatorExample</code>
 			class.
 		</p>
-		<div class="source">0    [main] DEBUG - logging statement0 
+		<div class="source"><pre>0    [main] DEBUG - logging statement0 
 0    [main] DEBUG - logging statement1 
 0    [main] DEBUG - logging statement2 
 0    [main] DEBUG - stacktrace logging statement3 Caller+0	 \
   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
 
-0    [main] DEBUG - logging statement4 
-</div>
+0    [main] DEBUG - logging statement4</pre></div>
 
 		<p>
 			Of course, one can change the expression to match one's
@@ -820,7 +818,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 		with an exception. However, we do not want request number 3 to display
 		its exception in the logging output.</p>
 
-<div class="source">public class ExceptionEvaluatorExample {
+<div class="source"><pre>public class ExceptionEvaluatorExample {
 
   public static void main(String[] args) {
     Logger logger = (Logger) LoggerFactory
@@ -843,14 +841,14 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
       }
     }</b>
   }
-}</div>
+}</pre></div>
 		
 		<p>The following configuration will allow that.</p>
 		<em>
 			Example 5.3: Sample usage of EventEvaluators
 			(examples/chapter5/exceptionEvaluatorConfig.xml)
 		</em>
-		<div class="source">&lt;configuration>
+		<div class="source"><pre>&lt;configuration>
 
   <b>&lt;evaluator name="DISPLAY_EX_EVAL">
     &lt;Expression>throwable != null &amp;&amp; throwable instanceof  \
@@ -870,7 +868,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     &lt;level value="debug" />
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></div>
+&lt;/configuration></pre></div>
 
 		<p>
 			With this configuration, each time an instance of the
@@ -924,13 +922,13 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			output, an internal CSS style is used. In that case, the following
 			xml element can be nested into the <code>&lt;layout&gt;</code> element.
 		</p>
-<div class="source">&lt;layout>
+<div class="source"><pre>&lt;layout>
   ...
   &lt;cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
     &lt;param name="url" value="path_to_StyleFile.css" />
   &lt;/cssBuilder>	
   ...
-&lt;/layout></div>
+&lt;/layout></pre></div>
 		
 		<p>
 			The HTMLLayout is often used in conjunction with
@@ -941,7 +939,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			When one wants to use the HTMLLayout with a SMTPAppender,
 			the following configuration is typically used.
 		</p>
-		<div class="source">&lt;configuration&gt;
+		<div class="source"><pre>&lt;configuration&gt;
   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
       &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
@@ -957,7 +955,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     &lt;level value="debug" /&gt;
     &lt;appender-ref ref="SMTP" /&gt;
   &lt;/root&gt;
-&lt;/configuration&gt;</div>
+&lt;/configuration&gt;</pre></div>
 		<p>
 			In this configuration file, the
 			<em>throwableRenderer</em>
@@ -971,11 +969,11 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 		for the classic module, the <code>AccessLayout</code> exists for the access module. It's
 		implementation is very straight-forward.</p>
 		
-		<div class="source">public interface AccessLayout extends Layout {
+		<div class="source"><pre>public interface AccessLayout extends Layout {
 
   String doLayout(AccessEvent event);
 
-}</div>
+}</pre></div>
 
 		<p>Many access layouts are actually adaptations of classic layouts. Logback
 		modules classic and access address pretty different needs, but offer the same power
