@@ -1,9 +1,12 @@
 /*
-	Logback CSS Theme for Maven 2, from LB-Skin
+ * Logback CSS Theme for Maven 2, from LB-Skin
+ *
 */
 body {
 	margin: 0px;
 	padding: 0px 0px 10px 0px;
+	line-height: 1.3em;
+	font-size: small;
 }
 
 img {
@@ -111,10 +114,10 @@ h5 {
 	font-size: normal;
 }
 
-p {
+/*p {
 	line-height: 1.3em;
 	font-size: small;
-}
+}*/
 
 #bannerLeft,#bannerRight {
 	font-size: xx-large;
@@ -248,9 +251,7 @@ table.bodyTable tr.b {
   padding-bottom: 0.5ex;
   padding-top: 0.5ex;
   padding-left: 1ex;
-  white-space: pre;
-  width: 55em;
-
+  /*white-space: pre;*/
 }
 
 .source pre {
@@ -358,5 +359,5 @@ dt {
 }
 .greenBold {
 	color: green;	
-    font-weight: bold;	
+  font-weight: bold;	
 }
