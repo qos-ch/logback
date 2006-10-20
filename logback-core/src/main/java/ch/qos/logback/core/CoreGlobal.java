@@ -15,7 +15,15 @@ public class CoreGlobal {
    * {@link Context} object store.
    */
   public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
-  public static  final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+  
+  public static final String ABSOLUTE_FORMAT = "ABSOLUTE";
+  public static final String ABSOLUTE_PATTERN = "HH:mm:ss,SSS";
+
+  public static final String DATE_AND_TIME_FORMAT = "DATE";
+  public static final String DATE_AND_TIME_PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
+  
+  public static final String ISO8601_FORMAT = "ISO8601";
+  public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
  
   /**
    * Time format used in Common Log Format

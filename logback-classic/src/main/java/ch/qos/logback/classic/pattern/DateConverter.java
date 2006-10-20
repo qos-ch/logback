@@ -19,7 +19,7 @@ import ch.qos.logback.core.CoreGlobal;
 
 
 public class DateConverter extends ClassicConverter {
-
+  
   long lastTimestamp = -1;
   String timesmapStr = null;
   SimpleDateFormat simpleFormat = null;
@@ -31,6 +31,13 @@ public class DateConverter extends ClassicConverter {
       datePattern = CoreGlobal.ISO8601_PATTERN;
     }
     
+    if (datePattern.equals(CoreGlobal.ISO8601_FORMAT)) {
+      datePattern = CoreGlobal.ISO8601_PATTERN;
+    } else if (datePattern.equals(CoreGlobal.DATE_AND_TIME_FORMAT)) {
+      datePattern = CoreGlobal.DATE_AND_TIME_PATTERN;
+    } else if (datePattern.equals(CoreGlobal.ABSOLUTE_FORMAT)) {
+      datePattern = CoreGlobal.ABSOLUTE_PATTERN;
+    }
     
     try {
       simpleFormat = new SimpleDateFormat(datePattern);

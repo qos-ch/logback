@@ -32,6 +32,13 @@ public class DateConverter extends AccessConverter {
       datePattern = CoreGlobal.CLF_DATE_PATTERN;
     }
     
+    if (datePattern.equals(CoreGlobal.ISO8601_FORMAT)) {
+      datePattern = CoreGlobal.ISO8601_PATTERN;
+    } else if (datePattern.equals(CoreGlobal.DATE_AND_TIME_FORMAT)) {
+      datePattern = CoreGlobal.DATE_AND_TIME_PATTERN;
+    } else if (datePattern.equals(CoreGlobal.ABSOLUTE_FORMAT)) {
+      datePattern = CoreGlobal.ABSOLUTE_PATTERN;
+    }
     
     try {
       simpleFormat = new SimpleDateFormat(datePattern);
