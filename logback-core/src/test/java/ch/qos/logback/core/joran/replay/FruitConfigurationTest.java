@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
-import ch.qos.logback.core.joran.NOPAction;
+import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;

@@ -12,7 +12,7 @@ package ch.qos.logback.core.joran.replay;
 import java.util.List;
 
 import ch.qos.logback.core.joran.GenericConfigurator;
-import ch.qos.logback.core.joran.NOPAction;
+import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.NestedComponentIA;
 import ch.qos.logback.core.joran.action.NestedSimplePropertyIA;
 import ch.qos.logback.core.joran.event.SaxEvent;
