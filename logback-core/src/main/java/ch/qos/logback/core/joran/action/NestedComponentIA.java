@@ -107,9 +107,8 @@ public class NestedComponentIA extends ImplicitAction {
       ec.pushObject(actionData.nestedComponent);
     } catch (Exception oops) {
       actionData.inError = true;
-
-      String msg = "Could not create component <" + localName + ">.";
-      addError(msg);
+      String msg = "Could not create component <" + localName + "> of type ["+className+"]";
+      addError(msg, oops);
     }
   }
 
