@@ -274,25 +274,40 @@ WARN  [main]: Message 2</pre></div>
 					<b>date</b>{<em>pattern</em>} <br />
 				</td>
 				<td>
-					<p>
-						Used to output the date of the logging event.
-						The date conversion word may be followed by
-						a set of braces containing a date and time
-						pattern strings used by
-						<code>java.text.SimpleDateFormat</code>,
-						<em>ABSOLUTE</em>, <em>DATE</em> or
-						<em>ISO8601</em> can also be used.
-					</p>
-					<b>Tableau 2 colonnes, pattern -> result, date fixée.</b>
-					<p>
-					For example,
-						<b>%d{HH:mm:ss,SSS}</b>,
-						<b>
-							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
-						</b>
-						or <b>%d{DATE}</b>. If no date format specifier is given then
-						ISO8601 format is assumed. <b>Reprendre du texte du livre.</b>
-					</p>
+					<p>Used to output the date of the logging event.
+					The date conversion word may be followed by an option
+					enclosed between braces.</p>
+					<p>The option admits the same syntax as the time pattern
+					string of the <code>java.text.SimpleDateFormat</code>.</p>
+					<p>A shortcut to the ISO8601 format is available by
+					specifying <em>ISO8601</em> in the braces. If  no option is set, 
+					the converter uses <em>ISO8601</em> as a default value.</p>
+					<p>Here are some sample option values. They assume
+					that the actual date is Friday 20th of October, 2006 and that
+					the reader finished her meal a short while ago.</p>
+					
+					<table BORDER="1" CELLPADDING="8">
+						<tr>
+							<th>Conversion Pattern</th>
+							<th>Result</th>
+						</tr>
+						<tr>
+							<td>%date</td>
+							<td>2006-10-20 14:46:49,812</td>
+						</tr>
+						<tr>
+							<td>%date{ISO8601}</td>
+							<td>2006-10-20 14:46:49,812</td>
+						</tr>			
+						<tr>
+							<td>%date{HH:mm:ss.SSS}</td>
+							<td>14:46:49.812</td>
+						</tr>
+						<tr>
+							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
+							<td>20 oct. 2006;14:46:49.812	</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 
@@ -307,10 +322,9 @@ WARN  [main]: Message 2</pre></div>
 						request was issued.
 					</p>
 					<p>
-						<b>WARNING</b>
-						Generating caller file information is extremely
-						slow. Its use should be avoided unless execution
-						speed is not an issue.
+						Generating the file information is not particularly fast.
+						Thus, it's use should be avoided unless
+						execution speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -375,10 +389,9 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 						logging request was issued.
 					</p>
 					<p>
-						<b>WARNING</b>
-						Generating caller location information is
-						extremely slow. It's use should be avoided
-						unless execution speed is not an issue.
+						Generating the line number information is not particularly fast.
+						Thus, it's use should be avoided unless
+						execution speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -405,10 +418,9 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 						request was issued.
 					</p>
 					<p>
-						<b>WARNING</b>
-						Generating caller location information is
-						extremely slow. It's use should be avoided
-						unless execution speed is not an issue.
+						Generating the method name is not particularly fast.
+						Thus, it's use should be avoided unless
+						execution speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -507,7 +519,8 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			</tr>
 			<tr>
 				<td align="center">
-					<b>ex / throwable</b>
+					<b>ex</b>{<em>length</em>} <br /> 
+					<b>throwable</b>{<em>length</em>} <br />
 				</td>
 
 				<td>
@@ -516,20 +529,55 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 						with the logging event, if any. By default the full stack trace 
 						will be output. 
 				 </p>
-				 <p>If
-						<em>throwable</em> conversion word is followed by an
-						option in the form
-						<b>%throwable{short}</b>
-						which will only output the first line of the
-						ThrowableInformation.
-					</p>
+				 <p>The <em>throwable</em> conversion word can followed by one of
+						the following options:$
+				 </p>
+				 <ul>
+				   <p><em>short</em>: prints the first line of the stack trace</p>
+				   <p><em>full</em>: prints the full stack trace</p>
+				   <p>Any integer: prints the given number of lines of the stack trace</p>
+				 </ul>
+				 
+				 <p>Here are some examples:</p>
+				 
+				 <table BORDER="1" CELLPADDING="8">
+						<tr>
+							<th>Conversion Pattern</th>
+							<th>Result</th>
+						</tr>
+						<tr>
+							<td>%ex</td>
+							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
+  at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
+						</tr>
+						<tr>
+							<td>%ex{short}</td>
+							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)</pre></td>
+						</tr>
+						<tr>
+							<td>%ex{full}</td>
+							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
+  at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
+						</tr>
+						<tr>
+							<td>%ex{2}</td>
+							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)</pre></td>
+						</tr>
+				 </table>
 					
 					<p>
 						This conversion word can also use evaluators to test logging events
 						against a given criteria before creating the output. For example, 
 						using <b>%ex{full, EX_DISPLAY_EVAL}</b> will display the full 
 						stacktrace of the exception, only if the evaluator called <em>EX_DISPLAY_EVAL</em>
-						returns a <b>negative</b> answer. This behaviour comes from the fact that
+						returns a <b>negative</b> answer. This behaviour is justified by the fact that
 						throwable data is generally displayed unless the evaluator would 
 						return a positive value. Evaluators are described
 						further down this document. 
@@ -579,13 +627,19 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			modifier which is designated by a period followed by a
 			decimal constant. If the data item is longer than the
 			maximum field, then the extra characters are removed from
-			the
-			<em>beginning</em>
-			of the data item and not from the end. For example, it the
+			the <em>beginning</em>
+			of the data item. For example, if the
 			maximum field width is eight and the data item is ten
 			characters long, then the first two characters of the data
 			item are dropped. This behavior deviates from the printf
 			function in C where truncation is done from the end.
+		</p>
+		<p>
+			Truncation from the end is possible by appending a minus
+			character right after the period. In that case, if the
+			maximum field width is eight and the data item is ten
+			characters long, then the last two characters of the data
+			item are dropped.
 		</p>
 		<p>
 			Below are various format modifier examples for the logger
@@ -600,7 +654,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			<th>Comment</th>
 
 			<tr>
-				<td align="center">%20l</td>
+				<td align="center">%20logger</td>
 				<td align="center">false</td>
 				<td align="center">20</td>
 				<td align="center">none</td>
@@ -610,7 +664,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%-20l</td>
+				<td align="center">%-20logger</td>
 				<td align="center">true</td>
 				<td align="center">20</td>
 				<td align="center">none</td>
@@ -620,7 +674,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%.30l</td>
+				<td align="center">%.30logger</td>
 				<td align="center">NA</td>
 				<td align="center">none</td>
 				<td align="center">30</td>
@@ -630,7 +684,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%20.30l</td>
+				<td align="center">%20.30logger</td>
 				<td align="center">false</td>
 				<td align="center">20</td>
 				<td align="center">30</td>
@@ -642,7 +696,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 			<tr>
-				<td align="center">%-20.30l</td>
+				<td align="center">%-20.30logger</td>
 				<td align="center">true</td>
 				<td align="center">20</td>
 				<td align="center">30</td>
@@ -653,8 +707,46 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					beginning.
 				</td>
 			</tr>
+			<tr>
+				<td align="center">%.-30logger</td>
+				<td align="center">NA</td>
+				<td align="center">none</td>
+				<td align="center">30</td>
+				<td>
+					Truncate from the end if the logger name is
+					longer than 30 characters.
+				</td>
+			</tr>
 		</table>
+				
+		<p>Here are some examples of the format modifier truncation:</p>
 
+
+		<table BORDER="1" CELLPADDING="8">
+			<th>Format modifier</th>
+			<th>Logger name</th>
+			<th>Result</th>
+			<tr>
+				<td align="center">[%-20.20logger]</td>
+				<td align="center">main.Name</td>
+				<td align="center"><pre>[main.Name           ]</pre></td>
+			</tr>
+			<tr>
+				<td align="center">[%20.-20logger]</td>
+				<td align="center">main.Name</td>
+				<td align="center"><pre>[           main.Name]</pre></td>
+			</tr>
+		  <tr>
+				<td align="center">[%-10.10logger]</td>
+				<td align="center">main.foo.foo.bar.Name</td>
+				<td align="center"><pre>[o.bar.Name]</pre></td>
+			</tr>
+			<tr>
+				<td align="center">[%10.-10logger]</td>
+				<td align="center">main.foo.foo.bar.Name</td>
+				<td align="center"><pre>[main.foo.f]</pre></td>
+			</tr>
+		</table>
 
 		<h3>Option handling</h3>
 
@@ -663,8 +755,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			braces. We have already seen some of the
 			possibilities offered by logback's option handling with, for
 			example, the MDC conversion specifier:
-			<em>%mdc{someKey}</em>
-			.
+			<em>%mdc{someKey}</em>.
 		</p>
 		<p>However, there is more to it than that.</p>
 
@@ -692,7 +783,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			message and caller data.
 		</p>
 		<p>
-			Since displaying the caller data of a logging event is very
+			Since displaying the caller data of a logging event is rather
 			expensive, this information will be displayed only when the
 			logging request comes from a specific logger, and whose
 			message contains a certain string. By doing that, we make
@@ -717,7 +808,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
-      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg \
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
         <b>%caller{2, DISP_CALLER_EVAL}</b>%n" /> 
     &lt;/layout>
   &lt;/appender>

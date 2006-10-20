@@ -8,7 +8,7 @@
     class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
       <param name="Pattern"
-        value="%-4relative [%thread] %-5level - %msg %caller{2, DISPLAY_CALLER_EVAL}%n" />
+        value="%-4relative [%thread] %-5level - %msg%n %caller{2, DISPLAY_CALLER_EVAL}" />
     </layout>
   </appender>
 
