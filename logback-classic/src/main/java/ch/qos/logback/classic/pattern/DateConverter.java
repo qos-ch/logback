@@ -31,13 +31,9 @@ public class DateConverter extends ClassicConverter {
       datePattern = CoreGlobal.ISO8601_PATTERN;
     }
     
-    if (datePattern.equals(CoreGlobal.ISO8601_FORMAT)) {
+    if (datePattern.equals(CoreGlobal.ISO8601_STR)) {
       datePattern = CoreGlobal.ISO8601_PATTERN;
-    } else if (datePattern.equals(CoreGlobal.DATE_AND_TIME_FORMAT)) {
-      datePattern = CoreGlobal.DATE_AND_TIME_PATTERN;
-    } else if (datePattern.equals(CoreGlobal.ABSOLUTE_FORMAT)) {
-      datePattern = CoreGlobal.ABSOLUTE_PATTERN;
-    }
+    } 
     
     try {
       simpleFormat = new SimpleDateFormat(datePattern);
