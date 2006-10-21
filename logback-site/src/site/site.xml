@@ -12,6 +12,7 @@
   <bannerLeft>
     <name>${project.name}</name>
     <src>/images/logos/lblogo.jpg</src>
+    <href>http://logback.qos.ch</href>
   </bannerLeft>
 
   <body>
