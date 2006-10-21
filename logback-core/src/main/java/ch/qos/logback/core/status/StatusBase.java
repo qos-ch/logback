@@ -104,7 +104,7 @@ abstract public class StatusBase implements Status {
    */
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    switch (level) {
+    switch (getEffectiveLevel()) {
     case INFO:
       buf.append("INFO");
       break;
