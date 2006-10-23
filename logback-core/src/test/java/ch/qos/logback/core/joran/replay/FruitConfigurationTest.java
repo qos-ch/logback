@@ -87,16 +87,17 @@ public class FruitConfigurationTest extends TestCase {
     FruitShell fs0 = fsList.get(0);
     assertNotNull(fs0);
     assertEquals("fs0", fs0.getName());
+    int oldCount = FruitFactory.count;
     Fruit fruit0 = fs0.fruitFactory.buildFruit();
     assertTrue(fruit0 instanceof WeightytFruit);
-    assertEquals("orange-0", fruit0.getName());
+    assertEquals("orange-"+oldCount, fruit0.getName());
     assertEquals(1.2, ((WeightytFruit) fruit0).getWeight());
   }
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new FruitConfigurationTest("testWithSubst"));
-    //suite.addTestSuite(FruitConfigurationTest.class);
+    //suite.addTest(new FruitConfigurationTest("testWithSubst"));
+    suite.addTestSuite(FruitConfigurationTest.class);
     return suite;
   }
 }
