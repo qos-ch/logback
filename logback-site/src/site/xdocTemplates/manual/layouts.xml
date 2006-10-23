@@ -66,10 +66,11 @@
 }</pre></div>
 		<p>
 			This interface is rather simple and yet is sufficent for
-			many formatting needs.
+			many formatting needs. The Texan developer from Texas,
+			who you might know from Joseph Heller's <em>Catch-22</em>, 
+			might exclaim: 
+			it just takes two methods to implement a layout!!?
 		</p>
-
-		<!-- Do we add here something about one's personal implementation of Layout?  -->
 
 		<h2>Logback classic</h2>
 
@@ -90,6 +91,125 @@
   String doLayout(LoggingEvent event);
 
 }</pre></div>
+
+		<h3>Writing your own Layout</h3>
+		<p>
+			Let us implement a simple and functional layout for the
+			classic module which prints the time elapsed since the start
+			of the application, the level of the logging event, the
+			caller thread between brackets, its logger name, a dash followed
+			by the event message and a new line.
+		</p>
+		<p>Sample output might look like:</p>
+		<div class="source">10489 DEBUG [main] com.marsupial.Pouch - Hello world.</div>
+
+		<p>Here is a possible implementation, authored by the Texan developer:</p>
+		<em>Example 5.0: Sample implementation of a Layout
+			(examples/chapter5/MySampleLayout.java)</em>
+		<div class="source"><pre>package chapter5;
+
+import ch.qos.logback.classic.ClassicLayout;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.LayoutBase;
+
+public class MySampleLayout extends LayoutBase implements ClassicLayout {
+
+  public String doLayout(LoggingEvent event) {
+    StringBuffer sbuf = new StringBuffer(128);
+    sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
+    sbuf.append(" ");
+    sbuf.append(event.getLevel());
+    sbuf.append(" [");
+    sbuf.append(event.getThreadName());
+    sbuf.append("] ");
+    sbuf.append(event.getLoggerRemoteView().getName());
+    sbuf.append(" - ");
+    sbuf.append(event.getFormattedMessage());
+    sbuf.append(LINE_SEP);
+    return sbuf.toString();
+  }
+
+  public String doLayout(Object event) {
+    return doLayout((LoggingEvent)event);
+  }
+}</pre></div>
+
+		<p>
+			Note that
+			<code>MySampleLayout</code>
+			extends <code>LayoutBase</code>. 
+			This class manages trivial components of a <code>Layout</code>
+			such as started or stopped status, header, footer and
+			content type access or logging context awareness. It allows
+			the developer to concentrate on the formatting she expects
+			from her <code>Layout</code>.
+		</p>
+		
+		<p><code>MySampleLayout</code> implements the <code>ClassicLayout</code>
+		interface, since it is intented to be used with the classic module.
+		Therefore, it offers a trivial implementation of the
+		<code>doLayout(Object event)</code> method, that only casts the event
+		in the right type and passes it to the method where the actual formatting
+		takes place.</p>
+		
+		<p>The marginally more interesting <code>doLayout(LoggingEvent event)</code> 
+		method begins by instantiating a StringBuffer. It proceeds by adding various 
+		fields of the event parameter. The Texan from Texas was careful to print 
+		the formatted form of the message and not its object form. 
+		This allows for logging requests which are passed object arrays to
+		build the message in its proper form.
+		</p>
+		<p>
+			In the previous listing of the <code>Layout</code> class, 
+			we had omitted the class static <code>LINE_SEP</code>
+			field which is simply assigned the value returned by
+			<code>System.getProperty("line.separator")</code>
+			method. After adding system dependent line separator
+			character(s), the format method returns the string buffer as
+			a String.
+		</p>
+		<p>
+			The format method ignores any eventual exceptions contained
+			in the event, leaving the task of handling throwables to the
+			containing appender.
+		</p>
+
+		<p>Custom layouts are configured as any other layout, as shown below:</p>
+		
+		<em>Example 5.0: Configuration of MySampleLayout
+			(examples/chapter5/sampleLayoutConfig.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;layout class="chapter5.MySampleLayout" /></b>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>The sample application <code>chapter5.SampleLogging</code> configures logback with the 
+		configuration script supplied as parameter and then logs a debug message, 
+		followed by an error message. 
+		See <em>examples/chapter5/SampleLogging.java</em> for precise details.</p>
+		
+		<p>Executing the command <em>java chapter5.SampleLogging chapter5/sampleLayoutConfig.xml</em> 
+		will produce the following output:</p>
+		
+<div class="source"><pre>0 DEBUG [main] chapter5.SampleLogging - Everything's going well
+0 ERROR [main] chapter5.SampleLogging - ... not quite</pre></div>
+
+		<p>That was simple enough. 
+		The skeptic Pyrrho of Elea, who insists that nothing is certain except 
+		perhaps uncertainty itself, which is by no means certain either,
+		might ask: how about a layout with options?  
+		The reader shall find a slightly modified version of our 
+		custom layout in <code>MySampleLayout2.java</code>. She will discover that adding an option 
+		to a layout is as simple as declaring a setter method for the option. 
+		See also <em>chapter5/sampleLayoutConfig2.xml</em> for a configuration example.</p>
 
 		<h3>PatternLayout</h3>
 
@@ -953,11 +1073,19 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		displayed when <em>the expression passed to the evaluator is <b>false</b>.</em></p>
 
 		<h3>HTMLLayout</h3>
-		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to an event.</p>
+		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to a
+		logging event.</p>
+		
+		<p>Here is a sample of the output that can be obtained using <code>HTMLLayout</code>
+		along with the default CSS stylesheet:</p>
+		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"/>
+		
 		<p>
 			The content of the table columns are specified using a
 			conversion pattern. See <code>PatternLayout</code> for documentation on
-			the available patterns.
+			the available patterns. This ensure that the user has full access to the creation
+			of the html table. One can choose to display any (or all) data that <code>PatternLayout</code>
+			can provide.
 		</p>
 		<p>One notable point about the use of <code>PatternLayout</code> with <code>HTMLLayout</code>
 		is that conversion specifiers should not be separated by a space. Each specifier found in the
@@ -1003,12 +1131,13 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 &lt;/layout></pre></div>
 		
 		<p>
-			The HTMLLayout is often used in conjunction with
-			SMTPAppender, to send a nicely formatted html email. Of
+			The <code>HTMLLayout</code> is often used in conjunction with
+			<code>SMTPAppender</code>, to send a nicely formatted html email. Of
 			course, it can be used with any other Appender.
 		</p>
 		<p>
-			When one wants to use the HTMLLayout with a SMTPAppender,
+			When one wants to use the <code>HTMLLayout</code> with a
+			<code>SMTPAppender</code>,
 			the following configuration is typically used.
 		</p>
 		<div class="source"><pre>&lt;configuration&gt;
@@ -1035,6 +1164,31 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			IThrowableRenderer. It could be omitted, but is showed for
 			educationnal purposes.
 		</p>
+		<p>When <code>HTMLLayout</code> is used with any <code>FileAppender</code>, 
+		one can specify the html page's title, simply by adding an element to the configuration,
+		as shown above:</p>
+		
+<div class="source"><pre>&lt;configuration>
+   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+     &lt;ActiveFileName>lastLogEntries.html&lt;/ActiveFileName>
+     &lt;FileNamePattern>lastLogEntries.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
+   &lt;/rollingPolicy>
+   
+   &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+      &lt;cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
+      	&lt;param name="url" value="path_to_StyleFile.css" />
+      &lt;/cssBuilder>	
+      &lt;Pattern>%relative%thread%mdc%level%logger%msg&lt;/Pattern>
+      <b>&lt;Title>Last Logging Events&lt;/Title></b>
+    &lt;/layout>
+ &lt;/appender> 
+
+ &lt;root>
+   &lt;level value="debug" />
+   &lt;appender-ref ref="FILE" />
+ &lt;/root>
+&lt;/configuration></pre></div>
 
 		<h2>Logback access</h2>
 		<p>Just like <code>ClassicLayout</code> represents the <code>Layout</code> interface
@@ -1050,6 +1204,12 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>Many access layouts are actually adaptations of classic layouts. Logback
 		modules classic and access address pretty different needs, but offer the same power
 		and flexibility to the user.</p>
+		
+		<h3>Writing your own Layout</h3>
+		<p>Writing a custom <code>Layout</code> for logback access works almost exactly the
+		same as writing such a component for the classic module.</p>
+		<p>The only exceptions comes from the fact that layouts in access module imlement
+		the <code>AccessLayout</code> interface instead <code>ClassicLayout</code>.</p>
 		
 		<h3>PatternLayout</h3>
 		<p>Access' <code>PatternLayout</code> work the exact same way as it's classic counterpart.
