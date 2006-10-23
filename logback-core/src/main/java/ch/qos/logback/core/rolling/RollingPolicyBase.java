@@ -26,7 +26,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   protected int compressionMode = Compress.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
-  protected String activeFileName;
+  protected String activeFileName = null;
 
   private boolean started;
   

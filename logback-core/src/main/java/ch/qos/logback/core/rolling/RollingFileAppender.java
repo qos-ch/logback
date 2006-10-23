@@ -60,7 +60,7 @@ import ch.qos.logback.core.FileAppender;
  * @since  1.3
  * */
 public class RollingFileAppender extends FileAppender {
-  File activeFile;
+  File activeFileCache;
   TriggeringPolicy triggeringPolicy;
   RollingPolicy rollingPolicy;
 
@@ -80,12 +80,11 @@ public class RollingFileAppender extends FileAppender {
 
     if (rollingPolicy != null) {
       String afn = rollingPolicy.getActiveFileName();
-      activeFile = new File(afn);
+      // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
+      activeFileCache = new File(afn);
       addInfo("Active log file name: "+afn);
       setFile(afn);
-      
-      // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-      activeFile = new File(afn);
+
       super.start();
     } else {
       addWarn("No RollingPolicy was set for the RollingFileAppender named "+ getName());
@@ -132,7 +131,7 @@ public class RollingFileAppender extends FileAppender {
     addInfo("Active file name is now ["+ fileName+"].");
 
     // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-    activeFile = new File(fileName);
+    ////activeFile = new File(fileName);
 
     try {
       // This will also close the file. This is OK since multiple
@@ -151,7 +150,7 @@ public class RollingFileAppender extends FileAppender {
   protected void subAppend(Object event) {
     // The roll-over check must precede actual writing. This is the 
     // only correct behavior for time driven triggers. 
-    if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
+    if (triggeringPolicy.isTriggeringEvent(activeFileCache, event)) {
       rollover();
     }
       

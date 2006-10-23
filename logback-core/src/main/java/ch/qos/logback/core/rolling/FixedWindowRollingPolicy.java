@@ -67,7 +67,6 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public FixedWindowRollingPolicy() {
     minIndex = 1;
     maxIndex = 7;
-    activeFileName = null;
   }
 
   public void start() {
