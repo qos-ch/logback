@@ -119,7 +119,7 @@ consists of the following abstract methods.
 </p>
 
 
-<div class="source">package ch.qos.logback.core.joran.action;
+<div class="source"><pre>package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
@@ -140,8 +140,7 @@ public abstract class Action {
   * have been processed. 
   */
   public abstract void end(ExecutionContext ec, String name);
-}
-</div>
+}</pre></div>
 
 <p>Thus, every action must implement the begin and end methods.</p>
 
@@ -243,13 +242,13 @@ the value from the stack and prints it.
 </p>
 <p>The <em>calculator2.xml</em> file is a bit more complex, and much more interesting.</p>
 <p>It contains the following elements:</p>
-<source>&lt;computation name="toto"&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
   &lt;add/&gt;
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</source>
+&lt;/computation&gt;</pre></div>
 <p>
 Here, there are obviously more actions that will be part of the computation.
 </p>
@@ -265,7 +264,7 @@ a certain, predictable way, but whose <code>end()</code> methods are empty.</p>
 <p>Finally, a <em>calculator3.xml</em> is also provided, to demonstrate the possibility
 elements that contain instances of the same element. Here's the content of
 <em>calculator3.xml</em>:</p>
-<source>&lt;computation name="toto"&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
@@ -274,7 +273,7 @@ elements that contain instances of the same element. Here's the content of
  
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</source>
+&lt;/computation&gt;</pre></div>
 
 <p>Much like the use of parentheses in an algebrical equation, the presence of
 a <code>computation</code> element nested in another is managed by the 
@@ -305,12 +304,12 @@ and added to the <code>RuleStore</code>, along with its corresponding pattern.</
 
 <p>Here is how new rules can be declared in an xml file:</p>
 
-<div class="source">&lt;new-rule pattern="*/computation/literal" actionClass="joran.calculator.LiteralAction"/&gt;</div>
+<div class="source"><pre>&lt;new-rule pattern="*/computation/literal" actionClass="joran.calculator.LiteralAction"/&gt;</pre></div>
 
 <p>Using new rule declarations, the preceding example, involving the calculation, could be
 expressed this way:</p>
 
-<div class="source">&lt;computation name="toto"&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
             actionClass="joran.calculator.LiteralAction"/&gt;
   &lt;new-rule pattern="*/computation/add" 
@@ -326,7 +325,7 @@ expressed this way:</p>
  
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</div>
+&lt;/computation&gt;</pre></div>
 
 <a name="implicit" />
 <h3>Implicit actions </h3>
@@ -402,7 +401,7 @@ the implicit action is applicable: its <code>begin()</code> method will be calle
 
 <p>The <em>implicit1.xml</em> file contains the following lines:</p>
 
-<source>&lt;foo&gt;
+<div class="source"><pre>&lt;foo&gt;
 
   &lt;xyz printme="true"&gt;
     &lt;abc printme="true"/&gt;
@@ -412,7 +411,7 @@ the implicit action is applicable: its <code>begin()</code> method will be calle
 
   &lt;foo printme="true"/&gt;
 
-&lt;/foo&gt;</source>
+&lt;/foo&gt;</pre></div>
 
 <p>As one can see, the first element will be printed, since it has a <em>printme</em>
 attribute, which bears the value <code>true</code>.</p>
@@ -426,10 +425,10 @@ of the <code>PrintMeImplicitAction</code>.</p>
 
 <p>Running the example yields the following output:</p>
 
-<div class="source">Element &lt;xyz> asked to be printed.
+<div class="source"><pre>Element &lt;xyz> asked to be printed.
 Element &lt;abc> asked to be printed.
 ERROR in ch.qos.logback.core.joran.spi.ExecutionContext@1c5c1 - no applicable action \
-for &lt;xyz>, current pattern is [/foo/xyz]</div>
+for &lt;xyz>, current pattern is [/foo/xyz]</pre></div>
 
 <p>The last line was printed because of a call to <code>StatusPrinter</code> at the end
 of the main class.</p>

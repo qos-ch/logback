@@ -97,7 +97,7 @@
     </p>
 
 <em>Example 1.1: Basic template for logging (examples/chapter1/HelloWorld1.java)</em>
-<div class="source">package chapter1;
+<div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public class HelloWorld1 {
     logger.debug("Hello world.");
 
   }
-}</div>
+}</pre></div>
 
 		<p>
 			The <code>HelloWorld</code> class is defined in the
@@ -147,7 +147,7 @@ public class HelloWorld1 {
 			Once you're in the <em>examples/classes</em> directory of the logback distribution, you can run this class with the command:
 		</p>
 
-		<div class="source">java chapter1.HelloWorld1</div>
+		<div class="source"><pre>java chapter1.HelloWorld1</pre></div>
 
 		<p>
 			Suprisingly enough, launching the <code>HelloWorld1</code>
@@ -167,7 +167,7 @@ public class HelloWorld1 {
 		</p>
 
 <em>Example 1.2: Printing Logger Status (examples/chapter1/HelloWorld2.java)</em>
-<div class="source">package chapter1;
+<div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,14 +180,14 @@ public class HelloWorld2 {
     logger.debug("Hello world.");
     <b>LoggerStatusPrinter.printStatusInDefaultContext();</b>
   }
-}</div>
+}</pre></div>
 
 
    <p>Running the <code>HelloWorld2</code> application will produce
    the following output:</p>
 
-<div class="source">ERROR in Logger[chapter1.HelloWorld2] - No appenders present in \ 
-context [default] for logger [chapter1.HelloWorld2].</div>
+<div class="source"><pre>ERROR in Logger[chapter1.HelloWorld2] - No appenders present in \ 
+context [default] for logger [chapter1.HelloWorld2].</pre></div>
 
 
   <!-- =========  CEKI: STOPPED HERE =================== -->
@@ -207,7 +207,7 @@ context [default] for logger [chapter1.HelloWorld2].</div>
   	<code>BasicConfigurator</code> class, like in the following code snippet.
   </p>
   <em>Example 1.3: Configuring before logging (examples/chapter1/HelloWorld3.java)</em>
-  <div class="source">package chapter1;
+  <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,7 +224,7 @@ public class HelloWorld3 {
     LoggerStatusPrinter.printStatusInDefaultContext();
 
   }
-}</div>
+}</pre></div>
 
 		<p>
 			Let's run the <code>HelloWorld3</code>
@@ -233,7 +233,7 @@ public class HelloWorld3 {
 			The logging request will then be propagated to the
 			<code>Appender</code> and the console will output the following:
 		</p>
-<div class="source">0    [main] DEBUG chapter1.HelloWorld3 - Hello world.</div>
+<div class="source"><pre>0    [main] DEBUG chapter1.HelloWorld3 - Hello world.</pre></div>
 
 		<p>
 			This example is rather simple. However, actual logging in a larger
@@ -317,7 +317,7 @@ public class HelloWorld3 {
 			It is exceptional in that it always exists. Like every
 			logger, it can be retrieved by its name, like this:
 		</p>
-		<div class="source">Logger rootLogger = LoggerFactory.getLogger(LoggerContext.<em>ROOT_NAME</em>);</div>
+		<div class="source"><pre>Logger rootLogger = LoggerFactory.getLogger(LoggerContext.<em>ROOT_NAME</em>);</pre></div>
 
 		<p>
 			All other loggers are also retrieved with the class static
@@ -326,7 +326,7 @@ public class HelloWorld3 {
 			methods in the <code>Logger</code> interface are listed below.
 		</p>
 
-		<div class="source">package org.slf4j; 
+		<div class="source"><pre>package org.slf4j; 
 public interface Logger {
 
   // Printing methods: 
@@ -335,7 +335,7 @@ public interface Logger {
   public void warn(String message); 
   public void error(String message); 
   public void fatal(String message); 
-}</div>
+}</pre></div>
 
 		<p>
 			Loggers may be assigned levels. The set of possible levels,
@@ -646,7 +646,7 @@ public interface Logger {
 		
 		<p>Here is an example of the basic selection rule.</p>
 
-		<div class="source">// get a logger instance named "com.foo", with an <span class="blue">INFO</span> level. 
+		<div class="source"><pre>// get a logger instance named "com.foo", with an <span class="blue">INFO</span> level. 
 Logger logger = LoggerFactory.getLogger("com.foo");
 //set its Level to <span class="blue">INFO</span>
 logger.setLevel(Level.INFO);
@@ -665,7 +665,7 @@ logger.<span class="green">debug</span>("Starting search for nearest gas station
 barlogger.<span class="green">info</span>("Located nearest gas station.");
 
 // This request is disabled, because<span class="green">DEBUG</span> &lt; <span class="blue">INFO</span>. 
-barlogger.<span class="green">debug</span>("Exiting gas station search");</div>
+barlogger.<span class="green">debug</span>("Exiting gas station search");</pre></div>
 
 		<h3>Retrieving Loggers</h3>
 		<p>
@@ -675,8 +675,8 @@ barlogger.<span class="green">debug</span>("Exiting gas station search");</div>
 		</p>
 
 		<p>For example, in</p>
-		<div class="source">Logger x = LoggerFactory.getLogger("wombat"); 
-Logger y = LoggerFactory.getLogger("wombat");</div>
+		<div class="source"><pre>Logger x = LoggerFactory.getLogger("wombat"); 
+Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 
 		<p>
 			<code>x</code> and <code>y</code> refer to
@@ -862,7 +862,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			"%-4relative [%thread] %-5level %class - %msg%n" will output something akin to:
 		</p>
 
-		<div class="source">176  [main] DEBUG chapter1.HelloWorld3 - Hello world.</div>
+		<div class="source"><pre>176  [main] DEBUG chapter1.HelloWorld3 - Hello world.</pre></div>
 
 		<p>
 			The first field is the number of milliseconds elapsed since
@@ -885,7 +885,7 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			For some Logger <code>logger</code>, writing,
 		</p>
 
-		<div class="source">logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));</div>
+		<div class="source"><pre>logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));</pre></div>
 
 		<p>
 			incurs the cost of constructing the message parameter, that
@@ -900,9 +900,9 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 			example.
 		</p>
 
-		<div class="source">if(logger.isDebugEnabled()) { 
+		<div class="source"><pre>if(logger.isDebugEnabled()) { 
   logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
-}</div>
+}</pre></div>
 
 
 		<p>
@@ -925,8 +925,8 @@ Logger y = LoggerFactory.getLogger("wombat");</div>
 		</p>
 
 
-		<div class="source">Object entry = new SomeObject(); 
-logger.debug("The entry is {}.", entry);</div>
+		<div class="source"><pre>Object entry = new SomeObject(); 
+logger.debug("The entry is {}.", entry);</pre></div>
 
 		<p>
 			After evaluting whether to log or not, and only if the
@@ -946,8 +946,8 @@ logger.debug("The entry is {}.", entry);</div>
 			factor of at least 30.
 		</p>
 
-		<div class="source">logger.debug("The new entry is "+entry+".");
-logger.debug("The new entry is {}.", entry);</div>
+		<div class="source"><pre>logger.debug("The new entry is "+entry+".");
+logger.debug("The new entry is {}.", entry);</pre></div>
 
 
 		<p>
@@ -955,7 +955,7 @@ logger.debug("The new entry is {}.", entry);</div>
 			can write:
 		</p>
 
-		<div class="source">logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</div>
+		<div class="source"><pre>logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</pre></div>
 
 		<p>
 			If three or more arguments need to be passed, an <code>Object[]</code>
@@ -963,8 +963,8 @@ logger.debug("The new entry is {}.", entry);</div>
 		</p>
 
 
-		<div class="source">Object[] paramArray = {newVal, below, above};
-logger.debug("Value {} was inserted between {} and {}.", paramArray);</div>
+		<div class="source"><pre>Object[] paramArray = {newVal, below, above};
+logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div>
 
     <h3>Configuration</h3>
 
@@ -992,7 +992,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</div>
 			imaginary application MyApp that uses logback. 
 		</p>
 		<em>Example 1.4: Basic configuration (examples/chapter1/MyApp.java)</em>
-<div class="source">package chapter1;
+<div class="source"><pre>package chapter1;
 
 // Import SLF4J classes.
 import org.slf4j.LoggerFactory;
@@ -1014,20 +1014,20 @@ public class MyApp {
     bar.doIt();
     logger.info("Exiting application.");
   }
-}</div>
+}</pre></div>
 		<p>
 			This class defines a logger instance variable 
 			with the name MyApp. It then uses the Bar class, defined as shown below:
 		</p>
 		<em>Example 1.4: Basic configuration (examples/chapter1/Bar.java)</em>
-<div class="source">class Bar {
+<div class="source"><pre>class Bar {
 
   Logger logger = LoggerFactory.getLogger(Bar.class);	
 	
   public void doIt() {
     logger.debug("doing my job");
   }
-}</div>
+}</pre></div>
 		<p>
 			The invocation of the BasicConfigurator create, as we have seen, 
 			a simple yet sufficient logback setup. By default, 
@@ -1038,14 +1038,14 @@ public class MyApp {
 		<p>
 			The output of MyApp is:
 		</p>
-<div class="source">0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Entering application.
+<div class="source"><pre>0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Entering application.
 0    [main] DEBUG ch.qos.logback.classic.examples.Bar - doing my job
-0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Exiting application.</div>
+0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Exiting application.</pre></div>
 		
 	<p>Let's configure logback to do exactly the same output, this time 
 	with an XML configuration file.</p>
 	<em>Example 1.4: Basic configuration (examples/chapter1/sample-config-1.xml)</em>	
-<div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
 
@@ -1061,7 +1061,7 @@ public class MyApp {
     &lt;level value="debug" /&gt;
     &lt;appender-ref ref="STDOUT" /&gt;
   &lt;/root&gt;
-&lt;/configuration&gt;</div>
+&lt;/configuration&gt;</pre></div>
 	
 	<p>We first created an <code>Appender</code>, named <em>STDOUT</em> that is of <code>ConsoleAppender</code> tye. Its layout
 	is managed by a PatternLayout, that uses the value of the "pattern" parameter to generate 
@@ -1072,13 +1072,13 @@ public class MyApp {
 	
 	<p>To run this examle, use this command:</p>
 	
-<div class="source">java chapter1.MyApp sample-config-1.xml</div>
+<div class="source"><pre>java chapter1.MyApp sample-config-1.xml</pre></div>
 
 	<p>The console output will be exactly the same as before. However, this time, we didn't need
 	to import and call the BasicConfigurator class, as you can see in the following code section: 
 	</p>
 	<em>Example 1.5: Logback configuration from file (examples/chapter1/MyAppWithConfigFile.java)</em>
-<div class="source">package chapter1;
+<div class="source"><pre>package chapter1;
 
 //Import SLF4J classes.
 import org.slf4j.Logger;
@@ -1105,7 +1105,7 @@ public class MyAppWithConfigFile {
 	
     StatusPrinter.print(lc.getStatusManager());
   }
-}</div>	
+}</pre></div>	
 	<p>
 	We used the JoranConfigurator class to parse the configuration file we just created.
 	Joran is a XML interpreter, similar to the commons-digester API, but offering several
@@ -1119,7 +1119,7 @@ public class MyAppWithConfigFile {
 	<p>Logging to the console is a rather simple example. Let's now configure logback
 	so that it logs to the console, but also to a custom file.</p>
 <em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-2.xml)</em>
-<div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
 
@@ -1146,7 +1146,7 @@ public class MyAppWithConfigFile {
     &lt;appender-ref ref="STDOUT" /&gt;
     &lt;appender-ref ref="FILE" /&gt;
   &lt;/root&gt;
-&lt;/configuration&gt;</div>
+&lt;/configuration&gt;</pre></div>
 	
 	<p>Now, all the logging statements are directed to the console and to a file named <em>sample-log.txt</em>.
 	As you can see, the configuration needed to add an Appender is rather small. The param element, in either
@@ -1158,7 +1158,7 @@ public class MyAppWithConfigFile {
 	This is done by adding the following xml snippet to the configuration file, right before
 	the <code>&lt;root&gt;</code> element.</p>
 <em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-3.xml)</em>	
-<div class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
 
@@ -1190,12 +1190,12 @@ public class MyAppWithConfigFile {
     &lt;appender-ref ref="FILE" /&gt;
   &lt;/root&gt;
 &lt;/configuration&gt;
-</div>	
+</pre></div>	
 	
 	<p>This done, the output is modified to show only statements of level INFO and higher.</p>
 	
-<div class="source">0    [main] INFO  chapter1.MyAppWithConfigFile - Entering application.
-0    [main] INFO  chapter1.MyAppWithConfigFile - Exiting application.</div>
+<div class="source"><pre>0    [main] INFO  chapter1.MyAppWithConfigFile - Entering application.
+0    [main] INFO  chapter1.MyAppWithConfigFile - Exiting application.</pre></div>
 
 	<p>Note that to obtain these different logging behaviors we did not need to recompile code. 
 	We could just as easily have logged to a UNIX Syslog daemon, redirected all chapter1 output 

@@ -92,15 +92,13 @@
 			<code>RequestLogImpl</code>,  add the following lines
 			to the jetty configuration file, namely <em>$JETTY_HOME/etc/jetty.xml</em>:
 		</p>
-		<pre>
-&lt;Ref id="requestLog"&gt;
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
   &lt;Set name="requestLog"&gt;
     &lt;New id="requestLogImpl"
       class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
     &lt;/New&gt;
   &lt;/Set&gt;
-&lt;/Ref&gt;
-		</pre>
+&lt;/Ref&gt;</pre></div>
 		<p>
 			These lines reference the requestLog functionnality of Jetty, setting
 			the actual class that will be called at each logging request.
@@ -127,24 +125,21 @@
 	jetty configuration file, with a path to the logback access
 	configuration file.
 		</p>
-		<pre>
-&lt;Ref id="requestLog"&gt;
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
   &lt;Set name="requestLog"&gt;
     &lt;New id="requestLogImpl"
       class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
     &lt;/New&gt;
     &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
   &lt;/Set&gt;
-&lt;/Ref&gt;
-		</pre>
+&lt;/Ref&gt;</pre></div>
 
     <h2>Example 1: logback-access configuration</h2>
 		<p>
 			Here is a sample <em>logback-access.xml</em> file that you can
 			immediately put to use:
 		</p>
-		<pre>
-&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration&gt;
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender"&gt;
     &lt;layout
@@ -154,8 +149,7 @@
   &lt;/appender&gt;
 
   &lt;appender-ref ref="STDOUT" /&gt;
-&lt;/configuration&gt;
-		</pre>
+&lt;/configuration&gt;</pre></div>
 		<p>
 		It declares a <code>ConsoleAppender</code> which directs its
 		output at the console.  The <code>ConsoleAppender</code> contains
@@ -171,9 +165,9 @@
     equivalent
     </p>
     
-    <div class="source">&lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
+    <div class="source"><pre>&lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
 &lt;Pattern>common&lt;/Pattern&gt;
-&lt;Pattern>clf&lt;/Pattern&gt;</div>
+&lt;Pattern>clf&lt;/Pattern&gt;</pre></div>
 
   <p>The so called "combined" format is also widely recognized. It is
   defined as the '%h %l %u %t "%r" %s %b "%i{Referer}"
@@ -181,24 +175,22 @@
   "combined" as a shorthand. Thus, the following directive
   </p>
 
-  <div class="source">&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
   &lt;Pattern>%h %l %u %t "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/Pattern&gt;
-&lt;/layout&gt;</div>
+&lt;/layout&gt;</pre></div>
 
   <p>is equivalent to:</p>
 
-  <div class="source">&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
   &lt;Pattern>combined&lt;/Pattern&gt;
-&lt;/layout&gt;
-  </div>
+&lt;/layout&gt;</pre></div>
 
 
     <h2>Example 2: RollingFileAppender</h2>
 
 		<p>Another configuration file, using logback'
 		<code>RollingFileAppender</code>, could be:</p>
-		<pre>
-&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration&gt;
   &lt;appender name="FILE"
     class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
     &lt;rollingPolicy
@@ -213,8 +205,7 @@
   &lt;/appender&gt;
  
   &lt;appender-ref ref="FILE" /&gt;
-&lt;/configuration&gt;
-		</pre>
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			Here, there is no output to the console. Instead, logback access
