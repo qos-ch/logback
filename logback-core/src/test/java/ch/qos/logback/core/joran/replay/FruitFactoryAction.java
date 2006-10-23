@@ -39,7 +39,7 @@ public class FruitFactoryAction extends Action implements InPlayListener {
     if(o instanceof FruitShell) {
       FruitShell fs = (FruitShell) o;
       FruitFactory fruitFactory = new FruitFactory();
-      fruitFactory.eventList = new ArrayList<SaxEvent>(seList);
+      fruitFactory.setEventList(new ArrayList<SaxEvent>(seList));
       fs.setFruitFactory(fruitFactory);
     }
   }

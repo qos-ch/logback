@@ -11,7 +11,7 @@ public class FruitFactory {
 
   static int count = 0;
   
-  List<SaxEvent> eventList;
+  private List<SaxEvent> eventList;
   Fruit fruit;
   
   public void setFruit(Fruit fruit) {
@@ -49,6 +49,10 @@ public class FruitFactory {
     retValue.append(" )");
 
     return retValue.toString();
+  }
+
+  public void setEventList(List<SaxEvent> eventList) {
+    this.eventList = eventList;
   }
 
 }
