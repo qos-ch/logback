@@ -48,10 +48,10 @@ public class CssBuilder {
     buf.append("TR.even { background: #FFFFFF; }");
     buf.append(LINE_SEP);
 
-    buf.append("TR.odd { background: #DADADA; }");
+    buf.append("TR.odd { background: #EAEAEA; }");
     buf.append(LINE_SEP);
 
-    buf.append("TR.warn TD.level, TR.error TD.level, TR.fatal TD.level {font-weight: bold; color: #FF4040 }");
+    buf.append("TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }");
     buf.append(LINE_SEP);
 
     buf.append("TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }");
@@ -69,10 +69,10 @@ public class CssBuilder {
     buf.append("TD.Logger { text-align: left; }");
     buf.append(LINE_SEP);
 
-    buf.append("TR.header { background: #9090FF; color: #FFF; font-weight: bold; font-size: larger; }");
+    buf.append("TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }");
     buf.append(LINE_SEP);
 
-    buf.append("TD.Exception { background: #C0C0F0; font-family: courier, monospace;}");
+    buf.append("TD.Exception { background: #A2AEE8; font-family: courier, monospace;}");
     buf.append(LINE_SEP);
 
     buf.append("</STYLE>");
