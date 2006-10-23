@@ -14,7 +14,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -44,7 +44,7 @@ public class NestedComponentIA extends ImplicitAction {
   Stack<ImplicitActionData> actionDataStack = new Stack<ImplicitActionData>();
 
   public boolean isApplicable(
-    Pattern pattern, Attributes attributes, ExecutionContext ec) {
+    Pattern pattern, Attributes attributes, InterpretationContext ec) {
     //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
@@ -72,7 +72,7 @@ public class NestedComponentIA extends ImplicitAction {
   }
 
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) {
+    InterpretationContext ec, String localName, Attributes attributes) {
     //LogLog.debug("in NestComponentIA begin method");
     // get the action data object pushed in isApplicable() method call
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.peek();
@@ -112,7 +112,7 @@ public class NestedComponentIA extends ImplicitAction {
     }
   }
 
-  public void end(ExecutionContext ec, String tagName) {
+  public void end(InterpretationContext ec, String tagName) {
     
     // pop the action data object pushed in isApplicable() method call
     // we assume that each this begin

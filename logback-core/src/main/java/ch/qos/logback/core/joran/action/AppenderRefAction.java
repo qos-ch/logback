@@ -14,7 +14,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreGlobal;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class AppenderRefAction extends Action {
   boolean inError = false;
 
-  public void begin(ExecutionContext ec, String tagName, Attributes attributes) {
+  public void begin(InterpretationContext ec, String tagName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
@@ -72,9 +72,9 @@ public class AppenderRefAction extends Action {
     appenderAttachable.addAppender(appender);
   }
 
-  public void end(ExecutionContext ec, String n) {
+  public void end(InterpretationContext ec, String n) {
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

@@ -3,9 +3,11 @@ package ch.qos.logback.core.joran.replay;
 import java.util.HashMap;
 import java.util.List;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
-import ch.qos.logback.core.joran.action.NOPAction;
+import junit.framework.TestSuite;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -75,5 +77,26 @@ public class FruitConfigurationTest extends TestCase {
     assertTrue(fruit1 instanceof WeightytFruit);
     assertEquals("orange", fruit1.getName());
     assertEquals(1.2, ((WeightytFruit) fruit1).getWeight());
+  }
+  
+  public void testWithSubst() throws Exception {
+    List<FruitShell> fsList = doFirstPart("fruitWithSubst.xml");
+    assertNotNull(fsList);
+    assertEquals(1, fsList.size());
+
+    FruitShell fs0 = fsList.get(0);
+    assertNotNull(fs0);
+    assertEquals("fs0", fs0.getName());
+    Fruit fruit0 = fs0.fruitFactory.buildFruit();
+    assertTrue(fruit0 instanceof WeightytFruit);
+    assertEquals("orange-0", fruit0.getName());
+    assertEquals(1.2, ((WeightytFruit) fruit0).getWeight());
+  }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new FruitConfigurationTest("testWithSubst"));
+    //suite.addTestSuite(FruitConfigurationTest.class);
+    return suite;
   }
 }

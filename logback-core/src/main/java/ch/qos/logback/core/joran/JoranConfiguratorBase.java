@@ -24,7 +24,7 @@ import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.RepositoryPropertyAction;
 import ch.qos.logback.core.joran.action.SubstitutionPropertyAction;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -85,7 +85,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
     omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
   }
 
-  public ExecutionContext getExecutionContext() {
+  public InterpretationContext getExecutionContext() {
     return interpreter.getExecutionContext();
   }
 }

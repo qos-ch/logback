@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<group>
+  <fruitShell name="fs0">
+    <fruit class="ch.qos.logback.core.joran.replay.WeightytFruit">
+      <name>${fruitKey}</name>
+      <weight>1.2</weight>
+    </fruit> 
+  </fruitShell>
+</group>

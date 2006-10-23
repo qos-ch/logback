@@ -14,7 +14,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
@@ -28,7 +28,7 @@ public class IncAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes) throws ActionException {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
     //System.out.println("IncAction Begin called");
     beginCount++;
     String val = attributes.getValue("increment");
@@ -42,7 +42,7 @@ public class IncAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     endCount++;
   }
 }

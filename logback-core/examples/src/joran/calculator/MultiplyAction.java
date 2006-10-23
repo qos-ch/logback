@@ -1,5 +1,5 @@
 /**
- * Logback: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -14,7 +14,7 @@ package joran.calculator;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 import java.util.EmptyStackException;
 
@@ -29,7 +29,7 @@ import java.util.EmptyStackException;
 public class MultiplyAction extends Action {
   
   
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     int first = fetchInteger(ec);
     int second = fetchInteger(ec);
     ec.pushObject(new Integer(first * second));
@@ -39,7 +39,7 @@ public class MultiplyAction extends Action {
    * Pop the Integer object at the top of the stack.
    * This code illustrates usage of Joran's error handling paradigm.
    */
-  int fetchInteger(ExecutionContext ec) {
+  int fetchInteger(InterpretationContext ec) {
     int result = 0;
 
     try {
@@ -61,7 +61,7 @@ public class MultiplyAction extends Action {
     return result;
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     // Nothing to do here.
     // In general, the end() method of actions associated with elements
     // having no children do not need to perform any processing in their

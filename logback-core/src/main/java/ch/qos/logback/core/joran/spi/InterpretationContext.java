@@ -19,13 +19,11 @@ import java.util.Stack;
 
 import org.xml.sax.Locator;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -37,56 +35,19 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class ExecutionContext extends ContextAwareBase {
+public class InterpretationContext extends ContextAwareBase {
   Stack<Object> objectStack;
   Map<String, Object> objectMap;
-  Properties substitutionProperties;
+  Map<String, String> substitutionMap;
   Interpreter joranInterpreter;
   final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
   
-  public ExecutionContext(Interpreter joranInterpreter) {
+  public InterpretationContext(Context context, Interpreter joranInterpreter) {
     this.joranInterpreter = joranInterpreter;
     objectStack = new Stack<Object> ();
     objectMap = new HashMap<String, Object>(5);
-    substitutionProperties = new Properties();
+    substitutionMap = new HashMap<String, String>();
   }
-
-  // /**
-  // * Clear the internal structures for reuse of the execution context
-  // *
-  // */
-  // public void clear() {
-  // objectStack.clear();
-  // objectMap.clear();
-  // errorList.clear();
-  // substitutionProperties.clear();
-  // }
-
-  public void addError(String msg, Object origin) {
-    msg = updateLocationInfo(msg);
-    addStatus(new ErrorStatus(msg, origin));
-  }
-
-  public void addError(String msg, Object origin, Exception e) {
-    msg = updateLocationInfo(msg);
-    addStatus(new ErrorStatus(msg, origin, e));
-  }
-
-  public void addWarn(String msg, Object origin) {
-    msg = updateLocationInfo(msg);
-    addStatus(new WarnStatus(msg, origin));
-  }
-
-  public void addWarn(String msg, Object origin, Exception e) {
-    msg = updateLocationInfo(msg);
-    addStatus(new WarnStatus(msg, origin, e));
-  }
-  
-  public void addInfo(String msg, Object origin) {
-    msg = updateLocationInfo(msg);
-    addStatus(new InfoStatus(msg, origin));
-  }
-
   
   String updateLocationInfo(String msg) {
     Locator locator = joranInterpreter.getLocator();
@@ -146,7 +107,7 @@ public class ExecutionContext extends ContextAwareBase {
 
     // values with leading or trailing spaces are bad. We remove them now.
     value = value.trim();
-    substitutionProperties.put(key, value);
+    substitutionMap.put(key, value);
   }
 
   public void addProperties(Properties props) {
@@ -161,19 +122,19 @@ public class ExecutionContext extends ContextAwareBase {
   }
 
   public String getSubstitutionProperty(String key) {
-    return substitutionProperties.getProperty(key);
+    return substitutionMap.get(key);
   }
 
   public String subst(String value) {
     if (value == null) {
       return null;
     }
-    return OptionHelper.substVars(value, substitutionProperties);
+    return OptionHelper.substVars(value, substitutionMap, context.getPropertyMap());
   }
   
   public void addInPlayListener(InPlayListener ipl) {
     if(listenerList.contains(ipl)) {
-      System.out.println("InPlayListener "+ipl+" has been already registered");
+      addWarn("InPlayListener "+ipl+" has been already registered");
     } else {
       listenerList.add(ipl);
     }

@@ -3,7 +3,7 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Properties;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 /**
@@ -13,14 +13,16 @@ public class RepositoryPropertyAction extends PropertyAction {
   
   /**
    * Add all the properties found in the argument named 'props' to an ExecutionContext.
-   * 
    */
-  @SuppressWarnings("unchecked")
-  public void setProperties(ExecutionContext ec, Properties props) {
-    this.context.getPropertyMap().putAll(props);
+  public void setProperties(InterpretationContext ec, Properties props) {
+    // TODO : test this method
+    for(Object o: props.keySet()) {
+      String key = (String) o;
+      this.context.setProperty(key, props.getProperty(key));
+    }
   }
   
-  public void setProperty(ExecutionContext ec, String key, String value) {
+  public void setProperty(InterpretationContext ec, String key, String value) {
     this.context.setProperty(key, value);
   }
 }

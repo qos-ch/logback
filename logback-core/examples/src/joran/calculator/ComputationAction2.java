@@ -15,7 +15,7 @@ import java.util.Stack;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -61,14 +61,14 @@ public class ComputationAction2 extends Action {
   Stack<String> nameStrStack = new Stack<String>();
   
   
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String nameStr = attributes.getValue(NAME_ATR);
     // save nameStr value in a special stack. Note that the value is saved
     // even if it is empty or null.
     nameStrStack.push(nameStr);
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     // pop nameStr value from the special stack
     String nameStr = (String) nameStrStack.pop();
     

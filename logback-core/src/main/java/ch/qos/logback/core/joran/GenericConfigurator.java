@@ -21,7 +21,7 @@ import org.xml.sax.InputSource;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.EventPlayer;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -81,8 +81,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
-    this.interpreter = new Interpreter(rs);
-    ExecutionContext ec = interpreter.getExecutionContext();
+    this.interpreter = new Interpreter(context, rs);
+    InterpretationContext ec = interpreter.getExecutionContext();
     ec.setContext(context);
     addImplicitRules(interpreter);
 

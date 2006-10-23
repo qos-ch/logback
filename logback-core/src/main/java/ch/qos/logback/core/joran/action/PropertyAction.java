@@ -11,7 +11,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.pattern.util.EscapeUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -32,8 +32,8 @@ abstract public class PropertyAction extends Action {
     "In <property> element, either the \"file\" attribute or both the \"name\" and \"value\" attributes must be set.";
 
   
-  abstract void setProperties(ExecutionContext ec, Properties props);
-  abstract void setProperty(ExecutionContext ec, String key, String value);
+  abstract void setProperties(InterpretationContext ec, Properties props);
+  abstract void setProperty(InterpretationContext ec, String key, String value);
   
   /**
    * Set a new property for the execution context by name, value pair, or adds
@@ -41,7 +41,7 @@ abstract public class PropertyAction extends Action {
    *
    */
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) {
+    InterpretationContext ec, String localName, Attributes attributes) {
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(NAME_ATTRIBUTE);
     String fileName = attributes.getValue(FILE_ATTRIBUTE);
@@ -75,9 +75,9 @@ abstract public class PropertyAction extends Action {
     }
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

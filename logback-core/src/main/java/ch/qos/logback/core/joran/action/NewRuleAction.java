@@ -12,7 +12,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -23,7 +23,7 @@ public class NewRuleAction extends Action {
   /**
    * Instantiates an layout of the given class and sets its name.
    */
-  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+  public void begin(InterpretationContext ec, String localName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
     String errorMsg;
@@ -61,9 +61,9 @@ public class NewRuleAction extends Action {
    * Once the children elements are also parsed, now is the time to activate the
    * appender options.
    */
-  public void end(ExecutionContext ec, String n) {
+  public void end(InterpretationContext ec, String n) {
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

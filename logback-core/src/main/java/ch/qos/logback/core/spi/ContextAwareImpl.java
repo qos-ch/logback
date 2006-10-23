@@ -18,16 +18,21 @@ import ch.qos.logback.core.status.WarnStatus;
 
 
 /**
- * A helper class that implements ContextAware methods. This class can be either
- * extended or alternatively included as a component.
+ * A helper class that implements ContextAware methods. Use this class to
+ * implement the ContextAware interface by composition.
  * 
  * @author Ceki G&uumllc&uuml;
  */
-public class ContextAwareImpl implements ContextAware {
+final public class ContextAwareImpl implements ContextAware {
 
   private int noContextWarning = 0;
   protected Context context;
-
+  final Object origin;
+  
+  public ContextAwareImpl(Object origin) {
+    this.origin = origin;
+  }
+  
   public void setContext(Context context) {
     if (this.context == null) {
       this.context = context;
@@ -61,27 +66,27 @@ public class ContextAwareImpl implements ContextAware {
   }
 
   public void addInfo(String msg) {
-    addStatus(new InfoStatus(msg, this));
+    addStatus(new InfoStatus(msg, origin));
   }
 
   public void addInfo(String msg, Throwable ex) {
-    addStatus(new InfoStatus(msg, this, ex));
+    addStatus(new InfoStatus(msg, origin, ex));
   }
 
   public void addWarn(String msg) {
-    addStatus(new WarnStatus(msg, this));
+    addStatus(new WarnStatus(msg, origin));
   }
 
   public void addWarn(String msg, Throwable ex) {
-    addStatus(new WarnStatus(msg, this, ex));
+    addStatus(new WarnStatus(msg, origin, ex));
   }
 
   public void addError(String msg) {
-    addStatus(new ErrorStatus(msg, this));
+    addStatus(new ErrorStatus(msg, origin));
   }
 
   public void addError(String msg, Throwable ex) {
-    addStatus(new ErrorStatus(msg, this, ex));
+    addStatus(new ErrorStatus(msg, origin, ex));
   }
 
 }

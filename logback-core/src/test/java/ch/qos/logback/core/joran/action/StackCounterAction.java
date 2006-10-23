@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
@@ -29,7 +29,7 @@ public class StackCounterAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     //String str = "Pushing "+name+"-begin";
     ec.pushObject(name+"-begin");
   }
@@ -38,11 +38,11 @@ public class StackCounterAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     //String str = "Pushing "+name+"-end";
     ec.pushObject(name+"-end");    
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

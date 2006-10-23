@@ -13,7 +13,7 @@ package joran.calculator;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
 public class LiteralAction extends Action {
   public static String VALUE_ATR = "value";
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String valueStr = attributes.getValue(VALUE_ATR);
 
     if (OptionHelper.isEmpty(valueStr)) {
@@ -47,7 +47,7 @@ public class LiteralAction extends Action {
     }
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     // Nothing to do here.
     // In general, the end() method of actions associated with elements
     // having no children do not need to perform any processing in their

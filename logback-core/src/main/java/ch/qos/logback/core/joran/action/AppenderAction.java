@@ -16,7 +16,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -32,7 +32,7 @@ public class AppenderAction extends Action {
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) throws ActionException {
+    InterpretationContext ec, String localName, Attributes attributes) throws ActionException {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
     // We are just beginning, reset variables
@@ -79,7 +79,7 @@ public class AppenderAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     if (inError) {
       return;
     }

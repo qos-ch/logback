@@ -18,11 +18,13 @@ import java.util.Vector;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
 import ch.qos.logback.core.joran.event.StartEvent;
+import ch.qos.logback.core.spi.ContextAwareImpl;
 
 /**
  * <id>Interpreter</id> is Joran's main driving class. It extends SAX
@@ -57,12 +59,13 @@ import ch.qos.logback.core.joran.event.StartEvent;
  * @author Ceki G&uuml;lcu&uuml;
  * 
  */
-public class Interpreter {
+public class Interpreter  {
   private static List EMPTY_LIST = new Vector(0);
   
   final private RuleStore ruleStore;
-  final private ExecutionContext ec;
+  final private InterpretationContext ec;
   final private ArrayList<ImplicitAction> implicitActions;
+  final private ContextAwareImpl cai;
   Pattern pattern;
   Locator locator;
 
@@ -82,15 +85,17 @@ public class Interpreter {
    */
   Pattern skip = null;
 
-  public Interpreter(RuleStore rs) {
-    ruleStore = rs;
-    ec = new ExecutionContext(this);
+  public Interpreter(Context context, RuleStore rs) {
+    this.cai = new ContextAwareImpl(this);
+    this.cai.setContext(context);
+    ruleStore = rs; 
+    ec = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
     pattern = new Pattern();
     actionListStack = new Stack<List>();
   }
 
-  public ExecutionContext getExecutionContext() {
+  public InterpretationContext getExecutionContext() {
     return ec;
   }
 
@@ -197,7 +202,7 @@ public class Interpreter {
    * one element.
    */
   List lookupImplicitAction(Pattern pattern, Attributes attributes,
-      ExecutionContext ec) {
+      InterpretationContext ec) {
     int len = implicitActions.size();
 
     for (int i = 0; i < len; i++) {
@@ -265,7 +270,7 @@ public class Interpreter {
       } catch (Exception e) {
         skip = (Pattern) pattern.clone();
         // getLogger().info("Skip pattern set to <{}>", skip);
-        ec.addError("Exception in Action for tag <" + tagName + ">", this, e);
+        cai.addError("Exception in Action for tag <" + tagName + ">", e);
       }
     }
   }
@@ -281,8 +286,7 @@ public class Interpreter {
       try {
         action.body(ec, body);
       } catch (ActionException ae) {
-        ec.addError("Exception in end() methd for action [" + action + "]",
-            this, ae);
+        cai.addError("Exception in end() methd for action [" + action + "]", ae);
       }
     }
   }
@@ -313,7 +317,7 @@ public class Interpreter {
         }
         // getLogger().info("Skip pattern set to <{}>", skip);
       } catch (Exception e) {
-        ec.addError("Exception in Action for tag <" + tagName + ">", this, e);
+        cai.addError("Exception in Action for tag <" + tagName + ">", e);
         skip = (Pattern) pattern.clone();
         skip.pop(); // induce the siblings to be skipped
         // getLogger().info("Skip pattern set to <{}>.", skip);

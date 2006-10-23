@@ -15,7 +15,7 @@ package joran.calculator;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -35,7 +35,7 @@ public class ComputationAction1 extends Action {
   /**
    * Store the value of the name attribute for future use.
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     nameStr = attributes.getValue(NAME_ATR);
   }
 
@@ -46,7 +46,7 @@ public class ComputationAction1 extends Action {
    * This value will be printed on the console but only if the action is 
    * named. Anonymous computation will not print their result.
    */
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     if (OptionHelper.isEmpty(nameStr)) {
       // nothing to do
     } else {

@@ -14,7 +14,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -28,7 +28,7 @@ public class MatcherAction extends Action {
    * 
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
-  public void begin(ExecutionContext ec, String localName, Attributes attributes)
+  public void begin(InterpretationContext ec, String localName, Attributes attributes)
       throws ActionException {
     
     matcher = null;
@@ -61,7 +61,7 @@ public class MatcherAction extends Action {
     }
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     if (inError) {
       return;
     }

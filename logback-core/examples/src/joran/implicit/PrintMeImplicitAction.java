@@ -13,7 +13,7 @@ package joran.implicit;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.ImplicitAction;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 
 
@@ -28,17 +28,17 @@ import ch.qos.logback.core.joran.spi.Pattern;
 public class PrintMeImplicitAction extends ImplicitAction {
   
   public boolean isApplicable(
-    Pattern pattern, Attributes attributes, ExecutionContext ec) {
+    Pattern pattern, Attributes attributes, InterpretationContext ec) {
     String printmeStr = attributes.getValue("printme");
 
     return Boolean.valueOf(printmeStr).booleanValue();
   }
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     System.out.println("Element <"+name+"> asked to be printed.");
    }
 
  
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
   }
 }

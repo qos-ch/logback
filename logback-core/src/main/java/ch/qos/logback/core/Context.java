@@ -36,10 +36,13 @@ public interface Context extends FilterAttachable {
    */
   public void putObject(String key, Object value);
   
-  /** 
-   * Get the properties specific for this context.
+  /**
+   * Get all the properties for this context as a Map. Note that
+   * the returned cop might be a copy not the original. Thus, modifying
+   * the returned Map will have no effect (on the original.)
+   * @return
    */
-  public Map getPropertyMap();
+  public Map<String, String> getPropertyMap();
 
   /** 
    * Get the property of this context.
@@ -51,7 +54,7 @@ public interface Context extends FilterAttachable {
    */
   public void setProperty(String key, String value);
   
-  
+ 
   /**
    * LB contexts have a notion of context-specific converter maps.
    * @return

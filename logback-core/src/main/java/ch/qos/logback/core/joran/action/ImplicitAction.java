@@ -12,7 +12,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 
 
@@ -37,7 +37,7 @@ public abstract class ImplicitAction extends Action {
    * @return Whether the implicit action is applicable in the current context
    */
   public abstract boolean isApplicable(
-    Pattern currentPattern, Attributes attributes, ExecutionContext ec);
+    Pattern currentPattern, Attributes attributes, InterpretationContext ec);
   
   
 }

@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.core.util;
 
-import java.util.Properties;
+import java.util.Map;
 
 import ch.qos.logback.core.CoreGlobal;
 
@@ -39,19 +39,19 @@ public class OptionHelper {
    * Then perform variable substitution on the found value.
    * 
    */
-  public static String findAndSubst(String key, Properties props) {
-    String value = props.getProperty(key);
-
-    if (value == null) {
-      return null;
-    }
-
-    try {
-      return substVars(value, props);
-    } catch (IllegalArgumentException e) {
-      return value;
-    }
-  }
+//  public static String findAndSubst(String key, Properties props) {
+//    String value = props.getProperty(key);
+//
+//    if (value == null) {
+//      return null;
+//    }
+//
+//    try {
+//      return substVars(value, props);
+//    } catch (IllegalArgumentException e) {
+//      return value;
+//    }
+//  }
 
   final static String DELIM_START = "${";
   final static char DELIM_STOP = '}';
@@ -59,25 +59,24 @@ public class OptionHelper {
   final static int DELIM_STOP_LEN = 1;
   /**
    * Perform variable substitution in string <code>val</code> from the values
-   * of keys found the properties passed as parameter or in the system
-   * properties.
+   * of keys found the primary map passed as first parameter, then in the secondary
+   * map, and last in the system properties.
    * 
    * <p>
    * The variable substitution delimeters are <b>${</b> and <b>}</b>.
    * 
    * <p>
-   * For example, if the properties parameter contains a property "key1" set as
+   * For example, if the primary map parameter contains a property "key1" set as
    * "value1", then the call
    * 
    * <pre>
-   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;);
+   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, priMap, null);
    * </pre>
-   * 
    * will set the variable <code>s</code> to "Value of key is value1.".
    * 
    * <p>
-   * If no value could be found for the specified key, then the system
-   * properties are searched, if the value could not be found there, then
+   * If no value could be found for the specified key, then the secondary map is searches, 
+   * and if that fails, the system properties are searched, if that fails, then
    * substitution defaults to the empty string.
    * 
    * <p>
@@ -86,7 +85,7 @@ public class OptionHelper {
    * 
    * <pre>
    * String s = OptionConverter
-   *     .subsVars(&quot;Value of inexistentKey is [${inexistentKey}]&quot;);
+   *     .subsVars(&quot;Value of inexistentKey is [${inexistentKey}]&quot;, priMap, null);
    * </pre>
    * 
    * will set <code>s</code> to "Value of inexistentKey is []".
@@ -113,7 +112,7 @@ public class OptionHelper {
    * @throws IllegalArgumentException
    *           if <code>val</code> is malformed.
    */
-  public static String substVars(String val, Properties props) {
+  public static String substVars(String val, Map<String, String> primaryMap, Map<String, String> secondaryMap) {
 
     StringBuffer sbuf = new StringBuffer();
 
@@ -155,8 +154,12 @@ public class OptionHelper {
           String replacement = null;
 
           // first try the props passed as parameter
-          if (props != null) {
-            replacement = props.getProperty(key);
+          if (primaryMap != null) {
+            replacement = primaryMap.get(key);
+          }
+          
+          if(replacement == null && secondaryMap != null) {
+            replacement = secondaryMap.get(key);
           }
 
           // then try in System properties
@@ -176,7 +179,7 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, props);
+            String recursiveReplacement = substVars(replacement, primaryMap, secondaryMap);
             sbuf.append(recursiveReplacement);
           }
 

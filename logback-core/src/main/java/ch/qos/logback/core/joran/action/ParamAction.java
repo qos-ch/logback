@@ -13,7 +13,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.PropertySetter;
 
 
@@ -24,7 +24,7 @@ public class ParamAction extends Action {
   boolean inError = false;
 
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) {
+    InterpretationContext ec, String localName, Attributes attributes) {
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(VALUE_ATTRIBUTE);
 
@@ -55,9 +55,9 @@ public class ParamAction extends Action {
     propSetter.setProperty(name, value);
   }
 
-  public void end(ExecutionContext ec, String localName) {
+  public void end(InterpretationContext ec, String localName) {
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

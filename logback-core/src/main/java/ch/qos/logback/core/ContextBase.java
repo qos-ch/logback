@@ -16,10 +16,9 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.status.StatusManager;
 
-
 public class ContextBase implements Context {
 
-	private String name;
+  private String name;
   StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
@@ -28,19 +27,19 @@ public class ContextBase implements Context {
   Map<String, Object> objectMap = new HashMap<String, Object>();
   Map<String, String> converterMap = new HashMap<String, String>();
   private FilterAttachableImpl fai = new FilterAttachableImpl();
-  
+
   public StatusManager getStatusManager() {
     return sm;
   }
-  
+
   public Map<String, String> getPropertyMap() {
-    return propertyMap;
+    return new HashMap<String, String>(propertyMap);
   }
 
   public void setProperty(String key, String val) {
     this.propertyMap.put(key, val);
   }
-  
+
   public String getProperty(String key) {
     return (String) this.propertyMap.get(key);
   }
@@ -52,7 +51,7 @@ public class ContextBase implements Context {
   public void putObject(String key, Object value) {
     objectMap.put(key, value);
   }
-  
+
   public Map<String, String> getConverterMap() {
     return converterMap;
   }
@@ -60,7 +59,7 @@ public class ContextBase implements Context {
   public void addFilter(Filter newFilter) {
     fai.addFilter(newFilter);
   }
-  
+
   public Filter getFirstFilter() {
     return fai.getFirstFilter();
   }
@@ -73,14 +72,14 @@ public class ContextBase implements Context {
     return fai.getFilterChainDecision(event);
   }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		if(this.name != null) {
-			throw new IllegalStateException("Context has been already given a name");
-		}
-		this.name = name;
-	}
+  public void setName(String name) {
+    if (this.name != null) {
+      throw new IllegalStateException("Context has been already given a name");
+    }
+    this.name = name;
+  }
 }

@@ -9,6 +9,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class FruitFactory {
 
+  static int count = 0;
+  
   List<SaxEvent> eventList;
   Fruit fruit;
   
@@ -22,6 +24,9 @@ public class FruitFactory {
     }
     Context context = new ContextBase();
     this.fruit = null;
+    context.setProperty("fruitKey", "orange-"+count);
+    // for next round
+    count++;
     FruitConfigurator fruitConfigurator = new FruitConfigurator(this);
     fruitConfigurator.setContext(context);
     try {

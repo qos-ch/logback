@@ -34,8 +34,12 @@ import ch.qos.logback.core.status.Status;
 
 public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
-  ContextAwareImpl cai = new ContextAwareImpl();
-
+  
+  final ContextAwareImpl cai;
+  
+  public SaxEventRecorder() {
+    cai =  new ContextAwareImpl(this);
+  }
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
   Locator locator;
   Pattern globalPattern = new Pattern();

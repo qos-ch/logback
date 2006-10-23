@@ -12,7 +12,7 @@ package joran.implicit;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
@@ -23,10 +23,10 @@ import ch.qos.logback.core.joran.spi.ExecutionContext;
  */
 public class NOPAction extends Action {
   
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
   }
 
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
   }
 }

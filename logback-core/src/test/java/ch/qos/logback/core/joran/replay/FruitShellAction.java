@@ -14,7 +14,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class FruitShellAction extends Action {
@@ -24,7 +24,7 @@ public class FruitShellAction extends Action {
 
   
   @Override
-  public void begin(ExecutionContext ec, String name, Attributes attributes)
+  public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
 
     // We are just beginning, reset variables
@@ -56,7 +56,7 @@ public class FruitShellAction extends Action {
   }
 
   @Override
-  public void end(ExecutionContext ec, String name) throws ActionException {
+  public void end(InterpretationContext ec, String name) throws ActionException {
     if (inError) {
       return;
     }

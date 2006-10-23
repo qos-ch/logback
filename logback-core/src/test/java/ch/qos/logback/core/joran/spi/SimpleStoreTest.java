@@ -137,35 +137,35 @@ public class SimpleStoreTest extends TestCase {
   
 
   class XAction extends Action {
-    public void begin(ExecutionContext ec, String name, Attributes attributes) {
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
     }
 
-    public void end(ExecutionContext ec, String name) {
+    public void end(InterpretationContext ec, String name) {
     }
 
-    public void finish(ExecutionContext ec) {
+    public void finish(InterpretationContext ec) {
     }
   }
 
   class YAction extends Action {
-    public void begin(ExecutionContext ec, String name, Attributes attributes) {
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
     }
 
-    public void end(ExecutionContext ec, String name) {
+    public void end(InterpretationContext ec, String name) {
     }
 
-    public void finish(ExecutionContext ec) {
+    public void finish(InterpretationContext ec) {
     }
   }
 
   class ZAction extends Action {
-    public void begin(ExecutionContext ec, String name, Attributes attributes) {
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
     }
 
-    public void end(ExecutionContext ec, String name) {
+    public void end(InterpretationContext ec, String name) {
     }
 
-    public void finish(ExecutionContext ec) {
+    public void finish(InterpretationContext ec) {
     }
   }
 }

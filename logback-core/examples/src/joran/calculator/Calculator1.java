@@ -10,72 +10,59 @@
 
 package joran.calculator;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.HashMap;
+import java.util.Map;
 
+import joran.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.util.StatusPrinter;
-
 
 /**
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
  * 
- * The first and only argument of this application must be the path to
- * the XML file to interpret. There are sample XML files in the 
- * <em>examples/src/joran/calculator/</em> directory. 
- *
+ * The first and only argument of this application must be the path to the XML
+ * file to interpret. There are sample XML files in the
+ * <em>examples/src/joran/calculator/</em> directory.
+ * 
  * For example,
- *
-<pre>
-    java joran.calculator.Calculator1 examples/src/joran/calculator/calculator1.xml
-</pre>
- *
+ * 
+ * <pre>
+ *  java joran.calculator.Calculator1 examples/src/joran/calculator/calculator1.xml
+ * </pre>
+ * 
  * Please refer to the comments in the source code for more information.
  * 
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class Calculator1 {
-  
-  
+
   public static void main(String[] args) throws Exception {
     Context context = new ContextBase();
-    
-    // Create a simple rule store where pattern and action associations will
-    // be kept. This is a basic requirement before invoking a Joran Interpreter.
-    RuleStore ruleStore = new SimpleRuleStore(context);
 
-    // Associate "/computation" pattern with  ComputationAction1
-    ruleStore.addRule(new Pattern("/computation"), new ComputationAction1());
+    Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+
+    // Associate "/computation" pattern with ComputationAction1
+    ruleMap.put(new Pattern("/computation"), new ComputationAction1());
 
     // Other associations
-    ruleStore.addRule(new Pattern("/computation/literal"), new LiteralAction());
-    ruleStore.addRule(new Pattern("/computation/add"), new AddAction());
-    ruleStore.addRule(new Pattern("/computation/multiply"), new MultiplyAction());
-    
-    // Create a new Joran Interpreter and hand it our simple rule store.
-    Interpreter ji = new Interpreter(ruleStore);
-    // set the context for the interpreter's execution context
-    ExecutionContext ec = ji.getExecutionContext();
-    ec.setContext(context);
+    ruleMap.put(new Pattern("/computation/literal"), new LiteralAction());
+    ruleMap.put(new Pattern("/computation/add"), new AddAction());
+    ruleMap.put(new Pattern("/computation/multiply"), new MultiplyAction());
 
-    
-    // Create a SAX parser
-    SAXParserFactory spf = SAXParserFactory.newInstance();
-    SAXParser saxParser = spf.newSAXParser();
+    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+    // link the configurator with its context
+    simpleConfigurator.setContext(context);
 
-    // Parse the file given as the application's first argument and
-    // set the SAX ContentHandler to the Joran Interpreter we just created.
-    saxParser.parse(args[0], ji);
-
-    // The file has been parsed and interpreted. We now print any errors that 
-    // might have occured.
-    StatusPrinter.print(context);
+    try {
+      simpleConfigurator.doConfigure(args[0]);
+    } catch (JoranException e) {
+      // Print any errors that might have occured.
+      StatusPrinter.print(context);
+    }
   }
 }

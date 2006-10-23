@@ -17,20 +17,20 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class ListenAction extends Action implements InPlayListener {
 
   List<SaxEvent> seList = new ArrayList<SaxEvent>();
 
   @Override
-  public void begin(ExecutionContext ec, String name, Attributes attributes)
+  public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
     ec.addInPlayListener(this);
   }
 
   @Override
-  public void end(ExecutionContext ec, String name) throws ActionException {
+  public void end(InterpretationContext ec, String name) throws ActionException {
     ec.removeInPlayListener(this);
 
   }

@@ -14,7 +14,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
@@ -28,7 +28,7 @@ public class TouchAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     Integer i = (Integer) ec.getContext().getObject(KEY);
     if(i == null) {
       ec.getContext().putObject(KEY, new Integer(1));
@@ -41,6 +41,6 @@ public class TouchAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
   }
 }

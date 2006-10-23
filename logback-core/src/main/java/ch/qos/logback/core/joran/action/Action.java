@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -51,20 +51,20 @@ public abstract class Action extends ContextAwareBase {
    * the returned value is 'false', then child elements are ignored.
    */
   public abstract void begin(
-    ExecutionContext ec, String name, Attributes attributes) throws ActionException ;
+    InterpretationContext ec, String name, Attributes attributes) throws ActionException ;
 
 
-  public void body(ExecutionContext ec, String body) throws ActionException {
+  public void body(InterpretationContext ec, String body) throws ActionException {
     // NOP
   }
 
-  public abstract void end(ExecutionContext ec, String name) throws ActionException;
+  public abstract void end(InterpretationContext ec, String name) throws ActionException;
 
   public String toString() {
     return this.getClass().getName();
   }
 
-  protected int getColumnNumber(ExecutionContext ec) {
+  protected int getColumnNumber(InterpretationContext ec) {
     Interpreter jp = ec.getJoranInterpreter();
     Locator locator = jp.getLocator();
     if (locator != null) {
@@ -73,7 +73,7 @@ public abstract class Action extends ContextAwareBase {
     return -1;
   }
 
-  protected int getLineNumber(ExecutionContext ec) {
+  protected int getLineNumber(InterpretationContext ec) {
     Interpreter jp = ec.getJoranInterpreter();
     Locator locator = jp.getLocator();
     if (locator != null) {

@@ -213,8 +213,8 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   }
 
   public void rollover() throws RolloverFailure {
-    addInfo("roll-over called");
-    addInfo("compressionMode: " + compressionMode);
+    //addInfo("roll-over called");
+    //addInfo("compressionMode: " + compressionMode);
 
     if (activeFileName == null) {
       switch (compressionMode) {
