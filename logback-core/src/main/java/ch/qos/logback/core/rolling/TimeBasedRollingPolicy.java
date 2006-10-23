@@ -255,6 +255,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   * as computed by the <b>FileNamePattern</b> option.
   *
   */
+  @Override
   public String getActiveFileName() {
     if (activeFileName == null) {
       return activeFileNamePattern.convertDate(lastCheck);

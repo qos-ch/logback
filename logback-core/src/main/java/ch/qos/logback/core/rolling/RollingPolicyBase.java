@@ -78,5 +78,9 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   public void stop() {
     started = false;
   }
+
+  public String getActiveFileName() {
+    return activeFileName;
+  }
   
 }
