@@ -17,7 +17,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ActionConst;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -25,7 +25,7 @@ import ch.qos.logback.core.util.OptionHelper;
 public class LoggerAction extends Action {
   boolean inError = false;
   
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
@@ -63,12 +63,12 @@ public class LoggerAction extends Action {
     ec.pushObject(l);
   }
 
-  public void end(ExecutionContext ec, String e) {
+  public void end(InterpretationContext ec, String e) {
     if (!inError) {
       ec.popObject();
     }
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

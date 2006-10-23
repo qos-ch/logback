@@ -79,6 +79,7 @@ public class LoggingEventSerializationTest extends TestCase {
     assertNotNull(loggerContextRemoteView);
     assertEquals("testContext", loggerContextRemoteView.getName());
     Map<String, String> props = loggerContextRemoteView.getPropertyMap();
+    assertNotNull(props);
     assertEquals("testValue", props.get("testKey"));
   }
   

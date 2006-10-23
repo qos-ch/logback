@@ -1,5 +1,5 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -25,26 +25,23 @@ import ch.qos.logback.classic.LoggerContext;
  */
 public class LoggerRemoteView implements Serializable {
 
+  private static final long serialVersionUID = 5028223666108713696L;
 
-	private static final long serialVersionUID = 5028223666108713696L;
+  final LoggerContextRemoteView loggerContextView;
+  final String name;
 
-	final LoggerContextRemoteView loggerContextView;
-	final String name;
+  public LoggerRemoteView(String name, LoggerContext lc) {
+    this.name = name;
+    assert lc.getLoggerContextRemoteView() != null;
+    loggerContextView = lc.getLoggerContextRemoteView();
+  }
 
-	public LoggerRemoteView(String name, LoggerContext lc) {
-		this.name = name;
-		assert lc.getLoggerContextRemoteView() != null;
-		loggerContextView = lc.getLoggerContextRemoteView();
-	}
-	
-	
-	public LoggerContextRemoteView getLoggerContextView() {
-		return loggerContextView;
-	}
+  public LoggerContextRemoteView getLoggerContextView() {
+    return loggerContextView;
+  }
 
-	public String getName() {
-		return name;
-	}
-
+  public String getName() {
+    return name;
+  }
 
 }

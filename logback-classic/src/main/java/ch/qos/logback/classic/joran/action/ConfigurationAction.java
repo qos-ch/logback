@@ -13,7 +13,7 @@ package ch.qos.logback.classic.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
@@ -21,7 +21,7 @@ public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
   boolean attachment = false;
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
 
     if (
@@ -36,7 +36,7 @@ public class ConfigurationAction extends Action {
     }
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     if (attachment) {
       addInfo("End of configuration.");
       //LoggerContext loggerContext = (LoggerContext) context;

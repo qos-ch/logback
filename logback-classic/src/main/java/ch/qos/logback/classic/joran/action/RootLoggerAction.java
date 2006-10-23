@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class RootLoggerAction extends Action {
   static final String NAME_ATTR = "name";
@@ -27,7 +27,7 @@ public class RootLoggerAction extends Action {
   Logger root;
   boolean inError = false;
   
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     inError = false;
     //logger.debug("In begin method");
 
@@ -38,7 +38,7 @@ public class RootLoggerAction extends Action {
     ec.pushObject(root);
   }
 
-  public void end(ExecutionContext ec, String name) {
+  public void end(InterpretationContext ec, String name) {
     //logger.debug("end() called.");
 
     if (inError) {
@@ -57,6 +57,6 @@ public class RootLoggerAction extends Action {
     }
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 }

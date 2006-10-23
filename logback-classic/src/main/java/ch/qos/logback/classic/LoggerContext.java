@@ -61,6 +61,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
       logger.buildRemoteView();
     }
   }
+  
+  @Override
+  public void setProperty(String key, String val) {
+    super.setProperty(key, val);
+    syncRemoteView();
+  }
 
   @Override
   public void setName(String name) {

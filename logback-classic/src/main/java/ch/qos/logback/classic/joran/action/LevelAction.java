@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ExecutionContext;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 public class LevelAction extends Action {
@@ -29,7 +29,7 @@ public class LevelAction extends Action {
 
   boolean inError = false;
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
     Object o = ec.peekObject();
 
     if (!(o instanceof Logger)) {
@@ -55,9 +55,9 @@ public class LevelAction extends Action {
     addInfo(loggerName + " level set to " + l.getLevel());
   }
 
-  public void finish(ExecutionContext ec) {
+  public void finish(InterpretationContext ec) {
   }
 
-  public void end(ExecutionContext ec, String e) {
+  public void end(InterpretationContext ec, String e) {
   }
 }
