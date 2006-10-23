@@ -56,6 +56,13 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>janino</groupId>
+			<artifactId>janino</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
