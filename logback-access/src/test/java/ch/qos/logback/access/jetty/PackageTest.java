@@ -16,8 +16,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    // FIXME Why doesn't JettyBasicTest.class pass?
-    //suite.addTestSuite(JettyBasicTest.class);
+    suite.addTest(JettyBasicTest.suite());
     return suite;
   }
 }
