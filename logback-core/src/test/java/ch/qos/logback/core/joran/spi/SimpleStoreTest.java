@@ -72,14 +72,13 @@ public class SimpleStoreTest extends TestCase {
     // jp.parse(doc);
   }
 
-  public void test2() throws Exception {
+  public void testTail1() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
 
     List r = srs.matchActions(new Pattern("a/b"));
     assertNotNull(r);
 
-    // System.out.println(r);
     assertEquals(1, r.size());
 
     if (!(r.get(0) instanceof XAction)) {
@@ -87,7 +86,22 @@ public class SimpleStoreTest extends TestCase {
     }
   }
 
-  public void test3() throws Exception {
+  
+  public void testTail2() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    srs.addRule(new Pattern("*/c"), new XAction());
+
+    List r = srs.matchActions(new Pattern("a/b/c"));
+    assertNotNull(r);
+
+    assertEquals(1, r.size());
+
+    if (!(r.get(0) instanceof XAction)) {
+      fail("Wrong type");
+    }
+  }
+  
+  public void testTail3() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
     srs.addRule(new Pattern("*/a/b"), new YAction());
@@ -103,7 +117,7 @@ public class SimpleStoreTest extends TestCase {
     }
   }
 
-  public void test4() throws Exception {
+  public void testTail4() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
     srs.addRule(new Pattern("*/a/b"), new YAction());
@@ -127,16 +141,55 @@ public class SimpleStoreTest extends TestCase {
 
     List r = srs.matchActions(new Pattern("a/b"));
     assertNotNull(r);
-
     assertEquals(1, r.size());
-
-    if (!(r.get(0) instanceof YAction)) {
-      fail("Wrong type");
-    }
+    assertTrue(r.get(0) instanceof YAction);
   }
   
+  public void testDeepSuffix() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    srs.addRule(new Pattern("a"), new XAction(1));
+    srs.addRule(new Pattern("a/b/*"), new XAction(2));
 
+    List r = srs.matchActions(new Pattern("a/other"));
+    assertNull(r);
+  }
+
+  public void testPrefixSuffixInteraction1() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    srs.addRule(new Pattern("a"), new ZAction());
+    srs.addRule(new Pattern("a/*"), new YAction());
+    srs.addRule(new Pattern("*/a/b"), new XAction(3));
+
+    List r = srs.matchActions(new Pattern("a/b"));
+    assertNotNull(r);
+
+    assertEquals(1, r.size());
+    
+    assertTrue(r.get(0) instanceof XAction);
+    XAction xaction = (XAction) r.get(0);
+    assertEquals(3, xaction.id);
+  }
+
+  public void testPrefixSuffixInteraction2() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    srs.addRule(new Pattern("testGroup"), new XAction());
+    srs.addRule(new Pattern("testGroup/testShell"), new YAction());
+    srs.addRule(new Pattern("testGroup/testShell/test"), new ZAction());
+    srs.addRule(new Pattern("testGroup/testShell/test/*"), new XAction(9));
+    
+    List r = srs.matchActions(new Pattern("testGroup/testShell/toto"));
+    System.out.println(r);
+    assertNull(r);
+  }
+  
   class XAction extends Action {
+    int id = 0;
+    XAction() {
+    }
+    XAction(int id) {
+      this.id = id;
+    }
+
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
     }
 
@@ -145,6 +198,10 @@ public class SimpleStoreTest extends TestCase {
 
     public void finish(InterpretationContext ec) {
     }
+    
+    public String toString() {
+     return "XAction("+id+")";
+    }    
   }
 
   class YAction extends Action {
@@ -168,4 +225,5 @@ public class SimpleStoreTest extends TestCase {
     public void finish(InterpretationContext ec) {
     }
   }
+
 }

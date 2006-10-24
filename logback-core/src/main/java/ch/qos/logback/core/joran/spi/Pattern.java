@@ -154,7 +154,8 @@ public class Pattern {
       String l = (String) this.components.get(i);
       String r = (String) p.components.get(i);
 
-      if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
+      //if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
+      if (l.equals(r)) {
         match++;
       } else {
         break;

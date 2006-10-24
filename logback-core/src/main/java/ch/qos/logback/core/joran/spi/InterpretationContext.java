@@ -71,6 +71,10 @@ public class InterpretationContext extends ContextAwareBase {
     return objectStack;
   }
 
+  public boolean isEmpty() {
+    return objectStack.isEmpty();
+  }
+
   public Object peekObject() {
     return objectStack.peek();
   }

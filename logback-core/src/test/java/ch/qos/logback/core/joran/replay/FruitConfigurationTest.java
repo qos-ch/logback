@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -30,19 +31,24 @@ public class FruitConfigurationTest extends TestCase {
 
   public List<FruitShell> doFirstPart(String filename) throws Exception {
 
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("group/fruitShell"), new FruitShellAction());
-    rulesMap.put(new Pattern("group/fruitShell/fruit"), new FruitFactoryAction());
-    rulesMap.put(new Pattern("group/fruitShell/fruit/*"), new NOPAction());
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
+    try {
+      HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+      rulesMap.put(new Pattern("group/fruitShell"), new FruitShellAction());
+      rulesMap.put(new Pattern("group/fruitShell/fruit"),
+          new FruitFactoryAction());
+      rulesMap.put(new Pattern("group/fruitShell/fruit/*"), new NOPAction());
+      SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
 
-    simpleConfigurator.setContext(fruitContext);
+      simpleConfigurator.setContext(fruitContext);
 
-    simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/" + filename);
+      simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/"
+          + filename);
 
-    StatusPrinter.print(fruitContext);
-    return fruitContext.getFruitShellList();
-
+      return fruitContext.getFruitShellList();
+    } catch (Exception je) {
+      StatusPrinter.print(fruitContext);
+      throw je;
+    }
   }
 
   public void test1() throws Exception {
@@ -69,7 +75,7 @@ public class FruitConfigurationTest extends TestCase {
     Fruit fruit0 = fs0.fruitFactory.buildFruit();
     assertTrue(fruit0 instanceof Fruit);
     assertEquals("blue", fruit0.getName());
-    
+
     FruitShell fs1 = fsList.get(1);
     assertNotNull(fs1);
     assertEquals("fs1", fs1.getName());
@@ -78,7 +84,7 @@ public class FruitConfigurationTest extends TestCase {
     assertEquals("orange", fruit1.getName());
     assertEquals(1.2, ((WeightytFruit) fruit1).getWeight());
   }
-  
+
   public void testWithSubst() throws Exception {
     List<FruitShell> fsList = doFirstPart("fruitWithSubst.xml");
     assertNotNull(fsList);
@@ -90,13 +96,13 @@ public class FruitConfigurationTest extends TestCase {
     int oldCount = FruitFactory.count;
     Fruit fruit0 = fs0.fruitFactory.buildFruit();
     assertTrue(fruit0 instanceof WeightytFruit);
-    assertEquals("orange-"+oldCount, fruit0.getName());
+    assertEquals("orange-" + oldCount, fruit0.getName());
     assertEquals(1.2, ((WeightytFruit) fruit0).getWeight());
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    //suite.addTest(new FruitConfigurationTest("testWithSubst"));
+    // suite.addTest(new FruitConfigurationTest("testWithSubst"));
     suite.addTestSuite(FruitConfigurationTest.class);
     return suite;
   }

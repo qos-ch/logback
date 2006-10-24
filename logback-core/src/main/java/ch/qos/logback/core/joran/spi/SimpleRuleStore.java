@@ -82,6 +82,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     } else if ( (actionList = tailMatch(currentPattern)) != null){
         return actionList;
     } else if ((actionList = prefixMatch(currentPattern)) != null) {
+      //System.out.println(currentPattern + " prefixMatches "+actionList);
       return actionList;
     } else {
       return null;
@@ -121,9 +122,11 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
       String last = p.peekLast();
       if("*".equals(last)) {
         int r = currentPattern.getPrefixMatchLength(p);
-
-        //System.out.println("prefixMatch " +r);
-        if (r > max) {
+        
+        //System.out.println("r = "+ r + ", p= "+p);
+        
+        // to qualify the match length must equal p's size omitting the '*'
+        if ((r == p.size()-1) && (r > max)) {
           //System.out.println("New longest prefixMatch "+p);
           max = r;
           longestMatchingPattern = p;

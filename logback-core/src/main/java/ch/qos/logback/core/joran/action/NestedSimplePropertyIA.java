@@ -45,6 +45,11 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
+    // no point in attempting if there is no parent object
+    if(ec.isEmpty()) {
+      return false;
+    }
+    
     Object o = ec.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
 

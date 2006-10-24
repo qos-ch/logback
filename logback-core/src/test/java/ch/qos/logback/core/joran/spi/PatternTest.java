@@ -132,7 +132,7 @@ public class PatternTest extends TestCase {
     {
       Pattern p = new Pattern("/a/b");
       Pattern rulePattern = new Pattern("/a/*");
-      assertEquals(2, p.getPrefixMatchLength(rulePattern));
+      assertEquals(1, p.getPrefixMatchLength(rulePattern));
     }
     
     {
@@ -144,7 +144,7 @@ public class PatternTest extends TestCase {
     {
       Pattern p = new Pattern("/a/b");
       Pattern rulePattern = new Pattern("/*");
-      assertEquals(1, p.getPrefixMatchLength(rulePattern));
+      assertEquals(0, p.getPrefixMatchLength(rulePattern));
     }
   }
 
