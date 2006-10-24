@@ -395,4 +395,8 @@ public class PropertySetter extends ContextAwareBase {
 
     return null;
   }
+
+  public Object getObj() {
+    return obj;
+  }
 }

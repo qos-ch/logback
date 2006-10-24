@@ -122,14 +122,22 @@ public class NestedComponentIA extends ImplicitAction {
       return;
     }
 
+//    PropertySetter nestedBean = new PropertySetter(actionData.nestedComponent);
+    
+//    FIXME
+//    nestedBean.setComponent(
+//        "parent", actionData.parentBean.getObj());
+    
     if (actionData.nestedComponent instanceof LifeCycle) {
       ((LifeCycle) actionData.nestedComponent).start();
     }
+    
+    
 
     Object o = ec.peekObject();
 
     if (o != actionData.nestedComponent) {
-      addWarn(
+      addError(
         "The object on the top the of the stack is not the component pushed earlier.");
     } else {
       //getLogger().debug("Removing component from the object stack");
