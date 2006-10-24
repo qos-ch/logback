@@ -3,7 +3,6 @@ package ch.qos.logback.core.html;
 import java.util.Map;
 
 import ch.qos.logback.core.LayoutBase;
-import ch.qos.logback.core.helpers.CssBuilder;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.parser.Node;
@@ -23,6 +22,8 @@ public abstract class HTMLLayoutBase extends LayoutBase {
 
   protected String title = "Logback Log Messages";
 
+  //It is the responsability of derived classes to set
+  //this variable in their constructor to a default value.
   protected CssBuilder cssBuilder;
 
   protected IThrowableRenderer throwableRenderer; //no more initialization ??????
@@ -131,11 +132,13 @@ public abstract class HTMLLayoutBase extends LayoutBase {
     sbuf.append(title);
     sbuf.append("</title>");
     sbuf.append(LINE_SEP);
-    if (cssBuilder == null) {
-      CssBuilder.addDefaultCSS(sbuf);
-    } else {
-      cssBuilder.addExternalCSS(sbuf);
-    }
+    
+    cssBuilder.addCss(sbuf);
+//    if (cssBuilder == null) {
+//      DefaultCssBuilder.addDefaultCSS(sbuf);
+//    } else {
+//      cssBuilder.addExternalCSS(sbuf);
+//    }
     sbuf.append(LINE_SEP);
     sbuf.append("</head>");
     sbuf.append(LINE_SEP);

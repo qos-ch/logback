@@ -83,8 +83,12 @@ public class RollingFileAppender extends FileAppender {
       // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
       activeFileCache = new File(afn);
       addInfo("Active log file name: "+afn);
-      setFile(afn);
 
+      // The local setFile throws an exception, so we use the parent's version.
+      // This is to prevent the user from configuring both the RollingFileAppender with
+      // an activeFileName _and_ the FileAppender's file attribute, causing confusion
+      // on the attributes' uses.
+      super.setFile(afn);
       super.start();
     } else {
       addWarn("No RollingPolicy was set for the RollingFileAppender named "+ getName());
@@ -184,5 +188,11 @@ public class RollingFileAppender extends FileAppender {
     if(policy instanceof RollingPolicy) {
       rollingPolicy = (RollingPolicy) policy;
     }
+  }
+  
+  @Override
+  public void setFile(String filename) {
+    throw new UnsupportedOperationException("With RollingFileAppender please use activeFileName " +
+                                "option instead of File");
   }
 }
