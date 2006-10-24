@@ -40,11 +40,11 @@ import ch.qos.logback.core.util.StatusPrinter;
  * &lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/&gt;
  * <p>
  * By default, LogbackValve looks for a logback configuration file called
- * logback.xml, in the same folder where the tomcat configuration is located,
- * that is /conf/logback.xml. The logback.xml file is slightly different than
- * the usual logback classic configuration file. Most of it is the same:
- * Appenders and Layouts are declared the exact same way. However, loggers
- * elements are not allowed.
+ * logback-access.xml, in the same folder where the tomcat configuration is located,
+ * that is $TOMCAT_HOME/conf/logback-access.xml. The format of logback-access configuration file 
+ * is only slightly different than for logback-classic. Most of it remains the same:
+ * Appenders and Layouts are declared the same way. However, since logback-access has 
+ * no notion of declared loggers, logger elements are not allowed.
  * <p>
  * Here is a sample logback.xml file that can be used right away:
  * 
@@ -77,7 +77,7 @@ public class LogbackValve extends ValveBase implements Context,
     AppenderAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
-      + "logback.xml";
+      + "logback-access.xml";
 
   // Attributes from ContextBase:
   private String name;
