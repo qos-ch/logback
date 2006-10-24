@@ -48,6 +48,11 @@ public class NestedComponentIA extends ImplicitAction {
     //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
+    // calling ec.peekObject with an empty stack will throw an exception
+    if(ec.isEmpty()) {
+      return false;
+    }
+    
     Object o = ec.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
 
