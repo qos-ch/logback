@@ -54,6 +54,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs
         .addRule(new Pattern("configuration/appender/layout"),
             new LayoutAction());
+    super.addInstanceRules(rs);
   }
 
 }
