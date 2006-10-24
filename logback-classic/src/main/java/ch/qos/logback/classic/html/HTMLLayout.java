@@ -26,57 +26,9 @@ import ch.qos.logback.core.pattern.Converter;
  * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns.
  * <p>
- * Note that the pattern <em>%ex</em> used to display an Exception is not the only way
- * to display an Exception with this layout. If you use this pattern, a table column will
- * be created to display the potential Exception's stacktrace.
- * <p>
- * However, a better solution is available in the form of implementations of the 
- * {@link ch.qos.logback.classic.html.IThrowableRenderer}  interface.
- * These implementations can be called and assigned to HTMLLayout to manage the display
- * of anything related to Exceptions.
- * <p>
- * By default, a {@link ch.qos.logback.classic.html.DefaultThrowableRenderer} 
- * is assigned to the HTMLLayout. It writes the Exception on a new table row, along
- * with its stacktrace, in a easily readable manner.
- * <p>
- * If one wants to use the <em>&ex</em> pattern anyway, then a NOPThrowableRenderer
- * can be specified in the configuration file.
- * <p>
- * A user-specified external CSS file can be linked to the html page. 
- * In case one does not want to customize the html output, an internal CSS style
- * is used.
+ * For more informations about this layout, please refer to the online manual at
+ * http://logback.qos.ch/manual/layouts.html#ClassicHTMLLayout
  * 
- * The HTMLLayout is often used in conjunction with SMTPAppender, to
- * send a nicely formatted html email. Of course, it can be used with any
- * other Appender.
- * 
- * In case on wants to use the HTMLLayout with a SMTPAppender, here is a sample
- * configuration file that can be used.
- * 
- * <pre>
- * &lt;configuration&gt;
- *   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
- *     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
- *       &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
- *     &lt;/layout&gt;
- *     &lt;throwableRenderer class="ch.qos.logback.classic.html.DefaultThrowableRenderer" /&gt;
- *    &lt;param name="From" value="sender.email@domain.net" /&gt;
- *    &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
- *    &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
- *    &lt;param name="To" value="destination.email@domain.net" /&gt;
- *   &lt;/appender&gt;
- *
- *   &lt;root&gt;
- *     &lt;level value="debug" /&gt;
- *     &lt;appender-ref ref="SMTP" /&gt;
- *   &lt;/root&gt;
- * &lt;/configuration&gt;
- *</pre>
- * <p>
- * In this configuration file, the <em>throwableRenderer</em> element specifies the default
- * implementation of IThrowableRenderer. It could be omitted, but is showed for educationnal
- * purposes.
- * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */

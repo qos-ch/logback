@@ -43,19 +43,12 @@
 				</td>
 			</tr>
 		</table>
+	
+		<p>Printing notice: if you want to print this document, you  might want to
+		use Firefox, with <em>Adapt to page size</em> enabled, 
+		or Opera for better rendering on paper.</p>
 
 		<h2>What is a layout</h2>
-
-<div class="source">this
-is
-   a     test
-  without pres</div>
-
-
-<div class="source"><pre>this
-is
-   a     test
-  with pres</pre></div>
 
 		<p>
 			While appenders are responsible for writing logging output
@@ -486,14 +479,14 @@ WARN  [main]: Message 2</pre></div>
 					</p>
 					<p>For example, <b>%caller{2}</b> would display the following excerpt:</p>
 					
-<div class="source"><pre>0    [main] DEBUG - logging statement Caller+0	 \
-at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
-Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre></div>
+<div class="source"><pre>0    [main] DEBUG - logging statement 
+Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre></div>
 					<p>And <b>%caller{3}</b> would display this other excerpt:</p>
-<div class="source"><pre>16   [main] DEBUG - logging statement Caller+0	 \
-at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
-Caller+1	 at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
-Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
+<div class="source"><pre>16   [main] DEBUG - logging statement 
+Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
+Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					
 					<p>
 						This conversion word can also use evaluators to test logging events

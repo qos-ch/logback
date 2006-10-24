@@ -25,9 +25,9 @@ public class CallerEvaluatorExample {
 
     for (int i = 0; i < 5; i++) {
       if (i == 3) {
-        logger.debug("stacktrace logging statement" + i);
+        logger.debug("who calls thee?");
       } else {
-        logger.debug("logging statement" + i);
+        logger.debug("I know me " + i);
       }
     }
   }

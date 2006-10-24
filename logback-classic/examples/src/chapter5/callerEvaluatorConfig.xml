@@ -1,7 +1,7 @@
 <configuration>
 
 	<evaluator name="DISPLAY_CALLER_EVAL">
-		<Expression>logger.getName().contains("chapter5") &amp;&amp; message.contains("stacktrace")</Expression>
+		<Expression>logger.getName().contains("chapter5") &amp;&amp; message.contains("who calls thee")</Expression>
 	</evaluator>
 	
   <appender name="STDOUT"

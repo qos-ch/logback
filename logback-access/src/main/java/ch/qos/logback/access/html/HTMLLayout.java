@@ -27,33 +27,10 @@ import ch.qos.logback.core.pattern.Converter;
  * See {@link ch.qos.logback.access.PatternLayout} for documentation on the
  * available patterns.
  * <p>
- * A user-specified external CSS file can be linked to the html page. 
- * In case one does not want to customize the html output, an internal CSS style
- * is used.
+ * For more informations about this layout, please refer to the online manual at
+ * http://logback.qos.ch/manual/layouts.html#AccessHTMLLayout
  * 
- * The HTMLLayout is often used in conjunction with SMTPAppender, to
- * send a nicely formatted html email. Of course, it can be used with any
- * other Appender.
  * 
- * In case on wants to use the HTMLLayout with a SMTPAppender, here is a sample
- * configuration file that can be used.
- * 
- * <pre>
- * &lt;configuration&gt;
- *   &lt;appender name="SMTP" class="ch.qos.logback.access.net.SMTPAppender"&gt;
- *     &lt;layout class="ch.qos.logback.access.html.HTMLLayout"&gt;
- *       &lt;param name="pattern" value="%remoteIP%date%requestURL%statusCode%bytesSent" /&gt;
- *     &lt;/layout&gt;
- *    &lt;param name="From" value="sender.email@domain.net" /&gt;
- *    &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
- *    &lt;param name="Subject" value="LastEvent: %statusCode %requestURL" /&gt;
- *    &lt;param name="To" value="destination.email@domain.net" /&gt;
- *   &lt;/appender&gt;
- *
- *   &lt;appender-ref ref="SMTP" /&gt;
- * &lt;/configuration&gt;
- *</pre>
- * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
