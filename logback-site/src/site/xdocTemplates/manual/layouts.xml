@@ -46,6 +46,17 @@
 
 		<h2>What is a layout</h2>
 
+<div class="source">this
+is
+   a     test
+  without pres</div>
+
+
+<div class="source"><pre>this
+is
+   a     test
+  with pres</pre></div>
+
 		<p>
 			While appenders are responsible for writing logging output
 			to an appender dependent device, layouts are responsible for
@@ -211,6 +222,7 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
 		to a layout is as simple as declaring a setter method for the option. 
 		See also <em>chapter5/sampleLayoutConfig2.xml</em> for a configuration example.</p>
 
+		<a name="AccessPatternLayout" />
 		<h3>PatternLayout</h3>
 
 		<p>
@@ -877,9 +889,20 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			example, the MDC conversion specifier:
 			<em>%mdc{someKey}</em>.
 		</p>
-		<p>However, there is more to it than that.</p>
+		<p>A conversion specifier might use more that one options. For example, 
+		a conversion specifier that uses evaluators, which we will cover very soon,
+		simply adds the evaluator names to the options list, as shown above</p>
 
-		<p><b>ADD OPTIONS EXAMPLES</b></p>
+		<div class="source"><pre>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
+        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
+    &lt;/layout>
+  &lt;/appender></pre></div>
+
+		
+
 
 		<h4>Evaluators</h4>
 		<p>
@@ -923,13 +946,13 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<div class="source"><pre>&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
     &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
-      message.contains("stacktrace")&lt;/Expression>
+      message.contains("who calls thee")&lt;/Expression>
   &lt;/evaluator></b>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
       &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL}</b>%n" /> 
+        <b>%caller{2, DISP_CALLER_EVAL}</b>" /> 
     &lt;/layout>
   &lt;/appender>
 
@@ -962,9 +985,9 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
     <b>for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
-        logger.debug("stacktrace logging statement" + i);
+        logger.debug("who calls thee?");
       } else {
-        logger.debug("logging statement" + i);
+        logger.debug("I know me " + i);
       }
     }</b>
   }
@@ -993,14 +1016,14 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 0    [main] DEBUG - logging statement4</pre></div>
 
 		<p>
-			Of course, one can change the expression to match one's
-			specific situation. An expression testing logger name and
+			Of course, one can change the expression to match a real
+			world situation. An expression testing logger name and
 			request level could also be meaningful: all logging requests of
 			level <em>WARN</em> and up, coming from a sensible part of an application
 			like a financial transaction module, would have their caller data displayed.
 		</p>
 		<p><b>Important:</b> With the <em>caller</em> conversion specifier, the data is
-		displayed when <em>the expression passed to the evaluator is <b>true</b>.</em></p>
+		displayed when <em>the expression evaluates to <b>true</b>.</em></p>
 		<p>
 			Let's look at a different situation. When exceptions are
 			added to a logging request, they are usually displayed. However, in some cases,
@@ -1070,8 +1093,9 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			exception.
 		</p>
 		<p><b>Important:</b> With the <em>ex</em> conversion specifier, the data is
-		displayed when <em>the expression passed to the evaluator is <b>false</b>.</em></p>
+		displayed when <em>the expression evaluates to <b>false</b>.</em></p>
 
+		<a name="ClassicHTMLLayout"/>
 		<h3>HTMLLayout</h3>
 		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to a
 		logging event.</p>
@@ -1211,6 +1235,7 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>The only exceptions comes from the fact that layouts in access module imlement
 		the <code>AccessLayout</code> interface instead <code>ClassicLayout</code>.</p>
 		
+		<a name="AccessPatternLayout" />
 		<h3>PatternLayout</h3>
 		<p>Access' <code>PatternLayout</code> work the exact same way as it's classic counterpart.
 		</p>
@@ -1437,10 +1462,24 @@ Caller+2	 at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 	 	much like the <em>common</em> pattern but also displays two request headers, namely
 	 	 referer, and user-agent.</p>
 
+		<a name="AccessHTMLLayout" />
 		<h3>HTMLLayout</h3>
 		
 		<p>The access version of <code>HTMLLayout</code> works like logback classic's
 		version.</p>
+		
+		<p>By default, it will create a table containing the following data:</p>
+		
+		<ul>
+			<p>Remote IP</p>
+			<p>Date</p>
+			<p>Request URL</p>
+			<p>Status code</p>
+			<p>Content Length</p>
+		</ul>
+		
+		<p>Here is what you can expect from a configured access <code>HTMLLayout</code>:</p>
+		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
 	</body>
 </document>
