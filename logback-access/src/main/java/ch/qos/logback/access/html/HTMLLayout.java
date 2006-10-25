@@ -15,6 +15,7 @@ import java.util.Map;
 import ch.qos.logback.access.AccessLayout;
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.core.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.html.NOPThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
@@ -50,6 +51,7 @@ public class HTMLLayout extends HTMLLayoutBase implements AccessLayout {
   public HTMLLayout() {
     pattern = DEFAULT_CONVERSION_PATTERN;
     throwableRenderer = new NOPThrowableRenderer();
+    cssBuilder = new DefaultCssBuilder();  
   }
   
   @Override
