@@ -43,10 +43,6 @@
 				</td>
 			</tr>
 		</table>
-	
-		<p>Printing notice: if you want to print this document, you  might want to
-		use Firefox, with <em>Adapt to page size</em> enabled, 
-		or Opera for better rendering on paper.</p>
 
 		<h2>What is a layout</h2>
 
@@ -1223,17 +1219,19 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 		</p>
 		<p>
 			A user-specified external CSS file can be linked to the html
-			page. In case one does not want to customize the html
-			output, an internal CSS style is used. In that case, the following
+			page. In that case, the following
 			xml element can be nested into the <code>&lt;layout&gt;</code> element.
 		</p>
 <div class="source"><pre>&lt;layout>
   ...
-  &lt;cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
+  &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
     &lt;param name="url" value="path_to_StyleFile.css" />
   &lt;/cssBuilder>	
   ...
 &lt;/layout></pre></div>
+
+		<p>In case one does not want to customize the html
+			output, an internal CSS style is used.</p>
 		
 		<p>
 			The <code>HTMLLayout</code> is often, although not necessarily used in conjunction with
@@ -1261,23 +1259,23 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
   &lt;/root&gt;
 &lt;/configuration&gt;</pre></div>
 
-		<p>When <code>HTMLLayout</code> is used with any <code>FileAppender</code>, 
-		one can specify the html page's title, simply by adding an element to the configuration,
-		as shown above:</p>
+		<p><code>HTMLLayout</code> can also be used with any <code>FileAppender</code>. In that
+		case, one can specify a rolling policy to archive log messages automatically.
+		One real world example could use the configuration below.</p>
 		
 <div class="source"><pre>&lt;configuration>
    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
      &lt;ActiveFileName>lastLogEntries.html&lt;/ActiveFileName>
-     &lt;FileNamePattern>lastLogEntries.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
+     &lt;FileNamePattern>logEntries.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
    &lt;/rollingPolicy>
    
    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
-      &lt;cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
-      	&lt;param name="url" value="path_to_StyleFile.css" />
+      &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
+        &lt;url>address_of_a_custom_stylesheet.css&lt;/url>
       &lt;/cssBuilder>	
       &lt;Pattern>%relative%thread%mdc%level%logger%msg&lt;/Pattern>
-      <b>&lt;Title>Last Logging Events&lt;/Title></b>
+      <b>&lt;Title>Logging Events&lt;/Title></b>
     &lt;/layout>
  &lt;/appender> 
 

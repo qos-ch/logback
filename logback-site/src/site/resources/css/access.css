@@ -1,0 +1,44 @@
+table { 
+	margin-left: 2em; 
+	margin-right: 2em; 
+	border-left: 2px solid #AAA; 
+}
+
+TR.even { 
+	background: #FFFFFF; 
+}
+
+TR.odd { 
+	background: #EAEAEA; 
+}
+
+TD { 
+	padding-right: 1ex; 
+	padding-left: 1ex; 
+	border-right: 2px solid #AAA;
+}
+
+TD.Time, TD.Date { 
+	text-align: right; 
+	font-family: courier, monospace; 
+	font-size: smaller; 
+}
+
+TD.RemoteHost, TD.RequestProtocol, TD.RequestHeader, TD.RequestURL, TD.RemoteUser, TD.RequestURI, TD.ServerName {
+	text-align: left; 
+}
+
+TD.RequestAttribute, TD.RequestCookie, TD.ResponseHeader, TD.RequestParameter {
+	text-align: left; 
+}
+	
+TD.RemoteIPAddress, TD.LocalIPAddress, TD.ContentLength, TD.StatusCode, TD.LocalPort { 
+	text-align: right; 
+}
+
+TR.header { 
+	background: #596ED5; 
+	color: #FFF; 
+	font-weight: bold; 
+	font-size: larger; 
+}
