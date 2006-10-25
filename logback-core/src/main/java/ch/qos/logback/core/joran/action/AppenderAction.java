@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework for Java.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2006, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -54,7 +54,7 @@ public class AppenderAction extends Action {
           "No appender name given for appender of type " + className + "].");
       } else {
         appender.setName(appenderName);
-        addInfo("Appender named as [" + appenderName + "]");
+        addInfo("Naming appender as [" + appenderName + "]");
       }
 
       // The execution context contains a bag which contains the appenders

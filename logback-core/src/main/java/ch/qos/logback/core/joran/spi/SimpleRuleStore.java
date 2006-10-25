@@ -141,5 +141,17 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
       return null;
     }
   }
+
+  public String toString()  {
+      final String TAB = "  ";
+      
+      StringBuilder retValue = new StringBuilder();
+      
+      retValue.append("SimpleRuleStore ( ")
+          .append("rules = ").append(this.rules).append(TAB)
+          .append(" )");
+      
+      return retValue.toString();
+  }
     
 }
