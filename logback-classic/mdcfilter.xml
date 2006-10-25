@@ -1,0 +1,28 @@
+<configuration>
+
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <param name="Pattern"
+        value="%-4relative [%thread] %-5level %X{testKey} - %msg%n" />
+    </layout>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">  
+      <Name>myFilter</Name>
+      <x>DENY</x>
+      <Evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+        <Name>mdcEvaluator</Name>
+        <Expression>mdc!=null &amp;&amp; mdc.get("key").equals("val")</Expression>
+      </Evaluator>
+     
+    </filter>
+  </appender>
+
+<!-- <Expression>"v".equals(mdc.get("k"))</Expression>
+-->
+
+  <root>
+    <level value="debug" />
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
+
