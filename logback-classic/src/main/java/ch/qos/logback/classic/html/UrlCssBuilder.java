@@ -7,7 +7,9 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.html;
+package ch.qos.logback.classic.html;
+
+import ch.qos.logback.core.html.CssBuilder;
 
 
 /**

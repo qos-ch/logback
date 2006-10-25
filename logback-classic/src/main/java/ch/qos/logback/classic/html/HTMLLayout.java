@@ -15,7 +15,7 @@ import java.util.Map;
 import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.html.DefaultCssBuilder;
+import ch.qos.logback.classic.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 
