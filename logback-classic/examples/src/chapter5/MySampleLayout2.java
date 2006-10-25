@@ -13,8 +13,8 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
     this.prefix = prefix;
   }
 
-  public void setPrintThreadName(String printThreadName) {
-    this.printThreadName = printThreadName.equals("true");
+  public void setPrintThreadName(boolean printThreadName) {
+    this.printThreadName = printThreadName;
   }
 
   public String doLayout(LoggingEvent event) {

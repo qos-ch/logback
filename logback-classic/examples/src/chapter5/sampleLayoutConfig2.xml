@@ -3,7 +3,7 @@
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <layout class="chapter5.MySampleLayout2"> 
-    	<prefix>MyContext</prefix>
+    	<prefix>MyPrefix</prefix>
     	<printThreadName>false</printThreadName>
     </layout>
   </appender>
