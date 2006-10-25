@@ -81,7 +81,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
   public void body(InterpretationContext ec, String body) {
    
     String finalBody = ec.subst(body);
-    System.out.println("body "+body+", finalBody="+finalBody);
+    //System.out.println("body "+body+", finalBody="+finalBody);
     // get the action data object pushed in isApplicable() method call
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.peek();
     actionData.parentBean.setProperty(actionData.propertyName, finalBody);
