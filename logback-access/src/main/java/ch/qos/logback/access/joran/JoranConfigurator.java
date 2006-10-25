@@ -27,11 +27,12 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
   @Override
   public void addInstanceRules(RuleStore rs) {
-  
+    super.addInstanceRules(rs);
+    
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
     rs.addRule(new Pattern("configuration/appender-ref"), 
         new AppenderRefAction());
-    super.addInstanceRules(rs);
+
   }
 
 
