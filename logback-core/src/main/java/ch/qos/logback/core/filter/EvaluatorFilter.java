@@ -7,8 +7,20 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
 
   EventEvaluator evaluator;
   
+  public EvaluatorFilter() {
+  }
  
- 
+
+  public void setX(String action) {
+    if ("NEUTRAL".equals(action)) {
+      onMatch = NEUTRAL;
+    } else if ("ACCEPT".equals(action)) {
+      onMatch = ACCEPT;
+    } else if ("DENY".equals(action)) {
+      onMatch = DENY;
+    }
+  }
+  
   public void start() {
     if(evaluator != null) {
       super.start();
@@ -21,12 +33,17 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
     return evaluator;
   }
 
+                 
   public void setEvaluator(EventEvaluator evaluator) {
     this.evaluator = evaluator;
   }
 
   public int decide(Object event) {
-
+    // let us not throw an exception
+    // see also bug #17.
+    if(!isStarted()) {
+      return NEUTRAL;
+    }
     try {
       if (evaluator.evaluate(event)) {
         return onMatch;

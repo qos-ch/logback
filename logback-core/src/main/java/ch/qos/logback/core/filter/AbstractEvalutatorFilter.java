@@ -24,6 +24,7 @@ abstract public class AbstractEvalutatorFilter extends Filter {
   int onMatch = NEUTRAL;
   int onMismatch = NEUTRAL;
 
+                 
   public void setOnMatch(String action) {
     if ("NEUTRAL".equals(action)) {
       onMatch = NEUTRAL;

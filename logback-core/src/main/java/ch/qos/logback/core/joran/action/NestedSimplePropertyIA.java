@@ -42,7 +42,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
 
   public boolean isApplicable(
     Pattern pattern, Attributes attributes, InterpretationContext ec) {
-    //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
+    //System.out.println("in NestedSimplePropertyIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
     // no point in attempting if there is no parent object
@@ -52,7 +52,8 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     
     Object o = ec.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
-
+    parentBean.setContext(context);
+    
     int containmentType = parentBean.canContainComponent(nestedElementTagName);
 
     switch (containmentType) {
@@ -65,7 +66,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
       ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
       ad.propertyName = nestedElementTagName;
       actionDataStack.push(ad);
-      // System.out.println("NestedSimplePropertyIA deemed applicable for " +pattern);
+      //System.out.println("in NestedSimplePropertyIA deemed applicable <" + pattern + ">");
       return true;
     default:
       addError("PropertySetter.canContainComponent returned " + containmentType);
