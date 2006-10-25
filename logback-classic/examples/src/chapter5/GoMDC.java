@@ -26,7 +26,7 @@ public class GoMDC {
     }
 
     logger.debug("I know me " + 0);
-    MDC.put("k", "v");
+    MDC.put("key", "val");
     logger.debug("I know me " + 1);
     
     StatusPrinter.print(lc);

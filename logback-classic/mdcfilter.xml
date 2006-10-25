@@ -11,13 +11,14 @@
       <x>DENY</x>
       <Evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
         <Name>mdcEvaluator</Name>
-        <Expression>mdc!=null &amp;&amp; mdc.get("key").equals("val")</Expression>
+        <Expression>mdc!=null &amp;&amp; "val".equals(mdc.get("key"))</Expression>
       </Evaluator>
      
     </filter>
   </appender>
 
 <!-- <Expression>"v".equals(mdc.get("k"))</Expression>
+ <Expression>mdc!=null &amp;&amp; mdc.get("key").equals("val")</Expression>
 -->
 
   <root>
