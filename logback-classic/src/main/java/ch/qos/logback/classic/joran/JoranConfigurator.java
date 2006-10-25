@@ -34,6 +34,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
   @Override
   public void addInstanceRules(RuleStore rs) {
+    // parent rules already added
     super.addInstanceRules(rs);
 
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
@@ -54,7 +55,6 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs
         .addRule(new Pattern("configuration/appender/layout"),
             new LayoutAction());
-    super.addInstanceRules(rs);
   }
 
 }
