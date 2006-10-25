@@ -8,7 +8,7 @@
     </layout>
     <filter class="ch.qos.logback.core.filter.EvaluatorFilter">  
       <Name>myFilter</Name>
-      <x>DENY</x>
+      <OnMatch>DENY</OnMatch>
       <Evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
         <Name>mdcEvaluator</Name>
         <Expression>mdc!=null &amp;&amp; "val".equals(mdc.get("key"))</Expression>
@@ -17,9 +17,6 @@
     </filter>
   </appender>
 
-<!-- <Expression>"v".equals(mdc.get("k"))</Expression>
- <Expression>mdc!=null &amp;&amp; mdc.get("key").equals("val")</Expression>
--->
 
   <root>
     <level value="debug" />
