@@ -110,7 +110,7 @@
 		<!-- Core Examples -->
 		<fileSet>
 			<directory>logback-core/examples/</directory>
-			<outputDirectory>logback-core/examples/</outputDirectory>
+			<outputDirectory>/examples/</outputDirectory>
 		</fileSet>
 				
 		<!-- Website -->

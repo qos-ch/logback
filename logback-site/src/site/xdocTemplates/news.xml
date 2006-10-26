@@ -11,6 +11,25 @@
 
 		<p>Here are the last news about the project.</p>
 
+		<h3>October 26th, 2006 - 0.5 version available</h3>
+		<p>
+			Version 0.5 for all three logback modules is now available.
+		</p>
+		<p>
+			This release offers a big improvement in Joran. Joran is now able to
+			replay configuration elements.
+		</p>
+		<p>	
+			Logback's documentation has also been improved. A complete reference on 
+			Layouts is available in the logback manual directory, as well as a FAQ page.
+		</p>
+		<p>
+			An archive containing source code, binaries and docs is available 
+			at the <a href="download.html">download page</a>.
+		</p>
+
+		<hr width="50%" align="center" />
+		
 		<h3>October 9th, 2006 - 0.4 version available</h3>
 		<p>
 			Version 0.4 for all three logback modules is now available.
