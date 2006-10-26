@@ -26,55 +26,56 @@ public class DefaultCssBuilder implements CssBuilder {
 
   public void addCss(StringBuffer sbuf) {
     sbuf.append("<STYLE  type=\"text/css\">");
-    sbuf.append("    table { ");
-    sbuf.append("                margin-left: 2em; ");
-    sbuf.append("                margin-right: 2em; ");
-    sbuf.append("                border-left: 2px solid #AAA; ");
+    sbuf.append("table{ ");
+    sbuf.append("margin-left: 2em; ");
+    sbuf.append("margin-right: 2em; ");
+    sbuf.append("border-left: 2px solid #AAA; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf.append("TR.even { ");
-    sbuf.append("               background: #FFFFFF; ");
+    sbuf.append("background: #FFFFFF; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf.append("TR.odd { ");
-    sbuf.append("                background: #EAEAEA; ");
+    sbuf.append("background: #EAEAEA; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
-    sbuf.append("TD { ");
-    sbuf.append("                padding-right: 1ex; ");
-    sbuf.append("                padding-left: 1ex; ");
-    sbuf.append("                border-right: 2px solid #AAA;");
+    sbuf.append("TD {");
+    sbuf.append("padding-right: 1ex; ");
+    sbuf.append("padding-left: 1ex; ");
+    sbuf.append("border-right: 2px solid #AAA;");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf.append("TD.Time, TD.Date { ");
-    sbuf.append("                text-align: right; ");
-    sbuf.append("                font-family: courier, monospace; ");
-    sbuf.append("                font-size: smaller; ");
+    sbuf.append("text-align: right; ");
+    sbuf.append("font-family: courier, monospace; ");
+    sbuf.append("font-size: smaller; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf
         .append("TD.RemoteHost, TD.RequestProtocol, TD.RequestHeader, TD.RequestURL, TD.RemoteUser, TD.RequestURI, TD.ServerName {");
-    sbuf.append("                text-align: left; ");
+    sbuf.append("text-align: left; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf
         .append("TD.RequestAttribute, TD.RequestCookie, TD.ResponseHeader, TD.RequestParameter {");
-    sbuf.append("                text-align: left; ");
+    sbuf.append("text-align: left; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf
         .append("TD.RemoteIPAddress, TD.LocalIPAddress, TD.ContentLength, TD.StatusCode, TD.LocalPort {");
-    sbuf.append("                text-align: right; ");
+    sbuf.append("text-align: right; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf.append("TR.header { ");
-    sbuf.append("                background: #596ED5; ");
-    sbuf.append("                color: #FFF; ");
-    sbuf.append("                font-weight: bold; ");
-    sbuf.append("                font-size: larger; ");
+    sbuf.append("background: #596ED5; ");
+    sbuf.append("color: #FFF; ");
+    sbuf.append("font-weight: bold; ");
+    sbuf.append("font-size: larger; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
     sbuf.append("  }");
     sbuf.append("}");
+    sbuf.append("</STYLE>");
   }
 }
