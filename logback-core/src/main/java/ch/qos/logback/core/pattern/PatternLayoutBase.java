@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
@@ -55,7 +56,7 @@ abstract public class PatternLayoutBase extends LayoutBase {
     // contextMap is more specific than the default map
     Context context = getContext();
     if (context != null) {
-      Map<String, String> contextMap = context.getConverterMap();
+      Map<String, String> contextMap = (Map) context.getObject(CoreGlobal.PATTERN_RULE_REGISTRY);
       if (contextMap != null) {
         effectiveMap.putAll(contextMap);
       }

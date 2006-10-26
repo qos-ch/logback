@@ -25,7 +25,6 @@ public class ContextBase implements Context {
   // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
-  Map<String, String> converterMap = new HashMap<String, String>();
   private FilterAttachableImpl fai = new FilterAttachableImpl();
 
   public StatusManager getStatusManager() {
@@ -50,10 +49,6 @@ public class ContextBase implements Context {
 
   public void putObject(String key, Object value) {
     objectMap.put(key, value);
-  }
-
-  public Map<String, String> getConverterMap() {
-    return converterMap;
   }
 
   public void addFilter(Filter newFilter) {
