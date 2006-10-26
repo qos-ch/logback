@@ -1166,6 +1166,96 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 		</p>
 		<p><b>Important:</b> With the <b><em>%ex</em></b> conversion specifier, the data is
 		displayed when <em>the expression evaluates to <b>false</b>.</em></p>
+		
+		<h3>Creating a custom conversion specifier</h3>
+		<p>We've seen up to here quite a lot of possibilities with conversion specifier and
+		<code>PatternLayout</code> objects. But what if somebody wants to make her own conversion
+		specifier?</p>
+		
+		<p>In that case, two steps are needed.</p> 
+		
+		<p>First, one must implement her own <code>Converter</code>
+		class. <code>Converter</code> objects are responsible to extract a specific information out of
+		a <code>LoggingEvent</code>. When <em>%logger</em> is used, a <code>LoggerConverter</code>
+		is called to extract the name of the logger from the <code>LoggingEvent</code>.</p>
+		
+		<p>Let us say that our customized <code>Converter</code> will output the level of the logging
+		event, colored following ANSI rules. Here is the necessary implementation:</p>
+		
+<div class="source"><pre>package chapter5;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.pattern.ClassicConverter;
+import ch.qos.logback.classic.spi.LoggingEvent;
+
+public class MySampleConverter extends ClassicConverter {
+
+  private static final String END_COLOR = "\u001b[m";
+
+  private static final String ERROR_COLOR = "\u001b[0;31m";
+  private static final String WARN_COLOR = "\u001b[0;33m";
+
+  @Override
+  <b>public String convert(Object eventObject) {
+    LoggingEvent event = (LoggingEvent) eventObject;
+    StringBuffer sbuf = new StringBuffer();
+    sbuf.append(getColor(event.getLevel()));
+    sbuf.append(event.getLevel());
+    sbuf.append(END_COLOR);
+    return sbuf.toString();
+  }</b>
+
+  /**
+   * Returns the appropriate characters to change the color for the specified
+   * logging level.
+   */
+  private String getColor(Level level) {
+    switch (level.toInt()) {
+    case Level.ERROR_INT:
+      return ERROR_COLOR;
+    case Level.WARN_INT:
+      return WARN_COLOR;
+    default:
+      return null;
+    }
+  }
+}
+</pre></div>
+
+		<p>This implementation is quite straightforward. The <code>MySampleConverter</code> class
+		extends <code>ClassicConverter</code>, and implements the <code>convert</code> method.
+		In that method, all it has to do is return the appropriate information.
+		</p>
+
+		<p>The second step, once the <code>Converter</code> class done, is to let logback know about
+		the new <code>Converter</code>. For this task, we just need to declare the new
+		conversion word in the configuration file, as shown below:</p>
+		
+<div class="source"><pre>&lt;configuration>
+
+  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
+	
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      <b>&lt;Pattern>%-4relative [%thread] %-5level - %msg %sample%n&lt;/Pattern></b>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>In this configuration file, once the new conversion word has been declared, we
+		just use it within a <code>PatternLayout</code> pattern element, as if 
+		our custom conversion word had always been here.</p>
+		
+		<p>The intersted reader might want to take a look at other <code>Converter</code> implementations
+		like <code>MDCConverter</code> to learn how to implement more complex behaviours, involving
+		the use of options, in her custom <code>Converter</code> objects.
+		</p>
 
 		<a name="ClassicHTMLLayout"/>
 		<h3>HTMLLayout</h3>
