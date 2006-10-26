@@ -67,7 +67,7 @@ public class ConversionRuleAction extends Action {
       }
       // put the new rule into the rule registry
       ruleRegistry.put(conversionWord, converterClass);
-  
+      
     } catch (Exception oops) {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";

@@ -4,7 +4,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.5</version>
 	<packaging>pom</packaging>
 	<name>Logback</name>
 
@@ -170,20 +170,37 @@
 					<outputDirectory>target/site/dist/</outputDirectory>
 				</configuration>
 			</plugin>
+			
+			
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>
+						https://svn.qos.ch/repos/logback/tags/
+					</tagBase>
+					<preparationGoals>
+						clean, compile source:jar site, assembly:assembly
+					</preparationGoals>
+					<goals>
+						site:deploy
+					</goals>
+				</configuration>
+			</plugin>
+			
     </plugins>
 
 	</reporting>
 	
 	<scm>
-		<connection>http://svn.qos.ch/repos/logback/</connection>
-		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/</developerConnection>
-		<url>http://svn.qos.ch/viewvc/logback/</url>
+		<connection>scm:svn:https://svn.qos.ch/repos/logback/tags/release-0.5</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/tags/release-0.5</developerConnection>
+		<url>https://svn.qos.ch/repos/logback/tags/release-0.5</url>
 	</scm>
 
  <distributionManagement>
    <site>
 		 <id>pixie</id>
-		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/kidding/</url>
+		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
 	 </site>
  </distributionManagement>
 </project>

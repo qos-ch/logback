@@ -92,34 +92,33 @@ public class PropertySetter extends ContextAwareBase {
    * Set the properties for the object that match the <code>prefix</code>
    * passed as parameter.
    */
-//  public void setProperties(Properties properties, String prefix) {
-//    int len = prefix.length();
-//
-//    for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
-//      String key = (String) e.nextElement();
-//
-//      // handle only properties that start with the desired frefix.
-//      if (key.startsWith(prefix)) {
-//        // ignore key if it contains dots after the prefix
-//        if (key.indexOf('.', len + 1) > 0) {
-//          // System.err.println("----------Ignoring---["+key
-//          // +"], prefix=["+prefix+"].");
-//          continue;
-//        }
-//
-//        String value = OptionHelper.findAndSubst(key, properties);
-//
-//        key = key.substring(len);
-//
-//        if ("layout".equals(key) && obj instanceof Appender) {
-//          continue;
-//        }
-//
-//        setProperty(key, value);
-//      }
-//    }
-//  }
-
+  // public void setProperties(Properties properties, String prefix) {
+  // int len = prefix.length();
+  //
+  // for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
+  // String key = (String) e.nextElement();
+  //
+  // // handle only properties that start with the desired frefix.
+  // if (key.startsWith(prefix)) {
+  // // ignore key if it contains dots after the prefix
+  // if (key.indexOf('.', len + 1) > 0) {
+  // // System.err.println("----------Ignoring---["+key
+  // // +"], prefix=["+prefix+"].");
+  // continue;
+  // }
+  //
+  // String value = OptionHelper.findAndSubst(key, properties);
+  //
+  // key = key.substring(len);
+  //
+  // if ("layout".equals(key) && obj instanceof Appender) {
+  // continue;
+  // }
+  //
+  // setProperty(key, value);
+  // }
+  // }
+  // }
   /**
    * Set a property on this PropertySetter's Object. If successful, this method
    * will invoke a setter method on the underlying Object. The setter is the one
@@ -227,7 +226,6 @@ public class PropertySetter extends ContextAwareBase {
 
     if (propertyDescriptor != null) {
       Method setterMethod = propertyDescriptor.getWriteMethod();
-
       if (setterMethod != null) {
         // getLogger().debug(
         // "Found setter method for property [{}] in class {}", name,
@@ -295,7 +293,8 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   public void setComponent(String name, Object childComponent) {
-    PropertyDescriptor propertyDescriptor = getPropertyDescriptor(name);
+    String dName = Introspector.decapitalize(name);
+    PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
 
     if (propertyDescriptor == null) {
       addWarn("Could not find PropertyDescriptor for [" + name + "] in "
@@ -388,7 +387,10 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     for (int i = 0; i < propertyDescriptors.length; i++) {
+      //System.out.println("Comparing " + name + " against "
+      //    + propertyDescriptors[i].getName());
       if (name.equals(propertyDescriptors[i].getName())) {
+        //System.out.println("matched");
         return propertyDescriptors[i];
       }
     }

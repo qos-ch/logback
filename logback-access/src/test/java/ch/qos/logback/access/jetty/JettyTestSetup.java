@@ -28,7 +28,7 @@ import ch.qos.logback.core.appender.ListAppender;
 public class JettyTestSetup extends TestSetup {
   RequestLogImpl requestLogImpl;
 
-  public static final int PORT = 8088;
+  public static final int PORT = 1234;
   
   public JettyTestSetup(Test suite, RequestLogImpl impl) {
     super(suite);

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.5</version>
 	</parent>
 	
 
@@ -12,7 +12,7 @@
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-skin</artifactId>
 	<packaging>jar</packaging>
-	<version>${parent.version}</version>
+	<version>0.5</version>
 	<name>Logback Skin</name>
 
 	<url>http://logback.qos.ch</url>

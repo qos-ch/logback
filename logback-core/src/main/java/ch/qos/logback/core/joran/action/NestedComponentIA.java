@@ -45,7 +45,7 @@ public class NestedComponentIA extends ImplicitAction {
 
   public boolean isApplicable(
     Pattern pattern, Attributes attributes, InterpretationContext ec) {
-    //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
+    //System.out.println("in NestComponentIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
     // calling ec.peekObject with an empty stack will throw an exception
@@ -55,7 +55,8 @@ public class NestedComponentIA extends ImplicitAction {
     
     Object o = ec.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
-
+    parentBean.setContext(context);
+    
     int containmentType = parentBean.canContainComponent(nestedElementTagName);
 
     switch (containmentType) {
@@ -66,6 +67,7 @@ public class NestedComponentIA extends ImplicitAction {
     // we only push action data if NestComponentIA is applicable
     case PropertySetter.AS_COLLECTION:
     case PropertySetter.AS_COMPONENT:
+      addInfo("is dmmed applicable for "+pattern);
       ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
       actionDataStack.push(ad);
 
@@ -108,7 +110,7 @@ public class NestedComponentIA extends ImplicitAction {
         ((ContextAware) actionData.nestedComponent).setContext(this.context);
       }
       //getLogger().debug(
-      //  "Pushing component <{}> on top of the object stack.", localName);
+      addInfo("Pushing component <"+localName+"> on top of the object stack.");
       ec.pushObject(actionData.nestedComponent);
     } catch (Exception oops) {
       actionData.inError = true;
@@ -151,9 +153,8 @@ public class NestedComponentIA extends ImplicitAction {
       // Now let us attach the component
       switch (actionData.containmentType) {
       case PropertySetter.AS_COMPONENT:
-        //getLogger().debug(
-          //"Setting [{}] to parent of type [{}]", tagName,
-          //actionData.parentBean.getObjClass());
+        //addInfo("Setting ["+tagName+"}] to parent of type ["+actionData.parentBean.getObjClass()+"]");
+                        
         actionData.parentBean.setComponent(
           tagName, actionData.nestedComponent);
 

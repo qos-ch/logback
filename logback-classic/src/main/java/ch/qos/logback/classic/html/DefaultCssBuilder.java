@@ -7,9 +7,10 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.html;
+package ch.qos.logback.classic.html;
 
 import static ch.qos.logback.core.Layout.LINE_SEP;
+import ch.qos.logback.core.html.CssBuilder;
 
 /**
  * This class helps the HTMLLayout build the CSS link. It either provides the

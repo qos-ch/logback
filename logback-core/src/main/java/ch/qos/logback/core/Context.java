@@ -54,13 +54,6 @@ public interface Context extends FilterAttachable {
    */
   public void setProperty(String key, String value);
   
- 
-  /**
-   * LB contexts have a notion of context-specific converter maps.
-   * @return
-   */
-  public Map<String, String> getConverterMap();
-  
   /**
    * Contexts are named objects.
    * 

@@ -15,7 +15,7 @@ import java.util.Map;
 import ch.qos.logback.access.AccessLayout;
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.html.DefaultCssBuilder;
+import ch.qos.logback.access.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.html.NOPThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
@@ -38,15 +38,13 @@ import ch.qos.logback.core.pattern.Converter;
 public class HTMLLayout extends HTMLLayoutBase implements AccessLayout {
 
   /**
-   * Default pattern string for log output. Currently set to the string <b>"%m"
-   * </b> which just prints the application supplied message.
+   * Default pattern string for log output.
    */
-  static final String DEFAULT_CONVERSION_PATTERN = "%remoteIP%date%requestURL%statusCode%bytesSent";
+  static final String DEFAULT_CONVERSION_PATTERN = "%h%l%u%t%r%s%b";
 
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
    * 
-   * The default pattern just produces the application supplied message.
    */
   public HTMLLayout() {
     pattern = DEFAULT_CONVERSION_PATTERN;

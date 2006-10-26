@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback</artifactId>
-	  <version>0.5-SNAPSHOT</version>
+	  <version>0.5</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-classic</artifactId>
-	<version>${parent.version}</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 	<name>Logback Classic Module</name>
 
@@ -112,21 +112,6 @@
 						<exclude>**/PackageTest.java</exclude>
 						<exclude>**/SerializationPerfsTest.java</exclude>
 					</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://svn.qos.ch/repos/logback/core/tags
-					</tagBase>
-					<preparationGoals>
-						clean, site, assembly:assembly
-					</preparationGoals>
-					<goals>
-						site, assembly:assembly site:deploy
-					</goals>
 				</configuration>
 			</plugin>
 		</plugins>
