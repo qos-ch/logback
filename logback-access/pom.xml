@@ -75,6 +75,20 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkMode>once</forkMode>
+					<reportFormat>plain</reportFormat>
+					<trimStackTrace>false</trimStackTrace>
+					<excludes>
+						<exclude>**/AllTest.java</exclude>
+						<exclude>**/PackageTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 		
 	</build>
