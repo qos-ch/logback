@@ -1238,7 +1238,7 @@ public class MySampleConverter extends ClassicConverter {
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      <b>&lt;Pattern>%-4relative [%thread] %-5level - %msg %sample%n&lt;/Pattern></b>
+      <b>&lt;Pattern>%-4relative [%thread] %%sample - %msg%n&lt;/Pattern></b>
     &lt;/layout>
   &lt;/appender>
 
@@ -1642,5 +1642,14 @@ public class MySampleConverter extends ClassicConverter {
 		<p>Here is what you can expect from a configured access <code>HTMLLayout</code>:</p>
 		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
+		<p>What's better than a real world example? Our own log4j properties to logback configuration 
+		<a href="http://logback.qos.ch/translator">translator</a>
+		is using logback access to showcase a live ouput, using a <code>RollingFileAppender</code> and
+		access' <code>HTMLLayout</code>.</p>
+		
+		<p>You can see the file by <a href="http://logback.qos.ch/translator/logs/access.html">following this link</a>.</p>
+
+		<p>Just like any access log, it can be altered simply by visiting the
+		<a href="http://logback.qos.ch/translator">translator</a> application.</p>
 	</body>
 </document>
