@@ -200,7 +200,7 @@
  <distributionManagement>
    <site>
 		 <id>pixie</id>
-		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/kidding/</url>
+		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
 	 </site>
  </distributionManagement>
 </project>
