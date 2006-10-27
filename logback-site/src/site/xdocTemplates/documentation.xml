@@ -20,15 +20,26 @@
 			<li>
 				<a href="accessLogJetty.html"><b>A short introduction to access logging with logback-access and Jetty</b></a>
 			</li>
-			<li>
-				<a href="apidocs/index.html"><b>Javadoc</b></a>
-			</li>
       <li>
         <a href="joran.html"><b>A introduction to Joran</b></a>
       </li>
       <li>
       	<a href="faq.html"><b>A Frequently Asked Questions list (FAQ)</b></a>
       </li>
+		</ul>
+		
+		<p>Source code related documentation:</p>
+		
+		<ul>
+			<li>
+				<a href="apidocs/index.html"><b>Javadoc</b></a>
+			</li>
+			<li>
+				<a href="xref/index.html"><b>Source code</b></a>
+			</li>
+			<li>
+				<a href="xref-test/index.html"><b>Test classes source code</b></a>
+			</li>
 		</ul>
 		
 		<p>A complete manual about logback is in the works at the moment. Each chapter will be
