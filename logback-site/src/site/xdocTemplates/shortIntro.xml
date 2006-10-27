@@ -15,31 +15,35 @@
     </div>
 
 
-    <table>
-    	<tr>
-    		<td valign="top" align="top">
-    			<a rel="license"
-    				href="http://creativecommons.org/licenses/by-nc-nd/2.5/">
-    				<img alt="Creative Commons License" border="0"
-    					valign="top" align="top"
-    					src="http://creativecommons.org/images/public/somerights20.png" />
-    			</a>
-    		</td>
-    		<td>
-    			<p>Copyright &#169; 2000-2006, QOS.ch</p>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
-    			<p>
-    				This work is licensed under a
-    				<a rel="license"
-    					href="http://creativecommons.org/licenses/by-nc-nd/2.5/">
-    					Creative Commons Attribution-Noncommercial-No
-    					Derivative Works 2.5 License
-    				</a>
-    				.
-    			</p>
-    		</td>
-    	</tr>
-    </table>
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>
+						.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+
 
     <h2>Introduction</h2>
 
