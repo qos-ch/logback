@@ -7,20 +7,6 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
 
   EventEvaluator evaluator;
   
-  public EvaluatorFilter() {
-  }
- 
-
-  public void setX(String action) {
-    if ("NEUTRAL".equals(action)) {
-      onMatch = NEUTRAL;
-    } else if ("ACCEPT".equals(action)) {
-      onMatch = ACCEPT;
-    } else if ("DENY".equals(action)) {
-      onMatch = DENY;
-    }
-  }
-  
   public void start() {
     if(evaluator != null) {
       super.start();
@@ -46,7 +32,7 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
     }
     try {
       if (evaluator.evaluate(event)) {
-        return onMatch;
+        return on_match;
       } else {
         return onMismatch;
       }

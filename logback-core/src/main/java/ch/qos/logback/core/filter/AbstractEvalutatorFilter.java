@@ -5,7 +5,7 @@ package ch.qos.logback.core.filter;
  * This abstract class is meant to be a base for specific evaluator filters.
  * </p>
  * <p>
- * The value of the {@link #onMatch} and {@link #onMismatch} attributes is set to 
+ * The value of the {@link #on_match} and {@link #onMismatch} attributes is set to 
  * {@link Filter.NEUTRAL}, so that a badly configured evaluator filter doesn't 
  * disturb the functionning of the chain.
  * </p>
@@ -19,23 +19,22 @@ package ch.qos.logback.core.filter;
  *
  */
 
-abstract public class AbstractEvalutatorFilter extends Filter {
+public abstract class AbstractEvalutatorFilter extends Filter {
 
-  int onMatch = NEUTRAL;
-  int onMismatch = NEUTRAL;
+  protected int on_match = NEUTRAL;
+  protected int onMismatch = NEUTRAL;
 
-                 
-  public void setOnMatch(String action) {
+  final public void setOnMatch(String action) {
     if ("NEUTRAL".equals(action)) {
-      onMatch = NEUTRAL;
+      on_match = NEUTRAL;
     } else if ("ACCEPT".equals(action)) {
-      onMatch = ACCEPT;
+      on_match = ACCEPT;
     } else if ("DENY".equals(action)) {
-      onMatch = DENY;
+      on_match = DENY;
     }
   }
 
-  public void setOnMismatch(String action) {
+  final public void setOnMismatch(String action) {
     if ("NEUTRAL".equals(action)) {
       onMismatch = NEUTRAL;
     } else if ("ACCEPT".equals(action)) {
@@ -43,13 +42,5 @@ abstract public class AbstractEvalutatorFilter extends Filter {
     } else if ("DENY".equals(action)) {
       onMismatch = DENY;
     }
-  }
-
-  public int getOnMatch() {
-    return onMatch;
-  }
-
-  public int getOnMistmatch() {
-    return onMismatch;
   }
 }

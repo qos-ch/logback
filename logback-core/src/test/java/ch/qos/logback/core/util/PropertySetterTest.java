@@ -46,6 +46,20 @@ public class PropertySetterTest extends TestCase {
     }
   }
 
+  public void testSetCamelProperty() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    
+    setter.setProperty("camelCase", "trot");
+    assertEquals("trot", house.getCamelCase());
+    
+    setter.setProperty("camelCase", "gh");
+    assertEquals("gh", house.getCamelCase());
+    
+    setter.setProperty("OnMatch", "raven");
+    assertEquals("raven", house.getOnMatch());
+    
+  }
   public void testSetComponent() {
     House house = new House();
     Door door = new Door();
@@ -61,6 +75,24 @@ class House {
   int count;
   boolean open;
   String name;
+  String camelCase;
+  String onMatch;
+  
+  public String getOnMatch() {
+    return onMatch;
+  }
+
+  public void setOnMatch(String onMatch) {
+    this.onMatch = onMatch;
+  }
+
+  public String getCamelCase() {
+    return camelCase;
+  }
+
+  public void setCamelCase(String camelCase) {
+    this.camelCase = camelCase;
+  }
 
   public int getCount() {
     return count;
