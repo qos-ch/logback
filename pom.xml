@@ -128,8 +128,6 @@
         <artifactId>maven-jxr-plugin</artifactId>
         <configuration>
           <aggregate>true</aggregate>
-          <!--destDir>target/site/source/</destDir>
-          <outputDirectory>target/site/source/</outputDirectory-->
           <javadocDir>target/site/apidocs/</javadocDir>
           <linkJavadoc>true</linkJavadoc>
         </configuration>
