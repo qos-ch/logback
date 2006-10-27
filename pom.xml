@@ -124,6 +124,10 @@
 				<artifactId>maven-site-plugin</artifactId>
 			</plugin>
 			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>
 					maven-project-info-reports-plugin
@@ -162,6 +166,10 @@
             <group>
               <title>SLF4J</title>
               <packages>org.slf4j:org.slf4j.*</packages>
+            </group>
+            <group>
+              <title>Examples</title>
+              <packages>chapter*:joran*</packages>
             </group>
           </groups>
 				</configuration>
