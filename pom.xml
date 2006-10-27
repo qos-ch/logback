@@ -22,6 +22,7 @@
 		<module>logback-access</module>
 		<module>logback-site</module>
 		<module>logback-skin</module>
+		<module>logback-examples</module>
 	</modules>
 
 	<dependencies>
@@ -49,6 +50,18 @@
 				<classifier>tests</classifier>
 			</dependency>
 			
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-access</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+						
 			<dependency>
 				<groupId>janino</groupId>
 				<artifactId>janino</artifactId>

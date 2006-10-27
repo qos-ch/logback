@@ -14,6 +14,9 @@
 					pom.xml
 				</include>
 			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
 		</fileSet>
 				<fileSet>
 			<directory>logback-classic/</directory>
@@ -23,8 +26,11 @@
 					pom.xml
 				</include>
 			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
 		</fileSet>
-				<fileSet>
+		<fileSet>
 			<directory>logback-access/</directory>
 			<outputDirectory>logback-access/</outputDirectory>
 			<includes>
@@ -32,6 +38,21 @@
 					pom.xml
 				</include>
 			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>logback-examples/</directory>
+			<outputDirectory>logback-examples/</outputDirectory>
+			<includes>
+				<include>
+					pom.xml
+				</include>
+			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
 		</fileSet>
 		
 		<!-- Module Source directories -->
@@ -51,6 +72,15 @@
 		<fileSet>
 			<directory>logback-access/src/</directory>
 			<outputDirectory>logback-access/src/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>logback-examples/src/</directory>
+			<outputDirectory>logback-examples/src/</outputDirectory>
+		</fileSet>
+		<!-- We also include the classes of the examples module -->
+		<fileSet>
+			<directory>logback-examples/target/classes/</directory>
+			<outputDirectory>logback-examples/classes/</outputDirectory>
 		</fileSet>
 		
 		<!-- Module JARs -->
@@ -101,18 +131,19 @@
 			</includes>
 		</fileSet>	
 				
-		<!-- Classic Examples -->
+		<!-- Classic Examples
 		<fileSet>
 			<directory>logback-classic/examples/</directory>
 			<outputDirectory>/examples/</outputDirectory>
 		</fileSet>
-
-		<!-- Core Examples -->
+		-->
+		<!-- Core Examples
 		<fileSet>
 			<directory>logback-core/examples/</directory>
 			<outputDirectory>/examples/</outputDirectory>
 		</fileSet>
-				
+		 -->
+		 
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
@@ -127,6 +158,9 @@
 				<include>LICENSE*</include>
 				<include>pom.xml</include>
 			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
 		</fileSet>
 	</fileSets>
 	

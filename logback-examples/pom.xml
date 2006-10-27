@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback</artifactId>
+		<version>0.6-SNAPSHOT</version>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>logback-examples</artifactId>
+	<version>0.6-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Logback Examples Module</name>
+
+	<url>http://logback.qos.ch</url>
+	<description>
+		<!-- 
+			Never _never_ let Eclipse's auto format function add
+			a line return in the description.
+			The generated jar will contain a corrupt MANIFEST file.
+		-->
+		Logback: the generic, reliable, fast and flexible logging library for Java.
+	</description>
+	<licenses>
+		<license>
+			<name> GNU Lesser General Public License</name>
+      		<url>http://www.gnu.org/licenses/lgpl.html</url>			
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>		
+	</build>
+
+</project>
