@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 	<name>Logback Access Module</name>
 
-	<url>http://logback.qos.ch/access</url>
+	<url>http://logback.qos.ch</url>
 	<description>
 		<!-- 
 			Never _never_ let Eclipse's auto format function add
