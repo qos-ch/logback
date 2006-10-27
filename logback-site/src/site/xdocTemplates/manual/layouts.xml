@@ -102,7 +102,7 @@
 
 		<p>Here is a possible implementation, authored by the Texan developer:</p>
 		<em>Example 5.0: Sample implementation of a Layout
-			(examples/chapter5/MySampleLayout.java)</em>
+			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</em>
 		<div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.ClassicLayout;
@@ -174,7 +174,7 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
 		<p>Custom layouts are configured as any other layout, as shown below:</p>
 		
 		<em>Example 5.0: Configuration of MySampleLayout
-			(examples/chapter5/sampleLayoutConfig.xml)</em>
+			(logback-examples/src/main/java/chapter5/sampleLayoutConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -289,7 +289,7 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
    </p>
 
 
-		<a name="AccessPatternLayout" />
+		<a name="ClassicPatternLayout" />
 		<h3>PatternLayout</h3>
 
 		<p>
@@ -322,7 +322,7 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
 		</p>
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
-			(examples/chapter5/PatternSample.java)
+			(logback-examples/src/main/java/chapter5/PatternSample.java)
 		</em>
 		<div class="source"><pre>package chapter5;
 
@@ -1015,7 +1015,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
-			(examples/chapter5/callerEvaluatorConfig.xml)
+			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
 		</em>
 		<div class="source"><pre>&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
@@ -1040,7 +1040,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>Let us test this configuration with the following code.</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
-			(examples/chapter5/EventEvaluatorExample.java)
+			(logback-examples/src/main/java/chapter5/EventEvaluatorExample.java)
 		</em>
 		<div class="source"><pre>public class CallerEvaluatorExample {
 
@@ -1135,7 +1135,7 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 		<p>The following configuration will allow that.</p>
 		<em>
 			Example 5.3: Sample usage of EventEvaluators
-			(examples/chapter5/exceptionEvaluatorConfig.xml)
+			(logback-examples/src/main/java/chapter5/exceptionEvaluatorConfig.xml)
 		</em>
 		<div class="source"><pre>&lt;configuration>
 
@@ -1182,6 +1182,7 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 		<p>Let us say that our customized <code>Converter</code> will output the level of the logging
 		event, colored following ANSI rules. Here is the necessary implementation:</p>
 		
+<em> Example 5.4: Sample Converter Example (examples/chapter5/MySampleConverter.java)</em>
 <div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.Level;
@@ -1231,9 +1232,11 @@ public class MySampleConverter extends ClassicConverter {
 		the new <code>Converter</code>. For this task, we just need to declare the new
 		conversion word in the configuration file, as shown below:</p>
 		
+<em> Example 5.4: Sample Converter Example (examples/chapter5/mySampleConverterConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
+  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5. \
+  MySampleConverter" /></b>
 	
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">

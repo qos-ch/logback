@@ -28,7 +28,7 @@ nothing to do with loggers, appenders or layouts.
 </p>
 
 <p>The examples for this tutorial can be found under
-<em>LOGBACK_HOME/logback-core/examples/src/joran</em>.
+<em>LOGBACK_HOME/logback-examples/src/main/java/joran</em>.
 </p>
 
 <p>To install joran, simply <a href="download.html">download</a> 
@@ -166,7 +166,7 @@ conditions by adding error items on the execution context's
 <a name="helloWorld" />
 <h3>A hello world example</h3>
 
-<p>The <em>examples/src/joran/helloWorld/</em> directory includes a
+<p>The <em>logback-examples/src/main/java/joran/helloWorld/</em> directory includes a
 trivial action and Joran interpreter setup which just diaplays "Hello
 World" when a &lt;hello-world&gt; element is encountered in an XML file.
 It also includes the basic steps which are
@@ -210,7 +210,7 @@ will be issued, displaying "Hello World" in the console.
 <a name="calculator" />
 <h3>Collaborating actions</h3>
 <p>
-The examples/src/joran/calculator/ directory includes several actions
+The logback-examples/src/main/java/joran/calculator/ directory includes several actions
 which collaborate together through the common object stack in order
 to accomplish simple computations.
 </p>
@@ -285,7 +285,7 @@ only by the matching end() method.</p>
 <h3>New-rule action</h3>
 <p>Joran includes an action which allows the Joran interpreter to lean
 new rules on the fly while interpreting the XML file containing the
-new rules.  See the <em>logback-core/examples/src/joran/newRule/</em>
+new rules.  See the <em>logback-examples/src/main/java/joran/newRule/</em>
 directory for sample code.
 </p>
 <p>In this package, the <code>NewRuleCalculator</code> class contains 
@@ -377,7 +377,7 @@ implicit action.
 <code>ch.qos.logback.core.joran.action</code> package.
 </p>
 
-<p>Refer to the <em>logback-core/examples/src/joran/implicit</em>
+<p>Refer to the <em>logback-examples/src/main/java/joran/implicit</em>
 directory for an example of an implicit action.
 </p>
 

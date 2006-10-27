@@ -96,7 +96,7 @@
     	to your classpath, you can begin experimenting with logback.
     </p>
 
-<em>Example 1.1: Basic template for logging (examples/chapter1/HelloWorld1.java)</em>
+<em>Example 1.1: Basic template for logging (logback-examples/src/main/java/chapter1/HelloWorld1.java)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -144,7 +144,7 @@ public class HelloWorld1 {
 
 
 		<p>
-			Once you're in the <em>examples/classes</em> directory of the logback distribution, you can run this class with the command:
+			Once you're in the <em>logback-examples/classes</em> directory of the logback distribution, you can run this class with the command:
 		</p>
 
 		<div class="source"><pre>java chapter1.HelloWorld1</pre></div>
@@ -166,7 +166,7 @@ public class HelloWorld1 {
 			class.
 		</p>
 
-<em>Example 1.2: Printing Logger Status (examples/chapter1/HelloWorld2.java)</em>
+<em>Example 1.2: Printing Logger Status (logback-examples/src/main/java/chapter1/HelloWorld2.java)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -206,7 +206,7 @@ context [default] for logger [chapter1.HelloWorld2].</pre></div>
   	simplest but least flexible way is by calling the
   	<code>BasicConfigurator</code> class, like in the following code snippet.
   </p>
-  <em>Example 1.3: Configuring before logging (examples/chapter1/HelloWorld3.java)</em>
+  <em>Example 1.3: Configuring before logging (logback-examples/src/main/java/chapter1/HelloWorld3.java)</em>
   <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -991,7 +991,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 			Let us give a taste of how logback configuration is done with the help of an 
 			imaginary application MyApp that uses logback. 
 		</p>
-		<em>Example 1.4: Basic configuration (examples/chapter1/MyApp.java)</em>
+		<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/MyApp.java)</em>
 <div class="source"><pre>package chapter1;
 
 // Import SLF4J classes.
@@ -1019,7 +1019,7 @@ public class MyApp {
 			This class defines a logger instance variable 
 			with the name MyApp. It then uses the Bar class, defined as shown below:
 		</p>
-		<em>Example 1.4: Basic configuration (examples/chapter1/Bar.java)</em>
+		<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/Bar.java)</em>
 <div class="source"><pre>class Bar {
 
   Logger logger = LoggerFactory.getLogger(Bar.class);	
@@ -1044,7 +1044,7 @@ public class MyApp {
 		
 	<p>Let's configure logback to do exactly the same output, this time 
 	with an XML configuration file.</p>
-	<em>Example 1.4: Basic configuration (examples/chapter1/sample-config-1.xml)</em>	
+	<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/sample-config-1.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
@@ -1077,7 +1077,7 @@ public class MyApp {
 	<p>The console output will be exactly the same as before. However, this time, we didn't need
 	to import and call the BasicConfigurator class, as you can see in the following code section: 
 	</p>
-	<em>Example 1.5: Logback configuration from file (examples/chapter1/MyAppWithConfigFile.java)</em>
+	<em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/MyAppWithConfigFile.java)</em>
 <div class="source"><pre>package chapter1;
 
 //Import SLF4J classes.
@@ -1118,7 +1118,7 @@ public class MyAppWithConfigFile {
 	
 	<p>Logging to the console is a rather simple example. Let's now configure logback
 	so that it logs to the console, but also to a custom file.</p>
-<em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-2.xml)</em>
+<em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/sample-config-2.xml)</em>
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
@@ -1157,7 +1157,7 @@ public class MyAppWithConfigFile {
 	<p>Suppose that we do not want to see the DEBUG level statements in the chapter1 package anymore.
 	This is done by adding the following xml snippet to the configuration file, right before
 	the <code>&lt;root&gt;</code> element.</p>
-<em>Example 1.5: Logback configuration from file (examples/chapter1/sample-config-3.xml)</em>	
+<em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/sample-config-3.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
