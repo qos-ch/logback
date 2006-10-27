@@ -4,15 +4,14 @@ import junit.framework.TestCase;
 
 import org.slf4j.MarkerFactory;
 
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
+import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
-
 
 public class JaninoEventEvaluatorTest extends TestCase {
 
@@ -31,8 +30,9 @@ public class JaninoEventEvaluatorTest extends TestCase {
   }
 
   LoggingEvent makeLoggingEvent(Exception ex) {
-    LoggingEvent e = new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class
-        .getName(), logger, Level.INFO, "Some message", ex, null);
+    LoggingEvent e = new LoggingEvent(
+        ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
+        logger, Level.INFO, "Some message", ex, null);
     return e;
   }
 
@@ -103,15 +103,16 @@ public class JaninoEventEvaluatorTest extends TestCase {
     try {
       jee.evaluate(event);
       fail("We should not reach this point");
-    }  catch(EvaluationException ee) {
-      
+    } catch (EvaluationException ee) {
+
     }
   }
-  
+
   public void testComplex() throws Exception {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
-    jee.setExpression("level >= INFO && x.matches(message) && marker.contains(\"BLUE\")");
+    jee
+        .setExpression("level >= INFO && x.matches(message) && marker.contains(\"BLUE\")");
     jee.setContext(loggerContext);
     jee.addMatcher(matcherX);
     jee.start();
@@ -121,7 +122,54 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
-  static final long LEN = 100 * 1000;
+  /**
+   * check that evaluator with bogis exp does not start
+   * 
+   * @throws Exception
+   */
+  public void testBogusExp1() {
+
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setExpression("mzzzz.get(\"key\").equals(null)");
+    jee.setContext(loggerContext);
+    jee.setName("bogus");
+    jee.start();
+
+    assertFalse(jee.isStarted());
+
+    // StatusPrinter.print(loggerContext);
+    // LoggingEvent event = makeLoggingEvent(null);
+    // event.setMarker(MarkerFactory.getMarker("BLUE"));
+    //    
+    // jee.evaluate(event);
+  }
+
+  // check that eval stops after errors
+  public void testBogusExp2() {
+
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setExpression("mdc.get(\"key\").equals(null)");
+    jee.setContext(loggerContext);
+    jee.setName("bogus");
+    jee.start();
+
+    assertTrue(jee.isStarted());
+
+    LoggingEvent event = makeLoggingEvent(null);
+
+    for (int i = 0; i < JaninoEventEvaluatorBase.ERROR_THRESHOLD; i++) {
+      try {
+        jee.evaluate(event);
+        fail("should throw an exception");
+      } catch (EvaluationException e) {
+      }
+    }
+    // after a few attempts the evaluator should stop
+    assertFalse(jee.isStarted());
+
+  }
+
+  static final long LEN = 10 * 1000;
 
   // with 6 parameters 400 nanos
   // with 7 parameters 460 nanos (all levels + selected fields from
@@ -130,7 +178,6 @@ public class JaninoEventEvaluatorTest extends TestCase {
   void loop(JaninoEventEvaluator jee, String msg) throws Exception {
     LoggingEvent event = makeLoggingEvent(null);
     final long start = System.nanoTime();
-    final long LEN = 500 * 1000;
     for (int i = 0; i < LEN; i++) {
       jee.evaluate(event);
     }
@@ -156,5 +203,5 @@ public class JaninoEventEvaluatorTest extends TestCase {
 
     loop(jee, "x.matches(message): ");
   }
- 
+
 }
