@@ -60,12 +60,21 @@ public class PropertySetterTest extends TestCase {
     assertEquals("raven", house.getOnMatch());
     
   }
+  
   public void testSetComponent() {
     House house = new House();
     Door door = new Door();
     PropertySetter setter = new PropertySetter(house);
     setter.setComponent("door", door);
     assertEquals(door, house.getDoor());
+  }
+  
+  public void testSetComponentWithCamelCaseName() {
+    House house = new House();
+    SwimmingPool pool = new SwimmingPool();
+    PropertySetter setter = new PropertySetter(house);
+    setter.setComponent("swimmingPool", pool);
+    assertEquals(pool, house.getSwimmingPool());
   }
 
 }
@@ -77,6 +86,7 @@ class House {
   String name;
   String camelCase;
   String onMatch;
+  SwimmingPool pool;
   
   public String getOnMatch() {
     return onMatch;
@@ -125,8 +135,22 @@ class House {
   public void setOpen(boolean open) {
     this.open = open;
   }
+  
+  public void setSwimmingPool(SwimmingPool pool) {
+    this.pool = pool;
+  }
+  
+  public SwimmingPool getSwimmingPool() {
+    return pool;
+  }
 }
 
 class Door {
   int handle;
+}
+
+class SwimmingPool {
+  int length;
+  int width;
+  int depth;
 }
