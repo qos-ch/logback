@@ -154,4 +154,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   public LoggerContextRemoteView getLoggerContextRemoteView() {
     return loggerContextRemoteView;
   }
+  
+  public void reset() {
+    root.recursiveReset();
+   
+  }
 }

@@ -337,6 +337,14 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     return childLogger;
   }
 
+  void recursiveReset() {
+    detachAndStopAllAppenders();
+    additive = true;
+    for(Logger childLogger: childrenList) {
+      childLogger.recursiveReset();
+    }
+  }
+  
   /**
    * The default size of child list arrays. The JDK 1.5 default is 10. We use a
    * smaller value to save a little space.

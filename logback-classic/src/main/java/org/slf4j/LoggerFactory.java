@@ -32,16 +32,11 @@
  */
 package org.slf4j;
 
-import java.net.URL;
-
-import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.impl.Util;
 
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.StatusPrinter;
-
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.util.ContextInitializer;
+ 
 /**
  * The <code>LoggerFactory</code> is a utility class producing Loggers for
  * various logging APIs, most notably for NLOG4J and JDK 1.4 logging. Other
@@ -60,7 +55,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public final class LoggerFactory {
 
-  static ILoggerFactory loggerFactory;
+  static LoggerContext loggerContext;
 
   // private constructor prevents instantiation
   private LoggerFactory() {
@@ -69,20 +64,13 @@ public final class LoggerFactory {
 
   static {
     try { 
-      loggerFactory = StaticLoggerBinder.SINGLETON.getLoggerFactory();
-      URL url = Loader.getResource("logback-classic.xml");
-      if (url != null) {
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext((Context)loggerFactory);
-        configurator.doConfigure(url);
-        StatusPrinter.print((Context)loggerFactory);
-      } else {
-        //TODO basic configuration??
-      }
+    loggerContext = new LoggerContext();
+    loggerContext.setName("default");
+      ContextInitializer.autoConfig(loggerContext);
     } catch (Exception e) {
       // we should never get here
       Util.reportFailure("Failed to instantiate logger ["
-          + StaticLoggerBinder.SINGLETON.getLoggerFactoryClassStr() + "]", e);
+          +  LoggerContext.class + "]", e);
     }
   }
 
@@ -95,7 +83,7 @@ public final class LoggerFactory {
    * @return logger
    */
   public static Logger getLogger(String name) {
-    return loggerFactory.getLogger(name);
+    return loggerContext.getLogger(name);
   }
 
   /**
@@ -107,7 +95,7 @@ public final class LoggerFactory {
    * @return logger
    */
   public static Logger getLogger(Class clazz) {
-    return loggerFactory.getLogger(clazz.getName());
+    return loggerContext.getLogger(clazz.getName());
   }
 
   /**
@@ -119,6 +107,6 @@ public final class LoggerFactory {
    * @return the ILoggerFactory instance in use
    */
   public static ILoggerFactory getILoggerFactory() {
-    return loggerFactory;
+    return loggerContext;
   }
 }
