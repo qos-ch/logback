@@ -340,6 +340,9 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
   void recursiveReset() {
     detachAndStopAllAppenders();
     additive = true;
+    if(childrenList == null) {
+      return;
+    }
     for(Logger childLogger: childrenList) {
       childLogger.recursiveReset();
     }
