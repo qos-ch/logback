@@ -1235,8 +1235,7 @@ public class MySampleConverter extends ClassicConverter {
 <em> Example 5.4: Sample Converter Example (examples/chapter5/mySampleConverterConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5. \
-  MySampleConverter" /></b>
+  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
 	
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">

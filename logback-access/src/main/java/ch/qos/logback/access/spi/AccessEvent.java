@@ -265,19 +265,6 @@ public class AccessEvent implements Serializable {
       if (httpResponse != null) {
         contentLength = serverAdapter.getContentLength();
         return contentLength;
-        // if (httpResponse instanceof org.mortbay.jetty.Response) {
-        // // TODO
-        // } else if (httpResponse instanceof
-        // com.caucho.server.connection.AbstractHttpResponse) {
-        // contentLength = ((com.caucho.server.connection.AbstractHttpResponse)
-        // httpResponse)
-        // .getContentLength();
-        // } else if (httpResponse instanceof
-        // org.apache.catalina.connector.Response) {
-        // contentLength = ((org.apache.catalina.connector.Response)
-        // httpResponse)
-        // .getContentLength();
-        // }
       }
     }
     return contentLength;
@@ -287,18 +274,6 @@ public class AccessEvent implements Serializable {
     if (statusCode == SENTINEL) {
       if (httpResponse != null) {
         statusCode = serverAdapter.getStatusCode();
-        // if (httpResponse instanceof org.mortbay.jetty.Response) {
-        // statusCode = ((org.mortbay.jetty.Response) httpResponse).getStatus();
-        // } else if (httpResponse instanceof
-        // com.caucho.server.connection.AbstractHttpResponse) {
-        // statusCode = ((com.caucho.server.connection.AbstractHttpResponse)
-        // httpResponse)
-        // .getStatusCode();
-        // } else if (httpResponse instanceof
-        // org.apache.catalina.connector.Response) {
-        // statusCode = ((org.apache.catalina.connector.Response) httpResponse)
-        // .getStatus();
-        // }
       }
     }
     return statusCode;
