@@ -11,11 +11,10 @@ package ch.qos.logback.core;
 
 import java.util.Map;
 
-import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.status.StatusManager;
 
 
-public interface Context extends FilterAttachable {
+public interface Context {
 
 	
   StatusManager getStatusManager();

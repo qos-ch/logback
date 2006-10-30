@@ -12,8 +12,6 @@ package ch.qos.logback.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.status.StatusManager;
 
 public class ContextBase implements Context {
@@ -25,8 +23,7 @@ public class ContextBase implements Context {
   // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
-  private FilterAttachableImpl fai = new FilterAttachableImpl();
-
+  
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -51,22 +48,7 @@ public class ContextBase implements Context {
     objectMap.put(key, value);
   }
 
-  public void addFilter(Filter newFilter) {
-    fai.addFilter(newFilter);
-  }
-
-  public Filter getFirstFilter() {
-    return fai.getFirstFilter();
-  }
-
-  public void clearAllFilters() {
-    fai.clearAllFilters();
-  }
-
-  public int getFilterChainDecision(Object event) {
-    return fai.getFilterChainDecision(event);
-  }
-
+  
   public String getName() {
     return name;
   }
