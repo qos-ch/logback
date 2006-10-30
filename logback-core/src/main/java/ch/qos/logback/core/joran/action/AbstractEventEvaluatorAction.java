@@ -12,13 +12,13 @@ package ch.qos.logback.core.joran.action;
 
 
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
@@ -64,6 +64,12 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       if(isOfCorrectType(evaluator)) {
         evaluator.setContext(this.context);
         evaluator.setName(evaluatorName);
+        
+        if (ec.getObjectStack().size() > 0 && ec.peekObject() instanceof EvaluatorFilter) {
+          ((EvaluatorFilter)ec.peekObject()).setEvaluator(evaluator);
+        }
+        
+        
         ec.pushObject(evaluator);        
         addInfo("Adding evaluator named ["+evaluatorName+"] to the object stack");
       } else {
@@ -109,7 +115,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
 
     if (o != evaluator) {
       addWarn(
-        "The object on the top the of the stack is not the layout pushed earlier.");
+        "The object on the top the of the stack is not the evaluator pushed earlier.");
     } else {
       ec.popObject();
 

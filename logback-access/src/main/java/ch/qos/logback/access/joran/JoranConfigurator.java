@@ -32,12 +32,10 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     super.addInstanceRules(rs);
     
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
-    rs.addRule(new Pattern("configuration/appender-ref"), 
-        new AppenderRefAction());
+    rs.addRule(new Pattern("configuration/appender-ref"), new AppenderRefAction());
     
     rs.addRule(new Pattern("*/evaluator"), new EvaluatorAction());
-    rs.addRule(new Pattern("*/evaluator/matcher"),
-        new MatcherAction());
+    rs.addRule(new Pattern("*/evaluator/matcher"), new MatcherAction());
 
   }
 
