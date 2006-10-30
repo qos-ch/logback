@@ -1,6 +1,7 @@
 package ch.qos.logback.access.jetty;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.mortbay.jetty.Request;
@@ -11,6 +12,7 @@ import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -108,6 +110,11 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   AppenderAttachableImpl aai = new AppenderAttachableImpl();
   String filename;
 
+  public RequestLogImpl() {
+    putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
+  }
+  
+  
   public void log(Request jettyRequest, Response jettyResponse) {
     JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
         jettyResponse);

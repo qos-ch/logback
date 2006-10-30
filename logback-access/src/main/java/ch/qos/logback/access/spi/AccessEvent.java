@@ -62,6 +62,14 @@ public class AccessEvent implements Serializable {
     this.timeStamp = System.currentTimeMillis();
     this.serverAdapter = adapter;
   }
+  
+  public HttpServletRequest getRequest() {
+    return httpRequest;
+  }
+  
+  public HttpServletResponse getResponse() {
+    return httpResponse;
+  }
 
   public long getTimeStamp() {
     return timeStamp;

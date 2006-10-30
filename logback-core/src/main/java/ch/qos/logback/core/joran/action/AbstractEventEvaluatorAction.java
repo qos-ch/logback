@@ -12,6 +12,7 @@ package ch.qos.logback.core.joran.action;
 
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
@@ -64,7 +65,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
         evaluator.setContext(this.context);
         evaluator.setName(evaluatorName);
         ec.pushObject(evaluator);        
-        addInfo("Adding evaluator named ["+evaluatorName+"] to the map of evaluators");
+        addInfo("Adding evaluator named ["+evaluatorName+"] to the object stack");
       } else {
         inError = true;
         addError("Evaluator of type ["+className+"] is not of the desired type");
