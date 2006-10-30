@@ -17,6 +17,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -94,7 +95,7 @@ public class LogbackValve extends ValveBase implements Context,
   boolean started;
 
   public LogbackValve() {
-    // System.out.println("LogbackValve constructor called");
+    putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
     start();
   }
 
