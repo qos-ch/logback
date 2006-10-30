@@ -14,16 +14,22 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.slf4j.ILoggerFactory;
+import org.slf4j.Marker;
 
+import ch.qos.logback.classic.filter.ClassicFilter;
+import ch.qos.logback.classic.spi.ClassicFilterAttachable;
+import ch.qos.logback.classic.spi.ClassicFilterAttachableImpl;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
  * @author ceki
  */
-public class LoggerContext extends ContextBase implements ILoggerFactory {
+public class LoggerContext extends ContextBase implements ILoggerFactory,
+    ClassicFilterAttachable {
 
   public static final String ROOT_NAME = "root";
 
@@ -39,6 +45,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   private Hashtable<String, Logger> loggerCache;
 
   LoggerContextRemoteView loggerContextRemoteView;
+
+  ClassicFilterAttachableImpl cfai = null;
 
   public LoggerContext() {
     super();
@@ -61,7 +69,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
       logger.buildRemoteView();
     }
   }
-  
+
   @Override
   public void setProperty(String key, String val) {
     super.setProperty(key, val);
@@ -154,9 +162,42 @@ public class LoggerContext extends ContextBase implements ILoggerFactory {
   public LoggerContextRemoteView getLoggerContextRemoteView() {
     return loggerContextRemoteView;
   }
-  
+
   public void reset() {
+
     root.recursiveReset();
-   
+
+  }
+
+  public void addFilter(ClassicFilter newFilter) {
+    if (cfai == null) {
+      cfai = new ClassicFilterAttachableImpl();
+    }
+    cfai.addFilter(newFilter);
+  }
+
+  public void clearAllFilters() {
+    if (cfai == null) {
+      return;
+    }
+    cfai.clearAllFilters();
+    cfai = null;
+  }
+
+  final public int getFilterChainDecision(final Marker marker,
+      final Logger logger, final Level level, final String format, final Object[] params,
+      final Throwable t) {
+    if (cfai == null) {
+      return Filter.NEUTRAL;
+    }
+    return cfai
+        .getFilterChainDecision(marker, logger, level, format, params, t);
+  }
+
+  public ClassicFilter getFirstFilter() {
+    if (cfai == null) {
+      return null;
+    }
+    return cfai.getFirstFilter();
   }
 }

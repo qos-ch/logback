@@ -374,222 +374,148 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     return childLogger;
   }
 
-  /**
-   * The next three methods could be merged. However, we decided not to merge
-   * them to make the calls to these methods more easily understandable,
-   * avoiding many instances of passing null parameters.
-   */
-  private void filterAndLog(String caller, Level level, String format,
-      Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, null);
-    if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-      callAppenders(le);
-    }
-  }
-
-  private void filterAndLog(String caller, Level level, String format,
-      Object[] argArray, Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, argArray);
-    if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-      callAppenders(le);
-    }
-  }
-
-  private void filterAndLog(String caller, Level level, Marker marker,
-      String format, Object[] argArray, Throwable t) {
-    LoggingEvent le = new LoggingEvent(caller, this, level, format, t, argArray);
-    le.setMarker(marker);
-    if (loggerContext.getFilterChainDecision(le) != Filter.DENY) {
-      callAppenders(le);
-    }
-  }
 
   public void debug(String msg) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, msg, null);
-    }
+//    if(!(effectiveLevelInt <= Level.DEBUG_INT)) {
+//      return;
+//    }
+    filterAndLog(null, Level.DEBUG, msg, null, null);
   }
 
   public void debug(String format, Object arg) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { arg }, null);
-    }
+    filterAndLog(null, Level.DEBUG, format, new Object[] { arg }, null);
   }
 
   public void debug(String format, Object arg1, Object arg2) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(null, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void debug(String format, Object[] argArray) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, format, new Object[] { argArray }, null);
-    }
+    filterAndLog(null, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(String msg, Throwable t) {
     if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, msg, t);
+      filterAndLog(null, Level.DEBUG, msg, null, t);
     }
   }
 
   public final void debug(Marker marker, String msg) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, msg, null, null);
+    filterAndLog(marker, Level.DEBUG, msg, null, null);
+  }
+  
+  final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
+      final Throwable t) {
+  
+    final int decision = loggerContext.getFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
+    
+    if(decision == Filter.NEUTRAL) {
+      if(effectiveLevelInt > level.levelInt) {
+        return;
+      }
+    } else if (decision == Filter.DENY) {
+      return;
     }
+    
+    LoggingEvent le = new LoggingEvent(FQCN, this, level, msg, t, params);
+    le.setMarker(marker);
+    callAppenders(le);
   }
 
   public void debug(Marker marker, String format, Object arg) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, format, new Object[] { arg },
-          null);
-    }
+    filterAndLog(marker, Level.DEBUG, format, new Object[] { arg }, null);
   }
 
   public void debug(Marker marker, String format, Object arg1, Object arg2) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, format,
-          new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(marker, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void debug(Marker marker, String format, Object[] argArray) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, format,
-          new Object[] { argArray }, null);
-    }
+    filterAndLog(marker, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(Marker marker, String msg, Throwable t) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, Level.DEBUG, marker, msg, null, t);
-    }
+    filterAndLog(marker, Level.DEBUG, msg, null, t);
   }
 
   public void error(String msg) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, msg, null);
-    }
+    filterAndLog(null, Level.ERROR, msg, null, null);
   }
 
   public void error(String format, Object arg) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] { arg }, null);
-    }
+    filterAndLog(null, Level.ERROR, format, new Object[] { arg }, null);
   }
 
   public void error(String format, Object arg1, Object arg2) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(null, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void error(String format, Object[] argArray) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, format, new Object[] { argArray }, null);
-    }
+    filterAndLog(null, Level.ERROR, format, argArray, null);
   }
 
   public void error(String msg, Throwable t) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, msg, t);
-    }
+    filterAndLog(null, Level.ERROR, msg, null, t);
   }
 
   public void error(Marker marker, String msg) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, msg, null, null);
-    }
+    filterAndLog(marker, Level.ERROR, msg, null, null);
   }
 
   public void error(Marker marker, String format, Object arg) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, format, new Object[] { arg },
-          null);
-    }
+    filterAndLog(marker, Level.ERROR, format,  new Object[] { arg }, null);
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, format,
-          new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(marker, Level.ERROR, format,  new Object[] { arg1, arg2 }, null);
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, format,
-          new Object[] { argArray }, null);
-    }
+    filterAndLog(marker, Level.ERROR, format,  argArray, null);
   }
 
   public void error(Marker marker, String msg, Throwable t) {
-    if (isErrorEnabled()) {
-      filterAndLog(FQCN, Level.ERROR, marker, msg, null, t);
-    }
+    filterAndLog(marker, Level.ERROR, msg,  null, t);
   }
 
   public void info(String msg) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, msg, null);
-    }
+    filterAndLog(null, Level.INFO, msg,  null, null);
   }
 
   public void info(String format, Object arg) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] { arg }, null);
-    }
+    filterAndLog(null, Level.INFO, format,  new Object[] { arg }, null);
   }
 
   public void info(String format, Object arg1, Object arg2) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(null, Level.INFO, format,  new Object[] { arg1, arg2 }, null);
   }
 
   public void info(String format, Object[] argArray) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, format, new Object[] { argArray }, null);
-    }
+    filterAndLog(null, Level.INFO, format,  argArray, null);
   }
 
   public void info(String msg, Throwable t) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, msg, t);
-    }
+    filterAndLog(null, Level.INFO, msg,  null, t);
   }
 
   public void info(Marker marker, String msg) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, msg, null, null);
-    }
+    filterAndLog(marker, Level.INFO, msg,  null, null);
   }
 
   public void info(Marker marker, String format, Object arg) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] { arg }, null);
-    }
+    filterAndLog(marker, Level.INFO, format,  new Object[] { arg }, null);
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format,
-          new Object[] { arg1, arg2 }, null);
-    }
+   filterAndLog(marker, Level.INFO, format,  new Object[] { arg1, arg2 }, null);
   }
 
   public void info(Marker marker, String format, Object[] argArray) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, format, new Object[] { argArray },
-          null);
-    }
+    filterAndLog(marker, Level.INFO, format,  argArray, null);
   }
 
   public void info(Marker marker, String msg, Throwable t) {
-    if (isInfoEnabled()) {
-      filterAndLog(FQCN, Level.INFO, marker, msg, null, t);
-    }
+    filterAndLog(marker, Level.INFO, msg,  null, t);
   }
 
   public final boolean isDebugEnabled() {
@@ -629,65 +555,43 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
   }
 
   public void warn(String msg) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, msg, null);
-    }
+    filterAndLog(null, Level.WARN, msg,  null, null);
   }
 
   public void warn(String msg, Throwable t) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, msg, t);
-    }
+    filterAndLog(null, Level.WARN, msg,  null, t);
   }
 
   public void warn(String format, Object arg) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] { arg }, null);
-    }
+    filterAndLog(null, Level.WARN, format,  new Object[] { arg }, null);
   }
 
   public void warn(String format, Object arg1, Object arg2) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(null, Level.WARN, format,  new Object[] { arg1, arg2 }, null);
   }
 
   public void warn(String format, Object[] argArray) {
-    if (effectiveLevelInt <= Level.WARN_INT) {
-      filterAndLog(FQCN, Level.WARN, format, new Object[] { argArray }, null);
-    }
+    filterAndLog(null, Level.WARN, format,  argArray, null);
   }
 
   public void warn(Marker marker, String msg) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, msg, null, null);
-    }
+    filterAndLog(marker, Level.WARN, msg,  null, null);
   }
 
   public void warn(Marker marker, String format, Object arg) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] { arg }, null);
-    }
+    filterAndLog(marker, Level.WARN, format,  new Object[] { arg }, null);
   }
 
   public void warn(Marker marker, String format, Object[] argArray) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format, new Object[] { argArray },
-          null);
-    }
+    filterAndLog(marker, Level.WARN, format,  argArray, null);
   }
 
   public void warn(Marker marker, String format, Object arg1, Object arg2) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, format,
-          new Object[] { arg1, arg2 }, null);
-    }
+    filterAndLog(marker, Level.WARN, format,  new Object[] { arg1, arg2 }, null);
   }
 
   public void warn(Marker marker, String msg, Throwable t) {
-    if (isWarnEnabled()) {
-      filterAndLog(FQCN, Level.WARN, marker, msg, null, t);
-    }
+    filterAndLog(marker, Level.WARN, msg,  null, t);
   }
 
   public boolean isAdditive() {
