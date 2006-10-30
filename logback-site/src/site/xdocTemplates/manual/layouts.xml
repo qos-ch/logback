@@ -335,8 +335,7 @@ import ch.qos.logback.core.ConsoleAppender;
 public class PatternSample {
 
   static public void main(String[] args) throws Exception {
-    Logger rootLogger = (Logger)
-    LoggerFactory.getLogger("root");
+    Logger rootLogger = (Logger)LoggerFactory.getLogger("root");
 
     <b>PatternLayout layout = new PatternLayout();
     layout.setPattern("%-5level [%thread]: %message%n");
@@ -1040,13 +1039,22 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>Let us test this configuration with the following code.</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapter5/EventEvaluatorExample.java)
+			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)
 		</em>
-		<div class="source"><pre>public class CallerEvaluatorExample {
+		<div class="source"><pre>ppackage chapter5;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+public class CallerEvaluatorExample {
 
   public static void main(String[] args)  {
-    Logger logger = (Logger) LoggerFactory
-        .getLogger(CallerEvaluatorExample.class);
+    Logger logger = LoggerFactory.getLogger(CallerEvaluatorExample.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     try {
@@ -1057,13 +1065,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
       StatusPrinter.print(lc);
     }
 
-    <b>for (int i = 0; i &lt; 5; i++) {
+    for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
         logger.debug("who calls thee?");
       } else {
         logger.debug("I know me " + i);
       }
-    }</b>
+    }
   }
 }</pre></div>
 		<p>
@@ -1081,13 +1089,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			<code>EventEvaluatorExample</code>
 			class.
 		</p>
-		<div class="source"><pre>0    [main] DEBUG - logging statement0 
-0    [main] DEBUG - logging statement1 
-0    [main] DEBUG - logging statement2 
-0    [main] DEBUG - stacktrace logging statement3 
+		<div class="source"><pre>0    [main] DEBUG - I know me 0 
+0    [main] DEBUG - I know me 1 
+0    [main] DEBUG - I know me 2 
+0    [main] DEBUG - who calls thee? 
 Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
 
-0    [main] DEBUG - logging statement4</pre></div>
+0    [main] DEBUG - I know me 4</pre></div>
 
 		<p>
 			Of course, one can change the expression to match a real
@@ -1107,11 +1115,20 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 		with an exception. However, we do not want to have the stack trace of the
 		third request to be output.</p>
 
-<div class="source"><pre>public class ExceptionEvaluatorExample {
+<div class="source"><pre>package chapter5;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+public class ExceptionEvaluatorExample {
 
   public static void main(String[] args) {
-    Logger logger = (Logger) LoggerFactory
-        .getLogger(ExceptionEvaluatorExample.class);
+    Logger logger = LoggerFactory.getLogger(ExceptionEvaluatorExample.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     try {
@@ -1121,14 +1138,14 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
     } catch (JoranException je) {
       StatusPrinter.print(lc);
     }
-    <b>for (int i = 0; i &lt; 5; i++) {
+    for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
         logger.debug("logging statement " + i, new TestException(
             "do not display this"));
       } else {
         logger.debug("logging statement " + i, new Exception("display"));
       }
-    }</b>
+    }
   }
 }</pre></div>
 		

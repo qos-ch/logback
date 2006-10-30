@@ -11,6 +11,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class SampleLogging {
 
   public static void main(String[] args) {
+
     Logger logger = LoggerFactory.getLogger(SampleLogging.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
