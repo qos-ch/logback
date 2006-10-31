@@ -4,7 +4,7 @@ import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.turbo.ClassicFilter;
+import ch.qos.logback.classic.turbo.TurboFilter;
 
 /**
  * Interface for attaching ClassicFilter instances to objects.
@@ -16,12 +16,12 @@ public interface ClassicFilterAttachable {
   /**
    * Add a filter.
    */
-  public void addFilter(ClassicFilter newFilter);
+  public void addFilter(TurboFilter newFilter);
 
   /**
    * Get first filter in the chain.
    */
-  public ClassicFilter getFirstFilter();
+  public TurboFilter getFirstFilter();
 
   public void clearAllFilters();
 

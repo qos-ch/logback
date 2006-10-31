@@ -16,7 +16,7 @@ import java.util.Hashtable;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.turbo.ClassicFilter;
+import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.spi.ClassicFilterAttachable;
 import ch.qos.logback.classic.spi.ClassicFilterAttachableImpl;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
@@ -169,7 +169,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   }
 
-  public void addFilter(ClassicFilter newFilter) {
+  public void addFilter(TurboFilter newFilter) {
     if (cfai == null) {
       cfai = new ClassicFilterAttachableImpl();
     }
@@ -194,7 +194,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
         .getFilterChainDecision(marker, logger, level, format, params, t);
   }
 
-  public ClassicFilter getFirstFilter() {
+  public TurboFilter getFirstFilter() {
     if (cfai == null) {
       return null;
     }
