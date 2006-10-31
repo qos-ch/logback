@@ -31,67 +31,8 @@
 		</ul>
 		
 		
-		<p>If you wish to download an older version of logback, please use these links:</p>
-
-		<p><b>Logback 0.5</b></p>
-		<ul>
-			<li>
-				<a href="dist/logback-0.5.zip">
-					logback-0.5.zip
-				</a>
-			</li>
-
-			<li>
-				<a href="dist/logback-0.5.tar.gz">
-					logback-0.5.tar.gz
-				</a>
-			</li>
-		</ul>	
-		
-		<p><b>Logback 0.4</b></p>
-		<ul>
-			<li>
-				<a href="dist/logback-0.4.zip">
-					logback-0.4.zip
-				</a>
-			</li>
-
-			<li>
-				<a href="dist/logback-0.4.tar.gz">
-					logback-0.4.tar.gz
-				</a>
-			</li>
-		</ul>	
-				
-		<p><b>Logback 0.3</b></p>
-		<ul>
-			<li>
-				<a href="dist/logback-0.3.zip">
-					logback-0.3.zip
-				</a>
-			</li>
-
-			<li>
-				<a href="dist/logback-0.3.tar.gz">
-					logback-0.3.tar.gz
-				</a>
-			</li>
-		</ul>		
-		
-				<p><b>Logback 0.2.5</b></p>
-		<ul>
-			<li>
-				<a href="dist/logback-0.2.5.zip">
-					logback-0.2.5.zip
-				</a>
-			</li>
-
-			<li>
-				<a href="dist/logback-0.2.5.tar.gz">
-					logback-0.2.5.tar.gz
-				</a>
-			</li>
-		</ul>	
+		<p>If you wish to download an older version of logback, please visit the
+		<a href="http://logback.qos.ch/dist/">distributions directory</a>.</p>
 
 	</body>
 </document>
