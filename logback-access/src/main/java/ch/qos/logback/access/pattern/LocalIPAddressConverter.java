@@ -9,7 +9,7 @@ public class LocalIPAddressConverter extends AccessConverter {
 
   String localIPAddressStr;
 
-  LocalIPAddressConverter() {
+  public LocalIPAddressConverter() {
     try {
       localIPAddressStr = InetAddress.getLocalHost().getHostAddress();
     } catch (UnknownHostException uhe) {
