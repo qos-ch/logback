@@ -69,7 +69,6 @@ abstract public class AbstractEventEvaluatorAction extends Action {
           ((EvaluatorFilter)ec.peekObject()).setEvaluator(evaluator);
         }
         
-        
         ec.pushObject(evaluator);        
         addInfo("Adding evaluator named ["+evaluatorName+"] to the object stack");
       } else {

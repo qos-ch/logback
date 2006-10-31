@@ -16,6 +16,7 @@ import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
@@ -131,7 +132,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
       filename = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
       getStatusManager().add(
-          new ErrorStatus("filename property not set. Assuming [" + filename
+          new WarnStatus("filename property not set. Assuming [" + filename
               + "]", this));
 
     }
