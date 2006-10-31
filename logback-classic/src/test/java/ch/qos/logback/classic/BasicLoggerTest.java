@@ -9,9 +9,6 @@
  */
 package ch.qos.logback.classic;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import junit.framework.TestCase;
 
 import org.slf4j.LoggerFactory;
