@@ -13,7 +13,7 @@ package ch.qos.logback.classic;
 import java.net.InetAddress;
 
 import junit.framework.TestCase;
-import ch.qos.logback.classic.turbo.NOPClassicFilter;
+import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.appender.NOPAppender;
 
 public class LoggerPerfTest extends TestCase {
@@ -67,7 +67,7 @@ public class LoggerPerfTest extends TestCase {
   double loopNopFilter(long len) {
     LoggerContext lc = new LoggerContext();
     NOPAppender mopAppender = new NOPAppender();
-    NOPClassicFilter nopFilter = new NOPClassicFilter();
+    NOPTurboFilter nopFilter = new NOPTurboFilter();
     nopFilter.setName("nop");
     mopAppender.start();
     lc.addFilter(nopFilter);
