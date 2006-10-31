@@ -39,8 +39,8 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
 
-    rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
-    rs.addRule(new Pattern("configuration/evaluator/matcher"),
+    rs.addRule(new Pattern("*/evaluator"), new EvaluatorAction());
+    rs.addRule(new Pattern("*/evaluator/matcher"),
         new MatcherAction());
 
     rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
