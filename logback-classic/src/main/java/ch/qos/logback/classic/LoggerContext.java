@@ -16,7 +16,7 @@ import java.util.Hashtable;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.filter.ClassicFilter;
+import ch.qos.logback.classic.turbo.ClassicFilter;
 import ch.qos.logback.classic.spi.ClassicFilterAttachable;
 import ch.qos.logback.classic.spi.ClassicFilterAttachableImpl;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;

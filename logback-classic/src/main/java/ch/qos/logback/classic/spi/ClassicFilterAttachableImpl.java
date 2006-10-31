@@ -13,7 +13,7 @@ import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.filter.ClassicFilter;
+import ch.qos.logback.classic.turbo.ClassicFilter;
 import ch.qos.logback.core.filter.Filter;
 
 /**
@@ -66,8 +66,8 @@ final public class ClassicFilterAttachableImpl implements ClassicFilterAttachabl
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public int getFilterChainDecision(Marker marker, Logger logger,
-      Level level, String format, Object[] params, Throwable t) {
+  public final int getFilterChainDecision(final Marker marker, final Logger logger,
+      final Level level, final String format, final Object[] params, final Throwable t) {
     ClassicFilter f = headFilter;
 
     while (f != null) {
