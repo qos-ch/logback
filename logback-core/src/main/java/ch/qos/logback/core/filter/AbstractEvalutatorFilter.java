@@ -5,7 +5,7 @@ package ch.qos.logback.core.filter;
  * This abstract class is meant to be a base for specific evaluator filters.
  * </p>
  * <p>
- * The value of the {@link #on_match} and {@link #onMismatch} attributes is set to 
+ * The value of the {@link #onMatch} and {@link #onMismatch} attributes is set to 
  * {@link Filter.NEUTRAL}, so that a badly configured evaluator filter doesn't 
  * disturb the functionning of the chain.
  * </p>
@@ -21,16 +21,16 @@ package ch.qos.logback.core.filter;
 
 public abstract class AbstractEvalutatorFilter extends Filter {
 
-  protected int on_match = NEUTRAL;
+  protected int onMatch = NEUTRAL;
   protected int onMismatch = NEUTRAL;
 
   final public void setOnMatch(String action) {
     if ("NEUTRAL".equals(action)) {
-      on_match = NEUTRAL;
+      onMatch = NEUTRAL;
     } else if ("ACCEPT".equals(action)) {
-      on_match = ACCEPT;
+      onMatch = ACCEPT;
     } else if ("DENY".equals(action)) {
-      on_match = DENY;
+      onMatch = DENY;
     }
   }
 

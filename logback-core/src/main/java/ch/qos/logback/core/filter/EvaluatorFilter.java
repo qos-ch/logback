@@ -7,6 +7,7 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
 
   EventEvaluator evaluator;
   
+  @Override
   public void start() {
     if(evaluator != null) {
       super.start();
@@ -32,7 +33,7 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
     }
     try {
       if (evaluator.evaluate(event)) {
-        return on_match;
+        return onMatch;
       } else {
         return onMismatch;
       }
@@ -40,7 +41,6 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
       addError("Evaluator "+evaluator.getName()+" threw an exception", e);
       return NEUTRAL;
     }
-
   }
 
 }
