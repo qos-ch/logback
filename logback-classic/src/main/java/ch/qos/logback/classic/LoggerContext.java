@@ -17,8 +17,8 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.classic.spi.ClassicFilterAttachable;
-import ch.qos.logback.classic.spi.ClassicFilterAttachableImpl;
+import ch.qos.logback.classic.spi.TurboFilterAttachable;
+import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
@@ -29,7 +29,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * @author ceki
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory,
-    ClassicFilterAttachable {
+    TurboFilterAttachable {
 
   public static final String ROOT_NAME = "root";
 
@@ -46,7 +46,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   LoggerContextRemoteView loggerContextRemoteView;
 
-  ClassicFilterAttachableImpl cfai = null;
+  TurboFilterAttachableImpl cfai = null;
 
   public LoggerContext() {
     super();
@@ -169,35 +169,35 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   }
 
-  public void addFilter(TurboFilter newFilter) {
+  public void addTurboFilter(TurboFilter newFilter) {
     if (cfai == null) {
-      cfai = new ClassicFilterAttachableImpl();
+      cfai = new TurboFilterAttachableImpl();
     }
-    cfai.addFilter(newFilter);
+    cfai.addTurboFilter(newFilter);
   }
 
-  public void clearAllFilters() {
+  public void clearAllTurboFilters() {
     if (cfai == null) {
       return;
     }
-    cfai.clearAllFilters();
+    cfai.clearAllTurboFilters();
     cfai = null;
   }
 
-  final public int getFilterChainDecision(final Marker marker,
+  final public int getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format, final Object[] params,
       final Throwable t) {
     if (cfai == null) {
       return Filter.NEUTRAL;
     }
     return cfai
-        .getFilterChainDecision(marker, logger, level, format, params, t);
+        .getTurboFilterChainDecision(marker, logger, level, format, params, t);
   }
 
-  public TurboFilter getFirstFilter() {
+  public TurboFilter getFirstTurboFilter() {
     if (cfai == null) {
       return null;
     }
-    return cfai.getFirstFilter();
+    return cfai.getFirstTurboFilter();
   }
 }

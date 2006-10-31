@@ -407,7 +407,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
   final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
       final Throwable t) {
   
-    final int decision = loggerContext.getFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
+    final int decision = loggerContext.getTurboFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
     
     if(decision == Filter.NEUTRAL) {
       if(effectiveLevelInt > level.levelInt) {

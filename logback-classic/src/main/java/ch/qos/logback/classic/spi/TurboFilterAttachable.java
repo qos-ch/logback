@@ -11,26 +11,26 @@ import ch.qos.logback.classic.turbo.TurboFilter;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface ClassicFilterAttachable {
+public interface TurboFilterAttachable {
 
   /**
    * Add a filter.
    */
-  public void addFilter(TurboFilter newFilter);
+  public void addTurboFilter(TurboFilter newFilter);
 
   /**
    * Get first filter in the chain.
    */
-  public TurboFilter getFirstFilter();
+  public TurboFilter getFirstTurboFilter();
 
-  public void clearAllFilters();
+  public void clearAllTurboFilters();
 
   /**
    * Loop through the filters in the chain. As soon as a filter decides on
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then NEUTRAL is returned.
    */
-  public int getFilterChainDecision(Marker marker, Logger logger,
+  public int getTurboFilterChainDecision(Marker marker, Logger logger,
       Level level, String format, Object[] params, Throwable t);
 
 }

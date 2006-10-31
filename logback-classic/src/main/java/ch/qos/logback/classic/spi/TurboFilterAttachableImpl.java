@@ -21,7 +21,7 @@ import ch.qos.logback.core.filter.Filter;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-final public class ClassicFilterAttachableImpl implements ClassicFilterAttachable {
+final public class TurboFilterAttachableImpl implements TurboFilterAttachable {
 
   TurboFilter headFilter;
   TurboFilter tailFilter;
@@ -29,7 +29,7 @@ final public class ClassicFilterAttachableImpl implements ClassicFilterAttachabl
   /**
    * Add a filter to end of the filter list.
    */
-  public void addFilter(TurboFilter newFilter) {
+  public void addTurboFilter(TurboFilter newFilter) {
     if (headFilter == null) {
       headFilter = newFilter;
       tailFilter = newFilter;
@@ -42,14 +42,14 @@ final public class ClassicFilterAttachableImpl implements ClassicFilterAttachabl
   /**
    * Get first filter in the chain.
    */
-  public TurboFilter getFirstFilter() {
+  public TurboFilter getFirstTurboFilter() {
     return headFilter;
   }
 
   /**
    * Clear the filter chain
    */
-  public void clearAllFilters() {
+  public void clearAllTurboFilters() {
     TurboFilter f = headFilter;
     while (f != null) {
       final TurboFilter next = f.getNext();
@@ -66,7 +66,7 @@ final public class ClassicFilterAttachableImpl implements ClassicFilterAttachabl
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public final int getFilterChainDecision(final Marker marker, final Logger logger,
+  public final int getTurboFilterChainDecision(final Marker marker, final Logger logger,
       final Level level, final String format, final Object[] params, final Throwable t) {
     TurboFilter f = headFilter;
 
