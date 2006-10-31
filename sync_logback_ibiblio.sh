@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FROM=rsync://logback.qos.ch/dist/bundles/
+FROM=rsync://logback.qos.ch/logbackBundles/
 TO=ch/qos/logback
 
-NO_SSH=true
+NO_SSH=true 
