@@ -86,6 +86,7 @@ public class TimeBasedRollingTest extends TestCase {
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test1-%d{"
         + DATE_PATTERN + "}");
+    tbrp.setParent(rfa);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
@@ -130,6 +131,7 @@ public class TimeBasedRollingTest extends TestCase {
     TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
     tbrp1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
         + DATE_PATTERN + "}");
+    tbrp1.setParent(rfa1);
     tbrp1.start();
     rfa1.setRollingPolicy(tbrp1);
     rfa1.start();
@@ -162,6 +164,7 @@ public class TimeBasedRollingTest extends TestCase {
     TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
     tbrp2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
         + DATE_PATTERN + "}");
+    tbrp2.setParent(rfa2);
     tbrp2.start();
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
@@ -187,6 +190,7 @@ public class TimeBasedRollingTest extends TestCase {
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test3-%d{"
         + DATE_PATTERN + "}.gz");
+    tbrp.setParent(rfa);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
@@ -232,11 +236,13 @@ public class TimeBasedRollingTest extends TestCase {
   public void test4() throws Exception {
     RollingFileAppender rfa1 = new RollingFileAppender();
     rfa1.setLayout(layout);
+    rfa1.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
 
     TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
+    //tbrp1.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
     tbrp1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
         + DATE_PATTERN + "}");
+    tbrp1.setParent(rfa1);
     tbrp1.start();
     rfa1.setRollingPolicy(tbrp1);
     rfa1.start();
@@ -266,11 +272,13 @@ public class TimeBasedRollingTest extends TestCase {
 
     RollingFileAppender rfa2 = new RollingFileAppender();
     rfa2.setLayout(layout);
+    rfa2.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
 
     TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
     tbrp2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
         + DATE_PATTERN + "}");
-    tbrp2.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
+    //tbrp2.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
+    tbrp2.setParent(rfa2);
     tbrp2.start();
     rfa2.setRollingPolicy(tbrp2);
     rfa2.start();
@@ -292,11 +300,13 @@ public class TimeBasedRollingTest extends TestCase {
   public void test5() throws Exception {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
+    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test5.log");
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test5-%d{"
         + DATE_PATTERN + "}");
-    tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test5.log");
+    //tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test5.log");
+    tbrp.setParent(rfa);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
@@ -335,11 +345,13 @@ public class TimeBasedRollingTest extends TestCase {
   public void test6() throws Exception {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
+    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test6.log");
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test6-%d{"
         + DATE_PATTERN + "}.gz");
-    tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test6.log");
+    //tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test6.log");
+    tbrp.setParent(rfa);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();

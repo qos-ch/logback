@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the reliable, generic, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -216,7 +216,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     //addInfo("roll-over called");
     //addInfo("compressionMode: " + compressionMode);
 
-    if (activeFileName == null) {
+    if (getParentFileName() == null) {
       switch (compressionMode) {
       case Compress.NONE:
         // nothing to do;
@@ -233,15 +233,15 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     } else {
       switch (compressionMode) {
       case Compress.NONE:
-        util.rename(activeFileName, elapsedPeriodsFileName);
+        util.rename(getParentFileName(), elapsedPeriodsFileName);
         break;
       case Compress.GZ:
         addInfo("GZIP compressing ["+elapsedPeriodsFileName+"]");
-        compress.GZCompress(activeFileName, elapsedPeriodsFileName);
+        compress.GZCompress(getParentFileName(), elapsedPeriodsFileName);
         break;
       case Compress.ZIP:
         addInfo("ZIP compressing ["+elapsedPeriodsFileName+"]");
-        compress.ZIPCompress(activeFileName, elapsedPeriodsFileName);
+        compress.ZIPCompress(getParentFileName(), elapsedPeriodsFileName);
         break;
       }
     }
@@ -255,12 +255,11 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   * as computed by the <b>FileNamePattern</b> option.
   *
   */
-  @Override
   public String getActiveFileName() {
-    if (activeFileName == null) {
+    if (getParentFileName() == null) {
       return activeFileNamePattern.convertDate(lastCheck);
     } else {
-      return activeFileName;
+      return getParentFileName();
     }
   }
 
@@ -289,5 +288,5 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     } else {
       return false;
     }
-  }
+  }  
 }

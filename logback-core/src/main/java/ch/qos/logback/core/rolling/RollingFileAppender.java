@@ -79,16 +79,23 @@ public class RollingFileAppender extends FileAppender {
     }
 
     if (rollingPolicy != null) {
-      String afn = rollingPolicy.getActiveFileName();
+      //rollingPolicy.setParent(this);
+      //String afn = rollingPolicy.getActiveFileName();
       // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-      activeFileCache = new File(afn);
-      addInfo("Active log file name: "+afn);
+      
+//      if (getFile() == null) {
+//        setFile(rollingPolicy.getActiveFileName());
+//      }
+      
+      activeFileCache = new File(getFile());
+      addInfo("Active log file name: "+ getFile());
 
       // The local setFile throws an exception, so we use the parent's version.
       // This is to prevent the user from configuring both the RollingFileAppender with
       // an activeFileName _and_ the FileAppender's file attribute, causing confusion
       // on the attributes' uses.
-      super.setFile(afn);
+      
+      //super.setFile(rollingPolicy.getActiveFileName());
       super.start();
     } else {
       addWarn("No RollingPolicy was set for the RollingFileAppender named "+ getName());
@@ -131,7 +138,8 @@ public class RollingFileAppender extends FileAppender {
     }
     
     // Although not certain, the active file name may change after roll over.
-    fileName = rollingPolicy.getActiveFileName();
+    //fileName = rollingPolicy.getActiveFileName();
+    fileName = getFile();
     addInfo("Active file name is now ["+ fileName+"].");
 
     // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
@@ -190,9 +198,9 @@ public class RollingFileAppender extends FileAppender {
     }
   }
   
-  @Override
-  public void setFile(String filename) {
-    throw new UnsupportedOperationException("With RollingFileAppender please use activeFileName " +
-                                "option instead of File");
-  }
+//  @Override
+//  public void setFile(String filename) {
+//    throw new UnsupportedOperationException("With RollingFileAppender please use activeFileName " +
+//                                "option instead of File");
+//  }
 }

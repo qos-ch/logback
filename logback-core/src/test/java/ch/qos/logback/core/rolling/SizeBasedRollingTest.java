@@ -74,6 +74,7 @@ public class SizeBasedRollingTest extends TestCase {
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
+    fwrp.setParent(rfa);
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
     sbtp.setContext(context);
 
@@ -102,7 +103,9 @@ public class SizeBasedRollingTest extends TestCase {
     rfa.setName("ROLLING");
     rfa.setLayout(layout);
     rfa.setContext(context);
-
+    rfa.setFile(Constants.TEST_DIR_PREFIX
+        + "output/sizeBased-test2.log");
+    
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     swrp.setContext(context);
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
@@ -110,11 +113,12 @@ public class SizeBasedRollingTest extends TestCase {
 
     sbtp.setMaxFileSize("100");
     swrp.setMinIndex(0);
-    swrp.setActiveFileName(Constants.TEST_DIR_PREFIX
-        + "output/sizeBased-test2.log");
+//    swrp.setActiveFileName(Constants.TEST_DIR_PREFIX
+//        + "output/sizeBased-test2.log");
 
     swrp.setFileNamePattern(Constants.TEST_DIR_PREFIX
         + "output/sizeBased-test2.%i");
+    swrp.setParent(rfa);
     swrp.start();
 
     rfa.setRollingPolicy(swrp);
@@ -172,6 +176,7 @@ public class SizeBasedRollingTest extends TestCase {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
     rfa.setContext(context);
+    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
@@ -180,9 +185,10 @@ public class SizeBasedRollingTest extends TestCase {
 
     sbtp.setMaxFileSize("100");
     fwrp.setMinIndex(0);
-    fwrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
+    //fwrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
     fwrp.setFileNamePattern(Constants.TEST_DIR_PREFIX
         + "output/sbr-test3.%i.gz");
+    fwrp.setParent(rfa);
     fwrp.start();
     rfa.setRollingPolicy(fwrp);
     rfa.setTriggeringPolicy(sbtp);

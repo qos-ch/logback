@@ -31,7 +31,7 @@ public class FileAppender extends WriterAppender {
   protected boolean append = true;
 
   /**
-   * The name of the log file.
+   * The name of the active log file.
    */
   protected String fileName = null;
 

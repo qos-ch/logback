@@ -129,11 +129,11 @@ public class NestedComponentIA extends ImplicitAction {
       return;
     }
 
-//    PropertySetter nestedBean = new PropertySetter(actionData.nestedComponent);
+    PropertySetter nestedBean = new PropertySetter(actionData.nestedComponent);
     
-//    FIXME
-//    nestedBean.setComponent(
-//        "parent", actionData.parentBean.getObj());
+//    FIXME set parent
+    nestedBean.setComponent(
+        "parent", actionData.parentBean.getObj());
     
     if (actionData.nestedComponent instanceof LifeCycle) {
       ((LifeCycle) actionData.nestedComponent).start();

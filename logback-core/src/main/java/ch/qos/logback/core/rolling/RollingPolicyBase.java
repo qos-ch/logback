@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the reliable, generic, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.Compress;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -31,8 +32,9 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
    * FileAppender. Unfortunately, a child component must be self contained
    * as it is started before its parent.
    */
-  protected String activeFileName = null;
-
+  //protected String activeFileName = null;
+  private FileAppender parent;
+  
   private boolean started;
   
   /**
@@ -62,15 +64,6 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   public String getFileNamePattern() {
     return fileNamePatternStr;
   }
-
-  /**
-   * ActiveFileName can be left unset, i.e. as null.
-   * @see #getActiveFileName
-   */
-  public void setActiveFileName(String afn) {
-    activeFileName = afn;
-  }
-
   
   public boolean isStarted() {
     return started;
@@ -83,9 +76,14 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   public void stop() {
     started = false;
   }
+  
+  public void setParent(FileAppender appender) {
+    addInfo("Adding parent to RollingPolicy: " + appender.getName());
+    this.parent = appender;
+  }
 
-  public String getActiveFileName() {
-    return activeFileName;
+  public String getParentFileName() {
+    return parent.getFile();
   }
   
 }

@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the reliable, generic, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.spi.LifeCycle;
 
 
@@ -38,4 +39,6 @@ public interface RollingPolicy extends LifeCycle {
    * Get the new name of the active log file.
    * */  
   public String getActiveFileName();
+  
+  public void setParent(FileAppender appender);
 }
