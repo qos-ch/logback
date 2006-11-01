@@ -9,7 +9,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * ClassicFilter is a specialized filter with a decide method that takes a bunch of parameters
+ * TurboFilter is a specialized filter with a decide method that takes a bunch of parameters
  * instead of a single event object. The latter is cleaner but the latter is much more 
  * performant.
  * 

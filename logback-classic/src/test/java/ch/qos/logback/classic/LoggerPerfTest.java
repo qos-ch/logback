@@ -70,7 +70,7 @@ public class LoggerPerfTest extends TestCase {
     NOPTurboFilter nopFilter = new NOPTurboFilter();
     nopFilter.setName("nop");
     mopAppender.start();
-    lc.addFilter(nopFilter);
+    lc.addTurboFilter(nopFilter);
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.OFF);
     long start = System.nanoTime();
