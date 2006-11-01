@@ -83,7 +83,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
     }
     // if (activeFileName == null) {
-    if (getActiveFileName() == null) {
+    if (getNewActiveFileName() == null) {
       addWarn("The ActiveFile name option must be set before using this rolling policy.");
       throw new IllegalStateException("The ActiveFileName option must be set.");
     }
@@ -137,13 +137,13 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       // move active file name to min
       switch (compressionMode) {
       case Compress.NONE:
-        util.rename(getActiveFileName(), fileNamePattern.convertInt(minIndex));
+        util.rename(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
         break;
       case Compress.GZ:
-        compress.GZCompress(getActiveFileName(), fileNamePattern.convertInt(minIndex));
+        compress.GZCompress(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
         break;
       case Compress.ZIP:
-        compress.ZIPCompress(getActiveFileName(), fileNamePattern.convertInt(minIndex));
+        compress.ZIPCompress(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
         break;
       }
     }
@@ -154,7 +154,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
    * 
    * @see {@link setActiveFileName}.
    */
-  public String getActiveFileName() {
+  public String getNewActiveFileName() {
     return getParentFileName();
   }
 

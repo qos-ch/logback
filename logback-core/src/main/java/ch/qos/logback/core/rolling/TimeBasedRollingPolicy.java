@@ -249,9 +249,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     //if we already generated a name, then we have to update
     //the fileAppender with a new active file name.
     if (getParentFileName() == lastGeneratedFileName) {
-      String newFile = activeFileNamePattern.convertDate(lastCheck);
-      setParentFileName(newFile);
-      lastGeneratedFileName = newFile;
+      setParentFileName(getNewActiveFileName());
     }
   }
 
@@ -280,7 +278,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
    * and only if the parent file name is null, so no test is required.
    *
    */
-  public String getActiveFileName() {
+  public String getNewActiveFileName() {
     String newName = activeFileNamePattern.convertDate(lastCheck);
     addInfo("Generated a new name for RollingFileAppender: " + newName);
     lastGeneratedFileName = newName;

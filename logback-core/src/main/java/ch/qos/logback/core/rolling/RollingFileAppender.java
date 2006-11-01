@@ -82,7 +82,7 @@ public class RollingFileAppender extends FileAppender {
       //if no active file name was set, then it's the responsability of the
       //rollingPolicy to create one.
       if (getFile() == null) {
-        setFile(rollingPolicy.getActiveFileName());
+        setFile(rollingPolicy.getNewActiveFileName());
       }
       
       activeFileCache = new File(getFile());
