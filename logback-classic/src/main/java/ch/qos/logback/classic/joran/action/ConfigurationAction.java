@@ -34,6 +34,9 @@ public class ConfigurationAction extends Action {
  
       attachment = true;
     }
+    
+    // the context is turbo filter attachable, so it is pushed on top of the stack
+    ec.pushObject(getContext());
   }
 
   public void end(InterpretationContext ec, String name) {
@@ -42,5 +45,6 @@ public class ConfigurationAction extends Action {
       //LoggerContext loggerContext = (LoggerContext) context;
       //ConfiguratorBase.detachTemporaryConsoleAppender(repository, errorList);
     }
+    ec.popObject();
   }
 }

@@ -13,4 +13,5 @@ public class ClassicGlobal {
   static public final char LOGGER_SEPARATOR = '.';
   static public final String CAUSED_BY = "Caused by: ";
   static public final char DOT = '.';
+  static public final String USER_MDC_KEY = "user";
 }

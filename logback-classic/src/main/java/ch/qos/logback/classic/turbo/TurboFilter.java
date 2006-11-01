@@ -23,7 +23,7 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
   /**
    * Points to the next filter in the filter chain.
    */
-  private TurboFilter classicNext;
+  private TurboFilter turboNext;
 
   /**
    * Make a decision based on the multiple parameters passed as arguments.
@@ -58,14 +58,14 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
    * Set the next filter pointer.
    */
   public void setNext(TurboFilter next) {
-    this.classicNext = next;
+    this.turboNext = next;
   }
 
   /**
    * Return the pointer to the next filter;
    */
   public TurboFilter getNext() {
-    return classicNext;
+    return turboNext;
   }
   
   public String getName() {
