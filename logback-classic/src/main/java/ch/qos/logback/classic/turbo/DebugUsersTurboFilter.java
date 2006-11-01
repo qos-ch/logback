@@ -42,5 +42,9 @@ public class DebugUsersTurboFilter extends TurboFilter {
     System.out.println("******* ADD USER CALLED");
     userList.add(user);
   }
+  
+  public List<String> getUsers() {
+    return userList;
+  }
 
 }

@@ -15,6 +15,9 @@ import junit.framework.TestSuite;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
+import ch.qos.logback.classic.turbo.NOPTurboFilter;
+import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.appender.ListAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -78,6 +81,32 @@ public class BasicJoranTest extends TestCase {
     logger.debug(msg);
   }
   
+  public void testTurboFilter() throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
+    jc.setContext(loggerContext);
+    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
+
+    StatusPrinter.print(loggerContext.getStatusManager());
+    
+    TurboFilter filter = loggerContext.getFirstTurboFilter();
+    assertTrue(filter instanceof NOPTurboFilter);
+  }
+  
+  public void testTurboFilterWithStringList() throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
+    jc.setContext(loggerContext);
+    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo2.xml");
+
+    StatusPrinter.print(loggerContext.getStatusManager());
+    
+    TurboFilter filter = loggerContext.getFirstTurboFilter();
+    assertTrue(filter instanceof DebugUsersTurboFilter);
+    DebugUsersTurboFilter dutf = (DebugUsersTurboFilter)filter;
+    assertEquals(2, dutf.getUsers().size());
+  }
+  
   
   // COMMENTED_OUT_
   public static Test COMMENTED_OUT_suite() {
@@ -87,8 +116,5 @@ public class BasicJoranTest extends TestCase {
     //suite.addTest(new BasicJoranTest("testSimpleList"));
 
     return suite;
-  }
-  
-  
-  
+  } 
 }
