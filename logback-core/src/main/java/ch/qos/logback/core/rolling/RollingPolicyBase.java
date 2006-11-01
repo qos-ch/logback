@@ -27,12 +27,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   protected int compressionMode = Compress.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
-  /*
-   * It would have been nice to merge 'activeFileName' into filename of
-   * FileAppender. Unfortunately, a child component must be self contained
-   * as it is started before its parent.
-   */
-  //protected String activeFileName = null;
+  
   private FileAppender parent;
   
   private boolean started;
@@ -86,4 +81,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     return parent.getFile();
   }
   
+  protected void setParentFileName(String newFileName) {
+    parent.setFile(newFileName);
+  }
 }

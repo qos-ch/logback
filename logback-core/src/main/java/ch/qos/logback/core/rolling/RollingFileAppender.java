@@ -78,24 +78,16 @@ public class RollingFileAppender extends FileAppender {
       return;
     }
 
-    if (rollingPolicy != null) {
-      //rollingPolicy.setParent(this);
-      //String afn = rollingPolicy.getActiveFileName();
-      // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-      
-//      if (getFile() == null) {
-//        setFile(rollingPolicy.getActiveFileName());
-//      }
+    if (rollingPolicy != null) {  
+      //if no active file name was set, then it's the responsability of the
+      //rollingPolicy to create one.
+      if (getFile() == null) {
+        setFile(rollingPolicy.getActiveFileName());
+      }
       
       activeFileCache = new File(getFile());
       addInfo("Active log file name: "+ getFile());
-
-      // The local setFile throws an exception, so we use the parent's version.
-      // This is to prevent the user from configuring both the RollingFileAppender with
-      // an activeFileName _and_ the FileAppender's file attribute, causing confusion
-      // on the attributes' uses.
       
-      //super.setFile(rollingPolicy.getActiveFileName());
       super.start();
     } else {
       addWarn("No RollingPolicy was set for the RollingFileAppender named "+ getName());
@@ -136,14 +128,6 @@ public class RollingFileAppender extends FileAppender {
       // we failed to roll-over, let us not truncate and risk data loss
       this.append = true;
     }
-    
-    // Although not certain, the active file name may change after roll over.
-    //fileName = rollingPolicy.getActiveFileName();
-    fileName = getFile();
-    addInfo("Active file name is now ["+ fileName+"].");
-
-    // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-    ////activeFile = new File(fileName);
 
     try {
       // This will also close the file. This is OK since multiple
@@ -197,10 +181,4 @@ public class RollingFileAppender extends FileAppender {
       rollingPolicy = (RollingPolicy) policy;
     }
   }
-  
-//  @Override
-//  public void setFile(String filename) {
-//    throw new UnsupportedOperationException("With RollingFileAppender please use activeFileName " +
-//                                "option instead of File");
-//  }
 }
