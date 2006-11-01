@@ -82,6 +82,9 @@ public class BasicJoranTest extends TestCase {
   }
   
   public void testTurboFilter() throws JoranException {
+    //Although this test uses turbo filters, it only checks
+    //that Joran can see the xml element and create
+    //and place the relevant object correctly.
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -94,6 +97,10 @@ public class BasicJoranTest extends TestCase {
   }
   
   public void testTurboFilterWithStringList() throws JoranException {
+    //Although this test uses turbo filters, it only checks
+    //that Joran can see <user> elements, and behave correctly
+    //that is call the addUser method and pass the correct values
+    //to that method.
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
