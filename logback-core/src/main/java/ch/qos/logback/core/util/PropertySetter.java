@@ -113,8 +113,7 @@ public class PropertySetter extends ContextAwareBase {
     name = Introspector.decapitalize(name);
 
     PropertyDescriptor prop = getPropertyDescriptor(name);
-
-    // LogLog.debug("---------Key: "+name+", type="+prop.getPropertyType());
+   
     if (prop == null) {
       addWarn("No such property [" + name + "] in " + objClass.getName() + ".");
     } else {
@@ -287,8 +286,8 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     name = capitalizeFirstLetter(name);
-
     Method adderMethod = getMethod("add" + name);
+ 
     if (adderMethod == null) {
       addError("No adder for property [" + name + "].");
       return;
@@ -308,12 +307,12 @@ public class PropertySetter extends ContextAwareBase {
       return;
     }
 
+
     if (arg == null) {
       addError("Conversion to type [" + paramTypes[0] + "] failed.");
     } else {
-
       try {
-        adderMethod.invoke(obj, new Object[] { arg });
+        adderMethod.invoke(obj, arg);
       } catch (Exception ex) {
         addError("Failed to invoke adder for " + name, ex);
       }

@@ -34,7 +34,7 @@ public class SimpleConfigurator extends GenericConfigurator {
     interpreter.addImplicitAction(nestedIA);
 
     NestedSimplePropertyIA nestedSimpleIA = new NestedSimplePropertyIA();
-    nestedIA.setContext(context);
+    nestedSimpleIA.setContext(context);
     interpreter.addImplicitAction(nestedSimpleIA);
   }
 
@@ -42,7 +42,6 @@ public class SimpleConfigurator extends GenericConfigurator {
   protected void addInstanceRules(RuleStore rs) {
     for(Pattern pattern : rulesMap.keySet()) {
       Action action = rulesMap.get(pattern);
-      System.out.println("Adding "+pattern +" "+action);
       rs.addRule(pattern, action);
     }
   }

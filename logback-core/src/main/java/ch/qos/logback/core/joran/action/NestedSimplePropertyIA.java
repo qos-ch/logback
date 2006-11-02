@@ -57,8 +57,6 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     
     ContainmentType containmentType = parentBean.canContainComponent(nestedElementTagName);
 
-    System.out.println("==="+containmentType);
-    
     switch (containmentType) {
     case NOT_FOUND:
     case AS_SINGLE_COMPONENT:
@@ -70,7 +68,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
       ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
       ad.propertyName = nestedElementTagName;
       actionDataStack.push(ad);
-      //System.out.println("in NestedSimplePropertyIA deemed applicable <" + pattern + ">");
+      addInfo("NestedSimplePropertyIA deemed applicable <" + pattern + ">");
       return true;
     default:
       addError("PropertySetter.canContainComponent returned " + containmentType);
@@ -89,9 +87,8 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     //System.out.println("body "+body+", finalBody="+finalBody);
     // get the action data object pushed in isApplicable() method call
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.peek();
-    
     switch (actionData.containmentType) {
-    case AS_SINGLE_COMPONENT:
+    case AS_SINGLE_PROPERTY:
       actionData.parentBean.setProperty(actionData.propertyName, finalBody);
       break;
     case AS_PROPERTY_COLLECTION:

@@ -44,7 +44,9 @@ public class SimplePropertyIATest extends TestCase {
       
       Fruit f0 = fList.get(0);
       assertEquals("blue", f0.getName());
-      assertEquals(1, f0.textList.size());
+      assertEquals(2, f0.textList.size());
+      assertEquals("hello", f0.textList.get(0));
+      assertEquals("world", f0.textList.get(1));
     } catch (Exception je) {
       StatusPrinter.print(fruitContext);
       throw je;

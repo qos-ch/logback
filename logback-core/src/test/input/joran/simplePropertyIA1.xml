@@ -4,5 +4,6 @@
     <fruit class="ch.qos.logback.core.joran.ia.Fruit">
       <name>blue</name>
       <text>hello</text>
+      <text>world</text>
     </fruit> 
 </context>

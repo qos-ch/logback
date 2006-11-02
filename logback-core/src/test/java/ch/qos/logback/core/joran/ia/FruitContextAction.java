@@ -25,7 +25,6 @@ public class FruitContextAction extends Action {
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
 
- 
     inError = false;
     
     try {
