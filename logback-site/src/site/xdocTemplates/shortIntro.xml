@@ -97,36 +97,32 @@
 
     <h2>First Baby Step</h2>
 
+    <h3>Requirements</h3>
+
     <p>Logback-classic module requires the presence
     <em>slf4j-api.jar</em>, <em>logback-core.jar</em> in addition to
     <em>logback-classic.jar</em> on the classpath.
     </p>
 
-    <p>in order to falitate running the the examples in this document,
-    we have placed the required jar files in the
-    <em>logback-examples/lib</em> directory. Assuming your current
-    directory is $LOGBACK_HOME/logback-examples, where $LOGBACK_HOME
-    is the directory you've installed logback, you can start launch
-    the first example application, chapter1.HelloWord1 with the
-    following command:
+
+    <p>Let us now begin experimenting with logback.</p>
+
+    <p>In order to facilitate running the the examples in this
+    introduction, we have placed the required jar files in the
+    <em>$LOGBACK_HOME/logback-examples/lib</em> directory. Assuming
+    your current directory is $LOGBACK_HOME/logback-examples, where
+    $LOGBACK_HOME is the directory you've installed logback, you can
+    start launch the first example application,
+    <em>chapter1.HelloWord1</em> with the following command:
     </p>
-    <div class="source"><pre>
-    java -cp lib/slf4j-api-1.1.0-beta0.jar;lib/logback-core-${version}.jar;lib/logback-classic-${version}.jar
-    </pre></div>
+    <div class="source"><pre>java -cp lib/slf4j-api-1.1.0-beta0.jar;../logback-core-${version}.jar;\
+     ../logback-classic-${version}.jar;logback-examples-${version}.jar\
+     chapter1.HelloWorld1</pre></div>
 
 
-<h1>FIXME</h1>
 
- <p>Assuming the After you
-    have added the jar files <em>slf4j-api.jar</em>,
-    <em>logback-core.jar</em>, <em>logback-classic.jar</em> and their
-    dependencies to your classpath, you can begin experimenting with
-    logback. To
-    </p>
 
-    <p>java -cp lib/logback-core-${version}.jar</p>
-
-<em>Example 1.1: Basic template for logging (logback-examples/src/main/java/chapter1/HelloWorld1.java)</em>
+<em>Example 1.1: Basic template for logging (<a href="xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;

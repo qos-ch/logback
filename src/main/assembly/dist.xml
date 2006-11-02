@@ -79,10 +79,17 @@
 		</fileSet>
 		<!-- We also include the classes of the examples module -->
 		<fileSet>
-			<directory>logback-examples/target/classes/</directory>
-			<outputDirectory>logback-examples/classes/</outputDirectory>
+			<directory>logback-examples/target/</directory>
+			<outputDirectory>logback-examples/</outputDirectory>
+      <includes>
+				<include>logback-examples-${project.version}.jar</include>
+      </includes>
 		</fileSet>
-		
+		<fileSet>
+			<directory>logback-examples/lib/</directory>
+			<outputDirectory>logback-examples/lib</outputDirectory>
+		</fileSet>
+ 		
 		<!-- Module JARs -->
 		<fileSet>
 			<directory>logback-core/target/</directory>

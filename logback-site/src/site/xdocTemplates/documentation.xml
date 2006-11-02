@@ -18,7 +18,7 @@
 				<a href="shortIntro.html"><b>A short introduction to logback-classic</b></a>
 			</li>
 			<li>
-				<a href="accessLogJetty.html"><b>A short introduction to access logging with logback-access and Jetty</b></a>
+				<a href="access.html"><b>A short introduction to access logging Jetty and Tomcat</b></a>
 			</li>
       <li>
         <a href="joran.html"><b>A introduction to Joran</b></a>
