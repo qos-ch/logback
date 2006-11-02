@@ -1,0 +1,471 @@
+<document>
+	<!-- 
+		
+		Warning: do not use any auto-format function on this file.
+		Since "source" divs use pre as white-space, it affects the
+		look of the code parts in this document.
+		
+	-->
+
+
+	<body>
+		<h2>Chapter 4: Appenders</h2>
+		<div class="author">
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+		</div>
+
+
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>
+						.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+
+		<h2>What is an Appender</h2>
+
+		<p>
+			Logback delegates the task of writing a logging event to appenders. 
+			Appenders must imple-ment the <code>ch.qos.logback.core.Appender</code> interface. 
+			The salient methods of this interface are summarized below:
+		</p>
+		<div class="source"><pre>package ch.qos.logback.core;
+  
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.FilterAttachable;
+import ch.qos.logback.core.spi.LifeCycle;
+  
+
+public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
+
+  public String getName();
+  <b>void doAppend(Object event);</b>
+  public void setLayout(Layout layout);
+  public Layout getLayout();
+  public void setName(String name);
+  
+}</pre></div>
+
+	<p>
+		Most of the methods in the Appender interface are made of setter 
+		and getter methods. A notable exception is the <code>doAppend()</code> 
+		method taking an Object instance as its only parameter. 
+		This method is perhaps the most important in the logback framework. 
+		It is responsible for outputting the logging events in a suitable format 
+		to the appropriate output device. Appenders are named entities. 
+		This ensures that they can be referenced by name, a quality confirmed 
+		to be especially significant in configuration scripts. 
+		An appender can contain multiple filters, thus the <code>Appender</code>
+		interface extending the <code>FilterAttachable</code> interface.
+		Filters are discussed in detail in a subsequent chapter.
+	</p>
+	
+	<p>
+		Appenders are ultimately responsible for outputting logging events. 
+		However, they may delegate the actual formatting of the event to a 
+		<code>Layout</code> object. 
+		Each layout is associated with one and only one appender, referred to 
+		as the containing appender. Some appenders have a built-in or fixed 
+		event format, such that they do not require a layout. For example, the 
+		<code>SocketAppender</code> simply serialize logging events before 
+		transmitting them over the wire.
+	</p>
+	
+	<h2>AppenderBase</h2>
+	
+	<p>
+		The <code>ch.qos.logback.core.AppenderSkeleton</code> class is an abstract 
+		class implementing the <code>Appender</code> interface. 
+		It provides basic functionality shared by all appenders, 
+		such as methods for getting or setting their name, their started status, 
+		their layout and their filters. 
+		It is the super-class of all appenders shipped with logback. 
+		Although an abstract class, AppenderBase actually implements the 
+		<code>doAppend()</code> method in the <code>Append</code> interface. 
+		Perhaps the clearest way to discuss AppenderBase class is by 
+		presenting a bit of its actual source code.
+		<code>AppenderBase</code>'s complete source code is also 
+		<a href="../xref/ch/qos/logback/core/AppenderBase.html">
+		available for viewing</a>.  
+	</p>
+	
+<div class="source"><pre>public synchronized void doAppend(Object eventObject) {
+
+  // prevent re-entry.
+  if (guard) {
+    return;
+  }
+
+  try {
+    guard = true;
+
+    if (!this.started) {
+      if (statusRepeatCount++ &lt; ALLOWED_REPEATS) {
+        addStatus(new WarnStatus(
+            "Attempted to append to non started appender [" + name + "].",this));
+      }
+      return;
+    }
+
+    if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
+      return;
+    }
+    
+    // ok, we now invoke derived class' implementation of append
+    this.append(eventObject);
+
+  } finally {
+    guard = false;
+  }
+}</pre></div>
+	
+	<p>
+		This implementation of the <code>doAppend()</code> method is synchronized. 
+		It follows that logging to the same appender from different 
+		threads is safe. While a thread, say <em>T</em>, is executing the <code>doAppend()</code> 
+		method, subsequent calls by other threads are queued until <em>T</em> 
+		leaves the <code>doAppend()</code> method, ensuring 
+		<em>T</em>'s exclusive access to the appender. 
+	</p>
+	
+	<p>
+		EXPLAIN GUARD
+	</p>
+	
+	<p>
+		The first statement of the <code>doAppend()</code> method, once the <code>try</code> block
+		is reached is to check whether the <code>started</code> field is true. 
+		If it is not, <code>doAppend()</code> will send a warning message and return. 
+		In other words, once stopped, it is impossible to write to a closed appender. 
+		<code>Appender</code> object implement the <code>LifeCycle</code> interface, 
+		which implies that they implement <code>start()</code>, <code>stop()</code>
+		and <code>isStarted()</code> methods. After setting all the options of an appender,
+		Joran, logback's configuration framework, calls this method to signal the appender
+		to bind or activate its options.
+		Indeed, depending on the appender, certain options cannot be activated because 
+		of interferences with other options, or appenders can even not start at all if
+		some options are missing. 
+		For example, since file creation depends on truncation mode, 
+		<code>FileAppender</code> cannot act on the value of its <code>File</code> option 
+		until the value of the Append option is also known for certain.
+		Sub-classes of <code>AppenderBase</code> are required to set the boolean variable 
+		<code>started</code> to false when their <code>stop()</code> method is invoked.
+	</p>
+	
+	<p>
+		If a warning message is sent due to incorrect calls to the <code>doAppend()</code>
+		method, logback's powerful <code>Status</code> error reporting system is used. In case
+		several incorrect calls on <code>doAppend()</code> are issued, <code>AppenderBase</code>
+		does not send an unlimited number of warnings. Once a certain limit is reached, the
+		<code>AppenderBase</code> instance stops its warnings.
+	</p>
+	
+	<p>
+		The next <code>if</code> statement checks the result
+		of the attached <code>Filter</code> objects. 
+		Depending on the decision made by the filters 
+		in the filter chain, events can be denied or alternatively accepted. 
+		In the absence of a decision by the filter chain, events are accepted by default.
+	</p>
+	
+	<p>
+		Lastly, the <code>doAppend()</code> method invoke the derived classes' implementation
+		of the <code>append()</code> method, which does the actual work of appending the
+		event to the appropriate device.
+	</p>
+	
+	<p>DO WE ADD A UML DIAGRAM?? YES!!</p>
+	
+	<p>In appenders, the term option or property is reserved for named attributes 
+	that are dynamically inferred using JavaBeans introspection. </p>
+	
+	<h2>Logback Core</h2>
+	
+	<h3>WriterAppender</h3>
+	
+	<p>
+		<code>WriterAppender</code> appends events to a <code>java.io.Writer</code>. 
+		This class provides basic services that other appenders build upon. 
+		Users do not usually instantiate <code>WriterAppender</code> objects directly. 
+		Since <code>java.io.Writer</code> type cannot be mapped to a string, there is no 
+		way to specify the target <code>Writer</code> object in a configuration script. 
+		Simply put, you cannot configure a <code>WriterAppender</code> from a script. 
+		However, this does not mean that <code>WriterAppender</code> lacks configurable options. 
+		These options are described next.
+	</p>
+	
+	<table>
+		<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">Encoding</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				The encoding specifies the method of conversion between 16-bit Unicode 
+				characters into raw 8-bit bytes. This appender will use the local platform's 
+				default encoding unless you specify otherwise using the 
+				<span class="option">Encoding</span> option. 
+				According to the <code>java.lang</code> package documentation, acceptable values 
+				are dependent on the VM implementation although all implementations are 
+				required to support at least the following encodings: 
+				<em>US-ASCII</em>, <em>ISO-8859-1</em>, <em>UTF-8</em>, <em>UTF-16BE</em>,
+				<em>UTF-16LE</em> and <em>UTF-16</em>. 
+				By default, the <span class="option">Encoding</span> option is null such 
+				that the platform's default encoding is used.
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">ImmediateFlush</span></b></td>
+			<td><code>boolean</code></td>
+			<td>
+				If set to true, each write of a logging event is followed by a flush operation 
+				on the underlying <code>Writer</code> object. Conversely, if the option is set to false, 
+				each write will not be followed by a flush. 
+				In general, skipping the flush operation improves logging throughput by roughly 15%. 
+				The downside is that if the application exits abruptly, the unwritten characters 
+				buffered inside the <code>Writer</code> might be lost. 
+				This can be particularly troublesome as those unwritten characters may contain 
+				crucial information needed in identifying the reasons behind a crash. 
+				By default, the <span class="option">ImmediateFlush</span> option is set to true.
+			</td>
+		</tr>
+	</table>
+	
+	<p>
+		In general, if you disable immediate flushing, then make sure to flush 
+		any output streams when your application exits. Otherwise, log messages 
+		will be lost as illustrated by the next example. 
+	</p>
+	
+	<em>Example 4.1: Exiting an application without flushing (logback-examples/src/main/java/chapter4/
+	<a href="../xref/chapter4/ExitWoes.html">ExitWoes.java</a>)</em>
+<div class="source"><pre>package chapter4;
+
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.WriterAppender;
+import ch.qos.logback.core.layout.DummyLayout;
+
+public class ExitWoes {
+
+  public static void main(String[] args) throws Exception {
+    LoggerContext lc = new LoggerContext();
+    WriterAppender writerAppender = new WriterAppender();
+    writerAppender.setContext(lc);
+    writerAppender.setLayout(new DummyLayout());
+
+    OutputStream os = new FileOutputStream("exitWoes1.log");
+    writerAppender.setWriter(new OutputStreamWriter(os));
+    writerAppender.setImmediateFlush(false);
+    writerAppender.start();
+
+    Logger logger = LoggerFactory.getLogger(ExitWoes1.class);
+
+    logger.debug("Hello world.");
+  }
+}</pre></div>
+
+	<p>
+		This example creates a <code>WriterAppender</code> that uses an 
+		<code>OutputStreamWriter</code> 
+		wrapping a <code>FileOutputStream</code> as its underlying <code>Writer</code> object, 
+		with immediate flushing disabled. It then proceeds to log a single debug message. 
+		According to <code>OutputStreamWriter</code> javadocs, each invocation of a 
+		<code>write()</code>
+		method causes the encoding converter to be invoked on the given character(s). 
+		The resulting bytes are accumulated in a buffer before being written 
+		to the underlying output stream. As astonishing as this may seem, 
+		running <code>ExitWoes1</code> will not produce any output in the file 
+		<em>exitWoes1.log</em>
+		because the Java VM does not flush output streams when it exits. 
+		Calling the <code>shutdown()</code> method of a <b>XXXXXX</b> ensures that all 
+		appenders in the hierarchy are closed and their buffers are flushed. 
+		For most applications this is as simple as including the following statement 
+		before exiting the application.
+	</p>
+	<p>WHAT TO DO IN LB ???</p>
+
+	<p>
+		The <code>WriterAppender</code> is the super class of four other appenders, 
+		namely <code>ConsoleAppender</code>, <code>FileAppender</code> which in turn is 
+		the super class of <code>RollingFileAppender</code>. 
+	</p>
+	<p><b>include UML??</b>
+		Figure 4 2 illustrates the class diagram for WriterAppender and its subclasses
+	</p>
+	
+	<h3>ConsoleAppender</h3>
+	
+	<p>
+		The <code>ConsoleAppender</code>, as the name indicates, appends on the console, 
+		or more precisely on <em>System.out</em> or <em>System.err</em>, the former 
+		being the default target. <code>ConsoleAppender</code> formats events with 
+		a layout specified by the user. Both <em>System.out</em> and <em>System.err</em> 
+		are <code>java.io.PrintStream</code> objects. 
+		Consequently, they are wrapped inside an <code>OutputStreamWriter</code> 
+		which buffers I/O operations but not character conversions. 
+	</p>
+	
+	<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">Encoding</span></b></td>
+			<td><code>String</code></td>
+			<td>See <code>WriterAppender</code> options.</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">ImmediateFlush</span></b></td>
+			<td><code>boolean</code></td>
+			<td>See <code>WriterAppender</code> options.</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">Target</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				One of the String values <em>System.out</em> or 
+				<em>System.err</em>. The default target is <em>System.out</em>.
+			</td>
+		</tr>
+	</table>
+	
+	<h3>FileAppendery</h3>
+	
+	<p>
+		The <code>FileAppender</code>, a subclass of <code>WriterAppender</code>, 
+		appends log events into a file. The file to write to is specified by 
+		the <span class="option">File</span> option. 
+		If the file already exists, it is either appended to, or truncated 
+		depending on the value of the <span class="option">Append</span> option. 
+		It uses a <code>FileOutputStream</code> which is wrapped by an <code>OutputStreamWriter</code>. 
+		Note that <code>OutputStreamWriter</code> buffers I/O operations 
+		but not character conversions. To optimize character conversions one 
+		can set the <span class="option">BufferedIO</span> option to true 
+		which effectively wraps the <code>OutputStreamWriter</code> with 
+		a <code>BufferedWriter</code>. Options for <code>FileAppender</code> are summarized below. 
+	</p>
+	
+	<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">Append</span></b></td>
+			<td><code>boolean</code></td>
+			<td>If true, events are appended at the end of an existing file. 
+			Otherwise, if <span class="option">Append</span> is false, any existing 
+			file is truncated. The <span class="option">Append</span> option is set to true by default.</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">Encoding</span></b></td>
+			<td><code>String</code></td>
+			<td>See <code>WriterAppender</code> options.</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">BufferedIO</span></b></td>
+			<td><code>boolean</code></td>
+			<td>
+				The <span class="option">BufferedIO</span> option is set to false by default. 
+				If set to true, the underlying <code>OutputStreamWriter</code> is wrapped 
+				by a <code>BufferedWriter</code> object. 
+				Setting <span class="option">BufferedIO</span> to true automatically 
+				sets the <span class="option">ImmediateFlush</span> option to false. 
+				The name <span class="option">BufferedIO</span> is slightly misleading because 
+				buffered IO is already supported by <code>OutputStreamWriter</code>. 
+				Setting <span class="option">BufferedIO</span> to true has the effect of 
+				buffering I/O as well as character to raw byte conversions, saving a few 
+				CPU cycles in the process.
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">BufferSize</span></b></td>
+			<td><code>int</code></td>
+			<td>Size of <code>BufferedWriter</code> buffer. The default value is 8192.</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">File</span></b></td>
+			<td><code>int</code></td>
+			<td>
+				The name of the file to write to. If the file does not exist, it is created. <br />
+				On the MS Windows platform users frequently forget to escape back slashes. 
+				For example, the value <em>c:\temp\test.log</em> is not likely to be interpreted 
+				properly as <em>'\t'</em> is an escape sequence interpreted as a single 
+				tab character <em>(\u0009)</em>. 
+				Correct values can be specified as <em>c:/temp/test.log</em> or 
+				alternatively as <em>c:\\temp\\test.log</em>. 
+				The <span class="option">File</span> option has no default value.
+			</td>
+		</tr>
+	</table>
+	
+	<p>
+		By default, <code>FileAppender</code> performs a flush operation for 
+		each event, ensuring that events are immediately written to disk. 
+		Setting the <span class="option">ImmediateFlush</span> option to false can drastically reduce 
+		I/O activity by letting <code>OutputStreamWriter</code> buffer bytes 
+		before writing them on disk. For short messages, we have observed 2 or 3 
+		fold increases in logging throughput, i.e. the number of logs output 
+		per unit of time. For longer messages, the throughput gains are somewhat 
+		less dramatic, and range between 1.4 and 2 fold. Enabling the 
+		<span class="option">BufferedIO</span> 
+		option, that is buffering character to byte conversions, increases 
+		performance by an additional 10% to 40% compared to only disk 
+		I/O buffering (<span class="option">ImmediateFlush</span>=false). 
+		Performance varies somewhat depending on the host machine as well as JDK version. 
+		Throughput measurements are based on the <code>chapter4.IO</code> application.
+		Please refer to the file <em>logback-examples/src/main/java/chapter4/IO.java</em> 
+		for actual source code. 
+		<a href="../xref/chapter4/IO.html">Online viewing</a> 
+		of this file is also available. 
+	</p>
+	
+	<h2>Logback Classic</h2>
+	
+	<h2>Logback Access</h2>
+	
+	
+	
+	
+	
+	
+	
+	
+
+	</body>
+</document>

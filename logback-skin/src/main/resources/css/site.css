@@ -361,3 +361,8 @@ dt {
 	color: green;	
   font-weight: bold;	
 }
+
+.option {
+  border: 1px solid black;
+  font-family: Arial, sans-serif;	
+}
