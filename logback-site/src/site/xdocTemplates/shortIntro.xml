@@ -107,21 +107,6 @@
 
     <p>Let us now begin experimenting with logback.</p>
 
-    <p>In order to facilitate running the the examples in this
-    introduction, we have placed the required jar files in the
-    <em>$LOGBACK_HOME/logback-examples/lib</em> directory. Assuming
-    your current directory is $LOGBACK_HOME/logback-examples, where
-    $LOGBACK_HOME is the directory you've installed logback, you can
-    start launch the first example application,
-    <em>chapter1.HelloWord1</em> with the following command:
-    </p>
-    <div class="source"><pre>java -cp lib/slf4j-api-1.1.0-beta0.jar;../logback-core-${version}.jar;\
-     ../logback-classic-${version}.jar;logback-examples-${version}.jar\
-     chapter1.HelloWorld1</pre></div>
-
-
-
-
 <em>Example 1.1: Basic template for logging (<a href="xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
@@ -169,11 +154,17 @@ public class HelloWorld1 {
 		</p>
 
 
-		<p>
-			Once you're in the <em>logback-examples/classes</em> directory of the logback distribution, you can run this class with the command:
-		</p>
-
-		<div class="source"><pre>java chapter1.HelloWorld1</pre></div>
+    <p>In order to facilitate running the the examples in this
+    introduction, we have placed the required slf4j-api.jar file in
+    the <em>$LOGBACK_HOME/logback-examples/lib</em>
+    directory. Assuming your current directory is
+    $LOGBACK_HOME/logback-examples, where $LOGBACK_HOME is the
+    directory you've installed logback, you can launch the first
+    sample application, <em>chapter1.HelloWord1</em> with the command:
+    </p>
+    <div class="source"><pre>java -cp lib/slf4j-api-1.1.0-beta0.jar;../logback-core-${version}.jar;\
+     ../logback-classic-${version}.jar;logback-examples-${version}.jar\
+     chapter1.HelloWorld1</pre></div>
 
 		<p>
 			Suprisingly enough, launching the <code>HelloWorld1</code>
@@ -192,7 +183,7 @@ public class HelloWorld1 {
 			class.
 		</p>
 
-<em>Example 1.2: Printing Logger Status (logback-examples/src/main/java/chapter1/HelloWorld2.java)</em>
+<em>Example 1.2: Printing Logger Status (<a href="xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -216,23 +207,22 @@ public class HelloWorld2 {
 context [default] for logger [chapter1.HelloWorld2].</pre></div>
 
 
-  <!-- =========  CEKI: STOPPED HERE =================== -->
-
   <p>
   	Logback complains that no appenders were configured for the
-  	default context. An <code>Appender</code> is a class that can be seen as an
-  	output destination. Appenders exist for many different
-  	destinations including the console, files, Syslog, Socket, JMS and many more. Users
-  	can also easily create their own Appenders for any specific
-  	situation.
+  	default context. An <code>Appender</code> is a class that can be
+  	seen as an output destination. Appenders exist for many different
+  	destinations including the console, files, Syslog, Socket, JMS and
+  	many more. Users can also easily create their own Appenders as
+  	appropriate for their specific situation.
   </p>
 
   <p>
-  	Configuring logback can be done in different ways. The
-  	simplest but least flexible way is by calling the
-  	<code>BasicConfigurator</code> class, like in the following code snippet.
+  	Configuring logback can be done in various ways. The simplest but
+  	least flexible way is by calling the
+  	<code>BasicConfigurator</code> class, like in the following code
+  	snippet.
   </p>
-  <em>Example 1.3: Configuring before logging (logback-examples/src/main/java/chapter1/HelloWorld3.java)</em>
+  <em>Example 1.3: Configuring before logging (<a href="xref/chapter1/HelloWorld3.html">logback-examples/src/main/java/chapter1/HelloWorld3.java)</a></em>
   <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -262,16 +252,19 @@ public class HelloWorld3 {
 <div class="source"><pre>0    [main] DEBUG chapter1.HelloWorld3 - Hello world.</pre></div>
 
 		<p>
-			This example is rather simple. However, actual logging in a larger
-			application would not be that different. The general pattern logging statements
-			will barely change. Only the configuration process will be
-			different since you don't need (nor should) configure the
-			logging context in each and every class that will require
-			logging. As you will see later on in this document, configuring logback can be done
-			in different flexible and powerfull manners.
-			As well, the <code>LoggerStatusPrinter</code> will certainly not be
-			used after all the logging statements.
+			This example is rather simple. However, actual logging in a
+			larger application would not be much different. The general
+			pattern logging statements will barely change. Only the
+			configuration process will be different since you don't need
+			(nor should) configure the logging context in each and every
+			class that requires logging. As you will see later on in this
+			document, configuring logback can be done in different flexible
+			and powerfull ways.  Note that, normally, you won't need to
+			invoke <code>LoggerStatusPrinter</code> after your log
+			statements.
 		</p>
+
+  <!-- =========  CEKI: STOPPED HERE =================== -->
 
 		<p>	
 			These are the three steps that are required to enable logging in your application.
