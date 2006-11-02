@@ -8,7 +8,7 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * Interface for attaching ClassicFilter instances to objects.
+ * Interface for attaching {@link TurboFilter} instances to objects.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
