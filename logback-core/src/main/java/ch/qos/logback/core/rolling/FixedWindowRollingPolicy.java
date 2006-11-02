@@ -21,7 +21,7 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  * according to a fixed window algorithm as described below.
  * 
  * <p>
- * The <b>ActiveFileName</b> property, which is required, represents the name
+ * The <b>File</b> property, which is required, represents the name
  * of the file where current logging output will be written. The
  * <b>FileNamePattern</b> option represents the file name pattern for the
  * archived (rolled over) log files. If present, the <b>FileNamePattern</b>
@@ -54,6 +54,7 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
   static final String FNP_NOT_SET = "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
   static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
+  static final String SEE_PARENT_FN_NOT_SET = "Please refer to http://logback.qos.ch/codes.html#fwrp_parentFileName_not_set";
   int maxIndex;
   int minIndex;
   RenameUtil util = new RenameUtil();
@@ -82,9 +83,10 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       addWarn(SEE_FNP_NOT_SET);
       throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
     }
-    // if (activeFileName == null) {
-    if (getNewActiveFileName() == null) {
-      addWarn("The ActiveFile name option must be set before using this rolling policy.");
+
+    if (getParentFileName() == null) {
+      addWarn("The File name option must be set before using this rolling policy.");
+      addWarn(SEE_PARENT_FN_NOT_SET);
       throw new IllegalStateException("The ActiveFileName option must be set.");
     }
 

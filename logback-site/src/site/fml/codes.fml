@@ -39,8 +39,31 @@
 							for more information.
 						</p>
 					</answer>
-
 				</faq>
+				
+				<faq id="fwrp_parentFileName_not_set">
+
+					<question>
+					<p>The File name option must be set before <code>FixedWindowRollingPolicy</code>.</p>
+					</question>
+
+					<answer>
+						<p>
+							The <span class="option">File</span> option is mandatory with <code>FixedWindowRollingPolicy</code>. Moreover, the File option must be
+							set before the declaration configuring <code>FixedWindowRollingPolicy</code>.
+						</p>
+						<p>
+							See the logback manual's chapter about 
+							<a
+								href="http://logback.qos.ch/manual/appenders.html#FixedWindowRollingPolicy">
+								FixedWindowRollingPolicy
+							</a>
+							for more information.
+						</p>
+					</answer>
+				</faq>				
+				
+				
 				<faq id="socket_no_host">
 					<question>
 						No remote host or address is set for
