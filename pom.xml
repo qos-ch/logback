@@ -193,7 +193,7 @@
 						logback-${project.version}
 					</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
-					<outputDirectory>target/site/dist/</outputDirectory>
+					<outputDirectory>target/dist/</outputDirectory>
 				</configuration>
 			</plugin>
 			
@@ -208,11 +208,13 @@
 						clean, compile source:jar site, assembly:assembly
 					</preparationGoals>
 					<goals>
-						site:deploy
+						site:deploy, deploy
 					</goals>
 				</configuration>
 			</plugin>
-			
+
+
+
     </plugins>
 
 	</reporting>
@@ -228,5 +230,9 @@
 		 <id>pixie</id>
 		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
 	 </site>
+	 <repository>
+		 <id>pixie</id>
+		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/dist/</url>
+	 </repository>
  </distributionManagement>
 </project>

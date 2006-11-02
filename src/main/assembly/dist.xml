@@ -130,19 +130,6 @@
 				<include>logback-access-${project.version}-sources.jar</include>
 			</includes>
 		</fileSet>	
-				
-		<!-- Classic Examples
-		<fileSet>
-			<directory>logback-classic/examples/</directory>
-			<outputDirectory>/examples/</outputDirectory>
-		</fileSet>
-		-->
-		<!-- Core Examples
-		<fileSet>
-			<directory>logback-core/examples/</directory>
-			<outputDirectory>/examples/</outputDirectory>
-		</fileSet>
-		 -->
 		 
 		<!-- Website -->
 		<fileSet>
