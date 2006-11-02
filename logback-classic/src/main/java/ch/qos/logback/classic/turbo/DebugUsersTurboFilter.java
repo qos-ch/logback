@@ -9,7 +9,7 @@ import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.MDC;
-import ch.qos.logback.core.filter.FilterReply;
+import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * This class allows output of debug level events to a certain list of users.

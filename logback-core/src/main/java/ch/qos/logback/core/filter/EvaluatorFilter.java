@@ -2,6 +2,7 @@ package ch.qos.logback.core.filter;
 
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.spi.FilterReply;
 
 public class EvaluatorFilter extends AbstractEvalutatorFilter {
 

@@ -10,6 +10,8 @@
 
 package ch.qos.logback.core.joran.action;
 
+import java.util.Stack;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -20,8 +22,6 @@ import ch.qos.logback.core.util.ContainmentType;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.PropertySetter;
-
-import java.util.Stack;
 
 /**
  * This action is responsible for tying together a parent object with a child

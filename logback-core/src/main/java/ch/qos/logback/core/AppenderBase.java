@@ -10,10 +10,10 @@
 package ch.qos.logback.core;
 
 import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
 

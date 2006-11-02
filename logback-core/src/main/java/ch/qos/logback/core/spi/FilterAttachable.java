@@ -10,7 +10,6 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * Interface for attaching filters to objects.

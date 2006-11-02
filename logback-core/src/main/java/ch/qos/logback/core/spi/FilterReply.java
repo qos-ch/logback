@@ -1,4 +1,6 @@
-package ch.qos.logback.core.filter;
+package ch.qos.logback.core.spi;
+
+import ch.qos.logback.core.filter.Filter;
 
 /**
  *

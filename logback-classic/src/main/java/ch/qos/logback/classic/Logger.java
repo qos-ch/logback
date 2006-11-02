@@ -21,9 +21,9 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
 
 public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     Serializable {

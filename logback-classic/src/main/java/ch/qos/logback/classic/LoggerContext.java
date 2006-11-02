@@ -22,7 +22,7 @@ import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
-import ch.qos.logback.core.filter.FilterReply;
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**

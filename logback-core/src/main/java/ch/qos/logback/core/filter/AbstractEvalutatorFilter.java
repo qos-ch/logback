@@ -1,5 +1,7 @@
 package ch.qos.logback.core.filter;
 
+import ch.qos.logback.core.spi.FilterReply;
+
 /**
  * <p>
  * This abstract class is meant to be a base for specific evaluator filters.

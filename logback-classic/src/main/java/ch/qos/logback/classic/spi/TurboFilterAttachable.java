@@ -5,7 +5,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.core.filter.FilterReply;
+import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * Interface for attaching ClassicFilter instances to objects.

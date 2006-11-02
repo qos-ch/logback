@@ -1,6 +1,7 @@
 package ch.qos.logback.core.filter;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
