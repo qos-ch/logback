@@ -51,15 +51,18 @@
     	Logback is intended as a successor to the popular log4j project.
     	It was designed by Ceki G&#252;lc&#252;, the founder of the
     	log4j project. It builds upon a decade long experience gained in
-    	designing industrial-strength logging systems. The resulting product, 
-    	logback is faster with a smaller footprint than all
+    	designing industrial-strength logging systems. The resulting
+    	product, logback is faster with a smaller footprint than all
     	existing logging systems, sometimes by a wide margin. Logback
     	also offers unique and rather useful features such as Markers,
     	parameterized logging statements, conditional stack tracing and
-    	powerful event filtering, to cite a few. For its own error
-    	reporting, logback relies on
-    	<code>Status</code>
-    	objects which you may wish to use in contexts other than logging.
+    	powerful event filtering. These are only few examples of useful
+    	features logback has to offer. For its own error reporting,
+    	logback relies on <code>Status</code> objects, which greatly
+    	facilitate troubleshooting. You may wish to rely on Status
+    	objects in contexts other than logging. Logback-core bundles
+    	Joran, a powerful and generic configutation system, which can be
+    	put to use in your own projects for great effect.
     </p>
 
     <p>
@@ -76,29 +79,52 @@
     </p>
 
     <p>
-    	The Core module lays the groundwork for the other two modules.
-    	The Classic module extends Core. Classic can be assimilated to
-    	an improved version of log4j. Logback Classic natively
-    	implements the
-    	<a href="http://www.slf4j.org">SLF4J API</a>
-    	so that you can readily switch back and forth between logback
-    	and other logging systems such as log4j or JDK14 Logging. The
-    	Access module integrates with Servlet containers to provide
-    	HTTP-access log functionality. The Access module will be covered
-    	in a separate document.
+    	The <em>core</em> module lays the groundwork for the other two
+    	modules.  The <em>classic</em> module extends <em>core</em>. The
+    	classic module can be assimilated to a significantly improved
+    	version of log4j. Logback-classic natively implements the <a
+    	href="http://www.slf4j.org">SLF4J API</a> so that you can
+    	readily switch back and forth between logback and other logging
+    	systems such as log4j or JDK14 Logging. The third module called
+    	<em>access</em> integrates with Servlet containers to provide
+    	HTTP-access log functionality. The access module will be covered
+    	in a <a href="access.html">separate document</a>.
     </p>
     <p>
-    	In this document, we will use the term logback to refer to the
+    	In this document, we will write "logback" to refer to the
     	logback classic module.
     </p>
 
     <h2>First Baby Step</h2>
 
-    <p>
-    	After you have added the jar files
-    	<em>logback-core.jar</em>, <em>logback-classic.jar</em> and their dependencies 
-    	to your classpath, you can begin experimenting with logback.
+    <p>Logback-classic module requires the presence
+    <em>slf4j-api.jar</em>, <em>logback-core.jar</em> in addition to
+    <em>logback-classic.jar</em> on the classpath.
     </p>
+
+    <p>in order to falitate running the the examples in this document,
+    we have placed the required jar files in the
+    <em>logback-examples/lib</em> directory. Assuming your current
+    directory is $LOGBACK_HOME/logback-examples, where $LOGBACK_HOME
+    is the directory you've installed logback, you can start launch
+    the first example application, chapter1.HelloWord1 with the
+    following command:
+    </p>
+    <div class="source"><pre>
+    java -cp lib/slf4j-api-1.1.0-beta0.jar;lib/logback-core-${version}.jar;lib/logback-classic-${version}.jar
+    </pre></div>
+
+
+<h1>FIXME</h1>
+
+ <p>Assuming the After you
+    have added the jar files <em>slf4j-api.jar</em>,
+    <em>logback-core.jar</em>, <em>logback-classic.jar</em> and their
+    dependencies to your classpath, you can begin experimenting with
+    logback. To
+    </p>
+
+    <p>java -cp lib/logback-core-${version}.jar</p>
 
 <em>Example 1.1: Basic template for logging (logback-examples/src/main/java/chapter1/HelloWorld1.java)</em>
 <div class="source"><pre>package chapter1;
