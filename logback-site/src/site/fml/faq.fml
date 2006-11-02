@@ -11,7 +11,7 @@
 				<faq id="setup_jetty">
 
 					<question>
-						How can I use logback with Jetty ?
+						How can I use logback classic with Jetty ?
 					</question>
 
 					<answer>
