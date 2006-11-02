@@ -10,30 +10,27 @@
 
 package ch.qos.logback.core.joran.action;
 
-
-
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.util.ContainmentType;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.PropertySetter;
 
-
 import java.util.Stack;
 
-
 /**
- * This action is responsible for tying together a parent object with
- * a child element for which there is no explicit rule.
+ * This action is responsible for tying together a parent object with a child
+ * element for which there is no explicit rule.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NestedComponentIA extends ImplicitAction {
-  
+
   // actionDataStack contains ActionData instances
   // We use a stack of ActionData objects in order to support nested
   // elements which are handled by the same NestComponentIA instance.
@@ -43,32 +40,35 @@ public class NestedComponentIA extends ImplicitAction {
   // be followed by the corresponding pop.
   Stack<ImplicitActionData> actionDataStack = new Stack<ImplicitActionData>();
 
-  public boolean isApplicable(
-    Pattern pattern, Attributes attributes, InterpretationContext ec) {
-    //System.out.println("in NestComponentIA.isApplicable <" + pattern + ">");
+  public boolean isApplicable(Pattern pattern, Attributes attributes,
+      InterpretationContext ec) {
+    // System.out.println("in NestComponentIA.isApplicable <" + pattern + ">");
     String nestedElementTagName = pattern.peekLast();
 
     // calling ec.peekObject with an empty stack will throw an exception
-    if(ec.isEmpty()) {
+    if (ec.isEmpty()) {
       return false;
     }
-    
+
     Object o = ec.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
     parentBean.setContext(context);
-    
-    int containmentType = parentBean.canContainComponent(nestedElementTagName);
+
+    ContainmentType containmentType = parentBean
+        .canContainComponent(nestedElementTagName);
 
     switch (containmentType) {
-    case PropertySetter.NOT_FOUND:
-    case PropertySetter.AS_PROPERTY:
+    case NOT_FOUND:
+    case AS_SINGLE_PROPERTY:
+    case AS_PROPERTY_COLLECTION:
       return false;
 
-    // we only push action data if NestComponentIA is applicable
-    case PropertySetter.AS_COLLECTION:
-    case PropertySetter.AS_COMPONENT:
-      addInfo("is dmmed applicable for "+pattern);
-      ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
+      // we only push action data if NestComponentIA is applicable
+    case AS_COMPONENT_COLLECTION:
+    case AS_SINGLE_COMPONENT:
+      addInfo("was deemed applicable for " + pattern);
+      ImplicitActionData ad = new ImplicitActionData(parentBean,
+          containmentType);
       actionDataStack.push(ad);
 
       return true;
@@ -78,9 +78,9 @@ public class NestedComponentIA extends ImplicitAction {
     }
   }
 
-  public void begin(
-    InterpretationContext ec, String localName, Attributes attributes) {
-    //LogLog.debug("in NestComponentIA begin method");
+  public void begin(InterpretationContext ec, String localName,
+      Attributes attributes) {
+    // LogLog.debug("in NestComponentIA begin method");
     // get the action data object pushed in isApplicable() method call
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.peek();
 
@@ -98,29 +98,31 @@ public class NestedComponentIA extends ImplicitAction {
     }
 
     try {
-      //getLogger().debug(
-      //  "About to instantiate component <{}> of type [{}]", localName,
-      //  className);
+      // getLogger().debug(
+      // "About to instantiate component <{}> of type [{}]", localName,
+      // className);
 
-      // FIXME: Loading classes should be governed by config file rules. 
+      // FIXME: Loading classes should be governed by config file rules.
       actionData.nestedComponent = Loader.loadClass(className).newInstance();
-      
+
       // pass along the repository
-      if(actionData.nestedComponent instanceof ContextAware) {
+      if (actionData.nestedComponent instanceof ContextAware) {
         ((ContextAware) actionData.nestedComponent).setContext(this.context);
       }
-      //getLogger().debug(
-      addInfo("Pushing component <"+localName+"> on top of the object stack.");
+      // getLogger().debug(
+      addInfo("Pushing component <" + localName
+          + "> on top of the object stack.");
       ec.pushObject(actionData.nestedComponent);
     } catch (Exception oops) {
       actionData.inError = true;
-      String msg = "Could not create component <" + localName + "> of type ["+className+"]";
+      String msg = "Could not create component <" + localName + "> of type ["
+          + className + "]";
       addError(msg, oops);
     }
   }
 
   public void end(InterpretationContext ec, String tagName) {
-    
+
     // pop the action data object pushed in isApplicable() method call
     // we assume that each this begin
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.pop();
@@ -130,47 +132,41 @@ public class NestedComponentIA extends ImplicitAction {
     }
 
     PropertySetter nestedBean = new PropertySetter(actionData.nestedComponent);
-    
-//    FIXME set parent
-    nestedBean.setComponent(
-        "parent", actionData.parentBean.getObj());
-    
+    nestedBean.setContext(context);
+
+    if (nestedBean.canContainComponent("parent") == ContainmentType.AS_SINGLE_COMPONENT) {
+      nestedBean.setComponent("parent", actionData.parentBean.getObj());
+    }
     if (actionData.nestedComponent instanceof LifeCycle) {
       ((LifeCycle) actionData.nestedComponent).start();
     }
-    
-    
 
     Object o = ec.peekObject();
 
     if (o != actionData.nestedComponent) {
-      addError(
-        "The object on the top the of the stack is not the component pushed earlier.");
+      addError("The object on the top the of the stack is not the component pushed earlier.");
     } else {
-      //getLogger().debug("Removing component from the object stack");
+      // getLogger().debug("Removing component from the object stack");
       ec.popObject();
 
       // Now let us attach the component
       switch (actionData.containmentType) {
-      case PropertySetter.AS_COMPONENT:
-        //addInfo("Setting ["+tagName+"}] to parent of type ["+actionData.parentBean.getObjClass()+"]");
-                        
-        actionData.parentBean.setComponent(
-          tagName, actionData.nestedComponent);
+      case AS_SINGLE_COMPONENT:
+        // addInfo("Setting ["+tagName+"}] to parent of type
+        // ["+actionData.parentBean.getObjClass()+"]");
+
+        actionData.parentBean.setComponent(tagName, actionData.nestedComponent);
 
         break;
-      case PropertySetter.AS_COLLECTION:
-        //getLogger().debug(
-          //"Adding [{}] to parent of type [{}]", tagName,
-          //actionData.parentBean.getObjClass());
-        actionData.parentBean.addComponent(
-          tagName, actionData.nestedComponent);
+      case AS_COMPONENT_COLLECTION:
+        // getLogger().debug(
+        // "Adding [{}] to parent of type [{}]", tagName,
+        // actionData.parentBean.getObjClass());
+        actionData.parentBean.addComponent(tagName, actionData.nestedComponent);
 
         break;
       }
     }
   }
 
-
 }
-

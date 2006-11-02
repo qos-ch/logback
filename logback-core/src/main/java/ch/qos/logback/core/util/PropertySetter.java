@@ -50,10 +50,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki Gulcu
  */
 public class PropertySetter extends ContextAwareBase {
-  public static final int NOT_FOUND = 0;
-  public static final int AS_COMPONENT = 1;
-  public static final int AS_PROPERTY = 2;
-  public static final int AS_COLLECTION = 3;
+  private static final int X_NOT_FOUND = 0;
+  private static final int X_AS_COMPONENT = 1;
+  private static final int X_AS_PROPERTY = 2;
 
   protected Object obj;
   protected Class objClass;
@@ -88,37 +87,6 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  /**
-   * Set the properties for the object that match the <code>prefix</code>
-   * passed as parameter.
-   */
-  // public void setProperties(Properties properties, String prefix) {
-  // int len = prefix.length();
-  //
-  // for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
-  // String key = (String) e.nextElement();
-  //
-  // // handle only properties that start with the desired frefix.
-  // if (key.startsWith(prefix)) {
-  // // ignore key if it contains dots after the prefix
-  // if (key.indexOf('.', len + 1) > 0) {
-  // // System.err.println("----------Ignoring---["+key
-  // // +"], prefix=["+prefix+"].");
-  // continue;
-  // }
-  //
-  // String value = OptionHelper.findAndSubst(key, properties);
-  //
-  // key = key.substring(len);
-  //
-  // if ("layout".equals(key) && obj instanceof Appender) {
-  // continue;
-  // }
-  //
-  // setProperty(key, value);
-  // }
-  // }
-  // }
   /**
    * Set a property on this PropertySetter's Object. If successful, this method
    * will invoke a setter method on the underlying Object. The setter is the one
@@ -208,16 +176,21 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  public int canContainComponent(String name) {
+  public ContainmentType canContainComponent(String name) {
     String cName = capitalizeFirstLetter(name);
 
-    Method method = getMethod("add" + cName);
+    Method addMethod = getMethod("add" + cName);
 
-    if (method != null) {
-      // getLogger().debug(
-      // "Found add {} method in class {}", cName, objClass.getName());
-
-      return AS_COLLECTION;
+    if (addMethod != null) {
+      int type = computeContainmentTpye(addMethod);
+      switch (type) {
+      case X_NOT_FOUND:
+        return ContainmentType.NOT_FOUND;
+      case X_AS_PROPERTY:
+        return ContainmentType.AS_PROPERTY_COLLECTION;
+      case X_AS_COMPONENT:
+        return ContainmentType.AS_COMPONENT_COLLECTION;
+      }
     }
 
     String dName = Introspector.decapitalize(name);
@@ -230,25 +203,39 @@ public class PropertySetter extends ContextAwareBase {
         // getLogger().debug(
         // "Found setter method for property [{}] in class {}", name,
         // objClass.getName());
-        Class[] classArray = setterMethod.getParameterTypes();
-        if (classArray.length != 1) {
-          return NOT_FOUND;
-        } else {
-          Class clazz = classArray[0];
-          Package p = clazz.getPackage();
-          if (clazz.isPrimitive()) {
-            return AS_PROPERTY;
-          } else if ("java.lang".equals(p.getName())) {
-            return AS_PROPERTY;
-          } else {
-            return AS_COMPONENT;
-          }
+        int type = computeContainmentTpye(setterMethod);
+        // getLogger().debug(
+        // "Found add {} method in class {}", cName, objClass.getName());
+        switch (type) {
+        case X_NOT_FOUND:
+          return ContainmentType.NOT_FOUND;
+        case X_AS_PROPERTY:
+          return ContainmentType.AS_SINGLE_PROPERTY;
+        case X_AS_COMPONENT:
+          return ContainmentType.AS_SINGLE_COMPONENT;
         }
       }
     }
 
     // we have failed
-    return NOT_FOUND;
+    return ContainmentType.NOT_FOUND;
+  }
+
+  int computeContainmentTpye(Method setterMethod) {
+    Class[] classArray = setterMethod.getParameterTypes();
+    if (classArray.length != 1) {
+      return X_NOT_FOUND;
+    } else {
+      Class clazz = classArray[0];
+      Package p = clazz.getPackage();
+      if (clazz.isPrimitive()) {
+        return X_AS_PROPERTY;
+      } else if ("java.lang".equals(p.getName())) {
+        return X_AS_PROPERTY;
+      } else {
+        return X_AS_COMPONENT;
+      }
+    }
   }
 
   public Class getObjClass() {
@@ -290,6 +277,48 @@ public class PropertySetter extends ContextAwareBase {
       addError("Could not find method [" + "add" + name + "] in class ["
           + objClass.getName() + "].");
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addProperty(String name, String strValue) {
+
+    if (strValue == null) {
+      return;
+    }
+
+    name = capitalizeFirstLetter(name);
+
+    Method adderMethod = getMethod("add" + name);
+    if (adderMethod == null) {
+      addError("No adder for property [" + name + "].");
+      return;
+    }
+
+    Class[] paramTypes = adderMethod.getParameterTypes();
+    if (paramTypes.length != 1) {
+      addError("#params for setter != 1");
+      return;
+
+    }
+    Object arg;
+    try {
+      arg = convertArg(strValue, paramTypes[0]);
+    } catch (Throwable t) {
+      addError("Conversion to type [" + paramTypes[0] + "] failed. ", t);
+      return;
+    }
+
+    if (arg == null) {
+      addError("Conversion to type [" + paramTypes[0] + "] failed.");
+    } else {
+
+      try {
+        adderMethod.invoke(obj, new Object[] { arg });
+      } catch (Exception ex) {
+        addError("Failed to invoke adder for " + name, ex);
+      }
+    }
+
   }
 
   public void setComponent(String name, Object childComponent) {
@@ -387,10 +416,10 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     for (int i = 0; i < propertyDescriptors.length; i++) {
-      //System.out.println("Comparing " + name + " against "
-      //    + propertyDescriptors[i].getName());
+      // System.out.println("Comparing " + name + " against "
+      // + propertyDescriptors[i].getName());
       if (name.equals(propertyDescriptors[i].getName())) {
-        //System.out.println("matched");
+        // System.out.println("matched");
         return propertyDescriptors[i];
       }
     }

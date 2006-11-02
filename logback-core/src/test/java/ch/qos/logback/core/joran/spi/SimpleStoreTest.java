@@ -69,9 +69,23 @@ public class SimpleStoreTest extends TestCase {
       fail("Wrong type");
     }
 
-    // jp.parse(doc);
   }
 
+  public void testSlashSuffix() throws Exception {
+    SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
+    Pattern pa = new Pattern("a/");
+    srs.addRule(pa, new XAction());
+    
+    List r = srs.matchActions(new Pattern("a"));
+    assertNotNull(r);
+    assertEquals(1, r.size());
+
+    if (!(r.get(0) instanceof XAction)) {
+      fail("Wrong type");
+    }
+
+ 
+  }
   public void testTail1() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());

@@ -18,6 +18,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.util.ContainmentType;
 import ch.qos.logback.core.util.PropertySetter;
 
 
@@ -54,15 +55,18 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     PropertySetter parentBean = new PropertySetter(o);
     parentBean.setContext(context);
     
-    int containmentType = parentBean.canContainComponent(nestedElementTagName);
+    ContainmentType containmentType = parentBean.canContainComponent(nestedElementTagName);
 
+    System.out.println("==="+containmentType);
+    
     switch (containmentType) {
-    case PropertySetter.NOT_FOUND:
-    case PropertySetter.AS_COMPONENT:
-    case PropertySetter.AS_COLLECTION:
+    case NOT_FOUND:
+    case AS_SINGLE_COMPONENT:
+    case AS_COMPONENT_COLLECTION:
       return false;
 
-    case PropertySetter.AS_PROPERTY:
+    case AS_SINGLE_PROPERTY:
+    case AS_PROPERTY_COLLECTION:
       ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
       ad.propertyName = nestedElementTagName;
       actionDataStack.push(ad);
@@ -85,8 +89,14 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     //System.out.println("body "+body+", finalBody="+finalBody);
     // get the action data object pushed in isApplicable() method call
     ImplicitActionData actionData = (ImplicitActionData) actionDataStack.peek();
-    actionData.parentBean.setProperty(actionData.propertyName, finalBody);
     
+    switch (actionData.containmentType) {
+    case AS_SINGLE_COMPONENT:
+      actionData.parentBean.setProperty(actionData.propertyName, finalBody);
+      break;
+    case AS_PROPERTY_COLLECTION:
+      actionData.parentBean.addProperty(actionData.propertyName, finalBody);
+    }
   }
   
   public void end(InterpretationContext ec, String tagName) {

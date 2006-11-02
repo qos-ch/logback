@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.joran.replay;
+package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
 
@@ -42,6 +42,7 @@ public class SimpleConfigurator extends GenericConfigurator {
   protected void addInstanceRules(RuleStore rs) {
     for(Pattern pattern : rulesMap.keySet()) {
       Action action = rulesMap.get(pattern);
+      System.out.println("Adding "+pattern +" "+action);
       rs.addRule(pattern, action);
     }
   }

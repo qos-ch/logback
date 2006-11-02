@@ -21,7 +21,6 @@ public class AllTest extends TestCase {
     suite.addTest(ch.qos.logback.core.pattern.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.appender.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.rolling.helper.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.rolling.PackageTest.suite());
     return suite;
   }

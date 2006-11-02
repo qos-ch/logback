@@ -11,6 +11,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(RenamingTest.class);
     suite.addTestSuite(SizeBasedRollingTest.class);
     suite.addTestSuite(TimeBasedRollingTest.class);
+    suite.addTest(ch.qos.logback.core.rolling.helper.PackageTest.suite());
     return suite;
   }
 }

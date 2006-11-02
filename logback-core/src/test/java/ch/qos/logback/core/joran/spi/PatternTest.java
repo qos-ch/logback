@@ -49,6 +49,13 @@ public class PatternTest extends TestCase {
     assertEquals("a", p.get(0));
   }
 
+  public void testSuffix() {
+    Pattern p = new Pattern("a/");
+    assertEquals(1, p.size());
+    assertEquals("a", p.peekLast());
+    assertEquals("a", p.get(0));
+  }
+  
   public void test2() {
     Pattern p = new Pattern("a/b");
     assertEquals(2, p.size());

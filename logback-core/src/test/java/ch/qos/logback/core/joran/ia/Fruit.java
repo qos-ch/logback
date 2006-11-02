@@ -1,4 +1,4 @@
-package ch.qos.logback.core.joran.replay;
+package ch.qos.logback.core.joran.ia;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +18,6 @@ public class Fruit {
 
   public String getName() {
     return name;
-  }
-
-  public String toString() {
-    final String TAB = "    ";
-
-    StringBuilder retValue = new StringBuilder();
-
-    retValue.append("xFruit ( ").append("name = ").append(this.name).append(TAB).append(" )");
-
-    return retValue.toString();
   }
   
   public void addText(String s) {

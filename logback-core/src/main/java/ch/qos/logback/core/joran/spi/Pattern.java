@@ -43,14 +43,16 @@ public class Pattern {
 
     int lastIndex = 0;
 
-    //System.out.println("p is "+ p);
+    // System.out.println("p is "+ p);
     while (true) {
       int k = p.indexOf('/', lastIndex);
 
-      //System.out.println("k is "+ k);
+      // System.out.println("k is "+ k);
       if (k == -1) {
-        components.add(p.substring(lastIndex));
-
+        String lastPart = p.substring(lastIndex);
+        if(lastPart != null && lastPart.length() > 0) {
+          components.add(p.substring(lastIndex));
+        }
         break;
       } else {
         String c = p.substring(lastIndex, k);
@@ -213,7 +215,7 @@ public class Pattern {
     int size = components.size();
     String result = "";
     for(int i = 0; i < size; i++) {
-      result +=  "/" + components.get(i);
+      result +=  "[" + components.get(i) + "]";
     }
     return result;
   }
