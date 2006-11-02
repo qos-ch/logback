@@ -10,6 +10,7 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * Interface for attaching filters to objects.
@@ -34,5 +35,5 @@ public interface FilterAttachable {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public int getFilterChainDecision(Object event);
+  public FilterReply getFilterChainDecision(Object event);
 }

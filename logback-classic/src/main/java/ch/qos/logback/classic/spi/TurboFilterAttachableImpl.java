@@ -14,7 +14,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * Implementation of ClassicFilterAttachable.
@@ -66,22 +66,23 @@ final public class TurboFilterAttachableImpl implements TurboFilterAttachable {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public final int getTurboFilterChainDecision(final Marker marker, final Logger logger,
+  public final FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger,
       final Level level, final String format, final Object[] params, final Throwable t) {
     TurboFilter f = headFilter;
 
+    
     while (f != null) {
       switch (f.decide(marker, logger,  level,  format, params,  t)) {
-      case Filter.DENY:
-        return Filter.DENY;
+      case DENY:
+        return FilterReply.DENY;
 
-      case Filter.ACCEPT:
-        return Filter.ACCEPT;
+      case ACCEPT:
+        return FilterReply.ACCEPT;
 
-      case Filter.NEUTRAL:
+      case NEUTRAL:
         f = f.getNext();
       }
     }
-    return Filter.NEUTRAL;
+    return FilterReply.NEUTRAL;
   }
 }

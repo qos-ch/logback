@@ -21,26 +21,26 @@ package ch.qos.logback.core.filter;
 
 public abstract class AbstractEvalutatorFilter extends Filter {
 
-  protected int onMatch = NEUTRAL;
-  protected int onMismatch = NEUTRAL;
+  protected FilterReply onMatch = FilterReply.NEUTRAL;
+  protected FilterReply onMismatch = FilterReply.NEUTRAL;
 
   final public void setOnMatch(String action) {
     if ("NEUTRAL".equals(action)) {
-      onMatch = NEUTRAL;
+      onMatch = FilterReply.NEUTRAL;
     } else if ("ACCEPT".equals(action)) {
-      onMatch = ACCEPT;
+      onMatch = FilterReply.ACCEPT;
     } else if ("DENY".equals(action)) {
-      onMatch = DENY;
+      onMatch = FilterReply.DENY;
     }
   }
 
   final public void setOnMismatch(String action) {
     if ("NEUTRAL".equals(action)) {
-      onMismatch = NEUTRAL;
+      onMismatch = FilterReply.NEUTRAL;
     } else if ("ACCEPT".equals(action)) {
-      onMismatch = ACCEPT;
+      onMismatch = FilterReply.ACCEPT;
     } else if ("DENY".equals(action)) {
-      onMismatch = DENY;
+      onMismatch = FilterReply.DENY;
     }
   }
 }

@@ -5,6 +5,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * Interface for attaching ClassicFilter instances to objects.
@@ -30,7 +31,7 @@ public interface TurboFilterAttachable {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then NEUTRAL is returned.
    */
-  public int getTurboFilterChainDecision(Marker marker, Logger logger,
+  public FilterReply getTurboFilterChainDecision(Marker marker, Logger logger,
       Level level, String format, Object[] params, Throwable t);
 
 }

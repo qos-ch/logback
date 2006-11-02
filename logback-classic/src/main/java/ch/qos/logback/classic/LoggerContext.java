@@ -16,13 +16,13 @@ import java.util.Hashtable;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterAttachable;
 import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
-import ch.qos.logback.classic.spi.LoggerContextRemoteView;
+import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
-import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
@@ -184,11 +184,11 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     cfai = null;
   }
 
-  final public int getTurboFilterChainDecision(final Marker marker,
+  final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format, final Object[] params,
       final Throwable t) {
     if (cfai == null) {
-      return Filter.NEUTRAL;
+      return FilterReply.NEUTRAL;
     }
     return cfai
         .getTurboFilterChainDecision(marker, logger, level, format, params, t);

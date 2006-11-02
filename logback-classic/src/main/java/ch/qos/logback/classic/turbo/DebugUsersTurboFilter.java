@@ -9,7 +9,7 @@ import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.MDC;
-import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * This class allows output of debug level events to a certain list of users.
@@ -27,22 +27,22 @@ public class DebugUsersTurboFilter extends TurboFilter {
   List<String> userList = new ArrayList<String>(); 
   
   @Override
-  public int decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+  public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
     if (!level.equals(Level.DEBUG)) {
-      return Filter.NEUTRAL;
+      return FilterReply.NEUTRAL;
     } 
     String user = MDC.get(ClassicGlobal.USER_MDC_KEY);
     if (user != null && userList.contains(user)) {
-      return Filter.ACCEPT;
+      return FilterReply.ACCEPT;
     }
-    return Filter.NEUTRAL;
+    return FilterReply.NEUTRAL;
   }
   
   public void addUser(String user) {
-    System.out.println("******* ADD USER CALLED");
     userList.add(user);
   }
   
+  //test in BasicJoranTest only, to be removed asap.
   public List<String> getUsers() {
     return userList;
   }

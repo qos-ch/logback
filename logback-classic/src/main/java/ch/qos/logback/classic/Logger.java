@@ -21,7 +21,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 
@@ -407,13 +407,13 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
   final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
       final Throwable t) {
   
-    final int decision = loggerContext.getTurboFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
+    final FilterReply decision = loggerContext.getTurboFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
     
-    if(decision == Filter.NEUTRAL) {
+    if(decision == FilterReply.NEUTRAL) {
       if(effectiveLevelInt > level.levelInt) {
         return;
       }
-    } else if (decision == Filter.DENY) {
+    } else if (decision == FilterReply.DENY) {
       return;
     }
     

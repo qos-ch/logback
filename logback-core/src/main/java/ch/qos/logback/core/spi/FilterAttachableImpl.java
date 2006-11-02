@@ -10,6 +10,7 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 
 /**
  * Implementation of FilterAttachable.
@@ -61,21 +62,21 @@ final public class FilterAttachableImpl implements FilterAttachable {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public int getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(Object event) {
     Filter f = headFilter;
 
     while (f != null) {
       switch (f.decide(event)) {
-      case Filter.DENY:
-        return Filter.DENY;
+      case DENY:
+        return FilterReply.DENY;
 
-      case Filter.ACCEPT:
-        return Filter.ACCEPT;
+      case ACCEPT:
+        return FilterReply.ACCEPT;
 
-      case Filter.NEUTRAL:
+      case NEUTRAL:
         f = f.getNext();
       }
     }
-    return Filter.NEUTRAL;
+    return FilterReply.NEUTRAL;
   }
 }

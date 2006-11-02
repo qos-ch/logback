@@ -13,7 +13,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * linear chain. The {@link #decide decide(Object)} method of each filter is
  * called sequentially, in the order of their addition to the chain.
  * <p>
- * The decide() method must return one of the integer constants {@link #DENY},
+ * The decide() method must return one of the FilterReplies {@link #DENY},
  * {@link #NEUTRAL} or {@link #ACCEPT}.
  * <p>
  * If the value DENY is returned, then the log event is dropped immediately
@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * consulting the remaining filters.
  * 
  * <p>
- * The philosophy of LOGBack filters are largely inspired from Linux ipchains.
+ * The philosophy of logback filters are largely inspired from Linux ipchains.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -40,19 +40,19 @@ public abstract class Filter extends ContextAwareBase implements LifeCycle {
    * The event must be dropped immediately without consulting with the remaining
    * filters, if any, in the chain.
    */
-  public static final int DENY = -1;
+  //public static final int DENY = -1;
 
   /**
    * This filter is neutral with respect to the event. The remaining filters, if
    * any, should be consulted for a final decision.
    */
-  public static final int NEUTRAL = 0;
+  //public static final int NEUTRAL = 0;
 
   /**
    * The event must be logged immediately without consulting with the remaining
    * filters, if any, in the chain.
    */
-  public static final int ACCEPT = 1;
+  //public static final int ACCEPT = 1;
 
   /**
    * Points to the next filter in the filter chain.
@@ -85,7 +85,7 @@ public abstract class Filter extends ContextAwareBase implements LifeCycle {
    * @param event
    *          The event to decide upon.
    */
-  public abstract int decide(Object event);
+  public abstract FilterReply decide(Object event);
 
   /**
    * Set the next filter pointer.

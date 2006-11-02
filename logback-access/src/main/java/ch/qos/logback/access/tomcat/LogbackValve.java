@@ -19,6 +19,7 @@ import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
@@ -211,7 +212,7 @@ public class LogbackValve extends ValveBase implements Context,
     fai.clearAllFilters();
   }
 
-  public int getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(Object event) {
     return fai.getFilterChainDecision(event);
   }
 

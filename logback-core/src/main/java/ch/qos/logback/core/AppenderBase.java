@@ -10,6 +10,7 @@
 package ch.qos.logback.core;
 
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
@@ -62,7 +63,7 @@ abstract public class AppenderBase extends ContextAwareBase implements
         return;
       }
 
-      if (getFilterChainDecision(eventObject) == Filter.DENY) {
+      if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
         return;
       }
       
@@ -111,7 +112,7 @@ abstract public class AppenderBase extends ContextAwareBase implements
     fai.clearAllFilters();
   }
 
-  public int getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(Object event) {
     return fai.getFilterChainDecision(event);
   }
 }

@@ -25,11 +25,11 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
     this.evaluator = evaluator;
   }
 
-  public int decide(Object event) {
+  public FilterReply decide(Object event) {
     // let us not throw an exception
     // see also bug #17.
     if(!isStarted()) {
-      return NEUTRAL;
+      return FilterReply.NEUTRAL;
     }
     try {
       if (evaluator.evaluate(event)) {
@@ -39,7 +39,7 @@ public class EvaluatorFilter extends AbstractEvalutatorFilter {
       }
     } catch (EvaluationException e) {
       addError("Evaluator "+evaluator.getName()+" threw an exception", e);
-      return NEUTRAL;
+      return FilterReply.NEUTRAL;
     }
   }
 

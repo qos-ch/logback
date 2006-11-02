@@ -5,6 +5,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.FilterReply;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
@@ -38,7 +39,7 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
    * @param t
    * @return
    */
-  public abstract int decide(Marker marker, Logger logger,
+  public abstract FilterReply decide(Marker marker, Logger logger,
       Level level, String format, Object[] params, Throwable t);
 
   public void start() {
