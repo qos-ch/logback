@@ -8,21 +8,65 @@
 
 	<body>
 
-    <h2>Logback manual</h2>
+    <h2>The logback manual</h2>
 
-		<p>Welcome to the main page of the logback manual.</p>
-		
-		<p>At the moment, only one chapter is available. More to come.</p>
+    <p>The complete logback manual documents the latest version of
+    logback framework. In over 100 pages and dozens of concrete
+    examples, it covers both basic and advanced logback features:
+    </p>
 
-		<p>Printing notice: if you want to print this document, you  might want to
-		use <a href="http://www.getfirefox.com">Firefox</a>, with <em>Adapt to page size</em> enabled, 
-		or <a href="http://www.opera.com">Opera</a> for better rendering on paper.</p>
+    <div>
+      <ul>
+        <li><p>the overall logback architecture</p></li>
+        <li><p>discussion of best logback practices and anti-patterns</p></li>
+        <li><p>logback configuration scripts in properties format</p></li>
+        <li><p>logback configuration scripts in XML format</p></li>
+        <li><p>appenders</p></li>
+        <li><p>layouts</p></li>
+        <li><p>filter chains</p></li>
+        <li><p>logback diagnostic contexts</p></li>
+        <li><p>logback default initialization</p></li>
+        <li><p>logback in Servlet Containers</p></li>
+      </ul>
+    </div>
 
-		<ul>
-			<li>
-				<a href="layouts.html"><b>Manual Chapter 5: Layout reference</b></a>
-			</li>
-		</ul>
+    
+    <div class="highlight">
+    <p>
+      If you wish to print chapters in this document, we recommend
+      that you do so using <a
+      href="http://www.getfirefox.com">Firefox</a>, with <em>Adapt to
+      page size</em> enabled, or <a
+      href="http://www.opera.com">Opera</a>.
+    </p>
+    </div>
 
+    <p>The logback manual describes the logback API in considerable
+    detail, including its features and design rationale. Authored by
+    Ceki Ceki G&#252;lc&#252; and Sebastien Pennec, the main
+    contributors to the logback project, the logback manual is
+    intended for developers already familiar with the Java language
+    but new to logback, as much as for experienced logback users. With
+    the aid of introductory material and many examples, new users
+    should quickly come up to speed.
+    </p>
+
+  
+   
+
+    
+    <div>
+      <p>Without further ado, here are the contents of the manual:</p>
+      
+      <ul>
+        <li><p>
+          <a href="layouts.html"><b>Chapter 4: Appenders</b></a>
+        </p></li>
+        
+        <li><p>
+          <a href="layouts.html"><b>Chapter 5: Layouts</b></a>
+        </p></li>
+      </ul>
+    </div>
 	</body>
 </document>

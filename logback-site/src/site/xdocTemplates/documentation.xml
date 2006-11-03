@@ -10,21 +10,26 @@
 
     <h2>Logback documentation</h2>
 
-		<p>Below is a list of documentaiton currently available for the
-		logback project.</p>
+		<p>Below is a list of logback-related documentaiton currently
+		available.</p>
 
 		<ul>
 			<li>
 				<a href="shortIntro.html"><b>A short introduction to logback-classic</b></a>
 			</li>
+
+     
+      <li><a href="manual/index.html"><b>The logback manual</b></a></li>
+
 			<li>
-				<a href="access.html"><b>A short introduction to access logging Jetty and Tomcat</b></a>
+				<a href="access.html">An introduction to access for Jetty
+				and Tomcat</a>
 			</li>
       <li>
-        <a href="joran.html"><b>A introduction to Joran</b></a>
+        <a href="joran.html">A introduction to Joran</a>
       </li>
       <li>
-      	<a href="faq.html"><b>A Frequently Asked Questions list (FAQ)</b></a>
+      	<a href="faq.html">A Frequently Asked Questions list (FAQ)</a>
       </li>
 		</ul>
 		
@@ -35,20 +40,13 @@
 				<a href="apidocs/index.html"><b>Javadoc</b></a>
 			</li>
 			<li>
-				<a href="xref/index.html"><b>Source code</b></a>
+				<a href="xref/index.html">Source code</a>
 			</li>
 			<li>
-				<a href="xref-test/index.html"><b>Test classes source code</b></a>
+				<a href="xref-test/index.html">Test classes source code</a>
 			</li>
 		</ul>
 		
-		<p>A complete manual about logback is in the works at the moment. Each chapter will be
-		put online as soon as it's complete. You can access the manual page by following the link
-		below.</p>
-		
-		<ul>
-			<li><a href="manual/index.html"><b>Complete logback manual</b></a></li>
-		</ul>
 
 	</body>
 </document>

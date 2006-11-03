@@ -228,7 +228,7 @@ context [default] for logger [chapter1.HelloWorld2].</pre></div>
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<b>import ch.qos.logback.BasicConfigurator;</b>
+<b>import ch.qos.logback.classic.BasicConfigurator;</b>
 import ch.qos.logback.classic.util.LoggerStatusPrinter;
 
 public class HelloWorld3 {
@@ -243,9 +243,11 @@ public class HelloWorld3 {
 }</pre></div>
 
 		<p>
-			Let's run the <code>HelloWorld3</code>
-			application. Now, the <code>BasicConfigurator</code>
-			will create a simple <code>ConsoleAppender</code>. 
+			Let's run the <code>HelloWorld3</code> application. In this
+			example, the <code><a
+			href="xref/ch/qos/logback/classic/BasicConfigurator.html">BasicConfigurator</a></code>
+			class's <code>configureDefaultContext()</code> method is
+			invoked. It will create a simple <code>ConsoleAppender</code>.
 			The logging request will then be propagated to the
 			<code>Appender</code> and the console will output the following:
 		</p>
@@ -253,8 +255,8 @@ public class HelloWorld3 {
 
 		<p>
 			This example is rather simple. However, actual logging in a
-			larger application would not be much different. The general
-			pattern logging statements will barely change. Only the
+			larger application would not be any different. The general
+			pattern logging statements will not change. Only the
 			configuration process will be different since you don't need
 			(nor should) configure the logging context in each and every
 			class that requires logging. As you will see later on in this
@@ -267,17 +269,25 @@ public class HelloWorld3 {
   <!-- =========  CEKI: STOPPED HERE =================== -->
 
 		<p>	
-			These are the three steps that are required to enable logging in your application.
+			Here is a list of the three required steps in order to enable
+			logging in your application.
 		</p>
 
 		<ol>
-			<li>Configure the logback environment. You can do it using several 
-			sophisticated ways. The BasicConfigurator is the simplest but also least flexible. More on this later.</li>
-			<li>In every class where you wish to perform logging, retrieve a Logger 
-			instance by invoking the LoggerFactory and passing the current class as the parameter.</li>
-			<li>Use this logger instance by invoking its printing methods, namely 
-			the debug(), info(), warn() and error() methods. Produce logging output on the 
-			configured appenders.</li>
+
+			<li>Configure the logback environment. You can do it using
+			several sophisticated ways. The BasicConfigurator is the
+			simplest but also least flexible. More on this later.</li>
+
+			<li>In every class where you wish to perform logging, retrieve a
+			Logger instance by invoking the
+			<code>org.slf4j.LoggerFactory</code> class'
+			<code>getLogger()</code> method, passing the current class' name
+			or the class itself as parameter.</li>
+			
+      <li>Use this logger instance by invoking its printing methods,
+      namely the debug(), info(), warn() and error() methods. This
+      will produce logging output on the configured appenders.</li>
 		</ol>
 
 		
@@ -291,26 +301,25 @@ public class HelloWorld3 {
 			messages are formatted and where they are reported.
 		</p>
 		<p>
-			Loggers are defined in the classic module. On the other
-			hand, Appenders and Layouts are defined in the core module
-			of logback.
+			The Logger class is part of the classic module. On the other
+			hand, Appenders and Layouts are part of the core
+			module. Interestingly enough, the core has no notion of loggers.
 		</p>
 
     <h3>Logger context</h3>
 
-		<p>
-			The first and foremost advantage of any logging API over
-			plain <code>System.out.println</code> resides in its ability to disable
-			certain log statements while allowing others to print
-			unhindered. This capability assumes that the logging space,
-			that is, the space of all possible logging statements, is
-			categorized according to some developer-chosen criteria. 
-			This categorization is an inherent part of loggers.
+		<p>The first and foremost advantage of any logging API over plain
+		<code>System.out.println</code> resides in its ability to disable
+		certain log statements while allowing others to print
+		unhindered. This capability assumes that the logging space, that
+		is, the space of all possible logging statements, is categorized
+		according to some developer-chosen criteria.  This categorization
+		is an inherent part of loggers.
 		</p>
 			
 		<p>
-			Loggers are named entities. Their names are case-sensitive and they follow the
-			hierarchical naming rule:
+			Loggers are named entities. Their names are case-sensitive and
+			they follow the hierarchical naming rule:
 		</p>
 		<div class="definition">
 			<div class="deftitle">Named Hierarchy</div>
@@ -1017,7 +1026,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import ch.qos.logback.BasicConfigurator;
+import ch.qos.logback.classic.BasicConfigurator;
 
 public class MyApp {
 

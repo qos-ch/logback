@@ -9,110 +9,110 @@
 	<body>
 		<h2>Logback News</h2>
 
-		<p>Here are the last news about the project.</p>
+		<p>Here are the lastest news about logback.</p>
 
-		<h3>October 26th, 2006 - 0.5 version available</h3>
-		<p>
-			Version 0.5 for all three logback modules is now available.
-		</p>
-		<p>
-			This release offers a big improvement in Joran. Joran is now able to
-			replay configuration elements.
-		</p>
-		<p>	
-			Logback's documentation has also been improved. A complete reference on 
-			Layouts is available in the logback manual directory, as well as a FAQ page.
-		</p>
-		<p>
-			An archive containing source code, binaries and docs is available 
-			at the <a href="download.html">download page</a>.
-		</p>
+		<h3>October 26th, 2006 - Release of version 0.5</h3>
 
-		<hr width="50%" align="center" />
+    <p>
+      Version 0.5 of logback has been released.
+		</p>
 		
-		<h3>October 9th, 2006 - 0.4 version available</h3>
-		<p>
-			Version 0.4 for all three logback modules is now available.
-		</p>
-		<p>
-			This release offers a much improved access module, with specific implementations
-			for the Jetty and Tomcat servers. Documentation was also added to show how
-			to integrate logback access with Jetty.
-		</p>
-		<p>	
-			Outside of the access module, several appenders and layouts have been added or improved.
-			The error reporting of logback is also improved, prompting the user with
-			a link to an online page presenting possible reasons for the error.
-		</p>
-		<p>	
-			A joran documentation was added, with examples in the core module.		
-		</p>
-		<p>
-			An archive containing source code, binaries and docs is available 
-			at the <a href="download.html">download page</a>.
+    <p>
+			This release offers a important improvements in Joran. In
+			particular, Joran can now replay configuration elements.
 		</p>
 
-		<hr width="50%" align="center" />
+    <p>	
+			As in the previous released, a major area of work is the
+			documentation which is being continously improved.
+		</p>
+
+		<hr width="80%" align="center" />
+		
+		<h3>October 9th, 2006 - Release of version 0.4</h3>
+		<p>
+      Version 0.3 of logback has been released.
+		</p>
+		
+    <p>
+			This release includes an improved access module, with specific
+			implementations for the Jetty and Tomcat servers. Documentation
+			was also added to show how to integrate logback-access with
+			Jetty.
+		</p>
+
+    <p>	
+      As for the classic module, several appenders and layouts have
+      been added or improved.  The error reporting of logback has also
+      been enhanced, presenting the user with a link to an online page
+      explaining possible reasons for the error.
+		</p>
+
+    <p>	
+			A joran documentation was added, with examples in the core
+			module.
+		</p>
+	
+		<hr width="80%" align="center" />
 				
-		<h3>September 8th, 2006 - 0.3 version available</h3>
+		<h3>September 8th, 2006 - Release of version 0.3</h3>
 		<p>
-			Version 0.3 for all three logback modules is now available.
-		</p>
-		<p>
-			This release offers several new Appenders, support for Mapped Diagnostic Context, 
-			improved tests and documentation<br />
-		</p>
-		<p>	
-			In response to a bug report by Rickard Nilsson on the logback mailing list, 
-			a bug affecting parametrized logging was fixed.
-		</p>
-		<p>	
-			We also released a <a href="http://logback.qos.ch/translator/">PropertiesTranslator</a> 
-			webapp that converts <em>log4j.properties</em> files to joran configuration files (in XML format).<br />
-		</p>
-		<p>
-			An archive containing source code, binaries and docs is available 
-			at the <a href="download.html">download page</a>.
+      Version 0.3 of logback has been released.
 		</p>
 
-		<hr width="50%" align="center" />
-		
-		<h3>August 23th, 2006 - 0.2.5 version available</h3>
 		<p>
-			Version 0.2.5 for all three logback modules is now available.
-		</p>
-		<p>
-			This release offers a better documentation. The introduction document to logback classic
-			was corrected and improved.
-			An archive containing source code, binaries and docs is available 
-			at the <a href="download.html">download page</a>.
+			This release offers several new Appenders, support for Mapped
+			Diagnostic Context, improved tests and documentation<br />
 		</p>
 
-		<hr width="50%" align="center" />
-		
-		
-		<h3>August 15th, 2006 - 0.2 version available</h3>
-		<p>
-			Version 0.2 for all three logback modules is now available.
-		</p>
-		<p>
-			It offers better tests, a few more functionalities, and enhanced documentation.
-			We also improved the site design to make it simpler and more efficient.
+    <p>	
+			In response to a bug report by Rickard Nilsson on the logback
+			mailing list, a bug affecting parametrized logging was fixed.
 		</p>
 
-		<hr width="50%" align="center" />
-		
-		<h3>July 26th, 2006 - 0.1 version available</h3>
-		<p>
-			A first version 0.1 for all three logback modules is now available.
+    <p>	
+			We also released a <a
+			href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
+			webapp that converts <em>log4j.properties</em> files to joran
+			configuration files (in XML format).<br />
 		</p>
-		<p>
-			The archives containing source code and binaries of all
-			modules are downloadable from the download
-			pages.
+	
+		<hr width="80%" align="center" />
+		
+		<h3>August 23th, 2006 - Release of version 0.2.5</h3>
+
+    <p>
+      Version 0.2.5 of logback has been released.
 		</p>
 
-		<hr width="50%" align="center" />
+		<p>
+			This release offers better documentation. With a number of
+			correction mande in the short introduction to logback-classic.
+		</p>
+
+		<hr width="80%" align="center" />
+		
+		
+		<h3>August 15th, 2006 - Release of version 0.2</h3>
+		<p>
+      Version 0.2 of logback has been released.
+		</p>
+
+    <p>
+			It offers better tests, a few more functionalities, and enhanced
+			documentation.  We also improved the site design to make it
+			simpler and more efficient.
+		</p>
+
+		<hr width="80%" align="center" />
+	
+		<h3>July 26th, 2006 - Release of version 0.1</h3>
+
+    <p>
+			Version 0.1 of logback has been released.
+		</p>
+
+		<hr width="80%" align="center" />
 
 		<h3>February 9th, 2006 - Logback web-site goes live</h3>
 		<p>
