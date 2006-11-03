@@ -13,7 +13,7 @@ package chapter1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.BasicConfigurator;
+import ch.qos.logback.classic.BasicConfigurator;
 
 public class MyApp {
 
