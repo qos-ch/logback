@@ -17,8 +17,6 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
-
-
 public class IO extends Thread {
   static String msgLong = "ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890";
   static String msgShort = "Hello";

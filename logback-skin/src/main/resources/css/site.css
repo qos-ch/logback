@@ -104,8 +104,8 @@ h4 {
 	/*color: #900;*/
 	color: navy;
 	background-color: white;
-	font-weight: normal;
-	font-size: large;
+	font-weight: large;
+	font-size: normal;
 }
 
 h5 {

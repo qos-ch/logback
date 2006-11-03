@@ -19,8 +19,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
-
-
 public class ExitWoes {
 
   public static void main(String[] args) throws Exception {
