@@ -545,6 +545,32 @@ public class ExitWoes {
 	</table>
 	
 	<h3>Rolling policies</h3>
+	
+	<p><code>RollingPolicy</code> implementations are responsible for the
+	procedure of the rollover. They manage file renaming and sometimes deleting.</p>
+	
+	<p>The <code>RollingPolicy</code> interface is rather simple:</p>
+	
+<div class="source"><pre>package ch.qos.logback.core.rolling;
+
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.spi.LifeCycle;
+
+public interface RollingPolicy extends LifeCycle {
+
+
+  public void rollover() throws RolloverFailure;
+  public String getNewActiveFileName();
+  public void setParent(FileAppender appender);
+}</pre></div>
+
+	<p>
+		The <code>rollover</code> method proceeds to the file change, renaming or deletion.
+		The <code>getNewActiveFileName()</code> method is called to compute a new file name, with
+		respect to the configuration elements that were injected in the <code>RollingPolicy</code>.
+		Lastly, a <code>RollingPolicy</code> knows about its parent.
+	</p>
+	
 	<a name="FixedWindowRollingPolicy" />
 	<h4>FixedWindowRollingPolicy</h4>
 
@@ -738,11 +764,11 @@ public class ExitWoes {
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>testFile.log&lt;/File>
-    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       &lt;FileNamePattern>testFile.%i.log.zip&lt;/FileNamePattern>
       &lt;MinIndex>1&lt;/MinIndex>
       &lt;MaxIndex>3&lt;/MaxIndex>
-    &lt;/rollingPolicy>
+    &lt;/rollingPolicy></b>
 
     &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
       &lt;MaxFileSize>5MB&lt;/MaxFileSize>
@@ -973,9 +999,9 @@ public class ExitWoes {
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>logFile.log&lt;/File>
-    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;FileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
-    &lt;/rollingPolicy>
+    &lt;/rollingPolicy></b>
 
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/Pattern>
@@ -987,16 +1013,114 @@ public class ExitWoes {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre></div>
-	
 
-
-
-
-
+		<a name="TriggeringPolicy"/>
 		<h3>Triggering policies</h3>
+		
+		<p><code>TriggeringPolicy</code> implementations are responsible for instructing
+		the <code>RollingFileAppender</code> to proceed to the rollover.</p>
+		
+		<p>The <code>TriggeringPolicy</code> interface is pretty simple.</p>
 	
+<div class="source"><pre>package ch.qos.logback.core.rolling;
+
+import java.io.File;
+import ch.qos.logback.core.spi.LifeCycle;
+
+public interface TriggeringPolicy extends LifeCycle {
+
+  public boolean isTriggeringEvent(final File file, final Object event);
+}</pre></div>
+
+		<p>
+			The
+			<code>isTriggeringEvent()</code>
+			method takes the active file, and the currently processed
+			logging event. It's implementation decied, based on these
+			parameters, whether the rollover must occur or not, by
+			returning a boolean value.
+		</p>
+
+		<a name="SizeBasedTriggeringPolicy" />
+		<h4>SizeBasedTriggeringPolicy</h4>
+
+		<p>
+			<code>SizeBasedTriggeringPolicy</code>
+			looks at size of the file being currently written to. If it
+			grows bigger than the specified size, the
+			<code>FileAppender</code> using the
+			<code>SizeBasedTriggeringPolicy</code>
+			will proceed to the rollover of the current file and log to
+			a new one.
+		</p>
+
+		<p>
+			This <code>TriggeringPolicy</code>
+			only accepts one parameter, that is the
+			<span class="option">MaxFileSize</span>
+			option. This option's default value is 10 MB.
+		</p>
+
+		<p>
+			The <span class="option">MaxFileSize</span>
+			option can be specified in a simple and easy way, by
+			specifying the unit that should be used. One can enter any 
+			numeric value, with three possible units, namely <em>KB</em>, 
+			<em>MB</em> and <em>GB</em>. Consequently, values like
+			<em>5MB</em>, <em>500KB</em> or <em>2GB</em> are all valid.
+		</p>
+		<p>
+			<b>Althought values expressed in <em>GB</em> are possible, 
+			we do not recommand setting the <span class="option">MaxFileSize</span>
+			option to a value bigger than XXX GB</b>.
+		</p>
+		<p>
+			Here is a sample configuration with a <code>RollingFileAppender</code>
+			using a <code>SizeBasedTriggeringPolicy</code>.
+		</p>
+
+<div class="source"><pre>&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;File>testFile.log&lt;/File>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      &lt;FileNamePattern>testFile.%i.log.zip&lt;/FileNamePattern>
+      &lt;MinIndex>1&lt;/MinIndex>
+      &lt;MaxIndex>3&lt;/MaxIndex>
+    &lt;/rollingPolicy>
+
+    <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      &lt;MaxFileSize>5MB&lt;/MaxFileSize>
+    &lt;/triggeringPolicy></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 	
-	<h2>Logback Classic</h2>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			<code>TriggeringPolicy</code> implementations do not only serve with
+			<code>RollingFileAppender</code> objects. They can also be used to tell
+			<code>SMTPAppender</code>, which will be covered soon, when to send an email
+			containing the last logging events.
+		</p>
+
+
+
+
+
+
+
+
+
+
+
+
+		<h2>Logback Classic</h2>
 	
 	<h2>Logback Access</h2>
 	
