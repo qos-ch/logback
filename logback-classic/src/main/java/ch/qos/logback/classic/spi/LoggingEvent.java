@@ -283,5 +283,14 @@ public class LoggingEvent implements Serializable {
     int levelInt = in.readInt();
     level = Level.toLevel(levelInt);
   }
+  
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer('[');
+    sb.append(level).append("] ");
+    sb.append(getFormattedMessage());
+    sb.append("\n");
+    return sb.toString();
+  }
 
 }
