@@ -9,17 +9,18 @@
  */
 package ch.qos.logback.core.layout;
 
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.LayoutBase;
 
 /**
- * Echos the incoming object adding a "\n" character at the end.
+ * Echos the incoming object adding a line separator character(s) at the end.
  * 
  * @author Ceki
  */
 public class EchoLayout extends LayoutBase {
 
   public String doLayout(Object event) {
-    return event+"\n";
+    return event+Layout.LINE_SEP;
   }
 
 }
