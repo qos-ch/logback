@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.BasicConfigurator;
+import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 

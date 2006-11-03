@@ -8,13 +8,10 @@
  * Software Foundation.
  */
 
-package ch.qos.logback;
+package ch.qos.logback.classic;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.core.ConsoleAppender;
 
 public class BasicConfigurator {

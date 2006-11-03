@@ -2,7 +2,7 @@ package ch.qos.logback.classic.util;
 
 import java.net.URL;
 
-import ch.qos.logback.BasicConfigurator;
+import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
