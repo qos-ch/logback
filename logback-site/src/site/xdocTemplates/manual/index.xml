@@ -19,7 +19,6 @@
       <ul>
         <li><p>the overall logback architecture</p></li>
         <li><p>discussion of best logback practices and anti-patterns</p></li>
-        <li><p>logback configuration scripts in properties format</p></li>
         <li><p>logback configuration scripts in XML format</p></li>
         <li><p>appenders</p></li>
         <li><p>layouts</p></li>
