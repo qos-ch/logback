@@ -119,6 +119,7 @@ public class SocketAppender extends AppenderBase {
   int port = DEFAULT_PORT;
   ObjectOutputStream oos;
   int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+  boolean includeCallerData = false;
 
   private Connector connector;
 
@@ -248,6 +249,9 @@ public class SocketAppender extends AppenderBase {
 
     if (oos != null) {
       try {
+        if (includeCallerData) {
+          ((LoggingEvent)event).getCallerData();
+        }
         oos.writeObject(event);
         // addInfo("=========Flushing.");
         oos.flush();
@@ -317,6 +321,11 @@ public class SocketAppender extends AppenderBase {
   public int getPort() {
     return port;
   }
+  
+  public void setIncludeCallerData(boolean includeCallerData) {
+    this.includeCallerData = includeCallerData;
+  }
+  
 
   /**
    * The <b>ReconnectionDelay</b> option takes a positive integer representing
