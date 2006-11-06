@@ -47,7 +47,8 @@
 
 		<p>
 			Logback delegates the task of writing a logging event to appenders. 
-			Appenders must imple-ment the <code>ch.qos.logback.core.Appender</code> interface. 
+			Appenders must implement the 
+			<a href="../xref/ch/qos/logback/core/Appender.html"><code>ch.qos.logback.core.Appender</code></a> interface. 
 			The salient methods of this interface are summarized below:
 		</p>
 		<div class="source"><pre>package ch.qos.logback.core;
@@ -96,7 +97,8 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	<h2>AppenderBase</h2>
 	
 	<p>
-		The <code>ch.qos.logback.core.AppenderSkeleton</code> class is an abstract 
+		The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
+		<code>ch.qos.logback.core.AppenderBase</code></a> class is an abstract 
 		class implementing the <code>Appender</code> interface. 
 		It provides basic functionality shared by all appenders, 
 		such as methods for getting or setting their name, their started status, 
@@ -211,7 +213,7 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	<h3>WriterAppender</h3>
 	
 	<p>
-		<code>WriterAppender</code> appends events to a <code>java.io.Writer</code>. 
+		<a href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a> appends events to a <code>java.io.Writer</code>. 
 		This class provides basic services that other appenders build upon. 
 		Users do not usually instantiate <code>WriterAppender</code> objects directly. 
 		Since <code>java.io.Writer</code> type cannot be mapped to a string, there is no 
@@ -267,8 +269,7 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		will be lost as illustrated by the next example. 
 	</p>
 	
-	<em>Example 4.1: Exiting an application without flushing (logback-examples/src/main/java/chapter4/
-	<a href="../xref/chapter4/ExitWoes.html">ExitWoes.java</a>)</em>
+	<em>Example 4.1: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes.html">logback-examples/src/main/java/chapter4/ExitWoes.java</a>)</em>
 <div class="source"><pre>package chapter4;
 
 import java.io.FileOutputStream;
@@ -280,15 +281,15 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
-import ch.qos.logback.core.layout.DummyLayout;
+import ch.qos.logback.core.layout.EchoLayout;
 
 public class ExitWoes {
 
   public static void main(String[] args) throws Exception {
-    LoggerContext lc = new LoggerContext();
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     WriterAppender writerAppender = new WriterAppender();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new DummyLayout());
+    writerAppender.setLayout(new EchoLayout());
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
@@ -314,12 +315,11 @@ public class ExitWoes {
 		running <code>ExitWoes1</code> will not produce any output in the file 
 		<em>exitWoes1.log</em>
 		because the Java VM does not flush output streams when it exits. 
-		Calling the <code>shutdown()</code> method of a <b>XXXXXX</b> ensures that all 
+		Calling the <code>reset()</code> method of a <code>LoggerContext</code> ensures that all 
 		appenders in the hierarchy are closed and their buffers are flushed. 
 		For most applications this is as simple as including the following statement 
 		before exiting the application.
 	</p>
-	<p>WHAT TO DO IN LB ???</p>
 
 	<p>
 		The <code>WriterAppender</code> is the super class of four other appenders, 
@@ -333,7 +333,8 @@ public class ExitWoes {
 	<h3>ConsoleAppender</h3>
 	
 	<p>
-		The <code>ConsoleAppender</code>, as the name indicates, appends on the console, 
+		The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
+		<code>ConsoleAppender</code></a>, as the name indicates, appends on the console, 
 		or more precisely on <em>System.out</em> or <em>System.err</em>, the former 
 		being the default target. <code>ConsoleAppender</code> formats events with 
 		a layout specified by the user. Both <em>System.out</em> and <em>System.err</em> 
@@ -371,7 +372,8 @@ public class ExitWoes {
 	<h3>FileAppender</h3>
 	
 	<p>
-		The <code>FileAppender</code>, a subclass of <code>WriterAppender</code>, 
+		The <a href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>, 
+		a subclass of <code>WriterAppender</code>, 
 		appends log events into a file. The file to write to is specified by 
 		the <span class="option">File</span> option. 
 		If the file already exists, it is either appended to, or truncated 
@@ -464,7 +466,8 @@ public class ExitWoes {
 	<h3>RollingFileAppender</h3>
 	
 	<p>
-		<code>RollingFileAppender</code> extends <code>FileAppender</code> by 
+		<a href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
+		extends <code>FileAppender</code> by 
 		allowing rolling from a log file to another. For example,
 		<code>RollingFileAppender</code> can log to a <em>log.txt</em> file and, 
 		once a certain condition is met, change its logging target to another file.
@@ -546,7 +549,8 @@ public class ExitWoes {
 	
 	<h3>Rolling policies</h3>
 	
-	<p><code>RollingPolicy</code> implementations are responsible for the
+	<p><a href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a> 
+	implementations are responsible for the
 	procedure of the rollover. They manage file renaming and sometimes deleting.</p>
 	
 	<p>The <code>RollingPolicy</code> interface is rather simple:</p>
@@ -575,7 +579,8 @@ public interface RollingPolicy extends LifeCycle {
 	<h4>FixedWindowRollingPolicy</h4>
 
 	<p>
-		When rolling over, <code>FixedWindowRollingPolicy</code>
+		When rolling over, <a href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+		<code>FixedWindowRollingPolicy</code></a>
 		renames files according to a fixed window algorithm as described below.
 	</p>
 	<p>
@@ -787,7 +792,8 @@ public interface RollingPolicy extends LifeCycle {
 	<a name="TimeBasedRollingPolicy" />
 	<h4>TimeBasedRollingPolicy</h4>
 	<p>
-		<code>TimeBasedRollingPolicy</code> is both easy to configure and quite powerful.
+		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+		<code>TimeBasedRollingPolicy</code></a> is both easy to configure and quite powerful.
 		It allows the rollover to be made based on time conditions. It is possible to specify
 		that the rollover must occur each day, or month, for example.
 	</p>
@@ -1017,7 +1023,8 @@ public interface RollingPolicy extends LifeCycle {
 		<a name="TriggeringPolicy"/>
 		<h3>Triggering policies</h3>
 		
-		<p><code>TriggeringPolicy</code> implementations are responsible for instructing
+		<p><a href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
+		implementations are responsible for instructing
 		the <code>RollingFileAppender</code> to proceed to the rollover.</p>
 		
 		<p>The <code>TriggeringPolicy</code> interface is pretty simple.</p>
@@ -1045,7 +1052,8 @@ public interface TriggeringPolicy extends LifeCycle {
 		<h4>SizeBasedTriggeringPolicy</h4>
 
 		<p>
-			<code>SizeBasedTriggeringPolicy</code>
+			<a href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
+			<code>SizeBasedTriggeringPolicy</code></a>
 			looks at size of the file being currently written to. If it
 			grows bigger than the specified size, the
 			<code>FileAppender</code> using the
@@ -1108,21 +1116,286 @@ public interface TriggeringPolicy extends LifeCycle {
 			<code>SMTPAppender</code>, which will be covered soon, when to send an email
 			containing the last logging events.
 		</p>
+		
+		<p>
+			In that case, the <code>isTriggeringEvent()</code> method takes <em>null</em>
+			as its first parameter (of type <code>File</code>) and takes the logging event
+			as its second parameter. It is based on that last element that the decision is
+			made to send the email or not. By default, a <code>TriggeringPolicy</code> is
+			included with <code>SMTPAppender</code> that triggers the mail each time an event
+			with a <code>Level</code> of <em>ERROR</em> or more is issued.
+		</p>
 
 
 
-
-
-
-
-
-
-
-
-
+		<a name="Classic"/>
 		<h2>Logback Classic</h2>
+		
+		<p><b>Keep this??</b>While logging event are declared as <code>Object</code> in logback core, 
+		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
+		
+		<a name="SocketAppender" />
+		<h3>SockerAppender</h3>
+		
+		<p>
+			The appenders covered this far were only able to log to local resources. 
+			In contrast, the <a href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
+			<code>SocketAppender</code></a> is designed to log to a 
+			remote entity by transmitting serialized LoggingEvent objects over the wire. 
+			Remote logging is non-intrusive as far as the logging event is concerned. 
+			On the receiving end after de-serialization, the event can be logged as 
+			if it were generated locally. Multiple <code>SocketAppender</code> instances 
+			running of different machines can direct their logging output 
+			to a central log server. <code>SocketAppender</code> does not admit an 
+			associated layout because it sends serialized events to a remote server. 
+			<code>SocketAppender</code> operates above the 
+			<em>Transmission Control Protocol (TCP)</em> 
+			layer which provides a reliable, sequenced, flow-controlled end-to-end octet stream. 
+			Consequently, if the remote server is reachable, then log events 
+			will eventually arrive there. Otherwise, if the remote server is down or 
+			unreachable, the logging events will simply be dropped. If and when the server 
+			comes back up, then event transmission will be resumed transparently. 
+			This transparent reconnection is performed by a connector thread which 
+			periodically attempts to connect to the server.
+		</p>
+		
+		<p>
+			Logging events are automatically buffered by the native TCP implementation. 
+			This means that if the link to server is slow but still faster than the 
+			rate of event production by the client, the client will not be affected by 
+			the slow network connection. However, if the network connection is slower 
+			then the rate of event production, then the client can only progress at the 
+			network rate. In particular, in the extreme case where the network link 
+			to the server is down, the client will be eventually blocked. 
+			Alternatively, if the network link is up, but the server is down, 
+			the client will not be blocked although the log events will be 
+			lost due to server unavailability.
+		</p>
+		
+		<p>
+			Even if a <code>SocketAppender</code> is no longer attached to any logger, 
+			it will not be garbage collected in the presence of a connector thread. 
+			A connector thread exists only if the connection to the server is down. 
+			To avoid this garbage collection problem, you should close the <code>SocketAppender</code> 
+			explicitly. Long lived applications which create/destroy many 
+			<code>SocketAppender</code> instances should be aware of this 
+			garbage collection problem. Most other applications can safely ignore it. 
+			If the JVM hosting the <code>SocketAppender</code> exits before the 
+			<code>SocketAppender</code> is closed, either explicitly or subsequent 
+			to garbage collection, then there might be untransmitted data in the 
+			pipe which may be lost. This is a common problem on Windows based systems.  
+			To avoid lost data, it is usually sufficient to <code>close()</code> the 
+			<code>SocketAppender</code> either explicitly or by calling the 
+			<code>LoggerContext</code>'s <code>reset()</code> method before exiting the application.
+		</p>
+		
+		<p>
+			The remote server is identified by the <span class="option">RemoteHost</span> and 
+			<span class="option">Port</span> options. 
+			<code>SocketAppender</code> options are listed in the following table.
+		</p>
+
+	<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">IncludeCallerData</span></b></td>
+			<td><code>boolean</code></td>
+			<td>
+				<p>
+					The <span class="option">IncludeCallerData</span> option takes a boolean value. 
+					If true, the caller data will be available to the remote host. 
+					By default no caller data is sent to the server.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">Port</span></b></td>
+			<td><code>int</code></td>
+			<td>
+				<p>
+					The port number of the remote server.
+				</p>
+			</td>
+		</tr>	
+		<tr>
+			<td><b><span class="option">ReconnectionDelay</span></b></td>
+			<td><code>int</code></td>
+			<td>
+					The <span class="option">ReconnectionDelay</span> option takes a 
+					positive integer representing the number of milliseconds to wait between 
+					each failed connection attempt to the server. 
+					The default value of this option is 30'000 which corresponds to 30 seconds. 
+					Setting this option to zero turns off reconnection capability. 
+					Note that in case of successful connection to the server, there will be no 
+					connector thread present.
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">RemoteHost</span></b></td>
+			<td><code>String</code></td>
+			<td>
+					The host name of the server.
+			</td>
+		</tr>		
+	</table>
 	
-	<h2>Logback Access</h2>
+	<p>
+		The standard logback distribution includes a simple log server application named
+		<code>ch.qos.logback.classic.net.SimpleSocketServer</code> that can service multiple 
+		<code>SocketAppender</code> clients. It waits for logging events from 
+		<code>SocketAppender</code> clients. After reception by 
+		<code>SimpleSocketServer</code>, the events are logged according to local server policy. 
+		The <code>SimpleSocketServer</code> application takes two parameters: 
+		port and configFile; where port is the port to listen on and configFile is 
+		configuration script in XML format. 
+	</p>
+	
+	<p>
+		Assuming you are in the <em>logback-examples/target/classes/</em> directory, 
+		start <code>SimpleSocketServer</code> with the following command:
+	</p>
+	
+<div class="source"><pre>  java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
+  chapter4/socket/server1.xml
+</pre></div>
+
+	<p>
+		where 6000 is the port number to listen on and <em>server1.xml</em> is a 
+		configuration script that adds a <code>ConsoleAppender</code> and a 
+		<code>RollingFileAppender</code> to the root logger. 
+		After you have started <code>SimpleSocketServer</code>, you can send it 
+		log events from multiple clients using <code>SocketAppender</code>.  
+		The examples associated with this manual include two such clients: 
+		<code>chapter4.SocketClient1</code> and <code>chapter4.SocketClient2</code> 
+		Both clients wait for the user to type a line of text on the console. 
+		The text is encapsulated in a logging event of level debug and then sent 
+		to the remote server. The two clients differ in the configuration of the 
+		<code>SocketAppender</code>. <code>SocketClient1</code> configures the appender 
+		programmatically while <code>SocketClient2</code> requires a configuration file. 
+	</p>
+	
+	<p>
+		Assuming <code>SimpleSocketServer</code> is running on the local host, 
+		you connect to it with the following command:
+	</p>
+	
+<div class="source"><pre>java chapter4.socket.SocketClient1 localhost 6000</pre></div>
+
+		<p>
+			Each line that you type should appear on the console of the
+			<code>SimpleSocketServer</code>
+			launched in the previous step. If you stop and restart the
+			<code>SimpleSocketServer</code>
+			the client will transparently reconnect to the new server
+			instance, although the events generated while disconnected
+			will be simply and irrevocably lost.
+		</p>
+
+		<p>
+			Unlike
+			<code>SocketClient1</code>, the sample application
+			<code>SocketClient2</code> does not configure logback by itself. 
+			It requires a configuration file in XML format. 
+			The configuration file <em>client1.xml</em>
+			shown below creates a <code>SocketAppender</code>
+			and attaches it to the root logger.
+		</p>
+
+		<em>Example 4.1: SocketAppender configuration (<a href="../xref/chapter4/socket/client1.html">logback-examples/src/main/java/chapter4/socket/client1.xml</a>)</em>
+<div class="source"><pre>&lt;configuration>
+	  
+  &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
+    &lt;RemoteHost>${host}&lt;/RemoteHost>
+    &lt;Port>${port}&lt;/Port>
+    &lt;ReconnectionDelay>10000&lt;/ReconnectionDelay>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="SOCKET" />
+  &lt;/root>  
+
+&lt;/configuration></pre></div>
+	
+	
+		<p>
+			Note that in the above configuration scripts the values for the 
+			<span class="option">RemoteHost</span>, <span class="option">Port</span> and
+			<span class="option">IncludeCallerData</span> options
+			are not given directly but as substituted variable keys. The values for the variables 
+			can be specified as system properties: 
+		</p>
+	
+<div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=false \
+  chapter4.socket.SocketClient2 chapter4/socket/client1.xml
+</pre></div>
+
+		<p>
+			This command should give similar results to the previous
+			<code>SocketClient1</code>
+			example.
+		</p>
+		
+		<p>
+			Allow us to repeat for emphasis that serialization of logging events is not 
+			intrusive. A de-serialized event carries the same information as any other 
+			logging event. It can be manipulated as if it were generated locally; 
+			except that serialized logging events by default do not include location 
+			information. Here is an example to illustrate the point. First, start 
+			<code>SimpleSocketServer</code> with the following command:
+		</p>
+
+<div class="source"><pre>  java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
+  chapter4/socket/server2.xml
+</pre></div>
+
+		<p>
+			The configuration file <em>server2.xml</em> creates a <code>ConsoleAppender</code> 
+			whose layout outputs the callers file name and line number along with other 
+			information. If you run <code>SocketClient2</code> with the configuration file 
+			<em>client1.xml</em> as previously, you will notice that the output on the 
+			server side will contain two question marks between parentheses instead of 
+			the file name and the line number of the caller:
+		</p>
+
+<div class="source"><pre>2006-11-06 17:37:30,968 DEBUG [Thread-0] [?:?] chapter4.socket.SocketClient2 - Hi</pre></div>
+
+		<p>
+			The outcome can be easily changed by instructing the <code>SocketAppender</code> 
+			to include caller data by setting the <span class="option">IncludeCallerData</span> 
+			option to true. Using the following command will do the trick:
+		</p>
+
+<div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=true \
+  chapter4.socket.SocketClient2 chapter4/socket/client1.xml
+</pre></div>
+
+		<p>
+			As deserialized events can be handled in the same way as locally 
+			generated events, they even can be sent to a second server for further treatment. 
+			As an exercise, you may wish to setup two servers where the first server 
+			tunnels the events it receives from its clients to a second server.
+		</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<h2>Logback Access</h2>
 	
 	
 	

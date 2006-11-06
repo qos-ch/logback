@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
@@ -22,7 +23,7 @@ import ch.qos.logback.core.layout.EchoLayout;
 public class ExitWoes {
 
   public static void main(String[] args) throws Exception {
-    LoggerContext lc = new LoggerContext();
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     WriterAppender writerAppender = new WriterAppender();
     writerAppender.setContext(lc);
     writerAppender.setLayout(new EchoLayout());

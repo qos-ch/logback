@@ -38,6 +38,11 @@
       page size</em> enabled, or <a
       href="http://www.opera.com">Opera</a>.
     </p>
+    <p>
+    	To run the examples provided in this book, you might have
+    	to add the logback jars to your classpath. They are available
+    	on our <a href="../download.html">download page</a>.
+    </p>
     </div>
 
     <p>The logback manual describes the logback API in considerable
