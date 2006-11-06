@@ -11,7 +11,7 @@
   <!-- Notice the %file and %line patterns in the Pattern. -->	  
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%date %-5level [%thread] [%file:%line] %logger - %msg%n</Pattern>
+      <Pattern>%date %-5level [%thread] [%file:%line] %logger - %message%n</Pattern>
     </layout>	    
   </appender>
 

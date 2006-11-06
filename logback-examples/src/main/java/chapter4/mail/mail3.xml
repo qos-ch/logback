@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- ============================================================= -->
+<!-- Sample SMTPAppender configuration using the HTMLLayout and a  --> 
+<!-- custom trigger event evaluator.                               -->
+<!-- ============================================================= -->
+
+<configuration>
+  <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <EvaluatorClass>chapter4.mail.CounterBasedTP</EvaluatorClass>
+    <BufferSize>1050</BufferSize>
+    <SMTPHost>${smtpHost}</SMTPHost>
+    <To>${to}</To>
+    <From>${from}</From>
+    <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+  </appender>
+
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="EMAIL" />
+  </root>  
+</configuration>
+
+

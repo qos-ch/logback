@@ -12,7 +12,7 @@
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
   
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%d %-5p [%t] %c - %m%n</Pattern>
+      <Pattern>%date %-5level [%thread] %logger - %message%n</Pattern>
     </layout>	    
   
   </appender>
@@ -32,7 +32,7 @@
 		</triggeringPolicy>
 		
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%r %-5p %c - %m%n</Pattern>
+      <Pattern>%relative %-5level %logger - %message%n</Pattern>
     </layout>	    
   </appender>
 

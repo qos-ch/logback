@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- ========================================================== -->
+<!-- Sample SMTPAppender configuration using the PatternLayout  -->
+<!-- ========================================================== -->
+
+<configuration>
+	  
+  <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST</SMTPHost>
+    <To>DESTINATION-EMAIL</To>
+    <From>SENDER-EMAIL</From>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %-5level %logger - %message%n</Pattern>
+    </layout>	    
+  </appender>
+
+  <root>
+    <level value="debug"/>
+    <appender-ref ref="EMAIL" />
+  </root>  
+</configuration>
