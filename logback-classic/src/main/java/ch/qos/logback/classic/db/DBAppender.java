@@ -10,6 +10,7 @@
 
 package ch.qos.logback.classic.db;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -101,7 +102,39 @@ import ch.qos.logback.core.db.dialect.SQLDialect;
  * @author S&eacute;bastien Pennec
  */
 public class DBAppender extends DBAppenderBase {
+  protected static final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+  protected static final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
+  protected static final String insertSQL;
+  protected static final Method GET_GENERATED_KEYS_METHOD;
 
+  static {
+    StringBuffer sql = new StringBuffer();
+    sql.append("INSERT INTO logging_event (");
+    sql.append("timestmp, ");
+    sql.append("formatted_message, ");
+    sql.append("logger_name, ");
+    sql.append("level_string, ");
+    sql.append("thread_name, ");
+    sql.append("reference_flag, ");
+    sql.append("caller_filename, ");
+    sql.append("caller_class, ");
+    sql.append("caller_method, ");
+    sql.append("caller_line) ");
+    sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?,?)");
+    insertSQL = sql.toString();
+    //
+    // PreparedStatement.getGeneratedKeys added in JDK 1.4
+    //
+    Method getGeneratedKeysMethod;
+    try {
+      getGeneratedKeysMethod = PreparedStatement.class.getMethod(
+          "getGeneratedKeys", (Class[]) null);
+    } catch (Exception ex) {
+      getGeneratedKeysMethod = null;
+    }
+    GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
+  }
+  
   public DBAppender() {
   }
 
@@ -167,5 +200,25 @@ public class DBAppender extends DBAppenderBase {
     }
 
     return mergedMap;
+  }
+
+  @Override
+  protected Method getGeneratedKeysMethod() {
+    return GET_GENERATED_KEYS_METHOD;
+  }
+
+  @Override
+  protected String getInsertExceptionSQL() {
+    return insertExceptionSQL;
+  }
+
+  @Override
+  protected String getInsertPropertiesSQL() {
+    return insertPropertiesSQL;
+  }
+
+  @Override
+  protected String getInsertSQL() {
+    return insertSQL;
   }
 }

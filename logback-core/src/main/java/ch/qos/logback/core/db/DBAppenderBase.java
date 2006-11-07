@@ -32,44 +32,17 @@ import ch.qos.logback.core.db.dialect.SQLDialect;
  * @author S&eacute;bastien Pennec
  */
 public abstract class DBAppenderBase extends AppenderBase {
-  protected static final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-  protected static final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
-  protected static final String insertSQL;
-  protected static final Method GET_GENERATED_KEYS_METHOD;
-
-  static {
-    StringBuffer sql = new StringBuffer();
-    sql.append("INSERT INTO logging_event (");
-    sql.append("timestmp, ");
-    sql.append("formatted_message, ");
-    sql.append("logger_name, ");
-    sql.append("level_string, ");
-    sql.append("thread_name, ");
-    sql.append("reference_flag, ");
-    sql.append("caller_filename, ");
-    sql.append("caller_class, ");
-    sql.append("caller_method, ");
-    sql.append("caller_line) ");
-    sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?,?)");
-    insertSQL = sql.toString();
-    //
-    // PreparedStatement.getGeneratedKeys added in JDK 1.4
-    //
-    Method getGeneratedKeysMethod;
-    try {
-      getGeneratedKeysMethod = PreparedStatement.class.getMethod(
-          "getGeneratedKeys", (Class[]) null);
-    } catch (Exception ex) {
-      getGeneratedKeysMethod = null;
-    }
-    GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
-  }
 
   protected ConnectionSource connectionSource;
   protected boolean cnxSupportsGetGeneratedKeys = false;
   protected boolean cnxSupportsBatchUpdates = false;
   protected SQLDialect sqlDialect;
 
+  protected abstract Method getGeneratedKeysMethod();
+  protected abstract String getInsertSQL();
+  protected abstract String getInsertPropertiesSQL();
+  protected abstract String getInsertExceptionSQL();
+  
   @Override
   public void start() {
 
@@ -80,7 +53,7 @@ public abstract class DBAppenderBase extends AppenderBase {
 
     sqlDialect = DBUtil
         .getDialectFromCode(connectionSource.getSQLDialectCode());
-    if (GET_GENERATED_KEYS_METHOD != null) {
+    if (getGeneratedKeysMethod() != null) {
       cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
     } else {
       cnxSupportsGetGeneratedKeys = false;
@@ -112,14 +85,13 @@ public abstract class DBAppenderBase extends AppenderBase {
 
   @Override
   public void append(Object eventObject) {
-    // LoggingEvent event = (LoggingEvent) eventObject;
     Connection connection = null;
     try {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
 
       PreparedStatement insertStatement = connection
-          .prepareStatement(insertSQL);
+          .prepareStatement(getInsertSQL());
 
       subAppend(eventObject, connection, insertStatement);
 
@@ -147,7 +119,7 @@ public abstract class DBAppenderBase extends AppenderBase {
     boolean gotGeneratedKeys = false;
     if (cnxSupportsGetGeneratedKeys) {
       try {
-        rs = (ResultSet) GET_GENERATED_KEYS_METHOD.invoke(insertStatement,
+        rs = (ResultSet) getGeneratedKeysMethod().invoke(insertStatement,
             (Object[]) null);
         gotGeneratedKeys = true;
       } catch (InvocationTargetException ex) {
@@ -193,7 +165,7 @@ public abstract class DBAppenderBase extends AppenderBase {
     Set propertiesKeys = mergedMap.keySet();
     if (propertiesKeys.size() > 0) {
       PreparedStatement insertPropertiesStatement = connection
-          .prepareStatement(insertPropertiesSQL);
+          .prepareStatement(getInsertPropertiesSQL());
 
       for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
         String key = (String) i.next();
@@ -223,7 +195,7 @@ public abstract class DBAppenderBase extends AppenderBase {
       int eventId) throws SQLException {
 
     PreparedStatement insertExceptionStatement = connection
-        .prepareStatement(insertExceptionSQL);
+        .prepareStatement(getInsertExceptionSQL());
 
     for (short i = 0; i < strRep.length; i++) {
       insertExceptionStatement.setInt(1, eventId);

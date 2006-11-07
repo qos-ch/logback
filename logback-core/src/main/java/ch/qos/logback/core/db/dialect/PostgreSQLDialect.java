@@ -15,8 +15,6 @@ package ch.qos.logback.core.db.dialect;
  * 
  * @author ceki
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PostgreSQLDialect
        implements SQLDialect {
