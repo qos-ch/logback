@@ -1,0 +1,23 @@
+<configuration>
+
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <connectionSource class="ch.qos.logback.classic.db.DriverManagerConnectionSource">
+       <driverClass>"com.mysql.jdbc.Driver</driverClass>
+       <url>jdbc:mysql://host_name:3306/datebase_name</url>
+       <user>logback</user>
+       <password>logback</password>
+     </connectionSource>
+  </appender>
+
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%level %thread %logger - %msg%n</pattern>
+    </layout>
+  </appender>
+  <root>
+    <level value="debug"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="DB"/>
+  </root>
+</configuration>

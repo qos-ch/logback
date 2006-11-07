@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>${driverClass}</driverClass>
+			<url>${url}</url>
+			<user>${user}</user>
+			<password>${password}</password>
+		</connectionSource>
+	</appender>
+
+	<!-- Prevent internal logback DEBUG messages from polluting the output. -->
+	<logger name="ch.qos.logback.core.joran"><level value="INFO" /></logger>
+	<logger name="ch.qos.logback.classic.joran"><level value="INFO" /></logger>
+
+	<root>
+		<level value="debug" />
+		<appender-ref ref="DB" />
+	</root>
+</configuration>
+
+
