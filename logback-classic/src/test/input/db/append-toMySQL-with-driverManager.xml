@@ -2,17 +2,17 @@
 
   <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
      <connectionSource class="ch.qos.logback.classic.db.DriverManagerConnectionSource">
-       <param name="driverClass" value="com.mysql.jdbc.Driver"/>
-       <param name="url" value="jdbc:mysql://host_name:3306/datebase_name"/>
-       <param name="user" value="logback"/>
-       <param name="password" value="logback"/>
+       <driverClass>"com.mysql.jdbc.Driver</driverClass>
+       <url>jdbc:mysql://host_name:3306/datebase_name</url>
+       <user>logback</user>
+       <password>logback</password>
      </connectionSource>
   </appender>
 
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <param name="pattern" value="%p %t %c - %m%n"/>
+      <pattern>%level %thread %logger - %msg%n</pattern>
     </layout>
   </appender>
   <root>
