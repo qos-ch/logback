@@ -269,7 +269,7 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		will be lost as illustrated by the next example. 
 	</p>
 	
-	<em>Example 4.1: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes.html">logback-examples/src/main/java/chapter4/ExitWoes.java</a>)</em>
+	<em>Example 4.1: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
 <div class="source"><pre>package chapter4;
 
 import java.io.FileOutputStream;
@@ -283,7 +283,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
-public class ExitWoes {
+public class ExitWoes1 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -316,9 +316,9 @@ public class ExitWoes {
 		<em>exitWoes1.log</em>
 		because the Java VM does not flush output streams when it exits. 
 		Calling the <code>reset()</code> method of a <code>LoggerContext</code> ensures that all 
-		appenders in the hierarchy are closed and their buffers are flushed. 
-		For most applications this is as simple as including the following statement 
-		before exiting the application.
+		appenders in the hierarchy are closed and their buffers are flushed. The
+		<code>ExitWoes2</code> class uses this statement and outputs a logging
+		request. <b>DOES NOT WORK ??</b>
 	</p>
 
 	<p>
@@ -1609,6 +1609,13 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 }</pre></div>
 
 		<p>
+			Note that this implementation extends <code>TriggeringPolicyBase</code> instead
+			of implementing <code>TriggeringPolicy</code>. This allows the user to concentrate
+			on the core functions of her <code>TriggeringPolicy</code> and let the base class
+			manage the other functionnalities.
+		</p>
+
+		<p>
 			Setting the <span class="option">EvaluatorClass</span> option of 
 			<code>SMTPAppender</code> instructs it to use a custom evaluator. 
 			The next configuration file attaches a <code>SMTPAppender</code> to the root logger. 
@@ -1621,7 +1628,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;EvaluatorClass>chapter4.mail.CounterBasedTP&lt;/EvaluatorClass>
+    <b>&lt;EvaluatorClass>chapter4.mail.CounterBasedTP&lt;/EvaluatorClass></b>
     &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>
@@ -1635,18 +1642,21 @@ public class CounterBasedTP extends TriggeringPolicyBase {
   &lt;/root>  
 &lt;/configuration></pre></div>
 
-
-
-
-
-
-
 		<h3>DBAppender</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
 		<h3>SyslogAppender</h3>
-
-
-
-
 
 		<h2>Logback Access</h2>
 		

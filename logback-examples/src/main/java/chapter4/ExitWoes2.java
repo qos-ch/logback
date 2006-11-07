@@ -20,21 +20,24 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
-public class ExitWoes {
+public class ExitWoes2 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    lc.reset();//this is to cancel default-config.
     WriterAppender writerAppender = new WriterAppender();
     writerAppender.setContext(lc);
     writerAppender.setLayout(new EchoLayout());
 
-    OutputStream os = new FileOutputStream("exitWoes1.log");
+    OutputStream os = new FileOutputStream("exitWoes2.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
     writerAppender.setImmediateFlush(false);
     writerAppender.start();
 
-    Logger logger = lc.getLogger(ExitWoes.class);
+    Logger logger = lc.getLogger(ExitWoes2.class);
 
     logger.debug("Hello world.");
+    
+    lc.reset();
   }
 }
