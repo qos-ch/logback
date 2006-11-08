@@ -1678,7 +1678,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		</p>
 
 		<p>
-			The table below summarizes the database tapes and their support of the 
+			The table below summarizes the database types and their support of the 
 			<code>getGeneratedKeys()</code> method.
 		</p>
 
@@ -1740,80 +1740,11 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		<p>
 			Configuring logback to use <code>DBAppender</code> can be done
 			in several different ways, depending on the tools one has to
-			connect to the database, and the database itself.
+			connect to the database, and the database itself. All manners of 
+			configuring <code>DBAppender</code> are about setting its
+			<code>ConnectionSource</code> object, which we will cover in
+			a short moment.
 		</p>
-		
-		<p>
-			The first example that we will review is a configuration using
-			<code>DriverManagerConnectionSource</code> and a MySQL database.
-			The following configuration file is what one would need.
-		</p>
-		
-<em>Example 4.6: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
-<div class="source"><pre>&lt;configuration>
-
-  <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-    &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-      &lt;driverClass>com.mysql.jdbc.Driver&lt;/driverClass>
-      &lt;url>jdbc:mysql://host_name:3306/datebase_name&lt;/url>
-      &lt;user>username&lt;/user>
-      &lt;password>password&lt;/password>
-    &lt;/connectionSource>
-  &lt;/appender></b>
-	
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
-	
-  &lt;root>
-    &lt;level value="debug" />
-    &lt;appender-ref ref="DB" />
-  &lt;/root>
-&lt;/configuration></pre></div>
-
-		<p>
-			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
-			class is used. The <span class="option">url</span> must begin with <em>jdbc:myslq://</em>.
-		</p>
-		
-		<p>Connecting to a database using a <code>DataSource</code> is rather similar:</p>
-	
-<em>Example 4.7: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
-<div class="source"><pre>&lt;configuration>
-
-  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-     <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
-       
-       &lt;dataSource class="${dataSourceClass}">
-       	 </b>&lt;!-- Joran cannot substitute variables
-       	 that are not attribute values. Therefore, we cannot
-       	 declare the next parameter like the others. 
-       	 -->
-         <b>&lt;param name="${url-key:-url}" value="${url_value}"/>
-         &lt;serverName>${serverName}&lt;/serverName>
-         &lt;databaseName>${databaseName}&lt;/databaseName>
-       &lt;/dataSource></b>
-       
-       &lt;user>${user}&lt;/user>
-       &lt;password>${password}&lt;/password>
-     &lt;/connectionSource>
-  &lt;/appender>
-  
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
-    
-  &lt;root>
-    &lt;level value ="debug"/>
-    &lt;appender-ref ref="DB" />
-  &lt;/root>  
-&lt;/configuration></pre></div>
-
-		<p>
-			Not that in this configuration sample, we make heavy use of substitution variables.
-			They are sometimes handy when connection details have to be centralised in a
-			single configuration file and shared by logback and other frameworks.
-		</p>	
 		
 		<p>
 			Once logback is configured properly, the logging events are sent to
@@ -1970,8 +1901,189 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		
 		<img src="images/chapter4/dbAppenderLEProperty.gif" alt="Logging Event Property table" />
 
+		
+		<h4>ConnectionSource</h4>
+		
+		<p>
+			The <id>ConnectionSource</id> interface provides a pluggable means of 
+			transparently obtaining JDBC Connections for logback classes that 
+			require the use of a <code>java.sql.Connection</code>. There are currently
+			three implementations of <code>ConnectionSource</code>, namely
+			<code>DataSourceConnectionSource</code>, <code>DriverManagerConnectionSource</code>
+			and <code>JNDIConnectionSource</code>.
+		</p>
+		
+		<p>
+			The first example that we will review is a configuration using
+			<code>DriverManagerConnectionSource</code> and a MySQL database.
+			The following configuration file is what one would need.
+		</p>
+		
+<em>Example 4.6: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      &lt;driverClass>com.mysql.jdbc.Driver&lt;/driverClass>
+      &lt;url>jdbc:mysql://host_name:3306/datebase_name&lt;/url>
+      &lt;user>username&lt;/user>
+      &lt;password>password&lt;/password>
+    &lt;/connectionSource>
+  &lt;/appender></b>
+	
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
+	
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="DB" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
+			class is used. The <span class="option">url</span> must begin with <em>jdbc:myslq://</em>.
+		</p>
+		
+		<p>
+			The 
+			<a href="../xref/ch/qos/logback/core/db/DriverManagerConnectionSource.html">
+			<code>DriverManagerConnectionSource</code></a> is an implementation of
+			<code>ConnectionSource</code> that obtains the connection in the
+			traditional JDBC manner based on the connection URL.
+		</p>
+		<p>
+			Note that this class will establish a new <code>Connection</code> for
+			each call to <code>getConnection()</code>. It is recommended
+			that you either use a JDBC driver that natively supports
+			connection pooling or that you create your own
+			implementation of <code>ConnectionSource</code> that taps into
+			whatever pooling mechanism you are already using. (If you
+			have access to a JNDI implementation that supports
+			<code>javax.sql.DataSource</code>, e.g. within a J2EE application
+			server, see <code>JNDIConnectionSource</code>).
+		</p>
+
+		<p>
+			If you do not have another connection pooling mechanism built
+			into your application, you can use the
+			<a href="http://jakarta.apache.org/commons/dbcp/index.html">
+		  commons-dbcp </a> package from Apache:
+		</p>
+
+<div class="source"><pre>
+  &lt;connectionSource
+    class=&quot;ch.qos.logback.core.db.DriverManagerConnectionSource&quot;&gt;
+    &lt;param name=&quot;driver&quot; value=&quot;org.apache.commons.dbcp.PoolingDriver&quot;/&gt; 
+    &lt;param name=&quot;url&quot; value=&quot;jdbc:apache:commons:dbcp:/myPoolingDriver&quot;/&gt; 
+  &lt;/connectionSource&gt;
+</pre></div>
+		
+		<p>
+			Then the configuration information for the commons-dbcp
+			package goes into the file <em>myPoolingDriver.jocl</em> and is
+			placed in the classpath. See the
+			<a href="http://jakarta.apache.org/commons/dbcp/index.html"> commons-dbcp </a>
+			documentation for details.
+		</p>
+
+		<p>
+			Connecting to a database using a <code>DataSource</code> is rather similar.
+			The configuration now uses 
+			<a href="../xref/ch/qos/logback/core/db/DataSourceConnectionSource.html">
+			<code>DataSourceConnectionSource</code></a>, 
+			which is an implementation of <code>ConnectionSource</code> that obtains the 
+			<code>Connection</code> in the recommended JDBC manner based on a 
+			<code>javax.sql.DataSource</code>.
+		</p>
+	
+<em>Example 4.7: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+       
+       &lt;dataSource class="${dataSourceClass}">
+       	 </b>&lt;!-- Joran cannot substitute variables
+       	 that are not attribute values. Therefore, we cannot
+       	 declare the next parameter like the others. 
+       	 -->
+         <b>&lt;param name="${url-key:-url}" value="${url_value}"/>
+         &lt;serverName>${serverName}&lt;/serverName>
+         &lt;databaseName>${databaseName}&lt;/databaseName>
+       &lt;/dataSource></b>
+       
+       &lt;user>${user}&lt;/user>
+       &lt;password>${password}&lt;/password>
+     &lt;/connectionSource>
+  &lt;/appender>
+  
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
+    
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="DB" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
+
+		<p>
+			Not that in this configuration sample, we make heavy use of substitution variables.
+			They are sometimes handy when connection details have to be centralised in a
+			single configuration file and shared by logback and other frameworks.
+		</p>	
+		
+		<p>
+			The third implementation of <code>ConnectionSource</code> that is shipped with
+			logback is the <code>JNDIConnectionSource</code>.
+		</p>
+
+		<p>
+			The
+			<a href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">
+			<code>JNDIConnectionSource</code></a>
+			is an implementation of <code>ConnectionSource</code> that
+			obtains a <code>javax.sql.DataSource</code> from a JNDI provider
+			and uses it to obtain a <code>java.sql.Connection</code>. It is
+			primarily designed to be used inside of J2EE application
+			servers or application server clients, assuming the
+			application server supports remote access of <code>javax.sql.DataSource</code>. 
+			In this way one can take advantage of connection pooling and whatever other goodies the
+			application server provides.
+		</p>
+		
+<div class="source"><pre>
+&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
+  &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
+  &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
+  &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
+&lt;/connectionSource&gt;
+ </pre></div>
+
+		<p>
+			Note that this class will obtain an
+			<code>javax.naming.InitialContext</code>
+			using the no-argument constructor. This will usually work
+			when executing within a J2EE environment. When outside the
+			J2EE environment, make sure that you provide a
+			<em>jndi.properties</em>
+			file as described by your JNDI provider's documentation.
+		</p>
+
+
+		<p>
+ 			<b>MORE INFO TO ADD HERE JNDI + BindAction + DataSourceCS? Or directly
+ 			with JNDICS??</b>
+ 		</p>
+
 
 		<h3>SyslogAppender</h3>
+		
+		<p>
+			
+		</p>
 
 		<h2>Logback Access</h2>
 		
