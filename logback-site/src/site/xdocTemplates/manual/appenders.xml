@@ -2082,9 +2082,109 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		<h3>SyslogAppender</h3>
 		
 		<p>
-			
+			The syslog protocol is a very simple protocol: a syslog sender sends a small 
+			message to a syslog receiver. 
+			The receiver is commonly called <em>syslog daemon</em> or <em>syslog server</em>.
+			Logback can send messages to a remote syslog daemon. This is achieved by using 
+			<a href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
+		</p>
+		
+		<p>
+			Here are its options:
 		</p>
 
+		<table>
+			<tr>
+				<th>Option Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<b>
+						<span class="option">SyslogHost</span>
+					</b>
+				</td>
+				<td>
+					<code>String</code>
+				</td>
+				<td>
+					The host name of the syslog server.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>
+						<span class="option">Port</span>
+					</b>
+				</td>
+				<td>
+					<code>String</code>
+				</td>
+				<td>
+					The port number on the syslog server to connect to. Nornally, one would not want 
+					to change the default value, that is <em>514</em>.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>
+						<span class="option">Facility</span>
+					</b>
+				</td>
+				<td>
+					<code>String</code>
+				</td>
+				<td>
+					<p>
+						The <span class="option">Facility</span> is meant to identify 
+						the source of a message.
+					</p>
+					<p>
+						The <span class="option">Facility</span> option must be set one 
+						of the strings <em>KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, 
+						CRON, AUTHPRIV, FTP, NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, 
+						LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>
+						<span class="option">SuffixPattern</span>
+					</b>
+				</td>
+				<td>
+					<code>String</code>
+				</td>
+				<td>
+					<p>
+						The <span class="option">SuffixPattern</span> option specifies the format of the 
+						non-standardized part the message sent to the syslog server. By default, its value
+						is <em>[%thread] %logger %msg %exception</em>. Any value that a <code>PatternLayout</code>
+						could use is a correct <span class="option">SuffixPattern</span>.
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		<p>
+			The syslog severity of a logging event is converted from the level of the logging event.
+			The <em>DEBUG</em> level is converted to <em>7</em>, <em>INFO</em> is converted to
+			<em>6</em>, <em>WARN</em> is converted to <em>4</em> and <em>ERROR</em> is converted
+			to <em>3</em>.
+		</p>
+		
+		<p>
+			Since the format of a syslog request follows rather strict rules, 
+		</p>
+		
+		
+		
+		
+		
+		
+		
 		<h2>Logback Access</h2>
 		
 		<h3>SMTPAppender</h3>

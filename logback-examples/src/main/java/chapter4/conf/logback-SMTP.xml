@@ -3,15 +3,14 @@
   <appender name="SMTP"
     class="ch.qos.logback.classic.net.SMTPAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <param name="pattern"
-        value="%-4relative [%thread] %-5level %class - %msg%n" />
+      <Pattern>%-4relative [%thread] %-5level %class - %msg%n</Pattern>
     </layout>
-    <param name="From" value="test.nospam@qos.ch" />
-    <param name="SMTPHost" value="mail.qos.ch" />
+    <From>sender_email@host.ch</From>
+    <SMTPHost>mail.host.ch</SMTPHost>
     
-    <param name="Subject" value="Last Event: %-10logger %nopex" />
+    <Subject>Last Event: %-10logger %nopex</Subject>
     
-    <param name="To" value="sebastien@qos.ch" />
+    <To>recipient_email@host.ch</To>
   </appender>
 
   <root>

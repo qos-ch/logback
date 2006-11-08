@@ -3,8 +3,7 @@
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <param name="Pattern"
-        value="%-4relative [%thread] %-5level %X{testKey} - %msg%n" />
+      <Pattern>%-4relative [%thread] %-5level %X{testKey} - %msg%n</Pattern>
     </layout>
   </appender>
 

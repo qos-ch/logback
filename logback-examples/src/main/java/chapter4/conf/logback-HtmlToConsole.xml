@@ -4,10 +4,9 @@
     class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.html.HTMLLayout">
       <cssBuilder class="ch.qos.logback.core.helpers.CssBuilder">
-      	<param name="url" value="path_to_StyleFile.css" />
+      	<url>path_to_StyleFile.css</url>
       </cssBuilder>	
-      <param name="Pattern"
-        value="%-4relative [%thread] %-5level - %msg%n" />
+      <Pattern>%-4relative [%thread] %-5level - %msg%n</Pattern>
     </layout>
   </appender>
 

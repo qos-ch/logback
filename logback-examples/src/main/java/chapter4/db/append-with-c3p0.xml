@@ -20,9 +20,7 @@
          <param name="inactivity-timeout" value="200"/>        
          -->                                         
        </dataSource>
-       
-       <user>${user}</user>
-       <password>${password}</password>
+
      </connectionSource>
   </appender>
   

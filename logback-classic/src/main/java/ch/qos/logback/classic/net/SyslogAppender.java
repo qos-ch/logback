@@ -24,7 +24,7 @@ public class SyslogAppender extends SyslogAppenderBase {
 
   String prefixPattern;
   
-  static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %m%exception";
+  static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg %exception";
   
   public Layout buildLayout(String facilityStr) {
   

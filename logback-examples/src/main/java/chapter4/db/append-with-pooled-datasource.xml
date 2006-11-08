@@ -19,9 +19,7 @@
          <initialConnections>10</initialConnections>
          <maxConnections>10</maxConnections>
        </dataSource>
-       
-       <user>${user}</user>
-       <password>${password}</password>
+
      </connectionSource>
   </appender>
 
