@@ -1380,9 +1380,10 @@ public interface TriggeringPolicy extends LifeCycle {
 		<h3>SMTPAppender</h3>
 		
 		<p>
-			The <code>SMTPAppender</code> accumulates logging events in a fixed-size 
-			buffer and sends them in an email when a user specified triggering event occurs.  
-			By default, the triggering event is taken as the reception of an event 
+			The <a href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a> 
+			accumulates logging events in a fixed-size buffer and sends them in an email when a 
+			user specified triggering event occurs.  
+		  By default, the triggering event is taken as the reception of an event 
 			of level <em>ERROR</em> or higher.
 		</p>
 		
@@ -1643,17 +1644,331 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 &lt;/configuration></pre></div>
 
 		<h3>DBAppender</h3>
+		
+		<p>
+			The <a href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a> 
+			inserts loggin events into three database tables in a format
+			independent of the Java programming language. 
+		</p>
+		<p>
+			These three tables are <em>logging_event</em>, <em>logging_event_property</em> and
+			<em>logging_event_exception</em>. They all must exist before <code>DBAppender</code>
+			can be used. Logback ships with SQL scripts that will create the tables. 
+			They can be found in the found in the 
+			<em>logback-classic/src/main/java/ch/qos/logback/classic/db/dialect</em> directory. There
+			is a specific script for each of the most popular database systems. 
+			If the script for your particular type of database system is missing, it should be
+			quite easy to write one, taking example on the already existing scripts. If
+			you send them to us, we will gladly include missing scripts in future
+		</p>
 
+		<p>
+			If the JDBC driver you are using supports the
+			<code>getGeneratedKeys</code> method introduced in
+			JDBC 3.0 specification, then no more steps are required, excluding usual
+			configuration. 
+		</p>
+		<p>
+			Otherwise, there must be an <code>SQLDialect</code> appropriate for your
+			database system. Currently, we have dialects for PostgreSQL,
+			MySQL, Oracle and MsSQL. As mentioned previously, an
+			<code>SQLDialect</code> is required only if the JDBC driver for your
+			database system does not support the <code>getGeneratedKeys</code>
+			method.
+		</p>
 
+		<p>
+			The table below summarizes the database tapes and their support of the 
+			<code>getGeneratedKeys()</code> method.
+		</p>
 
+		<table border="1" cellpadding="4">
+			<tr>
+				<th>RDBMS</th>
+				<th>
+					supports
+					<br />
+					<code>getGeneratedKeys()</code>
+					method
+				</th>
+				<th>
+					specific
+					<br />
+					SQLDialect support
+				</th>
+			</tr>
+			<tr>
+				<td>PostgreSQL</td>
+				<td>NO</td>
+				<td>present and used</td>
+			</tr>
+			<tr>
+				<td>MySQL</td>
+				<td>YES</td>
+				<td>present, but not actually needed or used</td>
+			</tr>
+			<tr>
+				<td>Oracle</td>
+				<td>YES</td>
+				<td>present, but not actually needed or used</td>
+			</tr>
+			<tr>
+				<td>DB2</td>
+				<td>YES</td>
+				<td>not present, and not needed or used</td>
+			</tr>
+			<tr>
+				<td>MsSQL</td>
+				<td>YES</td>
+				<td>not present, and not needed or used</td>
+			</tr>
+			<tr>
+				<td>HSQL</td>
+				<td>NO</td>
+				<td>present and used</td>
+			</tr>
+		</table>
+		
+		<p>
+			Experiments show that writing a single event
+			into the database takes approximately 50 milliseconds, on a
+			"standard" PC. If pooled connections are used, this figure
+			drops to under 10 milliseconds. Note that most JDBC drivers
+			already ship with connection pooling support.
+		</p>
+		
+		<p>
+			Configuring logback to use <code>DBAppender</code> can be done
+			in several different ways, depending on the tools one has to
+			connect to the database, and the database itself.
+		</p>
+		
+		<p>
+			The first example that we will review is a configuration using
+			<code>DriverManagerConnectionSource</code> and a MySQL database.
+			The following configuration file is what one would need.
+		</p>
+		
+<em>Example 4.6: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
+<div class="source"><pre>&lt;configuration>
 
+  <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      &lt;driverClass>com.mysql.jdbc.Driver&lt;/driverClass>
+      &lt;url>jdbc:mysql://host_name:3306/datebase_name&lt;/url>
+      &lt;user>username&lt;/user>
+      &lt;password>password&lt;/password>
+    &lt;/connectionSource>
+  &lt;/appender></b>
+	
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
+	
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="DB" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
+		<p>
+			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
+			class is used. The <span class="option">url</span> must begin with <em>jdbc:myslq://</em>.
+		</p>
+		
+		<p>Connecting to a database using a <code>DataSource</code> is rather similar:</p>
+	
+<em>Example 4.7: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+       
+       &lt;dataSource class="${dataSourceClass}">
+       	 </b>&lt;!-- Joran cannot substitute variables
+       	 that are not attribute values. Therefore, we cannot
+       	 declare the next parameter like the others. 
+       	 -->
+         <b>&lt;param name="${url-key:-url}" value="${url_value}"/>
+         &lt;serverName>${serverName}&lt;/serverName>
+         &lt;databaseName>${databaseName}&lt;/databaseName>
+       &lt;/dataSource></b>
+       
+       &lt;user>${user}&lt;/user>
+       &lt;password>${password}&lt;/password>
+     &lt;/connectionSource>
+  &lt;/appender>
+  
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
+    
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="DB" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
 
+		<p>
+			Not that in this configuration sample, we make heavy use of substitution variables.
+			They are sometimes handy when connection details have to be centralised in a
+			single configuration file and shared by logback and other frameworks.
+		</p>	
+		
+		<p>
+			Once logback is configured properly, the logging events are sent to
+			the specified database. As stated previously, there are three tables
+			used by logback to store logging event data.
+		</p>
+		
+		<p>
+			The <em>logging_event</em> table contains the following fields:
+		</p>
+		<table>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><b>timestmp</b></td>
+				<td><code>big int</code></td>
+				<td>The timestamp that was valid at the logging event's creation.</td>
+			</tr>
+			<tr>
+				<td><b>formatted_message</b></td>
+				<td><code>text</code></td>
+				<td>The message that has been added to the logging event, after formatting with
+				<code>org.slf4j.impl.MessageFormatter</code>, in case object were passed
+				along with the message.</td>
+			</tr>
+			<tr>
+				<td><b>logger_name</b></td>
+				<td><code>varchar</code></td>
+				<td>The name of the logger used to issue the logging request.</td>
+			</tr>
+			<tr>
+				<td><b>level_string</b></td>
+				<td><code>varchar</code></td>
+				<td>The level of the logging event.</td>
+			</tr>
+			<tr>
+				<td><b>reference_flag</b></td>
+				<td><code>smallint</code></td>
+				<td>
+					<p>
+						This field is used by logback to identify logging events that
+						have an exception or <code>MDC</code>property values associated. 
+					</p>
+					<p>
+						It's value is computed by
+						<code>ch.qos.logback.classic.db.DBHelper</code>. A logging event that 
+						contains <code>MDC</code> or <code>Context</code> 
+						properties has a flag number of <em>1</em>. One
+						that contains an exception has a flag number of <em>2</em>. A logging
+						event that contains both elements has a flag number of <em>3</em>.
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><b>caller_filename</b></td>
+				<td><code>varchar</code></td>
+				<td>The name of the file where the logging request was issued.</td>
+			</tr>
+			<tr>
+				<td><b>caller_class</b></td>
+				<td><code>varchar</code></td>
+				<td>The class where the logging request was issued.</td>
+			</tr>
+			<tr>
+				<td><b>caller_method</b></td>
+				<td><code>varchar</code></td>
+				<td>The name of the method where the logging request was issued.</td>
+			</tr>
+			<tr>
+				<td><b>caller_line</b></td>
+				<td><code>char</code></td>
+				<td>The line number where the logging request was issued.</td>
+			</tr>
+			<tr>
+				<td><b>event_id</b></td>
+				<td><code>int</code></td>
+				<td>The database id of the logging event.</td>
+			</tr>
+		</table>
+		
+		<p>
+			The <em>logging_event_property</em> is used to store the keys and values
+			contained in the <code>MDC</code> or the <code>Context</code>. 
+			It contains these fields:
+		</p>
 
+		<table>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><b>event_id</b></td>
+				<td><code>int</code></td>
+				<td>The database id of the logging event.</td>
+			</tr>
+			<tr>
+				<td><b>mapped_key</b></td>
+				<td><code>varchar</code></td>
+				<td>The key of the <code>MDC</code> property</td>
+			</tr>		
+			<tr>
+				<td><b>mapped_value</b></td>
+				<td><code>text</code></td>
+				<td>The value of the <code>MDC</code> property</td>
+			</tr>				
+		</table>
+		
+		<p>
+			The <em>logging_event_exception</em> table contains the following fields:
+		</p>
+		
+		<table>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><b>event_id</b></td>
+				<td><code>int</code></td>
+				<td>The database id of the logging event.</td>
+			</tr>
+			<tr>
+				<td><b>i</b></td>
+				<td><code>smallint</code></td>
+				<td>The index of the line in the full stack trace.</td>
+			</tr>		
+			<tr>
+				<td><b>trace_line</b></td>
+				<td><code>varchar</code></td>
+				<td>The corresponding line</td>
+			</tr>				
+		</table>
+		
+		<p>
+			To give a more visual example of the work done by <code>DBAppender</code>, here
+			is a screenshot of a MySQL database with content provided by <code>DBAppender</code>.
+		</p>
+		
+		<p>The <em>logging_event</em> table:</p>
 
+		<img src="images/chapter4/dbAppenderLE.gif" alt="Logging Event table" />
 
+		<p>The <em>logging_event_exception</em> table:</p>
+		
+		<img src="images/chapter4/dbAppenderLEException.gif" alt="Logging Event Exception table" />
 
+		<p>The <em>logging_event_property</em> table:</p>
+		
+		<img src="images/chapter4/dbAppenderLEProperty.gif" alt="Logging Event Property table" />
 
 
 		<h3>SyslogAppender</h3>

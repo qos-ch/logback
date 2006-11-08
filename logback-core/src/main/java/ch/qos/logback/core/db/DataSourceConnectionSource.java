@@ -10,21 +10,19 @@
 
 package ch.qos.logback.core.db;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-
 /**
- *  The DataSourceConnectionSource is an implementation of {@link ConnectionSource}
- *  that obtains the Connection in the recommended JDBC manner based on
- *  a {@link javax.sql.DataSource DataSource}.
- *  <p>
- *
- *  @author Ray DeCampo
- *  @author Ceki G&uuml;lc&uuml;
+ * The DataSourceConnectionSource is an implementation of
+ * {@link ConnectionSource} that obtains the Connection in the recommended JDBC
+ * manner based on a {@link javax.sql.DataSource DataSource}.
+ * <p>
+ * 
+ * @author Ray DeCampo
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class DataSourceConnectionSource extends ConnectionSourceBase {
 
@@ -32,20 +30,21 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
 
   @Override
   public void start() {
-    //LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
     if (dataSource == null) {
       addWarn("WARNING: No data source specified");
     } else {
       Connection connection = null;
       try {
         connection = getConnection();
-      } catch(SQLException se) {
-        addWarn("Could not get a connection to discover the dialect to use.", se);
+      } catch (SQLException se) {
+        addWarn("Could not get a connection to discover the dialect to use.",
+            se);
       }
-      if(connection != null) {
+      if (connection != null) {
         discoverConnnectionProperties();
-      } 
-      if(!supportsGetGeneratedKeys() && getSQLDialectCode() == ConnectionSource.UNKNOWN_DIALECT) {
+      }
+      if (!supportsGetGeneratedKeys()
+          && getSQLDialectCode() == ConnectionSource.UNKNOWN_DIALECT) {
         addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
     }

@@ -3,7 +3,8 @@
 <configuration>
 
 	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+		<connectionSource
+			class="ch.qos.logback.core.db.DriverManagerConnectionSource">
 			<driverClass>${driverClass}</driverClass>
 			<url>${url}</url>
 			<user>${user}</user>

@@ -1,23 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
 <configuration>
 
-  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-     <connectionSource class="ch.qos.logback.classic.db.DriverManagerConnectionSource">
-       <driverClass>"com.mysql.jdbc.Driver</driverClass>
-       <url>jdbc:mysql://host_name:3306/datebase_name</url>
-       <user>logback</user>
-       <password>logback</password>
-     </connectionSource>
-  </appender>
-
-
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <pattern>%level %thread %logger - %msg%n</pattern>
-    </layout>
-  </appender>
-  <root>
-    <level value="debug"/>
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="DB"/>
-  </root>
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>com.mysql.jdbc.Driver</driverClass>
+			<url>jdbc:mysql://host_name:3306/datebase_name</url>
+			<user>username</user>
+			<password>password</password>
+		</connectionSource>
+	</appender>
+	
+	<!-- Prevent internal logback DEBUG messages from polluting the output. -->
+	<logger name="ch.qos.logback.core.joran"><level value="INFO" /></logger>
+	<logger name="ch.qos.logback.classic.joran"><level value="INFO" /></logger>
+	
+	<root>
+		<level value="debug" />
+		<appender-ref ref="DB" />
+	</root>
 </configuration>

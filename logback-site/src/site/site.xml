@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="Logback Main Site">
+<project name="Logback Project">
 
   <skin>
     <groupId>ch.qos.logback</groupId>
@@ -10,7 +10,7 @@
   <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>
 
   <bannerLeft>
-    <name>${project.name}</name>
+    <name>Logback Project</name>
     <src>/images/logos/lblogo.jpg</src>
     <href>http://logback.qos.ch</href>
   </bannerLeft>
@@ -24,7 +24,7 @@
     </links>
     -->
 
-    <menu name="${project.name}">
+    <menu name="Logback Project">
       <item name="Introduction" href="index.html"/>
       <item name="News" href="news.html" />
       <item name="Download" href="download.html" />
