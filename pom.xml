@@ -107,7 +107,6 @@
 	</dependencyManagement>
 
 	<build>
-
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -218,21 +217,21 @@
     </plugins>
 
 	</reporting>
-	
+
 	<scm>
-		<connection>http://svn.qos.ch/repos/logback/</connection>
-		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/</developerConnection>
+		<connection>scm:svn:http://svn.qos.ch/repos/logback/trunk</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk</developerConnection>
 		<url>http://svn.qos.ch/viewvc/logback/</url>
 	</scm>
 
- <distributionManagement>
-   <site>
-		 <id>pixie</id>
-		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
-	 </site>
-	 <repository>
-		 <id>pixie</id>
-		 <url>scp://pixie/var/www/logback.qos.ch/htdocs/dist/</url>
-	 </repository>
- </distributionManagement>
+  <distributionManagement>
+    <site>
+      <id>pixie</id>
+      <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
+    </site>
+    <repository>
+      <id>pixie</id>
+      <url>scp://pixie/var/mvnrepo/</url>
+    </repository>
+  </distributionManagement>
 </project>
