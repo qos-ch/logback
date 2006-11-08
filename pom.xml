@@ -224,6 +224,18 @@
 		<url>http://svn.qos.ch/viewvc/logback/</url>
 	</scm>
 
+  <ciManagement>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+          <address>logback-dev@qos.ch</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+
   <distributionManagement>
     <site>
       <id>pixie</id>
