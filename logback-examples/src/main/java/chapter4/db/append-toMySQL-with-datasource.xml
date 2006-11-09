@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	  
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource	class="ch.qos.logback.core.db.DataSourceConnectionSource">
+			<dataSource class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+				<serverName>${serverName}</serverName>
+				<port>${port$</port>
+				<databaseName>${dbName}</databaseName>
+				<user>${user}</user>
+				<password>${pass}</password>
+			</dataSource>
+		</connectionSource>
+	</appender>
+
+  <!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  <logger name="ch.qos.logback.core.joran"><level value="INFO" /></logger>
+  <logger name="ch.qos.logback.classic.joran"><level value="INFO" /></logger>
+    
+    
+	<root>
+		<level value="debug" />
+		<appender-ref ref="DB" />
+	</root>
+
+</configuration>

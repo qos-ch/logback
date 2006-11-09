@@ -2096,7 +2096,100 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			<em>jndi.properties</em>
 			file as described by your JNDI provider's documentation.
 		</p>
+		
+		<h4>Connection pooling</h4>
+		
+		<p>
+			Logging events can be created at a rather fast pace. To keep up
+			with the flow of events that must be inserted into a database, 
+			it is recommanded to use connection pooling with
+			<code>DBAppender</code>.
+		</p>
+		
+		<p>
+			Experiment shows that using connection pooling with <code>DBAppender</code>
+			gives a big boost to the process' performance. With the following
+			configuration file, logging events are sent to a MySQL database,
+			without any pooling.
+		</p>
+<em>Example 4.8: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+      &lt;dataSource class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+        &lt;serverName>${serverName}&lt;/serverName>
+        &lt;port>${port$&lt;/port>
+        &lt;databaseName>${dbName}&lt;/databaseName>
+        &lt;user>${user}&lt;/user>
+        &lt;password>${pass}&lt;/password>
+      &lt;/dataSource>
+    &lt;/connectionSource>
+  &lt;/appender>
+
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">
+    &lt;level value="INFO" />
+  &lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">
+    &lt;level value="INFO" />
+  &lt;/logger>
+    
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="DB" />
+  &lt;/root>
+&lt;/configuration</pre></div>
+
+		<p>
+			With this configuration file, sending 500 logging events to
+			a MySQL database takes a whopping 22 seconds. This figure is absolutely
+			unacceptable when dealing with large applications.
+		</p>
+
+		<p>
+			A dedicated external library is necessary to use connection pooling
+			with <code>DBAppender</code>. The next example uses 
+			<a href="http://sourceforge.net/projects/c3p0">c3p0</a>. To be able
+			to use c3p0, one must download it and place <em>c3p0-VERSION.jar</em>
+			in the classpath.
+		</p>
+
+<em>Example 4.8: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    &lt;connectionSource
+      class="ch.qos.logback.core.db.DataSourceConnectionSource">
+      <b>&lt;dataSource
+        class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        &lt;driverClass>com.mysql.jdbc.Driver&lt;/driverClass>
+        &lt;jdbcUrl>jdbc:mysql://${serverName}:${port}/${dbName}&lt;/jdbcUrl>
+        &lt;user>${user}&lt;/user>
+        &lt;password>${password}&lt;/password>
+      &lt;/dataSource></b>
+    &lt;/connectionSource>
+  &lt;/appender>
+
+  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
+  &lt;logger name="ch.qos.logback.core.joran">
+    &lt;level value="INFO" />
+  &lt;/logger>
+  &lt;logger name="ch.qos.logback.classic.joran">
+    &lt;level value="INFO" />
+  &lt;/logger>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="DB" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			With this new configuration, sending 500 logging requests to
+			the same MySQL database as previously used takes no more than 5 seconds.
+			The gain is a <em>4.4</em> factor. 
+		</p>
 
 		<h3>SyslogAppender</h3>
 		
