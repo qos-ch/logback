@@ -30,7 +30,7 @@ public class SyslogAppenderTest extends TestCase {
   }
 
   public void testBasic() throws InterruptedException {
-      int port = MockSyslogServer.PORT+1;
+    int port = MockSyslogServer.PORT + 1;
 
     MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
@@ -44,35 +44,37 @@ public class SyslogAppenderTest extends TestCase {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
+    sa.setSuffixPattern("[%thread] %logger %msg %exception");
     sa.start();
     assertTrue(sa.isStarted());
-    
+
     String loggerName = this.getClass().getName();
     Logger logger = lc.getLogger(loggerName);
     logger.addAppender(sa);
     String logMsg = "hello";
     logger.debug(logMsg);
     StatusPrinter.print(lc.getStatusManager());
-    
+
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
     assertTrue(mockServer.finished);
     assertEquals(1, mockServer.msgList.size());
     String msg = mockServer.msgList.get(0);
-   
-    String expected = "<"+(SyslogConstants.LOG_MAIL+SyslogConstants.DEBUG_SEVERITY)+">";
+
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
     String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
     String threadName = Thread.currentThread().getName();
-   
-    assertTrue(msg.matches(first +"\\["+threadName+"\\] "+ loggerName +" " +logMsg));
-   
- }
-  
-  public void testExceptoin() throws InterruptedException {
-      int port = MockSyslogServer.PORT+2;
+    assertTrue(msg.matches(first + "\\[" + threadName + "\\] " + loggerName
+        + " " + logMsg + " "));
+
+  }
+
+  public void testException() throws InterruptedException {
+    int port = MockSyslogServer.PORT + 2;
     MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
     // give MockSyslogServer head start
@@ -85,31 +87,36 @@ public class SyslogAppenderTest extends TestCase {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
+    sa.setSuffixPattern("[%thread] %logger %msg %exception");
     sa.start();
     assertTrue(sa.isStarted());
-    
+
     String loggerName = this.getClass().getName();
     Logger logger = lc.getLogger(loggerName);
     logger.addAppender(sa);
     String logMsg = "hello";
-    logger.debug(logMsg, new Exception("just testing"));
+    String exMsg = "just testing";
+    Exception ex = new Exception(exMsg);
+    logger.debug(logMsg, ex);
     StatusPrinter.print(lc.getStatusManager());
-    
+
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
     assertTrue(mockServer.finished);
     assertEquals(1, mockServer.msgList.size());
     String msg = mockServer.msgList.get(0);
-   
-    String expected = "<"+(SyslogConstants.LOG_MAIL+SyslogConstants.DEBUG_SEVERITY)+">";
+
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    //String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
-    //String threadName = Thread.currentThread().getName();
-    System.out.println(msg);
-    //assertTrue(msg.matches(first +"\\["+threadName+"\\] "+ loggerName +" " +logMsg));
-   
-    //fail("check exceptions");
+//    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
+//    String threadName = Thread.currentThread().getName();
+//    String expectedResult = first + "\\[" + threadName + "\\] " + loggerName
+//        + " " + logMsg + " " + ex.getClass().getCanonicalName() + ": " + exMsg + "\n";
+//    assertTrue(msg.matches(expectedResult));
+
+    // fail("check exceptions");
   }
 }

@@ -2035,6 +2035,33 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			single configuration file and shared by logback and other frameworks.
 		</p>	
 		
+				
+		<p>
+			The connection created by <code>DataSourceConnectionSource</code> can be placed in a JNDI
+			context by using <code>BindDataSourceToJNDIAction</code>. In that case, one has to specify
+			the use of this class by adding a new rule to Joran, logback's configuration framework. Here
+			is an excerpt of such a configuration file.
+		</p>
+		
+<div class="source"><pre>&lt;configuration>
+  ..
+  <b>&lt;newRule pattern="configuration/bindDataSourceToJNDI" 
+           actionClass="ch.qos.logback.core.db.BindDataSourceToJNDIAction"/>
+  	    
+  &lt;bindDataSourceToJNDI /></b>
+  ..
+&lt;/configuration></pre></div>
+
+		<p>
+			The <em>newRule</em> element teaches Joran to use specified action class with the given pattern.
+			Then, we simply declare the given element. The action class will be called and our connection
+			source will be bound to a JNDI context.
+		</p>
+		<p>
+			This is a very powerfull possibility of Joran. If you'd like to read more about Joran, please
+			visit our <a href="../joran.html">introduction to Joran</a>.
+		</p>
+
 		<p>
 			The third implementation of <code>ConnectionSource</code> that is shipped with
 			logback is the <code>JNDIConnectionSource</code>.
@@ -2054,13 +2081,11 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			application server provides.
 		</p>
 		
-<div class="source"><pre>
-&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
+<div class="source"><pre>&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
   &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
   &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
   &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
-&lt;/connectionSource&gt;
- </pre></div>
+&lt;/connectionSource&gt;</pre></div>
 
 		<p>
 			Note that this class will obtain an
@@ -2071,12 +2096,6 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			<em>jndi.properties</em>
 			file as described by your JNDI provider's documentation.
 		</p>
-
-
-		<p>
- 			<b>MORE INFO TO ADD HERE JNDI + BindAction + DataSourceCS? Or directly
- 			with JNDICS??</b>
- 		</p>
 
 
 		<h3>SyslogAppender</h3>
@@ -2176,13 +2195,36 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		</p>
 		
 		<p>
-			Since the format of a syslog request follows rather strict rules, 
+			Since the format of a syslog request follows rather strict rules, there is no layout
+			to be used with <code>SyslogAppender</code>. However, the using the 
+			<span class="option">SuffixPattern</span> option lets the user display whatever
+			information she wishes.
 		</p>
 		
+		<p>
+			Here is a sample configuration using a <code>SyslogAppender</code>.
+		</p>
 		
-		
-		
-		
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="SYSLOG"
+    class="ch.qos.logback.classic.net.SyslogAppender">
+    &lt;SyslogHost>remote_home&lt;/SyslogHost>
+    &lt;Facility>AUTH&lt;/Facility>
+    &lt;SuffixPattern>%-4relative [%thread] %-5level - %msg&lt;/SuffixPattern>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			When testing this configuration, one should verify that the remote syslog daemon
+			accepts TCP requests from an external source. Experience shows that syslog daemons
+			usually deny such requests by default.
+		</p>
 		
 		
 		<h2>Logback Access</h2>

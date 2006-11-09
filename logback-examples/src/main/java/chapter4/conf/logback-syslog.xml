@@ -1,10 +1,10 @@
 <configuration>
 
-  <appender name="STDOUT"
+  <appender name="SYSLOG"
     class="ch.qos.logback.classic.net.SyslogAppender">
     <SyslogHost>pixie</SyslogHost>
     <Facility>AUTH</Facility>
-    <SuffixPattern>%-4relative [%thread] %-5level - %msg %n</SuffixPattern>
+    <SuffixPattern>%-4relative [%thread] %-5level - %msg</SuffixPattern>
   </appender>
 
   <root>
