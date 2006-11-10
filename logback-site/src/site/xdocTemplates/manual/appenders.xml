@@ -14,7 +14,6 @@
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
-
 		<table>
 			<tr>
 				<td valign="top" align="top">
@@ -104,13 +103,10 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		such as methods for getting or setting their name, their started status, 
 		their layout and their filters. 
 		It is the super-class of all appenders shipped with logback. 
-		Although an abstract class, AppenderBase actually implements the 
+		Although an abstract class, <code>AppenderBase</code> actually implements the 
 		<code>doAppend()</code> method in the <code>Append</code> interface. 
-		Perhaps the clearest way to discuss AppenderBase class is by 
+		Perhaps the clearest way to discuss <code>AppenderBase</code> class is by 
 		presenting a bit of its actual source code.
-		<code>AppenderBase</code>'s complete source code is also 
-		<a href="../xref/ch/qos/logback/core/AppenderBase.html">
-		available for viewing</a>.  
 	</p>
 	
 <div class="source"><pre>public synchronized void doAppend(Object eventObject) {
@@ -155,30 +151,28 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	<p>
 		The first thing the <code>doAppend()</code> method does is to set the 
 		<code>guard</code> variable to <code>true</code>. This ensures that the method will not
-		call itself and create an infinite loop. Why could it call itself, you  might ask? Well, 
-		just imagine that a logback component, called somewhere beyond the <code>append()</code>
-		method, might want to log something. Its call could be directed to the very same appender
+		call itself and create an infinite loop. Just imagine that a component, called somewhere 
+		beyond the <code>append()</code>
+		method, wants to log something. Its call could be directed to the very same appender
 		that just called it, which would then call it again.
 	</p>
 	
 	<p>
 		The first statement of the <code>doAppend()</code> method, once the <code>try</code> block
-		is reached is to check whether the <code>started</code> field is true. 
+		is reached, is to check whether the <code>started</code> field is true. 
 		If it is not, <code>doAppend()</code> will send a warning message and return. 
 		In other words, once stopped, it is impossible to write to a closed appender. 
-		<code>Appender</code> object implement the <code>LifeCycle</code> interface, 
+		<code>Appender</code> objects implement the <code>LifeCycle</code> interface, 
 		which implies that they implement <code>start()</code>, <code>stop()</code>
 		and <code>isStarted()</code> methods. After setting all the options of an appender,
-		Joran, logback's configuration framework, calls this method to signal the appender
-		to bind or activate its options.
+		Joran, logback's configuration framework, calls the <code>start()</code> 
+		method to signal the appender to bind or activate its options.
 		Indeed, depending on the appender, certain options cannot be activated because 
 		of interferences with other options, or appenders can even not start at all if
 		some options are missing. 
 		For example, since file creation depends on truncation mode, 
 		<code>FileAppender</code> cannot act on the value of its <code>File</code> option 
 		until the value of the Append option is also known for certain.
-		Sub-classes of <code>AppenderBase</code> are required to set the boolean variable 
-		<code>started</code> to false when their <code>stop()</code> method is invoked.
 	</p>
 	
 	<p>
@@ -192,8 +186,8 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	<p>
 		The next <code>if</code> statement checks the result
 		of the attached <code>Filter</code> objects. 
-		Depending on the decision made by the filters 
-		in the filter chain, events can be denied or alternatively accepted. 
+		Depending on the decision resulting from the filter chain, events can be denied or 
+		alternatively accepted. 
 		In the absence of a decision by the filter chain, events are accepted by default.
 	</p>
 	
@@ -242,7 +236,8 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 				required to support at least the following encodings: 
 				<em>US-ASCII</em>, <em>ISO-8859-1</em>, <em>UTF-8</em>, <em>UTF-16BE</em>,
 				<em>UTF-16LE</em> and <em>UTF-16</em>. 
-				By default, the <span class="option">Encoding</span> option is null such 
+				By default, the <span class="option">Encoding</span> option is 
+				<code>null</code> such 
 				that the platform's default encoding is used.
 			</td>
 		</tr>
@@ -315,7 +310,8 @@ public class ExitWoes1 {
 		running <code>ExitWoes1</code> will not produce any output in the file 
 		<em>exitWoes1.log</em>
 		because the Java VM does not flush output streams when it exits. 
-		Calling the <code>reset()</code> method of a <code>LoggerContext</code> ensures that all 
+		Calling the <code>shutdownAndReset()</code> method of a <code>LoggerContext</code> 
+		ensures that all 
 		appenders in the hierarchy are closed and their buffers are flushed. The
 		<code>ExitWoes2</code> class uses this statement and outputs a logging
 		request. <b>DOES NOT WORK ??</b>
@@ -368,6 +364,34 @@ public class ExitWoes1 {
 			</td>
 		</tr>
 	</table>
+	
+	<p>
+		Here is a sample configuration that uses <code>ConsoleAppender</code>.
+	</p>
+
+<em>Example 4.2: ConsoleAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-Console.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  <b>&lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%-4relative [%thread] %-5level - %msg %n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender></b>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+	<p>
+		To run this example, use the provided <code>ConfigurationTester</code> by
+		issuing the following command, once in the <em>logback-examples/target/classes</em>:
+	</p>
+	
+<div class="source"><pre>java chapter4.ConfigurationTester chapter4/conf/logback-Console.xml</pre></div>
+	
 	<a name="FileAppender" />
 	<h3>FileAppender</h3>
 	
@@ -439,6 +463,13 @@ public class ExitWoes1 {
 				The <span class="option">File</span> option has no default value.
 			</td>
 		</tr>
+		<tr>
+			<td><b><span class="option">ImmediateFlush</span></b></td>
+			<td><code>boolean</code></td>
+			<td>
+				See <code>WriterAppender</code> options.
+			</td>
+		</tr>
 	</table>
 	
 	<p>
@@ -456,11 +487,43 @@ public class ExitWoes1 {
 		I/O buffering (<span class="option">ImmediateFlush</span>=false). 
 		Performance varies somewhat depending on the host machine as well as JDK version. 
 		Throughput measurements are based on the <code>chapter4.IO</code> application.
-		Please refer to the file <em>logback-examples/src/main/java/chapter4/IO.java</em> 
+		Please refer to <a href="../xref/chapter4/IO.html">
+		<em>logback-examples/src/main/java/chapter4/IO.java</em></a>
 		for actual source code. 
-		<a href="../xref/chapter4/IO.html">Online viewing</a> 
-		of this file is also available. 
 	</p>
+	
+	<p>
+		Configuring <code>FileAppender</code> can be done the following way:
+	</p>
+
+<em>Example 4.3: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+	<b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		&lt;File>testFile.log&lt;/File>
+		&lt;Append>true&lt;/Append>
+		&lt;Encoding>UTF-8&lt;/Encoding>
+		&lt;BufferedIO>false&lt;/BufferedIO>
+		&lt;ImmediateFlush>true&lt;/ImmediateFlush>
+		
+		&lt;layout class="ch.qos.logback.classic.PatternLayout">
+			&lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
+		&lt;/layout>
+	&lt;/appender></b>
+	
+	&lt;root>
+		&lt;level value="debug" />
+		&lt;appender-ref ref="FILE" />
+	&lt;/root>
+&lt;/configuration></pre></div>
+
+	<p>
+		To run this example, use the provided <code>ConfigurationTester</code> by
+		issuing the following command, once in the <em>logback-examples/target/classes</em>:
+	</p>
+	
+<div class="source"><pre>java chapter4.ConfigurationTester chapter4/conf/logback-fileAppender.xml</pre></div>
+	
 	
 	<a name="RollingFileAppender" />
 	<h3>RollingFileAppender</h3>
@@ -475,7 +538,7 @@ public class ExitWoes1 {
 	<p>
 		There are two important logback componenents that interact with
 		<code>RollingFileAppender</code>. First, <code>RollingPolicy</code>
-		implementation define the procedure that will be followed when
+		implementations define the procedure that will be followed when
 		the rollover happens. The second componenent is
 		<code>TriggeringPolicy</code> implementations that are used
 		to check wether the rollover must happen or not at a given time.
@@ -514,17 +577,17 @@ public class ExitWoes1 {
 		</tr>	
 		<tr>
 			<td><b><span class="option">Encoding</span></b></td>
-			<td><code>int</code></td>
+			<td><code>String</code></td>
 			<td>See <code>WriterAppender</code> options.</td>
 		</tr>	
 		<tr>
 			<td><b><span class="option">File</span></b></td>
-			<td><code>int</code></td>
+			<td><code>String</code></td>
 			<td>See <code>FileAppender</code> options.</td>
 		</tr>	
 		<tr>
 			<td><b><span class="option">ImmediateFlush</span></b></td>
-			<td><code>int</code></td>
+			<td><code>boolean</code></td>
 			<td>See <code>WriterAppender</code> options.</td>
 		</tr>	
 		<tr>
@@ -562,8 +625,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public interface RollingPolicy extends LifeCycle {
 
-
-  public void rollover() throws RolloverFailure;
+  <b>public void rollover() throws RolloverFailure;</b>
   public String getNewActiveFileName();
   public void setParent(FileAppender appender);
 }</pre></div>
@@ -584,11 +646,11 @@ public interface RollingPolicy extends LifeCycle {
 		renames files according to a fixed window algorithm as described below.
 	</p>
 	<p>
-		The <b>File</b> property, which is configured in the 
+		The <span class="option">File</span>> option, which is configured in the 
 		<code>FileAppender</code> element, is required. It represents the name of the file
-		where current logging output will be written. The <b>FileNamePattern</b>
+		where current logging output will be written. The <span class="option">FileNamePattern</span>
 		option represents the file name pattern for the archived (rolled over) log files. 
-		The <b>FileNamePattern</b> option, which is also required, must include 
+		The <span class="option">FileNamePattern</span> option, which is also required, must include 
 		an integer token, that is the string <em>%i</em>
 		somewhere within the pattern.
 	</p>
@@ -662,7 +724,7 @@ public interface RollingPolicy extends LifeCycle {
 		We suppose that the <span class="option">MinIndex</span> is set to <em>1</em> and
 		<span class="option">MaxIndex</span> is set to <em>3</em>. The
 		<span class="option">FileNamePattern</span> option is set to <em>foo%i.log</em>, and
-		the <code>FileAppender</code>'s <span class="option">FileNamePattern</span> 
+		the <span class="option">FileNamePattern</span> 
 		option is set to <em>foo.log</em>.
 	</p>
 	
@@ -753,7 +815,7 @@ public interface RollingPolicy extends LifeCycle {
 				foo3.log, foo2.log, foo1.log
 			</td>
 			<td>
-				At the fourth rollover, the old <em>foo3.log</em> file is deleted. The files
+				From the fourth rollover, the old <em>foo3.log</em> file is deleted. The files
 				are all renamed with an increment to their index, and a new <em>foo.log</em>
 				file is created and used for the output.
 				From this moment on, there will always be 4 log files available, each being present
@@ -766,6 +828,9 @@ public interface RollingPolicy extends LifeCycle {
 		Here is a sample configuration to use <code>RollingFileAppender</code>
 		and <code>FixedWindowRollingPolicy</code>.
 	</p>
+	
+<em>Example 4.4: Sample configuration of a <code>RollingFileAppender</code> using a 
+<code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingFixedWindow.xml)</em>
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>testFile.log&lt;/File>
@@ -779,7 +844,7 @@ public interface RollingPolicy extends LifeCycle {
       &lt;MaxFileSize>5MB&lt;/MaxFileSize>
     &lt;/triggeringPolicy>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 	
@@ -958,7 +1023,7 @@ public interface RollingPolicy extends LifeCycle {
 		Given the use of the <span class="option">FileNamePattern</span>, we see that the
 		<code>TimeBasedRollingPolicy</code> is responsible for the rollover as well as for
 		the triggering of said rollover. Therefore, <code>TimeBasedTriggeringPolicy</code>
-		implements <code>RollingPolicy</code> as well as <code>TriggeringPolicy</code>
+		implements both <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
 		interfaces. A <code>RollingFileAppender</code> that uses
 		<code>TimeBasedRollingPolicy</code> can be started and used correctly even
 		if its configuration does not contain any reference to a <code>TriggeringPolicy</code>.
@@ -1002,6 +1067,8 @@ public interface RollingPolicy extends LifeCycle {
 	uses a <code>TimeBasedRollingPolicy</code>
 	</p>
 	
+<em>Example 4.5: Sample configuration of a <code>RollingFileAppender</code> using a 
+<code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingTimeBased.xml)</em>
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>logFile.log&lt;/File>
@@ -1010,7 +1077,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;/rollingPolicy></b>
 
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender> 
 
@@ -1036,14 +1103,14 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public interface TriggeringPolicy extends LifeCycle {
 
-  public boolean isTriggeringEvent(final File file, final Object event);
+  <b>public boolean isTriggeringEvent(final File file, final Object event);</b>
 }</pre></div>
 
 		<p>
 			The
 			<code>isTriggeringEvent()</code>
 			method takes the active file, and the currently processed
-			logging event. It's implementation decied, based on these
+			logging event. It's implementation decides, based on these
 			parameters, whether the rollover must occur or not, by
 			returning a boolean value.
 		</p>
@@ -1082,6 +1149,8 @@ public interface TriggeringPolicy extends LifeCycle {
 			using a <code>SizeBasedTriggeringPolicy</code>.
 		</p>
 
+<em>Example 4.6: Sample configuration of a <code>RollingFileAppender</code> using a 
+<code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingSizeBased.xml)</em>
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>testFile.log&lt;/File>
@@ -1095,7 +1164,7 @@ public interface TriggeringPolicy extends LifeCycle {
       &lt;MaxFileSize>5MB&lt;/MaxFileSize>
     &lt;/triggeringPolicy></b>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 	
@@ -1121,14 +1190,9 @@ public interface TriggeringPolicy extends LifeCycle {
 			with a <code>Level</code> of <em>ERROR</em> or more is issued.
 		</p>
 
-
-
 		<a name="Classic"/>
 		<h2>Logback Classic</h2>
-		
-		<p><b>Keep this??</b>While logging event are declared as <code>Object</code> in logback core, 
-		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
-		
+
 		<a name="SocketAppender" />
 		<h3>SockerAppender</h3>
 		
@@ -1181,7 +1245,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			pipe which may be lost. This is a common problem on Windows based systems.  
 			To avoid lost data, it is usually sufficient to <code>close()</code> the 
 			<code>SocketAppender</code> either explicitly or by calling the 
-			<code>LoggerContext</code>'s <code>reset()</code> method before exiting the application.
+			<code>LoggerContext</code>'s <code>shutdownAndReset()</code> method before exiting the application.
 		</p>
 		
 		<p>
@@ -1300,7 +1364,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			and attaches it to the root logger.
 		</p>
 
-		<em>Example 4.2: SocketAppender configuration (logback-examples/src/main/java/chapter4/socket/client1.xml)</em>
+		<em>Example 4.7: SocketAppender configuration (logback-examples/src/main/java/chapter4/socket/client1.xml)</em>
 <div class="source"><pre>&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
@@ -1499,7 +1563,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			Here is a sample configuration file you can supply to chapter4.mail.Email:
 		</p>	
 		
-<em>Example 4.3: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
+<em>Example 4.8: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
 <div class="source"><pre>&lt;configuration>
 	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -1584,7 +1648,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			every 1024th event triggers an email message.
 		</p>
 
-<em>Example 4.4: A <code>TriggeringPolicy</code> implementation
+<em>Example 4.9: A <code>TriggeringPolicy</code> implementation
 that triggers every 1024th event (<a href="../xref/chapter4/mail/CounterBasedTP.html">logback-examples/src/main/java/chapter4/mail/CounterBasedTP.java</a>)</em>
 <div class="source"><pre>package chapter4.mail;
 
@@ -1624,7 +1688,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			as its triggering event evaluator.
 		</p>
 
-<em>Example 4.5: <code>SMTPAppender</code> with custom 
+<em>Example 4.10: <code>SMTPAppender</code> with custom 
 <code>TriggeringPolicy</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
 
 <div class="source"><pre>&lt;configuration>
@@ -1919,7 +1983,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			The following configuration file is what one would need.
 		</p>
 		
-<em>Example 4.6: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
+<em>Example 4.11: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -1998,7 +2062,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			<code>javax.sql.DataSource</code>.
 		</p>
 	
-<em>Example 4.7: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
+<em>Example 4.12: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2112,7 +2176,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			configuration file, logging events are sent to a MySQL database,
 			without any pooling.
 		</p>
-<em>Example 4.8: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
+<em>Example 4.13: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2155,7 +2219,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			in the classpath.
 		</p>
 
-<em>Example 4.8: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
+<em>Example 4.14: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2298,6 +2362,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			Here is a sample configuration using a <code>SyslogAppender</code>.
 		</p>
 		
+<em>Example 4.15: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="SYSLOG"

@@ -13,7 +13,7 @@
 			<MaxFileSize>5MB</MaxFileSize>
 		</triggeringPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%-4relative [%thread] %-5level %class - %msg%n</Pattern>
+			<Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
 		</layout>
 	</appender>
 	
