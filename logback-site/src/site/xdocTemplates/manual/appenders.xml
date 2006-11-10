@@ -386,11 +386,13 @@ public class ExitWoes1 {
 &lt;/configuration></pre></div>
 
 	<p>
-		To run this example, use the provided <code>ConfigurationTester</code> by
-		issuing the following command, once in the <em>logback-examples/target/classes</em>:
+		To run this example, as well as others in this
+		chapter, please add the <em>logback-examples-VERSION.hjar</em> to your classpath. 
+		Then, use the provided <code>ConfigurationTester</code> by
+		issuing the following command, once in the <em>logback-examples</em> directory:
 	</p>
 	
-<div class="source"><pre>java chapter4.ConfigurationTester chapter4/conf/logback-Console.xml</pre></div>
+<div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-Console.xml</pre></div>
 	
 	<a name="FileAppender" />
 	<h3>FileAppender</h3>
@@ -522,7 +524,7 @@ public class ExitWoes1 {
 		issuing the following command, once in the <em>logback-examples/target/classes</em>:
 	</p>
 	
-<div class="source"><pre>java chapter4.ConfigurationTester chapter4/conf/logback-fileAppender.xml</pre></div>
+<div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</pre></div>
 	
 	
 	<a name="RollingFileAppender" />
@@ -646,7 +648,7 @@ public interface RollingPolicy extends LifeCycle {
 		renames files according to a fixed window algorithm as described below.
 	</p>
 	<p>
-		The <span class="option">File</span>> option, which is configured in the 
+		The <span class="option">File</span> option, which is configured in the 
 		<code>FileAppender</code> element, is required. It represents the name of the file
 		where current logging output will be written. The <span class="option">FileNamePattern</span>
 		option represents the file name pattern for the archived (rolled over) log files. 
@@ -1192,6 +1194,10 @@ public interface TriggeringPolicy extends LifeCycle {
 
 		<a name="Classic"/>
 		<h2>Logback Classic</h2>
+		
+		
+		<p>While logging event are declared as <code>Object</code> in logback core, 
+		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
 
 		<a name="SocketAppender" />
 		<h3>SockerAppender</h3>
@@ -1200,7 +1206,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			The appenders covered this far were only able to log to local resources. 
 			In contrast, the <a href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
 			<code>SocketAppender</code></a> is designed to log to a 
-			remote entity by transmitting serialized LoggingEvent objects over the wire. 
+			remote entity by transmitting serialized <code>LoggingEvent</code> objects over the wire. 
 			Remote logging is non-intrusive as far as the logging event is concerned. 
 			On the receiving end after de-serialization, the event can be logged as 
 			if it were generated locally. Multiple <code>SocketAppender</code> instances 
@@ -1314,12 +1320,12 @@ public interface TriggeringPolicy extends LifeCycle {
 	</p>
 	
 	<p>
-		Assuming you are in the <em>logback-examples/target/classes/</em> directory, 
+		Assuming you are in the <em>logback-examples/</em> directory, 
 		start <code>SimpleSocketServer</code> with the following command:
 	</p>
 	
 <div class="source"><pre>java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
-  chapter4/socket/server1.xml
+  src/main/java/chapter4/socket/server1.xml
 </pre></div>
 
 	<p>
@@ -1390,7 +1396,7 @@ public interface TriggeringPolicy extends LifeCycle {
 		</p>
 	
 <div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=false \
-  chapter4.socket.SocketClient2 chapter4/socket/client1.xml
+  chapter4.socket.SocketClient2 src/main/java/chapter4/socket/client1.xml
 </pre></div>
 
 		<p>
@@ -1409,7 +1415,7 @@ public interface TriggeringPolicy extends LifeCycle {
 		</p>
 
 <div class="source"><pre>  java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
-  chapter4/socket/server2.xml
+  src/main/java/chapter4/socket/server2.xml
 </pre></div>
 
 		<p>
@@ -1430,7 +1436,7 @@ public interface TriggeringPolicy extends LifeCycle {
 		</p>
 
 <div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=true \
-  chapter4.socket.SocketClient2 chapter4/socket/client1.xml
+  chapter4.socket.SocketClient2 src/main/java/chapter4/socket/client1.xml
 </pre></div>
 
 		<p>
@@ -1994,11 +2000,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
       &lt;password>password&lt;/password>
     &lt;/connectionSource>
   &lt;/appender></b>
-	
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
-	
+  
   &lt;root>
     &lt;level value="debug" />
     &lt;appender-ref ref="DB" />
@@ -2082,11 +2084,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
        &lt;password>${password}&lt;/password>
      &lt;/connectionSource>
   &lt;/appender>
-  
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">&lt;level value="INFO" />&lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">&lt;level value="INFO" />&lt;/logger>
-    
+
   &lt;root>
     &lt;level value ="debug"/>
     &lt;appender-ref ref="DB" />
@@ -2190,14 +2188,6 @@ public class CounterBasedTP extends TriggeringPolicyBase {
       &lt;/dataSource>
     &lt;/connectionSource>
   &lt;/appender>
-
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">
-    &lt;level value="INFO" />
-  &lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">
-    &lt;level value="INFO" />
-  &lt;/logger>
     
   &lt;root>
     &lt;level value="debug" />
@@ -2234,14 +2224,6 @@ public class CounterBasedTP extends TriggeringPolicyBase {
       &lt;/dataSource></b>
     &lt;/connectionSource>
   &lt;/appender>
-
-  &lt;!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  &lt;logger name="ch.qos.logback.core.joran">
-    &lt;level value="INFO" />
-  &lt;/logger>
-  &lt;logger name="ch.qos.logback.classic.joran">
-    &lt;level value="INFO" />
-  &lt;/logger>
 
   &lt;root>
     &lt;level value="debug" />

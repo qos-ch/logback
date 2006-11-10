@@ -19,11 +19,7 @@
        <password>${password}</password>
      </connectionSource>
   </appender>
-  
-  <!-- Prevent internal logback DEBUG messages from polluting the output. -->
-  <logger name="ch.qos.logback.core.joran"><level value="INFO" /></logger>
-  <logger name="ch.qos.logback.classic.joran"><level value="INFO" /></logger>
-    
+
   <root>
     <level value ="debug"/>
     <appender-ref ref="DB" />

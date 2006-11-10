@@ -14,7 +14,7 @@ import chapter4.sub.sample.Bar;
  * 
  * This class can be used to check the result of a configuration file.
  * <p>
- * When all the logback-core, logback-classic and their dependencies have been
+ * When all the logback-core, logback-classic, logback-examples and their dependencies have been
  * added to the ClassPath, one can launch this class using the following
  * command:
  * <p>
