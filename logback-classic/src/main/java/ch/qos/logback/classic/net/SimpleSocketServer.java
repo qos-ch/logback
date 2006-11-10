@@ -92,7 +92,7 @@ public class SimpleSocketServer {
     if (configFile.endsWith(".xml")) {
       LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
       JoranConfigurator configurator = new JoranConfigurator();
-      lc.reset();
+      lc.shutdownAndReset();
       configurator.setContext(lc);
       configurator.doConfigure(configFile);
       //StatusPrinter.print(lc);

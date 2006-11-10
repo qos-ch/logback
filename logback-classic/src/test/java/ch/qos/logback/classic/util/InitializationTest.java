@@ -38,7 +38,7 @@ public class InitializationTest extends TestCase {
       assertTrue(appender instanceof ConsoleAppender);
     }
     {
-      lc.reset();
+      lc.shutdownAndReset();
       Appender appender = root.getAppender("STDOUT");
       assertNull(appender);
     }

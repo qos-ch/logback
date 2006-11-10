@@ -163,7 +163,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return loggerContextRemoteView;
   }
 
-  public void reset() {
+  public void shutdownAndReset() {
 
     root.recursiveReset();
 

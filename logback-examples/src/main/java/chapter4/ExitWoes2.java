@@ -24,7 +24,7 @@ public class ExitWoes2 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.reset();//this is to cancel default-config.
+    lc.shutdownAndReset();//this is to cancel default-config.
     WriterAppender writerAppender = new WriterAppender();
     writerAppender.setContext(lc);
     writerAppender.setLayout(new EchoLayout());
@@ -38,6 +38,6 @@ public class ExitWoes2 {
 
     logger.debug("Hello world.");
     
-    lc.reset();
+    lc.shutdownAndReset();
   }
 }
