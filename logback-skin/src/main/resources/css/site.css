@@ -29,12 +29,13 @@ div.clear hr {
 
 body,td,select,input,li {
 	font-family: Verdana, Helvetica, Arial, sans-serif;
-	font-size: 13px;
+	/* font-size: 13px; */
 }
 
+/* it's a bad idea to use fixed font sized */
 code {
 	font-family: Courier, monospace;
-	font-size: 13px;
+  /*	font-size: 13px; */
 }
 
 a {
@@ -80,7 +81,7 @@ a.newWindow,a.newWindow:link,a.newWindow:visited,a.newWindow:active,a.newWindow:
 h2 {
 	padding: 2px 2px 1px 0px;
 	border: 0px solid #999;
-	color: navy;
+	color: #333;
 	/*background-color: #ddd;*/ /*background-color: rgb(144,223,144);*/
 	background-color: white;
 	font-weight: 900;
@@ -90,8 +91,7 @@ h2 {
 h3 {
 	padding: 2px 2px 2px 0px;
 	border: 0px solid #aaa;
-	/*color: #900;*/
-	color: navy;
+	color: #333;
 	/*background-color: #eee;*/
 	background-color: white;
 	font-weight: normal;
@@ -365,4 +365,26 @@ dt {
 .option {
   border: 1px solid black;
   font-family: Arial, sans-serif;	
+}
+
+.bold{
+  font-weight: bold;	
+}
+
+.big {
+  font-size: 110%;
+}
+
+.highlight {
+   width: 300px;
+  float: right;	
+  display: inline;
+  font-weight: bolder;
+  border:1px solid #000;
+  background:#FFCC99;	
+  padding-top: 0px;
+  padding-left: 1ex;
+  padding-right: 1ex;
+  margin-left: 3em;
+  margin-right: 3em;
 }
