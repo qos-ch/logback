@@ -13,9 +13,9 @@ package chapter4.socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 
@@ -55,8 +55,8 @@ public class SocketClient1 {
     // of the next statement.
     socketAppender.start();
 
-    Logger logger = LoggerFactory.getLogger(SocketClient1.class);
-    //logger.addAppender(socketAppender);
+    Logger logger = (Logger) LoggerFactory.getLogger(SocketClient1.class);
+    logger.addAppender(socketAppender);
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 

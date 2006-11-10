@@ -1377,6 +1377,7 @@ public interface TriggeringPolicy extends LifeCycle {
     &lt;RemoteHost>${host}&lt;/RemoteHost>
     &lt;Port>${port}&lt;/Port>
     &lt;ReconnectionDelay>10000&lt;/ReconnectionDelay>
+    &lt;IncludeCallerData>${includeCallerData}&lt;/IncludeCallerData>
   &lt;/appender>
 
   &lt;root>

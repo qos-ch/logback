@@ -28,7 +28,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 public class SocketClient2 {
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java " + SocketClient1.class.getName() +
+    System.err.println("Usage: java " + SocketClient2.class.getName() +
       " configFile\n" +
       "   configFile a logback configuration file" +
       "   in XML format.");

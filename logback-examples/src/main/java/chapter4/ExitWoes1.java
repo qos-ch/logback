@@ -13,9 +13,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
@@ -33,6 +33,8 @@ public class ExitWoes1 {
     writerAppender.setWriter(new OutputStreamWriter(os));
     writerAppender.setImmediateFlush(false);
     writerAppender.start();
+    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.addAppender(writerAppender);
 
     Logger logger = lc.getLogger(ExitWoes1.class);
 
