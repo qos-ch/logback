@@ -87,6 +87,18 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
   }
   
+  public void testWithParenthesis() {
+    PatternLayout pl = new PatternLayout();
+    pl.setPattern("(%msg:%msg) %msg");
+    Context context = new LoggerContext();
+    pl.setContext(context);
+    pl.start();
+    le = makeLoggingEvent(null);
+    String val = pl.doLayout(le);
+    //System.out.println("VAL == " + val);
+    assertEquals("(Some message:Some message) Some message", val);
+  }
+  
   public void testWithLettersComingFromLog4j() {
     PatternLayout pl = new PatternLayout();
     //Letters: p = level and c = logger

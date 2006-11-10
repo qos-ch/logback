@@ -51,7 +51,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
     plb.start();
     String result = plb.doLayout(getEventObject());
     assertFalse(result.contains("%PARSER_ERROR_EX"));
-    System.out.println("========="+result);
+    //System.out.println("========="+result);
   }
 
   public void testStarted() {
@@ -65,7 +65,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
   }
 
   public void testNullPattern() {
-    System.out.println("testNullPattern");
+    //System.out.println("testNullPattern");
     PatternLayoutBase plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
@@ -73,7 +73,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
     String s = plb.doLayout(getEventObject());
     assertEquals("", s);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    StatusPrinter.print(context.getStatusManager());
+    //StatusPrinter.print(context.getStatusManager());
     assertTrue(checker.containsMatch("Failed to parse pattern \"null\""));
   }
 
