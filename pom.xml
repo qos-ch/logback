@@ -80,7 +80,7 @@
 			<dependency>
 	  		<groupId>org.slf4j</groupId>
   			<artifactId>slf4j-api</artifactId>
-				<version>1.1.0-beta0</version>
+				<version>1.1.0-RC0</version>
 		  </dependency>
 		  <dependency>
 	  		<groupId>hsqldb</groupId>
@@ -241,9 +241,16 @@
       <id>pixie</id>
       <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
     </site>
+
     <repository>
       <id>pixie</id>
       <url>scp://pixie/var/mvnrepo/</url>
     </repository>
+
+    <snapshotRepository>
+      <id>pixie-snapshot</id>
+      <url>scp://pixie/var/mvnrepo-snapshots/</url>
+    </snapshotRepository>
+
   </distributionManagement>
 </project>
