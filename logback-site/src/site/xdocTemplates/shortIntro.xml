@@ -406,20 +406,14 @@ public interface Logger {
 		<table>
 			<tr>
 				<th>
-					Logger
-					<br />
-					name
+					Logger name
 				</th>
 				<th>
-					Assigned
-					<br />
-					level
+					Assigned level
 				</th>
 
 				<th>
-					Effective
-					<br />
-					level
+					Effective level
 				</th>
 			</tr>
 			<tr>
@@ -444,30 +438,24 @@ public interface Logger {
 				<td>DEBUG</td>
 			</tr>
 		</table>
-		<p>
-			In example 1 above, only the root logger is assigned a
-			level.
-		This level value, <code>DEBUG</code>, is inherited by the other loggers
-		<code>X</code>, <code>X.Y</code> and <code>X.Y.Z</code>
+
+		<p> In example 1 above, only the root logger is assigned a level.
+		This level value, <code>DEBUG</code>, is inherited by the other
+		loggers <code>X</code>, <code>X.Y</code> and <code>X.Y.Z</code>
 		</p>
+
 		<em>Example 2</em>
 		<table>
 			<tr>
 				<th>
-					Logger
-					<br />
-					name
+					Logger name
 				</th>
 				<th>
-					Assigned
-					<br />
-					level
+					Assigned level
 				</th>
 
 				<th>
-					Effective
-					<br />
-					level
+					Effective level
 				</th>
 			</tr>
 			<tr align="left">
@@ -493,28 +481,21 @@ public interface Logger {
 			</tr>
 		</table>
 
-		<p>
-			In example 2 above, all loggers have an assigned level value.
-			There is no need for level inheritence.
+		<p>In example 2 above, all loggers have an assigned level value.
+		There is no need for level inheritence.
 		</p>
 
 		<em>Example 3</em>
 		<table>
 			<tr>
 				<th>
-					Logger
-					<br />
-					name
+					Logger name
 				</th>
 				<th>
-					Assigned
-					<br />
-					level
+					Assigned level
 				</th>
 				<th>
-					Effective
-					<br />
-					level
+					Effective level
 				</th>
 			</tr>
 			<tr align="left">
@@ -551,19 +532,13 @@ public interface Logger {
 
 			<tr>
 				<th>
-					Logger
-					<br />
-					name
+					Logger name
 				</th>
 				<th>
-					Assigned
-					<br />
-					level
+					Assigned level
 				</th>
 				<th>
-					Effective
-					<br />
-					level
+					Effective level
 				</th>
 			</tr>
 			<tr align="left">
@@ -589,8 +564,7 @@ public interface Logger {
 			</tr>
 		</table>
 
-    <!-- =========  CEKI: STOPPED HERE =================== -->
-
+   
 		<p>In example 4 above, the loggers <code>root</code> and
 		<code>X</code> and are assigned the levels <code>DEBUG</code> and
 		<code>INFO</code> respectively. The loggers <code>X.Y</code> and
@@ -627,7 +601,7 @@ public interface Logger {
 			<code>DEBUG &lt; INFO &lt; WARN &lt; ERROR</code>.
 		</p>
 				
-		<p>In a more graphic way, here is how the selection rule works: in
+		<p>In a more graphic way, here is how the selection rule works. In
 		the following table, the vertical header shows the the level of
 		the logging request, designated by <em>p</em>, while the
 		horizontal header shows effective level of the logger, designated
@@ -728,51 +702,52 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			discussed shortly.
 		</p>
 		<p>
-			Logback makes it easy to name loggers by
-			<em>software component</em>. 
-			This can be accomplished by instantiating a
-			logger in each class, with the logger name equal to the
-			fully qualified name of the class. This is a useful and
-			straightforward method of defining loggers. As the log
-			output bears the name of the generating logger, this naming
-			strategy makes it easy to identify the origin of a log
-			message. However, this is only one possible, albeit common,
-			strategy for naming loggers. Logback does not restrict the
-			possible set of loggers. The developer is free to name the
-			loggers she desires.
+			Logback makes it easy to name loggers by <em>software
+			component</em>.  This can be accomplished by instantiating a
+			logger in each class, with the logger name equal to the fully
+			qualified name of the class. This is a useful and
+			straightforward method of defining loggers. As the log output
+			bears the name of the generating logger, this naming strategy
+			makes it easy to identify the origin of a log message. However,
+			this is only one possible, albeit common, strategy for naming
+			loggers. Logback does not restrict the possible set of
+			loggers. As a developer, you are free to name loggers as you
+			wish.
 		</p>
-		<p>
-			Nevertheless, naming loggers after the class where they are
-			located seems to be the best strategy known so far.
+
+		<p>Nevertheless, naming loggers after the class where they are
+		located seems to be the best strategy known so far.
 		</p>
 
     <h3>Appenders and Layouts</h3>
 
 		<p>
-			The ability to selectively enable or disable logging
-			requests based on their logger is only part of the picture.
-			Logback allows logging requests to print to multiple
-			destinations. In logback speak, an output destination is
-			called an appender. Currently, appenders exist for the
-			console, files, remote socket servers, JMS, and remote UNIX
-			Syslog daemons. It is also possible to log asynchronously.
+			The ability to selectively enable or disable logging requests
+			based on their logger is only part of the picture.  Logback
+			allows logging requests to print to multiple destinations. In
+			logback speak, an output destination is called an
+			appender. Currently, appenders exist for the console, files,
+			remote socket servers, to MySQL, PostgreSQL, Oracle and other
+			databases, to JMS, and remote UNIX Syslog daemons. 
+
+      <!--It is also possible to log asynchronously. -->
 		</p>
 
 		<p>More than one appender can be attached to a logger.</p>
-		<p>
-			The <code>addAppender</code> method adds an appender to a given logger.
-			Each enabled logging request for a given logger will be
-			forwarded to all the appenders in that logger as well as the
-			appenders higher in the context. In other words, appenders
-			are inherited additively from the logger context. For
-			example, if a console appender is added to the root logger,
-			then all enabled logging requests will at least print on the
-			console. If in addition a file appender is added to a
-			logger, say <em>L</em>, then enabled logging requests for
-			<em>L</em> and <em>L</em>'s children will print on a file <em>and</em> on the console. 
-			It is possible to override this default behavior so that appender
-			accumulation is no longer additive by setting the additivity
-			flag to false.
+
+		<p> The <code><a href="apidocs/ch/qos/logback/classic/Logger.html#addAppender(ch.qos.logback.core.Appender)">addAppender</a></code> method adds an appender to a
+		given logger.  Each enabled logging request for a given logger
+		will be forwarded to all the appenders in that logger as well as
+		the appenders higher in the context. In other words, appenders are
+		inherited additively from the logger context. For example, if a
+		console appender is added to the root logger, then all enabled
+		logging requests will at least print on the console. If in
+		addition a file appender is added to a logger, say <em>L</em>,
+		then enabled logging requests for <em>L</em> and <em>L</em>'s
+		children will print on a file <em>and</em> on the console.  It is
+		possible to override this default behavior so that appender
+		accumulation is no longer additive by setting the additivity flag
+		to false.
 		</p>
 
 		<p>
@@ -810,7 +785,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		<table class="bodyTable">
 			<tr>
 				<th>Logger Name</th>
-				<th>Added Appenders</th>
+				<th>Attached Appenders</th>
 				<th>Additivity Flag</th>
 				<th>Output Targets</th>
 				<th>Comment</th>
@@ -820,10 +795,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 				<td>A1</td>
 				<td>not applicable</td>
 				<td>A1</td>
-				<td>
-					The root logger can be accessed
-					with the LoggerFactory.getLogger("root") method. There is no
-					default appender attached to root.
+
+				<td>Since the root logger stands at the top of the logger
+				hiearchy, the additivity flag does not apply to it.
 				</td>
 			</tr>
 			<tr>
@@ -850,18 +824,19 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			<tr>
 				<td>security</td>
 				<td>A-sec</td>
-				<td class="blue">false</td>
+				<td class="blue"><span class="blue">false</span></td>
 				<td>A-sec</td>
+
 				<td>
-					No appender accumulation since the additivity flag
-					is set to
+					No appender accumulation since the additivity flag is set to
 					<code>false</code>. Only appender A-sec will be used.
 				</td>
 			</tr>
 			<tr>
 				<td>security.access</td>
 				<td>none</td>
-				<td>true</td>				<td>A-sec</td>
+				<td>true</td>				
+        <td>A-sec</td>
 				<td>
 					Only appenders of "security" because the additivity
 					flag in "security" is set to
@@ -887,7 +862,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 
 		<p>
 			For example, the PatternLayout with the conversion pattern
-			"%-4relative [%thread] %-5level %class - %msg%n" will output something akin to:
+			"%-4relative [%thread] %-5level %logger{32} - %msg%n" will output something akin to:
 		</p>
 
 		<div class="source"><pre>176  [main] DEBUG chapter1.HelloWorld3 - Hello world.</pre></div>
@@ -901,12 +876,15 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			the message of the statement.
 		</p>
 
-		<h4>Parametrized logging</h4>
+		<h3>Parameterized logging</h3>
 
 		<p>
-			If you are a SLF4J user, you'll
-			notice that the methods used to request logging do not only
-			take a String as a parameter. Some methods accept further parameters.
+			Given that loggers in logback-classic implement the <a
+			href="http://www.slf4j.org/api/org/slf4j/Logger.html">SLF4J's
+			Logger interface</a>, certain printing methods admit more than
+			one parameter. These printing method variants are mainly
+			intended to improve performance while minimizing the impact on
+			the readability of the code.
 		</p>
 
 		<p>
@@ -945,6 +923,8 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			log a statement.
 		</p>
 
+<!-- =========  CEKI: STOPPED HERE =================== -->
+
 		<h4>Better alternative</h4>
 
 		<p>
@@ -957,12 +937,11 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 logger.debug("The entry is {}.", entry);</pre></div>
 
 		<p>
-			After evaluting whether to log or not, and only if the
-			decision is affirmative, will the logger implementation
-			format the message and replace the '{}' pair with the string
-			value of <code>entry</code>. 
-			In other words, this form does not incur the cost of
-			parameter construction in case the log statement is
+			After evaluting whether to log or not, and only if the decision
+			is positive, will the logger implementation format the message
+			and replace the '{}' pair with the string value of
+			<code>entry</code>.  In other words, this form does not incur
+			the cost of parameter construction in case the log statement is
 			disabled.
 		</p>
 
@@ -997,27 +976,29 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
     <h3>Configuration</h3>
 
 		<p>
-			Inserting log requests into the application code requires 
-			a fair amount of planning and effort. Observation shows that 
-			approximately 4 percent of code is dedicated to logging. Consequently, 
-			even moderately sized applications will have thousands of logging 
-			statements embedded within their code. Given their number, it becomes 
-			imperative to manage these log statements without the need to 
-			modify them manually.
+			Inserting log requests into the application code requires a fair
+			amount of planning and effort. Observation shows that
+			approximately four percent of code is dedicated to
+			logging. Consequently, even moderately sized applications will
+			contain thousands of logging statements embedded within its
+			code. Given their number, it becomes imperative to manage these
+			log statements without the need to modify them manually.
 		</p>
 		<p>
-			The logback environment is fully configurable programmatically. 
-			However, it is far more flexible to configure logback using 
-			configuration files. In logback, configuration files must be written in 
-			XML format.
+			The logback environment is fully configurable programmatically.
+			However, it is far more flexible to configure logback using
+			configuration files. In logback, configuration files are
+			expressed in XML.
 		</p>
 		<p>
-			Log4j users can convert their <code>log4j.properties</code> files to logback xml configration files using
-			our <a href="http://logback.qos.ch/translator/">PropertiesTranslator</a> webapp.
+			Existing log4j users can convert their <em>log4j.properties</em>
+			files to <em>logback.xml</em> using <a
+			href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
+			web-application.
 		</p>
 		<p>
 			Let us give a taste of how logback configuration is done with the help of an 
-			imaginary application MyApp that uses logback. 
+			imaginary application <em>MyApp</em> that uses logback. 
 		</p>
 		<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/MyApp.java)</em>
 <div class="source"><pre>package chapter1;
