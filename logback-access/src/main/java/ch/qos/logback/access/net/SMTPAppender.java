@@ -61,7 +61,7 @@ public class SMTPAppender extends SMTPAppenderBase {
    * TriggeringEventEvaluator} for this SMTPAppender.
    */
   public SMTPAppender(TriggeringPolicy evaluator) {
-    this.evaluator = evaluator;
+    this.triggeringPolicy = evaluator;
   }
 
   /**

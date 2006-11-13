@@ -20,7 +20,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 
 /**
  * This application generates log messages in numbers specified by the
- * user. It is intended to let users test RollingFileAppender. See
+ * user. See
  * also configuration scripts rolling.properties and rolling.xml.
  * */
 public class EMail {

@@ -203,6 +203,13 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	that are dynamically inferred using JavaBeans introspection. </p>
 	
 	<h2>Logback Core</h2>
+	
+	<p>
+		Core is logback's central module. It offers functionnalities that are available
+		to any other module based on logback core. The <code>Appender</code> classes
+		contained in the core module are can be used by any module without any customization.
+	</p>
+	
 	<a name="WriterAppender" />
 	<h3>WriterAppender</h3>
 	
@@ -314,7 +321,7 @@ public class ExitWoes1 {
 		ensures that all 
 		appenders in the hierarchy are closed and their buffers are flushed. The
 		<code>ExitWoes2</code> class uses this statement and outputs a logging
-		request. <b>DOES NOT WORK ??</b>
+		request.
 	</p>
 
 	<p>
@@ -375,7 +382,7 @@ public class ExitWoes1 {
   <b>&lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level - %msg %n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender></b>
 
@@ -387,8 +394,8 @@ public class ExitWoes1 {
 
 	<p>
 		To run this example, as well as others in this
-		chapter, please add the <em>logback-examples-VERSION.hjar</em> to your classpath. 
-		Then, use the provided <code>ConfigurationTester</code> by
+		chapter, please run the script provided in logback's main directory. 
+		Then, use the <code>ConfigurationTester</code> by
 		issuing the following command, once in the <em>logback-examples</em> directory:
 	</p>
 	
@@ -501,22 +508,22 @@ public class ExitWoes1 {
 <em>Example 4.3: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-	<b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		&lt;File>testFile.log&lt;/File>
-		&lt;Append>true&lt;/Append>
-		&lt;Encoding>UTF-8&lt;/Encoding>
-		&lt;BufferedIO>false&lt;/BufferedIO>
-		&lt;ImmediateFlush>true&lt;/ImmediateFlush>
+  <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    &lt;File>testFile.log&lt;/File>
+    &lt;Append>true&lt;/Append>
+    &lt;Encoding>UTF-8&lt;/Encoding>
+    &lt;BufferedIO>false&lt;/BufferedIO>
+    &lt;ImmediateFlush>true&lt;/ImmediateFlush>
 		
-		&lt;layout class="ch.qos.logback.classic.PatternLayout">
-			&lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
-		&lt;/layout>
-	&lt;/appender></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender></b>
 	
-	&lt;root>
-		&lt;level value="debug" />
-		&lt;appender-ref ref="FILE" />
-	&lt;/root>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
 &lt;/configuration></pre></div>
 
 	<p>
@@ -597,7 +604,7 @@ public class ExitWoes1 {
 			<td><code>RollingPolicy</code></td>
 			<td>
 				This option is the component that will dictate 
-				<code>RollingFileAppender</code>'s behaviour when the rollover
+				<code>RollingFileAppender</code>'s behaviour when rollover
 				occurs. See more information below.
 			</td>
 		</tr>	
@@ -616,9 +623,9 @@ public class ExitWoes1 {
 	
 	<p><a href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a> 
 	implementations are responsible for the
-	procedure of the rollover. They manage file renaming and sometimes deleting.</p>
+	rollover procedure. They manage file renaming and in occasion file deleting.</p>
 	
-	<p>The <code>RollingPolicy</code> interface is rather simple:</p>
+	<p>The <code>RollingPolicy</code> interface is presented below:</p>
 	
 <div class="source"><pre>package ch.qos.logback.core.rolling;
 
@@ -650,7 +657,7 @@ public interface RollingPolicy extends LifeCycle {
 	<p>
 		The <span class="option">File</span> option, which is configured in the 
 		<code>FileAppender</code> element, is required. It represents the name of the file
-		where current logging output will be written. The <span class="option">FileNamePattern</span>
+		to write to. The <span class="option">FileNamePattern</span>
 		option represents the file name pattern for the archived (rolled over) log files. 
 		The <span class="option">FileNamePattern</span> option, which is also required, must include 
 		an integer token, that is the string <em>%i</em>
@@ -1015,10 +1022,10 @@ public interface RollingPolicy extends LifeCycle {
 	<p>
 		As we have seen, the <span class="option">FileNamePattern</span> serves two purposes. First,
 		by studying the pattern, logback computes the requested rollover periodicity. Second,
-		it uses the pattern to custom each rolled files. It is entirely possible for two different
+		it computes each files' name based on the pattern. It is entirely possible for two different
 		file name patterns to specify the same periodicity.
 		The date patterns <em>yyyy-MM</em> and <em>yyyy@MM</em> both specify monthly 
-		rollover periodicity, although the rolled files will carry different customizations.
+		rollover periodicity, although the rolled files will carry different names.
 	</p>
 	
 	<p>
@@ -1094,7 +1101,7 @@ public interface RollingPolicy extends LifeCycle {
 		
 		<p><a href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
 		implementations are responsible for instructing
-		the <code>RollingFileAppender</code> to proceed to the rollover.</p>
+		the <code>RollingFileAppender</code> to rollover.</p>
 		
 		<p>The <code>TriggeringPolicy</code> interface is pretty simple.</p>
 	
@@ -1105,7 +1112,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public interface TriggeringPolicy extends LifeCycle {
 
-  <b>public boolean isTriggeringEvent(final File file, final Object event);</b>
+  <b>public boolean isTriggeringEvent(final File activeFile, final Object event);</b>
 }</pre></div>
 
 		<p>
@@ -1124,7 +1131,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			<a href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
 			<code>SizeBasedTriggeringPolicy</code></a>
 			looks at size of the file being currently written to. If it
-			grows bigger than the specified size, the
+			grows larger than the specified size, the
 			<code>FileAppender</code> using the
 			<code>SizeBasedTriggeringPolicy</code>
 			will proceed to the rollover of the current file and log to
@@ -1200,10 +1207,10 @@ public interface TriggeringPolicy extends LifeCycle {
 		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
 
 		<a name="SocketAppender" />
-		<h3>SockerAppender</h3>
+		<h3>SocketAppender</h3>
 		
 		<p>
-			The appenders covered this far were only able to log to local resources. 
+			The appenders covered this far were only able to log on local resources. 
 			In contrast, the <a href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
 			<code>SocketAppender</code></a> is designed to log to a 
 			remote entity by transmitting serialized <code>LoggingEvent</code> objects over the wire. 
@@ -1211,7 +1218,8 @@ public interface TriggeringPolicy extends LifeCycle {
 			On the receiving end after de-serialization, the event can be logged as 
 			if it were generated locally. Multiple <code>SocketAppender</code> instances 
 			running of different machines can direct their logging output 
-			to a central log server. <code>SocketAppender</code> does not admit an 
+			to a central log server whose format is fixed. 
+			<code>SocketAppender</code> does not admit an 
 			associated layout because it sends serialized events to a remote server. 
 			<code>SocketAppender</code> operates above the 
 			<em>Transmission Control Protocol (TCP)</em> 
@@ -1233,7 +1241,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			network rate. In particular, in the extreme case where the network link 
 			to the server is down, the client will be eventually blocked. 
 			Alternatively, if the network link is up, but the server is down, 
-			the client will not be blocked although the log events will be 
+			the client will not be blocked, although the log events will be 
 			lost due to server unavailability.
 		</p>
 		
@@ -1357,7 +1365,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			<code>SimpleSocketServer</code>
 			the client will transparently reconnect to the new server
 			instance, although the events generated while disconnected
-			will be simply and irrevocably lost.
+			will be simply (and irrevocably) lost.
 		</p>
 
 		<p>
@@ -1410,8 +1418,8 @@ public interface TriggeringPolicy extends LifeCycle {
 			Allow us to repeat for emphasis that serialization of logging events is not 
 			intrusive. A de-serialized event carries the same information as any other 
 			logging event. It can be manipulated as if it were generated locally; 
-			except that serialized logging events by default do not include location 
-			information. Here is an example to illustrate the point. First, start 
+			except that serialized logging events by default do not include caller 
+			data. Here is an example to illustrate the point. First, start 
 			<code>SimpleSocketServer</code> with the following command:
 		</p>
 
@@ -1509,7 +1517,7 @@ public interface TriggeringPolicy extends LifeCycle {
 				</p>
 				<p>
 					By default, <code>SMTPAppender</code> will form a subject with
-					the message of the last logging event.
+					logger name and the message of the last logging event.
 				</p>
 			</td>
 		</tr>
@@ -1525,16 +1533,22 @@ public interface TriggeringPolicy extends LifeCycle {
 			</td>
 		</tr>
 		<tr>
-			<td><b><span class="option">EvaluatorClass</span></b></td>
+			<td><b><span class="option">TriggeringPolicy</span></b></td>
 			<td><code>String</code></td>
 			<td>
-				The <span class="option">EvaluatorClass</span> option takes a string 
-				value representing the name of the class implementing the 
-				<code>TriggeringPolicy</code> interface. A corresponding object will be 
-				instantiated and assigned as the triggering event evaluator for the 
-				<code>SMTPAppender</code>. In the absence of this option, 
-				<code>SMTPAppender</code> is assigned a default evaluator which triggers 
+				<p>This option is declared by creating a new <code>&lt;TriggeringPolicy/></code>
+				element. The name of the class that the user wishes to use as the
+				<code>SMTPAppender</code>'s <code>TriggeringPolicy</code> can be given
+				by adding an attribute to the newly created element.
+				</p>
+				<p>
+				More details about the use of triggering policies with <code>SMTPAppender</code>
+				follow further down this document.
+				</p>
+				<p>In the absence of this option, 
+				<code>SMTPAppender</code> is assigned a default triggering policy which triggers 
 				email transmission as a response to any event of level <em>ERROR</em> or higher.  
+				</p>
 			</td>
 		</tr>
 		</table>		
@@ -1544,7 +1558,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			in its cyclic buffer, throwing away older events when its buffer becomes full. 
 			The number of logging events  delivered in any e-mail sent by <code>SMTPAppender</code> 
 			is upper-bounded by <span class="option">BufferSize</span>. This keeps memory 
-			requirements bounded while still delivering the desired amount of application context. 
+			requirements bounded while still delivering a reasonable amount of application context. 
 		</p>
 		
 		<p>
@@ -1578,7 +1592,7 @@ public interface TriggeringPolicy extends LifeCycle {
     &lt;To>DESTINATION-EMAIL&lt;/To>
     &lt;From>SENDER-EMAIL&lt;/From>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %-5level %logger - %message%n&lt;/Pattern>
+      &lt;Pattern>%date %-5level %logger{35} - %message%n&lt;/Pattern>
     &lt;/layout>	    
   &lt;/appender>
 
@@ -1593,10 +1607,10 @@ public interface TriggeringPolicy extends LifeCycle {
 			configuration file, you must set the <span class="option">SMTPHost</span>, 
 			<span class="option">To</span> and <span class="option">From</span> options 
 			to values appropriate for your environment. Once you have set the proper values, 
-			execute the following command:
+			change directory to <em>logback-examples</em> and execute the following command:
 		</p>
 		
-<div class="source"><pre>java chapter4.mail.EMail 300 chapter4/mail/mail.xml</pre></div>
+<div class="source"><pre>java chapter4.mail.EMail 300 src/main/java/chapter4/mail/mail.xml</pre></div>
 
 		<p>
 			The chosen recipient should see an email message containing 300 logging events 
@@ -1624,7 +1638,7 @@ public interface TriggeringPolicy extends LifeCycle {
 		</p>
 		
 <div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com 
-  -DsmtpHost=some_smtp_host chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
+  -DsmtpHost=some_smtp_host src/main/java/chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
 </pre></div>
 
 		<p>
@@ -1667,7 +1681,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
   static int LIMIT = 1024;
   int counter = 0;
 
-  public boolean isTriggeringEvent(File file, Object event) {
+  public boolean isTriggeringEvent(File activeFile, Object event) {
     counter++;
 
     if (counter == LIMIT) {
@@ -1684,15 +1698,15 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			Note that this implementation extends <code>TriggeringPolicyBase</code> instead
 			of implementing <code>TriggeringPolicy</code>. This allows the user to concentrate
 			on the core functions of her <code>TriggeringPolicy</code> and let the base class
-			manage the other functionnalities.
+			provide the common functionnality.
 		</p>
 
 		<p>
-			Setting the <span class="option">EvaluatorClass</span> option of 
-			<code>SMTPAppender</code> instructs it to use a custom evaluator. 
+			Setting the <span class="option">TriggeringPolicy</span> option of 
+			<code>SMTPAppender</code> instructs it to use a custom triggering policy. 
 			The next configuration file attaches a <code>SMTPAppender</code> to the root logger. 
 			This appender has a buffer size of 2048 and uses a <code>CounterBasedTP</code> instance 
-			as its triggering event evaluator.
+			as its triggering policy.
 		</p>
 
 <em>Example 4.10: <code>SMTPAppender</code> with custom 
@@ -1700,7 +1714,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <b>&lt;EvaluatorClass>chapter4.mail.CounterBasedTP&lt;/EvaluatorClass></b>
+    <b>&lt;TriggeringPolicy class="chapter4.mail.CounterBasedTP" /></b>
     &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>

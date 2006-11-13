@@ -74,8 +74,8 @@ public class SMTPAppenderTest extends TestCase {
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
 
-  public void testEntryConditionsCheckNoEvaluator() {
-    appender.setEvaluator(null);
+  public void setTriggeringPolicy() {
+    appender.setTriggeringPolicy(null);
     appender.checkEntryConditions();
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
@@ -87,14 +87,14 @@ public class SMTPAppenderTest extends TestCase {
   }
 
   public void testDefaultEvaluatorNoTrigger() {
-    DefaultEvaluator evaluator = new DefaultEvaluator();
+    DefaultSMTPTriggeringPolicy evaluator = new DefaultSMTPTriggeringPolicy();
     LoggingEvent le = new LoggingEvent();
     le.setLevel(Level.DEBUG);
     assertFalse(evaluator.isTriggeringEvent(null, le));
   }
 
   public void testDefaultEvaluatorTrigger() {
-    DefaultEvaluator evaluator = new DefaultEvaluator();
+    DefaultSMTPTriggeringPolicy evaluator = new DefaultSMTPTriggeringPolicy();
     LoggingEvent le = new LoggingEvent();
     le.setLevel(Level.ERROR);
     assertTrue(evaluator.isTriggeringEvent(null, le));

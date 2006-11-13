@@ -27,7 +27,6 @@ import javax.mail.internet.MimeMultipart;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.rolling.TriggeringPolicy;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * An abstract class that provides basic support for
@@ -50,7 +49,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
 
   protected Message msg;
 
-  protected TriggeringPolicy evaluator;
+  protected TriggeringPolicy triggeringPolicy;
 
   /**
    * return a layout for the subjet string as appropriate for the
@@ -106,7 +105,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
 
     subAppend(eventObject);
 
-    if (evaluator.isTriggeringEvent(null, eventObject)) {
+    if (triggeringPolicy.isTriggeringEvent(null, eventObject)) {
       sendBuffer(eventObject);
     }
   }
@@ -127,7 +126,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       return false;
     }
 
-    if (this.evaluator == null) {
+    if (this.triggeringPolicy == null) {
       addError("No TriggeringPolicy is set for appender [" + name + "].");
       return false;
     }
@@ -210,13 +209,6 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   abstract protected void fillBuffer(StringBuffer sbuf); 
 
   /**
-   * Returns value of the <b>EvaluatorClass</b> option.
-   */
-  public String getEvaluatorClass() {
-    return evaluator == null ? null : evaluator.getClass().getName();
-  }
-
-  /**
    * Returns value of the <b>From</b> option.
    */
   public String getFrom() {
@@ -279,25 +271,16 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     this.msg = msg;
   }
   
-  public void setEvaluator(TriggeringPolicy evaluator) {
-    this.evaluator = evaluator;
-  }
-
   /**
-   * The <b>EvaluatorClass</b> option takes a string value representing the
-   * name of the class implementing the {@link TriggeringEventEvaluator}
+   * The <b>TriggeringPolicy</b> option takes a string value representing the
+   * name of the class implementing the {@link TriggeringPolicy}
    * interface. A corresponding object will be instantiated and assigned as the
    * triggering event evaluator for the SMTPAppender.
    */
-  public void setEvaluatorClass(String value) {
-    try {
-      evaluator = (TriggeringPolicy) OptionHelper.instantiateByClassName(value,
-          TriggeringPolicy.class);
-    } catch (Exception ex) {
-      addError("Evaluator class instanciation failed");
-    }
+  public void setTriggeringPolicy(TriggeringPolicy triggeringPolicy) {
+    this.triggeringPolicy = triggeringPolicy;
   }
-  
+
   public Layout getLayout() {
     return layout;
   }

@@ -44,19 +44,19 @@ public class SMTPAppender extends SMTPAppenderBase {
 
   /**
    * The default constructor will instantiate the appender with a
-   * {@link TriggeringEventEvaluator} that will trigger on events with level
+   * {@link TriggeringPolicy} that will trigger on events with level
    * ERROR or higher.
    */
   public SMTPAppender() {
-    this(new DefaultEvaluator());
+    this(new DefaultSMTPTriggeringPolicy());
   }
 
   /**
-   * Use <code>evaluator</code> passed as parameter as the {@link
-   * TriggeringEventEvaluator} for this SMTPAppender.
+   * Use the parameter as the {@link
+   * TriggeringPolicy} for this SMTPAppender.
    */
-  public SMTPAppender(TriggeringPolicy evaluator) {
-    this.evaluator = evaluator;
+  public SMTPAppender(TriggeringPolicy triggeringPolicy) {
+    this.triggeringPolicy = triggeringPolicy;
   }
 
   /**
@@ -112,7 +112,7 @@ public class SMTPAppender extends SMTPAppenderBase {
   }
 }
 
-class DefaultEvaluator implements TriggeringPolicy {
+class DefaultSMTPTriggeringPolicy implements TriggeringPolicy {
 
   private boolean started;
 
