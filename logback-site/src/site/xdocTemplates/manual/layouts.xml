@@ -266,21 +266,21 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
     the two setter methods are the only addition to the original class. Yet, it is sufficient
     to allow the user to configure these attributes, as shown in the configuration file below:</p>
 
-<div class="source"><pre>%lt;configuration>
+<div class="source"><pre>&lt;configuration>
 
-  %lt;appender name="STDOUT"
+  &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    %lt;layout class="chapter5.MySampleLayout2"> 
-    	<b>%lt;prefix>MyPrefix%lt;/prefix>
-    	%lt;printThreadName>false%lt;/printThreadName></b>
-    %lt;/layout>
-  %lt;/appender>
+    &lt;layout class="chapter5.MySampleLayout2"> 
+    	<b>&lt;prefix>MyPrefix&lt;/prefix>
+    	&lt;printThreadName>false&lt;/printThreadName></b>
+    &lt;/layout>
+  &lt;/appender>
 
-  %lt;root>
-    %lt;level value="debug" />
-    %lt;appender-ref ref="STDOUT" />
-  %lt;/root>
-%lt;/configuration></pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
    <p>
      Note that the <code>PrintThreadName</code> attribute is a boolean
@@ -371,6 +371,12 @@ WARN  [main]: Message 2</pre></div>
 			%-5level means the level of the logging event should be left
 			justified to a width of five characters. Format specifiers
 			will be explained in a short moment.
+		</p>
+		<p>
+			Note that usual brackets chars <em>(</em>
+			and <em>)</em> need to be escaped to be parsed correctly. These
+			brackets can be used by adding two backslashes before the bracket
+			like in <em>\\)</em> and <em>\\)</em>.
 		</p>
 		<p>
 			As mentionned previously, certain conversion specifiers can include 
