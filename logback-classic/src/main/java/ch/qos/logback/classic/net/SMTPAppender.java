@@ -37,7 +37,7 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
  */
 public class SMTPAppender extends SMTPAppenderBase {
 
-  static final String DEFAULT_SUBJECT_PATTERN = "%m";
+  static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
   
   private int bufferSize = 512;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
