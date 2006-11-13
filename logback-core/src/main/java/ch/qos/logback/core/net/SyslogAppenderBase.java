@@ -16,16 +16,16 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   protected String suffixPattern;
   SyslogWriter sw;
   int port = SyslogConstants.SYSLOG_PORT;
-  
+
   public void start() {
     int errorCount = 0;
     if (facilityStr == null) {
       addError("The Facility option is mandatory");
       errorCount++;
     }
-    
+
     facility = facilityStringToint(facilityStr);
-    
+
     try {
       sw = new SyslogWriter(syslogHost, port);
     } catch (UnknownHostException e) {
@@ -35,42 +35,47 @@ public abstract class SyslogAppenderBase extends AppenderBase {
       errorCount++;
       addError("Failed to bind to a random datagram socket ", e);
     }
-    
-    if(layout == null) {
+
+    if (layout == null) {
       layout = buildLayout(facilityStr);
     }
-    
-    if(errorCount == 0) {
+
+    if (errorCount == 0) {
       super.start();
     }
   }
-  
+
   abstract public Layout buildLayout(String facilityStr);
-  
+
   abstract public int getSeverityForEvent(Object eventObject);
-  
+
   @Override
   protected void append(Object eventObject) {
-    if(!isStarted()) {
+    if (!isStarted()) {
       return;
     }
-    
+
     try {
       String msg = layout.doLayout(eventObject);
       sw.write(msg);
       sw.flush();
-    
-    } catch(IOException ioe) {
-      addError("Failed to send diagram to "+syslogHost, ioe);
+      postProcess(eventObject, sw);
+    } catch (IOException ioe) {
+      addError("Failed to send diagram to " + syslogHost, ioe);
       stop();
     }
+  }
+  
+  protected void postProcess(Object event, SyslogWriter sw) {
+    
   }
 
   /**
    * Returns the integer value corresponding to the named syslog facility.
    * 
-   * @throws IllegalArgumentException if the facility string is not recognized
-   * */
+   * @throws IllegalArgumentException
+   *           if the facility string is not recognized
+   */
   static public int facilityStringToint(String facilityStr) {
     if ("KERN".equalsIgnoreCase(facilityStr)) {
       return SyslogConstants.LOG_KERN;
@@ -113,11 +118,11 @@ public abstract class SyslogAppenderBase extends AppenderBase {
     } else if ("LOCAL7".equalsIgnoreCase(facilityStr)) {
       return SyslogConstants.LOG_LOCAL7;
     } else {
-      throw new IllegalArgumentException(facilityStr + " is not a valid syslog facility string");
+      throw new IllegalArgumentException(facilityStr
+          + " is not a valid syslog facility string");
     }
   }
 
-  
   /**
    * Returns the value of the <b>SyslogHost</b> option.
    */
@@ -128,7 +133,7 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   /**
    * The <b>SyslogHost</b> option is the name of the the syslog host where log
    * output should go.
-   *
+   * 
    * <b>WARNING</b> If the SyslogHost is not set, then this appender will fail.
    */
   public void setSyslogHost(String syslogHost) {
@@ -137,7 +142,7 @@ public abstract class SyslogAppenderBase extends AppenderBase {
 
   /**
    * Returns the string value of the <b>Facility</b> option.
-   *
+   * 
    * See {@link #setFacility} for the set of allowed values.
    */
   public String getFacility() {
@@ -145,16 +150,17 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   }
 
   /**
-   * The <b>Facility</b> option must be set one of the strings KERN,
-   * USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP,
-   * NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5,
+   * The <b>Facility</b> option must be set one of the strings KERN, USER,
+   * MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP,
+   * AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5,
    * LOCAL6, LOCAL7. Case is not important.
-   *
-   * <p>See {@link SyslogConstants} and RFC 3164 for more information about the
+   * 
+   * <p>
+   * See {@link SyslogConstants} and RFC 3164 for more information about the
    * <b>Facility</b> option.
    */
   public void setFacility(String facilityStr) {
-    if(facilityStr != null) {
+    if (facilityStr != null) {
       facilityStr = facilityStr.trim();
     }
     this.facilityStr = facilityStr;
@@ -177,7 +183,7 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   }
 
   /**
-   * You can override 
+   * You can override
    */
   public Layout getLayout() {
     return layout;
@@ -186,7 +192,7 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   public void setLayout(Layout layout) {
     this.layout = layout;
   }
-  
+
   @Override
   public void stop() {
     sw.close();
@@ -203,7 +209,7 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   }
 
   /**
-   * The <b>suffixPattern</b> option specifies the fortmat of the 
+   * The <b>suffixPattern</b> option specifies the fortmat of the
    * non-standardized part the message sent to the syslog server.
    * 
    * @param pattern

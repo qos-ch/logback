@@ -44,7 +44,7 @@ public class SyslogAppenderTest extends TestCase {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
-    sa.setSuffixPattern("[%thread] %logger %msg %exception");
+    sa.setSuffixPattern("[%thread] %logger %msg");
     sa.start();
     assertTrue(sa.isStarted());
 
@@ -69,13 +69,13 @@ public class SyslogAppenderTest extends TestCase {
     String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
     String threadName = Thread.currentThread().getName();
     assertTrue(msg.matches(first + "\\[" + threadName + "\\] " + loggerName
-        + " " + logMsg + " "));
+        + " " + logMsg));
 
   }
 
   public void testException() throws InterruptedException {
     int port = MockSyslogServer.PORT + 2;
-    MockSyslogServer mockServer = new MockSyslogServer(1, port);
+    MockSyslogServer mockServer = new MockSyslogServer(21, port);
     mockServer.start();
     // give MockSyslogServer head start
     Thread.sleep(100);
@@ -87,7 +87,7 @@ public class SyslogAppenderTest extends TestCase {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
-    sa.setSuffixPattern("[%thread] %logger %msg %exception");
+    sa.setSuffixPattern("[%thread] %logger %msg");
     sa.start();
     assertTrue(sa.isStarted());
 
@@ -104,19 +104,23 @@ public class SyslogAppenderTest extends TestCase {
     // much sooner than that.
     mockServer.join(8000);
     assertTrue(mockServer.finished);
-    assertEquals(1, mockServer.msgList.size());
+    
+    //message + 20 lines of stacktrace
+    assertEquals(21, mockServer.msgList.size());
+//    int i = 0;
+//    for (String line: mockServer.msgList) {
+//      System.out.println(i++ + ": " + line);
+//    }
+    
     String msg = mockServer.msgList.get(0);
-
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
-
-//    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
-//    String threadName = Thread.currentThread().getName();
-//    String expectedResult = first + "\\[" + threadName + "\\] " + loggerName
-//        + " " + logMsg + " " + ex.getClass().getCanonicalName() + ": " + exMsg + "\n";
-//    assertTrue(msg.matches(expectedResult));
-
-    // fail("check exceptions");
+    
+    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
+    String threadName = Thread.currentThread().getName();
+    String expectedResult = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
+        + " " + logMsg;
+    assertTrue(msg.matches(expectedResult));
   }
 }

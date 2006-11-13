@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
  * SyslogWriter is a wrapper around the {@link DatagramSocket} class so that it
  * behaves like a {@link Writer}.
  */
-class SyslogWriter extends Writer {
+public class SyslogWriter extends Writer {
 
   /**
    * The maximum length after which we discard the existing string buffer and

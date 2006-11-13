@@ -44,9 +44,9 @@ public class MockSyslogServer extends Thread {
       for (int i = 0; i < loopLen; i++) {
         byte[] buf = new byte[2048];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
-	System.out.println("Waiting for message");
+        //System.out.println("Waiting for message");
         socket.receive(packet);
-	System.out.println("Got message");
+        //System.out.println("Got message");
         String msg = new String(buf, 0, packet.getLength());
         msgList.add(msg);
       }

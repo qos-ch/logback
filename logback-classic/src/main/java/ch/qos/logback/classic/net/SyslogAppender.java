@@ -9,12 +9,15 @@
  */
 package ch.qos.logback.classic.net;
 
+import java.io.IOException;
+
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+import ch.qos.logback.core.net.SyslogWriter;
 
 /**
  * 
@@ -23,31 +26,37 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 public class SyslogAppender extends SyslogAppenderBase {
 
   String prefixPattern;
-  
-  static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg %exception";
-  
+  PatternLayout prefixLayout;
+
+  static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
+
   public Layout buildLayout(String facilityStr) {
-  
-    PatternLayout pl = new PatternLayout();
-    pl.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
+
+    prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
+    prefixLayout = new PatternLayout();
+    prefixLayout.getInstanceConverterMap().put("syslogStart",
+        SyslogStartConverter.class.getName());
+    prefixLayout.setPattern(prefixPattern);
+    prefixLayout.setContext(getContext());
+    prefixLayout.start();
     
-    if(prefixPattern == null) {
-      prefixPattern = "%syslogStart{"+facilityStr+"}";
-    }
+    PatternLayout fullLayout = new PatternLayout();
+    fullLayout.getInstanceConverterMap().put("syslogStart",
+        SyslogStartConverter.class.getName());
     
-    if(suffixPattern == null) {
+    if (suffixPattern == null) {
       suffixPattern = DEFAULT_SUFFIX_PATTERN;
     }
-    
-    pl.setPattern(prefixPattern+suffixPattern);
-    pl.setContext(getContext());
-    pl.start();
-    return pl;
+
+    fullLayout.setPattern(prefixPattern + suffixPattern);
+    fullLayout.setContext(getContext());
+    fullLayout.start();
+    return fullLayout;
   }
-  
+
   /*
-   * Convert a level to equivalent syslog severity. Only levels for printing methods
-   * i.e DEBUG, WARN, INFO and ERROR are converted.
+   * Convert a level to equivalent syslog severity. Only levels for printing
+   * methods i.e DEBUG, WARN, INFO and ERROR are converted.
    * 
    * @see ch.qos.logback.core.net.SyslogAppenderBase#getSeverityForEvent(java.lang.Object)
    */
@@ -55,6 +64,26 @@ public class SyslogAppender extends SyslogAppenderBase {
   public int getSeverityForEvent(Object eventObject) {
     LoggingEvent event = (LoggingEvent) eventObject;
     return LevelToSyslogSeverity.convert(event);
+  }
+
+  @Override
+  protected void postProcess(Object eventObject, SyslogWriter sw) {
+    LoggingEvent event = (LoggingEvent) eventObject;
+    
+    String prefix = prefixLayout.doLayout(event);
+    
+    if (event.getThrowableInformation() != null) {
+      String[] strRep = event.getThrowableInformation().getThrowableStrRep();
+      try {
+        for (String line : strRep) {
+          sw.write(prefix + line);
+          sw.flush();
+        }
+      } catch (IOException e) {
+      }
+
+    }
+
   }
 
 }
