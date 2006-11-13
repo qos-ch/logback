@@ -89,7 +89,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   
   public void testWithParenthesis() {
     PatternLayout pl = new PatternLayout();
-    pl.setPattern("(%msg:%msg) %msg");
+    pl.setPattern("\\(%msg:%msg\\) %msg");
     Context context = new LoggerContext();
     pl.setContext(context);
     pl.start();
