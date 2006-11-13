@@ -96,7 +96,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>logback-core-${project.version}.jar</include>
-				<include>logback-core-${project.version}-tests.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -104,7 +103,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>logback-classic-${project.version}.jar</include>
-				<include>logback-classic-${project.version}-tests.jar</include>
 			</includes>
 		</fileSet>		
 		<fileSet>
