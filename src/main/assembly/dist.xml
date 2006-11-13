@@ -54,7 +54,30 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
-		
+		<fileSet>
+			<directory>logback-site/</directory>
+			<outputDirectory>logback-site/</outputDirectory>
+			<includes>
+				<include>
+					pom.xml
+				</include>
+			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>logback-skin/</directory>
+			<outputDirectory>logback-skin/</outputDirectory>
+			<includes>
+				<include>
+					pom.xml
+				</include>
+			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
+		</fileSet>
 		<!-- Module Source directories -->
 		<fileSet>
 			<directory>logback-core/src/</directory>
@@ -76,6 +99,23 @@
 		<fileSet>
 			<directory>logback-examples/src/</directory>
 			<outputDirectory>logback-examples/src/</outputDirectory>
+			<excludes>
+				<exclude>
+					main/resources/
+				</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>logback-examples/src/main/resources</directory>
+			<outputDirectory>logback-examples/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>logback-site/src/</directory>
+			<outputDirectory>logback-site/src/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>logback-skin/src/</directory>
+			<outputDirectory>logback-skin/src/</outputDirectory>
 		</fileSet>
 		<!-- We also include the classes of the examples module -->
 		<fileSet>
@@ -139,7 +179,7 @@
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
-			<outputDirectory>/site</outputDirectory>
+			<outputDirectory>logback-site/target/site</outputDirectory>
 		</fileSet>
 		
 		<!-- Parent files -->
