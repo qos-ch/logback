@@ -283,7 +283,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     }
   }
 
-  public boolean isTriggeringEvent(File file, final Object event) {
+  public boolean isTriggeringEvent(File activeFile, final Object event) {
     long n = System.currentTimeMillis();
 
     if (n >= nextCheck) {

@@ -123,7 +123,7 @@ class DefaultEvaluator implements TriggeringPolicy {
    * This method returns <code>true</code>, if the event level has ERROR
    * level or higher. Otherwise it returns <code>false</code>.
    */
-  public boolean isTriggeringEvent(File file, Object eventObject) {
+  public boolean isTriggeringEvent(File activeFile, Object eventObject) {
     LoggingEvent event = (LoggingEvent) eventObject;
     return event.getLevel().isGreaterOrEqual(Level.ERROR);
   }

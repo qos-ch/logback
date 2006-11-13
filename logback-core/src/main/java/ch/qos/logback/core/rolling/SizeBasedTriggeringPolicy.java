@@ -67,9 +67,9 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
       setMaxFileSize(maxFileSize);
   }
 
-  public boolean isTriggeringEvent(final File file, final Object event) {
+  public boolean isTriggeringEvent(final File activeFile, final Object event) {
     //System.out.println("Size"+file.length());
-    return (file.length() >= maxFileSizeAsLong);
+    return (activeFile.length() >= maxFileSizeAsLong);
   }
 
   public String getMaxFileSize() {

@@ -135,7 +135,7 @@ class DefaultEvaluator implements TriggeringPolicy {
    * Once an email is sent, the next one will not be sent unless a certain amount
    * of time passed.
    */
-  public boolean isTriggeringEvent(File file, Object eventObject) {
+  public boolean isTriggeringEvent(File activeFile, Object eventObject) {
     AccessEvent event = (AccessEvent) eventObject;
 
     if (TRIGGERING_STATUS_CODE <= event.getStatusCode()) {

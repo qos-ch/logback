@@ -23,7 +23,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
   static int LIMIT = 1024;
   int counter = 0;
 
-  public boolean isTriggeringEvent(File file, Object event) {
+  public boolean isTriggeringEvent(File activeFile, Object event) {
     counter++;
 
     if (counter == LIMIT) {

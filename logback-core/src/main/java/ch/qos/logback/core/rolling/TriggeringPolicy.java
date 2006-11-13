@@ -28,9 +28,9 @@ public interface TriggeringPolicy extends LifeCycle {
   /**
    * Should roll-over be triggered at this time?
    * 
-   * @param file A reference to the currently active log file. 
+   * @param activeFile A reference to the currently active log file. 
    * @param event A reference to the currently event. 
    * @return true if a roll-over should occur.
    */
-  public boolean isTriggeringEvent(final File file, final Object event);
+  public boolean isTriggeringEvent(final File activeFile, final Object event);
 }
