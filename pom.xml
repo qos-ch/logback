@@ -106,6 +106,15 @@
 		</dependencies>
 	</dependencyManagement>
 
+  <profiles>
+    <profile>
+      <id>testSkip</id>     
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+  </profiles>
+
 	<build>
 		<extensions>
 			<extension>
