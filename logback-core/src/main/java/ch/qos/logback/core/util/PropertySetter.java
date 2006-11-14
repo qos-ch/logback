@@ -231,7 +231,9 @@ public class PropertySetter extends ContextAwareBase {
         return X_AS_PROPERTY;
       } else if ("java.lang".equals(p.getName())) {
         return X_AS_PROPERTY;
-      } else {
+      } else if(Duration.class.isAssignableFrom(clazz)) {
+        return X_AS_PROPERTY;
+      }else {
         return X_AS_COMPONENT;
       }
     }
@@ -390,6 +392,8 @@ public class PropertySetter extends ContextAwareBase {
       } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
+    } else if(Duration.class.isAssignableFrom(type)) {
+      return Duration.valueOf(val);
     }
 
     return null;

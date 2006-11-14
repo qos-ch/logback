@@ -19,11 +19,14 @@ public class PropertySetterTest extends TestCase {
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("name"));
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Name"));
     
+    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Duration"));
+    
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("open"));
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Open"));
     
     assertEquals(ContainmentType.AS_COMPONENT_COLLECTION, setter.canContainComponent("Window"));
     assertEquals(ContainmentType.AS_PROPERTY_COLLECTION, setter.canContainComponent("adjective"));
+    
     
   }
 
@@ -105,6 +108,13 @@ public class PropertySetterTest extends TestCase {
     assertEquals(pool, house.getSwimmingPool());
   }
 
+  public void testDuration() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    setter.setProperty("duration", "1.4 seconds");
+    assertEquals(1400, house.getDuration().getMilliSeconds());
+  }
+  
 }
 
 class House {
@@ -114,6 +124,7 @@ class House {
   String name;
   String camelCase;
   SwimmingPool pool;
+  Duration duration;
   
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
@@ -173,6 +184,14 @@ class House {
 
   public void addAdjective(String s) {
     adjectiveList.add(s);
+  }
+
+  public Duration getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Duration duration) {
+    this.duration = duration;
   }
 }
 
