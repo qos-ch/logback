@@ -61,6 +61,12 @@
 			<artifactId>servlet-api-2.5</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>janino</groupId>
+			<artifactId>janino</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
