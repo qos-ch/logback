@@ -68,7 +68,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
       ImplicitActionData ad = new ImplicitActionData(parentBean, containmentType);
       ad.propertyName = nestedElementTagName;
       actionDataStack.push(ad);
-      addInfo("NestedSimplePropertyIA deemed applicable <" + pattern + ">");
+      //addInfo("NestedSimplePropertyIA deemed applicable <" + pattern + ">");
       return true;
     default:
       addError("PropertySetter.canContainComponent returned " + containmentType);
