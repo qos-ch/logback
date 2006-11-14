@@ -40,8 +40,9 @@
     </p>
     <p>
     	To run the examples provided in this book, you might have
-    	to add the logback jars to your classpath. They are available
-    	on our <a href="../download.html">download page</a>.
+    	to run the provided script to setup your classpath. The scripts
+    	can be found in the logback distributions, inside the <em>logback-examples</em>
+    	directory.
     </p>
     </div>
 

@@ -191,10 +191,14 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
 		<p>The sample application <code>chapter5.SampleLogging</code> configures logback with the 
 		configuration script supplied as parameter and then logs a debug message, 
 		followed by an error message. 
-		See <em>examples/chapter5/SampleLogging.java</em> for precise details.</p>
+		See <em>src/main/java/chapter5/SampleLogging.java</em> for precise details.</p>
 		
-		<p>Executing the command <em>java chapter5.SampleLogging chapter5/sampleLayoutConfig.xml</em> 
-		will produce the following output:</p>
+		<p>
+		To run this example, as well as others in this
+		chapter, please run the script provided in the <em>logback-examples</em> directory.
+		Executing the command <em>java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</em> 
+		once in the <em>logback-examples</em> directory will produce the following output:
+		</p>
 		
 <div class="source"><pre>0 DEBUG [main] chapter5.SampleLogging - Everything's going well
 0 ERROR [main] chapter5.SampleLogging - ... not quite</pre></div>
@@ -1047,7 +1051,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)
 		</em>
-		<div class="source"><pre>ppackage chapter5;
+		<div class="source"><pre>package chapter5;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1205,7 +1209,7 @@ public class ExceptionEvaluatorExample {
 		<p>Let us say that our customized <code>Converter</code> will output the level of the logging
 		event, colored following ANSI rules. Here is the necessary implementation:</p>
 		
-<em> Example 5.4: Sample Converter Example (examples/chapter5/MySampleConverter.java)</em>
+<em> Example 5.4: Sample Converter Example (src/main/java/chapter5/MySampleConverter.java)</em>
 <div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.Level;
@@ -1255,7 +1259,7 @@ public class MySampleConverter extends ClassicConverter {
 		the new <code>Converter</code>. For this task, we just need to declare the new
 		conversion word in the configuration file, as shown below:</p>
 		
-<em> Example 5.4: Sample Converter Example (examples/chapter5/mySampleConverterConfig.xml)</em>
+<em> Example 5.4: Sample Converter Example (src/main/java/chapter5/mySampleConverterConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>

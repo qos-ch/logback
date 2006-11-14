@@ -394,7 +394,7 @@ public class ExitWoes1 {
 
 	<p>
 		To run this example, as well as others in this
-		chapter, please run the script provided in logback's main directory. 
+		chapter, please run the script provided in the <em>logback-examples</em> directory. 
 		Then, use the <code>ConfigurationTester</code> by
 		issuing the following command, once in the <em>logback-examples</em> directory:
 	</p>
@@ -1728,6 +1728,9 @@ public class CounterBasedTP extends TriggeringPolicyBase {
   &lt;/root>  
 &lt;/configuration></pre></div>
 
+
+
+
 		<h3>DBAppender</h3>
 		
 		<p>
@@ -1744,11 +1747,11 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			is a specific script for each of the most popular database systems. 
 			If the script for your particular type of database system is missing, it should be
 			quite easy to write one, taking example on the already existing scripts. If
-			you send them to us, we will gladly include missing scripts in future
+			you send them to us, we will gladly include missing scripts in future releases.
 		</p>
 
 		<p>
-			If the JDBC driver you are using supports the
+			If your JDBC driver supports the
 			<code>getGeneratedKeys</code> method introduced in
 			JDBC 3.0 specification, then no more steps are required, excluding usual
 			configuration. 
