@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DummyResponse implements HttpServletResponse {
 
+  int status;
   Map<String, String> headerMap;
+  
   public DummyResponse() {
     headerMap = new HashMap<String, String>();
     headerMap.put("headerName1", "headerValue1");
@@ -68,9 +70,6 @@ public class DummyResponse implements HttpServletResponse {
   }
 
   public void setIntHeader(String arg0, int arg1) {
-  }
-
-  public void setStatus(int arg0) {
   }
 
   public void setStatus(int arg0, String arg1) {
@@ -131,5 +130,17 @@ public class DummyResponse implements HttpServletResponse {
   public String getHeader(String key) {
     return headerMap.get(key);
   }
+  
+  public long getContentCount() {
+    return 10000L;
+  }
+  
+  public int getStatus() {
+    return status;
+  }
 
+  public void setStatus(int status) {
+    this.status = status;
+  }
+  
 }

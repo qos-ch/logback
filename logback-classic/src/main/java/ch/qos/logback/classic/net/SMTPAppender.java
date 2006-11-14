@@ -10,15 +10,13 @@
 
 package ch.qos.logback.classic.net;
 
-import java.io.File;
-
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
-import ch.qos.logback.core.rolling.TriggeringPolicy;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -38,25 +36,36 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
 public class SMTPAppender extends SMTPAppenderBase {
 
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
+  static final String DEFAULT_EVALUATOR_EXPRESSION = "level >= ERROR";
   
   private int bufferSize = 512;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
 
   /**
    * The default constructor will instantiate the appender with a
-   * {@link TriggeringPolicy} that will trigger on events with level
+   * {@link EventEvaluator} that will trigger on events with level
    * ERROR or higher.
    */
   public SMTPAppender() {
-    this(new DefaultSMTPTriggeringPolicy());
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setContext(getContext());
+    jee.setExpression(DEFAULT_EVALUATOR_EXPRESSION);
+    jee.setName("SMTPAppender's default event evaluator");
+    this.eventEvaluator = jee;
   }
 
   /**
    * Use the parameter as the {@link
-   * TriggeringPolicy} for this SMTPAppender.
+   * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(TriggeringPolicy triggeringPolicy) {
-    this.triggeringPolicy = triggeringPolicy;
+  public SMTPAppender(EventEvaluator eventEvaluator) {
+    this.eventEvaluator = eventEvaluator;
+  }
+  
+  @Override
+  public void start() {
+    ((JaninoEventEvaluator) eventEvaluator).start();
+    super.start();
   }
 
   /**
@@ -109,34 +118,5 @@ public class SMTPAppender extends SMTPAppenderBase {
     pl.setPattern(subjectStr);
     pl.start();
     return pl;
-  }
-}
-
-class DefaultSMTPTriggeringPolicy implements TriggeringPolicy {
-
-  private boolean started;
-
-  /**
-   * Is this <code>event</code> the e-mail triggering event?
-   * 
-   * <p>
-   * This method returns <code>true</code>, if the event level has ERROR
-   * level or higher. Otherwise it returns <code>false</code>.
-   */
-  public boolean isTriggeringEvent(File activeFile, Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
-    return event.getLevel().isGreaterOrEqual(Level.ERROR);
-  }
-
-  public boolean isStarted() {
-    return started == true;
-  }
-
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
   }
 }

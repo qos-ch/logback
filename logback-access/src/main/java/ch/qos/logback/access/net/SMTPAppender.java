@@ -10,14 +10,12 @@
 
 package ch.qos.logback.access.net;
 
-import java.io.File;
-
 import ch.qos.logback.access.PatternLayout;
-import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
-import ch.qos.logback.core.rolling.TriggeringPolicy;
 
 /**
  * Send an e-mail when a specific access event occurs, typically on server errors.
@@ -34,7 +32,7 @@ import ch.qos.logback.core.rolling.TriggeringPolicy;
  * an email will be sent only if the previous email was sent more that 24 hours ago.
  * <p>
  * This behaviour can be easily bypassed either by modifying this class, or by
- * imlementing a new <code>TriggeringPolicy</code>.
+ * imlementing a new <code>EventEvaluator</code>.
  * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -49,19 +47,26 @@ public class SMTPAppender extends SMTPAppenderBase {
 
   /**
    * The default constructor will instantiate the appender with a
-   * {@link TriggeringEventEvaluator} that will trigger on events with level
+   * {@link EventEvaluator} that will trigger on events with level
    * ERROR or higher.
    */
   public SMTPAppender() {
-    this(new DefaultEvaluator());
+    DefaultSMTPEvaluator evaluator = new DefaultSMTPEvaluator(getContext());
+    setEventEvaluator(evaluator);
   }
 
   /**
    * Use <code>evaluator</code> passed as parameter as the {@link
-   * TriggeringEventEvaluator} for this SMTPAppender.
+   * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(TriggeringPolicy evaluator) {
-    this.triggeringPolicy = evaluator;
+  public SMTPAppender(EventEvaluator evaluator) {
+    this.eventEvaluator = evaluator;
+  }
+  
+  @Override
+  public void start() {
+    ((DefaultSMTPEvaluator) eventEvaluator).start();
+    super.start();
   }
 
   /**
@@ -113,49 +118,5 @@ public class SMTPAppender extends SMTPAppenderBase {
     pl.setPattern(subjectStr);
     pl.start();
     return pl;
-  }
-}
-
-class DefaultEvaluator implements TriggeringPolicy {
-
-  private boolean started;
-
-  private static final int TRIGGERING_STATUS_CODE = 500;
-  private static final long ONE_DAY = 1000*60*60*24;
-  private long LAST_TRIGGER_DATE = 0L;
-  
-  
-  /**
-   * Is this <code>event</code> the e-mail triggering event?
-   * 
-   * <p>
-   * This method returns <code>true</code>, if the event status code
-   * is 500 (server error) or higher. Otherwise it returns <code>false</code>.
-   * 
-   * Once an email is sent, the next one will not be sent unless a certain amount
-   * of time passed.
-   */
-  public boolean isTriggeringEvent(File activeFile, Object eventObject) {
-    AccessEvent event = (AccessEvent) eventObject;
-
-    if (TRIGGERING_STATUS_CODE <= event.getStatusCode()) {
-      if (System.currentTimeMillis() >= LAST_TRIGGER_DATE + ONE_DAY) {
-        LAST_TRIGGER_DATE = System.currentTimeMillis();
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public boolean isStarted() {
-    return started == true;
-  }
-
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
   }
 }

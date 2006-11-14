@@ -26,7 +26,8 @@ import javax.mail.internet.MimeMultipart;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.rolling.TriggeringPolicy;
+import ch.qos.logback.core.boolex.EvaluationException;
+import ch.qos.logback.core.boolex.EventEvaluator;
 
 /**
  * An abstract class that provides basic support for
@@ -49,7 +50,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
 
   protected Message msg;
 
-  protected TriggeringPolicy triggeringPolicy;
+  protected EventEvaluator eventEvaluator;
 
   /**
    * return a layout for the subjet string as appropriate for the
@@ -86,6 +87,8 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       
       subjectLayout = makeSubjectLayout(subjectStr);
       
+      
+      
       started = true;
 
     } catch (MessagingException e) {
@@ -105,8 +108,12 @@ public abstract class SMTPAppenderBase extends AppenderBase {
 
     subAppend(eventObject);
 
-    if (triggeringPolicy.isTriggeringEvent(null, eventObject)) {
+    try {
+    if (eventEvaluator.evaluate(eventObject)) {
       sendBuffer(eventObject);
+    }
+    } catch (EvaluationException ex) {
+      addError("SMTPAppender's EventEvaluator threw an Exception" + ex);
     }
   }
   
@@ -126,8 +133,8 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       return false;
     }
 
-    if (this.triggeringPolicy == null) {
-      addError("No TriggeringPolicy is set for appender [" + name + "].");
+    if (this.eventEvaluator == null) {
+      addError("No EventEvaluator is set for appender [" + name + "].");
       return false;
     }
 
@@ -272,13 +279,13 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   }
   
   /**
-   * The <b>TriggeringPolicy</b> option takes a string value representing the
-   * name of the class implementing the {@link TriggeringPolicy}
+   * The <b>EventEvaluator</b> option takes a string value representing the
+   * name of the class implementing the {@link EventEvaluators}
    * interface. A corresponding object will be instantiated and assigned as the
-   * triggering event evaluator for the SMTPAppender.
+   * event evaluator for the SMTPAppender.
    */
-  public void setTriggeringPolicy(TriggeringPolicy triggeringPolicy) {
-    this.triggeringPolicy = triggeringPolicy;
+  public void setEventEvaluator(EventEvaluator eventEvaluator) {
+    this.eventEvaluator = eventEvaluator;
   }
 
   public Layout getLayout() {
