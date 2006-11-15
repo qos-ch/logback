@@ -2131,7 +2131,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			single configuration file and shared by logback and other frameworks.
 		</p>	
 		
-				
+<!-- 		TO BE TESTED		
 		<p>
 			The connection created by <code>DataSourceConnectionSource</code> can be placed in a JNDI
 			context by using <code>BindDataSourceToJNDIAction</code>. In that case, one has to specify
@@ -2157,6 +2157,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			This is a very powerfull possibility of Joran. If you'd like to read more about Joran, please
 			visit our <a href="../joran.html">introduction to Joran</a>.
 		</p>
+		
+		-->
 
 		<p>
 			The third implementation of <code>ConnectionSource</code> that is shipped with
@@ -2204,7 +2206,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		
 		<p>
 			Experiment shows that using connection pooling with <code>DBAppender</code>
-			gives a big boost to the process' performance. With the following
+			gives a big performance boost. With the following
 			configuration file, logging events are sent to a MySQL database,
 			without any pooling.
 		</p>
@@ -2231,7 +2233,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>
 			With this configuration file, sending 500 logging events to
-			a MySQL database takes a whopping 22 seconds. This figure is absolutely
+			a MySQL database takes a whopping 5 seconds, that is 
+			10 miliseconds per requests. This figure is
 			unacceptable when dealing with large applications.
 		</p>
 
@@ -2267,8 +2270,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>
 			With this new configuration, sending 500 logging requests to
-			the same MySQL database as previously used takes no more than 5 seconds.
-			The gain is a <em>4.4</em> factor. 
+			the same MySQL database as previously used takes around 0.5 seconds,
+			for an average time of 1 milisecond per request.
+			The gain is a <em>10</em> factor. 
 		</p>
 
 		<a name="SyslogAppender" />
