@@ -11,7 +11,7 @@ import ch.qos.logback.core.boolex.EvaluationException;
 
 public class DefaultSMTPEvaluatorTest extends TestCase {
 
-  
+  final String expectedURL = "testUrl";
   Context context = new ContextBase();
   DefaultSMTPEvaluator evaluator;    
   DummyRequest request;
@@ -19,7 +19,9 @@ public class DefaultSMTPEvaluatorTest extends TestCase {
   DummyServerAdapter serverAdapter;
   
   public void setUp() throws Exception {
-    evaluator = new DefaultSMTPEvaluator(context);
+    evaluator = new DefaultSMTPEvaluator();
+    evaluator.setContext(context);
+    evaluator.setUrl(expectedURL);
     evaluator.start();
     request = new DummyRequest();
     response = new DummyResponse();
@@ -37,25 +39,14 @@ public class DefaultSMTPEvaluatorTest extends TestCase {
   }
   
   public void testExpectFalseBecauseOfStatus() throws EvaluationException {
+    request.setRequestUrl("test");
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    response.setStatus(100);
     assertFalse(evaluator.evaluate(ae));
   }
   
   public void testExpectTrue() throws EvaluationException {
+    request.setRequestUrl(expectedURL);    
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    response.setStatus(500);
     assertTrue(evaluator.evaluate(ae));    
   }
-  
-  public void testExpectFalseBecauseOfTime() throws EvaluationException {
-    AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    response.setStatus(500);
-    //this returns true and sets the time
-    evaluator.evaluate(ae);
-    //this should return false because 24h have not passed yet.
-    assertFalse(evaluator.evaluate(ae));
-  }
-  
-  
 }

@@ -7,7 +7,7 @@
 
 <configuration>
   <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <TriggeringPolicy class="chapter4.mail.CounterBasedTP" />
+    <Evaluator class="chapter4.mail.CounterBasedEvaluator" />
     <BufferSize>1050</BufferSize>
     <SMTPHost>${smtpHost}</SMTPHost>
     <To>${to}</To>

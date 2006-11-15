@@ -87,8 +87,6 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       
       subjectLayout = makeSubjectLayout(subjectStr);
       
-      
-      
       started = true;
 
     } catch (MessagingException e) {
@@ -284,7 +282,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * interface. A corresponding object will be instantiated and assigned as the
    * event evaluator for the SMTPAppender.
    */
-  public void setEventEvaluator(EventEvaluator eventEvaluator) {
+  public void setEvaluator(EventEvaluator eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
   }
 

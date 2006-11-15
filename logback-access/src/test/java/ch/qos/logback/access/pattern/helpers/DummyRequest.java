@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 public class DummyRequest implements HttpServletRequest {
 
   Hashtable<String, String> headerNames;
+  String url;
 
   public DummyRequest() {
     headerNames = new Hashtable<String, String>();
@@ -83,7 +84,7 @@ public class DummyRequest implements HttpServletRequest {
   }
 
   public StringBuffer getRequestURL() {
-    return null;
+    return new StringBuffer(url);
   }
 
   public String getRequestedSessionId() {
@@ -242,5 +243,9 @@ public class DummyRequest implements HttpServletRequest {
 
   public void setCharacterEncoding(String arg0)
       throws UnsupportedEncodingException {
+  }
+  
+  public void setRequestUrl(String url) {
+    this.url = url;
   }
 }

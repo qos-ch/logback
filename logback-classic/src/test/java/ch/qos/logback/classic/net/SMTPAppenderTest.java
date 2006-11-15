@@ -75,7 +75,7 @@ public class SMTPAppenderTest extends TestCase {
   }
 
   public void setTriggeringPolicy() {
-    appender.setEventEvaluator(null);
+    appender.setEvaluator(null);
     appender.checkEntryConditions();
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }

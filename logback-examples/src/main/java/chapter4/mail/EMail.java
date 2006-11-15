@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.util.StatusPrinter;
 
 
 
@@ -38,7 +39,7 @@ public class EMail {
       lc.shutdownAndReset();
       configurator.setContext(lc);
       configurator.doConfigure(configFile);
-      //StatusPrinter.print(lc);
+      StatusPrinter.print(lc);
     }
 
     Logger logger = LoggerFactory.getLogger(EMail.class);

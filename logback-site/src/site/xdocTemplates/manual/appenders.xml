@@ -1,4 +1,3 @@
-<document>
 	<!-- 
 		
 		Warning: do not use any auto-format function on this file.
@@ -1534,20 +1533,20 @@ public interface TriggeringPolicy extends LifeCycle {
 			</td>
 		</tr>
 		<tr>
-			<td><b><span class="option">TriggeringPolicy</span></b></td>
+			<td><b><span class="option">Evaluator</span></b></td>
 			<td><code>String</code></td>
 			<td>
-				<p>This option is declared by creating a new <code>&lt;TriggeringPolicy/></code>
+				<p>This option is declared by creating a new <code>&lt;EventEvaluator/></code>
 				element. The name of the class that the user wishes to use as the
-				<code>SMTPAppender</code>'s <code>TriggeringPolicy</code> can be given
+				<code>SMTPAppender</code>'s <code>Evaluator</code> can be given
 				by adding an attribute to the newly created element.
 				</p>
 				<p>
-				More details about the use of triggering policies with <code>SMTPAppender</code>
+				More details about the use of event evaluators with <code>SMTPAppender</code>
 				follow further down this document.
 				</p>
 				<p>In the absence of this option, 
-				<code>SMTPAppender</code> is assigned a default triggering policy which triggers 
+				<code>SMTPAppender</code> is assigned a default event evaluator which triggers 
 				email transmission as a response to any event of level <em>ERROR</em> or higher.  
 				</p>
 			</td>
@@ -1657,32 +1656,36 @@ public interface TriggeringPolicy extends LifeCycle {
 			By default, the <code>SMTPAppender</code> will initiate the transmission of an email 
 			message as a response to an event of level <em>ERROR</em> or higher. 
 			However, it is possible to override this default behavior by providing a custom 
-			implementation of the <code>TriggeringPolicy</code> interface. 
+			implementation of the <code>EventEvaluator</code> interface. 
 		</p>
 		
 		<p>
 			The <code>SMTPAppender</code> submits each incoming event to its evaluator 
-			by calling <code>isTriggeringEvent()</code> method in order to check whether 
+			by calling <code>evaluate()</code> method in order to check whether 
 			the event should trigger an email or just be placed in the cyclic buffer. 
+			When the evaluator gives a positive answer to its evaluation, an email is sent.
 			The <code>SMTPAppender</code> contains one and only one evaluator object. 
 			This object may possess its own state. For illustrative purposes, 
-			the <code>CounterBasedTP</code> class listed next, implements a triggering policy whereby 
-			every 1024th event triggers an email message.
+			the <code>CounterBasedEvaluator</code> class listed next, implements an
+			event evaluator whereby every 1024th event triggers an email message.
 		</p>
 
-<em>Example 4.9: A <code>TriggeringPolicy</code> implementation
-that triggers every 1024th event (<a href="../xref/chapter4/mail/CounterBasedTP.html">logback-examples/src/main/java/chapter4/mail/CounterBasedTP.java</a>)</em>
+<em>Example 4.9: A <code>EventEvaluator</code> implementation
+that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapter4/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapter4/mail/CounterBasedEvaluator.java</a>)</em>
 <div class="source"><pre>package chapter4.mail;
 
-import java.io.File;
-import ch.qos.logback.core.rolling.TriggeringPolicyBase;
+import ch.qos.logback.core.boolex.EvaluationException;
+import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class CounterBasedTP extends TriggeringPolicyBase {
-  boolean started;
+public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator {
+
   static int LIMIT = 1024;
   int counter = 0;
+  String name;
 
-  public boolean isTriggeringEvent(File activeFile, Object event) {
+  <b>public boolean evaluate(Object event) throws NullPointerException,
+      EvaluationException {
     counter++;
 
     if (counter == LIMIT) {
@@ -1692,30 +1695,38 @@ public class CounterBasedTP extends TriggeringPolicyBase {
     } else {
       return false;
     }
+  }</b>
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }</pre></div>
 
 		<p>
-			Note that this implementation extends <code>TriggeringPolicyBase</code> instead
-			of implementing <code>TriggeringPolicy</code>. This allows the user to concentrate
-			on the core functions of her <code>TriggeringPolicy</code> and let the base class
+			Note that this implementation extends <code>ContextAwareBase</code> and
+			implements <code>EventEvaluator</code>. This allows the user to concentrate
+			on the core functions of her <code>EventEvaluator</code> and let the base class
 			provide the common functionnality.
 		</p>
 
 		<p>
-			Setting the <span class="option">TriggeringPolicy</span> option of 
-			<code>SMTPAppender</code> instructs it to use a custom triggering policy. 
+			Setting the <span class="option">EventEvaluator</span> option of 
+			<code>SMTPAppender</code> instructs it to use a custom evaluator. 
 			The next configuration file attaches a <code>SMTPAppender</code> to the root logger. 
-			This appender has a buffer size of 2048 and uses a <code>CounterBasedTP</code> instance 
-			as its triggering policy.
+			This appender has a buffer size of 2048 and uses a <code>CounterBasedEvaluator</code> instance 
+			as its event evaluator.
 		</p>
 
 <em>Example 4.10: <code>SMTPAppender</code> with custom 
-<code>TriggeringPolicy</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
+<code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
 
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <b>&lt;TriggeringPolicy class="chapter4.mail.CounterBasedTP" /></b>
+    <b>&lt;Evaluator class="chapter4.mail.CounterBasedEvaluator" /></b>
     &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>

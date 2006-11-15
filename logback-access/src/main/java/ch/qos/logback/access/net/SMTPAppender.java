@@ -51,8 +51,6 @@ public class SMTPAppender extends SMTPAppenderBase {
    * ERROR or higher.
    */
   public SMTPAppender() {
-    DefaultSMTPEvaluator evaluator = new DefaultSMTPEvaluator(getContext());
-    setEventEvaluator(evaluator);
   }
 
   /**
@@ -61,12 +59,6 @@ public class SMTPAppender extends SMTPAppenderBase {
    */
   public SMTPAppender(EventEvaluator evaluator) {
     this.eventEvaluator = evaluator;
-  }
-  
-  @Override
-  public void start() {
-    ((DefaultSMTPEvaluator) eventEvaluator).start();
-    super.start();
   }
 
   /**

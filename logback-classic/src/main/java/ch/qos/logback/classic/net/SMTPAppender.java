@@ -57,12 +57,6 @@ public class SMTPAppender extends SMTPAppenderBase {
   public SMTPAppender(EventEvaluator eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
   }
-  
-  @Override
-  public void start() {
-    ((JaninoEventEvaluator) eventEvaluator).start();
-    super.start();
-  }
 
   /**
    * Perform SMTPAppender specific appending actions, mainly adding the event to
