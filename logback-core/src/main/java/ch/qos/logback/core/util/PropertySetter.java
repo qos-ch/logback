@@ -147,11 +147,12 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     Class[] paramTypes = setter.getParameterTypes();
-
+  
+    
     if (paramTypes.length != 1) {
       throw new PropertySetterException("#params for setter != 1");
     }
-
+    
     Object arg;
 
     try {

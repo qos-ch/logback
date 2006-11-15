@@ -31,48 +31,53 @@ public class DurationTest extends TestCase {
 
   public void test() {
     {
+      Duration d = Duration.valueOf("12");
+      assertEquals(12, d.getMilliseconds());
+    }
+    
+    {
       Duration d = Duration.valueOf("8 milliseconds");
-      assertEquals(8, d.getMilliSeconds());
+      assertEquals(8, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("10.7 millisecond");
-      assertEquals(10, d.getMilliSeconds());
+      assertEquals(10, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("10 seconds");
-      assertEquals(10 * 1000, d.getMilliSeconds());
+      assertEquals(10 * 1000, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("10.7 seconds");
-      assertEquals(10700, d.getMilliSeconds());
+      assertEquals(10700, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("1 minute");
-      assertEquals(1000*60, d.getMilliSeconds());
+      assertEquals(1000*60, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("2.2 minutes");
-      assertEquals(2200*60, d.getMilliSeconds());
+      assertEquals(2200*60, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("1 hour");
-      assertEquals(1000*HOURS_CO, d.getMilliSeconds());
+      assertEquals(1000*HOURS_CO, d.getMilliseconds());
     }
     
     {
       Duration d = Duration.valueOf("4.2 hours");
-      assertEquals(4200*HOURS_CO, d.getMilliSeconds());
+      assertEquals(4200*HOURS_CO, d.getMilliseconds());
     }
 
     {
       Duration d = Duration.valueOf("5 days");
-      assertEquals(5000*DAYS_CO, d.getMilliSeconds());
+      assertEquals(5000*DAYS_CO, d.getMilliseconds());
     }
   }
 }

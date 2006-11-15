@@ -12,12 +12,25 @@ package ch.qos.logback.core.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Duration instances represent a lapse of time. Internally, the duration is stored
+ * in milliseconds.
+ * <p>
+ * 
+ * The {@link #valueOf} method can convert strings such as "3.5 minutes", "5 hours", into
+ * Duration instances. The recognized units of time are the "millisecond", "second", "minute"
+ * "hour" and "day". The unit name may be followed by an "s". Thus, "2 day" and "2 days" are
+ * equivalent. In the absence of a time unit specification, milliseconds are assumed.
+ * 
+ * 
+ * @author Ceki Gulcu
+ */
 public class Duration {
 
   private final static String DOUBLE_PART = "([0-9]*(.[0-9]+)?)";
   private final static int DOUBLE_GROUP = 1;
 
-  private final static String UNIT_PART = "(millisecond|second|minute|hour|day)s?";
+  private final static String UNIT_PART = "(|millisecond|second|minute|hour|day)s?";
   private final static int UNIT_GROUP = 3;
 
   private static final Pattern DURATION_PATTERN = Pattern.compile(DOUBLE_PART
@@ -30,7 +43,7 @@ public class Duration {
 
   final long millis;
 
-  Duration(long millis) {
+  public Duration(long millis) {
     this.millis = millis;
   }
 
@@ -53,9 +66,12 @@ public class Duration {
   public static Duration buildByDays(double value) {
     return new Duration((long) (DAYS_COEFFICIENT*value));
   }
+
+  public static Duration buildUnbounded() {
+    return new Duration(Long.MAX_VALUE);
+  }
   
-  
-  public long getMilliSeconds() {
+  public long getMilliseconds() {
     return millis;
   }
 
@@ -67,7 +83,7 @@ public class Duration {
       String unitStr = matcher.group(UNIT_GROUP);
 
       double doubleValue = Double.valueOf(doubleStr);
-      if (unitStr.equalsIgnoreCase("millisecond")) {
+      if (unitStr.equalsIgnoreCase("millisecond") || unitStr.length() == 0) {
         return buildByMilliseconds(doubleValue);
       } else if (unitStr.equalsIgnoreCase("second")) {
         return buildBySeconds(doubleValue);

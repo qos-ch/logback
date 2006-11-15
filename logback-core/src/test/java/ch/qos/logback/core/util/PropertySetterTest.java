@@ -113,7 +113,7 @@ public class PropertySetterTest extends TestCase {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     setter.setProperty("duration", "1.4 seconds");
-    assertEquals(1400, house.getDuration().getMilliSeconds());
+    assertEquals(1400, house.getDuration().getMilliseconds());
   }
 
   public void testFileSize() {
