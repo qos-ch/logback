@@ -20,6 +20,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Name"));
     
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Duration"));
+    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("fs"));
     
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("open"));
     assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Open"));
@@ -114,7 +115,13 @@ public class PropertySetterTest extends TestCase {
     setter.setProperty("duration", "1.4 seconds");
     assertEquals(1400, house.getDuration().getMilliSeconds());
   }
-  
+
+  public void testFileSize() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    setter.setProperty("fs", "2 kb");
+    assertEquals(2*1024, house.getFs().getSize());
+  }
 }
 
 class House {
@@ -125,6 +132,7 @@ class House {
   String camelCase;
   SwimmingPool pool;
   Duration duration;
+  FileSize fs;
   
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
@@ -192,6 +200,14 @@ class House {
 
   public void setDuration(Duration duration) {
     this.duration = duration;
+  }
+
+  public FileSize getFs() {
+    return fs;
+  }
+
+  public void setFs(FileSize fs) {
+    this.fs = fs;
   }
 }
 

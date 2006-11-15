@@ -34,11 +34,32 @@ public class Duration {
     this.millis = millis;
   }
 
-  long getMilliSeconds() {
+  Duration buildByMilliseconds(double value) {
+    return new Duration((long) (value));
+  }
+  
+  Duration buildBySeconds(double value) {
+    return new Duration((long) (SECONDS_COEFFICIENT*value));
+  }
+
+  Duration buildByMinutes(double value) {
+    return new Duration((long) (MINUTES_COEFFICIENT*value));
+  }
+  
+  Duration buildByHours(double value) {
+    return new Duration((long) (HOURS_COEFFICIENT*value));
+  }
+
+  Duration buildByDays(double value) {
+    return new Duration((long) (DAYS_COEFFICIENT*value));
+  }
+  
+  
+  public long getMilliSeconds() {
     return millis;
   }
 
-  static Duration valueOf(String durationStr) {
+  public static Duration valueOf(String durationStr) {
     Matcher matcher = DURATION_PATTERN.matcher(durationStr);
 
     long coefficient;

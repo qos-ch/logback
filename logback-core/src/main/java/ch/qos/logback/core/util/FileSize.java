@@ -34,11 +34,11 @@ public class FileSize {
     this.size = size;
   }
 
-  long getSize() {
+  public long getSize() {
     return size;
   }
 
-  static FileSize valueOf(String fileSizeStr) {
+  static public FileSize valueOf(String fileSizeStr) {
     Matcher matcher = FILE_SIZE_PATTERN.matcher(fileSizeStr);
 
     long coefficient;

@@ -113,7 +113,7 @@ public class PropertySetter extends ContextAwareBase {
     name = Introspector.decapitalize(name);
 
     PropertyDescriptor prop = getPropertyDescriptor(name);
-   
+
     if (prop == null) {
       addWarn("No such property [" + name + "] in " + objClass.getName() + ".");
     } else {
@@ -231,9 +231,11 @@ public class PropertySetter extends ContextAwareBase {
         return X_AS_PROPERTY;
       } else if ("java.lang".equals(p.getName())) {
         return X_AS_PROPERTY;
-      } else if(Duration.class.isAssignableFrom(clazz)) {
+      } else if (Duration.class.isAssignableFrom(clazz)) {
         return X_AS_PROPERTY;
-      }else {
+      } else if (FileSize.class.isAssignableFrom(clazz)) {
+        return X_AS_PROPERTY;
+      } else {
         return X_AS_COMPONENT;
       }
     }
@@ -289,7 +291,7 @@ public class PropertySetter extends ContextAwareBase {
 
     name = capitalizeFirstLetter(name);
     Method adderMethod = getMethod("add" + name);
- 
+
     if (adderMethod == null) {
       addError("No adder for property [" + name + "].");
       return;
@@ -308,7 +310,6 @@ public class PropertySetter extends ContextAwareBase {
       addError("Conversion to type [" + paramTypes[0] + "] failed. ", t);
       return;
     }
-
 
     if (arg == null) {
       addError("Conversion to type [" + paramTypes[0] + "] failed.");
@@ -392,8 +393,10 @@ public class PropertySetter extends ContextAwareBase {
       } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
-    } else if(Duration.class.isAssignableFrom(type)) {
+    } else if (Duration.class.isAssignableFrom(type)) {
       return Duration.valueOf(val);
+    } else if (FileSize.class.isAssignableFrom(type)) {
+      return FileSize.valueOf(val);
     }
 
     return null;
