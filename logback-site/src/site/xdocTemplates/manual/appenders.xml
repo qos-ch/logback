@@ -1,4 +1,5 @@
-	<!-- 
+<document>
+<!-- 
 		
 		Warning: do not use any auto-format function on this file.
 		Since "source" divs use pre as white-space, it affects the
@@ -2425,13 +2426,6 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		
 		<h3>SyslogAppender</h3>
 	 -->
-	
-	
-	
-	
-	
-	
-	
 
 	</body>
 </document>
