@@ -34,23 +34,23 @@ public class Duration {
     this.millis = millis;
   }
 
-  Duration buildByMilliseconds(double value) {
+  public static Duration buildByMilliseconds(double value) {
     return new Duration((long) (value));
   }
   
-  Duration buildBySeconds(double value) {
+  public static Duration buildBySeconds(double value) {
     return new Duration((long) (SECONDS_COEFFICIENT*value));
   }
 
-  Duration buildByMinutes(double value) {
+  public static Duration buildByMinutes(double value) {
     return new Duration((long) (MINUTES_COEFFICIENT*value));
   }
   
-  Duration buildByHours(double value) {
+  public static Duration buildByHours(double value) {
     return new Duration((long) (HOURS_COEFFICIENT*value));
   }
 
-  Duration buildByDays(double value) {
+  public static Duration buildByDays(double value) {
     return new Duration((long) (DAYS_COEFFICIENT*value));
   }
   
@@ -62,26 +62,24 @@ public class Duration {
   public static Duration valueOf(String durationStr) {
     Matcher matcher = DURATION_PATTERN.matcher(durationStr);
 
-    long coefficient;
     if (matcher.matches()) {
       String doubleStr = matcher.group(DOUBLE_GROUP);
       String unitStr = matcher.group(UNIT_GROUP);
 
       double doubleValue = Double.valueOf(doubleStr);
       if (unitStr.equalsIgnoreCase("millisecond")) {
-        coefficient = 1;
+        return buildByMilliseconds(doubleValue);
       } else if (unitStr.equalsIgnoreCase("second")) {
-        coefficient = SECONDS_COEFFICIENT;
+        return buildBySeconds(doubleValue);
       } else if (unitStr.equalsIgnoreCase("minute")) {
-        coefficient = MINUTES_COEFFICIENT;
+        return buildByMinutes(doubleValue);
       } else if (unitStr.equalsIgnoreCase("hour")) {
-        coefficient = HOURS_COEFFICIENT;
+        return buildByHours(doubleValue);
       } else if (unitStr.equalsIgnoreCase("day")) {
-        coefficient = DAYS_COEFFICIENT;
+        return buildByDays(doubleValue);
       } else {
         throw new IllegalStateException("Unexpected" + unitStr);
       }
-      return new Duration((long) (doubleValue * coefficient));
     } else {
       throw new IllegalArgumentException("String value [" + durationStr
           + "] is not in the expected format.");
