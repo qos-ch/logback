@@ -43,7 +43,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * For more informations about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
  * 
- * 
  */
 
 public class PatternLayout extends PatternLayoutBase implements ClassicLayout {

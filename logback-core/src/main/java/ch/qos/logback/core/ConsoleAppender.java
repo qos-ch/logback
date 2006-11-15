@@ -17,7 +17,10 @@ import ch.qos.logback.core.status.WarnStatus;
  * ConsoleAppender appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The default
  * target is <code>System.out</code>.
- * 
+ *
+ * For more informations about this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#ConsoleAppender
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 

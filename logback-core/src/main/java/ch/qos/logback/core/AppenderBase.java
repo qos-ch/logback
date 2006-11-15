@@ -16,7 +16,14 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
-
+/**
+ * This class is used to manage base functionnalities of all appenders.
+ * 
+ * For more informations about this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#AppenderBase
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ */
 abstract public class AppenderBase extends ContextAwareBase implements
     Appender, FilterAttachable {
 

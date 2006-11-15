@@ -17,35 +17,9 @@ import java.io.File;
  * currently written to. If it grows bigger than the specified size, 
  * the FileAppender using the SizeBasedTriggeringPolicy rolls the file
  * and creates a new one.
- * <p>
- * Here is an example of a configuration using SizeBasedTriggeringPolicy.
- * <p>
- * <pre>
- * &lt;configuration&gt;
- *    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
- *    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"&gt;
- *      &lt;param name="ActiveFileName" value="outputFile.log" /&gt;
- *      &lt;param name="FileNamePattern" value="logFile.%i.log" /&gt;
- *      &lt;param name="MinIndex" value="1" /&gt;
- *      &lt;param name="MaxIndex" value="3" /&gt;
- *    &lt;/rollingPolicy&gt;
- *
- *    <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"&gt;
- *      &lt;param name="MaxFileSize" value="5MB" /&gt;
- *    &lt;/triggeringPolicy&gt;</b>
- *
- *    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
- *      &lt;param name="pattern" value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
- *    &lt;/layout&gt;
- *  &lt;/appender&gt; 
  * 
- *  &lt;root&gt;
- *    &lt;level value="debug" /&gt;
- *    &lt;appender-ref ref="FILE" /&gt;
- *  &lt;/root&gt;
- * &lt;/configuration&gt;
- * </pre>
- * 
+ * For more informations about this policy, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#SizeBasedTriggeringPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;
  *

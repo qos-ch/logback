@@ -197,7 +197,7 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		event to the appropriate device.
 	</p>
 	
-	<p>DO WE ADD A UML DIAGRAM?? YES!!</p>
+	<!-- ADD UML DIAGRAM -->
 	
 	<p>In appenders, the term option or property is reserved for named attributes 
 	that are dynamically inferred using JavaBeans introspection. </p>
@@ -214,7 +214,8 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 	<h3>WriterAppender</h3>
 	
 	<p>
-		<a href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a> appends events to a <code>java.io.Writer</code>. 
+		<a href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a> 
+		appends events to a <code>java.io.Writer</code>. 
 		This class provides basic services that other appenders build upon. 
 		Users do not usually instantiate <code>WriterAppender</code> objects directly. 
 		Since <code>java.io.Writer</code> type cannot be mapped to a string, there is no 
@@ -329,9 +330,9 @@ public class ExitWoes1 {
 		namely <code>ConsoleAppender</code>, <code>FileAppender</code> which in turn is 
 		the super class of <code>RollingFileAppender</code>. 
 	</p>
-	<p><b>include UML??</b>
-		Figure 4 2 illustrates the class diagram for WriterAppender and its subclasses
-	</p>
+	
+	<!-- ADD UML DIAGRAM -->
+	
 	<a name="ConsoleAppender" />
 	<h3>ConsoleAppender</h3>
 	
@@ -1730,7 +1731,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 
 
 
-
+		<a name="DBAppender"/>
 		<h3>DBAppender</h3>
 		
 		<p>
@@ -1819,9 +1820,9 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		
 		<p>
 			Experiments show that writing a single event
-			into the database takes approximately 50 milliseconds, on a
+			into the database takes approximately 10 milliseconds, on a
 			"standard" PC. If pooled connections are used, this figure
-			drops to under 10 milliseconds. Note that most JDBC drivers
+			drops to around 1 milliseconds. Note that most JDBC drivers
 			already ship with connection pooling support.
 		</p>
 		
@@ -2048,6 +2049,9 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			<code>javax.sql.DataSource</code>, e.g. within a J2EE application
 			server, see <code>JNDIConnectionSource</code>).
 		</p>
+<!-- 
+		
+		HAS TO BE TESTED
 
 		<p>
 			If you do not have another connection pooling mechanism built
@@ -2071,7 +2075,8 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			<a href="http://jakarta.apache.org/commons/dbcp/index.html"> commons-dbcp </a>
 			documentation for details.
 		</p>
-
+ -->
+ 
 		<p>
 			Connecting to a database using a <code>DataSource</code> is rather similar.
 			The configuration now uses 
@@ -2255,6 +2260,7 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 			The gain is a <em>4.4</em> factor. 
 		</p>
 
+		<a name="SyslogAppender" />
 		<h3>SyslogAppender</h3>
 		
 		<p>
@@ -2385,10 +2391,25 @@ public class CounterBasedTP extends TriggeringPolicyBase {
 		</p>
 		
 		
+		<a name="Access" />
 		<h2>Logback Access</h2>
 		
+		<p>
+			Most of the appenders found in logback classic can be used within
+			logback access. They function mostly in the same way as their logback
+			classic counterpart. Precise documentation about these appenders will
+			follow.
+		</p>
+		
+<!--  
+		<h3>SocketAppender</h3>
+		
 		<h3>SMTPAppender</h3>
-	
+		
+		<h3>DBAppender</h3>
+		
+		<h3>SyslogAppender</h3>
+	 -->
 	
 	
 	

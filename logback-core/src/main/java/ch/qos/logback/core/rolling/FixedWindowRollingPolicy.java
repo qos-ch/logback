@@ -18,36 +18,10 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 
 /**
  * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
- * according to a fixed window algorithm as described below.
+ * according to a fixed window algorithm.
  * 
- * <p>
- * The <b>File</b> property, which is required, represents the name
- * of the file where current logging output will be written. The
- * <b>FileNamePattern</b> option represents the file name pattern for the
- * archived (rolled over) log files. If present, the <b>FileNamePattern</b>
- * option must include an integer token, that is the string "%i" somewhere
- * within the pattern.
- * 
- * <p>
- * Let <em>max</em> and <em>min</em> represent the values of respectively
- * the <b>MaxIndex</b> and <b>MinIndex</b> options. Let "foo.log" be the value
- * of the <b>ActiveFile</b> option and "foo.%i.log" the value of
- * <b>FileNamePattern</b>. Then, when rolling over, the file
- * <code>foo.<em>max</em>.log</code> will be deleted, the file
- * <code>foo.<em>max-1</em>.log</code> will be renamed as
- * <code>foo.<em>max</em>.log</code>, the file
- * <code>foo.<em>max-2</em>.log</code> renamed as
- * <code>foo.<em>max-1</em>.log</code>, and so on, the file
- * <code>foo.<em>min+1</em>.log</code> renamed as
- * <code>foo.<em>min+2</em>.log</code>. Lastly, the active file
- * <code>foo.log</code> will be renamed as <code>foo.<em>min</em>.log</code>
- * and a new active file name <code>foo.log</code> will be created.
- * 
- * <p>
- * Given that this rollover algorithm requires as many file renaming operations
- * as the window size, large window sizes are discouraged. The current
- * implementation will automatically reduce the window size to 12 when larger
- * values are specified by the user.
+ * For more informations about this policy, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#FixedWindowRollingPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

@@ -22,12 +22,8 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * Send an e-mail when a specific logging event occurs, typically on errors or
  * fatal errors.
  * 
- * <p>
- * The number of logging events delivered in this e-mail depend on the value of
- * <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the
- * last <code>BufferSize</code> logging events in its cyclic buffer. This
- * keeps memory requirements at a reasonable level while still delivering useful
- * application context.
+ * For more informations about this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#SMTPAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

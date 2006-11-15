@@ -19,41 +19,9 @@ import ch.qos.logback.core.FileAppender;
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the log files
  * depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
  * <p>
- * To be of any use, a <code>RollingFileAppender</code> instance must have both 
- * a <code>RollingPolicy</code> and a <code>TriggeringPolicy</code> set up. 
- * However, if its <code>RollingPolicy</code> also implements the
- * <code>TriggeringPolicy</code> interface, then only the former needs to be
- * set up. For example, {@link TimeBasedRollingPolicy} acts both as a
- * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
  * 
- * <p><code>RollingFileAppender</code> can be configured programattically or
- * using {@link ch.qos.logback.classic.joran.JoranConfigurator}. Here is a sample
- * configration file:
-
-<pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
-
-&lt;configuration debug="true">
-
-  &lt;appender name="ROLL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      &lt;param name="FileNamePattern" value="/wombat/foo.%d{yyyy-MM}.gz"/>
-    &lt;/rollingPolicy></b>
-
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;param name="Pattern" value="%c{1} - %m%n"/>
-    &lt;/layout>     
-  &lt;/appender>
-
-  &lt;root">
-    &lt;appender-ref ref="ROLL"/>
-  &lt;/root>
- 
-&lt;/configuration>
-</pre>
-
- *<p>This configuration file specifies a monthly rollover schedule including
- * automatic compression of the archived files. See 
- * {@link TimeBasedRollingPolicy} for more details.
+ * For more informations about this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#RollingFileAppender
  * 
  * @author Heinz Richter
  * @author Ceki G&uuml;lc&uuml;
