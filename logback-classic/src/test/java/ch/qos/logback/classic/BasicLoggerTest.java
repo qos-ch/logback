@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class BasicLoggerTest extends TestCase {

@@ -2,7 +2,7 @@ package ch.qos.logback.classic;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.read.ListAppender;
 
 public class MessageFormattingTest extends TestCase {
 

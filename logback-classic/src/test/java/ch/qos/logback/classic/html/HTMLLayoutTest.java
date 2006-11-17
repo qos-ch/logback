@@ -19,7 +19,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableInformation;
-import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.read.ListAppender;
 
 public class HTMLLayoutTest extends TestCase {
 
@@ -197,7 +197,6 @@ class XHTMLEntityResolver implements EntityResolver {
       Class clazz = getClass();
       InputStream in =
         clazz.getResourceAsStream(relativePath);
-
       if (in == null) {
         return null;
       } else {
