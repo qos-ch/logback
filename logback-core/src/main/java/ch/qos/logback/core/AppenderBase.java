@@ -47,8 +47,11 @@ abstract public class AppenderBase extends ContextAwareBase implements
   }
 
   private int statusRepeatCount = 0;
-  static final int ALLOWED_REPEATS = 3;
+  private int exceptionCount = 0;
+  
+  static final int ALLOWED_REPEATS = 5;
 
+  
   public synchronized void doAppend(Object eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
@@ -77,7 +80,11 @@ abstract public class AppenderBase extends ContextAwareBase implements
       // ok, we now invoke derived class' implementation of append
       this.append(eventObject);
 
-    } finally {
+    } catch(Exception e) {
+      if (exceptionCount++ < ALLOWED_REPEATS) {
+        addError("Appender ["+name+"] failed to append.", e);
+      }
+    }  finally {
       guard = false;
     }
   }
