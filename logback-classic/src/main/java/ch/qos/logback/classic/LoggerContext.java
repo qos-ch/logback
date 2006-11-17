@@ -221,8 +221,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   
   private void notifyListeners(EventType eventType) {
     LogbackEvent event = new LogbackEvent(this, eventType);
-    for (ContextListener listener: listenerList) {
-      listener.update(event);
+    if (listenerList != null) {
+      for (ContextListener listener: listenerList) {
+        listener.update(event);
+      }
     }
   }
 }
