@@ -4,7 +4,6 @@ import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -19,7 +18,10 @@ import ch.qos.logback.core.spi.LifeCycle;
 public abstract class TurboFilter extends ContextAwareBase implements LifeCycle {
 
   private String name;
-  boolean start = false;
+  boolean start = false;  
+  protected FilterReply onMatch = FilterReply.NEUTRAL;
+  protected FilterReply onMismatch = FilterReply.NEUTRAL;
+
   
   /**
    * Points to the next filter in the filter chain.
@@ -28,8 +30,8 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
 
   /**
    * Make a decision based on the multiple parameters passed as arguments.
-   * The returned value should be one of <code>{@link Filter#DENY}</code>, 
-   * <code>{@link Filter#NEUTRAL}</code>, or <code>{@link Filter#ACCEPT}</code>.
+   * The returned value should be one of <code>{@link FilterReply#DENY}</code>, 
+   * <code>{@link FilterReply#NEUTRAL}</code>, or <code>{@link FilterReply#ACCEPT}</code>.
   
    * @param marker
    * @param logger
@@ -75,6 +77,26 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
 
   public void setName(String name) {
     this.name = name;
+  }
+  
+  final public void setOnMatch(String action) {
+    if ("NEUTRAL".equals(action)) {
+      onMatch = FilterReply.NEUTRAL;
+    } else if ("ACCEPT".equals(action)) {
+      onMatch = FilterReply.ACCEPT;
+    } else if ("DENY".equals(action)) {
+      onMatch = FilterReply.DENY;
+    }
+  }
+
+  final public void setOnMismatch(String action) {
+    if ("NEUTRAL".equals(action)) {
+      onMismatch = FilterReply.NEUTRAL;
+    } else if ("ACCEPT".equals(action)) {
+      onMismatch = FilterReply.ACCEPT;
+    } else if ("DENY".equals(action)) {
+      onMismatch = FilterReply.DENY;
+    }
   }
 
 }
