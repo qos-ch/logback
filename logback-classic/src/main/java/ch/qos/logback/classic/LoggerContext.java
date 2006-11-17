@@ -10,12 +10,17 @@
 
 package ch.qos.logback.classic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
+import ch.qos.logback.classic.spi.ContextListener;
+import ch.qos.logback.classic.spi.EventType;
+import ch.qos.logback.classic.spi.LogbackEvent;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterAttachable;
 import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
@@ -36,6 +41,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
+  private List<ContextListener> listenerList;
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
   // practice, it
@@ -164,9 +170,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void shutdownAndReset() {
-
     root.recursiveReset();
-
+    notifyListeners(EventType.CONTEXT_RESTART);
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
@@ -199,5 +204,25 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
       return null;
     }
     return cfai.getFirstTurboFilter();
+  }
+  
+  public void addListener(ContextListener listener) {
+    if (listenerList == null) {
+      listenerList = new ArrayList<ContextListener>();
+    }
+    listenerList.add(listener);
+  }
+  
+  public void removeListener(ContextListener listener) {
+    if (listenerList != null) {
+      listenerList.remove(listener);
+    }
+  }
+  
+  private void notifyListeners(EventType eventType) {
+    LogbackEvent event = new LogbackEvent(this, eventType);
+    for (ContextListener listener: listenerList) {
+      listener.update(event);
+    }
   }
 }
