@@ -35,7 +35,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
 
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
   
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
@@ -54,7 +54,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
 
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
   
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
@@ -73,7 +73,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
 
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
   
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     String msg = "hello world";
@@ -90,7 +90,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
 
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     
     TurboFilter filter = loggerContext.getFirstTurboFilter();
     assertTrue(filter instanceof NOPTurboFilter);
@@ -106,7 +106,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo2.xml");
 
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     
     TurboFilter filter = loggerContext.getFirstTurboFilter();
     assertTrue(filter instanceof DebugUsersTurboFilter);
