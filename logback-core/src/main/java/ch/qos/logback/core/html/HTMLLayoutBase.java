@@ -145,9 +145,13 @@ public abstract class HTMLLayoutBase extends LayoutBase {
     sbuf.append("<body>");
     sbuf.append(LINE_SEP);
 
+    return sbuf.toString();
+  }
+  
+  public String getPresentationHeader() {
+    StringBuffer sbuf = new StringBuffer();
     sbuf.append("<hr size=\"1\" noshade=\"true\" />");
     sbuf.append(LINE_SEP);
-
     sbuf.append("Log session start time ");
     sbuf.append(new java.util.Date());
     sbuf.append("<br />");
@@ -158,7 +162,7 @@ public abstract class HTMLLayoutBase extends LayoutBase {
     sbuf.append(LINE_SEP);
 
     createTableHeader(sbuf);
-
+    
     return sbuf.toString();
   }
 
@@ -185,6 +189,12 @@ public abstract class HTMLLayoutBase extends LayoutBase {
     sbuf.append("</tr>");
     sbuf.append(LINE_SEP);
   }
+  
+  public String getPresentationFooter() {
+    StringBuffer sbuf = new StringBuffer();
+    sbuf.append("</table>");
+    return sbuf.toString();    
+  }
 
   /**
    * Returns the appropriate HTML footers.
@@ -192,9 +202,6 @@ public abstract class HTMLLayoutBase extends LayoutBase {
   @Override
   public String getFileFooter() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("</table>");
-    sbuf.append(LINE_SEP);
-    sbuf.append("<br>");
     sbuf.append(LINE_SEP);
     sbuf.append("</body></html>");
     return sbuf.toString();

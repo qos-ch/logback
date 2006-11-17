@@ -210,6 +210,10 @@ public class WriterAppender extends AppenderBase {
       if ((h != null) && (this.writer != null)) {
         try {
           this.writer.write(h);
+          String ph = layout.getPresentationHeader();
+          if (ph != null) {
+            this.writer.write(ph);
+          }
           // append a line separator. This should be useful in most cases and should 
           // not hurt. 
           this.writer.write(Layout.LINE_SEP);
@@ -230,6 +234,10 @@ public class WriterAppender extends AppenderBase {
       if ((h != null) && (this.writer != null)) {
         try {
           this.writer.write(h);
+          String pf = layout.getPresentationFooter();
+          if (pf != null) {
+            this.writer.write(pf);
+          }
           // flushing is mandatory if the writer is not later closed.
           this.writer.flush();
         } catch (IOException ioe) {

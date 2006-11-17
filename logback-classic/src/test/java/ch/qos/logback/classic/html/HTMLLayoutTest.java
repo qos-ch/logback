@@ -58,6 +58,17 @@ public class HTMLLayoutTest extends TestCase {
     String header = layout.getFileHeader();
     //System.out.println(header);
 
+    Document doc = parseOutput(header + "</body></html>");
+    Element rootElement = doc.getRootElement();
+    assertNotNull(rootElement.element("body"));
+  }
+
+  public void testPresentationHeader() {
+    String header = layout.getFileHeader();
+    String presentationHeader = layout.getPresentationHeader();
+    header = header + presentationHeader;
+    //System.out.println(header);
+
     Document doc = parseOutput(header + "</table></body></html>");
     Element rootElement = doc.getRootElement();
     Element bodyElement = rootElement.element("body");
@@ -68,7 +79,7 @@ public class HTMLLayoutTest extends TestCase {
     assertEquals("Thread", elementList.get(1).getText());
     assertEquals("Message", elementList.get(2).getText());
   }
-
+  
   public void testAppendThrowable() throws Exception {
     StringBuffer buf = new StringBuffer();
     String[] strArray = { "test1", "test2" };
@@ -111,6 +122,7 @@ public class HTMLLayoutTest extends TestCase {
     String result = layout.doLayout(le);
 
     String stringToParse = layout.getFileHeader();
+    stringToParse = stringToParse + layout.getPresentationHeader();
     stringToParse += result;
     stringToParse += "</table></body></html>";
 
