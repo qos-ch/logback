@@ -28,7 +28,7 @@ public class ScenarioMakerTest extends TestCase {
       Scenario s = ScenarioMaker.makeTypeBScenario(30);
       List actionList = s.getActionList();
       for(int i = 0; i < actionList.size(); i++) {
-        System.out.println(actionList.get(i)) ;
+        //System.out.println(actionList.get(i)) ;
       }
     }
 
