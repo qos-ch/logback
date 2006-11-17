@@ -19,6 +19,6 @@ public class MDCTestThread extends Thread {
     x1 = MDC.get("x");
     MDC.clear();
     x2 = MDC.get("x");
-    System.out.println("Exiting "+val);
+    //System.out.println("Exiting "+val);
   }
 } 
