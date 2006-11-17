@@ -34,11 +34,11 @@ public class CyclicBufferAppender extends AppenderBase {
     cb.add(eventObject);
   }
 
-  int getLength() {
+  public int getLength() {
     return cb.length();
   }
 
-  Object get(int i) {
+  public Object get(int i) {
     return cb.get(i);
   }
   
