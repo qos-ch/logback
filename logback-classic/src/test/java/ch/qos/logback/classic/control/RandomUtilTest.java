@@ -24,7 +24,7 @@ public class RandomUtilTest extends TestCase {
     }
 
     double resultingAverage =   sum/(1.0*len);
-    System.out.println("Resulting average is "+resultingAverage);
+    //System.out.println("Resulting average is "+resultingAverage);
 
     assertTrue("Expected "+AVERAGE+" but got "+resultingAverage, Math.abs(resultingAverage-AVERAGE)<0.1);
   }

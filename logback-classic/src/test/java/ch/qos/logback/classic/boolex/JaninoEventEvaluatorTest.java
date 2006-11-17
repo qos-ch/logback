@@ -43,7 +43,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(null);
-    System.out.println(event);
+    //System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
@@ -54,7 +54,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(null);
-    System.out.println(event);
+    //System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
@@ -182,7 +182,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
       jee.evaluate(event);
     }
     final long end = System.nanoTime();
-    System.out.println(msg + (end - start) / LEN + " nanos");
+    //System.out.println(msg + (end - start) / LEN + " nanos");
   }
 
   public void testLoop1() throws Exception {

@@ -53,7 +53,7 @@ public class SyslogAppenderTest extends TestCase {
     logger.addAppender(sa);
     String logMsg = "hello";
     logger.debug(logMsg);
-    StatusPrinter.print(lc.getStatusManager());
+    //StatusPrinter.print(lc.getStatusManager());
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
@@ -98,7 +98,7 @@ public class SyslogAppenderTest extends TestCase {
     String exMsg = "just testing";
     Exception ex = new Exception(exMsg);
     logger.debug(logMsg, ex);
-    StatusPrinter.print(lc.getStatusManager());
+    //StatusPrinter.print(lc.getStatusManager());
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.

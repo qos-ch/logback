@@ -119,7 +119,7 @@ public class ConverterTest extends TestCase {
       DynamicConverter converter = new ThrowableInformationConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
-      System.out.println(buf);
+      // System.out.println(buf);
     }
 
     {
@@ -128,7 +128,7 @@ public class ConverterTest extends TestCase {
       converter.setOptionList(this.optionList);
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
-      System.out.println(buf);
+      // System.out.println(buf);
     }
   }
 
@@ -255,7 +255,7 @@ public class ConverterTest extends TestCase {
       if (buf.length() < 10) {
         fail("buf is too short");
       }
-      System.out.println(buf);
+      // System.out.println(buf);
     }
 
   }

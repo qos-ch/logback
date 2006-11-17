@@ -25,7 +25,6 @@ import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
 
 
 public class EvaluatorJoranTest extends TestCase {
@@ -45,7 +44,7 @@ public class EvaluatorJoranTest extends TestCase {
     
     Logger logger = loggerContext.getLogger("xx");
     LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     assertTrue(evaluator.evaluate(event));
     
     //StatusPrinter.print(loggerContext.getStatusManager());
@@ -57,17 +56,17 @@ public class EvaluatorJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/ignore.xml");
     
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     
     Map evalMap = (Map) loggerContext.getObject(CoreGlobal.EVALUATOR_MAP);
     assertNotNull(evalMap);
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     
     Logger logger = loggerContext.getLogger("xx");
     
     JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("IGNORE_EVAL");
     LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world",null, null);
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
     
     Marker ignoreMarker = MarkerFactory.getMarker("IGNORE");
     event.setMarker(ignoreMarker);
@@ -78,7 +77,7 @@ public class EvaluatorJoranTest extends TestCase {
     
     //logger.debug("hello", new Exception("test"));
     
-    StatusPrinter.print(loggerContext.getStatusManager());
+    //StatusPrinter.print(loggerContext.getStatusManager());
   }
   
   public void testMultipleConditionsInExpression() throws NullPointerException, EvaluationException {
@@ -91,7 +90,7 @@ public class EvaluatorJoranTest extends TestCase {
     //&amp;&amp;
     ee.setExpression("message.contains(\"stacktrace\") && message.contains(\"logging\")");
     ee.start();
-    StatusPrinter.print(loggerContext);
+    //StatusPrinter.print(loggerContext);
     
     String message = "stacktrace bla bla logging";
     LoggingEvent event = new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, message, null, null);

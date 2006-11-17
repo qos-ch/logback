@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.StringListAppender;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
@@ -72,12 +73,19 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
 
-    //StatusPrinter.print(loggerContext.getStatusManager());
-  
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     String msg = "hello world";
     logger.debug("toto");
     logger.debug(msg);
+    
+    StringListAppender slAppender = (StringListAppender) loggerContext.getLogger("root").getAppender("STR_LIST");
+    assertNotNull(slAppender);
+    assertEquals(2, slAppender.strList.size());
+    assertTrue(slAppender.strList.get(0).contains(" DEBUG - toto"));
+  
+    String str1 = slAppender.strList.get(1);
+    assertTrue(str1.contains("Caller+0"));
+    assertTrue(str1.contains(" DEBUG - hello world"));
   }
   
   public void testTurboFilter() throws JoranException {

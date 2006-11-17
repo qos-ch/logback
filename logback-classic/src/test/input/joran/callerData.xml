@@ -11,7 +11,7 @@
     </matcher>  
   </evaluator>
 
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="STR_LIST" class="ch.qos.logback.classic.StringListAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%caller{4, helloEval}%d %level - %m%n</Pattern>
     </layout>
@@ -19,7 +19,7 @@
   
   <root>
     <level value="DEBUG" />
-    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="STR_LIST" />
   </root>
   
   
