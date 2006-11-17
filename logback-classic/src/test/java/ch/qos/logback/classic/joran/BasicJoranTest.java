@@ -21,7 +21,6 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class BasicJoranTest extends TestCase {
 
