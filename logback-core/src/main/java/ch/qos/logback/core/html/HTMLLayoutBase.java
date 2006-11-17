@@ -119,7 +119,7 @@ public abstract class HTMLLayoutBase extends LayoutBase {
    * Returns appropriate HTML headers.
    */
   @Override
-  public String getHeader() {
+  public String getFileHeader() {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
     sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
@@ -190,7 +190,7 @@ public abstract class HTMLLayoutBase extends LayoutBase {
    * Returns the appropriate HTML footers.
    */
   @Override
-  public String getFooter() {
+  public String getFileFooter() {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append("</table>");
     sbuf.append(LINE_SEP);

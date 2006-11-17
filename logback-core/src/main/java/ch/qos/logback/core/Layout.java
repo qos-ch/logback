@@ -31,16 +31,33 @@ public interface Layout extends ContextAware, LifeCycle {
   String doLayout(Object event);
   
   /**
-   * Return the header for this layout. The returned value may be null.
+   * Return the file header for this layout. The returned value may be null.
    * @return The header.
    */
-  String getHeader();
+  String getFileHeader();
 
   /**
-   * Return the footer for this layout. The returned value may be null.
+   * Return the header of the logging event formatting. The returned value
+   * may be null.
+   * 
+   * @return The header.
+   */
+  String getPresentationHeader();
+
+  /**
+   * Return the footer of the logging event formatting. The returned value
+   * may be null.
+   * 
    * @return The footer.
    */
-  String getFooter();
+  
+  String getPresentationFooter();
+  
+  /**
+   * Return the file footer for this layout. The returned value may be null.
+   * @return The footer.
+   */
+  String getFileFooter();
   
   /**
    * Returns the content type as appropriate for the implementation.

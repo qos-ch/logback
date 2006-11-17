@@ -205,7 +205,7 @@ public class WriterAppender extends AppenderBase {
 
   void writeHeader() {
     if (layout != null) {
-      String h = layout.getHeader();
+      String h = layout.getFileHeader();
 
       if ((h != null) && (this.writer != null)) {
         try {
@@ -226,7 +226,7 @@ public class WriterAppender extends AppenderBase {
 
   void writeFooter() {
     if (layout != null) {
-      String h = layout.getFooter();
+      String h = layout.getFileFooter();
       if ((h != null) && (this.writer != null)) {
         try {
           this.writer.write(h);

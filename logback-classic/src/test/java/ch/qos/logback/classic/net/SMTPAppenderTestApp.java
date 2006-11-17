@@ -41,9 +41,9 @@ public class SMTPAppenderTestApp {
   private static Layout buildLayout(LoggerContext lc) {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
-    layout.setHeader("Some header\n");
+    layout.setFileHeader("Some header\n");
     layout.setPattern("%-4relative [%thread] %-5level %class - %msg %X{test}%n");
-    layout.setFooter("Some footer");
+    layout.setFileFooter("Some footer");
     layout.start();
     return layout;
   }

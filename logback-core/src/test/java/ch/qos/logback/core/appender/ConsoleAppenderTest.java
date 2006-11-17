@@ -70,7 +70,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
   public void testOpen() {
     ConsoleAppender ca = (ConsoleAppender) getAppender();
     DummyLayout dummyLayout = new DummyLayout();
-    dummyLayout.setHeader("open");
+    dummyLayout.setFileHeader("open");
     ca.setLayout(dummyLayout);
     ca.start();
     ca.doAppend(new Object());
@@ -80,7 +80,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
   public void testClose() {
     ConsoleAppender ca = (ConsoleAppender) getAppender();
     DummyLayout dummyLayout = new DummyLayout();
-    dummyLayout.setFooter("closed");
+    dummyLayout.setFileFooter("closed");
     ca.setLayout(dummyLayout);
     ca.start();
     ca.doAppend(new Object());

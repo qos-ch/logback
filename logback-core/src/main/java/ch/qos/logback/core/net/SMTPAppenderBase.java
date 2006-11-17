@@ -184,12 +184,12 @@ public abstract class SMTPAppenderBase extends AppenderBase {
 
       StringBuffer sbuf = new StringBuffer();
       
-      String header = layout.getHeader();
+      String header = layout.getFileHeader();
       if (header != null) {
         sbuf.append(header);
       }
       fillBuffer(sbuf);
-      String footer = layout.getFooter();
+      String footer = layout.getFileFooter();
       if (footer != null) {
         sbuf.append(footer);
       }

@@ -16,8 +16,10 @@ abstract public class LayoutBase extends ContextAwareBase implements Layout  {
   Context context;
   protected boolean started;
   
-  String header;
-  String footer;
+  String fileHeader;
+  String fileFooter;
+  String presentationHeader;
+  String presentationFooter;
   
   public void setContext(Context context) {
     this.context = context;
@@ -39,23 +41,39 @@ abstract public class LayoutBase extends ContextAwareBase implements Layout  {
     return started;
   }
   
-  public String getHeader() {
-    return header;
+  public String getFileHeader() {
+    return fileHeader;
   }
   
-  public String getFooter() {
-    return footer;
+  public String getPresentationHeader() {
+    return presentationHeader;
+  }
+  
+  public String getPresentationFooter() {
+    return presentationFooter;
+  }
+  
+  public String getFileFooter() {
+    return fileFooter;
   }
 
   public String getContentType() {
     return "text/plain";
   }
   
-  public void setHeader(String header) {
-    this.header = header;
+  public void setFileHeader(String header) {
+    this.fileHeader = header;
   }
 
-  public void setFooter(String footer) {
-    this.footer = footer;
+  public void setFileFooter(String footer) {
+    this.fileFooter = footer;
+  }
+  
+  public void setPresentationHeader(String header) {
+    this.presentationHeader = header;
+  }
+
+  public void setPresentationFooter(String footer) {
+    this.presentationFooter = footer;
   }
 }

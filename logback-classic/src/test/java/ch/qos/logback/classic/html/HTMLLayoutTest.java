@@ -55,7 +55,7 @@ public class HTMLLayoutTest extends TestCase {
 
   @SuppressWarnings("unchecked")
   public void testHeader() {
-    String header = layout.getHeader();
+    String header = layout.getFileHeader();
     //System.out.println(header);
 
     Document doc = parseOutput(header + "</table></body></html>");
@@ -110,7 +110,7 @@ public class HTMLLayoutTest extends TestCase {
         "test Exception")));
     String result = layout.doLayout(le);
 
-    String stringToParse = layout.getHeader();
+    String stringToParse = layout.getFileHeader();
     stringToParse += result;
     stringToParse += "</table></body></html>";
 
