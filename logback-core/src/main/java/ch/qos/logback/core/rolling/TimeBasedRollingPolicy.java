@@ -171,19 +171,19 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     long n = System.currentTimeMillis();
 
     if (n >= nextCheck) {
-      addInfo("Time to trigger roll-over");
+      //addInfo("Time to trigger roll-over");
       // We set the elapsedPeriodsFileName before we set the 'lastCheck' variable
       // The elapsedPeriodsFileName corresponds to the file name of the period
       // that just elapsed.
       elapsedPeriodsFileName = activeFileNamePattern.convertDate(lastCheck);
-      addInfo("elapsedPeriodsFileName set to "+elapsedPeriodsFileName);
+      //addInfo("elapsedPeriodsFileName set to "+elapsedPeriodsFileName);
 
       lastCheck.setTime(n);
       nextCheck = rc.getNextCheckMillis(lastCheck);
 
       Date x = new Date();
       x.setTime(nextCheck);
-      addInfo("Next check on "+ x);
+      //addInfo("Next check on "+ x);
 
       return true;
     } else {
