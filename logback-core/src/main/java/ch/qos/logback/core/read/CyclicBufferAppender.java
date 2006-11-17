@@ -15,34 +15,43 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
 
 public class CyclicBufferAppender extends AppenderBase {
 
-  
   CyclicBuffer cb;
   int maxSize = 512;
-  
+
   public void start() {
-    
     cb = new CyclicBuffer(maxSize);
     super.start();
   }
-  
-  
+
+  public void stop() {
+    cb = null;
+    super.stop();
+  }
+
   @Override
   protected void append(Object eventObject) {
-    if(!isStarted()) {
+    if (!isStarted()) {
       return;
     }
     cb.add(eventObject);
   }
 
   public int getLength() {
-    return cb.length();
+    if (cb != null) {
+      return cb.length();
+    } else {
+      return 0;
+    }
   }
 
   public Object get(int i) {
-    return cb.get(i);
+    if (cb != null) {
+      return cb.get(i);
+    } else {
+      return null;
+    }
   }
-  
-  
+
   public Layout getLayout() {
     return null;
   }
