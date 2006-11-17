@@ -148,7 +148,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
   public void testBogusExp2() {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
-    jee.setExpression("mdc.get(\"key\").equals(null)");
+    jee.setExpression("mdc.get(\"keyXN89\").equals(null)");
     jee.setContext(loggerContext);
     jee.setName("bogus");
     jee.start();
