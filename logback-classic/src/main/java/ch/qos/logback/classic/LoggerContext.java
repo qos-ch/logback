@@ -19,8 +19,6 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.spi.ContextListener;
-import ch.qos.logback.classic.spi.EventType;
-import ch.qos.logback.classic.spi.LogbackEvent;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterAttachable;
 import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
@@ -28,13 +26,14 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
  * @author ceki
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory,
-    TurboFilterAttachable {
+    TurboFilterAttachable, LifeCycle {
 
   public static final String ROOT_NAME = "root";
 
@@ -53,6 +52,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   LoggerContextRemoteView loggerContextRemoteView;
 
   TurboFilterAttachableImpl cfai = null;
+  
+  boolean started = false;
 
   public LoggerContext() {
     super();
@@ -171,7 +172,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public void shutdownAndReset() {
     root.recursiveReset();
-    notifyListeners(EventType.CONTEXT_RESTART);
+    fireOnReset();
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
@@ -219,12 +220,32 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     }
   }
   
-  private void notifyListeners(EventType eventType) {
-    LogbackEvent event = new LogbackEvent(this, eventType);
+  private void fireOnReset() {
     if (listenerList != null) {
       for (ContextListener listener: listenerList) {
-        listener.update(event);
+        listener.onReset(this);
       }
     }
+  }
+  
+  private void fireOnStart() {
+    if (listenerList != null) {
+      for (ContextListener listener: listenerList) {
+        listener.onStart(this);
+      }
+    }
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
+  public void start() {
+    started = true;
+    fireOnStart();
+  }
+
+  public void stop() {
+    started = false;
   }
 }

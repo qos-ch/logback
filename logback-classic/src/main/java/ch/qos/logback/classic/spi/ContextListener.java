@@ -1,9 +1,10 @@
 package ch.qos.logback.classic.spi;
 
-import java.util.EventListener;
+import ch.qos.logback.classic.LoggerContext;
 
-public interface ContextListener extends EventListener {
+public interface ContextListener {
   
-  public void update(LogbackEvent logbackEvent);
+  public void onReset(LoggerContext context);
+  public void onStart(LoggerContext contest);
 
 }

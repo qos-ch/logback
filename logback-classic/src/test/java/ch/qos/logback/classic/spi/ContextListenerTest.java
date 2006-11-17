@@ -15,11 +15,15 @@ public class ContextListenerTest extends TestCase {
     super.setUp();
   }
   
-  public void testNotify() {
+  public void testNotifyOnReset() {
     context.shutdownAndReset();
     assertTrue(listener.updated);
-    assertEquals(EventType.CONTEXT_RESTART, listener.lastEvent.getType());
-    assertEquals(context, listener.lastEvent.getSource());
+    assertEquals(listener.context, context);
   }
-
+  
+  public void testNotifyOnStart() {
+    context.start();
+    assertTrue(listener.updated);
+    assertEquals(listener.context, context);
+  }
 }

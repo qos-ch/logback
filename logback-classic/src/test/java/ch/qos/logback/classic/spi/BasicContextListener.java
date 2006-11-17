@@ -1,12 +1,19 @@
 package ch.qos.logback.classic.spi;
 
+import ch.qos.logback.classic.LoggerContext;
+
 public class BasicContextListener implements ContextListener {
 
   boolean updated = false;
-  LogbackEvent lastEvent;
+  LoggerContext context;
   
-  public void update(LogbackEvent logbackEvent) {
+  public void onReset(LoggerContext context) {
     updated = true;
-    lastEvent = logbackEvent;
+    this.context = context;
+    
+  }
+  public void onStart(LoggerContext context) {
+    updated = true;
+    this.context = context;
   }
 }
