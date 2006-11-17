@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.Util;
-import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.read.ListAppender;
 
 public class JettyBasicTest extends TestCase {
 

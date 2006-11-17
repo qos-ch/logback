@@ -23,7 +23,7 @@ import org.mortbay.util.ByteArrayISO8859Writer;
 
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.core.ConsoleAppender;
-import ch.qos.logback.core.appender.ListAppender;
+import ch.qos.logback.core.read.ListAppender;
 
 public class JettyTestSetup extends TestSetup {
   RequestLogImpl requestLogImpl;
