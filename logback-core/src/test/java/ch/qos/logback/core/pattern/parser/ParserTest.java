@@ -1,5 +1,5 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
  * Copyright (C) 1999-2006, QOS.ch
  * 
@@ -79,9 +79,6 @@ public class ParserTest extends TestCase {
   }
 
   public void testComposite() throws Exception {
-
-    System.out.println();
-    System.out.println("testRecursive");
     {
       Parser p = new Parser("hello%(%child)");
       Node t = p.parse();
@@ -92,13 +89,13 @@ public class ParserTest extends TestCase {
       composite.setChildNode(child);
       witness.next = composite;
 
-      System.out.println("w:" + witness);
-      System.out.println(t);
+      // System.out.println("w:" + witness);
+      // System.out.println(t);
 
       assertEquals(witness, t);
     }
 
-    System.out.println("testRecursive part 2");
+    // System.out.println("testRecursive part 2");
     {
       Parser p = new Parser("hello%(%child )");
       Node t = p.parse();
@@ -248,8 +245,6 @@ public class ParserTest extends TestCase {
 
   public void testCompositeFormatting() throws Exception {
 
-    System.out.println();
-    System.out.println("testRecursive");
     {
       Parser p = new Parser("hello%5(XYZ)");
       Node t = p.parse();
@@ -264,9 +259,10 @@ public class ParserTest extends TestCase {
       assertEquals(witness, t);
     }
   }
+
   public static Test Xsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new ParserTest("testFormattingInfo"));
     return suite;
- }
+  }
 }
