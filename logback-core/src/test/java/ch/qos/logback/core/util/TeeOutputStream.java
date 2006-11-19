@@ -27,12 +27,15 @@ public class TeeOutputStream extends OutputStream {
   final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
   public TeeOutputStream(PrintStream targetPS) {
+    // allow for null arguments
     this.targetPS = targetPS;
   }
 
   public void write(int b) throws IOException {
     baos.write(b);
+    if(targetPS != null) {
     targetPS.write(b);
+    }
   }
 
   public String toString() {

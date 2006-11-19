@@ -20,7 +20,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * 
@@ -74,21 +73,21 @@ public class RenamingTest extends TestCase {
     rfa.setRollingPolicy(tbrp);
     rfa.start();
 
-    StatusPrinter.print(context.getStatusManager());
+    //StatusPrinter.print(context.getStatusManager());
     Calendar cal = Calendar.getInstance();
 
     rfa.doAppend("Hello 0");
-    Thread.sleep(5000);
+    DelayerUtil.delayUntilNextSecond(50);
     rfa.doAppend("Hello 1");
 
     filenames[0] = "src/test/output/test-" + sdf.format(cal.getTime());
     filenames[1] = "src/test/output/test.log";
 
     for (int i = 0; i < filenames.length; i++) {
-      System.out.println("before i=" + i);
+      //System.out.println("before i=" + i);
       assertTrue(Compare.compare(filenames[i],
           "src/test/witness/rolling/renaming." + i));
-      System.out.println("post i=" + i);
+      //System.out.println("post i=" + i);
     }
   }
 }

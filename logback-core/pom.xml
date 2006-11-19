@@ -66,6 +66,7 @@
 						<exclude>**/AllTest.java</exclude>
 						<exclude>**/PackageTest.java</exclude>
 						<exclude>**/SizeBasedRollingTest.java</exclude>
+            <exclude>**/TimeBasedRollingTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

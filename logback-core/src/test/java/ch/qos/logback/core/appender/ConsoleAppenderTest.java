@@ -38,7 +38,11 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
     // tee will output bytes on System out but it will also
     // collect them so that the output can be compared against
     // some expected output data
-    tee = new TeeOutputStream(original);
+    // tee = new TeeOutputStream(original);
+    
+    // keep the console quiet
+    tee = new TeeOutputStream(null);
+    
     // redirect System.out to tee
     System.setOut(new PrintStream(tee));
   }
