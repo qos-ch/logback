@@ -19,9 +19,7 @@ public class FruitFactory {
   }
 
   public Fruit buildFruit() {
-    for (SaxEvent se : eventList) {
-      System.out.println("Event to replay: "+se);
-    }
+    
     Context context = new ContextBase();
     this.fruit = null;
     context.setProperty("fruitKey", "orange-"+count);

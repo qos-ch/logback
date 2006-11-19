@@ -192,7 +192,6 @@ public class SimpleStoreTest extends TestCase {
     srs.addRule(new Pattern("testGroup/testShell/test/*"), new XAction(9));
     
     List r = srs.matchActions(new Pattern("testGroup/testShell/toto"));
-    System.out.println(r);
     assertNull(r);
   }
   

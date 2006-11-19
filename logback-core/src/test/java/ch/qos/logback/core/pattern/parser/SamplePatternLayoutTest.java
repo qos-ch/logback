@@ -12,8 +12,6 @@ package ch.qos.logback.core.pattern.parser;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.StatusPrinter;
 
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {

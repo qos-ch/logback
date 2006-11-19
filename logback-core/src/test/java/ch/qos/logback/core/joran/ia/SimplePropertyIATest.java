@@ -37,7 +37,6 @@ public class SimplePropertyIATest extends TestCase {
 
       simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/"
           + "simplePropertyIA1.xml");
-      StatusPrinter.print(fruitContext);
       List<Fruit> fList = fruitContext.getFruitList();
       assertNotNull(fList);
       assertEquals(1, fList.size());

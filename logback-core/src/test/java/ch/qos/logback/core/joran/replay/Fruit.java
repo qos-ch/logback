@@ -9,7 +9,7 @@ public class Fruit {
   List<String> textList = new ArrayList<String>();
   
   public Fruit() {
-    System.out.println("Fruit constructor called");
+    // System.out.println("Fruit constructor called");
   }
 
   public void setName(String name) {
