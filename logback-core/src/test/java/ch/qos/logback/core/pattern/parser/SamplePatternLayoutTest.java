@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
  * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.pattern.parser;
 
@@ -37,10 +37,10 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     plb.setPattern("x%OTT");
     plb.start();
     String s = plb.doLayout(new Object());
-    System.out.println(s);
+    //System.out.println(s);
 
-    StatusManager sm = context.getStatusManager();
-    StatusPrinter.print(sm);
+    //StatusManager sm = context.getStatusManager();
+    //StatusPrinter.print(sm);
     assertEquals("x123", s);
 
   }

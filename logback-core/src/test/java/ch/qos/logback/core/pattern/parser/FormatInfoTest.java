@@ -7,7 +7,6 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package ch.qos.logback.core.pattern.parser;
 
 import ch.qos.logback.core.pattern.FormatInfo;
