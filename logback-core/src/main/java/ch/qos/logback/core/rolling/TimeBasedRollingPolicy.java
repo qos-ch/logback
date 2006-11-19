@@ -190,4 +190,10 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
       return false;
     }
   }  
+
+  @Override
+  public String toString() {
+    return "c.q.l.core.rolling.TimeBasedRollingPolicy";
+  }
+  
 }

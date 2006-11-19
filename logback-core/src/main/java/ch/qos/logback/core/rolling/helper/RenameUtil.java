@@ -75,11 +75,16 @@ public class RenameUtil extends ContextAwareBase {
       File fromFile = new File(from);
 
       if (!fromFile.delete()) {
-        addInfo("Could not delete "+ from);
+        addWarn("Could not delete "+ from);
       }
     } catch (IOException ioe) {
       addError("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
     }
+  }
+  
+  @Override
+  public String toString() {
+    return "c.q.l.co.rolling.helper.RenameUtil";
   }
 }
