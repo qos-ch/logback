@@ -177,11 +177,11 @@ public class JaninoEventEvaluatorTest extends TestCase {
   // with 10 parameters 510 nanos (all levels + fields)
   void loop(JaninoEventEvaluator jee, String msg) throws Exception {
     LoggingEvent event = makeLoggingEvent(null);
-    final long start = System.nanoTime();
+    //final long start = System.nanoTime();
     for (int i = 0; i < LEN; i++) {
       jee.evaluate(event);
     }
-    final long end = System.nanoTime();
+    //final long end = System.nanoTime();
     //System.out.println(msg + (end - start) / LEN + " nanos");
   }
 
