@@ -21,6 +21,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(DurationTest.class);
     suite.addTestSuite(FileSizeTest.class);
     suite.addTestSuite(PropertySetterTest.class);
+    suite.addTestSuite(TimeUtilTest.class);
     return suite;
   }
 }

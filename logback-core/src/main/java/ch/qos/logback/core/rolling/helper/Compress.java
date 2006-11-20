@@ -163,4 +163,9 @@ public class Compress extends ContextAwareBase {
           + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
     }
   }
+  
+  @Override
+  public String toString() {
+    return "c.q.l.core.rolling.helper.Compress";
+  }
 }
