@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
-	<artifactId>logback</artifactId>
+	<artifactId>logback-parent</artifactId>
 	<version>0.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Logback</name>
+	<name>Logback-Parent</name>
 
 	<url>http://logback.qos.ch</url>
 

@@ -2,7 +2,7 @@
 
 	<parent>
 		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback</artifactId>
+		<artifactId>logback-parent</artifactId>
 		<version>0.6-SNAPSHOT</version>
 	</parent>
 	
