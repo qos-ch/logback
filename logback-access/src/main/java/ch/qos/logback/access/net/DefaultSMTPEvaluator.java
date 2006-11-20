@@ -15,9 +15,6 @@ public class DefaultSMTPEvaluator extends JaninoEventEvaluator {
   
   @Override
   public void start() {
-    if (getContext() == null) {
-      System.out.println("CONTEXT NULL");
-    }
     setExpression("request.getRequestURL().toString().contains(\"" + url + "\")");
     super.start();
   }
