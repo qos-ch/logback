@@ -13,7 +13,6 @@ import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.net.SyslogConstants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest extends TestCase {
 
