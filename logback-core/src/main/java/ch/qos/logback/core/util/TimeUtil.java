@@ -17,20 +17,20 @@ public class TimeUtil {
     return cal.getTime().getTime();
   }
   
-  static long computeStartOfNextWeek(long now) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date(now));
-
-    cal.add(Calendar.DAY_OF_MONTH, getFirstDayOfWeek());
-    
-    
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
-    
-    return cal.getTime().getTime();
-  }
+//  static long computeStartOfNextWeek(long now) {
+//    Calendar cal = Calendar.getInstance();
+//    cal.setTime(new Date(now));
+//
+//    cal.add(Calendar.DAY_OF_MONTH, getFirstDayOfWeek());
+//    
+//    
+//    cal.set(Calendar.HOUR_OF_DAY, 0);
+//    cal.set(Calendar.MINUTE, 0);
+//    cal.set(Calendar.SECOND, 0);
+//    cal.set(Calendar.MILLISECOND, 0);
+//    
+//    return cal.getTime().getTime();
+//  }
   
 //  this.set(Calendar.DAY_OF_WEEK, getFirstDayOfWeek());
 //  this.set(Calendar.HOUR_OF_DAY, 0);
