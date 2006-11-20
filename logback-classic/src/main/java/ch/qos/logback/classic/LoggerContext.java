@@ -30,7 +30,13 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * @author ceki
+ * LoggerContext glues many of the logback-classic components together. In principle, 
+ * every logback-classic component instance is attached either directly or indirecty 
+ * to a LoggerContext instance. Just as importantly LoggerContext implements the 
+ * {@link ILoggerFactory} acting as the manufacturing source of {@link Logger} 
+ * instances.
+ * 
+ * @author Ceki Gulcu
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory,
     TurboFilterAttachable, LifeCycle {
@@ -40,7 +46,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
-  private List<ContextListener> listenerList;
+  final private List<ContextListener> contextListenerList = new ArrayList<ContextListener>();
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
   // practice, it
@@ -52,7 +58,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   LoggerContextRemoteView loggerContextRemoteView;
 
   TurboFilterAttachableImpl cfai = null;
-  
+
   boolean started = false;
 
   public LoggerContext() {
@@ -191,13 +197,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
-      final Logger logger, final Level level, final String format, final Object[] params,
-      final Throwable t) {
+      final Logger logger, final Level level, final String format,
+      final Object[] params, final Throwable t) {
     if (cfai == null) {
       return FilterReply.NEUTRAL;
     }
-    return cfai
-        .getTurboFilterChainDecision(marker, logger, level, format, params, t);
+    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+        params, t);
   }
 
   public TurboFilter getFirstTurboFilter() {
@@ -206,33 +212,24 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     }
     return cfai.getFirstTurboFilter();
   }
-  
+
   public void addListener(ContextListener listener) {
-    if (listenerList == null) {
-      listenerList = new ArrayList<ContextListener>();
-    }
-    listenerList.add(listener);
+    contextListenerList.add(listener);
   }
-  
+
   public void removeListener(ContextListener listener) {
-    if (listenerList != null) {
-      listenerList.remove(listener);
-    }
+    contextListenerList.remove(listener);
   }
-  
+
   private void fireOnReset() {
-    if (listenerList != null) {
-      for (ContextListener listener: listenerList) {
-        listener.onReset(this);
-      }
+    for (ContextListener listener : contextListenerList) {
+      listener.onReset(this);
     }
   }
-  
+
   private void fireOnStart() {
-    if (listenerList != null) {
-      for (ContextListener listener: listenerList) {
-        listener.onStart(this);
-      }
+    for (ContextListener listener : contextListenerList) {
+      listener.onStart(this);
     }
   }
 
