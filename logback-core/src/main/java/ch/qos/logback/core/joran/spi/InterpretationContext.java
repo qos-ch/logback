@@ -99,7 +99,7 @@ public class InterpretationContext extends ContextAwareBase {
    * Add a property to the properties of this execution context. If the property
    * exists already, it is overwritten.
    */
-  public void addProperty(String key, String value) {
+  public void addSubstitutionProperty(String key, String value) {
     if (key == null || value == null) {
       return;
     }
@@ -121,7 +121,7 @@ public class InterpretationContext extends ContextAwareBase {
     Iterator i = props.keySet().iterator();
     while (i.hasNext()) {
       String key = (String) i.next();
-      addProperty(key, props.getProperty(key));
+      addSubstitutionProperty(key, props.getProperty(key));
     }
   }
 

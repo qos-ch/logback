@@ -32,7 +32,7 @@ public class SubstitutionPropertyAction extends PropertyAction {
   }
   
   public void setProperty(InterpretationContext ec, String key, String value) {
-    ec.addProperty(key, value);
+    ec.addSubstitutionProperty(key, value);
     //ec.getContext().setProperty(key, value);
   }
 }

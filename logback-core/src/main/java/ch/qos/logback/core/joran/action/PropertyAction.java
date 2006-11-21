@@ -43,7 +43,7 @@ abstract public class PropertyAction extends Action {
   public void begin(
     InterpretationContext ec, String localName, Attributes attributes) {
     String name = attributes.getValue(NAME_ATTRIBUTE);
-    String value = attributes.getValue(NAME_ATTRIBUTE);
+    String value = attributes.getValue(VALUE_ATTRIBUTE);
     String fileName = attributes.getValue(FILE_ATTRIBUTE);
 
     if (
