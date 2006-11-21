@@ -114,7 +114,7 @@ public class InterpretationContext extends ContextAwareBase {
     substitutionMap.put(key, value);
   }
 
-  public void addProperties(Properties props) {
+  public void addSubstitutionProperties(Properties props) {
     if (props == null) {
       return;
     }

@@ -24,7 +24,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 public class SubstitutionPropertyAction extends PropertyAction {
 
   public void setProperties(InterpretationContext ec, Properties props) {
-    ec.addProperties(props);
+    ec.addSubstitutionProperties(props);
 //    for(Object o: props.keySet()) {
 //      String key = (String) o;
 //      ec.getContext().setProperty(key, props.getProperty(key));
