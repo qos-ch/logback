@@ -19,6 +19,15 @@ public class TimeUtilTest extends TestCase {
     super.tearDown();
   }
 
+  public void testSecond() {
+    // Mon Nov 20 18:05:17,522 CET 2006
+    long now = 1164042317522L;
+    // Mon Nov 20 18:06:00,000 CET 2006
+    long expected = 1164042318000L;
+    long computed = TimeUtil.computeStartOfNextSecond(now);
+    assertEquals(expected - now, 478); 
+    assertEquals(expected, computed);
+  }
   
   public void testDay() {
     // Mon Nov 20 18:05:17 CET 2006

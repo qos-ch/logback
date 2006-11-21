@@ -5,7 +5,16 @@ import java.util.Date;
 
 public class TimeUtil {
 
-  static long computeStartOfNextDay(long now) {
+  
+  public static long computeStartOfNextSecond(long now) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date(now));
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.add(Calendar.SECOND, 1);
+    return cal.getTime().getTime();
+  }
+  
+  public static long computeStartOfNextDay(long now) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date(now));
 
@@ -17,7 +26,7 @@ public class TimeUtil {
     return cal.getTime().getTime();
   }
   
-  static long computeStartOfNextWeek(long now) {
+  public static long computeStartOfNextWeek(long now) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date(now));
     
@@ -30,7 +39,7 @@ public class TimeUtil {
     return cal.getTime().getTime();
   }
 
-  static long computeStartOfNextMonth(long now) {
+  public static long computeStartOfNextMonth(long now) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date(now));
 
