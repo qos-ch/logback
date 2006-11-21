@@ -9,7 +9,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 /**
  * @author Ceki Gulcu
  */
-public class RepositoryPropertyAction extends PropertyAction {
+public class ContextPropertyAction extends PropertyAction {
   
   /**
    * Add all the properties found in the argument named 'props' to an ExecutionContext.

@@ -22,7 +22,7 @@ import ch.qos.logback.core.joran.action.NestedComponentIA;
 import ch.qos.logback.core.joran.action.NestedSimplePropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
-import ch.qos.logback.core.joran.action.RepositoryPropertyAction;
+import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.SubstitutionPropertyAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
@@ -53,8 +53,8 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   protected void addInstanceRules(RuleStore rs) {
     rs.addRule(new Pattern("configuration/substitutionProperty"),
         new SubstitutionPropertyAction());
-    rs.addRule(new Pattern("configuration/repositoryProperty"),
-        new RepositoryPropertyAction());
+    rs.addRule(new Pattern("configuration/contextProperty"),
+        new ContextPropertyAction());
     rs.addRule(new Pattern("configuration/conversionRule"),
         new ConversionRuleAction());
 
