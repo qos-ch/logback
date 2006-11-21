@@ -42,14 +42,12 @@ public class URLEvaluatorTest extends TestCase {
   public void testExpectFalse() throws EvaluationException {
     request.setRequestUri("test");
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    System.out.println(ae.getRequestURL());
     assertFalse(evaluator.evaluate(ae));
   }
   
   public void testExpectTrue() throws EvaluationException {
     request.setRequestUri(expectedURL1);   
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    System.out.println(ae.getRequestURL());
     assertTrue(evaluator.evaluate(ae));    
   }
   
@@ -57,7 +55,6 @@ public class URLEvaluatorTest extends TestCase {
     evaluator.addURL(expectedURL2);
     request.setRequestUri(expectedURL2);    
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
-    System.out.println(ae.getRequestURL());
     assertTrue(evaluator.evaluate(ae));    
   }
 }
