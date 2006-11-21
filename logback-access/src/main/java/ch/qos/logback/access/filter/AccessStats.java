@@ -5,8 +5,8 @@ public interface AccessStats {
   
   long getTotal();
   
-  long getDailyTotal();
-  long getDailyAverage();
+  long getLastDaysCount();
+  double getDailyAverage();
  
   
   long getWeeklyTotal();

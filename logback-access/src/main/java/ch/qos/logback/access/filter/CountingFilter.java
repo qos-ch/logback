@@ -20,9 +20,7 @@ public class CountingFilter extends Filter {
   
   @Override
   public FilterReply decide(Object event) {
-
     total++;
-
     return FilterReply.NEUTRAL;
   }
 
@@ -31,8 +29,6 @@ public class CountingFilter extends Filter {
   }
   
   
-  
-
   @Override
   public void start() {
     MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();

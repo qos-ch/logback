@@ -20,6 +20,7 @@ public class AllTest extends TestCase {
     suite.addTest(ch.qos.logback.access.net.PackageTest.suite());
     suite.addTest(ch.qos.logback.access.pattern.PackageTest.suite());
     suite.addTest(ch.qos.logback.access.jetty.PackageTest.suite());
+    suite.addTest(ch.qos.logback.access.filter.PackageTest.suite());
     return suite;
   }
 }

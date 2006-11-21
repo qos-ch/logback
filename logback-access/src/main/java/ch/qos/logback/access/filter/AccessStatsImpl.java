@@ -1,30 +1,31 @@
 package ch.qos.logback.access.filter;
 
-public class AccessStatsImpl implements AccessStats {
+import ch.qos.logback.core.spi.LifeCycle;
+
+public class AccessStatsImpl implements AccessStats, LifeCycle {
 
   final CountingFilter countingFilter;
+  boolean started;
+
+  StatsByDay statsByDay = new StatsByDay(System.currentTimeMillis());
   
   AccessStatsImpl(CountingFilter countingFilter) {
     this.countingFilter = countingFilter;
   }
-  
-  public long getDailyAverage() {
-    // TODO Auto-generated method stub
-    return 0;
+
+  public double getDailyAverage() {
+    return statsByDay.getAverage();
   }
 
-  public long getDailyTotal() {
-    // TODO Auto-generated method stub
-    return 0;
+  public long getLastDaysCount() {
+    return statsByDay.getLastCount();
   }
 
   public long getMonthlyAverage() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   public long getMonthlyTotal() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
@@ -33,13 +34,33 @@ public class AccessStatsImpl implements AccessStats {
   }
 
   public long getWeeklyAverage() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   public long getWeeklyTotal() {
-    // TODO Auto-generated method stub
     return 0;
+  }
+
+  void refresh(long now) {
+    statsByDay.refresh(now, getTotal());
+  }
+
+  void refresh() {
+    long now = System.currentTimeMillis();
+    refresh(now);
+  }
+
+  public void start() {
+    started = true;
+
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
+  public void stop() {
+    started = false;
   }
 
 }
