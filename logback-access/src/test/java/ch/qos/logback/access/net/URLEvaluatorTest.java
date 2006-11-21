@@ -9,19 +9,20 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.boolex.EvaluationException;
 
-public class DefaultSMTPEvaluatorTest extends TestCase {
+public class URLEvaluatorTest extends TestCase {
 
-  final String expectedURL = "testUrl";
+  final String expectedURL1 = "testUrl1";
+  final String expectedURL2 = "testUrl2";
   Context context = new ContextBase();
-  DefaultSMTPEvaluator evaluator;    
+  URLEvaluator evaluator;    
   DummyRequest request;
   DummyResponse response;
   DummyServerAdapter serverAdapter;
   
   public void setUp() throws Exception {
-    evaluator = new DefaultSMTPEvaluator();
+    evaluator = new URLEvaluator();
     evaluator.setContext(context);
-    evaluator.setUrl(expectedURL);
+    evaluator.addURL(expectedURL1);
     evaluator.start();
     request = new DummyRequest();
     response = new DummyResponse();
@@ -38,15 +39,25 @@ public class DefaultSMTPEvaluatorTest extends TestCase {
     context = null;
   }
   
-  public void testExpectFalseBecauseOfStatus() throws EvaluationException {
-    request.setRequestUrl("test");
+  public void testExpectFalse() throws EvaluationException {
+    request.setRequestUri("test");
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    System.out.println(ae.getRequestURL());
     assertFalse(evaluator.evaluate(ae));
   }
   
   public void testExpectTrue() throws EvaluationException {
-    request.setRequestUrl(expectedURL);    
+    request.setRequestUri(expectedURL1);   
     AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    System.out.println(ae.getRequestURL());
+    assertTrue(evaluator.evaluate(ae));    
+  }
+  
+  public void testExpectTrueMultiple() throws EvaluationException {
+    evaluator.addURL(expectedURL2);
+    request.setRequestUri(expectedURL2);    
+    AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    System.out.println(ae.getRequestURL());
     assertTrue(evaluator.evaluate(ae));    
   }
 }

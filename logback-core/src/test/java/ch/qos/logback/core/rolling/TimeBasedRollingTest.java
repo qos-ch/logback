@@ -24,8 +24,8 @@ import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
 
 /**
- * A rather exhaustive set of tests. Tests include leaving the ActiveFileName
- * argument blank, or setting it, with and without compression, and tests with
+ * A rather exhaustive set of tests. Tests include leaving the file option
+ * blank, or setting it, with and without compression, and tests with
  * or without stopping/restarting the RollingFileAppender.
  * 
  * The regression tests log a few times using a RollingFileAppender. Then, they
@@ -33,7 +33,7 @@ import ch.qos.logback.core.util.Constants;
  * with witness files.
  * 
  * <pre>
- *             Compression     ActiveFileName  Stop/Restart 
+ *             Compression     file option    Stop/Restart 
  *  Test1      NO              BLANK           NO
  *  Test2      NO              BLANK           YES
  *  Test3      YES             BLANK           NO
@@ -79,7 +79,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * Test rolling without compression, activeFileName left blank, no stop/start
+   * Test rolling without compression, file option left blank, no stop/start
    */
   public void test1() throws Exception {
 
@@ -127,7 +127,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * No compression, with stop/restart, activeFileName left blank
+   * No compression, with stop/restart, file option left blank
    */
   public void test2() throws Exception {
     RollingFileAppender rfa1 = new RollingFileAppender();
@@ -190,7 +190,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * With compression, activeFileName left blank, no stop/restart
+   * With compression, file option left blank, no stop/restart
    */
   public void test3() throws Exception {
     RollingFileAppender rfa = new RollingFileAppender();
@@ -242,7 +242,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * Without compression, activeFileName set, with stop/restart
+   * Without compression, file option set, with stop/restart
    */
   public void test4() throws Exception {
     RollingFileAppender rfa1 = new RollingFileAppender();
@@ -310,7 +310,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * No compression, activeFileName set, without stop/restart
+   * No compression, file option set, without stop/restart
    */
   public void test5() throws Exception {
     RollingFileAppender rfa = new RollingFileAppender();
@@ -357,7 +357,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * With compression, activeFileName set, no stop/restart,
+   * With compression, file option set, no stop/restart,
    */
   public void test6() throws Exception {
     RollingFileAppender rfa = new RollingFileAppender();
@@ -412,9 +412,6 @@ public class TimeBasedRollingTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    // CompressTest requires external copying
-    // suite.addTestSuite(CompressTest.class);
-    // suite.addTest(new TimeBasedRollingTest("test1"));
     suite.addTestSuite(TimeBasedRollingTest.class);
     return suite;
   }

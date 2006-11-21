@@ -15,7 +15,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(DefaultSMTPEvaluatorTest.class);
+    suite.addTestSuite(URLEvaluatorTest.class);
     return suite;
   }
 }
