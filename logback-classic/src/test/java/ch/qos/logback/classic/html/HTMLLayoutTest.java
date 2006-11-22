@@ -63,6 +63,7 @@ public class HTMLLayoutTest extends TestCase {
     assertNotNull(rootElement.element("body"));
   }
 
+  @SuppressWarnings("unchecked")
   public void testPresentationHeader() {
     String header = layout.getFileHeader();
     String presentationHeader = layout.getPresentationHeader();
