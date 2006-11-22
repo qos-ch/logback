@@ -7,7 +7,9 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
   final CountingFilter countingFilter;
   boolean started;
 
-  StatsByDay statsByDay = new StatsByDay(System.currentTimeMillis());
+  StatsByDay statsByDay = new StatsByDay();
+  StatsByWeek statsByWeek = new StatsByWeek();
+  StatsByMonth statsByMonth = new StatsByMonth();
   
   AccessStatsImpl(CountingFilter countingFilter) {
     this.countingFilter = countingFilter;
@@ -21,28 +23,32 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
     return statsByDay.getLastCount();
   }
 
-  public long getMonthlyAverage() {
-    return 0;
+  public double getMonthlyAverage() {
+    return  statsByMonth.getAverage();
   }
 
-  public long getMonthlyTotal() {
-    return 0;
+  public long getLastMonthsCount() {
+    return statsByMonth.getLastCount();
   }
 
   public long getTotal() {
     return countingFilter.getTotal();
   }
 
-  public long getWeeklyAverage() {
-    return 0;
+  public double getWeeklyAverage() {
+    return statsByWeek.getAverage();
   }
 
-  public long getWeeklyTotal() {
-    return 0;
+  public long getLastWeeksCount() {
+    return statsByWeek.getLastCount();
   }
 
   void refresh(long now) {
-    statsByDay.refresh(now, getTotal());
+    long total = getTotal();
+    statsByDay.update(now, total);
+    statsByWeek.update(now, total);
+    statsByMonth.update(now, total);
+    
   }
 
   void refresh() {
@@ -52,7 +58,10 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
 
   public void start() {
     started = true;
-
+    long now = System.currentTimeMillis();
+    statsByDay = new StatsByDay(now);
+    statsByWeek = new StatsByWeek(now);
+    statsByMonth = new StatsByMonth(now);
   }
 
   public boolean isStarted() {
@@ -61,6 +70,9 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
 
   public void stop() {
     started = false;
+    statsByDay.reset();
+    statsByWeek.reset();
+    statsByMonth.reset();
   }
 
 }

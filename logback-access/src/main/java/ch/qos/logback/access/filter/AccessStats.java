@@ -9,10 +9,10 @@ public interface AccessStats {
   double getDailyAverage();
  
   
-  long getWeeklyTotal();
-  long getWeeklyAverage();
+  long getLastWeeksCount();
+  double getWeeklyAverage();
   
-  long getMonthlyTotal();
-  long getMonthlyAverage();
+  long getLastMonthsCount();
+  double getMonthlyAverage();
   
 }

@@ -2,19 +2,18 @@ package ch.qos.logback.access.filter;
 
 import ch.qos.logback.core.util.TimeUtil;
 
-public class StatsByDay extends PeriodicStats {
+public class StatsByWeek extends PeriodicStats {
 
-  StatsByDay() {
+  StatsByWeek() {
     super();
   }
-
-  StatsByDay(long now) {
+  
+  StatsByWeek(long now) {
     super(now);
   }
-
   @Override
   long computeStartOfNextPeriod(long now) {
-    return TimeUtil.computeStartOfNextDay(now);
+    return TimeUtil.computeStartOfNextWeek(now);
   }
-
+  
 }
