@@ -16,6 +16,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
+    suite.addTestSuite(StatsByDayTest.class);
     suite.addTestSuite(AccessStatsTest.class);
     return suite;
   }
