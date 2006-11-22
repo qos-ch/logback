@@ -13,8 +13,12 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.spi.FilterAttachable;
+import ch.qos.logback.core.spi.FilterAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -30,65 +34,66 @@ import ch.qos.logback.core.util.StatusPrinter;
  * be added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
  * 
  * <pre>
- *  &lt;Ref id=&quot;requestLog&quot;&gt; 
- *    &lt;Set name=&quot;requestLog&quot;&gt; 
- *      &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *    &lt;/Set&gt; 
- *  &lt;/Ref&gt;
+ *   &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *     &lt;Set name=&quot;requestLog&quot;&gt; 
+ *       &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *     &lt;/Set&gt; 
+ *   &lt;/Ref&gt;
  * </pre>
  * 
  * By default, RequestLogImpl looks for a logback configuration file called
  * logback-access.xml, in the same folder where jetty.xml is located, that is
- * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly different than the usual
- * logback classic configuration file. Most of it is the same: Appenders and
- * Layouts are declared the exact same way. However, loggers elements are not
- * allowed.
+ * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly
+ * different than the usual logback classic configuration file. Most of it is
+ * the same: Appenders and Layouts are declared the exact same way. However,
+ * loggers elements are not allowed.
  * <p>
  * It is possible to put the logback configuration file anywhere, as long as
  * it's path is specified. Here is another example, with a path to the
  * logback-access.xml file.
  * 
  * <pre>
- *  &lt;Ref id=&quot;requestLog&quot;&gt; 
- *    &lt;Set name=&quot;requestLog&quot;&gt; 
- *      &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *        &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
- *    &lt;/Set&gt; 
- *  &lt;/Ref&gt;
+ *   &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *     &lt;Set name=&quot;requestLog&quot;&gt; 
+ *       &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *         &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
+ *     &lt;/Set&gt; 
+ *   &lt;/Ref&gt;
  * </pre>
  * 
  * <p>
  * Here is a sample logback-access.xml file that can be used right away:
  * 
  * <pre>
- *  &lt;configuration&gt; 
- *    &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *        &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
- *      &lt;/layout&gt; 
- *    &lt;/appender&gt; 
- *    
- *    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- *  &lt;/configuration&gt;
+ *   &lt;configuration&gt; 
+ *     &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *       &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *         &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
+ *       &lt;/layout&gt; 
+ *     &lt;/appender&gt; 
+ *     
+ *     &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ *   &lt;/configuration&gt;
  * </pre>
  * 
  * <p>
  * Another configuration file, using SMTPAppender, could be:
  * 
  * <pre>
- *  &lt;configuration&gt; 
- *    &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
- *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
- *        &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
- *      &lt;/layout&gt;
- *      &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
- *      &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
- *       &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
- *       &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
- *    &lt;/appender&gt;
- *    &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
- *  &lt;/configuration&gt;
+ *   &lt;configuration&gt; 
+ *     &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
+ *       &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+ *         &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
+ *       &lt;/layout&gt;
+ *       &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
+ *       &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
+ *        &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
+ *        &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
+ *     &lt;/appender&gt;
+ *     &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
+ *   &lt;/configuration&gt;
  * </pre>
+ * 
  * <p>
  * A special, module-specific implementation of PatternLayout was implemented to
  * allow http-specific patterns to be used. The
@@ -103,26 +108,29 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-    AppenderAttachable {
+    AppenderAttachable, FilterAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
       + "logback-access.xml";
 
   AppenderAttachableImpl aai = new AppenderAttachableImpl();
+  FilterAttachableImpl fai = new FilterAttachableImpl();
   String filename;
 
   public RequestLogImpl() {
     putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
   }
-  
-  
+
   public void log(Request jettyRequest, Response jettyResponse) {
     JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
         jettyResponse);
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
+    
+    if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
+      return;
+    }
     // TODO better exception handling
-    //check filter decision see AppenderBase
     aai.appendLoopOnAppenders(accessEvent);
   }
 
@@ -210,5 +218,21 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   public Appender detachAppender(String name) {
     return aai.detachAppender(name);
+  }
+
+  public void addFilter(Filter newFilter) {
+    fai.addFilter(newFilter);
+  }
+
+  public void clearAllFilters() {
+    fai.clearAllFilters();
+  }
+
+  public FilterReply getFilterChainDecision(Object event) {
+    return fai.getFilterChainDecision(event);
+  }
+
+  public Filter getFirstFilter() {
+    return fai.getFirstFilter();
   }
 }
