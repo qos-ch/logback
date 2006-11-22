@@ -22,6 +22,7 @@ abstract public class StatusBase implements Status {
   final Object origin;
   List<Status> childrenList;
   Throwable throwable;
+  long date;
 
   StatusBase(int level, String msg, Object origin) {
     this(level, msg, origin, null);
@@ -32,6 +33,7 @@ abstract public class StatusBase implements Status {
     this.message = msg;
     this.origin = origin;
     this.throwable = t;
+    this.date = System.currentTimeMillis();
   }
 
   public synchronized void add(Status child) {
@@ -98,12 +100,17 @@ abstract public class StatusBase implements Status {
   public Throwable getThrowable() {
     return throwable;
   }
+  
+  public Long getDate() {
+    return date;
+  }
 
   /**
    * @Override
    */
   public String toString() {
     StringBuffer buf = new StringBuffer();
+    buf.append(date + " ");
     switch (getEffectiveLevel()) {
     case INFO:
       buf.append("INFO");

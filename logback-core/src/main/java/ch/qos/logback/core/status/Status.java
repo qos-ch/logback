@@ -23,6 +23,7 @@ public interface Status  {
   Object getOrigin();
   String getMessage();
   Throwable getThrowable();
+  Long getDate();
   
   public boolean hasChildren();
   public void add(Status child);

@@ -19,7 +19,7 @@ public class ClassNameAbbreviator implements Abbreviator {
   final int targetLength;
   StringBuffer buf;
 
-  ClassNameAbbreviator(int targetLength) {
+  public ClassNameAbbreviator(int targetLength) {
     this.targetLength = targetLength;
     buf = new StringBuffer(targetLength);
   }
