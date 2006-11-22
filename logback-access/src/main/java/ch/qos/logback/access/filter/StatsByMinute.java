@@ -14,7 +14,7 @@ public class StatsByMinute extends PeriodicStats {
 
   @Override
   long computeStartOfNextPeriod(long now) {
-    return TimeUtil.computeStartOfNextDay(now);
+    return TimeUtil.computeStartOfNextMinute(now);
   }
 
 }
