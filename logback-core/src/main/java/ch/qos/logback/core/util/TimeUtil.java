@@ -13,6 +13,25 @@ public class TimeUtil {
     cal.add(Calendar.SECOND, 1);
     return cal.getTime().getTime();
   }
+
+  public static long computeStartOfNextMinute(long now) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date(now));
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.add(Calendar.MINUTE, 1);
+    return cal.getTime().getTime();
+  }
+
+  public static long computeStartOfNextHour(long now) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date(now));
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.add(Calendar.HOUR, 1);
+    return cal.getTime().getTime();
+  }
   
   public static long computeStartOfNextDay(long now) {
     Calendar cal = Calendar.getInstance();

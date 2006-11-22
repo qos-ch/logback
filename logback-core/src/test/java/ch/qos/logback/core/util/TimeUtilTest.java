@@ -22,10 +22,31 @@ public class TimeUtilTest extends TestCase {
   public void testSecond() {
     // Mon Nov 20 18:05:17,522 CET 2006
     long now = 1164042317522L;
-    // Mon Nov 20 18:06:00,000 CET 2006
+    //Mon Nov 20 18:05:18,000 CET 2006
     long expected = 1164042318000L;
     long computed = TimeUtil.computeStartOfNextSecond(now);
     assertEquals(expected - now, 478); 
+    assertEquals(expected, computed);
+  }
+  
+  public void testMinute() {
+    // Mon Nov 20 18:05:17,522 CET 2006
+    long now = 1164042317522L;
+    // Mon Nov 20 18:06:00 CET 2006
+    long expected = 1164042360000L;
+    long computed = TimeUtil.computeStartOfNextMinute(now);
+    assertEquals(expected - now, 1000*42+478); 
+    assertEquals(expected, computed);
+  }
+
+  public void testHour() {
+    // Mon Nov 20 18:05:17,522 CET 2006
+    long now = 1164042317522L;
+    // Mon Nov 20 19:00:00 CET 2006
+    long expected = 1164045600000L;
+    System.out.println(new Date(expected));
+    long computed = TimeUtil.computeStartOfNextHour(now);
+    assertEquals(expected - now, 1000*(42+60*54)+478); 
     assertEquals(expected, computed);
   }
   
