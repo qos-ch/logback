@@ -2,16 +2,18 @@ package ch.qos.logback.access.filter;
 
 import ch.qos.logback.core.spi.LifeCycle;
 
-public class AccessStatsImpl implements AccessStats, LifeCycle {
+public class StatisticalViewImpl implements StatisticalView, LifeCycle {
 
   final CountingFilter countingFilter;
   boolean started;
 
+  StatsByMinute statsByMinute = new StatsByMinute();
+  StatsByHour statsByHour = new StatsByHour();
   StatsByDay statsByDay = new StatsByDay();
   StatsByWeek statsByWeek = new StatsByWeek();
   StatsByMonth statsByMonth = new StatsByMonth();
   
-  AccessStatsImpl(CountingFilter countingFilter) {
+  StatisticalViewImpl(CountingFilter countingFilter) {
     this.countingFilter = countingFilter;
   }
 
@@ -45,6 +47,8 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
 
   void refresh(long now) {
     long total = getTotal();
+    statsByMinute.update(now, total);
+    statsByHour.update(now, total);
     statsByDay.update(now, total);
     statsByWeek.update(now, total);
     statsByMonth.update(now, total);
@@ -59,6 +63,8 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
   public void start() {
     started = true;
     long now = System.currentTimeMillis();
+    statsByMinute = new StatsByMinute(now);
+    statsByHour = new StatsByHour(now);
     statsByDay = new StatsByDay(now);
     statsByWeek = new StatsByWeek(now);
     statsByMonth = new StatsByMonth(now);
@@ -70,9 +76,27 @@ public class AccessStatsImpl implements AccessStats, LifeCycle {
 
   public void stop() {
     started = false;
+    statsByMinute.reset();
+    statsByHour.reset();
     statsByDay.reset();
     statsByWeek.reset();
     statsByMonth.reset();
+  }
+
+  public long getLastMinuteCount() {
+    return statsByMinute.getLastCount();
+  }
+
+  public double getMinuteAverage() {
+    return statsByMinute.getAverage();
+  }
+
+  public double getHourlyAverage() {
+    return statsByHour.getAverage();
+  }
+
+  public long getLastHoursCount() {
+    return  statsByHour.getLastCount();
   }
 
 }

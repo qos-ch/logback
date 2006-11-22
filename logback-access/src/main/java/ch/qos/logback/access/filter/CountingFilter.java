@@ -12,10 +12,10 @@ import ch.qos.logback.core.spi.FilterReply;
 public class CountingFilter extends Filter {
 
   long total = 0;
-  final AccessStatsImpl accessStatsImpl;
+  final StatisticalViewImpl accessStatsImpl;
   
   CountingFilter() {
-    accessStatsImpl = new AccessStatsImpl(this);
+    accessStatsImpl = new StatisticalViewImpl(this);
   }
   
   @Override
@@ -34,7 +34,7 @@ public class CountingFilter extends Filter {
     MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
     try {
       ObjectName on = new ObjectName("totp:Filter=1");
-      StandardMBean mbean = new StandardMBean(accessStatsImpl, AccessStats.class);
+      StandardMBean mbean = new StandardMBean(accessStatsImpl, StatisticalView.class);
       mbs.registerMBean(mbean, on);
       super.start();
     } catch (Exception e) {
