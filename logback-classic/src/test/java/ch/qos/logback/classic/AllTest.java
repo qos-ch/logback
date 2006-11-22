@@ -27,7 +27,7 @@ public class AllTest extends TestCase {
     suite.addTest(ch.qos.logback.classic.net.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.pattern.PackageTest.suite()); 
     suite.addTest(ch.qos.logback.classic.db.PackageTest.suite()); 
-
+    suite.addTest(ch.qos.logback.classic.spi.PackageTest.suite()); 
     return suite;
   }
 }
