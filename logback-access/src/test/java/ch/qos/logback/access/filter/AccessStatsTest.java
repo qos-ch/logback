@@ -1,12 +1,10 @@
 package ch.qos.logback.access.filter;
 
 import junit.framework.TestCase;
-import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.util.TimeUtil;
 
 public class AccessStatsTest extends TestCase {
 
-  AccessEvent accessEvent = new AccessEvent(null, null, null);
+  
   public AccessStatsTest(String arg0) {
     super(arg0);
   }
