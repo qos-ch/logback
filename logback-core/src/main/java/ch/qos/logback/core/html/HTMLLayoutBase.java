@@ -150,7 +150,7 @@ public abstract class HTMLLayoutBase extends LayoutBase {
   
   public String getPresentationHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<hr size=\"1\" noshade=\"true\" width=\"75%\" align=\"left\" />");
+    sbuf.append("<hr size=\"1\" noshade=\"true\" width=\"50%\" align=\"left\" />");
     sbuf.append(LINE_SEP);
     sbuf.append("Log session start time ");
     sbuf.append(new java.util.Date());
