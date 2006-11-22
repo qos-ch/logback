@@ -100,6 +100,19 @@ public class Duration {
       throw new IllegalArgumentException("String value [" + durationStr
           + "] is not in the expected format.");
     }
-
+  }
+  
+  @Override
+  public String toString() {
+    if(millis < SECONDS_COEFFICIENT) {
+      return millis + " milliseconds";
+    } else if (millis < MINUTES_COEFFICIENT){
+      return millis/SECONDS_COEFFICIENT +" seconds";   
+    } else if(millis < HOURS_COEFFICIENT) {
+      return millis/MINUTES_COEFFICIENT +" minutes";   
+    } else {
+      return millis/HOURS_COEFFICIENT+" hours";   
+    }
+   
   }
 }

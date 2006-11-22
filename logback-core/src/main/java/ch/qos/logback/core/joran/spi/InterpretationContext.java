@@ -125,6 +125,19 @@ public class InterpretationContext extends ContextAwareBase {
     }
   }
 
+  public void addSubstitutionProperties(Map<String, String> propertyMap) {
+    if (propertyMap == null) {
+      return;
+    }
+    Iterator i = propertyMap.keySet().iterator();
+    while (i.hasNext()) {
+      String key = (String) i.next();
+      addSubstitutionProperty(key, propertyMap.get(key));
+    }
+  }
+
+  
+
   public String getSubstitutionProperty(String key) {
     return substitutionMap.get(key);
   }
