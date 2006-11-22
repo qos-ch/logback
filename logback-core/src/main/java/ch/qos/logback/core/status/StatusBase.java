@@ -110,7 +110,6 @@ abstract public class StatusBase implements Status {
    */
   public String toString() {
     StringBuffer buf = new StringBuffer();
-    buf.append(date + " ");
     switch (getEffectiveLevel()) {
     case INFO:
       buf.append("INFO");
