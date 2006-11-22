@@ -14,7 +14,7 @@ public class CountingFilter extends Filter {
   long total = 0;
   final StatisticalViewImpl accessStatsImpl;
   
-  CountingFilter() {
+  public CountingFilter() {
     accessStatsImpl = new StatisticalViewImpl(this);
   }
   
