@@ -14,6 +14,8 @@ public class CountingFilter extends Filter {
   long total = 0;
   final StatisticalViewImpl accessStatsImpl;
   
+  String domain = "ch.qos.logback.access";
+  
   public CountingFilter() {
     accessStatsImpl = new StatisticalViewImpl(this);
   }
@@ -21,6 +23,7 @@ public class CountingFilter extends Filter {
   @Override
   public FilterReply decide(Object event) {
     total++;
+    accessStatsImpl.update();
     return FilterReply.NEUTRAL;
   }
 
@@ -33,7 +36,7 @@ public class CountingFilter extends Filter {
   public void start() {
     MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
     try {
-      ObjectName on = new ObjectName("totp:Filter=1");
+      ObjectName on = new ObjectName(domain+":Name="+getName());
       StandardMBean mbean = new StandardMBean(accessStatsImpl, StatisticalView.class);
       mbs.registerMBean(mbean, on);
       super.start();
@@ -52,6 +55,14 @@ public class CountingFilter extends Filter {
     } catch(Exception e) {
       addError("Failed to unregister mbean", e);
     }
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public void setDomain(String domain) {
+    this.domain = domain;
   }
   
 }

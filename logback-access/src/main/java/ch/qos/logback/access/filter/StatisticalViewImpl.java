@@ -45,7 +45,7 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     return statsByWeek.getLastCount();
   }
 
-  void refresh(long now) {
+  void update(long now) {
     long total = getTotal();
     statsByMinute.update(now, total);
     statsByHour.update(now, total);
@@ -55,12 +55,13 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     
   }
 
-  void refresh() {
+  void update() {
     long now = System.currentTimeMillis();
-    refresh(now);
+    update(now);
   }
 
   public void start() {
+    System.out.println("StatisticalViewImpl start called");
     started = true;
     long now = System.currentTimeMillis();
     statsByMinute = new StatsByMinute(now);
