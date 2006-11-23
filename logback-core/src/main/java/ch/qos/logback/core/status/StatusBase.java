@@ -15,6 +15,9 @@ import java.util.List;
 
 abstract public class StatusBase implements Status {
 
+  static {
+    System.out.println("XXXXXXXXXXXX Loading StatusBase ");
+  }
   static private final List<Status> EMPTY_LIST = new ArrayList<Status>(0);
   
   int level;
