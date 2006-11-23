@@ -44,8 +44,8 @@ public class MDC {
     if (oldMap != null) {
     	newMap.putAll(oldMap);
     }
+    // the newMap replaces the old one for serialisation's sake
     threadLocal.set(newMap);
-    
     newMap.put(key, val);
   }
 
@@ -81,7 +81,8 @@ public class MDC {
     if (oldMap != null) {
     	newMap.putAll(oldMap);
     }
-    
+    // the newMap replaces the old one for serialisation's sake
+    threadLocal.set(newMap);
     newMap.remove(key);
   }
 
