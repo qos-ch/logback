@@ -46,8 +46,23 @@ public class DurationTest extends TestCase {
     }
     
     {
-      Duration d = Duration.valueOf("10 seconds");
+      Duration d = Duration.valueOf("10 SECOnds");
       assertEquals(10 * 1000, d.getMilliseconds());
+    }
+
+    {
+      Duration d = Duration.valueOf("12seconde");
+      assertEquals(12 * 1000, d.getMilliseconds());
+    }
+
+    {
+      Duration d = Duration.valueOf("14 SECONDES");
+      assertEquals(14 * 1000, d.getMilliseconds());
+    }
+    
+    {
+      Duration d = Duration.valueOf("12second");
+      assertEquals(12 * 1000, d.getMilliseconds());
     }
     
     {

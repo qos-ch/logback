@@ -30,7 +30,7 @@ public class Duration {
   private final static String DOUBLE_PART = "([0-9]*(.[0-9]+)?)";
   private final static int DOUBLE_GROUP = 1;
 
-  private final static String UNIT_PART = "(|millisecond|second|minute|hour|day)s?";
+  private final static String UNIT_PART = "(|millisecond|second(e)?|minute|hour|day)s?";
   private final static int UNIT_GROUP = 3;
 
   private static final Pattern DURATION_PATTERN = Pattern.compile(DOUBLE_PART
@@ -85,7 +85,7 @@ public class Duration {
       double doubleValue = Double.valueOf(doubleStr);
       if (unitStr.equalsIgnoreCase("millisecond") || unitStr.length() == 0) {
         return buildByMilliseconds(doubleValue);
-      } else if (unitStr.equalsIgnoreCase("second")) {
+      } else if (unitStr.equalsIgnoreCase("second") || unitStr.equalsIgnoreCase("seconde")) {
         return buildBySeconds(doubleValue);
       } else if (unitStr.equalsIgnoreCase("minute")) {
         return buildByMinutes(doubleValue);
