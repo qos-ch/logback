@@ -14,7 +14,8 @@ import ch.qos.logback.access.pattern.AccessConverter;
 
 /**
  * The Access module's internal representation of logging events. When the
- * RequestLogImpl instance is called to log then a <code>AccessEvent</code>
+ * logging component instance is called in the container to log then a 
+ * <code>AccessEvent</code>
  * instance is created. This instance is passed around to the different logback
  * components.
  * 

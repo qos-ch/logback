@@ -6,25 +6,25 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-
 public class SocketAppenderTestApp {
 
-	public static void main(String[] args) {
+  public static void main(String[] args) {
 
-		Logger logger = (Logger) LoggerFactory.getLogger(SocketAppenderTestApp.class);
-		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		SocketAppender appender = new SocketAppender("localhost", 4560);
-		appender.setContext(lc);
-		appender.setName("socket");
-		appender.start();
+    Logger logger = (Logger) LoggerFactory
+        .getLogger(SocketAppenderTestApp.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    SocketAppender appender = new SocketAppender("localhost", 4560);
+    appender.setContext(lc);
+    appender.setName("socket");
+    appender.start();
 
-		logger.addAppender(appender);
+    logger.addAppender(appender);
 
-		for (int i = 0; i <= 1000; i++) {
-			logger.debug("** Hello world. n=" + i);
-		}
+    for (int i = 0; i <= 1000; i++) {
+      logger.debug("** Hello world. n=" + i);
+    }
 
-		StatusPrinter.print(lc.getStatusManager());
+    StatusPrinter.print(lc.getStatusManager());
 
-	}
+  }
 }

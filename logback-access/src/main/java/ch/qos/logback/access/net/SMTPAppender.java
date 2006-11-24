@@ -18,21 +18,11 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
 
 /**
- * Send an e-mail when a specific access event occurs, typically on server errors.
+ * Send an e-mail when a specific access event occurs, typically when
+ * certain pages are accessed.
  * 
- * <p>
- * The number of access events delivered in this e-mail depend on the value of
- * <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the
- * last <code>BufferSize</code> access events in its cyclic buffer. This
- * keeps memory requirements at a reasonable level while still delivering useful
- * application context.
- * <p> 
- * By default, the email is sent everytime an event has a status code of 
- * <em>500 (server error) or higher</em>. In order not to flood one's mailbox, 
- * an email will be sent only if the previous email was sent more that 24 hours ago.
- * <p>
- * This behaviour can be easily bypassed either by modifying this class, or by
- * imlementing a new <code>EventEvaluator</code>.
+ * For more informations about this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#AccessSMTPAppender
  * <p>
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

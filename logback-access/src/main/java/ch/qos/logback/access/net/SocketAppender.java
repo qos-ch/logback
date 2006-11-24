@@ -9,27 +9,25 @@
  */
 
 // Contributors: Dan MacDonald <dan@redknee.com>
-package ch.qos.logback.classic.net;
+package ch.qos.logback.access.net;
 
 import java.net.InetAddress;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
 
 /**
- * Sends {@link LoggingEvent} objects to a remote a log server, usually a
+ * Sends {@link AccessEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
  * 
  * For more informations about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#SocketAppender
+ * http://logback.qos.ch/manual/appenders.html#AccessSocketAppender
  *  
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
+ * 
  */
 
 public class SocketAppender extends SocketAppenderBase {
-
-  boolean includeCallerData = false;
   
   public SocketAppender() {
   }
@@ -54,13 +52,6 @@ public class SocketAppender extends SocketAppenderBase {
   
   @Override
   protected void postProcessEvent(Object event) {
-  if (includeCallerData) {
-      ((LoggingEvent) event).getCallerData();
-    } 
-  }
-  
-  public void setIncludeCallerData(boolean includeCallerData) {
-    this.includeCallerData = includeCallerData;
   }
 
 }
