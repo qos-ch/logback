@@ -10,6 +10,7 @@
 
 package ch.qos.logback.core.util;
 
+import java.io.PrintStream;
 import java.util.Iterator;
 
 import ch.qos.logback.core.Context;
@@ -17,7 +18,13 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 
 public class StatusPrinter {
+  
+  private static PrintStream ps = System.out;
 
+  public static void setPrintStream(PrintStream printStream) {
+    ps = printStream;
+  }
+  
   public static void print(Context context) {
     if (context == null) {
       throw new IllegalArgumentException("Context argument cannot be null");
@@ -25,7 +32,7 @@ public class StatusPrinter {
 
     StatusManager sm = context.getStatusManager();
     if (sm == null) {
-      System.out.println("WARN: Context named \"" + context.getName()
+      ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     }
 
@@ -49,9 +56,9 @@ public class StatusPrinter {
     } else {
       prefix = indentation + "|-";
     }
-    System.out.println(prefix+s);
+    ps.println(prefix+s);
     if (s.getThrowable() != null) {
-      s.getThrowable().printStackTrace(System.out);
+      s.getThrowable().printStackTrace(ps);
     }
     if(s.hasChildren()) {
       Iterator<Status> ite = s.iterator();
