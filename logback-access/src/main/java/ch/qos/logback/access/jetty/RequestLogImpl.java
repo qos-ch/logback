@@ -20,6 +20,7 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -154,16 +155,20 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
       getStatusManager().add(
           new ErrorStatus("[" + filename + "] does not exist", this));
     }
-
+    
+    if (getName() == null) {
+      setName("LogbackRequestLog");
+    }
+    RequestLogMapper.addRequestLog(this);
+    getStatusManager().add(
+        new InfoStatus("RequestLog added to RequestLogMapper with name: " + getName(), this));
   }
 
   public void stop() throws Exception {
-    // System.out.println("RequestLogImpl-stop called");
     aai.detachAndStopAllAppenders();
   }
 
   public boolean isRunning() {
-    // System.out.println("RequestLogImpl-isRunning called");
     return false;
   }
 
@@ -172,22 +177,18 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
 
   public boolean isStarted() {
-    // System.out.println("RequestLogImpl-isStarted called");
     return true;
   }
 
   public boolean isStarting() {
-    // System.out.println("RequestLogImpl-isStarting called");
     return false;
   }
 
   public boolean isStopping() {
-    // System.out.println("RequestLogImpl-isStopping called");
     return false;
   }
 
   public boolean isFailed() {
-    // System.out.println("RequestLogImpl-isFailed called");
     return false;
   }
 

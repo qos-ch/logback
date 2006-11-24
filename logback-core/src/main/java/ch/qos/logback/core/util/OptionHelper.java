@@ -26,8 +26,16 @@ public class OptionHelper {
     if (className == null) {
       throw new NullPointerException();
     }
-    Class classObj = Class.forName(className);
-
+    
+    // FIXME This is temporary (really!).
+    Class classObj = null;
+    try {
+       classObj = Class.forName(className);
+    } catch(ClassNotFoundException e) {
+      ClassLoader cccl = Thread.currentThread().getContextClassLoader();
+      classObj = cccl.loadClass(className);
+    }
+    
     if (!superClass.isAssignableFrom(classObj)) {
       throw new IncompatibleClassException(superClass, classObj);
     }
