@@ -12,6 +12,8 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 
+import ch.qos.logback.core.util.FileSize;
+
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being
  * currently written to. If it grows bigger than the specified size, 
@@ -31,8 +33,8 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
    */
   public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   
-  String maxFileSize = Long.toString(DEFAULT_MAX_FILE_SIZE); 
-  long maxFileSizeAsLong;
+  String maxFileSizeAsString = Long.toString(DEFAULT_MAX_FILE_SIZE); 
+  FileSize maxFileSize;
 
   public SizeBasedTriggeringPolicy() {
   }
@@ -43,16 +45,16 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
 
   public boolean isTriggeringEvent(final File activeFile, final Object event) {
     //System.out.println("Size"+file.length());
-    return (activeFile.length() >= maxFileSizeAsLong);
+    return (activeFile.length() >= maxFileSize.getSize());
   }
 
   public String getMaxFileSize() {
-    return maxFileSize;
+    return maxFileSizeAsString;
   }
 
   public void setMaxFileSize(String maxFileSize) {
-    this.maxFileSize = maxFileSize;
-    this.maxFileSizeAsLong = toFileSize(maxFileSize);
+    this.maxFileSizeAsString = maxFileSize;
+    this.maxFileSize = FileSize.valueOf(maxFileSize);
   }
   
   long toFileSize(String value) {
