@@ -1462,8 +1462,8 @@ public interface TriggeringPolicy extends LifeCycle {
 		<p>
 			The <a href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a> 
 			accumulates logging events in a fixed-size buffer and sends them in an email when a 
-			user specified triggering event occurs.  
-		  By default, the triggering event is taken as the reception of an event 
+			user specified event occurs.  
+		  By default, the email is sent as the reception of an event 
 			of level <em>ERROR</em> or higher.
 		</p>
 		
@@ -2419,13 +2419,42 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		
 <!--  
 		<h3>SocketAppender</h3>
-		
+-->
+	 		
 		<h3>SMTPAppender</h3>
 		
+		<p>
+			Access' <code>SMTPAppender</code> works in the same way as its Classic counterpart.
+			However, the evaluator is rather different. By default, the <code>URLEvaluator</code>
+			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
+			checked agains the current request's URL. When one of the pages given to the
+			<code>URLEvaluator</code> is requested, <code>SMTPAppender</code> sends an email.
+		</p>
+		
+		<p>
+			Here is a sample configuration of a <code>SMTPAppender</code> in the access environnement.
+		</p>
+<em>Example 4.15: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
+<div class="source"><pre>&lt;appender name="SMTP"
+  class="ch.qos.logback.access.net.SMTPAppender">
+  &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
+    &lt;Pattern>%h%l%u%t%r%s%b&lt;/Pattern>
+  &lt;/layout>
+    
+  <b>&lt;Evaluator class="ch.qos.logback.access.net.URLEvaluator">
+    &lt;URL>url1.jsp&lt;/URL>
+    &lt;URL>directory/url2.html&lt;/URL>
+  &lt;/Evaluator></b>
+  &lt;From>sender_email@host.com&lt;/From>
+  &lt;SMTPHost>mail.domain.com&lt;/SMTPHost>
+  &lt;To>recipient_email@host.com&lt;/To>
+&lt;/appender></pre></div>
+		
+<!-- 
 		<h3>DBAppender</h3>
 		
 		<h3>SyslogAppender</h3>
-	 -->
+-->
 
 	</body>
 </document>

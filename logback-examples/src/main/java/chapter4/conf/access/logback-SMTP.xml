@@ -1,0 +1,21 @@
+<configuration>
+
+	<appender name="SMTP"
+		class="ch.qos.logback.access.net.SMTPAppender">
+		<layout class="ch.qos.logback.access.html.HTMLLayout">
+			<Pattern>%h%l%u%t%r%s%b</Pattern>
+		</layout>
+
+		<b>
+			<Evaluator class="ch.qos.logback.access.net.URLEvaluator">
+				<URL>url1.jsp</URL>
+				<URL>directory/url2.html</URL>
+			</Evaluator>
+		</b>
+		<From>sender_email@host.com</From>
+		<SMTPHost>mail.domain.com</SMTPHost>
+		<To>recipient_email@host.com</To>
+	</appender>
+
+	<appender-ref ref="SMTP" />
+</configuration>
