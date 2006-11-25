@@ -22,7 +22,6 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -37,11 +36,11 @@ import ch.qos.logback.core.util.StatusPrinter;
  * be added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
  * 
  * <pre>
- *   &lt;Ref id=&quot;requestLog&quot;&gt; 
- *     &lt;Set name=&quot;requestLog&quot;&gt; 
- *       &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *     &lt;/Set&gt; 
- *   &lt;/Ref&gt;
+ *    &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *      &lt;Set name=&quot;requestLog&quot;&gt; 
+ *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *      &lt;/Set&gt; 
+ *    &lt;/Ref&gt;
  * </pre>
  * 
  * By default, RequestLogImpl looks for a logback configuration file called
@@ -56,45 +55,45 @@ import ch.qos.logback.core.util.StatusPrinter;
  * logback-access.xml file.
  * 
  * <pre>
- *   &lt;Ref id=&quot;requestLog&quot;&gt; 
- *     &lt;Set name=&quot;requestLog&quot;&gt; 
- *       &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *         &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
- *     &lt;/Set&gt; 
- *   &lt;/Ref&gt;
+ *    &lt;Ref id=&quot;requestLog&quot;&gt; 
+ *      &lt;Set name=&quot;requestLog&quot;&gt; 
+ *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ *          &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
+ *      &lt;/Set&gt; 
+ *    &lt;/Ref&gt;
  * </pre>
  * 
  * <p>
  * Here is a sample logback-access.xml file that can be used right away:
  * 
  * <pre>
- *   &lt;configuration&gt; 
- *     &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *       &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *         &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
- *       &lt;/layout&gt; 
- *     &lt;/appender&gt; 
- *     
- *     &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- *   &lt;/configuration&gt;
+ *    &lt;configuration&gt; 
+ *      &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
+ *        &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
+ *          &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
+ *        &lt;/layout&gt; 
+ *      &lt;/appender&gt; 
+ *      
+ *      &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
+ *    &lt;/configuration&gt;
  * </pre>
  * 
  * <p>
  * Another configuration file, using SMTPAppender, could be:
  * 
  * <pre>
- *   &lt;configuration&gt; 
- *     &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
- *       &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
- *         &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
- *       &lt;/layout&gt;
- *       &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
- *       &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
- *        &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
- *        &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
- *     &lt;/appender&gt;
- *     &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
- *   &lt;/configuration&gt;
+ *    &lt;configuration&gt; 
+ *      &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
+ *        &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+ *          &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
+ *        &lt;/layout&gt;
+ *        &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
+ *        &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
+ *         &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
+ *         &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
+ *      &lt;/appender&gt;
+ *      &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
+ *    &lt;/configuration&gt;
  * </pre>
  * 
  * <p>
@@ -129,7 +128,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
         jettyResponse);
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
-    
+
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
@@ -137,7 +136,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     aai.appendLoopOnAppenders(accessEvent);
   }
 
-  public void start()  {
+  public void start() {
 
     if (filename == null) {
       String jettyHomeProperty = System.getProperty("jetty.home");
@@ -148,31 +147,31 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
               + "]", this));
 
     }
-    File configFile = new File(filename);
-    if (configFile.exists()) {
-      JoranConfigurator jc = new JoranConfigurator();
-      jc.setContext(this);
-      try {
+    try {
+      File configFile = new File(filename);
+      if (configFile.exists()) {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(this);
         jc.doConfigure(filename);
-      } catch (JoranException e) {
-        e.printStackTrace(System.out);
+
+      } else {
+        getStatusManager().add(
+            new ErrorStatus("[" + filename + "] does not exist", this));
       }
-      
-    } else {
+
+      if (getName() == null) {
+        setName("LogbackRequestLog");
+      }
+      RequestLogRegistry.register(this);
       getStatusManager().add(
-          new ErrorStatus("[" + filename + "] does not exist", this));
+          new InfoStatus("RequestLog added to RequestLogMapper with name: "
+              + getName(), this));
+
+    } catch (JoranException e) {
+      // errors have been registered as status messages
     }
     
-    if (getName() == null) {
-      setName("LogbackRequestLog");
-    }
-    RequestLogRegistry.register(this);
-    getStatusManager().add(
-        new InfoStatus("RequestLog added to RequestLogMapper with name: " + getName(), this));
-
-    if(getStatusManager().getLevel() != Status.INFO) {
-      StatusPrinter.print(getStatusManager());
-    }
+    StatusPrinter.print(getStatusManager());
   }
 
   public void stop() throws Exception {
