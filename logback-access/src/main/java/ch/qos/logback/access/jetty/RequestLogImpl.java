@@ -14,6 +14,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterAttachable;
@@ -21,6 +22,7 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -135,7 +137,8 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     aai.appendLoopOnAppenders(accessEvent);
   }
 
-  public void start() throws Exception {
+  public void start()  {
+
     if (filename == null) {
       String jettyHomeProperty = System.getProperty("jetty.home");
 
@@ -149,8 +152,12 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     if (configFile.exists()) {
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(this);
-      jc.doConfigure(filename);
-      StatusPrinter.print(getStatusManager());
+      try {
+        jc.doConfigure(filename);
+      } catch (JoranException e) {
+        e.printStackTrace(System.out);
+      }
+      
     } else {
       getStatusManager().add(
           new ErrorStatus("[" + filename + "] does not exist", this));
@@ -159,9 +166,13 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     if (getName() == null) {
       setName("LogbackRequestLog");
     }
-    RequestLogMapper.addRequestLog(this);
+    RequestLogRegistry.register(this);
     getStatusManager().add(
         new InfoStatus("RequestLog added to RequestLogMapper with name: " + getName(), this));
+
+    if(getStatusManager().getLevel() != Status.INFO) {
+      StatusPrinter.print(getStatusManager());
+    }
   }
 
   public void stop() throws Exception {
