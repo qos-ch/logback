@@ -148,20 +148,17 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   }
 
   public void error(SAXParseException spe) throws SAXException {
-    addError("Parsing error", spe);
-    addError("Parsing problem on line " + spe.getLineNumber() + " and column "
+    addError("Parsing error on line " + spe.getLineNumber() + " and column "
         + spe.getColumnNumber(), spe);
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
-    addError("Parsing fatal error", spe);
-    addError("Parsing problem on line " + spe.getLineNumber() + " and column "
+    addError("Parsing fatal error on line " + spe.getLineNumber() + " and column "
         + spe.getColumnNumber(), spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {
-    addWarn("Parsing warning", spe);
-    addWarn("Parsing problem on line " + spe.getLineNumber() + " and column "
+    addWarn("Parsing warning on line " + spe.getLineNumber() + " and column "
         + spe.getColumnNumber(), spe);
   }
 
