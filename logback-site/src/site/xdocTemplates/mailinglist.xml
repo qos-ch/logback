@@ -62,11 +62,11 @@
 					<a
 						href="http://www.qos.ch/pipermail/logback-announce/">
 						qos.ch
-					</a>
+					</a> |
 					<a
 						href="http://marc.theaimsgroup.com/?l=logback-announce">
 						MARC
-					</a>
+					</a> |
 					<a
 						href="http://www.nabble.com/Logback-Announce-f16251.html">
 						Nabble
@@ -86,17 +86,17 @@
 					<a
 						href="http://qos.ch/mailman/options/logback-user">
 						Unsubscribe
-					</a>
+					</a> 
 				</td>
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-user/">
 						qos.ch
-					</a>
+					</a> |
 					<a
 						href="http://marc.theaimsgroup.com/?l=logback-user">
 						MARC
-					</a>
+					</a> |
 
 					<a
 						href="http://www.nabble.com/Logback-User-f16252.html">
@@ -117,17 +117,17 @@
 					<a
 						href="http://qos.ch/mailman/options/logback-dev">
 						Unsubscribe
-					</a>
+					</a> 
 				</td>
 				<td>
 					<a
 						href="http://www.qos.ch/pipermail/logback-dev/">
 						qos.ch
-					</a>
+					</a> |
 					<a
 						href="http://marc.theaimsgroup.com/?l=logback-dev">
 						MARC
-					</a>
+					</a> |
 					<a
 						href="http://www.nabble.com/Logback-Dev-f16253.html">
 						Nabble
@@ -135,5 +135,12 @@
 				</td>
 			</tr>
 		</table>
+
+    <h2>On IRC</h2>
+
+    <p>We can also be reached by IRC at <code><span
+    class="big">irc.freenode.net#logback</span>.</code>
+    </p>
+    
 	</body>
 </document>

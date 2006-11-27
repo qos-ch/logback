@@ -923,7 +923,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			log a statement.
 		</p>
 
-<!-- =========  CEKI: STOPPED HERE =================== -->
+
 
 		<h4>Better alternative</h4>
 
@@ -964,9 +964,9 @@ logger.debug("The new entry is {}.", entry);</pre></div>
 
 		<div class="source"><pre>logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</pre></div>
 
-		<p>
-			If three or more arguments need to be passed, an <code>Object[]</code>
-			variant is also availalble. For example, you can write:
+		<p>If three or more arguments need to be passed, an
+		<code>Object[]</code> variant is also availalble. For example, you
+		can write:
 		</p>
 
 
@@ -975,32 +975,32 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 
     <h3>Configuration</h3>
 
-		<p>
-			Inserting log requests into the application code requires a fair
-			amount of planning and effort. Observation shows that
-			approximately four percent of code is dedicated to
-			logging. Consequently, even moderately sized applications will
-			contain thousands of logging statements embedded within its
-			code. Given their number, it becomes imperative to manage these
-			log statements without the need to modify them manually.
+		<p>Inserting log requests into the application code requires a
+		fair amount of planning and effort. Observation shows that
+		approximately four percent of code is dedicated to
+		logging. Consequently, even moderately sized applications will
+		contain thousands of logging statements embedded within its
+		code. Given their number, it becomes imperative to manage these
+		log statements without the need to modify them manually.
 		</p>
-		<p>
-			The logback environment is fully configurable programmatically.
-			However, it is far more flexible to configure logback using
-			configuration files. In logback, configuration files are
-			expressed in XML.
+
+		<p>The logback environment is fully configurable programmatically.
+		However, it is far more flexible to configure logback using
+		configuration files. In logback, configuration files are expressed
+		in XML.
 		</p>
-		<p>
-			Existing log4j users can convert their <em>log4j.properties</em>
-			files to <em>logback.xml</em> using <a
-			href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
-			web-application.
+
+		<p>Existing log4j users can convert their
+		<em>log4j.properties</em> files to <em>logback.xml</em> using <a
+		href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
+		web-application.
 		</p>
-		<p>
-			Let us give a taste of how logback configuration is done with the help of an 
-			imaginary application <em>MyApp</em> that uses logback. 
+
+		<p>Let us give a taste of how logback configuration is done with
+		the help of a trivial application named <em>MyApp</em>.
 		</p>
-		<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/MyApp.java)</em>
+
+		<em>Example 1.4: Basic configuration (<a href="xref/chapter1/MyApp.html">logback-examples/src/main/java/chapter1/MyApp.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
 // Import SLF4J classes.
@@ -1024,12 +1024,19 @@ public class MyApp {
     logger.info("Exiting application.");
   }
 }</pre></div>
-		<p>
-			This class defines a logger instance variable 
-			with the name MyApp. It then uses the Bar class, defined as shown below:
+
+		<p>This class defines a logger instance variable with the name
+		<em>MyApp</em>. It then instantiates a <code>Bar</code>
+		object. The <code>Bar</code> class is listed below:
 		</p>
-		<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/Bar.java)</em>
-<div class="source"><pre>class Bar {
+
+		<em>Example 1.4: Basic configuration (<a href="xref/chapter1/Bar.html">logback-examples/src/main/java/chapter1/Bar.java</a>)</em>
+<div class="source"><pre>package chapter1;
+  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class Bar {
 
   Logger logger = LoggerFactory.getLogger(Bar.class);	
 	
@@ -1037,56 +1044,42 @@ public class MyApp {
     logger.debug("doing my job");
   }
 }</pre></div>
-		<p>
-			The invocation of the BasicConfigurator create, as we have seen, 
-			a simple yet sufficient logback setup. By default, 
-			the root Logger is assigned to Level.DEBUG.
+
+		<p>The invocation of the <code>configureDefaultContext()</code>
+		method in <code>BasicConfigurator</code> creates, as we have seen
+		previously, a minimal logback setup. Note that, by default, the
+		root Logger is assigned to Level.DEBUG.
 		</p>
-		<p>The BasicConfigurator has to be called only once. Any other class that wishes to
-		issue log statements only has to import the <em>Logger</em> class and use it.</p>
+
 		<p>
 			The output of MyApp is:
 		</p>
-<div class="source"><pre>0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Entering application.
-0    [main] DEBUG ch.qos.logback.classic.examples.Bar - doing my job
-0    [main] INFO  ch.qos.logback.classic.examples.MyApp - Exiting application.</pre></div>
-		
-	<p>Let's configure logback to do exactly the same output, this time 
-	with an XML configuration file.</p>
-	<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/sample-config-1.xml)</em>	
-<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<div class="source"><pre>22:05:21.461 [main] INFO  chapter1.MyApp - Entering application.
+22:05:21.461 [main] DEBUG chapter1.Bar - doing my job
+22:05:21.461 [main] INFO  chapter1.MyApp - Exiting application.</pre></div>
 
-&lt;configuration&gt;
+<!-- =========  CEKI: STOPPED HERE =================== -->
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;param name="pattern"
-        value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+    <p><em>MyApp</em> configures logback by invoking
+    <code>BasicConfigurator.configureDefaultContext()</code>. All
+    other classes only need to retrieve an instance of
+    <code>org.slf4j.Logger</code> by calling
+    <code>LoggerFactory.getLogger()</code>, and then log away. For
+    example, the only dependence of the <code>Bar</code> class is on
+    <code>org.slf4j.Logger</code> and
+    <code>org.slf4j.LoggerFactory</code>. Except code that configures
+    logback (if such code exists) user code does not need to depend on
+    logback, but on SLF4J instead.
+    </p>
 
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
-	
-	<p>We first created an <code>Appender</code>, named <em>STDOUT</em> that is of <code>ConsoleAppender</code> tye. Its layout
-	is managed by a PatternLayout, that uses the value of the "pattern" parameter to generate 
-	the logging statement. We then configured the root logger, set its level to DEBUG, 
-	and linked the newly configured <code>ConsoleAppender</code> to the root logger.</p>
-	<p>Note that we've set the root logger level explicitly. Since root logger have a DEBUG level
-	by default we could have omitted this.</p>
-	
-	<p>To run this examle, use this command:</p>
-	
-<div class="source"><pre>java chapter1.MyApp sample-config-1.xml</pre></div>
+  	<p>The previous example output logging information always in the
+  	same fixed format. Fortunately, it is easy to modify an
+  	application so that logging environment is configured at runtime.
+    </p>
 
-	<p>The console output will be exactly the same as before. However, this time, we didn't need
-	to import and call the BasicConfigurator class, as you can see in the following code section: 
-	</p>
-	<em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/MyAppWithConfigFile.java)</em>
+     <em>Example 1.5: Logback configuration from file ((<a
+  href="xref/chapter1/MyAppWithConfigFile.html">logback-examples/src/main/java/chapter1/MyAppWithConfigFile.java</a>)</em>
+
 <div class="source"><pre>package chapter1;
 
 //Import SLF4J classes.
@@ -1115,18 +1108,73 @@ public class MyAppWithConfigFile {
     StatusPrinter.print(lc.getStatusManager());
   }
 }</pre></div>	
-	<p>
-	We used the JoranConfigurator class to parse the configuration file we just created.
-	Joran is a XML interpreter, similar to the commons-digester API, but offering several
-	advantages over commons-digester. Here, it parses the xml file and runs actions depending
-	on the tags it finds.
-	To setup the JoranConfigurator properly, we passed the <code>LoggerContext</code>. A <code>LoggerContext</code>
-	is the class that creates and manages Loggers in logback. 
-	It is also the class that implements the <code>org.slf4j.ILoggerFactory</code> interface.
+
+    <p>MyApp2 instructs PropertyConfigurator to parse a configuration
+    file and to set up logging according to the instructions found
+    therein. The sample configuration file listed below, also
+    available as examples/chapter3/sample0.properties, configures
+    log4j (after parsing by PropertyConfigurator) in the same way as
+    BasicCon-figurator.configure.
+    </p>
+
+    <p>Let us configure logback in the exact same way,
+  	but this time with an XML configuration file. The next
+  	configuration file, once executed, will have the same affect as
+  	calling <code>BasicConfigrator</code>.</p>
+
+	<em>Example 1.4: Basic configuration (logback-examples/src/main/java/chapter1/sample-config-1.xml)</em>	
+<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+
+&lt;configuration&gt;
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value="debug" /&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>
+	
+	<p>We first created an <code>Appender</code>, named <em>STDOUT</em>
+	that is of <code>ConsoleAppender</code> tye. Its layout is managed
+	by a PatternLayout, that uses the value of the "pattern" parameter
+	to generate the logging statement. We then configured the root
+	logger, set its level to DEBUG, and linked the newly configured
+	<code>ConsoleAppender</code> to the root logger.</p>
+
+	<p>Note that we've set the root logger level explicitly. Since root
+	logger have a DEBUG level by default we could have omitted this.</p>
+	
+	<p>To run this examle, use this command:</p>
+	
+<div class="source"><pre>java chapter1.MyApp <b>HOW ABOUT PATH?</b>sample-config-1.xml</pre></div>
+
+	<p>The console output will be exactly the same as before. However,
+	this time, we didn't need to import and call the BasicConfigurator
+	class, as you can see in the following code section:
 	</p>
 	
-	<p>Logging to the console is a rather simple example. Let's now configure logback
-	so that it logs to the console, but also to a custom file.</p>
+ 
+	<p>We used the JoranConfigurator class to parse the configuration
+	file we just created.  Joran is a XML interpreter, similar to the
+	commons-digester API, but offering several advantages over
+	commons-digester. Here, it parses the xml file and runs actions
+	depending on the tags it finds.  To setup the JoranConfigurator
+	properly, we passed the <code>LoggerContext</code>. A
+	<code>LoggerContext</code> is the class that creates and manages
+	Loggers in logback.  It is also the class that implements the
+	<code>org.slf4j.ILoggerFactory</code> interface.
+	</p>
+	
+	<p>Logging to the console is a rather simple example. Let's now
+	configure logback so that it logs to the console, but also to a
+	custom file.</p>
+
 <em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/sample-config-2.xml)</em>
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
@@ -1157,15 +1205,19 @@ public class MyAppWithConfigFile {
   &lt;/root&gt;
 &lt;/configuration&gt;</pre></div>
 	
-	<p>Now, all the logging statements are directed to the console and to a file named <em>sample-log.txt</em>.
-	As you can see, the configuration needed to add an Appender is rather small. The param element, in either
-	Appender configuration, reads the <em>name</em> attribute and assigns its value to the corresponding attribute
-	in the specified java class.
+	<p>Now, all the logging statements are directed to the console and
+	to a file named <em>sample-log.txt</em>.  As you can see, the
+	configuration needed to add an Appender is rather small. The param
+	element, in either Appender configuration, reads the <em>name</em>
+	attribute and assigns its value to the corresponding attribute in
+	the specified java class.
 	</p>
 	
-	<p>Suppose that we do not want to see the DEBUG level statements in the chapter1 package anymore.
-	This is done by adding the following xml snippet to the configuration file, right before
-	the <code>&lt;root&gt;</code> element.</p>
+	<p>Suppose that we do not want to see the DEBUG level statements in
+	the chapter1 package anymore.  This is done by adding the following
+	xml snippet to the configuration file, right before the
+	<code>&lt;root&gt;</code> element.</p>
+
 <em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/sample-config-3.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
