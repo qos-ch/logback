@@ -54,7 +54,7 @@ public class SocketAppender extends SocketAppenderBase {
   @Override
   protected void postProcessEvent(Object event) {
     AccessEvent ae = (AccessEvent)event;
-    ae.prepareForSerialization();
+    ae.prepareForDeferredProcessing();
   }
 
 }

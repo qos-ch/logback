@@ -42,6 +42,7 @@ public class AccessEvent implements Serializable {
   String postContent;
 
   Map<String, Object> requestHeaderMap;
+  Map<String, Object> requestParameterMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
@@ -209,12 +210,27 @@ public class AccessEvent implements Serializable {
   public void buildRequestHeaderMap() {
     requestHeaderMap = new HashMap<String, Object>();
     Enumeration e = httpRequest.getHeaderNames();
+    if (e == null) {
+      return;
+    }
     while (e.hasMoreElements()) {
       String key = (String) e.nextElement();
       requestHeaderMap.put(key, httpRequest.getHeader(key));
     }
   }
-
+  
+  public void buildRequestParameterMap() {
+    requestParameterMap = new HashMap<String, Object>();
+    Enumeration e = httpRequest.getParameterNames();
+    if (e == null) {
+      return;
+    }
+    while (e.hasMoreElements()) {
+      String key = (String) e.nextElement();
+      requestParameterMap.put(key, httpRequest.getParameter(key));
+    }
+  }
+  
   public String getResponseHeader(String key) {
     return serverAdapter.getResponseHeader(key);
   }
@@ -319,7 +335,20 @@ public class AccessEvent implements Serializable {
     return serverAdapter;
   }
   
-  public void prepareForSerialization() {
+  public void prepareForDeferredProcessing() {
+    buildRequestHeaderMap();
+    buildRequestParameterMap();
+    getLocalPort();
+    getMethod();
+    getProtocol();
+    getRemoteAddr();
+    getRemoteHost();
+    getRemoteUser();
+    getRequestURI();
+    getRequestURL();
+    getServerName();
+    getTimeStamp();
+    
     getStatusCode();
     getContentLength();
     //getPostContent();
