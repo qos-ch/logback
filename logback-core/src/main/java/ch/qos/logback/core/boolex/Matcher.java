@@ -42,6 +42,7 @@ public class Matcher extends ContextAwareBase implements LifeCycle {
         code |= Pattern.UNICODE_CASE; 
       }
       
+      //code |= Pattern.DOTALL;
       
       pattern = Pattern.compile(regex, code);
       start = true;
@@ -71,7 +72,7 @@ public class Matcher extends ContextAwareBase implements LifeCycle {
   public boolean matches(String input) throws EvaluationException {
     if(start) {
       java.util.regex.Matcher matcher = pattern.matcher(input);
-      return matcher.matches();
+      return matcher.find();
     } else {
       throw new EvaluationException("Matcher ["+regex+"] not started");
     }
