@@ -164,7 +164,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
       }
       RequestLogRegistry.register(this);
       getStatusManager().add(
-          new InfoStatus("RequestLog added to RequestLogMapper with name: "
+          new InfoStatus("RequestLog added to RequestLogRegistry with name: "
               + getName(), this));
 
     } catch (JoranException e) {

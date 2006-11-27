@@ -29,16 +29,16 @@ import ch.qos.logback.core.util.StatusPrinter;
  * client.
  * 
  * <pre>
- *        &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SocketServer port configFile configDir
+ *   &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SocketServer port configFile configDir
  *       
- *        where &lt;b&gt;port&lt;/b&gt; is a part number where the server listens,
- *        &lt;b&gt;configFile&lt;/b&gt; is an xml configuration file fed to the {@link JoranConfigurator} and
- *        &lt;b&gt;configDir&lt;/b&gt; is a path to a directory containing configuration files, possibly one for each client host.
+ *   where &lt;b&gt;port&lt;/b&gt; is a part number where the server listens,
+ *   &lt;b&gt;configFile&lt;/b&gt; is an xml configuration file fed to the {@link JoranConfigurator} and
+ *   &lt;b&gt;configDir&lt;/b&gt; is a path to a directory containing configuration files, possibly one for each client host.
  * </pre>
  * 
  * <p>
- * The <code>configFile</code> is used to configure the log4j default
- * hierarchy that the <code>SocketServer</code> will use to report on its
+ * The <code>configFile</code> is used to configure the logback default
+ * context that the <code>SocketServer</code> will use to report on its
  * actions.
  * 
  * <p>

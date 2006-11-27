@@ -1,6 +1,5 @@
 package ch.qos.logback.access.spi;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class AccessEvent implements Serializable {
   int statusCode = SENTINEL;
   int localPort = SENTINEL;
 
-  ServerAdapter serverAdapter;
+  transient ServerAdapter serverAdapter;
 
   /**
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -293,12 +292,12 @@ public class AccessEvent implements Serializable {
       return postContent;
     }
 
-    try {
-      InputStream in = httpRequest.getInputStream();
-      postContent = Util.readToString(in);
-    } catch (Exception ex) {
-      // do nothing
-    }
+//    try {
+//      InputStream in = httpRequest.getInputStream();
+//      postContent = Util.readToString(in);
+//    } catch (Exception ex) {
+//      // do nothing
+//    }
     if (postContent == null || postContent.length() == 0) {
       postContent = NA;
     }
@@ -318,5 +317,11 @@ public class AccessEvent implements Serializable {
 
   public ServerAdapter getServerAdapter() {
     return serverAdapter;
+  }
+  
+  public void prepareForSerialization() {
+    getStatusCode();
+    getContentLength();
+    //getPostContent();
   }
 }

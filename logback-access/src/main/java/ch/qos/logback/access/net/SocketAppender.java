@@ -13,6 +13,7 @@ package ch.qos.logback.access.net;
 
 import java.net.InetAddress;
 
+import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
 
 /**
@@ -52,6 +53,8 @@ public class SocketAppender extends SocketAppenderBase {
   
   @Override
   protected void postProcessEvent(Object event) {
+    AccessEvent ae = (AccessEvent)event;
+    ae.prepareForSerialization();
   }
 
 }
