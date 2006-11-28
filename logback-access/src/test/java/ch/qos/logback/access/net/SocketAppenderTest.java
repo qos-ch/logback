@@ -43,6 +43,8 @@ public class SocketAppenderTest extends TestCase {
     assertEquals(1, mockSocketServer.accessEventList.size());
 
     AccessEvent remoteEvent = mockSocketServer.accessEventList.get(0);
+    //check that the values are available although the request and response
+    //objects did not survive serialization
     assertEquals("headerValue1", remoteEvent.getRequestHeader("headerName1"));
     assertEquals("testHost", remoteEvent.getRemoteHost());
   }
