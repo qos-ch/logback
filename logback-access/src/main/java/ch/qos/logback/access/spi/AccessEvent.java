@@ -206,6 +206,10 @@ public class AccessEvent implements Serializable {
       return AccessEvent.NA;
     }
   }
+  
+  public Enumeration getRequestHeaderNames() {
+    return httpRequest.getHeaderNames();
+  }
 
   public void buildRequestHeaderMap() {
     requestHeaderMap = new HashMap<String, Object>();

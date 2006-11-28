@@ -15,14 +15,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DBAppenderBase;
 
 /**
- * The DBAppender inserts loggin events into three database tables in a format
+ * The DBAppender inserts logging events into three database tables in a format
  * independent of the Java programming language. 
  * 
  * For more informations about this appender, please refer to the online manual at
@@ -33,8 +35,8 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * @author S&eacute;bastien Pennec
  */
 public class DBAppender extends DBAppenderBase {
-  protected static final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-  protected static final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
+  protected final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+  protected final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
   protected static final String insertSQL;
   protected static final Method GET_GENERATED_KEYS_METHOD;
 
@@ -139,17 +141,62 @@ public class DBAppender extends DBAppenderBase {
   }
 
   @Override
-  protected String getInsertExceptionSQL() {
-    return insertExceptionSQL;
-  }
-
-  @Override
-  protected String getInsertPropertiesSQL() {
-    return insertPropertiesSQL;
-  }
-
-  @Override
   protected String getInsertSQL() {
     return insertSQL;
+  }
+  
+  protected void insertProperties(Map<String, String> mergedMap,
+      Connection connection, int eventId) throws SQLException {
+    Set propertiesKeys = mergedMap.keySet();
+    if (propertiesKeys.size() > 0) {
+      PreparedStatement insertPropertiesStatement = connection
+          .prepareStatement(insertPropertiesSQL);
+
+      for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
+        String key = (String) i.next();
+        String value = (String) mergedMap.get(key);
+
+        insertPropertiesStatement.setInt(1, eventId);
+        insertPropertiesStatement.setString(2, key);
+        insertPropertiesStatement.setString(3, value);
+
+        if (cnxSupportsBatchUpdates) {
+          insertPropertiesStatement.addBatch();
+        } else {
+          insertPropertiesStatement.execute();
+        }
+      }
+
+      if (cnxSupportsBatchUpdates) {
+        insertPropertiesStatement.executeBatch();
+      }
+
+      insertPropertiesStatement.close();
+      insertPropertiesStatement = null;
+    }
+  }
+  
+  protected void insertThrowable(String[] strRep, Connection connection,
+      int eventId) throws SQLException {
+
+    PreparedStatement insertExceptionStatement = connection
+        .prepareStatement(insertExceptionSQL);
+
+    for (short i = 0; i < strRep.length; i++) {
+      insertExceptionStatement.setInt(1, eventId);
+      insertExceptionStatement.setShort(2, i);
+      insertExceptionStatement.setString(3, strRep[i]);
+      if (cnxSupportsBatchUpdates) {
+        insertExceptionStatement.addBatch();
+      } else {
+        insertExceptionStatement.execute();
+      }
+    }
+    if (cnxSupportsBatchUpdates) {
+      insertExceptionStatement.executeBatch();
+    }
+    insertExceptionStatement.close();
+    insertExceptionStatement = null;
+
   }
 }

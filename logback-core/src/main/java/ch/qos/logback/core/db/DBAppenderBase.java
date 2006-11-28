@@ -17,9 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
@@ -40,8 +37,6 @@ public abstract class DBAppenderBase extends AppenderBase {
 
   protected abstract Method getGeneratedKeysMethod();
   protected abstract String getInsertSQL();
-  protected abstract String getInsertPropertiesSQL();
-  protected abstract String getInsertExceptionSQL();
   
   @Override
   public void start() {
@@ -158,61 +153,6 @@ public abstract class DBAppenderBase extends AppenderBase {
     }
 
     return eventId;
-  }
-
-  protected void insertProperties(Map<String, String> mergedMap,
-      Connection connection, int eventId) throws SQLException {
-    Set propertiesKeys = mergedMap.keySet();
-    if (propertiesKeys.size() > 0) {
-      PreparedStatement insertPropertiesStatement = connection
-          .prepareStatement(getInsertPropertiesSQL());
-
-      for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
-        String key = (String) i.next();
-        String value = (String) mergedMap.get(key);
-
-        insertPropertiesStatement.setInt(1, eventId);
-        insertPropertiesStatement.setString(2, key);
-        insertPropertiesStatement.setString(3, value);
-
-        if (cnxSupportsBatchUpdates) {
-          insertPropertiesStatement.addBatch();
-        } else {
-          insertPropertiesStatement.execute();
-        }
-      }
-
-      if (cnxSupportsBatchUpdates) {
-        insertPropertiesStatement.executeBatch();
-      }
-
-      insertPropertiesStatement.close();
-      insertPropertiesStatement = null;
-    }
-  }
-
-  protected void insertThrowable(String[] strRep, Connection connection,
-      int eventId) throws SQLException {
-
-    PreparedStatement insertExceptionStatement = connection
-        .prepareStatement(getInsertExceptionSQL());
-
-    for (short i = 0; i < strRep.length; i++) {
-      insertExceptionStatement.setInt(1, eventId);
-      insertExceptionStatement.setShort(2, i);
-      insertExceptionStatement.setString(3, strRep[i]);
-      if (cnxSupportsBatchUpdates) {
-        insertExceptionStatement.addBatch();
-      } else {
-        insertExceptionStatement.execute();
-      }
-    }
-    if (cnxSupportsBatchUpdates) {
-      insertExceptionStatement.executeBatch();
-    }
-    insertExceptionStatement.close();
-    insertExceptionStatement = null;
-
   }
 
   @Override

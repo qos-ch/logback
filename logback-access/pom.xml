@@ -1,9 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-parent</artifactId>
-	  <version>0.6-SNAPSHOT</version>
+		<version>0.6-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -25,11 +27,11 @@
 	</description>
 	<licenses>
 		<license>
-			<name> GNU Lesser General Public License</name>
-      		<url>http://www.gnu.org/licenses/lgpl.html</url>			
+			<name>GNU Lesser General Public License</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
-	</licenses>	
-	
+	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -40,10 +42,10 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<classifier>tests</classifier>			
+			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>tomcat</groupId>
 			<artifactId>catalina</artifactId>
@@ -61,11 +63,17 @@
 			<artifactId>servlet-api-2.5</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>janino</groupId>
 			<artifactId>janino</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -95,9 +103,9 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
-		
+
 	</build>
 
 </project>
