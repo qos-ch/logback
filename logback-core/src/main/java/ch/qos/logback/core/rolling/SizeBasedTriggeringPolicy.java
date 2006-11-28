@@ -28,6 +28,7 @@ import ch.qos.logback.core.util.FileSize;
  */
 public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
   
+  public static final String SEE_SIZE_FORMAT = "http://logback.qos.ch/codes.html#sbtp_size_format";
   /**
    * The default maximum file size.
    */
@@ -82,7 +83,7 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
         return Long.valueOf(s).longValue() * multiplier;
       }
       catch (NumberFormatException e) {
-        addError("[" + s + "] is not in proper int form. For more info, please visit http://logback.qos.ch/codes.html#sbtp_size_format");
+        addError("[" + s + "] is not in proper int format. Please refer to "+SEE_SIZE_FORMAT);
         addError("[" + value + "] not in expected format.", e);
       }
     }
