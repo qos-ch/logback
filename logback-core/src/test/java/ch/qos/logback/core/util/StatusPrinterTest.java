@@ -95,7 +95,6 @@ public class StatusPrinterTest extends TestCase {
     context.getStatusManager().add(s2);
     StatusPrinter.print(context);  
     String result = outputStream.toString();
-    System.out.println(result);
     assertTrue(result.contains("|-ERROR in testWithException"));
     assertTrue(result.contains("+ INFO in testWithException"));
     assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinterTest.testWithException"));
