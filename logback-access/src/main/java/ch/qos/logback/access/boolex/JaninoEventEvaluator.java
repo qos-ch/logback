@@ -20,12 +20,8 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
   
   static {
     DEFAULT_PARAM_NAME_LIST.add("event");
-    DEFAULT_PARAM_NAME_LIST.add("request");
-    DEFAULT_PARAM_NAME_LIST.add("response");
     
     DEFAULT_PARAM_TYPE_LIST.add(AccessEvent.class);
-    DEFAULT_PARAM_TYPE_LIST.add(HttpServletRequest.class);
-    DEFAULT_PARAM_TYPE_LIST.add(HttpServletResponse.class);
   }
   
   
@@ -66,8 +62,6 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     Object[] values = new Object[DEFAULT_PARAM_NAME_LIST.size()+matcherListSize];
 
     values[i++] = loggingEvent;
-    values[i++] = loggingEvent.getRequest();
-    values[i++] = loggingEvent.getResponse();
     
     for(int j = 0; j < matcherListSize; j++) {
       values[i++] = (Matcher) matcherList.get(j);
