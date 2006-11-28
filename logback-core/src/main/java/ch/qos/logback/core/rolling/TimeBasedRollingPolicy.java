@@ -33,7 +33,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   static final String FNP_NOT_SET =
     "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
   static final String SEE_FNP_NOT_SET =
-    "See also http://logback.qos.ch/doc/codes.html#tbr_fnp_not_set";
+    "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   RollingCalendar rc;
   long nextCheck;
   Date lastCheck = new Date();
