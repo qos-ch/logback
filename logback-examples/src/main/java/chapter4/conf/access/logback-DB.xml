@@ -1,0 +1,14 @@
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.access.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>com.mysql.jdbc.Driver</driverClass>
+			<url>jdbc:mysql://localhost:3306/logbackdb</url>
+			<user>logback</user>
+			<password>logback</password>
+		</connectionSource>
+		<insertHeaders>true</insertHeaders>
+	</appender>
+
+  <appender-ref ref="DB" />
+</configuration>
