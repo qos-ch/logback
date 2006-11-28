@@ -117,16 +117,16 @@ public class Interpreter  {
     pattern.push(tagName);
 
     List applicableActionList = getApplicableActionList(pattern, atts);
-
+ 
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
     } else {
       actionListStack.add(EMPTY_LIST);
 
-      String errMsg = "no applicable action for <" + tagName
-          + ">, current pattern is [" + pattern + "]";
-      ec.addError(errMsg);
+      String errMsg = "no applicable action for [" + tagName
+          + "], current pattern is [" + pattern + "]";
+      cai.addError(errMsg);
     }
   }
 

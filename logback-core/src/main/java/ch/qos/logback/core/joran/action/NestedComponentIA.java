@@ -66,7 +66,7 @@ public class NestedComponentIA extends ImplicitAction {
       // we only push action data if NestComponentIA is applicable
     case AS_COMPONENT_COLLECTION:
     case AS_SINGLE_COMPONENT:
-      addInfo("was deemed applicable for " + pattern);
+      //addInfo("was deemed applicable for " + pattern);
       ImplicitActionData ad = new ImplicitActionData(parentBean,
           containmentType);
       actionDataStack.push(ad);
@@ -91,7 +91,7 @@ public class NestedComponentIA extends ImplicitAction {
 
     if (OptionHelper.isEmpty(className)) {
       actionData.inError = true;
-      String errMsg = "No class name attribute in <" + localName + ">";
+      String errMsg = "No class name attribute in [" + localName + "]";
       addError(errMsg);
 
       return;
@@ -110,12 +110,12 @@ public class NestedComponentIA extends ImplicitAction {
         ((ContextAware) actionData.nestedComponent).setContext(this.context);
       }
       // getLogger().debug(
-      addInfo("Pushing component <" + localName
-          + "> on top of the object stack.");
+      addInfo("Pushing component [" + localName
+          + "] on top of the object stack.");
       ec.pushObject(actionData.nestedComponent);
     } catch (Exception oops) {
       actionData.inError = true;
-      String msg = "Could not create component <" + localName + "> of type ["
+      String msg = "Could not create component [" + localName + "] of type ["
           + className + "]";
       addError(msg, oops);
     }
