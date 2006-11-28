@@ -3,9 +3,6 @@ package ch.qos.logback.access.boolex;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
