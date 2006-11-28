@@ -1,6 +1,5 @@
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 -- 
--- It is intended for MS SQL Server databases.  This has been tested with version 7.0. 
 
 DROP TABLE logging_event_property 
 DROP TABLE logging_event_exception 

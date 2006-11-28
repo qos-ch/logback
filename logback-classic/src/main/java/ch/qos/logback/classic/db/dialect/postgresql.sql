@@ -2,44 +2,32 @@
 #
 # It is intended for PostgreSQL databases.
 
-DROP TABLE    logging_event_property;
-DROP TABLE    logging_event_exception;
-DROP SEQUENCE logging_event_id_seq;
-DROP TABLE    logging_event;
+DROP TABLE    access_event_exception;
+DROP SEQUENCE access_event_id_seq;
+DROP TABLE    access_event;
 
+CREATE SEQUENCE access_event_id_seq MINVALUE 1 START 1;
 
-CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START 1;
-
-
-CREATE TABLE logging_event 
+CREATE TABLE access_event 
   (
-    timestmp         BIGINT NOT NULL,
-   	formatted_message  TEXT NOT NULL,
-    logger_name       VARCHAR(254) NOT NULL,
-    level_string      VARCHAR(254) NOT NULL,
-    thread_name       VARCHAR(254),
-    reference_flag    SMALLINT,
-    caller_filename   VARCHAR(254) NOT NULL,
-    caller_class      VARCHAR(254) NOT NULL,
-    caller_method     VARCHAR(254) NOT NULL,
-    caller_line       CHAR(4) NOT NULL,
-    event_id          INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
+    timestmp          BIGINT NOT NULL,
+   	requestURI        VARCHAR(254),
+    requestURL        VARCHAR(254),
+    remoteHost        VARCHAR(254),
+    remoteUser        VARCHAR(254),
+    remoteAddr        VARCHAR(254),
+    protocol          VARCHAR(254),
+    method            VARCHAR(254),
+    serverName        VARCHAR(254),
+    postContent       VARCHAR(254),
+    event_id          INT DEFAULT nextval('access_event_id_seq') PRIMARY KEY
   );
 
-CREATE TABLE logging_event_property
-  (
+CREATE TABLE access_event_header  
+(
     event_id	      INT NOT NULL,
-    mapped_key        VARCHAR(254) NOT NULL,
-    mapped_value      VARCHAR(1024),
-    PRIMARY KEY(event_id, mapped_key),
-    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
-  );
-
-CREATE TABLE logging_event_exception
-  (
-    event_id         INT NOT NULL,
-    i                SMALLINT NOT NULL,
-    trace_line       VARCHAR(254) NOT NULL,
-    PRIMARY KEY(event_id, i),
-    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
+    header_key        VARCHAR(254) NOT NULL,
+    header_value      VARCHAR(1024),
+    PRIMARY KEY(event_id, header_key),
+    FOREIGN KEY (event_id) REFERENCES access_event(event_id)
   );
