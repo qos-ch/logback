@@ -174,7 +174,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     StatusPrinter.print(getStatusManager());
   }
 
-  public void stop() throws Exception {
+  public void stop() {
     aai.detachAndStopAllAppenders();
   }
 
