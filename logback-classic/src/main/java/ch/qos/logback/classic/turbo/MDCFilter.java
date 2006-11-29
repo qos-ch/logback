@@ -27,7 +27,7 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class MDCTurboFilter extends MatchingTurboFilter {
+public class MDCFilter extends MatchingFilter {
 
   String MDCKey;
   String value;

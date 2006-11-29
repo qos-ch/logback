@@ -7,13 +7,13 @@ import ch.qos.logback.core.spi.FilterReply;
 
 import junit.framework.TestCase;
 
-public class MarkerTurboFilterTest extends TestCase {
+public class MarkerFilterTest extends TestCase {
 
   static String MARKER_NAME = "toto";
   
   Marker totoMarker = MarkerFactory.getMarker(MARKER_NAME);
   
-  public MarkerTurboFilterTest(String arg0) {
+  public MarkerFilterTest(String arg0) {
     super(arg0);
   }
 
@@ -26,7 +26,7 @@ public class MarkerTurboFilterTest extends TestCase {
   }
 
   public void testNoMarker() {
-    MarkerTurboFilter mkt = new MarkerTurboFilter();
+    MarkerFilter mkt = new MarkerFilter();
     mkt.start();
     assertFalse(mkt.isStarted());
     assertEquals(FilterReply.NEUTRAL, mkt.decide(totoMarker, null, null, null, null, null));
@@ -35,7 +35,7 @@ public class MarkerTurboFilterTest extends TestCase {
   }
   
   public void testBasic() {
-    MarkerTurboFilter mkt = new MarkerTurboFilter();
+    MarkerFilter mkt = new MarkerFilter();
     mkt.setMarker(totoMarker);
     mkt.setOnMatch("ACCEPT");
     mkt.setOnMismatch("DENY");

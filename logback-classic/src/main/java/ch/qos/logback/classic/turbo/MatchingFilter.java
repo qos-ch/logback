@@ -8,7 +8,7 @@ import ch.qos.logback.core.spi.FilterReply;
  *  
  * @author Ceki Gulcu
  */
-public abstract class MatchingTurboFilter extends TurboFilter {
+public abstract class MatchingFilter extends TurboFilter {
 
   protected FilterReply onMatch = FilterReply.NEUTRAL;
   protected FilterReply onMismatch = FilterReply.NEUTRAL;

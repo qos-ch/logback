@@ -9,7 +9,7 @@ import ch.qos.logback.core.spi.FilterReply;
 /**
  * Checks whether the marker in the event matches the marker specified by the user as a property.
  */
-public class MarkerTurboFilter extends MatchingTurboFilter {
+public class MarkerFilter extends MatchingFilter {
 
   Marker marker2Match;
 

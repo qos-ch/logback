@@ -18,7 +18,7 @@ public class PackageTest extends TestCase {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(MarkerTurboFilterTest.class);
+    suite.addTestSuite(MarkerFilterTest.class);
     return suite;
   }
 }
