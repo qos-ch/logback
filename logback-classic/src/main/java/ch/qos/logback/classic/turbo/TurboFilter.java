@@ -9,9 +9,9 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * TurboFilter is a specialized filter with a decide method that takes a bunch of parameters
- * instead of a single event object. The latter is cleaner but the latter is much more 
- * performant.
+ * TurboFilter is a specialized filter with a decide method that takes a bunch 
+ * of parameters instead of a single event object. The latter is cleaner but 
+ * the latter is much more performant.
  * 
  * @author Ceki Gulcu
  */
@@ -19,9 +19,7 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
 
   private String name;
   boolean start = false;  
-  protected FilterReply onMatch = FilterReply.NEUTRAL;
-  protected FilterReply onMismatch = FilterReply.NEUTRAL;
-
+ 
   
   /**
    * Points to the next filter in the filter chain.
@@ -51,12 +49,10 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
   public boolean isStarted() {
     return this.start;
   }
-
+ 
   public void stop() {
     this.start = false;
   }
-  
-  
   /**
    * Set the next filter pointer.
    */
@@ -78,25 +74,4 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
   public void setName(String name) {
     this.name = name;
   }
-  
-  final public void setOnMatch(String action) {
-    if ("NEUTRAL".equals(action)) {
-      onMatch = FilterReply.NEUTRAL;
-    } else if ("ACCEPT".equals(action)) {
-      onMatch = FilterReply.ACCEPT;
-    } else if ("DENY".equals(action)) {
-      onMatch = FilterReply.DENY;
-    }
-  }
-
-  final public void setOnMismatch(String action) {
-    if ("NEUTRAL".equals(action)) {
-      onMismatch = FilterReply.NEUTRAL;
-    } else if ("ACCEPT".equals(action)) {
-      onMismatch = FilterReply.ACCEPT;
-    } else if ("DENY".equals(action)) {
-      onMismatch = FilterReply.DENY;
-    }
-  }
-
 }
