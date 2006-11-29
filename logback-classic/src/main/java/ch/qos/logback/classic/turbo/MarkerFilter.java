@@ -1,6 +1,7 @@
 package ch.qos.logback.classic.turbo;
 
 import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -44,7 +45,9 @@ public class MarkerFilter extends MatchingFilter {
    * 
    * @param marker2Match
    */
-  public void setMarker(Marker marker2Match) {
-    this.marker2Match = marker2Match;
+  public void setMarker(String markerStr) {
+    if(markerStr != null) {
+      this.marker2Match = MarkerFactory.getMarker(markerStr);
+    }
   }
 }

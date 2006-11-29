@@ -36,7 +36,7 @@ public class MarkerFilterTest extends TestCase {
   
   public void testBasic() {
     MarkerFilter mkt = new MarkerFilter();
-    mkt.setMarker(totoMarker);
+    mkt.setMarker(MARKER_NAME);
     mkt.setOnMatch("ACCEPT");
     mkt.setOnMismatch("DENY");
 
