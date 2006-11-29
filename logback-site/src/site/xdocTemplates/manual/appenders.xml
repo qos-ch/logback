@@ -2402,7 +2402,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>
 			When testing this configuration, one should verify that the remote syslog daemon
-			accepts TCP requests from an external source. Experience shows that syslog daemons
+			accepts requests from an external source. Experience shows that syslog daemons
 			usually deny such requests by default.
 		</p>
 		
@@ -2413,19 +2413,34 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Most of the appenders found in logback classic can be used within
 			logback access. They function mostly in the same way as their logback
-			classic counterpart. Precise documentation about these appenders will
-			follow.
+			classic counterpart. In the next section, we will cover their use, but will
+			focuse on the differences with the classic appenders.
 		</p>
 		
-<!--  
+  	<a name="AccessSocketAppender"/>
 		<h3>SocketAppender</h3>
--->
-	 		
+		
+		<p>
+			The <a href="../xref/ch/qos/logback/access/net/SocketAppender.html">
+			<code>SocketAppender</code></a> is designed to log to a 
+			remote entity by transmitting serialized <code>AccessEvent</code> objects over the wire. 
+			Remote logging is non-intrusive as far as the access event is concerned. 
+			On the receiving end after de-serialization, the event can be logged as 
+			if it were generated locally.
+		</p>
+		<p>
+			The options of access' <code>SocketAppender</code> are the same as those available
+			for classc's <code>SocketAppender</code>.
+		</p>
+
+	 	<a name="AccessSMTPAppender"/>	
 		<h3>SMTPAppender</h3>
 		
 		<p>
-			Access' <code>SMTPAppender</code> works in the same way as its Classic counterpart.
-			However, the evaluator is rather different. By default, the <code>URLEvaluator</code>
+			Access' <a href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
+			<code>SMTPAppender</code></a> works in the same way as its Classic counterpart.
+			However, the <span class="option">evaluator</span> option is rather different. 
+			By default, a <code>URLEvaluator</code> object
 			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
 			checked agains the current request's URL. When one of the pages given to the
 			<code>URLEvaluator</code> is requested, <code>SMTPAppender</code> sends an email.
@@ -2449,12 +2464,133 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;SMTPHost>mail.domain.com&lt;/SMTPHost>
   &lt;To>recipient_email@host.com&lt;/To>
 &lt;/appender></pre></div>
+
+		<p>
+			This way of triggering the email lets user select pages that are important steps
+			in a specific process, for example. 
+			When such a page is accessed, the email is sent with the pages
+			that were accessed previously, and any information the user wants to be included
+			in the email.
+		</p>
 		
-<!-- 
+		
+
+		<a name="AccessDBAppender"/>
 		<h3>DBAppender</h3>
 		
+		<p>
+			<a href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
+			is used to insert the access events into a database.
+		</p>
+		<p>
+			Two tables are used by <code>DBAppender</code>: <em>access_event</em> and
+			<em>access_event_header</em>. They all must exist before <code>DBAppender</code>
+			can be used. Logback ships with SQL scripts that will create the tables. 
+			They can be found in the found in the 
+			<em>logback-access/src/main/java/ch/qos/logback/access/db/dialect</em> directory. There
+			is a specific script for each of the most popular database systems. 
+			If the script for your particular type of database system is missing, it should be
+			quite easy to write one, taking example on the already existing scripts. If
+			you send them to us, we will gladly include missing scripts in future releases.
+		</p>
+		
+		<p>The <em>access_event</em> table's XXXXXX are described below:</p>
+
+		<table>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><b>timestmp</b></td>
+				<td><code>big int</code></td>
+				<td>The timestamp that was valid at the access event's creation.</td>
+			</tr>
+			<tr>
+				<td><b>requestURI</b></td>
+				<td><code>varchar</code></td>
+				<td>The URI that was requested.</td>
+			</tr>
+			<tr>
+				<td><b>requestURL</b></td>
+				<td><code>varchar</code></td>
+				<td>The URL that was requested. This is a string composed of the request method,
+				the request URI and the request protocol.
+				</td>
+			</tr>
+			<tr>
+				<td><b>remoteHost</b></td>
+				<td><code>varchar</code></td>
+				<td>The name of the remote host.</td>
+			</tr>
+			<tr>
+				<td><b>remoteUser</b></td>
+				<td><code>varchar</code></td>
+				<td>
+					The name of the remote user.
+				</td>
+			</tr>
+			<tr>
+				<td><b>remoteAddr</b></td>
+				<td><code>varchar</code></td>
+				<td>The remote IP address.</td>
+			</tr>
+			<tr>
+				<td><b>protocol</b></td>
+				<td><code>varchar</code></td>
+				<td>The request protocol, like <em>HTTP</em> or <em>HTTPS</em>.</td>
+			</tr>
+			<tr>
+				<td><b>method</b></td>
+				<td><code>varchar</code></td>
+				<td>The request method, usually <em>GET</em> or <em>POST</em>.</td>
+			</tr>
+			<tr>
+				<td><b>serverName</b></td>
+				<td><code>varchar</code></td>
+				<td>The name of the server that issued the request.</td>
+			</tr>
+			<tr>
+				<td><b>event_id</b></td>
+				<td><code>int</code></td>
+				<td>The database id of the access event.</td>
+			</tr>
+		</table>
+		
+		<p>
+			The <em>access_event_header</em> table contains the header of each
+			requests. The information is organised as shown below:
+		</p>
+
+		<table>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><b>event_id</b></td>
+				<td><code>int</code></td>
+				<td>The database id of the corresponding access event.</td>
+			</tr>
+			<tr>
+				<td><b>header_key</b></td>
+				<td><code>varchar</code></td>
+				<td>The header name, for example <em>User-Agent</em>.</td>
+			</tr>
+			<tr>
+				<td><b>header_value</b></td>
+				<td><code>varchar</code></td>
+				<td>The header value, for example <em>Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8.1) Gecko/20061010 Firefox/2.0</em></td>
+			</tr>
+			</table>
+
+		
+		
+		
+		<a name="AccessSyslogAppender"/>
 		<h3>SyslogAppender</h3>
--->
 
 	</body>
 </document>

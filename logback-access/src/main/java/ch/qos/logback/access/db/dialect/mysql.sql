@@ -31,7 +31,7 @@ CREATE TABLE access_event_header
   (
     event_id	      INT NOT NULL,
     header_key        VARCHAR(254) NOT NULL,
-    header_value      TEXT,
+    header_value      VARCHAR(1024),
     PRIMARY KEY(event_id, header_key),
     FOREIGN KEY (event_id) REFERENCES access_event(event_id)
   );
