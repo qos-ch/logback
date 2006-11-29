@@ -23,14 +23,6 @@ public abstract class DBAppenderTestBase extends TestCase {
     super(name);
   }
 
-  public DBAppenderTestBase(String name, String url, boolean isNetwork) {
-
-    super(name);
-
-    this.isNetwork = isNetwork;
-    this.url = url;
-  }
-
   protected void setUp() throws SQLException {
 
     if (isNetwork) {

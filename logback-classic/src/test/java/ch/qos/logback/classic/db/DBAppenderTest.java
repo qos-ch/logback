@@ -82,7 +82,6 @@ public class DBAppenderTest extends DBAppenderTestBase {
     LoggingEvent event = createLoggingEvent();
 
     appender.append(event);
-    //StatusPrinter.print(lc.getStatusManager());
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
@@ -102,7 +101,6 @@ public class DBAppenderTest extends DBAppenderTestBase {
     lc.setProperty("testKey1", "testValue1");
     
     appender.append(event);
-    //StatusPrinter.print(lc.getStatusManager());
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
@@ -123,7 +121,6 @@ public class DBAppenderTest extends DBAppenderTestBase {
       LoggingEvent event = createLoggingEvent();
       appender.append(event);
     }
-    //StatusPrinter.print(lc.getStatusManager());
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;

@@ -10,6 +10,7 @@ import ch.qos.logback.access.pattern.helpers.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.BasicContext;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderTest extends DBAppenderTestBase {
 
@@ -36,6 +37,10 @@ public class DBAppenderTest extends DBAppenderTestBase {
     connectionSource.setPassword(password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
+  }
+  
+  private void setInsertHeadersAndStart(boolean insert) {
+    appender.setInsertHeaders(insert);
     appender.start();
   }
 
@@ -47,9 +52,11 @@ public class DBAppenderTest extends DBAppenderTestBase {
   }
 
   public void testAppendAccessEvent() throws SQLException {
+    setInsertHeadersAndStart(false);
+
     AccessEvent event = createAccessEvent();
     appender.append(event);
-
+    
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM access_event");
@@ -71,16 +78,53 @@ public class DBAppenderTest extends DBAppenderTestBase {
     rs.close();
     stmt.close();
   }
+  
+  
+  public void testCheckNoHeadersAreInserted() throws Exception {
+    setInsertHeadersAndStart(false);
+    
+    AccessEvent event = createAccessEvent();
+    appender.append(event);
+    StatusPrinter.print(context.getStatusManager());
+    
+    //Check that no headers were inserted
+    Statement stmt = connectionSource.getConnection().createStatement();
+    ResultSet rs = null;
+    rs = stmt.executeQuery("SELECT * FROM access_event_header");
+    
+    assertFalse(rs.next());
+    rs.close();
+    stmt.close();
+  }
 
-  public void testAppendHeaders() throws SQLException {    
+  public void testAppendHeaders() throws SQLException {   
+    setInsertHeadersAndStart(true);
+    
     AccessEvent event = createAccessEvent();
     appender.append(event);
 
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM access_event_header where event_id = 0");
-    while (rs.next()) {
-      assertEquals(event.getRequestHeader(rs.getString(2)), rs.getString(3));
+    rs = stmt.executeQuery("SELECT * FROM access_event_header");
+    String key;
+    String value;
+    if (!rs.next()) {
+      fail("There should be results to this query");
+    } else {
+      key = rs.getString(2);
+      value = rs.getString(3);
+      assertNotNull(key);
+      assertNotNull(value);
+      assertEquals(event.getRequestHeader(key), value);
+      rs.next();
+      key = rs.getString(2);
+      value = rs.getString(3);
+      assertNotNull(key);
+      assertNotNull(value);
+      assertEquals(event.getRequestHeader(key), value);
+    }
+    if (rs.next()) {
+      fail("There should be no more rows available");
     }
 
     rs.close();
