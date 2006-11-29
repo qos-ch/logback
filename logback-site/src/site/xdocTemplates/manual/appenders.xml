@@ -2494,7 +2494,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			you send them to us, we will gladly include missing scripts in future releases.
 		</p>
 		
-		<p>The <em>access_event</em> table's XXXXXX are described below:</p>
+		<p>The <em>access_event</em> table's fields are described below:</p>
 
 		<table>
 			<tr>
@@ -2586,11 +2586,10 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			</tr>
 			</table>
 
-		
-		
-		
-		<a name="AccessSyslogAppender"/>
-		<h3>SyslogAppender</h3>
+		<p>
+			The options of access' <code>DBAppender</code> are the same as those available
+			for classc's <code>DBAppender</code>.
+		</p>
 
 	</body>
 </document>
