@@ -160,10 +160,10 @@ public class Interpreter  {
       // "+skip);
       if (skip.equals(pattern)) {
         // ec.addInfo("Normal processing will continue with the next element.
-        // Current pattern is <"+ pattern+">", this);
+        // Current pattern is ["+ pattern+"]", this);
         skip = null;
       } else {
-        // getLogger().debug("Skipping invoking end() method for <{}>.",
+        // getLogger().debug("Skipping invoking end() method for [{}].",
         // pattern);
       }
     } else if (applicableActionList != EMPTY_LIST) {
@@ -240,7 +240,7 @@ public class Interpreter  {
     }
 
     if (skip != null) {
-      // getLogger().debug("Skipping invoking begin() method for <{}>.",
+      // getLogger().debug("Skipping invoking begin() method for [{}].",
       // pattern);
       return;
     }
@@ -266,11 +266,11 @@ public class Interpreter  {
           skip.pop();
           break;
         }
-        // getLogger().info("Skip pattern set to <{}>", skip);
+        // getLogger().info("Skip pattern set to [{}]", skip);
       } catch (Exception e) {
         skip = (Pattern) pattern.clone();
-        // getLogger().info("Skip pattern set to <{}>", skip);
-        cai.addError("Exception in Action for tag <" + tagName + ">", e);
+        // getLogger().info("Skip pattern set to [{}]", skip);
+        cai.addError("Exception in Action for tag [" + tagName + "]", e);
       }
     }
   }
@@ -296,7 +296,7 @@ public class Interpreter  {
       return;
     }
 
-    // logger.debug("About to call end actions on node: <" + localName + ">");
+    // logger.debug("About to call end actions on node: [" + localName + "]");
     Iterator i = applicableActionList.iterator();
 
     while (i.hasNext()) {
@@ -317,10 +317,10 @@ public class Interpreter  {
         }
         // getLogger().info("Skip pattern set to <{}>", skip);
       } catch (Exception e) {
-        cai.addError("Exception in Action for tag <" + tagName + ">", e);
+        cai.addError("Exception in Action for tag [" + tagName + "]", e);
         skip = (Pattern) pattern.clone();
         skip.pop(); // induce the siblings to be skipped
-        // getLogger().info("Skip pattern set to <{}>.", skip);
+        // getLogger().info("Skip pattern set to [{}].", skip);
       }
     }
   }

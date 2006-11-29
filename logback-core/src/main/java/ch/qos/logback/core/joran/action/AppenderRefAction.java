@@ -33,8 +33,8 @@ public class AppenderRefAction extends Action {
     Object o = ec.peekObject();
 
     if (!(o instanceof AppenderAttachable)) {
-      String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near <"
-          + tagName + "> line " + getLineNumber(ec);
+      String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near ["
+          + tagName + "] line " + getLineNumber(ec);
       inError = true;
       addError(errMsg);
       return;

@@ -42,7 +42,7 @@ public class NestedComponentIA extends ImplicitAction {
 
   public boolean isApplicable(Pattern pattern, Attributes attributes,
       InterpretationContext ec) {
-    // System.out.println("in NestComponentIA.isApplicable <" + pattern + ">");
+    // System.out.println("in NestComponentIA.isApplicable [" + pattern + "]");
     String nestedElementTagName = pattern.peekLast();
 
     // calling ec.peekObject with an empty stack will throw an exception
@@ -99,7 +99,7 @@ public class NestedComponentIA extends ImplicitAction {
 
     try {
       // getLogger().debug(
-      // "About to instantiate component <{}> of type [{}]", localName,
+      // "About to instantiate component [{}] of type [{}]", localName,
       // className);
 
       // FIXME: Loading classes should be governed by config file rules.

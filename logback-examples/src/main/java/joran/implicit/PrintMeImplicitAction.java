@@ -35,7 +35,7 @@ public class PrintMeImplicitAction extends ImplicitAction {
   }
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    System.out.println("Element <"+name+"> asked to be printed.");
+    System.out.println("Element ["+name+"] asked to be printed.");
    }
 
  
