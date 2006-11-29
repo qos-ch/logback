@@ -35,6 +35,8 @@ public class DBAppender extends DBAppenderBase {
   protected final String insertHeaderSQL = "INSERT INTO  access_event_header (event_id, header_key, header_value) VALUES (?, ?, ?)";
   protected static final Method GET_GENERATED_KEYS_METHOD; 
 
+  private boolean insertHeaders = false;
+  
   static {
     StringBuffer sql = new StringBuffer();
     sql.append("INSERT INTO access_event (");
@@ -76,8 +78,10 @@ public class DBAppender extends DBAppenderBase {
       addWarn("Failed to insert access event");
     }
     
-    int eventId = getEventId(insertStatement, connection);
-    addRequestHeaders(event, connection, eventId);
+    if (insertHeaders) {
+      int eventId = getEventId(insertStatement, connection);
+      addRequestHeaders(event, connection, eventId);
+    }
   }
   
   void addAccessEvent(PreparedStatement stmt, AccessEvent event)
@@ -134,5 +138,9 @@ public class DBAppender extends DBAppenderBase {
   @Override
   protected String getInsertSQL() {
     return insertSQL;
+  }
+  
+  public void setInsertHeaders(boolean insertHeaders) {
+    this.insertHeaders = insertHeaders;
   }
 }

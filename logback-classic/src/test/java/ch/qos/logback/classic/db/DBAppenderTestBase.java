@@ -44,6 +44,8 @@ public abstract class DBAppenderTestBase extends TestCase {
       server.setDatabasePath(0, "mem:test;sql.enforce_strict_size=true");
       server.setLogWriter(null);
       server.setErrWriter(null);
+      server.setTrace(false);
+      server.setSilent(true);
       server.start();
     } else {
       if (url == null) {
