@@ -4,7 +4,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-parent</artifactId>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.6</version>
 	<packaging>pom</packaging>
 	<name>Logback-Parent</name>
 
@@ -243,9 +243,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:http://svn.qos.ch/repos/logback/trunk</connection>
-		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk</developerConnection>
-		<url>http://svn.qos.ch/viewvc/logback/</url>
+		<connection>scm:svn:https://svn.qos.ch/repos/logback/tags/logback-parent-0.6</connection>
+		<developerConnection>scm:svn:https://svn.qos.ch/repos/logback/tags/logback-parent-0.6</developerConnection>
+		<url>https://svn.qos.ch/repos/logback/tags/logback-parent-0.6</url>
 	</scm>
 
   <ciManagement>
