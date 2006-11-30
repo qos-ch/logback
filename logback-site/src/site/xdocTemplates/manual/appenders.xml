@@ -2320,7 +2320,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 					<code>String</code>
 				</td>
 				<td>
-					The port number on the syslog server to connect to. Nornally, one would not want 
+					The port number on the syslog server to connect to. Normally, one would not want 
 					to change the default value, that is <em>514</em>.
 				</td>
 			</tr>
@@ -2430,7 +2430,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 		<p>
 			The options of access' <code>SocketAppender</code> are the same as those available
-			for classc's <code>SocketAppender</code>.
+			for classic's <code>SocketAppender</code>.
 		</p>
 
 	 	<a name="AccessSMTPAppender"/>	
@@ -2587,9 +2587,51 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			</table>
 
 		<p>
-			The options of access' <code>DBAppender</code> are the same as those available
-			for classc's <code>DBAppender</code>.
+			All options of classic's <code>DBAppender</code> are available
+			in access' <code>DBAppender</code>. The latter offers one more option,
+			described below.
 		</p>
+		
+		<table>
+			<tr>
+				<th>Option Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<b>
+						<span class="option">insertHeaders</span>
+					</b>
+				</td>
+				<td>
+					<code>boolean</code>
+				</td>
+				<td>
+					Tells the <code>DBAppender</code> to populate the database with the header
+					information of all incoming requests.
+				</td>
+			</tr>
+		</table>
+		
+		<p>
+			Here is a sample configuration that uses <code>DBAppender</code>.
+		</p>
+		
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
+    &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      &lt;driverClass>com.mysql.jdbc.Driver&lt;/driverClass>
+      &lt;url>jdbc:mysql://localhost:3306/logbackdb&lt;/url>
+      &lt;user>logback&lt;/user>
+      &lt;password>logback&lt;/password>
+    &lt;/connectionSource>
+    &lt;insertHeaders>true&lt;/insertHeaders>
+  &lt;/appender>
+
+  &lt;appender-ref ref="DB" />
+&lt;/configuration></pre></div>
 
 	</body>
 </document>

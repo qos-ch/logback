@@ -46,6 +46,30 @@
 						</p>
 					</answer>
 				</faq>
+				
+				<faq id="auto_config">
+          
+          <question>
+						How does the automatic configuration work?
+					</question>
+
+					<answer>
+						<p>
+							If a file called <em>logback.xml</em> is found in the
+							classpath, then it is used.
+						</p>
+						<p>In case it is not found, a <em>logback-test.xml</em> file 
+						is searched, and used if available.
+						</p>
+						<p>
+							If none of these files are available, logback uses its 
+							<code>BasicConfiguratory</code> class to create a simple default 
+							configuration that will only log to the console.
+						</p>
+					</answer>
+				</faq>
+				
+				
 			</part>
 		</faqs>
 	</body>

@@ -3,6 +3,7 @@
 
 	<properties>
 		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
 		<title>${pom.name} download</title>
 	</properties>
 
@@ -11,6 +12,47 @@
 
 		<p>Here are the lastest news about logback.</p>
 
+		<h3>November 30th, 2006 - Release of version 0.6</h3>
+
+    <p>
+      Version 0.6 of logback has been released.
+		</p>
+
+		<p>
+			Logback classic now supports automatic configuration, allowing test and production
+			environment configuration. <code>TurboFilters</code> make their first appearance
+			in a logback release. They provide ultra-fast filtering possibilities.
+			The logging context now supports listeners which will be contacted each
+			time the context is reset or started. <code>SMTPAppender</code> 
+			allows for much more flexible configuration than before.
+		</p>
+		
+		<p>
+			In logback access, new Appenders are available, namely <code>SocketAppender</code> 
+			and <code>DBAppender</code>. 
+			Logback access now supports filtering and event evaluations. A <code>CountingFilter</code>
+			has been added. It provides statistical views of server access, reachable
+			via JMX.
+		</p>
+		
+		<p>
+			The documentation has also been improved. A complete new chapter
+			has been added about Appenders, the short introduction to logback
+			classic has been updated and a new module, containing many configuration
+			examples has been added.
+		</p>
+		
+		<p>
+			Logback now uses continous integration in its development.
+		</p>
+		
+		<p>
+			Tests have been improved, many new have been added. 
+			This release also provides some bug fixes.
+		</p>
+
+		<hr width="80%" align="center" />
+		
 		<h3>October 26th, 2006 - Release of version 0.5</h3>
 
     <p>
