@@ -2633,5 +2633,107 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;appender-ref ref="DB" />
 &lt;/configuration></pre></div>
 
-	</body>
+
+    <a name="WriteOwnAppender" />
+		<h2>Writing your own Appender</h2>
+
+
+    <p>You can easily write your appender by sub-classing <code>AppenderBase</code>. 
+    It handles support for filters, status among other functionality shared by most appenders. 
+    The derived class only needs to implement one method, namely 
+    <code>append(Object eventObject)</code>.
+    </p>
+
+    <p>The <code>CountingConsoleAppender</code>, which we list next, appends a limited 
+    number of incoming events on the console. It shuts down after the limit is reached.
+    It uses a <code>Layout</code> to format the events and accepts a parameter, 
+    thus a few more methods are needed.
+    </p>
+    
+<em>Example 4.16: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
+<div class="source"><pre>package chapter4;
+
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
+
+
+public class CountingConsoleAppender extends AppenderBase {
+  static int DEFAULT_LIMIT = 16;
+  int counter = 0;
+  int limit = DEFAULT_LIMIT;
+  
+  private Layout layout;
+
+  public CountingConsoleAppender() {
+  }
+
+  public void setLimit(int limit) {
+    this.limit = limit;
+  }
+
+  public int getLimit() {
+    return limit;
+  }  
+  
+  @Override
+  public void start() {
+    if (this.layout == null) {
+      addError("No layout set for the appender named ["+ name +"].");
+      return;
+    }
+    
+    super.start();
+  }
+
+  public void append(Object eventObject) {
+
+    if (counter >= limit) {
+      return;
+    }
+
+    // output the events as formatted by our layout
+    System.out.print(this.layout.doLayout(eventObject));
+
+    // prepare for next event
+    counter++;
+  }
+
+  public Layout getLayout() {
+    return layout;
+  }
+
+  public void setLayout(Layout layout) {
+    this.layout = layout;
+  }
+}</pre></div>
+
+		<p>
+			The <code>start()</code> method checks for the presence of a <code>Layout</code>.
+			In case none is found, the appender is not started.
+		</p>
+		
+		<p>
+			This custom appender illustrates a two points:
+		</p>
+		
+		<ul>
+			<li>
+				All options that follow the setter/getter JavaBeans conventions 
+				are handled transparently. The <code>start()</code> method, that is 
+				called automatically, has the responsability to check that the given
+				options are coherent.
+			</li>
+			<li>
+				The <code>AppenderBase.doAppend()</code> method invokes the append() 
+				method of its derived classes where actual output operations occur. 
+				It is in this method that appenders format events by invoking their layouts.
+			</li>
+		</ul>
+		
+		<p>
+			The <code>CountingConsoleAppender</code> can be configured like any appender. 
+			See sample file <em>logback-examples/src/main/java/chapter4/countingConsole.xml</em> 
+			for an example. 
+		</p>
+  </body>
 </document>
