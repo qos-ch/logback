@@ -1,13 +1,12 @@
  package ch.qos.logback.access.filter;
 
-import java.lang.management.ManagementFactory;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.FilterReply;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
-
-import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.spi.FilterReply;
+import java.lang.management.ManagementFactory;
 
 public class CountingFilter extends Filter {
 
@@ -38,6 +37,9 @@ public class CountingFilter extends Filter {
     try {
       ObjectName on = new ObjectName(domain+":Name="+getName());
       StandardMBean mbean = new StandardMBean(accessStatsImpl, StatisticalView.class);
+      if (mbs.isRegistered(on)) {
+          mbs.unregisterMBean(on);
+      }
       mbs.registerMBean(mbean, on);
       super.start();
     } catch (Exception e) {
