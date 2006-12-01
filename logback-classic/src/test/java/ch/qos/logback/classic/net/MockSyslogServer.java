@@ -36,7 +36,7 @@ public class MockSyslogServer extends Thread {
 
   @Override
   public void run() {
-      System.out.println("MockSyslogServer listening on port "+port);
+    //System.out.println("MockSyslogServer listening on port "+port);
     DatagramSocket socket = null;
     try {
       socket = new DatagramSocket(port);

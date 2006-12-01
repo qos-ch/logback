@@ -109,7 +109,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
     while (rs.next()) {
       String key = rs.getString(2);
       assertEquals(map.get(key), rs.getString(3));
-      System.out.println("value: " + map.get(key));
+      //System.out.println("value: " + map.get(key));
     }
     
     rs.close();
