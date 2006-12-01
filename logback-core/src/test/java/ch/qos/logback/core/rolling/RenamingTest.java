@@ -10,16 +10,17 @@
 
 package ch.qos.logback.core.rolling;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import junit.framework.TestCase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
+import ch.qos.logback.core.util.Constants;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * 
@@ -56,7 +57,7 @@ public class RenamingTest extends TestCase {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile("src/test/output/test.log");
+    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test.log");
     
     // rollover by the second
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
@@ -64,7 +65,7 @@ public class RenamingTest extends TestCase {
     String[] filenames = new String[2];
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern("src/test/output/test-%d{" + datePattern + "}");
+    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "/output/test-%d{" + datePattern + "}");
     //tbrp.setActiveFileName("src/test/output/test.log");
     tbrp.setContext(context);
     tbrp.setParent(rfa);
@@ -80,13 +81,13 @@ public class RenamingTest extends TestCase {
     DelayerUtil.delayUntilNextSecond(50);
     rfa.doAppend("Hello 1");
 
-    filenames[0] = "src/test/output/test-" + sdf.format(cal.getTime());
-    filenames[1] = "src/test/output/test.log";
+    filenames[0] = Constants.TEST_DIR_PREFIX + "output/test-" + sdf.format(cal.getTime());
+    filenames[1] = Constants.TEST_DIR_PREFIX + "/output/test.log";
 
     for (int i = 0; i < filenames.length; i++) {
       //System.out.println("before i=" + i);
       assertTrue(Compare.compare(filenames[i],
-          "src/test/witness/rolling/renaming." + i));
+          Constants.TEST_DIR_PREFIX + "witness/rolling/renaming." + i));
       //System.out.println("post i=" + i);
     }
   }

@@ -10,18 +10,18 @@
 
 package ch.qos.logback.core.rolling;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -217,7 +217,7 @@ public class TimeBasedRollingTest extends TestCase {
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[3] = "src/test/output/test3-" + sdf.format(cal.getTime());
+    filenames[3] = Constants.TEST_DIR_PREFIX + "output/test3-" + sdf.format(cal.getTime());
 
     //System.out.println("Waiting until next second and 100 millis.");
     DelayerUtil.delayUntilNextSecond(100);

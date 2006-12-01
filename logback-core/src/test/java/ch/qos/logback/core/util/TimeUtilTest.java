@@ -1,9 +1,9 @@
 package ch.qos.logback.core.util;
 
+import junit.framework.TestCase;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import junit.framework.TestCase;
 
 public class TimeUtilTest extends TestCase {
 
@@ -44,7 +44,7 @@ public class TimeUtilTest extends TestCase {
     long now = 1164042317522L;
     // Mon Nov 20 19:00:00 CET 2006
     long expected = 1164045600000L;
-    System.out.println(new Date(expected));
+    //System.out.println(new Date(expected));
     long computed = TimeUtil.computeStartOfNextHour(now);
     assertEquals(expected - now, 1000*(42+60*54)+478); 
     assertEquals(expected, computed);
