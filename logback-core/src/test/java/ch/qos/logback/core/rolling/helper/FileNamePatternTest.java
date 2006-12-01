@@ -71,7 +71,7 @@ public class FileNamePatternTest extends TestCase {
   }
 
   public void test2() {
-    System.out.println("Testing [foo%ibar%i]");
+    //System.out.println("Testing [foo%ibar%i]");
 
     FileNamePattern pp = new FileNamePattern("foo%i\\_bar%i", context);
     assertEquals("foo3bar3", pp.convertInt(3));
