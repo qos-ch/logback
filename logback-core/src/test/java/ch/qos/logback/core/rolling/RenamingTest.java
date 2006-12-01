@@ -43,7 +43,7 @@ public class RenamingTest extends TestCase {
     super.setUp();
     layout = new EchoLayout();
 
-    File target = new File("src/test/output/test.log");
+    File target = new File(Constants.TEST_DIR_PREFIX + "output/test.log");
     target.mkdirs();
     target.delete();
   }
@@ -65,7 +65,7 @@ public class RenamingTest extends TestCase {
     String[] filenames = new String[2];
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "/output/test-%d{" + datePattern + "}");
+    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test-%d{" + datePattern + "}");
     //tbrp.setActiveFileName("src/test/output/test.log");
     tbrp.setContext(context);
     tbrp.setParent(rfa);
@@ -82,7 +82,7 @@ public class RenamingTest extends TestCase {
     rfa.doAppend("Hello 1");
 
     filenames[0] = Constants.TEST_DIR_PREFIX + "output/test-" + sdf.format(cal.getTime());
-    filenames[1] = Constants.TEST_DIR_PREFIX + "/output/test.log";
+    filenames[1] = Constants.TEST_DIR_PREFIX + "output/test.log";
 
     for (int i = 0; i < filenames.length; i++) {
       //System.out.println("before i=" + i);
