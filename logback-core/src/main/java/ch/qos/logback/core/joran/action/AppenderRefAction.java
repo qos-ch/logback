@@ -67,7 +67,7 @@ public class AppenderRefAction extends Action {
       return;
     }
 
-    addInfo("Attaching appender named [" + appenderName + " to "
+    addInfo("Attaching appender named [" + appenderName + "] to "
         + appenderAttachable);
     appenderAttachable.addAppender(appender);
   }
