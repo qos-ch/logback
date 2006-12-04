@@ -38,24 +38,6 @@ import ch.qos.logback.core.spi.LifeCycle;
 public abstract class Filter extends ContextAwareBase implements LifeCycle {
 
   /**
-   * The event must be dropped immediately without consulting with the remaining
-   * filters, if any, in the chain.
-   */
-  //public static final int DENY = -1;
-
-  /**
-   * This filter is neutral with respect to the event. The remaining filters, if
-   * any, should be consulted for a final decision.
-   */
-  //public static final int NEUTRAL = 0;
-
-  /**
-   * The event must be logged immediately without consulting with the remaining
-   * filters, if any, in the chain.
-   */
-  //public static final int ACCEPT = 1;
-
-  /**
    * Points to the next filter in the filter chain.
    */
   private Filter next;
