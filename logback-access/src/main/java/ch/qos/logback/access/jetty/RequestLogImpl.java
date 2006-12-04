@@ -197,6 +197,10 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public boolean isStopping() {
     return false;
   }
+  
+  public boolean isStopped() {
+    return false;
+  }
 
   public boolean isFailed() {
     return false;
