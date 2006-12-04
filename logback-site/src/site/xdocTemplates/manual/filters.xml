@@ -153,6 +153,83 @@
 		</p>
 		
 		<p>
+			The variables available to the <code>EventEvaluator</code> are descripbed below:
+		</p>
+		
+		<table>
+			<th>
+				<td>Name</td>
+				<td>Type</td>
+				<td>Description</td>
+			</th>
+			<tr>
+				<td>event
+				</td>
+				<td><code>LoggingEvent</code></td>
+				<td>The newly created logging event.
+				</td>
+			</tr>
+			<tr>
+				<td>message
+				</td>
+				<td><code>String</code></td>
+				<td>The message created with the logging request.
+				</td>
+			</tr>
+			<tr>
+				<td>logger
+				</td>
+				<td><code>LoggerRemoteView</code></td>
+				<td>This object can be treated like a usual logger. In case the logging event
+				is serialized and sent to a remote machine, the usual logger object is
+				dropped and replaced by a <code>LoggerRemoteView</code> object, which
+				performs much better over the wire.
+				</td>
+			</tr>
+			<tr>
+				<td>level
+				</td>
+				<td><code>int</code></td>
+				<td>The int value corresponding to the level. To help create easily
+				expressions involving levels, the default value <em>DEBUG</em>, 
+				<em>INFO</em>, <em>WARN</em> and <em>ERROR</em> are also available. Thus,
+				using <em>level &gt; INFO</em> is a correct expression.
+				</td>
+			</tr>
+			<tr>
+				<td>timeStamp
+				</td>
+				<td><code>long</code></td>
+				<td>The timestamp corresponding to the logging event's creation.
+				</td>
+			</tr>
+			<tr>
+				<td>marker
+				</td>
+				<td><code>Marker</code></td>
+				<td>The <code>Marker</code> object associated with the logging request.
+				</td>
+			</tr>
+			<tr>
+				<td>mdc
+				</td>
+				<td><code>Map</code></td>
+				<td>A map containing all the MDC values at the time of the 
+				creation of the logging event. A value can be access by using the
+				following expression: <em>mdc.get("myKey")</em>.
+				</td>
+			</tr>
+			<tr>
+				<td>throwable
+				</td>
+				<td><code>Throwable</code></td>
+				<td>The exception that was passed to the logger when it
+				was requested.
+				</td>
+			</tr>
+		</table>
+		
+		<p>
 			The behaviour of the filter is also defined by its <span class="option">OnMatch</span>
 			and <span class="option">OnMismatch</span> options. The configuration specifies thanks
 			to these elements the replies that the <code>EvaluatorFilter</code> must give once its
@@ -281,9 +358,26 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
 		</p>
     
     
-    <h2>Logback Access</h2>
+    <h3>Logback Access</h3>
     
-    <h3>Filters</h3>
+    <p>
+    	Logback access benefits from most of the possibilities available
+    	to the classic module. <code>Filter</code> objects are available and work
+    	in the same way as their classic counterpart. They handle access' implementation
+    	of logging events: <code>AccessEvent</code>. On the other hand,
+    	<code>TurboFilter</code> objects are not available to the access module.
+    </p>
+    
+    <h2>Filters</h2>
+    
+    <p>
+    	<code>EvaluatorFilter</code> objects, with their expressions, are available to
+    	the access module. However, the variables that one can use to build an expression
+    	are different. Only the <code>AccessEvent</code> objects can be used, by inserting the
+    	<em>event</em> variable in the expression. Although less wide than its classic
+    	counterpart, the access evaluation filter is just as powerfull. All the
+    	request and response components are reachable from the <em>event</em> variable.
+    </p>    
 
 
 
