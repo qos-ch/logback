@@ -118,6 +118,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   AppenderAttachableImpl aai = new AppenderAttachableImpl();
   FilterAttachableImpl fai = new FilterAttachableImpl();
   String filename;
+  boolean started = false;
 
   public RequestLogImpl() {
     putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
@@ -166,6 +167,8 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
       getStatusManager().add(
           new InfoStatus("RequestLog added to RequestLogRegistry with name: "
               + getName(), this));
+      
+      started = true;
 
     } catch (JoranException e) {
       // errors have been registered as status messages
@@ -176,10 +179,11 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   public void stop() {
     aai.detachAndStopAllAppenders();
+    started = false;
   }
 
   public boolean isRunning() {
-    return false;
+    return started;
   }
 
   public void setFileName(String filename) {
@@ -187,7 +191,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
 
   public boolean isStarted() {
-    return true;
+    return started;
   }
 
   public boolean isStarting() {
@@ -199,7 +203,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
   
   public boolean isStopped() {
-    return false;
+    return !started;
   }
 
   public boolean isFailed() {
