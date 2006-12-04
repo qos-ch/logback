@@ -56,13 +56,16 @@
 			<code>TurboFilter</code>.
 		</p>
 		
+		<h2>Logback Classic</h2>
+		
 		<a name="Filter" />
 		<p><code>Filter</code> subclasses all implement the 
 		<a href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a> 
-		abscract class.
+		abscract class. The <code>decide(Object event)</code> method is passed a
+		newly created <code>LoggingEvent</code> object.
 		</p>
 		
-		<h2>Filter chains</h2>
+		<h3>Filter chains</h3>
 		<p>
 			This abstract class assumes that filters be organized in a linear chain. 
 			Its member field next points to the next filter in the chain, or 
@@ -102,6 +105,7 @@
     	flexibility in the way that you can affect the logging event's filtering.
     </p>
     
+    <a name="EventEvaluator" />
     <h3>Event Evaluators</h3>
     
     <p>
@@ -114,7 +118,7 @@
     	Let's see a sample configuration.
     </p>
     
-<em>Example 6.1: Basic event evaluator usage</em>
+<em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -158,9 +162,128 @@
 			logging event should be accepted, or rejected.
 		</p>
 		
+		
+		<a name="TurboFilter" />
+		<h3>TurboFilters</h3>
+    
+    <p>
+    	<code>TurboFilter</code> objects all extend the 
+    	<a href="../xref/ch/qos/logback/classic/turbo/TurboFilter.html">
+    	<code>TurboFilter</code></a> abstract class. Like the usual filters, they
+    	use ternary logic to return their evaluation of the logging event.
+    </p>
+    
+    <p>
+    	Overall, they work much like the previously mentionned filters. However, 
+    	there are two main differences between <code>Filter</code> and 
+    	<code>TurboFilter</code> objects.
+    </p>
+    
+   	<p>	
+   		<code>TurboFilter</code> objects are tied to the logging context. Hence, they
+   		are called not only when a given appender is used, but each and every time a logging
+   		request is issued. Their scope is wider than appender-attached filters.
+   	</p>
+   	
+   	<p>
+   		They are called before the <code>LoggingEvent</code> object creation. Their
+   		decision is made based on some of the logging event's components. They require 
+   		no instanciation, nor any other treatement to provide their 
+   		filtering functionnalities. They are much more performant than the usual
+   		<code>Filter</code> objects.
+   	</p>
+   	
+   	<p>
+   		Logback classic ships with several <code>TurboFilter</code> classes ready for use.
+   		The <code>MDCFilter</code> check the presence of a given value in the MDC. On the other
+   		hand, <code>MarkerFilter</code> checks for the presence of a specific marker attached
+   		to the logging request.
+   	</p>
+   	
+   	<p>
+   		Here is a sample configuration, using both <code>MDCFilter</code> and 
+   		<code>MarkerFilter</code>.
+   	</p>
+   	
+<em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+	&lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
+		&lt;MDCKey>username&lt;/MDCKey>
+		&lt;Value>sebastien&lt;/Value>
+		&lt;OnMatch>ACCEPT&lt;/OnMatch>
+	&lt;/turboFilter>
+	
+	&lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+		&lt;Marker>billing&lt;/Marker>
+		&lt;OnMatch>DENY&lt;/OnMatch>
+	&lt;/turboFilter>
+
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="info"/>
+    &lt;appender-ref ref="console" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
+
+		<p>
+			You can see this configuration in action by issuing the following command:
+		</p>
+    
+<div class="source"><pre>
+java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
+</pre></div>
+
+		<p>
+			The <code>FilterEvents</code> class creates 10 logging requests, 
+			each with its number from 01 to 9. All of the requests are of level <em>INFO</em>,
+			just like the configured overall level, except for two requests. 
+			The 3rd request, is a <em>DEBUG</em> level corresponding to the key <em>username</em>.
+			This obviously satisfies the first <code>TurboFilter</code> declared in the previous 
+			configuration file. The 6th request is a <em>ERROR</em> level request, 
+			which is issued along with the <em>billing</em> marker, to match 
+			the requests for the second declared <code>TurboFilter</code>.
+		</p>
+		
+		<p>	
+			Here is the output of the previous command:
+		</p>
+
+<div class="source"><pre>
+2006-12-04 15:17:22,859 [main] INFO  chapter6.FilterEvents - logging statement 0
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 1
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 2
+2006-12-04 15:17:22,875 [main] DEBUG chapter6.FilterEvents - logging statement 3
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 4
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 5
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 7
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 8
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 9
+</pre></div>
+			
+			
+		<p>
+			One can see that the 3rd request, who should not be displayed if we
+			only followed the overall <em>INFO</em> level, appears anyway, because
+			it matched the first <code>TurboFilter</code> requirements and was accepted.
+		</p>    
+		
+		<p>
+			On the other hand, the 6th request, that is a <em>ERROR</em> level request
+			should have been displayed. But it satisfied the second <code>TurboFilter</code>
+			whose op was <span class="option">OnMatch</span> option is set to <em>DENY</em>. 
+			Thus, the 6th request was not displayed.
+		</p>
     
     
+    <h2>Logback Access</h2>
     
+    <h3>Filters</h3>
 
 
 
