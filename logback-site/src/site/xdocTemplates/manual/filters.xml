@@ -1,0 +1,168 @@
+<document>
+<!-- 
+		
+		Warning: do not use any auto-format function on this file.
+		Since "source" divs use pre as white-space, it affects the
+		look of the code parts in this document.
+		
+	-->
+
+	<body>
+		<h2>Chapter 6: Filters</h2>
+		<div class="author">
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+		</div>
+
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+		<p>
+			As we have seen, logback has several built-in ways for filtering log requests, 
+			including the context-wide filter, logger-level selection rule and appender filters. 
+			These provide high performance filtering for the most commonly encountered 
+			cases. These filters are largely inspired from Linux ipchains or 
+			iptables as they are called in more recent Linux kernels. 
+			Logback filters are based on ternary logic allowing them to be assembled or chained 
+			together to compose an arbitrarily complex filtering policy.
+		</p>
+		
+		<p>
+			There are two main types of filters, namely <code>Filter</code> and 
+			<code>TurboFilter</code>.
+		</p>
+		
+		<a name="Filter" />
+		<p><code>Filter</code> subclasses all implement the 
+		<a href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a> 
+		abscract class.
+		</p>
+		
+		<h2>Filter chains</h2>
+		<p>
+			This abstract class assumes that filters be organized in a linear chain. 
+			Its member field next points to the next filter in the chain, or 
+			<code>null</code> if there are no further filters in the chain. 
+			Figure 6.1 depicts a sample filter chain consisting of three filters.
+		</p>
+		
+		<img src="images/chapter6/filterChain.gif" alt="A sample filter chain"/>
+
+    <p>
+    	Filters are based on ternary logic. The <code>decide(Object event)</code> 
+    	method of each filter is called in sequence. This method returns one of the 
+    	enumerations <code>FilterReply.DENY</code>, <code>FilterReply.NEUTRAL</code> or 
+    	<code>FilterReply.ACCEPT</code>. If the returned value is <code>FilterReply.DENY</code>, 
+    	then the log event is dropped immediately without consulting the 
+    	remaining filters. If the value returned is <code>FilterReply.NEUTRAL</code>, 
+    	then the next filter in the chain is consulted. If there are no further filters 
+    	to consult, then the logging event is processed normally. 
+    	If the returned value is <code>FilterReply.ACCEPT</code>, then the logging 
+    	event is processed immediately skipping the remaining filters.
+    </p>
+    
+    <p>
+    	In logback, <code>Filter</code> objects can only be added to <code>Appender</code>
+    	instances. By adding filters to an appender you can filter events by various 
+    	criteria, such as the contents of the log message, the contents of the NDC, 
+    	the time of day or any other part of the logging event.
+    </p>
+    
+    <p>
+    	The criteria can be specified using an expression evaluator. The
+    	<a href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
+    	<code>EvaluatorFilter</code></a> class uses an 
+    	<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+    	<code>EventEvaluator</code></a>
+    	to decide wether to accept or deny the request. This allows unprecedented
+    	flexibility in the way that you can affect the logging event's filtering.
+    </p>
+    
+    <h3>Event Evaluators</h3>
+    
+    <p>
+    	Events evaluators allow the user to enter java expressions, using 
+    	components of a logging event, and to check each logging event
+    	against the compiled expression.
+    </p>
+    
+    <p>
+    	Let's see a sample configuration.
+    </p>
+    
+<em>Example 6.1: Basic event evaluator usage</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="myEval">
+        &lt;expression>message.contains("important")&lt;/expression>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="INFO" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			The bold part in the previous configuration adds an <code>EvaluatorFilter</code>
+			to a <code>ConsoleAppender</code>. An <code>EventEvaluator</code> is then given to
+			the filter. The <em>expression</em> element contains a recognizable java expression.
+			Notice that the <em>message</em> variable is not defined anywhere. Logback provides
+			access to the internal components of a logging event and lets the user build her
+			expression at will.
+		</p>
+		
+		<p>
+			The behaviour of the filter is also defined by its <span class="option">OnMatch</span>
+			and <span class="option">OnMismatch</span> options. The configuration specifies thanks
+			to these elements the replies that the <code>EvaluatorFilter</code> must give once its
+			expression has been evaluated. The example above returns a positive reply when the
+			message of the logging event contains the String <em>important</em>. If this String is 
+			not found in the message, then the filter lets the next filter evaluate whether this
+			logging event should be accepted, or rejected.
+		</p>
+		
+    
+    
+    
+
+
+
+  </body>
+</document>

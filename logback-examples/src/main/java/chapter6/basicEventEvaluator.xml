@@ -1,0 +1,23 @@
+<configuration>
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator name="myEval">
+				<expression>message.contains("important")</expression>
+			</evaluator>
+			<OnMismatch>NEUTRAL</OnMismatch>
+			<OnMatch>ACCEPT</OnMatch>
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%-4relative [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</layout>
+	</appender>
+
+	<root>
+		<level value="INFO" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
