@@ -157,11 +157,11 @@
 		</p>
 		
 		<table>
-			<th>
-				<td>Name</td>
-				<td>Type</td>
-				<td>Description</td>
-			</th>
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
 			<tr>
 				<td>event
 				</td>
@@ -285,21 +285,21 @@
 <em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-	&lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
-		&lt;MDCKey>username&lt;/MDCKey>
-		&lt;Value>sebastien&lt;/Value>
-		&lt;OnMatch>ACCEPT&lt;/OnMatch>
-	&lt;/turboFilter>
+  &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
+    &lt;MDCKey>username&lt;/MDCKey>
+    &lt;Value>sebastien&lt;/Value>
+    &lt;OnMatch>ACCEPT&lt;/OnMatch>
+  &lt;/turboFilter>
 	
-	&lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
-		&lt;Marker>billing&lt;/Marker>
-		&lt;OnMatch>DENY&lt;/OnMatch>
-	&lt;/turboFilter>
+  &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    &lt;Marker>billing&lt;/Marker>
+    &lt;OnMatch>DENY&lt;/OnMatch>
+  &lt;/turboFilter>
 
   &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
-    &lt;/layout>
+  &lt;/layout>
   &lt;/appender>
 
   &lt;root>
@@ -358,7 +358,7 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
 		</p>
     
     
-    <h3>Logback Access</h3>
+    <h2>Logback Access</h2>
     
     <p>
     	Logback access benefits from most of the possibilities available
@@ -368,7 +368,7 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
     	<code>TurboFilter</code> objects are not available to the access module.
     </p>
     
-    <h2>Filters</h2>
+    <h3>Filters</h3>
     
     <p>
     	<code>EvaluatorFilter</code> objects, with their expressions, are available to
