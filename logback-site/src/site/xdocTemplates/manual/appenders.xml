@@ -197,8 +197,6 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		event to the appropriate device.
 	</p>
 	
-	<!-- ADD UML DIAGRAM -->
-	
 	<p>In appenders, the term option or property is reserved for named attributes 
 	that are dynamically inferred using JavaBeans introspection. </p>
 	
