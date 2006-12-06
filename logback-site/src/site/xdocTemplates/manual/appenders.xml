@@ -328,10 +328,11 @@ public class ExitWoes1 {
 	<p>
 		The <code>WriterAppender</code> is the super class of four other appenders, 
 		namely <code>ConsoleAppender</code>, <code>FileAppender</code> which in turn is 
-		the super class of <code>RollingFileAppender</code>. 
+		the super class of <code>RollingFileAppender</code>. The next figure illustrates 
+		the class diagram for <code>WriterAppender</code> and its subclasses.
 	</p>
 	
-	<!-- ADD UML DIAGRAM -->
+	<img src="images/chapter4/fileAppenderUML.png" alt="A UML diagram showing FileAppender"/>
 	
 	<a name="ConsoleAppender" />
 	<h3>ConsoleAppender</h3>
@@ -2634,7 +2635,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre></div>
 
 
-    <a name="WriteOwnAppender" />
+    <a name="WriteYourOwnAppender" />
 		<h2>Writing your own Appender</h2>
 
 
