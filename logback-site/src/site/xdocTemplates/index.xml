@@ -9,30 +9,10 @@
 
 	<body>
 
-    <h3>10 reasons to switch to logback</h3>
-
-    <p>
-      <a href=" http://tinyurl.com/yjcq33"> <img border="0" src="images/hortisMG.gif"/></a>
-    </p>
-    
-    <p>On the 5th of December, Ceki G&#252;lc&#252; will be presenting
-    (in French) top <a href="10reasons.ppt"><b>10 reasons for
-    migrating</b></a> your projects to logback. Issues such as
-    migration strategy, new APIs, SLF4J and Joran will be
-    discussed. Emphasis will be given to practical aspects and a live
-    demo rather than relatively theoretical considerations.
-    </p>
-
-    <p>This <a href=" http://tinyurl.com/yjcq33">free-entry event</a>
-    is organized in colloboration with <a
-    href="http://www.hortis.ch">Hortis SA</a>.</p>
-
-    
-
 		<h2>Logback Project</h2>
 		<p>
 			Logback is intended as a successor to the popular log4j
-			project. It was designed by Ceki G&#252;lcü, the founder of the
+			project. It was designed by Ceki G&#252;lc&#252;, the founder of the
 			log4j project. It builds upon exerience gained in building
 			industrial-strength logging systems going back as far as 1999.
 		</p>
