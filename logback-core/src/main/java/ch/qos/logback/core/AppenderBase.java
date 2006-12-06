@@ -129,4 +129,11 @@ abstract public class AppenderBase extends ContextAwareBase implements
   public FilterReply getFilterChainDecision(Object event) {
     return fai.getFilterChainDecision(event);
   }
+  
+  public Layout getLayout() {
+    return null;
+  }
+
+  public void setLayout(Layout layout) {
+  }
 }

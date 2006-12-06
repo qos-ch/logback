@@ -17,7 +17,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 
 /**
  * 
@@ -249,13 +248,6 @@ public abstract class SocketAppenderBase extends AppenderBase {
    */
   public int getReconnectionDelay() {
     return reconnectionDelay;
-  }
-
-  public Layout getLayout() {
-    return null;
-  }
-
-  public void setLayout(Layout layout) {
   }
 
   /**

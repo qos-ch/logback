@@ -10,7 +10,6 @@
 package ch.qos.logback.core.read;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
 /**
@@ -57,13 +56,6 @@ public class CyclicBufferAppender extends AppenderBase {
     } else {
       return null;
     }
-  }
-
-  public Layout getLayout() {
-    return null;
-  }
-
-  public void setLayout(Layout layout) {
   }
 
   /**

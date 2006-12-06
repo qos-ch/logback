@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialect;
 
@@ -159,12 +158,4 @@ public abstract class DBAppenderBase extends AppenderBase {
   public void stop() {
     super.stop();
   }
-
-  public Layout getLayout() {
-    return null;
-  }
-
-  public void setLayout(Layout layout) {
-  }
-
 }

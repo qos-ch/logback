@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 
 public class ListAppender extends AppenderBase {
 
@@ -23,12 +22,4 @@ public class ListAppender extends AppenderBase {
   protected void append(Object o) {
     list.add(o);
   }
-
-  public void setLayout(Layout layout) {
-  }
-
-  public Layout getLayout() {
-    return null;
-  }
-
 }
