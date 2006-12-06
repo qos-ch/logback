@@ -53,7 +53,7 @@
 		<p> 
 				A lighter technique consists of uniquely stamping each 
 				log request servicing a given client. Neil Harrison described this method in the book 
-				<em>"Patterns for Logging Diagnostic Messages,"</em> in 
+				<em>Patterns for Logging Diagnostic Messages</em> in 
 				Pattern Languages of Program Design 3, edited by R. Martin, D. Riehle, 
 				and F. Buschmann (Addison-Wesley, 1997). Logback offers a variant of this technique: 
 				Mapped Diagnostic Contexts (MDC).
@@ -88,7 +88,7 @@ public class MDC {
 
 		<p>
 			The <code>MDC</code> class contains only static methods. 
-			It lets the developer place information in a “diagnostic context” that can be 
+			It lets the developer place information in a <em>diagnostic context</em> that can be 
 			subsequently retrieved by certain logback components. The 
 			<code>MDC</code> manages contextual information on a per thread basis.  
 			Typically, while starting to service a new client request, the developer will 
@@ -226,7 +226,7 @@ public interface NumberCruncher extends Remote {
 			an RMI Registry on the local host that accepts requests on a well-known port.  
 		</p>
 
-<em>Example 7.2: The server side (<a href="../xref/chapter7/NumberCruncherServer.html">
+<em>Example 7.3: The server side (<a href="../xref/chapter7/NumberCruncherServer.html">
 logback-examples/src/main/java/chapter7/NumberCruncherServer.java)</a></em>
 <div class="source"><pre>package chapter7;
 
@@ -386,7 +386,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 				<em>number</em>. After computing the distinct factors of the integer 
 				parameter, the result is returned to the client. Before returning the 
 				result however, the values for the <em>client</em> and <em>number</em> are 
-				cleared by calling the <code>MDC.remove(9</code> method. Normally, 
+				cleared by calling the <code>MDC.remove()</code> method. Normally, 
 				a <code>put()</code> operation should be balanced by the corresponding 
 				<code>remove()</code> operation. Otherwise, the <code>MDC</code> will 
 				contain stale values for certain keys. We would recommend that whenever 
@@ -404,7 +404,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		<p>
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
-
+<em>Example 7.4: Configuration file (logback-examples/src/main/java/chapter7/mdc1.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="CONSOLE"
@@ -440,39 +440,50 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		<p>
 			Executing multiple instances of the client and requesting the server to factor 
 			the numbers 129 from the first client and shortly thereafter 
-			the number 71 from the second client, the server outputs the following (edited to fit):
+			the number 71 from the second client, the server outputs the following:
 		</p>
 		
 <div class="source"><pre>
-70984 [RMI TCP Connection(4)-192.168.1.6] INFO  C:192.168.1.6 N:129 - Beginning to factor.
-70984 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 2 as a factor.
-71093 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 3 as a factor.
-71093 [RMI TCP Connection(4)-192.168.1.6] INFO  C:192.168.1.6 N:129 - Found factor 3
-71187 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 4 as a factor.
-71297 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 5 as a factor.
-71390 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 6 as a factor.
-71453 [RMI TCP Connection(5)-192.168.1.6] INFO  C:192.168.1.6 N:71 - Beginning to factor.
-71453 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 2 as a factor.
-71484 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 7 as a factor.
-71547 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 3 as a factor.
-71593 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 8 as a factor.
-71656 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 4 as a factor.
-71687 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 9 as a factor.
-71750 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 5 as a factor.
-71797 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 10 as a factor.
-71859 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 6 as a factor.
-71890 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:192.168.1.6 N:129 - Trying 11 as a factor.
-71953 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 7 as a factor.
-72000 [RMI TCP Connection(4)-192.168.1.6] INFO  C:192.168.1.6 N:129 - Found factor 43
-72062 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:192.168.1.6 N:71 - Trying 8 as a factor.
-72156 [RMI TCP Connection(5)-192.168.1.6] INFO  C:192.168.1.6 N:71 - Found factor 71</pre></div>
+<b>70984 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Beginning to factor.</b>
+70984 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 2 as a factor.
+71093 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 3 as a factor.
+71093 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Found factor 3
+71187 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 4 as a factor.
+71297 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 5 as a factor.
+71390 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 6 as a factor.
+<b>71453 [RMI TCP Connection(5)-192.168.1.6] INFO  C:orion N:71 - Beginning to factor.</b>
+71453 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 2 as a factor.
+71484 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 7 as a factor.
+71547 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 3 as a factor.
+71593 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 8 as a factor.
+71656 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 4 as a factor.
+71687 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 9 as a factor.
+71750 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 5 as a factor.
+71797 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 10 as a factor.
+71859 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 6 as a factor.
+71890 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 11 as a factor.
+71953 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 7 as a factor.
+72000 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Found factor 43
+72062 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 8 as a factor.
+72156 [RMI TCP Connection(5)-192.168.1.6] INFO  C:orion N:71 - Found factor 71</pre></div>
+
+		<p>
+			The clients were run from a machine called <em>orion</em> as can be seen in 
+			the above output. Even if the server processes the requests of clients 
+			near-simultaneously in separate threads, the logging output pertaining 
+			to each client request can be distinguished by studying the output of the 
+			<code>MDC</code>. Note for example the stamp associated with <em>number</em>, 
+			i.e. the number to factor. 
+		</p>
 		
-		
-		
-
-
-
-
-
+		<p>
+			The attentive reader might have observed that the thread name could 
+			also have been used to distinguish each request. The thread name can cause 
+			confusion if the server side technology recycles threads. In that case, 
+			it may be hard to determine the boundaries of each request, that is, 
+			when a given thread finishes servicing a request and when it begins servicing the next.
+			Because the <code>MDC</code> is under the control of the application developer, 
+			<code>MDC</code> stamps do not suffer from this problem. 
+		</p>
   </body>
 </document>
