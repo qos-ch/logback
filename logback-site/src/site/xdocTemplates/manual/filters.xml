@@ -389,26 +389,59 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
 <em>Example 6.3: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-	&lt;appender name="STDOUT"
-		class="ch.qos.logback.core.ConsoleAppender">
-		<b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-			&lt;evaluator name="myEval">
-				&lt;expression>event.getStatusCode() == 404&lt;/expression>
-			&lt;/evaluator>
-			&lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-			&lt;OnMatch>ACCEPT&lt;/OnMatch>
-		&lt;/filter></b>
-		&lt;layout class="ch.qos.logback.access.PatternLayout">
-			&lt;pattern>
-				%h %l %u %t %r %s %b
-			&lt;/pattern>
-		&lt;/layout>
-	&lt;/appender>
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="myEval">
+        &lt;expression>event.getStatusCode() == 404&lt;/expression>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.access.PatternLayout">
+      &lt;pattern>
+        %h %l %u %t %r %s %b
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-	&lt;appender-ref ref="STDOUT" />
+  &lt;appender-ref ref="STDOUT" />
 &lt;/configuration></pre></div>
 
+		<p>
+			We might imagine a slightly more complex use of filters to ensure the display of 404 errors, but
+			to prevent polluting the output with endless accesses to CSS files. Here is what such a configuration
+			would look like:
+		</p>	
 
+<em>Example 6.4: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="Eval404">
+        &lt;expression>event.getStatusCode() == 404&lt;/expression>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+    &lt;/filter>
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="EvalCSS">
+        &lt;expression>event.getRequestURI().contains("css")&lt;/expression>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>DENY&lt;/OnMatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.access.PatternLayout">
+      &lt;pattern>
+        %h %l %u %t %r %s %b
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;appender-ref ref="STDOUT" />
+&lt;/configuration></pre></div>	
+		
   </body>
 </document>
