@@ -10,7 +10,9 @@
 
 package ch.qos.logback.core.net;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -30,20 +32,19 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 
 /**
- * An abstract class that provides basic support for
- * sending events to an email address.
+ * An abstract class that provides basic support for sending events to an email
+ * address.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
  */
 public abstract class SMTPAppenderBase extends AppenderBase {
-  
-  
+
   protected Layout layout;
   protected Layout subjectLayout;
 
-  private String to;
+  private List<String> to = new ArrayList<String>();
   private String from;
   private String subjectStr = null;
   private String smtpHost;
@@ -53,16 +54,16 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   protected EventEvaluator eventEvaluator;
 
   /**
-   * return a layout for the subjet string as appropriate for the
-   * module. If the subjectStr parameter is null, then a default
-   * value for subjectStr should be used.
+   * return a layout for the subjet string as appropriate for the module. If the
+   * subjectStr parameter is null, then a default value for subjectStr should be
+   * used.
    * 
    * @param subjectStr
    * 
    * @return a layout as appropriate for the module
    */
   abstract protected Layout makeSubjectLayout(String subjectStr);
-  
+
   /**
    * Start the appender
    */
@@ -84,9 +85,9 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       }
 
       msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
-      
+
       subjectLayout = makeSubjectLayout(subjectStr);
-      
+
       started = true;
 
     } catch (MessagingException e) {
@@ -95,8 +96,8 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   }
 
   /**
-   * Perform SMTPAppender specific appending actions, delegating some
-   * of them to a subclass and checking if the event triggers an e-mail to be sent.
+   * Perform SMTPAppender specific appending actions, delegating some of them to
+   * a subclass and checking if the event triggers an e-mail to be sent.
    */
   protected void append(Object eventObject) {
 
@@ -107,14 +108,14 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     subAppend(eventObject);
 
     try {
-    if (eventEvaluator.evaluate(eventObject)) {
-      sendBuffer(eventObject);
-    }
+      if (eventEvaluator.evaluate(eventObject)) {
+        sendBuffer(eventObject);
+      }
     } catch (EvaluationException ex) {
       addError("SMTPAppender's EventEvaluator threw an Exception" + ex);
     }
   }
-  
+
   abstract protected void subAppend(Object eventObject);
 
   /**
@@ -137,7 +138,9 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     }
 
     if (this.layout == null) {
-      addError("No layout set for appender named [" + name + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
+      addError("No layout set for appender named ["
+          + name
+          + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
       return false;
     }
     return true;
@@ -156,19 +159,28 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     }
   }
 
-  InternetAddress[] parseAddress(String addressStr) {
-    try {
-      return InternetAddress.parse(addressStr, true);
-    } catch (AddressException e) {
-      addError("Could not parse address [" + addressStr + "].", e);
-      return null;
+  InternetAddress[] parseAddress(List<String> addressList) {
+
+    InternetAddress[] iaArray = new InternetAddress[addressList.size()];
+
+    for (int i = 0; i < addressList.size(); i++) {
+      try {
+        InternetAddress[] tmp = InternetAddress.parse(addressList.get(i), true);
+        //one <To> element should contain one email address
+        iaArray[i] = tmp[0];
+      } catch (AddressException e) {
+        addError("Could not parse address [" + addressList.get(i) + "].", e);
+        return null;
+      }
     }
+
+    return iaArray;
   }
 
   /**
    * Returns value of the <b>To</b> option.
    */
-  public String getTo() {
+  public List<String> getTo() {
     return to;
   }
 
@@ -183,7 +195,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       MimeBodyPart part = new MimeBodyPart();
 
       StringBuffer sbuf = new StringBuffer();
-      
+
       String header = layout.getFileHeader();
       if (header != null) {
         sbuf.append(header);
@@ -201,11 +213,11 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       if (presentationFooter != null) {
         sbuf.append(presentationFooter);
       }
-      
+
       if (subjectLayout != null) {
         msg.setSubject(subjectLayout.doLayout(lastEventObject));
       }
-      
+
       part.setContent(sbuf.toString(), layout.getContentType());
 
       Multipart mp = new MimeMultipart();
@@ -218,8 +230,8 @@ public abstract class SMTPAppenderBase extends AppenderBase {
       addError("Error occured while sending e-mail notification.", e);
     }
   }
-  
-  abstract protected void fillBuffer(StringBuffer sbuf); 
+
+  abstract protected void fillBuffer(StringBuffer sbuf);
 
   /**
    * Returns value of the <b>From</b> option.
@@ -234,7 +246,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   public String getSubject() {
     return subjectStr;
   }
-  
+
   /**
    * The <b>From</b> option takes a string value which should be a e-mail
    * address of the sender.
@@ -250,7 +262,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   public void setSubject(String subject) {
     this.subjectStr = subject;
   }
-  
+
   /**
    * The <b>SMTPHost</b> option takes a string value which should be a the host
    * name of the SMTP server that will send the e-mail message.
@@ -267,28 +279,28 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   }
 
   /**
-   * The <b>To</b> option takes a string value which should be a comma
-   * separated list of e-mail address of the recipients.
+   * The <b>To</b> option takes a string value which should be 
+   * an e-mail address of one of the recipients.
    */
-  public void setTo(String to) {
-    this.to = to;
+  public void addTo(String to) {
+    this.to.add(to);
   }
-  
-  //for testing purpose only
+
+  // for testing purpose only
   public Message getMessage() {
     return msg;
   }
-  
-  //for testing purpose only
+
+  // for testing purpose only
   public void setMessage(Message msg) {
     this.msg = msg;
   }
-  
+
   /**
    * The <b>EventEvaluator</b> option takes a string value representing the
-   * name of the class implementing the {@link EventEvaluators}
-   * interface. A corresponding object will be instantiated and assigned as the
-   * event evaluator for the SMTPAppender.
+   * name of the class implementing the {@link EventEvaluators} interface. A
+   * corresponding object will be instantiated and assigned as the event
+   * evaluator for the SMTPAppender.
    */
   public void setEvaluator(EventEvaluator eventEvaluator) {
     this.eventEvaluator = eventEvaluator;

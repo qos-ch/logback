@@ -24,7 +24,7 @@ public class SMTPAppenderTestApp {
     appender.setLayout(buildLayout(lc));
     appender.setSMTPHost("mail.qos.ch");
     appender.setSubject("logging report");
-    appender.setTo("sebastien.nospam@qos.ch");
+    appender.addTo("sebastien.nospam@qos.ch");
 
     appender.start();
 
