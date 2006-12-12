@@ -1488,7 +1488,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			<td><code>String</code></td>
 			<td>
 				The email address of the recipient. Multiple recipients can
-				be specified by separating each recipient with a comma.
+				be specified by using several &lt;To&gt; elements.
 			</td>
 		</tr>
 		<tr>
