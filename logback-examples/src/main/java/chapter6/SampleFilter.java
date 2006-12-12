@@ -9,7 +9,7 @@ public class SampleFilter extends Filter {
   @Override
   public FilterReply decide(Object eventObject) {
     LoggingEvent event = (LoggingEvent)eventObject;
-    if (event.getMessage().contains("sample")) {
+    if (event.getMessage() != null && event.getMessage().contains("sample")) {
       return FilterReply.ACCEPT;
     } else {
       return FilterReply.NEUTRAL;

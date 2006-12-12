@@ -5,10 +5,10 @@
 		Since "source" divs use pre as white-space, it affects the
 		look of the code parts in this document.
 		
-	-->
+-->
 
 	<body>
-		<h2>Chapter 6: Filters</h2>
+		<h2>Chapter 6: Filter chains</h2>
 		<div class="author">
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
@@ -239,7 +239,7 @@
 			logging event should be accepted, or rejected.
 		</p>
 		
-		<h2>Implementing your own Filter</h2>
+		<h3>Implementing your own Filter</h3>
 		
 		<p>
 			Creating your own filter is not difficult. If your filter doesn't need any evaluation
@@ -283,7 +283,6 @@ public class SampleFilter extends Filter {
 
 <em>Example 6.3: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
 <div class="source"><pre>&lt;configuration>
-
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;Filter class="chapter6.SampleFilter" /></b>
@@ -434,7 +433,7 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
 		</p>
 		
 		
-	  <h2>Implementing your own TurboFilter</h2>
+	  <h3>Implementing your own TurboFilter</h3>
     
     <p>
       To create your own <code>TurboFilter</code> component, just extend the 
@@ -443,7 +442,7 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
       ask that one implement the <code>decide()</code> method, as shown below:
     </p>
     
-<em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
+<em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
 <div class="source"><pre>package chapter6;
 
 import org.slf4j.Marker;
@@ -474,7 +473,9 @@ public class SampleTurboFilter extends TurboFilter {
 		</p>
 		
 		<p>
-			
+			Like any other logback component, adding an option only requires implementing the
+			getter and setter methods in the corresponding class. Once done, the option can be specified
+			by adding nested elements inside the <em>TurboFilter</em> element.
 		</p>
     
     
@@ -486,7 +487,11 @@ public class SampleTurboFilter extends TurboFilter {
     	Logback access benefits from most of the possibilities available
     	to the classic module. <code>Filter</code> objects are available and work
     	in the same way as their classic counterpart. They handle access' implementation
-    	of logging events: <code>AccessEvent</code>. On the other hand,
+    	of logging events: <code>AccessEvent</code>. 
+    	Thus, a customized filter
+    	for logback access is follows strictly the same rules than one for the 
+    	classic module, except for the event implemenation recieved as a parameter.
+    	On the other hand,
     	<code>TurboFilter</code> objects are not available to the access module.
     </p>
     
