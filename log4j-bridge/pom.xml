@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-parent</artifactId>
+		<version>0.7-SNAPSHOT</version>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>log4j-bridge</artifactId>
+	<version>0.7-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Log4j Bridge Module</name>
+
+	<url>http://logback.qos.ch</url>
+	<description>
+		<!-- 
+			Never _never_ let Eclipse's auto format function add
+			a line return in the description.
+			The generated jar will contain a corrupt MANIFEST file.
+		-->
+		Logback: the generic, reliable, fast and flexible logging library for Java.
+	</description>
+	<licenses>
+		<license>
+			<name>Apache Software Licenses</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>			
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

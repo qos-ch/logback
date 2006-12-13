@@ -404,7 +404,8 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     filterAndLog(marker, Level.DEBUG, msg, null, null);
   }
   
-  final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
+
+  public final void filterAndLog(final String localFQCN, final Marker marker, final Level level, final String msg, final Object[] params,
       final Throwable t) {
   
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
@@ -417,9 +418,16 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
       return;
     }
     
-    LoggingEvent le = new LoggingEvent(FQCN, this, level, msg, t, params);
+    LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
     le.setMarker(marker);
     callAppenders(le);
+    
+  }
+
+  
+  final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
+      final Throwable t) {
+    filterAndLog(FQCN, marker, level, msg, params, t);
   }
 
   public void debug(Marker marker, String format, Object arg) {
