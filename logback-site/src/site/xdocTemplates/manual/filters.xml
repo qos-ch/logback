@@ -439,7 +439,8 @@ java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
       To create your own <code>TurboFilter</code> component, just extend the 
       <code>TurboFilter</code> abstract class. Like previously, when implementing
       a custumized filter object, developing a custom <code>TurboFilter</code> only
-      ask that one implement the <code>decide()</code> method, as shown below:
+      ask that one implement the <code>decide()</code> method. In the next example, we
+      create a slightly more complex filter:
     </p>
     
 <em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
@@ -455,16 +456,37 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class SampleTurboFilter extends TurboFilter {
 
+  String marker;
+  Marker acceptedMarker;
+
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level,
       String format, Object[] params, Throwable t) {
-    if ((MarkerFactory.getMarker("sample").equals(marker))) {
+
+    if ((acceptedMarker.equals(marker))) {
       return FilterReply.ACCEPT;
     } else {
       return FilterReply.NEUTRAL;
     }
   }
-}</pre></div>
+
+  public String getMarker() {
+    return marker;
+  }
+
+  public void setMarker(String markerStr) {
+    this.marker = markerStr;
+  }
+
+  @Override
+  public void start() {
+    if (marker != null &amp;&amp; marker.trim().length() > 0) {
+      acceptedMarker = MarkerFactory.getMarker(marker);
+      super.start(); 
+    }
+  }
+}
+</pre></div>
 
 		<p>
 			The <code>TurboFilter</code> above accepts events that contain a specific marker.
@@ -473,12 +495,35 @@ public class SampleTurboFilter extends TurboFilter {
 		</p>
 		
 		<p>
-			Like any other logback component, adding an option only requires implementing the
-			getter and setter methods in the corresponding class. Once done, the option can be specified
-			by adding nested elements inside the <em>TurboFilter</em> element.
+			To allow more flexibility, the marker that will be tested can be specified
+			in the configuration file. Hence the getter and setter methods. We also implemented
+			the <code>start()</code> method, to check that the option has been specified during the
+			configuration process.
 		</p>
-    
-    
+		
+		<p>
+			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
+		</p>
+		
+<em>Example 6.5: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<div class="source"><pre>&lt;configuration>
+	<b>&lt;turboFilter class="chapter6.SampleTurboFilter">
+		&lt;Marker>sample&lt;/Marker>
+	&lt;/turboFilter></b>
+
+	&lt;appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		&lt;layout class="ch.qos.logback.classic.PatternLayout">
+			&lt;pattern>
+				%-4relative [%thread] %-5level %logger - %msg%n
+			&lt;/pattern>
+		&lt;/layout>
+	&lt;/appender>
+
+	&lt;root>
+		&lt;appender-ref ref="STDOUT" />
+	&lt;/root>
+&lt;/configuration></pre></div>   
     
     
     <h2>Logback Access</h2>
