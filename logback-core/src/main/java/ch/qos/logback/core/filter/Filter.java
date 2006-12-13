@@ -10,28 +10,8 @@ import ch.qos.logback.core.spi.LifeCycle;
  * and understand the built-in rules before rushing to write your own custom
  * filters.
  * <p>
- * This abstract class assumes and also imposes that filters be organized in a
- * linear chain. The {@link #decide decide(Object)} method of each filter is
- * called sequentially, in the order of their addition to the chain.
- * <p>
- * The decide() method must return one of the FilterReplies {@link #DENY},
- * {@link #NEUTRAL} or {@link #ACCEPT}.
- * <p>
- * If the value DENY is returned, then the log event is dropped immediately
- * without consulting with the remaining filters.
- * 
- * <p>
- * If the value NEUTRAL is returned, then the next filter in the chain is
- * consulted. If there are no more filters in the chain, then the log event is
- * logged. Thus, in the presence of no filters, the default behaviour is to log
- * all logging events.
- * 
- * <p>
- * If the value ACCEPT is returned, then the log event is logged without
- * consulting the remaining filters.
- * 
- * <p>
- * The philosophy of logback filters are largely inspired from Linux ipchains.
+ * For more informations about filters, please refer to the online manual at
+ * http://logback.qos.ch/manual/filters.html
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
