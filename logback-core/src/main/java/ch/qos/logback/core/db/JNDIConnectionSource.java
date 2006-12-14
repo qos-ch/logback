@@ -30,31 +30,8 @@ import javax.sql.DataSource;
  * of connection pooling and whatever other goodies the application server
  * provides.
  * <p>
- * Sample configuration:<br>
- * 
- * <pre>
- *     &lt;connectionSource class=&quot;org.apache.log4j.jdbc.JNDIConnectionSource&quot;&gt;
- *         &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
- *     &lt;/connectionSource&gt;
- * </pre>
- * 
- * <p>
- * Sample configuration (with username and password):<br>
- * 
- * <pre>
- *     &lt;connectionSource class=&quot;org.apache.log4j.jdbc.JNDIConnectionSource&quot;&gt;
- *         &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
- *         &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
- *         &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
- *     &lt;/connectionSource&gt;
- * </pre>
- * 
- * <p>
- * Note that this class will obtain an {@link javax.naming.InitialContext} using
- * the no-argument constructor. This will usually work when executing within a
- * J2EE environment. When outside the J2EE environment, make sure that you
- * provide a jndi.properties file as described by your JNDI provider's
- * documentation.
+ * For more informations about this component, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */

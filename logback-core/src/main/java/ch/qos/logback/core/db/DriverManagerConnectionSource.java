@@ -19,45 +19,8 @@ import java.sql.SQLException;
  * {@link ConnectionSource} that obtains the Connection in the traditional JDBC
  * manner based on the connection URL.
  * <p>
- * Note that this class will establish a new Connection for each call to
- * {@link #getConnection()}. It is recommended that you either use a JDBC
- * driver that natively supported Connection pooling or that you create your own
- * implementation of {@link ConnectionSource} that taps into whatever pooling
- * mechanism you are already using. (If you have access to a JNDI implementation
- * that supports {@link javax.sql.DataSource}s, e.g. within a J2EE application
- * server, see {@link JNDIConnectionSource}). See <a href="#dbcp">below</a>
- * for a configuration example that uses the <a
- * href="http://jakarta.apache.org/commons/dbcp/index.html">commons-dbcp</a>
- * package from Apache.
- * <p>
- * Sample configuration:<br>
- * 
- * <pre>
- *      &lt;connectionSource class=&quot;org.apache.log4j.jdbc.DriverManagerConnectionSource&quot;&gt;
- *         &lt;param name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
- *         &lt;param name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mydb&quot; /&gt;
- *         &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
- *         &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
- *      &lt;/connectionSource&gt;
- * </pre>
- * 
- * <p>
- * <a name="dbcp">If</a> you do not have another connection pooling mechanism
- * built into your application, you can use the <a
- * href="http://jakarta.apache.org/commons/dbcp/index.html">commons-dbcp</a>
- * package from Apache:<br>
- * 
- * <pre>
- *      &lt;connectionSource class=&quot;org.apache.log4j.jdbc.DriverManagerConnectionSource&quot;&gt;
- *         &lt;param name=&quot;driver&quot; value=&quot;org.apache.commons.dbcp.PoolingDriver&quot; /&gt;
- *         &lt;param name=&quot;url&quot; value=&quot;jdbc:apache:commons:dbcp:/myPoolingDriver&quot; /&gt;
- *      &lt;/connectionSource&gt;
- * </pre>
- * 
- * Then the configuration information for the commons-dbcp package goes into the
- * file myPoolingDriver.jocl and is placed in the classpath. See the <a
- * href="http://jakarta.apache.org/commons/dbcp/index.html">commons-dbcp</a>
- * documentation for details.
+ * For more informations about this component, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
