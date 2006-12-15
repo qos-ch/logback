@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
+		<title>Logback Team</title>
+	</properties>
+
+	<body>
+		<h2>Logback Team</h2>
+
+		<p>Let us introduce you to the logback team members:</p>
+		
+		<table>
+			<tr>
+				<td><img src="images/ceki.gif" alt="Ceki" witdh="79" height="110"/></td>
+				<td>
+					Ceki G&#252;lc&#252; has been working on logging systems since 1996. 
+					He is the founder of the log4j as well as logback projects. 
+					Ceki very much enjoys writing software, a task far more difficult 
+					than what it might seem at first sight. 
+					One of the core lessons he has learned is that unit tests lie
+					at the heart of maintainable software. 
+				</td>
+			</tr>
+			<tr>
+				<td><img src="images/seb.gif" alt="Sebastien" witdh="79" height="110"/></td>
+				<td>
+					S&#233;bastien Pennec has been using computers for the most part of
+					his life, be it as a hobby, or during his studies or, 
+					more recently, as Software Engineer. He loves to write software in dynamic
+					and enthusiastic environments, while learning new technologies and practices.
+				</td>
+			</tr>
+		</table>
+
+	</body>
+</document>
