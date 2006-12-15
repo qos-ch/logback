@@ -33,5 +33,12 @@ published by the Free Software Foundation.</pre></div>
     href="http://www.slf4j.org/license.html">an X11 type license</a>.
     </p>
 
+    <p>If you wish to make a significant contribution to the logback
+    project, we invite you to file <a href="cla.txt">Contributor
+    License Agreement</a>. The purpose of this agreement is to
+    formalize the terms of your contribution and to protect the
+    project in case of litigation.
+    </p>
+
 	</body>
 </document>
