@@ -13,7 +13,6 @@ import java.util.Map;
 
 import ch.qos.logback.core.CoreGlobal;
 
-
 /**
  * @author Ceki Gulcu
  */
@@ -21,25 +20,31 @@ public class OptionHelper {
 
   @SuppressWarnings("unchecked")
   public static Object instantiateByClassName(String className, Class superClass)
-      throws ClassNotFoundException, IncompatibleClassException,
-      InstantiationException, IllegalAccessException {
+      throws IncompatibleClassException, DynamicClassLoadingException {
+
     if (className == null) {
       throw new NullPointerException();
     }
-    
-    // FIXME This is temporary (really!).
-    Class classObj = null;
+
     try {
-       classObj = Class.forName(className);
-    } catch(ClassNotFoundException e) {
-      ClassLoader cccl = Thread.currentThread().getContextClassLoader();
-      classObj = cccl.loadClass(className);
+      // FIXME This is temporary (really!).
+      Class classObj = null;
+      try {
+        classObj = Class.forName(className);
+      } catch (ClassNotFoundException e) {
+        ClassLoader cccl = Thread.currentThread().getContextClassLoader();
+        classObj = cccl.loadClass(className);
+      }
+
+      if (!superClass.isAssignableFrom(classObj)) {
+        throw new IncompatibleClassException(superClass, classObj);
+      }
+      return classObj.newInstance();
+    } catch (IncompatibleClassException ice) {
+      throw ice;
+    } catch (Throwable t) {
+      throw new DynamicClassLoadingException("Failed to instantiate type "+className, t);
     }
-    
-    if (!superClass.isAssignableFrom(classObj)) {
-      throw new IncompatibleClassException(superClass, classObj);
-    }
-    return classObj.newInstance();
   }
 
   /**
@@ -47,28 +52,28 @@ public class OptionHelper {
    * Then perform variable substitution on the found value.
    * 
    */
-//  public static String findAndSubst(String key, Properties props) {
-//    String value = props.getProperty(key);
-//
-//    if (value == null) {
-//      return null;
-//    }
-//
-//    try {
-//      return substVars(value, props);
-//    } catch (IllegalArgumentException e) {
-//      return value;
-//    }
-//  }
-
+  // public static String findAndSubst(String key, Properties props) {
+  // String value = props.getProperty(key);
+  //
+  // if (value == null) {
+  // return null;
+  // }
+  //
+  // try {
+  // return substVars(value, props);
+  // } catch (IllegalArgumentException e) {
+  // return value;
+  // }
+  // }
   final static String DELIM_START = "${";
   final static char DELIM_STOP = '}';
   final static int DELIM_START_LEN = 2;
   final static int DELIM_STOP_LEN = 1;
+
   /**
    * Perform variable substitution in string <code>val</code> from the values
-   * of keys found the primary map passed as first parameter, then in the secondary
-   * map, and last in the system properties.
+   * of keys found the primary map passed as first parameter, then in the
+   * secondary map, and last in the system properties.
    * 
    * <p>
    * The variable substitution delimeters are <b>${</b> and <b>}</b>.
@@ -78,22 +83,24 @@ public class OptionHelper {
    * "value1", then the call
    * 
    * <pre>
-   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, priMap, null);
+   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, priMap,
+   *     null);
    * </pre>
+   * 
    * will set the variable <code>s</code> to "Value of key is value1.".
    * 
    * <p>
-   * If no value could be found for the specified key, then the secondary map is searches, 
-   * and if that fails, the system properties are searched, if that fails, then
-   * substitution defaults to the empty string.
+   * If no value could be found for the specified key, then the secondary map is
+   * searches, and if that fails, the system properties are searched, if that
+   * fails, then substitution defaults to the empty string.
    * 
    * <p>
    * For example, if system properties contains no value for the key
    * "inexistentKey", then the call
    * 
    * <pre>
-   * String s = OptionConverter
-   *     .subsVars(&quot;Value of inexistentKey is [${inexistentKey}]&quot;, priMap, null);
+   * String s = OptionConverter.subsVars(
+   *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, priMap, null);
    * </pre>
    * 
    * will set <code>s</code> to "Value of inexistentKey is []".
@@ -120,7 +127,8 @@ public class OptionHelper {
    * @throws IllegalArgumentException
    *           if <code>val</code> is malformed.
    */
-  public static String substVars(String val, Map<String, String> primaryMap, Map<String, String> secondaryMap) {
+  public static String substVars(String val, Map<String, String> primaryMap,
+      Map<String, String> secondaryMap) {
 
     StringBuffer sbuf = new StringBuffer();
 
@@ -137,7 +145,7 @@ public class OptionHelper {
 
           return val;
         } else { // add the tail string which contails no variables and return
-                  // the result.
+          // the result.
           sbuf.append(val.substring(i, val.length()));
 
           return sbuf.toString();
@@ -165,8 +173,8 @@ public class OptionHelper {
           if (primaryMap != null) {
             replacement = primaryMap.get(key);
           }
-          
-          if(replacement == null && secondaryMap != null) {
+
+          if (replacement == null && secondaryMap != null) {
             replacement = secondaryMap.get(key);
           }
 
@@ -187,7 +195,8 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, primaryMap, secondaryMap);
+            String recursiveReplacement = substVars(replacement, primaryMap,
+                secondaryMap);
             sbuf.append(recursiveReplacement);
           }
 
@@ -212,7 +221,7 @@ public class OptionHelper {
     try {
       return System.getProperty(key, def);
     } catch (Throwable e) { // MS-Java throws
-                            // com.ms.security.SecurityExceptionEx
+      // com.ms.security.SecurityExceptionEx
       return def;
     }
   }
@@ -227,7 +236,7 @@ public class OptionHelper {
     }
     return result;
   }
-  
+
   /**
    * If <code>value</code> is "true", then <code>true</code> is returned. If
    * <code>value</code> is "false", then <code>true</code> is returned.
