@@ -77,9 +77,9 @@
 	<!-- ================================================================= -->
 	<!-- Run tests                                                     -->
 	<!-- ================================================================= -->
-	<target name="all" depends="test1, test2" />
+	<target name="all" depends="test12, test13" />
 
-	<target name="test1" depends="build_log4j12">
+	<target name="test12" depends="build_log4j12">
 		<junit printsummary="yes" fork="yes" haltonfailure="yes">
 			<classpath refid="log4-bridge.classpath" />
 			<classpath location="${javac.dest.12}" />
@@ -88,7 +88,7 @@
 		</junit>
 	</target>
 
-	<target name="test2" depends="build_log4j13">
+	<target name="test13" depends="build_log4j13">
 		<junit printsummary="yes" fork="yes" haltonfailure="yes">
 			<classpath refid="log4-bridge.classpath" />
 			<classpath location="${javac.dest.13}" />

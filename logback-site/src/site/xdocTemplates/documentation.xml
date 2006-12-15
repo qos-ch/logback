@@ -31,6 +31,9 @@
       <li>
       	<a href="faq.html">A Frequently Asked Questions list (FAQ)</a>
       </li>
+      <li>
+      	<a href="bridge.html">How to: use and test the log4j bridge</a>
+      </li>
 		</ul>
 		
 		<p>Source code related documentation:</p>

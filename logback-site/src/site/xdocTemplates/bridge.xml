@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<document>
+
+	<properties>
+		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+		<author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
+		<title>Log4j Bridge</title>
+	</properties>
+
+	<body>
+
+    <h2>Log4j bridge</h2>
+
+		<p>
+			As of version 0.7, logback ships with a new module called <em>log4j-bridge</em>.
+			It allows log4j users to use logback without changing a single line of code in
+			their application. All that is needed to do is to replace the log4j.jar file
+			with the appropriate logback jars.
+		</p>
+		
+		<h3>How does it work?</h3>
+		<p>
+	  	The log4j-bridge module contains new implementations of the most widely used
+	  	log4j classes, namely <code>Category</code>, <code>Level</code>, <code>Logger</code>,
+	  	<code>MDC</code> and <code>Priority</code>, as well as <code>Log4jLoggerFactory</code>.
+	  	All these implementations redirect the calls to the corresponding logback class.
+		</p>
+		<p>
+			To use the bridge in your own application, the first step is to locate and remove
+			the log4j.jar file. Then you should place the following jars in your application's
+			classpath:
+		</p>
+
+		<ul>
+			<li>
+				log4j-bridge-<em>VERSION</em>.jar
+			</li>
+			<li>
+				logback-classic-<em>VERSION</em>.jar
+			</li>
+			<li>
+				logback-core-<em>VERSION</em>.jar
+			</li>
+			<li>
+				slf4j-api-<em>VERSION</em>.jar
+			</li>
+		</ul>
+		
+		<p>
+			This is what it takes to make logback your logging implementation when using log4j.
+			It will use logback's automatic basic configuration, displaying the logging requests
+			in the console. More advanced use will require a configuration file and other jars
+			which are logback dependencies. In that case, a file called <em>logback.xml</em>, 
+			placed in the application's classpath, will be automatically loaded by logback.
+		</p>
+		
+		<h3>Running the log4j-bridge tests</h3>
+		<p>
+			The log4j-bridge module contains a <em>compatibility</em> directory that is used to
+			test the module against various log4j calls. Two test cases simulate the typical calls
+			that one can find in an application that uses either log4j 1.2.x, or log4j 1.3.x.
+		</p>
+		<p>
+			In the same directory is a <em>build.xml</em> file that uses ant to 
+			compile the test cases with the corresponding log4j version, 
+			and to runs these tests without log4j in the classpath but with 
+			logback jars instead.
+		</p>
+		
+		<p>
+			To run the tests, one must have ant installed. Issuing the following command, 
+			once in the <em>compatibility</em> directory will launch the tests:
+		</p>
+		
+<div class="source"><pre>ant all</pre></div>
+
+	</body>
+</document>

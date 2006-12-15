@@ -1,3 +1,12 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package test;
 
 import junit.framework.TestCase;
@@ -5,6 +14,14 @@ import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
+/**
+ * 
+ * A test case that issues the typical calls
+ * that an application using log4j 1.2 would do.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
+ */
 public class Log4j12Calls extends TestCase {
   public static final Logger logger = Logger.getLogger(Log4j12Calls.class);
   

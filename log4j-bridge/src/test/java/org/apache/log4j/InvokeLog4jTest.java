@@ -46,7 +46,6 @@ import junit.framework.TestCase;
 public class InvokeLog4jTest extends TestCase {
 
   public void testIsEnabledAPI() {
-    // assume that we are running over slf4j-simple
     Logger log = Logger.getLogger(InvokeLog4jTest.class.getName());
     
     assertTrue(log.isTraceEnabled());
