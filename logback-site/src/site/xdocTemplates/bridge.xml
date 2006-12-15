@@ -50,7 +50,7 @@
 			This is what it takes to make logback your logging implementation when using log4j.
 			It will use logback's automatic basic configuration, displaying the logging requests
 			in the console. More advanced use will require a configuration file and other jars
-			which are logback dependencies. In that case, a file called <em>logback.xml</em>, 
+			which are logback dependencies. A file called <em>logback.xml</em>, 
 			placed in the application's classpath, will be automatically loaded by logback.
 		</p>
 		

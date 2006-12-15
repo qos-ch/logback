@@ -63,7 +63,7 @@
 						</p>
 						<p>
 							If none of these files are available, logback uses its 
-							<code>BasicConfiguratory</code> class to create a simple default 
+							<code>BasicConfigurator</code> class to create a simple default 
 							configuration that will only log to the console.
 						</p>
 					</answer>
