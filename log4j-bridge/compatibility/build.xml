@@ -1,0 +1,100 @@
+<project name="testing-log4j-bridge" default="usage" basedir=".">
+
+	<property name="source.home" value="./src/main/java/" />
+	<property name="javac.dest.12" value="./target/classes12/" />
+	<property name="javac.dest.13" value="./target/classes13/" />
+	<property name="lib" value="./lib" />
+
+	<property name="version" value="1.0" />
+	<property name="deprecation" value="on" />
+
+	<path id="basic.classpath">
+		<pathelement location="${source.home}" />
+		<pathelement location="${lib}/junit-3.8.1.jar" />
+	</path>
+
+	<path id="log4j12.classpath">
+		<path refid="basic.classpath" />
+		<pathelement location="${javac.dest.12}" />
+		<pathelement location="${lib}/log4j-1.2.14.jar" />
+	</path>
+
+	<path id="log4j13.classpath">
+		<path refid="basic.classpath" />
+		<pathelement location="${javac.dest.13}" />
+		<pathelement location="${lib}/log4j-1.3alpha-8.jar" />
+	</path>
+
+	<path id="log4-bridge.classpath">
+		<path refid="basic.classpath" />
+		<pathelement location="${lib}/log4j-bridge-0.7-SNAPSHOT.jar" />
+		<pathelement location="${lib}/logback-classic-0.7-SNAPSHOT.jar" />
+		<pathelement location="${lib}/logback-core-0.7-SNAPSHOT.jar" />
+		<pathelement location="${lib}/slf4j-api-1.1.0-RC1.jar" />
+	</path>
+
+	<!-- ================================================================= -->
+	<!-- Default target                                                    -->
+	<!-- ================================================================= -->
+	<target name="usage">
+		<echo>      
+      These are some of the targets supported by this ANT build scpript:
+
+      all - run all available tests
+      
+    </echo>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${javac.dest.12}" />
+		<mkdir dir="${javac.dest.13}" />
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset dir="${javac.dest.12}" includes="**" />
+			<fileset dir="${javac.dest.13}" includes="**" />
+		</delete>
+	</target>
+
+	<target name="build_log4j12" depends="init">
+		<javac srcdir="${source.home}" 
+			     destdir="${javac.dest.12}" 
+			     includes="**/Log4j12Calls.java" 
+			      deprecation="${deprecation}" debug="on">
+			<classpath refid="log4j12.classpath" />
+		</javac>
+	</target>
+
+	<target name="build_log4j13" depends="init">
+		<javac srcdir="${source.home}" 
+			     destdir="${javac.dest.13}" 
+			     includes="**/Log4j13Calls.java" deprecation="${deprecation}" debug="on">
+			<classpath refid="log4j13.classpath" />
+		</javac>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Run tests                                                     -->
+	<!-- ================================================================= -->
+	<target name="all" depends="test1, test2" />
+
+	<target name="test1" depends="build_log4j12">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath refid="log4-bridge.classpath" />
+			<classpath location="${javac.dest.12}" />
+			<formatter type="plain" usefile="false" />
+			<test name="test.Log4j12Calls" />
+		</junit>
+	</target>
+
+	<target name="test2" depends="build_log4j13">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath refid="log4-bridge.classpath" />
+			<classpath location="${javac.dest.13}" />
+			<formatter type="plain" usefile="false" />
+			<test name="test.Log4j13Calls" />
+		</junit>
+	</target>
+
+</project>
