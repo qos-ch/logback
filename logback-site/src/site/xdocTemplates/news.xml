@@ -4,13 +4,31 @@
 	<properties>
 		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
 		<author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-		<title>${pom.name} download</title>
+		<title>News</title>
 	</properties>
 
 	<body>
 		<h2>Logback News</h2>
 
 		<p>Here are the latest news about logback.</p>
+
+		<h3>December 15th, 2006 - Release of version 0.7</h3>
+		
+		<p>
+		   Version 0.7 of logback has been released.
+		</p>
+		
+		<p>
+			Logback now ships with a new module: <em>log4j-bridge</em>. This new module
+			can be used to intercept log4j calls and redirects them to logback components.
+			More information about this module can be found in the corresponding 
+			<a href="bridge.html">documentation page</a>.
+		</p>
+		
+		<p>
+			The documentation has been vastly updated. Two new chapters,
+			namely Filters and MDC, are available in the manual section.
+		</p>
 
 		<h3>November 30th, 2006 - Release of version 0.6</h3>
 

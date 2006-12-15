@@ -18,6 +18,18 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
+		<fileSet>
+			<directory>log4j-bridge/</directory>
+			<outputDirectory>log4j-bridge/</outputDirectory>
+			<includes>
+				<include>
+					pom.xml
+				</include>
+			</includes>
+			<excludes>
+				<exclude>*.bak</exclude>
+			</excludes>
+		</fileSet>
 				<fileSet>
 			<directory>logback-classic/</directory>
 			<outputDirectory>logback-classic/</outputDirectory>
@@ -106,9 +118,28 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
+			<directory>log4j-bridge/src/</directory>
+			<outputDirectory>log4j-bridge/src/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>log4j-bridge/compatibility/</directory>
+			<outputDirectory>log4j-bridge/compatibility/</outputDirectory>
+			<excludes>
+				<exclude>
+					target/classes/
+				</exclude>
+				<exclude>
+					target/classes12/
+				</exclude>
+				<exclude>
+					target/classes13/
+				</exclude>
+			</excludes>
+		</fileSet>
+		<!--fileSet>
 			<directory>logback-examples/src/main/resources</directory>
 			<outputDirectory>logback-examples/</outputDirectory>
-		</fileSet>
+		</fileSet -->
 		<fileSet>
 			<directory>logback-site/src/</directory>
 			<outputDirectory>logback-site/src/</outputDirectory>
@@ -128,6 +159,14 @@
 		<fileSet>
 			<directory>logback-examples/lib/</directory>
 			<outputDirectory>logback-examples/lib</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>logback-examples/target/classes</directory>
+			<outputDirectory>logback-examples/</outputDirectory>
+      <includes>
+				<include>setClasspath.sh</include>
+				<include>setClasspath.cmd</include>
+      </includes>
 		</fileSet>
  		
 		<!-- Module JARs -->
@@ -152,7 +191,13 @@
 				<include>logback-access-${project.version}.jar</include>
 			</includes>
 		</fileSet>		
-
+		<fileSet>
+			<directory>log4j-bridge/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>log4j-bridge-${project.version}.jar</include>
+			</includes>
+		</fileSet>	
 		<!-- Module Source JARs -->
 		<fileSet>
 			<directory>logback-core/target/</directory>
@@ -175,7 +220,14 @@
 				<include>logback-access-${project.version}-sources.jar</include>
 			</includes>
 		</fileSet>	
-		 
+		<fileSet>
+			<directory>log4j-bridge/target/</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>log4j-bridge-${project.version}-sources.jar</include>
+			</includes>
+		</fileSet>	
+				 
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>

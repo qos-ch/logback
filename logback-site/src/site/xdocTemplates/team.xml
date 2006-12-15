@@ -25,7 +25,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><img src="images/seb.gif" alt="Sebastien" witdh="79" height="110"/></td>
+				<td><!-- img src="images/seb.gif" alt="Sebastien" witdh="79" height="110"/ --></td>
 				<td>
 					S&#233;bastien Pennec has been using computers for the most part of
 					his life, be it as a hobby, or during his studies or, 
