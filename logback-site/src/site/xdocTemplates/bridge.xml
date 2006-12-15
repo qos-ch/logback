@@ -1,34 +1,40 @@
 <?xml version="1.0"?>
 <document>
 
-	<properties>
-		<author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-		<author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-		<title>Log4j Bridge</title>
-	</properties>
-
+  <properties>
+    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
+    <title>Log4j Bridge</title>
+  </properties>
+  
 	<body>
 
     <h2>Log4j bridge</h2>
+    
+    <p>As of version 0.7, logback ships with a new module called
+    <em>log4j-bridge</em>.  It allows log4j users to use logback
+    without changing a single line of code in their application. All
+    that is needed to do is to replace the log4j.jar file with the
+    appropriate logback jars.
+    </p>
+    
+    <h3>How does it work?</h3>
 
-		<p>
-			As of version 0.7, logback ships with a new module called <em>log4j-bridge</em>.
-			It allows log4j users to use logback without changing a single line of code in
-			their application. All that is needed to do is to replace the log4j.jar file
-			with the appropriate logback jars.
-		</p>
-		
-		<h3>How does it work?</h3>
-		<p>
-	  	The log4j-bridge module contains new implementations of the most widely used
-	  	log4j classes, namely <code>Category</code>, <code>Level</code>, <code>Logger</code>,
-	  	<code>MDC</code> and <code>Priority</code>, as well as <code>Log4jLoggerFactory</code>.
-	  	All these implementations redirect the calls to the corresponding logback class.
-		</p>
-		<p>
-			To use the bridge in your own application, the first step is to locate and remove
-			the log4j.jar file. Then you should place the following jars in your application's
-			classpath:
+    <p>The log4j-bridge module contains replacements of most widely
+    used log4j classes, namely <code>Category</code>,
+    <code>Level</code>, <code>Logger</code>, <code>MDC</code>,
+    <code>Priority</code>, and <code>Log4jLoggerFactory</code>.  These
+    replacement classes redirect loggging calls to the corresponding
+    logback methods.
+    </p>
+
+    <p>
+			To use log4j-bridge in your own application, the first step is
+			to locate and remove the <em>log4j.jar</em> file and replace it
+			with <em>log4j-bridge.jar</em> which ships with logback. Note
+			that you still need logback-classic and its dependencies for the
+			log4j-bridge to work properly. In summary, here is a list of the
+			required jars:
 		</p>
 
 		<ul>
