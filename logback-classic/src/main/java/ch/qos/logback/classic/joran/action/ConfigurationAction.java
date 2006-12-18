@@ -12,14 +12,16 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
-  boolean attachment = false;
+  boolean debugMode = false;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
@@ -32,7 +34,7 @@ public class ConfigurationAction extends Action {
       //LoggerContext loggerContext = (LoggerContext) context;
       //ConfiguratorBase.attachTemporaryConsoleAppender(context);
  
-      attachment = true;
+      debugMode = true;
     }
     
     // the context is turbo filter attachable, so it is pushed on top of the stack
@@ -40,8 +42,11 @@ public class ConfigurationAction extends Action {
   }
 
   public void end(InterpretationContext ec, String name) {
-    if (attachment) {
+    if (debugMode) {
       addInfo("End of configuration.");
+      LoggerContext loggerContext = (LoggerContext) context;
+      StatusPrinter.print(loggerContext);
+      
       //LoggerContext loggerContext = (LoggerContext) context;
       //ConfiguratorBase.detachTemporaryConsoleAppender(repository, errorList);
     }
