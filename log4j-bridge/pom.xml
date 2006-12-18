@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-parent</artifactId>
-		<version>0.7-SNAPSHOT</version>
+		<version>0.7</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>log4j-bridge</artifactId>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.7</version>
 	<packaging>jar</packaging>
 	<name>Log4j Bridge Module</name>
 
