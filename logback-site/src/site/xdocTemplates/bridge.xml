@@ -23,7 +23,8 @@
     <p>The log4j-bridge module contains replacements of most widely
     used log4j classes, namely <code>Category</code>,
     <code>Level</code>, <code>Logger</code>, <code>MDC</code>,
-    <code>Priority</code>, and <code>Log4jLoggerFactory</code>.  These
+    <code>Priority</code>, <code>BasicConfigurator</code>
+    and <code>Log4jLoggerFactory</code>.  These
     replacement classes redirect loggging calls to the corresponding
     logback methods.
     </p>
@@ -59,26 +60,21 @@
 			which are logback dependencies. A file called <em>logback.xml</em>, 
 			placed in the application's classpath, will be automatically loaded by logback.
 		</p>
-		
-		<h3>Running the log4j-bridge tests</h3>
-		<p>
-			The log4j-bridge module contains a <em>compatibility</em> directory that is used to
-			test the module against various log4j calls. Two test cases simulate the typical calls
-			that one can find in an application that uses either log4j 1.2.x, or log4j 1.3.x.
-		</p>
-		<p>
-			In the same directory is a <em>build.xml</em> file that uses ant to 
-			compile the test cases with the corresponding log4j version, 
-			and to runs these tests without log4j in the classpath but with 
-			logback jars instead.
-		</p>
+
+    <h3>When does it not work?</h3>
+    
+    <p>
+    	The <em>log4-bridge</em> module does not work when the application calls
+    	log4j components that are not present in the bridge.
+    	For examples, direct creation of log4j <code>Appenders</code> or 
+    	<code>Filters</code> will not work.
+    </p>
 		
 		<p>
-			To run the tests, one must have ant installed. Issuing the following command, 
-			once in the <em>compatibility</em> directory will launch the tests:
+			However, in most situations, log4j finds its configuration file and 
+			configures itself. In these cases, the application will only issue calls
+			to the classes that are contained in the <em>log4j-bridge</em>.
 		</p>
-		
-<div class="source"><pre>ant all</pre></div>
 
 	</body>
 </document>
