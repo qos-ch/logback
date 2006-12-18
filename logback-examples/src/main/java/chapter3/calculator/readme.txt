@@ -13,5 +13,5 @@ computation.
 
 For more in-depth informations about this example, please visit:
 
-http://logback.qos.ch/joran.html#calculator
+http://logback.qos.ch/manual/joran.html#calculator
 

@@ -7,18 +7,18 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package joran.calculator;
+package chapter3.calculator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import joran.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
+import chapter3.SimpleConfigurator;
 
 
 /**

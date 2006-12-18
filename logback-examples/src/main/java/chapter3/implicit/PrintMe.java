@@ -7,14 +7,14 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package joran.implicit;
+package chapter3.implicit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import joran.SimpleConfigurator;
+import chapter3.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;

@@ -10,11 +10,11 @@
 
 <computation name="toto">
   <new-rule pattern="*/computation/literal" 
-            actionClass="joran.calculator.LiteralAction"/>
+            actionClass="chapter3.calculator.LiteralAction"/>
   <new-rule pattern="*/computation/add" 
-            actionClass="joran.calculator.AddAction"/>
+            actionClass="chapter3.calculator.AddAction"/>
   <new-rule pattern="*/computation/multiply" 
-            actionClass="joran.calculator.MultiplyAction"/>
+            actionClass="chapter3.calculator.MultiplyAction"/>
 
   <computation>
     <literal value="7"/>

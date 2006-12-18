@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package joran;
+package chapter3;
 
 import java.util.List;
 import java.util.Map;

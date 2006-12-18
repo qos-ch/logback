@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package joran.implicit;
+package chapter3.implicit;
 
 import org.xml.sax.Attributes;
 

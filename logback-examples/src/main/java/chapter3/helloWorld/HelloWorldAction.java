@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package joran.helloWorld;
+package chapter3.helloWorld;
 
 
 

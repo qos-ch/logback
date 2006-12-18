@@ -8,12 +8,12 @@
  * Software Foundation.
  */
 
-package joran.helloWorld;
+package chapter3.helloWorld;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import joran.SimpleConfigurator;
+import chapter3.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;

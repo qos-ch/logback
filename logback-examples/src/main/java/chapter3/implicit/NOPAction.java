@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package joran.implicit;
+package chapter3.implicit;
 
 import org.xml.sax.Attributes;
 

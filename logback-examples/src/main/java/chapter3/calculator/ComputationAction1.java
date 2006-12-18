@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package joran.calculator;
+package chapter3.calculator;
 
 
 

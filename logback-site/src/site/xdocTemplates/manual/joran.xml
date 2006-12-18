@@ -13,6 +13,36 @@
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>
+						.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+
+
 <p>Joran stands for a cold north-west wind which, every now and then,
 blows force-fully on Lake Leman, a.k.a lake Geneva. Located right in
 the middle of Europe, the Leman happens to be the continent's largest
@@ -79,14 +109,14 @@ occurs for the corresponding pattern. This relation between patterns
 and actions lies at the core of Joran.  Quite remarkably, one can deal
 with quite complex requirements by using simple patterns, or more
 precisely with exact matches and wildcard matches. For example, the
-pattern "a/b" will match a <code>&lt;b></code> element nested within
+pattern <em>a/b</em> will match a <code>&lt;b></code> element nested within
 an <code>&lt;a></code> element but not a <code>&lt;c></code> element,
 even if nested within a <code>&lt;b></code> element. It is also
 possible to match a particular XML element, regardless of its nesting
-level, by using the "*" wildcard character. For example, the pattern
-"*/a" will match an <code>&lt;a></code> element at any nesting
+level, by using the <em>*</em> wildcard character. For example, the pattern
+<em>*/a</em> will match an <code>&lt;a></code> element at any nesting
 position within the document. Other types of patterns, for example
-"a/*", are not currently supported by Joran.
+<em>a/*</em>, are not currently supported by Joran.
 </p>
 
 <h2>SAX or DOM?</h2>
@@ -172,25 +202,26 @@ conditions by adding error items on the execution context's
 <a name="helloWorld" />
 <h3>A hello world example</h3>
 
-<p>The <em>logback-examples/src/main/java/joran/helloWorld/</em> directory includes a
-trivial action and Joran interpreter setup which just diaplays "Hello
-World" when a &lt;hello-world&gt; element is encountered in an XML file.
+<p>The <em>logback-examples/src/main/java/chapter3/helloWorld/</em> directory includes a
+trivial action and Joran interpreter setup which just displays <em>Hello
+World</em> when a &lt;hello-world&gt; element is encountered in an XML file.
 It also includes the basic steps which are
 necessary to set up and invoke a Joran interpreter.
 </p>
 <p>
 The <em>hello.xml</em> file contains only one element, without any
-other nested elements. The <code>HelloWorldAction</code> class is 
+other nested elements. The <a href="../xref/chapter3/helloWorld/HelloWorldAction.html">
+<code>HelloWorldAction</code></a> class is 
 a trivial implementation: it only prints "Hello World" in the console when
 it's <code>begin()</code> method is called.
 </p>
 <p>
-<code>HelloWorld</code> is a class that sets up the Joran interpreter,
+<a href="../xref/chapter3/helloWorld/HelloWorld.html"><code>HelloWorld</code></a> 
+is a class that sets up the Joran interpreter,
 with the minimal steps necessary:
 </p>
 
 <ul>
-	<!-- Pretty dirty, thanks site-generation... -->
 	<p>It creates a <code>RuleStore</code> and a <code>Context</code></p>
 	<p>It adds the <em>hello-world</em> pattern, with it's corresponding action</p>
 	<p>It creates a Joran interpreter, and passes the <code>RuleStore</code></p>
@@ -201,7 +232,7 @@ with the minimal steps necessary:
 <p>
 It's last step is to print the content of the <code>Context</code>. 
 Since Joran uses logback's powerfull <code>Status</code> objects for 
-error reporting, one can have a good feedback on  what happened during 
+error reporting, one can have a good feedback on what happened during 
 the parsing.
 </p>
 
@@ -210,13 +241,13 @@ In this example, the parsing is rather simple. The <em>hello-world</em> element
 will activate <code>HelloWorldAction</code>'s <code>begin()</code> and 
 <code>end()</code> methods.
 In the first method, a simple call to <code>System.out.println()</code> 
-will be issued, displaying "Hello World" in the console.
+will be issued, displaying <em>Hello World</em> in the console.
 </p>
 
 <a name="calculator" />
 <h3>Collaborating actions</h3>
 <p>
-The logback-examples/src/main/java/joran/calculator/ directory includes several actions
+The <em>logback-examples/src/main/java/joran/calculator/</em> directory includes several actions
 which collaborate together through the common object stack in order
 to accomplish simple computations.
 </p>
@@ -225,17 +256,21 @@ The <em>calculator1.xml</em> file contains a <code>computation</code> element,
 with a nested <code>literal</code> element.
 </p>
 <p>
-In the <code>Calculator1</code> class, we declare various patterns and actions,
+In the <a href="../xref/chapter3/calculator/Calculator1.html">
+<code>Calculator1</code></a> class, we declare various patterns and actions,
 that will collaborate and calculate a result based on the xml file. The simple
 <em>calculator1.xml</em> file only creates a computation and declares a literal
 value. The resulting parsing is pretty simple:
 </p>
 <ul>
-	<p>The <code>ComputationAction1</code> class' <code>begin()</code> method
+	<p>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
+	<code>ComputationAction1</code></a> class' <code>begin()</code> method
 	is called</p>
-	<p>The <code>LiteralAction</code> class' <code>begin()</code> and <code>end()</code> 
+	<p>The <a href="../xref/chapter3/calculator/LiteralAction.html">
+	<code>LiteralAction</code></a> class' <code>begin()</code> and <code>end()</code> 
 	methods are called</p>
-	<p>The <code>ComputationAction1</code> class' <code>end()</code> method
+	<p>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
+	<code>ComputationAction1</code></a> class' <code>end()</code> method
 	is called</p>
 </ul>
 <p>
@@ -246,7 +281,7 @@ any other action can pop the value to read or modify it. Here, the
 <code>end()</code> method of the <code>ComputationAction1</code> class pops
 the value from the stack and prints it.
 </p>
-<p>The <em>calculator2.xml</em> file is a bit more complex, and much more interesting.</p>
+<p>The <em>calculator2.xml</em> file is a bit more complex, but much more interesting.</p>
 <p>It contains the following elements:</p>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
@@ -258,10 +293,12 @@ the value from the stack and prints it.
 <p>
 Here, there are obviously more actions that will be part of the computation.
 </p>
-<p>When called, the <code>AddAction</code> class will remove the two integers at
+<p>When called, the <a href="../xref/chapter3/calculator/AddAction.html">
+<code>AddAction</code></a> class will remove the two integers at
 the bottom of the stack, add them and push the resulting integer at the
 top of the stack, for further use.</p>
-<p>Later in the computation, the <code>MultiplyAction</code> class will be called.
+<p>Later in the computation, the <a href="../xref/chapter3/calculator/MultiplyAction.html">
+<code>MultiplyAction</code></a> class will be called.
 It will take the last two integers from the stack, multiply them and
 push the result in the stack.</p>
 <p>We have here two examples of action whose <code>begin()</code> method behaves in 
@@ -283,9 +320,10 @@ elements that contain instances of the same element. Here's the content of
 
 <p>Much like the use of parentheses in an algebrical equation, the presence of
 a <code>computation</code> element nested in another is managed by the 
-<code>ComputationAction2</code> class using an internal stack. The well-formedness 
-of XML will guarantee that a value saved by one begin() will be consumed 
-only by the matching end() method.</p>
+<a href="../xref/chapter3/calculator/ComputationAction2.html">
+<code>ComputationAction2</code></a> class using an internal stack. The well-formedness 
+of XML will guarantee that a value saved by one <code>begin()</code> will be consumed 
+only by the matching <code>end()</code> method.</p>
 
 <a name="newRule" />
 <h3>New-rule action</h3>
@@ -294,7 +332,8 @@ new rules on the fly while interpreting the XML file containing the
 new rules.  See the <em>logback-examples/src/main/java/joran/newRule/</em>
 directory for sample code.
 </p>
-<p>In this package, the <code>NewRuleCalculator</code> class contains 
+<p>In this package, the <a href="../xref/chapter3/newRule/NewRuleCalculator.html">
+<code>NewRuleCalculator</code></a> class contains 
 the same setup as we have seen so far, but for one line:</p>
 
 <source>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</source>
@@ -310,18 +349,18 @@ and added to the <code>RuleStore</code>, along with its corresponding pattern.</
 
 <p>Here is how new rules can be declared in an xml file:</p>
 
-<div class="source"><pre>&lt;new-rule pattern="*/computation/literal" actionClass="joran.calculator.LiteralAction"/&gt;</pre></div>
+<div class="source"><pre>&lt;new-rule pattern="*/computation/literal" actionClass="chapter3.calculator.LiteralAction"/&gt;</pre></div>
 
 <p>Using new rule declarations, the preceding example, involving the calculation, could be
 expressed this way:</p>
 
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
-            actionClass="joran.calculator.LiteralAction"/&gt;
+            actionClass="chapter3.calculator.LiteralAction"/&gt;
   &lt;new-rule pattern="*/computation/add" 
-            actionClass="joran.calculator.AddAction"/&gt;
+            actionClass="chapter3.calculator.AddAction"/&gt;
   &lt;new-rule pattern="*/computation/multiply" 
-            actionClass="joran.calculator.MultiplyAction"/&gt;
+            actionClass="chapter3.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
@@ -350,8 +389,9 @@ well-defined patterns linking the various parts together. Implicit
 rules come in very handy when processing components composed of
 sub-components unknown ahead of time. For example, Apache Ant is
 capable of handling tasks which contain tags unknown at compile time
-by looking at methods whose names start with add, as in addFile, or
-addClassPath.  When Ant encounters an embedded tag within a task, it
+by looking at methods whose names start with <em>add</em>, as in 
+<code>addFile</code>, or <code>addClassPath</code>.  
+When Ant encounters an embedded tag within a task, it
 simply instantiates an object that matches the signature of the task
 class' add method and attaches the resulting object to the parent.
 </p>
@@ -368,7 +408,10 @@ actions or obviously none, if no implicit action is appropriate for a
 given situation.
 </p>
 
-<p>For example, the NestedComponentIA extending ImplicitAction , will
+<p>For example, the <a href="../xref/ch/qos/logback/core/joran/action/NestedComponentIA.html">
+<code>NestedComponentIA</code></a> extending 
+<a href="../xref/ch/qos/logback/core/joran/action/ImplicitAction.html">
+<code>ImplicitAction</code></a> , will
 instantiate the class specified in a nested component and attach it
 to the parent component by using setter method of the parent
 component and the nested element's name. Under certain circumstances,
@@ -379,7 +422,7 @@ handling multiply nested elements requiring intervention by the same
 implicit action.
 </p>
 
-<p>Both ImplicitAction and NestedComponentIA are located in the
+<p>Both <code>ImplicitAction</code> and <code>NestedComponentIA</code> are located in the
 <code>ch.qos.logback.core.joran.action</code> package.
 </p>
 
@@ -390,12 +433,15 @@ directory for an example of an implicit action.
 <p>In that directory, you will find two actions classes, one xml file and one
 class containing the setup of Joran.</p>
 
-<p>The <code>NOPAction</code> class does nothing. It is used to set
+<p>The <a href="../xref/chapter3/implicit/NOPAction.html">
+<code>NOPAction</code></a> class does nothing. It is used to set
 the context of the <em>foo</em> element, using this line:</p>
 
 <source>ruleStore.addRule(new Pattern("*/foo"), new NOPAction());</source>
 
-<p>After that, the implicit action, namely <code>PrintMeImplicitAction</code>, 
+<p>After that, the implicit action, namely 
+<a href="../xref/chapter3/implicit/PrintMeImplicitAction.html">
+<code>PrintMeImplicitAction</code></a>, 
 is added to the <code>RuleStore</code>. This is done by simply adding a new
 instance of the action to the <code>Joran interpreter</code></p>
 

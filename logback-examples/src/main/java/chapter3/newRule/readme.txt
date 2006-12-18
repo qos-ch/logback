@@ -13,5 +13,5 @@ the xml file.
 
 For more in-depth informations about this example, please visit:
 
-http://logback.qos.ch/joran.html#newRule
+http://logback.qos.ch/manual/joran.html#newRule
 

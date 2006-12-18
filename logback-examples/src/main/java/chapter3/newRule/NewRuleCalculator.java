@@ -8,13 +8,11 @@
  * Software Foundation.
  */
 
-package joran.newRule;
+package chapter3.newRule;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import joran.SimpleConfigurator;
-import joran.calculator.ComputationAction2;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
@@ -22,6 +20,8 @@ import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
+import chapter3.SimpleConfigurator;
+import chapter3.calculator.ComputationAction2;
 
 
 /**

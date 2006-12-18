@@ -8,16 +8,16 @@
  * Software Foundation.
  */
 
-package joran.calculator;
+package chapter3.calculator;
 
 
+
+import java.util.EmptyStackException;
 
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-
-import java.util.EmptyStackException;
 
 
 /**
