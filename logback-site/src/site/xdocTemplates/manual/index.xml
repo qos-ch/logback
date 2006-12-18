@@ -61,6 +61,10 @@
       
       <ul>
         <li><p>
+          <a href="joran.html"><b>Chapter 3: Logback configuration with Joran</b></a>
+        </p></li>
+        
+        <li><p>
           <a href="appenders.html"><b>Chapter 4: Appenders</b></a>
         </p></li>
         
