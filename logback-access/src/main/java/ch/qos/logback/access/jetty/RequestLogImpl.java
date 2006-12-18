@@ -23,7 +23,6 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * This class is logback's implementation of jetty's RequestLog interface.
