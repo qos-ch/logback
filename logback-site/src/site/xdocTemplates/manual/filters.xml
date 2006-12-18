@@ -388,7 +388,7 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 		</p>
     
 <div class="source"><pre>
-java chapter6.FilterEvents src/java/main/chapter6/turboFilters.xml
+java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 </pre></div>
 
 		<p>
