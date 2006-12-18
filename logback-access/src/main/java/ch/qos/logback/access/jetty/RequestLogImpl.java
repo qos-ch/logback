@@ -173,8 +173,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     } catch (JoranException e) {
       // errors have been registered as status messages
     }
-    
-    StatusPrinter.print(getStatusManager());
   }
 
   public void stop() {
