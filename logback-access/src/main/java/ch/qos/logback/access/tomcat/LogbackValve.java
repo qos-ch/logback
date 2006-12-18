@@ -22,10 +22,12 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
@@ -76,7 +78,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author S&eacute;bastien Pennec
  */
 public class LogbackValve extends ValveBase implements Context,
-    AppenderAttachable {
+    AppenderAttachable, FilterAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
@@ -121,7 +123,7 @@ public class LogbackValve extends ValveBase implements Context,
       }
     } else {
       getStatusManager().add(
-          new ErrorStatus("[" + filename + "] does not exist", this));
+          new WarnStatus("[" + filename + "] does not exist", this));
     }
     started = true;
   }
@@ -131,9 +133,13 @@ public class LogbackValve extends ValveBase implements Context,
 
     getNext().invoke(request, response);
 
-    // System.out.println("**** LogbackValve invoke called");
     TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
     AccessEvent accessEvent = new AccessEvent(request, response, adapter);
+    
+    if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
+      return;
+    }
+    
     // TODO better exception handling
     aai.appendLoopOnAppenders(accessEvent);
   }
