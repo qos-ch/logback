@@ -505,11 +505,9 @@ thousands of elements.
 
 <h2>Configuration in logback</h2>
 
-<div class="redBold">This section should be considered as work in progress</div>
-
 <p>
-	Logback can be configured both programmatically and thanks to an xml configuration
-	file. Here are the steps that logback follows to try to configure itself:
+Logback can be configured both programmatically and thanks to an xml configuration
+file. Here are the steps that logback follows to try to configure itself:
 </p>
 
 <ul>
@@ -520,24 +518,24 @@ thousands of elements.
 	</a> class.</p>
 </ul>
 <p>
-	The first two checks allow for two environments to cooperate nicely. When the application
-	using logback is in development and test process, a special file can be used to setup
-	a logging environment that is developer-friendly. Once in production environment, the 
-	presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
-	configuration.
+The first two checks allow for two environments to cooperate nicely. When the application
+using logback is in development and test process, a special file can be used to setup
+a logging environment that is developer-friendly. Once in production environment, the 
+presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
+configuration.
 </p>
 
 <p>
-	The last step is meant to provide very basic logging functionnality in case no configuration
-	file is provided. In that case, the logging requests are output to the console.
+The last step is meant to provide very basic logging functionnality in case no configuration
+file is provided. In that case, the logging requests are output to the console.
 </p>
 
-<h3>Manually configuring logback</h3>
+<h3>Automatically configuring logback</h3>
 
 <p>
-	The simplest way to configure logback is by using the 
-	<code>BasicConfigurator.configureDefaultContext()</code> method. Let us give a taste of how 
-	this is done with the help of an imaginary application called <code>MyApp1</code>.
+The simplest way to configure logback is by letting logback use its 
+<code>BasicConfigurator.configureDefaultContext()</code> method. Let us give a taste of how 
+this is done with the help of an imaginary application called <code>MyApp1</code>.
 </p>
 
 <em>Example 3.5: Simple example of <code>BasicConfigurator</code> usage 
@@ -547,15 +545,96 @@ thousands of elements.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.BasicConfigurator;
-
-
 public class MyApp1 {
   final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
 
   public static void main(String[] args) {
-    //Set up a simple configuration that logs on the console.
-    BasicConfigurator.configureDefaultContext();
+    logger.info("Entering application.");
+
+    Foo foo = new Foo();
+    foo.doIt();
+    logger.info("Exiting application.");
+  }
+}</pre></div>
+
+<p>
+There is no invokation of the <code>BasicConfigurator</code> here, since logback
+automatically calls it when no configuration files are found. It creates a rather
+simple logback setup. This call is hardwired to add a <code>ConsoleAppender</code> to
+the root logger. The output is formatting using a <code>PatternLayout</code> set to the
+pattern <em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</em>. Note that
+by default the root logger is assigned to the <code>DEBUG</code> level.
+</p>
+
+<p>
+The output of the command <em>java chapter3.MyApp1</em> should be similar to:
+</p>
+
+<div class="source"><pre>16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
+16:06:09.046 [main] DEBUG chapter3.Foo - Did it again!
+16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</pre></div>
+
+<p>
+If you are unable to run this command, then make sure that you have set
+your classpath correctly. The scripts provided in the 
+<em>logback-examples/</em> directory will help you setting it up.
+</p>
+
+<p>
+As a side note, let me mention that in logback child loggers link only 
+to their existing ancestors. In particular, the logger named <em>chapter3.Foo</em> 
+is linked directly with the root logger, thereby circumventing the unused 
+<em>chapter3</em> logger. This noticeably improves the performance 
+of hierarchy walks and also slightly reduces logback's memory footprint
+</p>
+
+<p>
+The <code>MyApp1</code> class uses logback by calling the org.slf4j.LoggerFactory and
+org.slf4j.Logger classes, retrieve the loggers it wishes to use, and log away. 
+For example, the only dependence of the <code>Foo</code> class on logback is the 
+org.slf4j.LoggerFactory and org.slf4j.Logger import. 
+Except code that configures logback (if such code exists) user code does not need to 
+depend on logback. Given that SLF4J permits the use of any implementation under its
+abstraction layer, it is rather easy to migrate large bodies of code from an imlementation
+to another. Logback also ships with a module called <em>log4j-bridge</em> that intercepts
+log4j calls and redirects them to the corresponding logback components. Thank to that module,
+one can migrate an entire application using log4j to logback just by replacing jars. More
+information about the <em>log4j-bridge</em> module in its 
+<a href="../bridge.html">specific documentation page</a>.
+</p>
+
+<h3>The same using <code>JoranConfigurator</code></h3>
+
+<p>
+The previous example outputs logging information always in the same fixed manner. 
+Fortunately, it is easy to modify <code>MyApp1</code> so that the log output can 
+be controlled at runtime. Here is a slightly modified version called <code>MyApp2</code>.
+</p>
+
+<em>Example 3.6: Simple example of <code>BasicConfigurator</code> usage  <a href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em>
+<div class="source"><pre>package chapter3;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+
+public class MyApp2 {
+  final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
+
+  public static void main(String[] args) {
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    
+    try {
+      <b>JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(lc);
+      lc.shutdownAndReset();
+      configurator.doConfigure(args[0]);</b>
+    } catch (JoranException je) {
+      je.printStackTrace();
+    }
 
     logger.info("Entering application.");
 
@@ -564,24 +643,96 @@ public class MyApp1 {
     logger.info("Exiting application.");
   }
 }</pre></div>
-	
-<p>
 
+<p>
+<code>MyApp2</code> fetches the <code>LoggerContext</code>, creates a new
+<code>JoranConfigurator</code>, gives it the context and finally asks that
+the configurator parses a configuration file. A basic configuration file, that
+creates the same components as the default configuration would create, is
+listed below:
 </p>
 
+<em>Example 3.7: Basic configuration file (logback-examples/src/main/java/chapter3/sample0.xml)</em>
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
+<p>
+Assuming the current directory is <em>logback-examples</em>, try running the 
+<code>MyApp2</code> class by issuing the following command:
+</p>
 
+<div class="source"><pre>java chapter3.MyApp2 src/main/java/chapter3/sample0.xml</pre></div>
 
+<p>
+The ouput of this command is very similar to the output of the previous example, except
+that <code>MyApp2</code> retrieves a logger called <em>chapter3.MyApp2</em> instead of
+<code>chapter3.MyApp1</code>. The output will reflect the difference.
+</p>
 
+<div class="source"><pre>16:09:00.593 [main] INFO  chapter3.MyApp2 - Entering application.
+16:09:00.593 [main] DEBUG chapter3.Foo - Did it again!
+16:09:00.593 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
+<p>
+It is often very useful to define the logback debug configuration property in order 
+to instruct logback to output internal configuration messages on the console. To achieve
+this, one only needs to add an attribute to the main <em>configuration</em> element in the
+configuration file, as shown above:
+</p>
 
+<em>Example 3.8: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
+<div class="source"><pre>&lt;configuration debug="true">
 
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
+<p>
+This should cause logback to print internal configuration messages in 
+addition to the actual logs. Relaunching the <code>MyApp2</code> application with this
+new configuration file will ouput the following lines:
+</p>
 
+<div class="source"><pre>|-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch. \
+qos.logback.core.ConsoleAppender]
+|-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+|-INFO in ch.qos.logback.core.joran.action.AppenderAction - Popping appender named [STDOUT] from the \
+object stack
+|-INFO in ch.qos.logback.classic.joran.action.LevelAction - root level set to DEBUG
+|-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to \
+Logger[root]
+|-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+16:18:23.687 [main] INFO  chapter3.MyApp2 - Entering application.
+16:18:23.687 [main] DEBUG chapter3.Foo - Did it again!
+16:18:23.687 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
+<p>
+At the end of this output, one will immediately recognize the lines that were printed
+before. But right above stand the printing of logback's <code>Status</code> objects.
+<code>Status</code> objects are logback's powerful error reporting mechanism. They provide
+easy and precise access to logback's internal state.
+</p>
 
 
 
