@@ -80,7 +80,7 @@
 		<javac srcdir="${source.home}" 
 			     destdir="${javac.dest.12}" 
 			     includes="**/Log4j12Calls.java" 
-			      deprecation="${deprecation}" debug="on">
+			     deprecation="${deprecation}" debug="on">
 			<classpath refid="log4j12.classpath" />
 		</javac>
 	</target>

@@ -739,6 +739,33 @@ easy and precise access to logback's internal state.
 <h4>Configuring Loggers</h4>
 
 <p>
+Loggers are configured using <em>logger</em> elements. A <em>logger</em> element takes exactly
+one mandatory name atttribute and an optional additivity attribute, which takes values
+<em>true</em> or <em>false</em>. The <em>logger</em> element admits at most one <em>level</em>
+element which is discussed next. It may also contain zero or more <em>appender-ref</em> elements;
+each appender thus referenced is added to the named logger. It is important to keep mind that 
+each named logger that is declared with a <em>logger</em> element first has all its 
+appenders removed and only then are the referenced appenders attached to it. 
+In particular, if there are no appender references, then the named logger will 
+lose all its appenders. 
+</p>
+
+<p>
+The <em>level</em> element is used to set logger levels. It admits two attributes 
+<em>value</em> and <em>class</em>. The value attribute can be one of the strings <em>DEBUG</em>, 
+<em>INFO</em>, <em>WARN</em> <em>ERROR</em>, <em>ALL</em> or <em>OFF</em>.  
+The special case-insensitive value <em>INHERITED</em>, or its synonym <em>NULL</em>, 
+will force the level of the logger to be inherited from higher up in the hierarchy. 
+Note that the level of the root logger cannot be inherited. 
+If you set the level of a logger and later decide that it should inherit 
+its level, then you need to specify <em>INHERITED</em> or its synonym <em>NULL</em> 
+as the level value. The class attribute allows you to specify a custom 
+level where the value of the attribute is the fully qualified name of a 
+custom level class. You may alternatively use the <em>level#classname</em> syntax within 
+the value attribute. The <em>level</em> element has no children.
+</p>
+
+<p>
 Setting the level of a logger is as simple as declaring it and setting 
 its level, as the next example illustrates. Suppose we are no longer interested 
 in seeing any <code>DEBUG</code> level logs from any component 
@@ -877,7 +904,7 @@ where the appenders are attached. The configuration file <em>sample4.xml</em> is
 
   <b>%lt;logger name="chapter3">
     %lt;level value="INFO" />
-  %lt;/logger>
+  %lt;/logger></b>
 
   %lt;root>
     <b>%lt;level value="OFF" /></b>
@@ -940,6 +967,18 @@ directly refer to it.
 </p>
 
 <h4>Configuring Appenders + multiple + additivity</h4>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <h4>Variable substitution</h4>
 
