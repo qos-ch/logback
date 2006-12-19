@@ -51,6 +51,12 @@ sweet water reserve.
 
 <h2>Introduction</h2>
 
+<p>
+	This document begins with a generic explanation of how the configuration
+	framework in logback works. Then, a second part explains how to use it
+	within logback to configure precisely a logging strategy.
+</p>
+
 <p>For it's configuration, logback relies on Joran, a
 mature, flexible and powerful configuration framework. Many of the
 capabilities offered by logback modules are possible thanks to Joran.
@@ -63,7 +69,7 @@ that sprit, many of the examples related to this tutorial, have
 nothing to do with loggers, appenders or layouts.
 </p>
 
-<p>The examples for this tutorial can be found under
+<p>The examples for this chapter can be found under
 <em>LOGBACK_HOME/logback-examples/src/main/java/chapter3</em>.
 </p>
 
@@ -283,6 +289,8 @@ the value from the stack and prints it.
 </p>
 <p>The <em>calculator2.xml</em> file is a bit more complex, but much more interesting.</p>
 <p>It contains the following elements:</p>
+
+<em>Example 3.1: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
@@ -307,6 +315,8 @@ a certain, predictable way, but whose <code>end()</code> methods are empty.</p>
 <p>Finally, a <em>calculator3.xml</em> is also provided, to demonstrate the possibility
 elements that contain instances of the same element. Here's the content of
 <em>calculator3.xml</em>:</p>
+
+<em>Example 3.2: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator3.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
@@ -354,6 +364,7 @@ and added to the <code>RuleStore</code>, along with its corresponding pattern.</
 <p>Using new rule declarations, the preceding example, involving the calculation, could be
 expressed this way:</p>
 
+<em>Example 3.3: Configuration file using new rules on the fly (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
             actionClass="chapter3.calculator.LiteralAction"/&gt;
@@ -453,6 +464,7 @@ the implicit action is applicable: its <code>begin()</code> method will be calle
 
 <p>The <em>implicit1.xml</em> file contains the following lines:</p>
 
+<em>Example 3.4: Usage of implicit rules (logback-examples/src/main/java/chapter3/implicit/implicit1.xml)</em>
 <div class="source"><pre>&lt;foo&gt;
 
   &lt;xyz printme="true"&gt;
@@ -490,6 +502,99 @@ of the main class.</p>
 <p>The Joran API is not intended to be used to parse documents with
 thousands of elements.
 </p>
+
+<h2>Configuration in logback</h2>
+
+<div class="redBold">This section should be considered as work in progress</div>
+
+<p>
+	Logback can be configured both programmatically and thanks to an xml configuration
+	file. Here are the steps that logback follows to try to configure itself:
+</p>
+
+<ul>
+	<p>Logback tries to find a file called <em>logback.xml</em> within the classpath.</p>
+	<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
+	<p>In case no files are found, logback configures itself automatically thanks to the 
+	<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
+	</a> class.</p>
+</ul>
+<p>
+	The first two checks allow for two environments to cooperate nicely. When the application
+	using logback is in development and test process, a special file can be used to setup
+	a logging environment that is developer-friendly. Once in production environment, the 
+	presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
+	configuration.
+</p>
+
+<p>
+	The last step is meant to provide very basic logging functionnality in case no configuration
+	file is provided. In that case, the logging requests are output to the console.
+</p>
+
+<h3>Manually configuring logback</h3>
+
+<p>
+	The simplest way to configure logback is by using the 
+	<code>BasicConfigurator.configureDefaultContext()</code> method. Let us give a taste of how 
+	this is done with the help of an imaginary application called <code>MyApp1</code>.
+</p>
+
+<em>Example 3.5: Simple example of <code>BasicConfigurator</code> usage 
+<a href="../xref/chapter3/MyApp1.html">(logback-examples/src/main/java/chapter3/MyApp1.java)</a></em>
+<div class="source"><pre>package chapter3;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.BasicConfigurator;
+
+
+public class MyApp1 {
+  final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
+
+  public static void main(String[] args) {
+    //Set up a simple configuration that logs on the console.
+    BasicConfigurator.configureDefaultContext();
+
+    logger.info("Entering application.");
+
+    Foo foo = new Foo();
+    foo.doIt();
+    logger.info("Exiting application.");
+  }
+}</pre></div>
+	
+<p>
+
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </document>
