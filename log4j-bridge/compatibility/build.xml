@@ -1,11 +1,12 @@
 <project name="testing-log4j-bridge" default="usage" basedir=".">
 
+	<property name="lbversion" value="0.8-SNAPSHOT" />
+  <property name="slf4jversion" value="1.1.0-RC1" />
 	<property name="source.home" value="./src/main/java/" />
 	<property name="javac.dest.12" value="./target/classes12/" />
 	<property name="javac.dest.13" value="./target/classes13/" />
 	<property name="lib" value="./lib" />
 
-	<property name="version" value="1.0" />
 	<property name="deprecation" value="on" />
 
 	<path id="basic.classpath">
@@ -27,10 +28,10 @@
 
 	<path id="log4-bridge.classpath">
 		<path refid="basic.classpath" />
-		<pathelement location="${lib}/log4j-bridge-0.7.1.jar" />
-		<pathelement location="${lib}/logback-classic-0.7.1.jar" />
-		<pathelement location="${lib}/logback-core-0.7.1.jar" />
-		<pathelement location="${lib}/slf4j-api-1.1.0-RC1.jar" />
+		<pathelement location="${lib}/log4j-bridge-${lbversion}.jar" />
+		<pathelement location="${lib}/logback-classic-${lbversion}.jar" />
+		<pathelement location="${lib}/logback-core-${lbversion}.jar" />
+		<pathelement location="${lib}/slf4j-api-${slf4jversion}.jar" />
 	</path>
 
 	<!-- ================================================================= -->
@@ -41,9 +42,27 @@
       These are some of the targets supported by this ANT build scpript:
 
       all - run all available tests
-      
+      refresh - copy required jar files to the lib directory
     </echo>
 	</target>
+
+  <delete>
+    <fileset dir="." includes="**/*.bak"/>
+  </delete>
+
+  <target name="refresh">
+    <delete>
+      <fileset dir="lib">
+        <include name="logback-*.jar"/>
+        <include name="log4j-bridge-*.jar"/>
+      </fileset>
+    </delete>
+    <copy file="../../logback-core/target/logback-core-${lbversion}.jar" todir="lib/"/>
+    <copy file="../../logback-classic/target/logback-classic-${lbversion}.jar" todir="lib/"/>
+    <copy file="../target/log4j-bridge-${lbversion}.jar" todir="lib/"/>
+
+  </target>
+
 
 	<target name="init">
 		<mkdir dir="${javac.dest.12}" />
