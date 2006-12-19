@@ -24,12 +24,10 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  public static void autoConfig(LoggerContext loggerContext) {
-
-    ClassLoader tccl = Loader.getTCL();
-    URL url = Loader.getResource(AUTOCONFIG_FILE, tccl);
+  public static void autoConfig(LoggerContext loggerContext, ClassLoader classLoader) {
+    URL url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
     if (url == null) {
-      url = Loader.getResource(TEST_AUTOCONFIG_FILE, tccl);
+      url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
     }
 
     if (url != null) {
@@ -41,5 +39,11 @@ public class ContextInitializer {
     } else {
         BasicConfigurator.configure(loggerContext);
     }
+  }
+  
+  public static void autoConfig(LoggerContext loggerContext) {
+    ClassLoader tccl = Loader.getTCL();
+    autoConfig(loggerContext, tccl);
+   
   }
 }
