@@ -12,6 +12,18 @@
 
 		<p>Here are the latest news about logback.</p>
 
+		<h3>December 19th, 2006 - Release of version 0.7.1</h3>
+		
+		<p>
+		   Version 0.7.1 of logback has been released.
+		</p>
+		
+		<p>
+			This version contains more detailled information about logback access module, and
+			its JMX components. A <a href="access.html">dedicated page</a> explains how to configure and use logback
+			access in Tomcat and Jetty, and access some of its components via JMX.
+		</p>
+		
 		<h3>December 18th, 2006 - Release of version 0.7</h3>
 		
 		<p>
