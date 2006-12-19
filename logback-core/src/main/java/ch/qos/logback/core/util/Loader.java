@@ -44,8 +44,8 @@ public class Loader {
    * parameter is false.</li>
    * 
    * <p>
-   * <li>If the above step fails, search for <code>resource</code> using
-   * the class loader that loaded this class (<code>Loader</code>).</li>
+   * <li>If the above step fails, search for <code>resource</code> using the
+   * class loader that loaded this class (<code>Loader</code>).</li>
    * 
    * <p>
    * <li>Try one last time with
@@ -55,53 +55,14 @@ public class Loader {
    * 
    * </ol>
    */
-  public static URL getResource(String resource) {
-    ClassLoader classLoader = null;
-    URL url = null;
-
+  public static URL getResource(String resource, ClassLoader classLoader) {
     try {
-      classLoader = getTCL();
-
-      if (classLoader != null) {
-        // LogLog.debug(
-        // "Trying to find [" + resource + "] using context classloader "
-        // + classLoader + ".");
-        url = classLoader.getResource(resource);
-
-        if (url != null) {
-          return url;
-        }
-      }
-
-      // We could not find resource. Ler us now try with the
-      // classloader that loaded this class.
-      classLoader = Loader.class.getClassLoader();
-
-      if (classLoader != null) {
-        // LogLog.debug(
-        // "Trying to find [" + resource + "] using " + classLoader
-        // + " class loader.");
-        url = classLoader.getResource(resource);
-
-        if (url != null) {
-          return url;
-        }
-      }
+      return classLoader.getResource(resource);
     } catch (Throwable t) {
-      // LogLog.warn(TSTR, t);
+      return null;
     }
 
-    // Last ditch attempt: get the resource from the class path. It
-    // may be the case that clazz was loaded by the Extentsion class
-    // loader which the parent of the system class loader. Hence the
-    // code below.
-    // LogLog.debug(
-    // "Trying to find [" + resource
-    // + "] using ClassLoader.getSystemResource().");
-
-    return ClassLoader.getSystemResource(resource);
   }
-
 
   /**
    * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
@@ -109,7 +70,7 @@ public class Loader {
    * <code>null<code>.
    *
    */
-  private static ClassLoader getTCL() {
+  public static ClassLoader getTCL() {
     return Thread.currentThread().getContextClassLoader();
   }
 
