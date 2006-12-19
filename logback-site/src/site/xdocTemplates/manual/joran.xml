@@ -734,13 +734,216 @@ before. But right above stand the printing of logback's <code>Status</code> obje
 easy and precise access to logback's internal state.
 </p>
 
+<h3>XML Syntax</h3>
 
+<h4>Configuring Loggers</h4>
 
+<p>
+Setting the level of a logger is as simple as declaring it and setting 
+its level, as the next example illustrates. Suppose we are no longer interested 
+in seeing any <code>DEBUG</code> level logs from any component 
+belonging to the chapter3 package. The following configuration file shows how to achieve that.
+</p>
 
+<em>Example 3.8: Setting the level of a logger (logback-examples/src/main/java/chapter3/sample2.xml)</em>
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger></b>
+  
+  &lt;root>		
+    &lt;!-- The following level element is not necessary since the -->
+    &lt;!-- level of the root level is set to DEBUG by default.    -->
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>  
+  
+&lt;/configuration></pre></div>
 
+<p>
+This new configuration will yield the following output, when used with the
+same <code>chapter3.MyApp2</code> class.
+</p>
 
+<div class="source"><pre>17:34:07.578 [main] INFO  chapter3.MyApp2 - Entering application.
+17:34:07.578 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
+
+<p>
+Obviously, you can configure the levels of as many loggers as you wish. 
+In the next configuration file we set the level of the <em>chapter3</em> logger to 
+<code>INFO</code> but at the same time set the level of the <em>chapter3.Foo</em> logger 
+to <code>DEBUG</code>. 
+</p>
+
+<em>Example 3.8: Setting the level of multiple loggers (logback-examples/src/main/java/chapter3/sample3.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+     &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger>
+
+  &lt;logger name="chapter3.Foo">
+    &lt;level value="DEBUG" />
+  &lt;/logger></b>
+
+  &lt;root>
+    &lt;!-- The following level element is not necessary since the -->
+    &lt;!-- level of the root level is set to DEBUG by default.    -->
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+
+&lt;/configuration></pre></div>
+
+<p>
+Running <code>MyApp2</code> with this configuration file will result in the 
+following output on the console:
+</p>
+
+<div class="source"><pre>17:39:27.593 [main] INFO  chapter3.MyApp2 - Entering application.
+17:39:27.593 [main] DEBUG chapter3.Foo - Did it again!
+17:39:27.593 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
+
+<p>
+After <code>JoranConfigurator</code> configures logback using the <em>sample3.xml</em> 
+file, the logger settings, more specifically their levels, are summarized in the following table. 
+</p>
+
+<table>
+	<tr>
+		<th>Logger name</th>
+		<th>Assigned Level</th>
+		<th>Effective Level</th>
+	</tr>
+	<tr>
+		<td>root</td>
+		<td><code>DEBUG</code></td>
+		<td><code>DEBUG</code></td>
+	</tr>
+		<tr>
+		<td>chapter3</td>
+		<td><code>INFO</code></td>
+		<td><code>INFO</code></td>
+	</tr>
+		<tr>
+		<td>chapter3.MyApp2</td>
+		<td><code>null</code></td>
+		<td><code>INFO</code></td>
+	</tr>
+		<tr>
+		<td>chapter3.Foo</td>
+		<td><code>DEBUG</code></td>
+		<td><code>DEBUG</code></td>
+	</tr>
+</table>
+
+<p>
+It follows that the two logging statements of level <code>INFO</code> in the <code>MyApp2</code> 
+class are enabled while the <code>debug</code> statement in <code>Foo.doIt()</code> method 
+will also print without hindrance. Note that the level of the root logger is always 
+set to a non-null value, which is <code>DEBUG</code> by default.
+One rather important point to remember is that the logger-level filter depends 
+on the effective level of the logger being invoked, not the level of the logger 
+where the appenders are attached. The configuration file <em>sample4.xml</em> is a case in point: 
+</p>
+
+<div class="source"><pre>%lt;configuration>
+
+  %lt;appender name="STDOUT"
+   class="ch.qos.logback.core.ConsoleAppender">
+   %lt;layout class="ch.qos.logback.classic.PatternLayout">
+     %lt;Pattern>
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      %lt;/Pattern>
+    %lt;/layout>
+  %lt;/appender>
+
+  <b>%lt;logger name="chapter3">
+    %lt;level value="INFO" />
+  %lt;/logger>
+
+  %lt;root>
+    <b>%lt;level value="OFF" /></b>
+    %lt;appender-ref ref="STDOUT" />
+  %lt;/root>
+
+%lt;/configuration></pre></div>
+
+<p>¨
+The following table lists the loggers and their level setting after applying the 
+<em>sample4.xml</em> configuration file.  
+</p>
+
+<table>
+	<tr>
+		<th>Logger name</th>
+		<th>Assigned Level</th>
+		<th>Effective Level</th>
+	</tr>
+	<tr>
+		<td>root</td>
+		<td><code>OFF</code></td>
+		<td><code>OFF</code></td>
+	</tr>
+		<tr>
+		<td>chapter3</td>
+		<td><code>INFO</code></td>
+		<td><code>INFO</code></td>
+	</tr>
+		<tr>
+		<td>chapter3.MyApp2</td>
+		<td><code>null</code></td>
+		<td><code>INFO</code></td>
+	</tr>
+		<tr>
+		<td>chapter3.Foo</td>
+		<td><code>null</code></td>
+		<td><code>INFO</code></td>
+	</tr>
+</table>
+
+<p>
+The ConsoleAppender named <em>STDOUT</em>, the only configured appender in 
+<em>sample4.xml</em>, is attached to the root logger whose level is set to 
+<code>OFF</code>. However, running MyApp2 with configuration script 
+<em>sample4.xml</em> will output:
+</p>
+
+<div class="source"><pre>17:52:23.609 [main] INFO  chapter3.MyApp2 - Entering application.
+17:52:23.609 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
+
+<p>
+Thus, the level of the root logger has no apparent effect because the loggers in 
+<code>chapter3.MyApp2</code> and <code>chapter3.Foo</code> classes, namely 
+<em>chapter3.MyApp2</em> and <em>chapter3.Foo</em>, inherit their level from the 
+<em>chapter3</em> logger which has its level set to <code>INFO</code>. 
+As noted previously, the <em>chapter3</em> logger exists by virtue of its 
+declaration in the configuration file – even if the Java source code does not 
+directly refer to it. 
+</p>
+
+<h4>Configuring Appenders + multiple + additivity</h4>
+
+<h4>Variable substitution</h4>
+
+<h4></h4>
 
 
 
