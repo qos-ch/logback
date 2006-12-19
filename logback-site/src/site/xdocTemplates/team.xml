@@ -25,21 +25,36 @@
 			<tr>
 				<td><img src="images/ceki.gif" alt="Ceki"/></td>
 				<td>
-					Ceki G&#252;lc&#252; has been working on logging systems since 1996. 
-					He is the founder of the log4j as well as logback projects. 
-					Ceki very much enjoys writing software, a task far more difficult 
-					than what it might seem at first sight. 
-					One of the core lessons he has learned is that unit tests lie
-					at the heart of maintainable software. 
+          <p>Ceki G&#252;lc&#252; has been working on logging systems
+          since 1996.  He is the founder of the log4j, slf4j and
+          logback projects.  Ceki enjoys writing software, a task far
+          more difficult and time-consuming than what it seems at
+          first sight.  His interests range from cryptography, systems
+          monitoring and testing to application interoperability.
+          </p>
+
+          <p>One of the core lessons he has learned over the years is
+          that unit tests lie at the heart of maintainable
+          software. Adding tests towards the end of development cycle
+          yields poor results. Tests must be an inherent part of the
+          development process right from the start.
+          </p>
+
+          <p>When not busy programming, Ceki enjoys watching the
+          Simpsons on DVD or alternatively preparing suchi for his
+          friends.
+          </p>
+
 				</td>
 			</tr>
 			<tr>
 				<td><img src="images/seb.gif" alt="Sebastien"/></td>
 				<td>
-					S&#233;bastien Pennec has been using computers for the most part of
-					his life, be it as a hobby, or during his studies or, 
-					more recently, as Software Engineer. He loves to write software in dynamic
-					and enthusiastic environments, while learning new technologies and practices.
+					S&#233;bastien Pennec has been using computers for the most
+					part of his life, be it as a hobby, or during his studies
+					or, more recently, as Software Engineer. He loves to write
+					software in dynamic and enthusiastic environments, while
+					learning new technologies and practices.
 				</td>
 			</tr>
 		</table>
