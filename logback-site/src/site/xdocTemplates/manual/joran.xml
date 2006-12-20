@@ -766,6 +766,19 @@ the value attribute. The <em>level</em> element has no children.
 </p>
 
 <p>
+The <em>root</em> element configures the root logger. It does not admit 
+any attributes because the additivity flag does not apply to the root logger. 
+Moreover, since the root logger cannot be named, it does not admit a name 
+attribute either. The <em>root</em> element admits at most one <em>level</em> 
+element and zero or more <em>appender-ref</em> elements. 
+Similar to the <em>logger</em> element, declaring a <em>root</em> element 
+will have the effect of first closing and then detaching all its current 
+appenders and only subsequently will referenced appenders, if any, will be added. 
+In particular, if it has no appender references, then the root logger 
+will lose all its appenders.  
+</p>
+
+<p>
 Setting the level of a logger is as simple as declaring it and setting 
 its level, as the next example illustrates. Suppose we are no longer interested 
 in seeing any <code>DEBUG</code> level logs from any component 
@@ -891,29 +904,29 @@ on the effective level of the logger being invoked, not the level of the logger
 where the appenders are attached. The configuration file <em>sample4.xml</em> is a case in point: 
 </p>
 
-<div class="source"><pre>%lt;configuration>
+<div class="source"><pre>&lt;configuration>
 
-  %lt;appender name="STDOUT"
+  &lt;appender name="STDOUT"
    class="ch.qos.logback.core.ConsoleAppender">
-   %lt;layout class="ch.qos.logback.classic.PatternLayout">
-     %lt;Pattern>
+   &lt;layout class="ch.qos.logback.classic.PatternLayout">
+     &lt;Pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-      %lt;/Pattern>
-    %lt;/layout>
-  %lt;/appender>
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  <b>%lt;logger name="chapter3">
-    %lt;level value="INFO" />
-  %lt;/logger></b>
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger></b>
 
-  %lt;root>
-    <b>%lt;level value="OFF" /></b>
-    %lt;appender-ref ref="STDOUT" />
-  %lt;/root>
+  &lt;root>
+    <b>&lt;level value="OFF" /></b>
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
 
-%lt;/configuration></pre></div>
+&lt;/configuration></pre></div>
 
-<p>¨
+<p>
 The following table lists the loggers and their level setting after applying the 
 <em>sample4.xml</em> configuration file.  
 </p>
@@ -966,15 +979,77 @@ declaration in the configuration file – even if the Java source code does not
 directly refer to it. 
 </p>
 
-<h4>Configuring Appenders + multiple + additivity</h4>
+<h4>Configuring Appenders</h4>
 
+<p>
+Appenders are configured using <em>appender</em> elements. These elements admit 
+two attributes <em>name</em> and <em>class</em> both of which are mandatory. 
+The <em>name</em> attribute specifies the name of the appender whereas 
+the <em>class</em> attribute specifies the fully qualified name of the class 
+of which the named appender will be an instance. 
+The <em>appender</em> may contain zero or one <em>layout</em> elements and 
+zero or more <em>filter</em> elements. Appart from these two basic elements, 
+<em>appender</em> elements may contain any element that corresponds to a setter
+method of the appender class, to configure the appender's options.
+</p>
 
+<p>
+The <em>layout</em> element takes a mandatory class attribute specifying 
+the fully qualified name of the class of which the associated layout 
+should be an instance. Like the <em>appender</em> element, it may contain
+other elements, referring to setter methods, to configure its options.
+</p>
 
+<p>
+Logging to multiple appenders is as easy as defining the various appenders 
+and referencing them in a logger, as the next configuration file illustrates:
+</p>
 
+<div class="source"><pre>&lt;configuration>
 
+  &lt;appender name="<b>FILE</b>"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>myApp.log&lt;/file>
 
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        myApp-%d{yyyy-MM-dd-HH-mm-ss}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
+  &lt;appender name="<b>STDOUT</b>"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    <b>&lt;appender-ref ref="FILE" />
+    &lt;appender-ref ref="STDOUT" /></b>
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+This configuration scripts defines two appenders called <em>FILE</em> and <em>STDOUT</em>. 
+The <em>FILE</em> appender logs to a file called myApp.log. The layout for this appender 
+is a <code>PatternLayout</code> that outputs the date, level, thread name, logger name, 
+file name and line number where the log request is located, 
+the message and line separator character(s).  
+The second appender called <code>STDOUT</code> outputs to the console. 
+The layout for this appender outputs only the message string followed by a line separator.
+</p>
 
 
 
