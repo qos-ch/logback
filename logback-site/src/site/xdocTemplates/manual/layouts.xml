@@ -1244,7 +1244,7 @@ public class MySampleConverter extends ClassicConverter {
     case Level.WARN_INT:
       return WARN_COLOR;
     default:
-      return null;
+      return "";
     }
   }
 }
@@ -1267,7 +1267,7 @@ public class MySampleConverter extends ClassicConverter {
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      <b>&lt;Pattern>%-4relative [%thread] %%sample - %msg%n&lt;/Pattern></b>
+      <b>&lt;Pattern>%-4relative [%thread] %sample - %msg%n&lt;/Pattern></b>
     &lt;/layout>
   &lt;/appender>
 

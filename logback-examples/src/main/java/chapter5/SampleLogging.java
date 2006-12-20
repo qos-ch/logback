@@ -17,6 +17,7 @@ public class SampleLogging {
 
     try {
       JoranConfigurator configurator = new JoranConfigurator();
+      lc.shutdownAndReset();
       configurator.setContext(lc);
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
@@ -24,8 +25,10 @@ public class SampleLogging {
     }
     
     logger.debug("Everything's going well");
+    logger.info("Everything's going well info");
+    logger.warn("Everything's going well warn");
     
-    logger.error("... not quite");
+    logger.error("... not quite error");
   }
 
 }
