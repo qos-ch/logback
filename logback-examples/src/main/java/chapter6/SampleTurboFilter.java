@@ -11,13 +11,17 @@ import ch.qos.logback.core.spi.FilterReply;
 public class SampleTurboFilter extends TurboFilter {
 
   String marker;
-  Marker acceptedMarker;
+  Marker markerToAccept;
 
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level,
       String format, Object[] params, Throwable t) {
+    
+    if (!isStarted()) {
+      return FilterReply.NEUTRAL;
+    }
 
-    if ((acceptedMarker.equals(marker))) {
+    if ((markerToAccept.equals(marker))) {
       return FilterReply.ACCEPT;
     } else {
       return FilterReply.NEUTRAL;
@@ -35,7 +39,7 @@ public class SampleTurboFilter extends TurboFilter {
   @Override
   public void start() {
     if (marker != null && marker.trim().length() > 0) {
-      acceptedMarker = MarkerFactory.getMarker(marker);
+      markerToAccept = MarkerFactory.getMarker(marker);
       super.start(); 
     }
   }

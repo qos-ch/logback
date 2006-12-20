@@ -89,163 +89,18 @@
     </p>
     
     <p>
-    	In logback, <code>Filter</code> objects can only be added to <code>Appender</code>
+    	In logback-classic, <code>Filter</code> objects can only be added to <code>Appender</code>
     	instances. By adding filters to an appender you can filter events by various 
     	criteria, such as the contents of the log message, the contents of the MDC, 
     	the time of day or any other part of the logging event.
     </p>
     
-    <p>
-    	The criteria can be specified using an expression evaluator. The
-    	<a href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
-    	<code>EvaluatorFilter</code></a> class uses an 
-    	<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-    	<code>EventEvaluator</code></a>
-    	to decide wether to accept or deny the request. This allows unprecedented
-    	flexibility in the way that you can affect the logging event's filtering.
-    </p>
-    
-    <a name="EventEvaluator" />
-    <h3>Event Evaluators</h3>
-    
-    <p>
-    	Events evaluators allow the user to enter java expressions, using 
-    	components of a logging event, and to check each logging event
-    	against the compiled expression.
-    </p>
-    
-    <p>
-    	Let's see a sample configuration.
-    </p>
-    
-<em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
-<div class="source"><pre>&lt;configuration>
-
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="myEval">
-        &lt;expression>message.contains("important")&lt;/expression>
-      &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
-        %-4relative [%thread] %-5level %logger - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
-
-  &lt;root>
-    &lt;level value="INFO" />
-    &lt;appender-ref ref="STDOUT" />
-  &lt;/root>
-&lt;/configuration></pre></div>
-
-		<p>
-			The bold part in the previous configuration adds an <code>EvaluatorFilter</code>
-			to a <code>ConsoleAppender</code>. An <code>EventEvaluator</code> is then given to
-			the filter. The <em>expression</em> element contains a recognizable java expression.
-			Notice that the <em>message</em> variable is not defined anywhere. Logback provides
-			access to the internal components of a logging event and lets the user build her
-			expression at will.
-		</p>
-		
-		<p>
-			The variables available to the <code>EventEvaluator</code> are descripbed below:
-		</p>
-		
-		<table>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Description</th>
-			</tr>
-			<tr>
-				<td>event
-				</td>
-				<td><code>LoggingEvent</code></td>
-				<td>The newly created logging event.
-				</td>
-			</tr>
-			<tr>
-				<td>message
-				</td>
-				<td><code>String</code></td>
-				<td>The message created with the logging request.
-				</td>
-			</tr>
-			<tr>
-				<td>logger
-				</td>
-				<td><code>LoggerRemoteView</code></td>
-				<td>This object can be treated like a usual logger. In case the logging event
-				is serialized and sent to a remote machine, the usual logger object is
-				dropped and replaced by a <code>LoggerRemoteView</code> object, which
-				performs much better over the wire.
-				</td>
-			</tr>
-			<tr>
-				<td>level
-				</td>
-				<td><code>int</code></td>
-				<td>The int value corresponding to the level. To help create easily
-				expressions involving levels, the default value <em>DEBUG</em>, 
-				<em>INFO</em>, <em>WARN</em> and <em>ERROR</em> are also available. Thus,
-				using <em>level &gt; INFO</em> is a correct expression.
-				</td>
-			</tr>
-			<tr>
-				<td>timeStamp
-				</td>
-				<td><code>long</code></td>
-				<td>The timestamp corresponding to the logging event's creation.
-				</td>
-			</tr>
-			<tr>
-				<td>marker
-				</td>
-				<td><code>Marker</code></td>
-				<td>The <code>Marker</code> object associated with the logging request.
-				</td>
-			</tr>
-			<tr>
-				<td>mdc
-				</td>
-				<td><code>Map</code></td>
-				<td>A map containing all the MDC values at the time of the 
-				creation of the logging event. A value can be access by using the
-				following expression: <em>mdc.get("myKey")</em>.
-				</td>
-			</tr>
-			<tr>
-				<td>throwable
-				</td>
-				<td><code>Throwable</code></td>
-				<td>The exception that was passed to the logger when it
-				was requested.
-				</td>
-			</tr>
-		</table>
-		
-		<p>
-			The behaviour of the filter is also defined by its <span class="option">OnMatch</span>
-			and <span class="option">OnMismatch</span> options. The configuration specifies thanks
-			to these elements the replies that the <code>EvaluatorFilter</code> must give once its
-			expression has been evaluated. The example above returns a positive reply when the
-			message of the logging event contains the String <em>important</em>. If this String is 
-			not found in the message, then the filter lets the next filter evaluate whether this
-			logging event should be accepted, or rejected.
-		</p>
-		
 		<h3>Implementing your own Filter</h3>
 		
 		<p>
-			Creating your own filter is not difficult. If your filter doesn't need any evaluation
-			functionnalities, then all you have to do is extend the <code>Filter</code> abstract class.
-			The only method that you will have to implement is the <code>decide()</code> method, allowing
-			you to contentrate only on the behaviour of your filter.
+			Creating your own filter is not difficult. All you have to do is extend the <code>Filter</code> 
+			abstract class. The only method that you will have to implement is the <code>decide()</code> 
+			method, allowing you to contentrate only on the behaviour of your filter.
 		</p>
 		
 		<p>
@@ -303,14 +158,164 @@ public class SampleFilter extends Filter {
 			Thanks to Joran, logback's powerful configuration framework, adding
 			an option to such a filter is very easy. Just add the corresponding
 			getter and setter methods in the class, and you can specify the
-			option's value in a xml element, nested in the filter element.
+			option's value in an xml element, nested within the <em>filter</em> element.
+		</p>
+
+		<h3>Evaluator Filters</h3>
+		    
+		<p>
+			A special category of filters ships with logback. The
+    	<a href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
+    	<code>EvaluatorFilter</code></a> objects use an 
+    	<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+    	<code>EventEvaluator</code></a>
+    	to decide wether to accept or deny the request. This allows unprecedented
+    	flexibility in the way that you can affect the logging event's filtering.
+    </p>
+    
+    <p>
+			Creating a customized filter that makes use of <code>EventEvaluator</code> objects
+			works the same way as seen previously, except that one must extend the 
+			<code>EvaluatorFilter</code> class, instead of the <code>Filter</code> class.
+		</p>
+    
+    <a name="EventEvaluator" />
+    <h3>Event Evaluators</h3>
+    
+    <p>
+    	Events evaluators allow the user to enter java expressions, using 
+    	components of a logging event, and to check each logging event
+    	against the compiled expression.
+    </p>
+    
+    <p>
+    	Let's see a sample configuration.
+    </p>
+    
+<em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="myEval">
+        &lt;expression>message.contains("important")&lt;/expression>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="INFO" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			The bold part in the previous configuration adds an <code>EvaluatorFilter</code>
+			to a <code>ConsoleAppender</code>. An <code>EventEvaluator</code> is then given to
+			the filter. The <em>expression</em> element contains a recognizable java expression.
+			Notice that the <em>message</em> variable is defined implicitly. Logback provides
+			access to the internal components of a logging event and lets the user build her
+			expression at will.
 		</p>
 		
 		<p>
-			Creating a filter that makes use of <code>EventEvaluator</code> objects
-			works the same way, except that one must extend the <code>EvaluatorFilter</code>
-			class, instead of the <code>Filter</code> class.
+			The implicit variables available to the <code>EventEvaluator</code> are descripbed below:
 		</p>
+		
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>event
+				</td>
+				<td><code>LoggingEvent</code></td>
+				<td>The logging event associated with the logging request.
+				All of the following variables are also available from the event. For example, 
+				<code>event.getMessage()</code> returns the same String value as the <em>message</em>
+				variable.
+				</td>
+			</tr>
+			<tr>
+				<td>message
+				</td>
+				<td><code>String</code></td>
+				<td>The message created with the logging request.
+				</td>
+			</tr>
+			<tr>
+				<td>logger
+				</td>
+				<td><code>LoggerRemoteView</code></td>
+				<td>This object can be treated like a usual logger. In case the logging event
+				is serialized and sent to a remote machine, the usual logger object is
+				dropped and replaced by a <code>LoggerRemoteView</code> object, which
+				performs much better when serialized.
+				</td>
+			</tr>
+			<tr>
+				<td>level
+				</td>
+				<td><code>int</code></td>
+				<td>The int value corresponding to the level. To help create easily
+				expressions involving levels, the default value <em>DEBUG</em>, 
+				<em>INFO</em>, <em>WARN</em> and <em>ERROR</em> are also available. Thus,
+				using <em>level &gt; INFO</em> is a correct expression.
+				</td>
+			</tr>
+			<tr>
+				<td>timeStamp
+				</td>
+				<td><code>long</code></td>
+				<td>The timestamp corresponding to the logging event's creation.
+				</td>
+			</tr>
+			<tr>
+				<td>marker
+				</td>
+				<td><code>Marker</code></td>
+				<td>The <code>Marker</code> object associated with the logging request.
+				</td>
+			</tr>
+			<tr>
+				<td>mdc
+				</td>
+				<td><code>Map</code></td>
+				<td>A map containing all the MDC values at the time of the 
+				creation of the logging event. A value can be access by using the
+				following expression: <em>mdc.get("myKey")</em>.
+				</td>
+			</tr>
+			<tr>
+				<td>throwable
+				</td>
+				<td><code>Throwable</code></td>
+				<td>The exception that was passed to the logger when it
+				was requested.
+				</td>
+			</tr>
+		</table>
+		
+		<p>
+			The behaviour of the filter is also defined by its <span class="option">OnMatch</span>
+			and <span class="option">OnMismatch</span> options. The configuration specifies thanks
+			to these elements the replies that the <code>EvaluatorFilter</code> must give once its
+			expression has been evaluated. The example above returns the value <code>FilterReply.ACCEPT</code> 
+			when the message of the logging event contains the String <em>important</em>. 
+			If <em>important</em> is not contained in the message, then the filter lets the next filter 
+			evaluate this logging event.
+		</p>
+		
 		
 		<a name="TurboFilter" />
 		<h3>TurboFilters</h3>
@@ -335,20 +340,116 @@ public class SampleFilter extends Filter {
    	</p>
    	
    	<p>
-   		They are called before the <code>LoggingEvent</code> object creation. Their
-   		decision is made based on some of the logging event's components. They require 
+   		More importantly, they are called before the <code>LoggingEvent</code> object creation. 
+   		Their decision is made based on some of the logging event's components. They require 
    		no logging event instanciation, nor any other treatement to provide their 
    		filtering functionnalities. They are much more performant than the usual
    		<code>Filter</code> objects.
    	</p>
    	
+   	<h3>Implementing your own TurboFilter</h3>
+    
+    <p>
+      To create your own <code>TurboFilter</code> component, just extend the 
+      <code>TurboFilter</code> abstract class. As previously, when implementing
+      a custumized filter object, developing a custom <code>TurboFilter</code> only
+      ask that one implement the <code>decide()</code> method. In the next example, we
+      create a slightly more complex filter:
+    </p>
+    
+<em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
+<div class="source"><pre>package chapter6;
+
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.core.spi.FilterReply;
+
+public class SampleTurboFilter extends TurboFilter {
+
+  String marker;
+  Marker markerToAccept;
+
+  @Override
+  public FilterReply decide(Marker marker, Logger logger, Level level,
+      String format, Object[] params, Throwable t) {
+
+    if (!isStarted()) {
+      return FilterReply.NEUTRAL;
+    }
+
+    if ((markerToAccept.equals(marker))) {
+      return FilterReply.ACCEPT;
+    } else {
+      return FilterReply.NEUTRAL;
+    }
+  }
+
+  public String getMarker() {
+    return marker;
+  }
+
+  public void setMarker(String markerStr) {
+    this.marker = markerStr;
+  }
+
+  @Override
+  public void start() {
+    if (marker != null &amp;&amp; marker.trim().length() > 0) {
+      markerToAccept = MarkerFactory.getMarker(marker);
+      super.start(); 
+    }
+  }
+}
+</pre></div>
+
+		<p>
+			The <code>TurboFilter</code> above accepts events that contain a specific marker.
+			If said marker is not found, then the filter passes the responsability to
+			the next filter in the chain.
+		</p>
+		
+		<p>
+			To allow more flexibility, the marker that will be tested can be specified
+			in the configuration file. Hence the getter and setter methods. We also implemented
+			the <code>start()</code> method, to check that the option has been specified during the
+			configuration process.
+		</p>
+		
+		<p>
+			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
+		</p>
+		
+<em>Example 6.5: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<div class="source"><pre>&lt;configuration>
+  <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
+    &lt;Marker>sample&lt;/Marker>
+  &lt;/turboFilter></b>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>   
+
    	<p>
    		Logback classic ships with several <code>TurboFilter</code> classes ready for use.
    		The 
    		<a href="../xref/ch/qos/logback/classic/turbo/MDCFilter.html"><code>MDCFilter</code></a> 
    		check the presence of a given value in the MDC. On the other hand, 
    		<a href="../xref/ch/qos/logback/classic/turbo/MarkerFilter.html"><code>MarkerFilter</code></a> 
-   		checks for the presence of a specific marker attached to the logging request.
+   		checks for the presence of a specific marker associated with the logging request.
    	</p>
    	
    	<p>
@@ -397,9 +498,9 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 			just like the configured overall level, except for two requests. 
 			The 3rd request, is a <em>DEBUG</em> level corresponding to the key <em>username</em>.
 			This obviously satisfies the first <code>TurboFilter</code> declared in the previous 
-			configuration file. The 6th request is a <em>ERROR</em> level request, 
-			which is issued along with the <em>billing</em> marker, to match 
-			the requests for the second declared <code>TurboFilter</code>.
+			configuration file. The 6th request, a <em>ERROR</em> level request, 
+			which is issued along with the <em>billing</em> marker, matches 
+			the second <code>TurboFilter</code>.
 		</p>
 		
 		<p>	
@@ -432,100 +533,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 			Thus, the 6th request was not displayed.
 		</p>
 		
-		
-	  <h3>Implementing your own TurboFilter</h3>
-    
-    <p>
-      To create your own <code>TurboFilter</code> component, just extend the 
-      <code>TurboFilter</code> abstract class. Like previously, when implementing
-      a custumized filter object, developing a custom <code>TurboFilter</code> only
-      ask that one implement the <code>decide()</code> method. In the next example, we
-      create a slightly more complex filter:
-    </p>
-    
-<em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
-<div class="source"><pre>package chapter6;
-
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.core.spi.FilterReply;
-
-public class SampleTurboFilter extends TurboFilter {
-
-  String marker;
-  Marker acceptedMarker;
-
-  @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level,
-      String format, Object[] params, Throwable t) {
-
-    if ((acceptedMarker.equals(marker))) {
-      return FilterReply.ACCEPT;
-    } else {
-      return FilterReply.NEUTRAL;
-    }
-  }
-
-  public String getMarker() {
-    return marker;
-  }
-
-  public void setMarker(String markerStr) {
-    this.marker = markerStr;
-  }
-
-  @Override
-  public void start() {
-    if (marker != null &amp;&amp; marker.trim().length() > 0) {
-      acceptedMarker = MarkerFactory.getMarker(marker);
-      super.start(); 
-    }
-  }
-}
-</pre></div>
-
-		<p>
-			The <code>TurboFilter</code> above accepts events that contain a specific marker.
-			If said marker is not found, then the filter passes the responsability to
-			the next filter in the chain.
-		</p>
-		
-		<p>
-			To allow more flexibility, the marker that will be tested can be specified
-			in the configuration file. Hence the getter and setter methods. We also implemented
-			the <code>start()</code> method, to check that the option has been specified during the
-			configuration process.
-		</p>
-		
-		<p>
-			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
-		</p>
-		
-<em>Example 6.5: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
-<div class="source"><pre>&lt;configuration>
-	<b>&lt;turboFilter class="chapter6.SampleTurboFilter">
-		&lt;Marker>sample&lt;/Marker>
-	&lt;/turboFilter></b>
-
-	&lt;appender name="STDOUT"
-		class="ch.qos.logback.core.ConsoleAppender">
-		&lt;layout class="ch.qos.logback.classic.PatternLayout">
-			&lt;pattern>
-				%-4relative [%thread] %-5level %logger - %msg%n
-			&lt;/pattern>
-		&lt;/layout>
-	&lt;/appender>
-
-	&lt;root>
-		&lt;appender-ref ref="STDOUT" />
-	&lt;/root>
-&lt;/configuration></pre></div>   
-    
-    
+		  
     <h2>Logback Access</h2>
     
     <p>
