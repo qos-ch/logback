@@ -166,6 +166,17 @@
         <configuration>
           <downloadSources>true</downloadSources>
         </configuration>
+      </plugin>    
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clover-plugin</artifactId>
+        <configuration>
+          <jdk>1.5</jdk>
+          <excludes>
+            <exclude>**/chapter*/</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -185,19 +196,25 @@
           <linkJavadoc>true</linkJavadoc>
         </configuration>
       </plugin>
+
+
+      <!-- =================  COBERTURA ============================ -->
+      <!-- run using "mvn cobertura:cobertura -Dmaven.test.skip=true" -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+      </plugin>
+
+      
+      <!-- ======================= CLOVER ============================== -->
+      <!-- Run with:                                                     -->
+      <!--   mvn  clean clover:instrument clover:aggregate clover:clover --> 
+      <!-- ============================================================= -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>
-          maven-project-info-reports-plugin
-        </artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      
+        <artifactId>maven-clover-plugin</artifactId>
+      </plugin>   
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
