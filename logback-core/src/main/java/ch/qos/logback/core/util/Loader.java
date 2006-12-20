@@ -11,6 +11,8 @@ package ch.qos.logback.core.util;
 
 import java.net.URL;
 
+import ch.qos.logback.core.Context;
+
 /**
  * Load resources (or images) from various sources.
  * 
@@ -31,6 +33,7 @@ public class Loader {
     }
   }
 
+  
   /**
    * This method will search for <code>resource</code> in different places.
    * The search order is as follows:
@@ -74,6 +77,10 @@ public class Loader {
     return Thread.currentThread().getContextClassLoader();
   }
 
+  public static Class loadClass(String clazz, Context context) throws ClassNotFoundException {
+    ClassLoader cl = context.getClass().getClassLoader();
+    return cl.loadClass(clazz);
+  }
   /**
    * If running under JDK 1.2 load the specified class using the
    * <code>Thread</code> <code>contextClassLoader</code> if that fails try

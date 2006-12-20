@@ -48,8 +48,10 @@ abstract public class JaninoEventEvaluatorBase extends ContextAwareBase
 
   public void start() {
     try {
+      assert context != null;
+      ClassLoader cl = context.getClass().getClassLoader();
       ee = new ExpressionEvaluator(getDecoratedExpression(), EXPRESSION_TYPE,
-          getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS, null);
+          getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS, cl);
       start = true;
     } catch (Exception e) {
       addError(

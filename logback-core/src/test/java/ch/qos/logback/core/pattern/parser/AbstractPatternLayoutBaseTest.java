@@ -28,6 +28,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
 
   abstract public PatternLayoutBase getPatternLayoutBase();
   abstract public Object getEventObject();
+  abstract public Context getContext();
   
   public void testUnStarted() {
     PatternLayoutBase plb = getPatternLayoutBase();
@@ -46,6 +47,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
    */
   public void testConverterStart() {
     PatternLayoutBase plb = getPatternLayoutBase();
+    plb.setContext(getContext());
     plb.getInstanceConverterMap().put("EX", ExceptionalConverter.class.getName());
     plb.setPattern("%EX");
     plb.start();

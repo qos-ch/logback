@@ -53,7 +53,7 @@ public class FileNamePattern extends ContextAwareBase {
   void parse() {
     try {
       Parser p = new Parser(pattern);
-      p.setStatusManager(getStatusManager());
+      p.setContext(context);
       Node t = p.parse();
       this.headTokenConverter = p.compile(t, CONVERTER_MAP);
 

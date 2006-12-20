@@ -12,6 +12,7 @@ package ch.qos.logback.classic.joran;
 
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.EvaluatorAction;
+import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
 import ch.qos.logback.classic.joran.action.LayoutAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
 import ch.qos.logback.classic.joran.action.LoggerAction;
@@ -55,6 +56,8 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs
         .addRule(new Pattern("configuration/appender/layout"),
             new LayoutAction());
+    
+    rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
   }
 
 }

@@ -38,7 +38,7 @@ abstract public class AbstractLayoutAction extends Action {
     try {
       layout = (Layout)
         OptionHelper.instantiateByClassName(
-          className, ch.qos.logback.core.Layout.class);
+          className, ch.qos.logback.core.Layout.class, context);
       
       if(isOfCorrectType(layout)) {
         layout.setContext(this.context);

@@ -59,7 +59,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
     try {
       evaluator = (EventEvaluator)
         OptionHelper.instantiateByClassName(
-          className, ch.qos.logback.core.boolex.EventEvaluator.class);
+          className, ch.qos.logback.core.boolex.EventEvaluator.class, context);
       
       if(isOfCorrectType(evaluator)) {
         evaluator.setContext(this.context);

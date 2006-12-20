@@ -43,7 +43,7 @@ public class AppenderAction extends Action {
       addInfo("About to instantiate appender of type ["+className+"]");
 
       appender = (Appender) OptionHelper.instantiateByClassName(
-          className, ch.qos.logback.core.Appender.class);
+          className, ch.qos.logback.core.Appender.class, context);
 
       appender.setContext(context);
 

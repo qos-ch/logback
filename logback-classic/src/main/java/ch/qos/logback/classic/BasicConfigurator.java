@@ -13,10 +13,21 @@ package ch.qos.logback.classic;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusManager;
 
 public class BasicConfigurator {
 
+  final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
+    
+  private BasicConfigurator() {
+  }
+  
   public static void configure(LoggerContext lc) {
+    StatusManager sm = lc.getStatusManager();
+    if(sm != null)  {
+     sm.add(new InfoStatus("Setting up default configuration.", hiddenSingleton));
+    }
     ConsoleAppender ca = new ConsoleAppender();
     ca.setContext(lc);
     ca.setName("console");

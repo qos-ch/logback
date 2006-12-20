@@ -28,7 +28,7 @@ import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
-	LoggerContext lc = new LoggerContext();
+  LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
   LoggingEvent le;
   List optionList = new ArrayList();
@@ -117,5 +117,10 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     //suite.addTest(new PatternLayoutTest("testNopExeptionHandler"));
     suite.addTestSuite(PatternLayoutTest.class);
     return suite;
+  }
+
+  @Override
+  public Context getContext() {
+    return lc;
   }
 }

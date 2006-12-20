@@ -72,7 +72,7 @@ abstract public class PatternLayoutBase extends LayoutBase {
     try {
       Parser p = new Parser(pattern);
       if (getContext() != null) {
-        p.setStatusManager(getContext().getStatusManager());
+        p.setContext(getContext());
       }
       Node t = p.parse();
       this.head = p.compile(t, getEffectiveConverterMap());

@@ -55,7 +55,7 @@ public class BindDataSourceToJNDIAction extends Action {
 
     try {
       DataSource ds =
-        (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class);
+        (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class, context);
 
       PropertySetter setter = new PropertySetter(ds);
 

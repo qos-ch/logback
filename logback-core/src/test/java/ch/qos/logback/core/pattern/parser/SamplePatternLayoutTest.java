@@ -16,10 +16,12 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
+  Context context = new ContextBase();
   public SamplePatternLayoutTest(String arg) {
     super(arg);
   }
   
+
   public PatternLayoutBase getPatternLayoutBase() {
     return new SamplePatternLayout();
   }
@@ -41,5 +43,10 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     //StatusPrinter.print(sm);
     assertEquals("x123", s);
 
+  }
+
+  @Override
+  public Context getContext() {
+    return  context;
   }
 }

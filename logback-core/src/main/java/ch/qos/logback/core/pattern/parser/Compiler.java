@@ -15,19 +15,17 @@ import ch.qos.logback.core.pattern.CompositeConverter;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.LiteralConverter;
+import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.OptionHelper;
 
 
-class Compiler {
+class Compiler extends ContextAwareBase {
 
   Converter head;
   Converter tail;
   final Node top;
   final Map converterMap;
-  StatusManager statusManager;
   
   Compiler(final Node top, final Map converterMap) {
     this.top = top;
@@ -45,8 +43,9 @@ class Compiler {
         CompositeNode cn = (CompositeNode) n;
         CompositeConverter compositeConverter = new CompositeConverter();
         compositeConverter.setFormattingInfo(cn.getFormatInfo());
-        Converter childConverter = new Compiler(cn.getChildNode(), converterMap)
-            .compile();
+        Compiler childCompiler = new Compiler(cn.getChildNode(), converterMap);
+        childCompiler.setContext(context);
+        Converter childConverter = childCompiler.compile();
         compositeConverter.setChildConverter(childConverter);
         addToList(compositeConverter);
         break;
@@ -94,7 +93,7 @@ class Compiler {
     if (converterClassStr != null) {
       try {
         return (DynamicConverter) OptionHelper.instantiateByClassName(
-            converterClassStr, DynamicConverter.class);
+            converterClassStr, DynamicConverter.class, context);
       } catch (Exception e) {
         return null;
       }
@@ -103,13 +102,13 @@ class Compiler {
     }
   }
 
-  public void setStatusManager(StatusManager statusManager) {
-    this.statusManager = statusManager;
-  }
-  
-  void addStatus(Status status) {
-    if(statusManager != null) {
-      statusManager.add(status);
-    }
-  }
+//  public void setStatusManager(StatusManager statusManager) {
+//    this.statusManager = statusManager;
+//  }
+//  
+//  void addStatus(Status status) {
+//    if(statusManager != null) {
+//      statusManager.add(status);
+//    }
+//  }
 }

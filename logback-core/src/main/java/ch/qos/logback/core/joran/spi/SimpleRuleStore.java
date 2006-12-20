@@ -57,7 +57,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     
     try {
       action = (Action) OptionHelper.instantiateByClassName(
-        actionClassName, Action.class);
+        actionClassName, Action.class, context);
     } catch(Exception e) {
       addError("Could not instantiate class ["+actionClassName+"]", e);
     }

@@ -5,12 +5,11 @@ import java.util.Map;
 
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.FormatInfo;
-import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.spi.ContextAwareBase;
 
 
-public class Parser {
+public class Parser extends ContextAwareBase {
 
-  StatusManager statusManager;
   final List tokenList;
   int pointer = 0;
   
@@ -42,7 +41,8 @@ public class Parser {
    */
   public Converter compile(final Node top, Map converterMap) {
     Compiler compiler = new Compiler(top, converterMap);
-    compiler.setStatusManager(statusManager);
+    compiler.setContext(context);
+    //compiler.setStatusManager(statusManager);
     return compiler.compile();
   }
 
@@ -185,7 +185,7 @@ public class Parser {
     }
   }
 
-  public void setStatusManager(StatusManager statusManager) {
-    this.statusManager = statusManager;
-  }
+//  public void setStatusManager(StatusManager statusManager) {
+//    this.statusManager = statusManager;
+//  }
 }

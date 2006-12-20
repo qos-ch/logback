@@ -11,6 +11,7 @@ package ch.qos.logback.core.util;
 
 import java.util.Map;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 
 /**
@@ -18,8 +19,15 @@ import ch.qos.logback.core.CoreGlobal;
  */
 public class OptionHelper {
 
+  public static Object instantiateByClassName(String className,
+      Class superClass, Context context) throws IncompatibleClassException, DynamicClassLoadingException {
+    ClassLoader classLoader = context.getClass().getClassLoader();
+    return instantiateByClassName(className, superClass, classLoader);
+  }
+  
   @SuppressWarnings("unchecked")
-  public static Object instantiateByClassName(String className, Class superClass)
+  public static Object instantiateByClassName(String className,
+      Class superClass, ClassLoader classLoader)
       throws IncompatibleClassException, DynamicClassLoadingException {
 
     if (className == null) {
@@ -27,15 +35,8 @@ public class OptionHelper {
     }
 
     try {
-      // FIXME This is temporary (really!).
       Class classObj = null;
-      try {
-        classObj = Class.forName(className);
-      } catch (ClassNotFoundException e) {
-        ClassLoader cccl = Thread.currentThread().getContextClassLoader();
-        classObj = cccl.loadClass(className);
-      }
-
+      classObj = classLoader.loadClass(className);
       if (!superClass.isAssignableFrom(classObj)) {
         throw new IncompatibleClassException(superClass, classObj);
       }
@@ -43,7 +44,8 @@ public class OptionHelper {
     } catch (IncompatibleClassException ice) {
       throw ice;
     } catch (Throwable t) {
-      throw new DynamicClassLoadingException("Failed to instantiate type "+className, t);
+      throw new DynamicClassLoadingException("Failed to instantiate type "
+          + className, t);
     }
   }
 

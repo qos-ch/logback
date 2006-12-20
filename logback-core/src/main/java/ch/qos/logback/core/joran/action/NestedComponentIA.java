@@ -103,7 +103,8 @@ public class NestedComponentIA extends ImplicitAction {
       // className);
 
       // FIXME: Loading classes should be governed by config file rules.
-      actionData.nestedComponent = Loader.loadClass(className).newInstance();
+      
+      actionData.nestedComponent = Loader.loadClass(className, context).newInstance();
 
       // pass along the repository
       if (actionData.nestedComponent instanceof ContextAware) {
