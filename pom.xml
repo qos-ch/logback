@@ -38,7 +38,7 @@
   
   <properties>
     <!-- slf4j.version property is used by setClasspath.cmd -->
-    <slf4j.version>1.1.0-RC1</slf4j.version>
+    <slf4j.version>1.1.0</slf4j.version>
   </properties>
   
   <dependencyManagement>
@@ -87,7 +87,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.1.0-RC1</version>
+        <version>1.1.0</version>
       </dependency>
       <dependency>
         <groupId>hsqldb</groupId>
@@ -198,8 +198,9 @@
       </plugin>
 
 
-      <!-- =================  COBERTURA ============================ -->
-      <!-- run using "mvn cobertura:cobertura -Dmaven.test.skip=true" -->
+      <!-- =================  COBERTURA ================================ -->
+      <!-- run using "mvn cobertura:cobertura -Dmaven.test.skip=true"    -->
+      <!-- ============================================================= -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
