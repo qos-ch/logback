@@ -903,7 +903,7 @@ One rather important point to remember is that the logger-level filter depends
 on the effective level of the logger being invoked, not the level of the logger 
 where the appenders are attached. The configuration file <em>sample4.xml</em> is a case in point: 
 </p>
-
+<em>Example 3.9: Logger level sample (logback-examples/src/main/java/chapter3/sample4.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -1005,6 +1005,7 @@ Logging to multiple appenders is as easy as defining the various appenders
 and referencing them in a logger, as the next configuration file illustrates:
 </p>
 
+<em>Example 3.10: Multiple loggers (logback-examples/src/main/java/chapter3/multiple.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="<b>FILE</b>"
@@ -1050,6 +1051,181 @@ the message and line separator character(s).
 The second appender called <code>STDOUT</code> outputs to the console. 
 The layout for this appender outputs only the message string followed by a line separator.
 </p>
+
+<p>
+The appenders are attached to the root logger by referencing 
+them by name within an <em>appender-ref</em> element. Note that each appender 
+has its own layout. Layouts are usually not designed to be shared by multiple 
+appenders. XML configuration files do not provide any syntactical 
+means for sharing layouts.
+</p>
+
+<p>
+By default, <b>appenders are cumulative</b>: a logger will log to the appenders 
+attached to itself (if any) as well as all the appenders attached to its ancestors. 
+Thus, attaching the same appender to multiple loggers will cause 
+logging output to be duplicated.
+</p>
+
+<em>Example 3.11: Duplicate appender (logback-examples/src/main/java/chapter3/duplicate.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;logger name="chapter3">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/logger>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+Running <code>MyApp2</code> with <em>duplicate.xml</em> will yield the following output:
+</p>
+
+<div class="source"><pre>14:25:36.343 [main] INFO  chapter3.MyApp2 - Entering application.
+14:25:36.343 [main] INFO  chapter3.MyApp2 - Entering application.
+14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
+14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
+14:25:36.359 [main] INFO  chapter3.MyApp2 - Exiting application.
+14:25:36.359 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
+
+<p>
+Notice the duplicated output. The appender named <em>STDOUT</em> is attached to 
+two loggers, to root and to <em>chapter3</em>. Since the root logger is the 
+ancestor of all loggers and <em>chapter3</em> is the parent of <em>chapter3.MyApp2</em> 
+and <em>chapter3.Foo</em>, logging request made with these two loggers 
+will be output twice, once because <em>STDOUT</em> is attached to <em>chapter3</em> 
+and once because it is attached to <em>root</em>.
+</p>
+
+<p>
+Appender additivity is not intended as a trap for new users. 
+It is a quite convenient logback feature. For instance, you can configure 
+logging such that log messages appear on the console (for all loggers in the system) 
+while messages only from some specific set of loggers flow into a specific appender. 
+</p>
+
+<em>Example 3.11: Multiple appender (logback-examples/src/main/java/chapter3/restricted.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>myApp.log&lt;/file>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        myApp-%d{yyyy-MM-dd-HH-mm-ss}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;logger name="chapter3">
+    &lt;appender-ref ref="FILE" />
+  &lt;/logger>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+In this example, the console appender will log all the messages (for all loggers in the system) 
+whereas only logs under the <em>chapter3</em> tree go into the <em>myApp.log</em> file. 
+</p>
+	
+<h4>Overriding the default cumulative behaviour</h4>
+
+<p>
+In case the default cumulative behavior turns out to be unsuitable for 
+one’s needs, one can override it by setting the additivity flag to false. 
+Thus, a branch in your logger tree may direct output to a set of appenders 
+different than those of the rest of the tree. 
+</p>
+
+<em>Example 3.12: Additivity flag (logback-examples/src/main/java/chapter3/additivityFlag.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>foo.log&lt;/file>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        foo-%d{yyyy-MM-dd-HH-mm-ss}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;logger name="chapter3.Foo" <b>additivity="false"</b>>
+    &lt;appender-ref ref="FILE" />
+  &lt;/logger>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+This example, the appender named <em>FILE</em> is attached to the <em>chapter3.Foo</em> 
+logger. Moreover, the <em>chapter3.Foo</em> logger has its additivity flag set to false 
+such that its logging output will be sent to the appender named <em>FILE</em> but 
+not to any appender attached higher in the hierarchy. Other loggers remain 
+oblivious to the additivity setting of the <em>chapter3.Foo</em> logger.
+Running the <code>MyApp2</code> application with the <em>additivityFlag.xml</em> 
+configuration file will output results on the console from the <em>chapter3.MyApp2</em> 
+logger. 
+However, output from the <em>chapter3.Foo</em> logger will appear in the <em>foo.log</em> file 
+and only in that file.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
