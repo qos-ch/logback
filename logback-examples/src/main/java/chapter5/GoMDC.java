@@ -19,6 +19,7 @@ public class GoMDC {
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
+      lc.shutdownAndReset();
       configurator.doConfigure("mdcFilter.xml");
       
     } catch (JoranException je) {
