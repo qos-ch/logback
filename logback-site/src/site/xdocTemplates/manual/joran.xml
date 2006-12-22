@@ -513,7 +513,7 @@ file. Here are the steps that logback follows to try to configure itself:
 <ul>
 	<p>Logback tries to find a file called <em>logback.xml</em> within the classpath.</p>
 	<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
-	<p>In case no files are found, logback configures itself automatically thanks to the 
+	<p>In case none of these files are found, logback configures itself automatically thanks to the 
 	<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
 	</a> class.</p>
 </ul>
@@ -1215,25 +1215,81 @@ However, output from the <em>chapter3.Foo</em> logger will appear in the <em>foo
 and only in that file.
 </p>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <h4>Variable substitution</h4>
 
-<h4></h4>
+<p>
+All option <em>values</em> admit variable substitution. The syntax of variable 
+substitution is similar to that of Unix shells. The string between an 
+opening <em>${</em> and closing <em>}</em> is interpreted as a key. 
+The value of the substituted variable can be defined as a system property 
+or in the configuration file itself. The value of the key 
+is first searched in the system properties, and if not found there, 
+it is then searched in the configuration file being parsed. 
+The corresponding value replaces <em>${aKey}</em> sequence. For example, 
+if <em>java.home</em> system property is set to <em>/home/xyz</em>, 
+then every occurrence of the sequence <em>${java.home}</em> will be 
+interpreted as <em>/home/xyz</em>. Recursive substitution is 
+also supported as the next example illustrates.
+</p>
+
+<em>Example 3.12: Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution.xml)</em>
+<div class="source"><pre>&lt;configuration debug="true">
+
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file><b>${filename}</b>&lt;/file>
+
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        <b>${filename}-%d{yyyy-MM-dd-HH-mm}</b>
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %relative [%thread] %level %logger{20} %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

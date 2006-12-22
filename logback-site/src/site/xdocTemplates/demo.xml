@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
+    <title>Logback Demo</title>
+  </properties>
+  
+	<body>
+
+<h2>Logback Demo</h2>
+
+<p>
+	Welcome to the logback demo! This document will take you to a tour
+	that will show you some of the most useful possibilities of logback.
+</p>
+
+<p>
+	First, please download the logback demo. You will need a 
+	<a href="http://subversion.tigris.org/">Subversion</a> client
+	and issue the following command:
+</p>
+  
+<div class="source"><pre>svn co https://svn.qos.ch/repos/logback-demo logback-demo</pre></div>
+
+<p>
+	This will checkout a copy of the logback demonstration web-app to a directory called
+	<em>logback-demo</em>. The logback demo can be packaged as a <em>war</em> file and
+	deployed to an application server. We strongly recommand the use of 
+	<a href="http://maven.apache.org/">Maven 2</a> to do this
+	task, since all it will take to compile, package and run a server with the demo is
+	a single command.
+</p>
+
+<p>
+	Using Maven, let's run the demo for the first time. From the <em>logback-demo</em>
+	directory, issue the following command:
+</p>
+
+<div class="source"><pre>mvn jetty:run</pre></div>
+    
+<p>
+	Then, visit <em>http://localhost:8080/</em> to view the main page of the logback demo.
+</p>
+
+<p>image main page</p>
+
+<p>
+	For now, logback uses two components: one <code>ConsoleAppender</code> and one 
+	<code>RollingFileAppender</code>. The <code>RollingFileAppender</code> sends logging events
+	to a file called <em>logFile.log</em> and will rollover
+	the active file every minute. The old file will be renamed and compressed using the <em>zip</em>
+	format. The <code>ConsoleAppender</code> will output the logging requests to the console,
+	and shorten the logger names to gain some space in the console window, without making the
+	names unreadable.
+</p>
+
+<p>
+	Let's now visit the <em>ViewStatii</em> page, via the navigation menu on the left hand
+	of the screen. This page contains the content of the <code>Status</code> objects that were
+	created until now. <code>Status</code> objects are a part of logback's powerful internal 
+	reporting framework. They allow you to see what is going on in logback, and check
+	that a configuration file has been parsed correctly, or that a rollover has occured as 
+	expected.
+</p>
+
+<p>image statii page</p>
+
+<p>
+Visiting the <em>View logs</em> page does not impress much at the moment. Let us uncomment
+the two parts of the config file that are below the <em>Part I: Cyclic buffer</em> comment.
+Now reload the web-app by exiting the previous command with <em>CTRL-C</em> and issuing it
+again: <em>mvn jetty:run</em>.
+</p>
+
+<p>
+Now, the <em>View logs</em> page looks prettier. Thanks to the <code>CyclicBufferAppender</code>,
+this page can fetch the last events and present them through a servlet.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</body>
+</document>
