@@ -160,6 +160,16 @@ public class SampleFilter extends Filter {
 			getter and setter methods in the class, and you can specify the
 			option's value in an xml element, nested within the <em>filter</em> element.
 		</p>
+		
+		<p>
+			In case you want to implement a filter that provides different behaviour
+			depending on the result of its test (say, a filter that would accept or deny
+			an event depending on the content of its message), you can extend the
+			<a href="../xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">
+			<code>AbstractMatcherFilter</code></a> class. It will provide your filter with 
+			two attribute: <em>OnMatch</em> and <em>OnMismatch</em>, that can be configured
+			like any other option.
+		</p>
 
 		<h3>Evaluator Filters</h3>
 		    
@@ -176,7 +186,8 @@ public class SampleFilter extends Filter {
     <p>
 			Creating a customized filter that makes use of <code>EventEvaluator</code> objects
 			works the same way as seen previously, except that one must extend the 
-			<code>EvaluatorFilter</code> class, instead of the <code>Filter</code> class.
+			<code>EvaluatorFilter</code> class, instead of the <code>Filter</code>
+			or <code>AbstractMatcherFilter</code> classes.
 		</p>
     
     <a name="EventEvaluator" />
