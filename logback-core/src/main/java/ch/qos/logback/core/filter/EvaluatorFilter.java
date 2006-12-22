@@ -22,33 +22,10 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author S&eacute;bastien Pennec
  */
 
-public class EvaluatorFilter extends Filter {
+public class EvaluatorFilter extends AbstractMatcherFilter {
 
   EventEvaluator evaluator;
-  
-  protected FilterReply onMatch = FilterReply.NEUTRAL;
-  protected FilterReply onMismatch = FilterReply.NEUTRAL;
-
-  final public void setOnMatch(String action) {
-    if ("NEUTRAL".equals(action)) {
-      onMatch = FilterReply.NEUTRAL;
-    } else if ("ACCEPT".equals(action)) {
-      onMatch = FilterReply.ACCEPT;
-    } else if ("DENY".equals(action)) {
-      onMatch = FilterReply.DENY;
-    }
-  }
-
-  final public void setOnMismatch(String action) {
-    if ("NEUTRAL".equals(action)) {
-      onMismatch = FilterReply.NEUTRAL;
-    } else if ("ACCEPT".equals(action)) {
-      onMismatch = FilterReply.ACCEPT;
-    } else if ("DENY".equals(action)) {
-      onMismatch = FilterReply.DENY;
-    }
-  }
-  
+    
   @Override
   public void start() {
     if(evaluator != null) {

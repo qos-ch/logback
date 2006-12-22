@@ -2,10 +2,10 @@ package ch.qos.logback.classic.filter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.filter.AbstractMatcherFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
-public class LevelFilter extends Filter {
+public class LevelFilter extends AbstractMatcherFilter {
 
   Level level;
   
@@ -18,9 +18,9 @@ public class LevelFilter extends Filter {
     LoggingEvent event = (LoggingEvent)eventObject;
     
     if (event.getLevel().isGreaterOrEqual(level)) {
-      return FilterReply.ACCEPT;
+      return onMatch;
     } else {
-      return FilterReply.DENY;
+      return onMismatch;
     }
   }
   
