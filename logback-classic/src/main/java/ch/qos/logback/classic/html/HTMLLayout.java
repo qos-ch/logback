@@ -36,8 +36,7 @@ import ch.qos.logback.core.pattern.Converter;
 public class HTMLLayout extends HTMLLayoutBase implements ClassicLayout {
 
   /**
-   * Default pattern string for log output. Currently set to the string <b>"%m"
-   * </b> which just prints the application supplied message.
+   * Default pattern string for log output.
    */
   static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
 

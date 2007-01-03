@@ -127,6 +127,11 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * is returned.
    */
   public boolean checkEntryConditions() {
+    if (!this.started) {
+      addError("Attempting to append to a non-started appender: " + this.getName());
+      return false;
+    }
+    
     if (this.msg == null) {
       addError("Message object not configured.");
       return false;

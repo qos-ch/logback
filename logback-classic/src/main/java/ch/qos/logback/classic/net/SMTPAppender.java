@@ -31,7 +31,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  */
 public class SMTPAppender extends SMTPAppenderBase {
 
-  static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
+  static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m %nopex";
   static final String DEFAULT_EVALUATOR_EXPRESSION = "level >= ERROR";
   
   private int bufferSize = 512;
@@ -43,11 +43,19 @@ public class SMTPAppender extends SMTPAppenderBase {
    * ERROR or higher.
    */
   public SMTPAppender() {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
-    jee.setContext(getContext());
-    jee.setExpression(DEFAULT_EVALUATOR_EXPRESSION);
-    jee.setName("SMTPAppender's default event evaluator");
-    this.eventEvaluator = jee;
+
+  }
+  
+  public void start() {    
+    if (eventEvaluator == null) {
+      JaninoEventEvaluator jee = new JaninoEventEvaluator();
+      jee.setContext(getContext());
+      jee.setExpression(DEFAULT_EVALUATOR_EXPRESSION);
+      jee.setName("SMTPAppender's default event evaluator");
+      jee.start();
+      this.eventEvaluator = jee;      
+    }
+    super.start();
   }
 
   /**
@@ -105,6 +113,7 @@ public class SMTPAppender extends SMTPAppenderBase {
       subjectStr = DEFAULT_SUBJECT_PATTERN;
     }
     PatternLayout pl = new PatternLayout();
+    pl.setContext(getContext());
     pl.setPattern(subjectStr);
     pl.start();
     return pl;
