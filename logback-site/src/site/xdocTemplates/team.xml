@@ -50,11 +50,17 @@
 			<tr>
 				<td><img src="images/seb.gif" alt="Sebastien"/></td>
 				<td>
-					S&#233;bastien Pennec has been using computers for the most
+					<p>S&#233;bastien Pennec has been using computers for the most
 					part of his life, be it as a hobby, or during his studies
 					or, more recently, as Software Engineer. He loves to write
 					software in dynamic and enthusiastic environments, while
 					learning new technologies and practices.
+					</p>
+					<p>
+						S&#233;bastien's hobbys include writing articles about
+						Macintosh products on <a href="http://www.cuk.ch">cuk.ch</a>, 
+						digital photography and playing poker with his friends.
+					</p>
 				</td>
 			</tr>
 		</table>

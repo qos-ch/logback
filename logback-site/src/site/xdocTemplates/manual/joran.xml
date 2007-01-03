@@ -581,7 +581,7 @@ your classpath correctly. The scripts provided in the
 </p>
 
 <p>
-As a side note, let me mention that in logback child loggers link only 
+As a side note, let us mention that in logback child loggers link only 
 to their existing ancestors. In particular, the logger named <em>chapter3.Foo</em> 
 is linked directly with the root logger, thereby circumventing the unused 
 <em>chapter3</em> logger. This noticeably improves the performance 
@@ -595,7 +595,7 @@ For example, the only dependence of the <code>Foo</code> class on logback is the
 org.slf4j.LoggerFactory and org.slf4j.Logger import. 
 Except code that configures logback (if such code exists) user code does not need to 
 depend on logback. Given that SLF4J permits the use of any implementation under its
-abstraction layer, it is rather easy to migrate large bodies of code from an imlementation
+abstraction layer, it is rather easy to migrate large bodies of code from an implementation
 to another. Logback also ships with a module called <em>log4j-bridge</em> that intercepts
 log4j calls and redirects them to the corresponding logback components. Thank to that module,
 one can migrate an entire application using log4j to logback just by replacing jars. More
@@ -975,7 +975,7 @@ Thus, the level of the root logger has no apparent effect because the loggers in
 <em>chapter3.MyApp2</em> and <em>chapter3.Foo</em>, inherit their level from the 
 <em>chapter3</em> logger which has its level set to <code>INFO</code>. 
 As noted previously, the <em>chapter3</em> logger exists by virtue of its 
-declaration in the configuration file – even if the Java source code does not 
+declaration in the configuration file - even if the Java source code does not 
 directly refer to it. 
 </p>
 
@@ -1044,7 +1044,7 @@ and referencing them in a logger, as the next configuration file illustrates:
 
 <p>
 This configuration scripts defines two appenders called <em>FILE</em> and <em>STDOUT</em>. 
-The <em>FILE</em> appender logs to a file called myApp.log. The layout for this appender 
+The <em>FILE</em> appender logs to a file called <em>myApp.log</em>. The layout for this appender 
 is a <code>PatternLayout</code> that outputs the date, level, thread name, logger name, 
 file name and line number where the log request is located, 
 the message and line separator character(s).  
@@ -1161,7 +1161,7 @@ whereas only logs under the <em>chapter3</em> tree go into the <em>myApp.log</em
 
 <p>
 In case the default cumulative behavior turns out to be unsuitable for 
-one’s needs, one can override it by setting the additivity flag to false. 
+one's needs, one can override it by setting the additivity flag to false. 
 Thus, a branch in your logger tree may direct output to a set of appenders 
 different than those of the rest of the tree. 
 </p>
@@ -1228,8 +1228,7 @@ it is then searched in the configuration file being parsed.
 The corresponding value replaces <em>${aKey}</em> sequence. For example, 
 if <em>java.home</em> system property is set to <em>/home/xyz</em>, 
 then every occurrence of the sequence <em>${java.home}</em> will be 
-interpreted as <em>/home/xyz</em>. Recursive substitution is 
-also supported as the next example illustrates.
+interpreted as <em>/home/xyz</em>.
 </p>
 
 <em>Example 3.12: Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution.xml)</em>
