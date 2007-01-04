@@ -20,7 +20,9 @@ public class PackageTest extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(DurationTest.class);
     suite.addTestSuite(FileSizeTest.class);
+    suite.addTestSuite(OptionHelperTest.class);
     suite.addTestSuite(PropertySetterTest.class);
+    suite.addTestSuite(StatusPrinterTest.class);
     suite.addTestSuite(TimeUtilTest.class);
     return suite;
   }
