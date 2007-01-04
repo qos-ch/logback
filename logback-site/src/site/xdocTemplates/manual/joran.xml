@@ -1222,36 +1222,42 @@ All option <em>values</em> admit variable substitution. The syntax of variable
 substitution is similar to that of Unix shells. The string between an 
 opening <em>${</em> and closing <em>}</em> is interpreted as a key. 
 The value of the substituted variable can be defined as a system property 
-or in the configuration file itself. The value of the key 
-is first searched in the system properties, and if not found there, 
-it is then searched in the configuration file being parsed. 
+in the configuration file itself or in a separate file linked to the 
+configuration file. The value of the key 
+is first searched in configuration file or linked properties file, 
+and if not found there, it is then searched in system properties. 
 The corresponding value replaces <em>${aKey}</em> sequence. For example, 
 if <em>java.home</em> system property is set to <em>/home/xyz</em>, 
 then every occurrence of the sequence <em>${java.home}</em> will be 
 interpreted as <em>/home/xyz</em>.
 </p>
 
-<em>Example 3.12: Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution.xml)</em>
-<div class="source"><pre>&lt;configuration debug="true">
+<p>
+The first example shows a declared property at the beginning of the 
+configuration file. It is then used further down the file to specify
+the place to create the output file.
+</p>
+
+<em>Example 3.12: Simple Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution1.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  <b>&lt;substitutionProperty name="user.home.dir" value="/Users/seb" /></b>
 
   &lt;appender name="FILE"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;file><b>${filename}</b>&lt;/file>
-
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
     &lt;rollingPolicy
       class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;FileNamePattern>
-        <b>${filename}-%d{yyyy-MM-dd-HH-mm}</b>
+        myApp-%d{yyyy-MM-dd-HH}.log
       &lt;/FileNamePattern>
     &lt;/rollingPolicy>
-
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>
-        %relative [%thread] %level %logger{20} %msg%n
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
       &lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
-
 
   &lt;root>
     &lt;level value="debug" />
@@ -1260,26 +1266,125 @@ interpreted as <em>/home/xyz</em>.
 &lt;/configuration></pre></div>
 
 
+<p>
+The next example shows the use of a System property to achieve the same result. The
+property is not declared anywhere, thus logback will look for it in the System properties. 
+</p>
+
+<em>Example 3.13: System Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution2.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        myApp-%d{yyyy-MM-dd-HH}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+When many variables are used, it is often more convenient to create
+a separate file that will contain all the variables. Here is how one can
+do such a setup.
+</p>
+
+<em>Example 3.14: Variable substitution using a separate file (logback-examples/src/main/java/chapter3/variableSubstitution3.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;substitutionProperty file="variables1.properties" />
+
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        myApp-%d{yyyy-MM-dd-HH}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+<p>
+This configuration file contains a link to another file called <em>variables.properties</em>.
+The variables contained in that other file will be read and will thus be available to the 
+logback configuration file. Here is what the <em>variable.properties</em> file looks like.
+</p>
+
+<em>Example 3.15: Variable file (logback-examples/src/main/java/chapter3/variables1.properties)</em>
+<div class="source"><pre>user.home.dir=/Users/seb</pre></div>
+
+<p>
+Nothing more is needed to declare the variable.
+</p>
+
+<p>
+Recursive subsitution is also available. If the user wants to use variables to
+specify not only the destination directory but also the file name, here is what she
+would write in her <em>variables.properties</em> file.
+</p>
 
 
+<em>Example 3.16: Recursive use of variables (logback-examples/src/main/java/chapter3/variables2.properties)</em>
+<div class="source"><pre>user.home.dir=/Users/seb
+file=myApp.log
+destination=${user.home.dir}/${file}</pre></div>
 
+<p>
+In the configuration file, only the last variable, <em>${destination}</em> will
+be used, as shown below:
+</p>
 
+<em>Example 3.17: Variable substitution using a separate file (logback-examples/src/main/java/chapter3/variableSubstitution4.xml)</em>
+<div class="source"><pre>&lt;configuration>
 
+  &lt;substitutionProperty file="variables1.properties" />
 
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${destination}&lt;/file></b>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        myApp-%d{yyyy-MM-dd-HH}.log
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
+        %date %level [%thread] %logger{10} [%file : %line] %msg%n
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 
 

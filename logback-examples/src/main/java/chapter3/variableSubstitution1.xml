@@ -1,12 +1,15 @@
 <configuration>
 
+	<substitutionProperty name="user.home.dir"
+		value="/Users/seb" />
+
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>myApp.log</file>
+		<file>${user.home.dir}/myApp.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>
-				myApp-%d{yyyy-MM-dd-HH-mm-ss}.log
+				myApp-%d{yyyy-MM-dd-HH}.log
 			</FileNamePattern>
 		</rollingPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -16,19 +19,8 @@
 		</layout>
 	</appender>
 
-	<appender name="STDOUT"
-		class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%msg%n</Pattern>
-		</layout>
-	</appender>
-
-	<logger name="chapter3">
-		<appender-ref ref="FILE" />
-	</logger>
-
 	<root>
 		<level value="debug" />
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
 	</root>
 </configuration>
