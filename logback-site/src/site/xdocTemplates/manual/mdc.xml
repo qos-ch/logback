@@ -50,6 +50,18 @@
 				This technique promotes the proliferation of loggers and considerably increases 
 				their management overhead.
 		</p>
+		<div class="highlight">
+    <p>
+      Running the examples provided with
+      the complete logback manual only requires
+      a few steps.
+    </p>
+    <p>
+    	To set you up quickly, please visit
+    	the <a href="../setup.html">dedicated page</a>.
+    </p>
+    </div>
+    
 		<p> 
 				A lighter technique consists of uniquely stamping each 
 				log request servicing a given client. Neil Harrison described this method in the book 

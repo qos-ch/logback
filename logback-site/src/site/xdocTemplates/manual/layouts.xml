@@ -44,8 +44,19 @@
 			</tr>
 		</table>
 
+	  <div class="highlight">
+    <p>
+      Running the examples provided with
+      the complete logback manual only requires
+      a few steps.
+    </p>
+    <p>
+    	To set you up quickly, please visit
+    	the <a href="../setup.html">dedicated page</a>.
+    </p>
+    </div>
+    
 		<h2>What is a layout</h2>
-
 		<p>
 			While appenders are responsible for writing logging output
 			to an appender dependent device, layouts are responsible for

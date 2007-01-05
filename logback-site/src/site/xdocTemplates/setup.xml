@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
+    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
+    <title>Logback Examples</title>
+  </properties>
+  
+	<body>
+
+<h2>Classpath Setup</h2>
+
+<p>
+Setting up an environment to run the logback examples mainly consists 
+of putting a few jars in your classpath. For most examples, these are:
+</p>
+
+<ul>
+	<p>logback-core-${version}.jar</p>
+	<p>logback-classic-${version}.jar</p>
+	<p>logback-examples-${version}.jar</p>
+	<p>slf4j-api-${slf4j.version}.jar</p>
+</ul>
+
+<p>
+Assuming your current directory is
+<em>$LOGBACK_HOME/logback-examples</em>, where <em>$LOGBACK_HOME</em> is the
+directory you've installed logback, you can launch the first
+sample application,
+<em>chapter1.HelloWord1</em>
+with the command:
+</p>
+
+<div class="source"><pre>java -cp
+ lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
+ ../logback-classic-${version}.jar;logback-examples-${version}.jar\
+ chapter1.HelloWorld1</pre></div>
+
+<p>
+Having to include the jars in each command you run is not practical, 
+to say the least. Two scripts are available to help you setup the jars
+in your system's classpath. They are located in 
+<em>$LOGBACK_HOME/logback-examples</em>.
+</p>
+
+<p>
+To run these scripts, you need to edit them and set the variable called
+<em>LB_HOME</em> to the directory where you've installed logback.
+</p>
+
+<p>
+Unless specified differently, running the examples by using the command
+provided in the manual will work if it is run from the 
+<em>$LOGBACK_HOME/logback-examples</em> directory.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</body>
+</document>

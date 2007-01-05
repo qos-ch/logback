@@ -154,17 +154,10 @@ public class HelloWorld1 {
 		</p>
 
 
-    <p>In order to facilitate running the the examples in this
-    introduction, we have placed the required slf4j-api.jar file in
-    the <em>$LOGBACK_HOME/logback-examples/lib</em>
-    directory. Assuming your current directory is
-    $LOGBACK_HOME/logback-examples, where $LOGBACK_HOME is the
-    directory you've installed logback, you can launch the first
+    <p>You can launch the first
     sample application, <em>chapter1.HelloWord1</em> with the command:
     </p>
-    <div class="source"><pre>java -cp lib/slf4j-api-1.1.0-beta0.jar;../logback-core-${version}.jar;\
-     ../logback-classic-${version}.jar;logback-examples-${version}.jar\
-     chapter1.HelloWorld1</pre></div>
+    <div class="source"><pre>java chapter1.HelloWorld1</pre></div>
 
 		<p>
 			Launching the <code>HelloWorld1</code>
@@ -211,8 +204,8 @@ public class HelloWorld2 {
 
 
   <p>
-  	Logback explains it configured itself using its default
-  	configuration, which is a basic <code>ConsoleAppender</code>. 
+  	Logback explains that it configured itself using its default
+  	policy, which is a basic <code>ConsoleAppender</code>. 
   	An <code>Appender</code> is a class that can be
   	seen as an output destination. Appenders exist for many different
   	destinations including the console, files, Syslog, Socket, JMS and

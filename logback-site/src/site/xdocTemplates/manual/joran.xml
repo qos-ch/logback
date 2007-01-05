@@ -42,7 +42,18 @@
 			</tr>
 		</table>
 
-
+	  <div class="highlight">
+    <p>
+      Running the examples provided with
+      the complete logback manual only requires
+      a few steps.
+    </p>
+    <p>
+    	To set you up quickly, please visit
+    	the <a href="../setup.html">dedicated page</a>.
+    </p>
+    </div>
+    
 <p>Joran stands for a cold north-west wind which, every now and then,
 blows force-fully on Lake Leman, a.k.a lake Geneva. Located right in
 the middle of Europe, the Leman happens to be the continent's largest

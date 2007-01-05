@@ -50,7 +50,19 @@
 			Logback filters are based on ternary logic allowing them to be assembled or chained 
 			together to compose an arbitrarily complex filtering policy.
 		</p>
-		
+	
+		<div class="highlight">
+    <p>
+      Running the examples provided with
+      the complete logback manual only requires
+      a few steps.
+    </p>
+    <p>
+    	To set you up quickly, please visit
+    	the <a href="../setup.html">dedicated page</a>.
+    </p>
+    </div>
+    
 		<p>
 			There are two main types of filters, namely <code>Filter</code> and 
 			<code>TurboFilter</code>.

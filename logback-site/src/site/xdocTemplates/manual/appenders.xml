@@ -41,9 +41,21 @@
 				</td>
 			</tr>
 		</table>
-
+		    
+		<div class="highlight">
+    <p>
+      Running the examples provided with
+      the complete logback manual only requires
+      a few steps.
+    </p>
+    <p>
+    	To set you up quickly, please visit
+    	the <a href="../setup.html">dedicated page</a>.
+    </p>
+    </div>
+    
 		<h2>What is an Appender</h2>
-
+    
 		<p>
 			Logback delegates the task of writing a logging event to appenders. 
 			Appenders must implement the 
@@ -302,7 +314,7 @@ public class ExitWoes1 {
     logger.debug("Hello world.");
   }
 }</pre></div>
-
+    
 	<p>
 		This example creates a <code>WriterAppender</code> that uses an 
 		<code>OutputStreamWriter</code> 
@@ -322,7 +334,7 @@ public class ExitWoes1 {
 		<code>ExitWoes2</code> class uses this statement and outputs a logging
 		request.
 	</p>
-
+	    
 	<p>
 		The <code>WriterAppender</code> is the super class of four other appenders, 
 		namely <code>ConsoleAppender</code>, <code>FileAppender</code> which in turn is 
@@ -393,10 +405,8 @@ public class ExitWoes1 {
 &lt;/configuration></pre></div>
 
 	<p>
-		To run this example, as well as others in this
-		chapter, please run the script provided in the <em>logback-examples</em> directory. 
-		Then, use the <code>ConfigurationTester</code> by
-		issuing the following command, once in the <em>logback-examples</em> directory:
+		To run this example, just issue the following command, 
+		once in the <em>logback-examples</em> directory:
 	</p>
 	
 <div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-Console.xml</pre></div>
