@@ -53,13 +53,11 @@
 	
 		<div class="highlight">
     <p>
-      Running the examples provided with
-      the complete logback manual only requires
-      a few steps.
-    </p>
-    <p>
-    	To set you up quickly, please visit
-    	the <a href="../setup.html">dedicated page</a>.
+      In order to run the examples in this chapter, you need
+      to make sure that certain jar files are present on the
+      classpath.
+    	Please refer to the <a href="../setup.html">setup page</a>
+    	for further details.
     </p>
     </div>
     

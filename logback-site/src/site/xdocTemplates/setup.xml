@@ -12,8 +12,8 @@
 <h2>Classpath Setup</h2>
 
 <p>
-Setting up an environment to run the logback examples mainly consists 
-of putting a few jars in your classpath. For most examples, these are:
+In order to run the examples provided in the documentation,
+you need to add the following jars to your class path:
 </p>
 
 <ul>
@@ -22,6 +22,8 @@ of putting a few jars in your classpath. For most examples, these are:
 	<p>logback-examples-${version}.jar</p>
 	<p>slf4j-api-${slf4j.version}.jar</p>
 </ul>
+
+<h3>Example</h3>
 
 <p>
 Assuming your current directory is
@@ -38,21 +40,22 @@ with the command:
  chapter1.HelloWorld1</pre></div>
 
 <p>
-Having to include the jars in each command you run is not practical, 
-to say the least. Two scripts are available to help you setup the jars
-in your system's classpath. They are located in 
-<em>$LOGBACK_HOME/logback-examples</em>.
+It is more convenient to set the CLASSPATH environment variable
+once and for all before running the examples.
+</p>
+<p>The <em>setClasspath.cmd</em> script located in the $LOGBACK_HOME/logback-examples 
+folder will configure the class path for the MS Windows platform. For Unix, the 
+equivalent script is <em>setClasspath.sh</em>.
 </p>
 
-<p>
-To run these scripts, you need to edit them and set the variable called
-<em>LB_HOME</em> to the directory where you've installed logback.
-</p>
+<p>Please remember to adapt the <em>LB_HOME</em> variable for your local environment.</p>
 
 <p>
-Unless specified differently, running the examples by using the command
-provided in the manual will work if it is run from the 
-<em>$LOGBACK_HOME/logback-examples</em> directory.
+Please be aware that many examples will launch java classes along
+with configuration files. To access these files by using
+the same commands as written in the documentation, you will need to
+issue the commands in the <em>$LOGBACK_HOME/logback-examples</em> 
+directory.
 </p>
 
 

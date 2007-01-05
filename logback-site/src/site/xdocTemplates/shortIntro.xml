@@ -97,6 +97,16 @@
 
     <h2>First Baby Step</h2>
 
+		<div class="highlight">
+    <p>
+      In order to run the examples in this introduction, you need
+      to make sure that certain jar files are present on the
+      classpath.
+    	Please refer to the <a href="setup.html">setup page</a>
+    	for further details.
+    </p>
+    </div>
+    
     <h3>Requirements</h3>
 
     <p>Logback-classic module requires the presence

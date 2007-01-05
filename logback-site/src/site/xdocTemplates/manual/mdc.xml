@@ -52,13 +52,11 @@
 		</p>
 		<div class="highlight">
     <p>
-      Running the examples provided with
-      the complete logback manual only requires
-      a few steps.
-    </p>
-    <p>
-    	To set you up quickly, please visit
-    	the <a href="../setup.html">dedicated page</a>.
+      In order to run the examples in this chapter, you need
+      to make sure that certain jar files are present on the
+      classpath.
+    	Please refer to the <a href="../setup.html">setup page</a>
+    	for further details.
     </p>
     </div>
     
@@ -188,6 +186,8 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 			Moreover, the information placed into the <code>MDC</code> can be used by 
 			multiple logger invocations.
 		</p>
+		
+		<h3>Advanced Use</h3>
 		
 		<p>
 			Mapped Diagnostic Contexts shine brightest within client server architectures. 
@@ -497,5 +497,124 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			Because the <code>MDC</code> is under the control of the application developer, 
 			<code>MDC</code> stamps do not suffer from this problem. 
 		</p>
+		
+		
+		
+		<h3>Automating access to the <code>MDC</code></h3>
+		
+		<p>
+			As we've seen, the <code>MDC</code> is very useful when dealing with multiple
+			clients. In the case of a web application that manages user authentication, one
+			simple solution could be to set the user's name in the <code>MDC</code> and remove
+			it once the user logs out. Unfortunately, it is not always possible to achieve
+			reliable results using this technique. Since <code>MDC</code> is managing
+			information on a <em>per thread</em> basis, a server that recycles
+			threads might lead to false information contained in the <code>MDC</code>.
+		</p>
+		
+		<p>
+			To allow the information contained in the <code>MDC</code> to be correct
+			at all times when a request is processed, a solution might be to store the
+			username at the beginning of the process, and remove it at the end of
+			said process. A servlet 
+			<a href="http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html">
+			<code>Filter</code></a> is a good tool to have at
+			hand in such case.
+		</p>
+		
+		<p>
+			By using a servlet filter, one can access the request, try to access
+			to relevant user information and store it in the <code>MDC</code>. 
+			Then, after the process of creating the response, one just needs 
+			to remove the user information from the <code>MDC</code>.
+		</p>
+		
+		<p>
+		Here is an implementation of such a filter:
+		</p>
+
+<em>Example 7.5: User servlet filter (<a href="../xref/chapter7/UserServletFilter.html">
+logback-examples/src/main/java/chapter7/UserServletFilter.java)</a></em>
+<div class="source"><pre>package chapter7;
+
+import java.io.IOException;
+import java.security.Principal;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import ch.qos.logback.classic.MDC;
+
+public class UserServletFilter implements Filter {
+
+  boolean userRegistered = false;
+  
+  private final String userKey = "username";
+  
+  public void destroy() {
+  }
+
+  public void doFilter(ServletRequest request, ServletResponse response,
+    FilterChain chain) throws IOException, ServletException {
+
+    HttpServletRequest req = (HttpServletRequest) request;
+    Principal principal = req.getUserPrincipal();
+
+    if (principal != null) {
+      String username = principal.getName();
+      registerUsername(username);
+    } else {
+      HttpSession session = req.getSession();
+      String username = (String)session.getAttribute(userKey);
+      registerUsername(username);
+    }
+    
+    try {
+      chain.doFilter(request, response);
+    } finally {
+      if (userRegistered) {
+        MDC.remove(userKey);
+      }
+    }
+  }
+
+  public void init(FilterConfig arg0) throws ServletException {
+  }
+  
+  private void registerUsername(String username) {
+    if (username != null &amp;&amp; username.trim().length() > 0) {
+      MDC.put(userKey, username);
+      userRegistered = true;
+    }
+  }
+}</pre></div>
+
+
+	<p>
+		When the filter's <code>doFilter()</code> method is called, is first looks for a
+		<code>java.security.Principal</code> object in the request. This object contains 
+		the name of the currently authenticated user. In case the user principal is not set, 
+		the filter looks for a session attribute matching a given key (here <em>username</em>).
+		If a user information is found, it is registered in the <code>MDC</code>.
+	</p>
+		
+	<p>
+		Once the filter chain has completed, the filter removes the user information
+		from the <code>MDC</code>.
+	</p>
+	
+	<p>
+		With this filter, the user information is present in the <code>MDC</code> only 
+		the time it takes to process the request. The thread may be reused to process a
+		request for another user without risking to display false information in the
+		logs.
+	</p>
+		
   </body>
 </document>
