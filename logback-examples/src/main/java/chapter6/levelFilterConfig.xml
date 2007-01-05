@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%-4relative [%thread] %-5level %logger{30} - %msg%n
+			</pattern>
+		</layout>
+	</appender>
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>

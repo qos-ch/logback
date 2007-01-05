@@ -121,7 +121,7 @@
 			neutral response to any logging event who's message does not contain this String.
 		</p>
 		
-<em>Example 6.2: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
+<em>Example 6.1: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
 <div class="source"><pre>package chapter6;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -148,7 +148,7 @@ public class SampleFilter extends Filter {
 			shown below:
 		</p>
 
-<em>Example 6.3: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
+<em>Example 6.2: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -182,6 +182,40 @@ public class SampleFilter extends Filter {
 			two attribute: <em>OnMatch</em> and <em>OnMismatch</em>, that can be configured
 			like any other option.
 		</p>
+		
+		<h3>Logback Filters</h3>
+		
+		<p>
+			As the moment, there is one filter that ships with 
+			logback. This is the most commonly used filter: 
+			<a href="../xref/ch/qos/logback/classic/LevelFilter.html">
+			<code>LevelFilter</code></a>.
+			It provides event filtering based on a <code>Level</code> value. It the event's
+			level is equal or higher than the configured level, the filter accepts of denies
+			the event, depending on its configuration. Here is a sample configuration that
+			uses <code>LevelFilter</code>.
+		</p>
+		
+<em>Example 6.3: SampleFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
+<div class="source"><pre>&lt;configuration>
+  &lt;appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
+      &lt;level>INFO&lt;/level>
+      &lt;onMatch>ACCEPT&lt;/onMatch>
+      &lt;onMismatch>DENY&lt;/onMismatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>
+        %-4relative [%thread] %-5level %logger{30} - %msg%n
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+  &lt;root>
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 		<h3>Evaluator Filters</h3>
 		    
@@ -215,7 +249,7 @@ public class SampleFilter extends Filter {
     	Let's see a sample configuration.
     </p>
     
-<em>Example 6.1: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+<em>Example 6.4: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -250,7 +284,7 @@ public class SampleFilter extends Filter {
 		</p>
 		
 		<p>
-			The implicit variables available to the <code>EventEvaluator</code> are descripbed below:
+			The implicit variables available to the <code>EventEvaluator</code> are described below:
 		</p>
 		
 		<table>
@@ -446,7 +480,7 @@ public class SampleTurboFilter extends TurboFilter {
 			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
 		</p>
 		
-<em>Example 6.5: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<em>Example 6.6: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
 <div class="source"><pre>&lt;configuration>
   <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
@@ -480,7 +514,7 @@ public class SampleTurboFilter extends TurboFilter {
    		<code>MarkerFilter</code>.
    	</p>
    	
-<em>Example 6.4: <code>MDCFilter</code> and <code>MarkerFilter</code> 
+<em>Example 6.7: <code>MDCFilter</code> and <code>MarkerFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
@@ -586,7 +620,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
     	Here is a sample configuration that will ensure that any 404 error will be displayed:
     </p>
    	
-<em>Example 6.6: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
+<em>Example 6.8: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -614,7 +648,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 			would look like:
 		</p>	
 
-<em>Example 6.7: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
+<em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
