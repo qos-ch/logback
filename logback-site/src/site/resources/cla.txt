@@ -1,6 +1,10 @@
                             QOS.ch
          Individual Contributor License Agreement ("Agreement") 
 
+This agreement is an adaptation  of the Apache Software Foundation ICL
+agreement where  references to  ASF have been  replaced by  QOS.ch. We
+thank the ASF for allowing QOS.ch to make use of their ICL agreement.
+
 Thank  you  for your  interest  in QOS.ch.  In  order  to clarify  the
 intellectual  property  license granted  with  Contributions from  any
 person  or entity, QOS.ch  must have  a Contributor  License Agreement
