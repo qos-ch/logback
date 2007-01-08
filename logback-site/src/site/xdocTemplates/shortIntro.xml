@@ -1122,7 +1122,7 @@ public class MyAppWithConfigFile {
 	
 	<p>To run this examle, use this command:</p>
 	
-<div class="source"><pre>java chapter1.MyApp <b>HOW ABOUT PATH?</b>sample-config-1.xml</pre></div>
+<div class="source"><pre>java chapter1.MyApp src/main/java/chapter1/sample-config-1.xml</pre></div>
 
 	<p>The console output will be exactly the same as before. However,
 	this time, we didn't need to import and call the BasicConfigurator
@@ -1148,32 +1148,29 @@ public class MyAppWithConfigFile {
 <em>Example 1.5: Logback configuration from file (logback-examples/src/main/java/chapter1/sample-config-2.xml)</em>
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
-&lt;configuration&gt;
+&lt;configuration>
 
   &lt;appender name="STDOUT"
-      class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;param name="pattern"
-        value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
 
   &lt;appender name="FILE"
-      class="ch.qos.logback.core.FileAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;param name="pattern"
-        value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-    &lt;/layout&gt;
-    &lt;param name="File"
-      value="sample-log.txt" /&gt;
-  &lt;/appender&gt;
+    class="ch.qos.logback.core.FileAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
+    &lt;/layout>
+    &lt;File>sample-log.txt&lt;/File>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-    &lt;appender-ref ref="FILE" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 	
 	<p>Now, all the logging statements are directed to the console and
 	to a file named <em>sample-log.txt</em>.  As you can see, the
@@ -1194,22 +1191,19 @@ public class MyAppWithConfigFile {
 &lt;configuration&gt;
 
   &lt;appender name="STDOUT"
-      class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;param name="pattern"
-          value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
 
   &lt;appender name="FILE"
-      class="ch.qos.logback.core.FileAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;param name="pattern"
-          value="%-4relative [%thread] %-5level %class - %msg%n" /&gt;
-    &lt;/layout&gt;
-      &lt;param name="File"
-          value="sample-log.txt" /&gt;
-  &lt;/appender&gt;
+    class="ch.qos.logback.core.FileAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
+    &lt;/layout>
+    &lt;File>sample-log.txt&lt;/File>
+  &lt;/appender>
 <b>
   &lt;logger name="chapter1"&gt;
     &lt;level value="info" /&gt;
