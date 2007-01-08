@@ -2,19 +2,19 @@ package ch.qos.logback.classic.filter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.filter.AbstractMatcherFilter;
+import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * A class that filters events depending on their level.
  * 
- * One can specify a level and the behaviour of the filter when 
- * said level is encountered in a logging event.
+ * All events with a level equal or above the specified
+ * level will be accepted, while all events with a level
+ * under the specified level will be denied.
  *
- * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LevelFilter extends AbstractMatcherFilter {
+public class ThresholdFilter extends Filter {
 
   Level level;
   
@@ -26,10 +26,10 @@ public class LevelFilter extends AbstractMatcherFilter {
     
     LoggingEvent event = (LoggingEvent)eventObject;
     
-    if (event.getLevel().equals(level)) {
-      return onMatch;
+    if (event.getLevel().isGreaterOrEqual(level)) {
+      return FilterReply.ACCEPT;
     } else {
-      return onMismatch;
+      return FilterReply.DENY;
     }
   }
   
