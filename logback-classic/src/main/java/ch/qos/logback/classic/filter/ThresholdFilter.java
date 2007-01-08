@@ -8,9 +8,11 @@ import ch.qos.logback.core.spi.FilterReply;
 /**
  * A class that filters events depending on their level.
  * 
- * All events with a level equal or above the specified
- * level will be accepted, while all events with a level
- * under the specified level will be denied.
+ * All events with a level under or above the specified
+ * level will be denied, while all events with a level
+ * equal or above the specified level will trigger a
+ * FilterReply.NEUTRAL result, to allow the rest of the
+ * filter chain process the event.
  *
  * @author S&eacute;bastien Pennec
  */
@@ -27,7 +29,7 @@ public class ThresholdFilter extends Filter {
     LoggingEvent event = (LoggingEvent)eventObject;
     
     if (event.getLevel().isGreaterOrEqual(level)) {
-      return FilterReply.ACCEPT;
+      return FilterReply.NEUTRAL;
     } else {
       return FilterReply.DENY;
     }
