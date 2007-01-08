@@ -78,7 +78,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author S&eacute;bastien Pennec
  */
 public class LogbackValve extends ValveBase implements Context,
-    AppenderAttachable, FilterAttachable {
+    AppenderAttachable<AccessEvent>, FilterAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
@@ -93,7 +93,7 @@ public class LogbackValve extends ValveBase implements Context,
   Map<String, Object> objectMap = new HashMap<String, Object>();
   private FilterAttachableImpl fai = new FilterAttachableImpl();
 
-  AppenderAttachableImpl aai = new AppenderAttachableImpl();
+  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   String filename;
   boolean started;
 
@@ -148,7 +148,7 @@ public class LogbackValve extends ValveBase implements Context,
     started = false;
   }
 
-  public void addAppender(Appender newAppender) {
+  public void addAppender(Appender<AccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
@@ -156,7 +156,7 @@ public class LogbackValve extends ValveBase implements Context,
     return aai.iteratorForAppenders();
   }
 
-  public Appender getAppender(String name) {
+  public Appender<AccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 

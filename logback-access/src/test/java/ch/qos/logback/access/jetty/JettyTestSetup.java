@@ -22,6 +22,7 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.util.ByteArrayISO8859Writer;
 
 import ch.qos.logback.access.PatternLayout;
+import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.read.ListAppender;
 
@@ -81,12 +82,12 @@ public class JettyTestSetup extends TestSetup {
 
   private void buildContext() {
 
-    ListAppender appender = new ListAppender();
+    ListAppender<AccessEvent> appender = new ListAppender<AccessEvent>();
     appender.setContext(requestLogImpl);
     appender.setName("list");
     appender.start();
 
-    ConsoleAppender console = new ConsoleAppender();
+    ConsoleAppender<AccessEvent> console = new ConsoleAppender<AccessEvent>();
     console.setContext(requestLogImpl);
     console.setName("console");
     PatternLayout layout = new PatternLayout();

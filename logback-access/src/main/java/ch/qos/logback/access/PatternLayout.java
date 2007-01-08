@@ -51,7 +51,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class PatternLayout extends PatternLayoutBase implements AccessLayout {
+public class PatternLayout extends PatternLayoutBase<AccessEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
@@ -155,10 +155,6 @@ public class PatternLayout extends PatternLayoutBase implements AccessLayout {
       return null;
     }
     return writeLoopOnConverters(event);
-  }
-
-  public String doLayout(Object o) {
-    return doLayout((AccessEvent) o);
   }
 
   @Override

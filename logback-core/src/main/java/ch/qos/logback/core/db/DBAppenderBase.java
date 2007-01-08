@@ -27,7 +27,7 @@ import ch.qos.logback.core.db.dialect.SQLDialect;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public abstract class DBAppenderBase extends AppenderBase {
+public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
   protected ConnectionSource connectionSource;
   protected boolean cnxSupportsGetGeneratedKeys = false;
@@ -78,7 +78,7 @@ public abstract class DBAppenderBase extends AppenderBase {
   }
 
   @Override
-  public void append(Object eventObject) {
+  public void append(E eventObject) {
     Connection connection = null;
     try {
       connection = connectionSource.getConnection();

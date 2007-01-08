@@ -34,7 +34,7 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public class DBAppender extends DBAppenderBase {
+public class DBAppender extends DBAppenderBase<LoggingEvent> {
   protected final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
   protected final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
   protected static final String insertSQL;

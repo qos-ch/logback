@@ -28,7 +28,7 @@ import ch.qos.logback.core.net.SocketAppenderBase;
  * 
  */
 
-public class SocketAppender extends SocketAppenderBase {
+public class SocketAppender extends SocketAppenderBase<AccessEvent> {
   
   public SocketAppender() {
   }
@@ -52,7 +52,7 @@ public class SocketAppender extends SocketAppenderBase {
   }
   
   @Override
-  protected void postProcessEvent(Object event) {
+  protected void postProcessEvent(AccessEvent event) {
     AccessEvent ae = (AccessEvent)event;
     ae.prepareForDeferredProcessing();
   }

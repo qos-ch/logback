@@ -12,10 +12,8 @@ package ch.qos.logback.access.html;
 
 import java.util.Map;
 
-import ch.qos.logback.access.AccessLayout;
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.html.NOPThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
@@ -35,7 +33,7 @@ import ch.qos.logback.core.pattern.Converter;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class HTMLLayout extends HTMLLayoutBase implements AccessLayout {
+public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
 
   /**
    * Default pattern string for log output.
@@ -55,10 +53,6 @@ public class HTMLLayout extends HTMLLayoutBase implements AccessLayout {
   @Override
   protected Map<String, String> getDefaultConverterMap() {
     return PatternLayout.defaultConverterMap;
-  }
-
-  public String doLayout(Object event) {
-    return doLayout((AccessEvent) event);
   }
 
   public String doLayout(AccessEvent event) {

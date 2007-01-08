@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>janino</groupId>
 			<artifactId>janino</artifactId>
-			<scope>provided</scope>
+			<version>2.4.3</version>
 		</dependency>
 		
 		<dependency>

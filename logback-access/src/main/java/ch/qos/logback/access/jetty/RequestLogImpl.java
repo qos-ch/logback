@@ -109,12 +109,12 @@ import ch.qos.logback.core.status.WarnStatus;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-    AppenderAttachable, FilterAttachable {
+    AppenderAttachable<AccessEvent>, FilterAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
       + "logback-access.xml";
 
-  AppenderAttachableImpl aai = new AppenderAttachableImpl();
+  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   FilterAttachableImpl fai = new FilterAttachableImpl();
   String filename;
   boolean started = false;
@@ -207,7 +207,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return false;
   }
 
-  public void addAppender(Appender newAppender) {
+  public void addAppender(Appender<AccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
@@ -215,7 +215,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return aai.iteratorForAppenders();
   }
 
-  public Appender getAppender(String name) {
+  public Appender<AccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 

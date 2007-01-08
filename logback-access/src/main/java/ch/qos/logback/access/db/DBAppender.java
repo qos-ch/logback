@@ -30,7 +30,7 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public class DBAppender extends DBAppenderBase {
+public class DBAppender extends DBAppenderBase<AccessEvent> {
   protected static final String insertSQL;
   protected final String insertHeaderSQL = "INSERT INTO  access_event_header (event_id, header_key, header_value) VALUES (?, ?, ?)";
   protected static final Method GET_GENERATED_KEYS_METHOD; 
