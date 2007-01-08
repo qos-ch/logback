@@ -69,14 +69,14 @@ sweet water reserve.
 <h2>Configuration in logback</h2>
 
 <p>
-Logback can be configured both programmatically and thanks to an xml configuration
+Logback can be configured both programmatically and with an xml configuration
 file. Here are the steps that logback follows to try to configure itself:
 </p>
 
 <ul>
 	<p>Logback tries to find a file called <em>logback.xml</em> within the classpath.</p>
 	<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
-	<p>In case none of these files are found, logback configures itself automatically thanks to the 
+	<p>In case none of these files are found, logback configures itself automatically using the 
 	<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
 	</a> class.</p>
 </ul>
@@ -955,7 +955,7 @@ be used, as shown below:
 
 <p>As we've seen, logback relies on Joran, a
 mature, flexible and powerful configuration framework. Many of the
-capabilities offered by logback modules are possible thanks to Joran.
+capabilities offered by logback modules are possible with the help of Joran.
 </p>
 
 <p>Joran is actually a generic configuration system which can be used

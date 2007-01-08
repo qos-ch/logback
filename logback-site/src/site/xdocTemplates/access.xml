@@ -319,7 +319,7 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 <div class="source"><pre>jconsole &amp;</pre></div>
 
 		<p>
-			The user might prefer to access her components thanks to a web-based solution using MX4J. 
+			The user might prefer to access her components via a web-based solution using MX4J. 
 			In that case, here are the required steps:
 		</p>
 		

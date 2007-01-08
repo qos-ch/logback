@@ -75,7 +75,7 @@ again: <em>mvn jetty:run</em>.
 </p>
 
 <p>
-Now, the <em>View logs</em> page looks prettier. Thanks to the <code>CyclicBufferAppender</code>,
+Now, the <em>View logs</em> page looks prettier. By virtue of the <code>CyclicBufferAppender</code>,
 this page can fetch the last events and present them through a servlet.
 </p>
 

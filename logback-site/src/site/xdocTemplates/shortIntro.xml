@@ -171,10 +171,10 @@ public class HelloWorld1 {
 
 		<p>
 			Launching the <code>HelloWorld1</code>
-			application will produce a very simple output. This it thanks
-			to logback's default configuration policy. When nothing is found to
-			configure logback explicitly, logback will configure itself with
-			a simple output to the console, as shown below.
+			application will output a single line on the console. By virtue of
+			to logback's default configuration policy, when no default file 
+			is found to configure logback explicitely, logback will add a 
+			<code>ConsoleAppender</code> to the root logger.
 		</p>
 
 <div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</pre></div>
