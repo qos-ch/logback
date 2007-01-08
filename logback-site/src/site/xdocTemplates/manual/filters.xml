@@ -184,17 +184,16 @@ public class SampleFilter extends Filter {
 		<h3>Logback Filters</h3>
 		
 		<p>
-			As the moment, there is one filter that ships with 
-			logback. This is the most commonly used filter: 
+			As the moment, there are two filters that ship with logback.
 			<a href="../xref/ch/qos/logback/classic/LevelFilter.html">
-			<code>LevelFilter</code></a>.
-			It provides event filtering based on a <code>Level</code> value. It the event's
-			level is equal or higher than the configured level, the filter accepts of denies
-			the event, depending on its configuration. Here is a sample configuration that
+			<code>LevelFilter</code></a> provides event filtering based on a <code>Level</code> value. 
+			It the event's level is equal to the configured level, the filter accepts of denies
+			the event, depending on its configuration. It allows you to choose the
+			behaviour of logback for a precise given level. Here is a sample configuration that
 			uses <code>LevelFilter</code>.
 		</p>
 		
-<em>Example 6.3: SampleFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
+<em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -202,6 +201,34 @@ public class SampleFilter extends Filter {
       &lt;level>INFO&lt;/level>
       &lt;onMatch>ACCEPT&lt;/onMatch>
       &lt;onMismatch>DENY&lt;/onMismatch>
+    &lt;/filter></b>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;pattern>
+        %-4relative [%thread] %-5level %logger{30} - %msg%n
+      &lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+  &lt;root>
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+
+		<p>
+			The second filter that ships with logback is 
+			<a href="../xref/ch/qos/logback/classic/ThresholdFilter.html">
+			<code>ThresholdFilter</code></a>.
+			It is also based on level value, but acts as a threshold to deny any request
+			whose level is not equal or greater to the configured level. A sample
+			use of the <code>ThresholdFilter</code> is shown below.
+		</p>
+
+<em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/ThresholdFilterConfig.xml)</em>				
+<div class="source"><pre>&lt;configuration>
+  &lt;appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      &lt;level>INFO&lt;/level>
     &lt;/filter></b>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;pattern>
@@ -247,17 +274,17 @@ public class SampleFilter extends Filter {
     	Let's see a sample configuration.
     </p>
     
-<em>Example 6.4: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+<em>Example 6.5: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator name="myEval">
-        &lt;expression>message.contains("important")&lt;/expression>
+        &lt;expression>message.contains("billing")&lt;/expression>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+      &lt;OnMatch>DENY&lt;/OnMatch>
     &lt;/filter></b>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;pattern>
@@ -371,6 +398,68 @@ public class SampleFilter extends Filter {
 			evaluate this logging event.
 		</p>
 		
+		<p>
+			Let us see an example of <code>EvaluatorFilter</code>. The <code>FilterEvents</code>
+			class issues ten logging requests, numbered from 0 to 9.
+		</p>
+		
+		<p>
+			First, let us run the <code>FilterEvents</code> class with a configuration that does
+			not contain any filters. This can be done by issuing the following command:
+		</p>
+		
+<div class="source"><pre>
+java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
+</pre></div>
+		
+		<p>
+			All requests will be displayed, as shown below:
+		</p>
+
+<div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
+0    [main] INFO  chapter6.FilterEvents - logging statement 1
+0    [main] INFO  chapter6.FilterEvents - logging statement 2
+0    [main] DEBUG chapter6.FilterEvents - logging statement 3
+0    [main] INFO  chapter6.FilterEvents - logging statement 4
+0    [main] INFO  chapter6.FilterEvents - logging statement 5
+0    [main] ERROR chapter6.FilterEvents - <b>billing statement 6</b>
+0    [main] INFO  chapter6.FilterEvents - logging statement 7
+0    [main] INFO  chapter6.FilterEvents - logging statement 8
+0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
+
+		<p>
+		Suppose that we want to get rid of the billing information. We
+		can use an <code>EvaluatorFilter</code> configured as follows:
+		</p>
+
+<div class="source"><pre>&lt;configuration>
+  ...
+  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+    &lt;evaluator name="myEval">
+      &lt;expression>message.contains("billing")&lt;/expression>
+    &lt;/evaluator>
+    &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+    &lt;OnMatch>DENY&lt;/OnMatch>
+  &lt;/filter>
+  ...
+&lt;/configuration></pre></div>
+
+		<p>
+			This filter will deny any logging event whose message
+			contains the String <em>billing</em>. If we run the <code>FilterEvents</code> 
+			class again, we obtain the following output:
+		</p>
+		
+<div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
+0    [main] INFO  chapter6.FilterEvents - logging statement 1
+0    [main] INFO  chapter6.FilterEvents - logging statement 2
+0    [main] DEBUG chapter6.FilterEvents - logging statement 3
+0    [main] INFO  chapter6.FilterEvents - logging statement 4
+0    [main] INFO  chapter6.FilterEvents - logging statement 5
+0    [main] INFO  chapter6.FilterEvents - logging statement 7
+0    [main] INFO  chapter6.FilterEvents - logging statement 8
+0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
+		
 		
 		<a name="TurboFilter" />
 		<h3>TurboFilters</h3>
@@ -412,7 +501,7 @@ public class SampleFilter extends Filter {
       create a slightly more complex filter:
     </p>
     
-<em>Example 6.5: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
+<em>Example 6.6: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
 <div class="source"><pre>package chapter6;
 
 import org.slf4j.Marker;
@@ -478,7 +567,7 @@ public class SampleTurboFilter extends TurboFilter {
 			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
 		</p>
 		
-<em>Example 6.6: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<em>Example 6.7: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
 <div class="source"><pre>&lt;configuration>
   <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
@@ -512,7 +601,7 @@ public class SampleTurboFilter extends TurboFilter {
    		<code>MarkerFilter</code>.
    	</p>
    	
-<em>Example 6.7: <code>MDCFilter</code> and <code>MarkerFilter</code> 
+<em>Example 6.8: <code>MDCFilter</code> and <code>MarkerFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
@@ -548,7 +637,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 </pre></div>
 
 		<p>
-			The <code>FilterEvents</code> class creates 10 logging requests, 
+			As we've seen previously, the <code>FilterEvents</code> class creates 10 logging requests, 
 			each with its number from 0 to 9. All of the requests are of level <em>INFO</em>,
 			just like the configured overall level, except for two requests. 
 			The 3rd request, is a <em>DEBUG</em> level corresponding to the key <em>username</em>.
@@ -618,7 +707,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
     	Here is a sample configuration that will ensure that any 404 error will be displayed:
     </p>
    	
-<em>Example 6.8: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
+<em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -646,7 +735,7 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 			would look like:
 		</p>	
 
-<em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
+<em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"

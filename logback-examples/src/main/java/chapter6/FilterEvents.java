@@ -13,6 +13,11 @@ import ch.qos.logback.core.joran.spi.JoranException;
 public class FilterEvents {
 
   public static void main(String[] args) throws InterruptedException {
+    if (args.length == 0) {
+      System.out.println("A configuration file must be passed as a parameter.");
+      return;
+    }
+    
     Logger logger = (Logger) LoggerFactory.getLogger(FilterEvents.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -32,12 +37,10 @@ public class FilterEvents {
         MDC.remove("username");
       } else if (i == 6) {
         Marker billing = MarkerFactory.getMarker("billing");
-        logger.error(billing, "logging statement " + i);
+        logger.error(billing, "billing statement " + i);
       } else {
         logger.info("logging statement " + i);
       }
     }
-
-    //StatusPrinter.print(lc.getStatusManager());
   }
 }
