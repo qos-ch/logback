@@ -8,7 +8,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.Constants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertyActionTest extends TestCase {
 
@@ -79,7 +78,6 @@ public class PropertyActionTest extends TestCase {
   public void testLoadNotPossible() {
     atts.setValue("file", "toto");
     spAction.begin(ec, null, atts);
-    StatusPrinter.print(context);
     assertEquals(2, context.getStatusManager().getCount());
     assertTrue(checkFileErrors());
   }

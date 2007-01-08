@@ -50,7 +50,8 @@ public abstract class DBAppenderTestBase extends TestCase {
       e.printStackTrace();
       System.out.println(this + ".setUp() error: " + e.getMessage());
     }
-
+    Thread.yield();
+    
     createTables();
   }
 

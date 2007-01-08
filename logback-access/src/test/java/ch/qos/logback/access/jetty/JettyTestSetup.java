@@ -66,6 +66,8 @@ public class JettyTestSetup extends TestSetup {
     context.addHandler(handler);
 
     server.start();
+    
+    Thread.yield();
   }
 
   public void tearDown() throws Exception {
