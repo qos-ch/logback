@@ -6,6 +6,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -38,7 +39,7 @@ public class SMTPAppenderTestApp {
     StatusPrinter.print(lc.getStatusManager());
   }
 
-  private static Layout buildLayout(LoggerContext lc) {
+  private static Layout<LoggingEvent> buildLayout(LoggerContext lc) {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader("Some header\n");

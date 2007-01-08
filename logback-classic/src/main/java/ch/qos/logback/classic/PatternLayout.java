@@ -45,7 +45,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * 
  */
 
-public class PatternLayout extends PatternLayoutBase implements ClassicLayout {
+public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
 
   // FIXME fix exception handling
 
@@ -160,10 +160,6 @@ public class PatternLayout extends PatternLayoutBase implements ClassicLayout {
       return CoreGlobal.EMPTY_STRING;
     }
     return writeLoopOnConverters(event);
-  }
-
-  public String doLayout(Object event) {
-    return doLayout((LoggingEvent) event);
   }
 
 }

@@ -28,14 +28,14 @@ import ch.qos.logback.core.net.SyslogWriter;
  * 
  * @author Ceki G&uumllc&uuml;
  */
-public class SyslogAppender extends SyslogAppenderBase {
+public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
 
   String prefixPattern;
   PatternLayout prefixLayout;
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
 
-  public Layout buildLayout(String facilityStr) {
+  public Layout<LoggingEvent> buildLayout(String facilityStr) {
 
     prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
     prefixLayout = new PatternLayout();

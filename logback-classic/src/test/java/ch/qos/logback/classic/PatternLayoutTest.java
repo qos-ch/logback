@@ -47,7 +47,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
         .getName(), logger, Level.INFO, "Some message", ex, null);
   }
 
-  public Object getEventObject() {
+  @Override
+  public LoggingEvent getEventObject() {
     return makeLoggingEvent(null);
   }
   

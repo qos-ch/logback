@@ -53,7 +53,7 @@ public class HLogger extends MarkerIgnoringBase {
   /**
    * Array of appenders.
    */
-  private ArrayList appenderList;
+  private ArrayList<Appender<LoggingEvent>> appenderList;
 
   /**
    * Additivity is set to true by default, that is children inherit the
@@ -155,7 +155,7 @@ public class HLogger extends MarkerIgnoringBase {
     if (appenderList != null) {
       int len = appenderList.size();
       for (int i = 0; i < len; i++) {
-        Appender a = (Appender) appenderList.get(i);
+        Appender a = appenderList.get(i);
         a.stop();
       }
       appenderList.clear();
@@ -195,12 +195,12 @@ public class HLogger extends MarkerIgnoringBase {
 
   private int appendLoopOnAppenders(LoggingEvent event) {
     int size = 0;
-    Appender appender;
+    Appender<LoggingEvent> appender;
 
     if (appenderList != null) {
       size = appenderList.size();
       for (int i = 0; i < size; i++) {
-        appender = (Appender) appenderList.get(i);
+        appender = appenderList.get(i);
         appender.doAppend(event);
       }
     }

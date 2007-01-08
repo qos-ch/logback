@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -20,7 +21,7 @@ public class BasicLoggerTest extends TestCase {
 
   public void testBasic() {
     LoggerContext lc = new LoggerContext();
-    ListAppender listAppender = new ListAppender();
+    ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
     listAppender.start();
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.addAppender(listAppender);
@@ -32,7 +33,7 @@ public class BasicLoggerTest extends TestCase {
 
   public void testNoStart() {
     LoggerContext lc = new LoggerContext();
-    ListAppender listAppender = new ListAppender();
+    ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
     // listAppender.start();
     listAppender.setContext(lc);
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -44,7 +45,7 @@ public class BasicLoggerTest extends TestCase {
 
   public void testAdditive() {
     LoggerContext lc = new LoggerContext();
-    ListAppender listAppender = new ListAppender();
+    ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
     listAppender.start();
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.addAppender(listAppender);
@@ -68,7 +69,7 @@ public class BasicLoggerTest extends TestCase {
   
   public void testBasicFiltering() throws Exception {
     LoggerContext lc = new LoggerContext();
-    ListAppender listAppender = new ListAppender();
+    ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
     listAppender.start();
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.addAppender(listAppender);

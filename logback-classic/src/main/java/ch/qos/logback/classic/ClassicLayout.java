@@ -4,7 +4,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
 
 
-public interface ClassicLayout extends Layout {
+public interface ClassicLayout extends Layout<LoggingEvent> {
 
   /**
    * Transform an event of type {@link LoggingEvent) and return it as a String after

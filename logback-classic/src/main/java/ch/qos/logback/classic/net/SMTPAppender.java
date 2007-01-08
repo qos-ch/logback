@@ -29,13 +29,13 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * @author S&eacute;bastien Pennec
  * 
  */
-public class SMTPAppender extends SMTPAppenderBase {
+public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
 
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m %nopex";
   static final String DEFAULT_EVALUATOR_EXPRESSION = "level >= ERROR";
   
   private int bufferSize = 512;
-  protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
+  protected CyclicBuffer<LoggingEvent> cb = new CyclicBuffer<LoggingEvent>(bufferSize);
 
   /**
    * The default constructor will instantiate the appender with a
@@ -70,9 +70,7 @@ public class SMTPAppender extends SMTPAppenderBase {
    * Perform SMTPAppender specific appending actions, mainly adding the event to
    * a cyclic buffer.
    */
-  protected void subAppend(Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
-
+  protected void subAppend(LoggingEvent event) {
     event.getThreadName();
     cb.add(event);
     // addInfo("Added event to the cyclic buffer: " + event.getMessage());
@@ -83,7 +81,7 @@ public class SMTPAppender extends SMTPAppenderBase {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
       // sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
-      Object event = cb.get();
+      LoggingEvent event = cb.get();
       sbuf.append(layout.doLayout(event));
     }
   }
@@ -108,7 +106,7 @@ public class SMTPAppender extends SMTPAppenderBase {
   }
 
   @Override
-  protected Layout makeSubjectLayout(String subjectStr) {
+  protected Layout<LoggingEvent> makeSubjectLayout(String subjectStr) {
     if(subjectStr == null) {
       subjectStr = DEFAULT_SUBJECT_PATTERN;
     }

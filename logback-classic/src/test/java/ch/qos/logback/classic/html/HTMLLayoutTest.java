@@ -33,7 +33,7 @@ public class HTMLLayoutTest extends TestCase {
     lc = new LoggerContext();
     lc.setName("default");
 
-    ListAppender appender = new ListAppender();
+    ListAppender<LoggingEvent> appender = new ListAppender<LoggingEvent>();
     appender.setContext(lc);
     layout = new HTMLLayout();
     layout.setThrowableRenderer(new DefaultThrowableRenderer());

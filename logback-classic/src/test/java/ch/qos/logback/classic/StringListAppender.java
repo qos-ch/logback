@@ -7,9 +7,9 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
-public class StringListAppender extends AppenderBase {
+public class StringListAppender extends AppenderBase<LoggingEvent> {
 
-  Layout layout;
+  Layout<LoggingEvent> layout;
   public List<String> strList = new ArrayList<String>();
 
   public void start() {
@@ -26,17 +26,17 @@ public class StringListAppender extends AppenderBase {
   }
 
   @Override
-  protected void append(Object eventObject) {
+  protected void append(LoggingEvent eventObject) {
     LoggingEvent le = (LoggingEvent) eventObject;
     String res = layout.doLayout(le);
     strList.add(res);
   }
 
-  public Layout getLayout() {
+  public Layout<LoggingEvent> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<LoggingEvent> layout) {
     this.layout = layout;
 
   }

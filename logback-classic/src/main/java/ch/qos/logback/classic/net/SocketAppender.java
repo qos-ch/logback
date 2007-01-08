@@ -27,7 +27,7 @@ import ch.qos.logback.core.net.SocketAppenderBase;
  * @author S&eacute;bastien Pennec
  */
 
-public class SocketAppender extends SocketAppenderBase {
+public class SocketAppender extends SocketAppenderBase<LoggingEvent> {
 
   boolean includeCallerData = false;
   
@@ -53,7 +53,7 @@ public class SocketAppender extends SocketAppenderBase {
   }
   
   @Override
-  protected void postProcessEvent(Object event) {
+  protected void postProcessEvent(LoggingEvent event) {
   if (includeCallerData) {
       ((LoggingEvent) event).getCallerData();
     } 

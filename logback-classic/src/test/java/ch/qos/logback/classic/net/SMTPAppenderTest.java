@@ -86,7 +86,7 @@ public class SMTPAppenderTest extends TestCase {
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
 
-  private static Layout buildLayout(LoggerContext lc) {
+  private static Layout<LoggingEvent> buildLayout(LoggerContext lc) {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader("Some header\n");

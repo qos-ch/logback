@@ -25,7 +25,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
-public final class Logger implements org.slf4j.Logger, AppenderAttachable,
+public final class Logger implements org.slf4j.Logger, AppenderAttachable<LoggingEvent>,
     Serializable {
 
   /**
@@ -65,7 +65,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
    */
   private List<Logger> childrenList;
 
-  private transient AppenderAttachableImpl aai;
+  private transient AppenderAttachableImpl<LoggingEvent> aai;
   /**
    * Additivity is set to true by default, that is children inherit the
    * appenders of their ancestors by default. If this variable is set to
@@ -221,9 +221,9 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     return aai.detachAppender(name);
   }
 
-  public synchronized void addAppender(Appender newAppender) {
+  public synchronized void addAppender(Appender<LoggingEvent> newAppender) {
     if (aai == null) {
-      aai = new AppenderAttachableImpl();
+      aai = new AppenderAttachableImpl<LoggingEvent>();
     }
     aai.addAppender(newAppender);
   }
@@ -242,9 +242,9 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable,
     return aai.iteratorForAppenders();
   }
 
-  public Appender getAppender(String name) {
+  public Appender<LoggingEvent> getAppender(String name) {
     if (aai == null) {
-      aai = new AppenderAttachableImpl();
+      return null;
     }
     return aai.getAppender(name);
   }

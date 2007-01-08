@@ -33,8 +33,8 @@ import ch.qos.logback.core.pattern.Converter;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class HTMLLayout extends HTMLLayoutBase implements ClassicLayout {
-
+public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> implements ClassicLayout {
+  
   /**
    * Default pattern string for log output.
    */
@@ -53,10 +53,6 @@ public class HTMLLayout extends HTMLLayoutBase implements ClassicLayout {
   
   protected Map<String, String> getDefaultConverterMap() {
     return PatternLayout.defaultConverterMap;
-  }
-
-  public String doLayout(Object event) {
-    return doLayout((LoggingEvent) event);
   }
 
   public String doLayout(LoggingEvent event) {
