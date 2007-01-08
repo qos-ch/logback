@@ -27,9 +27,12 @@ public class Configurator extends ContextAwareBase implements
 
   public void reload(String fileName) throws JoranException {
     LoggerContext lc = (LoggerContext) context;
+    addInfo("Shutting down context: " + lc.getName());
+    lc.shutdownAndReset();
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
     configurator.doConfigure(fileName);
+    addInfo("Context: " + lc.getName() + " reloaded.");
   }
 
   public void reload(URL url) throws JoranException {
@@ -41,7 +44,18 @@ public class Configurator extends ContextAwareBase implements
   }
 
   public void setLoggerLevel(String loggerName, String levelStr) {
+    if (loggerName == null) {
+      return;
+    }
+    if (levelStr == null) {
+      return;
+    }
+    loggerName = loggerName.trim();
+    levelStr = levelStr.trim();
+    
+    addInfo("Trying to set level " + levelStr + " to logger " + loggerName);
     LoggerContext lc = (LoggerContext) context;
+    
     Logger logger = lc.getLogger(loggerName);
     if ("null".equalsIgnoreCase(levelStr)) {
       logger.setLevel(null);
