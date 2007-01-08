@@ -27,7 +27,7 @@ import ch.qos.logback.core.FileAppender;
  * @author Ceki G&uuml;lc&uuml;
  * @since  1.3
  * */
-public class RollingFileAppender extends FileAppender {
+public class RollingFileAppender<E> extends FileAppender<E> {
   File activeFileCache;
   TriggeringPolicy triggeringPolicy;
   RollingPolicy rollingPolicy;
@@ -109,7 +109,7 @@ public class RollingFileAppender extends FileAppender {
      This method differentiates RollingFileAppender from its super
      class.
   */
-  protected void subAppend(Object event) {
+  protected void subAppend(E event) {
     // The roll-over check must precede actual writing. This is the 
     // only correct behavior for time driven triggers. 
     if (triggeringPolicy.isTriggeringEvent(activeFileCache, event)) {

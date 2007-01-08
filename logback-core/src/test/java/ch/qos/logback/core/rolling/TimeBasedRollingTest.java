@@ -48,7 +48,7 @@ public class TimeBasedRollingTest extends TestCase {
 
   static final String DATE_PATTERN = "yyyy-MM-dd_HH_mm_ss";
 
-  EchoLayout layout = new EchoLayout();
+  EchoLayout<Object> layout = new EchoLayout<Object>();
   Context context = new  ContextBase();
   
   public TimeBasedRollingTest(String name) {
@@ -83,7 +83,7 @@ public class TimeBasedRollingTest extends TestCase {
    */
   public void test1() throws Exception {
 
-    RollingFileAppender rfa = new RollingFileAppender();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
 
@@ -130,7 +130,7 @@ public class TimeBasedRollingTest extends TestCase {
    * No compression, with stop/restart, file option left blank
    */
   public void test2() throws Exception {
-    RollingFileAppender rfa1 = new RollingFileAppender();
+    RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
     rfa1.setContext(context);
     rfa1.setLayout(layout);
 
@@ -165,7 +165,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     rfa1.stop();
 
-    RollingFileAppender rfa2 = new RollingFileAppender();
+    RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
     rfa2.setContext(context);
     rfa2.setLayout(layout);
 
@@ -193,7 +193,7 @@ public class TimeBasedRollingTest extends TestCase {
    * With compression, file option left blank, no stop/restart
    */
   public void test3() throws Exception {
-    RollingFileAppender rfa = new RollingFileAppender();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
 
@@ -245,7 +245,7 @@ public class TimeBasedRollingTest extends TestCase {
    * Without compression, file option set, with stop/restart
    */
   public void test4() throws Exception {
-    RollingFileAppender rfa1 = new RollingFileAppender();
+    RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
     rfa1.setContext(context);
     rfa1.setLayout(layout);
     rfa1.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
@@ -283,7 +283,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     rfa1.stop();
 
-    RollingFileAppender rfa2 = new RollingFileAppender();
+    RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
     rfa2.setContext(context);
     rfa2.setLayout(layout);
     rfa2.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
@@ -313,7 +313,7 @@ public class TimeBasedRollingTest extends TestCase {
    * No compression, file option set, without stop/restart
    */
   public void test5() throws Exception {
-    RollingFileAppender rfa = new RollingFileAppender();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test5.log");
@@ -360,7 +360,7 @@ public class TimeBasedRollingTest extends TestCase {
    * With compression, file option set, no stop/restart,
    */
   public void test6() throws Exception {
-    RollingFileAppender rfa = new RollingFileAppender();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test6.log");

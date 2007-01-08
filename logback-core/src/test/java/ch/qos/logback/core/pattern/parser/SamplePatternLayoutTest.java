@@ -22,8 +22,8 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
   }
   
 
-  public PatternLayoutBase getPatternLayoutBase() {
-    return new SamplePatternLayout();
+  public PatternLayoutBase<Object> getPatternLayoutBase() {
+    return new SamplePatternLayout<Object>();
   }
 
   public Object getEventObject() {
@@ -31,7 +31,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
   }
   
   public void testOK() {
-    PatternLayoutBase plb = getPatternLayoutBase();
+    PatternLayoutBase<Object> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
     plb.setPattern("x%OTT");

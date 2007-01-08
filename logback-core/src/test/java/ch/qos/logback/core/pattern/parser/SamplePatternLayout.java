@@ -18,7 +18,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 
 
-public class SamplePatternLayout extends PatternLayoutBase {
+public class SamplePatternLayout<E> extends PatternLayoutBase<E> {
 
   Map<String, String> converterMap = new HashMap<String, String>();
 
@@ -31,7 +31,7 @@ public class SamplePatternLayout extends PatternLayoutBase {
     return converterMap;
   }
 
-  public String doLayout(Object event) {
+  public String doLayout(E event) {
     return writeLoopOnConverters(event);
   }
 

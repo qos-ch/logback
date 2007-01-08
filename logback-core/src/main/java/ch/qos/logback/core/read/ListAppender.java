@@ -14,12 +14,11 @@ import java.util.List;
 
 import ch.qos.logback.core.AppenderBase;
 
-public class ListAppender extends AppenderBase {
+public class ListAppender<E> extends AppenderBase<E> {
 
-  public List list = new ArrayList();
+  public List<E> list = new ArrayList<E>();
   
-  @SuppressWarnings("unchecked")
-  protected void append(Object o) {
-    list.add(o);
+  protected void append(E e) {
+    list.add(e);
   }
 }

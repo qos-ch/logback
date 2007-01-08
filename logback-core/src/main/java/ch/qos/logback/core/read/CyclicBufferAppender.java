@@ -19,13 +19,13 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
  * 
  * @author Ceki Gulcu
  */
-public class CyclicBufferAppender extends AppenderBase {
+public class CyclicBufferAppender<E> extends AppenderBase<E> {
 
-  CyclicBuffer cb;
+  CyclicBuffer<E> cb;
   int maxSize = 512;
 
   public void start() {
-    cb = new CyclicBuffer(maxSize);
+    cb = new CyclicBuffer<E>(maxSize);
     super.start();
   }
 
@@ -35,7 +35,7 @@ public class CyclicBufferAppender extends AppenderBase {
   }
 
   @Override
-  protected void append(Object eventObject) {
+  protected void append(E eventObject) {
     if (!isStarted()) {
       return;
     }

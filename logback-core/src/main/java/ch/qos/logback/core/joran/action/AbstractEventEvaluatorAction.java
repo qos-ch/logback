@@ -100,6 +100,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the evaluator options.
    */
+  @SuppressWarnings("unchecked")
   public void end(InterpretationContext ec, String e) {
     if (inError) {
       return;
@@ -119,7 +120,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       ec.popObject();
 
       try {
-        Map<String, EventEvaluator> evaluatorMap = (Map) context.getObject(CoreGlobal.EVALUATOR_MAP);
+        Map<String, EventEvaluator> evaluatorMap = (Map<String, EventEvaluator>) context.getObject(CoreGlobal.EVALUATOR_MAP);
         evaluatorMap.put(evaluator.getName(), evaluator);
       } catch (Exception ex) {
         addError(

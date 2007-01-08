@@ -20,18 +20,18 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
-abstract public class AbstractPatternLayoutBaseTest extends TestCase {
+abstract public class AbstractPatternLayoutBaseTest<E> extends TestCase {
 
   public AbstractPatternLayoutBaseTest(String arg0) {
     super(arg0);
   }
 
-  abstract public PatternLayoutBase getPatternLayoutBase();
-  abstract public Object getEventObject();
+  abstract public PatternLayoutBase<E> getPatternLayoutBase();
+  abstract public E getEventObject();
   abstract public Context getContext();
-  
+   
   public void testUnStarted() {
-    PatternLayoutBase plb = getPatternLayoutBase();
+    PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
     String s = plb.doLayout(getEventObject());
@@ -46,7 +46,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
    * method is called before being started.
    */
   public void testConverterStart() {
-    PatternLayoutBase plb = getPatternLayoutBase();
+    PatternLayoutBase<E> plb = getPatternLayoutBase();
     plb.setContext(getContext());
     plb.getInstanceConverterMap().put("EX", ExceptionalConverter.class.getName());
     plb.setPattern("%EX");
@@ -57,7 +57,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
   }
 
   public void testStarted() {
-    PatternLayoutBase plb = getPatternLayoutBase();
+    PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
     String s = plb.doLayout(getEventObject());
@@ -68,7 +68,7 @@ abstract public class AbstractPatternLayoutBaseTest extends TestCase {
 
   public void testNullPattern() {
     //System.out.println("testNullPattern");
-    PatternLayoutBase plb = getPatternLayoutBase();
+    PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
     plb.start();

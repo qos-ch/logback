@@ -1,7 +1,7 @@
 /**
  * LOGBack: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 1999-2007, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,35 +20,28 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
-
-
-abstract public class AbstractLayoutAction extends Action {
-  Layout layout;
+abstract public class AbstractLayoutAction<E> extends Action {
+  Layout<E> layout;
   boolean inError = false;
 
   /**
    * Instantiates an layout of the given class and sets its name.
    *
    */
+  @SuppressWarnings("unchecked")
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     try {
-      layout = (Layout)
+      layout = (Layout<E>)
         OptionHelper.instantiateByClassName(
           className, ch.qos.logback.core.Layout.class, context);
       
-      if(isOfCorrectType(layout)) {
         layout.setContext(this.context);
         //getLogger().debug("Pushing layout on top of the object stack.");
         ec.pushObject(layout);        
-      } else {
-        inError = true;
-        addError("Layout of class ["+className+"] is not of the desired type");
-      }
-
     } catch (Exception oops) {
       inError = true;
       addError("Could not create layout of type " + className + "].", oops);
@@ -60,12 +53,13 @@ abstract public class AbstractLayoutAction extends Action {
    * @param layout
    * @return true if the layout is of the correct type
    */
-  abstract protected boolean isOfCorrectType(Layout layout);
+  //abstract protected boolean isOfCorrectType(Layout layout);
   
   /**
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
+  @SuppressWarnings("unchecked")
   public void end(InterpretationContext ec, String e) {
     if (inError) {
       return;
@@ -86,7 +80,7 @@ abstract public class AbstractLayoutAction extends Action {
       try {
         //getLogger().debug(
         //  "About to set the layout of the containing appender.");
-        Appender appender = (Appender) ec.peekObject();
+        Appender<E> appender = (Appender<E>) ec.peekObject();
         appender.setLayout(layout);
       } catch (Exception ex) {
         addError(

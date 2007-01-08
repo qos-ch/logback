@@ -27,16 +27,16 @@ public class DummyAppenderTest extends AbstractAppenderTest {
   }
   
   protected AppenderBase getConfiguredAppender() {
-    DummyAppender da = new DummyAppender(new StringWriter());
-    da.setLayout(new NopLayout());
+    DummyAppender<Object> da = new DummyAppender<Object>(new StringWriter());
+    da.setLayout(new NopLayout<Object>());
     da.start();
     return da;
   }
 
   public void testBasic() {
     StringWriter sw = new StringWriter();
-    DummyAppender da = new DummyAppender(sw);
-    da.setLayout(new DummyLayout());
+    DummyAppender<Object> da = new DummyAppender<Object>(sw);
+    da.setLayout(new DummyLayout<Object>());
     da.start();
     da.doAppend(new Object());
     assertEquals(DummyLayout.DUMMY, sw.getBuffer().toString());

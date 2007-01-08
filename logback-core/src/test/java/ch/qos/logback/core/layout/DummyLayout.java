@@ -11,11 +11,11 @@ package ch.qos.logback.core.layout;
 
 import ch.qos.logback.core.LayoutBase;
 
-public class DummyLayout extends LayoutBase {
+public class DummyLayout<E> extends LayoutBase<E> {
 
   public static final String DUMMY = "dummy"+LINE_SEP;
   
-  public String doLayout(Object event) {
+  public String doLayout(E event) {
     return DUMMY;
   }
 

@@ -13,7 +13,7 @@ import java.io.Writer;
 
 import ch.qos.logback.core.WriterAppender;
 
-public class DummyAppender extends WriterAppender {
+public class DummyAppender<E> extends WriterAppender<E> {
 
   
   DummyAppender(Writer writer) {

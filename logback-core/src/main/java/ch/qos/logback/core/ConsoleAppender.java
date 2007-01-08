@@ -24,7 +24,7 @@ import ch.qos.logback.core.status.WarnStatus;
  * @author Ceki G&uuml;lc&uuml;
  */
 
-public class ConsoleAppender extends WriterAppender {
+public class ConsoleAppender<E> extends WriterAppender<E> {
 
     public static final String SYSTEM_OUT = "System.out";
     public static final String SYSTEM_ERR = "System.err";

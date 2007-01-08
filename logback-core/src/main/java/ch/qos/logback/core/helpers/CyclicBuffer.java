@@ -21,9 +21,9 @@ package ch.qos.logback.core.helpers;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class CyclicBuffer {
+public class CyclicBuffer<E> {
 
-  Object[] ea;
+  E[] ea;
   int first;
   int last;
   int numElems;
@@ -37,13 +37,14 @@ public class CyclicBuffer {
    * @param maxSize
    *          The maximum number of elements in the buffer.
    */
+  @SuppressWarnings("unchecked")
   public CyclicBuffer(int maxSize) throws IllegalArgumentException {
     if (maxSize < 1) {
       throw new IllegalArgumentException("The maxSize argument (" + maxSize
           + ") is not a positive integer.");
     }
     this.maxSize = maxSize;
-    ea = new Object[maxSize];
+    ea = (E[]) new Object[maxSize];
     first = 0;
     last = 0;
     numElems = 0;
@@ -53,7 +54,7 @@ public class CyclicBuffer {
    * Add an <code>event</code> as the last event in the buffer.
    * 
    */
-  public void add(Object event) {
+  public void add(E event) {
     ea[last] = event;
     if (++last == maxSize)
       last = 0;
@@ -85,8 +86,8 @@ public class CyclicBuffer {
    * Get the oldest (first) element in the buffer. The oldest element is removed
    * from the buffer.
    */
-  public Object get() {
-    Object r = null;
+  public E get() {
+    E r = null;
     if (numElems > 0) {
       numElems--;
       r = ea[first];
@@ -111,6 +112,7 @@ public class CyclicBuffer {
    * @throws IllegalArgumentException
    *           if <code>newSize</code> is negative.
    */
+  @SuppressWarnings("unchecked")
   public void resize(int newSize) {
     if (newSize < 0) {
       throw new IllegalArgumentException("Negative array size [" + newSize
@@ -119,7 +121,8 @@ public class CyclicBuffer {
     if (newSize == numElems)
       return; // nothing to do
 
-    Object[] temp = new Object[newSize];
+    // 
+    E[] temp = (E[]) new Object[newSize];
 
     int loopLen = newSize < numElems ? newSize : numElems;
 

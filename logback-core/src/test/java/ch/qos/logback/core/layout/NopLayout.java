@@ -11,9 +11,9 @@ package ch.qos.logback.core.layout;
 
 import ch.qos.logback.core.LayoutBase;
 
-public class NopLayout extends LayoutBase {
+public class NopLayout<E> extends LayoutBase<E> {
   
-  public String doLayout(Object event) {
+  public String doLayout(E event) {
     return "";
   }
 }

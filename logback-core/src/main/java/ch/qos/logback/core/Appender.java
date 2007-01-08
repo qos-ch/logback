@@ -14,7 +14,7 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.LifeCycle;
   
 
-public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
+public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable {
 
   /**
    * Get the name of this appender. The name uniquely identifies the appender.
@@ -26,17 +26,17 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
    * is of type Object.
    * @param event
    */
-  void doAppend(Object event);
+  void doAppend(E event);
 
   /**
    * Set the {@link Layout} for this appender.
    */
-  public void setLayout(Layout layout);
+  public void setLayout(Layout<E> layout);
 
   /**
    * Returns this appenders layout.
    */
-  public Layout getLayout();
+  public Layout<E> getLayout();
 
   /**
    * Set the name of this appender. The name is used by other components to

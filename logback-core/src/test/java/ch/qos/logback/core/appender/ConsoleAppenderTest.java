@@ -23,7 +23,7 @@ import ch.qos.logback.core.layout.NopLayout;
 import ch.qos.logback.core.util.TeeOutputStream;
 
 
-public class ConsoleAppenderTest extends AbstractAppenderTest {
+public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   TeeOutputStream tee;
   PrintStream original;
@@ -52,28 +52,29 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
     System.setOut(original);
   }
 
-  protected AppenderBase getAppender() {
-    return new ConsoleAppender();
-  }
+  @Override
+  protected AppenderBase<Object> getAppender() {
+    return new ConsoleAppender<Object>();
+  } 
 
-  protected AppenderBase getConfiguredAppender() {
-    ConsoleAppender ca = new ConsoleAppender();
-    ca.setLayout(new NopLayout());
+  protected AppenderBase<Object> getConfiguredAppender() {
+    ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
+    ca.setLayout(new NopLayout<Object>());
     ca.start();
     return ca;
   }
 
   public void testBasic() {
-    ConsoleAppender ca = (ConsoleAppender) getAppender();
-    ca.setLayout(new DummyLayout());
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    ca.setLayout(new DummyLayout<Object>());
     ca.start();
     ca.doAppend(new Object());
     assertEquals(DummyLayout.DUMMY, tee.toString());
   }
   
   public void testOpen() {
-    ConsoleAppender ca = (ConsoleAppender) getAppender();
-    DummyLayout dummyLayout = new DummyLayout();
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
     dummyLayout.setFileHeader("open");
     ca.setLayout(dummyLayout);
     ca.start();
@@ -82,8 +83,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
     assertEquals("open"+Layout.LINE_SEP+DummyLayout.DUMMY, tee.toString());
   }
   public void testClose() {
-    ConsoleAppender ca = (ConsoleAppender) getAppender();
-    DummyLayout dummyLayout = new DummyLayout();
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
     dummyLayout.setFileFooter("closed");
     ca.setLayout(dummyLayout);
     ca.start();
@@ -96,8 +97,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
 
   
   public void testUTF16BE() throws UnsupportedEncodingException {
-    ConsoleAppender ca = (ConsoleAppender) getAppender();
-    ca.setLayout(new DummyLayout());
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    ca.setLayout(new DummyLayout<Object>());
     String encodingName = "UTF-16BE";
     ca.setEncoding(encodingName);
     ca.start();

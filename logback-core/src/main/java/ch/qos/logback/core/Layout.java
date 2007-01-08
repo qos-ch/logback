@@ -12,7 +12,7 @@ package ch.qos.logback.core;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
-public interface Layout extends ContextAware, LifeCycle {
+public interface Layout<E> extends ContextAware, LifeCycle {
   // Note that the line.separator property can be looked up even by applets.
   public static final String LINE_SEP = System.getProperty("line.separator");
   public static final int LINE_SEP_LEN = LINE_SEP.length();
@@ -28,7 +28,7 @@ public interface Layout extends ContextAware, LifeCycle {
    * @param event The event to format
    * @return the event formatted as a String
    */
-  String doLayout(Object event);
+  String doLayout(E event);
   
   /**
    * Return the file header for this layout. The returned value may be null.

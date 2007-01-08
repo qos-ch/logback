@@ -35,8 +35,8 @@ public class FileAppenderTest extends AbstractAppenderTest {
   }
 
   protected AppenderBase getConfiguredAppender() {
-    FileAppender appender = new FileAppender();
-    appender.setLayout(new NopLayout());
+    FileAppender<Object> appender = new FileAppender<Object>();
+    appender.setLayout(new NopLayout<Object>());
     appender.setFile("temp.log");
     appender.setName("temp.log");
     appender.setContext(new ContextBase());
@@ -45,8 +45,8 @@ public class FileAppenderTest extends AbstractAppenderTest {
   }
   
   public void test() {
-    FileAppender appender = new FileAppender();
-    appender.setLayout(new DummyLayout());
+    FileAppender<Object> appender = new FileAppender<Object>();
+    appender.setLayout(new DummyLayout<Object>());
     appender.setAppend(false);
     appender.setFile("temp.log");
     appender.setName("temp.log");

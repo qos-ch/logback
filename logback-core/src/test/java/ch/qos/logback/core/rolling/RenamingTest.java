@@ -32,7 +32,7 @@ import java.util.Calendar;
  */
 public class RenamingTest extends TestCase {
 
-  Layout layout;
+  Layout<Object> layout;
   Context context = new ContextBase();
 
   public RenamingTest(String arg0) {
@@ -41,7 +41,7 @@ public class RenamingTest extends TestCase {
 
   protected void setUp() throws Exception {
     super.setUp();
-    layout = new EchoLayout();
+    layout = new EchoLayout<Object>();
 
     File target = new File(Constants.TEST_DIR_PREFIX + "output/test.log");
     target.mkdirs();
@@ -54,7 +54,7 @@ public class RenamingTest extends TestCase {
 
   public void testRename() throws Exception {
 
-    RollingFileAppender rfa = new RollingFileAppender();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test.log");

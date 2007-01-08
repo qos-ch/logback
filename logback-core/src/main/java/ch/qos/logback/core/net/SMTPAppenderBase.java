@@ -39,10 +39,10 @@ import ch.qos.logback.core.boolex.EventEvaluator;
  * @author S&eacute;bastien Pennec
  * 
  */
-public abstract class SMTPAppenderBase extends AppenderBase {
+public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
-  protected Layout layout;
-  protected Layout subjectLayout;
+  protected Layout<E> layout;
+  protected Layout<E> subjectLayout;
 
   private List<String> to = new ArrayList<String>();
   private String from;
@@ -62,7 +62,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * 
    * @return a layout as appropriate for the module
    */
-  abstract protected Layout makeSubjectLayout(String subjectStr);
+  abstract protected Layout<E> makeSubjectLayout(String subjectStr);
 
   /**
    * Start the appender
@@ -99,7 +99,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
    * Perform SMTPAppender specific appending actions, delegating some of them to
    * a subclass and checking if the event triggers an e-mail to be sent.
    */
-  protected void append(Object eventObject) {
+  protected void append(E eventObject) {
 
     if (!checkEntryConditions()) {
       return;
@@ -116,7 +116,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     }
   }
 
-  abstract protected void subAppend(Object eventObject);
+  abstract protected void subAppend(E eventObject);
 
   /**
    * This method determines if there is a sense in attempting to append.
@@ -192,7 +192,7 @@ public abstract class SMTPAppenderBase extends AppenderBase {
   /**
    * Send the contents of the cyclic buffer as an e-mail message.
    */
-  protected void sendBuffer(Object lastEventObject) {
+  protected void sendBuffer(E lastEventObject) {
 
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
@@ -311,11 +311,11 @@ public abstract class SMTPAppenderBase extends AppenderBase {
     this.eventEvaluator = eventEvaluator;
   }
 
-  public Layout getLayout() {
+  public Layout<E> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }
 }

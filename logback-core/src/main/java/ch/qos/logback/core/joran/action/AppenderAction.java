@@ -22,7 +22,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 
 
-public class AppenderAction extends Action {
+public class AppenderAction<E> extends Action {
   Appender appender;
   private boolean inError = false;
 
@@ -31,6 +31,7 @@ public class AppenderAction extends Action {
    *
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
+  @SuppressWarnings("unchecked")
   public void begin(
     InterpretationContext ec, String localName, Attributes attributes) throws ActionException {
     String className = attributes.getValue(CLASS_ATTRIBUTE);

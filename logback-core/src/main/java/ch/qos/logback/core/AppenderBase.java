@@ -24,8 +24,8 @@ import ch.qos.logback.core.status.WarnStatus;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-abstract public class AppenderBase extends ContextAwareBase implements
-    Appender, FilterAttachable {
+abstract public class AppenderBase<E> extends ContextAwareBase implements
+    Appender<E>, FilterAttachable {
 
   protected boolean started = false;
 
@@ -52,7 +52,7 @@ abstract public class AppenderBase extends ContextAwareBase implements
   static final int ALLOWED_REPEATS = 5;
 
   
-  public synchronized void doAppend(Object eventObject) {
+  public synchronized void doAppend(E eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
 
@@ -89,7 +89,7 @@ abstract public class AppenderBase extends ContextAwareBase implements
     }
   }
 
-  abstract protected void append(Object eventObject);
+  abstract protected void append(E eventObject);
 
   /**
    * Set the name of this appender.
@@ -130,10 +130,10 @@ abstract public class AppenderBase extends ContextAwareBase implements
     return fai.getFilterChainDecision(event);
   }
   
-  public Layout getLayout() {
+  public Layout<E> getLayout() {
     return null;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<E> layout) {
   }
 }

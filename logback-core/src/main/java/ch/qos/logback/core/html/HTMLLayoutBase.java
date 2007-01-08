@@ -14,7 +14,7 @@ import ch.qos.logback.core.pattern.parser.ScanException;
  *
  * @author S&eacute;bastien Pennec
  */
-public abstract class HTMLLayoutBase extends LayoutBase {
+public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 
   protected String pattern;
 
@@ -81,7 +81,7 @@ public abstract class HTMLLayoutBase extends LayoutBase {
     }
 
     if (errorCount == 0) {
-      started = true;
+      super.started = true;
     }
   }
   

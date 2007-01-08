@@ -25,7 +25,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class WriterAppender extends AppenderBase {
+public class WriterAppender<E> extends AppenderBase<E> {
 
   /**
    * Immediate flush means that the underlying writer or output stream will be
@@ -58,7 +58,7 @@ public class WriterAppender extends AppenderBase {
    * The layout variable does not need to be set if the appender implementation
    * has its own layout.
    */
-  protected Layout layout;
+  protected Layout<E> layout;
 
   /**
    * The default constructor does nothing.
@@ -115,7 +115,8 @@ public class WriterAppender extends AppenderBase {
     }
   }
 
-  protected void append(Object eventObject) {
+  @Override
+  protected void append(E eventObject) {
     if (!isStarted()) {
       return;
     }
@@ -192,14 +193,14 @@ public class WriterAppender extends AppenderBase {
    * Set the layout for this appender. Note that some appenders have their own
    * (fixed) layouts or do not use any.
    */
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }
 
   /**
    * Returns the layout of this appender. The value may be null.
    */
-  public Layout getLayout() {
+  public Layout<E> getLayout() {
     return layout;
   }
 
@@ -275,7 +276,7 @@ public class WriterAppender extends AppenderBase {
    * 
    * @since 0.9.0
    */
-  protected void subAppend(Object event) {
+  protected void subAppend(E event) {
     if (!isStarted()) {
       return;
     }

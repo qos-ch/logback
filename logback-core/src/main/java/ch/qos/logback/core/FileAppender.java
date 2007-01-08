@@ -24,7 +24,7 @@ import ch.qos.logback.core.status.InfoStatus;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class FileAppender extends WriterAppender {
+public class FileAppender<E> extends WriterAppender<E> {
 
   /**
    * Append to or truncate the file? The default value for this variable is

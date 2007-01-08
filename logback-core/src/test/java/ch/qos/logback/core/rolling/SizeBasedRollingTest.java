@@ -67,8 +67,8 @@ public class SizeBasedRollingTest extends TestCase {
     // We purposefully use the \n as the line separator.
     // This makes the regression test system independent.
     Context context = new ContextBase();
-    Layout layout = new DummyLayout();
-    RollingFileAppender rfa = new RollingFileAppender();
+    Layout<Object> layout = new DummyLayout<Object>();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(new ContextBase());
 
@@ -98,8 +98,8 @@ public class SizeBasedRollingTest extends TestCase {
   public void test2() throws Exception {
     Context context = new ContextBase();
 
-    DummyLayout layout = new DummyLayout();
-    RollingFileAppender rfa = new RollingFileAppender();
+    DummyLayout<Object> layout = new DummyLayout<Object>();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setName("ROLLING");
     rfa.setLayout(layout);
     rfa.setContext(context);
@@ -172,8 +172,8 @@ public class SizeBasedRollingTest extends TestCase {
    */
   public void test3() throws Exception {
     Context context = new ContextBase();
-    DummyLayout layout = new DummyLayout();
-    RollingFileAppender rfa = new RollingFileAppender();
+    DummyLayout<Object> layout = new DummyLayout<Object>();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");

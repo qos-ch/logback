@@ -19,14 +19,14 @@ import ch.qos.logback.core.status.StatusChecker;
 
 
 
-abstract public class AbstractAppenderTest extends TestCase {
+abstract public class AbstractAppenderTest<E> extends TestCase {
   
   AbstractAppenderTest(String arg) {
     super(arg);
   }
   
-  abstract protected AppenderBase getAppender();
-  abstract protected AppenderBase getConfiguredAppender();
+  abstract protected AppenderBase<E> getAppender();
+  abstract protected AppenderBase<E> getConfiguredAppender();
 
   public void testNewAppender() {
     // new appenders should be inactive
@@ -45,11 +45,12 @@ abstract public class AbstractAppenderTest extends TestCase {
   }
   
   public void testNoStart() {
-    AppenderBase appender = getAppender();
+    AppenderBase<E> appender = getAppender();
     Context context = new ContextBase();
     appender.setContext(context);
     appender.setName("doh");
-    appender.doAppend(new Object());
+    // is null OK?
+    appender.doAppend(null);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
     //StatusPrinter.print(context.getStatusManager());
     assertTrue(checker.containsMatch("Attempted to append to non started appender \\[doh\\]."));

@@ -27,7 +27,7 @@ import ch.qos.logback.core.AppenderBase;
  * @author S&eacute;bastien Pennec
  */
 
-public abstract class SocketAppenderBase extends AppenderBase {
+public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * The default port number of remote logging server (4560).
@@ -143,7 +143,7 @@ public abstract class SocketAppenderBase extends AppenderBase {
   }
 
   @Override
-  protected void append(Object event) {
+  protected void append(E event) {
 
     if (event == null)
       return;
@@ -177,7 +177,7 @@ public abstract class SocketAppenderBase extends AppenderBase {
     }
   }
   
-  protected abstract void postProcessEvent(Object event);
+  protected abstract void postProcessEvent(E event);
 
   void fireConnector() {
     if (connector == null) {

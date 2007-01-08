@@ -7,9 +7,9 @@ import java.net.UnknownHostException;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
-public abstract class SyslogAppenderBase extends AppenderBase {
+public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
-  Layout layout;
+  Layout<E> layout;
   int facility;
   String facilityStr;
   String syslogHost;
@@ -45,12 +45,12 @@ public abstract class SyslogAppenderBase extends AppenderBase {
     }
   }
 
-  abstract public Layout buildLayout(String facilityStr);
+  abstract public Layout<E> buildLayout(String facilityStr);
 
   abstract public int getSeverityForEvent(Object eventObject);
 
   @Override
-  protected void append(Object eventObject) {
+  protected void append(E eventObject) {
     if (!isStarted()) {
       return;
     }
@@ -185,11 +185,11 @@ public abstract class SyslogAppenderBase extends AppenderBase {
   /**
    * You can override
    */
-  public Layout getLayout() {
+  public Layout<E> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }
 

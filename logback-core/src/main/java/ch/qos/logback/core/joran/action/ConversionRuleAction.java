@@ -28,6 +28,7 @@ public class ConversionRuleAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
+  @SuppressWarnings("unchecked")
   public void begin(InterpretationContext ec, String localName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;

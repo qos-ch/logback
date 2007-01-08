@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
 
 
-abstract public class PatternLayoutBase extends LayoutBase {
+abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   Converter head;
   String pattern;
@@ -42,6 +42,7 @@ abstract public class PatternLayoutBase extends LayoutBase {
    * Returns a map where the default converter map is merged with the map
    * contained in the context.
    */
+  @SuppressWarnings("unchecked")
   public Map<String, String> getEffectiveConverterMap() {
     
     Map<String, String> effectiveMap = new HashMap<String, String>();
@@ -108,7 +109,7 @@ abstract public class PatternLayoutBase extends LayoutBase {
     }
   }
 
-  protected String writeLoopOnConverters(Object event) {
+  protected String writeLoopOnConverters(E event) {
     StringBuffer buf = new StringBuffer(128);
     Converter c = head;
     while (c != null) {

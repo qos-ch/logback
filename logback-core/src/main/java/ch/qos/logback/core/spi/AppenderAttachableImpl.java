@@ -20,15 +20,15 @@ import ch.qos.logback.core.Appender;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class AppenderAttachableImpl implements AppenderAttachable {
+public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-  final private List<Appender> appenderList = new ArrayList<Appender>();
+  final private List<Appender<E>> appenderList = new ArrayList<Appender<E>>();
 
   /**
    * Attach an appender. If the appender is already in the list in won't be
    * added again.
    */
-  public void addAppender(Appender newAppender) {
+  public void addAppender(Appender<E> newAppender) {
     // Null values for newAppender parameter are strictly forbidden.
     if (newAppender == null) {
       throw new IllegalArgumentException("Cannot null as an appener");
@@ -41,14 +41,14 @@ public class AppenderAttachableImpl implements AppenderAttachable {
   /**
    * Call the <code>doAppend</code> method on all attached appenders.
    */
-  public int appendLoopOnAppenders(Object o) {
+  public int appendLoopOnAppenders(E e) {
     int size = 0;
-    Appender appender;
+    Appender<E> appender;
 
     size = appenderList.size();
     for (int i = 0; i < size; i++) {
-      appender = (Appender) appenderList.get(i);
-      appender.doAppend(o);
+      appender = (Appender<E>) appenderList.get(i);
+      appender.doAppend(e);
     }
     return size;
   }
@@ -70,16 +70,16 @@ public class AppenderAttachableImpl implements AppenderAttachable {
    * Return the appender with that name if in the list. Return null otherwise.
    * 
    */
-  public Appender getAppender(String name) {
+  public Appender<E> getAppender(String name) {
     if (name == null) {
       return null;
     }
 
     int size = appenderList.size();
-    Appender appender;
+    Appender<E> appender;
 
     for (int i = 0; i < size; i++) {
-      appender = (Appender) appenderList.get(i);
+      appender = appenderList.get(i);
 
       if (name.equals(appender.getName())) {
         return appender;

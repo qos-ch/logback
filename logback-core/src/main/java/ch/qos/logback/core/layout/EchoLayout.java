@@ -17,9 +17,9 @@ import ch.qos.logback.core.LayoutBase;
  * 
  * @author Ceki
  */
-public class EchoLayout extends LayoutBase {
+public class EchoLayout<E> extends LayoutBase<E> {
 
-  public String doLayout(Object event) {
+  public String doLayout(E event) {
     return event+Layout.LINE_SEP;
   }
 
