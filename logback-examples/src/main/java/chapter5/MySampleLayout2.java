@@ -4,7 +4,7 @@ import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
+public class MySampleLayout2 extends LayoutBase<LoggingEvent> implements ClassicLayout {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -37,9 +37,5 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
     sbuf.append(event.getFormattedMessage());
     sbuf.append(LINE_SEP);
     return sbuf.toString();
-  }
-
-  public String doLayout(Object event) {
-    return doLayout((LoggingEvent) event);
   }
 }

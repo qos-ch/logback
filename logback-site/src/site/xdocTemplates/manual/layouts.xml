@@ -118,7 +118,7 @@ import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout extends LayoutBase implements ClassicLayout {
+public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements ClassicLayout {
 
   public String doLayout(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
@@ -134,10 +134,6 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
     sbuf.append(LINE_SEP);
     return sbuf.toString();
   }
-  //method declared in ch.qos.logback.core.Layout interface
-  public String doLayout(Object event) {
-    return doLayout((LoggingEvent)event);
-  }
 }</pre></div>
 
 		<p>
@@ -148,15 +144,14 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
 			such as started or stopped status, header, footer and
 			content type access or logging context awareness. It allows
 			the developer to concentrate on the formatting she expects
-			from her <code>Layout</code>.
+			from her <code>Layout</code>. Note that the <code>LayoutBase</code>
+			class is generic. By extending it, we precise the type that it will
+			have to handle, by adding <em>&lt;LoggingEvent></em> after its declaration.
 		</p>
 		
 		<p><code>MySampleLayout</code> implements the <code>ClassicLayout</code>
 		interface, since it is intented to be used with the classic module.
-		Therefore, it offers a trivial implementation of the
-		<code>doLayout(Object event)</code> method, that only casts the event
-		to the right type and passes it to the method where the actual formatting
-		takes place.</p>
+		</p>
 		
 		<p>The marginally more interesting <code>doLayout(LoggingEvent event)</code> 
 		method begins by instantiating a StringBuffer. It proceeds by adding various 
@@ -203,10 +198,10 @@ public class MySampleLayout extends LayoutBase implements ClassicLayout {
 		See <em>src/main/java/chapter5/SampleLogging.java</em> for precise details.</p>
 		
 		<p>
-		To run this example, as well as others in this
-		chapter, please run the script provided in the <em>logback-examples</em> directory.
-		Executing the command <em>java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</em> 
-		once in the <em>logback-examples</em> directory will produce the following output:
+		To run this example execute the command 
+		<em>java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</em> 
+		once in the <em>logback-examples</em> directory. This will produce the following
+		output:
 		</p>
 		
 <div class="source"><pre>0 DEBUG [main] chapter5.SampleLogging - Everything's going well
@@ -235,7 +230,7 @@ import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
+public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> implements ClassicLayout {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -268,10 +263,6 @@ public class MySampleLayout2 extends LayoutBase implements ClassicLayout {
     sbuf.append(event.getFormattedMessage());
     sbuf.append(LINE_SEP);
     return sbuf.toString();
-  }
-
-  public String doLayout(Object event) {
-    return doLayout((LoggingEvent) event);
   }
 }</pre></div>
 
