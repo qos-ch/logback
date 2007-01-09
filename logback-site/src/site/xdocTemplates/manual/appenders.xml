@@ -67,18 +67,18 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.LifeCycle;
   
 
-public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
+public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachable {
 
   public String getName();
-  <b>void doAppend(Object event);</b>
-  public void setLayout(Layout layout);
-  public Layout getLayout();
+  <b>void doAppend(E event);</b>
+  public void setLayout(Layout&lt;E> layout);
+  public Layout&lt;E> getLayout();
   public void setName(String name);
   
 }</pre></div>
 
 	<p>
-		Most of the methods in the Appender interface are made of setter 
+		Most of the methods in the <code>Appender</code> interface are made of setter 
 		and getter methods. A notable exception is the <code>doAppend()</code> 
 		method taking an Object instance as its only parameter. 
 		This method is perhaps the most important in the logback framework. 
@@ -119,7 +119,7 @@ public interface Appender extends LifeCycle, ContextAware, FilterAttachable {
 		presenting a bit of its actual source code.
 	</p>
 	
-<div class="source"><pre>public synchronized void doAppend(Object eventObject) {
+<div class="source"><pre>public synchronized void doAppend(E eventObject) {
 
   // prevent re-entry.
   if (guard) {

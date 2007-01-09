@@ -62,13 +62,15 @@
 			layouts have nothing to do with large estates in Florida.
 			The
 			<code>format()</code>
-			method in the Layout class takes an object that represents
+			method in the 
+			<a href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a> 
+			interface takes an object that represents
 			an event (of any type) and returns a String. A synopsis of the
-			Layout interface is shown below.
+			<code>Layout</code> interface is shown below.
 		</p>
-		<div class="source"><pre>public interface Layout extends ContextAware, LifeCycle {
+		<div class="source"><pre>public interface Layout&lt;E> extends ContextAware, LifeCycle {
 
-  String doLayout(Object event);
+  String doLayout(E event);
   String getHeader();
   String getFooter();
   String getContentType();
@@ -85,11 +87,12 @@
 
 		<p>
 			Logback classic only processes events of type
-			<code>ch.qos.logback.classic.LoggingEvent</code>. 
+			<a href="../xref/ch/qos/logback/classic/spi/LoggingEvent.html">
+			<code>ch.qos.logback.classic.spi.LoggingEvent</code></a>. 
 			Therefore, logback classic module imposes that
 			all its layouts implement
-			the <code>ClassicLayout</code> interface that is
-			shown below.
+			the <a href="../xref/ch/qos/logback/classic/ClassicLayout.html"><code>ClassicLayout</code>
+			</a> interface that is shown below.
 		</p>
 
 		<div class="source"><pre>public interface ClassicLayout extends Layout {
@@ -111,7 +114,8 @@
 
 		<p>Here is a possible implementation, authored by the Texan developer:</p>
 		<em>Example 5.0: Sample implementation of a Layout
-			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</em>
+			<a href="../xref/chapter5/MySampleLayout.html">
+			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</a></em>
 		<div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.ClassicLayout;
@@ -139,7 +143,8 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements Class
 		<p>
 			Note that
 			<code>MySampleLayout</code>
-			extends <code>LayoutBase</code>. 
+			extends <a href="../xref/ch/qos/logback/core/LayoutBase.html">
+			<code>LayoutBase</code></a>. 
 			This class manages trivial components of a <code>Layout</code>
 			such as started or stopped status, header, footer and
 			content type access or logging context awareness. It allows
@@ -192,10 +197,10 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements Class
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>The sample application <code>chapter5.SampleLogging</code> configures logback with the 
+		<p>The sample application <a href="../xref/chapter5/SampleLogging.html">
+		<code>chapter5.SampleLogging</code></a> configures logback with the 
 		configuration script supplied as parameter and then logs a debug message, 
-		followed by an error message. 
-		See <em>src/main/java/chapter5/SampleLogging.java</em> for precise details.</p>
+		followed by an error message. </p>
 		
 		<p>
 		To run this example execute the command 
@@ -217,7 +222,8 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements Class
 		</p>
 		<p>
 			The
-			<code>MySampleLayout2</code>
+			<a href="../xref/chapter5/MySampleLayout2.html"><code>MySampleLayout2</code>
+			</a>
 			class contains two attributes. The first one is a prefix that
 			can be added to the output. The second attribute is used to
 			choose wether to display the name of the thread from which
@@ -298,11 +304,10 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> implements Clas
 
 		<p>
 			Logback classic ships with a flexible layout called
-			<code>PatternLayout</code>, which implements the 
+			<a href="../xref/ch/qos/logback/classic/PatternLayout.html">
+			<code>PatternLayout</code></a>, which implements the 
 			<code>ClassicLayout</code> interface. 
-			As all classic layouts,
-			<code>PatternLayout</code>
-			
+			As all classic layouts, <code>PatternLayout</code>	
 			takes a logging event and returns a String. However, the
 			returned String can be customized at will by tweaking its
 			conversion pattern.
@@ -326,7 +331,8 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> implements Clas
 		</p>
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
-			(logback-examples/src/main/java/chapter5/PatternSample.java)
+			<a href="../xref/chapter5/PatternSample.html">
+			(logback-examples/src/main/java/chapter5/PatternSample.java)</a>
 		</em>
 		<div class="source"><pre>package chapter5;
 
@@ -994,7 +1000,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			specifier is when
 			<code>PatternLayout</code>
 			is used with
-			<code>EventEvaluator</code> objects.
+			<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+			<code>EventEvaluator</code></a> objects.
 		</p>
 		<p>
 			<code>EventEvaluator</code> objects
@@ -1049,7 +1056,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>Let us test this configuration with the following code.</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)
+			<a href="../xref/chapter5/CallerEvaluatorExample.html">
+			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)</a>
 		</em>
 		<div class="source"><pre>package chapter5;
 
@@ -1096,7 +1104,7 @@ public class CallerEvaluatorExample {
 		</p>
 		<p>
 			Here is the output of the
-			<code>EventEvaluatorExample</code>
+			<code>CallerEvaluatorExample</code>
 			class.
 		</p>
 		<div class="source"><pre>0    [main] DEBUG - I know me 0 
@@ -1202,14 +1210,19 @@ public class ExceptionEvaluatorExample {
 		<p>In that case, two steps are needed.</p> 
 		
 		<p>First, one must implement her own <code>Converter</code>
-		class. <code>Converter</code> objects are responsible to extract a specific information out of
-		a <code>LoggingEvent</code>. When <em>%logger</em> is used, a <code>LoggerConverter</code>
+		class. <a href="../xref/ch/qos/logback/core/pattern/Converter.html">
+		<code>Converter</code></a> objects are responsible to extract a specific information out of
+		a <code>LoggingEvent</code>. When <em>%logger</em> is used, a 
+		<a href="../xref/ch/qos/logback/classic/pattern/LoggerConverter.html">
+		<code>LoggerConverter</code></a>
 		is called to extract the name of the logger from the <code>LoggingEvent</code>.</p>
 		
 		<p>Let us say that our customized <code>Converter</code> will output the level of the logging
 		event, colored following ANSI rules. Here is the necessary implementation:</p>
 		
-<em> Example 5.4: Sample Converter Example (src/main/java/chapter5/MySampleConverter.java)</em>
+<em> Example 5.4: Sample Converter Example 
+<a href="../xref/chapter5/MySampleConverter.html">
+(src/main/java/chapter5/MySampleConverter.java)</a></em>
 <div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.Level;
@@ -1282,13 +1295,16 @@ public class MySampleConverter extends ClassicConverter {
 		our custom conversion word had always been here.</p>
 		
 		<p>The intersted reader might want to take a look at other <code>Converter</code> implementations
-		like <code>MDCConverter</code> to learn how to implement more complex behaviours, involving
+		like 
+		<a href="../xref/ch/qos/logback/classic/pattern/MDCConverter.html">
+		<code>MDCConverter</code></a> to learn how to implement more complex behaviours, involving
 		the use of options, in her custom <code>Converter</code> objects.
 		</p>
 
 		<a name="ClassicHTMLLayout"/>
 		<h3>HTMLLayout</h3>
-		<p>HTMLLayout outputs events in an HTML table. Each row of the table corresponds to a
+		<p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
+		<code>HTMLLayout</code></a> outputs events in an HTML table. Each row of the table corresponds to a
 		logging event.</p>
 		
 		<p>Here is a sample of the output that can be obtained using <code>HTMLLayout</code>
@@ -1321,19 +1337,23 @@ public class MySampleConverter extends ClassicConverter {
 			a better solution is available in the form of
 			implementations of the <code>IThrowableRenderer</code> interface.
 			These implementations can be called and assigned to
-			HTMLLayout to manage the display of anything related to
+			<code>HTMLLayout</code> to manage the display of anything related to
 			Exceptions.
 		</p>
 		<p>
-			By default, a <code>DefaultThrowableRenderer</code> is
-			assigned to the HTMLLayout. It writes the Exception on a <em>new
+			By default, a 
+			<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
+			<code>DefaultThrowableRenderer</code></a> is
+			assigned to the <code>HTMLLayout</code>. It writes the Exception on a <em>new
 			table row</em>, along with its stacktrace, in a easily readable
 			manner, like presented in the picture above.
 		</p>
 		<p>
 			If one wants to use the
 			<em>%ex</em>
-			pattern anyway, then a <code>NOPThrowableRenderer</code> can be specified
+			pattern anyway, then a 
+			<a href="../xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">
+			<code>NOPThrowableRenderer</code></a> can be specified
 			in the configuration file.
 		</p>
 		<p>
@@ -1405,15 +1425,6 @@ public class MySampleConverter extends ClassicConverter {
 &lt;/configuration></pre></div>
 
 		<h2>Logback access</h2>
-		<p>Just like <code>ClassicLayout</code> restricts the possible <code>Layout</code> classes
-		for the classic module, the <code>AccessLayout</code> imposes a structure for <code>Layout</code> objects
-		in the access module. It is reproduced below.</p>
-		
-		<div class="source"><pre>public interface AccessLayout extends Layout {
-
-  String doLayout(AccessEvent event);
-
-}</pre></div>
 
 		<p>Many access layouts are mere adaptations of classic layouts. Logback
 	  classic and access modules address different needs, but offer comparable power
@@ -1422,12 +1433,11 @@ public class MySampleConverter extends ClassicConverter {
 		<h3>Writing your own Layout</h3>
 		<p>Writing a custom <code>Layout</code> for logback access is nearly identical
 		as to writing a <code>Layout</code> for the classic module.</p>
-		<p>The only difference comes from the fact that access layouts must implement
-		the <code>AccessLayout</code> interface instead <code>ClassicLayout</code>.</p>
 		
 		<a name="AccessPatternLayout" />
 		<h3>PatternLayout</h3>
-		<p>Access' <code>PatternLayout</code> work the exact same way as it's classic counterpart.
+		<p>Access' <a href="../xref/ch/qos/logback/access/PatternLayout.html">
+		<code>PatternLayout</code></a> work the exact same way as it's classic counterpart.
 		</p>
 		<p>However, the conversion specifier are different, giving specific access to request
 		and response objects' attributes.</p>
@@ -1604,7 +1614,7 @@ public class MySampleConverter extends ClassicConverter {
 			<td>
 				<p>
 					Attribute of the request.
-				</p>^
+				</p>
 				<p>This conversion word takes the first option in braces and looks
 				for the corresponding attribute in the request.</p>
 				<p><b>%reqAttribute{SOME_ATTRIBUTE}</b> 
@@ -1655,7 +1665,9 @@ public class MySampleConverter extends ClassicConverter {
 		<a name="AccessHTMLLayout" />
 		<h3>HTMLLayout</h3>
 		
-		<p>The access version of <code>HTMLLayout</code> works like logback classic's
+		<p>The access version of 
+		<a href="../xref/ch/qos/logback/access/html/HTMLLayout.html">
+		<code>HTMLLayout</code></a> works like logback classic's
 		version.</p>
 		
 		<p>By default, it will create a table containing the following data:</p>
@@ -1672,13 +1684,13 @@ public class MySampleConverter extends ClassicConverter {
 		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
 		<p>What's better than a real world example? Our own log4j properties to logback configuration 
-		<a href="http://logback.qos.ch/translator">translator</a>
+		<a href="http://logback.qos.ch/translator/">translator</a>
 		is using logback access to showcase a live ouput, using a <code>RollingFileAppender</code> and
 		access' <code>HTMLLayout</code>.</p>
 		
 		<p>You can see the file by <a href="http://logback.qos.ch/translator/logs/access.html">following this link</a>.</p>
 
 		<p>Just like any access log, it can be altered simply by visiting the
-		<a href="http://logback.qos.ch/translator">translator</a> application.</p>
+		<a href="http://logback.qos.ch/translator/">translator</a> application.</p>
 	</body>
 </document>
