@@ -22,7 +22,7 @@
       <li><a href="manual/index.html"><b>The logback manual</b></a></li>
 
 			<li>
-				<a href="access.html">An introduction to access for Jetty
+				<a href="access.html">An introduction to logback-access for Jetty
 				and Tomcat</a>
 			</li>
       <li>
@@ -30,6 +30,9 @@
       </li>
       <li>
       	<a href="bridge.html">How to use the log4j bridge</a>
+      </li>
+      <li>
+      	<a href="jmxConfig.html">How to use the logback JMX Configurator</a>
       </li>
 		</ul>
 		

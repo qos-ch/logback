@@ -160,7 +160,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * @param name
    *          the name of the logger to search for.
    */
-  Logger exists(String name) {
+  public Logger exists(String name) {
     return (Logger) loggerCache.get(name);
   }
 

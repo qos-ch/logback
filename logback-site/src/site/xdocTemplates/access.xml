@@ -313,7 +313,7 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"</pre></div>
 
 		<p>
-			Once started with these options, Tomcat's JMX compoenents can be access
+			Once started with these options, Tomcat's JMX compoenents can be accessed
 			with JConsole by issuing the following command in a shell:
 		</p>
 <div class="source"><pre>jconsole &amp;</pre></div>

@@ -13,5 +13,9 @@ public interface ConfiguratorMBean {
   public void reload(URL url) throws JoranException;
   
   public void setLoggerLevel(String loggerName, String levelStr);
+  
+  public String getLoggerLevel(String loggerName);
+  
+  public String getLoggerEffectiveLevel(String loggerName);
 
 }

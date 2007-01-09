@@ -13,6 +13,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public class Configurator extends ContextAwareBase implements
     ConfiguratorMBean {
 
+  private static String EMPTY = "";
+  
   public Configurator(LoggerContext loggerContext) {
     this.context = loggerContext;
   }
@@ -66,5 +68,39 @@ public class Configurator extends ContextAwareBase implements
       }
     }
   }
+
+  public String getLoggerLevel(String loggerName) {
+    if (loggerName == null) {
+      return EMPTY;
+    }
+    
+    loggerName = loggerName.trim();
+    
+    LoggerContext lc = (LoggerContext) context;
+    Logger logger = lc.exists(loggerName);
+    if (logger != null) {
+      return logger.getLevel().toString();
+    } else {
+      return EMPTY;
+    }
+  }
+
+  public String getLoggerEffectiveLevel(String loggerName) {
+    if (loggerName == null) {
+      return EMPTY;
+    }
+    
+    loggerName = loggerName.trim();
+    
+    LoggerContext lc = (LoggerContext) context;
+    Logger logger = lc.exists(loggerName);
+    if (logger != null) {
+      return logger.getEffectiveLevel().toString();
+    } else {
+      return EMPTY;
+    }
+  }
+  
+  
 
 }
