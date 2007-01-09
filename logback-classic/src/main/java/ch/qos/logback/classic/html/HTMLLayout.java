@@ -12,7 +12,6 @@ package ch.qos.logback.classic.html;
 
 import java.util.Map;
 
-import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.html.DefaultCssBuilder;
@@ -33,7 +32,7 @@ import ch.qos.logback.core.pattern.Converter;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> implements ClassicLayout {
+public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
   
   /**
    * Default pattern string for log output.
