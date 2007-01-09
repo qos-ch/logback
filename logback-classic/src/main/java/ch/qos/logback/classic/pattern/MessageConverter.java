@@ -18,9 +18,8 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class MessageConverter extends ClassicConverter {
 
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
-    return le.getFormattedMessage();
+  public String convert(LoggingEvent event) {
+    return event.getFormattedMessage();
   }
 
 }

@@ -70,11 +70,12 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-		
+    <!--
 		<dependency>
 		  <groupId>javax.jms</groupId>
 		  <artifactId>jms</artifactId>
 		</dependency>
+    -->
 	</dependencies>
 
 	<build>

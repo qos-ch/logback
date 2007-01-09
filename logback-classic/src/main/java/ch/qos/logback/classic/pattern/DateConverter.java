@@ -53,8 +53,7 @@ public class DateConverter extends ClassicConverter {
     }
   }
   
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent le) {
     long timestamp = le.getTimeStamp();
     
     // if called multiple times within the same millisecond

@@ -8,7 +8,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.Status;
 
 
-abstract public class AccessConverter extends DynamicConverter implements ContextAware {
+abstract public class AccessConverter extends DynamicConverter<AccessEvent> implements ContextAware {
 
   public final static char SPACE_CHAR = ' ';
   public final static char QUESTION_CHAR = '?';
@@ -23,12 +23,6 @@ abstract public class AccessConverter extends DynamicConverter implements Contex
     return cab.getContext();
   }
   
-  public final String convert(Object event) {
-    return convert((AccessEvent) event);  
-  }
-  
-  abstract protected String convert(AccessEvent accessEvent);
-
   public void addStatus(Status status) {
     cab.addStatus(status);
   }

@@ -17,7 +17,7 @@ public class LocalIPAddressConverter extends AccessConverter {
     }
   }
 
-  protected String convert(AccessEvent accessEvent) {
+  public String convert(AccessEvent accessEvent) {
     return localIPAddressStr;
   }
 

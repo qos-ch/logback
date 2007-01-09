@@ -75,7 +75,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     }
     buf.append(LINE_SEP);
 
-    Converter c = head;
+    Converter<LoggingEvent> c = head;
     while (c != null) {
       appendEventToBuffer(buf, c, event);
       c = c.getNext();
@@ -89,7 +89,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     return buf.toString();
   }
 
-  private void appendEventToBuffer(StringBuffer buf, Converter c,
+  private void appendEventToBuffer(StringBuffer buf, Converter<LoggingEvent> c,
       LoggingEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));

@@ -73,9 +73,7 @@ public class CallerDataConverter extends ClassicConverter {
     evaluatorList.add(ee);
   }
 
-  public String convert(Object event) {
-
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent le) {
     StringBuffer buf = new StringBuffer();
 
     if (evaluatorList != null) {
@@ -83,7 +81,7 @@ public class CallerDataConverter extends ClassicConverter {
       for (int i = 0; i < evaluatorList.size(); i++) {
         EventEvaluator ee = (EventEvaluator) evaluatorList.get(i);
         try {
-          if (ee.evaluate(event)) {
+          if (ee.evaluate(le)) {
             printCallerData = true;
             break;
           }

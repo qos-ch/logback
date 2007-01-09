@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.core.pattern;
 
-public final class LiteralConverter extends Converter {
+public final class LiteralConverter<E> extends Converter<E> {
 
   String literal;
 
@@ -17,7 +17,7 @@ public final class LiteralConverter extends Converter {
     this.literal = literal;
   }
 
-  public String convert(Object o) {
+  public String convert(E o) {
     return literal;
   }
   

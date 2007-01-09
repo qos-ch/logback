@@ -214,7 +214,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
     }
   }
 
-  public synchronized Appender detachAppender(String name) {
+  public synchronized Appender<LoggingEvent> detachAppender(String name) {
     if (aai == null) {
       return null;
     }

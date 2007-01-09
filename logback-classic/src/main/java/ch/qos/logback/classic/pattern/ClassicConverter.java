@@ -12,6 +12,7 @@ package ch.qos.logback.classic.pattern;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextAware;
 import ch.qos.logback.classic.spi.LoggerContextAwareBase;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.status.Status;
@@ -23,7 +24,7 @@ import ch.qos.logback.core.status.Status;
  * 
  * @author Ceki Gulcu
  */
-abstract public class ClassicConverter extends DynamicConverter implements
+abstract public class ClassicConverter extends DynamicConverter<LoggingEvent> implements
     LoggerContextAware {
 
   LoggerContextAwareBase lcab = new LoggerContextAwareBase();

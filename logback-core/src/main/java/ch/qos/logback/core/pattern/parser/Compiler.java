@@ -20,10 +20,10 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
 
-class Compiler extends ContextAwareBase {
+class Compiler<E> extends ContextAwareBase {
 
-  Converter head;
-  Converter tail;
+  Converter<E> head;
+  Converter<E> tail;
   final Node top;
   final Map converterMap;
   
@@ -32,26 +32,26 @@ class Compiler extends ContextAwareBase {
     this.converterMap = converterMap;
   }
 
-  Converter compile() {
+  Converter<E> compile() {
     head = tail = null;
     for (Node n = top; n != null; n = n.next) {
       switch (n.type) {
       case Node.LITERAL:
-        addToList(new LiteralConverter((String) n.getValue()));
+        addToList(new LiteralConverter<E>((String) n.getValue()));
         break;
       case Node.COMPOSITE:
         CompositeNode cn = (CompositeNode) n;
-        CompositeConverter compositeConverter = new CompositeConverter();
+        CompositeConverter<E> compositeConverter = new CompositeConverter<E>();
         compositeConverter.setFormattingInfo(cn.getFormatInfo());
-        Compiler childCompiler = new Compiler(cn.getChildNode(), converterMap);
+        Compiler<E> childCompiler = new Compiler<E>(cn.getChildNode(), converterMap);
         childCompiler.setContext(context);
-        Converter childConverter = childCompiler.compile();
+        Converter<E> childConverter = childCompiler.compile();
         compositeConverter.setChildConverter(childConverter);
         addToList(compositeConverter);
         break;
       case Node.KEYWORD:
         KeywordNode kn = (KeywordNode) n;
-        DynamicConverter dynaConverter = createConverter(kn);
+        DynamicConverter<E> dynaConverter = createConverter(kn);
         if (dynaConverter != null) {
           dynaConverter.setFormattingInfo(kn.getFormatInfo());
           dynaConverter.setOptionList(kn.getOptions());
@@ -59,7 +59,7 @@ class Compiler extends ContextAwareBase {
         } else {
           // if the appropriate dynaconverter cannot be found, then replace
           // it with a dummy LiteralConverter indicating an error.
-          Converter errConveter = new LiteralConverter("%PARSER_ERROR_"
+          Converter<E> errConveter = new LiteralConverter<E>("%PARSER_ERROR_"
               + kn.getValue());
           addStatus(new ErrorStatus("["+kn.getValue()+"] is not a valid conversion word", this));
           addToList(errConveter);
@@ -70,7 +70,7 @@ class Compiler extends ContextAwareBase {
     return head;
   }
 
-  private void addToList(Converter c) {
+  private void addToList(Converter<E> c) {
     if (head == null) {
       head = tail = c;
     } else {
@@ -85,7 +85,8 @@ class Compiler extends ContextAwareBase {
    * @param kn
    * @return
    */
-  DynamicConverter createConverter(KeywordNode kn) {
+  @SuppressWarnings("unchecked")
+  DynamicConverter<E> createConverter(KeywordNode kn) {
     String keyword = (String) kn.getValue();
     String converterClassStr = (String) converterMap.get(keyword);
 

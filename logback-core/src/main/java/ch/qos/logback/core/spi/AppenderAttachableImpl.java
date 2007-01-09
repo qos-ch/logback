@@ -143,7 +143,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove the appender with the name passed as parameter form the list of
    * appenders.
    */
-  public Appender detachAppender(String name) {
+  public Appender<E> detachAppender(String name) {
     if (name == null) {
       return null;
     }
@@ -151,8 +151,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     int size = appenderList.size();
 
     for (int i = 0; i < size; i++) {
-      if (name.equals(((Appender) appenderList.get(i)).getName())) {
-        return (Appender) appenderList.remove(i);
+      if (name.equals((appenderList.get(i)).getName())) {
+        return appenderList.remove(i);
       }
     }
     return null;

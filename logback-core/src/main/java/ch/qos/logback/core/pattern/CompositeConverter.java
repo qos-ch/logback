@@ -9,25 +9,25 @@
  */
 package ch.qos.logback.core.pattern;
 
-public class CompositeConverter extends FormattingConverter {
+public class CompositeConverter<E> extends FormattingConverter<E> {
 
   StringBuffer buf = new StringBuffer();
-  Converter childConverter;
+  Converter<E> childConverter;
 
-  public String convert(Object event) {
+  public String convert(E event) {
     if (buf.capacity() > MAX_CAPACITY) {
       buf = new StringBuffer(INITIAL_BUF_SIZE);
     } else {
       buf.setLength(0);
     }
 
-    for (Converter c = childConverter; c != null; c = c.next) {
+    for (Converter<E> c = childConverter; c != null; c = c.next) {
       c.write(buf, event);
     }
     return buf.toString();
   }
 
-  public void setChildConverter(Converter child) {
+  public void setChildConverter(Converter<E> child) {
     childConverter = child;
   }
 

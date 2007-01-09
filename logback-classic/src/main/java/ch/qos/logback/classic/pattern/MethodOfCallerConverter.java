@@ -14,8 +14,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class MethodOfCallerConverter extends ClassicConverter {
 
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent le) {
     CallerData[] cda = le.getCallerData();
     if (cda != null && cda.length > 0) {
       return cda[0].getMethodName();

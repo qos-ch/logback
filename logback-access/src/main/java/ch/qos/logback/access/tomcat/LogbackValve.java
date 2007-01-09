@@ -173,7 +173,7 @@ public class LogbackValve extends ValveBase implements Context,
     return aai.detachAppender(appender);
   }
 
-  public Appender detachAppender(String name) {
+  public Appender<AccessEvent> detachAppender(String name) {
     return aai.detachAppender(name);
   }
 

@@ -15,9 +15,9 @@ package ch.qos.logback.core.pattern;
  * 
  * @author ceki
  */
-abstract public class Converter {
+abstract public class Converter<E> {
   
-  Converter next;
+  Converter<E> next;
 
   /**
    * The convert method is responsible for extracting data from the event and
@@ -25,7 +25,7 @@ abstract public class Converter {
    * 
    * @param event
    */
-  public abstract String  convert(Object event);
+  public abstract String  convert(E event);
 
   /**
    * In its simplest incarnation, a convert simply appends the data extracted from
@@ -34,18 +34,18 @@ abstract public class Converter {
    * @param buf The input buffer where data is appended
    * @param event The event from where data is extracted
    */
-  public void write(StringBuffer buf, Object event) {
+  public void write(StringBuffer buf, E event) {
     buf.append(convert(event));
   }
   
-  public final void setNext(Converter next) {
+  public final void setNext(Converter<E> next) {
     if (this.next != null) {
       throw  new IllegalStateException("Next converter has been already set");
     }
     this.next = next;
   }
 
-  public final Converter getNext() {
+  public final Converter<E> getNext() {
     return next;
   }
 }

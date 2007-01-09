@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.core.pattern;
 
-abstract public class FormattingConverter extends Converter {
+abstract public class FormattingConverter<E> extends Converter<E> {
 
   static final int INITIAL_BUF_SIZE = 256;
   static final int MAX_CAPACITY = 1024;
@@ -28,7 +28,7 @@ abstract public class FormattingConverter extends Converter {
     this.formattingInfo = formattingInfo;
   }
 
-  final public void write(StringBuffer buf, Object event) {
+  final public void write(StringBuffer buf, E event) {
     String s = convert(event);
     
     if(formattingInfo == null) {

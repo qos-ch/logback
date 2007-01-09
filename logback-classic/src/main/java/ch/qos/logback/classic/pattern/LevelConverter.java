@@ -9,8 +9,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class LevelConverter extends ClassicConverter {
 
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent le) {
     return le.getLevel().toString();
   }
 

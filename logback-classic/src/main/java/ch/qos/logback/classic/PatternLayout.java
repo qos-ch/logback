@@ -119,10 +119,10 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
    * 
    * 
    */
-  protected void postCompileProcessing(Converter head) {
+  protected void postCompileProcessing(Converter<LoggingEvent> head) {
     if (!chainHandlesThrowable(head)) {
-      Converter tail = findTail(head);
-      Converter exConverter = new ThrowableInformationConverter();
+      Converter<LoggingEvent> tail = findTail(head);
+      Converter<LoggingEvent> exConverter = new ThrowableInformationConverter();
       if (tail == null) {
         head = exConverter;
       } else {

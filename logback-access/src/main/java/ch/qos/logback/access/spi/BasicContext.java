@@ -18,16 +18,16 @@ import ch.qos.logback.core.spi.FilterReply;
  *
  * @author S&eacute;bastien Pennec
  */
-public class BasicContext extends ContextBase implements AppenderAttachable, FilterAttachable {
+public class BasicContext extends ContextBase implements AppenderAttachable<AccessEvent>, FilterAttachable {
 
-  AppenderAttachableImpl aai = new AppenderAttachableImpl();
+  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   FilterAttachableImpl fai = new FilterAttachableImpl();
   
   public void callAppenders(AccessEvent event) {
     aai.appendLoopOnAppenders(event);
   }
   
-  public void addAppender(Appender newAppender) {
+  public void addAppender(Appender<AccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
@@ -39,11 +39,11 @@ public class BasicContext extends ContextBase implements AppenderAttachable, Fil
     return aai.detachAppender(appender);
   }
 
-  public Appender detachAppender(String name) {
+  public Appender<AccessEvent> detachAppender(String name) {
     return aai.detachAppender(name);
   }
 
-  public Appender getAppender(String name) {
+  public Appender<AccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 

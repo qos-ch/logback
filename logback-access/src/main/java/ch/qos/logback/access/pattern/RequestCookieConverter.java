@@ -17,7 +17,7 @@ public class RequestCookieConverter extends AccessConverter {
     }
   }
 
-  protected String convert(AccessEvent accessEvent) {
+  public String convert(AccessEvent accessEvent) {
     if (!isStarted()) {
       return "INACTIVE_COOKIE_CONVERTER";
     }

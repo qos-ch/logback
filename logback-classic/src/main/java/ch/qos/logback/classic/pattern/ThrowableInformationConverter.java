@@ -84,11 +84,10 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
     super.stop();
   }
 
-  public String convert(Object event) {
+  public String convert(LoggingEvent event) {
     StringBuffer buf = new StringBuffer(32);
 
-    LoggingEvent le = (LoggingEvent) event;
-    ThrowableInformation information = le.getThrowableInformation();
+    ThrowableInformation information = event.getThrowableInformation();
 
     if (information == null) {
       return CoreGlobal.EMPTY_STRING;

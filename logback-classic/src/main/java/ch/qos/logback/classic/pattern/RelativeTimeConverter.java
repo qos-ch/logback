@@ -16,9 +16,8 @@ public class RelativeTimeConverter extends ClassicConverter {
   long lastTimestamp = -1;
   String timesmapStr = null;
   
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
-    long timestamp = le.getTimeStamp();
+  public String convert(LoggingEvent event) {
+    long timestamp = event.getTimeStamp();
     
     // if called multiple times within the same millisecond
     // return old value

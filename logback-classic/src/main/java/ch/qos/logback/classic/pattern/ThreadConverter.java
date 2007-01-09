@@ -9,9 +9,8 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class ThreadConverter extends ClassicConverter {
 
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
-    return le.getThreadName();
+  public String convert(LoggingEvent event) {
+    return event.getThreadName();
   }
 
 }

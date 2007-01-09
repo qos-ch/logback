@@ -13,6 +13,7 @@ package ch.qos.logback.classic;
 import java.net.InetAddress;
 
 import junit.framework.TestCase;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.appender.NOPAppender;
 
@@ -27,7 +28,7 @@ public class LoggerPerfTest extends TestCase {
   public void testSpeed() {
     long len = 1000*1000*10;
     loopBasic(len);
-    double avg = loopBasic(len);
+    double avg = loopBasic(len); 
     
     System.out.println("Running on "+localhostName);
     // check for performance on KAL only
@@ -53,7 +54,7 @@ public class LoggerPerfTest extends TestCase {
   
   double loopBasic(long len) {
     LoggerContext lc = new LoggerContext();
-    NOPAppender mopAppender = new NOPAppender();
+    NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
     mopAppender.start();
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.OFF);
@@ -67,7 +68,7 @@ public class LoggerPerfTest extends TestCase {
   
   double loopNopFilter(long len) {
     LoggerContext lc = new LoggerContext();
-    NOPAppender mopAppender = new NOPAppender();
+    NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
     NOPTurboFilter nopFilter = new NOPTurboFilter();
     nopFilter.setName("nop");
     mopAppender.start();

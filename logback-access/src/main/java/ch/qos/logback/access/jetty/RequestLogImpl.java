@@ -228,11 +228,11 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   }
 
-  public boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender<AccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
-  public Appender detachAppender(String name) {
+  public Appender<AccessEvent> detachAppender(String name) {
     return aai.detachAppender(name);
   }
 

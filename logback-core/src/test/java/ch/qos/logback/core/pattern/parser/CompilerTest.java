@@ -41,9 +41,9 @@ public class CompilerTest extends TestCase {
     super.tearDown();
   }
 
-  String write(final Converter head, Object event) {
+  String write(final Converter<Object> head, Object event) {
     StringBuffer buf = new StringBuffer();
-    Converter c = head;
+    Converter<Object> c = head;
     while (c != null) {
       c.write(buf, event);
       c = c.getNext();
@@ -52,27 +52,27 @@ public class CompilerTest extends TestCase {
   }
 
   public void testLiteral() throws Exception {
-    Parser p = new Parser("hello");
+    Parser<Object> p = new Parser<Object>("hello");
     Node t = p.parse();
-    Converter head = p.compile(t, converterMap);
+    Converter<Object> head = p.compile(t, converterMap);
     String result = write(head, new Object());
     assertEquals("hello", result);
   }
 
   public void testBasic() throws Exception {
     {
-      Parser p = new Parser("abc %hello");
+      Parser<Object> p = new Parser<Object>("abc %hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
-      assertEquals("abc Hello", result);
+      assertEquals("abc Hello", result); 
     }
     {
-      Parser p = new Parser("abc %hello %OTT");
+      Parser<Object> p = new Parser<Object>("abc %hello %OTT");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc Hello 123", result);
     }
@@ -80,70 +80,70 @@ public class CompilerTest extends TestCase {
 
   public void testFormat() throws Exception {
     {
-      Parser p = new Parser("abc %7hello");
+      Parser<Object> p = new Parser<Object>("abc %7hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc   Hello", result);
     }
 
     {
-      Parser p = new Parser("abc %-7hello");
+      Parser<Object> p = new Parser<Object>("abc %-7hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc Hello  ", result);
     }
 
     {
-      Parser p = new Parser("abc %.3hello");
+      Parser<Object> p = new Parser<Object>("abc %.3hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc llo", result);
     }
 
     {
-      Parser p = new Parser("abc %.-3hello");
+      Parser<Object> p = new Parser<Object>("abc %.-3hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc Hel", result);
     }
 
     {
-      Parser p = new Parser("abc %4.5OTT");
+      Parser<Object> p = new Parser<Object>("abc %4.5OTT");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc  123", result);
     }
     {
-      Parser p = new Parser("abc %-4.5OTT");
+      Parser<Object> p = new Parser<Object>("abc %-4.5OTT");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc 123 ", result);
     }
     {
-      Parser p = new Parser("abc %3.4hello");
+      Parser<Object> p = new Parser<Object>("abc %3.4hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc ello", result);
     }
     {
-      Parser p = new Parser("abc %-3.-4hello");
+      Parser<Object> p = new Parser<Object>("abc %-3.-4hello");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("abc Hell", result);
     }
@@ -151,28 +151,28 @@ public class CompilerTest extends TestCase {
 
   public void testComposite() throws Exception {
 //    {
-//      Parser p = new Parser("%(ABC)");
+//      Parser<Object> p = new Parser<Object>("%(ABC)");
 //      p.setContext(context);
 //      Node t = p.parse();
-//      Converter head = p.compile(t, converterMap);
+//      Converter<Object> head = p.compile(t, converterMap);
 //      String result = write(head, new Object());
 //      assertEquals("ABC", result);
 //    }
     {
       Context c = new ContextBase();
-      Parser p = new Parser("%(ABC %hello)");
+      Parser<Object> p = new Parser<Object>("%(ABC %hello)");
       p.setContext(c);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       StatusPrinter.print(c);
       assertEquals("ABC Hello", result);
     }
     {
-      Parser p = new Parser("%(ABC %hello)");
+      Parser<Object> p = new Parser<Object>("%(ABC %hello)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("ABC Hello", result);
     }
@@ -180,53 +180,53 @@ public class CompilerTest extends TestCase {
 
   public void testCompositeFormatting() throws Exception {
     {
-      Parser p = new Parser("xyz %4.10(ABC)");
+      Parser<Object> p = new Parser<Object>("xyz %4.10(ABC)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz  ABC", result);
     }
 
     {
-      Parser p = new Parser("xyz %-4.10(ABC)");
+      Parser<Object> p = new Parser<Object>("xyz %-4.10(ABC)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz ABC ", result);
     }
 
     {
-      Parser p = new Parser("xyz %.2(ABC %hello)");
+      Parser<Object> p = new Parser<Object>("xyz %.2(ABC %hello)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz lo", result);
     }
 
     {
-      Parser p = new Parser("xyz %.-2(ABC)");
+      Parser<Object> p = new Parser<Object>("xyz %.-2(ABC)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz AB", result);
     }
 
     {
-      Parser p = new Parser("xyz %30.30(ABC %20hello)");
+      Parser<Object> p = new Parser<Object>("xyz %30.30(ABC %20hello)");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz       ABC                Hello", result);
     }
   }
 
   public void testUnknownWord() throws Exception {
-    Parser p = new Parser("%unknown");
+    Parser<Object> p = new Parser<Object>("%unknown");
     p.setContext(context);
     Node t = p.parse();
     p.compile(t, converterMap);
@@ -237,10 +237,10 @@ public class CompilerTest extends TestCase {
 
   public void testWithNopEscape() throws Exception {
     {
-      Parser p = new Parser("xyz %hello\\_world");
+      Parser<Object> p = new Parser<Object>("xyz %hello\\_world");
       p.setContext(context);
       Node t = p.parse();
-      Converter head = p.compile(t, converterMap);
+      Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
       assertEquals("xyz Helloworld", result);
     }

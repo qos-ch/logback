@@ -10,7 +10,7 @@ import ch.qos.logback.access.spi.AccessEvent;
  */
 public class NAConverter extends AccessConverter {
   
-  protected String convert(AccessEvent accessEvent) {    
+  public String convert(AccessEvent accessEvent) {    
       return AccessEvent.NA;
   }
 

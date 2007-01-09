@@ -137,9 +137,11 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
   /**
    * Add a line separator so that each line is on a separate line.
    */
-  protected void postCompileProcessing(Converter head) {
-    Converter tail = findTail(head);
-    Converter newLineConverter = new LineSeparatorConverter();
+  @SuppressWarnings("unchecked")
+  @Override
+  protected void postCompileProcessing(Converter<AccessEvent> head) {
+    Converter<AccessEvent> tail = findTail(head);
+    Converter<AccessEvent> newLineConverter = new LineSeparatorConverter();
     if (tail == null) {
       head = newLineConverter;
     } else {

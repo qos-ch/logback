@@ -76,6 +76,4 @@ public class AppenderRefAction extends Action {
   public void end(InterpretationContext ec, String n) {
   }
 
-  public void finish(InterpretationContext ec) {
-  }
 }

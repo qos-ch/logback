@@ -41,7 +41,7 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   String pattern;
-  Converter headTokenConverter;
+  Converter<Object> headTokenConverter;
 
   public FileNamePattern(String patternArg, Context contextArg) {
     setPattern(patternArg);
@@ -52,7 +52,7 @@ public class FileNamePattern extends ContextAwareBase {
 
   void parse() {
     try {
-      Parser p = new Parser(pattern);
+      Parser<Object> p = new Parser<Object>(pattern);
       p.setContext(context);
       Node t = p.parse();
       this.headTokenConverter = p.compile(t, CONVERTER_MAP);
@@ -195,7 +195,7 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   public String convert(Object o) {
-    Converter p = headTokenConverter;
+    Converter<Object> p = headTokenConverter;
     StringBuffer buf = new StringBuffer();
     while (p != null) {
       buf.append(p.convert(o));

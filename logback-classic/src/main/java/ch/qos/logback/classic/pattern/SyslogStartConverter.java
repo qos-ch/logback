@@ -52,16 +52,15 @@ public class SyslogStartConverter extends ClassicConverter {
     }
   }
 
-  public String convert(Object event) {
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent event) {
     StringBuilder sb = new StringBuilder();
 
-    int pri = facility + LevelToSyslogSeverity.convert(le);
+    int pri = facility + LevelToSyslogSeverity.convert(event);
   
     sb.append("<");
     sb.append(pri);
     sb.append(">");
-    fillInTimestamp(sb, le.getTimeStamp());
+    fillInTimestamp(sb, event.getTimeStamp());
     sb.append(' ');
     sb.append(localHostName);
     sb.append(' ');

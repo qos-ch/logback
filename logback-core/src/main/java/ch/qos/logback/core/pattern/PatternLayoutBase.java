@@ -25,7 +25,7 @@ import ch.qos.logback.core.status.StatusManager;
 
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
-  Converter head;
+  Converter<E> head;
   String pattern;
 
   Map<String, String> instanceConverterMap = new HashMap<String, String>();
@@ -71,7 +71,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   public void start() {
     try {
-      Parser p = new Parser(pattern);
+      Parser<E> p = new Parser<E>(pattern);
       if (getContext() != null) {
         p.setContext(getContext());
       }
@@ -94,10 +94,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
    * 
    * @param head
    */
-  protected void postCompileProcessing(Converter head) {
+  protected void postCompileProcessing(Converter<E> head) {
   }
   
-  protected void setContextForConverters(Converter head) {
+  protected void setContextForConverters(Converter<E> head) {
     
     Context context = getContext();
     Converter c = head;
@@ -111,7 +111,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   protected String writeLoopOnConverters(E event) {
     StringBuffer buf = new StringBuffer(128);
-    Converter c = head;
+    Converter<E> c = head;
     while (c != null) {
       c.write(buf, event);
       c = c.getNext();
@@ -131,10 +131,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     return this.getClass().getName() + "(" + getPattern() + ")";
   }
 
-  protected static Converter findTail(Converter head) {
-    Converter c = head;
+  protected Converter<E> findTail(Converter<E> head) {
+    Converter<E> c = head;
     while (c != null) {
-      Converter next = c.getNext();
+      Converter<E> next = c.getNext();
       if (next == null) {
         break;
       } else {

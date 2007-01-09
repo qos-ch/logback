@@ -8,7 +8,7 @@ import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 
-public class Parser extends ContextAwareBase {
+public class Parser<E> extends ContextAwareBase {
 
   final List tokenList;
   int pointer = 0;
@@ -39,8 +39,8 @@ public class Parser extends ContextAwareBase {
    * @return
    * @throws ScanException
    */
-  public Converter compile(final Node top, Map converterMap) {
-    Compiler compiler = new Compiler(top, converterMap);
+  public Converter<E> compile(final Node top, Map converterMap) {
+    Compiler<E> compiler = new Compiler<E>(top, converterMap);
     compiler.setContext(context);
     //compiler.setStatusManager(statusManager);
     return compiler.compile();

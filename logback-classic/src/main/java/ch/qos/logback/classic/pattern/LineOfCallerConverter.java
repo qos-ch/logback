@@ -14,9 +14,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class LineOfCallerConverter extends ClassicConverter {
 
-  public String convert(Object event) {
-    
-    LoggingEvent le = (LoggingEvent) event;
+  public String convert(LoggingEvent le) {
     CallerData[] cda = le.getCallerData();
     if (cda != null && cda.length > 0) {
       return Integer.toString(cda[0].getLineNumber());

@@ -27,9 +27,8 @@ public class MDCConverter extends ClassicConverter {
   }
 
   @Override
-  public String convert(Object event) {
-    LoggingEvent loggingEvent = (LoggingEvent) event;
-    Map<String, String> mdcPropertyMap = loggingEvent.getMDCPropertyMap();
+  public String convert(LoggingEvent event) {
+    Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
     if (mdcPropertyMap == null) {
       return EMPTY_STRING;
@@ -55,7 +54,7 @@ public class MDCConverter extends ClassicConverter {
       return buf.toString();
     }
 
-    String value = loggingEvent.getMDCPropertyMap().get(key);
+    String value = event.getMDCPropertyMap().get(key);
     if (value != null) {
       return value;
     } else {

@@ -17,7 +17,7 @@ public class ResponseHeaderConverter extends AccessConverter {
     }
   }
 
-  protected String convert(AccessEvent accessEvent) {
+  public String convert(AccessEvent accessEvent) {
     if(!isStarted()) {
       return "INACTIVE_REPONSE_HEADER_CONV";
     }

@@ -69,7 +69,7 @@ public class ConverterTest extends TestCase {
 
   public void testLineOfCaller() {
     {
-      DynamicConverter converter = new LineOfCallerConverter();
+      DynamicConverter<LoggingEvent> converter = new LineOfCallerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
@@ -79,13 +79,13 @@ public class ConverterTest extends TestCase {
 
   public void testLevel() {
     {
-      DynamicConverter converter = new LevelConverter();
+      DynamicConverter<LoggingEvent> converter = new LevelConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals("INFO", buf.toString());
     }
     {
-      DynamicConverter converter = new LevelConverter();
+      DynamicConverter<LoggingEvent> converter = new LevelConverter();
       converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
@@ -94,21 +94,21 @@ public class ConverterTest extends TestCase {
   }
 
   public void testThread() {
-    DynamicConverter converter = new ThreadConverter();
+    DynamicConverter<LoggingEvent> converter = new ThreadConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals("main", buf.toString());
   }
 
   public void testMessage() {
-    DynamicConverter converter = new MessageConverter();
+    DynamicConverter<LoggingEvent> converter = new MessageConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals("Some message", buf.toString());
   }
 
   public void testLineSeparator() {
-    DynamicConverter converter = new LineSeparatorConverter();
+    DynamicConverter<LoggingEvent> converter = new LineSeparatorConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals(CoreGlobal.LINE_SEPARATOR, buf.toString());
@@ -116,14 +116,14 @@ public class ConverterTest extends TestCase {
 
   public void testException() {
     {
-      DynamicConverter converter = new ThrowableInformationConverter();
+      DynamicConverter<LoggingEvent> converter = new ThrowableInformationConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // System.out.println(buf);
     }
 
     {
-      DynamicConverter converter = new ThrowableInformationConverter();
+      DynamicConverter<LoggingEvent> converter = new ThrowableInformationConverter();
       this.optionList.add("3");
       converter.setOptionList(this.optionList);
       StringBuffer buf = new StringBuffer();
@@ -134,14 +134,14 @@ public class ConverterTest extends TestCase {
 
   public void testLogger() {
     {
-      DynamicConverter converter = new LoggerConverter();
+      DynamicConverter<LoggingEvent> converter = new LoggerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals(this.getClass().getName(), buf.toString());
     }
 
     {
-      DynamicConverter converter = new LoggerConverter();
+      DynamicConverter<LoggingEvent> converter = new LoggerConverter();
       this.optionList.add("20");
       converter.setOptionList(this.optionList);
       converter.start();
@@ -153,7 +153,7 @@ public class ConverterTest extends TestCase {
 
   public void testClass() {
     {
-      DynamicConverter converter = new ClassOfCallerConverter();
+      DynamicConverter<LoggingEvent> converter = new ClassOfCallerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals(this.getClass().getName(), buf.toString());
@@ -162,7 +162,7 @@ public class ConverterTest extends TestCase {
 
   public void testMethodOfCaller() {
     {
-      DynamicConverter converter = new MethodOfCallerConverter();
+      DynamicConverter<LoggingEvent> converter = new MethodOfCallerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals("testMethodOfCaller", buf.toString());
@@ -171,7 +171,7 @@ public class ConverterTest extends TestCase {
 
   public void testFileOfCaller() {
     {
-      DynamicConverter converter = new FileOfCallerConverter();
+      DynamicConverter<LoggingEvent> converter = new FileOfCallerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals("ConverterTest.java", buf.toString());
@@ -180,7 +180,7 @@ public class ConverterTest extends TestCase {
 
   public void testCallerData() {
     {
-      DynamicConverter converter = new CallerDataConverter();
+      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
       converter.start();
 
       StringBuffer buf = new StringBuffer();
@@ -191,7 +191,7 @@ public class ConverterTest extends TestCase {
     }
 
     {
-      DynamicConverter converter = new CallerDataConverter();
+      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
       this.optionList.add("2");
       this.optionList.add("XXX");
       converter.setOptionList(this.optionList);
@@ -207,7 +207,7 @@ public class ConverterTest extends TestCase {
     }
 
     {
-      DynamicConverter converter = new CallerDataConverter();
+      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -224,7 +224,7 @@ public class ConverterTest extends TestCase {
       }
     }
     {
-      DynamicConverter converter = new CallerDataConverter();
+      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -242,7 +242,7 @@ public class ConverterTest extends TestCase {
     }
 
     {
-      DynamicConverter converter = new CallerDataConverter();
+      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -262,7 +262,7 @@ public class ConverterTest extends TestCase {
 
   public void testRelativeTime() throws Exception {
     {
-      DynamicConverter converter = new RelativeTimeConverter();
+      DynamicConverter<LoggingEvent> converter = new RelativeTimeConverter();
       Thread.sleep(100);
       StringBuffer buf = new StringBuffer();
       converter.write(buf, makeLoggingEvent(null));
@@ -275,7 +275,7 @@ public class ConverterTest extends TestCase {
 
   public void testSyslogStart() throws Exception {
     {
-      DynamicConverter converter = new SyslogStartConverter();
+      DynamicConverter<LoggingEvent> converter = new SyslogStartConverter();
       this.optionList.clear();
       this.optionList.add("MAIL");
       converter.setOptionList(this.optionList);

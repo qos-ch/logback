@@ -38,8 +38,8 @@ public abstract class NamedConverter extends ClassicConverter {
     }
   }
 
-  public String convert(Object event) {
-    String fqn = getFullyQualifiedName((LoggingEvent) event);
+  public String convert(LoggingEvent event) {
+    String fqn = getFullyQualifiedName(event);
 
     if (abbreviator == null) {
       return fqn;

@@ -18,7 +18,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 
   protected String pattern;
 
-  protected Converter head;
+  protected Converter<E> head;
 
   protected String title = "Logback Log Messages";
 
@@ -70,7 +70,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     }
     
     try {
-      Parser p = new Parser(pattern);
+      Parser<E> p = new Parser<E>(pattern);
       p.setContext(getContext());
       Node t = p.parse();
       this.head = p.compile(t, getDefaultConverterMap());

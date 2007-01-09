@@ -54,5 +54,5 @@ public interface AppenderAttachable<E> {
    * Detach the appender with the name passed as parameter from the list of
    * appenders.
    */
-  Appender detachAppender(String name);
+  Appender<E> detachAppender(String name);
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import ch.qos.logback.core.spi.LifeCycle;
 
-abstract public class DynamicConverter extends FormattingConverter implements LifeCycle {
+abstract public class DynamicConverter<E> extends FormattingConverter<E> implements LifeCycle {
 
   // Contains a list of option Strings.
   private List optionList;
