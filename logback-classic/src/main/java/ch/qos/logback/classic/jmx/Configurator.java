@@ -1,6 +1,7 @@
 package ch.qos.logback.classic.jmx;
 
 import java.net.URL;
+import java.util.List;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -99,6 +100,11 @@ public class Configurator extends ContextAwareBase implements
     } else {
       return EMPTY;
     }
+  }
+
+  public List<Logger> getLoggerList() {
+    LoggerContext lc = (LoggerContext)context;
+    return lc.getLoggerList();
   }
   
   

@@ -11,6 +11,8 @@
 package ch.qos.logback.classic;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -19,6 +21,7 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.spi.ContextListener;
+import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterAttachable;
 import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
@@ -172,6 +175,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     }
   }
 
+  public List<Logger> getLoggerList() {
+    Collection<Logger> collection = loggerCache.values();
+    List<Logger> loggerList = new ArrayList<Logger>(collection);
+    Collections.sort(loggerList, new LoggerComparator());
+    return loggerList;
+  }
+  
   public LoggerContextRemoteView getLoggerContextRemoteView() {
     return loggerContextRemoteView;
   }
