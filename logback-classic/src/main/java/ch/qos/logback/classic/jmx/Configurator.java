@@ -11,6 +11,17 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+/**
+ * A class that provides access to logback components via
+ * JMX.
+ * 
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @author S&eacute;bastien Pennec
+ * 
+ * Contributor:
+ *   Sebastian Davids
+ */
 public class Configurator extends ContextAwareBase implements
     ConfiguratorMBean {
 
