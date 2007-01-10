@@ -134,7 +134,7 @@ public class SimpleMDC {
     PatternLayout layout = new PatternLayout();
     layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();
-    ConsoleAppender appender = new ConsoleAppender();
+    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
     appender.setLayout(layout);
     appender.start();
     Logger root = (Logger)LoggerFactory.getLogger("root");

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
@@ -40,14 +41,14 @@ public class IO extends Thread {
 
     // A FileAppender is created according to the buffering and
     // immediate flush setting of this IO instance.
-    FileAppender fa = new FileAppender();
+    FileAppender<LoggingEvent> fa = new FileAppender<LoggingEvent>();
 
     if (longMessage) {
       PatternLayout pa = new PatternLayout();
       pa.setPattern("%r %5p %c [%t] - %m%n");
       fa.setLayout(pa);
     } else {
-      fa.setLayout(new EchoLayout());
+      fa.setLayout(new EchoLayout<LoggingEvent>());
     }
 
     fa.setFile(getName() + ".log");

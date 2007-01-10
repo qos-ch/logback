@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -26,9 +27,9 @@ public class ExitWoes2 {
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     lc.shutdownAndReset();//this is to cancel default-config.
-    WriterAppender writerAppender = new WriterAppender();
+    WriterAppender<LoggingEvent> writerAppender = new WriterAppender<LoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout());
+    writerAppender.setLayout(new EchoLayout<LoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes2.log");
     writerAppender.setWriter(new OutputStreamWriter(os));

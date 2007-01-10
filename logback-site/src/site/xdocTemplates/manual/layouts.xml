@@ -89,17 +89,7 @@
 			Logback classic only processes events of type
 			<a href="../xref/ch/qos/logback/classic/spi/LoggingEvent.html">
 			<code>ch.qos.logback.classic.spi.LoggingEvent</code></a>. 
-			Therefore, logback classic module imposes that
-			all its layouts implement
-			the <a href="../xref/ch/qos/logback/classic/ClassicLayout.html"><code>ClassicLayout</code>
-			</a> interface that is shown below.
-		</p>
-
-		<div class="source"><pre>public interface ClassicLayout extends Layout {
-
-  String doLayout(LoggingEvent event);
-
-}</pre></div>
+			</p>
 
 		<h3>Writing your own Layout</h3>
 		<p>
@@ -118,11 +108,10 @@
 			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</a></em>
 		<div class="source"><pre>package chapter5;
 
-import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements ClassicLayout {
+public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 
   public String doLayout(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
@@ -152,10 +141,6 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements Class
 			from her <code>Layout</code>. Note that the <code>LayoutBase</code>
 			class is generic. By extending it, we precise the type that it will
 			have to handle, by adding <em>&lt;LoggingEvent></em> after its declaration.
-		</p>
-		
-		<p><code>MySampleLayout</code> implements the <code>ClassicLayout</code>
-		interface, since it is intented to be used with the classic module.
 		</p>
 		
 		<p>The marginally more interesting <code>doLayout(LoggingEvent event)</code> 
@@ -232,11 +217,10 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> implements Class
 		<p>Here is the implementation of this class:</p>
 <div class="source"><pre>package chapter5;
 
-import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> implements ClassicLayout {
+public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -305,8 +289,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> implements Clas
 		<p>
 			Logback classic ships with a flexible layout called
 			<a href="../xref/ch/qos/logback/classic/PatternLayout.html">
-			<code>PatternLayout</code></a>, which implements the 
-			<code>ClassicLayout</code> interface. 
+			<code>PatternLayout</code></a>.
 			As all classic layouts, <code>PatternLayout</code>	
 			takes a logging event and returns a String. However, the
 			returned String can be customized at will by tweaking its
@@ -351,7 +334,7 @@ public class PatternSample {
     layout.setPattern("%-5level [%thread]: %message%n");
     layout.start();</b>
 
-    ConsoleAppender appender = new ConsoleAppender();
+    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
     appender.setContext(rootLogger.getLoggerContext());
     appender.setLayout(layout); appender.start();
 
@@ -1237,8 +1220,7 @@ public class MySampleConverter extends ClassicConverter {
   private static final String WARN_COLOR = "\u001b[0;33m";
 
   @Override
-  <b>public String convert(Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
+  <b>public String convert(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append(getColor(event.getLevel()));
     sbuf.append(event.getLevel());

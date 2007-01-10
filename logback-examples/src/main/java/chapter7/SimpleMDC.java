@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 
 public class SimpleMDC {
@@ -27,7 +28,7 @@ public class SimpleMDC {
     PatternLayout layout = new PatternLayout();
     layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();
-    ConsoleAppender appender = new ConsoleAppender();
+    ConsoleAppender<LoggingEvent> appender = new ConsoleAppender<LoggingEvent>();
     appender.setLayout(layout);
     appender.start();
     Logger root = (Logger)LoggerFactory.getLogger("root");

@@ -1,10 +1,9 @@
 package chapter5;
 
-import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase<LoggingEvent> implements ClassicLayout {
+public class MySampleLayout2 extends LayoutBase<LoggingEvent> {
 
   String prefix = null;
   boolean printThreadName = true;

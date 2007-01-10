@@ -12,8 +12,7 @@ public class MySampleConverter extends ClassicConverter {
   private static final String WARN_COLOR = "\u001b[0;33m";
 
   @Override
-  public String convert(Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
+  public String convert(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append(getColor(event.getLevel()));
     sbuf.append(event.getLevel());

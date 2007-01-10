@@ -10,16 +10,17 @@
 
 package chapter4;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
 
-public class CountingConsoleAppender extends AppenderBase {
+public class CountingConsoleAppender extends AppenderBase<LoggingEvent> {
   static int DEFAULT_LIMIT = 10;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
   
-  private Layout layout;
+  private Layout<LoggingEvent> layout;
 
   public CountingConsoleAppender() {
   }
@@ -42,24 +43,24 @@ public class CountingConsoleAppender extends AppenderBase {
     super.start();
   }
 
-  public void append(Object eventObject) {
+  public void append(LoggingEvent event) {
 
     if (counter >= limit) {
       return;
     }
 
     // output the events as formatted by our layout
-    System.out.print(this.layout.doLayout(eventObject));
+    System.out.print(this.layout.doLayout(event));
 
     // prepare for next event
     counter++;
   }
 
-  public Layout getLayout() {
+  public Layout<LoggingEvent> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout<LoggingEvent> layout) {
     this.layout = layout;
   }
 }

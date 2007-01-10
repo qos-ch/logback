@@ -298,9 +298,9 @@ public class ExitWoes1 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    WriterAppender writerAppender = new WriterAppender();
+    WriterAppender&lt;LoggingEvent> writerAppender = new WriterAppender&lt;LoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout());
+    writerAppender.setLayout(new EchoLayout&lt;LoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
@@ -2664,12 +2664,12 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
 
-public class CountingConsoleAppender extends AppenderBase {
+public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
   static int DEFAULT_LIMIT = 16;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
   
-  private Layout layout;
+  private Layout&lt;LoggingEvent> layout;
 
   public CountingConsoleAppender() {
   }
@@ -2692,24 +2692,24 @@ public class CountingConsoleAppender extends AppenderBase {
     super.start();
   }
 
-  public void append(Object eventObject) {
+  public void append(LoggingEvent event) {
 
     if (counter >= limit) {
       return;
     }
 
     // output the events as formatted by our layout
-    System.out.print(this.layout.doLayout(eventObject));
+    System.out.print(this.layout.doLayout(event));
 
     // prepare for next event
     counter++;
   }
 
-  public Layout getLayout() {
+  public Layout&lt;LoggingEvent> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout layout) {
+  public void setLayout(Layout&lt;LoggingEvent> layout) {
     this.layout = layout;
   }
 }</pre></div>

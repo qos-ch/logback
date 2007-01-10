@@ -1,10 +1,9 @@
 package chapter5;
 
-import ch.qos.logback.classic.ClassicLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout extends LayoutBase<LoggingEvent> implements ClassicLayout {
+public class MySampleLayout extends LayoutBase<LoggingEvent>  {
 
   public String doLayout(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
