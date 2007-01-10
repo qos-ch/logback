@@ -49,7 +49,7 @@
 			a Subversion client. You can check out the entire logback
 			project with the following command:</p>
 		
-		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/</div>
+		<div class="source">svn co http://svn.qos.ch/repos/logback/trunk/ target_directory</div>
 				
 		<div class="section">
 			<p>
