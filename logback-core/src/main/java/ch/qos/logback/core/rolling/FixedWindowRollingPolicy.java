@@ -20,7 +20,7 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
  * according to a fixed window algorithm.
  * 
- * For more informations about this policy, please refer to the online manual at
+ * For more information about this policy, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#FixedWindowRollingPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;

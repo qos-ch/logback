@@ -11,6 +11,9 @@ import ch.qos.logback.core.spi.FilterReply;
  * One can specify a level and the behaviour of the filter when 
  * said level is encountered in a logging event.
  *
+ * For more information about filters, please refer to the online manual at
+ * http://logback.qos.ch/manual/filters.html
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */

@@ -19,7 +19,7 @@ import ch.qos.logback.core.status.WarnStatus;
 /**
  * This class is used to manage base functionnalities of all appenders.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#AppenderBase
  *
  * @author Ceki G&uuml;lc&uuml;

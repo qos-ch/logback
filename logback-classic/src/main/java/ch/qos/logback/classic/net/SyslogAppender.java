@@ -23,7 +23,7 @@ import ch.qos.logback.core.net.SyslogWriter;
  * This appender can be used to send messages to a remote
  * syslog daemon.
  * <p>
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SyslogAppender
  * 
  * @author Ceki G&uumllc&uuml;

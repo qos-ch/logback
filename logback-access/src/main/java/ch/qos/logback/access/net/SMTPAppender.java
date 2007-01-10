@@ -21,7 +21,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * Send an e-mail when a specific access event occurs, typically when
  * certain pages are accessed.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#AccessSMTPAppender
  * <p>
  * @author Ceki G&uuml;lc&uuml;

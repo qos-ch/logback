@@ -30,7 +30,7 @@ import javax.sql.DataSource;
  * of connection pooling and whatever other goodies the application server
  * provides.
  * <p>
- * For more informations about this component, please refer to the online manual at
+ * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>

@@ -13,6 +13,9 @@ import ch.qos.logback.core.spi.FilterReply;
  * equal or above the specified level will trigger a
  * FilterReply.NEUTRAL result, to allow the rest of the
  * filter chain process the event.
+ * 
+ * For more information about filters, please refer to the online manual at
+ * http://logback.qos.ch/manual/filters.html
  *
  * @author S&eacute;bastien Pennec
  */

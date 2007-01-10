@@ -45,7 +45,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * usual <code>PatternLayout</code>.
  * </p>
  * <p>
- * For more informations about this layout, please refer to the online manual at
+ * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#AccessPatternLayout
  * 
  * @author Ceki G&uuml;lc&uuml;

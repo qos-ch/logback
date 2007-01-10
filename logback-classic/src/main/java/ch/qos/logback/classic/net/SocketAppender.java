@@ -20,7 +20,7 @@ import ch.qos.logback.core.net.SocketAppenderBase;
  * Sends {@link LoggingEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SocketAppender
  *  
  * @author Ceki G&uuml;lc&uuml;

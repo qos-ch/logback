@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  *  transparently obtaining JDBC {@link java.sql.Connection}s for logback classes
  *  that require the use of a {@link java.sql.Connection}.
  *  
- * For more informations about this component, please refer to the online manual at
+ * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
  *
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>

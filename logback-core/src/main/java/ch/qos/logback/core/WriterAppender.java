@@ -20,7 +20,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * WriterAppender appends events to a hava.io.Writer. 
  * This class provides basic services that other appenders build upon.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#WriterAppender
  *
  * @author Ceki G&uuml;lc&uuml;

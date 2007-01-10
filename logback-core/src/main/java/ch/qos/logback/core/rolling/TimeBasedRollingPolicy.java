@@ -24,7 +24,7 @@ import ch.qos.logback.core.rolling.helper.RollingCalendar;
  * powerful. It allows the rollover to be made based on time conditions. 
  * It is possible to specify that the rollover must occur each day, or month, for example.
  * 
- *  For more informations about this policy, please refer to the online manual at
+ *  For more information about this policy, please refer to the online manual at
  *  http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;

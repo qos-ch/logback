@@ -10,7 +10,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * and understand the built-in rules before rushing to write your own custom
  * filters.
  * <p>
- * For more informations about filters, please refer to the online manual at
+ * For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html
  * 
  * @author Ceki G&uuml;lc&uuml;

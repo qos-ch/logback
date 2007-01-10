@@ -15,7 +15,7 @@ import ch.qos.logback.core.spi.FilterReply;
  * a given result must be returned after the evaluation either failed or succeeded.
  * </p>
  * 
- * For more informations about filters, please refer to the online manual at
+ * For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html
  * 
  * @author Ceki G&uuml;lc&uuml;

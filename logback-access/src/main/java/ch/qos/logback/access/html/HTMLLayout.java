@@ -26,7 +26,7 @@ import ch.qos.logback.core.pattern.Converter;
  * See {@link ch.qos.logback.access.PatternLayout} for documentation on the
  * available patterns.
  * <p>
- * For more informations about this layout, please refer to the online manual at
+ * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#AccessHTMLLayout
  * 
  * 

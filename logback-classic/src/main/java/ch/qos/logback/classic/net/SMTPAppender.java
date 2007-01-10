@@ -22,7 +22,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * Send an e-mail when a specific logging event occurs, typically on errors or
  * fatal errors.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SMTPAppender
  * 
  * @author Ceki G&uuml;lc&uuml;

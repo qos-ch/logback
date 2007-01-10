@@ -13,7 +13,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * of parameters instead of a single event object. The latter is cleaner but 
  * the latter is much more performant.
  * <p>
- * For more informations about turbo filters, please refer to the online manual at
+ * For more information about turbo filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#TurboFilter
  * 
  * @author Ceki Gulcu

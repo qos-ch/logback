@@ -19,7 +19,7 @@ import ch.qos.logback.core.status.InfoStatus;
 /**
  * FileAppender appends log events to a file.
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more informatio about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#FileAppender
  * 
  * @author Ceki G&uuml;lc&uuml;

@@ -19,7 +19,7 @@ import java.sql.SQLException;
  * {@link ConnectionSource} that obtains the Connection in the traditional JDBC
  * manner based on the connection URL.
  * <p>
- * For more informations about this component, please refer to the online manual at
+ * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>

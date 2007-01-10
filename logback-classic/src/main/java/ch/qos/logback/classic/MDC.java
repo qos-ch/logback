@@ -15,7 +15,7 @@ import java.util.Set;
  * its parent.
  * <p>
  * 
- * For more informations about turbo filters, please refer to the online manual at
+ * For more information about turbo filters, please refer to the online manual at
  * http://logback.qos.ch/manual/mdc.html
  * 
  * @author Ceki G&uuml;lc&uuml;

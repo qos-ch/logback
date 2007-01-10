@@ -20,7 +20,7 @@ import ch.qos.logback.core.util.FileSize;
  * the FileAppender using the SizeBasedTriggeringPolicy rolls the file
  * and creates a new one.
  * 
- * For more informations about this policy, please refer to the online manual at
+ * For more information about this policy, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SizeBasedTriggeringPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;

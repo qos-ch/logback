@@ -21,7 +21,7 @@ import javax.sql.DataSource;
  * manner based on a {@link javax.sql.DataSource DataSource}.
  * <p>
  * 
- * For more informations about this component, please refer to the online manual at
+ * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author Ray DeCampo

@@ -23,7 +23,7 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * The DBAppender inserts access events into three database tables in a format
  * independent of the Java programming language. 
  * 
- * For more informations about this appender, please refer to the online manual at
+ * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#AccessDBAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
