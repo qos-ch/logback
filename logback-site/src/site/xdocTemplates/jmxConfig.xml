@@ -14,7 +14,7 @@
 		<p>
 			As of version 0.8, logback ships with a component that allows 
 			configuration via JMX. Basically, it lets you reload the current
-			configuration, load a new one, or modify logger levels.
+			configuration, load a new one, list loggers and modify logger levels.
 		</p>
 		
 		<h3>Configuring your server</h3>
@@ -153,7 +153,10 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 				Get the level of a logger
 			</p>
 			<p>
-				Get the effective level of a logger
+				Change the level setting of a specified logger.
+			</p>
+			<p>
+				Change a list of all declared loggers.
 			</p>
 			<p>
 				Change the level setting of a specified logger.
