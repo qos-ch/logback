@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.net;
+package ch.qos.logback.classic.net.mock;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -20,15 +20,15 @@ import java.util.List;
  */
 public class MockSyslogServer extends Thread {
 
-  static final int PORT = 14500;
+  public static final int PORT = 14500;
 
   final int loopLen;
-    final int port;
+  final int port;
   
   List<String> msgList = new ArrayList<String>();
   boolean finished = false;
   
-  MockSyslogServer(int loopLen, int port) {
+  public MockSyslogServer(int loopLen, int port) {
     super();
     this.loopLen = loopLen;
     this.port = port;
@@ -58,5 +58,13 @@ public class MockSyslogServer extends Thread {
       }
     }
     finished = true;
+  }
+  
+  public boolean isFinished() {
+    return finished;
+  }
+  
+  public List<String> getMessageList() {
+    return msgList;
   }
 }

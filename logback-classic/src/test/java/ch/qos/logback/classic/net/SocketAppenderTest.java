@@ -16,6 +16,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.MDC;
+import ch.qos.logback.classic.net.mock.MockSocketServer;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -44,10 +45,10 @@ public class SocketAppenderTest extends TestCase {
     // Wait max 2 seconds for mock server to finish. However, it should
     // finish much sooner than that.
     mockSocketServer.join(2000);
-    assertTrue(mockSocketServer.finished);
-    assertEquals(1, mockSocketServer.loggingEventList.size());
+    assertTrue(mockSocketServer.isFinished());
+    assertEquals(1, mockSocketServer.getEventsList().size());
 
-    LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
+    LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(0);
     assertEquals("test msg", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
@@ -62,10 +63,10 @@ public class SocketAppenderTest extends TestCase {
     // Wait max 2 seconds for mock server to finish. However, it should
     // finish much sooner than that.
     mockSocketServer.join(2000);
-    assertTrue(mockSocketServer.finished);
-    assertEquals(1, mockSocketServer.loggingEventList.size());
+    assertTrue(mockSocketServer.isFinished());
+    assertEquals(1, mockSocketServer.getEventsList().size());
 
-    LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
+    LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(0);
 
     LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
     assertNotNull(loggerRemoteView);
@@ -91,10 +92,10 @@ public class SocketAppenderTest extends TestCase {
     // Wait max 2 seconds for mock server to finish. However, it should
     // finish much sooner than that.
     mockSocketServer.join(2000);
-    assertTrue(mockSocketServer.finished);
-    assertEquals(1, mockSocketServer.loggingEventList.size());
+    assertTrue(mockSocketServer.isFinished());
+    assertEquals(1, mockSocketServer.getEventsList().size());
 
-    LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(0);
+    LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
@@ -114,12 +115,12 @@ public class SocketAppenderTest extends TestCase {
     // Wait max 2 seconds for mock server to finish. However, it should
     // finish much sooner than that.
     mockSocketServer.join(2000);
-    assertTrue(mockSocketServer.finished);
-    assertEquals(2, mockSocketServer.loggingEventList.size());
+    assertTrue(mockSocketServer.isFinished());
+    assertEquals(2, mockSocketServer.getEventsList().size());
 
     // We observe the second logging event. It should provide us with
     // the updated MDC property.
-    LoggingEvent remoteEvent = mockSocketServer.loggingEventList.get(1);
+    LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(1);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }

@@ -12,6 +12,7 @@ package ch.qos.logback.classic.net;
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.net.mock.MockSyslogServer;
 import ch.qos.logback.core.net.SyslogConstants;
 
 public class SyslogAppenderTest extends TestCase {
@@ -57,9 +58,9 @@ public class SyslogAppenderTest extends TestCase {
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
-    assertTrue(mockServer.finished);
-    assertEquals(1, mockServer.msgList.size());
-    String msg = mockServer.msgList.get(0);
+    assertTrue(mockServer.isFinished());
+    assertEquals(1, mockServer.getMessageList().size());
+    String msg = mockServer.getMessageList().get(0);
 
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
@@ -102,16 +103,16 @@ public class SyslogAppenderTest extends TestCase {
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
-    assertTrue(mockServer.finished);
+    assertTrue(mockServer.isFinished());
     
     //message + 20 lines of stacktrace
-    assertEquals(21, mockServer.msgList.size());
+    assertEquals(21, mockServer.getMessageList().size());
 //    int i = 0;
 //    for (String line: mockServer.msgList) {
 //      System.out.println(i++ + ": " + line);
 //    }
     
-    String msg = mockServer.msgList.get(0);
+    String msg = mockServer.getMessageList().get(0);
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));

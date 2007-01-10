@@ -21,6 +21,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(SyslogAppenderTest.class);
     suite.addTestSuite(SMTPAppenderTest.class);
     suite.addTestSuite(SocketAppenderTest.class);
+    suite.addTestSuite(JMSTopicAppenderTest.class);
     return suite;
   }
 }
