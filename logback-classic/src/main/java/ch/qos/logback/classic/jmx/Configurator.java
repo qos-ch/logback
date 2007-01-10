@@ -21,6 +21,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  * Contributor:
  *   Sebastian Davids
+ *   See http://bugzilla.qos.ch/show_bug.cgi?id=35
  */
 public class Configurator extends ContextAwareBase implements
     ConfiguratorMBean {
