@@ -1118,7 +1118,7 @@ public class MyAppWithConfigFile {
 	<p>Note that we've set the root logger level explicitly. Since root
 	logger have a DEBUG level by default we could have omitted this.</p>
 	
-	<p>To run this examle, use this command:</p>
+	<p>To run this example, use this command:</p>
 	
 <div class="source"><pre>java chapter1.MyAppWithConfigFile src/main/java/chapter1/sample-config-1.xml</pre></div>
 
