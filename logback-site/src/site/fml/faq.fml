@@ -33,14 +33,12 @@
 							<em>logback-classic-VERSION.jar</em> .
 						</p>
 
-
-            <!-- should logback.xml really be placed in JETTY_HOME?  -->
-
 						<p>
 							To configure logback-classic, a file called
 							<em>logback.xml</em> should be placed at the root
 							directory of Jetty, that is the <em>JETTY_HOME</em>
-							directory. You can find configuration samples in the
+							directory or in the <em>JETTY_HOME/resources</em> directory,
+							depending on your classpath settings. You can find configuration samples in the
 							<em>examples/src/chapter4/conf/</em> directory, in the
 							distribution of logback.
 						</p>
