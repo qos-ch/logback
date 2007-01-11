@@ -28,8 +28,8 @@ public class JMSTopicAppenderTest extends TestCase {
     appender.setName("jmsTopic");
     appender.tcfBindingName = "topicCnxFactory";
     appender.topicBindingName = "testTopic";
-    appender.providerURL = "url";
-    appender.initialContextFactoryName = MockInitialContextFactory.class.getName();
+    appender.setProviderURL("url");
+    appender.setInitialContextFactoryName(MockInitialContextFactory.class.getName());
     
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(appender.tcfBindingName, new MockTopicConnectionFactory());
@@ -79,62 +79,62 @@ public class JMSTopicAppenderTest extends TestCase {
   }
 
   public void testBuildEnvProperties() {
-    appender.initialContextFactoryName = "icfn";
-    appender.providerURL = "url";
-    appender.urlPkgPrefixes = "pkgPref";
-    appender.securityPrincipalName = "user";
-    appender.securityCredentials = "cred";
+    appender.setInitialContextFactoryName("icfn");
+    appender.setProviderURL("url");
+    appender.setURLPkgPrefixes("pkgPref");
+    appender.setSecurityPrincipalName("user");
+    appender.setSecurityCredentials("cred");
 
     Properties props = appender.buildEnvProperties();
     assertEquals(5, props.size());
-    assertEquals(appender.initialContextFactoryName, props
+    assertEquals(appender.getInitialContextFactoryName(), props
         .getProperty(Context.INITIAL_CONTEXT_FACTORY));
-    assertEquals(appender.providerURL, props.getProperty(Context.PROVIDER_URL));
-    assertEquals(appender.urlPkgPrefixes, props
+    assertEquals(appender.getProviderURL(), props.getProperty(Context.PROVIDER_URL));
+    assertEquals(appender.getURLPkgPrefixes(), props
         .getProperty(Context.URL_PKG_PREFIXES));
-    assertEquals(appender.securityPrincipalName, props
+    assertEquals(appender.getSecurityPrincipalName(), props
         .getProperty(Context.SECURITY_PRINCIPAL));
-    assertEquals(appender.securityCredentials, props
+    assertEquals(appender.getSecurityCredentials(), props
         .getProperty(Context.SECURITY_CREDENTIALS));
   }
 
   public void testBuildEnvPropertiesWithNullProviderURL() {
-    appender.initialContextFactoryName = "icfn";
-    appender.providerURL = null;
-    appender.urlPkgPrefixes = "pkgPref";
-    appender.securityPrincipalName = "user";
-    appender.securityCredentials = "cred";
+    appender.setInitialContextFactoryName("icfn");
+    appender.setProviderURL(null);
+    appender.setURLPkgPrefixes("pkgPref");
+    appender.setSecurityPrincipalName("user");
+    appender.setSecurityCredentials("cred");
 
     Properties props = appender.buildEnvProperties();
     assertEquals(4, props.size());
-    assertEquals(appender.initialContextFactoryName, props
+    assertEquals(appender.getInitialContextFactoryName(), props
         .getProperty(Context.INITIAL_CONTEXT_FACTORY));
     assertEquals(null, props.getProperty(Context.PROVIDER_URL));
-    assertEquals(appender.urlPkgPrefixes, props
+    assertEquals(appender.getURLPkgPrefixes(), props
         .getProperty(Context.URL_PKG_PREFIXES));
-    assertEquals(appender.securityPrincipalName, props
+    assertEquals(appender.getSecurityPrincipalName(), props
         .getProperty(Context.SECURITY_PRINCIPAL));
-    assertEquals(appender.securityCredentials, props
+    assertEquals(appender.getSecurityCredentials(), props
         .getProperty(Context.SECURITY_CREDENTIALS));
 
     assertEquals(1, context.getStatusManager().getCount());
   }
 
   public void testBuildEnvPropertiesWithNullCredentials() {
-    appender.initialContextFactoryName = "icfn";
-    appender.providerURL = "url";
-    appender.urlPkgPrefixes = "pkgPref";
-    appender.securityPrincipalName = "user";
-    appender.securityCredentials = null;
+    appender.setInitialContextFactoryName("icfn");
+    appender.setProviderURL("url");
+    appender.setURLPkgPrefixes("pkgPref");
+    appender.setSecurityPrincipalName("user");
+    appender.setSecurityCredentials(null);
 
     Properties props = appender.buildEnvProperties();
     assertEquals(4, props.size());
-    assertEquals(appender.initialContextFactoryName, props
+    assertEquals(appender.getInitialContextFactoryName(), props
         .getProperty(Context.INITIAL_CONTEXT_FACTORY));
-    assertEquals(appender.providerURL, props.getProperty(Context.PROVIDER_URL));
-    assertEquals(appender.urlPkgPrefixes, props
+    assertEquals(appender.getProviderURL(), props.getProperty(Context.PROVIDER_URL));
+    assertEquals(appender.getURLPkgPrefixes(), props
         .getProperty(Context.URL_PKG_PREFIXES));
-    assertEquals(appender.securityPrincipalName, props
+    assertEquals(appender.getSecurityPrincipalName(), props
         .getProperty(Context.SECURITY_PRINCIPAL));
     assertEquals(null, props
         .getProperty(Context.SECURITY_CREDENTIALS));
@@ -143,22 +143,22 @@ public class JMSTopicAppenderTest extends TestCase {
   }
   
   public void testBuildEnvPropertiesWithPkgNull() {
-    appender.initialContextFactoryName = "icfn";
-    appender.providerURL = "url";
-    appender.urlPkgPrefixes = null;
-    appender.securityPrincipalName = "user";
-    appender.securityCredentials = "cred";
+    appender.setInitialContextFactoryName("icfn");
+    appender.setProviderURL("url");
+    appender.setURLPkgPrefixes(null);
+    appender.setSecurityPrincipalName("user");
+    appender.setSecurityCredentials("cred");
 
     Properties props = appender.buildEnvProperties();
     assertEquals(4, props.size());
-    assertEquals(appender.initialContextFactoryName, props
+    assertEquals(appender.getInitialContextFactoryName(), props
         .getProperty(Context.INITIAL_CONTEXT_FACTORY));
-    assertEquals(appender.providerURL, props.getProperty(Context.PROVIDER_URL));
+    assertEquals(appender.getProviderURL(), props.getProperty(Context.PROVIDER_URL));
     assertEquals(null, props
         .getProperty(Context.URL_PKG_PREFIXES));
-    assertEquals(appender.securityPrincipalName, props
+    assertEquals(appender.getSecurityPrincipalName(), props
         .getProperty(Context.SECURITY_PRINCIPAL));
-    assertEquals(appender.securityCredentials, props
+    assertEquals(appender.getSecurityCredentials(), props
         .getProperty(Context.SECURITY_CREDENTIALS));
 
     assertEquals(0, context.getStatusManager().getCount());
@@ -167,7 +167,7 @@ public class JMSTopicAppenderTest extends TestCase {
   public void testStartMinimalInfo() {
     //let's leave only what's in the setup()
     //method, minus the providerURL
-    appender.providerURL = null;
+    appender.setProviderURL(null);
     appender.start();
     
     assertTrue(appender.isStarted());
@@ -180,8 +180,8 @@ public class JMSTopicAppenderTest extends TestCase {
   }
   
   public void testStartUserPass() {
-    appender.userName = "";
-    appender.password = "";
+    appender.setUserName("test");
+    appender.setPassword("test");
     
     appender.start();
     
