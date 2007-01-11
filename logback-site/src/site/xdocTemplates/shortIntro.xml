@@ -965,87 +965,12 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 		href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
 		web-application.
 		</p>
-
-		<p>Let us give a taste of how logback configuration is done with
-		the help of a trivial application named <em>MyApp</em>.
-		</p>
-
-		<em>Example 1.3: BasicConfigurator sample usage (<a href="xref/chapter1/MyApp.html">logback-examples/src/main/java/chapter1/MyApp.java</a>)</em>
-<div class="source"><pre>package chapter1;
-
-// Import SLF4J classes.
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-import ch.qos.logback.classic.BasicConfigurator;
-
-public class MyApp {
-
-  public static void main(String[] args) {
-	
-    // Set up a simple configuration that logs on the console.
-    BasicConfigurator.configureDefaultContext();
-
-    Logger logger = LoggerFactory.getLogger(MyApp.class);
-	
-    logger.info("Entering application.");
-    Bar bar = new Bar();
-    bar.doIt();
-    logger.info("Exiting application.");
-  }
-}</pre></div>
-
-		<p>This class defines a logger instance variable with the name
-		<em>MyApp</em>. It then instantiates a <code>Bar</code>
-		object. The <code>Bar</code> class is listed below:
-		</p>
-
-		<em>Example 1.3: Sample logging class (<a href="xref/chapter1/Bar.html">logback-examples/src/main/java/chapter1/Bar.java</a>)</em>
-<div class="source"><pre>package chapter1;
-  
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-class Bar {
-
-  Logger logger = LoggerFactory.getLogger(Bar.class);	
-	
-  public void doIt() {
-    logger.debug("doing my job");
-  }
-}</pre></div>
-
-		<p>The invocation of the <code>configureDefaultContext()</code>
-		method in <code>BasicConfigurator</code> creates a minimal logback setup. 
-		Note that, by default, the root Logger is assigned to <code>Level.DEBUG</code>.
-		</p>
-
+		
 		<p>
-			Running <code>MyApp</code>, by issuing the command <em>java chapter1.MyApp</em>,
-			will produce the following output:
+			Configuring logback from a XML file is an easy task. One just needs to
+			instanciate a <code>JoranConfigurator</code> and pass the configuration
+			file, as the following example demonstrate.
 		</p>
-<div class="source"><pre>22:05:21.461 [main] INFO  chapter1.MyApp - Entering application.
-22:05:21.461 [main] DEBUG chapter1.Bar - doing my job
-22:05:21.461 [main] INFO  chapter1.MyApp - Exiting application.</pre></div>
-
-<!-- =========  CEKI: STOPPED HERE =================== -->
-
-    <p><em>MyApp</em> configures logback by invoking
-    <code>BasicConfigurator.configureDefaultContext()</code>. All
-    other classes only need to retrieve an instance of
-    <code>org.slf4j.Logger</code> by calling
-    <code>LoggerFactory.getLogger()</code>, and then log away. For
-    example, the only dependence of the <code>Bar</code> class is on
-    <code>org.slf4j.Logger</code> and
-    <code>org.slf4j.LoggerFactory</code>. Except code that configures
-    logback (if such code exists) user code does not need to depend on
-    logback, but on SLF4J instead.
-    </p>
-
-  	<p>The previous example output logging information always in the
-  	same fixed format. Fortunately, it is easy to modify an
-  	application so that logging environment is configured at runtime.
-    </p>
 
      <em>Example 1.4: Logback configuration from file ((<a
   href="xref/chapter1/MyAppWithConfigFile.html">logback-examples/src/main/java/chapter1/MyAppWithConfigFile.java</a>)</em>
@@ -1079,16 +1004,51 @@ public class MyAppWithConfigFile {
   }
 }</pre></div>	
 
-    <p>MyAppWithConfigFile instructs <code>JoranConfigurator</code> 
-    to parse a configuration file and to set up logging according to 
-    the instructions found
-    therein.
+
+		<p>This class defines a logger instance variable. 
+		It then instantiates a <code>Bar</code>
+		object. The <code>Bar</code> class is listed below:
+		</p>
+
+		<em>Example 1.3: Sample logging class (<a href="xref/chapter1/Bar.html">logback-examples/src/main/java/chapter1/Bar.java</a>)</em>
+<div class="source"><pre>package chapter1;
+  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class Bar {
+
+  Logger logger = LoggerFactory.getLogger(Bar.class);	
+	
+  public void doIt() {
+    logger.debug("doing my job");
+  }
+}</pre></div>
+
+		<p><em>MyAppWithConfigFile</em> configures logback by using the
+	   <code>JoranConfigurator</code>.  Joran is a XML interpreter, similar to the
+		commons-digester API, but offering several advantages over
+		commons-digester. Here, it parses the xml file and runs actions
+		depending on the tags it finds.  To setup the <code>JoranConfigurator</code>
+		properly, we passed the <code>LoggerContext</code>. A
+		<code>LoggerContext</code> is the class that creates and manages
+		Loggers in logback.  It is also the class that implements the
+		<code>org.slf4j.ILoggerFactory</code> interface.
+		</p>
+	<p>
+		All
+    other classes only need to retrieve an instance of
+    <code>org.slf4j.Logger</code> by calling
+    <code>LoggerFactory.getLogger()</code>, and then log away. For
+    example, the only dependence of the <code>Bar</code> class is on
+    <code>org.slf4j.Logger</code> and
+    <code>org.slf4j.LoggerFactory</code>. Except code that configures
+    logback (if such code exists) user code does not need to depend on
+    logback, but on SLF4J instead.
     </p>
 
-    <p>Let us configure logback in the exact same way,
-  	but this time with an XML configuration file. The next
-  	configuration file, once executed, will have the same affect as
-  	calling <code>BasicConfigrator</code>.</p>
+    <p>Let us configure logback with the
+    next XML configuration file:</p>
 
 	<em>Example 1.5: Basic configuration with a xml file (logback-examples/src/main/java/chapter1/sample-config-1.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
@@ -1122,21 +1082,14 @@ public class MyAppWithConfigFile {
 	
 <div class="source"><pre>java chapter1.MyAppWithConfigFile src/main/java/chapter1/sample-config-1.xml</pre></div>
 
-	<p>The console output will be exactly the same as before. However,
-	this time, we didn't need to import and call the <code>BasicConfigurator</code>
-	class.
+	<p>
+		Here is what you should see in the console:
 	</p>
- 
-	<p>We used the <code>JoranConfigurator</code> class to parse the configuration
-	file we just created.  Joran is a XML interpreter, similar to the
-	commons-digester API, but offering several advantages over
-	commons-digester. Here, it parses the xml file and runs actions
-	depending on the tags it finds.  To setup the <code>JoranConfigurator</code>
-	properly, we passed the <code>LoggerContext</code>. A
-	<code>LoggerContext</code> is the class that creates and manages
-	Loggers in logback.  It is also the class that implements the
-	<code>org.slf4j.ILoggerFactory</code> interface.
-	</p>
+	
+<div class="source"><pre>18:15:26.718 [main] INFO  chapter1.MyAppWithConfigFile - Entering application.
+18:15:26.718 [main] DEBUG chapter1.Bar - doing my job
+18:15:26.718 [main] INFO  chapter1.MyAppWithConfigFile - Exiting application.</pre></div>
+
 	
 	<p>Logging to the console is a rather simple example. Let's now
 	configure logback so that it logs to the console, but also to a
@@ -1225,5 +1178,44 @@ public class MyAppWithConfigFile {
 	which would log according to local server policy, for example by forwarding the log event 
 	to a second logback server.</p>
 	
+	
+	<p>
+		Until now, we always had to specifically load the configuration file and pass it
+		to a logback component. However, this step is not necessary in most cases. When logback
+		is not configured by instanciating <code>JoranConfigurator</code> objects, it follows 
+		a simple policy to configure itself.
+	</p>
+	
+	<ul>
+		<p>Logback first tries to find a file called <em>logback.xml</em> within the classpath.</p>
+		<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
+		<p>In case none of these files are found, logback configures itself automatically using the 
+		<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
+		</a> class.</p>
+	</ul>
+	
+	<p>
+		The first two checks allow for two environments to cooperate nicely. When the application
+		using logback is in development and test process, a special file can be used to setup
+		a logging environment that is developer-friendly. Once in production environment, the 
+		presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
+		configuration.
+	</p>
+		
+	<p>
+		The last step is meant to provide very basic logging functionnality in case no configuration
+		file is provided. In that case, the logging requests are output to the console.
+	</p>
+	
+	<p>
+		Letting logback load its configuration file is the most often used way of 
+		configuring. It allows the user to only import SLF4J classes in her code.
+	</p>
+	
+	<p>
+		The last step of logback's configuration policy permits the use of a minimal
+		logging configuration right out of the box. Remember the very first example of 
+		this short introduction. The output was generated due to this feature.
+	</p>
 	</body>
 </document>
