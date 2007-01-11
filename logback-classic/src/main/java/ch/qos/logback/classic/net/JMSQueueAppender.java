@@ -40,10 +40,10 @@ import ch.qos.logback.core.AppenderBase;
  * requires the retreival of a JNDI {@link Context}.
  * 
  * <p>
- * There are two common methods for retrieving a JNDI {@link Context}. If a file
- * resource named <em>jndi.properties</em> is available to the JNDI API, it
- * will use the information found therein to retrieve an initial JNDI context.
- * To obtain an initial context, your code will simply call:
+ * There are two common methods for retrieving a JNDI {@link Context}. If a
+ * file resource named <em>jndi.properties</em> is available to the JNDI API,
+ * it will use the information found therein to retrieve an initial JNDI
+ * context. To obtain an initial context, your code will simply call:
  * 
  * <pre>
  * InitialContext jndiContext = new InitialContext();
@@ -115,7 +115,6 @@ public class JMSQueueAppender extends AppenderBase<LoggingEvent> {
   QueueSession queueSession;
   QueueSender queueSender;
 
-  boolean inOrder = false;
   int successiveFailureCount = 0;
 
   public JMSQueueAppender() {
@@ -159,79 +158,82 @@ public class JMSQueueAppender extends AppenderBase<LoggingEvent> {
     QueueConnectionFactory queueConnectionFactory;
 
     try {
-      Context jndi;
+      Context jndi = buildJNDIContext();
 
-      //addInfo("Getting initial context.");
-      if (initialContextFactoryName != null) {
-        Properties env = new Properties();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
-        if (providerURL != null) {
-          env.put(Context.PROVIDER_URL, providerURL);
-        } else {
-         addWarn(
-            "You have set InitialContextFactoryName option but not the "
-            + "ProviderURL. This is likely to cause problems.");
-        }
-        if (urlPkgPrefixes != null) {
-          env.put(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
-        }
-
-        if (securityPrincipalName != null) {
-          env.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
-          if (securityCredentials != null) {
-            env.put(Context.SECURITY_CREDENTIALS, securityCredentials);
-          } else {
-            addWarn(
-              "You have set SecurityPrincipalName option but not the "
-              + "SecurityCredentials. This is likely to cause problems.");
-          }
-        }
-        jndi = new InitialContext(env);
-      } else {
-        jndi = new InitialContext();
-      }
-
-      //addInfo("Looking up [" + qcfBindingName + "]");
-      queueConnectionFactory =
-        (QueueConnectionFactory) lookup(jndi, qcfBindingName);
-      //addInfo("About to create QueueConnection.");
+      // addInfo("Looking up [" + qcfBindingName + "]");
+      queueConnectionFactory = (QueueConnectionFactory) lookup(jndi,
+          qcfBindingName);
+      // addInfo("About to create QueueConnection.");
       if (userName != null) {
-        this.queueConnection =
-          queueConnectionFactory.createQueueConnection(userName, password);
+        this.queueConnection = queueConnectionFactory.createQueueConnection(
+            userName, password);
       } else {
         this.queueConnection = queueConnectionFactory.createQueueConnection();
       }
 
-      //addInfo(
-      //  "Creating QueueSession, non-transactional, "
-      //  + "in AUTO_ACKNOWLEDGE mode.");
-      this.queueSession =
-        queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+      // addInfo(
+      // "Creating QueueSession, non-transactional, "
+      // + "in AUTO_ACKNOWLEDGE mode.");
+      this.queueSession = queueConnection.createQueueSession(false,
+          Session.AUTO_ACKNOWLEDGE);
 
-      //addInfo("Looking up queue name [" + queueBindingName + "].");
+      // addInfo("Looking up queue name [" + queueBindingName + "].");
       Queue queue = (Queue) lookup(jndi, queueBindingName);
 
-      //addInfo("Creating QueueSender.");
+      // addInfo("Creating QueueSender.");
       this.queueSender = queueSession.createSender(queue);
 
-      //addInfo("Starting QueueConnection.");
+      // addInfo("Starting QueueConnection.");
       queueConnection.start();
 
       jndi.close();
     } catch (Exception e) {
-      addError(
-       "Error while activating options for appender named [" + name + "].", e);
+      addError("Error while activating options for appender named [" + name
+          + "].", e);
     }
-    
-    
-    if (this.queueConnection != null && this.queueSession != null && this.queueSender != null) {
-      inOrder = true;
+
+    if (this.queueConnection != null && this.queueSession != null
+        && this.queueSender != null) {
+      super.start();
+    }
+  }
+
+  public Context buildJNDIContext() throws NamingException {
+    Context jndi = null;
+
+    // addInfo("Getting initial context.");
+    if (initialContextFactoryName != null) {
+      Properties env = buildEnvProperties();
+      jndi = new InitialContext(env);
     } else {
-      inOrder = false;
+      jndi = new InitialContext();
     }
-    if(inOrder) {
-        super.start();
+    return jndi;
+  }
+
+  public Properties buildEnvProperties() {
+    Properties env = new Properties();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
+    if (providerURL != null) {
+      env.put(Context.PROVIDER_URL, providerURL);
+    } else {
+      addWarn("You have set InitialContextFactoryName option but not the "
+          + "ProviderURL. This is likely to cause problems.");
     }
+    if (urlPkgPrefixes != null) {
+      env.put(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
+    }
+
+    if (securityPrincipalName != null) {
+      env.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
+      if (securityCredentials != null) {
+        env.put(Context.SECURITY_CREDENTIALS, securityCredentials);
+      } else {
+        addWarn("You have set SecurityPrincipalName option but not the "
+            + "SecurityCredentials. This is likely to cause problems.");
+      }
+    }
+    return env;
   }
 
   protected Object lookup(Context ctx, String name) throws NamingException {
@@ -273,35 +275,23 @@ public class JMSQueueAppender extends AppenderBase<LoggingEvent> {
   }
 
   /**
-   * Gets whether appender is properly configured to append messages.
-   * 
-   * @return true if properly configured.
-   */
-  protected boolean checkEntryConditions() {
-    return inOrder;
-  }
-
-  /**
    * This method called by {@link AppenderSkeleton#doAppend} method to do most
    * of the real appending work.
    */
   public void append(LoggingEvent event) {
-    if (!checkEntryConditions()) {
+    if (!isStarted()) {
       return;
     }
 
     try {
       ObjectMessage msg = queueSession.createObjectMessage();
-
-      // manage caller data
-
       msg.setObject(event);
       queueSender.send(msg);
       successiveFailureCount = 0;
     } catch (Exception e) {
       successiveFailureCount++;
       if (successiveFailureCount > SUCCESSIVE_FAILURE_LIMIT) {
-        inOrder = false;
+        stop();
       }
       addError("Could not send message in JMSAppender [" + name + "].", e);
 
@@ -397,16 +387,16 @@ public class JMSQueueAppender extends AppenderBase<LoggingEvent> {
   }
 
   /**
-   * Returns the QueueSession used for this appender. Only valid after
-   * start() method has been invoked.
+   * Returns the QueueSession used for this appender. Only valid after start()
+   * method has been invoked.
    */
   protected QueueSession getQueueSession() {
     return queueSession;
   }
 
   /**
-   * Returns the QueueSender used for this appender. Only valid after
-   * start() method has been invoked.
+   * Returns the QueueSender used for this appender. Only valid after start()
+   * method has been invoked.
    */
   protected QueueSender getQueueSender() {
     return queueSender;

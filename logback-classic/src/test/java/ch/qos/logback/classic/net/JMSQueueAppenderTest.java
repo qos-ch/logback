@@ -9,31 +9,31 @@ import junit.framework.TestCase;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.net.mock.MockInitialContext;
 import ch.qos.logback.classic.net.mock.MockInitialContextFactory;
-import ch.qos.logback.classic.net.mock.MockTopic;
-import ch.qos.logback.classic.net.mock.MockTopicConnectionFactory;
-import ch.qos.logback.classic.net.mock.MockTopicPublisher;
+import ch.qos.logback.classic.net.mock.MockQueue;
+import ch.qos.logback.classic.net.mock.MockQueueConnectionFactory;
+import ch.qos.logback.classic.net.mock.MockQueueSender;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.ContextBase;
 
-public class JMSTopicAppenderTest extends TestCase {
+public class JMSQueueAppenderTest extends TestCase {
 
   ch.qos.logback.core.Context context;
-  JMSTopicAppender appender;
+  JMSQueueAppender appender;
 
   @Override
   protected void setUp() throws Exception {
     context = new ContextBase();
-    appender = new JMSTopicAppender();
+    appender = new JMSQueueAppender();
     appender.setContext(context);
-    appender.setName("jmsTopic");
-    appender.tcfBindingName = "topicCnxFactory";
-    appender.topicBindingName = "testTopic";
+    appender.setName("jmsQueue");
+    appender.qcfBindingName = "queueCnxFactory";
+    appender.queueBindingName = "testQueue";
     appender.providerURL = "url";
     appender.initialContextFactoryName = MockInitialContextFactory.class.getName();
     
     MockInitialContext mic = MockInitialContextFactory.getContext();
-    mic.map.put(appender.tcfBindingName, new MockTopicConnectionFactory());
-    mic.map.put(appender.topicBindingName, new MockTopic(appender.topicBindingName));
+    mic.map.put(appender.qcfBindingName, new MockQueueConnectionFactory());
+    mic.map.put(appender.queueBindingName, new MockQueue(appender.queueBindingName));
     
     super.setUp();
   }
@@ -51,9 +51,9 @@ public class JMSTopicAppenderTest extends TestCase {
     LoggingEvent le = createLoggingEvent();
     appender.append(le);
     
-    MockTopicPublisher tp = (MockTopicPublisher)appender.topicPublisher;
-    assertEquals(1, tp.getMessageList().size());
-    ObjectMessage message = (ObjectMessage) tp.getMessageList().get(0);
+    MockQueueSender qs = (MockQueueSender)appender.queueSender;
+    assertEquals(1, qs.getMessageList().size());
+    ObjectMessage message = (ObjectMessage) qs.getMessageList().get(0);
     try {
       assertEquals(le, message.getObject());
     } catch (Exception e) {
@@ -65,7 +65,7 @@ public class JMSTopicAppenderTest extends TestCase {
     appender.start();
     
     //make sure the append method does not work
-    appender.topicPublisher = null;
+    appender.queueSender = null;
     
     LoggingEvent le = createLoggingEvent();
     for (int i = 1; i <= 3; i++) {
@@ -173,7 +173,7 @@ public class JMSTopicAppenderTest extends TestCase {
     assertTrue(appender.isStarted());
     
     try {
-      assertEquals(appender.topicBindingName, appender.topicPublisher.getTopic().getTopicName());
+      assertEquals(appender.queueBindingName, appender.queueSender.getQueue().getQueueName());
     } catch (Exception e) {
       fail();
     }
@@ -188,14 +188,14 @@ public class JMSTopicAppenderTest extends TestCase {
     assertTrue(appender.isStarted());
     
     try {
-      assertEquals(appender.topicBindingName, appender.topicPublisher.getTopic().getTopicName());
+      assertEquals(appender.queueBindingName, appender.queueSender.getQueue().getQueueName());
     } catch (Exception e) {
       fail();
     }
   }
   
   public void testStartFails() {
-    appender.topicBindingName = null;
+    appender.queueBindingName = null;
     
     appender.start();
     
