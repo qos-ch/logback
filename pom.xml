@@ -16,7 +16,7 @@
     <url>http://www.qos.ch</url>
   </organization>
   <inceptionYear>2005</inceptionYear>
-  
+     
   <modules>
     <module>logback-core</module>
     <module>logback-classic</module>
