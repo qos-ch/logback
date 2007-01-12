@@ -45,20 +45,20 @@ public class JMSQueueSink implements javax.jms.MessageListener {
   private Logger logger = (Logger)LoggerFactory.getLogger(JMSTopicSink.class);
 
   static public void main(String[] args) throws Exception {
-    if (args.length != 4) {
+    if (args.length != 2) {
       usage("Wrong number of arguments.");
     }
 
     String qcfBindingName = args[0];
     String queueBindingName = args[1];
-    String username = args[2];
-    String password = args[3];
+//    String username = args[2];
+//    String password = args[3];
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     ContextInitializer.autoConfig(loggerContext);
 
-    new JMSQueueSink(qcfBindingName, queueBindingName, username, password);
+    new JMSQueueSink(qcfBindingName, queueBindingName, null, null);
 
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
     // Loop until the word "exit" is typed
@@ -138,7 +138,7 @@ public class JMSQueueSink implements javax.jms.MessageListener {
     System.err
         .println("Usage: java "
             + JMSTopicSink.class.getName()
-            + " QueueConnectionFactoryBindingName QueueBindingName username password");
+            + " QueueConnectionFactoryBindingName QueueBindingName");
     System.exit(1);
   }
 }

@@ -45,20 +45,20 @@ public class JMSTopicSink implements javax.jms.MessageListener {
   private Logger logger = (Logger)LoggerFactory.getLogger(JMSTopicSink.class);
 
   static public void main(String[] args) throws Exception {
-    if (args.length != 4) {
+    if (args.length != 2) {
       usage("Wrong number of arguments.");
     }
 
     String tcfBindingName = args[0];
     String topicBindingName = args[1];
-    String username = args[2];
-    String password = args[3];
+//    String username = args[2];
+//    String password = args[3];
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     ContextInitializer.autoConfig(loggerContext);
 
-    new JMSTopicSink(tcfBindingName, topicBindingName, username, password);
+    new JMSTopicSink(tcfBindingName, topicBindingName, null, null);
 
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
     // Loop until the word "exit" is typed
@@ -109,7 +109,6 @@ public class JMSTopicSink implements javax.jms.MessageListener {
 
   public void onMessage(javax.jms.Message message) {
     LoggingEvent event;
-    System.out.println("xxxx onMessage called");
     try {
       if (message instanceof ObjectMessage) {
         ObjectMessage objectMessage = (ObjectMessage) message;
@@ -139,7 +138,7 @@ public class JMSTopicSink implements javax.jms.MessageListener {
     System.err
         .println("Usage: java "
             + JMSTopicSink.class.getName()
-            + " TopicConnectionFactoryBindingName TopicBindingName username password");
+            + " TopicConnectionFactoryBindingName TopicBindingName");
     System.exit(1);
   }
 }
