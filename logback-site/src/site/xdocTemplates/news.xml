@@ -33,7 +33,7 @@
 		</p>
 		
 		<p>
-			A JMSTopicAppender andJMSQueueAppender are now available, as well as two new filters: LevelFilter
+			A JMSTopicAppender and JMSQueueAppender are now available, as well as two new filters: LevelFilter
 			and ThresholdFilter. A refactoring was done in the filters objects to ease the implementation
 			of custom filters.
 		</p>
