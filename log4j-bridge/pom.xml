@@ -10,7 +10,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>log4j-bridge</artifactId>
-	<version>0.8</version>
+	<version>0.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Log4j Bridge Module</name>
 
