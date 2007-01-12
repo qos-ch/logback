@@ -15,6 +15,11 @@
 					</question>
 
 					<answer>
+						<p>
+							The Jetty application server uses SLF4J for its internal
+							logging. Here are the required steps to install logback as 
+							SLF4J's underlaying implementation.
+						</p>
             <p>
               A few jars must be present in the
 							<em>JETTY_HOME/lib</em>
@@ -30,15 +35,14 @@
 						<p>
 							Logback's own jars must also be present, namely 
 							<em>logback-core-VERSION.jar</em> and
-							<em>logback-classic-VERSION.jar</em> .
+							<em>logback-classic-VERSION.jar</em>.
 						</p>
 
 						<p>
 							To configure logback-classic, a file called
-							<em>logback.xml</em> should be placed at the root
-							directory of Jetty, that is the <em>JETTY_HOME</em>
-							directory or in the <em>JETTY_HOME/resources</em> directory,
-							depending on your classpath settings. You can find configuration samples in the
+							<em>logback.xml</em> should be placed in the 
+							<em>JETTY_HOME/resources</em> directory. 
+							You can find configuration samples in the
 							<em>examples/src/chapter4/conf/</em> directory, in the
 							distribution of logback.
 						</p>
@@ -68,6 +72,75 @@
 				</faq>
 				
 				
+				<faq id="intercept_calls_tomcat">
+          
+          <question>
+						How can I intercept JCL calls in Tomcat?
+					</question>
+
+					<answer>
+						<p>
+							When a dependency of your webapp logs using Jakarta Commons Logging 
+							(for example Struts), you can intercept these calls and redirect them to logback.
+						</p>
+						<p>
+							This can be done by using <em>jcl104-over-slf4j.jar</em>, a module
+							that is shipped with <a href="http://www.slf4j.org">SLF4J</a>.
+						</p>
+						<p>
+							If you have only one webapp, its <em>WEB-INF/lib</em> directory should already 
+							contain the logback jars, namely <em>logback-core-VERSION.jar</em>, 
+							<em>logback-classic-VERSION.jar</em> and <em>slf4j-api-VERSION.jar</em>. 
+							A logback configuration file, named
+							<em>logback.xml</em> should be placed in the <em>WEB-INF/classes/</em>
+							directory.
+						</p>
+						<p>
+							You now need to add <code>jcl104-over-slf4j.jar</code>
+							to your <em>WEB-INF/lib</em> directory and remove 
+							<code>commons-logging-1.0.4.jar</code>. The logging that used to 
+							be directed to JCL should now be handled by logback.
+						</p>
+						
+						<p>
+							In case several webapps share the logback jars, you might place the 
+							previously mentionned jars in the <em>common/lib/</em> directory of 
+							your Tomcat installation. The <em>logback.xml</em> file should then
+							be placed in <em>common/classes</em>.
+						</p>
+					</answer>
+				</faq>
+				
+				<faq id="intercept_calls_jetty">
+          
+          <question>
+						How can I intercept JCL calls in Jetty ?
+					</question>
+
+					<answer>
+						<p>
+							Using logback as the logging implementation of choice for frameworks
+							depending on JCL can also be done in Jetty.
+						</p>
+						<p>
+							In case you have only one webapp, the required steps are exactly the same
+							as <a href="#intercept_calls_tomcat">those needed in Tomcat</a>.
+						</p>
+						<p>
+							In case several webapps share the logback jars, you might place the 
+							necessary jars in the <em>lib/</em> directory of 
+							your Jetty installation. The <em>logback.xml</em> file should then
+							be placed in the <em>resources/</em> directory.
+						</p>
+						<p>
+							However, due to <a href="http://docs.codehaus.org/display/JETTY/Classloading">
+							Jetty's internal Classloading mechanism</a>, the <em>logback-classic-VERSION.jar</em>
+							and <em>slf4j-api-VERSION.jar</em> files need to be in your webapps, too. They
+							should be placed in the <em>WEB-INF/lib/</em> directory of your webapps.
+						</p>
+					</answer>
+				</faq>
+											
 			</part>
 		</faqs>
 	</body>
