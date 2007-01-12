@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-parent</artifactId>
-		<version>0.8</version>
+		<version>0.8.1-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-access</artifactId>
-	<version>0.8</version>
+	<version>0.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Logback Access Module</name>
 
