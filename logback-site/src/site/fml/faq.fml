@@ -135,8 +135,8 @@
 						<p>
 							However, due to <a href="http://docs.codehaus.org/display/JETTY/Classloading">
 							Jetty's internal Classloading mechanism</a>, the <em>logback-classic-VERSION.jar</em>
-							and <em>slf4j-api-VERSION.jar</em> files need to be in your webapps, too. They
-							should be placed in the <em>WEB-INF/lib/</em> directory of your webapps.
+							and <em>slf4j-api-VERSION.jar</em> files should also be placed in the <em>WEB-INF/lib/</em> 
+							directory of your webapps.
 						</p>
 					</answer>
 				</faq>
