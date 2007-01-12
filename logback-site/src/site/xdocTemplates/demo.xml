@@ -22,7 +22,7 @@
 	and issue the following command:
 </p>
   
-<div class="source"><pre>svn co https://svn.qos.ch/repos/logback-demo logback-demo</pre></div>
+<div class="source"><pre>svn co http://svn.qos.ch/repos/logback-demo logback-demo</pre></div>
 
 <p>
 	This will checkout a copy of the logback demonstration web-app to a directory called
@@ -76,16 +76,84 @@ again: <em>mvn jetty:run</em>.
 
 <p>
 Now, the <em>View logs</em> page looks prettier. By virtue of the <code>CyclicBufferAppender</code>,
-this page can fetch the last events and present them through a servlet.
+this page can fetch the last events and present them through a servlet. We see that each 3 seconds
+a line is added to the logs.
+</p>
+
+<p>
+Having the logs that we see on the web page cluttered with scheduled messages
+is not very comfortable. To get rid of these logs once we've verified that they
+work, we can add an <code>EvaluatorFilter</code> to the Appender. Uncomment the
+parts named <em>PART II: Cyclic buffer with Evaluator</em>. You may then
+comment or delete the first Basic Cyclic buffer elements.
+</p>
+<p>
+Let's take a look at the filter we've just added:
+</p>
+
+<div class="source"><pre>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+  &lt;evaluator name="loggingTaskEval">
+    &lt;expression>
+      logger.getName().contains("LoggingTask") &amp;&amp;
+      message.contains("Howdydy-diddly-ho") &amp;&amp;
+      (timeStamp - event.getStartTime()) >= 20000
+    &lt;/expression>
+  &lt;/evaluator>
+  &lt;OnMatch>DENY&lt;/OnMatch>
+&lt;/filter></pre></div>
+
+<p>
+The expression element contains a familiar java statement. It uses a few variables
+that are made available by logback before the filter evaluates the expression.
+The <em>OnMatch</em> element allows the user to choose the filter's behaviour once
+the expression was evaluated to true. A similar <em>OnMismatch</em> element exists. 
+</p>
+
+<p>
+After a restart, the <em>Vew logs</em> page shows the
+<em>Howdydy-diddly-ho</em> logs for the first 20 seconds only.
+</p>
+
+<p>
+Logback ships with a special category of filters: <code>TurboFilter</code> objects
+are ultra-fast, context-wide filters. They reveals themselves very useful to 
+test MDC values, for examples. Let's uncomment the part named
+<em>PART III: TurboFilter: MDC value</em> in the <em>logback.xml</em> file.
+</p>
+<p>
+This part adds a <code>TurboFilter</code> object to the context. It allows to
+have a typical output for every client that uses the demo application, but a different
+one for one given user. Here, the filter will accept all the requests that are
+associated with a MDC value of <em>sebastien</em> bound to the <em>username</em> key.
+</p>
+<p>
+To view the consequences of such a <code>TurboFilter</code>, try to log in the
+application using the username <em>sebastien</em>, perform some tasks, log out
+and log in again using another username. The <em>View logs</em> page should
+clearly mark the difference between the logs that were generated when the first
+and second user were logged in.
 </p>
 
 
+<p>
+Part IV? Parametrized logging: modify source?
+</p>
 
+<p>
+Part V: Markers: add turbo filter for TRACE
+</p>
 
+<p>
+Part VI: Access logs on the console
+</p>
 
+<p>
+Part VII: SMTP and lottery
+</p>
 
-
-
+<p>
+Part VIII: JMX for access and classic
+</p>
 
 
 
