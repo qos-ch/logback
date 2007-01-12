@@ -12,6 +12,33 @@
 
 		<p>Here are the latest news about logback.</p>
 
+		<h3>January 12th, 2007 - Release of version 0.8</h3>
+
+		<p>
+			This version contains a whole new chapter, namely Chapter 3, about logback
+			configuration. Several other documentation pages have been improved.
+		</p>
+		
+		<p>
+			Logback now uses Generics in many components.
+		</p>
+		
+		<p>
+			Several new components have been added to logback. A JMX Configurator now allows
+			users to see and modify loggers or reload configuration among other possibilities. 
+			A <a href="jmxConfig.html">document</a> 
+			about this configurator is available in the <a href="documentation.html">corresponding section</a> 
+			of the site. We'd like to thank Sebastian Davids for his ideas and contributions to this
+			component.
+		</p>
+		
+		<p>
+			A JMSTopicAppender andJMSQueueAppender are now available, as well as two new filters: LevelFilter
+			and ThresholdFilter. A refactoring was done in the filters objects to ease the implementation
+			of custom filters.
+		</p>
+		
+		
 		<h3>December 19th, 2006 - Release of version 0.7.1</h3>
 		
 		<p>
