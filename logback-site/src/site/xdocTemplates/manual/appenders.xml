@@ -1811,10 +1811,39 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 		
 		<p>
-			It is working in a very similar manner to the <code>JMSTopicAppender</code>.
+			It works in a very similar manner to the <code>JMSTopicAppender</code>.
 		</p>
 		
-		queue's own options
+		<p>
+			Some options are proper to <code>JMSQueueAppender</code>. They are 
+			listed below.
+		</p>
+		
+		<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">QueueConnectionFactoryBindingName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					The name of the queue factory. There is no default value for this mandatory option.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">QueueBindingName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					The name of the queue to use. There is no default value for this mandatory option.
+				</p>
+			</td>
+		</tr>
+		</table>
 		
 		jms comments
 		

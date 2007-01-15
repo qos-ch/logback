@@ -45,24 +45,28 @@ public class JMSTopicSink implements javax.jms.MessageListener {
   private Logger logger = (Logger)LoggerFactory.getLogger(JMSTopicSink.class);
 
   static public void main(String[] args) throws Exception {
-    if (args.length != 2) {
+    if (args.length < 2) {
       usage("Wrong number of arguments.");
     }
 
     String tcfBindingName = args[0];
     String topicBindingName = args[1];
-//    String username = args[2];
-//    String password = args[3];
+    String username = null;
+    String password = null;
+    if (args.length == 4) {
+      username = args[2];
+      password = args[3];
+    }
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     ContextInitializer.autoConfig(loggerContext);
 
-    new JMSTopicSink(tcfBindingName, topicBindingName, null, null);
+    new JMSTopicSink(tcfBindingName, topicBindingName, username, password);
 
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
     // Loop until the word "exit" is typed
-    System.out.println("Type \"exit\" to quit JMSSink.");
+    System.out.println("Type \"exit\" to quit JMSTopicSink.");
     while (true) {
       String s = stdin.readLine();
       if (s.equalsIgnoreCase("exit")) {
@@ -89,7 +93,7 @@ public class JMSTopicSink implements javax.jms.MessageListener {
       System.out.println("Topic found: " + topic.getTopicName());
 
       TopicConnection topicConnection = topicConnectionFactory
-          .createTopicConnection();
+          .createTopicConnection(username, password);
       System.out.println("Topic Connection created");
       
       TopicSession topicSession = topicConnection.createTopicSession(false,
@@ -113,7 +117,8 @@ public class JMSTopicSink implements javax.jms.MessageListener {
       if (message instanceof ObjectMessage) {
         ObjectMessage objectMessage = (ObjectMessage) message;
         event = (LoggingEvent) objectMessage.getObject();
-        logger.callAppenders(event);
+        Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerRemoteView().getName());
+        log.callAppenders(event);
       } else {
         logger.warn("Received message is of type " + message.getJMSType()
             + ", was expecting ObjectMessage.");
@@ -138,7 +143,7 @@ public class JMSTopicSink implements javax.jms.MessageListener {
     System.err
         .println("Usage: java "
             + JMSTopicSink.class.getName()
-            + " TopicConnectionFactoryBindingName TopicBindingName");
+            + " TopicConnectionFactoryBindingName TopicBindingName Username Password");
     System.exit(1);
   }
 }

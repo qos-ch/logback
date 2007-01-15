@@ -13,6 +13,9 @@ import ch.qos.logback.core.AppenderBase;
 /**
  * This class serves as a base class for 
  * JMSTopicAppender and JMSQueueAppender
+ * 
+ * For more information about this appender, please refer to:
+ * http://logback.qos.ch/manual/appenders.html#JMSAppenderBase
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

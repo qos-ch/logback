@@ -18,78 +18,18 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.net.JMSAppenderBase;
 
 /**
  * A simple appender that publishes events to a JMS Queue. The events are
  * serialized and transmitted as JMS message type {@link
  * javax.jms.ObjectMessage}.
- * 
  * <p>
- * JMS {@link javax.jms.Queue queues} and
- * {@link javax.jms.QueueConnectionFactory queue connection factories} are
- * administered objects that are retrieved using JNDI messaging which in turn
- * requires the retreival of a JNDI {@link Context}.
- * 
- * <p>
- * There are two common methods for retrieving a JNDI {@link Context}. If a
- * file resource named <em>jndi.properties</em> is available to the JNDI API,
- * it will use the information found therein to retrieve an initial JNDI
- * context. To obtain an initial context, your code will simply call:
- * 
- * <pre>
- * InitialContext jndiContext = new InitialContext();
- * </pre>
- * 
- * <p>
- * Calling the no-argument <code>InitialContext()</code> method will also work
- * from within Enterprise Java Beans (EJBs) because it is part of the EJB
- * contract for application servers to provide each bean an environment naming
- * context (ENC).
- * 
- * <p>
- * In the second approach, several predetermined properties are set and these
- * properties are passed to the <code>InitialContext</code> contructor to
- * connect to the naming service provider. For example, to connect to JBoss
- * naming service one would write:
- * 
- * <pre>
- * Properties env = new Properties();
- * env.put(Context.INITIAL_CONTEXT_FACTORY,
- *     &quot;org.jnp.interfaces.NamingContextFactory&quot;);
- * env.put(Context.PROVIDER_URL, &quot;jnp://hostname:1099&quot;);
- * env.put(Context.URL_PKG_PREFIXES, &quot;org.jboss.naming:org.jnp.interfaces&quot;);
- * InitialContext jndiContext = new InitialContext(env);
- * </pre>
- * 
- * where <em>hostname</em> is the host where the JBoss applicaiton server is
- * running.
- * 
- * <p>
- * To connect to the the naming service of Weblogic application server one would
- * write:
- * 
- * <pre>
- * Properties env = new Properties();
- * env.put(Context.INITIAL_CONTEXT_FACTORY,
- *     &quot;weblogic.jndi.WLInitialContextFactory&quot;);
- * env.put(Context.PROVIDER_URL, &quot;t3://localhost:7001&quot;);
- * InitialContext jndiContext = new InitialContext(env);
- * </pre>
- * 
- * <p>
- * Other JMS providers will obviously require different values.
- * 
- * The initial JNDI context can be obtained by calling the no-argument
- * <code>InitialContext()</code> method in EJBs. Only clients running in a
- * separate JVM need to be concerned about the <em>jndi.properties</em> file
- * and calling {@link InitialContext#InitialContext()} or alternatively
- * correctly setting the different properties before calling {@link
- * InitialContext#InitialContext(java.util.Hashtable)} method.
- * 
+ * For more information about this appender, please refer to:
+ * http://logback.qos.ch/manual/appenders.html#JMSQueueAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -113,8 +53,8 @@ public class JMSQueueAppender extends JMSAppenderBase<LoggingEvent> {
    * Its value will be used to lookup the appropriate
    * <code>QueueConnectionFactory</code> from the JNDI context.
    */
-  public void setQueueConnectionFactoryBindingName(String tcfBindingName) {
-    this.qcfBindingName = tcfBindingName;
+  public void setQueueConnectionFactoryBindingName(String qcfBindingName) {
+    this.qcfBindingName = qcfBindingName;
   }
 
   /**
@@ -216,7 +156,7 @@ public class JMSQueueAppender extends JMSAppenderBase<LoggingEvent> {
   }
 
   /**
-   * This method called by {@link AppenderSkeleton#doAppend} method to do most
+   * This method called by {@link AppenderBase#doAppend} method to do most
    * of the real appending work.
    */
   public void append(LoggingEvent event) {
