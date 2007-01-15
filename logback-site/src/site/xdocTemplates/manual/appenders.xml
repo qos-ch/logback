@@ -1463,6 +1463,370 @@ public interface TriggeringPolicy extends LifeCycle {
 			tunnels the events it receives from its clients to a second server.
 		</p>
 		
+		<a name="JMSAppenderBase" />
+		<h3>JMSAppenderBase</h3>
+		
+		<p>
+		 The <a href="../xref/ch/qos/logback/core/net/JMSAppenderBase.html">
+		 <code>JMSAppenderBase</code></a> subclasses conceptually accomplishes 
+		 the same task as the <code>SocketAppender</code> but as the name 
+		 suggests it is based on the JMS API instead of TCP sockets. 
+		 JMS or the Java Message Service API 
+		 provides an abstraction for Message-Oriented Middleware (MOM) products. 
+		 One of the key architectural concepts in JMS is the decoupling of message 
+		 producers and message consumers. Senders do not have to wait for receivers 
+		 to handle messages and conversely the receiver consumes messages as they 
+		 become available; messages are said to be delivered asynchronously. Just as 
+		 importantly, consumers as well as producers can be added or removed at will 
+		 to a JMS channel. The set of the message producers and message consumers can 
+		 vary independently and transparently over time, with both sets oblivious 
+		 to each other.
+		</p>
+		
+		<p>
+			The JMS specification provides for two types of messaging models, 
+			publish-and-subscribe and point-to-point queuing. Logback supports the former
+			model with <code>JMSTopicAppender</code> and the latter with <code>JMSQueueAppender</code> 
+			Both appenders extend the <code>JMSAppenderBase</code> class and 
+			publish serialized events to a topic or queue specified by the user. 
+			One or more <code>JMSTopicSink</code> or <code>JMSQueueSink</code> applications 
+			can consume these serialized events. 
+		</p>
+		
+		<p>
+			The consumer of JMS appenders generated events need not be only <code>JMSTopicSink</code> 
+			or <code>JMSQueueSink</code> applications. Any application or MessageDrivenBean 
+			capable of subscribing to the appropriate topic or queue and consuming serialized 
+			logging event messages would be suitable.
+			Additional consumers could be quickly built based on the <code>JMSTopicSink</code> or
+			<code>JMSQueueSink</code> model.
+		</p>
+		
+		<p>
+			Here are <code>JMSAppenderBase</code>'s options:
+		</p>
+		
+	<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">InitialContextFactoryName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					The class name of the initial JNDI context factory. There is no need 
+					to set this option if you have a properly configured <em>jndi.properties</em> 
+					file or if <code>JMSAppenderBase</code> subclass is running 
+					within an application server. 
+				</p>
+				<p>
+					If you set this option, you should 
+					also set the <span class="option">ProviderURL</span> option.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">ProviderURL</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					This option specifies configuration information for the 
+					JNDI service provider. The value of the property should contain a 
+					URL string (e.g. <em>ldap://somehost:389</em>). 
+				</p>
+				<p>
+					The <span class="option">ProviderURL</span> option is taken into 
+					account only if the <span class="option">InitialContextFactoryName</span> 
+					option is specified. It is ignored otherwise.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">URLPkgPrefixes</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+						This option contains the list of package prefixes to 
+						use when loading in URL context factories. The value of the 
+						property should be a colon-separated list of package 
+						prefixes for the class name of the URL context factory class.
+				</p>
+				<p>
+						For JBoss the value of this option should be:
+						org.jboss.naming:org.jnp.interfaces
+						This option is not needed under Weblogic.
+				</p>
+				<p>
+						This option is taken into account only if the 
+						<span class="option">InitialContextFactoryName</span> 
+						option is specified. It is ignored otherwise.
+				</p>
+			</td>
+		</tr>		
+		<tr>
+			<td><b><span class="option">SecurityPrincipalName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+						The security principal name to use when accessing the JNDI namespace. 
+						This option is usually not required.
+				</p>
+				<p>
+						This option is taken into account only if the 
+						<span class="option">InitialContextFactoryName</span> 
+						option is specified. It is ignored otherwise.
+				</p>
+			</td>
+		</tr>				
+		<tr>
+			<td>
+				<b>
+					<span class="option">SecurityCredentials</span>
+				</b>
+			</td>
+			<td>
+				<code>String</code>
+			</td>
+			<td>
+				<p>
+					The security credentials to use when accessing the
+					JNDI namespace. This option is usually not required.
+				</p>
+				<p>
+					This option is taken into account only if the
+					<span class="option">
+						InitialContextFactoryName
+					</span>
+					option is specified. It is ignored otherwise.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>
+					<span class="option">UserName</span>
+				</b>
+			</td>
+			<td>
+				<code>String</code>
+			</td>
+			<td>
+				<p>
+					The username to use when creating a topic or queue connection.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>
+					<span class="option">Password</span>
+				</b>
+			</td>
+			<td>
+				<code>String</code>
+			</td>
+			<td>
+				<p>
+					The password to use when creating a topic or queue connection.
+				</p>
+			</td>
+		</tr>
+	</table>		
+	
+		<p>
+			JMS topics, queues and connection factories are administered objects that are obtained 
+			using the JNDI API. This in turn implies the necessity of retrieving a JNDI Context. 
+			There are two common methods for obtaining a JNDI Context. If a file resource named 
+			<em>jndi.properties</em> is available to the JNDI API, it will use the information 
+			found therein to retrieve an initial JNDI context. 
+			To obtain an initial context, one simply calls:	
+		</p>
+
+<div class="source"><pre>InitialContext jndiContext = new InitialContext();</pre></div>
+
+		<p>
+			Calling the no-argument <code>InitialContext()</code> constructor will also work 
+			from within Enterprise Java Beans (EJBs). 
+			Indeed, it is part of the EJB contract for application servers to provide 
+			each enterprise bean an environment naming context (ENC).
+		</p>
+		
+		<p>
+			In the second approach, several predetermined properties are specified. 
+			These properties are passed to the <code>InitialContext</code> constructor 
+			to connect to the naming service provider. 
+			For example, to connect to an 
+			<a href="http://www.activemq.org/site/home.html"><code>ActiveMQ</code></a> 
+			naming server one would write:
+		</p>
+
+<div class="source"><pre>Properties env = new Properties();
+env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+env.put(Context.PROVIDER_URL, "tcp://<em>hostname</em>:61616");
+Context ctx = new InitialContext(env);</pre></div>
+
+		<p>
+			where <em>hostname</em> is the host where the ActiveMQ server is running.  
+		</p>
+		
+		<p>
+			Other JNDI providers will obviously require different values. 
+			As mentioned previously, the initial JNDI context can be obtained by calling 
+			the no-argument <code>InitialContext()</code> constructor from within EJBs. 
+			Only clients running in a separate JVM need to be concerned about 
+			the <em>jndi.properties</em> file or setting the different properties 
+			before calling <code>InitialContext</code> constructor taking a 
+			Properties (i.e. Hashtable) parameter. 
+		</p>
+
+		<a name="JMSTopicAppender" />
+		<h3>JMSTopicAppender</h3>
+		
+		<p>
+			The  <a href="../xref/ch/qos/logback/classic/net/JMSTopicAppender.html">
+			<code>JMSTopicAppender</code></a> acts as a message producer to a publish and subscribe
+			Topic.
+		</p>
+		
+		<p>
+			Its most important method, <code>doAppend()</code> is listed below:
+		</p>
+		
+<div class="source"><pre>public void append(LoggingEvent event) {
+  if (!isStarted()) {
+    return;
+  }
+
+  try {
+    ObjectMessage msg = topicSession.createObjectMessage();
+
+    msg.setObject(event);
+    topicPublisher.publish(msg);
+    successiveFailureCount = 0;
+  } catch (Exception e) {
+    successiveFailureCount++;
+    if (successiveFailureCount > SUCCESSIVE_FAILURE_LIMIT) {
+      stop();
+    }
+      addError("Could not publish message in JMSTopicAppender [" + name + "].", e);
+  }
+}</pre></div>	
+
+		<p>
+			The <code>isStarted()</code> method allows the appender to check whether 
+			prerequisite conditions for its proper functioning, in particular the 
+			availability of a valid and open <code>TopicConnection</code> and a 
+			<code>TopicSession</code>, are fulfilled. If that is not the case, 
+			the append method returns without performing any work. 
+			If the prerequisite conditions are fulfilled, then the method 
+			proceeds to publish the logging event. This is done by obtaining a 
+			<code>javax.jms.ObjectMessage</code> from the <code>TopicSession</code> 
+			and then setting its payload to the logging event received as 
+			the input parameter. Once the payload of the message is set, it is 
+			published. The fact that <code>LoggingEvent</code> is serializable 
+			has its importance, as only Serializable objects can be 
+			transported within an <code>ObjectMessage</code>. 
+		</p>
+		
+		<p>
+			In summary, the <code>JMSTopicAppender</code> broadcasts messages consisting 
+			of a serialized <code>LoggingEvent</code> payload over a user-specified 
+			JMS topic. These events can be processed by a 
+			<a href="../xref/ch/qos/logback/classic/net/JMSTopicSink.html">
+			<code>JMSTopicSink</code></a>
+			or a similar consumer. According to JMS specification, the provider 
+			will asynchronously call the <code>onMessage()</code> of duly registered 
+			and subscribed <code>javax.jms.MessageListener</code> objects. 
+			The <code>onMessage()</code> method in <code>JMSTopicSink</code>
+			is implemented as follows:
+		</p>
+
+<div class="source"><pre>public void onMessage(javax.jms.Message message) {
+  LoggingEvent event;
+  try {
+    if (message instanceof ObjectMessage) {
+      ObjectMessage objectMessage = (ObjectMessage) message;
+      event = (LoggingEvent) objectMessage.getObject();
+      Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerRemoteView().getName());
+      log.callAppenders(event);
+    } else {
+      logger.warn("Received message is of type " + message.getJMSType()
+          + ", was expecting ObjectMessage.");
+    }
+  } catch (JMSException jmse) {
+    logger.error("Exception thrown while processing incoming message.", jmse);
+  }
+}</pre></div>
+
+		<p>
+			The <code>onMessage()</code> method begins by retrieving the logging event's payload. 
+			It then obtains a Logger with the same name as the logger name of the incoming event. 
+			The event is then logged through this logger as if it were generated locally, 
+			by calling its <code>callAppenders()</code> method. The <code>SocketNode</code> class used by 
+			<code>SimpleSocketServer</code> handles incoming logging events essentially in the same way.
+		</p>
+		
+		<p>
+			Some options are proper to <code>JMSTopicAppender</code>. They are 
+			listed below.
+		</p>
+		
+		<table>
+			<tr>
+			<th>Option Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><b><span class="option">TopicConnectionFactoryBindingName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					The name of the topic factory. There is no default value for this mandatory option.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><b><span class="option">TopicBindingName</span></b></td>
+			<td><code>String</code></td>
+			<td>
+				<p>
+					The name of the topic to use. There is no default value for this mandatory option.
+				</p>
+			</td>
+		</tr>
+		</table>
+
+		
+		<a name="JMSQueueAppender" />
+		<h3>JMSQueueAppender</h3>
+		
+		<p>
+			The  <a href="../xref/ch/qos/logback/classic/net/JMSQueueAppender.html">
+			<code>JMSQueueAppender</code></a> acts as a message producer to a point-to-point
+			Queue.
+		</p>
+		
+		<p>
+			It is working in a very similar manner to the <code>JMSTopicAppender</code>.
+		</p>
+		
+		queue's own options
+		
+		jms comments
+		
+		diff topic/queue: client goes off and back online
+		
+		
+		
+		
+		
+		
+		
+		
 		<a name="SMTPAppender"/>
 		<h3>SMTPAppender</h3>
 		
