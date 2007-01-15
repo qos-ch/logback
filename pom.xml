@@ -307,7 +307,7 @@
   </reporting>
 
   <scm>
-    <connection>scm:svn:https://svn.qos.ch/repos/logback/trunk/</connection>
+    <connection>scm:svn:http://svn.qos.ch/repos/logback/trunk/</connection>
     <developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk/</developerConnection>
     <url>https://svn.qos.ch/repos/logback/trunk/</url>
   </scm>
