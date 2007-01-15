@@ -1488,12 +1488,12 @@ public interface TriggeringPolicy extends LifeCycle {
 			publish-and-subscribe and point-to-point queuing. Logback supports the former
 			model with <code>JMSTopicAppender</code> and the latter with <code>JMSQueueAppender</code> 
 			Both appenders extend the <code>JMSAppenderBase</code> class and 
-			publish serialized events to a topic or queue specified by the user. 
-			One or more <code>JMSTopicSink</code> or <code>JMSQueueSink</code> applications 
-			can consume these serialized events. 
+			publish serialized events to a topic or queue specified by the user.
 		</p>
 		
 		<p>
+			One or more <code>JMSTopicSink</code> or <code>JMSQueueSink</code> applications 
+			can register to a JMS server and consume the serialized events. 
 			The consumer of JMS appenders generated events need not be only <code>JMSTopicSink</code> 
 			or <code>JMSQueueSink</code> applications. Any application or MessageDrivenBean 
 			capable of subscribing to the appropriate topic or queue and consuming serialized 
@@ -1681,7 +1681,42 @@ Context ctx = new InitialContext(env);</pre></div>
 			before calling <code>InitialContext</code> constructor taking a 
 			Properties (i.e. Hashtable) parameter. 
 		</p>
-
+		
+		<h4>Comments on JMS appenders</h4>
+		
+		<p>
+			Transmitting a packet of information using JMS is certain to be substantially 
+			slower then sending the same packet using raw TCP sockets. JMS vendors bragging 
+			about the performance of their messaging platform tend to omit this simple fact. 
+			Guaranteed store and forward messaging comes at a hefty price. 
+			In return for increased cost, JMS messaging provides decoupling of 
+			sender and receiver. As long as the JMS provider is reachable, messages 
+			will eventually arrive at destination. 
+			However, what if the JMS server is down or simply unreachable?
+		</p>
+		
+		<p>
+			According to the JMS specification, producers can mark a message as either 
+			persistent or non-persistent. The persistent delivery mode instructs the JMS provider 
+			to log the message to stable storage as part of the client's send operation, allowing 
+			the message to survive provider crashes. JMS appenders do not set the delivery 
+			mode of messages it produces because according to the JMS specification, 
+			the delivery mode is considered as an administered property.
+		</p>
+		
+		<p>
+			Once a message reaches the JMS provider, the provider assumes the responsibility 
+			of delivering it to its destination, relieving the client from this chore. 
+			What if the JMS server is unreachable? The JMS API provides an 
+			<code>ExceptionListener</code> interface to deal with this situation. 
+			When the client runtime of the JMS provider detects a lost connection to the JMS server, 
+			it calls the <code>onException()</code> method of the registered 
+			<code>ExceptionListener</code>. Once notified of the problem, client code can attempt 
+			to reestablish the connection. According to the section 4.3.8 of the JMS specification, 
+			the provider should attempt to resolve connection problems prior to notifying the client. 
+			The JMS appenders do not implement the <code>ExceptionListener</code> interface.
+		</p>
+		
 		<a name="JMSTopicAppender" />
 		<h3>JMSTopicAppender</h3>
 		
@@ -1799,7 +1834,31 @@ Context ctx = new InitialContext(env);</pre></div>
 			</td>
 		</tr>
 		</table>
+		
+		<p>
+			<code>JMSTopicAppender</code> is rather straightforward to configure:
+		</p>
 
+		<em>Example 4.8: JMSTopicAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSTopic.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="Topic"
+    class="ch.qos.logback.classic.net.JMSTopicAppender">
+    &lt;InitialContextFactoryName>
+      org.apache.activemq.jndi.ActiveMQInitialContextFactory
+    &lt;/InitialContextFactoryName>
+    &lt;ProviderURL>tcp://localhost:61616&lt;/ProviderURL>
+    &lt;TopicConnectionFactoryBindingName>
+      ConnectionFactory
+    &lt;/TopicConnectionFactoryBindingName>
+    &lt;TopicBindingName>MyTopic&lt;/TopicBindingName>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="Topic" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 		
 		<a name="JMSQueueAppender" />
 		<h3>JMSQueueAppender</h3>
@@ -1845,16 +1904,30 @@ Context ctx = new InitialContext(env);</pre></div>
 		</tr>
 		</table>
 		
-		jms comments
-		
-		diff topic/queue: client goes off and back online
-		
-		
-		
-		
-		
-		
-		
+		<p>
+			A typical <code>JMSQueueAppender</code> configuration file looks very
+			similar to that of a <code>JMSTopicAppender</code>.
+		</p>
+		<em>Example 4.9: JMSQueueAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSQueue.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;appender name="Queue"
+    class="ch.qos.logback.classic.net.JMSQueueAppender">
+    &lt;InitialContextFactoryName>
+      org.apache.activemq.jndi.ActiveMQInitialContextFactory
+    &lt;/InitialContextFactoryName>
+    &lt;ProviderURL>tcp://localhost:61616&lt;/ProviderURL>
+    &lt;QueueConnectionFactoryBindingName>
+      ConnectionFactory
+    &lt;/QueueConnectionFactoryBindingName>
+    &lt;QueueBindingName>MyQueue&lt;/QueueBindingName>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="Queue" />
+  &lt;/root>
+&lt;/configuration></pre></div>		
 		
 		<a name="SMTPAppender"/>
 		<h3>SMTPAppender</h3>
@@ -1985,7 +2058,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			Here is a sample configuration file you can supply to chapter4.mail.Email:
 		</p>	
 		
-<em>Example 4.8: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
+<em>Example 4.10: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
 <div class="source"><pre>&lt;configuration>
 	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2071,7 +2144,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			event evaluator whereby every 1024th event triggers an email message.
 		</p>
 
-<em>Example 4.9: A <code>EventEvaluator</code> implementation
+<em>Example 4.11: A <code>EventEvaluator</code> implementation
 that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapter4/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapter4/mail/CounterBasedEvaluator.java</a>)</em>
 <div class="source"><pre>package chapter4.mail;
 
@@ -2122,7 +2195,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			as its event evaluator.
 		</p>
 
-<em>Example 4.10: <code>SMTPAppender</code> with custom 
+<em>Example 4.12: <code>SMTPAppender</code> with custom 
 <code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
 
 <div class="source"><pre>&lt;configuration>
@@ -2420,7 +2493,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			The following configuration file is what one would need.
 		</p>
 		
-<em>Example 4.11: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
+<em>Example 4.13: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2499,7 +2572,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			<code>javax.sql.DataSource</code>.
 		</p>
 	
-<em>Example 4.12: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
+<em>Example 4.14: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2611,7 +2684,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			configuration file, logging events are sent to a MySQL database,
 			without any pooling.
 		</p>
-<em>Example 4.13: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
+<em>Example 4.15: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2647,7 +2720,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			in the classpath.
 		</p>
 
-<em>Example 4.14: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
+<em>Example 4.16: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2784,7 +2857,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			Here is a sample configuration using a <code>SyslogAppender</code>.
 		</p>
 		
-<em>Example 4.15: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
+<em>Example 4.17: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="SYSLOG"
@@ -2849,7 +2922,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Here is a sample configuration of a <code>SMTPAppender</code> in the access environnement.
 		</p>
-<em>Example 4.15: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
+<em>Example 4.18: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
 <div class="source"><pre>&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
   &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
@@ -3017,7 +3090,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Here is a sample configuration that uses <code>DBAppender</code>.
 		</p>
-		
+<em>Example 4.19: DBAppender configuration (logback-examples/src/main/java/chapter4/conf/access/logback-DB.xml)</em>		
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
@@ -3050,7 +3123,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     thus a few more methods are needed.
     </p>
     
-<em>Example 4.16: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
+<em>Example 4.20: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
 <div class="source"><pre>package chapter4;
 
 import ch.qos.logback.core.AppenderBase;
