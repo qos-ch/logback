@@ -1,139 +1,176 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-parent</artifactId>
-	  <version>0.8.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-parent</artifactId>
+    <version>0.8.1-SNAPSHOT</version>
+  </parent>
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>ch.qos.logback</groupId>
-	<artifactId>logback-classic</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>Logback Classic Module</name>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>0.8.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Logback Classic Module</name>
 
-	<url>http://logback.qos.ch</url>
-	<description>
-		<!-- 
-			Never _never_ let Eclipse's auto format function add
-			a line return in the description.
-			The generated jar will contain a corrupt MANIFEST file.
-		-->
-		Logback: the generic, reliable, fast and flexible logging library for Java.
-	</description>
-	<licenses>
-		<license>
-			<name> GNU Lesser General Public License</name>
-      		<url>http://www.gnu.org/licenses/lgpl.html</url>			
-		</license>
-	</licenses>
-	
-	<dependencies>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
+  <url>http://logback.qos.ch</url>
+  <description>
+    <!-- 
+      Never _never_ let Eclipse's auto format function add
+      a line return in the description.
+      The generated jar will contain a corrupt MANIFEST file.
+    -->
+    Logback: the generic, reliable, fast and flexible logging library for Java.
+  </description>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+    </license>
+  </licenses>
 
-    	<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<scope>test</scope>
-		</dependency>
-				
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>janino</groupId>
-			<artifactId>janino</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-    
-		<dependency>
-		  <groupId>javax.jms</groupId>
-		  <artifactId>jms</artifactId>
-		  <scope>compile</scope>
-		</dependency>
-    
-	</dependencies>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-	<build>
-		<plugins>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>bundle-test-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<forkMode>once</forkMode>
-					<reportFormat>plain</reportFormat>
-					<trimStackTrace>false</trimStackTrace>
-					<excludes>
-						<exclude>**/AllTest.java</exclude>
-						<exclude>**/PackageTest.java</exclude>
-						<exclude>**/SerializationPerfsTest.java</exclude>
-						<exclude>**/LoggerPerfTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+    <dependency>
+      <groupId>janino</groupId>
+      <artifactId>janino</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-test-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <reportFormat>plain</reportFormat>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/AllTest.java</exclude>
+            <exclude>**/PackageTest.java</exclude>
+            <exclude>**/SerializationPerfsTest.java</exclude>
+            <exclude>**/LoggerPerfTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>retrotranslator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>translate</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>
+                  <directory>${project.build.outputDirectory}</directory>
+                </include>
+              </includes>
+              <destjar>target/${artifactId}-${project.version}-jdk14.jar</destjar>
+              <verify>true</verify>
+              <failonwarning>false</failonwarning>
+              <verifyClasspath>
+                <element>${path.to.rt.jar}</element>
+              </verifyClasspath>
+            </configuration>
+          </execution>
+        </executions>
+        <!-- dependencies>
+          <dependency>
+            <groupId>net.sf.retrotranslator</groupId>
+            <artifactId>retrotranslator-runtime</artifactId>
+            <version>1.0.8</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies -->
+      </plugin>
+      
+    </plugins>
 
 
-		<testResources>
-			<testResource>
-				<directory>src/test/input</directory>
-				<targetPath>input</targetPath>
-			</testResource>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<targetPath>/</targetPath>
-			</testResource>
-		</testResources>
-	</build>
+    <testResources>
+      <testResource>
+        <directory>src/test/input</directory>
+        <targetPath>input</targetPath>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <targetPath>/</targetPath>
+      </testResource>
+    </testResources>
+  </build>
 
 </project>

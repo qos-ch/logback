@@ -109,6 +109,55 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-test-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>retrotranslator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>translate</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>
+                  <directory>${project.build.outputDirectory}</directory>
+                </include>
+              </includes>
+              <destjar>target/${artifactId}-${project.version}-jdk14.jar</destjar>
+              <verify>true</verify>
+              <failonwarning>false</failonwarning>
+              <verifyClasspath>
+                <element>${path.to.rt.jar}</element>
+              </verifyClasspath>
+            </configuration>
+          </execution>
+        </executions>
+        <!-- dependencies>
+          <dependency>
+            <groupId>net.sf.retrotranslator</groupId>
+            <artifactId>retrotranslator-runtime</artifactId>
+            <version>1.0.8</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies -->
+      </plugin>
+      			
 		</plugins>
 
 	</build>

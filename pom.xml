@@ -34,11 +34,22 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>net.sf.retrotranslator</groupId>
+      <artifactId>retrotranslator-runtime</artifactId>
+      <version>1.0.8</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   
   <properties>
     <!-- slf4j.version property is used by setClasspath.cmd -->
     <slf4j.version>1.1.0</slf4j.version>
+    <!-- 
+      This next variable should be declared either here or in 
+    	your maven_home/conf/settings.xml file
+    -->
+    <!-- <path.to.rt.jar>C:/j2sdk1.4.2_13/jre/lib/rt.jar</path.to.rt.jar> -->
   </properties>
   
   <dependencyManagement>
@@ -113,7 +124,7 @@
         <groupId>javax.jms</groupId>
         <artifactId>jms</artifactId>
         <version>1.1</version>
-      </dependency>   
+      </dependency>       
     </dependencies>
   </dependencyManagement>
   
@@ -170,9 +181,7 @@
         <configuration>
           <downloadSources>true</downloadSources>
         </configuration>
-      </plugin>    
-
-			
+      </plugin>   			
       <plugin>	
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clover-plugin</artifactId>
@@ -183,7 +192,6 @@
           </excludes>
         </configuration>
       </plugin>
-      
     </plugins>
   </build>
   
@@ -286,22 +294,7 @@
           <outputDirectory>target/dist/</outputDirectory>
         </configuration>
       </plugin>
-      
-      
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagBase>
-            https://svn.qos.ch/repos/logback/tags/
-          </tagBase>
-          <preparationGoals>
-            clean, compile source:jar site, assembly:assembly
-          </preparationGoals>
-          <goals>
-            site:deploy, deploy
-          </goals>
-        </configuration>
-      </plugin>
+
     </plugins>
 
   </reporting>

@@ -228,6 +228,38 @@
 			</includes>
 		</fileSet>	
 				 
+		<!-- Module JDK14 JARs -->
+		<fileSet>
+			<directory>logback-core/target/</directory>
+			<outputDirectory>/jdk14/</outputDirectory>
+			<includes>
+				<include>logback-core-${project.version}-jdk14.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>logback-classic/target/</directory>
+			<outputDirectory>/jdk14/</outputDirectory>
+			<includes>
+				<include>logback-classic-${project.version}-jdk14.jar</include>
+			</includes>
+		</fileSet>		
+		<fileSet>
+			<directory>logback-access/target/</directory>
+			<outputDirectory>/jdk14/</outputDirectory>
+			<includes>
+				<include>logback-access-${project.version}-jdk14.jar</include>
+			</includes>
+		</fileSet>	
+		<fileSet>
+			<directory>log4j-bridge/target/</directory>
+			<outputDirectory>/jdk14/</outputDirectory>
+			<includes>
+				<include>log4j-bridge-${project.version}-jdk14.jar</include>
+			</includes>
+		</fileSet>	
+				 
+
+				 
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
