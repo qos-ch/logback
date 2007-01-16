@@ -25,12 +25,12 @@
 <div class="source"><pre>svn co http://svn.qos.ch/repos/logback-demo logback-demo</pre></div>
 
 <p>
-	This will checkout a copy of the logback demonstration web-app to a directory called
-	<em>logback-demo</em>. The logback demo can be packaged as a <em>war</em> file and
-	deployed to an application server. We strongly recommand the use of 
-	<a href="http://maven.apache.org/">Maven 2</a> to do this
-	task, since all it will take to compile, package and run a server with the demo is
-	a single command.
+This will checkout a copy of the logback demonstration web-app to a directory called
+<em>logback-demo</em>. The logback demo can be packaged as a <em>war</em> file and
+deployed to an application server. We strongly recommand the use of 
+<a href="http://maven.apache.org/">Maven 2</a> to do this
+task, since all it will take to compile, package and run a server with the demo is
+a single command.
 </p>
 
 <p>
@@ -47,22 +47,24 @@
 <p>image main page</p>
 
 <p>
-	For now, logback uses two components: one <code>ConsoleAppender</code> and one 
-	<code>RollingFileAppender</code>. The <code>RollingFileAppender</code> sends logging events
-	to a file called <em>logFile.log</em> and will rollover
-	the active file every minute. The old file will be renamed and compressed using the <em>zip</em>
-	format. The <code>ConsoleAppender</code> will output the logging requests to the console,
-	and shorten the logger names to gain some space in the console window, without making the
-	names unreadable.
+For now, logback uses two components: one <code>ConsoleAppender</code> and one 
+<code>RollingFileAppender</code>. The <code>RollingFileAppender</code> sends logging events
+to a file called <em>logFile.log</em> and will rollover
+the active file every minute. The old file will be renamed and compressed using the <em>zip</em>
+format. The <code>ConsoleAppender</code> will output the logging requests to the console,
+and shorten the logger names to gain some space in the console window, without making the
+names unreadable. You can study the configuration file that is used by editing the
+file called <em>logback.xml</em>, located in the <em>src/main/resources/</em> directory
+of the demo.
 </p>
 
 <p>
-	Let's now visit the <em>ViewStatii</em> page, via the navigation menu on the left hand
-	of the screen. This page contains the content of the <code>Status</code> objects that were
-	created until now. <code>Status</code> objects are a part of logback's powerful internal 
-	reporting framework. They allow you to see what is going on in logback, and check
-	that a configuration file has been parsed correctly, or that a rollover has occured as 
-	expected.
+Let's now visit the <em>ViewStatii</em> page, via the navigation menu on the left hand
+of the screen. This page contains the content of the <code>Status</code> objects that were
+created until now. <code>Status</code> objects are a part of logback's powerful internal 
+reporting framework. They allow you to see what is going on in logback, and check
+that a configuration file has been parsed correctly, or that a rollover has occured as 
+expected.
 </p>
 
 <p>image statii page</p>
@@ -140,15 +142,106 @@ Part IV? Parametrized logging: modify source?
 </p>
 
 <p>
-Part V: Markers: add turbo filter for TRACE
+SLF4J allows the use of Marker objects. 
+For example, one could use <em>TRACE</em> markers, to enrich some 
+specific logging statements. On the other hand, one could want that such
+marked statements be dropped and not logged anywhere. <code>TurboFilter</code>
+objects can do that in an elegant and flexible way. Let us uncomment the
+<em>PART V: TurboFilter: Marker value</em> section in the <em>logback.xml</em> file,
+and reload via the <em>Reload configuration</em> page.
+</p>
+<p>
+The logging statements that contained the <em>Howdydy-diddly-ho</em> do
+not appear anymore because they were associated with a <em>TRACE</em> marker. You
+can check that by visiting the <em>View Logs</em> page.
 </p>
 
 <p>
-Part VI: Access logs on the console
+Access logging is another important feature offered by logback. The first
+step will be to simply read what appears on the console while
+browsing the logback-demo website. Each access is logged to the console,
+with some information about the access. To achieve this situation, we simply
+used a <code>ConsoleAppender</code> and a <code>PatternLayout</code>, just like
+we would do in a classic logging configuration. The configuration file
+that we will edit in the next few steps is called <em>logback-access.xml</em>
+and is located in the <em>src/etc/</em> directory.
+The necessary configuration is listed below:
+</p>
+
+<div class="source"><pre>&lt;configuration>
+ 
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.access.PatternLayout">
+      &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+  
+  &lt;appender-ref ref="STDOUT" />
+  
+&lt;/configuration></pre></div>
+
+<p>
+In this next part, we are going to add some information to the console.
+Let us imagine that we want to log the numbers that are tried on the
+<em>Lottery</em> page. We will need a second <code>ConsoleAppender</code>
+that will only print a given information (e.g. the guessed number, along
+with some hints about the player). The appender will also have to
+print that information only when a certain page is accessed.
 </p>
 
 <p>
-Part VII: SMTP and lottery
+The configuration lines that are necessary are listed below.
+</p>
+
+<div class="source"><pre>&lt;appender name="STDOUT_LOTTERY"
+  class="ch.qos.logback.core.ConsoleAppender">
+  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+    &lt;evaluator name="lotto_eval">
+      &lt;Expression>
+        url.matches(request.getRequestURL().toString())
+      &lt;/Expression>
+      &lt;matcher name="url">
+        &lt;regex>lotto.do&lt;/regex>
+        &lt;caseSensitive>false&lt;/caseSensitive>
+      &lt;/matcher>
+    &lt;/evaluator>
+    &lt;OnMatch>ACCEPT&lt;/OnMatch>
+    &lt;OnMismatch>DENY&lt;/OnMismatch>
+  &lt;/filter>
+  &lt;layout class="ch.qos.logback.access.PatternLayout">
+    &lt;Pattern>
+      LOTTO: %A [%r] Guess=%reqParameter{guessed_number}
+    &lt;/Pattern>
+  &lt;/layout>
+&lt;/appender></pre></div>
+
+<p>
+This appender will use a <code>PatternLayout</code> to format its output.
+The <em>%reqParameter</em> conversion word is used to extract the guessed number
+from the request, and print it. 
+</p>
+<p>
+It also uses an <code>EvaluatorFilter</code> that will prevent the appender
+to display anything when the access' request url does not match the
+given expression. You can see that it is easy to specify a RegExp, name
+it and use it in the expression that will be evaluated. In that case, we only
+entered the name of the <em>lotto.do</em> action.
+</p>
+
+<p>
+Before shutting down the server and starting it again with the new configuration,
+you might want to comment the appender named <em>STDOUT</em>, as well as its
+<em>appender-ref</em> element, in the first logback configuration file, called
+<em>logback.xml</em> and located in <em>src/main/resources/</em>. It will clear
+the console from the logs made by the demo application and only display those
+that are generated by logback access.
+</p>
+
+
+
+<p>
+  SMTP and 
 </p>
 
 <p>
