@@ -8,6 +8,9 @@ public class Util {
   static final int BUF_SIZE= 128;
   
   public static String readToString(InputStream in) throws IOException {
+    if(in == null) {
+      return null;
+    }
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     byte[] buf = new byte[BUF_SIZE];
     int n = 0;
