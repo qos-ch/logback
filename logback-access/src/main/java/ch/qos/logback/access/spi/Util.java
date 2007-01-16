@@ -14,7 +14,6 @@ public class Util {
     while( (n = in.read(buf, 0, BUF_SIZE)) != -1) {
       baos.write(buf, 0, n);
     }
-    
     return baos.toString();
   }
 }
