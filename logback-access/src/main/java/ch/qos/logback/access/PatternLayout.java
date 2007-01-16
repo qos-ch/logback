@@ -18,6 +18,7 @@ import ch.qos.logback.access.pattern.LineSeparatorConverter;
 import ch.qos.logback.access.pattern.LocalIPAddressConverter;
 import ch.qos.logback.access.pattern.LocalPortConverter;
 import ch.qos.logback.access.pattern.NAConverter;
+import ch.qos.logback.access.pattern.PostContentConverter;
 import ch.qos.logback.access.pattern.RemoteHostConverter;
 import ch.qos.logback.access.pattern.RemoteIPAddressConverter;
 import ch.qos.logback.access.pattern.RemoteUserConverter;
@@ -119,6 +120,9 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
     defaultConverterMap.put("reqParameter", RequestParameterConverter.class
         .getName());
 
+    defaultConverterMap.put("post", PostContentConverter.class.getName());
+
+    
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
   }
 
