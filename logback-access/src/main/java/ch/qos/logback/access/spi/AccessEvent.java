@@ -212,7 +212,7 @@ public class AccessEvent implements Serializable {
     return httpRequest.getHeaderNames();
   }
 
-  public Map<String, String> requestHeaderMap() {
+  public Map<String, String> getRequestHeaderMap() {
     if(requestHeaderMap == null) {
       buildRequestHeaderMap();
     }
