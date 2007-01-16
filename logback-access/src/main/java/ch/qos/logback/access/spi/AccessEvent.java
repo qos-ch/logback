@@ -1,5 +1,6 @@
 package ch.qos.logback.access.spi;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class AccessEvent implements Serializable {
   String serverName;
   String postContent;
 
-  Map<String, Object> requestHeaderMap;
+  Map<String, String> requestHeaderMap;
   Map<String, Object> requestParameterMap;
 
   long contentLength = SENTINEL;
@@ -211,8 +212,15 @@ public class AccessEvent implements Serializable {
     return httpRequest.getHeaderNames();
   }
 
+  public Map<String, String> requestHeaderMap() {
+    if(requestHeaderMap == null) {
+      buildRequestHeaderMap();
+    }
+    return requestHeaderMap;
+  }
+  
   public void buildRequestHeaderMap() {
-    requestHeaderMap = new HashMap<String, Object>();
+    requestHeaderMap = new HashMap<String, String>();
     Enumeration e = httpRequest.getHeaderNames();
     if (e == null) {
       return;
@@ -312,12 +320,12 @@ public class AccessEvent implements Serializable {
       return postContent;
     }
 
-//    try {
-//      InputStream in = httpRequest.getInputStream();
-//      postContent = Util.readToString(in);
-//    } catch (Exception ex) {
-//      // do nothing
-//    }
+    try {
+      InputStream in = httpRequest.getInputStream();
+      postContent = Util.readToString(in);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
     if (postContent == null || postContent.length() == 0) {
       postContent = NA;
     }
