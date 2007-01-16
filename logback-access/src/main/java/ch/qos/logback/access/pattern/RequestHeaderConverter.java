@@ -11,10 +11,10 @@ public class RequestHeaderConverter extends AccessConverter {
   public void start() {
     key = getFirstOption();
     if (OptionHelper.isEmpty(key)) {
-      addWarn("Missing key for the requested header");
-    } else {
-      super.start();
-    }
+      addWarn("Missing key for the requested header. Defaulting to all keys.");
+      key = null;
+    } 
+    super.start();
   }
 
   public String convert(AccessEvent accessEvent) {
@@ -22,7 +22,11 @@ public class RequestHeaderConverter extends AccessConverter {
       return "INACTIVE_HEADER_CONV";
     }
     
-    return accessEvent.getRequestHeader(key);
+    if(key != null) {
+      return accessEvent.getRequestHeader(key);
+    } else {
+      return accessEvent.getRequestHeaderMap().toString();
+    }
   }
 
 }
