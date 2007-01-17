@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-public class InputStreamDuplicatingFilter implements Filter {
+public class TeeFilter implements Filter {
 
   public void destroy() {
     // NOP
@@ -21,9 +21,11 @@ public class InputStreamDuplicatingFilter implements Filter {
     
     if(request instanceof HttpServletRequest) {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
-      request = new TeeHttpServletRequest(httpRequest);
+      request =  new TeeHttpServletRequest(httpRequest);
     }
+    
     filterChain.doFilter(request, response);
+
   }
 
   public void init(FilterConfig arg0) throws ServletException {

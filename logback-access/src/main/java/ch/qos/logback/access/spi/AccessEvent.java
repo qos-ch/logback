@@ -1,6 +1,5 @@
 package ch.qos.logback.access.spi;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -10,14 +9,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ch.qos.logback.access.Constants;
 import ch.qos.logback.access.pattern.AccessConverter;
 
 /**
  * The Access module's internal representation of logging events. When the
- * logging component instance is called in the container to log then a 
- * <code>AccessEvent</code>
- * instance is created. This instance is passed around to the different logback
- * components.
+ * logging component instance is called in the container to log then a
+ * <code>AccessEvent</code> instance is created. This instance is passed
+ * around to the different logback components.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -27,6 +26,7 @@ public class AccessEvent implements Serializable {
   private static final long serialVersionUID = -3118194368414470960L;
 
   public final static String NA = "-";
+  public final static String EMPTY = "";
   public static final int SENTINEL = -1;
 
   private transient final HttpServletRequest httpRequest;
@@ -40,7 +40,7 @@ public class AccessEvent implements Serializable {
   String protocol;
   String method;
   String serverName;
-  String postContent;
+  String requestContent;
 
   Map<String, String> requestHeaderMap;
   Map<String, Object> requestParameterMap;
@@ -64,11 +64,11 @@ public class AccessEvent implements Serializable {
     this.timeStamp = System.currentTimeMillis();
     this.serverAdapter = adapter;
   }
-  
+
   public HttpServletRequest getRequest() {
     return httpRequest;
   }
-  
+
   public HttpServletResponse getResponse() {
     return httpResponse;
   }
@@ -207,18 +207,18 @@ public class AccessEvent implements Serializable {
       return AccessEvent.NA;
     }
   }
-  
+
   public Enumeration getRequestHeaderNames() {
     return httpRequest.getHeaderNames();
   }
 
   public Map<String, String> getRequestHeaderMap() {
-    if(requestHeaderMap == null) {
+    if (requestHeaderMap == null) {
       buildRequestHeaderMap();
     }
     return requestHeaderMap;
   }
-  
+
   public void buildRequestHeaderMap() {
     requestHeaderMap = new HashMap<String, String>();
     Enumeration e = httpRequest.getHeaderNames();
@@ -230,7 +230,7 @@ public class AccessEvent implements Serializable {
       requestHeaderMap.put(key, httpRequest.getHeader(key));
     }
   }
-  
+
   public void buildRequestParameterMap() {
     requestParameterMap = new HashMap<String, Object>();
     Enumeration e = httpRequest.getParameterNames();
@@ -242,7 +242,7 @@ public class AccessEvent implements Serializable {
       requestParameterMap.put(key, httpRequest.getParameter(key));
     }
   }
-  
+
   public String getResponseHeader(String key) {
     return serverAdapter.getResponseHeader(key);
   }
@@ -315,22 +315,22 @@ public class AccessEvent implements Serializable {
     return statusCode;
   }
 
-  public String getPostContent() {
-    if (postContent != null) {
-      return postContent;
+  public String getRequestContent() {
+    if (requestContent != null) {
+      return requestContent;
+    }
+    // retreive the byte array placed by TeeFilter
+    byte[] inputBuffer = (byte[]) httpRequest.getAttribute(Constants.LB_INPUT_BUFFER);
+
+    if (inputBuffer != null) {
+      requestContent = new String(inputBuffer);
     }
 
-    try {
-      InputStream in = httpRequest.getInputStream();
-      postContent = Util.readToString(in);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-    if (postContent == null || postContent.length() == 0) {
-      postContent = NA;
+    if (requestContent == null || requestContent.length() == 0) {
+      requestContent = EMPTY;
     }
 
-    return postContent;
+    return requestContent;
   }
 
   public int getLocalPort() {
@@ -346,7 +346,7 @@ public class AccessEvent implements Serializable {
   public ServerAdapter getServerAdapter() {
     return serverAdapter;
   }
-  
+
   public void prepareForDeferredProcessing() {
     buildRequestHeaderMap();
     buildRequestParameterMap();
@@ -360,9 +360,9 @@ public class AccessEvent implements Serializable {
     getRequestURL();
     getServerName();
     getTimeStamp();
-    
+
     getStatusCode();
     getContentLength();
-    //getPostContent();
+    // getPostContent();
   }
 }

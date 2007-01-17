@@ -95,7 +95,7 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
     stmt.setString(7, event.getProtocol());
     stmt.setString(8, event.getMethod());
     stmt.setString(9, event.getServerName());
-    stmt.setString(10, event.getPostContent()); 
+    stmt.setString(10, event.getRequestContent()); 
   }
   
   void addRequestHeaders(AccessEvent event,

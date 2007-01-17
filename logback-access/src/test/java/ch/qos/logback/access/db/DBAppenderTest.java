@@ -70,7 +70,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
       assertEquals(event.getProtocol(), rs.getString(7));
       assertEquals(event.getMethod(), rs.getString(8));
       assertEquals(event.getServerName(), rs.getString(9));
-      assertEquals(event.getPostContent(), rs.getString(10));
+      assertEquals(event.getRequestContent(), rs.getString(10));
     } else {
       fail("No row was inserted in the database");
     }

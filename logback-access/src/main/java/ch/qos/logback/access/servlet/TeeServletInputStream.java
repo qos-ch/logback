@@ -8,15 +8,15 @@ import java.io.InputStream;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-public class TeeServletInputStream extends ServletInputStream {
+class TeeServletInputStream extends ServletInputStream {
 
   InputStream in;
   byte[] inputBuffer;
-  
+
   TeeServletInputStream(HttpServletRequest request) {
     duplicateInputStream(request);
   }
-  
+
   @Override
   public int read() throws IOException {
     return in.read();
@@ -26,20 +26,24 @@ public class TeeServletInputStream extends ServletInputStream {
     try {
       int len = request.getContentLength();
       ServletInputStream originalSIS = request.getInputStream();
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      inputBuffer = new byte[len];
-      int n = 0;
-      while ((n = originalSIS.read(inputBuffer, 0, len)) != -1) {
-        baos.write(inputBuffer, 0, n);
+      if (len < 0) {
+        in = originalSIS;
+      } else {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        inputBuffer = new byte[len];
+        int n = 0;
+        while ((n = originalSIS.read(inputBuffer, 0, len)) != -1) {
+          baos.write(inputBuffer, 0, n);
+        }
+        this.in = new ByteArrayInputStream(inputBuffer);
+        originalSIS.close();
       }
-      this.in = new ByteArrayInputStream(inputBuffer);
-      originalSIS.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
-  
-  public byte[] getInputBuffer() {
+
+  byte[] getInputBuffer() {
     return inputBuffer;
   }
 }
