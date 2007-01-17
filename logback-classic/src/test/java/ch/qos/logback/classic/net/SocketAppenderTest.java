@@ -12,6 +12,10 @@ package ch.qos.logback.classic.net;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -98,6 +102,25 @@ public class SocketAppenderTest extends TestCase {
     LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
+  }
+  
+  public void testMessageWithMarker() throws InterruptedException {
+    startServer(1);
+    configureClient();
+
+    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    
+    Marker marker = MarkerFactory.getMarker("testMarker");
+    logger.debug(marker, "test msg");
+
+    // Wait max 2 seconds for mock server to finish. However, it should
+    // finish much sooner than that.
+    mockSocketServer.join(2000);
+    assertTrue(mockSocketServer.isFinished());
+    assertEquals(1, mockSocketServer.getEventsList().size());
+
+    LoggingEvent remoteEvent = mockSocketServer.getEventsList().get(0);
+    assertEquals("testMarker", remoteEvent.getMarker().getName());
   }
 
   public void testMessageWithUpdatedMDC() throws InterruptedException {
