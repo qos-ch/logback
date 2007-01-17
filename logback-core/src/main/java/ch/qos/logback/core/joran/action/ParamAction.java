@@ -45,6 +45,7 @@ public class ParamAction extends Action {
 
     Object o = ec.peekObject();
     PropertySetter propSetter = new PropertySetter(o);
+    propSetter.setContext(context);
     value = ec.subst(value);
 
     // allow for variable substitution for name as well

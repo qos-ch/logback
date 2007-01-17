@@ -58,6 +58,7 @@ public class BindDataSourceToJNDIAction extends Action {
         (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class, context);
 
       PropertySetter setter = new PropertySetter(ds);
+      setter.setContext(context);
 
       if (!OptionHelper.isEmpty(urlStr)) {
         setter.setProperty("url", urlStr);
