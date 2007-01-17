@@ -1,94 +1,91 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-parent</artifactId>
-		<version>0.8.1-SNAPSHOT</version>
-	</parent>
-	
-	<modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-parent</artifactId>
+    <version>0.8.1-SNAPSHOT</version>
+  </parent>
 
-	<groupId>ch.qos.logback</groupId>
-	<artifactId>log4j-bridge</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>Log4j Bridge Module</name>
+  <modelVersion>4.0.0</modelVersion>
 
-	<url>http://logback.qos.ch</url>
-	<description>
-		<!-- 
-			Never _never_ let Eclipse's auto format function add
-			a line return in the description.
-			The generated jar will contain a corrupt MANIFEST file.
-		-->
-		Logback: the generic, reliable, fast and flexible logging library for Java.
-	</description>
-	<licenses>
-		<license>
-			<name>Apache Software Licenses</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>			
-		</license>
-	</licenses>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>log4j-bridge</artifactId>
+  <version>0.8.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Log4j Bridge Module</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-					<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>bundle-test-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-      
+  <url>http://logback.qos.ch</url>
+  <description>
+    <!-- 
+      Never _never_ let Eclipse's auto format function add
+      a line return in the description.
+      The generated jar will contain a corrupt MANIFEST file.
+    -->
+    Logback: the generic, reliable, fast and flexible logging library for Java.
+  </description>
+  <licenses>
+    <license>
+      <name>Apache Software Licenses</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-test-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>retrotranslator-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>process-classes</phase>
+             <phase>process-classes</phase> 
             <goals>
               <goal>translate</goal>
             </goals>
             <configuration>
               <includes>
                 <include>
-                  <directory>${project.build.outputDirectory}</directory>
+                  <directory>
+                    ${project.build.outputDirectory}
+                  </directory>
                 </include>
               </includes>
-              <destjar>target/${artifactId}-${project.version}-jdk14.jar</destjar>
-              <verify>true</verify>
-              <failonwarning>false</failonwarning>
+              <destjar>
+                target/${artifactId}-${project.version}-jdk14.jar
+              </destjar>
+              <verify>${retrotranslator.verify}</verify>
               <verifyClasspath>
                 <element>${path.to.rt.jar}</element>
               </verifyClasspath>
+              <failonwarning>false</failonwarning>
             </configuration>
           </execution>
         </executions>
-        <!-- dependencies>
-          <dependency>
-            <groupId>net.sf.retrotranslator</groupId>
-            <artifactId>retrotranslator-runtime</artifactId>
-            <version>1.0.8</version>
-            <scope>compile</scope>
-          </dependency>
-        </dependencies -->
       </plugin>
-      
-		</plugins>
-	</build>
+    </plugins>
+  </build>
 
 </project>

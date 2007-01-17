@@ -34,22 +34,12 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>net.sf.retrotranslator</groupId>
-      <artifactId>retrotranslator-runtime</artifactId>
-      <version>1.0.8</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   
   <properties>
     <!-- slf4j.version property is used by setClasspath.cmd -->
-    <slf4j.version>1.1.0</slf4j.version>
-    <!-- 
-      This next variable should be declared either here or in 
-    	your maven_home/conf/settings.xml file
-    -->
-    <!-- <path.to.rt.jar>C:/j2sdk1.4.2_13/jre/lib/rt.jar</path.to.rt.jar> -->
+    <slf4j.version>1.1.0</slf4j.version>   
+    <retrotranslator.verify>false</retrotranslator.verify>
   </properties>
   
   <dependencyManagement>
@@ -135,6 +125,30 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
+    <profile>
+    	<!-- 
+    	  The use of this profile requires to set
+    	  the <path.to.rt.jar> property in the
+    	  MAVEN_HOME/conf/settings.xml file.
+    	  The variable should point to a JDK1.4
+    	  rt.jar file.
+    	-->
+      <id>retrotranslator</id>
+      <properties>
+        <retrotranslator.verify>true</retrotranslator.verify>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>net.sf.retrotranslator</groupId>
+          <artifactId>retrotranslator-runtime</artifactId>
+          <version>1.0.8</version>
+          <scope>compile</scope>
+         </dependency>
+      </dependencies>
+      <build>
+      	<defaultGoal>process-classes</defaultGoal>
+      </build>
+    </profile>    
   </profiles>
   
   <build>
