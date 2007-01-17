@@ -230,23 +230,19 @@ table {
 table.bodyTable th {
 	color: white;
 	background-color: #bbb;
-	text-align: left;
 	font-weight: bold;
 }
 
 table.bodyTable th,table.bodyTable td {
 	font-size: 1em;
-	text-align:center;
 }
 
 table.bodyTable tr.a {
 	background-color: #ddd;
-	text-align: center;
 }
 
 table.bodyTable tr.b {
 	background-color: #eee;
-	text-align: center;
 }
 
 .source {

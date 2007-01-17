@@ -1502,6 +1502,9 @@ public class MySampleConverter extends ClassicConverter {
 				<p>This conversion word takes the first option in braces and looks
 				for the corresponding header in the request.</p>
 				<p><b>%header{Referer}</b> displays the referer of the request.</p>
+        <p>
+        If no option is specified, it displays every available header.
+        </p>
 			</td>
 		</tr>	
 		<tr>
@@ -1625,6 +1628,31 @@ public class MySampleConverter extends ClassicConverter {
 				<p><b>%header{Referer}</b> displays the referer of the response.</p>
 			</td>
 		</tr>
+    <tr>
+      <td align="center"><b>requestContent</b></td>
+      <td>
+        <p>
+          This conversion word displays the content of the request, that is the
+          request's <code>InputStream</code>. It is used in conjunction with a
+          <a href="../xref/ch/qos/logback/access/servlet/TeeFilter.html">
+          <code>TeeFilter</code></a>, a <code>javax.servlet.Filter</code> that 
+          replaces the original <code>HttpServletRequest</code> 
+          by a <a href="../xref/ch/qos/logback/access/servlet/TeeHttpServletRequest.html">
+          <code>TeeHttpServletRequest</code></a>. The latter object allows
+          access to the requet's <code>InputStream</code> multiple times without
+          any loss of data.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><b>fullRequest</b></td>
+      <td>
+        <p>
+          This conversion word takes all the available headers of the
+          request and displays their values.
+        </p>
+      </td>
+    </tr>
 		</table>
 		
 		<p>Logback access' <code>PatternLayout</code> also recognize three keywords, which

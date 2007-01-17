@@ -6,7 +6,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Layout;
 
 /**
- * This class is tied to the <code>requestContent</code> conversion word.
+ * This class is tied to the <code>fullRequest</code> conversion word.
  * <p>
  * It has been removed from the {@link ch.qos.logback.access.PatternLayout} since
  * it needs further testing before wide use.
