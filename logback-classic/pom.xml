@@ -145,9 +145,6 @@
                 target/${artifactId}-${project.version}-jdk14.jar
               </destjar>
               <verify>${retrotranslator.verify}</verify>
-              <verifyClasspath>
-                <element>${path.to.rt.jar}</element>
-              </verifyClasspath>
               <failonwarning>false</failonwarning>
             </configuration>
           </execution>

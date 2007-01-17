@@ -118,7 +118,7 @@
     </dependencies>
   </dependencyManagement>
   
-  <profiles>
+  <profiles>    
     <profile>
       <id>testSkip</id>
       <properties>
@@ -147,6 +147,18 @@
       </dependencies>
       <build>
       	<defaultGoal>process-classes</defaultGoal>
+      	<plugins>
+      		<plugin>
+      			<groupId>org.codehaus.mojo</groupId>
+        		<artifactId>retrotranslator-maven-plugin</artifactId>
+        		<inherited>true</inherited>
+        		<configuration>
+              <verifyClasspath>
+                <element>${path.to.rt.jar}</element>
+              </verifyClasspath>
+        		</configuration>
+      		</plugin>
+      	</plugins>
       </build>
     </profile>    
   </profiles>
