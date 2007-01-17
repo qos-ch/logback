@@ -236,14 +236,17 @@ table.bodyTable th {
 
 table.bodyTable th,table.bodyTable td {
 	font-size: 1em;
+	text-align:center;
 }
 
 table.bodyTable tr.a {
 	background-color: #ddd;
+	text-align: center;
 }
 
 table.bodyTable tr.b {
 	background-color: #eee;
+	text-align: center;
 }
 
 .source {

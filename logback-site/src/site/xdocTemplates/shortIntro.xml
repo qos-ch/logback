@@ -49,8 +49,8 @@
 
     <p>
     	Logback is intended as a successor to the popular log4j project.
-    	It was designed by Ceki G&#252;lc&#252;, the founder of the
-    	log4j project. It builds upon a decade long experience gained in
+    	It was designed by Ceki G&#252;lc&#252;, the log4j founder. 
+      It builds upon a decade long experience gained in
     	designing industrial-strength logging systems. The resulting
     	product, logback is faster with a smaller footprint than all
     	existing logging systems, sometimes by a wide margin. Logback
@@ -61,13 +61,13 @@
     	logback relies on <code>Status</code> objects, which greatly
     	facilitate troubleshooting. You may wish to rely on Status
     	objects in contexts other than logging. Logback-core bundles
-    	Joran, a powerful and generic configutation system, which can be
-    	put to use in your own projects for great effect.
+    	Joran, a powerful and generic configuration system, which can be
+    	put to use in your own projects to great effect.
     </p>
 
     <p>
-    	This document presents the more basic concepts in logback,
-    	enough to get you started.
+    	This document logback's basic concepts,
+    	just enough to get you started.
     </p>
 
     <h2>Logback architecture</h2>
@@ -81,7 +81,7 @@
     <p>
     	The <em>core</em> module lays the groundwork for the other two
     	modules.  The <em>classic</em> module extends <em>core</em>. The
-    	classic module can be assimilated to a significantly improved
+    	classic module corresponds to a significantly improved
     	version of log4j. Logback-classic natively implements the <a
     	href="http://www.slf4j.org">SLF4J API</a> so that you can
     	readily switch back and forth between logback and other logging
@@ -91,7 +91,7 @@
     	in a <a href="access.html">separate document</a>.
     </p>
     <p>
-    	In this document, we will write "logback" to refer to the
+    	In the reminder of this document, we will write "logback" to refer to the
     	logback classic module.
     </p>
 
@@ -218,7 +218,7 @@ public class HelloWorld2 {
   	policy, which is a basic <code>ConsoleAppender</code>. 
   	An <code>Appender</code> is a class that can be
   	seen as an output destination. Appenders exist for many different
-  	destinations including the console, files, Syslog, Socket, JMS and
+  	destinations including the console, files, Syslog, TCP Socket, JMS and
   	many more. Users can also easily create their own Appenders as
   	appropriate for their specific situation.
   </p>
@@ -244,8 +244,7 @@ public class HelloWorld2 {
 		<ol>
 
 			<li>Configure the logback environment. You can do so in several
-			more or less sophisticated ways. The BasicConfigurator is the
-			simplest but also least flexible. More on this later.</li>
+			more or less sophisticated ways. More on this later.</li>
 
 			<li>In every class where you wish to perform logging, retrieve a
 			<code>Logger</code> instance by invoking the
@@ -262,16 +261,17 @@ public class HelloWorld2 {
 		<h2>Logger, Appenders and Layouts</h2>
 		
 		<p>
-			Logback has three main components: Loggers,
-			Appenders and Layouts. These three types of components work
+			Logback has three main types: <code>Logger</code>,
+			<code>Appender</code> and <code>Layout</code>. These three types of components work
 			together to enable developers to log messages according to
 			message type and level, and to control at runtime how these
 			messages are formatted and where they are reported.
 		</p>
 		<p>
 			The Logger class is part of the classic module. On the other
-			hand, Appenders and Layouts are part of the core module. For the
-			sake of genericity, logback-core has no notion of loggers.
+			hand, the <code>Appender</code> and <code>Layout</code> interfaces 
+      are part of the core module. For the sake of genericity, 
+      logback-core has no notion of loggers.
 		</p>
 
     <h3>Logger context</h3>
@@ -318,9 +318,8 @@ public class HelloWorld2 {
 
 		<p>
 			All other loggers are also retrieved with the class static
-			<code>getLogger</code> method found in the <b>CHECK THE
-			URL</b><a
-			href="http://www.slf4j.org/javadocs/org/slf4j/Logger.html">org.slf4j.LoggerFactory</a>
+			<code>getLogger</code> method found in the <a
+			href="http://www.slf4j.org/api/org/slf4j/Logger.html">org.slf4j.LoggerFactory</a>
 			class. This method takes the name of the desired logger as a
 			parameter. Some of the basic methods in the <code>Logger</code>
 			interface are listed below.
@@ -341,7 +340,7 @@ public interface Logger {
 			Loggers may be assigned levels. The set of possible levels, that
 			is DEBUG, INFO, WARN and ERROR are defined in the
 			<code>ch.qos.logback.classic.Level</code> class. Note that in
-			logback, the level class is final and cannot be derived as a
+			logback, the level class is final and cannot be derived, as a
 			much more flexible approach exist in the form of Marker objects.
 		</p>
 
@@ -356,7 +355,7 @@ public interface Logger {
 			<p>
 				The effective level for a given logger <em>L</em>, is equal to
 				the first non-null level in its hierarchy, starting at
-				<em>L</em> itself and proceeding upwards in the context
+				<em>L</em> itself and proceeding upwards in the hierarchy
 				towards the root logger.
 			</p>
 		</div>
@@ -452,7 +451,7 @@ public interface Logger {
 		</table>
 
 		<p>In example 2 above, all loggers have an assigned level value.
-		There is no need for level inheritence.
+		Level inheritence does not come into play.
 		</p>
 
 		<em>Example 3</em>
@@ -547,7 +546,7 @@ public interface Logger {
 		<p>By definition, the printing method determines the level of a
 		logging request. For example, if <code>L</code> is a logger
 		instance, then the statement <code>L.info("..")</code> is a
-		logging request of level INFO.
+		logging statement of level INFO.
 		</p>
 		
     <p>A logging request is said to be <em>enabled</em> if its level
@@ -568,7 +567,7 @@ public interface Logger {
 		<p>
 			This rule is at the heart of logback. It assumes
 			that levels are ordered as follows: 
-			<code>DEBUG &lt; INFO &lt; WARN &lt; ERROR</code>.
+			<code>DEBUG &lt; INFO &lt; WARN &lt; ERROR&lt; OFF</code>.
 		</p>
 				
 		<p>In a more graphic way, here is how the selection rule works. In
@@ -584,7 +583,8 @@ public interface Logger {
 				<th>DEBUG</th>
 				<th>INFO</th>
 				<th>WARN</th>
-				<th>ERROR</th>				
+				<th>ERROR</th>	
+        <th>OFF</th>    			
 			</tr>
 			<tr>
 				<th>DEBUG</th>
@@ -592,6 +592,7 @@ public interface Logger {
 				<td><span class="redBold">NO</span></td>
 				<td><span class="redBold">NO</span></td>
 				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
 			</tr>
 			<tr>
 				<th>INFO</th>
@@ -599,6 +600,7 @@ public interface Logger {
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="redBold">NO</span></td>
 				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
 			</tr>
 			<tr>
 				<th>WARN</th>
@@ -606,6 +608,7 @@ public interface Logger {
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
 			</tr>
 			<tr>
 				<th>ERROR</th>
@@ -613,6 +616,7 @@ public interface Logger {
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
+        <td><span class="redBold">NO</span></td>
 			</tr>		
 		</table>
 		
@@ -686,7 +690,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		</p>
 
 		<p>Nevertheless, naming loggers after the class where they are
-		located seems to be the best strategy known so far.
+		located seems to be the best general strategy known so far.
 		</p>
 
     <h3>Appenders and Layouts</h3>
@@ -698,7 +702,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			logback speak, an output destination is called an
 			appender. Currently, appenders exist for the console, files,
 			remote socket servers, to MySQL, PostgreSQL, Oracle and other
-			databases, to JMS, and remote UNIX Syslog daemons. 
+			databases, JMS, and remote UNIX Syslog daemons. 
 
       <!--It is also possible to log asynchronously. -->
 		</p>
@@ -708,8 +712,8 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		<p> The <code><a href="apidocs/ch/qos/logback/classic/Logger.html#addAppender(ch.qos.logback.core.Appender)">addAppender</a></code> method adds an appender to a
 		given logger.  Each enabled logging request for a given logger
 		will be forwarded to all the appenders in that logger as well as
-		the appenders higher in the context. In other words, appenders are
-		inherited additively from the logger context. For example, if a
+		the appenders higher in the hierarchy. In other words, appenders are
+		inherited additively from the logger hierarchy. For example, if a
 		console appender is added to the root logger, then all enabled
 		logging requests will at least print on the console. If in
 		addition a file appender is added to a logger, say <em>L</em>,
@@ -717,7 +721,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		children will print on a file <em>and</em> on the console.  It is
 		possible to override this default behavior so that appender
 		accumulation is no longer additive by setting the additivity flag
-		to false.
+		of a logger to false.
 		</p>
 
 		<p>
@@ -841,9 +845,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			The first field is the number of milliseconds elapsed since
 			the start of the program. The second field is the thread
 			making the log request. The third field is the level of the
-			log statement. The fourth field is the name of the logger
+			log request. The fourth field is the name of the logger
 			associated with the log request. The text after the '-' is
-			the message of the statement.
+			the message of the request.
 		</p>
 
 		<h3>Parameterized logging</h3>
@@ -890,7 +894,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			and once in <code>debug</code>. 
 			This is an insignificant overhead because evaluating a
 			logger takes less than 1% of the time it takes to actually
-			log a statement.
+			log a request.
 		</p>
 
 
@@ -898,7 +902,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		<h4>Better alternative</h4>
 
 		<p>
-			There exists a very convenient alternative based on message
+			There exists a convenient alternative based on message
 			formats. Assuming <code>entry</code> is an object, you can write:
 		</p>
 
@@ -1092,7 +1096,7 @@ class Bar {
 
 	
 	<p>Logging to the console is a rather simple example. Let's now
-	configure logback so that it logs to the console, but also to a
+	configure logback so that it logs on the console, but also to a
 	custom file.</p>
 
 <em>Example 1.6: Configuring logback with multiple appenders (logback-examples/src/main/java/chapter1/sample-config-2.xml)</em>
