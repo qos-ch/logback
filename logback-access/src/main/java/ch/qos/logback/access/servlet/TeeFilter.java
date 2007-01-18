@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class TeeFilter implements Filter {
 
@@ -22,6 +23,10 @@ public class TeeFilter implements Filter {
     if(request instanceof HttpServletRequest) {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       request =  new TeeHttpServletRequest(httpRequest);
+    }
+    if(response instanceof HttpServletResponse) {
+      HttpServletResponse httpResponse = (HttpServletResponse) response;
+      response =  new TeeHttpServletResponse(httpResponse);
     }
     
     filterChain.doFilter(request, response);
