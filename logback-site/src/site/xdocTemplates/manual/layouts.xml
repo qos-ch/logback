@@ -283,7 +283,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
    </p>
 
 
-		<a name="ClassicPatternLayout" />
+		<a name="PatternLayout" />
 		<h3>PatternLayout</h3>
 
 		<p>
@@ -789,7 +789,26 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					</p>
 				</td>
 			</tr>
+      
+      <tr>
+        <td align="center">
+          <b>marker</b>
+        </td>
 
+        <td>
+          <p>
+            Used to output the marker associated with the logger request.
+          </p>
+          <p>
+            If there is a single marker available, its name is displayed.
+            In case the marker has children markers, the converter displays
+            the parent's and children's names as shown below.
+          </p>
+          <p>
+            <em>parentName [ child1, child2 ]</em>
+          </p>
+        </td>
+      </tr>
 			<tr>
 
 				<td align="center">

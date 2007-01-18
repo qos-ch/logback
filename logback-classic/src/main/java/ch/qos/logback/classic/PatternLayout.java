@@ -42,7 +42,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * <em>conversion pattern</em>.
  * <p>
  * For more information about this layout, please refer to the online manual at
- * http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
+ * http://logback.qos.ch/manual/layouts.html#PatternLayout
  * 
  */
 
