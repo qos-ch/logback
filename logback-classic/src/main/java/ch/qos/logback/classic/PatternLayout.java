@@ -21,6 +21,7 @@ import ch.qos.logback.classic.pattern.LineOfCallerConverter;
 import ch.qos.logback.classic.pattern.LineSeparatorConverter;
 import ch.qos.logback.classic.pattern.LoggerConverter;
 import ch.qos.logback.classic.pattern.MDCConverter;
+import ch.qos.logback.classic.pattern.MarkerConverter;
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
@@ -100,6 +101,8 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
         NopThrowableInformationConverter.class.getName());
 
     defaultConverterMap.put("caller", CallerDataConverter.class.getName());
+    
+    defaultConverterMap.put("marker", MarkerConverter.class.getName());
 
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
   }
