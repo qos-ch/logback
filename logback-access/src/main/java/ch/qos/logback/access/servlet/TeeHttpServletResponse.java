@@ -49,7 +49,11 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
   
   
   void  finish() throws IOException {
-    this.writer.close();
-    teeServletOutputStream.close();
+    if(this.writer != null) {
+      this.writer.close();
+    }
+    if(this.teeServletOutputStream != null) {
+      this.teeServletOutputStream.close();
+    }
   }
 }
