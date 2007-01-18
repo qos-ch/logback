@@ -13,7 +13,7 @@ public class FullResponseConverter extends AccessConverter {
     
     buf.append("HTTP/1.1 ");
     buf.append(ae.getStatusCode());
-    buf.append(" NA");
+    buf.append(" DO_FIXME");
     buf.append(Layout.LINE_SEP);
     
     List<String> hnList = ae.getResponseHeaderNameList();
