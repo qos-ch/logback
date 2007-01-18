@@ -3,6 +3,7 @@ package ch.qos.logback.access.spi;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -41,7 +42,8 @@ public class AccessEvent implements Serializable {
   String method;
   String serverName;
   String requestContent;
-
+  String responseContent;
+  
   Map<String, String> requestHeaderMap;
   Map<String, Object> requestParameterMap;
 
@@ -247,6 +249,10 @@ public class AccessEvent implements Serializable {
     return serverAdapter.getResponseHeader(key);
   }
 
+  public List<String> getResponseHeaderNameList() {
+    return serverAdapter.getResponseHeaderNameList();
+  }
+  
   /**
    * Attributes are not serialized
    * 
@@ -333,6 +339,23 @@ public class AccessEvent implements Serializable {
     return requestContent;
   }
 
+  public String getResponseContent() {
+    if (responseContent != null) {
+      return responseContent;
+    }
+    // retreive the byte array previously placed by TeeFilter
+    byte[] outputBuffer = (byte[]) httpRequest.getAttribute(Constants.LB_OUTPUT_BUFFER);
+
+    if (outputBuffer != null) {
+      responseContent = new String(outputBuffer);
+    }
+
+    if (responseContent == null || responseContent.length() == 0) {
+      responseContent = EMPTY;
+    }
+
+    return responseContent;
+  }
   public int getLocalPort() {
     if (localPort == SENTINEL) {
       if (httpRequest != null) {

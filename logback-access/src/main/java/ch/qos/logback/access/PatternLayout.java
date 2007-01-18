@@ -15,6 +15,7 @@ import java.util.Map;
 import ch.qos.logback.access.pattern.ContentLengthConverter;
 import ch.qos.logback.access.pattern.DateConverter;
 import ch.qos.logback.access.pattern.FullRequestConverter;
+import ch.qos.logback.access.pattern.FullResponseConverter;
 import ch.qos.logback.access.pattern.LineSeparatorConverter;
 import ch.qos.logback.access.pattern.LocalIPAddressConverter;
 import ch.qos.logback.access.pattern.LocalPortConverter;
@@ -31,6 +32,7 @@ import ch.qos.logback.access.pattern.RequestParameterConverter;
 import ch.qos.logback.access.pattern.RequestProtocolConverter;
 import ch.qos.logback.access.pattern.RequestURIConverter;
 import ch.qos.logback.access.pattern.RequestURLConverter;
+import ch.qos.logback.access.pattern.ResponseContentConverter;
 import ch.qos.logback.access.pattern.ResponseHeaderConverter;
 import ch.qos.logback.access.pattern.ServerNameConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
@@ -135,7 +137,10 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
 
     defaultConverterMap.put("requestContent", RequestContentConverter.class.getName());
 
+    defaultConverterMap.put("responseContent", ResponseContentConverter.class.getName());
+
     defaultConverterMap.put("fullRequest", FullRequestConverter.class.getName());
+    defaultConverterMap.put("fullResponse", FullResponseConverter.class.getName());
 
     
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());

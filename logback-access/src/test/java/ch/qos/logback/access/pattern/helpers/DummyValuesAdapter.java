@@ -1,5 +1,7 @@
 package ch.qos.logback.access.pattern.helpers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,10 @@ public class DummyValuesAdapter implements ServerAdapter {
 
   public int getStatusCode() {
     return 1;
+  }
+
+  public List<String> getResponseHeaderNameList() {
+    return null;
   }
 
 }

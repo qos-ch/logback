@@ -1,5 +1,7 @@
 package ch.qos.logback.access.pattern.helpers;
 
+import java.util.List;
+
 import ch.qos.logback.access.spi.ServerAdapter;
 
 public class DummyServerAdapter implements ServerAdapter {
@@ -22,6 +24,10 @@ public class DummyServerAdapter implements ServerAdapter {
   
   public String getResponseHeader(String key) {
     return response.getHeader(key);
+  }
+
+  public List<String> getResponseHeaderNameList() {
+    return null;
   }
 
 }
