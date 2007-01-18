@@ -64,7 +64,7 @@
 		<p>
 			To use logback-access with Tomcat, after downlading the logback
 			distribution, place the files <em>logback-core-VERSION.jar</em>
-			and <em>logback-access-VERSION.jar</em> under $TOMCAT_HOME/common/lib
+			and <em>logback-access-VERSION.jar</em> under $TOMCAT_HOME/server/lib
 			directory, where $TOMCAT_HOME is the folder where you have
 			installed Tomcat. We have tested logback-access module with Tomcat
 			version 5.5.20.
@@ -99,8 +99,7 @@
 			configuration file contains directives for configuring logback
 			components. Among others, you can specify the appenders where
 			the logging requests will be sent, and their format. Please refer
-			to the above description about logback access and Jetty for examples
-			of configuration.
+			to the description below about logback access configuration for examples.
 	</p>
 		
 		<h2>Logback Access and Jetty</h2>

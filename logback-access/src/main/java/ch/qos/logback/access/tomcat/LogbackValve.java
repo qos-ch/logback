@@ -25,7 +25,6 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -108,7 +107,7 @@ public class LogbackValve extends ValveBase implements Context,
 
       filename = tomcatHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
       getStatusManager().add(
-          new ErrorStatus("filename property not set. Assuming [" + filename
+          new WarnStatus("filename property not set. Assuming [" + filename
               + "]", this));
 
     }

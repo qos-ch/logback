@@ -98,7 +98,7 @@
       <dependency>
         <groupId>tomcat</groupId>
         <artifactId>catalina</artifactId>
-        <version>5.5.12</version>
+        <version>5.5.15</version>
       </dependency>
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
