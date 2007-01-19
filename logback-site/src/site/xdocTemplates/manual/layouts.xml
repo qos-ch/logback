@@ -1672,6 +1672,31 @@ public class MySampleConverter extends ClassicConverter {
         </p>
       </td>
     </tr>
+    <tr>
+      <td align="center"><b>responseContent</b></td>
+      <td>
+        <p>
+          This conversion word displays the content of the response, that is the
+          response's <code>InputStream</code>. It is used in conjunction with a
+          <a href="../xref/ch/qos/logback/access/servlet/TeeFilter.html">
+          <code>TeeFilter</code></a>, a <code>javax.servlet.Filter</code> that 
+          replaces the original <code>HttpServletResponse</code> 
+          by a <a href="../xref/ch/qos/logback/access/servlet/TeeHttpServletResponse.html">
+          <code>TeeHttpServletResponse</code></a>. The latter object allows
+          access to the requet's <code>InputStream</code> multiple times without
+          any loss of data.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><b>fullResponse</b></td>
+      <td>
+        <p>
+          This conversion word takes all the available headers of the
+          response and displays their values.
+        </p>
+      </td>
+    </tr>
 		</table>
 		
 		<p>Logback access' <code>PatternLayout</code> also recognize three keywords, which
