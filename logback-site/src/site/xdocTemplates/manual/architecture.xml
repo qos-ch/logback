@@ -63,13 +63,13 @@
     	systems such as log4j or JDK14 Logging. The third module called
     	<em>access</em> integrates with Servlet containers to provide
     	HTTP-access log functionality. The access module will be covered
-    	in a <a href="access.html">separate document</a>.
+    	in a <a href="../access.html">separate document</a>.
     </p>
     <p>
     	In the reminder of this document, we will write "logback" to refer to the
     	logback classic module.
     </p>
-		
+    
 		<h2>Logger, Appenders and Layouts</h2>
 		
 		<p>
@@ -126,7 +126,7 @@
 			inception. Like every logger, it can be retrieved by its name,
 			as follows:
 		</p>
-		<div class="source"><pre>Logger rootLogger = LoggerFactory.getLogger(<a href="apidocs/constant-values.html#ch.qos.logback.classic.LoggerContext.ROOT_NAME">LoggerContext.<em>ROOT_NAME</em></a>);</pre></div>
+		<div class="source"><pre>Logger rootLogger = LoggerFactory.getLogger(<a href="../apidocs/constant-values.html#ch.qos.logback.classic.LoggerContext.ROOT_NAME">LoggerContext.<em>ROOT_NAME</em></a>);</pre></div>
 
 		<p>
 			All other loggers are also retrieved with the class static
@@ -457,7 +457,7 @@ barlogger.<span class="green bold">debug</span>("Exiting gas station search");</
 
 		<h3>Retrieving Loggers</h3>
 		<p>
-			Calling the <code><a href="/apidocs/org/slf4j/LoggerFactory.html#getLogger(java.lang.String)">LoggerFactory.getLogger</a></code>
+			Calling the <code><a href="../apidocs/org/slf4j/LoggerFactory.html#getLogger(java.lang.String)">LoggerFactory.getLogger</a></code>
 			method with the same name will always return a reference to
 			the exact same logger object.
 		</p>
@@ -521,7 +521,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 
 		<p>More than one appender can be attached to a logger.</p>
 
-		<p> The <code><a href="apidocs/ch/qos/logback/classic/Logger.html#addAppender(ch.qos.logback.core.Appender)">addAppender</a></code> method adds an appender to a
+		<p> The <code><a href="../apidocs/ch/qos/logback/classic/Logger.html#addAppender(ch.qos.logback.core.Appender)">addAppender</a></code> method adds an appender to a
 		given logger.  Each enabled logging request for a given logger
 		will be forwarded to all the appenders in that logger as well as
 		the appenders higher in the hierarchy. In other words, appenders are
@@ -769,8 +769,18 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 		code. Given their number, it becomes imperative to manage these
 		log statements without the need to modify them manually.
 		</p>
-
-		<p>The logback environment is fully configurable programmatically.
+    
+    <div class="highlight">
+    <p>
+      In order to run the examples in this introduction, you need
+      to make sure that certain jar files are present on the
+      classpath.
+      Please refer to the <a href="../setup.html">setup page</a>
+      for further details.
+    </p>
+    </div>
+    
+    <p>The logback environment is fully configurable programmatically.
 		However, it is far more flexible to configure logback using
 		configuration files. In logback, configuration files are written
 		in XML format.
@@ -788,8 +798,8 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 			file, as the following example demonstrate.
 		</p>
 
-     <em>Example 1.4: Logback configuration from file ((<a
-  href="xref/chapter2/MyAppWithConfigFile.html">logback-examples/src/main/java/chapter2/MyAppWithConfigFile.java</a>)</em>
+     <em>Example 2.1: Logback configuration from file (<a
+  href="../xref/chapter2/MyAppWithConfigFile.html">logback-examples/src/main/java/chapter2/MyAppWithConfigFile.java</a>)</em>
 
 <div class="source"><pre>package chapter2;
 
@@ -826,7 +836,7 @@ public class MyAppWithConfigFile {
 		object. The <code>Bar</code> class is listed below:
 		</p>
 
-		<em>Example 1.3: Sample logging class (<a href="xref/chapter2/Bar.html">logback-examples/src/main/java/chapter2/Bar.java</a>)</em>
+		<em>Example 2.2: Sample logging class (<a href="../xref/chapter2/Bar.html">logback-examples/src/main/java/chapter2/Bar.java</a>)</em>
 <div class="source"><pre>package chapter2;
   
 import org.slf4j.Logger;
@@ -866,7 +876,7 @@ class Bar {
     <p>Let us configure logback with the
     next XML configuration file:</p>
 
-	<em>Example 1.5: Basic configuration with a xml file (logback-examples/src/main/java/chapter2/sample-config-1.xml)</em>	
+	<em>Example 2.3: Basic configuration with a xml file (logback-examples/src/main/java/chapter2/sample-config-1.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
@@ -911,7 +921,7 @@ class Bar {
 	configure logback so that it logs on the console, but also to a
 	custom file.</p>
 
-<em>Example 1.6: Configuring logback with multiple appenders (logback-examples/src/main/java/chapter2/sample-config-2.xml)</em>
+<em>Example 2.4: Configuring logback with multiple appenders (logback-examples/src/main/java/chapter2/sample-config-2.xml)</em>
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration>
@@ -951,7 +961,7 @@ class Bar {
 	bold xml snippet to the configuration file, right before the
 	<code>&lt;root&gt;</code> element.</p>
 
-<em>Example 1.7: Configuring a specific logger (logback-examples/src/main/java/chapter2/sample-config-3.xml)</em>	
+<em>Example 2.5: Configuring a specific logger (logback-examples/src/main/java/chapter2/sample-config-3.xml)</em>	
 <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 
 &lt;configuration&gt;
