@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package chapter1;
+package chapter2;
 
 //Import SLF4J classes.
 import org.slf4j.Logger;

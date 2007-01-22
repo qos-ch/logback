@@ -1,0 +1,265 @@
+<document>
+	<!-- 
+	
+		Warning: do not use any auto-format function on this file.
+		Since "source" divs use pre as white-space, it affects the
+		look of the code parts in this document.
+	
+	 -->
+
+
+	<body>
+    <h2>Introduction</h2>
+    <div class="author">
+    	Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+    </div>
+
+
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>
+						.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+
+
+    <h2>Introduction</h2>
+
+    <p>
+    	Logback is intended as a successor to the popular log4j project.
+    	It was designed by Ceki G&#252;lc&#252;, the log4j founder. 
+      It builds upon a decade long experience gained in
+    	designing industrial-strength logging systems. The resulting
+    	product, logback is faster with a smaller footprint than all
+    	existing logging systems, sometimes by a wide margin. Logback
+    	also offers unique and rather useful features such as Markers,
+    	parameterized logging statements, conditional stack tracing and
+    	powerful event filtering. These are only few examples of useful
+    	features logback has to offer. For its own error reporting,
+    	logback relies on <code>Status</code> objects, which greatly
+    	facilitate troubleshooting. You may wish to rely on Status
+    	objects in contexts other than logging. Logback-core bundles
+    	Joran, a powerful and generic configuration system, which can be
+    	put to use in your own projects to great effect.
+    </p>
+
+    <h2>First Baby Step</h2>
+
+    <div class="highlight">
+    <p>
+      In order to run the examples in this introduction, you need
+      to make sure that certain jar files are present on the
+      classpath.
+      Please refer to the <a href="setup.html">setup page</a>
+      for further details.
+    </p>
+    </div>
+    
+    <h3>Requirements</h3>
+
+    <p>Logback-classic module requires the presence
+    <em>slf4j-api.jar</em>, <em>logback-core.jar</em> in addition to
+    <em>logback-classic.jar</em> on the classpath.
+    </p>
+
+
+    <p>Let us now begin experimenting with logback.</p>
+
+<em>Example 1.1: Basic template for logging (<a href="xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
+<div class="source"><pre>package chapter1;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HelloWorld1 {
+
+  public static void main(String[] args) {
+
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld1");
+    logger.debug("Hello world.");
+
+  }
+}</pre></div>
+
+    <p>
+      The <code>HelloWorld</code> class is defined in the
+      <code>chapter1</code> package. It starts by importing the <code>Logger</code>
+      and <code>LoggerFactory</code>
+      classes defined in the SLF4J API, more specifically within the <code>org.slf4j</code>
+      package.
+    </p>
+
+
+    <p>
+      On the first line of the main() method, the variable named <code>logger</code>
+      is assigned a <code>Logger</code>
+      instance retreived by invoking the static method <code>getLogger</code>
+      in the <code>LoggerFactory</code> class. 
+      This logger is named "chapter1.HelloWorld1". The main method proceeds to call the
+      <code>debug</code> method of this logger passing "Hello World" as an argument. 
+      We say that the main
+      method contains a logging statement of level debug with the message "Hello world".
+    </p>
+
+    <p>
+      You will note that the above example does not reference any
+      logback classes. In most cases, as far as logging is
+      concerned, your classes will need to import only SLF4J
+      classes. In principle, you will have to import logback
+      classes only for configuring logback. Thus, the vast
+      majority of your classes will only be cognizant of SLF4J API
+      and oblivious to the existence of logback.
+    </p>
+
+
+    <p>You can launch the first
+    sample application, <em>chapter1.HelloWord1</em> with the command:
+    </p>
+    <div class="source"><pre>java chapter1.HelloWorld1</pre></div>
+
+    <p>
+      Launching the <code>HelloWorld1</code>
+      application will output a single line on the console. By virtue of
+      to logback's default configuration policy, when no default file 
+      is found to configure logback explicitely, logback will add a 
+      <code>ConsoleAppender</code> to the root logger.
+    </p>
+
+<div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</pre></div>
+
+    <p>
+      Logback can report information about its internal state
+      using a built-in status system. Important events occuring
+      during logback's lifetime can be accessed through a
+      <code>StatusManager</code>. For the time being, let us instruct logback to print its
+      internal state. This is accomplished by a static method in
+      the <code>LoggerStatusPrinter</code>
+      class.
+    </p>
+
+<em>Example 1.2: Printing Logger Status (<a href="xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
+<div class="source"><pre>package chapter1;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+<b>import ch.qos.logback.classic.util.LoggerStatusPrinter;</b>
+
+public class HelloWorld2 {
+
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld2");
+    logger.debug("Hello world.");
+    <b>LoggerStatusPrinter.printStatusInDefaultContext();</b>
+  }
+}</pre></div>
+
+
+   <p>Running the <code>HelloWorld2</code> application will produce
+   the following output:</p>
+
+<div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld2 - Hello world.
+|-INFO in ch.qos.logback.classic.BasicConfigurator@1c1ea29 - Setting up default configuration.</pre></div>
+
+
+  <p>
+    Logback explains that it configured itself using its default
+    policy, which is a basic <code>ConsoleAppender</code>. 
+    An <code>Appender</code> is a class that can be
+    seen as an output destination. Appenders exist for many different
+    destinations including the console, files, Syslog, TCP Socket, JMS and
+    many more. Users can also easily create their own Appenders as
+    appropriate for their specific situation.
+  </p>
+
+  <p>
+    The previous examples are rather simple. However, actual logging
+    in a larger application would not be any different. The general
+    pattern logging statements will not change. Only the configuration
+    process will be different since you will certainly need a more
+    specific configuration than what logback provides by default. 
+    As you will see later on in this document,
+    configuring logback can be done in different flexible and
+    powerfull ways. Note that, normally, you won't need to invoke
+    <code>LoggerStatusPrinter</code>
+    after your log statements.
+  </p>
+
+  <p> 
+    Here is a list of the three required steps in order to enable
+    logging in your application.
+  </p>
+
+  <ol>
+
+    <li>Configure the logback environment. You can do so in several
+    more or less sophisticated ways. More on this later.</li>
+
+    <li>In every class where you wish to perform logging, retrieve a
+    <code>Logger</code> instance by invoking the
+    <code>org.slf4j.LoggerFactory</code> class'
+    <code>getLogger()</code> method, passing the current class name
+    or the class itself as parameter.</li>
+    
+    <li>Use this logger instance by invoking its printing methods,
+    namely the debug(), info(), warn() and error(). This will
+    produce logging output on the configured appenders.</li>
+  </ol>
+ 
+  <h2>Building logback</h2>  
+  
+<p>
+Like many java applications today, logback relies on <a href="http://maven.apache.org">
+Maven 2</a> as its build tool. Maven 2 is a free open source build tool that requires
+one or more build files names <em>pom.xml</em> which already ship with logback
+distributions.
+</p>
+
+<p>
+Building all logback components is mostly done by issuing the <em>mvn compile</em>
+line in a terminal or command window. Maven 2 will automatically download the required
+external libraries and use them. However, a library cannot be downloaded from
+the Maven 2 repository. Libraries such as <code>JMS</code>
+from sun require a separate download and to issue a command to install their
+jars into your local repository. The required command will be presented
+by Maven 2 in your console when trying to compile logback.
+</p>
+
+<p>
+Logback distributions contain complete source code such that you can modify parts 
+of logback library and build your own version of it. You may even 
+redistribute the modified version, as long as you adhere to the conditions 
+of the LGPL License. In particular you may not call the modified version <em>logback</em> 
+or claim that it is endorsed by the QOS.ch.
+</p>
+
+
+
+
+
+
+ 
+ 
+	</body>
+</document>

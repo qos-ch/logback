@@ -17,7 +17,7 @@
 		<File>sample-log.txt</File>
 	</appender>
 	
-	<logger name="chapter1">
+	<logger name="chapter2">
 		<level value="info" />
 	</logger>
 
