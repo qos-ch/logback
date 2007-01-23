@@ -236,7 +236,7 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
   }
 
   public synchronized Iterator iteratorForAppenders() {
-    if (aai != null) {
+    if (aai == null) {
       return Collections.EMPTY_LIST.iterator();
     }
     return aai.iteratorForAppenders();
