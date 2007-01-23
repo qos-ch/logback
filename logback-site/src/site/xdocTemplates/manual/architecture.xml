@@ -1041,7 +1041,92 @@ class Bar {
 	<p>
 		The last step of logback's configuration policy permits the use of a minimal
 		logging configuration right out of the box. Remember the very first example of 
-		this short introduction. The output was generated due to this feature.
+		the introduction. The output was generated due to this feature.
 	</p>
-	</body>
+  
+
+<h3>A peak under the hood</h3>
+
+<p>
+After we have introduced the essential logback components, we are now 
+ready to describe the steps that the logback framework takes when the user invokes 
+a logger's printing method. Let us now analyze the steps logback takes when the 
+user invokes the <code>info()</code> method of a 
+logger named <em>com.wombat</em>.
+</p>
+
+<h4>1. Get the filter chain decision</h4>
+
+<p>
+Logback's <code>TurboFilter</code> chain is called. These filters may
+be used to prodvide a context-wide threshold, or to filter out certain
+events based on basic logging informations such as <code>Marker</code>, 
+<code>Level</code>, <code>Logger</code>, message, or the <code>Throwable</code>
+that was provided in the logging request.
+If the reply of the filter chain is <code>FilterReply.DENY</code>, then the
+logging request is dropped. If it is <code>FilterReply.NEUTRAL</code>, then
+the next step is processed. In case the reply is <code>FilterReply.ACCEPT</code>,
+the next step is skipped and the logging request is directly processed to step 3.
+</p>
+
+<h4>2. Apply the Logger level filter</h4>
+
+<p>
+Logback compares the effective level of the <em>com.wombat</em> logger
+with the level of the request (in this example: <em>INFO</em>). If the logging
+request is disabled, then logback will drop the request without further processing.
+</p>
+
+<h4>3. Create a <code>LoggingEvent</code> object</h4>
+
+<p>
+If the request passed the previous filter, or if the <code>TurboFilter</code> chain
+gave a <code>FilterReply.ACCEPT</code> result, logback will create a
+<code>ch.qos.logback.classic.LoggingEvent</code> object containing all the 
+relevant parameters of the request such as the logger of the request, the request
+level, the message, the exception that might have been passed along the request,
+the current time, the current thread, several information about the class that 
+issued the logging request and the <code>MDC</code> map. Note that some of these fields
+are initialized lazily, that is only when they are actually needed.
+</p>
+
+<h4>4. Invoking appenders</h4>
+
+<p>
+After the creation of a <code>LoggingEvent</code> object, logback will proceed 
+to invoke the <code>doAppend()</code> methods of all the applicable appenders, 
+that is, the appenders inherited from the logger context.
+</p>
+<p>
+All appenders shipped with the logback distribution extend the 
+<code>AppenderBase</code> abstract class that implements the 
+<code>doAppend</code> method in a synchronized block ensuring thread-safety. 
+The <code>doAppend()</code> method of <code>AppenderBase</code> also invokes 
+custom filters attached to the appender, if any such filters exist. 
+Custom filters, which can be dynamically attached to any appender, 
+are presented Chapter 6.
+</p>
+
+<h4>5. Formatting the <code>LoggingEvent</code></h4>
+
+<p>
+It is responsibility of the invoked appender to format the 
+logging event. However, most (but not all) appenders delegate 
+the task of formatting the logging event to their layout. Their 
+layout formats the <code>LoggingEvent</code> instance and returns the 
+result as a String. Note that some appenders, such as the 
+<code>SocketAppender</code>, do not transform the logging event 
+into a string but serialize it instead. 
+Consequently, they do not require nor have a layout. 
+</p>
+
+<h4>6. Sending out the <code>LoggingEvent</code></h4>
+
+<p>
+After the logging event is fully formatted it is sent to 
+its destination by each appender.
+</p>
+  
+  
+</body>
 </document>
