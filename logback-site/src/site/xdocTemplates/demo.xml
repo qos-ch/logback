@@ -112,8 +112,8 @@ Let's take a look at the filter we've just added:
 <div class="source"><pre>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
   &lt;evaluator name="loggingTaskEval">
     &lt;expression>
-      logger.getName().contains("LoggingTask") &amp;&amp;
-      message.contains("Howdydy-diddly-ho") &amp;&amp;
+      logger.getName().contains("LoggingTask") &amp;amp;&amp;amp;
+      message.contains("Howdydy-diddly-ho") &amp;amp;&amp;amp;
       (timeStamp - event.getStartTime()) >= 20000
     &lt;/expression>
   &lt;/evaluator>
@@ -238,7 +238,9 @@ by a non-negligeable factor.
 <p>
 SLF4J allows the use of Marker objects. 
 For example, one could use <em>TRACE</em> markers, to enrich some 
-specific logging statements. On the other hand, one could want that such
+specific logging statements. In our demo applications, the <em>Howdydy-diddly-ho</em>
+logging statements are bound to a <em>TRACE</em> marker. 
+On the other hand, one could want that such
 marked statements be dropped and not logged anywhere. <code>TurboFilter</code>
 objects can do that in an elegant and flexible way. Let us uncomment the
 <em>TurboFilter: Marker value</em> section in the <em>logback.xml</em> file as
