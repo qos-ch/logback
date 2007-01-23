@@ -12,6 +12,30 @@
 
 		<p>Here are the latest news about logback.</p>
 
+    <h3>January 23th, 2007 - Release of version 0.8.1</h3>
+
+    <p>
+      This version contains new components in the Access module, allowing users
+      to display the full HttpServletRequest or HttpServletResponse of an access event.
+    </p>
+    
+    <p>
+      The documentation section has been updated. The short introduction was split
+      into the chapter 1 and chapter 2 of the logback manual. The chapters about
+      Appenders and Layouts have been updated to document new components of logback.
+    </p>
+    
+    <p>
+      A demonstration webApp presenting logback's major components is available.
+      A document explains how to run it, and provides a step-by-step visit of the
+      demo.
+    </p>
+    
+    <p>
+      A first translation of logback jars to JDK1.4 is present in this release.
+    </p>
+
+    
 		<h3>January 12th, 2007 - Release of version 0.8</h3>
 
 		<p>
