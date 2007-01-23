@@ -46,8 +46,6 @@ a single command.
 	Then, visit <em>http://localhost:8080/logback-demo/</em> to view the main page of the logback demo.
 </p>
 
-<p>image main page</p>
-
 <h3>Logback Classic</h3>
 
 <p>
@@ -425,6 +423,15 @@ and reload a few times the main page of the demo. Nothing should be displayed. I
 the <em>RequestLogImpl</em> again, the requests will be shown in the terminal
 window.
 </p>
+
+<p>
+In the <em>logback-access.xml</em> configuration file, uncomment the <em>JMX</em>
+part and restart the server. A <code>CountingFilter</code> will now be available in
+the <em>ch.qos.logback.access</em> domain. Clicking on it will display several statistical
+figures corresponding to server accesses. Loading some application pages will make
+these figures grow and show a time-sensitive picture of the server activity.
+</p>
+
 
 <p>
 These is more to discover with logback and JMX. In the <em>logback.xml</em> file, 
