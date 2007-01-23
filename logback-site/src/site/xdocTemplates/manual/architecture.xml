@@ -1127,6 +1127,12 @@ After the logging event is fully formatted it is sent to
 its destination by each appender.
 </p>
   
-  
+<p>
+Here is a sequence UML diagram to show how everything works. You might
+want to click on the image to display its bigger version.
+</p>
+
+<a target="blank" href="underTheHood.html"><img width="50%" height="50%" src="images/chapter2/underTheHoodSequence.gif" /></a>
+
 </body>
 </document>
