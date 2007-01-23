@@ -13,12 +13,7 @@
 		<p>Below is a list of logback-related documentaiton currently
 		available.</p>
 
-		<ul>
-			<li>
-				<a href="shortIntro.html"><b>A short introduction to logback-classic</b></a>
-			</li>
-
-     
+		<ul>     
       <li><a href="manual/index.html"><b>The logback manual</b></a></li>
 
 			<li>
@@ -34,6 +29,9 @@
       <li>
       	<a href="jmxConfig.html">How to use the logback JMX Configurator</a>
       </li>
+      <li>
+        <a href="demo.html">A step-by-step document to experience the logback-demo webApp</a>
+      </li>      
 		</ul>
 		
 		<p>Source code related documentation:</p>
