@@ -87,7 +87,7 @@
 
     <p>Let us now begin experimenting with logback.</p>
 
-<em>Example 1.1: Basic template for logging (<a href="xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
+<em>Example 1.1: Basic template for logging (<a href="../xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
@@ -159,7 +159,7 @@ public class HelloWorld1 {
       class.
     </p>
 
-<em>Example 1.2: Printing Logger Status (<a href="xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
+<em>Example 1.2: Printing Logger Status (<a href="../xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
 <div class="source"><pre>package chapter1;
 
 import org.slf4j.Logger;
