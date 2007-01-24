@@ -77,6 +77,7 @@
     </p>
     </div>
     
+    <a name="Requirements" />
     <h3>Requirements</h3>
 
     <p>Logback-classic module requires the presence
@@ -213,21 +214,22 @@ public class HelloWorld2 {
 
   <ol>
 
-    <li>Configure the logback environment. You can do so in several
-    more or less sophisticated ways. More on this later.</li>
+    <p>Configure the logback environment. You can do so in several
+    more or less sophisticated ways. More on this later.</p>
 
-    <li>In every class where you wish to perform logging, retrieve a
+    <p>In every class where you wish to perform logging, retrieve a
     <code>Logger</code> instance by invoking the
     <code>org.slf4j.LoggerFactory</code> class'
     <code>getLogger()</code> method, passing the current class name
-    or the class itself as parameter.</li>
+    or the class itself as parameter.</p>
     
-    <li>Use this logger instance by invoking its printing methods,
+    <p>Use this logger instance by invoking its printing methods,
     namely the debug(), info(), warn() and error(). This will
-    produce logging output on the configured appenders.</li>
+    produce logging output on the configured appenders.</p>
   </ol>
  
-  <h2>Building logback</h2>  
+  <a name="BuildingLogback" />
+  <h3>Building logback</h3>  
   
 <p>
 Like many java applications today, logback relies on <a href="http://maven.apache.org">

@@ -85,7 +85,8 @@
       are part of the core module. For the sake of genericity, 
       logback-core has no notion of loggers.
 		</p>
-
+    
+    <a name="LoggerContext" />
     <h3>Logger context</h3>
 
 		<p>The first and foremost advantage of any logging API over plain
@@ -353,6 +354,7 @@ public interface Logger {
 		parent <code>X</code>, which has an assigned level.
 		</p>
 
+    <a name="PrintintMethods" />
     <h3>Printing methods</h3>
 
 		<p>By definition, the printing method determines the level of a
@@ -455,6 +457,7 @@ barlogger.<span class="green bold">info</span>("Located nearest gas station.");
 // This request is disabled, because <span class="green bold">DEBUG</span> &lt; <span class="blue">INFO</span>. 
 barlogger.<span class="green bold">debug</span>("Exiting gas station search");</pre></div>
 
+    <a name="RetrievingLoggers" />
 		<h3>Retrieving Loggers</h3>
 		<p>
 			Calling the <code><a href="../apidocs/org/slf4j/LoggerFactory.html#getLogger(java.lang.String)">LoggerFactory.getLogger</a></code>
@@ -505,6 +508,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		located seems to be the best general strategy known so far.
 		</p>
 
+    <a name="AppendersAndLayouts" />
     <h3>Appenders and Layouts</h3>
 
 		<p>
@@ -662,6 +666,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			the message of the request.
 		</p>
 
+    <a name="ParametrizedLogging" />
 		<h3>Parameterized logging</h3>
 
 		<p>
@@ -759,6 +764,7 @@ logger.debug("The new entry is {}.", entry);</pre></div>
 		<div class="source"><pre>Object[] paramArray = {newVal, below, above};
 logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div>
 
+    <a name="Configuration" />
     <h3>Configuration</h3>
 
 		<p>Inserting log requests into the application code requires a
@@ -1044,7 +1050,7 @@ class Bar {
 		the introduction. The output was generated due to this feature.
 	</p>
   
-
+<a name="UnderTheHood" />
 <h3>A peak under the hood</h3>
 
 <p>
@@ -1133,6 +1139,105 @@ want to click on the image to display its bigger version.
 </p>
 
 <a href="underTheHood.html"><img src="images/chapter2/underTheHoodSequence2_small.gif" /></a>
+
+<a name="Performance" />
+<h3>Performance</h3>
+
+<p>
+One of the often-cited arguments against logging is its computational cost. 
+This is a legitimate concern as even moderately sized applications can generate 
+thousands of log requests. Much effort is spent measuring and tweaking 
+logging performance.
+Independently of these efforts, the user should still be aware of the following 
+performance issues.
+</p>
+
+<h4>1. Logging performance when logging is turned off entirely</h4>
+
+<p>
+You can turn off logging entirely by setting the level of the root logger
+to <code>Level.OFF</code>, the highest possible level. 
+When logging is turned off entirely, 
+the cost of a log request consists of a method invocation plus an 
+integer comparison. On a 3.2Ghz Pentium D machine this cost is typically 
+in the 500 - 600 nanosecond range. 
+</p>
+
+<p>
+However, any method invocation involves the "hidden" cost of parameter construction. 
+For example, for some logger <em>x</em> writing, 
+</p>
+
+<div class="source"><pre>x.debug("Entry number: " + i + "is " + entry[i]);</pre></div>
+
+<p>
+incurs the cost of constructing the message parameter, i.e. converting both 
+integer <code>i</code> and <code>entry[i]</code> to a string, and concatenating 
+intermediate strings, regardless of whether the message will be logged or not. 
+</p>
+
+<p>
+The cost of parameter construction can be quite high and depends on the size 
+of the parameters involved. To avoid the cost of parameter construction 
+you can use logback's parametrized logging: 
+</p>
+
+<div class="source"><pre>x.debug("Entry number: {} is {}", i, entry[i]);</pre></div>
+
+<p>
+This will not incur the cost of parameter construction. Compared to the
+previous call to the <code>debug()</code> method, this call will be faster by 
+a very wide margin. 
+The message will be formatted only if the request is processed to the appenders. 
+If it is processed, the component that formats the message offers high performance 
+and does not impact negatively the overall process. 
+It respectively takes 2 and 4 microseconds to format a message with 1 and 3 parameters.
+</p>
+
+<p>
+Please notice that, despite the performance points that we just discussed, inserting 
+logging statements in tight-loops or very frequently invoked code is a lose-lose proposal
+and will not result in high performance. They will slow down your application even 
+if logging is turned off or generate massive (and hence useless) output if enabled. 
+</p>
+
+<h4>2. The performance of deciding whether to log or not to log when logging is turned on.</h4>
+
+<p>
+This is essentially the performance of walking the logger hierarchy. 
+When logging is turned on, logback still needs to compare the level of the 
+log request with the level of the request logger. However, loggers may not have an 
+assigned level; they can inherit them from the logger hierarchy. Thus, before 
+inheriting a level, the logger may need to search its ancestors.
+</p>
+
+<p>
+There has been a serious effort to make this hierarchy walk to be as fast as 
+possible. For example, child loggers link only to their existing ancestors. 
+This significantly improves the speed of the walk, especially in <em>sparse</em> hierarchies. 
+</p>
+
+<p>
+The cost of walking the hierarchy is typically 2 times slower than just 
+checking whether logging is turned off entirely. 
+</p>
+
+<h4>3. Actual logging (formatting and writing to the output device)</h4>
+
+<p>
+This is the cost of formatting the log output and sending it to its 
+target destination. Here again, a serious effort was made to make 
+layouts (formatters) perform as quickly as possible. 
+The same is true for appenders. The typical cost of actually logging is 
+about 10 to 15 microseconds when logging to a file on the local machine.
+It goes up to 1 millisecond when logging to a database on a remote server.
+</p>
+
+<p>
+Although feature-rich, one of the foremost design goals of logback was speed 
+of execution, a requirement which is second only to reliability. Some logback 
+components have been rewritten many times to improve performance. 
+</p>
 
 </body>
 </document>
