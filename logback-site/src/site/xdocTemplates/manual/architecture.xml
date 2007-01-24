@@ -1160,7 +1160,7 @@ to <code>Level.OFF</code>, the highest possible level.
 When logging is turned off entirely, 
 the cost of a log request consists of a method invocation plus an 
 integer comparison. On a 3.2Ghz Pentium D machine this cost is typically 
-in the 500 - 600 nanosecond range. 
+around 20 nanoseconds. 
 </p>
 
 <p>
@@ -1204,22 +1204,17 @@ if logging is turned off or generate massive (and hence useless) output if enabl
 <h4>2. The performance of deciding whether to log or not to log when logging is turned on.</h4>
 
 <p>
-This is essentially the performance of walking the logger hierarchy. 
-When logging is turned on, logback still needs to compare the level of the 
-log request with the level of the request logger. However, loggers may not have an 
-assigned level; they can inherit them from the logger hierarchy. Thus, before 
-inheriting a level, the logger may need to search its ancestors.
+In logback, there is no need to walk the whole logger hierarchy. A logger knows
+its effective level (that is, its level, once level inheritance has been
+taken into consideration) when it is created. Should the level of a parent logger
+be changed, then all child loggers will be contacted and handle the change. Thus, before
+accepting or denying a request based on the effective level, the logger does not need
+to search its ancestors.
 </p>
 
 <p>
-There has been a serious effort to make this hierarchy walk to be as fast as 
-possible. For example, child loggers link only to their existing ancestors. 
-This significantly improves the speed of the walk, especially in <em>sparse</em> hierarchies. 
-</p>
-
-<p>
-The cost of walking the hierarchy is typically 2 times slower than just 
-checking whether logging is turned off entirely. 
+Given this situation, it takes the same time to decide whether to log or not when logging
+is turned on as it takes when logging is turned off.
 </p>
 
 <h4>3. Actual logging (formatting and writing to the output device)</h4>
@@ -1229,7 +1224,7 @@ This is the cost of formatting the log output and sending it to its
 target destination. Here again, a serious effort was made to make 
 layouts (formatters) perform as quickly as possible. 
 The same is true for appenders. The typical cost of actually logging is 
-about 10 to 15 microseconds when logging to a file on the local machine.
+about 9 to 12 microseconds when logging to a file on the local machine.
 It goes up to 1 millisecond when logging to a database on a remote server.
 </p>
 
