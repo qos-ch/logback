@@ -64,7 +64,7 @@
           <a href="introduction.html"><b>Chapter 1: Introduction to logback</b></a>
         </p></li>
         <li><p>
-          <a href="joran.html"><b>Chapter 2: Architecture</b></a>
+          <a href="architecture.html"><b>Chapter 2: Architecture</b></a>
         </p></li>
         <li><p>
           <a href="joran.html"><b>Chapter 3: Logback configuration with Joran</b></a>

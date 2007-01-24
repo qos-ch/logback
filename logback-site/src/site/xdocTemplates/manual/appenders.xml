@@ -468,7 +468,7 @@ public class ExitWoes1 {
 		</tr>
 		<tr>
 			<td><b><span class="option">File</span></b></td>
-			<td><code>int</code></td>
+			<td><code>String</code></td>
 			<td>
 				The name of the file to write to. If the file does not exist, it is created. <br />
 				On the MS Windows platform users frequently forget to escape back slashes. 
