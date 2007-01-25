@@ -36,7 +36,7 @@ import org.slf4j.impl.Util;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
- 
+
 /**
  * The <code>LoggerFactory</code> is a utility class producing Loggers for
  * various logging APIs, most notably for NLOG4J and JDK 1.4 logging. Other
@@ -61,16 +61,15 @@ public final class LoggerFactory {
   private LoggerFactory() {
   }
 
-
   static {
-    try { 
-    loggerContext = new LoggerContext();
-    loggerContext.setName("default");
+    try {
+      loggerContext = new LoggerContext();
+      loggerContext.setName("default");
       ContextInitializer.autoConfig(loggerContext);
     } catch (Exception e) {
       // we should never get here
-      Util.reportFailure("Failed to instantiate logger ["
-          +  LoggerContext.class + "]", e);
+      Util.reportFailure("Failed to instantiate logger [" + LoggerContext.class
+          + "]", e);
     }
   }
 
@@ -101,8 +100,8 @@ public final class LoggerFactory {
   /**
    * Return the {@link ILoggerFactory} instance in use.
    * 
-   * <p>ILoggerFactory instance is bound with this class at compile
-   * time.
+   * <p>
+   * ILoggerFactory instance is bound with this class at compile time.
    * 
    * @return the ILoggerFactory instance in use
    */
