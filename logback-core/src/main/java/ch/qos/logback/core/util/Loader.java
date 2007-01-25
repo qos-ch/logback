@@ -64,9 +64,12 @@ public class Loader {
     } catch (Throwable t) {
       return null;
     }
-
   }
 
+  public static URL getResourceByTCL(String resource) {
+    return getResource(resource, getTCL());
+  }
+  
   /**
    * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
    * under JDK 1.1 or anything else goes wrong the method returns

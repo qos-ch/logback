@@ -85,6 +85,13 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    
   </dependencies>
 
   <build>

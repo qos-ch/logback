@@ -34,8 +34,13 @@ package org.slf4j;
 
 import org.slf4j.impl.Util;
 
+import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.selector.ContextJNDISelector;
+import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.selector.DefaultContextSelector;
 import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * The <code>LoggerFactory</code> is a utility class producing Loggers for
@@ -55,7 +60,9 @@ import ch.qos.logback.classic.util.ContextInitializer;
  */
 public final class LoggerFactory {
 
-  static LoggerContext loggerContext;
+  static LoggerContext defaultLoggerContext;
+  
+  private static ContextSelector contextSelector;
 
   // private constructor prevents instantiation
   private LoggerFactory() {
@@ -63,9 +70,19 @@ public final class LoggerFactory {
 
   static {
     try {
-      loggerContext = new LoggerContext();
-      loggerContext.setName("default");
-      ContextInitializer.autoConfig(loggerContext);
+      //let's configure a default context
+      defaultLoggerContext = new LoggerContext();
+      defaultLoggerContext.setName("default");
+      ContextInitializer.autoConfig(defaultLoggerContext);
+      
+      //See if a special context selector is needed
+      String contextSelectorStr = OptionHelper.getSystemProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
+      if (contextSelectorStr == null) {
+        contextSelector = new DefaultContextSelector(defaultLoggerContext);
+      } else if (contextSelectorStr.equals("JNDI")) {
+        //if jndi is specified, let's use the appropriate class
+        contextSelector = new ContextJNDISelector(defaultLoggerContext);
+      }
     } catch (Exception e) {
       // we should never get here
       Util.reportFailure("Failed to instantiate logger [" + LoggerContext.class
@@ -82,7 +99,7 @@ public final class LoggerFactory {
    * @return logger
    */
   public static Logger getLogger(String name) {
-    return loggerContext.getLogger(name);
+    return contextSelector.getLoggerContext().getLogger(name);
   }
 
   /**
@@ -94,7 +111,7 @@ public final class LoggerFactory {
    * @return logger
    */
   public static Logger getLogger(Class clazz) {
-    return loggerContext.getLogger(clazz.getName());
+    return contextSelector.getLoggerContext().getLogger(clazz.getName());
   }
 
   /**
@@ -106,6 +123,15 @@ public final class LoggerFactory {
    * @return the ILoggerFactory instance in use
    */
   public static ILoggerFactory getILoggerFactory() {
-    return loggerContext;
+    return contextSelector.getLoggerContext();
+  }
+  
+  /**
+   * Return the {@link ContextSelector} instance in use.
+   * 
+   * @return the ContextSelector instance in use
+   */
+  public static ContextSelector getContextSelector() {
+    return contextSelector;
   }
 }
