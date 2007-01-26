@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 public interface StatusManager {
   public void add(Status status);
-  public Iterator iterator();
+  public Iterator<Status> iterator();
   public int getLevel();
   /**
    * Return the number of entries.

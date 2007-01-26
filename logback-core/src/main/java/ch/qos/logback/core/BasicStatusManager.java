@@ -38,7 +38,7 @@ public class BasicStatusManager implements StatusManager {
     statusList.add(newStatus);
   }
 
-  public Iterator iterator() {
+  public Iterator<Status> iterator() {
     return statusList.iterator();
   }
 
