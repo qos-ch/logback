@@ -68,26 +68,8 @@ public final class LoggerFactory {
   private LoggerFactory() {
   }
 
-  static {
-    try {
-      //let's configure a default context
-      defaultLoggerContext = new LoggerContext();
-      defaultLoggerContext.setName("default");
-      ContextInitializer.autoConfig(defaultLoggerContext);
-      
-      //See if a special context selector is needed
-      String contextSelectorStr = OptionHelper.getSystemProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
-      if (contextSelectorStr == null) {
-        contextSelector = new DefaultContextSelector(defaultLoggerContext);
-      } else if (contextSelectorStr.equals("JNDI")) {
-        //if jndi is specified, let's use the appropriate class
-        contextSelector = new ContextJNDISelector(defaultLoggerContext);
-      }
-    } catch (Exception e) {
-      // we should never get here
-      Util.reportFailure("Failed to instantiate logger [" + LoggerContext.class
-          + "]", e);
-    }
+  static {       
+    setup();
   }
 
   /**
@@ -133,5 +115,27 @@ public final class LoggerFactory {
    */
   public static ContextSelector getContextSelector() {
     return contextSelector;
+  }
+  
+  public static void setup() {
+    try {
+      //let's configure a default context
+      defaultLoggerContext = new LoggerContext();
+      defaultLoggerContext.setName("default");
+      ContextInitializer.autoConfig(defaultLoggerContext);
+      
+      //See if a special context selector is needed
+      String contextSelectorStr = OptionHelper.getSystemProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
+      if (contextSelectorStr == null) {
+        contextSelector = new DefaultContextSelector(defaultLoggerContext);
+      } else if (contextSelectorStr.equals("JNDI")) {
+        //if jndi is specified, let's use the appropriate class
+        contextSelector = new ContextJNDISelector(defaultLoggerContext);
+      }
+    } catch (Exception e) {
+      // we should never get here
+      Util.reportFailure("Failed to instantiate logger [" + LoggerContext.class
+          + "]", e);
+    }
   }
 }

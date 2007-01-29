@@ -19,6 +19,8 @@ public class ContextDetachingSCLTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     System.setProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, "JNDI");
+    LoggerFactory.setup();
+    
     listener = new ContextDetachingSCL();
     
     MockInitialContext mic = MockInitialContextFactory.getContext();
