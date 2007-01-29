@@ -156,8 +156,10 @@
       		<plugin>
       			<groupId>org.codehaus.mojo</groupId>
         		<artifactId>retrotranslator-maven-plugin</artifactId>
+        		<version>1.0-SNAPSHOT</version>
         		<inherited>true</inherited>
         		<configuration>
+        		  <advanced>true</advanced>
               <verifyClasspath>
                 <element>${path.to.rt.jar}</element>
               </verifyClasspath>
@@ -165,6 +167,19 @@
       		</plugin>
       	</plugins>
       </build>
+      <pluginRepositories>
+        <pluginRepository>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>snapshots.repository.codehaus.org</id>
+          <name>Retrotranslator-Snapshot-Repo</name>
+          <url>http://snapshots.repository.codehaus.org</url>
+        </pluginRepository>
+      </pluginRepositories>
     </profile>    
   </profiles>
   
