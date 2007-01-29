@@ -108,5 +108,15 @@ public class ContextJNDISelector implements ContextSelector {
           + " does not lead to a valid file");
     }
   }
+  
+  /**
+   * Returns the number of managed contexts
+   * Used for testing purposes
+   * 
+   * @return the number of managed contexts
+   */
+  public int getCount() {
+    return contextMap.size();
+  }
 
 }
