@@ -1,5 +1,7 @@
 package ch.qos.logback.classic.selector;
 
+import java.util.List;
+
 import ch.qos.logback.classic.LoggerContext;
 
 /**
@@ -15,8 +17,11 @@ public interface ContextSelector {
 
   public LoggerContext getLoggerContext();
   
+  public LoggerContext getLoggerContext(String name);
+  
   public LoggerContext getDefaultLoggerContext();
   
   public LoggerContext detachLoggerContext(String loggerContextName);
   
+  public List<String> getContextNames();
 }

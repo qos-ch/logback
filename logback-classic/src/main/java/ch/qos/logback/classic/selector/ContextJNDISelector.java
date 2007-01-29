@@ -4,8 +4,10 @@ import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONFIGURATION_RESOURCE;
 import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONTEXT_NAME;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -107,6 +109,16 @@ public class ContextJNDISelector implements ContextSelector {
       logger.warn("The provided URL for context" + context.getName()
           + " does not lead to a valid file");
     }
+  }
+  
+  public List<String> getContextNames() {
+    List<String> list = new ArrayList<String>();
+    list.addAll(contextMap.keySet());
+    return list;
+  }
+  
+  public LoggerContext getLoggerContext(String name) {
+    return contextMap.get(name);
   }
   
   /**

@@ -1,5 +1,8 @@
 package ch.qos.logback.classic.selector;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ch.qos.logback.classic.LoggerContext;
 
 public class DefaultContextSelector implements ContextSelector {
@@ -20,5 +23,17 @@ public class DefaultContextSelector implements ContextSelector {
 
   public LoggerContext detachLoggerContext(String loggerContextName) {
     return context;
+  }
+  
+  public List<String> getContextNames() {
+    return Arrays.asList(context.getName());
+  }
+  
+  public LoggerContext getLoggerContext(String name) {
+    if (context.getName().equals(name)) {
+      return context;
+    } else {
+      return null;
+    }
   }
 }

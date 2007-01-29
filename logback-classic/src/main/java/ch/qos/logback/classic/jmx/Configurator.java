@@ -1,6 +1,8 @@
 package ch.qos.logback.classic.jmx;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ch.qos.logback.classic.Level;
@@ -10,6 +12,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.status.Status;
 
 /**
  * A class that provides access to logback components via
@@ -119,6 +122,13 @@ public class Configurator extends ContextAwareBase implements
     return lc.getLoggerList();
   }
   
-  
+  public List<Status> getStatuses() {
+    List<Status> list = new ArrayList<Status>();
+    Iterator<Status> it = context.getStatusManager().iterator();
+    while(it.hasNext()) {
+      list.add(it.next());
+    }
+    return list;
+  }
 
 }
