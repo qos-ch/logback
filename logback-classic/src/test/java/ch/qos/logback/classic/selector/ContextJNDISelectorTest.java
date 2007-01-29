@@ -60,4 +60,14 @@ public class ContextJNDISelectorTest extends TestCase {
     assertEquals(2, selector.getCount());
   }
   
+  public void testReturnDefaultContext() {
+    MockInitialContext mic = MockInitialContextFactory.getContext();
+    mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, null);
+
+    ContextJNDISelector selector = (ContextJNDISelector)LoggerFactory.getContextSelector();
+    Context context = selector.getLoggerContext();
+    
+    assertEquals("default", context.getName());    
+  }
+  
 }
