@@ -1,0 +1,246 @@
+<document>
+<!-- 
+		
+		Warning: do not use any auto-format function on this file.
+		Since "source" divs use pre as white-space, it affects the
+		look of the code parts in this document.
+		
+	-->
+
+	<body>
+		<h2>Chapter 8: Context Selector</h2>
+		<div class="author">
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+		</div>
+
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+		
+<h3>Introduction</h3>
+
+<p>
+When working with several Web applications, all running on one server, the
+multiplications of <code>LoggerContext</code> objects might reveal itself
+a tricky issue.
+</p>
+
+<p>
+Logback provides a simple yet powerful way of dealing with multiple
+contexts, without corruption of data, nor collusion between context
+instances.
+</p>
+
+<p>
+One thing we know for sure is that JNDI environments are independant. Thus
+setting environment variables in each application will allow a given component
+to know which application it is dealing with at the moment. This is basically
+the mechanism that uses logback to provide easy access to the right
+<code>LoggerContext</code> instance.
+</p>
+
+<p>
+The component that manages the different contexts is the
+<a href="../xref/ch/qos/logback/classic/selector/ContextSelector.html">
+ContextSelector</a> 
+implementation. The JNDI-specific implementation is called 
+<a href="../xref/ch/qos/logback/classic/selector/ContextJNDISelector.html">
+ContextJNDISelector</a>. This
+object is instanciated at the very fist time a Web applications calls logback. 
+</p>
+
+<p>
+Each Web application provides two environment variables. One that specifies 
+the application's <code>LoggerContext</code> name, and one that provides the
+path to the xml file that will be used to configure the context.
+</p>
+
+
+<h3>Setting up the <code>ContextSelector</code>.</h3>
+
+<h4>The server side</h4>
+
+<p>
+First, place the logback jars (that is logback-classic-<em>VERSION</em>.jar,
+logback-core-<em>VERSION</em>.jar and slf4j-api-<em>VERSION</em>.jar) in the
+server's shared class directory. In Tomcat, this directory is 
+<em>TOMCAT_HOME/common/lib/</em>. This directory might be different depending
+on the server you are using. For example, with Jetty, this directory is located
+at <em>JETTY_HOME/lib/</em>.
+</p>
+
+<p>
+The next step is to let logback know that it will have to use JNDI to manage
+the context instances. This is done thanks to a System Property. When launching
+the web server, make sure that the <em>logback.ContextSelector</em> property is
+linked with the <em>JNDI</em> value. In Tomcat, this can be done by editing the
+<em>TOMCAT_HOME/bin/catalina.sh</em> or <em>TOMCAT_HOME/bin/catalina.bat</em>
+file, and adding the following line to the java options:
+</p>
+
+<div class="source"><pre>-Dlogback.ContextSelector=JNDI</pre></div>
+
+<p>
+In Jetty, adding an environment variable is done by adding the following
+xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file:
+</p>
+
+<div class="source"><pre>&lt;Call class="java.lang.System" name="setProperty">
+  &lt;Arg>logback.ContextSelector&lt;/Arg>
+  &lt;Arg>JNDI&lt;/Arg>
+&lt;/Call></pre></div>
+
+<h4>Configuring each Web application</h4>
+
+<p>
+While each Web application will need the logback jars to compile, they need not 
+nor should be placed within the Web application's WAR file.
+</p>
+
+<p>
+In each Web application's <em>web.xml</em> file, two JNDI environment entries
+are needed. The first one specifies the desired name of the application's
+<code>LoggerContext</code>. It takes the following form:
+</p>
+
+<div class="source"><pre>&lt;env-entry>
+  &lt;description>JNDI logging context for this app&lt;/description>
+  &lt;env-entry-name>logback/context-name&lt;/env-entry-name>
+  &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
+  &lt;env-entry-value>ContextApp-A&lt;/env-entry-value>
+&lt;/env-entry></pre></div>
+
+<p>
+The second JNDI entry will lead logback to the application's own xml configuration
+file. It can be declared as shown below:
+</p>
+
+<div class="source"><pre>&lt;env-entry>
+  &lt;description>URL for configuring logback context&lt;/description>
+  &lt;env-entry-name>logback/configuration-resource&lt;/env-entry-name>
+  &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
+  &lt;env-entry-value>logback-app-A.xml&lt;/env-entry-value>
+&lt;/env-entry></pre></div>
+
+<p>
+Specifying only the name of the file will lead logback to search for it in
+the Web application's <em>WEB-INF/classes/</em> directory.
+</p>
+
+<p>
+When the Web application is recycled or shutdown, it is very often
+useful to recycle the associated <code>LoggerContext</code>. This can
+be done by installing a <code>ServletContextListener</code> which will
+detach the context from the <code>ContextSelector</code> and shut it down.
+</p>
+
+<p>
+The <a href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html
+"><code>ContextDetachingSCL</code></a> class which
+ships with logback does exactly that. To use it, add the following
+lines to your Web application's <em>web.xml</em> file.
+</p>
+
+<div class="source"><pre>&lt;listener>
+  &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
+&lt;/listener</pre></div>
+
+
+<p>
+Using the <code>ContextJNDISelector</code> might slow down your
+application a bit, because of the JNDI call that is issued each time
+a <code>LoggerContext</code> is required. To prevent the cost
+of this call, logback ships with a <code>LoggerContextFilter</code>
+component. This filter is a <code>javax.servlet.Filter</code> implementation
+that gets the environment-specific <code>LoggerContext</code> and sets it
+in a <code>ThreadLocal</code> variable. Each time
+the <code>ContextSelector</code> will be called to provide the
+Web application's own <code>LoggerContext</code>, it will first check
+if the <code>ThreadLocal</code> variable is set. If it is, then the call
+to the JNDI environment will not be issued.
+</p>
+
+<p>
+Like all servlet filters, the 
+<a href="../xref/ch/qos/logback/classic/selector/servlet/LoggerContextFilter.html">
+<code>LoggerContextFilter</code></a> can act
+before and after the Web application's process. This allows the filter
+to set the <code>ThreadLocal</code> variable at the beginning of the process
+and to remove it once the Web application has finished processing the request.
+This behaviour permits the thread to be recycled for use by another Web
+application and still provide the correct <code>LoggerContext</code>.
+</p>
+
+<p>The <code>LoggerContextFilter</code> can be used by adding the following
+lines to your Web application's <em>web.xml</em> file.
+</p>
+
+<div class="source"><pre>&lt;filter>
+  &lt;filter-name>LoggerContextFilter&lt;/filter-name>
+  &lt;filter-class>ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class>
+&lt;/filter>
+&lt;filter-mapping>
+  &lt;filter-name>LoggerContextFilter&lt;/filter-name>
+  &lt;url-pattern>/*&lt;/url-pattern>
+&lt;/filter-mapping></pre></div>
+
+<h4>Some recommandations</h4>
+
+<p>
+To avoid confusion, it is prudent to name each Web application
+in the <em>web.xml</em> file, as in:
+</p>
+
+<div class="source"><pre>&lt;display-name>Name_Of_My_WebApp&lt;/display-name></pre></div>
+
+<p>
+We recommend that you name logback configuration resources uniquely. In
+particualar, avoid naming the logback configuration resource as
+<em>logback.xml</em> for a non-default logger context.
+</p>
+
+<p>
+While trying to configure the Web application logback would search for
+the resource <em>logback.xml</em> using the thread context classloader.  Thus,
+it would first attempt to locate <em>logback.xml</em> file using the
+classloader specific to the Web application.  However, if the file
+<em>logback.xml</em> did not exist there (if you forgot to put a custom one in
+<em>WEB-INF/classes</em>), and if the file <em>logback.xml</em> existed higher up in the
+classloader tree, we could end up in a situation where the logger
+context for your Web application would be configured using the same
+file as that used to configure the default context. Such
+involuntary sharing of the same configuration by multiple repositories
+will result in corrupt log output.
+</p>
+
+
+
+
+
+
+</body>
+</document>
