@@ -80,31 +80,51 @@ path to the xml file that will be used to configure the context.
 </p>
 
 
-<h3>Setting up the <code>ContextSelector</code>.</h3>
+<h3>The server side</h3>
 
-<h4>The server side</h4>
+<h4>Configuring Tomcat</h4>
 
 <p>
 First, place the logback jars (that is logback-classic-<em>VERSION</em>.jar,
 logback-core-<em>VERSION</em>.jar and slf4j-api-<em>VERSION</em>.jar) in the
 server's shared class directory. In Tomcat, this directory is 
-<em>TOMCAT_HOME/common/lib/</em>. This directory might be different depending
-on the server you are using. For example, with Jetty, this directory is located
-at <em>JETTY_HOME/lib/</em>.
+<em>TOMCAT_HOME/common/lib/</em>. 
 </p>
 
 <p>
 The next step is to let logback know that it will have to use JNDI to manage
 the context instances. This is done thanks to a System Property. When launching
-the web server, make sure that the <em>logback.ContextSelector</em> property is
-linked with the <em>JNDI</em> value. In Tomcat, this can be done by editing the
+Tomcat, make sure that the <em>logback.ContextSelector</em> property is
+linked with the <em>JNDI</em> value. This can be done by editing the
 <em>TOMCAT_HOME/bin/catalina.sh</em> or <em>TOMCAT_HOME/bin/catalina.bat</em>
 file, and adding the following line to the java options:
 </p>
 
 <div class="source"><pre>-Dlogback.ContextSelector=JNDI</pre></div>
 
+<h4>Configuring Jetty</h4>
+
 <p>
+Configuring Jetty requires first to enable the use of JNDI. This is not a big
+deal, since the Jetty distribution provides the configuration files needed to
+achieve this task. The only thing to do is launch Jetty with the following command:
+</p>
+
+<div class="source"><pre>java -jar start.jar etc/jetty.xml etc/jetty-plus.xml</pre></div>
+
+<p>
+Note that you will need to install your appplications in the 
+<em>JETTY_HOME/webapps-plus</em> directory.
+</p>
+
+<p>To place the logback jars (that is logback-classic-<em>VERSION</em>.jar,
+logback-core-<em>VERSION</em>.jar and slf4j-api-<em>VERSION</em>.jar) in the
+server shared directory, just install them in <em>JETTY_HOME/lib/</em>.
+</p>
+
+<p>
+The next step is to let logback know that it will have to use JNDI to manage
+the context instances. This is done thanks to a System Property.
 In Jetty, adding an environment variable is done by adding the following
 xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file:
 </p>
@@ -114,7 +134,15 @@ xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file:
   &lt;Arg>JNDI&lt;/Arg>
 &lt;/Call></pre></div>
 
-<h4>Configuring each Web application</h4>
+<p>
+Be aware that adding a <em>-Dlogback.ContextSelector=JNDI</em> to the java
+command when starting the server will not work. By doing this, the
+<code>LoggerFactory</code> instanciated by the server for its internal logging
+will try to use JNDI, when only the Web applications should attempt to retrieve
+their <code>LoggerContext</code> this way. 
+</p>
+
+<h3>Configuring each Web application</h3>
 
 <p>
 While each Web application will need the logback jars to compile, they need not 
@@ -172,7 +200,7 @@ lines to your Web application's <em>web.xml</em> file.
 
 <p>
 Using the <code>ContextJNDISelector</code> might slow down your
-application a bit, because of the JNDI call that is issued each time
+application, because of the JNDI call that is issued each time
 a <code>LoggerContext</code> is required. To prevent the cost
 of this call, logback ships with a <code>LoggerContextFilter</code>
 component. This filter is a <code>javax.servlet.Filter</code> implementation
@@ -181,7 +209,9 @@ in a <code>ThreadLocal</code> variable. Each time
 the <code>ContextSelector</code> will be called to provide the
 Web application's own <code>LoggerContext</code>, it will first check
 if the <code>ThreadLocal</code> variable is set. If it is, then the call
-to the JNDI environment will not be issued.
+to the JNDI environment will not be issued. The <code>LoggerContextFilter</code>
+class increases the performances by a wide margin, sometimes dividing the time
+it takes to retrieve loggers by 400.
 </p>
 
 <p>
@@ -236,11 +266,6 @@ file as that used to configure the default context. Such
 involuntary sharing of the same configuration by multiple repositories
 will result in corrupt log output.
 </p>
-
-
-
-
-
 
 </body>
 </document>
