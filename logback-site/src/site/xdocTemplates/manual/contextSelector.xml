@@ -146,7 +146,15 @@ their <code>LoggerContext</code> this way.
 
 <p>
 While each Web application will need the logback jars to compile, they need not 
-nor should be placed within the Web application's WAR file.
+nor should be placed within the Web application's WAR file, except if you are
+using Jetty.
+</p>
+
+<p>This is due to <a href="http://docs.codehaus.org/display/JETTY/Classloading">
+Jetty's internal Classloading mechanism</a>. 
+Consequently, the <em>logback-classic-VERSION.jar</em>
+and <em>slf4j-api-VERSION.jar</em> files should also be placed in the <em>WEB-INF/lib/</em> 
+directory of your webapps when running Jetty.
 </p>
 
 <p>
@@ -187,8 +195,8 @@ detach the context from the <code>ContextSelector</code> and shut it down.
 </p>
 
 <p>
-The <a href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html
-"><code>ContextDetachingSCL</code></a> class which
+The <a href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html">
+<code>ContextDetachingSCL</code></a> class which
 ships with logback does exactly that. To use it, add the following
 lines to your Web application's <em>web.xml</em> file.
 </p>
