@@ -1,3 +1,12 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2006, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.selector;
 
 import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONFIGURATION_RESOURCE;
@@ -39,6 +48,8 @@ public class ContextJNDISelector implements ContextSelector {
   private final Map<String, LoggerContext> contextMap;
   private final LoggerContext defaultContext;
 
+  private static final ThreadLocal<LoggerContext> threadLocal = new ThreadLocal<LoggerContext>();
+
   public ContextJNDISelector(LoggerContext context) {
     contextMap = Collections
         .synchronizedMap(new HashMap<String, LoggerContext>());
@@ -48,6 +59,12 @@ public class ContextJNDISelector implements ContextSelector {
   public LoggerContext getLoggerContext() {
     String contextName = null;
     Context ctx = null;
+
+    // First check if ThreadLocal has been set already
+    LoggerContext lc = threadLocal.get();
+    if (lc != null) {
+      return lc;
+    }
 
     try {
       // We first try to find the name of our
@@ -110,25 +127,40 @@ public class ContextJNDISelector implements ContextSelector {
           + " does not lead to a valid file");
     }
   }
-  
+
   public List<String> getContextNames() {
     List<String> list = new ArrayList<String>();
     list.addAll(contextMap.keySet());
     return list;
   }
-  
+
   public LoggerContext getLoggerContext(String name) {
     return contextMap.get(name);
   }
-  
+
   /**
-   * Returns the number of managed contexts
-   * Used for testing purposes
+   * Returns the number of managed contexts Used for testing purposes
    * 
    * @return the number of managed contexts
    */
   public int getCount() {
     return contextMap.size();
+  }
+
+  /**
+   * These methods are used by the LoggerContextFilter.
+   * 
+   * They provide a way to tell the selector which context to use, thus saving
+   * the cost of a JNDI call at each new request.
+   * 
+   * @param context
+   */
+  public void setLocalContext(LoggerContext context) {
+    threadLocal.set(context);
+  }
+
+  public void removeLocalContext() {
+    threadLocal.remove();
   }
 
 }
