@@ -12,6 +12,26 @@
 
 		<p>Here are the latest news about logback.</p>
 
+    <h3>January 31st, 2007 - Release of version 0.9</h3>
+
+    <p>
+      This version contains a new component, namely the <code>ContextSelector</code>,
+      that provides context separation and management when logback is used
+      by several web-apps running under the same server. A 
+      <a href="manual/contextSelector.html">new chapter</a> was added to the logback manual to detail 
+      the use of the <code>ContextSelector</code>, along with its associated components.
+    </p>
+    
+    <p>
+      The <code>JMXConfigurator</code> has been improved. It now shows the context's
+      Status objects, which lets users check the internal state of logback.
+    </p>
+    
+    <p>
+      The logback manual's chapter 2, about <a href="manual/architecture.html">logback's architecture</a>, 
+      has been updated with two sections: Under the hood and Performance.
+    </p>
+    
     <h3>January 23th, 2007 - Release of version 0.8.1</h3>
 
     <p>
