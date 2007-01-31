@@ -4,7 +4,7 @@
   <skin>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-skin</artifactId>
-    <version>0.9</version>
+    <version>1.0-SNAPSHOT</version>
   </skin>
   <!--
   <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>
