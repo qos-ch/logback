@@ -56,7 +56,7 @@ instances.
 </p>
 
 <p>
-One thing we know for sure is that JNDI environments are independant. Thus
+One thing we know is that JNDI environments are independant. Thus
 setting environment variables in each application will allow a given component
 to know which application it is dealing with at the moment. This is basically
 the mechanism that uses logback to provide easy access to the right
@@ -64,13 +64,12 @@ the mechanism that uses logback to provide easy access to the right
 </p>
 
 <p>
-The component that manages the different contexts is the
+The component that manages the different contexts is a
 <a href="../xref/ch/qos/logback/classic/selector/ContextSelector.html">
 ContextSelector</a> 
 implementation. The JNDI-specific implementation is called 
 <a href="../xref/ch/qos/logback/classic/selector/ContextJNDISelector.html">
-ContextJNDISelector</a>. This
-object is instanciated at the very fist time a Web applications calls logback. 
+ContextJNDISelector</a>.
 </p>
 
 <p>
@@ -95,7 +94,7 @@ server's shared class directory. In Tomcat, this directory is
 The next step is to let logback know that it will have to use JNDI to manage
 the context instances. This is done thanks to a System Property. When launching
 Tomcat, make sure that the <em>logback.ContextSelector</em> property is
-linked with the <em>JNDI</em> value. This can be done by editing the
+set with the <em>JNDI</em> value. This can be done by editing the
 <em>TOMCAT_HOME/bin/catalina.sh</em> or <em>TOMCAT_HOME/bin/catalina.bat</em>
 file, and adding the following line to the java options:
 </p>
@@ -117,16 +116,18 @@ Note that you will need to install your appplications in the
 <em>JETTY_HOME/webapps-plus</em> directory.
 </p>
 
-<p>To place the logback jars (that is logback-classic-<em>VERSION</em>.jar,
-logback-core-<em>VERSION</em>.jar and slf4j-api-<em>VERSION</em>.jar) in the
-server shared directory, just install them in <em>JETTY_HOME/lib/</em>.
+<p>In Jetty, the server shared class directory is <em>JETTY_HOME/lib/</em>.
+This is where you will need to place the logback jars 
+(that is logback-classic-<em>VERSION</em>.jar,
+logback-core-<em>VERSION</em>.jar and slf4j-api-<em>VERSION</em>.jar).
 </p>
 
 <p>
 The next step is to let logback know that it will have to use JNDI to manage
 the context instances. This is done thanks to a System Property.
 In Jetty, adding an environment variable is done by adding the following
-xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file:
+xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file, 
+nested in a <em>Configuration</em> element:
 </p>
 
 <div class="source"><pre>&lt;Call class="java.lang.System" name="setProperty">
@@ -218,8 +219,7 @@ the <code>ContextSelector</code> will be called to provide the
 Web application's own <code>LoggerContext</code>, it will first check
 if the <code>ThreadLocal</code> variable is set. If it is, then the call
 to the JNDI environment will not be issued. The <code>LoggerContextFilter</code>
-class increases the performances by a wide margin, sometimes dividing the time
-it takes to retrieve loggers by 400.
+class increases the performances by a wide margin.
 </p>
 
 <p>
