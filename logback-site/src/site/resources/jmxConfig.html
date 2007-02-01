@@ -1,15 +1,23 @@
-<?xml version="1.0"?>
-<document>
-
-  <properties>
-    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-    <title>JMX Configurator</title>
-  </properties>
-  
-	<body>
-
-    <h2>JMX Configurator</h2>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>JMX Configuration</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+<script src="templates/base/header.js"></script>
+<div id="left">
+  <script src="templates/base/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/base/right.js"></script>
+</div>
+<div id="content">
+	
+	
+	
+	    <h2>JMX Configurator</h2>
     
 		<p>
 			As of version 0.8, logback ships with a component that allows 
@@ -30,9 +38,9 @@
 			to the <em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
 		</p>
 		
-<div class="source"><pre>CATALINA_OPTS="-Dcom.sun.management.jmxremote"
-CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
-CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"</pre></div>
+<div class="source"><pre>CATALINA_OPTS=&quot;-Dcom.sun.management.jmxremote&quot;
+CATALINA_OPTS=&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false&quot;
+CATALINA_OPTS=&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false&quot;</pre></div>
 
 		<p>
 			Once started with these options, Tomcat's JMX compoenents can be accessed
@@ -56,24 +64,24 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 		<em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
 		</p>
 
-<div class="source"><pre>&lt;!-- at the beginning of the file -->
-CATALINA_OPTS="-Dcom.sun.management.jmxremote"
-CATALINA_OPTS="$CATALINA_OPTS -Djavax.management.builder.initial=mx4j.server.MX4JMBeanServerBuilder"
+<div class="source"><pre>&lt;!-- at the beginning of the file --&gt;
+CATALINA_OPTS=&quot;-Dcom.sun.management.jmxremote&quot;
+CATALINA_OPTS=&quot;$CATALINA_OPTS -Djavax.management.builder.initial=mx4j.server.MX4JMBeanServerBuilder&quot;
 
-&lt;!-- in the "Add on extra jar files to CLASSPATH" section -->
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
+&lt;!-- in the &quot;Add on extra jar files to CLASSPATH&quot; section --&gt;
+CLASSPATH=&quot;$CLASSPATH&quot;:&quot;$CATALINA_HOME&quot;/bin/mx4j-impl.jar</pre></div>
 
 		<p>
 			Finally, declare a new <code>Connector</code> in the
 			<em>$TOMCAT_HOME/conf/server.xml</em> file:
 		</p>
 		
-<div class="source"><pre>&lt;Connector port="8050" 
-  handler.list="mx"
-  mx.enabled="true" 
-  mx.httpHost="localhost" 
-  mx.httpPort="8082" 
-  protocol="AJP/1.3" /></pre></div>
+<div class="source"><pre>&lt;Connector port=&quot;8050&quot; 
+  handler.list=&quot;mx&quot;
+  mx.enabled=&quot;true&quot; 
+  mx.httpHost=&quot;localhost&quot; 
+  mx.httpPort=&quot;8082&quot; 
+  protocol=&quot;AJP/1.3&quot; /&gt;</pre></div>
   
   	<p>
   		Once Tomcat is started, you should be ableo to reach the JMX components by
@@ -90,19 +98,19 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 			added:
 		</p>
 
-<div class="source"><pre>&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer"/>
-&lt;!-- initialize the Jetty MBean container -->
-&lt;Get id="Container" name="container">
-  &lt;Call name="addEventListener">
-    &lt;Arg>
-      &lt;New class="org.mortbay.management.MBeanContainer">
-        &lt;Arg>&lt;Ref id="MBeanServer"/>&lt;/Arg>
-        &lt;Set name="managementPort">8082&lt;/Set>
-        &lt;Call name="start" />
-      &lt;/New>
-    &lt;/Arg>
-  &lt;/Call>
-&lt;/Get></pre></div>
+<div class="source"><pre>&lt;Call id=&quot;MBeanServer&quot; class=&quot;java.lang.management.ManagementFactory&quot; name=&quot;getPlatformMBeanServer&quot;/&gt;
+&lt;!-- initialize the Jetty MBean container --&gt;
+&lt;Get id=&quot;Container&quot; name=&quot;container&quot;&gt;
+  &lt;Call name=&quot;addEventListener&quot;&gt;
+    &lt;Arg&gt;
+      &lt;New class=&quot;org.mortbay.management.MBeanContainer&quot;&gt;
+        &lt;Arg&gt;&lt;Ref id=&quot;MBeanServer&quot;/&gt;&lt;/Arg&gt;
+        &lt;Set name=&quot;managementPort&quot;&gt;8082&lt;/Set&gt;
+        &lt;Call name=&quot;start&quot; /&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+&lt;/Get&gt;</pre></div>
 
 		<p>
 			Once Jetty is started with this configuration, all available components can be reviewed
@@ -118,21 +126,21 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 			file. This is done by adding a single element, as shown below:
 		</p>
 
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
 
-  <b>&lt;jmxConfigurator /></b>
+  <b>&lt;jmxConfigurator /&gt;</b>
 
-  &lt;appender name="console" class="ch.qos.logback.classic.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date [%thread] %-5level %logger{25} - %msg%n&lt;/Pattern>
-    &lt;/layout>
-  &lt;/appender>
+  &lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.classic.ConsoleAppender&quot;&gt;
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;Pattern&gt;%date [%thread] %-5level %logger{25} - %msg%n&lt;/Pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;root>
-    &lt;level value="debug"/>
-    &lt;appender-ref ref="console" />
-  &lt;/root>  
-&lt;/configuration></pre></div>
+  &lt;root&gt;
+    &lt;level value=&quot;debug&quot;/&gt;
+    &lt;appender-ref ref=&quot;console&quot; /&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre></div>
 		
 		<p>
 			Once the JMX Configurator is displayed on your screen, there are
@@ -188,6 +196,13 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
       the configuration file was successfully processed.
     </p>
 		
-
-	</body>
-</document>
+	
+	
+	
+	
+	
+	
+<script src="templates/base/footer.js"></script>
+</div>
+</body>
+</html>

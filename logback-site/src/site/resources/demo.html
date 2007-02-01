@@ -1,15 +1,22 @@
-<?xml version="1.0"?>
-<document>
-
-  <properties>
-    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-    <title>Logback Demo</title>
-  </properties>
-  
-	<body>
-
-<h2>Logback Demo</h2>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Logback Demo</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+<script src="templates/base/header.js"></script>
+<div id="left">
+  <script src="templates/base/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/base/right.js"></script>
+</div>
+<div id="content">
+	
+	
+	<h2>Logback Demo</h2>
 
 <p>
 	Welcome to the logback demo! This document will take you to a tour
@@ -107,16 +114,16 @@ comment or delete the first Basic Cyclic buffer <em>appender</em> element.
 Let's take a look at the filter we've just added:
 </p>
 
-<div class="source"><pre>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-  &lt;evaluator name="loggingTaskEval">
-    &lt;expression>
-      logger.getName().contains("LoggingTask") &amp;amp;&amp;amp;
-      message.contains("Howdydy-diddly-ho") &amp;amp;&amp;amp;
-      (timeStamp - event.getStartTime()) >= 20000
-    &lt;/expression>
-  &lt;/evaluator>
-  &lt;OnMatch>DENY&lt;/OnMatch>
-&lt;/filter></pre></div>
+<div class="source"><pre>&lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+  &lt;evaluator name=&quot;loggingTaskEval&quot;&gt;
+    &lt;expression&gt;
+      logger.getName().contains(&quot;LoggingTask&quot;) &amp;amp;&amp;amp;
+      message.contains(&quot;Howdydy-diddly-ho&quot;) &amp;amp;&amp;amp;
+      (timeStamp - event.getStartTime()) &gt;= 20000
+    &lt;/expression&gt;
+  &lt;/evaluator&gt;
+  &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+&lt;/filter&gt;</pre></div>
 
 <p>
 The expression element contains a familiar java statement. This expression
@@ -183,7 +190,7 @@ Parametrized logging is a feature that will be a great asset for any performance
 system. Usually, a logging request is issued like this:
 </p>
 
-<div class="source"><pre>logger.debug("Hello, my name is" + username + ", I am " + age + " years old.");</pre></div>
+<div class="source"><pre>logger.debug(&quot;Hello, my name is&quot; + username + &quot;, I am &quot; + age + &quot; years old.&quot;);</pre></div>
 
 <p>
 By issuing this line, the cost of constructing the String cannot be saved when the
@@ -197,7 +204,7 @@ eventually be dropped.
 Logback offers the following method:
 </p>
 
-<div class="source"><pre>logger.debug("Hello, my name is {}, I am {} years old", username, age);</pre></div>
+<div class="source"><pre>logger.debug(&quot;Hello, my name is {}, I am {} years old&quot;, username, age);</pre></div>
 
 <p>
 As you can see, the variables are not inserted in the message yet. Both the message
@@ -223,7 +230,7 @@ and re-run the calculations you tried beforehand.
 <p>
 The durations should be obviously different. Remember that we had turned off all
 logging in the previous step of this demo. With the initial formatting method,
-we were constructing the logging message (<em>"Trying "+i+" as a factor."</em>) 
+we were constructing the logging message (<em>&quot;Trying &quot;+i+&quot; as a factor.&quot;</em>) 
 a huge amount of times, actually each time a factor was tried for these big numbers.
 With the paramatrized logging, the construction of the message was postponed and, since
 logging was turned off, not processed. We see here that the cost of the <b>non-</b>logging 
@@ -264,18 +271,18 @@ and is located in the <em>src/etc/</em> directory.
 The necessary configuration is listed below:
 </p>
 
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
  
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.access.PatternLayout">
-      &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
-    &lt;/layout>
-  &lt;/appender>
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+      &lt;Pattern&gt;%h %l %u %t \&quot;%r\&quot; %s %b&lt;/Pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
   
-  &lt;appender-ref ref="STDOUT" />
+  &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
   
-&lt;/configuration></pre></div>
+&lt;/configuration&gt;</pre></div>
 
 <p>
 To see more clearly the output produced by logback access,
@@ -326,27 +333,27 @@ print that information only when a certain page is accessed.
 The configuration lines that are necessary are listed below.
 </p>
 
-<div class="source"><pre>&lt;appender name="STDOUT_LOTTERY"
-  class="ch.qos.logback.core.ConsoleAppender">
-  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-    &lt;evaluator name="lotto_eval">
-      &lt;Expression>
+<div class="source"><pre>&lt;appender name=&quot;STDOUT_LOTTERY&quot;
+  class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+  &lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+    &lt;evaluator name=&quot;lotto_eval&quot;&gt;
+      &lt;Expression&gt;
         url.matches(event.getRequestURL().toString())
-      &lt;/Expression>
-      &lt;matcher name="url">
-        &lt;regex>Lottery.do&lt;/regex>
-        &lt;caseSensitive>false&lt;/caseSensitive>
-      &lt;/matcher>
-    &lt;/evaluator>
-    &lt;OnMatch>ACCEPT&lt;/OnMatch>
-    &lt;OnMismatch>DENY&lt;/OnMismatch>
-  &lt;/filter>
-  &lt;layout class="ch.qos.logback.access.PatternLayout">
-    &lt;Pattern>
+      &lt;/Expression&gt;
+      &lt;matcher name=&quot;url&quot;&gt;
+        &lt;regex&gt;Lottery.do&lt;/regex&gt;
+        &lt;caseSensitive&gt;false&lt;/caseSensitive&gt;
+      &lt;/matcher&gt;
+    &lt;/evaluator&gt;
+    &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+    &lt;OnMismatch&gt;DENY&lt;/OnMismatch&gt;
+  &lt;/filter&gt;
+  &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+    &lt;Pattern&gt;
       LOTTERY: %A [%r] Guess=%reqParameter{guessed_number}
-    &lt;/Pattern>
-  &lt;/layout>
-&lt;/appender></pre></div>
+    &lt;/Pattern&gt;
+  &lt;/layout&gt;
+&lt;/appender&gt;</pre></div>
 
 <p>
 This appender will use a <code>PatternLayout</code> to format its output.
@@ -501,6 +508,14 @@ You might want to check the <a href="http://logback.qos.ch/documentation.html">
 logback documentation page</a> for more information about any component
 you'd like to test.
 </p>
-
+	
+	
+	
+	
+	
+	
+	
+<script src="templates/base/footer.js"></script>
+</div>
 </body>
-</document>
+</html>

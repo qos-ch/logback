@@ -1,41 +1,43 @@
-<document>
-<!-- 
-		
-		Warning: do not use any auto-format function on this file.
-		Since "source" divs use pre as white-space, it affects the
-		look of the code parts in this document.
-		
-	-->
-
-	<body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Chapter 8: Context Selector</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+</head>
+<body>
+<script src="../templates/header.js"></script>
+<div id="left">
+  <script src="../templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="../templates/right.js"></script>
+</div>
+<div id="content"><br />
 		<h2>Chapter 8: Context Selector</h2>
 		<div class="author">
-			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+			Authors: Ceki Gülcü, Sébastien Pennec
 		</div>
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
+		<table class="bodyTable">
+			<tr class="a">
+				<td>
+						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
 						</a>
 				</td>
 				<td>
-					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+					<p>Copyright © 2000-2006, QOS.ch</p>
 
 					<p>
-						<!--Creative Commons License-->
+						
 						This work is licensed under a
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>.
-						<!--/Creative Commons License-->
+						
 					</p>
 				</td>
 			</tr>
@@ -130,10 +132,10 @@ xml element in the <em>JETTY_HOME/etc/jetty.xml</em> configuration file,
 nested in a <em>Configuration</em> element:
 </p>
 
-<div class="source"><pre>&lt;Call class="java.lang.System" name="setProperty">
-  &lt;Arg>logback.ContextSelector&lt;/Arg>
-  &lt;Arg>JNDI&lt;/Arg>
-&lt;/Call></pre></div>
+<div class="source"><pre>&lt;Call class=&quot;java.lang.System&quot; name=&quot;setProperty&quot;&gt;
+  &lt;Arg&gt;logback.ContextSelector&lt;/Arg&gt;
+  &lt;Arg&gt;JNDI&lt;/Arg&gt;
+&lt;/Call&gt;</pre></div>
 
 <p>
 Be aware that adding a <em>-Dlogback.ContextSelector=JNDI</em> to the java
@@ -164,24 +166,24 @@ are needed. The first one specifies the desired name of the application's
 <code>LoggerContext</code>. It takes the following form:
 </p>
 
-<div class="source"><pre>&lt;env-entry>
-  &lt;description>JNDI logging context for this app&lt;/description>
-  &lt;env-entry-name>logback/context-name&lt;/env-entry-name>
-  &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
-  &lt;env-entry-value>ContextApp-A&lt;/env-entry-value>
-&lt;/env-entry></pre></div>
+<div class="source"><pre>&lt;env-entry&gt;
+  &lt;description&gt;JNDI logging context for this app&lt;/description&gt;
+  &lt;env-entry-name&gt;logback/context-name&lt;/env-entry-name&gt;
+  &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+  &lt;env-entry-value&gt;ContextApp-A&lt;/env-entry-value&gt;
+&lt;/env-entry&gt;</pre></div>
 
 <p>
 The second JNDI entry will lead logback to the application's own xml configuration
 file. It can be declared as shown below:
 </p>
 
-<div class="source"><pre>&lt;env-entry>
-  &lt;description>URL for configuring logback context&lt;/description>
-  &lt;env-entry-name>logback/configuration-resource&lt;/env-entry-name>
-  &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
-  &lt;env-entry-value>logback-app-A.xml&lt;/env-entry-value>
-&lt;/env-entry></pre></div>
+<div class="source"><pre>&lt;env-entry&gt;
+  &lt;description&gt;URL for configuring logback context&lt;/description&gt;
+  &lt;env-entry-name&gt;logback/configuration-resource&lt;/env-entry-name&gt;
+  &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+  &lt;env-entry-value&gt;logback-app-A.xml&lt;/env-entry-value&gt;
+&lt;/env-entry&gt;</pre></div>
 
 <p>
 Specifying only the name of the file will lead logback to search for it in
@@ -202,8 +204,8 @@ ships with logback does exactly that. To use it, add the following
 lines to your Web application's <em>web.xml</em> file.
 </p>
 
-<div class="source"><pre>&lt;listener>
-  &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
+<div class="source"><pre>&lt;listener&gt;
+  &lt;listener-class&gt;ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class&gt;
 &lt;/listener</pre></div>
 
 
@@ -237,14 +239,14 @@ application and still provide the correct <code>LoggerContext</code>.
 lines to your Web application's <em>web.xml</em> file.
 </p>
 
-<div class="source"><pre>&lt;filter>
-  &lt;filter-name>LoggerContextFilter&lt;/filter-name>
-  &lt;filter-class>ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class>
-&lt;/filter>
-&lt;filter-mapping>
-  &lt;filter-name>LoggerContextFilter&lt;/filter-name>
-  &lt;url-pattern>/*&lt;/url-pattern>
-&lt;/filter-mapping></pre></div>
+<div class="source"><pre>&lt;filter&gt;
+  &lt;filter-name&gt;LoggerContextFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;LoggerContextFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;</pre></div>
 
 <h4>Some recommandations</h4>
 
@@ -253,7 +255,7 @@ To avoid confusion, it is prudent to name each Web application
 in the <em>web.xml</em> file, as in:
 </p>
 
-<div class="source"><pre>&lt;display-name>Name_Of_My_WebApp&lt;/display-name></pre></div>
+<div class="source"><pre>&lt;display-name&gt;Name_Of_My_WebApp&lt;/display-name&gt;</pre></div>
 
 <p>
 We recommend that you name logback configuration resources uniquely. In
@@ -274,6 +276,7 @@ file as that used to configure the default context. Such
 involuntary sharing of the same configuration by multiple repositories
 will result in corrupt log output.
 </p>
-
+<script src="../templates/footer.js"></script>
+</div>
 </body>
-</document>
+</html>

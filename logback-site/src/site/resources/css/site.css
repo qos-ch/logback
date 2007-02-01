@@ -1,0 +1,261 @@
+html { 
+  padding:0px;
+  margin:0px;
+}
+
+body {
+  background-color: #fff;
+  font-family: Verdana, Arial, SunSans-Regular, Sans-Serif;
+  color:#564b47;  
+  padding:0px;
+  margin:0px;
+  font-size: small;
+}
+
+p, h2, pre {
+ margin: 0px; 
+ padding-top: 5px;
+ padding-bottom: 5px;
+ /*padding-left: 1ex;*/
+ /*padding: 5px 20px 5px 20px; */
+}
+
+
+a { 
+ color: navy;
+ /*font-size: smaller;*/
+ background-color:transparent;
+ text-decoration: none; 
+}
+
+#content a:hover {
+ text-decoration: underline;
+}
+
+.source { 
+  border-top: 1px solid #DDDDDD;
+  border-bottom: 1px solid #DDDDDD;
+  background:#eee;
+  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
+  padding-bottom: 0.5ex;
+  padding-top: 0.5ex;
+  padding-left: 1ex;
+  /*white-space: pre;*/
+}
+
+pre { 
+ color: #564b47;
+ background-color:transparent;
+ font-family: Courier, Monaco, Monospace;
+}
+
+.alignright {
+ margin-top: 0; 
+ text-align: right;
+ font-size: 10px;
+}
+
+h1 {
+}
+
+h2 {
+  padding-top:10px; 
+  color: #564b47;
+  background-color: transparent;
+	font-weight: 900;
+	font-size: x-large;
+}
+
+h3 {
+  padding-top:10px; 
+	color: #564b47;
+	background-color: transparent;
+	font-weight: normal;
+	font-size: large;
+}
+
+h4 {
+  padding-top:5px; 
+	color: navy;
+	background-color: transparent;	
+	font-weight: large;
+	font-size: normal;
+}
+
+.footer {
+  text-align: right;
+  color: #564b47;
+  background-color: #90897a;
+  padding:0px;
+  margin:0px
+}
+
+
+
+strong { 
+  /*font-size: 13px;*/
+  font-weight: bold;
+}
+
+/*  positioning-layers static and absolute */
+
+#breadcrumbs {
+	padding: 3px 10px 3px 10px;
+  margin: 0px 4px 0px 4px;
+	font-size: small;
+	border: 1px solid #CCCCCC;
+	/*border-bottom: 1px solid #aaa;
+  /* background-color: #ccc; lime;
+  border-color: #663300;*/
+	background-color: #ffd0a0;
+	/*max-width: 77em;*/
+}
+
+#left {
+  position: absolute;
+  left: 0px;
+  width: 15em;
+  color: #564b47;
+  margin: 4px 0px 0px 4px; 
+  padding: 0px;
+  /* background-color: #ffffff;    */
+  border: 1px solid #cccccc;
+  /*  background-color: #ffcc99; */
+  background-color: #ffffff;
+}
+
+#left a, #right a {
+  display: block; 
+  width: 95.5%; 
+  margin: 0px; 
+  padding: 2px; 
+  border: solid 1px #FFFFFF; 
+  color: #0066cc; 
+  text-decoration: none;
+}
+
+p.menu_header {
+  margin: 0px; 
+  padding: 2px;
+  font-weight: normal; 
+  background-color: #ffd0a0; 
+  border-top: solid 1px #CCCCCC;
+  border-bottom: solid 1px #CCCCCC;
+}
+
+#left a:hover, #right a:hover {
+  border: solid 1px #FFFFFF; 
+  background-color: #0066cc; 
+  color: #ffffff;
+}
+
+#content {
+  margin: 0px 15em 0px 16em;
+  padding: 0px;
+  background-color: #ffffff;  
+}
+
+#right {
+  position: absolute;
+  right: 0px;        
+  width: 14em;
+  color: #564b47;
+  margin: 4px 4px 0px 0px; 
+  padding: 0px;
+  background-color: #ffffff;    
+  border: 1px solid #cccccc;
+}
+
+#left img {
+	display: block;
+	margin: 20px 0 20px 17px;
+	border: none;
+	width: 90px;
+	height: 30px;
+}
+
+#content img {
+	border:none;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+table.bodyTable {
+	padding: 0px;
+	width: 100%;
+	margin-left: -2px;
+	margin-right: -2px;
+}
+
+table.bodyTable th {
+	color: white;
+	background-color: #bbb;
+	font-weight: bold;
+}
+
+
+table.bodyTable tr.a {
+	background-color: #ddd;
+}
+
+table.bodyTable tr.b {
+	background-color: #eee;
+}
+
+.author {
+	text-align: left;
+	font-weight: bold;
+}
+
+.definition {
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px 50px 5px 50px;
+	text-align: justify;
+	background-color: #E6E64C;
+}
+
+.deftitle {
+	font-weight: bold;
+}
+
+.green {
+	color: green;
+}
+.blue {
+	color: blue;	
+}
+
+.redBold {
+	color: red;
+	font-weight: bold;	
+}
+.greenBold {
+	color: green;	
+  font-weight: bold;	
+}
+
+code {
+	font-family: Courier, monospace;
+}
+
+
+.option {
+  border: 1px solid black;
+  font-family: Arial, sans-serif;	
+}
+
+.highlight {
+   width: 300px;
+  float: right;	
+  display: inline;
+  font-weight: bolder;
+  border:1px solid #000;
+  background:#FFCC99;	
+  padding-top: 0px;
+  padding-left: 1ex;
+  padding-right: 1ex;
+  margin-left: 3em;
+  margin-right: 3em;
+}

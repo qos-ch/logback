@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="LOGBack Main Site">
 
-  <skin>
+  <!--<skin>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-skin</artifactId>
     <version>0.9.1-SNAPSHOT</version>
-  </skin>
+  </skin> -->
   <!--
   <publishDate position="navigation-bottom" format="dd-MM-yyyy"/>
 

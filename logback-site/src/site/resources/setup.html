@@ -1,15 +1,22 @@
-<?xml version="1.0"?>
-<document>
-
-  <properties>
-    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-    <title>Logback Examples</title>
-  </properties>
-  
-	<body>
-
-<h2>Classpath Setup</h2>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Setup</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+<script src="templates/base/header.js"></script>
+<div id="left">
+  <script src="templates/base/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/base/right.js"></script>
+</div>
+<div id="content">
+	
+	
+	<h2>Classpath Setup</h2>
 
 <p>
 In order to run the examples provided in the documentation,
@@ -17,10 +24,10 @@ you need to add the following jars to your class path:
 </p>
 
 <ul>
-	<p>logback-core-${version}.jar</p>
-	<p>logback-classic-${version}.jar</p>
-	<p>logback-examples-${version}.jar</p>
-	<p>slf4j-api-${slf4j.version}.jar</p>
+	<p>logback-core-1.0-SNAPSHOT.jar</p>
+	<p>logback-classic-1.0-SNAPSHOT.jar</p>
+	<p>logback-examples-1.0-SNAPSHOT.jar</p>
+	<p>slf4j-api-1.2.jar</p>
 </ul>
 
 <h3>Example</h3>
@@ -33,8 +40,8 @@ sample application, <em>chapter1.HelloWord1</em> with the following command:
 </p>
 
 <div class="source"><pre>java -cp
- lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
- ../logback-classic-${version}.jar;logback-examples-${version}.jar\
+ lib/slf4j-api-1.2.jar;../logback-core-1.0-SNAPSHOT.jar;\
+ ../logback-classic-1.0-SNAPSHOT.jar;logback-examples-1.0-SNAPSHOT.jar\
  chapter1.HelloWorld1</pre></div>
 
 <p>
@@ -57,22 +64,14 @@ issue the commands from within the <em>$LOGBACK_HOME/logback-examples</em>
 directory.
 </p>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	</body>
-</document>
+	
+	
+	
+	
+	
+	
+	
+<script src="templates/base/footer.js"></script>
+</div>
+</body>
+</html>

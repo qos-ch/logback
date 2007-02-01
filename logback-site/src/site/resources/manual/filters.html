@@ -1,41 +1,42 @@
-<document>
-<!-- 
-		
-		Warning: do not use any auto-format function on this file.
-		Since "source" divs use pre as white-space, it affects the
-		look of the code parts in this document.
-		
--->
-
-	<body>
-		<h2>Chapter 6: Filter chains</h2>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Chapter 6: Filters</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+</head>
+<body>
+<script src="../templates/header.js"></script>
+<div id="left">
+  <script src="../templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="../templates/right.js"></script>
+</div>
+<div id="content">		<h2>Chapter 6: Filter chains</h2>
 		<div class="author">
-			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+			Authors: Ceki Gülcü, Sébastien Pennec
 		</div>
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
+		<table class="bodyTable">
+			<tr class="a">
+				<td>
+						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
 						</a>
 				</td>
 				<td>
-					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+					<p>Copyright © 2000-2006, QOS.ch</p>
 
 					<p>
-						<!--Creative Commons License-->
+						
 						This work is licensed under a
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>.
-						<!--/Creative Commons License-->
+						
 					</p>
 				</td>
 			</tr>
@@ -68,7 +69,7 @@
 		
 		<h2>Logback Classic</h2>
 		
-		<a name="Filter" />
+		<a name="Filter"></a>
 		<p><code>Filter</code> objects all implement the 
 		<a href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a> 
 		abscract class. The <code>decide(Object event)</code> method is passed a
@@ -83,7 +84,7 @@
 			Figure 6.1 depicts a sample filter chain consisting of three filters.
 		</p>
 		
-		<img src="images/chapter6/filterChain.gif" alt="A sample filter chain"/>
+		<img src="images/chapter6/filterChain.gif" alt="A sample filter chain"></img>
 
     <p>
     	Filters are based on ternary logic. The <code>decide(Object event)</code> 
@@ -132,7 +133,7 @@ public class SampleFilter extends Filter {
   public FilterReply decide(Object eventObject) {
     LoggingEvent event = (LoggingEvent)eventObject;
     
-    if (event.getMessage().contains("sample")) {
+    if (event.getMessage().contains(&quot;sample&quot;)) {
       return FilterReply.ACCEPT;
     } else {
       return FilterReply.NEUTRAL;
@@ -147,22 +148,22 @@ public class SampleFilter extends Filter {
 		</p>
 
 <em>Example 6.2: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;Filter class="chapter6.SampleFilter" /></b>
+<div class="source"><pre>&lt;configuration&gt;
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;Filter class=&quot;chapter6.SampleFilter&quot; /&gt;</b>
 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %-4relative [%thread] %-5level %logger - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 	
-  &lt;root>
-    &lt;appender-ref ref="STDOUT" />
-  &lt;/root>
-&lt;/configuration></pre></div>
+  &lt;root&gt;
+    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			Thanks to Joran, logback's powerful configuration framework, adding
@@ -194,25 +195,25 @@ public class SampleFilter extends Filter {
 		</p>
 		
 <em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
-  &lt;appender name="CONSOLE"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
-      &lt;level>INFO&lt;/level>
-      &lt;onMatch>ACCEPT&lt;/onMatch>
-      &lt;onMismatch>DENY&lt;/onMismatch>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
+<div class="source"><pre>&lt;configuration&gt;
+  &lt;appender name=&quot;CONSOLE&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;filter class=&quot;ch.qos.logback.classic.filter.LevelFilter&quot;&gt;
+      &lt;level&gt;INFO&lt;/level&gt;
+      &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %-4relative [%thread] %-5level %logger{30} - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
-  &lt;root>
-    &lt;level value="DEBUG" />
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>
-&lt;/configuration></pre></div>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+  &lt;root&gt;
+    &lt;level value=&quot;DEBUG&quot; /&gt;
+    &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			The second filter that ships with logback is 
@@ -224,23 +225,23 @@ public class SampleFilter extends Filter {
 		</p>
 
 <em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/ThresholdFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
-  &lt;appender name="CONSOLE"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      &lt;level>INFO&lt;/level>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
+<div class="source"><pre>&lt;configuration&gt;
+  &lt;appender name=&quot;CONSOLE&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;
+      &lt;level&gt;INFO&lt;/level&gt;
+    &lt;/filter&gt;</b>
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %-4relative [%thread] %-5level %logger{30} - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
-  &lt;root>
-    &lt;level value="DEBUG" />
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>
-&lt;/configuration></pre></div>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+  &lt;root&gt;
+    &lt;level value=&quot;DEBUG&quot; /&gt;
+    &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>
 
 		<h3>Evaluator Filters</h3>
 		    
@@ -261,7 +262,7 @@ public class SampleFilter extends Filter {
 			or <code>AbstractMatcherFilter</code> classes.
 		</p>
     
-    <a name="EventEvaluator" />
+    <a name="EventEvaluator"></a>
     <h3>Event Evaluators</h3>
     
     <p>
@@ -275,29 +276,29 @@ public class SampleFilter extends Filter {
     </p>
     
 <em>Example 6.5: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="myEval">
-        &lt;expression>message.contains("billing")&lt;/expression>
-      &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>DENY&lt;/OnMatch>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+      &lt;evaluator name=&quot;myEval&quot;&gt;
+        &lt;expression&gt;message.contains(&quot;billing&quot;)&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %-4relative [%thread] %-5level %logger - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;root>
-    &lt;level value="INFO" />
-    &lt;appender-ref ref="STDOUT" />
-  &lt;/root>
-&lt;/configuration></pre></div>
+  &lt;root&gt;
+    &lt;level value=&quot;INFO&quot; /&gt;
+    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			The bold part in the previous configuration adds an <code>EvaluatorFilter</code>
@@ -312,13 +313,13 @@ public class SampleFilter extends Filter {
 			The implicit variables available to the <code>EventEvaluator</code> are described below:
 		</p>
 		
-		<table>
-			<tr>
+		<table class="bodyTable">
+			<tr class="b">
 				<th>Name</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr>
+			<tr class="a">
 				<td>event
 				</td>
 				<td><code>LoggingEvent</code></td>
@@ -328,14 +329,14 @@ public class SampleFilter extends Filter {
 				variable.
 				</td>
 			</tr>
-			<tr>
+			<tr class="b">
 				<td>message
 				</td>
 				<td><code>String</code></td>
 				<td>The message created with the logging request.
 				</td>
 			</tr>
-			<tr>
+			<tr class="a">
 				<td>logger
 				</td>
 				<td><code>LoggerRemoteView</code></td>
@@ -345,7 +346,7 @@ public class SampleFilter extends Filter {
 				performs much better when serialized.
 				</td>
 			</tr>
-			<tr>
+			<tr class="b">
 				<td>level
 				</td>
 				<td><code>int</code></td>
@@ -355,30 +356,30 @@ public class SampleFilter extends Filter {
 				using <em>level &gt; INFO</em> is a correct expression.
 				</td>
 			</tr>
-			<tr>
+			<tr class="a">
 				<td>timeStamp
 				</td>
 				<td><code>long</code></td>
 				<td>The timestamp corresponding to the logging event's creation.
 				</td>
 			</tr>
-			<tr>
+			<tr class="b">
 				<td>marker
 				</td>
 				<td><code>Marker</code></td>
 				<td>The <code>Marker</code> object associated with the logging request.
 				</td>
 			</tr>
-			<tr>
+			<tr class="a">
 				<td>mdc
 				</td>
 				<td><code>Map</code></td>
 				<td>A map containing all the MDC values at the time of the 
 				creation of the logging event. A value can be access by using the
-				following expression: <em>mdc.get("myKey")</em>.
+				following expression: <em>mdc.get(&quot;myKey&quot;)</em>.
 				</td>
 			</tr>
-			<tr>
+			<tr class="b">
 				<td>throwable
 				</td>
 				<td><code>Throwable</code></td>
@@ -432,17 +433,17 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 		can use an <code>EvaluatorFilter</code> configured as follows:
 		</p>
 
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
   ...
-  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-    &lt;evaluator name="myEval">
-      &lt;expression>message.contains("billing")&lt;/expression>
-    &lt;/evaluator>
-    &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-    &lt;OnMatch>DENY&lt;/OnMatch>
-  &lt;/filter>
+  &lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+    &lt;evaluator name=&quot;myEval&quot;&gt;
+      &lt;expression&gt;message.contains(&quot;billing&quot;)&lt;/expression&gt;
+    &lt;/evaluator&gt;
+    &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+    &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+  &lt;/filter&gt;
   ...
-&lt;/configuration></pre></div>
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			This filter will deny any logging event whose message
@@ -461,7 +462,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
 		
 		
-		<a name="TurboFilter" />
+		<a name="TurboFilter"></a>
 		<h3>TurboFilters</h3>
     
     <p>
@@ -542,7 +543,7 @@ public class SampleTurboFilter extends TurboFilter {
 
   @Override
   public void start() {
-    if (marker != null &amp;&amp; marker.trim().length() > 0) {
+    if (marker != null &amp;&amp; marker.trim().length() &gt; 0) {
       markerToAccept = MarkerFactory.getMarker(marker);
       super.start(); 
     }
@@ -568,24 +569,24 @@ public class SampleTurboFilter extends TurboFilter {
 		</p>
 		
 <em>Example 6.7: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
-<div class="source"><pre>&lt;configuration>
-  <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
-    &lt;Marker>sample&lt;/Marker>
-  &lt;/turboFilter></b>
+<div class="source"><pre>&lt;configuration&gt;
+  <b>&lt;turboFilter class=&quot;chapter6.SampleTurboFilter&quot;&gt;
+    &lt;Marker&gt;sample&lt;/Marker&gt;
+  &lt;/turboFilter&gt;</b>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %-4relative [%thread] %-5level %logger - %msg%n
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;root>
-    &lt;appender-ref ref="STDOUT" />
-  &lt;/root>
-&lt;/configuration></pre></div>   
+  &lt;root&gt;
+    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre></div>   
 
    	<p>
    		Logback classic ships with several <code>TurboFilter</code> classes ready for use.
@@ -603,30 +604,30 @@ public class SampleTurboFilter extends TurboFilter {
    	
 <em>Example 6.8: <code>MDCFilter</code> and <code>MarkerFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
 
-  &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
-    &lt;MDCKey>username&lt;/MDCKey>
-    &lt;Value>sebastien&lt;/Value>
-    &lt;OnMatch>ACCEPT&lt;/OnMatch>
-  &lt;/turboFilter>
+  &lt;turboFilter class=&quot;ch.qos.logback.classic.turbo.MDCFilter&quot;&gt;
+    &lt;MDCKey&gt;username&lt;/MDCKey&gt;
+    &lt;Value&gt;sebastien&lt;/Value&gt;
+    &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+  &lt;/turboFilter&gt;
 	
-  &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
-    &lt;Marker>billing&lt;/Marker>
-    &lt;OnMatch>DENY&lt;/OnMatch>
-  &lt;/turboFilter>
+  &lt;turboFilter class=&quot;ch.qos.logback.classic.turbo.MarkerFilter&quot;&gt;
+    &lt;Marker&gt;billing&lt;/Marker&gt;
+    &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+  &lt;/turboFilter&gt;
 
-  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
-  &lt;/layout>
-  &lt;/appender>
+  &lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
+      &lt;Pattern&gt;%date [%thread] %-5level %logger - %msg%n&lt;/Pattern&gt;
+  &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;root>
-    &lt;level value="info"/>
-    &lt;appender-ref ref="console" />
-  &lt;/root>  
-&lt;/configuration></pre></div>
+  &lt;root&gt;
+    &lt;level value=&quot;info&quot;/&gt;
+    &lt;appender-ref ref=&quot;console&quot; /&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			You can see this configuration in action by issuing the following command:
@@ -708,26 +709,26 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
     </p>
    	
 <em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="myEval">
-        &lt;expression>event.getStatusCode() == 404&lt;/expression>
-      &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.access.PatternLayout">
-      &lt;pattern>
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+      &lt;evaluator name=&quot;myEval&quot;&gt;
+        &lt;expression&gt;event.getStatusCode() == 404&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %h %l %u %t %r %s %b
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;appender-ref ref="STDOUT" />
-&lt;/configuration></pre></div>
+  &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+&lt;/configuration&gt;</pre></div>
 
 		<p>
 			We might imagine a slightly more complex use of filters to ensure the display of 404 errors, but
@@ -736,33 +737,34 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 		</p>	
 
 <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<div class="source"><pre>&lt;configuration&gt;
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="Eval404">
-        &lt;expression>event.getStatusCode() == 404&lt;/expression>
-      &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
-    &lt;/filter>
-    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="EvalCSS">
-        &lt;expression>event.getRequestURI().contains("css")&lt;/expression>
-      &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>DENY&lt;/OnMatch>
-    &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.access.PatternLayout">
-      &lt;pattern>
+  &lt;appender name=&quot;STDOUT&quot;
+    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    <b>&lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+      &lt;evaluator name=&quot;Eval404&quot;&gt;
+        &lt;expression&gt;event.getStatusCode() == 404&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+    &lt;/filter&gt;
+    &lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;
+      &lt;evaluator name=&quot;EvalCSS&quot;&gt;
+        &lt;expression&gt;event.getRequestURI().contains(&quot;css&quot;)&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
+      &lt;pattern&gt;
         %h %l %u %t %r %s %b
-      &lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
+      &lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
 
-  &lt;appender-ref ref="STDOUT" />
-&lt;/configuration></pre></div>	
-		
-  </body>
-</document>
+  &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+&lt;/configuration&gt;</pre></div>	
+<script src="../templates/footer.js"></script>
+</div>
+</body>
+</html>

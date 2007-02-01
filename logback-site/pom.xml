@@ -25,12 +25,12 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>src/site/xdocTemplates</directory>
+				<directory>src/site/resources</directory>
 				<!-- 
 					We're saving filtered xdocs in a temporary folder
 					and telling the site plug in to get the xdocs there.
 				-->
-				<targetPath>generated-site</targetPath>
+        <targetPath>generated-site</targetPath>
 				<filtering>true</filtering>
 			</resource>
 		</resources>

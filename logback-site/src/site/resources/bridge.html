@@ -1,14 +1,20 @@
-<?xml version="1.0"?>
-<document>
-
-  <properties>
-    <author email="ceki at qos ddoott ch ">Ceki Gulcu</author>
-    <author email="sebastien at qos ddoott ch ">Sebastien Pennec</author>
-    <title>Log4j Bridge</title>
-  </properties>
-  
-	<body>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Log4j Bridge</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+<script src="templates/base/header.js"></script>
+<div id="left">
+  <script src="templates/base/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/base/right.js"></script>
+</div>
+<div id="content">
+	
     <h2>Log4j bridge</h2>
     
     <p>As of version 0.7, logback ships with a new module called
@@ -53,28 +59,36 @@
 			</li>
 		</ul>
 		
-		<p>
+		
 			This is what it takes to make logback your logging implementation when using log4j.
 			It will use logback's automatic basic configuration, displaying the logging requests
 			in the console. More advanced use will require a configuration file and other jars
 			which are logback dependencies. A file called <em>logback.xml</em>, 
 			placed in the application's classpath, will be automatically loaded by logback.
-		</p>
+		
 
     <h3>When does it not work?</h3>
     
-    <p>
+    
     	The <em>log4-bridge</em> module does not work when the application calls
     	log4j components that are not present in the bridge.
     	For examples, direct creation of log4j <code>Appenders</code> or 
     	<code>Filters</code> will not work.
-    </p>
+    
 		
-		<p>
+		
 			However, in most situations, log4j finds its configuration file and 
 			configures itself. In these cases, the application will only issue calls
 			to the classes that are contained in the <em>log4j-bridge</em>.
-		</p>
-
-	</body>
-</document>
+			
+	
+	
+	
+	
+	
+	
+	
+<script src="templates/base/footer.js"></script>
+</div>
+</body>
+</html>
