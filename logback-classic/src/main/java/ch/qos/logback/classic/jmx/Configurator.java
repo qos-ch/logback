@@ -126,16 +126,22 @@ public class Configurator extends ContextAwareBase implements
     }
   }
 
-  public List<Logger> getLoggerList() {
+  public List<String> getLoggerList() {
     LoggerContext lc = (LoggerContext)context;
-    return lc.getLoggerList();
+    List<String> strList = new ArrayList<String>();
+    Iterator<Logger> it = lc.getLoggerList().iterator();
+    while(it.hasNext()) {
+      Logger log = it.next();
+      strList.add(log.getName());
+    }
+    return strList;
   }
   
-  public List<Status> getStatuses() {
-    List<Status> list = new ArrayList<Status>();
+  public List<String> getStatuses() {
+    List<String> list = new ArrayList<String>();
     Iterator<Status> it = context.getStatusManager().iterator();
     while(it.hasNext()) {
-      list.add(it.next());
+      list.add(it.next().toString());
     }
     return list;
   }
