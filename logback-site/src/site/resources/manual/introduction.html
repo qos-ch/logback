@@ -17,32 +17,36 @@ prefix='../';
   <script src="../templates/right.js"></script>
 </div>
 <div id="content">
-	    <h2>Introduction</h2>
+  <h2>Introduction</h2>
     <div class="author">
-    	Authors: Ceki Gülcü, Sébastien Pennec
+    	Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
     </div>
 
 
-		<table class="bodyTable">
-			<tr class="a">
-				<td>
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
 						</a>
 				</td>
 				<td>
-					<p>Copyright © 2000-2006, QOS.ch</p>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
-						
+						<!--Creative Commons License-->
 						This work is licensed under a
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>
 						.
-						
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -53,7 +57,7 @@ prefix='../';
 
     <p>
     	Logback is intended as a successor to the popular log4j project.
-    	It was designed by Ceki Gülcü, the log4j founder. 
+    	It was designed by Ceki G&#252;lc&#252;, the log4j founder. 
       It builds upon a decade long experience gained in
     	designing industrial-strength logging systems. The resulting
     	product, logback is faster with a smaller footprint than all
@@ -81,7 +85,7 @@ prefix='../';
     </p>
     </div>
     
-    <a name="Requirements"></a>
+    <a name="Requirements" />
     <h3>Requirements</h3>
 
     <p>Logback-classic module requires the presence
@@ -102,8 +106,8 @@ public class HelloWorld1 {
 
   public static void main(String[] args) {
 
-    Logger logger = LoggerFactory.getLogger(&quot;chapter1.HelloWorld1&quot;);
-    logger.debug(&quot;Hello world.&quot;);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld1");
+    logger.debug("Hello world.");
 
   }
 }</pre></div>
@@ -122,10 +126,10 @@ public class HelloWorld1 {
       is assigned a <code>Logger</code>
       instance retreived by invoking the static method <code>getLogger</code>
       in the <code>LoggerFactory</code> class. 
-      This logger is named &quot;chapter1.HelloWorld1&quot;. The main method proceeds to call the
-      <code>debug</code> method of this logger passing &quot;Hello World&quot; as an argument. 
+      This logger is named "chapter1.HelloWorld1". The main method proceeds to call the
+      <code>debug</code> method of this logger passing "Hello World" as an argument. 
       We say that the main
-      method contains a logging statement of level debug with the message &quot;Hello world&quot;.
+      method contains a logging statement of level debug with the message "Hello world".
     </p>
 
     <p>
@@ -174,8 +178,8 @@ import org.slf4j.LoggerFactory;
 public class HelloWorld2 {
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(&quot;chapter1.HelloWorld2&quot;);
-    logger.debug(&quot;Hello world.&quot;);
+    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld2");
+    logger.debug("Hello world.");
     <b>LoggerStatusPrinter.printStatusInDefaultContext();</b>
   }
 }</pre></div>
@@ -216,7 +220,7 @@ public class HelloWorld2 {
     logging in your application.
   </p>
 
-  <ol type="1">
+  <ol>
 
     <p>Configure the logback environment. You can do so in several
     more or less sophisticated ways. More on this later.</p>
@@ -232,7 +236,7 @@ public class HelloWorld2 {
     produce logging output on the configured appenders.</p>
   </ol>
  
-  <a name="BuildingLogback"></a>
+  <a name="BuildingLogback" />
   <h3>Building logback</h3>  
   
 <p>
@@ -259,6 +263,11 @@ redistribute the modified version, as long as you adhere to the conditions
 of the LGPL License. In particular you may not call the modified version <em>logback</em> 
 or claim that it is endorsed by the QOS.ch.
 </p>
+
+
+
+
+
 <script src="../templates/footer.js"></script>
 </div>
 </body>

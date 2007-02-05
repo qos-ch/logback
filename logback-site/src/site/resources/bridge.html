@@ -63,31 +63,29 @@ prefix='';
 			</li>
 		</ul>
 		
-		
+		<p>
 			This is what it takes to make logback your logging implementation when using log4j.
 			It will use logback's automatic basic configuration, displaying the logging requests
 			in the console. More advanced use will require a configuration file and other jars
 			which are logback dependencies. A file called <em>logback.xml</em>, 
 			placed in the application's classpath, will be automatically loaded by logback.
-		
+		</p>
 
     <h3>When does it not work?</h3>
     
-    
+    <p>
     	The <em>log4-bridge</em> module does not work when the application calls
     	log4j components that are not present in the bridge.
     	For examples, direct creation of log4j <code>Appenders</code> or 
     	<code>Filters</code> will not work.
-    
+    </p>
 		
-		
+		<p>
 			However, in most situations, log4j finds its configuration file and 
 			configures itself. In these cases, the application will only issue calls
 			to the classes that are contained in the <em>log4j-bridge</em>.
-			
-	
-	
-	
+		</p>
+
 	
 	
 	

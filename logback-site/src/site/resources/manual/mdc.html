@@ -17,30 +17,34 @@ prefix='../';
   <script src="../templates/right.js"></script>
 </div>
 <div id="content">
-			<h2>Chapter 7: Diagnostic Context</h2>
+	<h2>Chapter 7: Diagnostic Context</h2>
 		<div class="author">
-			Authors: Ceki Gülcü, Sébastien Pennec
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
-		<table class="bodyTable">
-			<tr class="a">
-				<td>
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
 						</a>
 				</td>
 				<td>
-					<p>Copyright © 2000-2006, QOS.ch</p>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
-						
+						<!--Creative Commons License-->
 						This work is licensed under a
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>.
-						
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -98,7 +102,7 @@ public class MDC {
   <b>public static void clear();</b>
 
   //Returns the keys in the MDC as a Set. The returned value can be null.
-  <b>public static Set&lt;String&gt; getKeys();</b>
+  <b>public static Set&lt;String> getKeys();</b>
 }</pre></div>
 
 		<p>
@@ -133,33 +137,33 @@ public class SimpleMDC {
   static public void main(String[] args) throws Exception {
     // You can put values in the MDC at any time. We first put the
     // first name
-    <b>MDC.put(&quot;first&quot;, &quot;Dorothy&quot;);</b>
+    <b>MDC.put("first", "Dorothy");</b>
 
     // Configure logback
     PatternLayout layout = new PatternLayout();
-    layout.setPattern(&quot;%X{first} %X{last} - %m%n&quot;);
+    layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();
-    ConsoleAppender&lt;LoggingEvent&gt; appender = new ConsoleAppender&lt;LoggingEvent&gt;();
+    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
     appender.setLayout(layout);
     appender.start();
-    Logger root = (Logger)LoggerFactory.getLogger(&quot;root&quot;);
+    Logger root = (Logger)LoggerFactory.getLogger("root");
     root.addAppender(appender);
     
     // get a logger
     Logger logger = (Logger)LoggerFactory.getLogger(SimpleMDC.class);
 
     // We now put the last name
-    <b>MDC.put(&quot;last&quot;, &quot;Parker&quot;);</b>
+    <b>MDC.put("last", "Parker");</b>
 
     // The most beautiful two words in the English language according
     // to Dorothy Parker:
-    logger.info(&quot;Check enclosed.&quot;);
-    logger.debug(&quot;The most beautiful two words in English.&quot;);
+    logger.info("Check enclosed.");
+    logger.debug("The most beautiful two words in English.");
 
-    MDC.put(&quot;first&quot;, &quot;Richard&quot;);
-    MDC.put(&quot;last&quot;, &quot;Nixon&quot;);
-    logger.info(&quot;I am not a crook.&quot;);
-    logger.info(&quot;Attributed to the former US president. 17 Nov 1973.&quot;);
+    MDC.put("first", "Richard");
+    MDC.put("last", "Nixon");
+    logger.info("I am not a crook.");
+    logger.info("Attributed to the former US president. 17 Nov 1973.");
   }
 }</pre></div>
 
@@ -281,9 +285,9 @@ public class NumberCruncherServer extends UnicastRemoteObject
   public int[] factor(int number) throws RemoteException {
     // The client's host is an important source of information.
     try {
-      <b>MDC.put(&quot;client&quot;, NumberCruncherServer.getClientHost());</b>
+      <b>MDC.put("client", NumberCruncherServer.getClientHost());</b>
     } catch (java.rmi.server.ServerNotActiveException e) {
-      logger.warn(&quot;Caught unexpected ServerNotActiveException.&quot;, e);
+      logger.warn("Caught unexpected ServerNotActiveException.", e);
     }
 
     // The information contained within the request is another source
@@ -291,28 +295,28 @@ public class NumberCruncherServer extends UnicastRemoteObject
     // date of request, request ID etc. In servlet type environments,
     // useful information is contained in the HttpRequest or in the  
     // HttpSession.
-    <b>MDC.put(&quot;number&quot;, String.valueOf(number));</b>
+    <b>MDC.put("number", String.valueOf(number));</b>
 
-    logger.info(&quot;Beginning to factor.&quot;);
+    logger.info("Beginning to factor.");
 
     if (number &lt;= 0) {
       throw new IllegalArgumentException(number +
-        &quot; is not a positive integer.&quot;);
+        " is not a positive integer.");
     } else if (number == 1) {
       return new int[] { 1 };
     }
 
-    Vector&lt;Integer&gt; factors = new Vector&lt;Integer&gt;();
+    Vector&lt;Integer> factors = new Vector&lt;Integer>();
     int n = number;
 
     for (int i = 2; (i &lt;= n) &amp;&amp; ((i * i) &lt;= number); i++) {
       // It is bad practice to place log requests within tight loops.
       // It is done here to show interleaved log output from
       // different requests. 
-      logger.debug(&quot;Trying &quot; + i + &quot; as a factor.&quot;);
+      logger.debug("Trying " + i + " as a factor.");
 
       if ((n % i) == 0) {
-        logger.info(&quot;Found factor &quot; + i);
+        logger.info("Found factor " + i);
         factors.addElement(new Integer(i));
 
         do {
@@ -326,7 +330,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     }
 
     if (n != 1) {
-      logger.info(&quot;Found factor &quot; + n);
+      logger.info("Found factor " + n);
       factors.addElement(new Integer(n));
     }
 
@@ -339,16 +343,16 @@ public class NumberCruncherServer extends UnicastRemoteObject
     }
 
     <b>// clean up
-    MDC.remove(&quot;client&quot;);
-    MDC.remove(&quot;number&quot;);</b>
+    MDC.remove("client");
+    MDC.remove("number");</b>
 
     return result;
   }
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println(&quot;Usage: java chapter7.NumberCruncherServer configFile\n&quot; +
-      &quot;   where configFile is a logback configuration file.&quot;);
+    System.err.println("Usage: java chapter7.NumberCruncherServer configFile\n" +
+      "   where configFile is a logback configuration file.");
     System.exit(1);
   }
 
@@ -361,12 +365,12 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
   public static void main(String[] args) {
     if (args.length != 1) {
-      usage(&quot;Wrong number of arguments.&quot;);
+      usage("Wrong number of arguments.");
     }
 
     String configFile = args[0];
 
-    if (configFile.endsWith(&quot;.xml&quot;)) {
+    if (configFile.endsWith(".xml")) {
       try {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         JoranConfigurator configurator = new JoranConfigurator();
@@ -382,13 +386,13 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
     try {
       ncs = new NumberCruncherServer();
-      logger.info(&quot;Creating registry.&quot;);
+      logger.info("Creating registry.");
 
       Registry registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-      registry.rebind(&quot;Factor&quot;, ncs);
-      logger.info(&quot;NumberCruncherServer bound and ready.&quot;);
+      registry.rebind("Factor", ncs);
+      logger.info("NumberCruncherServer bound and ready.");
     } catch (Exception e) {
-      logger.error(&quot;Could not bind NumberCruncherServer.&quot;, e);
+      logger.error("Could not bind NumberCruncherServer.", e);
 
       return;
     }
@@ -422,20 +426,20 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
 <em>Example 7.4: Configuration file (logback-examples/src/main/java/chapter7/mdc1.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;CONSOLE&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%-4r [%thread] %-5level <b>C:%X{client} N:%X{number}</b> - %msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;	    
-  &lt;/appender&gt;
+  &lt;appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%-4r [%thread] %-5level <b>C:%X{client} N:%X{number}</b> - %msg%n&lt;/Pattern>
+    &lt;/layout>	    
+  &lt;/appender>
   
-  &lt;root&gt;
-    &lt;level value =&quot;debug&quot;/&gt;
-    &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;
-  &lt;/root&gt;  
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="CONSOLE"/>
+  &lt;/root>  
+&lt;/configuration></pre></div>
 
 		<p>
 			Note the use of the <em>%X</em> conversion specifier within the 
@@ -560,7 +564,7 @@ public class UserServletFilter implements Filter {
 
   boolean userRegistered = false;
   
-  private final String userKey = &quot;username&quot;;
+  private final String userKey = "username";
   
   public void destroy() {
   }
@@ -593,7 +597,7 @@ public class UserServletFilter implements Filter {
   }
   
   private void registerUsername(String username) {
-    if (username != null &amp;&amp; username.trim().length() &gt; 0) {
+    if (username != null &amp;&amp; username.trim().length() > 0) {
       MDC.put(userKey, username);
       userRegistered = true;
     }
@@ -620,6 +624,7 @@ public class UserServletFilter implements Filter {
 		request for another user without risking to display false information in the
 		logs.
 	</p>
+		
 <script src="../templates/footer.js"></script>
 </div>
 </body>

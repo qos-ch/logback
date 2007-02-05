@@ -16,32 +16,38 @@ prefix='../';
 <div id="right">
   <script src="../templates/right.js"></script>
 </div>
-<div id="content"> 		<h2>Chapter 5: Layouts</h2>
+<div id="content">
+	
+		<h2>Chapter 5: Layouts</h2>
 		<div class="author">
-			Authors: Ceki Gülcü, Sébastien Pennec
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
 
-		<table class="bodyTable">
-			<tr class="a">
-				<td>
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
 						</a>
 				</td>
 				<td>
-					<p>Copyright © 2000-2006, QOS.ch</p>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
-						
+						<!--Creative Commons License-->
 						This work is licensed under a
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>
 						.
-						
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -71,7 +77,7 @@ prefix='../';
 			an event (of any type) and returns a String. A synopsis of the
 			<code>Layout</code> interface is shown below.
 		</p>
-		<div class="source"><pre>public interface Layout&lt;E&gt; extends ContextAware, LifeCycle {
+		<div class="source"><pre>public interface Layout&lt;E> extends ContextAware, LifeCycle {
 
   String doLayout(E event);
   String getHeader();
@@ -114,18 +120,18 @@ prefix='../';
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout extends LayoutBase&lt;LoggingEvent&gt; {
+public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 
   public String doLayout(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
     sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
-    sbuf.append(&quot; &quot;);
+    sbuf.append(" ");
     sbuf.append(event.getLevel());
-    sbuf.append(&quot; [&quot;);
+    sbuf.append(" [");
     sbuf.append(event.getThreadName());
-    sbuf.append(&quot;] &quot;);
+    sbuf.append("] ");
     sbuf.append(event.getLoggerRemoteView().getName());
-    sbuf.append(&quot; - &quot;);
+    sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
     sbuf.append(LINE_SEP);
     return sbuf.toString();
@@ -143,7 +149,7 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent&gt; {
 			the developer to concentrate on the formatting she expects
 			from her <code>Layout</code>. Note that the <code>LayoutBase</code>
 			class is generic. By extending it, we precise the type that it will
-			have to handle, by adding <em>&lt;LoggingEvent&gt;</em> after its declaration.
+			have to handle, by adding <em>&lt;LoggingEvent></em> after its declaration.
 		</p>
 		
 		<p>The marginally more interesting <code>doLayout(LoggingEvent event)</code> 
@@ -157,7 +163,7 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent&gt; {
 			In the above listing of the <code>Layout</code> class, 
 			we had omitted the class static <code>LINE_SEP</code>
 			field which is simply assigned the value returned by
-			<code>System.getProperty(&quot;line.separator&quot;)</code>
+			<code>System.getProperty("line.separator")</code>
 			method. After adding system dependent line separator
 			character(s), the format method returns the string buffer as
 			a String.
@@ -172,18 +178,18 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent&gt; {
 		
 		<em>Example 5.0: Configuration of MySampleLayout
 			(logback-examples/src/main/java/chapter5/sampleLayoutConfig.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    <b>&lt;layout class=&quot;chapter5.MySampleLayout&quot; /&gt;</b>
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;layout class="chapter5.MySampleLayout" /></b>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 		<p>The sample application <a href="../xref/chapter5/SampleLogging.html">
 		<code>chapter5.SampleLogging</code></a> configures logback with the 
@@ -223,7 +229,7 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent&gt; {
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent&gt; {
+public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -239,20 +245,20 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent&gt; {
   public String doLayout(LoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
     <b>if (prefix != null) {
-      sbuf.append(prefix + &quot;: &quot;);
+      sbuf.append(prefix + ": ");
     }</b>
     sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
-    sbuf.append(&quot; &quot;);
+    sbuf.append(" ");
     sbuf.append(event.getLevel());
     <b>if (printThreadName) {
-      sbuf.append(&quot; [&quot;);
+      sbuf.append(" [");
       sbuf.append(event.getThreadName());
-      sbuf.append(&quot;] &quot;);
+      sbuf.append("] ");
     } else {
-      sbuf.append(&quot; &quot;);
+      sbuf.append(" ");
     }</b>
     sbuf.append(event.getLoggerRemoteView().getName());
-    sbuf.append(&quot; - &quot;);
+    sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
     sbuf.append(LINE_SEP);
     return sbuf.toString();
@@ -263,21 +269,21 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent&gt; {
     the two setter methods are the only addition to the original class. Yet, it is sufficient
     to allow the user to configure these attributes, as shown in the configuration file below:</p>
 
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;chapter5.MySampleLayout2&quot;&gt; 
-    	<b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;
-    	&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="chapter5.MySampleLayout2"> 
+    	<b>&lt;prefix>MyPrefix&lt;/prefix>
+    	&lt;printThreadName>false&lt;/printThreadName></b>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
    <p>
      Note that the <code>PrintThreadName</code> attribute is a boolean
@@ -286,7 +292,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent&gt; {
    </p>
 
 
-		<a name="PatternLayout"></a>
+		<a name="PatternLayout" />
 		<h3>PatternLayout</h3>
 
 		<p>
@@ -331,33 +337,33 @@ import ch.qos.logback.core.ConsoleAppender;
 public class PatternSample {
 
   static public void main(String[] args) throws Exception {
-    Logger rootLogger = (Logger)LoggerFactory.getLogger(&quot;root&quot;);
+    Logger rootLogger = (Logger)LoggerFactory.getLogger("root");
 
     <b>PatternLayout layout = new PatternLayout();
-    layout.setPattern(&quot;%-5level [%thread]: %message%n&quot;);
+    layout.setPattern("%-5level [%thread]: %message%n");
     layout.start();</b>
 
-    ConsoleAppender&lt;LoggingEvent&gt; appender = new ConsoleAppender&lt;LoggingEvent&gt;();
+    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
     appender.setContext(rootLogger.getLoggerContext());
     appender.setLayout(layout); appender.start();
 
     rootLogger.addAppender(appender);
 
-    rootLogger.debug(&quot;Message 1&quot;); 
-    rootLogger.warn(&quot;Message 2&quot;);
+    rootLogger.debug("Message 1"); 
+    rootLogger.warn("Message 2");
   } 
 }</pre></div>
 
 		<p>
-			The conversion pattern is set to be <b>&quot;%-5level [%thread]:
-			%message%n&quot;</b>. Running PatternSample will yield the following
+			The conversion pattern is set to be <b>"%-5level [%thread]:
+			%message%n"</b>. Running PatternSample will yield the following
 			output on the console.
 		</p>
 		<div class="source"><pre>DEBUG [main]: Message 1 
 WARN  [main]: Message 2</pre></div>
 		<p>
-			Note that in the conversion pattern <b>&quot;%-5level [%thread]:
-			%message%n&quot;</b> there is no explicit separator between literal
+			Note that in the conversion pattern <b>"%-5level [%thread]:
+			%message%n"</b> there is no explicit separator between literal
 			text and conversion specifiers. When parsing a conversion
 			pattern,
 			<code>PatternLayout</code>
@@ -386,16 +392,16 @@ WARN  [main]: Message 2</pre></div>
 		column, they should be considered as aliases.
 		</p>
 		
-		<table class="bodyTable">
+		<table border="1" CELLPADDING="8">
 			<th>Conversion Word</th>
 			<th>Effect</th>
 
-			<tr class="b">
-				<td>
-					<b>c</b>{<em>length</em>} <br></br> 
-					<b>l</b>{<em>length</em>} <br></br>
-					<b>lo</b>{<em>length</em>} <br></br>
-					<b>logger</b>{<em>length</em>} <br></br>
+			<tr>
+				<td align="center">
+					<b>c</b>{<em>length</em>} <br /> 
+					<b>l</b>{<em>length</em>} <br />
+					<b>lo</b>{<em>length</em>} <br />
+					<b>logger</b>{<em>length</em>} <br />
 				</td>
 
 				<td>
@@ -412,36 +418,36 @@ WARN  [main]: Message 2</pre></div>
 
 					<p>The next table should clarify the matter.</p>
 
-					<table class="bodyTable">
-						<tr class="a">
+					<table BORDER="1" CELLPADDING="8">
+						<tr>
 							<th>Conversion Pattern</th>
 							<th>Logger name</th>
 							<th>Result</th>
 						</tr>
-						<tr class="b">
+						<tr>
 							<td>%logger</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>mainPackage.sub.sample.Bar</td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%logger{10}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.s.s.Bar</td>
 						</tr>
 
-						<tr class="b">
+						<tr>
 							<td>%logger{15}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.s.sample.Bar</td>
 						</tr>
 
-						<tr class="a">
+						<tr>
 							<td>%logger{16}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.sub.sample.Bar</td>
 						</tr>
 
-						<tr class="b">
+						<tr>
 							<td>%logger{26}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>mainPackage.sub.sample.Bar</td>
@@ -449,10 +455,10 @@ WARN  [main]: Message 2</pre></div>
 					</table>
 				</td>
 			</tr>
-			<tr class="a">
-				<td>
-					<b>C</b>{<em>length</em>} <br></br> 
-					<b>class</b>{<em>length</em>} <br></br>
+			<tr>
+				<td align="center">
+					<b>C</b>{<em>length</em>} <br /> 
+					<b>class</b>{<em>length</em>} <br />
 				</td>
 
 				<td>
@@ -477,10 +483,10 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 			</tr>
 
-			<tr class="b">
-				<td>
-					<b>d</b>{<em>pattern</em>} <br></br> 
-					<b>date</b>{<em>pattern</em>} <br></br>
+			<tr>
+				<td align="center">
+					<b>d</b>{<em>pattern</em>} <br /> 
+					<b>date</b>{<em>pattern</em>} <br />
 				</td>
 				<td>
 					<p>Used to output the date of the logging event.
@@ -489,39 +495,39 @@ WARN  [main]: Message 2</pre></div>
 					<p>The option admits the same syntax as the time pattern
 					string of the <code>java.text.SimpleDateFormat</code>.</p>
 					<p>A shortcut to the ISO8601 format is available by
-					specifying the String <em>&quot;ISO8601&quot;</em> in the braces. If  no option is set, 
-					the converter uses <em>&quot;ISO8601&quot;</em> as the default value.</p>
+					specifying the String <em>"ISO8601"</em> in the braces. If  no option is set, 
+					the converter uses <em>"ISO8601"</em> as the default value.</p>
 					<p>Here are some sample option values. They assume
 					that the actual date is Friday 20th of October, 2006 and that
 					the author finished his meal a short while ago.</p>
 					
-					<table class="bodyTable">
-						<tr class="a">
+					<table BORDER="1" CELLPADDING="8">
+						<tr>
 							<th>Conversion Pattern</th>
 							<th>Result</th>
 						</tr>
-						<tr class="b">
+						<tr>
 							<td>%date</td>
 							<td>2006-10-20 14:46:49,812</td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%date{ISO8601}</td>
 							<td>2006-10-20 14:46:49,812</td>
 						</tr>			
-						<tr class="b">
+						<tr>
 							<td>%date{HH:mm:ss.SSS}</td>
 							<td>14:46:49.812</td>
 						</tr>
-						<tr class="a">
-							<td>%date{dd MMM yyyy ;HH:mm:ss.SSS}</td>
+						<tr>
+							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
 							<td>20 oct. 2006;14:46:49.812	</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
 
-			<tr class="b">
-				<td>
+			<tr>
+				<td align="center">
 					<b>F / file</b>
 				</td>
 
@@ -538,8 +544,8 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 			</tr>
 
-			<tr class="a">
-				<td>
+			<tr>
+				<td align="center">
 					<b>caller{depth}</b>
 					<b>caller{depth, evaluator-1, ... evaluator-n}</b>
 				</td>
@@ -586,8 +592,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 
-			<tr class="b">
-				<td>
+			<tr>
+				<td align="center">
 					<b>L / line</b>
 				</td>
 
@@ -605,8 +611,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			</tr>
 
 
-			<tr class="a">
-				<td>
+			<tr>
+				<td align="center">
 					<b>m / msg / message</b>
 				</td>
 				<td>
@@ -615,8 +621,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 
-			<tr class="b">
-				<td>
+			<tr>
+				<td align="center">
 					<b>M / method</b>
 				</td>
 
@@ -633,8 +639,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
 
-			<tr class="a">
-				<td>
+			<tr>
+				<td align="center">
 					<b>n</b>
 				</td>
 
@@ -646,7 +652,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					<p>
 						This conversion word offers practically the
 						same performance as using non-portable line
-						separator strings such as &quot;\n&quot;, or &quot;\r\n&quot;. Thus,
+						separator strings such as "\n", or "\r\n". Thus,
 						it is the preferred way of specifying a line
 						separator.
 					</p>
@@ -654,16 +660,16 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
 			</tr>
 
-			<tr class="b">
-				<td>
+			<tr>
+				<td align="center">
 					<b>p / le / level</b>
 				</td>
 				<td>Used to output the level of the logging event.</td>
 			</tr>
 
-			<tr class="a">
+			<tr>
 
-				<td>
+				<td align="center">
 					<b>r / relative</b>
 				</td>
 
@@ -675,8 +681,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			</tr>
 
 
-			<tr class="b">
-				<td>
+			<tr>
+				<td align="center">
 					<b>t / thread</b>
 				</td>
 
@@ -687,10 +693,10 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
 			</tr>
 
-			<tr class="a">
-				<td>
-					<b>X</b>{<em>key</em>} <br></br> 
-					<b>mdc</b>{<em>key</em>} <br></br>
+			<tr>
+				<td align="center">
+					<b>X</b>{<em>key</em>} <br /> 
+					<b>mdc</b>{<em>key</em>} <br />
 				</td>
 
 				<td>
@@ -711,12 +717,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					<p>
 						If no option is given, then
 						the entire content of the MDC will be output in the format 
-						&quot;key1=val1, key2=val2&quot;.
+						"key1=val1, key2=val2".
 					</p>
 
 					<p>
 						See
-						<a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/MDC.html">
+						<a
+							href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/MDC.html">
 							MDC
 						</a>
 						class for more details.
@@ -724,10 +731,10 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 
 				</td>
 			</tr>
-			<tr class="b">
-				<td>
-					<b>ex</b>{<em>length</em>} <br></br> 
-					<b>throwable</b>{<em>length</em>} <br></br>
+			<tr>
+				<td align="center">
+					<b>ex</b>{<em>length</em>} <br /> 
+					<b>throwable</b>{<em>length</em>} <br />
 					<b>ex{length, evaluator-1, ..., evaluator-n}</b>
 					<b>throwable{length, evaluator-1, ..., evaluator-n}</b>
 				</td>
@@ -749,31 +756,31 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				 
 				 <p>Here are some examples:</p>
 				 
-				 <table class="bodyTable">
-						<tr class="a">
+				 <table BORDER="1" CELLPADDING="8">
+						<tr>
 							<th>Conversion Pattern</th>
 							<th>Result</th>
 						</tr>
-						<tr class="b">
+						<tr>
 							<td>%ex</td>
 							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
   at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
   at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
   at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%ex{short}</td>
 							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
   at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)</pre></td>
 						</tr>
-						<tr class="b">
+						<tr>
 							<td>%ex{full}</td>
 							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
   at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
   at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
   at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%ex{2}</td>
 							<td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
   at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
@@ -792,8 +799,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 				</td>
 			</tr>
       
-      <tr class="b">
-        <td>
+      <tr>
+        <td align="center">
           <b>marker</b>
         </td>
 
@@ -811,9 +818,9 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
           </p>
         </td>
       </tr>
-			<tr class="a">
+			<tr>
 
-				<td>
+				<td align="center">
 					<b>%</b>
 				</td>
 
@@ -872,48 +879,48 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			conversion specifier.
 		</p>
 
-		<table class="bodyTable">
+		<table BORDER="1" CELLPADDING="8">
 			<th>Format modifier</th>
 			<th>Left justify</th>
 			<th>Minimum width</th>
 			<th>Maximum width</th>
 			<th>Comment</th>
 
-			<tr class="b">
-				<td>%20logger</td>
-				<td>false</td>
-				<td>20</td>
-				<td>none</td>
+			<tr>
+				<td align="center">%20logger</td>
+				<td align="center">false</td>
+				<td align="center">20</td>
+				<td align="center">none</td>
 				<td>
 					Left pad with spaces if the category name is less
 					than 20 characters long.
 				</td>
 			</tr>
-			<tr class="a">
-				<td>%-20logger</td>
-				<td>true</td>
-				<td>20</td>
-				<td>none</td>
+			<tr>
+				<td align="center">%-20logger</td>
+				<td align="center">true</td>
+				<td align="center">20</td>
+				<td align="center">none</td>
 				<td>
 					Right pad with spaces if the logger name is less
 					than 20 characters long.
 				</td>
 			</tr>
-			<tr class="b">
-				<td>%.30logger</td>
-				<td>NA</td>
-				<td>none</td>
-				<td>30</td>
+			<tr>
+				<td align="center">%.30logger</td>
+				<td align="center">NA</td>
+				<td align="center">none</td>
+				<td align="center">30</td>
 				<td>
 					Truncate from the beginning if the logger name is
 					longer than 30 characters.
 				</td>
 			</tr>
-			<tr class="a">
-				<td>%20.30logger</td>
-				<td>false</td>
-				<td>20</td>
-				<td>30</td>
+			<tr>
+				<td align="center">%20.30logger</td>
+				<td align="center">false</td>
+				<td align="center">20</td>
+				<td align="center">30</td>
 				<td>
 					Left pad with spaces if the logger name is shorter
 					than 20 characters. However, if logger name is
@@ -921,11 +928,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					beginning.
 				</td>
 			</tr>
-			<tr class="b">
-				<td>%-20.30logger</td>
-				<td>true</td>
-				<td>20</td>
-				<td>30</td>
+			<tr>
+				<td align="center">%-20.30logger</td>
+				<td align="center">true</td>
+				<td align="center">20</td>
+				<td align="center">30</td>
 				<td>
 					Right pad with spaces if the logger name is shorter
 					than 20 characters. However, if logger name is
@@ -933,11 +940,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 					<em>beginning</em>.
 				</td>
 			</tr>
-			<tr class="a">
-				<td>%.-30logger</td>
-				<td>NA</td>
-				<td>none</td>
-				<td>30</td>
+			<tr>
+				<td align="center">%.-30logger</td>
+				<td align="center">NA</td>
+				<td align="center">none</td>
+				<td align="center">30</td>
 				<td>
 					Truncate from the <em>end</em> if the logger name is
 					longer than 30 characters.
@@ -948,29 +955,29 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		<p>Here are some examples of the format modifier truncation:</p>
 
 
-		<table class="bodyTable">
+		<table BORDER="1" CELLPADDING="8">
 			<th>Format modifier</th>
 			<th>Logger name</th>
 			<th>Result</th>
-			<tr class="b">
-				<td>[%-20.20logger]</td>
-				<td>main.Name</td>
-				<td><pre>[main.Name           ]</pre></td>
+			<tr>
+				<td align="center">[%-20.20logger]</td>
+				<td align="center">main.Name</td>
+				<td align="center"><pre>[main.Name           ]</pre></td>
 			</tr>
-			<tr class="a">
-				<td>[%20.-20logger]</td>
-				<td>main.Name</td>
-				<td><pre>[           main.Name]</pre></td>
+			<tr>
+				<td align="center">[%20.-20logger]</td>
+				<td align="center">main.Name</td>
+				<td align="center"><pre>[           main.Name]</pre></td>
 			</tr>
-		  <tr class="b">
-				<td>[%-10.10logger]</td>
-				<td>main.foo.foo.bar.Name</td>
-				<td><pre>[o.bar.Name]</pre></td>
+		  <tr>
+				<td align="center">[%-10.10logger]</td>
+				<td align="center">main.foo.foo.bar.Name</td>
+				<td align="center"><pre>[o.bar.Name]</pre></td>
 			</tr>
-			<tr class="a">
-				<td>[%10.-10logger]</td>
-				<td>main.foo.foo.bar.Name</td>
-				<td><pre>[main.foo.f]</pre></td>
+			<tr>
+				<td align="center">[%10.-10logger]</td>
+				<td align="center">main.foo.foo.bar.Name</td>
+				<td align="center"><pre>[main.foo.f]</pre></td>
 			</tr>
 		</table>
 
@@ -988,12 +995,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 		simply adds the evaluator names to the option list, as shown below:</p>
 
 		<div class="source"><pre>
-  &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt; 
-      &lt;param name=&quot;Pattern&quot; value=&quot;%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>&quot; /&gt; 
-    &lt;/layout&gt;
-  &lt;/appender&gt;</pre></div>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
+        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
+    &lt;/layout>
+  &lt;/appender></pre></div>
 
 		
 
@@ -1037,24 +1044,24 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre></div>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
 		</em>
-		<div class="source"><pre>&lt;configuration&gt;
-  <b>&lt;evaluator name=&quot;DISP_CALLER_EVAL&quot;&gt;
-    &lt;Expression&gt;logger.getName().contains(&quot;chapter5&quot;) &amp;amp;&amp;amp; \
-      message.contains(&quot;who calls thee&quot;)&lt;/Expression&gt;
-  &lt;/evaluator&gt;</b>
+		<div class="source"><pre>&lt;configuration>
+  <b>&lt;evaluator name="DISP_CALLER_EVAL">
+    &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
+      message.contains("who calls thee")&lt;/Expression>
+  &lt;/evaluator></b>
 
-  &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt; 
-      &lt;param name=&quot;Pattern&quot; value=&quot;%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL}</b>&quot; /&gt; 
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
+        <b>%caller{2, DISP_CALLER_EVAL}</b>" /> 
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt; 
-    &lt;level value=&quot;debug&quot; /&gt; 
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root> 
+    &lt;level value="debug" /> 
+    &lt;appender-ref ref="STDOUT" /> 
+  &lt;/root>
+&lt;/configuration></pre></div>
 		<p>Please note that the &amp; value cannot be written like one would do in a java
 		class, because of XML encoding rules.</p>
 		<p>Let us test this configuration with the following code.</p>
@@ -1089,9 +1096,9 @@ public class CallerEvaluatorExample {
 
     for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
-        logger.debug(&quot;who calls thee?&quot;);
+        logger.debug("who calls thee?");
       } else {
-        logger.debug(&quot;I know me &quot; + i);
+        logger.debug("I know me " + i);
       }
     }
   }
@@ -1162,10 +1169,10 @@ public class ExceptionEvaluatorExample {
     }
     for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
-        logger.debug(&quot;logging statement &quot; + i, new TestException(
-            &quot;do not display this&quot;));
+        logger.debug("logging statement " + i, new TestException(
+            "do not display this"));
       } else {
-        logger.debug(&quot;logging statement &quot; + i, new Exception(&quot;display&quot;));
+        logger.debug("logging statement " + i, new Exception("display"));
       }
     }
   }
@@ -1176,27 +1183,27 @@ public class ExceptionEvaluatorExample {
 			Example 5.3: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/exceptionEvaluatorConfig.xml)
 		</em>
-		<div class="source"><pre>&lt;configuration&gt;
+		<div class="source"><pre>&lt;configuration>
 
-  <b>&lt;evaluator name=&quot;DISPLAY_EX_EVAL&quot;&gt;
-    &lt;Expression&gt;throwable != null &amp;&amp; throwable instanceof  \
-      chapter5.TestException&lt;/Expression&gt;
-  &lt;/evaluator&gt;</b>
+  <b>&lt;evaluator name="DISPLAY_EX_EVAL">
+    &lt;Expression>throwable != null &amp;&amp; throwable instanceof  \
+      chapter5.TestException&lt;/Expression>
+  &lt;/evaluator></b>
 	
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;param name=&quot;Pattern&quot;
-        value=&quot;%-4relative [%thread] %-5level - %msg \
-          <b>%ex{full, DISPLAY_EX_EVAL}</b>%n&quot; /&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;param name="Pattern"
+        value="%-4relative [%thread] %-5level - %msg \
+          <b>%ex{full, DISPLAY_EX_EVAL}</b>%n" />
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 		<p>
 			With this configuration, each time an instance of the
@@ -1235,10 +1242,10 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class MySampleConverter extends ClassicConverter {
 
-  private static final String END_COLOR = &quot;\u001b[m&quot;;
+  private static final String END_COLOR = "\u001b[m";
 
-  private static final String ERROR_COLOR = &quot;\u001b[0;31m&quot;;
-  private static final String WARN_COLOR = &quot;\u001b[0;33m&quot;;
+  private static final String ERROR_COLOR = "\u001b[0;31m";
+  private static final String WARN_COLOR = "\u001b[0;33m";
 
   @Override
   <b>public String convert(LoggingEvent event) {
@@ -1260,7 +1267,7 @@ public class MySampleConverter extends ClassicConverter {
     case Level.WARN_INT:
       return WARN_COLOR;
     default:
-      return &quot;&quot;;
+      return "";
     }
   }
 }
@@ -1276,22 +1283,22 @@ public class MySampleConverter extends ClassicConverter {
 		conversion word in the configuration file, as shown below:</p>
 		
 <em> Example 5.4: Sample Converter Example (src/main/java/chapter5/mySampleConverterConfig.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  <b>&lt;conversionRule conversionWord=&quot;sample&quot; converterClass=&quot;chapter5.MySampleConverter&quot; /&gt;</b>
+  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
 	
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      <b>&lt;Pattern&gt;%-4relative [%thread] %sample - %msg%n&lt;/Pattern&gt;</b>
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      <b>&lt;Pattern>%-4relative [%thread] %sample - %msg%n&lt;/Pattern></b>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 		<p>In this configuration file, once the new conversion word has been declared, we
 		just use it within a <code>PatternLayout</code> pattern element, as if 
@@ -1304,7 +1311,7 @@ public class MySampleConverter extends ClassicConverter {
 		the use of options, in her custom <code>Converter</code> objects.
 		</p>
 
-		<a name="ClassicHTMLLayout"></a>
+		<a name="ClassicHTMLLayout"/>
 		<h3>HTMLLayout</h3>
 		<p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
 		<code>HTMLLayout</code></a> outputs events in an HTML table. Each row of the table corresponds to a
@@ -1312,7 +1319,7 @@ public class MySampleConverter extends ClassicConverter {
 		
 		<p>Here is a sample of the output that can be obtained using <code>HTMLLayout</code>
 		along with the default CSS stylesheet:</p>
-		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"></img>
+		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"/>
 		
 		<p>
 			The content of the table columns are specified using a
@@ -1364,13 +1371,13 @@ public class MySampleConverter extends ClassicConverter {
 			page. In that case, the following
 			xml element can be nested into the <code>&lt;layout&gt;</code> element.
 		</p>
-<div class="source"><pre>&lt;layout&gt;
+<div class="source"><pre>&lt;layout>
   ...
-  &lt;cssBuilder class=&quot;ch.qos.logback.core.html.UrlCssBuilder&quot;&gt;
-    &lt;param name=&quot;url&quot; value=&quot;path_to_StyleFile.css&quot; /&gt;
-  &lt;/cssBuilder&gt;	
+  &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
+    &lt;param name="url" value="path_to_StyleFile.css" />
+  &lt;/cssBuilder>	
   ...
-&lt;/layout&gt;</pre></div>
+&lt;/layout></pre></div>
 
 		<p>In case one does not want to customize the html
 			output, an internal CSS style is used.</p>
@@ -1385,19 +1392,19 @@ public class MySampleConverter extends ClassicConverter {
 			the following configuration would be typical.
 		</p>
 		<div class="source"><pre>&lt;configuration&gt;
-  &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.classic.net.SMTPAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.html.HTMLLayout&quot;&gt;
-      &lt;param name=&quot;pattern&quot; value=&quot;%relative%thread%mdc%level%class%msg&quot; /&gt;
+  &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+      &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
     &lt;/layout&gt;
-   &lt;param name=&quot;From&quot; value=&quot;sender.email@domain.net&quot; /&gt;
-   &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.net&quot; /&gt;
-   &lt;param name=&quot;Subject&quot; value=&quot;LastEvent: %class - %msg&quot; /&gt;
-   &lt;param name=&quot;To&quot; value=&quot;destination.email@domain.net&quot; /&gt;
+   &lt;param name="From" value="sender.email@domain.net" /&gt;
+   &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
+   &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
+   &lt;param name="To" value="destination.email@domain.net" /&gt;
   &lt;/appender&gt;
 
   &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;SMTP&quot; /&gt;
+    &lt;level value="debug" /&gt;
+    &lt;appender-ref ref="SMTP" /&gt;
   &lt;/root&gt;
 &lt;/configuration&gt;</pre></div>
 
@@ -1405,27 +1412,27 @@ public class MySampleConverter extends ClassicConverter {
 		case, one can specify a rolling policy to archive log messages automatically.
 		One real world example could use the configuration below.</p>
 		
-<div class="source"><pre>&lt;configuration&gt;
-   &lt;appender name=&quot;FILE&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-   &lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-     &lt;ActiveFileName&gt;lastLogEntries.html&lt;/ActiveFileName&gt;
-     &lt;FileNamePattern&gt;logEntries.%d{yyyy-MM-dd}.log&lt;/FileNamePattern&gt;
-   &lt;/rollingPolicy&gt;
+<div class="source"><pre>&lt;configuration>
+   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+     &lt;ActiveFileName>lastLogEntries.html&lt;/ActiveFileName>
+     &lt;FileNamePattern>logEntries.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
+   &lt;/rollingPolicy>
    
-   &lt;layout class=&quot;ch.qos.logback.classic.html.HTMLLayout&quot;&gt;
-      &lt;cssBuilder class=&quot;ch.qos.logback.core.html.UrlCssBuilder&quot;&gt;
-        &lt;url&gt;address_of_a_custom_stylesheet.css&lt;/url&gt;
-      &lt;/cssBuilder&gt;	
-      &lt;Pattern&gt;%relative%thread%mdc%level%logger%msg&lt;/Pattern&gt;
-      <b>&lt;Title&gt;Logging Events&lt;/Title&gt;</b>
-    &lt;/layout&gt;
- &lt;/appender&gt; 
+   &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+      &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
+        &lt;url>address_of_a_custom_stylesheet.css&lt;/url>
+      &lt;/cssBuilder>	
+      &lt;Pattern>%relative%thread%mdc%level%logger%msg&lt;/Pattern>
+      <b>&lt;Title>Logging Events&lt;/Title></b>
+    &lt;/layout>
+ &lt;/appender> 
 
- &lt;root&gt;
-   &lt;level value=&quot;debug&quot; /&gt;
-   &lt;appender-ref ref=&quot;FILE&quot; /&gt;
- &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+ &lt;root>
+   &lt;level value="debug" />
+   &lt;appender-ref ref="FILE" />
+ &lt;/root>
+&lt;/configuration></pre></div>
 
 		<h2>Logback access</h2>
 
@@ -1437,7 +1444,7 @@ public class MySampleConverter extends ClassicConverter {
 		<p>Writing a custom <code>Layout</code> for logback access is nearly identical
 		as to writing a <code>Layout</code> for the classic module.</p>
 		
-		<a name="AccessPatternLayout"></a>
+		<a name="AccessPatternLayout" />
 		<h3>PatternLayout</h3>
 		<p>Access' <a href="../xref/ch/qos/logback/access/PatternLayout.html">
 		<code>PatternLayout</code></a> work the exact same way as it's classic counterpart.
@@ -1448,62 +1455,62 @@ public class MySampleConverter extends ClassicConverter {
 		<p>Here are the conversion specifier one can use with logback access 
 		<code>PatternLayout</code>.</p>
 		
-		<table class="bodyTable">
-			<th>Conversion Word</th>
-			<th>Effect</th>
+		<table border="1" CELLPADDING="8">
+			<th align="center">Conversion Word</th>
+			<th align="center">Effect</th>
 
-		<tr class="b">
-			<td><b>a / remoteIP</b></td>
+		<tr>
+			<td align="center"><b>a / remoteIP</b></td>
 			<td>
 				<p>
 					Remote IP address.
 				</p>
 			</td>
 		</tr>
-		<tr class="a">
-			<td><b>A / localIP</b></td>
+		<tr>
+			<td align="center"><b>A / localIP</b></td>
 			<td>
 				<p>
 					Local IP address.
 				</p>
 			</td>
 		</tr>		
-		<tr class="b">
-			<td><b>b / B / byteSent</b></td>
+		<tr>
+			<td align="center"><b>b / B / byteSent</b></td>
 			<td>
 				<p>
 					Response's content length.
 				</p>
 			</td>
 		</tr>				
-		<tr class="a">
-			<td><b>h / clientHost</b></td>
+		<tr>
+			<td align="center"><b>h / clientHost</b></td>
 			<td>
 				<p>
 					Remote host.
 				</p>
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b>H / protocol</b></td>
+		<tr>
+			<td align="center"><b>H / protocol</b></td>
 			<td>
 				<p>
 					Request protocol.
 				</p>
 			</td>
 		</tr>
-    <tr class="a">
-      <td><b>l</b></td>
+    <tr>
+      <td align="center"><b>l</b></td>
 			<td>
 				<p>
 					Remote log name. In logback-access, this converter always
-					returns the value &quot;-&quot;.
+					returns the value "-".
 				</p>
 			</td>
 		</tr>
 
-		<tr class="b">
-			<td><b>reqParameter{paramName}</b></td>
+		<tr>
+			<td align="center"><b>reqParameter{paramName}</b></td>
 			<td>
 				<p>
 					Parameter of the response.
@@ -1514,8 +1521,8 @@ public class MySampleConverter extends ClassicConverter {
 				displays the corresponding parameter.</p>
 			</td>
 		</tr>		
-		<tr class="a">
-			<td><b>i{header} / header{header}</b></td>
+		<tr>
+			<td align="center"><b>i{header} / header{header}</b></td>
 			<td>
 				<p>
 					Request header.
@@ -1528,32 +1535,32 @@ public class MySampleConverter extends ClassicConverter {
         </p>
 			</td>
 		</tr>	
-		<tr class="b">
-			<td><b>m / requestMethod</b></td>
+		<tr>
+			<td align="center"><b>m / requestMethod</b></td>
 			<td>
 				<p>
 					Request method.
 				</p>
 			</td>
 		</tr>		
-		<tr class="a">
-			<td><b>r / requestURL</b></td>
+		<tr>
+			<td align="center"><b>r / requestURL</b></td>
 			<td>
 				<p>
 					URL requested.
 				</p>
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b>s / statusCode</b></td>
+		<tr>
+			<td align="center"><b>s / statusCode</b></td>
 			<td>
 				<p>
 					Status code of the request.
 				</p>
 			</td>
 		</tr>		
-		<tr class="a">
-			<td><b>t / date</b></td>
+		<tr>
+			<td align="center"><b>t / date</b></td>
 			<td>
 					<p>
 						Used to output the date of the logging event.
@@ -1574,7 +1581,7 @@ public class MySampleConverter extends ClassicConverter {
 						<b>%d{HH:mm:ss,SSS}</b>
 						,
 						<b>
-							%d{dd MMM yyyy ;HH:mm:ss,SSS}
+							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
 						</b>
 						or
 						<b>%d{DATE}</b>
@@ -1583,40 +1590,40 @@ public class MySampleConverter extends ClassicConverter {
 					</p>
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b>u / user</b></td>
+		<tr>
+			<td align="center"><b>u / user</b></td>
 			<td>
 				<p>
 					Remote user.
 				</p>
 			</td>
 		</tr>		
-		<tr class="a">
-			<td><b>U / requestURI</b></td>
+		<tr>
+			<td align="center"><b>U / requestURI</b></td>
 			<td>
 				<p>
 					Requested URI.
 				</p>
 			</td>
 		</tr>		
-		<tr class="b">
-			<td><b>v / server</b></td>
+		<tr>
+			<td align="center"><b>v / server</b></td>
 			<td>
 				<p>
 					Server name.
 				</p>
 			</td>
 		</tr>
-		<tr class="a">
-			<td><b>localPort</b></td>
+		<tr>
+			<td align="center"><b>localPort</b></td>
 			<td>
 				<p>
 					Local port.
 				</p>
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b>reqAttribute{attributeName}</b></td>
+		<tr>
+			<td align="center"><b>reqAttribute{attributeName}</b></td>
 			<td>
 				<p>
 					Attribute of the request.
@@ -1627,8 +1634,8 @@ public class MySampleConverter extends ClassicConverter {
 				displays the corresponding attribute.</p>
 			</td>
 		</tr>
-		<tr class="a">
-			<td><b>reqCookie{cookie}</b></td>
+		<tr>
+			<td align="center"><b>reqCookie{cookie}</b></td>
 			<td>
 				<p>
 					Request cookie.
@@ -1638,8 +1645,8 @@ public class MySampleConverter extends ClassicConverter {
 				<p><b>%cookie{COOKIE_NAME}</b> displays corresponding cookie.</p>
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b>responseHeader{header}</b></td>
+		<tr>
+			<td align="center"><b>responseHeader{header}</b></td>
 			<td>
 				<p>
 					Header of the response.
@@ -1649,8 +1656,8 @@ public class MySampleConverter extends ClassicConverter {
 				<p><b>%header{Referer}</b> displays the referer of the response.</p>
 			</td>
 		</tr>
-    <tr class="a">
-      <td><b>requestContent</b></td>
+    <tr>
+      <td align="center"><b>requestContent</b></td>
       <td>
         <p>
           This conversion word displays the content of the request, that is the
@@ -1665,8 +1672,8 @@ public class MySampleConverter extends ClassicConverter {
         </p>
       </td>
     </tr>
-    <tr class="b">
-      <td><b>fullRequest</b></td>
+    <tr>
+      <td align="center"><b>fullRequest</b></td>
       <td>
         <p>
           This conversion word takes all the available headers of the
@@ -1674,8 +1681,8 @@ public class MySampleConverter extends ClassicConverter {
         </p>
       </td>
     </tr>
-    <tr class="a">
-      <td><b>responseContent</b></td>
+    <tr>
+      <td align="center"><b>responseContent</b></td>
       <td>
         <p>
           This conversion word displays the content of the response, that is the
@@ -1690,8 +1697,8 @@ public class MySampleConverter extends ClassicConverter {
         </p>
       </td>
     </tr>
-    <tr class="b">
-      <td><b>fullResponse</b></td>
+    <tr>
+      <td align="center"><b>fullResponse</b></td>
       <td>
         <p>
           This conversion word takes all the available headers of the
@@ -1709,16 +1716,16 @@ public class MySampleConverter extends ClassicConverter {
 	 	<p><em>combined</em></p>
 	 	</ul>
 	 	
-	 	<p>The <em>common</em> keyword corresponds to the pattern <em>%h %l %u %t \&quot;%r\&quot; %s %b</em>
+	 	<p>The <em>common</em> keyword corresponds to the pattern <em>%h %l %u %t \"%r\" %s %b</em>
 	 	which displays client host, remote log name, user, date, requested URL, status code 
 	 	and response's content length</p>
 	 	
 	 	<p>The <em>combined</em> keyword is a shortcut to 
-	 	<em>%h %l %u %t \&quot;%r\&quot; %s %b \&quot;%i{Referer}\&quot; \&quot;%i{User-Agent}\&quot;</em>. This pattern begins
+	 	<em>%h %l %u %t \"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em>. This pattern begins
 	 	much like the <em>common</em> pattern but also displays two request headers, namely
 	 	 referer, and user-agent.</p>
 
-		<a name="AccessHTMLLayout"></a>
+		<a name="AccessHTMLLayout" />
 		<h3>HTMLLayout</h3>
 		
 		<p>The access version of 
@@ -1737,7 +1744,7 @@ public class MySampleConverter extends ClassicConverter {
 		</ul>
 		
 		<p>Here is what you can expect from a configured access <code>HTMLLayout</code>:</p>
-		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"></img>
+		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
 		<p>What's better than a real world example? Our own log4j properties to logback configuration 
 		<a href="http://logback.qos.ch/translator/">translator</a>
@@ -1748,8 +1755,6 @@ public class MySampleConverter extends ClassicConverter {
 
 		<p>Just like any access log, it can be altered simply by visiting the
 		<a href="http://logback.qos.ch/translator/">translator</a> application.</p>
-	
-
 <script src="../templates/footer.js"></script>
 </div>
 </body>

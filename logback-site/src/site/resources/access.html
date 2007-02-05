@@ -19,33 +19,36 @@ prefix='';
 </div>
 <div id="content">  
 	
-	
 			<h2>Access log with logback, Jetty and Tomcat</h2>
 		<div class="author">
-			Authors: Ceki Gülcü, Sébastien Pennec
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
 
-		<table class="bodyTable">
-			<tr class="a">
-				<td>
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
 						</a>
 				</td>
 				<td>
-					<p>Copyright © 2000-2006, QOS.ch</p>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
-						
+						<!--Creative Commons License-->
 						This work is licensed under a
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>
 						.
-						
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -82,7 +85,8 @@ prefix='';
 		<p>
 			The <a href="xref/ch/qos/logback/access/tomcat/LogbackValve.html">
 			<code>ch.qos.logback.access.tomcat.LogbackValve</code></a>
-			class extends Tomcat's <code><a href="http://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/valves/ValveBase.html">
+			class extends Tomcat's <code><a
+			href="http://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/valves/ValveBase.html">
 			ValveBase</a></code>
 			class. This class is used to allow external
 			components to be integrated into Tomcat.
@@ -93,7 +97,7 @@ prefix='';
 			<code>LogbackValve</code>,  add the following lines
 			to the tomcat server configuration file, namely <em>$TOMCAT_HOME/conf/server.xml</em>:
 		</p>
-		<div class="source"><pre>&lt;Valve className=&quot;ch.qos.logback.access.tomcat.LogbackValve&quot;/&gt;</pre></div>
+		<div class="source"><pre>&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/></pre></div>
 		<p>
 			This line need to be nested in an <em>Engine</em> element.
 		</p>
@@ -124,7 +128,8 @@ prefix='';
 		<p>
 			The <a href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
 			<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a>
-			class implements jetty's <code><a href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
+			class implements jetty's <code><a
+			href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
 			interface. This interface is used by Jetty to allow external
 			components to manage request logging.
 		</p>
@@ -140,10 +145,10 @@ prefix='';
 			<code>RequestLogImpl</code>,  add the following lines
 			to the jetty configuration file, namely <em>$JETTY_HOME/etc/jetty.xml</em>:
 		</p>
-		<div class="source"><pre>&lt;Ref id=&quot;requestLog&quot;&gt;
-  &lt;Set name=&quot;requestLog&quot;&gt;
-    &lt;New id=&quot;requestLogImpl&quot;
-      class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New id="requestLogImpl"
+      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
     &lt;/New&gt;
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre></div>
@@ -165,12 +170,12 @@ prefix='';
 	jetty configuration file, with a path to the logback access
 	configuration file.
 		</p>
-		<div class="source"><pre>&lt;Ref id=&quot;requestLog&quot;&gt;
-  &lt;Set name=&quot;requestLog&quot;&gt;
-    &lt;New id=&quot;requestLogImpl&quot;
-      class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New id="requestLogImpl"
+      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
     &lt;/New&gt;
-    &lt;Set name=&quot;fileName&quot;&gt;path/to/myaccess.xml&lt;/Set&gt;
+    &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre></div>
 
@@ -190,48 +195,49 @@ prefix='';
 			immediately put to use:
 		</p>
 <div class="source"><pre>&lt;configuration&gt;
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender"&gt;
     &lt;layout
-      class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%h %l %u %user %date &quot;%r&quot; %s %b&lt;/Pattern&gt;
+      class="ch.qos.logback.access.PatternLayout"&gt;
+      &lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
     &lt;/layout&gt;
   &lt;/appender&gt;
 
-  &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
+  &lt;appender-ref ref="STDOUT" /&gt;
 &lt;/configuration&gt;</pre></div>
 		<p>
 		It declares a <code>ConsoleAppender</code> which directs its
 		output at the console.  The <code>ConsoleAppender</code> contains
 		a <code>PatternLayout</code> format the output. The log format is
-		specied using the %h %l %u %user %date &quot;%r&quot; %s %b&quot; pattern which
+		specied using the %h %l %u %user %date "%r" %s %b" pattern which
 		is the Commong Log Format (CLF). This format is recognized by log
-		analysers such as <a href="http://www.analog.cx/">Analog</a> or <a href="http://awstats.sourceforge.net/">AWStats</a>.
+		analysers such as <a href="http://www.analog.cx/">Analog</a> or <a
+		href="http://awstats.sourceforge.net/">AWStats</a>.
 		</p>
 
-    <p>Instead of specifying the complete pattern, the word &quot;common&quot;
-    or &quot;clf&quot; can be used as a shorthand. Thus, the following are all
+    <p>Instead of specifying the complete pattern, the word "common"
+    or "clf" can be used as a shorthand. Thus, the following are all
     equivalent
     </p>
     
-    <div class="source"><pre>&lt;Pattern&gt;%h %l %u %user %date &quot;%r&quot; %s %b&lt;/Pattern&gt;
-&lt;Pattern&gt;common&lt;/Pattern&gt;
-&lt;Pattern&gt;clf&lt;/Pattern&gt;</pre></div>
+    <div class="source"><pre>&lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
+&lt;Pattern>common&lt;/Pattern&gt;
+&lt;Pattern>clf&lt;/Pattern&gt;</pre></div>
 
-  <p>The so called &quot;combined&quot; format is also widely recognized. It is
-  defined as the '%h %l %u %t &quot;%r&quot; %s %b &quot;%i{Referer}&quot;
-  &quot;%i{User-Agent}&quot;' pattern. As a facilitator, you can use the
-  &quot;combined&quot; as a shorthand. Thus, the following directive
+  <p>The so called "combined" format is also widely recognized. It is
+  defined as the '%h %l %u %t "%r" %s %b "%i{Referer}"
+  "%i{User-Agent}"' pattern. As a facilitator, you can use the
+  "combined" as a shorthand. Thus, the following directive
   </p>
 
-  <div class="source"><pre>&lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
-  &lt;Pattern&gt;%h %l %u %t &quot;%r&quot; %s %b &quot;%i{Referer}&quot; &quot;%i{User-Agent}&quot;&lt;/Pattern&gt;
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  &lt;Pattern>%h %l %u %t "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/Pattern&gt;
 &lt;/layout&gt;</pre></div>
 
   <p>is equivalent to:</p>
 
-  <div class="source"><pre>&lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
-  &lt;Pattern&gt;combined&lt;/Pattern&gt;
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  &lt;Pattern>combined&lt;/Pattern&gt;
 &lt;/layout&gt;</pre></div>
 
 
@@ -240,20 +246,20 @@ prefix='';
 		<p>Another configuration file, using logback'
 		<code>RollingFileAppender</code>, could be:</p>
 <div class="source"><pre>&lt;configuration&gt;
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    &lt;File&gt;access.log&quot;&lt;/File&gt;
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+    &lt;File&gt;access.log"&lt;/File&gt;
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
       &lt;FileNamePattern&gt;access.%d{yyyy-MM-dd}.log.zip&lt;/FileNamePattern&gt;
     &lt;/rollingPolicy&gt;
 
-    &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
-      &lt;Pattern&quot;&gt;combined&lt;/Pattern&quot;&gt;
+    &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+      &lt;Pattern"&gt;combined&lt;/Pattern"&gt;
     &lt;/layout&gt;
   &lt;/appender&gt;
  
-  &lt;appender-ref ref=&quot;FILE&quot; /&gt;
+  &lt;appender-ref ref="FILE" /&gt;
 &lt;/configuration&gt;</pre></div>
 
 		<p>
@@ -276,7 +282,8 @@ prefix='';
 
 		<p>
 			An http-specific implementation of <code>PatternLayout</code> is
-			included in the access module.  The <a href="xref/ch/qos/logback/access/PatternLayout.html">
+			included in the access module.  The <a
+			href="xref/ch/qos/logback/access/PatternLayout.html">
 			<code>ch.qos.logback.access.PatternLayout</code></a> provides a
 			way to format the logging output that is just as easy and
 			flexible as the <code>PatternLayout</code> found in logback
@@ -310,9 +317,9 @@ prefix='';
 			to the <em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
 		</p>
 		
-<div class="source"><pre>CATALINA_OPTS=&quot;-Dcom.sun.management.jmxremote&quot;
-CATALINA_OPTS=&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false&quot;
-CATALINA_OPTS=&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false&quot;</pre></div>
+<div class="source"><pre>CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"</pre></div>
 
 		<p>
 			Once started with these options, Tomcat's JMX compoenents can be accessed
@@ -336,24 +343,24 @@ CATALINA_OPTS=&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=f
 		<em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
 		</p>
 
-<div class="source"><pre>&lt;!-- at the beginning of the file --&gt;
-CATALINA_OPTS=&quot;-Dcom.sun.management.jmxremote&quot;
-CATALINA_OPTS=&quot;$CATALINA_OPTS -Djavax.management.builder.initial=mx4j.server.MX4JMBeanServerBuilder&quot;
+<div class="source"><pre>&lt;!-- at the beginning of the file -->
+CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+CATALINA_OPTS="$CATALINA_OPTS -Djavax.management.builder.initial=mx4j.server.MX4JMBeanServerBuilder"
 
-&lt;!-- in the &quot;Add on extra jar files to CLASSPATH&quot; section --&gt;
-CLASSPATH=&quot;$CLASSPATH&quot;:&quot;$CATALINA_HOME&quot;/bin/mx4j-impl.jar</pre></div>
+&lt;!-- in the "Add on extra jar files to CLASSPATH" section -->
+CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 
 		<p>
 			Finally, declare a new <code>Connector</code> in the
 			<em>$TOMCAT_HOME/conf/server.xml</em> file:
 		</p>
 		
-<div class="source"><pre>&lt;Connector port=&quot;8050&quot; 
-  handler.list=&quot;mx&quot;
-  mx.enabled=&quot;true&quot; 
-  mx.httpHost=&quot;localhost&quot; 
-  mx.httpPort=&quot;8082&quot; 
-  protocol=&quot;AJP/1.3&quot; /&gt;</pre></div>
+<div class="source"><pre>&lt;Connector port="8050" 
+  handler.list="mx"
+  mx.enabled="true" 
+  mx.httpHost="localhost" 
+  mx.httpPort="8082" 
+  protocol="AJP/1.3" /></pre></div>
   
   	<p>
   		Once Tomcat is started, you should be ableo to reach the JMX components by
@@ -370,19 +377,19 @@ CLASSPATH=&quot;$CLASSPATH&quot;:&quot;$CATALINA_HOME&quot;/bin/mx4j-impl.jar</p
 			added:
 		</p>
 
-<div class="source"><pre>&lt;Call id=&quot;MBeanServer&quot; class=&quot;java.lang.management.ManagementFactory&quot; name=&quot;getPlatformMBeanServer&quot;/&gt;
-&lt;!-- initialize the Jetty MBean container --&gt;
-&lt;Get id=&quot;Container&quot; name=&quot;container&quot;&gt;
-  &lt;Call name=&quot;addEventListener&quot;&gt;
-    &lt;Arg&gt;
-      &lt;New class=&quot;org.mortbay.management.MBeanContainer&quot;&gt;
-        &lt;Arg&gt;&lt;Ref id=&quot;MBeanServer&quot;/&gt;&lt;/Arg&gt;
-        &lt;Set name=&quot;managementPort&quot;&gt;8082&lt;/Set&gt;
-        &lt;Call name=&quot;start&quot; /&gt;
-      &lt;/New&gt;
-    &lt;/Arg&gt;
-  &lt;/Call&gt;
-&lt;/Get&gt;</pre></div>
+<div class="source"><pre>&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer"/>
+&lt;!-- initialize the Jetty MBean container -->
+&lt;Get id="Container" name="container">
+  &lt;Call name="addEventListener">
+    &lt;Arg>
+      &lt;New class="org.mortbay.management.MBeanContainer">
+        &lt;Arg>&lt;Ref id="MBeanServer"/>&lt;/Arg>
+        &lt;Set name="managementPort">8082&lt;/Set>
+        &lt;Call name="start" />
+      &lt;/New>
+    &lt;/Arg>
+  &lt;/Call>
+&lt;/Get></pre></div>
 
 		<p>
 			Once Jetty is started with this configuration, all available components can be reviewed
@@ -408,20 +415,20 @@ CLASSPATH=&quot;$CLASSPATH&quot;:&quot;$CATALINA_HOME&quot;/bin/mx4j-impl.jar</p
 			other filter:
 		</p>
 
-<div class="source"><pre>&lt;configuration&gt;
-  <b>&lt;filter class=&quot;ch.qos.logback.access.filter.CountingFilter&quot;&gt;
-    &lt;name&gt;countingFilter&lt;/name&gt;
-  &lt;/filter&gt;</b>
+<div class="source"><pre>&lt;configuration>
+  <b>&lt;filter class="ch.qos.logback.access.filter.CountingFilter">
+    &lt;name>countingFilter&lt;/name>
+  &lt;/filter></b>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%h %l %u %t \&quot;%r\&quot; %s %b&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.access.PatternLayout">
+      &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;appender-ref ref="STDOUT" />
+&lt;/configuration></pre></div>
 
 		<p>
 			This component registers itself to the JMX server and publishes

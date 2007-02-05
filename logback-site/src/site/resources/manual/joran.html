@@ -18,31 +18,35 @@ prefix='../';
 </div>
 <div id="content">
 	
-			<h2>Chapter 3: Logback configuration with Joran</h2>
+		<h2>Chapter 3: Logback configuration with Joran</h2>
 		<div class="author">
-			Authors: Ceki Gülcü, Sébastien Pennec
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
-		<table class="bodyTable">
-			<tr class="a">
-				<td>
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"></img>
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
 						</a>
 				</td>
 				<td>
-					<p>Copyright © 2000-2006, QOS.ch</p>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
-						
+						<!--Creative Commons License-->
 						This work is licensed under a
-						<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>
 						.
-						
+						<!--/Creative Commons License-->
 					</p>
 				</td>
 			</tr>
@@ -118,11 +122,11 @@ public class MyApp1 {
   final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
 
   public static void main(String[] args) {
-    logger.info(&quot;Entering application.&quot;);
+    logger.info("Entering application.");
 
     Foo foo = new Foo();
     foo.doIt();
-    logger.info(&quot;Exiting application.&quot;);
+    logger.info("Exiting application.");
   }
 }</pre></div>
 
@@ -205,11 +209,11 @@ public class MyApp2 {
       je.printStackTrace();
     }
 
-    logger.info(&quot;Entering application.&quot;);
+    logger.info("Entering application.");
 
     Foo foo = new Foo();
     foo.doIt();
-    logger.info(&quot;Exiting application.&quot;);
+    logger.info("Exiting application.");
   }
 }</pre></div>
 
@@ -222,20 +226,20 @@ listed below:
 </p>
 
 <em>Example 3.3: Basic configuration file (logback-examples/src/main/java/chapter3/sample0.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 Assuming the current directory is <em>logback-examples</em>, try running the 
@@ -262,20 +266,20 @@ configuration file, as shown above:
 </p>
 
 <em>Example 3.4: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
-<div class="source"><pre>&lt;configuration debug=&quot;true&quot;&gt;
+<div class="source"><pre>&lt;configuration debug="true">
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 This should cause logback to print internal configuration messages in 
@@ -355,27 +359,27 @@ belonging to the chapter3 package. The following configuration file shows how to
 </p>
 
 <em>Example 3.5: Setting the level of a logger (logback-examples/src/main/java/chapter3/sample2.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  <b>&lt;logger name=&quot;chapter3&quot;&gt;
-    &lt;level value=&quot;INFO&quot; /&gt;
-  &lt;/logger&gt;</b>
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger></b>
   
-  &lt;root&gt;		
-    &lt;!-- The following level element is not necessary since the --&gt;
-    &lt;!-- level of the root level is set to DEBUG by default.    --&gt;
-    &lt;level value=&quot;DEBUG&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;  
+  &lt;root>		
+    &lt;!-- The following level element is not necessary since the -->
+    &lt;!-- level of the root level is set to DEBUG by default.    -->
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>  
   
-&lt;/configuration&gt;</pre></div>
+&lt;/configuration></pre></div>
 
 <p>
 This new configuration will yield the following output, when used with the
@@ -393,33 +397,33 @@ to <code>DEBUG</code>.
 </p>
 
 <em>Example 3.6: Setting the level of multiple loggers (logback-examples/src/main/java/chapter3/sample3.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-     &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+     &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  <b>&lt;logger name=&quot;chapter3&quot;&gt;
-    &lt;level value=&quot;INFO&quot; /&gt;
-  &lt;/logger&gt;
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger>
 
-  &lt;logger name=&quot;chapter3.Foo&quot;&gt;
-    &lt;level value=&quot;DEBUG&quot; /&gt;
-  &lt;/logger&gt;</b>
+  &lt;logger name="chapter3.Foo">
+    &lt;level value="DEBUG" />
+  &lt;/logger></b>
 
-  &lt;root&gt;
-    &lt;!-- The following level element is not necessary since the --&gt;
-    &lt;!-- level of the root level is set to DEBUG by default.    --&gt;
-    &lt;level value=&quot;DEBUG&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
+  &lt;root>
+    &lt;!-- The following level element is not necessary since the -->
+    &lt;!-- level of the root level is set to DEBUG by default.    -->
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
 
-&lt;/configuration&gt;</pre></div>
+&lt;/configuration></pre></div>
 
 <p>
 Running <code>MyApp2</code> with this configuration file will result in the 
@@ -435,28 +439,28 @@ After <code>JoranConfigurator</code> configures logback using the <em>sample3.xm
 file, the logger settings, more specifically their levels, are summarized in the following table. 
 </p>
 
-<table class="bodyTable">
-	<tr class="b">
+<table>
+	<tr>
 		<th>Logger name</th>
 		<th>Assigned Level</th>
 		<th>Effective Level</th>
 	</tr>
-	<tr class="a">
+	<tr>
 		<td>root</td>
 		<td><code>DEBUG</code></td>
 		<td><code>DEBUG</code></td>
 	</tr>
-		<tr class="b">
+		<tr>
 		<td>chapter3</td>
 		<td><code>INFO</code></td>
 		<td><code>INFO</code></td>
 	</tr>
-		<tr class="a">
+		<tr>
 		<td>chapter3.MyApp2</td>
 		<td><code>null</code></td>
 		<td><code>INFO</code></td>
 	</tr>
-		<tr class="b">
+		<tr>
 		<td>chapter3.Foo</td>
 		<td><code>DEBUG</code></td>
 		<td><code>DEBUG</code></td>
@@ -473,55 +477,55 @@ on the effective level of the logger being invoked, not the level of the logger
 where the appenders are attached. The configuration file <em>sample4.xml</em> is a case in point: 
 </p>
 <em>Example 3.7: Logger level sample (logback-examples/src/main/java/chapter3/sample4.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-   class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-   &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-     &lt;Pattern&gt;
+  &lt;appender name="STDOUT"
+   class="ch.qos.logback.core.ConsoleAppender">
+   &lt;layout class="ch.qos.logback.classic.PatternLayout">
+     &lt;Pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  <b>&lt;logger name=&quot;chapter3&quot;&gt;
-    &lt;level value=&quot;INFO&quot; /&gt;
-  &lt;/logger&gt;</b>
+  <b>&lt;logger name="chapter3">
+    &lt;level value="INFO" />
+  &lt;/logger></b>
 
-  &lt;root&gt;
-    <b>&lt;level value=&quot;OFF&quot; /&gt;</b>
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
+  &lt;root>
+    <b>&lt;level value="OFF" /></b>
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
 
-&lt;/configuration&gt;</pre></div>
+&lt;/configuration></pre></div>
 
 <p>
 The following table lists the loggers and their level setting after applying the 
 <em>sample4.xml</em> configuration file.  
 </p>
 
-<table class="bodyTable">
-	<tr class="a">
+<table>
+	<tr>
 		<th>Logger name</th>
 		<th>Assigned Level</th>
 		<th>Effective Level</th>
 	</tr>
-	<tr class="b">
+	<tr>
 		<td>root</td>
 		<td><code>OFF</code></td>
 		<td><code>OFF</code></td>
 	</tr>
-		<tr class="a">
+		<tr>
 		<td>chapter3</td>
 		<td><code>INFO</code></td>
 		<td><code>INFO</code></td>
 	</tr>
-		<tr class="b">
+		<tr>
 		<td>chapter3.MyApp2</td>
 		<td><code>null</code></td>
 		<td><code>INFO</code></td>
 	</tr>
-		<tr class="a">
+		<tr>
 		<td>chapter3.Foo</td>
 		<td><code>null</code></td>
 		<td><code>INFO</code></td>
@@ -575,41 +579,41 @@ and referencing them in a logger, as the next configuration file illustrates:
 </p>
 
 <em>Example 3.8: Multiple loggers (logback-examples/src/main/java/chapter3/multiple.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;<b>FILE</b>&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    &lt;file&gt;myApp.log&lt;/file&gt;
+  &lt;appender name="<b>FILE</b>"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>myApp.log&lt;/file>
 
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH-mm-ss}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
 
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;appender name=&quot;<b>STDOUT</b>&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+  &lt;appender name="<b>STDOUT</b>"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    <b>&lt;appender-ref ref=&quot;FILE&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;</b>
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    <b>&lt;appender-ref ref="FILE" />
+    &lt;appender-ref ref="STDOUT" /></b>
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 This configuration scripts defines two appenders called <em>FILE</em> and <em>STDOUT</em>. 
@@ -637,26 +641,26 @@ logging output to be duplicated.
 </p>
 
 <em>Example 3.9: Duplicate appender (logback-examples/src/main/java/chapter3/duplicate.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;logger name=&quot;chapter3&quot;&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/logger&gt;
+  &lt;logger name="chapter3">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/logger>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 Running <code>MyApp2</code> with <em>duplicate.xml</em> will yield the following output:
@@ -686,40 +690,40 @@ while messages only from some specific set of loggers flow into a specific appen
 </p>
 
 <em>Example 3.10: Multiple appender (logback-examples/src/main/java/chapter3/restricted.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    &lt;file&gt;myApp.log&lt;/file&gt;
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>myApp.log&lt;/file>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH-mm-ss}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;logger name=&quot;chapter3&quot;&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/logger&gt;
+  &lt;logger name="chapter3">
+    &lt;appender-ref ref="FILE" />
+  &lt;/logger>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 In this example, the console appender will log all the messages (for all loggers in the system) 
@@ -736,40 +740,40 @@ different than those of the rest of the tree.
 </p>
 
 <em>Example 3.11: Additivity flag (logback-examples/src/main/java/chapter3/additivityFlag.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    &lt;file&gt;foo.log&lt;/file&gt;
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>foo.log&lt;/file>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         foo-%d{yyyy-MM-dd-HH-mm-ss}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;appender name=&quot;STDOUT&quot;
-    class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;%msg%n&lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;logger name=&quot;chapter3.Foo&quot; <b>additivity=&quot;false&quot;</b>&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/logger&gt;
+  &lt;logger name="chapter3.Foo" <b>additivity="false"</b>>
+    &lt;appender-ref ref="FILE" />
+  &lt;/logger>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 This example, the appender named <em>FILE</em> is attached to the <em>chapter3.Foo</em> 
@@ -797,7 +801,7 @@ is first searched in configuration file or linked properties file,
 and if not found there, it is then searched in system properties. 
 The corresponding value replaces <em>${aKey}</em> sequence. For example, 
 if <em>java.home</em> system property is set to <em>/home/xyz</em>, 
-then every occurrence of the sequence <em>c:\Program Files\Java\jdk1.5.0_10\jre</em> will be 
+then every occurrence of the sequence <em>${java.home}</em> will be 
 interpreted as <em>/home/xyz</em>.
 </p>
 
@@ -808,31 +812,31 @@ the place to create the output file.
 </p>
 
 <em>Example 3.12: Simple Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution1.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  <b>&lt;substitutionProperty name=&quot;user.home.dir&quot; value=&quot;/Users/seb&quot; /&gt;</b>
+  <b>&lt;substitutionProperty name="user.home.dir" value="/Users/seb" /></b>
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    <b>&lt;file&gt;${user.home.dir}/myApp.log&lt;/file&gt;</b>
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 
 <p>
@@ -841,29 +845,29 @@ property is not declared anywhere, thus logback will look for it in the System p
 </p>
 
 <em>Example 3.13: System Variable substitution (logback-examples/src/main/java/chapter3/variableSubstitution2.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    <b>&lt;file&gt;${user.home.dir}/myApp.log&lt;/file&gt;</b>
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 When many variables are used, it is often more convenient to create
@@ -872,31 +876,31 @@ do such a setup.
 </p>
 
 <em>Example 3.14: Variable substitution using a separate file (logback-examples/src/main/java/chapter3/variableSubstitution3.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;substitutionProperty file=&quot;variables1.properties&quot; /&gt;
+  &lt;substitutionProperty file="variables1.properties" />
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    <b>&lt;file&gt;${user.home.dir}/myApp.log&lt;/file&gt;</b>
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${user.home.dir}/myApp.log&lt;/file></b>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 <p>
 This configuration file contains a link to another file called <em>variables.properties</em>.
@@ -929,34 +933,34 @@ be used, as shown below:
 </p>
 
 <em>Example 3.17: Variable substitution using a separate file (logback-examples/src/main/java/chapter3/variableSubstitution4.xml)</em>
-<div class="source"><pre>&lt;configuration&gt;
+<div class="source"><pre>&lt;configuration>
 
-  &lt;substitutionProperty file=&quot;variables1.properties&quot; /&gt;
+  &lt;substitutionProperty file="variables1.properties" />
 
-  &lt;appender name=&quot;FILE&quot;
-    class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;
-    <b>&lt;file&gt;${destination}&lt;/file&gt;</b>
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>${destination}&lt;/file></b>
     &lt;rollingPolicy
-      class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;
-      &lt;FileNamePattern&gt;
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
         myApp-%d{yyyy-MM-dd-HH}.log
-      &lt;/FileNamePattern&gt;
-    &lt;/rollingPolicy&gt;
-    &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-      &lt;Pattern&gt;
+      &lt;/FileNamePattern>
+    &lt;/rollingPolicy>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>
         %date %level [%thread] %logger{10} [%file : %line] %msg%n
-      &lt;/Pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
+      &lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
-  &lt;root&gt;
-    &lt;level value=&quot;debug&quot; /&gt;
-    &lt;appender-ref ref=&quot;FILE&quot; /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre></div>
 
 
-<a name="Joran"></a>
+<a name="Joran" />
 <h2>Using Joran in your own application</h2>
 
 <p>As we've seen, logback relies on Joran, a
@@ -997,7 +1001,8 @@ changed. The modified code had to be recompiled and redeployed. Just
 as importantly, the code of the DOMConfigurator consists of loops
 dealing with children elements containing many interspersed if/else
 statements. One could not help but notice that that particular code
-reeked of redundancy.  The <a href="http://jakarta.apache.org/commons/digester/">digester
+reeked of redundancy.  The <a
+href="http://jakarta.apache.org/commons/digester/">digester
 project</a> has shown that it is possible to parse XML files using
 pattern matching rules. At parse time, digester will apply the rules
 that match previously stated patterns. Rule classes are usually quite
@@ -1016,12 +1021,12 @@ occurs for the corresponding pattern. This relation between patterns
 and actions lies at the core of Joran.  Quite remarkably, one can deal
 with quite complex requirements by using simple patterns, or more
 precisely with exact matches and wildcard matches. For example, the
-pattern <em>a/b</em> will match a <code>&lt;b&gt;</code> element nested within
-an <code>&lt;a&gt;</code> element but not a <code>&lt;c&gt;</code> element,
-even if nested within a <code>&lt;b&gt;</code> element. It is also
+pattern <em>a/b</em> will match a <code>&lt;b></code> element nested within
+an <code>&lt;a></code> element but not a <code>&lt;c></code> element,
+even if nested within a <code>&lt;b></code> element. It is also
 possible to match a particular XML element, regardless of its nesting
 level, by using the <em>*</em> wildcard character. For example, the pattern
-<em>*/a</em> will match an <code>&lt;a&gt;</code> element at any nesting
+<em>*/a</em> will match an <code>&lt;a></code> element at any nesting
 position within the document. Other types of patterns, for example
 <em>a/*</em>, are not currently supported by Joran.
 </p>
@@ -1106,7 +1111,7 @@ conditions by adding error items on the execution context's
 <code>StatusManager</code>.
 </p>
 
-<a name="helloWorld"></a>
+<a name="helloWorld" />
 <h3>A hello world example</h3>
 
 <p>The <em>logback-examples/src/main/java/chapter3/helloWorld/</em> directory includes a
@@ -1119,7 +1124,7 @@ necessary to set up and invoke a Joran interpreter.
 The <em>hello.xml</em> file contains only one element, without any
 other nested elements. The <a href="../xref/chapter3/helloWorld/HelloWorldAction.html">
 <code>HelloWorldAction</code></a> class is 
-a trivial implementation: it only prints &quot;Hello World&quot; in the console when
+a trivial implementation: it only prints "Hello World" in the console when
 it's <code>begin()</code> method is called.
 </p>
 <p>
@@ -1151,7 +1156,7 @@ In the first method, a simple call to <code>System.out.println()</code>
 will be issued, displaying <em>Hello World</em> in the console.
 </p>
 
-<a name="calculator"></a>
+<a name="calculator" />
 <h3>Collaborating actions</h3>
 <p>
 The <em>logback-examples/src/main/java/joran/calculator/</em> directory includes several actions
@@ -1192,11 +1197,11 @@ the value from the stack and prints it.
 <p>It contains the following elements:</p>
 
 <em>Example 3.18: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
-<div class="source"><pre>&lt;computation name=&quot;toto&quot;&gt;
-  &lt;literal value=&quot;7&quot;/&gt;
-  &lt;literal value=&quot;3&quot;/&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
+  &lt;literal value="7"/&gt;
+  &lt;literal value="3"/&gt;
   &lt;add/&gt;
-  &lt;literal value=&quot;3&quot;/&gt;
+  &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre></div>
 <p>
@@ -1218,14 +1223,14 @@ elements that contain instances of the same element. Here's the content of
 <em>calculator3.xml</em>:</p>
 
 <em>Example 3.19: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator3.xml)</em>
-<div class="source"><pre>&lt;computation name=&quot;toto&quot;&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;computation&gt;
-    &lt;literal value=&quot;7&quot;/&gt;
-    &lt;literal value=&quot;3&quot;/&gt;
+    &lt;literal value="7"/&gt;
+    &lt;literal value="3"/&gt;
     &lt;add/&gt;
   &lt;/computation&gt;   
  
-  &lt;literal value=&quot;3&quot;/&gt;
+  &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre></div>
 
@@ -1236,7 +1241,7 @@ a <code>computation</code> element nested in another is managed by the
 of XML will guarantee that a value saved by one <code>begin()</code> will be consumed 
 only by the matching <code>end()</code> method.</p>
 
-<a name="newRule"></a>
+<a name="newRule" />
 <h3>New-rule action</h3>
 <p>Joran includes an action which allows the Joran interpreter to lean
 new rules on the fly while interpreting the XML file containing the
@@ -1247,7 +1252,7 @@ directory for sample code.
 <code>NewRuleCalculator</code></a> class contains 
 the same setup as we have seen so far, but for one line:</p>
 
-<div class="source"><pre>ruleStore.addRule(new Pattern(&quot;/computation/new-rule&quot;), new NewRuleAction());</pre></div>
+<source>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</source>
 
 <p>By adding this line, we ask Joran to allow new rules to be learnt
 at parsing time. It works pretty much like the other rules: it has a
@@ -1260,31 +1265,31 @@ and added to the <code>RuleStore</code>, along with its corresponding pattern.</
 
 <p>Here is how new rules can be declared in an xml file:</p>
 
-<div class="source"><pre>&lt;new-rule pattern=&quot;*/computation/literal&quot; actionClass=&quot;chapter3.calculator.LiteralAction&quot;/&gt;</pre></div>
+<div class="source"><pre>&lt;new-rule pattern="*/computation/literal" actionClass="chapter3.calculator.LiteralAction"/&gt;</pre></div>
 
 <p>Using new rule declarations, the preceding example, involving the calculation, could be
 expressed this way:</p>
 
 <em>Example 3.20: Configuration file using new rules on the fly (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
-<div class="source"><pre>&lt;computation name=&quot;toto&quot;&gt;
-  &lt;new-rule pattern=&quot;*/computation/literal&quot; 
-            actionClass=&quot;chapter3.calculator.LiteralAction&quot;/&gt;
-  &lt;new-rule pattern=&quot;*/computation/add&quot; 
-            actionClass=&quot;chapter3.calculator.AddAction&quot;/&gt;
-  &lt;new-rule pattern=&quot;*/computation/multiply&quot; 
-            actionClass=&quot;chapter3.calculator.MultiplyAction&quot;/&gt;
+<div class="source"><pre>&lt;computation name="toto"&gt;
+  &lt;new-rule pattern="*/computation/literal" 
+            actionClass="chapter3.calculator.LiteralAction"/&gt;
+  &lt;new-rule pattern="*/computation/add" 
+            actionClass="chapter3.calculator.AddAction"/&gt;
+  &lt;new-rule pattern="*/computation/multiply" 
+            actionClass="chapter3.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
-    &lt;literal value=&quot;7&quot;/&gt;
-    &lt;literal value=&quot;3&quot;/&gt;
+    &lt;literal value="7"/&gt;
+    &lt;literal value="3"/&gt;
     &lt;add/&gt;
   &lt;/computation&gt;   
  
-  &lt;literal value=&quot;3&quot;/&gt;
+  &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre></div>
 
-<a name="implicit"></a>
+<a name="implicit" />
 <h3>Implicit actions </h3>
 <p>The rules defined thus far are called explicit rules because they
 require an explicit pattern, hence fixing the tag name of the elements
@@ -1327,8 +1332,8 @@ given situation.
 instantiate the class specified in a nested component and attach it
 to the parent component by using setter method of the parent
 component and the nested element's name. Under certain circumstances,
-a nested action needs to be applied to an element say &lt;a&gt; and also
-to another element &lt;b&gt; nested within &lt;a&gt;. The current
+a nested action needs to be applied to an element say &lt;a> and also
+to another element &lt;b> nested within &lt;a>. The current
 implementation of <code>NestedComponentIA</code> is capable of
 handling multiply nested elements requiring intervention by the same
 implicit action.
@@ -1349,7 +1354,7 @@ class containing the setup of Joran.</p>
 <code>NOPAction</code></a> class does nothing. It is used to set
 the context of the <em>foo</em> element, using this line:</p>
 
-<div class="source"><pre>ruleStore.addRule(new Pattern(&quot;*/foo&quot;), new NOPAction());</pre></div>
+<source>ruleStore.addRule(new Pattern("*/foo"), new NOPAction());</source>
 
 <p>After that, the implicit action, namely 
 <a href="../xref/chapter3/implicit/PrintMeImplicitAction.html">
@@ -1357,7 +1362,7 @@ the context of the <em>foo</em> element, using this line:</p>
 is added to the <code>RuleStore</code>. This is done by simply adding a new
 instance of the action to the <code>Joran interpreter</code></p>
 
-<div class="source"><pre>ji.addImplicitAction(new PrintMeImplicitAction());</pre></div>
+<source>ji.addImplicitAction(new PrintMeImplicitAction());</source>
 
 <p>When called, the <code>isApplicable()</code> method of <code>PrintMeImplicitAction</code>
 checks the value of the <em>printme</em> attribute. If the value is <code>true</code>, 
@@ -1368,13 +1373,13 @@ the implicit action is applicable: its <code>begin()</code> method will be calle
 <em>Example 3.21: Usage of implicit rules (logback-examples/src/main/java/chapter3/implicit/implicit1.xml)</em>
 <div class="source"><pre>&lt;foo&gt;
 
-  &lt;xyz printme=&quot;true&quot;&gt;
-    &lt;abc printme=&quot;true&quot;/&gt;
+  &lt;xyz printme="true"&gt;
+    &lt;abc printme="true"/&gt;
   &lt;/xyz&gt;
 
   &lt;xyz/&gt;
 
-  &lt;foo printme=&quot;true&quot;/&gt;
+  &lt;foo printme="true"/&gt;
 
 &lt;/foo&gt;</pre></div>
 
@@ -1390,10 +1395,10 @@ of the <code>PrintMeImplicitAction</code>.</p>
 
 <p>Running the example yields the following output:</p>
 
-<div class="source"><pre>Element &lt;xyz&gt; asked to be printed.
-Element &lt;abc&gt; asked to be printed.
+<div class="source"><pre>Element &lt;xyz> asked to be printed.
+Element &lt;abc> asked to be printed.
 ERROR in ch.qos.logback.core.joran.spi.ExecutionContext@1c5c1 - no applicable action \
-for &lt;xyz&gt;, current pattern is [/foo/xyz]</pre></div>
+for &lt;xyz>, current pattern is [/foo/xyz]</pre></div>
 
 <p>The last line was printed because of a call to <code>StatusPrinter</code> at the end
 of the main class.</p>
@@ -1403,6 +1408,12 @@ of the main class.</p>
 <p>The Joran API is not intended to be used to parse documents with
 thousands of elements.
 </p>
+
+
+
+
+
+
 
 <script src="../templates/footer.js"></script>
 </div>

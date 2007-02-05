@@ -20,7 +20,7 @@ prefix='';
 <div id="content">
 	
 	
-	<h2>Classpath Setup</h2>
+<h2>Classpath Setup</h2>
 
 <p>
 In order to run the examples provided in the documentation,
@@ -28,10 +28,10 @@ you need to add the following jars to your class path:
 </p>
 
 <ul>
-	<p>logback-core-1.0-SNAPSHOT.jar</p>
-	<p>logback-classic-1.0-SNAPSHOT.jar</p>
-	<p>logback-examples-1.0-SNAPSHOT.jar</p>
-	<p>slf4j-api-1.2.jar</p>
+	<p>logback-core-${version}.jar</p>
+	<p>logback-classic-${version}.jar</p>
+	<p>logback-examples-${version}.jar</p>
+	<p>slf4j-api-${slf4j.version}.jar</p>
 </ul>
 
 <h3>Example</h3>
@@ -44,8 +44,8 @@ sample application, <em>chapter1.HelloWord1</em> with the following command:
 </p>
 
 <div class="source"><pre>java -cp
- lib/slf4j-api-1.2.jar;../logback-core-1.0-SNAPSHOT.jar;\
- ../logback-classic-1.0-SNAPSHOT.jar;logback-examples-1.0-SNAPSHOT.jar\
+ lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
+ ../logback-classic-${version}.jar;logback-examples-${version}.jar\
  chapter1.HelloWorld1</pre></div>
 
 <p>
@@ -67,6 +67,7 @@ the same commands as written in the documentation, you will need to
 issue the commands from within the <em>$LOGBACK_HOME/logback-examples</em> 
 directory.
 </p>
+
 
 	
 	
