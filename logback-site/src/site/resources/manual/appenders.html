@@ -113,7 +113,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 		transmitting them over the wire.
 	</p>
 	
-	<a name="AppenderBase"/>
+	<a name="AppenderBase"></a>
 	<h2>AppenderBase</h2>
 	
 	<p>
@@ -229,7 +229,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 		contained in the core module are can be used by any module without any customization.
 	</p>
 	
-	<a name="WriterAppender" />
+	<a name="WriterAppender"></a>
 	<h3>WriterAppender</h3>
 	
 	<p>
@@ -353,7 +353,7 @@ public class ExitWoes1 {
 	
 	<img src="images/chapter4/fileAppenderUML.png" alt="A UML diagram showing FileAppender"/>
 	
-	<a name="ConsoleAppender" />
+	<a name="ConsoleAppender"></a>
 	<h3>ConsoleAppender</h3>
 	
 	<p>
@@ -420,7 +420,7 @@ public class ExitWoes1 {
 	
 <div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-Console.xml</pre></div>
 	
-	<a name="FileAppender" />
+	<a name="FileAppender"></a>
 	<h3>FileAppender</h3>
 	
 	<p>
@@ -553,7 +553,7 @@ public class ExitWoes1 {
 <div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</pre></div>
 	
 	
-	<a name="RollingFileAppender" />
+	<a name="RollingFileAppender"></a>
 	<h3>RollingFileAppender</h3>
 	
 	<p>
@@ -665,7 +665,7 @@ public interface RollingPolicy extends LifeCycle {
 		Lastly, a <code>RollingPolicy</code> knows about its parent.
 	</p>
 	
-	<a name="FixedWindowRollingPolicy" />
+	<a name="FixedWindowRollingPolicy"></a>
 	<h4>FixedWindowRollingPolicy</h4>
 
 	<p>
@@ -882,7 +882,7 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre></div>
 	
-	<a name="TimeBasedRollingPolicy" />
+	<a name="TimeBasedRollingPolicy"></a>
 	<h4>TimeBasedRollingPolicy</h4>
 	<p>
 		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
@@ -1115,7 +1115,7 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<a name="TriggeringPolicy"/>
+		<a name="TriggeringPolicy"></a>
 		<h3>Triggering policies</h3>
 		
 		<p><a href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
@@ -1143,7 +1143,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			returning a boolean value.
 		</p>
 
-		<a name="SizeBasedTriggeringPolicy" />
+		<a name="SizeBasedTriggeringPolicy"></a>
 		<h4>SizeBasedTriggeringPolicy</h4>
 
 		<p>
@@ -1218,14 +1218,14 @@ public interface TriggeringPolicy extends LifeCycle {
 			with a <code>Level</code> of <em>ERROR</em> or more is issued.
 		</p>
 
-		<a name="Classic"/>
+		<a name="Classic"></a>
 		<h2>Logback Classic</h2>
 		
 		
 		<p>While logging event are declared as <code>Object</code> in logback core, 
 		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
 
-		<a name="SocketAppender" />
+		<a name="SocketAppender"></a>
 		<h3>SocketAppender</h3>
 		
 		<p>
@@ -1474,7 +1474,7 @@ public interface TriggeringPolicy extends LifeCycle {
 			tunnels the events it receives from its clients to a second server.
 		</p>
 		
-		<a name="JMSAppenderBase" />
+		<a name="JMSAppenderBase"></a>
 		<h3>JMSAppenderBase</h3>
 		
 		<p>
@@ -1728,7 +1728,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			The JMS appenders do not implement the <code>ExceptionListener</code> interface.
 		</p>
 		
-		<a name="JMSTopicAppender" />
+		<a name="JMSTopicAppender"></a>
 		<h3>JMSTopicAppender</h3>
 		
 		<p>
@@ -1871,7 +1871,7 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;/root>
 &lt;/configuration></pre></div>
 		
-		<a name="JMSQueueAppender" />
+		<a name="JMSQueueAppender"></a>
 		<h3>JMSQueueAppender</h3>
 		
 		<p>
@@ -2227,7 +2227,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 
 
-		<a name="DBAppender"/>
+		<a name="DBAppender"></a>
 		<h3>DBAppender</h3>
 		
 		<p>
@@ -2760,7 +2760,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			The gain is a <em>10</em> factor. 
 		</p>
 
-		<a name="SyslogAppender" />
+		<a name="SyslogAppender"></a>
 		<h3>SyslogAppender</h3>
 		
 		<p>
@@ -2891,7 +2891,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 		
 		
-		<a name="Access" />
+		<a name="Access"></a>
 		<h2>Logback Access</h2>
 		
 		<p>
@@ -2917,7 +2917,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			for classic's <code>SocketAppender</code>.
 		</p>
 
-	 	<a name="AccessSMTPAppender"/>	
+	 	<a name="AccessSMTPAppender"></a>	
 		<h3>SMTPAppender</h3>
 		
 		<p>
@@ -2959,7 +2959,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		
 		
 
-		<a name="AccessDBAppender"/>
+		<a name="AccessDBAppender"></a>
 		<h3>DBAppender</h3>
 		
 		<p>
@@ -3118,7 +3118,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre></div>
 
 
-    <a name="WriteYourOwnAppender" />
+    <a name="WriteYourOwnAppender"></a>
 		<h2>Writing your own Appender</h2>
 
 

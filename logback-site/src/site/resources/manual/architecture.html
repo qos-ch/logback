@@ -94,7 +94,7 @@ prefix='../';
       logback-core has no notion of loggers.
 		</p>
     
-    <a name="LoggerContext" />
+    <a name="LoggerContext"></a>
     <h3>Logger context</h3>
 
 		<p>The first and foremost advantage of any logging API over plain
@@ -362,7 +362,7 @@ public interface Logger {
 		parent <code>X</code>, which has an assigned level.
 		</p>
 
-    <a name="PrintintMethods" />
+    <a name="PrintintMethods"></a>
     <h3>Printing methods</h3>
 
 		<p>By definition, the printing method determines the level of a
@@ -465,7 +465,7 @@ barlogger.<span class="green bold">info</span>("Located nearest gas station.");
 // This request is disabled, because <span class="green bold">DEBUG</span> &lt; <span class="blue">INFO</span>. 
 barlogger.<span class="green bold">debug</span>("Exiting gas station search");</pre></div>
 
-    <a name="RetrievingLoggers" />
+    <a name="RetrievingLoggers"></a>
 		<h3>Retrieving Loggers</h3>
 		<p>
 			Calling the <code><a href="../apidocs/org/slf4j/LoggerFactory.html#getLogger(java.lang.String)">LoggerFactory.getLogger</a></code>
@@ -516,7 +516,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		located seems to be the best general strategy known so far.
 		</p>
 
-    <a name="AppendersAndLayouts" />
+    <a name="AppendersAndLayouts"></a>
     <h3>Appenders and Layouts</h3>
 
 		<p>
@@ -674,7 +674,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 			the message of the request.
 		</p>
 
-    <a name="ParametrizedLogging" />
+    <a name="ParametrizedLogging"></a>
 		<h3>Parameterized logging</h3>
 
 		<p>
@@ -772,7 +772,7 @@ logger.debug("The new entry is {}.", entry);</pre></div>
 		<div class="source"><pre>Object[] paramArray = {newVal, below, above};
 logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div>
 
-    <a name="Configuration" />
+    <a name="Configuration"></a>
     <h3>Configuration</h3>
 
 		<p>Inserting log requests into the application code requires a
@@ -1058,7 +1058,7 @@ class Bar {
 		the introduction. The output was generated due to this feature.
 	</p>
   
-<a name="UnderTheHood" />
+<a name="UnderTheHood"></a>
 <h3>A peak under the hood</h3>
 
 <p>
@@ -1147,7 +1147,7 @@ want to click on the image to display its bigger version.
 
 <a href="underTheHood.html"><img src="images/chapter2/underTheHoodSequence2_small.gif" /></a>
 
-<a name="Performance" />
+<a name="Performance"></a>
 <h3>Performance</h3>
 
 <p>
