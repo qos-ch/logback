@@ -1101,8 +1101,7 @@ relevant parameters of the request such as the logger of the request, the reques
 level, the message, the exception that might have been passed along the request,
 the current time, the current thread, several information about the class that 
 issued the logging request and the <code>MDC</code> map. Note that some of these fields
-are initialized lazily, that is only when they are actually needed.
-</p>
+are initialized lazily, that is only when they are actually needed. The <code>MDC</code> is used to stamp each requests with specific parameters. It is introduced in the <a href="mdc.html">corresponding chapter</a>.</p>
 
 <h4>4. Invoking appenders</h4>
 
