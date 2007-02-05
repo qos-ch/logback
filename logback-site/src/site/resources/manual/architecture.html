@@ -193,7 +193,7 @@ public interface Logger {
 		</p>
 
 		<em>Example 1</em>
-		<table>
+		<table class="bodyTable">
 			<tr>
 				<th>
 					Logger name
@@ -206,28 +206,28 @@ public interface Logger {
 					Effective level
 				</th>
 			</tr>
-			<tr>
+			<tr class="a">
 				<td>root</td>
 				<td>DEBUG</td>
 				<td>DEBUG</td>
-			</tr>
-			<tr>
+		  </tr>
+			<tr class="b">
 				<td>X</td>
 				<td>none</td>
 				<td>DEBUG</td>
-			</tr>
+		  </tr>
 
-			<tr>
+			<tr class="a">
 				<td>X.Y</td>
 				<td>none</td>
 				<td>DEBUG</td>
-			</tr>
-			<tr>
+		  </tr>
+			<tr class="b">
 				<td>X.Y.Z</td>
 				<td>none</td>
 				<td>DEBUG</td>
-			</tr>
-		</table>
+		  </tr>
+  </table>
 
 		<p> In example 1 above, only the root logger is assigned a level.
 		This level value, <code>DEBUG</code>, is inherited by the other
@@ -376,7 +376,7 @@ public interface Logger {
     request is said to be <em>disabled</em>. A logger without an
     assigned level will inherit one from the context. This rule is
     summarized below.
-		</p>
+  </p>
 
 		<div class="definition">
 			<div class="deftitle">Basic Selection Rule</div>
@@ -798,7 +798,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 		However, it is far more flexible to configure logback using
 		configuration files. In logback, configuration files are written
 		in XML format.
-		</p>
+  </p>
 
 		<p>Existing log4j users can convert their
 		<em>log4j.properties</em> files to <em>logback.xml</em> using our <a
