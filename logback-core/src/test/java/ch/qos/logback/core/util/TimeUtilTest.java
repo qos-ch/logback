@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TimeUtilTest extends TestCase {
 
@@ -34,38 +35,45 @@ public class TimeUtilTest extends TestCase {
     long now = 1164042317522L;
     // Mon Nov 20 18:06:00 CET 2006
     long expected = 1164042360000L;
+
     long computed = TimeUtil.computeStartOfNextMinute(now);
     assertEquals(expected - now, 1000 * 42 + 478);
     assertEquals(expected, computed);
   }
 
   public void testHour() {
-    // Mon Nov 20 18:05:17,522 CET 2006
-    long now = 1164042317522L;
-    // Mon Nov 20 19:00:00 CET 2006
-    long expected = 1164045600000L;
-    // System.out.println(new Date(expected));
+    // Mon Nov 20 18:05:17,522 GMT 2006
+    long now = 1164045917522L;
+    now = correctBasedOnTimeZone(now);
+    // Mon Nov 20 19:00:00 GMT 2006
+    long expected = 1164049200000L;
+    expected = correctBasedOnTimeZone(expected);
+    
     long computed = TimeUtil.computeStartOfNextHour(now);
     assertEquals(expected - now, 1000 * (42 + 60 * 54) + 478);
     assertEquals(expected, computed);
   }
 
   public void testDay() {
-    // Mon Nov 20 18:05:17 CET 2006
-    long now = 1164042317522L;
-    // Tue Nov 21 00:00:00 CET 2006
-    long expected = 1164063600000L;
+    // Mon Nov 20 18:05:17 GMT 2006
+    long now = 1164045917522L;
+    now = correctBasedOnTimeZone(now);
+    // Tue Nov 21 00:00:00 GMT 2006
+    long expected = 1164067200000L;
+    expected = correctBasedOnTimeZone(expected);
     long computed = TimeUtil.computeStartOfNextDay(now);
+    
     assertEquals(expected - now, 1000 * (3600 * 5 + 60 * 54 + 42) + 478);
     assertEquals(expected, computed);
   }
 
   public void testWeek() {
-    // Mon Nov 20 18:05:17 CET 2006
-    long now = 1164042317522L;
-    // Sun Nov 26 00:00:00 CET 2006
-
-    long expected = 1164495600000L;
+    // Mon Nov 20 18:05:17 GMT 2006
+    long now = 1164045917522L;
+    now = correctBasedOnTimeZone(now);
+    // Sun Nov 26 00:00:00 GMT 2006
+    long expected = 1164499200000L;
+    expected = correctBasedOnTimeZone(expected);
 
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date(now));
@@ -85,14 +93,22 @@ public class TimeUtilTest extends TestCase {
   }
 
   public void testMonth() {
-    // Mon Nov 20 18:05:17 CET 2006
-    long now = 1164042317522L;
-    // Fri Dec 01 00:00:00 CET 2006
-    long expected = 1164927600000L;
+    // Mon Nov 20 18:05:17 GMT 2006
+    long now = 1164045917522L;
+    now = correctBasedOnTimeZone(now);
+    // Fri Dec 01 00:00:00 GMT 2006
+    long expected = 1164931200000L;
+    expected = correctBasedOnTimeZone(expected);
+    
     long computed = TimeUtil.computeStartOfNextMonth(now);
     assertEquals(expected - now,
         1000 * (3600 * (5 + 24 * 10) + 60 * 54 + 42) + 478);
     assertEquals(expected, computed);
+  }
+  
+  private long correctBasedOnTimeZone(long gmtLong) {
+    int offset = TimeZone.getDefault().getRawOffset();
+    return gmtLong - offset;
   }
 
 }
