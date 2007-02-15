@@ -139,7 +139,7 @@ public class Category {
    * in addition, the call is marked with a marker named "TRACE".
    */
   public void trace(Object message) {
-    lbLogger.debug(TRACE_MARKER, prepareMessage(message));
+    lbLogger.debug(TRACE_MARKER, convertToString(message));
   }
 
   /**
@@ -147,7 +147,7 @@ public class Category {
    * method of logback in addition, the call is marked with a marker named "TRACE".
    */
   public void trace(Object message, Throwable t) {
-    lbLogger.debug(TRACE_MARKER, prepareMessage(message), t);
+    lbLogger.debug(TRACE_MARKER, convertToString(message), t);
   }
   
   /**
@@ -155,7 +155,7 @@ public class Category {
    * method of logback in addition, the call is marked with a marker named "TRACE".
    */
   public void trace(Object message, Object o) {
-    lbLogger.debug(TRACE_MARKER, prepareMessage(message), o);
+    lbLogger.debug(TRACE_MARKER, convertToString(message), o);
   }
 
   /**
@@ -173,7 +173,7 @@ public class Category {
   public void debug(Object message) {
     // casting to String as SLF4J only accepts String instances, not Object
     // instances.
-    lbLogger.debug(prepareMessage(message));
+    lbLogger.debug(convertToString(message));
   }
 
   /**
@@ -181,7 +181,7 @@ public class Category {
    * method of logback.
    */
   public void debug(Object message, Throwable t) {
-    lbLogger.debug(prepareMessage(message), t);
+    lbLogger.debug(convertToString(message), t);
   }
 
   /**
@@ -189,7 +189,7 @@ public class Category {
    * method of logback.
    */
   public void debug(Object message, Object o) {
-    lbLogger.debug(prepareMessage(message), o);
+    lbLogger.debug(convertToString(message), o);
   }
   
   /**
@@ -205,7 +205,7 @@ public class Category {
    * method of logback.
    */
   public void info(Object message) {
-    lbLogger.info(prepareMessage(message));
+    lbLogger.info(convertToString(message));
   }
 
   /**
@@ -213,7 +213,7 @@ public class Category {
    * method of logback.
    */
   public void info(Object message, Throwable t) {
-    lbLogger.info(prepareMessage(message), t);
+    lbLogger.info(convertToString(message), t);
   }
 
   /**
@@ -221,7 +221,7 @@ public class Category {
    * method of logback.
    */
   public void info(Object message, Object o) {
-    lbLogger.info(prepareMessage(message), o);
+    lbLogger.info(convertToString(message), o);
   }  
   
   /**
@@ -237,7 +237,7 @@ public class Category {
    * method of logback.
    */
   public void warn(Object message) {
-    lbLogger.warn(prepareMessage(message));
+    lbLogger.warn(convertToString(message));
   }
 
   /**
@@ -245,7 +245,7 @@ public class Category {
    * method of logback.
    */
   public void warn(Object message, Throwable t) {
-    lbLogger.warn(prepareMessage(message), t);
+    lbLogger.warn(convertToString(message), t);
   }
 
   /**
@@ -253,7 +253,7 @@ public class Category {
    * method of logback.
    */
   public void warn(Object message, Object o) {
-    lbLogger.warn(prepareMessage(message), o);
+    lbLogger.warn(convertToString(message), o);
   }
   
   /**
@@ -269,7 +269,7 @@ public class Category {
    * method of logback.
    */
   public void error(Object message) {
-    lbLogger.error(prepareMessage(message));
+    lbLogger.error(convertToString(message));
   }
 
   /**
@@ -277,7 +277,7 @@ public class Category {
    * method of logback.
    */
   public void error(Object message, Throwable t) {
-    lbLogger.error(prepareMessage(message), t);
+    lbLogger.error(convertToString(message), t);
   }
 
   /**
@@ -285,7 +285,7 @@ public class Category {
    * method of logback.
    */
   public void error(Object message, Object o) {
-    lbLogger.error(prepareMessage(message), o);
+    lbLogger.error(convertToString(message), o);
   }
   
   /**
@@ -301,7 +301,7 @@ public class Category {
    * method of logback.
    */
   public void fatal(Object message) {
-    lbLogger.error(FATAL_MARKER, prepareMessage(message));
+    lbLogger.error(FATAL_MARKER, convertToString(message));
   }
 
   /**
@@ -309,7 +309,7 @@ public class Category {
    * method of logback in addition, the call is marked with a marker named "FATAL".
    */
   public void fatal(Object message, Throwable t) {
-    lbLogger.error(FATAL_MARKER, prepareMessage(message), t);
+    lbLogger.error(FATAL_MARKER, convertToString(message), t);
   }
 
   /**
@@ -317,7 +317,7 @@ public class Category {
    * method of logback in addition, the call is marked with a marker named "FATAL".
    */
   public void fatal(Object message, Object o) {
-    lbLogger.error(FATAL_MARKER, prepareMessage(message), o);
+    lbLogger.error(FATAL_MARKER, convertToString(message), o);
   } 
   
   /**
@@ -350,7 +350,7 @@ public class Category {
     }
   }
   
-  private String prepareMessage(Object message) {
+  private final String convertToString(Object message) {
     if (message == null) {
       return (String)message;
     } else {
