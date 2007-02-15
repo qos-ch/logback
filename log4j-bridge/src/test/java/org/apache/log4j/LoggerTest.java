@@ -23,7 +23,7 @@ public class LoggerTest extends TestCase {
   ch.qos.logback.classic.Logger logbackLogger;
   org.apache.log4j.Logger log4jLogger;
 
-  public void setUp() {
+  public void setUp() throws Exception {
     context = (LoggerContext) LoggerFactory.getILoggerFactory();
     context.shutdownAndReset();
     appender = new ListAppender<LoggingEvent>();
@@ -36,15 +36,17 @@ public class LoggerTest extends TestCase {
 
     log4jLogger = org.apache.log4j.Logger.getLogger(LoggerTest.class);
     logbackLogger = context.getLogger(LoggerTest.class);
+    super.setUp();
   }
 
-  public void tearDown() {
+  public void tearDown() throws Exception {
     appender.stop();
     context.stop();
     appender = null;
     context = null;
     logbackLogger = null;
     log4jLogger = null;
+    super.tearDown();
   }
 
   public void testLogWithObjectMessages() {
