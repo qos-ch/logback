@@ -15,44 +15,47 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   public TeeHttpServletResponse(HttpServletResponse httpServletResponse) {
     super(httpServletResponse);
-    //System.out.println("TeeHttpServletResponse.constructor called");
+    // System.out.println("TeeHttpServletResponse.constructor called");
   }
 
   @Override
   public ServletOutputStream getOutputStream() throws IOException {
-    //System.out.println("TeeHttpServletResponse.getOutputStream() called");
-    if(teeServletOutputStream == null) {
-      teeServletOutputStream = new TeeServletOutputStream(
-          this.getResponse());
+    if (teeServletOutputStream == null) {
+      teeServletOutputStream = new TeeServletOutputStream(this.getResponse());
     }
     return teeServletOutputStream;
   }
 
   @Override
   public PrintWriter getWriter() throws IOException {
-    //System.out.println("TeeHttpServletResponse.getWriter() called");
+    // System.out.println("TeeHttpServletResponse.getWriter() called");
     if (this.writer == null) {
-      this.writer = new PrintWriter(new OutputStreamWriter(getOutputStream()), true);
+      this.writer = new PrintWriter(new OutputStreamWriter(getOutputStream()),
+          true);
     }
     return this.writer;
   }
 
   @Override
   public void flushBuffer() {
-    //System.out.println("TeeHttpServletResponse.flushBuffer() called");
+    // System.out.println("TeeHttpServletResponse.flushBuffer() called");
     this.writer.flush();
   }
-  
+
   byte[] getOutputBuffer() {
-    return teeServletOutputStream.getOutputBuffer();
+    // teeServletOutputStream can be null if the getOutputStream method is never called.
+    if (teeServletOutputStream != null) {
+      return teeServletOutputStream.getOutputBuffer();
+    } else {
+      return null;
+    }
   }
-  
-  
-  void  finish() throws IOException {
-    if(this.writer != null) {
+
+  void finish() throws IOException {
+    if (this.writer != null) {
       this.writer.close();
     }
-    if(this.teeServletOutputStream != null) {
+    if (this.teeServletOutputStream != null) {
       this.teeServletOutputStream.close();
     }
   }
