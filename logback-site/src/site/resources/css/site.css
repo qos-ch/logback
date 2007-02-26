@@ -6,7 +6,7 @@ html {
 body {
   background-color: #fff;
   font-family: Verdana, Arial, SunSans-Regular, Sans-Serif;
-  color:#564b47;  
+  color: #000;  
   padding:0px;
   margin:0px;
   font-size: small;
@@ -22,7 +22,7 @@ p, h2, pre {
 
 
 a { 
- color: navy;
+ color: #0000CC;
  /*font-size: smaller;*/
  background-color:transparent;
  text-decoration: none; 
@@ -44,7 +44,6 @@ a {
 }
 
 pre { 
- color: #564b47;
  background-color:transparent;
  font-family: Courier, Monaco, Monospace;
 }
@@ -55,12 +54,13 @@ pre {
  font-size: 10px;
 }
 
-h1 {
+
+h1, h2, h3, h4 {
+  color: #333;
 }
 
 h2 {
   padding-top:10px; 
-  color: #564b47;
   background-color: transparent;
 	font-weight: 900;
 	font-size: x-large;
@@ -68,7 +68,6 @@ h2 {
 
 h3 {
   padding-top:10px; 
-	color: #564b47;
 	background-color: transparent;
 	font-weight: normal;
 	font-size: large;
@@ -85,9 +84,11 @@ h4 {
 .footer {
   text-align: right;
   color: #564b47;
-  background-color: #90897a;
+  background-color: #fff;
   padding:0px;
-  margin:0px
+  border-top:  1px solid #CCCCCC;
+  margin-top: 3ex;
+	font-size: smaller;
 }
 
 
@@ -145,12 +146,12 @@ p.menu_header {
 
 #left a:hover, #right a:hover {
   border: solid 1px #FFFFFF; 
-  background-color: #0066cc; 
+   background-color: #3333CC; 
   color: #ffffff;
 }
 
 #content {
-  margin: 0px 15em 0px 16em;
+  margin: 0px 17em 0px 17em;
   padding: 0px;
   background-color: #ffffff;  
 }
@@ -218,6 +219,11 @@ table.bodyTable tr.b {
 
 .deftitle {
 	font-weight: bold;
+}
+
+
+.big {
+  font-size: 130%;
 }
 
 .green {
