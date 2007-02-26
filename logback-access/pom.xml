@@ -139,9 +139,13 @@
               <goal>translate</goal>
             </goals>
             <configuration>
-							<fileset>
-							    <basedir>${project.build.outputDirectory}</basedir>
-							</fileset> 
+              <includes>
+                <include>
+                  <directory>
+                    ${project.build.outputDirectory}
+                  </directory>
+                </include>
+              </includes>
               <destjar>
                 target/${artifactId}-${project.version}-jdk14.jar
               </destjar>
