@@ -197,51 +197,57 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	<p>
-		If a warning message is sent due to incorrect calls to the <code>doAppend()</code>
-		method, logback's powerful <code>Status</code> error reporting system is used. In case
-		several incorrect calls on <code>doAppend()</code> are issued, <code>AppenderBase</code>
-		does not send an unlimited number of warnings. Once a certain limit is reached, the
+		If a warning message is sent due to incorrect calls to the
+		<code>doAppend()</code> method, logback's powerful
+		<code>Status</code> error reporting system is used. In case
+		several incorrect calls on <code>doAppend()</code> are issued,
+		<code>AppenderBase</code> does not send an unlimited number of
+		warnings. Once a certain limit is reached, the
 		<code>AppenderBase</code> instance stops its warnings.
 	</p>
 	
 	<p>
-		The next <code>if</code> statement checks the result
-		of the attached <code>Filter</code> objects. 
-		Depending on the decision resulting from the filter chain, events can be denied or 
-		alternatively accepted. 
-		In the absence of a decision by the filter chain, events are accepted by default.
+		The next <code>if</code> statement checks the result of the
+		attached <code>Filter</code> objects.  Depending on the decision
+		resulting from the filter chain, events can be denied or
+		alternatively accepted.  In the absence of a decision by the
+		filter chain, events are accepted by default.
 	</p>
 	
 	<p>
-		Lastly, the <code>doAppend()</code> method invoke the derived classes' implementation
-		of the <code>append()</code> method, which does the actual work of appending the
-		event to the appropriate device.
+		Lastly, the <code>doAppend()</code> method invoke the derived
+		classes' implementation of the <code>append()</code> method, which
+		does the actual work of appending the event to the appropriate
+		device.
 	</p>
 	
-	<p>In appenders, the term option or property is reserved for named attributes 
-	that are dynamically inferred using JavaBeans introspection. </p>
+	<p>In appenders, the term option or property is reserved for named
+	attributes that are dynamically inferred using JavaBeans
+	introspection. </p>
 	
 	<h2>Logback Core</h2>
 	
 	<p>
-		Core is logback's central module. It offers functionnalities that are available
-		to any other module based on logback core. The <code>Appender</code> classes
-		contained in the core module are can be used by any module without any customization.
+		Core is logback's central module. It offers functionnalities that
+		are available to any other module based on logback core. The
+		<code>Appender</code> classes contained in the core module are can
+		be used by any module without any customization.
 	</p>
 	
 	<a name="WriterAppender"></a>
 	<h3>WriterAppender</h3>
 	
-	<p>
-		<a href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a> 
-		appends events to a <code>java.io.Writer</code>. 
-		This class provides basic services that other appenders build upon. 
-		Users do not usually instantiate <code>WriterAppender</code> objects directly. 
-		Since <code>java.io.Writer</code> type cannot be mapped to a string, there is no 
-		way to specify the target <code>Writer</code> object in a configuration script. 
-		Simply put, you cannot configure a <code>WriterAppender</code> from a script. 
-		However, this does not mean that <code>WriterAppender</code> lacks configurable options. 
-		These options are described next.
+	<p><a
+		href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a>
+		appends events to a <code>java.io.Writer</code>.  This class
+		provides basic services that other appenders build upon.  Users do
+		not usually instantiate <code>WriterAppender</code> objects
+		directly.  Since <code>java.io.Writer</code> type cannot be mapped
+		to a string, there is no way to specify the target
+		<code>Writer</code> object in a configuration script.  Simply put,
+		you cannot configure a <code>WriterAppender</code> from a script.
+		However, this does not mean that <code>WriterAppender</code> lacks
+		configurable options.  These options are described next.
 	</p>
 	
 	<table>
@@ -254,7 +260,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 			<td><b><span class="option">Encoding</span></b></td>
 			<td><code>String</code></td>
 			<td>
-				The encoding specifies the method of conversion between 16-bit Unicode 
+      	The encoding specifies the method of conversion between 16-bit Unicode 
 				characters into raw 8-bit bytes. This appender will use the local platform's 
 				default encoding unless you specify otherwise using the 
 				<span class="option">Encoding</span> option. 
@@ -271,17 +277,21 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 		<tr>
 			<td><b><span class="option">ImmediateFlush</span></b></td>
 			<td><code>boolean</code></td>
+
 			<td>
-				If set to true, each write of a logging event is followed by a flush operation 
-				on the underlying <code>Writer</code> object. Conversely, if the option is set to false, 
-				each write will not be followed by a flush. 
-				In general, skipping the flush operation improves logging throughput by roughly 15%. 
-				The downside is that if the application exits abruptly, the unwritten characters 
-				buffered inside the <code>Writer</code> might be lost. 
-				This can be particularly troublesome as those unwritten characters may contain 
-				crucial information needed in identifying the reasons behind a crash. 
-				By default, the <span class="option">ImmediateFlush</span> option is set to true.
-			</td>
+				If set to true, each write of a logging event is followed by a
+				flush operation on the underlying <code>Writer</code>
+				object. Conversely, if the option is set to false, each write
+				will not be followed by a flush.  In general, skipping the
+				flush operation improves logging throughput by roughly 15%.
+				The downside is that if the application exits abruptly, the
+				unwritten characters buffered inside the <code>Writer</code>
+				might be lost.  This can be particularly troublesome as those
+				unwritten characters may contain crucial information needed in
+				identifying the reasons behind a crash.  By default, the <span
+				class="option">ImmediateFlush</span> option is set to true.
+				</td>
+
 		</tr>
 	</table>
 	
@@ -3215,9 +3225,10 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
 		</ul>
 		
 		<p>
-			The <code>CountingConsoleAppender</code> can be configured like any appender. 
-			See sample file <em>logback-examples/src/main/java/chapter4/countingConsole.xml</em> 
-			for an example. 
+			The <code>CountingConsoleAppender</code> can be configured like
+			any appender.  See sample file
+			<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
+			for an example.
 		</p>
   
 
