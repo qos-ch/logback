@@ -146,7 +146,7 @@
         <dependency>
           <groupId>net.sf.retrotranslator</groupId>
           <artifactId>retrotranslator-runtime</artifactId>
-          <version>1.0.8</version>
+          <version>1.2.1</version>
           <scope>compile</scope>
          </dependency>
       </dependencies>
@@ -156,7 +156,7 @@
       		<plugin>
       			<groupId>org.codehaus.mojo</groupId>
         		<artifactId>retrotranslator-maven-plugin</artifactId>
-        		<version>1.0-SNAPSHOT</version>
+        		<version>1.0-alpha-2-SNAPSHOT</version>
         		<inherited>true</inherited>
         		<configuration>
         		  <advanced>true</advanced>
