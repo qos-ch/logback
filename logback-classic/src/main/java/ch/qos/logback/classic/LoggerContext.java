@@ -152,7 +152,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     size++;
   }
 
-  int size() {
+  synchronized int size() {
     return size;
   }
 
