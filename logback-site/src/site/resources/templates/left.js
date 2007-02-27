@@ -1,16 +1,19 @@
 
-document.write('<p class="menu_header">Logback</p>');
-document.write('<p><a href="index.html">Introduction</a>');
-document.write('<a href="' + prefix + 'news.html">News</a>');
-document.write('<a href="' + prefix + 'download.html">Download</a>');
-document.write('<a href="' + prefix + 'documentation.html">Documentation</a>');
-document.write('<a href="' + prefix + 'mailinglist.html">Mailing Lists</a>');
-document.write('<a href="' + prefix + 'repos.html">Source Repository</a>');
-document.write('<a href="' + prefix + 'bugreport.html">Bug Report</a>');
-document.write('<a href="' + prefix + 'license.html">License</a>');
-document.write('<a href="http://logback.qos.ch/translator/">Log4j Properties Translator</a>');
-document.write('<a href="' + prefix + 'team.html">Logback Team</a>');
-document.write('<a href="http://www.qos.ch/"><img src="' + prefix + 'images/logos/qosLogo.png" /></a>');
+document.write('<p class="menu_header">Logback project</p>');
+document.write('<p class="menu"><a href="index.html">Introduction</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'news.html">News</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'download.html">Download</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'documentation.html">Documentation</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'mailinglist.html">Mailing Lists</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'repos.html">Source Repository</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'bugreport.html">Bug Report</a></p>');
+document.write('<p class="menu"><a href="' + prefix + 'license.html">License</a></p>');
+document.write('<p class="menu"><a href="http://logback.qos.ch/translator/">Log4j Properties Translator</a>');
+document.write('<p class="menu"><a href="' + prefix + 'team.html">Logback Team</a></p>');
+document.write('<p><a class="x" href="http://www.qos.ch/"><img src="' + prefix + 'images/logos/qosLogo.png" /></a></p>');
+
+document.write('<span class="small">Last updated 2007-02-27</span>');
+
 document.write('</p>');
 
 

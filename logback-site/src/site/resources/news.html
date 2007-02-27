@@ -19,10 +19,21 @@ prefix='';
 </div>
 <div id="content">
 	
-			<h2>Logback News</h2>
+  <h2>Logback News</h2>
+  
+  <p>You can receive logback-related announcements by subscribing to
+  the <a
+  href="http://www.qos.ch/mailman/listinfo/logback-announce">logback
+  announce</a> mailing list.</p>
 
-		<p>Here are the latest news about logback.</p>
-		<h3>MMMM ddd, 2007 - Release of version 0.9.x</h3>
+  <hr width="80%" align="center" />
+
+		<h3>MMMM ddd, 2007 - Release of version 0.9.1</h3>
+
+    <p>Logback-class now depends on SLF4J version 1.3.0 instead of
+    1.2.</p>
+
+    <p>Numerous improvements to the documentation.</p>
 
 		<p><a href="http://bugzilla.qos.ch/show_bug.cgi?id=46">Bug #46</a>
 		reported by Mark Renyolds has been fixed. The
@@ -35,31 +46,41 @@ prefix='';
     passing an <code>Object</code> to the printing methods using the
     log4j-bridge module. </p>
 
+    <hr width="80%" align="center" />
+
 		<h3>January 31st, 2007 - Release of version 0.9</h3>
 
     <p>
-      This version contains a new component, namely the <code>ContextSelector</code>,
-      that provides context separation and management when logback is used
-      by several web-apps running under the same server. A 
-      <a href="manual/contextSelector.html">new chapter</a> was added to the logback manual to detail 
-      the use of the <code>ContextSelector</code>, along with its associated components.
+      This version contains a new component, namely the
+      <code>ContextSelector</code>, that provides context separation
+      and management when logback is used by several web-apps running
+      under the same server. A <a
+      href="manual/contextSelector.html">new chapter</a> was added to
+      the logback manual to detail the use of the
+      <code>ContextSelector</code>, along with its associated
+      components.
     </p>
     
     <p>
-      The <code>JMXConfigurator</code> has been improved. It now shows the context's
-      Status objects, which lets users check the internal state of logback.
+      The <code>JMXConfigurator</code> has been improved. It now shows
+      the context's Status objects, which lets users check the
+      internal state of logback.
     </p>
     
     <p>
-      The logback manual's chapter 2, about <a href="manual/architecture.html">logback's architecture</a>, 
-      has been updated with two sections: Under the hood and Performance.
+      The logback manual's chapter 2, about <a
+      href="manual/architecture.html">logback's architecture</a>, has
+      been updated with two sections: Under the hood and Performance.
     </p>
     
+		<hr width="80%" align="center" />
+
     <h3>January 23th, 2007 - Release of version 0.8.1</h3>
 
     <p>
-      This version contains new components in the Access module, allowing users
-      to display the full HttpServletRequest or HttpServletResponse of an access event.
+      This version contains new components in the Access module,
+      allowing users to display the full HttpServletRequest or
+      HttpServletResponse of an access event.
     </p>
     
     <p>
@@ -68,56 +89,60 @@ prefix='';
       Appenders and Layouts have been updated to document new components of logback.
     </p>
     
-    <p>
-      A demonstration webApp presenting logback's major components is available.
-      A document explains how to run it, and provides a step-by-step visit of the
-      demo.
+    <p>A demonstration webApp presenting logback's major components is
+    available.  A document explains how to run it, and provides a
+    step-by-step visit of the demo.
     </p>
     
-    <p>
-      A first translation of logback jars to JDK1.4 is present in this release.
+    <p>A first translation of logback jars to JDK1.4 is present in
+    this release.
     </p>
 
     
+		<hr width="80%" align="center" />
+
 		<h3>January 12th, 2007 - Release of version 0.8</h3>
 
-		<p>
-			This version contains a whole new chapter, namely Chapter 3, about logback
-			configuration. Several other documentation pages have been improved.
+		<p>This version contains a whole new chapter, namely Chapter 3,
+		about logback configuration. Several other documentation pages
+		have been improved.
 		</p>
 		
-		<p>
-			Logback now uses Generics in many components.
+		<p>Logback now uses Generics in many components.
 		</p>
 		
-		<p>
-			Several new components have been added to logback. A JMX Configurator now allows
-			users to see and modify loggers or reload configuration among other possibilities. 
-			A <a href="jmxConfig.html">document</a> 
-			about this configurator is available in the <a href="documentation.html">corresponding section</a> 
-			of the site. We'd like to thank Sebastian Davids for his ideas and contributions to this
-			component.
+		<p>Several new components have been added to logback. A JMX
+		Configurator now allows users to see and modify loggers or reload
+		configuration among other possibilities.  A <a
+		href="jmxConfig.html">document</a> about this configurator is
+		available in the <a href="documentation.html">corresponding
+		section</a> of the site. We'd like to thank Sebastian Davids for
+		his ideas and contributions to this component.
 		</p>
 		
-		<p>
-			A JMSTopicAppender and JMSQueueAppender are now available, as well as two new filters: LevelFilter
-			and ThresholdFilter. A refactoring was done in the filters objects to ease the implementation
-			of custom filters.
+		<p>A JMSTopicAppender and JMSQueueAppender are now available, as
+		well as two new filters: LevelFilter and ThresholdFilter. A
+		refactoring was done in the filters objects to ease the
+		implementation of custom filters.
 		</p>
 		
+		<hr width="80%" align="center" />
+
 		
 		<h3>December 19th, 2006 - Release of version 0.7.1</h3>
 		
-		<p>
-		   Version 0.7.1 of logback has been released.
+		<p>Version 0.7.1 of logback has been released.
 		</p>
 		
-		<p>
-			This version contains more detailled information about logback access module, and
-			its JMX components. A <a href="access.html">dedicated page</a> explains how to configure and use logback
-			access in Tomcat and Jetty, and access some of its components via JMX.
+		<p>This version contains more detailled information about logback
+		access module, and its JMX components. A <a
+		href="access.html">dedicated page</a> explains how to configure
+		and use logback access in Tomcat and Jetty, and access some of its
+		components via JMX.
 		</p>
 		
+    <hr width="80%" align="center" />
+
 		<h3>December 18th, 2006 - Release of version 0.7</h3>
 		
 		<p>
@@ -136,27 +161,29 @@ prefix='';
 			namely Filters and MDC, are available in the manual section.
 		</p>
 
+    <hr width="80%" align="center" />
+
 		<h3>November 30th, 2006 - Release of version 0.6</h3>
 
-    <p>
-      Version 0.6 of logback has been released.
-  </p>
+    <p>Version 0.6 of logback has been released.
+    </p>
 
-		<p>
-			Logback classic now supports automatic configuration, allowing test and production
-			environment configuration. <code>TurboFilters</code> make their first appearance
-			in a logback release. They provide ultra-fast filtering possibilities.
-			The logging context now supports listeners which will be contacted each
-			time the context is reset or started. <code>SMTPAppender</code> 
-			allows for much more flexible configuration than before.
+		<p>Logback classic now supports automatic configuration, allowing
+		test and production environment
+		configuration. <code>TurboFilters</code> make their first
+		appearance in a logback release. They provide ultra-fast filtering
+		possibilities.  The logging context now supports listeners which
+		will be contacted each time the context is reset or
+		started. <code>SMTPAppender</code> allows for much more flexible
+		configuration than before.
 		</p>
 		
 		<p>
-			In logback access, new Appenders are available, namely <code>SocketAppender</code> 
-			and <code>DBAppender</code>. 
-			Logback access now supports filtering and event evaluations. A <code>CountingFilter</code>
-			has been added. It provides statistical views of server access, reachable
-			via JMX.
+			In logback access, new Appenders are available, namely
+			<code>SocketAppender</code> and <code>DBAppender</code>.
+			Logback access now supports filtering and event evaluations. A
+			<code>CountingFilter</code> has been added. It provides
+			statistical views of server access, reachable via JMX.
 		</p>
 		
 		<p>
@@ -186,7 +213,7 @@ prefix='';
     <p>
 			This release offers a important improvements in Joran. In
 			particular, Joran can now replay configuration elements.
-  </p>
+        </p>
 
     <p>	
 			As in the previous release, a major area of work is the

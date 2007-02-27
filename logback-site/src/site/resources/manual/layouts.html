@@ -4,6 +4,8 @@
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <title>Chapter 5: Layouts</title>
 <link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+
 </head>
 <body>
 		<script>
@@ -24,29 +26,30 @@ prefix='../';
 		</div>
 
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
-						</a>
+		<table cellpadding="10">
+
+      <tr>
+        <td>
+          <a rel="license"
+             href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+            <img alt="Creative Commons License"
+                 style="border-width: 0"
+                 src="http://creativecommons.org/images/public/somerights20.png" />
+          </a>
 				</td>
 				<td>
 					<p>Copyright &#169; 2000-2006, QOS.ch</p>
 
 					<p>
 						<!--Creative Commons License-->
-						This work is licensed under a
+						This document is licensed under a
 						<a rel="license"
 							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
 							Creative Commons
 							Attribution-NonCommercial-ShareAlike 2.5
 							License
 						</a>
-						.
+						
 						<!--/Creative Commons License-->
 					</p>
 				</td>
@@ -54,67 +57,68 @@ prefix='../';
 		</table>
 
 		<div class="highlight">
-    <p>
-      In order to run the examples in this chapter, you need
-      to make sure that certain jar files are present on the
-      classpath.
-    	Please refer to the <a href="../setup.html">setup page</a>
-    	for further details.
+
+    <p>In order to run the examples in this chapter, you need to make
+    sure that certain jar files are present on the classpath.  Please
+    refer to the <a href="../setup.html">setup page</a> for further
+    details.
     </p>
     </div>
     
 		<h2>What is a layout</h2>
-		<p>
-			While appenders are responsible for writing logging output
-			to an appender dependent device, layouts are responsible for
-			the format of the output. In case you were wondering,
-			layouts have nothing to do with large estates in Florida.
-			The
-			<code>format()</code>
-			method in the 
-			<a href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a> 
-			interface takes an object that represents
-			an event (of any type) and returns a String. A synopsis of the
-			<code>Layout</code> interface is shown below.
+
+		<p>While appenders are responsible for writing logging output to
+		an appender dependent device, layouts are responsible for the
+		format of the output. In case you were wondering, layouts have
+		nothing to do with large estates in Florida.  The
+		<code>format()</code> method in the <a
+		href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a>
+		interface takes an object that represents an event (of any type)
+		and returns a String. A synopsis of the <code>Layout</code>
+		interface is shown below.
 		</p>
-		<div class="source"><pre>public interface Layout&lt;E> extends ContextAware, LifeCycle {
+
+		<div class="source">public interface Layout&lt;E> extends ContextAware, LifeCycle {
 
   String doLayout(E event);
   String getHeader();
   String getFooter();
   String getContentType();
-}</pre></div>
-		<p>
-			This interface is rather simple and yet is sufficent for
-			many formatting needs. The Texan developer from Texas,
-			who you might know from Joseph Heller's <em>Catch-22</em>, 
-			might exclaim: 
-			it just takes two methods to implement a layout!!?
+}</div>
+
+		<p>This interface is rather simple and yet is sufficent for many
+		formatting needs. The Texan developer from Texas, who you might
+		know from Joseph Heller's <em>Catch-22</em>, might exclaim: it
+		just takes five methods to implement a layout!!?
 		</p>
 
-		<h2>Logback classic</h2>
+		<h2>Logback-classic</h2>
 
-		<p>
-			Logback classic only processes events of type
+		<p>Logback-classic is wired to processes only events of type
 			<a href="../xref/ch/qos/logback/classic/spi/LoggingEvent.html">
-			<code>ch.qos.logback.classic.spi.LoggingEvent</code></a>. 
+			<code>ch.qos.logback.classic.spi.LoggingEvent</code></a>. This
+			fact will apparent for the remaining of this section.
 			</p>
 
 		<h3>Writing your own Layout</h3>
+
 		<p>
-			Let us implement a simple and functional layout for the
-			classic module which prints the time elapsed since the start
-			of the application, the level of the logging event, the
+			Let us implement a simple yet functional layout for the
+			logback-classic module that prints the time elapsed since the
+			start of the application, the level of the logging event, the
 			caller thread between brackets, its logger name, a dash followed
 			by the event message and a new line.
 		</p>
+
 		<p>Sample output might look like:</p>
+
 		<div class="source">10489 DEBUG [main] com.marsupial.Pouch - Hello world.</div>
 
 		<p>Here is a possible implementation, authored by the Texan developer:</p>
 		<em>Example 5.0: Sample implementation of a Layout
 			<a href="../xref/chapter5/MySampleLayout.html">
 			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</a></em>
+
 		<div class="source"><pre>package chapter5;
 
 import ch.qos.logback.classic.spi.LoggingEvent;

@@ -9,7 +9,7 @@ body {
 	font-size: 12px;
 }
 
-#leftColumn {
+#left, #right {
 	width: 0px;
 	height: 0px;
 	visibility:hidden;
