@@ -12,10 +12,10 @@ body {
   font-size: small;
 }
 
-p, h2, pre {
+p, pre {
  margin: 0px; 
- padding-top: 5px;
- padding-bottom: 5px;
+ padding-top: 0px;
+ padding-bottom: 0px;
  /*padding-left: 1ex;*/
  /*padding: 5px 20px 5px 20px; */
 }
@@ -60,21 +60,21 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-  padding-top:10px; 
+  padding-top: 0ex; 
   background-color: transparent;
 	font-weight: 900;
 	font-size: x-large;
 }
 
 h3 {
-  padding-top:10px; 
+  padding-top: 0ex; 
 	background-color: transparent;
 	font-weight: normal;
 	font-size: large;
 }
 
 h4 {
-  padding-top:5px; 
+  padding-top: 0ex; 
 	color: navy;
 	background-color: transparent;	
 	font-weight: large;

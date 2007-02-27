@@ -21,29 +21,30 @@ prefix='';
 	
     <h2>Log4j bridge</h2>
     
-    <p>As of version 0.7, logback ships with a new module called
+    <p>Recent versions of logback ship with a module called
     <em>log4j-bridge</em>.  It allows log4j users to use logback
-    without changing a single line of code in their application. All
-    that is needed to do is to replace the log4j.jar file with the
-    appropriate logback jars.
+    without changing <em>a single line of code</em> in their existing
+    applications by replacing the <em>log4j.jar</em> file with
+    appropriate jars, as described below.
     </p>
     
     <h3>How does it work?</h3>
 
     <p>The log4j-bridge module contains replacements of most widely
-    used log4j classes, namely <code>Category</code>,
-    <code>Level</code>, <code>Logger</code>, <code>MDC</code>,
-    <code>Priority</code>, <code>BasicConfigurator</code>
-    and <code>Log4jLoggerFactory</code>.  These
-    replacement classes redirect loggging calls to the corresponding
-    logback methods.
+    used log4j classes, namely <code>org.apache.log4j.Category</code>,
+    <code>org.apache.log4j.Logger</code>,
+    <code>org.apache.log4j.Priority</code>,
+    <code>org.apache.log4j.Level</code>,
+    <code>org.apache.log4j.MDC</code>, and
+    <code>org.apache.log4j.BasicConfigurator</code>. These replacement
+    classes redirect all work to their corresponding logback classes.
     </p>
 
     <p>
 			To use log4j-bridge in your own application, the first step is
-			to locate and remove the <em>log4j.jar</em> file and replace it
-			with <em>log4j-bridge.jar</em> which ships with logback. Note
-			that you still need logback-classic and its dependencies for the
+			to locate and then remove <em>log4j.jar</em> replacing it with
+			<em>log4j-bridge.jar</em> which ships with logback. Note that
+			you still need logback-classic and its dependencies for the
 			log4j-bridge to work properly. In summary, here is a list of the
 			required jars:
 		</p>
@@ -64,30 +65,50 @@ prefix='';
 		</ul>
 		
 		<p>
-			This is what it takes to make logback your logging implementation when using log4j.
-			It will use logback's automatic basic configuration, displaying the logging requests
-			in the console. More advanced use will require a configuration file and other jars
-			which are logback dependencies. A file called <em>logback.xml</em>, 
-			placed in the application's classpath, will be automatically loaded by logback.
-		</p>
+			In most situtations, replacing a jar file is all it takes in
+			order to migrate from log4j to logback.
+    </p>
+
+    <p>Note that as a result of this migration, log4j configuration
+    files will no longer be picked up. If you need to migrate your
+    log4j.properties file to logback, the <a
+    href="http://logback.qos.ch/translator/">log4j translator</a>
+    might be of help. For configuring logback, please refer to <a
+    href="manual/index.html">the manual</a>.
+    </p>
+
+    <p>We are happy to report that several applications are
+    using log4j-bridge in production with success.
+    </p>
+
 
     <h3>When does it not work?</h3>
     
-    <p>
-    	The <em>log4-bridge</em> module does not work when the application calls
-    	log4j components that are not present in the bridge.
-    	For examples, direct creation of log4j <code>Appenders</code> or 
-    	<code>Filters</code> will not work.
+    <p>The <em>log4-bridge</em> module will not work when the
+    application calls log4j components that are not present in the
+    bridge.  For example, direct references to log4j appenders,
+    filters or PropertyConfigurator are not supported by log4j-bridge.
+    While the number of cases where log4j-bridge is insufficient is
+    not negligible, in a large number of cases where log4j is
+    configured through a configuration file, be it
+    <em>log4j.properties</em> or <em>log4j.xml</em>, log4j-bridge is
+    sufficient to migrate your application to logback.
     </p>
-		
-		<p>
-			However, in most situations, log4j finds its configuration file and 
-			configures itself. In these cases, the application will only issue calls
-			to the classes that are contained in the <em>log4j-bridge</em>.
-		</p>
 
-	
-	
+    <h3>What about the overhead?</h3>
+
+    <p>There overhead of using log4j-bridge instead of log4j directly
+    is relatively small. Given that log4j-bridge immediately delegates
+    all work to logback, the CPU overhead should be negligible, in the
+    order of a few <em>nanoseconds</em>, i.e. neglible. There memory
+    overhead amount to an entry in a hasmap per logger, which should
+    be usually acceptable even for very large applications consisting
+    of several thousand loggers.  Moreover, given that logback is both
+    much faster and more memory-efficient, the gains made by using
+    logback should compensate for the overhead of using log4j-bridge
+    instead of log4j directly.</p>
+
+    
 	
 	
 <script src="templates/footer.js"></script>

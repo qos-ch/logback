@@ -1,7 +1,4 @@
 
-/*document.write('<p class="menu_header"></p>')
-document.write('<p><a href="http//www.slf4j.org">Sister Project: SLF4J</a>')
-document.write('<a href="."></a>')
-document.write('<a href=".">log4j configration ttnaslator</a>')
-document.write('<a href=".">xxxxxxxxxxx</a>')
-document.write('</p>')*/
+document.write('<p class="menu_header">New and noteworthy</p>')
+document.write('<p><a href="10reasons.ppt">10 reasons for migrating</a>')
+document.write('</p>')
