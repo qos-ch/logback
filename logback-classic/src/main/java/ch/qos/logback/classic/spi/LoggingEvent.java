@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.slf4j.Marker;
-import org.slf4j.impl.MessageFormatter;
+import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.slf4j.impl.MarkerIgnoringBase;
+import org.slf4j.helpers.MarkerIgnoringBase;
 
 import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.Level;

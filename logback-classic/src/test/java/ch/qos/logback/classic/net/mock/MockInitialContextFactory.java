@@ -10,14 +10,18 @@ public class MockInitialContextFactory implements InitialContextFactory {
   static MockInitialContext mic;
 
   static {
+    System.out.println("MockInitialContextFactory static called");
+    initialize();
+  }
+ 
+  public static void initialize() {
     try {
       mic = new MockInitialContext();
     } catch (NamingException e) {
       e.printStackTrace();
     }
-
   }
-
+  
   public Context getInitialContext(Hashtable<?, ?> environment)
       throws NamingException {
     return mic;

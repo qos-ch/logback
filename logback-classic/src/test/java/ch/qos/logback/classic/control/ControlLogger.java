@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.control;
 
-import org.slf4j.impl.MarkerIgnoringBase;
+import org.slf4j.helpers.MarkerIgnoringBase;
 
 import ch.qos.logback.classic.Level;
 

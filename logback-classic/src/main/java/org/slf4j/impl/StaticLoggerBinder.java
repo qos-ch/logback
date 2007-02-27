@@ -11,9 +11,16 @@ package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.Util;
 import org.slf4j.spi.LoggerFactoryBinder;
 
+import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.selector.ContextJNDISelector;
+import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.selector.DefaultContextSelector;
+import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * 
@@ -24,30 +31,61 @@ import ch.qos.logback.classic.LoggerContext;
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
+  private ContextSelector contextSelector;
+
   /**
    * The unique instance of this class.
    */
   public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
-  private static final String loggerFactoryClassStr = LoggerContext.class
+  private static final String loggerFactoryClassStr = ContextSelector.class
       .getName();
 
-  /**
-   * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
-   * method should always be the same object
-   */
-  private final ILoggerFactory loggerFactory;
-
   private StaticLoggerBinder() {
-    LoggerContext lc = new LoggerContext();
-    lc.setName("default");
-    loggerFactory = lc;
+    initialize();
+  }
+
+  public void initialize() {
+    try {
+      // let's configure a default context
+      LoggerContext defaultLoggerContext = new LoggerContext();
+      defaultLoggerContext.setName("default");
+      ContextInitializer.autoConfig(defaultLoggerContext);
+
+      // See if a special context selector is needed
+      String contextSelectorStr = OptionHelper.getSystemProperty(
+          ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
+      if (contextSelectorStr == null) {
+        contextSelector = new DefaultContextSelector(defaultLoggerContext);
+      } else if (contextSelectorStr.equals("JNDI")) {
+        // if jndi is specified, let's use the appropriate class
+        contextSelector = new ContextJNDISelector(defaultLoggerContext);
+      }
+    } catch (Exception e) {
+      // we should never get here
+      Util.reportFailure("Failed to instantiate ["
+          + LoggerContext.class.getName() + "]", e);
+    }
   }
 
   public ILoggerFactory getLoggerFactory() {
-    return loggerFactory;
+    if (contextSelector == null) {
+      throw new IllegalStateException(
+          "contextSelector cannot be null. See also http://logback.qos.ch/codes.html#null_CS");
+    }
+    return contextSelector.getLoggerContext();
   }
 
   public String getLoggerFactoryClassStr() {
     return loggerFactoryClassStr;
   }
+
+  /**
+   * Return the {@link ContextSelector} instance in use.
+   * 
+   * @return the ContextSelector instance in use
+   */
+  public ContextSelector getContextSelector() {
+    return contextSelector;
+  }
+
 }

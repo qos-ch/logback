@@ -20,6 +20,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
@@ -56,7 +57,7 @@ public class LoggerContextFilter implements Filter {
       FilterChain chain) throws IOException, ServletException {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    ContextSelector selector = LoggerFactory.getContextSelector();
+    ContextSelector selector = StaticLoggerBinder.SINGLETON.getContextSelector();
     ContextJNDISelector sel = null;
 
     if (selector instanceof ContextJNDISelector) {

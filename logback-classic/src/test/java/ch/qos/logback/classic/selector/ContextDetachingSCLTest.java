@@ -2,8 +2,8 @@ package ch.qos.logback.classic.selector;
 
 import junit.framework.TestCase;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.net.mock.MockInitialContext;
@@ -19,10 +19,11 @@ public class ContextDetachingSCLTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     System.setProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, "JNDI");
-    LoggerFactory.setup();
+    //LoggerFactory.setup();
     
     listener = new ContextDetachingSCL();
     
+    MockInitialContextFactory.initialize();
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "toto");
     
@@ -30,8 +31,7 @@ public class ContextDetachingSCLTest extends TestCase {
     System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
     
     //this call will create the context "toto"
-    @SuppressWarnings("unused")
-    Logger logger = LoggerFactory.getLogger(ContextDetachingSCLTest.class);
+    LoggerFactory.getLogger(ContextDetachingSCLTest.class);
 
     super.setUp();
   }
@@ -43,19 +43,21 @@ public class ContextDetachingSCLTest extends TestCase {
   }
   
   public void testDetach() {
-    ContextJNDISelector selector = (ContextJNDISelector) LoggerFactory.getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.SINGLETON.getContextSelector();
     listener.contextDestroyed(null);
-    
     assertEquals(0, selector.getCount());
   }
   
   public void testDetachWithMissingContext() {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "tata");
-    
-    ContextJNDISelector selector = (ContextJNDISelector) LoggerFactory.getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.SINGLETON.getContextSelector();
+    assertEquals("tata", selector.getLoggerContext().getName());
+
+    mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "titi");
+    assertEquals("titi", selector.getLoggerContext().getName());
     listener.contextDestroyed(null);
-    
+
     assertEquals(1, selector.getCount());
   }
   
