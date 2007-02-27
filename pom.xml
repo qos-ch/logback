@@ -37,8 +37,8 @@
   </dependencies>
   
   <properties>
-    <!-- slf4j.version property is used by setClasspath.cmd -->
-    <slf4j.version>1.2</slf4j.version>   
+    <!-- slf4j.version property is used below and in setClasspath.cmd -->
+    <slf4j.version>1.3.0</slf4j.version>   
     <retrotranslator.verify>false</retrotranslator.verify>
   </properties>
   
