@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Logback Access</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+	<script>
+prefix='';	
+</script>
+
+<script src="templates/header.js"></script>
+<div id="left">
+  <script src="templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/right.js"></script>
+</div>
+<div id="content">  
+	
+			<h2>Access log with logback, Jetty and Tomcat</h2>
+		<div class="author">
+			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
+		</div>
+
+
+		<table>
+			<tr>
+				<td valign="top" align="top">
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							<img alt="Creative Commons License"
+								style="border-width: 0"
+								src="http://creativecommons.org/images/public/somerights20.png" />
+						</a>
+				</td>
+				<td>
+					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+
+					<p>
+						<!--Creative Commons License-->
+						This work is licensed under a
+						<a rel="license"
+							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
+							Creative Commons
+							Attribution-NonCommercial-ShareAlike 2.5
+							License
+						</a>
+						.
+						<!--/Creative Commons License-->
+					</p>
+				</td>
+			</tr>
+		</table>
+
+
+		<h2>Introduction</h2>
+
+		<p>
+			Logback was designed as a modular framework from the start. Being
+			able to use logback's internal core in many situations, without
+			heavy coding or complex specific configuration was one of our
+			goals.
+		</p>
+
+		<p>
+			Lobgack access integrates with Servlet containers such as Jetty
+			and Tomcat to provide HTTP-access log functionality.
+		</p>
+
+		<h2>Logback Access and Tomcat</h2>
+		
+		<p>
+			To use logback-access with Tomcat, after downlading the logback
+			distribution, place the files <em>logback-core-VERSION.jar</em>
+			and <em>logback-access-VERSION.jar</em> under $TOMCAT_HOME/server/lib
+			directory, where $TOMCAT_HOME is the folder where you have
+			installed Tomcat. We have tested logback-access module with Tomcat
+			version 5.5.20.
+		</p>
+		
+		<h3>LogbackValve</h3>
+
+		<p>
+			The <a href="xref/ch/qos/logback/access/tomcat/LogbackValve.html">
+			<code>ch.qos.logback.access.tomcat.LogbackValve</code></a>
+			class extends Tomcat's <code><a
+			href="http://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/valves/ValveBase.html">
+			ValveBase</a></code>
+			class. This class is used to allow external
+			components to be integrated into Tomcat.
+		</p>
+	
+		<p>
+			To configure Tomcat in order to use
+			<code>LogbackValve</code>,  add the following lines
+			to the tomcat server configuration file, namely <em>$TOMCAT_HOME/conf/server.xml</em>:
+		</p>
+		<div class="source"><pre>&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/></pre></div>
+		<p>
+			This line need to be nested in an <em>Engine</em> element.
+		</p>
+		<p>
+			By default, <code>LogbackValve</code> looks for a logback
+			configuration file called <em>logback-access.xml</em>, in the
+			same folder where <em>server.xml</em> is located, that is
+			in <em>$TOMCAT_HOME/conf/</em>. This
+			configuration file contains directives for configuring logback
+			components. Among others, you can specify the appenders where
+			the logging requests will be sent, and their format. Please refer
+			to the description below about logback access configuration for examples.
+	</p>
+		
+		<h2>Logback Access and Jetty</h2>
+
+		<p>
+			To use logback-access with Jetty, after downlading the logback
+			distribution, place the files <em>logback-core-VERSION.jar</em>
+			and <em>logback-access-VERSION.jar</em> under $JETTY_HOME/lib
+			directory, where $JETTY_HOME is the folder where you have
+			installed Jetty. We have tested logback-access module with Jetty
+			version 6.0.1.
+		</p>
+
+		<h3>Logback's RequestLog implementation</h3>
+
+		<p>
+			The <a href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
+			<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a>
+			class implements jetty's <code><a
+			href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
+			interface. This interface is used by Jetty to allow external
+			components to manage request logging.
+		</p>
+
+		<p>
+			In logback, logging destinations are called Appenders. These classes
+			can be attached directly to <code>RequestLogImpl</code>.
+		</p>
+
+	
+		<p>
+			To configure jetty in order to use logback's
+			<code>RequestLogImpl</code>,  add the following lines
+			to the jetty configuration file, namely <em>$JETTY_HOME/etc/jetty.xml</em>:
+		</p>
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New id="requestLogImpl"
+      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+    &lt;/New&gt;
+  &lt;/Set&gt;
+&lt;/Ref&gt;</pre></div>
+		<p>
+			These lines reference the requestLog functionnality of Jetty, setting
+			the actual class that will be called at each logging request.
+		</p>
+		<p>
+			By default, <code>RequestLogImpl</code> looks for a logback
+			configuration file called <em>logback-access.xml</em>, in the
+			same folder where <em>jetty.xml</em> is located. This
+			configuration file contains directives for configuring logback
+			components. Among others, you can specify the appenders where
+			the logging requests will be sent, and their format.
+	</p>
+	
+		<p>As long the path is specified, you can place the logback
+	configuration file in any location. Here is another example of
+	jetty configuration file, with a path to the logback access
+	configuration file.
+		</p>
+		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New id="requestLogImpl"
+      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+    &lt;/New&gt;
+    &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
+  &lt;/Set&gt;
+&lt;/Ref&gt;</pre></div>
+
+	<h2>Logback Access Configuration</h2>
+	
+  <p>Altough similar, the <em>logback-access.xml</em> file is slightly
+  different than the usual logback classic configuration file.
+  Appenders and Layouts are declared the exact same way. However, in
+  the access module there is no notion of loggers and consequently
+  loggers elements are disallowed in configuraiton files for
+  logback-access.
+	</p>
+
+    <h3>Example 1: basic logback-access configuration</h3>
+		<p>
+			Here is a sample <em>logback-access.xml</em> file that you can
+			immediately put to use:
+		</p>
+<div class="source"><pre>&lt;configuration&gt;
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout
+      class="ch.qos.logback.access.PatternLayout"&gt;
+      &lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+
+  &lt;appender-ref ref="STDOUT" /&gt;
+&lt;/configuration&gt;</pre></div>
+		<p>
+		It declares a <code>ConsoleAppender</code> which directs its
+		output at the console.  The <code>ConsoleAppender</code> contains
+		a <code>PatternLayout</code> format the output. The log format is
+		specied using the %h %l %u %user %date "%r" %s %b" pattern which
+		is the Commong Log Format (CLF). This format is recognized by log
+		analysers such as <a href="http://www.analog.cx/">Analog</a> or <a
+		href="http://awstats.sourceforge.net/">AWStats</a>.
+		</p>
+
+    <p>Instead of specifying the complete pattern, the word "common"
+    or "clf" can be used as a shorthand. Thus, the following are all
+    equivalent
+    </p>
+    
+    <div class="source"><pre>&lt;Pattern>%h %l %u %user %date "%r" %s %b&lt;/Pattern&gt;
+&lt;Pattern>common&lt;/Pattern&gt;
+&lt;Pattern>clf&lt;/Pattern&gt;</pre></div>
+
+  <p>The so called "combined" format is also widely recognized. It is
+  defined as the '%h %l %u %t "%r" %s %b "%i{Referer}"
+  "%i{User-Agent}"' pattern. As a facilitator, you can use the
+  "combined" as a shorthand. Thus, the following directive
+  </p>
+
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  &lt;Pattern>%h %l %u %t "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/Pattern&gt;
+&lt;/layout&gt;</pre></div>
+
+  <p>is equivalent to:</p>
+
+  <div class="source"><pre>&lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+  &lt;Pattern>combined&lt;/Pattern&gt;
+&lt;/layout&gt;</pre></div>
+
+
+    <h3>Example 2: RollingFileAppender</h3>
+
+		<p>Another configuration file, using logback'
+		<code>RollingFileAppender</code>, could be:</p>
+<div class="source"><pre>&lt;configuration&gt;
+  &lt;appender name="FILE"
+    class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+    &lt;File&gt;access.log"&lt;/File&gt;
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"&gt;
+      &lt;FileNamePattern&gt;access.%d{yyyy-MM-dd}.log.zip&lt;/FileNamePattern&gt;
+    &lt;/rollingPolicy&gt;
+
+    &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;
+      &lt;Pattern"&gt;combined&lt;/Pattern"&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+ 
+  &lt;appender-ref ref="FILE" /&gt;
+&lt;/configuration&gt;</pre></div>
+
+		<p>
+			Here, there is no output to the console. Instead, logback access
+			logs to the file named access.log. This file will be rolled over
+			every 24 hours. We specify in the configuration the name of the file
+			where the actual logging is added, and the pattern that the archived
+			files must match.
+			The newly archived file will be automatically compressed.
+		</p>
+		
+    <p>
+			These two configuration examples should give you an idea of the
+			possibilities offered by the logback-access module. In
+			principle, most of the things that you can do with
+			logback-classic module are equally possible with logback-access.
+		</p>
+
+    <h3>PatternLayout</h3>
+
+		<p>
+			An http-specific implementation of <code>PatternLayout</code> is
+			included in the access module.  The <a
+			href="xref/ch/qos/logback/access/PatternLayout.html">
+			<code>ch.qos.logback.access.PatternLayout</code></a> provides a
+			way to format the logging output that is just as easy and
+			flexible as the <code>PatternLayout</code> found in logback
+			classic.
+		</p>
+		
+		<p>
+			For detailled instructions on how to use the <code>PatternLayout</code> for
+			logback access, please refer to the 
+			<a href="manual/layouts.html#AccessPatternLayout">corresponding chapter</a> 
+			of the logback manual.
+		</p>
+		
+		<h2>JMX Components</h2>
+		
+		<p>Logback access easily integrates with JMX servers to publish useful information
+		about some of its components.
+		</p>
+		
+		<p>
+			Both <code>RequestLogImpl</code> and <code>LogbackValve</code> can be
+			published and modified via JMX. A special filter, that we will cover
+			further down this document, publishes statistical views of access logs.
+		</p>
+		
+		
+		<h3>Configuring Tomcat</h3>
+		
+		<p>
+			Accessing JMX components with Tomcat requires to add the following lines
+			to the <em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
+		</p>
+		
+<div class="source"><pre>CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"</pre></div>
+
+		<p>
+			Once started with these options, Tomcat's JMX compoenents can be accessed
+			with JConsole by issuing the following command in a shell:
+		</p>
+<div class="source"><pre>jconsole &amp;</pre></div>
+
+		<p>
+			The user might prefer to access her components via a web-based solution using MX4J. 
+			In that case, here are the required steps:
+		</p>
+		
+		<p>
+			First, <a href="http://mx4j.sourceforge.net/">download MX4J</a>. 
+			Place the <em>mx4j-impl.jar</em> file in
+			the <em>$TOMCAT_HOME/bin/</em> directory, and the <em>mx4j-tools.jar</em>
+			in the <em>$TOMCAT_HOME/common/lib/</em> directory.
+		</p>
+		
+		<p>Then, add the following lines to the
+		<em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
+		</p>
+
+<div class="source"><pre>&lt;!-- at the beginning of the file -->
+CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+CATALINA_OPTS="$CATALINA_OPTS -Djavax.management.builder.initial=mx4j.server.MX4JMBeanServerBuilder"
+
+&lt;!-- in the "Add on extra jar files to CLASSPATH" section -->
+CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
+
+		<p>
+			Finally, declare a new <code>Connector</code> in the
+			<em>$TOMCAT_HOME/conf/server.xml</em> file:
+		</p>
+		
+<div class="source"><pre>&lt;Connector port="8050" 
+  handler.list="mx"
+  mx.enabled="true" 
+  mx.httpHost="localhost" 
+  mx.httpPort="8082" 
+  protocol="AJP/1.3" /></pre></div>
+  
+  	<p>
+  		Once Tomcat is started, you should be ableo to reach the JMX components by
+  		pointing a browser to the following URL:
+  	</p>
+
+<div class="source"><pre>http://host_name:8082/</pre></div>
+
+		<h3>Configuring Jetty</h3>
+		
+		<p>
+			Configuring Jetty to publish JMX components requires a few modifications to the
+			<em>$JETTY_HOME/etc/jetty.xml</em> configuration file. Here are the elements that need to be
+			added:
+		</p>
+
+<div class="source"><pre>&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer"/>
+&lt;!-- initialize the Jetty MBean container -->
+&lt;Get id="Container" name="container">
+  &lt;Call name="addEventListener">
+    &lt;Arg>
+      &lt;New class="org.mortbay.management.MBeanContainer">
+        &lt;Arg>&lt;Ref id="MBeanServer"/>&lt;/Arg>
+        &lt;Set name="managementPort">8082&lt;/Set>
+        &lt;Call name="start" />
+      &lt;/New>
+    &lt;/Arg>
+  &lt;/Call>
+&lt;/Get></pre></div>
+
+		<p>
+			Once Jetty is started with this configuration, all available components can be reviewed
+			at this address:
+		</p>
+<div class="source"><pre>http://host_name:8082/</pre></div>
+
+		<p>
+			Logback's <code>RequestLogImpl</code> is available, and its <code>start()</code>
+			and <code>stop()</code> method can be called.
+		</p>
+
+
+		<h3>CountingFilter</h3>
+		
+		<p>
+			Logback can provide a statistical view of the accesses to the server. This is done by using the
+			<a href="xref/ch/qos/logback/access/filter/CountingFilter.html"><code>CountingFilter</code></a> class.
+		</p>
+		
+		<p>
+			To use the <code>CountingFilter</code>, one just needs to declare it, like any
+			other filter:
+		</p>
+
+<div class="source"><pre>&lt;configuration>
+  <b>&lt;filter class="ch.qos.logback.access.filter.CountingFilter">
+    &lt;name>countingFilter&lt;/name>
+  &lt;/filter></b>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.access.PatternLayout">
+      &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;appender-ref ref="STDOUT" />
+&lt;/configuration></pre></div>
+
+		<p>
+			This component registers itself to the JMX server and publishes
+			the following statistical figures:
+		</p>
+		
+		<ul>
+			<p>Minute average</p>
+			<p>Last minute's count</p>
+			<p>Hourly average</p>
+			<p>Last hour's count</p>
+			<p>Daily average</p>
+			<p>Last day's count</p>
+			<p>Weekly average</p>
+			<p>Last week's count</p>
+			<p>Monthly average</p>
+			<p>Last month's count</p>
+			<p>Total accesses</p>
+		</ul>
+<script src="templates/footer.js"></script>
+</div>
+</body>
+</html>
