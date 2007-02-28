@@ -1,18 +1,29 @@
 html { 
-/*  padding:0px;
-  margin:0px; */
+  padding:0px;
+  margin:0px;
 }
 
 body {
   background-color: #fff;
   font-family: Verdana, Arial, SunSans-Regular, Sans-Serif;
   color: #000;  
-  padding: 0px;
-  margin: 0px;
+  padding:0px;
+  margin:0px;
+  font-size: small;
 }
+
+p, h2, pre {
+ margin: 0px; 
+ padding-top: 5px;
+ padding-bottom: 5px;
+ /*padding-left: 1ex;*/
+ /*padding: 5px 20px 5px 20px; */
+}
+
 
 a { 
  color: #0000CC;
+ /*font-size: smaller;*/
  background-color:transparent;
  text-decoration: none; 
 }
@@ -21,9 +32,6 @@ a {
  text-decoration: underline;
 }
 
-div.source {
- margin-top: 1em;
-}
 .source { 
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
@@ -32,12 +40,10 @@ div.source {
   padding-bottom: 0.5ex;
   padding-top: 0.5ex;
   padding-left: 1ex;
-  white-space: pre;
+  /*white-space: pre;*/
 }
 
 pre { 
- padding: 0px;
- margin: 0px; 
  background-color:transparent;
  font-family: Courier, Monaco, Monospace;
 }
@@ -54,21 +60,21 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-  padding-top: 0ex; 
+  padding-top:10px; 
   background-color: transparent;
 	font-weight: 900;
 	font-size: x-large;
 }
 
 h3 {
-  padding-top: 0ex; 
+  padding-top:10px; 
 	background-color: transparent;
 	font-weight: normal;
 	font-size: large;
 }
 
 h4 {
-  padding-top: 0ex; 
+  padding-top:5px; 
 	color: navy;
 	background-color: transparent;	
 	font-weight: large;
@@ -86,16 +92,6 @@ h4 {
 }
 
 
-p.menu {
- padding-top: 0px;
- padding-bottom: 0px; 
- margin-top: 0px;
- margin-bottom: 0px;
-}
-
-.small { 
-	font-size: smaller;
-}
 
 strong { 
   /*font-size: 13px;*/
@@ -123,7 +119,9 @@ strong {
   color: #564b47;
   margin: 4px 0px 0px 4px; 
   padding: 0px;
+  /* background-color: #ffffff;    */
   border: 1px solid #cccccc;
+  /*  background-color: #ffcc99; */
   background-color: #ffffff;
 }
 
@@ -148,14 +146,9 @@ p.menu_header {
 
 #left a:hover, #right a:hover {
   border: solid 1px #FFFFFF; 
-  background-color: #3333CC; 
+   background-color: #3333CC; 
   color: #ffffff;
 }
-
-#left a:hover.x {
-  background-color: #fff; 
-}
-
 
 #content {
   margin: 0px 17em 0px 17em;
@@ -260,7 +253,7 @@ code {
 }
 
 .highlight {
-  width: 300px;
+   width: 300px;
   float: right;	
   display: inline;
   font-weight: bolder;

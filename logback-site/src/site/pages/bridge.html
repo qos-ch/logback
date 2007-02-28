@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Log4j Bridge</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+	<script>
+prefix='';	
+</script>
+
+<script src="templates/header.js"></script>
+<div id="left">
+  <script src="templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/right.js"></script>
+</div>
+<div id="content">
+	
+    <h2>Log4j bridge</h2>
+    
+    <p>As of version 0.7, logback ships with a new module called
+    <em>log4j-bridge</em>.  It allows log4j users to use logback
+    without changing a single line of code in their application. All
+    that is needed to do is to replace the log4j.jar file with the
+    appropriate logback jars.
+    </p>
+    
+    <h3>How does it work?</h3>
+
+    <p>The log4j-bridge module contains replacements of most widely
+    used log4j classes, namely <code>Category</code>,
+    <code>Level</code>, <code>Logger</code>, <code>MDC</code>,
+    <code>Priority</code>, <code>BasicConfigurator</code>
+    and <code>Log4jLoggerFactory</code>.  These
+    replacement classes redirect loggging calls to the corresponding
+    logback methods.
+    </p>
+
+    <p>
+			To use log4j-bridge in your own application, the first step is
+			to locate and remove the <em>log4j.jar</em> file and replace it
+			with <em>log4j-bridge.jar</em> which ships with logback. Note
+			that you still need logback-classic and its dependencies for the
+			log4j-bridge to work properly. In summary, here is a list of the
+			required jars:
+		</p>
+
+		<ul>
+			<li>
+				log4j-bridge-<em>VERSION</em>.jar
+			</li>
+			<li>
+				logback-classic-<em>VERSION</em>.jar
+			</li>
+			<li>
+				logback-core-<em>VERSION</em>.jar
+			</li>
+			<li>
+				slf4j-api-<em>VERSION</em>.jar
+			</li>
+		</ul>
+		
+		<p>
+			This is what it takes to make logback your logging implementation when using log4j.
+			It will use logback's automatic basic configuration, displaying the logging requests
+			in the console. More advanced use will require a configuration file and other jars
+			which are logback dependencies. A file called <em>logback.xml</em>, 
+			placed in the application's classpath, will be automatically loaded by logback.
+		</p>
+
+    <h3>When does it not work?</h3>
+    
+    <p>
+    	The <em>log4-bridge</em> module does not work when the application calls
+    	log4j components that are not present in the bridge.
+    	For examples, direct creation of log4j <code>Appenders</code> or 
+    	<code>Filters</code> will not work.
+    </p>
+		
+		<p>
+			However, in most situations, log4j finds its configuration file and 
+			configures itself. In these cases, the application will only issue calls
+			to the classes that are contained in the <em>log4j-bridge</em>.
+		</p>
+
+	
+	
+	
+	
+<script src="templates/footer.js"></script>
+</div>
+</body>
+</html>

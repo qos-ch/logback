@@ -25,12 +25,12 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>src/site/resources</directory>
+				<directory>src/site/pages</directory>
 				<!-- 
-					We're saving filtered xdocs in a temporary folder
-					and telling the site plug in to get the xdocs there.
+					We're saving filtered html docs in a temporary folder
+					and telling the site plug in to get the docs there.
 				-->
-        <targetPath>generated-site</targetPath>
+        <targetPath>../../../target/site</targetPath>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
@@ -43,10 +43,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
-					<xdocDirectory>
+					<!--<xdocDirectory>
 						${project.build.outputDirectory}/generated-site
 					</xdocDirectory>
-					<outputDirectory>${project.parent.basedir}/target/site</outputDirectory>
+					--><outputDirectory>${project.parent.basedir}/target/site</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
