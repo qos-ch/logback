@@ -25,10 +25,7 @@ public class SampleLogging {
     }
     
     logger.debug("Everything's going well");
-    logger.info("Everything's going well info");
-    logger.warn("Everything's going well warn");
-    
-    logger.error("... not quite error");
+    logger.error("maybe not quite...");
   }
 
 }
