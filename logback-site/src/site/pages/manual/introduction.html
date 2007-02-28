@@ -57,20 +57,20 @@ prefix='../';
 
     <p>
     	Logback is intended as a successor to the popular log4j project.
-    	It was designed by Ceki G&#252;lc&#252;, the log4j founder. 
-      It builds upon a decade long experience gained in
-    	designing industrial-strength logging systems. The resulting
-    	product, logback is faster with a smaller footprint than all
-    	existing logging systems, sometimes by a wide margin. Logback
-    	also offers unique and rather useful features such as Markers,
-    	parameterized logging statements, conditional stack tracing and
-    	powerful event filtering. These are only few examples of useful
-    	features logback has to offer. For its own error reporting,
-    	logback relies on <code>Status</code> objects, which greatly
-    	facilitate troubleshooting. You may wish to rely on Status
-    	objects in contexts other than logging. Logback-core bundles
-    	Joran, a powerful and generic configuration system, which can be
-    	put to use in your own projects to great effect.
+    	It was designed by Ceki G&#252;lc&#252;, log4j's founder.  It
+    	builds upon a decade long experience gained in designing
+    	industrial-strength logging systems. The resulting product,
+    	logback is faster with a smaller footprint than all existing
+    	logging systems, sometimes by a wide margin. Logback also offers
+    	unique and rather useful features such as Markers, parameterized
+    	logging statements, conditional stack tracing and powerful event
+    	filtering. These are only few examples of useful features
+    	logback has to offer. For its own error reporting, logback
+    	relies on <code>Status</code> objects, which greatly facilitate
+    	troubleshooting. You may wish to rely on Status objects in
+    	contexts other than logging. Logback-core bundles Joran, a
+    	powerful and generic configuration system, which can be put to
+    	use in your own projects to great effect.
     </p>
 
     <h2>First Baby Step</h2>
@@ -239,30 +239,27 @@ public class HelloWorld2 {
   <a name="BuildingLogback"></a>
   <h3>Building logback</h3>  
   
-<p>
-Like many java applications today, logback relies on <a href="http://maven.apache.org">
-Maven 2</a> as its build tool. Maven 2 is a free open source build tool that requires
-one or more build files names <em>pom.xml</em> which already ship with logback
-distributions.
-</p>
+  <p>Like many java applications today, logback relies on <a
+  href="http://maven.apache.org"> Maven 2</a> as its build tool. Maven
+  2 is a free open source build tool that requires one or more build
+  files names <em>pom.xml</em> which already ship with logback
+  distributions.
+  </p>
 
-<p>
-Building all logback components is mostly done by issuing the <em>mvn compile</em>
-line in a terminal or command window. Maven 2 will automatically download the required
-external libraries and use them. However, a library cannot be downloaded from
-the Maven 2 repository. Libraries such as <code>JMS</code>
-from sun require a separate download and to issue a command to install their
-jars into your local repository. The required command will be presented
-by Maven 2 in your console when trying to compile logback.
-</p>
+  <p>Building all logback modules is mostly done by issuing the
+  <em>mvn package</em> line in a terminal or command window. Maven
+  will automatically download the required external libraries and use
+  them. However, certain artefacts cannot be downloaded from the
+  Maven2 repository. Libraries such as <code>JMS</code> from SUN Inc.
+  need to be downloaded and installed separately into your local
+  repository.
+  </p>
 
-<p>
-Logback distributions contain complete source code such that you can modify parts 
-of logback library and build your own version of it. You may even 
-redistribute the modified version, as long as you adhere to the conditions 
-of the LGPL License. In particular you may not call the modified version <em>logback</em> 
-or claim that it is endorsed by the QOS.ch.
-</p>
+  <p>Logback distributions contain complete source code such that you
+  can modify parts of logback library and build your own version of
+  it. You may even redistribute the modified version, as long as you
+  adhere to the conditions of the LGPL License. 
+  </p>
 
 
 

@@ -143,42 +143,49 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 }</pre></div>
 
 		<p>
-			Note that
-			<code>MySampleLayout</code>
-			extends <a href="../xref/ch/qos/logback/core/LayoutBase.html">
-			<code>LayoutBase</code></a>. 
-			This class manages trivial components of a <code>Layout</code>
-			such as started or stopped status, header, footer and
-			content type access or logging context awareness. It allows
-			the developer to concentrate on the formatting she expects
-			from her <code>Layout</code>. Note that the <code>LayoutBase</code>
-			class is generic. By extending it, we precise the type that it will
-			have to handle, by adding <em>&lt;LoggingEvent></em> after its declaration.
+			Note that <code>MySampleLayout</code> extends <a
+			href="../xref/ch/qos/logback/core/LayoutBase.html">
+			<code>LayoutBase</code></a>.  This class manages state shared by
+			all <code>Layout</code> classes, such as whether the layout is
+			started or stopped, header, footer and content type data. It
+			allows the developer to concentrate on the formatting she
+			expects from her <code>Layout</code>. Note that the
+			<code>LayoutBase</code> class is generic. In its class
+			declaration, <code>MySampleLayout</code> extends a typed
+			<code>LayoutBase</code>,
+			<code>LayoutBase&lt;LoggingEvent&gt;</code>, instead of generic
+			one.
 		</p>
 		
-		<p>The marginally more interesting <code>doLayout(LoggingEvent event)</code> 
-		method begins by instantiating a StringBuffer. It proceeds by adding various 
-		fields of the event parameter. The Texan from Texas was careful to print 
-		the formatted form of the message and not its object form. 
-		This allows for logging requests which are passed object arrays to
-		build the message in its proper form.
+		<p>The <code>doLayout(LoggingEvent event)</code> method, i.e. the
+		only method in <code>MySampleLayout</code>, begins by
+		instantiating a <code>StringBuffer</code>. It proceeds by adding
+		various fields of the event parameter. The Texan from Texas was
+		careful to print the formatted form of the message. This is
+		important when there are one or more parameters passed along with
+		the logging request.
 		</p>
-		<p>
-			In the above listing of the <code>Layout</code> class, 
-			we had omitted the class static <code>LINE_SEP</code>
-			field which is simply assigned the value returned by
-			<code>System.getProperty("line.separator")</code>
-			method. After adding system dependent line separator
-			character(s), the format method returns the string buffer as
-			a String.
-		</p>
-		<p>
-			The <code>doLayout</code> method ignores any eventual exceptions contained
-			in the event. In a real world layout implementation, you would probably not want
-			to silently ignore exceptions.
+		
+    <p>In the above listing of the <code>Layout</code> class, the
+    <code>LINE_SEP</code> field is inherited from the
+    <code>Layout</code> interface. It refers to the value returned by
+    <code>System.getProperty("line.separator")</code> method, that is
+    system dependent line separator character(s). After adding these
+    system dependent character(s), the <code>doLayout()</code> method
+    converts <code>sbuf</code> to <code>String</code> and returns the
+    resulting value.
 		</p>
 
-		<p>Custom layouts are configured as any other layout, as shown below:</p>
+		<p>In the above example, the <code>doLayout</code> method ignores
+		any eventual exceptions contained in the event. In a real world
+		layout implementation, you would most probably want to print the
+		contents of exceptions as well.
+		</p>
+
+    <h3>Configuringyour custom layout</h3>
+
+		<p>Custom layouts are configured as any other layout. Here is as
+		example:</p>
 		
 		<em>Example 5.0: Configuration of MySampleLayout
 			(logback-examples/src/main/java/chapter5/sampleLayoutConfig.xml)</em>
@@ -201,23 +208,26 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 		followed by an error message. </p>
 		
 		<p>
-		To run this example execute the command 
-		<em>java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</em> 
-		once in the <em>logback-examples</em> directory. This will produce the following
-		output:
-		</p>
+		To run this example issue the following command from within the
+		<em>logback-examples</em> directory.
+    </p>
+    
+    <p class="command">java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</p>
+    
+    <p> This will produce:</p>
 		
 <div class="source"><pre>0 DEBUG [main] chapter5.SampleLogging - Everything's going well
-0 ERROR [main] chapter5.SampleLogging - ... not quite</pre></div>
+0 ERROR [main] chapter5.SampleLogging - maybe not quite...</pre></div>
 
-		<p>That was simple enough. 
-		The skeptic Pyrrho of Elea, who insists that nothing is certain except 
-		perhaps uncertainty itself, which is by no means certain either,
-		might ask: how about a layout with options?  
-		The reader shall find a slightly modified version of our 
-		custom layout in <code>MySampleLayout2.java</code>. She will discover that adding an option 
-		to a layout is as simple as declaring a setter method for the option. 
+		<p>That was simple enough.  The skeptic Pyrrho of Elea, who
+		insists that nothing is certain except perhaps uncertainty itself,
+		which is by no means certain either, might ask: how about a layout
+		with options?  The reader shall find a slightly modified version
+		of our custom layout in <code>MySampleLayout2.java</code>. She
+		will discover that adding an option to a layout is as simple as
+		declaring a setter method for the option.
 		</p>
+
 		<p>
 			The
 			<a href="../xref/chapter5/MySampleLayout2.html"><code>MySampleLayout2</code>
@@ -269,17 +279,26 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
   }
 }</pre></div>
 
-    <p>Appart from the actual use of the two attributes, in the <code>doLayout</code> method, 
-    the two setter methods are the only addition to the original class. Yet, it is sufficient
-    to allow the user to configure these attributes, as shown in the configuration file below:</p>
+
+    <!-- ====================== XXXXXXXXXXXXx -->
+    <p>The addition of the corresponding setter method is all that is
+    needed to enable the configuration of an option.  Note that the
+    <code>PrintThreadName</code> attribute is a boolean and not a
+    <code>String</code>. It can be configured anyway by writing
+    <em>true</em> of <em>false</em> in the configuration
+    file.Configuration of logback components was covered in detail in
+    <a href="chapter3.html">"Chapter 3: Logback configuration with
+    Joran"</a>. Here is a configuration file adapted for
+    <code>MySampleLayout2</code>.
+    </p>
 
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="chapter5.MySampleLayout2"> 
-    	<b>&lt;prefix>MyPrefix&lt;/prefix>
-    	&lt;printThreadName>false&lt;/printThreadName></b>
+      <b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;</b>
+      <b>&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
     &lt;/layout>
   &lt;/appender>
 
@@ -290,9 +309,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
 &lt;/configuration></pre></div>
 
    <p>
-     Note that the <code>PrintThreadName</code> attribute is a boolean
-     and not a <code>String</code>. It can be configured anyway by writing <em>true</em>
-     of <em>false</em> in the configuration file.
+    
    </p>
 
 
