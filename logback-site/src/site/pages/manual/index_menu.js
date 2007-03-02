@@ -1,5 +1,5 @@
 
-document.write('<p class="menu_header">Manual</p>')
+document.write('<p class="menu_header">Chapter Index</p>')
 document.write('<p class="menu"><a href="introduction.html"><b>Ch1: Introduction to logback</b></a></p>');
 document.write('<p class="menu"><a href="architecture.html"><b>Ch2: Architecture</b></a>');
 document.write('<p class="menu"><a href="joran.html"><b>Ch3: Logback configuration with Joran</b></a>');
