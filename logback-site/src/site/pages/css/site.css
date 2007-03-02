@@ -248,6 +248,12 @@ table.bodyTable tr.b {
 .green {
 	color: green;
 }
+
+.white_bg {
+	background-color: #FFFFFF;
+}
+
+
 .blue {
 	color: blue;	
 }
