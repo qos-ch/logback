@@ -26,4 +26,12 @@ public abstract class AbstractMatcherFilter extends Filter {
       onMismatch = FilterReply.DENY;
     }
   }  
+  
+  final public FilterReply getOnMatch() {
+    return onMatch;
+  }
+  
+  final public FilterReply getOnMismatch() {
+    return onMismatch;
+  }
 }
