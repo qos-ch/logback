@@ -14,51 +14,24 @@ prefix='../';
   <script src="../templates/left.js"></script>
 </div>
 <div id="right">
-  <script src="../templates/right.js"></script>
+  <script src="index_menu.js"></script>
 </div>
 <div id="content">
 	
-	<h2>Chapter 6: Filter chains</h2>
-		<div class="author">
-			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
-		</div>
+  <h1>Chapter 6: Filter chains</h1>
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
-						</a>
-				</td>
-				<td>
-					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+     <script src="../templates/creative.js"></script>
 
-					<p>
-						<!--Creative Commons License-->
-						This work is licensed under a
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							Creative Commons
-							Attribution-NonCommercial-ShareAlike 2.5
-							License
-						</a>.
-						<!--/Creative Commons License-->
-					</p>
-				</td>
-			</tr>
-		</table>
 		
-		<p>
-			As we have seen, logback has several built-in ways for filtering log requests, 
-			including the context-wide filter, logger-level selection rule and appender filters. 
-			These provide high performance filtering for the most commonly encountered 
-			cases. These filters are largely inspired from Linux ipchains or 
-			iptables as they are called in more recent Linux kernels. 
-			Logback filters are based on ternary logic allowing them to be assembled or chained 
-			together to compose an arbitrarily complex filtering policy.
+		<p>As we have seen, logback has several built-in ways for
+			filtering log requests, including the context-wide filter,
+			logger-level selection rule and appender filters.  These provide
+			high performance filtering for the most commonly encountered
+			cases. These filters are largely inspired from Linux ipchains or
+			iptables as they are called in more recent Linux kernels.
+			Logback filters are based on ternary logic allowing them to be
+			assembled or chained together to compose an arbitrarily complex
+			filtering policy.
 		</p>
 	
 		<div class="highlight">

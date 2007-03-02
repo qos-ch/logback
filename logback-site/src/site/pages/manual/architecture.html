@@ -14,58 +14,26 @@ prefix='../';
   <script src="../templates/left.js"></script>
 </div>
 <div id="right">
-  <script src="../templates/right.js"></script>
+  <script src="index_menu.js"></script>
 </div>
 <div id="content">
-   <h2>Chapter 2: Architecture</h2>
-    <div class="author">
-    	Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
-    </div>
+
+   <h1>Chapter 2: Architecture</h1>
 
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
-						</a>
-				</td>
-				<td>
-					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+   <script src="../templates/creative.js"></script>
 
-					<p>
-						<!--Creative Commons License-->
-						This work is licensed under a
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							Creative Commons
-							Attribution-NonCommercial-ShareAlike 2.5
-							License
-						</a>
-						.
-						<!--/Creative Commons License-->
-					</p>
-				</td>
-			</tr>
-		</table>
+    <h2>Logback's architecture</h2>
 
-
-    <h2>Logback architecture</h2>
-
-    <p>
-    	Logback's basic architecture is sufficiently generic so as to
+    <p>Logback's basic architecture is sufficiently generic so as to
     	apply under different circumstances. At present time, logback is
     	divided into three modules, Core, Classic and Access.
     </p>
 
-    <p>
-    	The <em>core</em> module lays the groundwork for the other two
+    <p>The <em>core</em> module lays the groundwork for the other two
     	modules.  The <em>classic</em> module extends <em>core</em>. The
-    	classic module corresponds to a significantly improved
-    	version of log4j. Logback-classic natively implements the <a
+    	classic module corresponds to a significantly improved version
+    	of log4j. Logback-classic natively implements the <a
     	href="http://www.slf4j.org">SLF4J API</a> so that you can
     	readily switch back and forth between logback and other logging
     	systems such as log4j or JDK14 Logging. The third module called
