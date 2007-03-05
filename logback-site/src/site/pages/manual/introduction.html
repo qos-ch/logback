@@ -208,6 +208,18 @@ public class HelloWorld2 {
   <a name="BuildingLogback"></a>
   <h3>Building logback</h3>  
   
+  <!-- 
+  
+   Try downloading the file manually from:
+      http://java.sun.com/products/jms/docs.html
+
+  Then, install it using the command:
+      mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
+          -Dversion=1.1 -Dpackaging=jar -Dfile=/path/to/file 
+  
+   -->
+  
+  
   <p>Like many java applications today, logback relies on <a
   href="http://maven.apache.org"> Maven 2</a> as its build tool. Maven
   2 is a free open source build tool that requires one or more build
