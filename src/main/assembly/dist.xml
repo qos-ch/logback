@@ -247,7 +247,7 @@
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
-			<outputDirectory>logback-site/target/site</outputDirectory>
+			<outputDirectory>docs/</outputDirectory>
 		</fileSet>
 		
 		<!-- Parent files -->
