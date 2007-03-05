@@ -12,6 +12,7 @@
 package ch.qos.logback.core.boolex;
 
 import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.LifeCycle;
 
 /**
  * An EventEvaluator has the responsibility to evaluate whether a given an event
@@ -23,7 +24,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * @author Ceki G&uuml;lc&uuml;
  */
 
-public interface EventEvaluator extends ContextAware {
+public interface EventEvaluator extends ContextAware, LifeCycle {
   
 
   /**

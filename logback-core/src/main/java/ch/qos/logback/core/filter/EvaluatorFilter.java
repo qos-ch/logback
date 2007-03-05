@@ -47,7 +47,7 @@ public class EvaluatorFilter extends AbstractMatcherFilter {
   public FilterReply decide(Object event) {
     // let us not throw an exception
     // see also bug #17.
-    if(!isStarted()) {
+    if(!isStarted() || !evaluator.isStarted()) {
       return FilterReply.NEUTRAL;
     }
     try {
