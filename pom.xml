@@ -5,7 +5,7 @@
   
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
   
@@ -22,7 +22,6 @@
     <module>logback-classic</module>
     <module>logback-access</module>
     <module>logback-site</module>
-    <!-- <module>logback-skin</module> -->
     <module>logback-examples</module>
     <module>log4j-bridge</module>
   </modules>
