@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-parent</artifactId>
-		<version>0.9.2-SNAPSHOT</version>
+		<version>0.9.2</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-site</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.2-SNAPSHOT</version>
+	<version>0.9.2</version>
 	<name>Logback Site</name>
 
 	<url>http://logback.qos.ch</url>
