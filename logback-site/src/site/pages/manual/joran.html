@@ -236,7 +236,7 @@ configuration file, as shown above:
 </p>
 
 <em>Example 3.4: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
-<div class="source"><pre>&lt;configuration debug="true">
+<div class="source"><pre>&lt;configuration <b>debug="true"</b>>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -848,7 +848,7 @@ do such a setup.
 <em>Example 3.14: Variable substitution using a separate file (logback-examples/src/main/java/chapter3/variableSubstitution3.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
-  &lt;substitutionProperty file="variables1.properties" />
+  <b>&lt;substitutionProperty file="variables1.properties" /></b>
 
   &lt;appender name="FILE"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -873,7 +873,7 @@ do such a setup.
 &lt;/configuration></pre></div>
 
 <p>
-This configuration file contains a link to another file called <em>variables.properties</em>.
+This configuration file contains a link to another file called <em>variables1.properties</em>.
 The variables contained in that other file will be read and will thus be available to the 
 logback configuration file. Here is what the <em>variable.properties</em> file looks like.
 </p>
@@ -888,7 +888,7 @@ Nothing more is needed to declare the variable.
 <p>
 Recursive subsitution is also available. If the user wants to use variables to
 specify not only the destination directory but also the file name, here is what she
-would write in her <em>variables.properties</em> file.
+would write in her <em>variables1.properties</em> file.
 </p>
 
 
@@ -941,7 +941,7 @@ capabilities offered by logback modules are possible with the help of Joran.
 <p>Joran is actually a generic configuration system which can be used
 independently of logging. To emphaises this point, we should mention
 that the logback-core module does not have a notion of loggers. In
-that sprit, many of the examples related to this tutorial, have
+that spirit, many of the examples related to this tutorial, have
 nothing to do with loggers, appenders or layouts.
 </p>
 
@@ -949,7 +949,7 @@ nothing to do with loggers, appenders or layouts.
 <em>LOGBACK_HOME/logback-examples/src/main/java/chapter3</em>.
 </p>
 
-<p>To install joran, simply <a href="download.html">download</a> 
+<p>To install joran, simply <a href="../download.html">download</a> 
 logback and add <em>logback-core-VERSION.jar</em> to your classpath.</p>
 
 <h2>Historical perspective</h2>
