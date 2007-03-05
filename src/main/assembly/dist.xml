@@ -78,18 +78,6 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
-		<fileSet>
-			<directory>logback-skin/</directory>
-			<outputDirectory>logback-skin/</outputDirectory>
-			<includes>
-				<include>
-					pom.xml
-				</include>
-			</includes>
-			<excludes>
-				<exclude>*.bak</exclude>
-			</excludes>
-		</fileSet>
 		<!-- Module Source directories -->
 		<fileSet>
 			<directory>logback-core/src/</directory>
@@ -143,10 +131,6 @@
 		<fileSet>
 			<directory>logback-site/src/</directory>
 			<outputDirectory>logback-site/src/</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>logback-skin/src/</directory>
-			<outputDirectory>logback-skin/src/</outputDirectory>
 		</fileSet>
 		<!-- We also include the classes of the examples module -->
 		<fileSet>
