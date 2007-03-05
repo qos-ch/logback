@@ -23,6 +23,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   static int LIMIT = 1024;
   int counter = 0;
   String name;
+  boolean started;
 
   public boolean evaluate(Object event) throws NullPointerException,
       EvaluationException {
@@ -43,5 +44,17 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
+  public void start() {
+    started = true;
+  }
+
+  public void stop() {
+    started = false;
   }
 }
