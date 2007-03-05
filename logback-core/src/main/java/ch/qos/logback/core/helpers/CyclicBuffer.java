@@ -43,11 +43,23 @@ public class CyclicBuffer<E> {
       throw new IllegalArgumentException("The maxSize argument (" + maxSize
           + ") is not a positive integer.");
     }
+    init(maxSize);
+  }
+  
+  private void init(int maxSize) {
     this.maxSize = maxSize;
     ea = (E[]) new Object[maxSize];
     first = 0;
     last = 0;
     numElems = 0;
+  }
+  
+  /**
+   * Clears the buffer
+   * and resets all attributes.
+   */
+  public void clear() {
+    init(this.maxSize);
   }
 
   /**
