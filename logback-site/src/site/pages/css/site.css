@@ -215,6 +215,12 @@ table.bodyTable th {
 }
 
 
+table.bodyTable td {
+  padding-left: 0.5ex;
+  padding-bottom: 0.5ex;
+}
+
+
 table.bodyTable tr.a {
 	background-color: #ddd;
 }

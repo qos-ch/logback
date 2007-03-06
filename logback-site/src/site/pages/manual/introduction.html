@@ -4,6 +4,8 @@
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <title>Chapter 1: Introduction</title>
 <link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+
 </head>
 <body>
 		<script>
@@ -206,7 +208,7 @@ public class HelloWorld2 {
   </ol>
  
   <a name="BuildingLogback"></a>
-  <h3>Building logback</h3>  
+  <h2>Building logback</h2>  
   
   <!-- 
   
@@ -220,20 +222,29 @@ public class HelloWorld2 {
    -->
   
   
-  <p>Like many java applications today, logback relies on <a
-  href="http://maven.apache.org"> Maven 2</a> as its build tool. Maven
-  2 is a free open source build tool that requires one or more build
-  files names <em>pom.xml</em> which already ship with logback
-  distributions.
+  <p>Logback relies on <a href="http://maven.apache.org">Maven2</a> as
+  its build tool. Maven2 is a widely-used open-source build tool. 
   </p>
 
-  <p>Building all logback modules is mostly done by issuing the
-  <em>mvn package</em> line in a terminal or command window. Maven
-  will automatically download the required external libraries and use
-  them. However, certain artefacts cannot be downloaded from the
-  Maven2 repository. Libraries such as <code>JMS</code> from SUN Inc.
-  need to be downloaded and installed separately into your local
-  repository.
+  <p>Once you have installed Maven2, building the logback project,
+  including all its modules, should be as easy as issuing a <code>mvn
+  package</code> command in a terminal or command window from within
+  the directory where you unarchived the logback distribution
+  file. Maven will automatically download the required external
+  libraries and use them. However, certain artefacts cannot be
+  downloaded from the Maven2 repository. At present, time only the JMS
+  API from from SUN Inc. needs to be downloaded and installed
+  separately into your local repository.
+  </p>
+
+  <p>You can manually download the <a
+  href="http://java.sun.com/products/jms/docs.html">JMS API from
+  Sun</a>. Once you have downloaded the <em>jms.jar</em> file, you can
+  install it in your local Maven 2 repository by issuing the command:
+  </p>
+
+  <p class="source">mvn install:install-file -DgroupId=javax.jms -DartifactId=jms -Dversion=1.1 /
+     -Dpackaging=jar -Dfile=/path/to/jms.jar.file
   </p>
 
   <p>Logback distributions contain complete source code such that you

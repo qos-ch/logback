@@ -720,8 +720,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				<td align="center">
 					<b>ex</b>{<em>length</em>} <br /> 
 					<b>throwable</b>{<em>length</em>} <br />
-					<b>ex{length, evaluator-1, ..., evaluator-n}</b>
-					<b>throwable{length, evaluator-1, ..., evaluator-n}</b>
+					<b>ex</b>{length, evaluator-1, ..., evaluator-n} <br />
+					<b>throwable</b>{length, evaluator-1, ..., evaluator-n}
 				</td>
 
 				<td>
@@ -948,12 +948,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				<td align="center"><pre>[main.Name           ]</pre></td>
 			</tr>
 			<tr class="b">
-				<td align="center">[%20.-20logger]</td>
+				<td align="center">[%20.20logger]</td>
 				<td align="center">main.Name</td>
 				<td align="center"><pre>[           main.Name]</pre></td>
 			</tr>
 		  <tr class="a">
-				<td align="center">[%-10.10logger]</td>
+				<td align="center">[%10.10logger]</td>
 				<td align="center">main.foo.foo.bar.Name</td>
 				<td align="center"><pre>[o.bar.Name]</pre></td>
 			</tr>
@@ -986,7 +986,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
   &lt;/appender></pre></div>
 
 		
-
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 		<h4>Evaluators</h4>
 		<p>
@@ -1087,14 +1087,15 @@ public class CallerEvaluatorExample {
   }
 }</pre></div>
 		<p>
-			This excerpt does nothing too fancy. Five logging requests
-			are issued, the third one being different from the others.
+			The above application does nothing too fancy. Five logging
+			requests are issued, the third one being different from the
+			others.
 		</p>
 		<p>
-			When a logging request is sent, the corresponding logging
-			event will pass through the evaluation process. Here, 
-			the third request will match the evaluation,
-			causing its caller data to be displayed.
+			When a logging request is sent, the corresponding logging event
+			will pass through the evaluation process. Here, the third
+			request will match the evaluation criteria, causing its caller
+			data to be displayed.
 		</p>
 		<p>
 			Here is the output of the
@@ -1109,23 +1110,27 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 
 0    [main] DEBUG - I know me 4</pre></div>
 
-		<p>
-			Of course, one can change the expression to match a real
-			world situation. An expression testing logger name and
-			request level could also be meaningful: all logging requests of
-			level <em>WARN</em> and up, coming from a sensible part of an application
-			like a financial transaction module, would have their caller data displayed.
+		<p>One can change the expression to match a real world
+		situation. An expression testing logger name and request level
+		could also be meaningful: all logging requests of level
+		<em>WARN</em> and up, coming from a sensible part of an
+		application like a financial transaction module, would have their
+		caller data displayed.
 		</p>
-		<p><b>Important:</b> With the <em>caller</em> conversion specifier, the data is
-		displayed when <em>the expression evaluates to <b>true</b>.</em></p>
-		<p>
-			Let us look at a different situation. When exceptions are included in
-			a logging request, their stack trace is usually displayed. However, in some cases,
-			one might want to supress the stack trace of specific exception.
+
+		<p><b>Important:</b> With the <em>caller</em> conversion
+		specifier, the data is displayed when <em>the expression evaluates
+		to <b>true</b>.</em></p>
+
+		<p>Now, let us look at a different situation. When exceptions are
+		included in a logging request, their stack trace is usually
+		displayed. However, in some cases, one might want to supress the
+		stack trace of specific exception.
 		</p>
+
 		<p>The java code shown below creates five log requests, each one
-		with an exception. However, we do not want to have the stack trace of the
-		third request to be output.</p>
+		with an exception. However, we do not want to have the stack trace
+		of the third request to be output.</p>
 
 <div class="source"><pre>package chapter5;
 
