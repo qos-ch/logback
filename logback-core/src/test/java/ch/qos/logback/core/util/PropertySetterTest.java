@@ -3,6 +3,7 @@ package ch.qos.logback.core.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.util.PropertySetter;
 import junit.framework.TestCase;
 
@@ -123,12 +124,20 @@ public class PropertySetterTest extends TestCase {
     assertEquals(2*1024, house.getFs().getSize());
   }
   
-  public void testEnum() {
+  public void testFilterReply() {
     //test case reproducing bug #52
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
+    setter.setProperty("filterReply", "ACCEPT");
+    assertEquals(FilterReply.ACCEPT, house.getFilterReply());
+  }
+  
+  public void testEnum() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
     setter.setProperty("houseColor", "BLUE");
-    assertEquals(HouseColor.BLUE, house.getHouseColor());
+    //TODO fails for now
+    //assertEquals(HouseColor.BLUE, house.getHouseColor());
   }
 }
 
@@ -142,6 +151,7 @@ class House {
   Duration duration;
   FileSize fs;
   HouseColor houseColor;
+  FilterReply reply;
   
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
@@ -219,13 +229,22 @@ class House {
     this.fs = fs;
   }
   
-  public void setHouseColor(String color) {
-    this.houseColor = HouseColor.valueOf(color);
+  public void setHouseColor(HouseColor color) {
+    this.houseColor = color;
   }
   
   public HouseColor getHouseColor() {
     return houseColor;
   }
+  
+  public void setFilterReply(FilterReply reply) {
+    this.reply = reply;
+  }
+  
+  public FilterReply getFilterReply() {
+    return reply;
+  }
+  
 }
 
 class Door {

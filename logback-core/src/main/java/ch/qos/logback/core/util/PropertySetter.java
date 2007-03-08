@@ -25,6 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * General purpose Object property setter. Clients repeatedly invokes
@@ -398,6 +399,8 @@ public class PropertySetter extends ContextAwareBase {
       return Duration.valueOf(val);
     } else if (FileSize.class.isAssignableFrom(type)) {
       return FileSize.valueOf(val);
+    } else if (FilterReply.class.isAssignableFrom(type)) {
+      return FilterReply.valueOf(v);
     }
 
     return null;
