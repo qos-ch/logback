@@ -237,6 +237,8 @@ public class PropertySetter extends ContextAwareBase {
         return X_AS_PROPERTY;
       } else if (FileSize.class.isAssignableFrom(clazz)) {
         return X_AS_PROPERTY;
+      } else if (FilterReply.class.isAssignableFrom(clazz)){
+        return X_AS_PROPERTY;
       } else {
         return X_AS_COMPONENT;
       }
