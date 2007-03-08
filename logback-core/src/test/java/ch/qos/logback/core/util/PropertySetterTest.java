@@ -122,6 +122,14 @@ public class PropertySetterTest extends TestCase {
     setter.setProperty("fs", "2 kb");
     assertEquals(2*1024, house.getFs().getSize());
   }
+  
+  public void testEnum() {
+    //test case reproducing bug #52
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    setter.setProperty("houseColor", "BLUE");
+    assertEquals(HouseColor.BLUE, house.getHouseColor());
+  }
 }
 
 class House {
@@ -133,6 +141,7 @@ class House {
   SwimmingPool pool;
   Duration duration;
   FileSize fs;
+  HouseColor houseColor;
   
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
@@ -209,6 +218,14 @@ class House {
   public void setFs(FileSize fs) {
     this.fs = fs;
   }
+  
+  public void setHouseColor(String color) {
+    this.houseColor = HouseColor.valueOf(color);
+  }
+  
+  public HouseColor getHouseColor() {
+    return houseColor;
+  }
 }
 
 class Door {
@@ -223,4 +240,8 @@ class SwimmingPool {
   int length;
   int width;
   int depth;
+}
+
+enum HouseColor {
+  WHITE, BLUE
 }
