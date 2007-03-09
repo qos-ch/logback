@@ -25,8 +25,8 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
-public final class Logger implements org.slf4j.Logger, AppenderAttachable<LoggingEvent>,
-    Serializable {
+public final class Logger implements org.slf4j.Logger,
+    AppenderAttachable<LoggingEvent>, Serializable {
 
   /**
    * 
@@ -340,14 +340,14 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
   void recursiveReset() {
     detachAndStopAllAppenders();
     additive = true;
-    if(childrenList == null) {
+    if (childrenList == null) {
       return;
     }
-    for(Logger childLogger: childrenList) {
+    for (Logger childLogger : childrenList) {
       childLogger.recursiveReset();
     }
   }
-  
+
   /**
    * The default size of child list arrays. The JDK 1.5 default is 10. We use a
    * smaller value to save a little space.
@@ -374,11 +374,10 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
     return childLogger;
   }
 
-
   public void debug(String msg) {
-//    if(!(effectiveLevelInt <= Level.DEBUG_INT)) {
-//      return;
-//    }
+    // if(!(effectiveLevelInt <= Level.DEBUG_INT)) {
+    // return;
+    // }
     filterAndLog(null, Level.DEBUG, msg, null, null);
   }
 
@@ -403,30 +402,30 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
   public final void debug(Marker marker, String msg) {
     filterAndLog(marker, Level.DEBUG, msg, null, null);
   }
-  
 
-  public final void filterAndLog(final String localFQCN, final Marker marker, final Level level, final String msg, final Object[] params,
+  public final void filterAndLog(final String localFQCN, final Marker marker,
+      final Level level, final String msg, final Object[] params,
       final Throwable t) {
-  
-    final FilterReply decision = loggerContext.getTurboFilterChainDecision(marker, this, Level.DEBUG, msg, params, t);
-    
-    if(decision == FilterReply.NEUTRAL) {
-      if(effectiveLevelInt > level.levelInt) {
+
+    final FilterReply decision = loggerContext.getTurboFilterChainDecision(
+        marker, this, Level.DEBUG, msg, params, t);
+
+    if (decision == FilterReply.NEUTRAL) {
+      if (effectiveLevelInt > level.levelInt) {
         return;
       }
     } else if (decision == FilterReply.DENY) {
       return;
     }
-    
+
     LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
     le.setMarker(marker);
     callAppenders(le);
-    
+
   }
 
-  
-  final void filterAndLog(final Marker marker, final Level level, final String msg, final Object[] params,
-      final Throwable t) {
+  final void filterAndLog(final Marker marker, final Level level,
+      final String msg, final Object[] params, final Throwable t) {
     filterAndLog(FQCN, marker, level, msg, params, t);
   }
 
@@ -471,59 +470,59 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
   }
 
   public void error(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.ERROR, format,  new Object[] { arg }, null);
+    filterAndLog(marker, Level.ERROR, format, new Object[] { arg }, null);
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.ERROR, format,  new Object[] { arg1, arg2 }, null);
+    filterAndLog(marker, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.ERROR, format,  argArray, null);
+    filterAndLog(marker, Level.ERROR, format, argArray, null);
   }
 
   public void error(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.ERROR, msg,  null, t);
+    filterAndLog(marker, Level.ERROR, msg, null, t);
   }
 
   public void info(String msg) {
-    filterAndLog(null, Level.INFO, msg,  null, null);
+    filterAndLog(null, Level.INFO, msg, null, null);
   }
 
   public void info(String format, Object arg) {
-    filterAndLog(null, Level.INFO, format,  new Object[] { arg }, null);
+    filterAndLog(null, Level.INFO, format, new Object[] { arg }, null);
   }
 
   public void info(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.INFO, format,  new Object[] { arg1, arg2 }, null);
+    filterAndLog(null, Level.INFO, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void info(String format, Object[] argArray) {
-    filterAndLog(null, Level.INFO, format,  argArray, null);
+    filterAndLog(null, Level.INFO, format, argArray, null);
   }
 
   public void info(String msg, Throwable t) {
-    filterAndLog(null, Level.INFO, msg,  null, t);
+    filterAndLog(null, Level.INFO, msg, null, t);
   }
 
   public void info(Marker marker, String msg) {
-    filterAndLog(marker, Level.INFO, msg,  null, null);
+    filterAndLog(marker, Level.INFO, msg, null, null);
   }
 
   public void info(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.INFO, format,  new Object[] { arg }, null);
+    filterAndLog(marker, Level.INFO, format, new Object[] { arg }, null);
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
-   filterAndLog(marker, Level.INFO, format,  new Object[] { arg1, arg2 }, null);
+    filterAndLog(marker, Level.INFO, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void info(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.INFO, format,  argArray, null);
+    filterAndLog(marker, Level.INFO, format, argArray, null);
   }
 
   public void info(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.INFO, msg,  null, t);
+    filterAndLog(marker, Level.INFO, msg, null, t);
   }
 
   public final boolean isDebugEnabled() {
@@ -563,43 +562,43 @@ public final class Logger implements org.slf4j.Logger, AppenderAttachable<Loggin
   }
 
   public void warn(String msg) {
-    filterAndLog(null, Level.WARN, msg,  null, null);
+    filterAndLog(null, Level.WARN, msg, null, null);
   }
 
   public void warn(String msg, Throwable t) {
-    filterAndLog(null, Level.WARN, msg,  null, t);
+    filterAndLog(null, Level.WARN, msg, null, t);
   }
 
   public void warn(String format, Object arg) {
-    filterAndLog(null, Level.WARN, format,  new Object[] { arg }, null);
+    filterAndLog(null, Level.WARN, format, new Object[] { arg }, null);
   }
 
   public void warn(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.WARN, format,  new Object[] { arg1, arg2 }, null);
+    filterAndLog(null, Level.WARN, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void warn(String format, Object[] argArray) {
-    filterAndLog(null, Level.WARN, format,  argArray, null);
+    filterAndLog(null, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String msg) {
-    filterAndLog(marker, Level.WARN, msg,  null, null);
+    filterAndLog(marker, Level.WARN, msg, null, null);
   }
 
   public void warn(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.WARN, format,  new Object[] { arg }, null);
+    filterAndLog(marker, Level.WARN, format, new Object[] { arg }, null);
   }
 
   public void warn(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.WARN, format,  argArray, null);
+    filterAndLog(marker, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.WARN, format,  new Object[] { arg1, arg2 }, null);
+    filterAndLog(marker, Level.WARN, format, new Object[] { arg1, arg2 }, null);
   }
 
   public void warn(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.WARN, msg,  null, t);
+    filterAndLog(marker, Level.WARN, msg, null, t);
   }
 
   public boolean isAdditive() {
