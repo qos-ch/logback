@@ -370,29 +370,29 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void debug(String msg) {
-    filterAndLog(null, Level.DEBUG, msg, null, null);
+    filterAndLog(FQCN, null, Level.DEBUG, msg, null, null);
   }
 
   public void debug(String format, Object arg) {
-    filterAndLog(null, Level.DEBUG, format, arg, null);
+    filterAndLog(FQCN, null, Level.DEBUG, format, arg, null);
   }
 
   public void debug(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.DEBUG, format, arg1, arg2, null);
+    filterAndLog(FQCN, null, Level.DEBUG, format, arg1, arg2, null);
   }
 
   public void debug(String format, Object[] argArray) {
-    filterAndLog(null, Level.DEBUG, format, argArray, null);
+    filterAndLog(FQCN, null, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(String msg, Throwable t) {
     if (isDebugEnabled()) {
-      filterAndLog(null, Level.DEBUG, msg, null, t);
+      filterAndLog(FQCN, null, Level.DEBUG, msg, null, t);
     }
   }
 
   public final void debug(Marker marker, String msg) {
-    filterAndLog(marker, Level.DEBUG, msg, null, null);
+    filterAndLog(FQCN, marker, Level.DEBUG, msg, null, null);
   }
 
   /**
@@ -406,7 +406,7 @@ public final class Logger implements org.slf4j.Logger,
 
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(
         marker, this, Level.DEBUG, msg, param, t);
-
+    
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
         return;
@@ -465,125 +465,118 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   final void filterAndLog(final Marker marker, final Level level,
-      final String msg, final Object param1, final Throwable t) {
-    filterAndLog(FQCN, marker, level, msg, param1, t);
-  }
-
-  final void filterAndLog(final Marker marker, final Level level,
       final String msg, final Object param1, final Object param2,
       final Throwable t) {
     filterAndLog(FQCN, marker, level, msg, param1, param2, t);
   }
 
-  final void filterAndLog(final Marker marker, final Level level,
-      final String msg, final Object[] params, final Throwable t) {
-    filterAndLog(FQCN, marker, level, msg, params, t);
-  }
-
   public void debug(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.DEBUG, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, marker, Level.DEBUG, format, arg, null);
   }
 
   public void debug(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, marker, Level.DEBUG, format, arg1, arg2 , null);
   }
 
   public void debug(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.DEBUG, format, argArray, null);
+    filterAndLog(FQCN, marker, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.DEBUG, msg, null, t);
+    filterAndLog(FQCN, marker, Level.DEBUG, msg, null, t);
   }
 
   public void error(String msg) {
-    filterAndLog(null, Level.ERROR, msg, null, null);
+    filterAndLog(FQCN, null, Level.ERROR, msg, null, null);
   }
 
   public void error(String format, Object arg) {
-    filterAndLog(null, Level.ERROR, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, null, Level.ERROR, format, arg, null);
   }
 
   public void error(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, null, Level.ERROR, format, arg1, arg2, null);
   }
 
   public void error(String format, Object[] argArray) {
-    filterAndLog(null, Level.ERROR, format, argArray, null);
+    filterAndLog(FQCN, null, Level.ERROR, format, argArray, null);
   }
 
   public void error(String msg, Throwable t) {
-    filterAndLog(null, Level.ERROR, msg, null, t);
+    filterAndLog(FQCN, null, Level.ERROR, msg, null, t);
   }
 
   public void error(Marker marker, String msg) {
-    filterAndLog(marker, Level.ERROR, msg, null, null);
+    filterAndLog(FQCN, marker, Level.ERROR, msg, null, null);
   }
 
   public void error(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.ERROR, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, marker, Level.ERROR, format, arg, null);
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.ERROR, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, marker, Level.ERROR, format,  arg1, arg2, null);
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.ERROR, format, argArray, null);
+    filterAndLog(FQCN,  marker, Level.ERROR, format, argArray, null);
   }
 
   public void error(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.ERROR, msg, null, t);
+    filterAndLog(FQCN, marker, Level.ERROR, msg, null, t);
   }
 
   public void info(String msg) {
-    filterAndLog(null, Level.INFO, msg, null, null);
+    filterAndLog(FQCN, null, Level.INFO, msg, null, null);
   }
 
   public void info(String format, Object arg) {
-    filterAndLog(null, Level.INFO, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, null, Level.INFO, format, arg, null);
   }
 
   public void info(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.INFO, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, null, Level.INFO, format, arg1, arg2, null);
   }
 
   public void info(String format, Object[] argArray) {
-    filterAndLog(null, Level.INFO, format, argArray, null);
+    filterAndLog(FQCN, null, Level.INFO, format, argArray, null);
   }
 
   public void info(String msg, Throwable t) {
-    filterAndLog(null, Level.INFO, msg, null, t);
+    filterAndLog(FQCN, null, Level.INFO, msg, null, t);
   }
 
   public void info(Marker marker, String msg) {
-    filterAndLog(marker, Level.INFO, msg, null, null);
+    filterAndLog(FQCN, marker, Level.INFO, msg, null, null);
   }
 
   public void info(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.INFO, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, marker, Level.INFO, format, arg , null);
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.INFO, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, marker, Level.INFO, format, arg1, arg2, null);
   }
 
   public void info(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.INFO, format, argArray, null);
+    filterAndLog(FQCN, marker, Level.INFO, format, argArray, null);
   }
 
   public void info(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.INFO, msg, null, t);
+    filterAndLog(FQCN,  marker, Level.INFO, msg, null, t);
   }
 
   public final boolean isDebugEnabled() {
-    FilterReply decision = callTurboFilters(Level.DEBUG);
-    if  (decision.equals(FilterReply.ACCEPT)) {
-      return true;
-    } else if (decision.equals(FilterReply.DENY)) {
+    final FilterReply decision = callTurboFilters(Level.DEBUG);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
       return false;
+    } else if (decision == FilterReply.ACCEPT){
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    return (effectiveLevelInt <= Level.DEBUG_INT);
   }
 
   public boolean isDebugEnabled(Marker marker) {
@@ -592,12 +585,15 @@ public final class Logger implements org.slf4j.Logger,
 
   public final boolean isErrorEnabled() {
     FilterReply decision = callTurboFilters(Level.ERROR);
-    if  (decision.equals(FilterReply.ACCEPT)) {
-      return true;
-    } else if (decision.equals(FilterReply.DENY)) {
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
       return false;
+    } else if (decision == FilterReply.ACCEPT){
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    return (effectiveLevelInt <= Level.ERROR_INT);
   }
 
   public boolean isErrorEnabled(Marker marker) {
@@ -606,12 +602,15 @@ public final class Logger implements org.slf4j.Logger,
 
   public boolean isInfoEnabled() {
     FilterReply decision = callTurboFilters(Level.INFO);
-    if  (decision.equals(FilterReply.ACCEPT)) {
-      return true;
-    } else if (decision.equals(FilterReply.DENY)) {
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
       return false;
+    } else if (decision == FilterReply.ACCEPT){
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    return (effectiveLevelInt <= Level.INFO_INT);
   }
 
   public boolean isInfoEnabled(Marker marker) {
@@ -620,12 +619,15 @@ public final class Logger implements org.slf4j.Logger,
 
   public boolean isWarnEnabled() {
     FilterReply decision = callTurboFilters(Level.WARN);
-    if  (decision.equals(FilterReply.ACCEPT)) {
-      return true;
-    } else if (decision.equals(FilterReply.DENY)) {
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
       return false;
+    } else if (decision == FilterReply.ACCEPT){
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    return (effectiveLevelInt <= Level.WARN_INT);
   }
 
   public boolean isWarnEnabled(Marker marker) {
@@ -634,52 +636,55 @@ public final class Logger implements org.slf4j.Logger,
 
   public boolean isEnabledFor(Level level) {
     FilterReply decision = callTurboFilters(level);
-    if  (decision.equals(FilterReply.ACCEPT)) {
-      return true;
-    } else if (decision.equals(FilterReply.DENY)) {
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
       return false;
+    } else if (decision == FilterReply.ACCEPT){
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    return (effectiveLevelInt <= level.levelInt);
   }
 
   public void warn(String msg) {
-    filterAndLog(null, Level.WARN, msg, null, null);
+    filterAndLog(FQCN, null, Level.WARN, msg, null, null);
   }
 
   public void warn(String msg, Throwable t) {
-    filterAndLog(null, Level.WARN, msg, null, t);
+    filterAndLog(FQCN, null, Level.WARN, msg, null, t);
   }
 
   public void warn(String format, Object arg) {
-    filterAndLog(null, Level.WARN, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, null, Level.WARN, format, arg, null);
   }
 
   public void warn(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.WARN, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, null, Level.WARN, format, arg1, arg2, null);
   }
 
   public void warn(String format, Object[] argArray) {
-    filterAndLog(null, Level.WARN, format, argArray, null);
+    filterAndLog(FQCN, null, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String msg) {
-    filterAndLog(marker, Level.WARN, msg, null, null);
+    filterAndLog(FQCN, marker, Level.WARN, msg, null, null);
   }
 
   public void warn(Marker marker, String format, Object arg) {
-    filterAndLog(marker, Level.WARN, format, new Object[] { arg }, null);
+    filterAndLog(FQCN, marker, Level.WARN, format, arg, null);
   }
 
   public void warn(Marker marker, String format, Object[] argArray) {
-    filterAndLog(marker, Level.WARN, format, argArray, null);
+    filterAndLog(FQCN, marker, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(marker, Level.WARN, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(FQCN, marker, Level.WARN, format, arg1, arg2, null);
   }
 
   public void warn(Marker marker, String msg, Throwable t) {
-    filterAndLog(marker, Level.WARN, msg, null, t);
+    filterAndLog(FQCN, marker, Level.WARN, msg, null, t);
   }
 
   public boolean isAdditive() {
