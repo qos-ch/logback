@@ -249,11 +249,6 @@ public final class Logger implements org.slf4j.Logger,
     return aai.getAppender(name);
   }
 
-  // public boolean isAttached(Appender appender) {
-  // // TODO Auto-generated method stub
-  // return false;
-  // }
-
   /**
    * Invoke all the appenders of this logger.
    * 
@@ -375,18 +370,15 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void debug(String msg) {
-    // if(!(effectiveLevelInt <= Level.DEBUG_INT)) {
-    // return;
-    // }
     filterAndLog(null, Level.DEBUG, msg, null, null);
   }
 
   public void debug(String format, Object arg) {
-    filterAndLog(null, Level.DEBUG, format, new Object[] { arg }, null);
+    filterAndLog(null, Level.DEBUG, format, arg, null);
   }
 
   public void debug(String format, Object arg1, Object arg2) {
-    filterAndLog(null, Level.DEBUG, format, new Object[] { arg1, arg2 }, null);
+    filterAndLog(null, Level.DEBUG, format, arg1, arg2, null);
   }
 
   public void debug(String format, Object[] argArray) {
@@ -401,6 +393,49 @@ public final class Logger implements org.slf4j.Logger,
 
   public final void debug(Marker marker, String msg) {
     filterAndLog(marker, Level.DEBUG, msg, null, null);
+  }
+
+  /**
+   * The next methods are not merged into one because of the time we gain by not
+   * creating a new Object[] with the params. This reduces the cost of not
+   * logging of about 20 nanos.
+   */
+
+  public final void filterAndLog(final String localFQCN, final Marker marker,
+      final Level level, final String msg, final Object param, final Throwable t) {
+
+    final FilterReply decision = loggerContext.getTurboFilterChainDecision(
+        marker, this, Level.DEBUG, msg, param, t);
+
+    if (decision == FilterReply.NEUTRAL) {
+      if (effectiveLevelInt > level.levelInt) {
+        return;
+      }
+    } else if (decision == FilterReply.DENY) {
+      return;
+    }
+
+    buildLoggingEventAndAppend(localFQCN, marker, level, msg,
+        new Object[] { param }, t);
+  }
+
+  public final void filterAndLog(final String localFQCN, final Marker marker,
+      final Level level, final String msg, final Object param1,
+      final Object param2, final Throwable t) {
+
+    final FilterReply decision = loggerContext.getTurboFilterChainDecision(
+        marker, this, Level.DEBUG, msg, param1, param2, t);
+
+    if (decision == FilterReply.NEUTRAL) {
+      if (effectiveLevelInt > level.levelInt) {
+        return;
+      }
+    } else if (decision == FilterReply.DENY) {
+      return;
+    }
+
+    buildLoggingEventAndAppend(localFQCN, marker, level, msg, new Object[] {
+        param1, param2 }, t);
   }
 
   public final void filterAndLog(final String localFQCN, final Marker marker,
@@ -418,10 +453,26 @@ public final class Logger implements org.slf4j.Logger,
       return;
     }
 
+    buildLoggingEventAndAppend(localFQCN, marker, level, msg, params, t);
+  }
+
+  private void buildLoggingEventAndAppend(final String localFQCN,
+      final Marker marker, final Level level, final String msg,
+      final Object[] params, final Throwable t) {
     LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
     le.setMarker(marker);
     callAppenders(le);
+  }
 
+  final void filterAndLog(final Marker marker, final Level level,
+      final String msg, final Object param1, final Throwable t) {
+    filterAndLog(FQCN, marker, level, msg, param1, t);
+  }
+
+  final void filterAndLog(final Marker marker, final Level level,
+      final String msg, final Object param1, final Object param2,
+      final Throwable t) {
+    filterAndLog(FQCN, marker, level, msg, param1, param2, t);
   }
 
   final void filterAndLog(final Marker marker, final Level level,
@@ -526,6 +577,12 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public final boolean isDebugEnabled() {
+    FilterReply decision = callTurboFilters(Level.DEBUG);
+    if  (decision.equals(FilterReply.ACCEPT)) {
+      return true;
+    } else if (decision.equals(FilterReply.DENY)) {
+      return false;
+    }
     return (effectiveLevelInt <= Level.DEBUG_INT);
   }
 
@@ -534,6 +591,12 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public final boolean isErrorEnabled() {
+    FilterReply decision = callTurboFilters(Level.ERROR);
+    if  (decision.equals(FilterReply.ACCEPT)) {
+      return true;
+    } else if (decision.equals(FilterReply.DENY)) {
+      return false;
+    }
     return (effectiveLevelInt <= Level.ERROR_INT);
   }
 
@@ -542,6 +605,12 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public boolean isInfoEnabled() {
+    FilterReply decision = callTurboFilters(Level.INFO);
+    if  (decision.equals(FilterReply.ACCEPT)) {
+      return true;
+    } else if (decision.equals(FilterReply.DENY)) {
+      return false;
+    }
     return (effectiveLevelInt <= Level.INFO_INT);
   }
 
@@ -550,6 +619,12 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public boolean isWarnEnabled() {
+    FilterReply decision = callTurboFilters(Level.WARN);
+    if  (decision.equals(FilterReply.ACCEPT)) {
+      return true;
+    } else if (decision.equals(FilterReply.DENY)) {
+      return false;
+    }
     return (effectiveLevelInt <= Level.WARN_INT);
   }
 
@@ -558,6 +633,10 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public boolean isEnabledFor(Level level) {
+    FilterReply decision = callTurboFilters(level);
+    if  (decision.equals(FilterReply.ACCEPT)) {
+      return true;
+    }
     return (effectiveLevelInt <= level.levelInt);
   }
 
@@ -612,11 +691,28 @@ public final class Logger implements org.slf4j.Logger,
   public String toString() {
     return "Logger[" + name + "]";
   }
+  
+  /**
+   * Method that calls the attached TurboFilter
+   * objects based on the logger and the level.
+   * 
+   * It is used by isYYYEnabled() methods.
+   * 
+   * It returns the typical FilterReply values:
+   * ACCEPT, NEUTRAL or DENY.
+   * 
+   * @param level
+   * @return the reply given by the TurboFilters
+   */
+  private FilterReply callTurboFilters(Level level) {
+    return loggerContext.getTurboFilterChainDecision(
+        null, this, level, null, null, null);
+  }
 
   /**
    * Return the context for this logger.
    * 
-   * @return
+   * @return the context
    */
   public LoggerContext getLoggerContext() {
     return loggerContext;

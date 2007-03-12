@@ -215,6 +215,26 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return cfai.getTurboFilterChainDecision(marker, logger, level, format,
         params, t);
   }
+  
+  final public FilterReply getTurboFilterChainDecision(final Marker marker,
+      final Logger logger, final Level level, final String format,
+      final Object param, final Throwable t) {
+    if (cfai == null) {
+      return FilterReply.NEUTRAL;
+    }
+    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+        new Object[]{param}, t);
+  }
+  
+  final public FilterReply getTurboFilterChainDecision(final Marker marker,
+      final Logger logger, final Level level, final String format,
+      final Object param1, final Object param2, final Throwable t) {
+    if (cfai == null) {
+      return FilterReply.NEUTRAL;
+    }
+    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+        new Object[]{param1, param2}, t);
+  }
 
   public TurboFilter getFirstTurboFilter() {
     if (cfai == null) {
