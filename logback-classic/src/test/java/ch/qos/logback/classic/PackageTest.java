@@ -21,6 +21,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(BasicLoggerTest.class);
     suite.addTestSuite(MessageFormattingTest.class);
     suite.addTestSuite(MDCTest.class);
+    suite.addTestSuite(LoggerTest.class);
     return suite;
   }
 }
