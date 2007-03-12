@@ -67,6 +67,12 @@ public class LoggerTest extends TestCase {
     assertTrue(logger.isEnabledFor(Level.INFO));
   }
   
+  public void testIsEnabledForWithNoFilter() {
+    addNoFilter();
+    logger.setLevel(Level.DEBUG);
+    assertFalse(logger.isEnabledFor(Level.INFO));
+  }
+  
   public void testIsDebugEnabledWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);

@@ -636,6 +636,8 @@ public final class Logger implements org.slf4j.Logger,
     FilterReply decision = callTurboFilters(level);
     if  (decision.equals(FilterReply.ACCEPT)) {
       return true;
+    } else if (decision.equals(FilterReply.DENY)) {
+      return false;
     }
     return (effectiveLevelInt <= level.levelInt);
   }
