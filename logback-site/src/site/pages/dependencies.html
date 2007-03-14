@@ -55,13 +55,22 @@
           </ul>
         </td>      
       </tr>
-      <tr class="b">
-        <td>SMTPAppender</td>
+        <tr class="a">
+        <td><code>JaninoEventEvaluatorBase</code> and derived classes</td>
         <td>
           <ul>
+            <li><a href="http://janino.net">Janino</a> version 2.4.3</li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr class="b">
+        <td><code>SMTPAppenderBase</code> and derived classes</td>
+        <td>
+          <ul>         
             <li><a
             href="https://glassfish.dev.java.net/javaee5/mail/">JavaMail
-            API</a> version 1.4, 
+            API</a> version 1.4,
             </li>
             <li><a
             href="http://java.sun.com/products/javabeans/jaf/index.jsp">JavaBeans
@@ -70,14 +79,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="a">
-        <td>JaninoEventEvaluatorBase and derived classes</td>
-        <td>
-          <ul>
-            <li><a href="http://janino.net">Janino</a> version 2.4.3</li>
-          </ul>
-        </td>
-      </tr>
+    
     </table>
     
     <h2>logback-classic</h2>
@@ -131,6 +133,37 @@
           </ul>
         </td>       
       </tr>
+
+      <tr class="b">
+        <td>c.q.l.c.boolex.JaninoEventEvaluator</td>
+        <td>
+          <ul>
+            <li>Depends on <code>JaninoEventEvaluatorBase</code>, and by
+            transitivity on <code>JaninoEventEvaluatorBase</code>'s
+            dependencies.
+            </li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr class="b">
+        <td>SMTPAppender</td>
+        <td>
+          <ul>
+            <li>Depends on <code>SMTPAppenderBase</code>, and by
+            transitivity on <code>SMTPAppenderBase</code>'s
+            dependencies.
+            </li>
+
+            <li>Depends on
+            <code>ch.qos.logback.classic.boolex.JaninoEventEvaluator</code>,
+            and by transitivity on Janino.
+            </li>
+          </ul>
+        </td>
+      </tr>
+
+
     </table>
 
   <h2>logback-access</h2>

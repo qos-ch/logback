@@ -63,26 +63,21 @@ pre {
 
 h1, h2, h3, h4 {
   color: #333;
+  padding-top: 0ex; 
+  background-color: transparent;
 }
 
 h2 {
-  padding-top: 0ex; 
-  background-color: transparent;
 	font-weight: 900;
 	font-size: x-large;
 }
 
 h3 {
-  padding-top: 0ex; 
-	background-color: transparent;
 	font-weight: normal;
 	font-size: large;
 }
 
 h4 {
-  padding-top: 0ex; 
-	color: navy;
-	background-color: transparent;	
 	font-weight: large;
 	font-size: normal;
 }
@@ -137,6 +132,7 @@ strong {
   padding: 0px;
   border: 1px solid #cccccc;
   background-color: #ffffff;
+  font-size: 80%;
 }
 
 #left a, #right a {
@@ -170,7 +166,7 @@ p.menu_header {
 
 
 #content {
-  margin: 0px 17em 0px 17em;
+  margin: 0px 15em 0px 15em;
   padding: 0px;
   background-color: #ffffff;  
 }
@@ -178,12 +174,13 @@ p.menu_header {
 #right {
   position: absolute;
   right: 0px;        
-  width: 14em;
+  width: 12em;
   color: #564b47;
   margin: 4px 4px 0px 0px; 
   padding: 0px;
   background-color: #ffffff;    
   border: 1px solid #cccccc;
+  font-size: 80%;
 }
 
 #left img {
@@ -295,4 +292,9 @@ code {
   padding-right: 1ex;
   margin-left: 3em;
   margin-right: 3em;
+}
+
+.quote {
+  align: right;
+  padding-left: 12em;
 }
