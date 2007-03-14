@@ -19,14 +19,19 @@ import ch.qos.logback.core.joran.event.StartEvent;
 public class EventPlayer {
 
   final Interpreter interpreter;
-  
+  List<SaxEvent> eventList;
+  int currentIndex;
+
   public EventPlayer(Interpreter interpreter) {
-    this.interpreter = interpreter;
+    this.interpreter = interpreter; 
   }
   
   public void play(List<SaxEvent> seList) {
-    
-    for(SaxEvent se : seList) {
+    eventList = seList;
+    SaxEvent se;
+    for(currentIndex = 0; currentIndex < eventList.size(); currentIndex++) {
+      se = eventList.get(currentIndex);
+      
       if(se instanceof StartEvent) {
         interpreter.startElement((StartEvent) se);
         // invoke fireInPlay after startElement processing
@@ -44,5 +49,9 @@ public class EventPlayer {
       }
     
     }
+  }
+  
+  public void addEvents(List<SaxEvent> eventList) {
+    this.eventList.addAll(currentIndex+2, eventList);
   }
 }

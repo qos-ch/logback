@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+  <substitutionProperty name="path.to.file"
+    value="src/test/input/joran/simpleConfig.xml" />
+
+  <include path="${path.to.file}" />
+  
+</configuration>

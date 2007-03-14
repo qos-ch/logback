@@ -23,6 +23,7 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.StartEvent;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 
@@ -68,6 +69,7 @@ public class Interpreter  {
   final private ContextAwareImpl cai;
   Pattern pattern;
   Locator locator;
+  EventPlayer player;
 
    /**
    * The <id>actionListStack</id> contains a list of actions that are executing
@@ -93,6 +95,7 @@ public class Interpreter  {
     implicitActions = new ArrayList<ImplicitAction>(3);
     pattern = new Pattern();
     actionListStack = new Stack<List>();
+    player = new EventPlayer(this);
   }
 
   public InterpretationContext getExecutionContext() {
@@ -327,5 +330,15 @@ public class Interpreter  {
 
   public RuleStore getRuleStore() {
     return ruleStore;
+  }
+  
+  public void play(List<SaxEvent> eventList) {
+    player.play(eventList);
+  }
+  
+  public void addEvents(List<SaxEvent> eventList) {
+    if (player != null) {
+      player.addEvents(eventList);
+    }
   }
 }

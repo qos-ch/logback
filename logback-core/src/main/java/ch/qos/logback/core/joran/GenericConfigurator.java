@@ -85,7 +85,6 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     InterpretationContext ec = interpreter.getExecutionContext();
     ec.setContext(context);
     addImplicitRules(interpreter);
-
   }
 
   final public void doConfigure(final InputSource inputSource)
@@ -94,8 +93,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
     buildInterpreter();
-    EventPlayer player = new EventPlayer(interpreter);
-    player.play(recorder.saxEventList);
+    interpreter.play(recorder.saxEventList);
   }
 
   public void doConfigure(final List<SaxEvent> eventList)

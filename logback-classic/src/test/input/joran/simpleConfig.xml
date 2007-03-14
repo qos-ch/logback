@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE included>
+
+<included>
+
+  <appender name="redirectConsole"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <param name="Pattern" value="%d - %m%n" />
+    </layout>
+  </appender>
+
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="redirectConsole" />
+  </root>
+
+</included>
