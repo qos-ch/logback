@@ -15,7 +15,7 @@ import ch.qos.logback.classic.joran.action.EvaluatorAction;
 import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
 import ch.qos.logback.classic.joran.action.LayoutAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
-import ch.qos.logback.classic.joran.action.LoadConfigurationFileAction;
+import ch.qos.logback.classic.joran.action.IncludeFileAction;
 import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
@@ -59,7 +59,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
             new LayoutAction());
     
     rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
-    rs.addRule(new Pattern("configuration/include"), new LoadConfigurationFileAction());
+    rs.addRule(new Pattern("configuration/include"), new IncludeFileAction());
   }
 
 }

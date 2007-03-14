@@ -5,6 +5,6 @@
   <substitutionProperty name="path.to.file"
     value="src/test/input/joran/simpleConfig.xml" />
 
-  <include path="${path.to.file}" />
+  <include file="${path.to.file}" />
   
 </configuration>

@@ -3,6 +3,6 @@
 
 <configuration>
 
-  <include path="toto" />
+  <include file="toto" />
 
 </configuration>

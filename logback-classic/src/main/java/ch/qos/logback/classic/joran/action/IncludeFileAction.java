@@ -22,17 +22,17 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 
-public class LoadConfigurationFileAction extends Action {
+public class IncludeFileAction extends Action {
 
   private static final String INCLUDED_TAG = "included";
-  private static final String PATH_ATTR = "path";
+  private static final String FILE_ATTR = "file";
   private SaxEventRecorder recorder;
   
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
 
-    String attribute = attributes.getValue(PATH_ATTR);
+    String attribute = attributes.getValue(FILE_ATTR);
     if (attribute == null) {
       addError("Path to configuration file to include is not set.");
       return;

@@ -4,17 +4,17 @@ import junit.framework.TestCase;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.joran.action.LoadConfigurationFileAction;
+import ch.qos.logback.classic.joran.action.IncludeFileAction;
 import ch.qos.logback.classic.util.Constants;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
 
-public class LoadConfigurationFileTest extends TestCase {
+public class IncludeFileActionTest extends TestCase {
 
   LoggerContext context;
-  LoadConfigurationFileAction action;
+  IncludeFileAction action;
 
   String filePath = Constants.TEST_DIR_PREFIX
       + "input/joran/redirectConfig.xml";
@@ -29,7 +29,7 @@ public class LoadConfigurationFileTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     context = new LoggerContext();
-    action = new LoadConfigurationFileAction();
+    action = new IncludeFileAction();
     action.setContext(context);
   }
 

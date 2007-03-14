@@ -17,7 +17,7 @@ public class PackageTest extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(BasicJoranTest.class);
     suite.addTestSuite(EvaluatorJoranTest.class);
-    suite.addTestSuite(LoadConfigurationFileTest.class);
+    suite.addTestSuite(IncludeFileActionTest.class);
     return suite;
   }
 }
