@@ -22,6 +22,14 @@ prefix='../';
 	
 		<h1>Chapter 5: Layouts</h1>
 	
+    <div class="quote">
+      <p>TCP implementations will follow a general principle of
+      robustness: be conservative in what you do, be liberal in what
+      you accept from others.
+      </p>
+      <p>-- JON POSTEL, RFC 793</p>
+    </div>
+
     <script src="../templates/creative.js"></script>
 
 		<div class="highlight">
@@ -935,22 +943,25 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			</tr>
 		</table>
 				
-		<p>Here are some examples of the format modifier truncation:</p>
+		<p>The table below list examples for format modifier
+		truncation. Please note that the brackets, i.e the pair of "[]"
+		characters, are not part of the output. They are used to delimit
+		the width of output.</p>
 
 
 		<table  class="bodyTable" BORDER="0" CELLPADDING="8">
 			<th>Format modifier</th>
 			<th>Logger name</th>
-			<th>Result</th>
-			<tr class="a">
-				<td align="center">[%-20.20logger]</td>
-				<td align="center">main.Name</td>
-				<td align="center"><pre>[main.Name           ]</pre></td>
-			</tr>
+			<th>Result</th>		
 			<tr class="b">
 				<td align="center">[%20.20logger]</td>
 				<td align="center">main.Name</td>
 				<td align="center"><pre>[           main.Name]</pre></td>
+			</tr>
+      <tr class="a">
+				<td align="center">[%-20.20logger]</td>
+				<td align="center">main.Name</td>
+				<td align="center"><pre>[main.Name           ]</pre></td>
 			</tr>
 		  <tr class="a">
 				<td align="center">[%10.10logger]</td>
@@ -964,18 +975,20 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			</tr>
 		</table>
 
-		<h3>Option handling</h3>
+		<h3>Options</h3>
 
 		<p>
-			A conversion specifier can be followed by options between
-			braces. We have already seen some of the
-			possibilities offered by logback's option handling with, for
-			example, the MDC conversion specifier:
+			A conversion specifier can be followed by options. The are
+			always declared between braces. We have already seen some of the
+			possibilities offered by options, for instance in conjunction
+			with the MDC conversion specifier, as in:
 			<em>%mdc{someKey}</em>.
 		</p>
-		<p>A conversion specifier might have more than one options. For example, 
-		a conversion specifier that uses evaluators, which we will cover very soon,
-		simply adds the evaluator names to the option list, as shown below:</p>
+
+    <p>A conversion specifier might have more than one option. For
+    example, a conversion specifier that makes use of evaluators,
+    which will be covered soon, may add evaluator names to the option
+    list, as shown below:</p>
 
 		<div class="source"><pre>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
@@ -986,43 +999,30 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
   &lt;/appender></pre></div>
 
 		
-    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		<h3>Evaluators</h3>
 
-		<h4>Evaluators</h4>
-		<p>
-			Another use case for adding options to a conversion
-			specifier is when
-			<code>PatternLayout</code>
-			is used with
-			<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-			<code>EventEvaluator</code></a> objects.
+		<p>As mentioned above, option lists come in handy when a
+		conversion specifier is required to behave dynamically based on
+		one or more
+		<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+		<code>EventEvaluator</code></a> objects.
+		<code>EventEvaluator</code> objects have the responsibility to
+		determine whether a given logging event matches the criteria of the
+		evaluator.
 		</p>
-		<p>
-			<code>EventEvaluator</code> objects
-			have the responsability to check wether a given event
-			matches a given criteria.
-		</p>
-		<p>
-			Let's look at an example using
-			<code>EventEvaluator</code> objects. 
-			The following configuration file outputs the logging
-			events to the console, displaying date, thread, level,
-			message and caller data.
-		</p>
-		<p>
-			Since displaying the caller data of a logging event is rather
-			expensive, this information will be displayed only when the
-			logging request comes from a specific logger, and whose
-			message contains a certain string. By doing that, we make
-			sure that only the specific logging requests will have
-			their caller information generated and displayed, without
-			penalizing application performance.
+		
+    <p>Let us review an example with <code>EventEvaluator</code>
+    objects.  The following configuration file outputs the logging
+    events to the console, displaying date, thread, level, message and
+    caller data. Given that extracting the caller data of a logging
+    event is on expensive side, we will do so only when the logging
+    request originates from a specific logger, and whose message
+    contains a certain string. Thus, we make sure that only specific
+    logging requests will have their caller information generated and
+    displayed. In other cases, where the caller data is superfluous,
+    we will not penalize application performance.
 		</p>
 
-		<p>
-			Here is how to configure logback to behave like we
-			described:
-		</p>
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
@@ -1045,14 +1045,19 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
 &lt;/configuration></pre></div>
-		<p>Please note that the &amp; value cannot be written like one would do in a java
-		class, because of XML encoding rules.</p>
-		<p>Let us test this configuration with the following code.</p>
-		<em>
+
+		<p>Due to XML encoding rules, the &amp; character cannot be
+		written as is, and needs to be escaped as &amp;amp;.</p>
+
+    <p>The above configuration file is designed to be accompanied by
+    the following custom-tailored code.</p>
+		
+    <p><em>
 			Example 5.2: Sample usage of EventEvaluators
 			<a href="../xref/chapter5/CallerEvaluatorExample.html">
 			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)</a>
 		</em>
+    </p>
 		<div class="source"><pre>package chapter5;
 
 import org.slf4j.Logger;
@@ -1087,51 +1092,58 @@ public class CallerEvaluatorExample {
   }
 }</pre></div>
 		<p>
-			The above application does nothing too fancy. Five logging
-			requests are issued, the third one being different from the
-			others.
+			The <em>CallerEvaluatorExample</em> application does nothing particularly
+			fancy. Five logging requests are issued, the third one being
+			different from the others.
 		</p>
 		<p>
-			When a logging request is sent, the corresponding logging event
-			will pass through the evaluation process. Here, the third
-			request will match the evaluation criteria, causing its caller
-			data to be displayed.
+			When a logging request is issued, the corresponding logging
+			event goes through the evaluation process. The third request
+			matches the evaluation criteria, causing its caller data to be
+			displayed.
 		</p>
+
 		<p>
 			Here is the output of the
 			<code>CallerEvaluatorExample</code>
 			class.
 		</p>
+
 		<div class="source"><pre>0    [main] DEBUG - I know me 0 
 0    [main] DEBUG - I know me 1 
 0    [main] DEBUG - I know me 2 
 0    [main] DEBUG - who calls thee? 
 Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
-
 0    [main] DEBUG - I know me 4</pre></div>
 
-		<p>One can change the expression to match a real world
-		situation. An expression testing logger name and request level
-		could also be meaningful: all logging requests of level
-		<em>WARN</em> and up, coming from a sensible part of an
-		application like a financial transaction module, would have their
-		caller data displayed.
+		<p>One can change the expression to correspond a real world
+		scenario. For instance, one could combine the logger name and
+		request level. Thus, logging requests of level <em>WARN</em> and
+		up, originating from a sensitive part of an application, e.g. a
+		financial transaction module, would have their caller data
+		displayed.
 		</p>
 
 		<p><b>Important:</b> With the <em>caller</em> conversion
 		specifier, the data is displayed when <em>the expression evaluates
 		to <b>true</b>.</em></p>
 
-		<p>Now, let us look at a different situation. When exceptions are
+		<p>Let us consider at a different situation. When exceptions are
 		included in a logging request, their stack trace is usually
 		displayed. However, in some cases, one might want to supress the
-		stack trace of specific exception.
+		stack trace of some specific exception.
 		</p>
 
-		<p>The java code shown below creates five log requests, each one
-		with an exception. However, we do not want to have the stack trace
-		of the third request to be output.</p>
+		<p>The java code shown below creates five log requests, each with
+		an exception. However, it so happends that we do not wish the
+		stack trace of the third request to be output.</p>
 
+   <p><em>
+			Example 5.2: Sample usage of EventEvaluators
+			<a href="../xref/chapter5/ExceptionEvaluatorExample.html">
+			(logback-examples/src/main/java/chapter5/ExceptionEvaluatorExample.java)</a>
+		</em>
+    </p>
 <div class="source"><pre>package chapter5;
 
 import org.slf4j.Logger;
@@ -1166,7 +1178,8 @@ public class ExceptionEvaluatorExample {
   }
 }</pre></div>
 		
-		<p>The following configuration will allow that.</p>
+		<p>The following configuration will supress the stack trace of the
+		third logging request.</p>
 		<em>
 			Example 5.3: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/exceptionEvaluatorConfig.xml)
@@ -1193,31 +1206,38 @@ public class ExceptionEvaluatorExample {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>
-			With this configuration, each time an instance of the
-			<em>chapter5.TestException</em>
-			is included within a logging request, no stack trace will be displayed.
+		<p>With this configuration, each time an instance of the
+		<em>chapter5.TestException</em> is included within a logging
+		request, the stack trace will be suppressed.
 		</p>
-		<p><b>Important:</b> With the <b><em>%ex</em></b> conversion specifier, the data is
-		displayed when <em>the expression evaluates to <b>false</b>.</em></p>
+
+		<p><b>Important:</b> With the <b><em>%ex</em></b> conversion
+		specifier, the stack trace is displayed when <em>the expression
+		evaluates to <b>false</b>.</em></p>
 		
 		<h3>Creating a custom conversion specifier</h3>
-		<p>We've seen up to here quite a lot of possibilities with conversion specifier and
-		<code>PatternLayout</code> objects. But what if somebody wants to make her own conversion
-		specifier?</p>
+
+		<p>Up to this point we have presented the built-inconversion
+		specifiers of <code>PatternLayout</code>. But it is also possible
+		to use a conversion specifier of your own making.</p>
 		
-		<p>In that case, two steps are needed.</p> 
+		<p>Building a custom conversion specifier consists of two steps.
+    </p>
 		
-		<p>First, one must implement her own <code>Converter</code>
-		class. <a href="../xref/ch/qos/logback/core/pattern/Converter.html">
-		<code>Converter</code></a> objects are responsible to extract a specific information out of
-		a <code>LoggingEvent</code>. When <em>%logger</em> is used, a 
+		<p>First, you must sub-class the <code>Converter</code> class. <a
+		href="../xref/ch/qos/logback/core/pattern/Converter.html">
+		<code>Converter</code></a> objects are responsible for extracting
+		information out of <code>LoggingEvent</code> objects and returning
+		it as String. For example, the 
 		<a href="../xref/ch/qos/logback/classic/pattern/LoggerConverter.html">
-		<code>LoggerConverter</code></a>
-		is called to extract the name of the logger from the <code>LoggingEvent</code>.</p>
+		<code>LoggerConverter</code></a>, the converter underlying the
+		%logger conversion word, extracts the name of the logger from the
+		<code>LoggingEvent</code> and returns it as a String. It might
+		abbreviate the logger name in the process.</p>
 		
-		<p>Let us say that our customized <code>Converter</code> will output the level of the logging
-		event, colored following ANSI rules. Here is the necessary implementation:</p>
+		<p>Let us say that our customized <code>Converter</code> colors
+		the level of the logging event, according to ANSI terminal
+		conventions. Here is a possible implementation:</p>
 		
 <em> Example 5.4: Sample Converter Example 
 <a href="../xref/chapter5/MySampleConverter.html">
@@ -1261,14 +1281,19 @@ public class MySampleConverter extends ClassicConverter {
 }
 </pre></div>
 
-		<p>This implementation is quite straightforward. The <code>MySampleConverter</code> class
-		extends <code>ClassicConverter</code>, and implements the <code>convert</code> method.
-		In that method, all it has to do is return the appropriate information.
+
+java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml 
+
+		<p>This implementation is relatively straightforward. The
+		<code>MySampleConverter</code> class extends
+		<code>ClassicConverter</code>, and implements the
+		<code>convert</code> method where it returns a level string
+		decorated with ANSI coloring codes.
 		</p>
 
-		<p>The second step, once the <code>Converter</code> class done, is to let logback know about
-		the new <code>Converter</code>. For this task, we just need to declare the new
-		conversion word in the configuration file, as shown below:</p>
+		<p>In the second step, we must let logback know about the new
+		<code>Converter</code>. For this purpose, we need to declare the
+		new conversion word in the configuration file, as shown below:</p>
 		
 <em> Example 5.4: Sample Converter Example (src/main/java/chapter5/mySampleConverterConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
@@ -1288,16 +1313,36 @@ public class MySampleConverter extends ClassicConverter {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>In this configuration file, once the new conversion word has been declared, we
-		just use it within a <code>PatternLayout</code> pattern element, as if 
-		our custom conversion word had always been here.</p>
+		<p>In this configuration file, once the new conversion word has
+		been declared, we can refert to it within a
+		<code>PatternLayout</code> pattern, as if the custom conversion
+		word had always been here.</p>
 		
-		<p>The intersted reader might want to take a look at other <code>Converter</code> implementations
-		like 
+    <p>Given that ANSI terminal codes do not work on Windows, you can
+    view the results on non-Windows platforms such as Linux or
+    Mac. The following command:</p>
+
+    <div class="source">java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml </div>
+
+    <p>should yield:</p>
+    
+<div class="source">0    [main] DEBUG - Everything's going well
+3    [main] <span class="red">ERROR</span> - maybe not quite... </div>
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxx
+
+    <p>Please note that the string "ERROR" is highlighted in red,
+    which is basically the whole point of the exercise.</p>
+
+		<p>The intersted reader might want to take a look at other
+		<code>Converter</code> implementations such as
 		<a href="../xref/ch/qos/logback/classic/pattern/MDCConverter.html">
-		<code>MDCConverter</code></a> to learn how to implement more complex behaviours, involving
-		the use of options, in her custom <code>Converter</code> objects.
+		<code>MDCConverter</code></a> to learn how to implement more
+		complex behaviour, such as option handling.
 		</p>
+
+
+
 
 		<a name="ClassicHTMLLayout"></a>
 		<h3>HTMLLayout</h3>
