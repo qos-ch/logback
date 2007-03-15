@@ -931,6 +931,54 @@ be used, as shown below:
   &lt;/root>
 &lt;/configuration></pre></div>
 
+<a name="Include"></a>
+<h3>File inclusion</h3>
+
+<p>
+It is possible to include configuration elements into a <em>logback.xml</em> 
+configuration file. This is done by using a <em>include</em> element, as shown
+in the example below:
+</p>
+
+<em>Example 3.18: File include (logback-examples/src/main/java/chapter3/redirectConfig.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  &lt;include file="path/to/included/configuration/file" />
+
+&lt;/configuration></pre></div>
+
+<p>
+The target file must have its elements nested inside an <em>included</em>
+element. For example, a <code>ConsoleAppender</code> would be declared this way:
+</p>
+
+<em>Example 3.18: File include (logback-examples/src/main/java/chapter3/includedConfig.xml)</em>
+<div class="source"><pre>&lt;included>
+
+  &lt;appender name="redirectConsole"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;param name="Pattern" value="%d - %m%n" />
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="DEBUG" />
+    &lt;appender-ref ref="redirectConsole" />
+  &lt;/root>
+
+&lt;/included></pre></div>
+
+<p>
+It is also possible to specify the file to be included by using a
+variable, in any of the ways explained above in this chapter.
+</p>
+
+<p>
+Included a file by specifying an <code>URL</code> is also possible. Instead of
+using the <em>file</em> attribute, add a <em>url</em> attribute to the 
+<em>include</em> element.
+</p>
 
 <a name="Joran"></a>
 <h2>Using Joran in your own application</h2>
@@ -1168,7 +1216,7 @@ the value from the stack and prints it.
 <p>The <em>calculator2.xml</em> file is a bit more complex, but much more interesting.</p>
 <p>It contains the following elements:</p>
 
-<em>Example 3.18: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
+<em>Example 3.19: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
@@ -1194,7 +1242,7 @@ a certain, predictable way, but whose <code>end()</code> methods are empty.</p>
 elements that contain instances of the same element. Here's the content of
 <em>calculator3.xml</em>:</p>
 
-<em>Example 3.19: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator3.xml)</em>
+<em>Example 3.20: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator3.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
@@ -1242,7 +1290,7 @@ and added to the <code>RuleStore</code>, along with its corresponding pattern.</
 <p>Using new rule declarations, the preceding example, involving the calculation, could be
 expressed this way:</p>
 
-<em>Example 3.20: Configuration file using new rules on the fly (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
+<em>Example 3.21: Configuration file using new rules on the fly (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
             actionClass="chapter3.calculator.LiteralAction"/&gt;
@@ -1342,7 +1390,7 @@ the implicit action is applicable: its <code>begin()</code> method will be calle
 
 <p>The <em>implicit1.xml</em> file contains the following lines:</p>
 
-<em>Example 3.21: Usage of implicit rules (logback-examples/src/main/java/chapter3/implicit/implicit1.xml)</em>
+<em>Example 3.22: Usage of implicit rules (logback-examples/src/main/java/chapter3/implicit/implicit1.xml)</em>
 <div class="source"><pre>&lt;foo&gt;
 
   &lt;xyz printme="true"&gt;
