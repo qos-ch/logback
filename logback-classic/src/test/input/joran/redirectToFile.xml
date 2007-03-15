@@ -3,6 +3,6 @@
 
 <configuration>
 
-  <include file="src/test/input/joran/invalidConfig.xml" />
+  <include file="${testing.value.file}" />
 
 </configuration>
