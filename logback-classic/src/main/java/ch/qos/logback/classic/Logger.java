@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Marker;
+import org.slf4j.spi.LocationAwareLogger;
 
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -25,7 +26,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
-public final class Logger implements org.slf4j.Logger,
+public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     AppenderAttachable<LoggingEvent>, Serializable {
 
   /**
@@ -251,7 +252,7 @@ public final class Logger implements org.slf4j.Logger,
 
   /**
    * Invoke all the appenders of this logger.
-   * 
+   *
    * @param event
    *          The event to log
    */
@@ -373,7 +374,7 @@ public final class Logger implements org.slf4j.Logger,
     filterAndLog(FQCN, null, Level.DEBUG, msg, null, null);
   }
 
-  public void debug(String format, Object arg) {
+  public final void debug(String format, Object arg) {
     filterAndLog(FQCN, null, Level.DEBUG, format, arg, null);
   }
 
@@ -406,7 +407,7 @@ public final class Logger implements org.slf4j.Logger,
 
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(
         marker, this, Level.DEBUG, msg, param, t);
-    
+
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
         return;
@@ -475,7 +476,7 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void debug(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(FQCN, marker, Level.DEBUG, format, arg1, arg2 , null);
+    filterAndLog(FQCN, marker, Level.DEBUG, format, arg1, arg2, null);
   }
 
   public void debug(Marker marker, String format, Object[] argArray) {
@@ -515,11 +516,11 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog(FQCN, marker, Level.ERROR, format,  arg1, arg2, null);
+    filterAndLog(FQCN, marker, Level.ERROR, format, arg1, arg2, null);
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
-    filterAndLog(FQCN,  marker, Level.ERROR, format, argArray, null);
+    filterAndLog(FQCN, marker, Level.ERROR, format, argArray, null);
   }
 
   public void error(Marker marker, String msg, Throwable t) {
@@ -551,7 +552,7 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void info(Marker marker, String format, Object arg) {
-    filterAndLog(FQCN, marker, Level.INFO, format, arg , null);
+    filterAndLog(FQCN, marker, Level.INFO, format, arg, null);
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
@@ -563,7 +564,21 @@ public final class Logger implements org.slf4j.Logger,
   }
 
   public void info(Marker marker, String msg, Throwable t) {
-    filterAndLog(FQCN,  marker, Level.INFO, msg, null, t);
+    filterAndLog(FQCN, marker, Level.INFO, msg, null, t);
+  }
+
+  public final boolean isDebugEnabled(Marker o1, String o2, Object o3,
+      Throwable o4, Object o5) {
+    final FilterReply decision = callTurboFilters(Level.DEBUG);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
   }
 
   public final boolean isDebugEnabled() {
@@ -572,7 +587,7 @@ public final class Logger implements org.slf4j.Logger,
       return effectiveLevelInt <= Level.DEBUG_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
-    } else if (decision == FilterReply.ACCEPT){
+    } else if (decision == FilterReply.ACCEPT) {
       return true;
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -589,7 +604,7 @@ public final class Logger implements org.slf4j.Logger,
       return effectiveLevelInt <= Level.DEBUG_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
-    } else if (decision == FilterReply.ACCEPT){
+    } else if (decision == FilterReply.ACCEPT) {
       return true;
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -606,7 +621,7 @@ public final class Logger implements org.slf4j.Logger,
       return effectiveLevelInt <= Level.DEBUG_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
-    } else if (decision == FilterReply.ACCEPT){
+    } else if (decision == FilterReply.ACCEPT) {
       return true;
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -623,7 +638,7 @@ public final class Logger implements org.slf4j.Logger,
       return effectiveLevelInt <= Level.DEBUG_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
-    } else if (decision == FilterReply.ACCEPT){
+    } else if (decision == FilterReply.ACCEPT) {
       return true;
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -640,7 +655,7 @@ public final class Logger implements org.slf4j.Logger,
       return effectiveLevelInt <= Level.DEBUG_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
-    } else if (decision == FilterReply.ACCEPT){
+    } else if (decision == FilterReply.ACCEPT) {
       return true;
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -698,22 +713,21 @@ public final class Logger implements org.slf4j.Logger,
   public String toString() {
     return "Logger[" + name + "]";
   }
-  
+
   /**
-   * Method that calls the attached TurboFilter
-   * objects based on the logger and the level.
+   * Method that calls the attached TurboFilter objects based on the logger and
+   * the level.
    * 
    * It is used by isYYYEnabled() methods.
    * 
-   * It returns the typical FilterReply values:
-   * ACCEPT, NEUTRAL or DENY.
+   * It returns the typical FilterReply values: ACCEPT, NEUTRAL or DENY.
    * 
    * @param level
    * @return the reply given by the TurboFilters
    */
   private FilterReply callTurboFilters(Level level) {
-    return loggerContext.getTurboFilterChainDecision(
-        null, this, level, null, null, null);
+    return loggerContext.getTurboFilterChainDecision(null, this, level, null,
+        null, null);
   }
 
   /**
@@ -731,5 +745,28 @@ public final class Logger implements org.slf4j.Logger,
 
   void buildRemoteView() {
     this.loggerRemoteView = new LoggerRemoteView(name, loggerContext);
+  }
+
+  public void log(Marker marker, String fqcn, int levelInt, String message,
+      Throwable t) {
+    Level level = null;
+    switch (levelInt) {
+    case LocationAwareLogger.DEBUG_INT:
+      level = Level.DEBUG;
+      break;
+    case LocationAwareLogger.INFO_INT:
+      level = Level.INFO;
+      break;
+    case LocationAwareLogger.WARN_INT:
+      level = Level.WARN;
+      break;
+    case LocationAwareLogger.ERROR_INT:
+      level = Level.ERROR;
+      break;
+    default:
+      throw new IllegalArgumentException(levelInt
+          + " not a valid level integet");
+    }
+    filterAndLog(fqcn, marker, level, message, null, t);
   }
 }
