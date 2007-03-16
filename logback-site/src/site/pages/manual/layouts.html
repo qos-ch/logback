@@ -1329,38 +1329,39 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 <div class="source">0    [main] DEBUG - Everything's going well
 3    [main] <span class="red">ERROR</span> - maybe not quite... </div>
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxx
 
     <p>Please note that the string "ERROR" is highlighted in red,
-    which is basically the whole point of the exercise.</p>
+    which was somewhat the point of the exercise.</p>
 
 		<p>The intersted reader might want to take a look at other
 		<code>Converter</code> implementations such as
 		<a href="../xref/ch/qos/logback/classic/pattern/MDCConverter.html">
-		<code>MDCConverter</code></a> to learn how to implement more
-		complex behaviour, such as option handling.
+		<code>MDCConverter</code></a> to learn about more complex
+		behaviours, such as option handling.
 		</p>
 
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+   	<a name="ClassicHTMLLayout"></a>
 
-
-		<a name="ClassicHTMLLayout"></a>
 		<h3>HTMLLayout</h3>
-		<p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
-		<code>HTMLLayout</code></a> outputs events in an HTML table. Each row of the table corresponds to a
-		logging event.</p>
 		
-		<p>Here is a sample of the output that can be obtained using <code>HTMLLayout</code>
-		along with the default CSS stylesheet:</p>
+    <p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
+    <code>HTMLLayout</code></a> outputs events in an HTML table. Each
+    row of the table corresponds to a logging event.</p>
+		
+		<p>Here is a sample of the output produced by
+		<code>HTMLLayout</code> using its default CSS stylesheet:</p>
 		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"/>
 		
-		<p>
-			The content of the table columns are specified using a
-			conversion pattern. See <code>PatternLayout</code> for documentation on
-			the available patterns. This ensures that the user has full control over the creation
-			of the html table. One can choose to display any (or all) data that <code>PatternLayout</code>
-			can provide.
+		<p>The content of the table columns are specified using a
+		conversion pattern. See <code>PatternLayout</code> for
+		documentation on the available patterns. This ensures that the
+		user has full control over the creation of the html table. One can
+		choose to display any (or all) data that
+		<code>PatternLayout</code> can provide.
 		</p>
+
 		<p>One notable point about the use of <code>PatternLayout</code> with <code>HTMLLayout</code>
 		is that conversion specifiers should not be separated by a space or in general
 		any literals. Each specifier found in the
