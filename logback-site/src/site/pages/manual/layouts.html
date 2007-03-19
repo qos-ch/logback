@@ -1340,71 +1340,69 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		behaviours, such as option handling.
 		</p>
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
    	<a name="ClassicHTMLLayout"></a>
 
 		<h3>HTMLLayout</h3>
 		
     <p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
-    <code>HTMLLayout</code></a> outputs events in an HTML table. Each
-    row of the table corresponds to a logging event.</p>
+    <code>HTMLLayout</code></a> outputs logging events in an HTML
+    table where each row of the table corresponds to a logging
+    event.</p>
 		
-		<p>Here is a sample of the output produced by
-		<code>HTMLLayout</code> using its default CSS stylesheet:</p>
+		<p>Here is a sample output produced by <code>HTMLLayout</code>
+		using its default CSS stylesheet:</p>
 		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"/>
 		
-		<p>The content of the table columns are specified using a
-		conversion pattern. See <code>PatternLayout</code> for
-		documentation on the available patterns. This ensures that the
-		user has full control over the creation of the html table. One can
-		choose to display any (or all) data that
-		<code>PatternLayout</code> can provide.
+		<p>The content of table columns are specified with the help of a
+		conversion pattern. See <a
+		href="#PatternLayout"><code>PatternLayout</code></a> for
+		documentation on conversion patterns. Thus, the user has full
+		control over the contents and format of the table. You can display
+		any one of the converters <code>PatternLayout</code> knows about.
 		</p>
 
-		<p>One notable point about the use of <code>PatternLayout</code> with <code>HTMLLayout</code>
-		is that conversion specifiers should not be separated by a space or in general
-		any literals. Each specifier found in the
-		pattern will result in a separate column, meaning that each literal will create 
-		an extra column.</p>
-		<p>
-			The pattern <em>%ex</em>
-			used to display an Exception is not the only way to display
-			an Exception with this layout. If you use this pattern, a
-			table column will be created to display the potential
-			Exception's stacktrace. That means that, in most cases, the column
-			will be empty, and will take quite a lot of space when displaying 
-			an exception's stack trace.
+		<p>One notable point about the use of <code>PatternLayout</code>
+		with <code>HTMLLayout</code> is that conversion specifiers should
+		not be separated by a space or in general any literals. Each
+		specifier found in the pattern will result in a separate column,
+		in particular each literal in the pattern.
+    </p>
+
+		<p>The pattern <em>%ex</em> used to display exceptions is not the
+		only way to display them. If you use the <em>%em</em> conversion
+		word, a table column will be created to display exception stack
+		traces. In most cases the column will be empty, wasting valuable
+		real-estate on your screen.
 		</p>
+
 		<p>
-			Since printing a stack trace on a separate column is not very readable,
-			a better solution is available in the form of
-			implementations of the <code>IThrowableRenderer</code> interface.
-			These implementations can be called and assigned to
-			<code>HTMLLayout</code> to manage the display of anything related to
-			Exceptions.
-		</p>
-		<p>
-			By default, a 
+			Moreover, printing a stack trace on a separate column does yield
+			very readable results. A better solution is available in the
+			form of implementations of the <code>IThrowableRenderer</code>
+			interface.  Such an implementation can assigned to
+			<code>HTMLLayout</code> to manage the display data related to
+			exceptions. By default, a
 			<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
-			<code>DefaultThrowableRenderer</code></a> is
-			assigned to the <code>HTMLLayout</code>. It writes the Exception on a <em>new
-			table row</em>, along with its stacktrace, in a easily readable
-			manner, like presented in the picture above.
+			<code>DefaultThrowableRenderer</code></a> is assigned to each
+			<code>HTMLLayout</code> isntance. It writes exceptions on a
+			<em>new table row</em>, along with its stacktrace, in an easily
+			readable manner, as shown on the figure above.
 		</p>
-		<p>
-			If one wants to use the
-			<em>%ex</em>
-			pattern anyway, then a 
+
+		<p>If for some reason, you still wish to use the <em>%ex</em>
+		pattern, then you can specify
 			<a href="../xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">
-			<code>NOPThrowableRenderer</code></a> can be specified
-			in the configuration file.
+			<code>NOPThrowableRenderer</code></a> in the configuration file
+			in order to disable displaying a separate row for the stack
+			trace.
 		</p>
-		<p>
-			A user-specified external CSS file can be linked to the html
-			page. In that case, the following
-			xml element can be nested into the <code>&lt;layout&gt;</code> element.
+
+		<p>A user-specified external CSS file can be set as the
+		style-sheet of the HTML output. For this purpose, a
+		<code>cssBuilder</code> xml element can be nested within a
+		<code>&lt;layout&gt;</code> element, as shown below.
 		</p>
+
 <div class="source"><pre>&lt;layout>
   ...
   &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
@@ -1413,18 +1411,13 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   ...
 &lt;/layout></pre></div>
 
-		<p>In case one does not want to customize the html
-			output, an internal CSS style is used.</p>
+		<p>By default, an internal CSS style is used.</p>
 		
-		<p>
-			The <code>HTMLLayout</code> is often, although not necessarily used in conjunction with
-			<code>SMTPAppender</code>, to send a nicely formatted html email.
+		<p>The <code>HTMLLayout</code> is often used in conjunction with
+		<code>SMTPAppender</code>, in order to send an email pleasantly
+		formatted in HTML. Here is a typical configuration:
 		</p>
-		<p>
-			When one wants to use the <code>HTMLLayout</code> with a
-			<code>SMTPAppender</code>,
-			the following configuration would be typical.
-		</p>
+
 		<div class="source"><pre>&lt;configuration&gt;
   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
@@ -1442,9 +1435,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   &lt;/root&gt;
 &lt;/configuration&gt;</pre></div>
 
-		<p><code>HTMLLayout</code> can also be used with any <code>FileAppender</code>. In that
-		case, one can specify a rolling policy to archive log messages automatically.
-		One real world example could use the configuration below.</p>
+		<p><code>HTMLLayout</code> can also be used with any
+		<code>FileAppender</code>, including a a rolling file appender, as
+		shown in the sample configuration below.
+    </p>
 		
 <div class="source"><pre>&lt;configuration>
    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -1470,24 +1464,28 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 		<h2>Logback access</h2>
 
-		<p>Many access layouts are mere adaptations of classic layouts. Logback
-	  classic and access modules address different needs, but offer comparable power
-		and flexibility.</p>
+		<p>Most logback-access layouts are mere adaptations of
+		logback-classic layouts. Logback-classic and logback-access
+		modules address different needs, but in general offer comparable
+		power and flexibility.</p>
 		
 		<h3>Writing your own Layout</h3>
-		<p>Writing a custom <code>Layout</code> for logback access is nearly identical
-		as to writing a <code>Layout</code> for the classic module.</p>
+		<p>Writing a custom <code>Layout</code> for logback access is
+		nearly identical as its sibling<code>Layout</code> in
+		logback-classic.</p>
 		
 		<a name="AccessPatternLayout"></a>
+
 		<h3>PatternLayout</h3>
-		<p>Access' <a href="../xref/ch/qos/logback/access/PatternLayout.html">
-		<code>PatternLayout</code></a> work the exact same way as it's classic counterpart.
+		<p> <a href="../xref/ch/qos/logback/access/PatternLayout.html">
+		<code>PatternLayout</code></a> in logback-access can be configured
+		in the same way as it's classic counterpart, with the notable
+		exception of the available conversion specifiers, as appropriate
+		for HTTP servlet request and response.
 		</p>
-		<p>However, the conversion specifier are different, giving specific access to request
-		and response objects' attributes.</p>
-		
-		<p>Here are the conversion specifier one can use with logback access 
-		<code>PatternLayout</code>.</p>
+
+		<p>Below is a list of conversion specifiers for 
+		<code>PatternLayout</code> in logback-access.</p>
 		
 		<table  class="bodyTable" border="0" CELLPADDING="8">
 			<th align="center">Conversion Word</th>
@@ -1745,11 +1743,23 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		<p>Logback access' <code>PatternLayout</code> also recognize three keywords, which
 		act like shortcuts to a certain pattern.</p>
 
-	 <ul>
-	 	<p><em>common</em> or <em>CLF</em></p>
-	 	<p><em>combined</em></p>
-	 	</ul>
-	 	
+    <table  class="bodyTable">
+      <tr>
+        <th>keyword</th>
+        <th>equivalent conversion pattern</th>
+      </tr>
+      <tr class="a">
+        <td><em>common</em> or <em>CLF</em></td>
+        <td><em>%h %l %u %t \"%r\" %s %b</em></td>
+      </tr>
+      <tr class="b">
+        <td><em>combined</em></td>
+        <td><em>%h %l %u %t \"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em></td>
+      </tr>
+
+    </table>
+
+ 	
 	 	<p>The <em>common</em> keyword corresponds to the pattern <em>%h %l %u %t \"%r\" %s %b</em>
 	 	which displays client host, remote log name, user, date, requested URL, status code 
 	 	and response's content length</p>
@@ -1777,18 +1787,24 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 			<p>Content Length</p>
 		</ul>
 		
-		<p>Here is what you can expect from a configured access <code>HTMLLayout</code>:</p>
+		<p>Here is a sample output produced by <code>HTMLLayout</code> in logback-access:</p>
 		<img src="images/chapter5/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
-		<p>What's better than a real world example? Our own log4j properties to logback configuration 
-		<a href="http://logback.qos.ch/translator/">translator</a>
-		is using logback access to showcase a live ouput, using a <code>RollingFileAppender</code> and
-		access' <code>HTMLLayout</code>.</p>
+		<p>What is better than a real world example? Our own log4j
+		properties to logback <a
+		href="http://logback.qos.ch/translator/">translator</a> makes use
+		of logback-access to showcase a live ouput, using a
+		<code>RollingFileAppender</code> and <code>HTMLLayout</code>.</p>
 		
-		<p>You can see the file by <a href="http://logback.qos.ch/translator/logs/access.html">following this link</a>.</p>
+		<p>You can see the file by <a
+		href="http://logback.qos.ch/translator/logs/access.html">following
+		this link</a>.</p>
 
-		<p>Just like any access log, it can be altered simply by visiting the
-		<a href="http://logback.qos.ch/translator/">translator</a> application.</p>
+		<p>Just like any access log, each visit the <a
+		href="http://logback.qos.ch/translator/">translator</a>
+		web-application will add a new entry to the access logs.
+    </p>
+
 <script src="../templates/footer.js"></script>
 </div>
 </body>
