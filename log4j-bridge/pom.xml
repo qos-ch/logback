@@ -66,13 +66,14 @@
               <goal>translate</goal>
             </goals>
             <configuration>
-              <includes>
-                <include>
-                  <directory>
-                    ${project.build.outputDirectory}
-                  </directory>
-                </include>
-              </includes>
+	            <filesets>
+						    <fileset>
+						        <directory>${project.build.outputDirectory}</directory>
+						        <includes>
+						            <include>**/*.class</include>
+						        </includes>
+						    </fileset>
+						  </filesets>
               <destjar>
                 target/${artifactId}-${project.version}-jdk14.jar
               </destjar>

@@ -155,7 +155,7 @@
       		<plugin>
       			<groupId>org.codehaus.mojo</groupId>
         		<artifactId>retrotranslator-maven-plugin</artifactId>
-        		<version>1.0-alpha-2-SNAPSHOT</version>
+        		<version>1.0-alpha-2</version>
         		<inherited>true</inherited>
         		<configuration>
         		  <advanced>true</advanced>
