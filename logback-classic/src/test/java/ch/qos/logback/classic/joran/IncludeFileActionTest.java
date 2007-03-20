@@ -10,7 +10,6 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class IncludeFileActionTest extends TestCase {
 
