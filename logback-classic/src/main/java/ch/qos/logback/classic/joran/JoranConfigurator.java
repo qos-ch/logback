@@ -11,6 +11,7 @@
 package ch.qos.logback.classic.joran;
 
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
+import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.EvaluatorAction;
 import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
 import ch.qos.logback.classic.joran.action.LayoutAction;
@@ -60,6 +61,8 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     
     rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
     rs.addRule(new Pattern("configuration/include"), new IncludeFileAction());
+    
+    rs.addRule(new Pattern("configuration/consolePlugin"), new ConsolePluginAction());
   }
 
 }
