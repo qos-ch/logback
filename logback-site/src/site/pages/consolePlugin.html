@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Logback Console Plugin for Eclipse</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
+
+</head>
+<body>
+	<script>
+prefix='';	
+</script>
+
+<script src="templates/header.js"></script>
+<div id="left">
+  <script src="templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/right.js"></script>
+</div>
+<div id="content">
+	
+    <h2>Logback Console Plugin for Eclipse</h2>
+    
+    <p>
+    When developping a product, it is often useful to print logs to the console. Logging requests
+    are displayed using a <code>PatternLayout</code>, and one can easily see what happens when the
+    product runs.
+    </p>
+    
+    <p>
+    The logback Console Plugin for Eclipse serves the same purpose, but offers several possibilities
+    that are not possible by using a simple output to the console. In short, here
+    are the key advantages of the logback plugin:
+    </p>
+    
+    <ul>
+     <li>
+      Filter logs using logback's powerful filtering mechanism without changing
+      your logging configuration
+     </li>
+     <li>
+      View stacktraces in Eclipse's own StackTrace Console effortlessly
+     </li>
+     <li>
+      Immediately see where a certain logging request was issued
+     </li>
+     <li>
+      Easy configuration (only one line in your <em>logback.xml</em> file)
+     </li>
+    </ul>
+    
+    <h3>Installation</h3>
+    
+    <p>
+     Installing the plugin requires few steps. First get the plugin from
+     our <a href="download.html">download page</a>.
+    </p>
+    
+    <p>
+     Once the transfert is complete, unzip the file called 
+     <code>ch.qos.logback.eclipse_<em>VERSION</em>.zip</code>. Place the folder
+     found inside the archive in the following directory: <em>ECLIPSE_INSTALL/plugins/</em>
+     where <em>ECLIPSE_INSTALL</em> is the directory where you've installed Eclipse.
+    </p>
+    
+    <p>
+     Relaunching Eclipse should do the trick. To access the logback plugin, open
+     the following menu: <em>Window &gt; Show view &gt; Other... </em>. You should see
+     the <em>Logback View</em> nested in the <em>Logback</em> category. Selecting the
+     view will add it to your workspace.
+    </p>
+    
+    <h3>Logging to the logback plugin</h3>
+    
+    <p>
+     Logging to the logback plugin takes a single line of configuration
+     in your <em>logback.xml</em> configuration file, as you can see below.
+    </p>
+    
+    <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;configuration&gt;
+
+  &lt;consolePlugin /&gt;
+  
+&lt;/configuration&gt;</pre></div>
+  
+   <p>
+    This element will trigger the creation of a <code>SocketAppender</code> that will send
+    events to the localhost, on port <em>4321</em> by default. That's all it takes to run your
+    software and log to the logback plugin.
+   </p>
+    
+   <p>If you already have
+    a server running on the default port, you can specify the port that will be used
+    by adding a simple attribute to the xml element:
+   </p>
+    
+    <div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;configuration&gt;
+
+  &lt;consolePlugin port="4567" /&gt;
+  
+&lt;/configuration&gt;</pre></div>    
+    
+   <p>
+    In that case, however, you will need to specify in the plugin preferences on which
+    port to listen for events. The plugin preferences will be covered in the next section
+    of this document.
+   </p>
+   
+   <h3>Using the logback plugin</h3>
+   
+   <p>
+    Once the <em>Logback View</em> is shown on your workspace, you might want to
+    configure it to fit your needs. Look at the right side of the plugin view.
+    You should see two buttons, along with the usual three Eclipse icons:
+   </p>
+   
+   <img src="images/plugin/buttons.gif" />
+   
+   <p>
+    The first button on the left clears the console. The second button toggles
+    the auto-scroll functionnality. When enabled, you will always see the latest
+    logs that have been recieved by the plugin. If you disable the auto scrolling, 
+    the view will display the current logs, and add the new ones at the bottom of
+    the list.
+   </p>
+   
+   <p>
+    The third button opens a sub-menu that lets you configure the logback plugin.
+   </p>
+   
+   <p>
+    When your software logs events, they are displayed in the logback view as shown
+    below:
+   </p>
+   
+   <img src="images/plugin/sampleLogs.gif" />
+   
+   <p>
+    All events with a level equal or higher to <em>WARN</em> are displayed in red.
+   </p>
+   
+   <p>
+    Double-clicking on a log entry will open a Java editor and show you the line
+    where the entry was requested. It is an easy way to be access directly
+    to the class and method that logged the selected entry.
+   </p>
+   
+   <p>
+    When an icon is shown on the left of the logging event, it means that the
+    logging event contains a stacktrace. Right-clicking on the line reveals
+    a sub-menu that lets you open Eclipse's StackTrace Console and display the
+    stacktrace.
+   </p>
+   
+   <img src="images/plugin/stackTrace.gif" />
+   
+   <h3>Configuring the logback plugin</h3>
+   
+   <p>
+    On the right of the view, right next to the auto-scroll toggle is
+    a button that opens a sub menu.
+   </p>
+   
+   <h4>Preferences</h4>
+   
+   <p>
+    The first item in this menu opens the plugin's preference window.
+   </p>
+   
+   <img src="images/plugin/prefs.gif" />
+   
+   <p>
+    In this window, you can configure the pattern that will be used by the plugin
+    to display the logs. By default, it is configured to show the following informations:
+   </p>
+
+   <ul>
+    <li>
+     Relative time since launch
+    </li>
+    <li>
+     Level of the request
+    </li>
+    <li>
+     The thread name
+    </li>
+    <li>
+     Name of the logger. The name is automatically shortened when longer than
+     25 characters
+    </li>
+    <li>
+     The message of the request
+    </li>
+   </ul>
+   
+   <p>
+    An important point about this pattern is that, if it is modified, the changes
+    are immediately reflected on the <strong>current content</strong> of the logback view.
+    That means that if you would like to display an <code>MDC</code> value, or any other
+    information that the <code>PatternLayout</code> provides, you can change it even 
+    <em>after</em> the logs have been requested.
+   </p>
+   
+   <p>
+    Along with the pattern, you can specify the port on which the plugin will listen
+    for logging events. You can also choose the font type and size that will be used
+    to display the logs in the logback view.
+   </p>
+   
+   
+   <h4>Filters</h4>
+   
+   <p>
+    The logback plugin lets you filter logging events when they are
+    recieved. It uses the powerfull <code>EvaluatorFilter</code>objects 
+    that are available in logback. For detailled information about these filters, you might want
+    to check the <a href="manual/filters.html">corresponding documentation</a> 
+    in the logback manual. In this document, we will only
+    cover some basic points, enough to get you started using the filtering
+    functionnality of the logback plugin.
+   </p>
+   
+   <p>
+    The second item of the sub-menu on the right of the logback view
+    opens the filter configuration window:
+   </p>
+
+   <img src="images/plugin/filterWindow.gif" />
+   
+   <p>
+    The upper part of the window lists the filters that are currently
+    used by the logback plugin. The lower part lets you create, edit
+    or delete a filter.
+   </p>
+   
+   <p>
+    A filter is composed of three informations. First, a Java expression,
+    that will be evaluated for each logging event that is recieved by
+    the logback plugin. This expression can use a set of common variables
+    such as <code>level</code>, <code>logger</code>, <code>message</code>, 
+    and several others. For a complete list of available variables, please
+    refer to the <a href="manual/filters#EventEvaluator.html">chapter 
+    about filters</a> in the logback manual.
+   </p>
+   
+   <p>
+    The second and third informations that compose a filter are the
+    action that will be taken when the evaluated expression is satisfied
+    or not. Three actions are possible: <em>ACCEPT</em>, <em>DENY</em>
+    or <em>NEUTRAL</em>. Setting a filter's reply to <em>ACCEPT</em>
+    or <em>DENY</em> will prevent the plugin from evaluating any
+    other filter and return a definitive result on the logging event.
+   </p>
+   
+   <p>
+    Let us create a filter that will drop any request that has a level
+    lower than <em>INFO</em>. A click on the <em>New</em> button creates
+    a new filter. Enter the following informations in the corresponding
+    fields:
+   </p>
+   
+   <ul>
+    <li>
+     Expression: <code>level &ght;= INFO</code>
+    </li>
+    <li>
+     Action on filter match: <code>NEUTRAL</code>
+    </li>
+    <li>
+     Action on filter mismatch: <code>DENY</code>
+    </li>
+   </ul>
+   
+   <p>
+    Here is what the window should look like, once you've
+    saved the filter.
+   </p>
+ 
+   <img src="images/plugin/createFilter.gif" />
+   
+   <p>
+    We've just created a filter that will drop any requests whose
+    level is lower than <em>INFO</em>. Note the use of the <em>NEUTRAL</em>
+    value as the action to be taken when the filter is matched. Since
+    we do not know what other filters might want to do, there is not reason
+    to stop evaluating when the level is higher or equal to <em>INFO</em>.
+   </p>
+   
+   
+<script src="templates/footer.js"></script>
+</div>
+</body>
+</html>
