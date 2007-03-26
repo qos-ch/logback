@@ -39,7 +39,9 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
   @Override
   public void flushBuffer() {
     // System.out.println("TeeHttpServletResponse.flushBuffer() called");
-    this.writer.flush();
+    if(this.writer != null) {
+      this.writer.flush();
+    }
   }
 
   byte[] getOutputBuffer() {
