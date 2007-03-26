@@ -52,8 +52,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final private List<ContextListener> contextListenerList = new ArrayList<ContextListener>();
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
-  // practice, it
-  // performs a little faster than the map returned by
+  // practice, it performs a little faster than the map returned by
   // Collections.synchronizedMap at the
   // cost of a very slightly higher memory footprint.
   private Hashtable<String, Logger> loggerCache;
