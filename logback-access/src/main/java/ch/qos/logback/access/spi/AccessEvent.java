@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.access.Constants;
 import ch.qos.logback.access.pattern.AccessConverter;
+import ch.qos.logback.access.servlet.Util;
 
 /**
  * The Access module's internal representation of logging events. When the
@@ -43,7 +44,7 @@ public class AccessEvent implements Serializable {
   String serverName;
   String requestContent;
   String responseContent;
-  
+
   Map<String, String> requestHeaderMap;
   Map<String, Object> requestParameterMap;
 
@@ -252,7 +253,7 @@ public class AccessEvent implements Serializable {
   public List<String> getResponseHeaderNameList() {
     return serverAdapter.getResponseHeaderNameList();
   }
-  
+
   /**
    * Attributes are not serialized
    * 
@@ -321,19 +322,55 @@ public class AccessEvent implements Serializable {
     return statusCode;
   }
 
+  @SuppressWarnings("unchecked")
   public String getRequestContent() {
     if (requestContent != null) {
       return requestContent;
     }
-    // retreive the byte array placed by TeeFilter
-    byte[] inputBuffer = (byte[]) httpRequest.getAttribute(Constants.LB_INPUT_BUFFER);
 
-    if (inputBuffer != null) {
-      requestContent = new String(inputBuffer);
-    }
+    if (Util.isFormUrlEncoded(httpRequest)) {
+      StringBuffer buf = new StringBuffer();
+      
+      Enumeration pramEnumeration = httpRequest.getParameterNames();
 
-    if (requestContent == null || requestContent.length() == 0) {
-      requestContent = EMPTY;
+      // example: id=1234&user=cgu
+      //          number=1233&x=1
+      int count = 0;
+      try {
+        while(pramEnumeration.hasMoreElements()) {
+          
+        
+        String key = (String) pramEnumeration.nextElement();
+          if (count++ != 0) {
+            buf.append("&");
+          }
+          buf.append(key);
+          buf.append("=");
+          String val = httpRequest.getParameter(key);
+          if(val != null) {
+            buf.append(val);
+          } else {
+            buf.append("");
+          }
+        }
+      } catch (Exception e) {
+        // FIXME Why is try/catch required?
+        e.printStackTrace();
+      }
+      requestContent = buf.toString();
+    } else {
+
+      // retreive the byte array placed by TeeFilter
+      byte[] inputBuffer = (byte[]) httpRequest
+          .getAttribute(Constants.LB_INPUT_BUFFER);
+
+      if (inputBuffer != null) {
+        requestContent = new String(inputBuffer);
+      }
+
+      if (requestContent == null || requestContent.length() == 0) {
+        requestContent = EMPTY;
+      }
     }
 
     return requestContent;
@@ -344,7 +381,8 @@ public class AccessEvent implements Serializable {
       return responseContent;
     }
     // retreive the byte array previously placed by TeeFilter
-    byte[] outputBuffer = (byte[]) httpRequest.getAttribute(Constants.LB_OUTPUT_BUFFER);
+    byte[] outputBuffer = (byte[]) httpRequest
+        .getAttribute(Constants.LB_OUTPUT_BUFFER);
 
     if (outputBuffer != null) {
       responseContent = new String(outputBuffer);
@@ -356,6 +394,7 @@ public class AccessEvent implements Serializable {
 
     return responseContent;
   }
+
   public int getLocalPort() {
     if (localPort == SENTINEL) {
       if (httpRequest != null) {

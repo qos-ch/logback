@@ -19,6 +19,7 @@ class TeeServletInputStream extends ServletInputStream {
 
   @Override
   public int read() throws IOException {
+    System.out.println("zzzzzzzzzz TeeServletInputStream.read called");
     return in.read();
   }
 
@@ -35,7 +36,7 @@ class TeeServletInputStream extends ServletInputStream {
         while ((n = originalSIS.read(inputBuffer, 0, len)) != -1) {
           baos.write(inputBuffer, 0, n);
         }
-        this.in = new ByteArrayInputStream(inputBuffer);
+        this.in = new ByteArrayInputStream(inputBuffer);       
         originalSIS.close();
       }
     } catch (IOException e) {

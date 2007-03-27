@@ -19,27 +19,51 @@ class TeeHttpServletRequest extends HttpServletRequestWrapper {
 
   private TeeServletInputStream inStream;
   private BufferedReader reader;
+  boolean postedParametersMode = false;
 
   TeeHttpServletRequest(HttpServletRequest request) {
     super(request);
-    inStream = new TeeServletInputStream(request);
-    // add the contents of the input buffer as an attribute of the request in byte[] format
-    request.setAttribute(Constants.LB_INPUT_BUFFER, inStream.getInputBuffer());
-    reader = new BufferedReader(new InputStreamReader(inStream));
+    if (Util.isFormUrlEncoded(request)) {
+      postedParametersMode = true;
+    } else {
+      inStream = new TeeServletInputStream(request);
+      // add the contents of the input buffer as an attribute of the request
+      request
+          .setAttribute(Constants.LB_INPUT_BUFFER, inStream.getInputBuffer());
+      reader = new BufferedReader(new InputStreamReader(inStream));
+    }
+
   }
-  
+
   byte[] getInputBuffer() {
+    if (postedParametersMode) {
+      throw new IllegalStateException("Call disallowed in postedParametersMode");
+    }
     return inStream.getInputBuffer();
   }
 
   @Override
   public ServletInputStream getInputStream() throws IOException {
-    return inStream;
+    if (!postedParametersMode) {
+      return inStream;
+    } else {
+      return super.getInputStream();
+    }
   }
+
+  //
 
   @Override
   public BufferedReader getReader() throws IOException {
-    return reader;
+    if (!postedParametersMode) {
+      return reader;
+    } else {
+      return super.getReader();
+    }
   }
-  
+
+  public boolean isPostedParametersMode() {
+    return postedParametersMode;
+  }
+
 }

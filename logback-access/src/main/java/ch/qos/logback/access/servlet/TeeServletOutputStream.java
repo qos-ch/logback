@@ -15,11 +15,6 @@ public class TeeServletOutputStream extends ServletOutputStream {
       throws IOException {
     // System.out.println("TeeServletOutputStream.constructor() called");
     this.underlyingStream = httpServletResponse.getOutputStream();
-    if (underlyingStream == null) {
-      System.out.println("XXXXX underlyingStream == null");
-    } else {
-      System.out.println("XXXXX underlyingStream != null");
-    }
     baos = new ByteArrayOutputStream();
   }
 
@@ -29,8 +24,6 @@ public class TeeServletOutputStream extends ServletOutputStream {
 
   @Override
   public void write(int val) throws IOException {
-    // System.out.println("XXXXXXXXXXXWRITE TeeServletOutputStream.write(int)
-    // called");
     if (underlyingStream != null) {
       underlyingStream.write(val);
       baos.write(val);
@@ -69,7 +62,6 @@ public class TeeServletOutputStream extends ServletOutputStream {
   }
 
   public void finish() throws IOException {
-    // System.out.println("FINISH TeeServletOutputStream.close() called");
     flush();
     underlyingStream.close();
     baos.close();

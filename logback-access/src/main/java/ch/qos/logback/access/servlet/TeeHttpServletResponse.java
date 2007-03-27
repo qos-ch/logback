@@ -15,7 +15,6 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   public TeeHttpServletResponse(HttpServletResponse httpServletResponse) {
     super(httpServletResponse);
-    // System.out.println("TeeHttpServletResponse.constructor called");
   }
 
   @Override
@@ -28,7 +27,6 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   @Override
   public PrintWriter getWriter() throws IOException {
-    // System.out.println("TeeHttpServletResponse.getWriter() called");
     if (this.writer == null) {
       this.writer = new PrintWriter(new OutputStreamWriter(getOutputStream()),
           true);
@@ -38,14 +36,14 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   @Override
   public void flushBuffer() {
-    // System.out.println("TeeHttpServletResponse.flushBuffer() called");
-    if(this.writer != null) {
+    if (this.writer != null) {
       this.writer.flush();
     }
   }
 
   byte[] getOutputBuffer() {
-    // teeServletOutputStream can be null if the getOutputStream method is never called.
+    // teeServletOutputStream can be null if the getOutputStream method is never
+    // called.
     if (teeServletOutputStream != null) {
       return teeServletOutputStream.getOutputBuffer();
     } else {
