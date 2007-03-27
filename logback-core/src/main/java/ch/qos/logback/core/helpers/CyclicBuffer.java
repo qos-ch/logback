@@ -82,7 +82,7 @@ public class CyclicBuffer<E> {
    * is outside the range 0 to the number of elements currently in the buffer,
    * then <code>null</code> is returned.
    */
-  public Object get(int i) {
+  public E get(int i) {
     if (i < 0 || i >= numElems)
       return null;
 
