@@ -267,26 +267,27 @@
           </reportSet>
         </reportSets>
 			</plugin>
+
       <!-- =================  COBERTURA ================================ -->
       <!-- run using "mvn cobertura:cobertura -Dmaven.test.skip=true"    -->
       <!-- ============================================================= -->
-      
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
       </plugin>
-			
+      -->
       
       <!-- ======================= CLOVER ============================== -->
       <!-- Run with:                                                     -->
       <!--   mvn  clean clover:instrument clover:aggregate clover:clover --> 
       <!-- ============================================================= -->
-      
+      <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clover-plugin</artifactId>
       </plugin>   
-			
+      -->
 			
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
