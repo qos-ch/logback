@@ -25,50 +25,19 @@ prefix='';
 		</div>
 
 
-		<table>
-			<tr>
-				<td valign="top" align="top">
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							<img alt="Creative Commons License"
-								style="border-width: 0"
-								src="http://creativecommons.org/images/public/somerights20.png" />
-						</a>
-				</td>
-				<td>
-					<p>Copyright &#169; 2000-2006, QOS.ch</p>
+   <script src="../templates/creative.js"></script>
 
-					<p>
-						<!--Creative Commons License-->
-						This work is licensed under a
-						<a rel="license"
-							href="http://creativecommons.org/licenses/by-nc-sa/2.5/">
-							Creative Commons
-							Attribution-NonCommercial-ShareAlike 2.5
-							License
-						</a>
-						.
-						<!--/Creative Commons License-->
-					</p>
-				</td>
-			</tr>
-		</table>
+		<h1>Introduction</h1>
 
-
-		<h2>Introduction</h2>
-
-		<p>
-			Logback was designed as a modular framework from the start. Being
-			able to use logback's internal core in many situations, without
-			heavy coding or complex specific configuration was one of our
-			goals.
+		<p>Logback was designed as a modular framework from the
+			start. Making logback-core reusable under different
+			circumstances, without too much coding was one of our main
+			goals. As such, logback-access builds on top of logback-core. It
+			fully integrates with Servlet containers such as Jetty or Tomcat
+			to provide HTTP-access log functionality.
 		</p>
 
-		<p>
-			Lobgack access integrates with Servlet containers such as Jetty
-			and Tomcat to provide HTTP-access log functionality.
-		</p>
-
+    <a name="tomcat"></a>
 		<h2>Logback Access and Tomcat</h2>
 		
 		<p>
@@ -82,40 +51,38 @@ prefix='';
 		
 		<h3>LogbackValve</h3>
 
-		<p>
-			The <a href="xref/ch/qos/logback/access/tomcat/LogbackValve.html">
-			<code>ch.qos.logback.access.tomcat.LogbackValve</code></a>
-			class extends Tomcat's <code><a
+		<p>The <a
+			href="xref/ch/qos/logback/access/tomcat/LogbackValve.html">
+			<code>ch.qos.logback.access.tomcat.LogbackValve</code></a> class
+			extends Tomcat's <code><a
 			href="http://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/valves/ValveBase.html">
-			ValveBase</a></code>
-			class. This class is used to allow external
+			ValveBase</a></code> class. This class is used to allow external
 			components to be integrated into Tomcat.
 		</p>
 	
-		<p>
-			To configure Tomcat in order to use
-			<code>LogbackValve</code>,  add the following lines
-			to the tomcat server configuration file, namely <em>$TOMCAT_HOME/conf/server.xml</em>:
+		<p>To configure Tomcat in order to use <code>LogbackValve</code>,
+			add the following lines to the tomcat server configuration file,
+			namely <em>$TOMCAT_HOME/conf/server.xml</em>:
 		</p>
 		<div class="source"><pre>&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/></pre></div>
-		<p>
-			This line need to be nested in an <em>Engine</em> element.
+
+		<p>This line need to be nested in an <em>Engine</em> element.
 		</p>
-		<p>
-			By default, <code>LogbackValve</code> looks for a logback
+
+		<p>By default, <code>LogbackValve</code> looks for a logback
 			configuration file called <em>logback-access.xml</em>, in the
-			same folder where <em>server.xml</em> is located, that is
-			in <em>$TOMCAT_HOME/conf/</em>. This
-			configuration file contains directives for configuring logback
-			components. Among others, you can specify the appenders where
-			the logging requests will be sent, and their format. Please refer
-			to the description below about logback access configuration for examples.
+			same folder where <em>server.xml</em> is located, that is in
+			<em>$TOMCAT_HOME/conf/</em>. This configuration file contains
+			directives for configuring logback components. Among others, you
+			can specify the appenders where the logging requests will be
+			sent, and their format. Please refer to the description below
+			about logback access configuration for examples.
 	</p>
 		
+    <a name="jetty"></a>
 		<h2>Logback Access and Jetty</h2>
 
-		<p>
-			To use logback-access with Jetty, after downlading the logback
+		<p>To use logback-access with Jetty, after downlading the logback
 			distribution, place the files <em>logback-core-VERSION.jar</em>
 			and <em>logback-access-VERSION.jar</em> under $JETTY_HOME/lib
 			directory, where $JETTY_HOME is the folder where you have
@@ -125,8 +92,8 @@ prefix='';
 
 		<h3>Logback's RequestLog implementation</h3>
 
-		<p>
-			The <a href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
+		<p>The <a
+			href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
 			<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a>
 			class implements jetty's <code><a
 			href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
@@ -134,16 +101,15 @@ prefix='';
 			components to manage request logging.
 		</p>
 
-		<p>
-			In logback, logging destinations are called Appenders. These classes
-			can be attached directly to <code>RequestLogImpl</code>.
+		<p>In logback, logging destinations are called Appenders. These
+			classes can be attached directly to <code>RequestLogImpl</code>.
 		</p>
 
 	
-		<p>
-			To configure jetty in order to use logback's
-			<code>RequestLogImpl</code>,  add the following lines
-			to the jetty configuration file, namely <em>$JETTY_HOME/etc/jetty.xml</em>:
+		<p>To configure jetty in order to use logback's
+			<code>RequestLogImpl</code>, add the following lines to the
+			jetty configuration file, namely
+			<em>$JETTY_HOME/etc/jetty.xml</em>:
 		</p>
 		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
   &lt;Set name="requestLog"&gt;
@@ -152,25 +118,27 @@ prefix='';
     &lt;/New&gt;
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre></div>
-		<p>
-			These lines reference the requestLog functionnality of Jetty, setting
-			the actual class that will be called at each logging request.
+
+		<p>These lines reference the requestLog functionnality of Jetty,
+		setting the actual class that will be called at each logging
+		request.
 		</p>
-		<p>
-			By default, <code>RequestLogImpl</code> looks for a logback
-			configuration file called <em>logback-access.xml</em>, in the
-			same folder where <em>jetty.xml</em> is located. This
-			configuration file contains directives for configuring logback
-			components. Among others, you can specify the appenders where
-			the logging requests will be sent, and their format.
-	</p>
+
+		<p>By default, <code>RequestLogImpl</code> looks for a logback
+		configuration file called <em>logback-access.xml</em>, in the same
+		folder where <em>jetty.xml</em> is located. This configuration
+		file contains directives for configuring logback components. Among
+		others, you can specify the appenders where the logging requests
+		will be sent, and their format.
+    </p>
 	
 		<p>As long the path is specified, you can place the logback
-	configuration file in any location. Here is another example of
-	jetty configuration file, with a path to the logback access
-	configuration file.
+		configuration file in any location. Here is another example of
+		jetty configuration file, with a path to the logback access
+		configuration file.
 		</p>
-		<div class="source"><pre>&lt;Ref id="requestLog"&gt;
+		
+    <div class="source"><pre>&lt;Ref id="requestLog"&gt;
   &lt;Set name="requestLog"&gt;
     &lt;New id="requestLogImpl"
       class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
