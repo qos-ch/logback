@@ -439,7 +439,45 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 &lt;/configuration&gt;
 </div>
 
-<script src="templates/footer.js"></script>
+<p>Few clicks accessing the <a href="demo.html">logback-demo</a>
+application configured as outlined above, yeilds:
+</p>
+
+<div class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) Gecko/20070312 Firefox/1.5.0.11
+Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://localhost:8080/logback-demo/login.jsp
+Cookie: JSESSIONID=15c7tqi9ehlwk;  OID324nkzcmr=null; OID32862zgoa=null; 
+
+
+
+<b>HTTP/1.1 200 OK</b>
+Content-Type: text/html; charset=iso-8859-1
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
+
+
+&lt;html&gt;
+&lt;head&gt;
+        &lt;LINK REL=StyleSheet HREF="css/pk.css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h2&gt;Logback demo center&lt;/h2&gt;
+
+[snip, so that text is reasonably sized]</div>
+
+<p>&nbsp;</p>
+
 </div>
+<script src="templates/footer.js"></script>
+
+
 </body>
 </html>
