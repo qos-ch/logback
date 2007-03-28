@@ -142,7 +142,8 @@ prefix='';
    <img src="images/plugin/sampleLogs.gif" />
    
    <p>
-    All events with a level equal or higher to <em>WARN</em> are displayed in red.
+    All events with the <em>WARN</em> level are displayed in orange. <em>ERROR</em>
+    level events are displayed in red.
    </p>
    
    <p>
@@ -213,6 +214,14 @@ prefix='';
     to display the logs in the logback view.
    </p>
    
+   <p>
+    Finally, you can choose how many logging events should be displayed in the
+    view before the list is trimmed. By default, the logback plugin will display
+    20'000 events. Once this number is reached, the plugin automatically drops
+    the 30% oldest logs. Please note that changing this value to a too much higher
+    value might lead to memory issues, or even crashing Eclipse.
+   </p>
+   
    
    <h4>Filters</h4>
    
@@ -267,7 +276,7 @@ prefix='';
    
    <ul>
     <li>
-     Expression: <code>level &ght;= INFO</code>
+     Expression: <code>level &gt;= INFO</code>
     </li>
     <li>
      Action on filter match: <code>NEUTRAL</code>
