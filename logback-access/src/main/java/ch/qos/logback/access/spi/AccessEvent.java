@@ -330,24 +330,23 @@ public class AccessEvent implements Serializable {
 
     if (Util.isFormUrlEncoded(httpRequest)) {
       StringBuffer buf = new StringBuffer();
-      
+
       Enumeration pramEnumeration = httpRequest.getParameterNames();
 
       // example: id=1234&user=cgu
-      //          number=1233&x=1
+      // number=1233&x=1
       int count = 0;
       try {
-        while(pramEnumeration.hasMoreElements()) {
-          
-        
-        String key = (String) pramEnumeration.nextElement();
+        while (pramEnumeration.hasMoreElements()) {
+
+          String key = (String) pramEnumeration.nextElement();
           if (count++ != 0) {
             buf.append("&");
           }
           buf.append(key);
           buf.append("=");
           String val = httpRequest.getParameter(key);
-          if(val != null) {
+          if (val != null) {
             buf.append(val);
           } else {
             buf.append("");
@@ -380,16 +379,21 @@ public class AccessEvent implements Serializable {
     if (responseContent != null) {
       return responseContent;
     }
-    // retreive the byte array previously placed by TeeFilter
-    byte[] outputBuffer = (byte[]) httpRequest
-        .getAttribute(Constants.LB_OUTPUT_BUFFER);
 
-    if (outputBuffer != null) {
-      responseContent = new String(outputBuffer);
-    }
+    if (Util.isImageResponse(httpResponse)) {
+      responseContent = "[IMAGE CONTENTS SUPPRESSED]";
+    } else {
 
-    if (responseContent == null || responseContent.length() == 0) {
-      responseContent = EMPTY;
+      // retreive the byte array previously placed by TeeFilter
+      byte[] outputBuffer = (byte[]) httpRequest
+          .getAttribute(Constants.LB_OUTPUT_BUFFER);
+
+      if (outputBuffer != null) {
+        responseContent = new String(outputBuffer);
+      }
+      if (responseContent == null || responseContent.length() == 0) {
+        responseContent = EMPTY;
+      }
     }
 
     return responseContent;
