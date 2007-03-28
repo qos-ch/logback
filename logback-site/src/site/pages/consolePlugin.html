@@ -23,36 +23,34 @@ prefix='';
 	
     <h2>Logback Console Plugin for Eclipse</h2>
     
-    <p>
-    While developping a product, it is often useful to print logs to the console. Logging requests
-    may be displayed using a <code>PatternLayout</code>, and one can easily see which actions take
-    place when the code runs.
-    </p>
-    
-    <p>
-    The logback Console Plugin for Eclipse serves the same purpose, but offers several possibilities
-    that are not possible by using the usual output to the console. In short, here
-    are the key advantages of the logback plugin:
+    <p>During the development process, it is common for developers to
+    print log output on the console. Typically, the developer will
+    also customize the format of the log output by setting properties
+    of a <code>PatternLayout</code> instance.  The Logback Console
+    Plugin for Eclipse serves the same purpose, but offers several
+    advantages over the console. Below is a list of key advantages of
+    our plugin:
     </p>
     
     <ul>
-     <li>
-      Filter logs using logback's powerful filtering mechanism without changing
-      your logging configuration
-     </li>
-     <li>
-      View stacktraces in Eclipse's StackTrace Console effortlessly
-     </li>
-     <li>
-      Immediately see where a certain logging request was issued
-     </li>
-     <li>
-      Easy configuration (only one line in your <em>logback.xml</em> file)
-     </li>
-     <li>
-      Change the information that is displayed about each log even after the
-      logs have been issued.
-     </li>
+
+      <li>Event of level WARN and ERROR are colored in orange and
+      respectively in red.</li>
+
+      <li>Go to the java class and line where any given logging request was
+      issued by double-clicking on its output line.
+      </li>
+
+      <li>Filter events with logback's powerful filtering mechanism
+      without changing your logging configuration.
+      </li>
+    
+      <li>Change the output format dynamically whenever you chose to do so.</li>
+
+
+      <li>Easy configuration (only one line in your <em>logback.xml</em> file).
+      </li>
+     
     </ul>
     
     <h3>Installation</h3>

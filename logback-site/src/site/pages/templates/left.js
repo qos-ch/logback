@@ -12,7 +12,7 @@ document.write('<p class="menu"><a href="http://logback.qos.ch/translator/">Log4
 document.write('<p class="menu"><a href="' + prefix + 'team.html">Logback Team</a></p>');
 document.write('<p><a class="x" href="http://www.qos.ch/"><img src="' + prefix + 'images/logos/qosLogo.png" /></a></p>');
 
-document.write('<span class="small">Last updated 2007-02-27</span>');
+document.write('<span class="small">Last updated 2007-03-29</span>');
 
 document.write('</p>');
 
