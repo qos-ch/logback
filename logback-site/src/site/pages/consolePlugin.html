@@ -310,6 +310,16 @@ prefix='';
    </p>
    
    <p>
+    You may have noticed the two buttons on the left side of the filter windows
+    labelled <em>Up</em> and <em>Down</em>. An important concept ruling the filters
+    in logback is that filters are called in a chain. As we've seen above, 
+    a filter returning <em>ACCEPT</em> or <em>DENY</em> will stop the chain
+    and have a direct impact on the logging event. It is sometimes important
+    to manage the order in which filters are called to achieve a specific
+    filtering policy.
+   </p>
+   
+   <p>
     You should now be ready to experience the logback plugin and use its functionnalites.
     If you have any question about its use, feel free to use the logback
     <a href="mailinglist.html">mailing lists</a>.
