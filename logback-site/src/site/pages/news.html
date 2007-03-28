@@ -30,12 +30,14 @@ prefix='';
   
     <h3>xxxx , 2007 - Release of version 0.9.4</h3>
     
-    <p>Significant bug fixes made to <code>TeeFilter</code> and
-    Co. located in the logback-access module. Images and other binary
-    files are now intercepted and replayed correctly. As for
+    <p>Significant bug fixes made to
+    <code>c.q.l.access.TeeFilter</code> and Co. Images and other
+    binary files are now intercepted and replayed correctly. As for
     "x-www-form-urlencoded" post requests, their input buffer is left
-    untouched. In a best-effort attempt, the input buffer is later
-    reconstructed. However, it may differ from the original.
+    untouched. In a best-effort attempt, the input buffer for
+    "x-www-form-urlencoded" post requests is later reconstructed
+    through the request parameters. However, it may differ from the
+    original buffer.
     </p>
 
     <h3>March 20th, 2007 - Release of version 0.9.3</h3>
