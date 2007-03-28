@@ -24,14 +24,14 @@ prefix='';
     <h2>Logback Console Plugin for Eclipse</h2>
     
     <p>
-    When developping a product, it is often useful to print logs to the console. Logging requests
-    are displayed using a <code>PatternLayout</code>, and one can easily see what happens when the
-    product runs.
+    While developping a product, it is often useful to print logs to the console. Logging requests
+    may be displayed using a <code>PatternLayout</code>, and one can easily see which actions take
+    place when the code runs.
     </p>
     
     <p>
     The logback Console Plugin for Eclipse serves the same purpose, but offers several possibilities
-    that are not possible by using a simple output to the console. In short, here
+    that are not possible by using the usual output to the console. In short, here
     are the key advantages of the logback plugin:
     </p>
     
@@ -41,7 +41,7 @@ prefix='';
       your logging configuration
      </li>
      <li>
-      View stacktraces in Eclipse's own StackTrace Console effortlessly
+      View stacktraces in Eclipse's StackTrace Console effortlessly
      </li>
      <li>
       Immediately see where a certain logging request was issued
@@ -49,12 +49,16 @@ prefix='';
      <li>
       Easy configuration (only one line in your <em>logback.xml</em> file)
      </li>
+     <li>
+      Change the information that is displayed about each log even after the
+      logs have been issued.
+     </li>
     </ul>
     
     <h3>Installation</h3>
     
     <p>
-     Installing the plugin requires few steps. First get the plugin from
+     Installing the plugin requires a few steps. First get the plugin from
      our <a href="download.html">download page</a>.
     </p>
     
@@ -66,7 +70,7 @@ prefix='';
     </p>
     
     <p>
-     Relaunching Eclipse should do the trick. To access the logback plugin, open
+     Relaunching Eclipse should load the plugin. To access the logback plugin, open
      the following menu: <em>Window &gt; Show view &gt; Other... </em>. You should see
      the <em>Logback View</em> nested in the <em>Logback</em> category. Selecting the
      view will add it to your workspace.
@@ -90,7 +94,9 @@ prefix='';
    <p>
     This element will trigger the creation of a <code>SocketAppender</code> that will send
     events to the localhost, on port <em>4321</em> by default. That's all it takes to run your
-    software and log to the logback plugin.
+    software and log to the logback plugin. By default, logging events are not filtered, but please
+    keep in mind that context-wide filtering in your logging configuration may affect the events
+    that are recieved by the logback plugin.
    </p>
     
    <p>If you already have
@@ -108,7 +114,7 @@ prefix='';
     
    <p>
     In that case, however, you will need to specify in the plugin preferences on which
-    port to listen for events. The plugin preferences will be covered in the next section
+    port to listen for events. The plugin preferences will be covered in a following section
     of this document.
    </p>
    
@@ -131,7 +137,8 @@ prefix='';
    </p>
    
    <p>
-    The third button opens a sub-menu that lets you configure the logback plugin.
+    The third button opens a sub-menu that lets you configure the logback plugin. This
+    will be covered in a short moment.
    </p>
    
    <p>
@@ -156,7 +163,8 @@ prefix='';
     When an icon is shown on the left of the logging event, it means that the
     logging event contains a stacktrace. Right-clicking on the line reveals
     a sub-menu that lets you open Eclipse's StackTrace Console and display the
-    stacktrace.
+    stacktrace. You can click on the underlined parts of the stack trace to open
+    an editor revealing the selected class.
    </p>
    
    <img src="images/plugin/stackTrace.gif" />
@@ -260,8 +268,8 @@ prefix='';
    
    <p>
     The second and third informations that compose a filter are the
-    action that will be taken when the evaluated expression is satisfied
-    or not. Three actions are possible: <em>ACCEPT</em>, <em>DENY</em>
+    action that will be taken depending on the result of the evaluation.
+    Three actions are possible: <em>ACCEPT</em>, <em>DENY</em>
     or <em>NEUTRAL</em>. Setting a filter's reply to <em>ACCEPT</em>
     or <em>DENY</em> will prevent the plugin from evaluating any
     other filter and return a definitive result on the logging event.
@@ -299,6 +307,12 @@ prefix='';
     value as the action to be taken when the filter is matched. Since
     we do not know what other filters might want to do, there is not reason
     to stop evaluating when the level is higher or equal to <em>INFO</em>.
+   </p>
+   
+   <p>
+    You should now be ready to experience the logback plugin and use its functionnalites.
+    If you have any question about its use, feel free to use the logback
+    <a href="mailinglist.html">mailing lists</a>.
    </p>
    
    
