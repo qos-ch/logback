@@ -12,22 +12,23 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 public class ConsolePluginAction extends Action {
 
   private static final String PORT_ATTR = "port";
+  private static final Integer DEFAULT_PORT = 4321;
 
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
     String portStr = attributes.getValue(PORT_ATTR);
-
-    if (portStr == null) {
-      addError("The ConsolePlugin configuration requires a port attribute.");
-    }
-
     Integer port = null;
-    try {
-      port = Integer.valueOf(portStr);
-    } catch (NumberFormatException ex) {
-      addError("Port " + portStr
-          + " in ConsolePlugin config is not a correct number");
+    
+    if (portStr == null) {
+      port = DEFAULT_PORT;
+    } else {
+      try {
+        port = Integer.valueOf(portStr);
+      } catch (NumberFormatException ex) {
+        addError("Port " + portStr
+            + " in ConsolePlugin config is not a correct number");
+      }
     }
 
     LoggerContext lc = (LoggerContext)ec.getContext();
