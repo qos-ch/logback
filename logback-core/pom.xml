@@ -5,14 +5,14 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.4</version>
   </parent>
  
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-core</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.4</version>
   <packaging>jar</packaging>
   <name>Logback Core Module</name>
 
