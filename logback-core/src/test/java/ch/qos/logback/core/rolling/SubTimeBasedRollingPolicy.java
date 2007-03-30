@@ -10,7 +10,7 @@ import java.util.Date;
  * 
  * @author Jean-Noel Charpin
  */
-public class TimeBasedRollingPolicyTest extends TimeBasedRollingPolicy {
+public class SubTimeBasedRollingPolicy extends TimeBasedRollingPolicy {
 
   private long simulatedTime;
 

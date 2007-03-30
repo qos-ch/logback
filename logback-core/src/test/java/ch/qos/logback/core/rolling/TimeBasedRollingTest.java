@@ -90,7 +90,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa.setContext(context);
     rfa.setLayout(layout);
 
-    TimeBasedRollingPolicyTest tbrpt = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt = new SubTimeBasedRollingPolicy();
     tbrpt.setContext(context);
     tbrpt.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test1-%d{"
         + DATE_PATTERN + "}");
@@ -141,7 +141,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.setContext(context);
     rfa1.setLayout(layout);
 
-    TimeBasedRollingPolicyTest tbrpt1 = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt1 = new SubTimeBasedRollingPolicy();
     tbrpt1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
         + DATE_PATTERN + "}");
     tbrpt1.setContext(context);
@@ -176,7 +176,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setContext(context);
     rfa2.setLayout(layout);
 
-    TimeBasedRollingPolicyTest tbrpt2 = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt2 = new SubTimeBasedRollingPolicy();
     tbrpt2.setContext(context);
     tbrpt2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
         + DATE_PATTERN + "}");
@@ -210,7 +210,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa.setContext(context);
     rfa.setLayout(layout);
 
-    TimeBasedRollingPolicyTest tbrpt = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt = new SubTimeBasedRollingPolicy();
     tbrpt.setContext(context);
     tbrpt.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test3-%d{"
         + DATE_PATTERN + "}.gz");
@@ -267,7 +267,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.setLayout(layout);
     rfa1.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
 
-    TimeBasedRollingPolicyTest tbrpt1 = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt1 = new SubTimeBasedRollingPolicy();
     tbrpt1.setContext(context);
     // tbrp1.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
     tbrpt1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
@@ -304,7 +304,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa2.setLayout(layout);
     rfa2.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
 
-    TimeBasedRollingPolicyTest tbrpt2 = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt2 = new SubTimeBasedRollingPolicy();
     tbrpt2.setContext(context);
     tbrpt2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
         + DATE_PATTERN + "}");
@@ -339,7 +339,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa.setLayout(layout);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test5.log");
 
-    TimeBasedRollingPolicyTest tbrpt = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt = new SubTimeBasedRollingPolicy();
     tbrpt.setContext(context);
     tbrpt.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test5-%d{"
         + DATE_PATTERN + "}");
@@ -389,7 +389,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa.setLayout(layout);
     rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test6.log");
 
-    TimeBasedRollingPolicyTest tbrpt = new TimeBasedRollingPolicyTest();
+    SubTimeBasedRollingPolicy tbrpt = new SubTimeBasedRollingPolicy();
     tbrpt.setContext(context);
     tbrpt.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test6-%d{"
         + DATE_PATTERN + "}.gz");
