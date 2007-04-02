@@ -6,7 +6,7 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 import junit.framework.TestCase;
 
-public class LoggerTest extends TestCase {
+public class TurboFilteringInLoggerTest extends TestCase {
 
   LoggerContext context;
   Logger logger;
@@ -17,7 +17,7 @@ public class LoggerTest extends TestCase {
     context = new LoggerContext();
     context.setName("test");
     context.start();
-    logger = context.getLogger(LoggerTest.class);
+    logger = context.getLogger(TurboFilteringInLoggerTest.class);
   }
 
   @Override
