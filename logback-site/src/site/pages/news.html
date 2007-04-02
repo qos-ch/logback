@@ -63,6 +63,14 @@ prefix='';
   more details.
   </p>
 
+  <p>As discussed in <a href="">bug 54</a>, during automatic
+  initialization, it makes better sense to first check for
+  <em>logback-test.xml</em> file and only if that fails, to check for
+  <em>logback.xml</em>. Maven2 will guarantee that the
+  logback-test.xml file, if places undder test/resources will not be
+  included in the artifact it produces.
+  </p>
+
   <h3>March 20th, 2007 - Release of version 0.9.3</h3>
   
   <p>Includes in configuration files are now supported by Joran,

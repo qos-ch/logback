@@ -64,44 +64,48 @@ prefix='../';
     logback follows to try to configure itself:
     </p>
 
-    xxxxxxxxxxxxx
 
-    <ul>
+
+    <ol>
       <li>
-        <p>Logback tries to find a file called <em>logback.xml</em>
-        within the classpath.</p>
+        <p>Logback tries to find a file called <em>logback-test.xml</em>
+        in the classpath.</p>
       </li>
 
-      <li><p>If no such file is found, it checks for another file
-      called <em>logback-test.xml</em>.</p>
+      <li><p>If no such file is found, it checks for the file
+      <em>logback.xml</em>.</p>
       </li>
       
-      <li><p>In case none of these files are found, logback configures
-      itself automatically using the <a
-      href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
-      </a> class.</p>
+      <li><p>In case neither file is found, logback configures itself
+      automatically using the <a
+      href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>
+      which will direct logging output on the console. </a></p>
       </li>
-</ul>
-<p>
-The first two checks allow for two environments to cooperate nicely. When the application
-using logback is in development and test process, a special file can be used to setup
-a logging environment that is developer-friendly. Once in production environment, the 
-presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
-configuration.
-</p>
+    </ol>
 
-<p>
-The last step is meant to provide very basic logging functionnality in case no configuration
-file is provided. In that case, the logging requests are output to the console.
-</p>
+    <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
-<h3>Automatically configuring logback</h3>
+    <p>The last step is meant to provide basic logging functionnality
+    in case no configuration file is provided. 
+    </p>
 
-<p>
-The simplest way to configure logback is by letting logback use its 
-<code>BasicConfigurator.configureDefaultContext()</code> method. Let us give a taste of how 
-this is done with the help of an imaginary application called <code>MyApp1</code>.
-</p>
+
+    <p>Assuming the <em>logback-test.xml</em> file is placed under
+    <em>src/test/resources</em> folder, Maven will ensure that it
+    won't be included in the artifact it produces. Thus, you can use a
+    different configuration file, namely <em>logback-test.xml</em>
+    during testing, and another file, namely, <em>logback.xml</em>, in
+    production.
+    </p>
+
+
+    <h3>Automatically configuring logback</h3>
+
+    <p>The simplest way to configure logback is by letting logback use
+    its <code>BasicConfigurator.configureDefaultContext()</code>
+    method. Let us give a taste of how this is done with the help of
+    an imaginary application called <code>MyApp1</code>.
+    </p>
 
 <em>Example 3.1: Simple example of <code>BasicConfigurator</code> usage 
 <a href="../xref/chapter3/MyApp1.html">(logback-examples/src/main/java/chapter3/MyApp1.java)</a></em>

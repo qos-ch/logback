@@ -25,9 +25,9 @@ public class ContextInitializer {
   }
 
   public static void autoConfig(LoggerContext loggerContext, ClassLoader classLoader) {
-    URL url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
+    URL url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
     if (url == null) {
-      url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
+      url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
     }
 
     if (url != null) {
