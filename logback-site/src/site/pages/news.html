@@ -43,6 +43,16 @@ prefix='';
   </p>
 
 
+  <p>As discussed in <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=54">bug 54</a>, during
+  automatic initialization, it makes better sense to first check for
+  <em>logback-test.xml</em> file and only if that fails, to check for
+  <em>logback.xml</em>. Maven2 will guarantee that the
+  logback-test.xml file, if places undder test/resources will not be
+  included in the artifact it produces.
+  </p>
+
+
   <hr width="80%" align="center" />
   
   <h3>March 29th, 2007 - Release of version 0.9.4</h3>
@@ -63,13 +73,6 @@ prefix='';
   more details.
   </p>
 
-  <p>As discussed in <a href="">bug 54</a>, during automatic
-  initialization, it makes better sense to first check for
-  <em>logback-test.xml</em> file and only if that fails, to check for
-  <em>logback.xml</em>. Maven2 will guarantee that the
-  logback-test.xml file, if places undder test/resources will not be
-  included in the artifact it produces.
-  </p>
 
   <h3>March 20th, 2007 - Release of version 0.9.3</h3>
   
