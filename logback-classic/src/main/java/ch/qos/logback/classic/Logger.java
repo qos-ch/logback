@@ -567,92 +567,66 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog(FQCN, marker, Level.INFO, msg, null, t);
   }
 
-  public final boolean isDebugEnabled(Marker o1, String o2, Object o3,
-      Throwable o4, Object o5) {
-    final FilterReply decision = callTurboFilters(Level.DEBUG);
-    if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
-    } else if (decision == FilterReply.DENY) {
-      return false;
-    } else if (decision == FilterReply.ACCEPT) {
-      return true;
-    } else {
-      throw new IllegalStateException("Unknown FilterReply value: " + decision);
-    }
-  }
-
   public final boolean isDebugEnabled() {
-    final FilterReply decision = callTurboFilters(Level.DEBUG);
-    if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
-    } else if (decision == FilterReply.DENY) {
-      return false;
-    } else if (decision == FilterReply.ACCEPT) {
-      return true;
-    } else {
-      throw new IllegalStateException("Unknown FilterReply value: " + decision);
-    }
+    return isDebugEnabled(null);
   }
 
   public boolean isDebugEnabled(Marker marker) {
-    return isDebugEnabled();
+    final FilterReply decision = callTurboFilters(marker, Level.DEBUG);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.DEBUG_INT;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
+   
   }
 
   public final boolean isErrorEnabled() {
-    FilterReply decision = callTurboFilters(Level.ERROR);
-    if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
-    } else if (decision == FilterReply.DENY) {
-      return false;
-    } else if (decision == FilterReply.ACCEPT) {
-      return true;
-    } else {
-      throw new IllegalStateException("Unknown FilterReply value: " + decision);
-    }
+    return isErrorEnabled(null);
   }
 
   public boolean isErrorEnabled(Marker marker) {
-    return isErrorEnabled();
+    FilterReply decision = callTurboFilters(marker, Level.ERROR);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.ERROR_INT;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
   }
 
   public boolean isInfoEnabled() {
-    FilterReply decision = callTurboFilters(Level.INFO);
-    if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
-    } else if (decision == FilterReply.DENY) {
-      return false;
-    } else if (decision == FilterReply.ACCEPT) {
-      return true;
-    } else {
-      throw new IllegalStateException("Unknown FilterReply value: " + decision);
-    }
+    return isInfoEnabled(null);
   }
 
   public boolean isInfoEnabled(Marker marker) {
-    return isInfoEnabled();
+    FilterReply decision = callTurboFilters(marker, Level.INFO);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.INFO_INT;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
   }
 
   public boolean isWarnEnabled() {
-    FilterReply decision = callTurboFilters(Level.WARN);
-    if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
-    } else if (decision == FilterReply.DENY) {
-      return false;
-    } else if (decision == FilterReply.ACCEPT) {
-      return true;
-    } else {
-      throw new IllegalStateException("Unknown FilterReply value: " + decision);
-    }
+    return isWarnEnabled(null);
   }
 
   public boolean isWarnEnabled(Marker marker) {
-    return isWarnEnabled();
-  }
-
-  public boolean isEnabledFor(Level level) {
-    FilterReply decision = callTurboFilters(level);
+    FilterReply decision = callTurboFilters(marker, Level.WARN);
     if (decision == FilterReply.NEUTRAL) {
-      return effectiveLevelInt <= Level.DEBUG_INT;
+      return effectiveLevelInt <= Level.WARN_INT;
     } else if (decision == FilterReply.DENY) {
       return false;
     } else if (decision == FilterReply.ACCEPT) {
@@ -660,6 +634,24 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
+    
+  }
+  
+  public boolean isEnabledFor(Marker marker, Level level) {
+    FilterReply decision = callTurboFilters(marker, level);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= level.levelInt;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
+  }
+  
+  public boolean isEnabledFor(Level level) {
+    return isEnabledFor(null, level);
   }
 
   public void warn(String msg) {
@@ -725,8 +717,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @param level
    * @return the reply given by the TurboFilters
    */
-  private FilterReply callTurboFilters(Level level) {
-    return loggerContext.getTurboFilterChainDecision(null, this, level, null,
+  private FilterReply callTurboFilters(Marker marker, Level level) {
+    return loggerContext.getTurboFilterChainDecision(marker, this, level, null,
         null, null);
   }
 

@@ -8,7 +8,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * Checks whether the marker in the event matches the marker specified by the user as a property.
+ * Checks whether the marker in the event matches the marker specified by the 
+ * user.
  */
 public class MarkerFilter extends MatchingFilter {
 

@@ -50,26 +50,37 @@ prefix='../';
     continent's largest sweet water reserve.
     </p>
 
-    <p>In the first part, this document presents Joran's use as a
-    using Joran in order to configure logback. In the second, <a
-    href="#Joran">a second part</a> gives a generic explanation of how
-    the configuration framework in logback works, and how to use it in
-    your own applications.
-</p>
+    <p>In the first part, we start by presenting ways for configuring
+    logback, with many example configuration scripts.  In the <a
+    href="#Joran"> second part</a>, we present Joran as a generic
+    configuration framework, and how you can use it to configure your
+    own applications.
+    </p>
 
-<h2>Configuration in logback</h2>
+    <h2>Configuration in logback</h2>
 
-<p>
-Logback can be configured both programmatically and with an xml configuration
-file. Here are the steps that logback follows to try to configure itself:
-</p>
+    <p>Logback can be configured both programmatically or with
+    configuration script (in XML formal). Here are the steps that
+    logback follows to try to configure itself:
+    </p>
 
-<ul>
-	<p>Logback tries to find a file called <em>logback.xml</em> within the classpath.</p>
-	<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
-	<p>In case none of these files are found, logback configures itself automatically using the 
-	<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
-	</a> class.</p>
+    xxxxxxxxxxxxx
+
+    <ul>
+      <li>
+        <p>Logback tries to find a file called <em>logback.xml</em>
+        within the classpath.</p>
+      </li>
+
+      <li><p>If no such file is found, it checks for another file
+      called <em>logback-test.xml</em>.</p>
+      </li>
+      
+      <li><p>In case none of these files are found, logback configures
+      itself automatically using the <a
+      href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
+      </a> class.</p>
+      </li>
 </ul>
 <p>
 The first two checks allow for two environments to cooperate nicely. When the application

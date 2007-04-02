@@ -82,14 +82,27 @@ public class BasicLoggerTest extends TestCase {
     logger.error("x");
     assertEquals(3, listAppender.list.size());
   }
+
+  public void testEnabledX_All() throws Exception {
+    LoggerContext lc = new LoggerContext();
+    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.setLevel(Level.ALL);
+    Logger logger = lc.getLogger(BasicLoggerTest.class);
+    assertTrue(logger.isDebugEnabled());
+    assertTrue(logger.isInfoEnabled());
+    assertTrue(logger.isWarnEnabled());
+    assertTrue(logger.isErrorEnabled());
+    assertTrue(logger.isEnabledFor(Level.DEBUG));
+    assertTrue(logger.isEnabledFor(Level.INFO));
+    assertTrue(logger.isEnabledFor(Level.WARN));    
+    assertTrue(logger.isEnabledFor(Level.ERROR));
+  }
   
   public void testEnabledX_Debug() throws Exception {
     LoggerContext lc = new LoggerContext();
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.setLevel(Level.DEBUG);
     Logger logger = lc.getLogger(BasicLoggerTest.class);
-
-
     assertTrue(logger.isDebugEnabled());
     assertTrue(logger.isInfoEnabled());
     assertTrue(logger.isWarnEnabled());
@@ -107,7 +120,6 @@ public class BasicLoggerTest extends TestCase {
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.setLevel(Level.INFO);
     Logger logger = lc.getLogger(BasicLoggerTest.class);
-
     assertFalse(logger.isDebugEnabled());
     assertTrue(logger.isInfoEnabled());
     assertTrue(logger.isWarnEnabled());
@@ -123,7 +135,6 @@ public class BasicLoggerTest extends TestCase {
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.setLevel(Level.WARN);
     Logger logger = lc.getLogger(BasicLoggerTest.class);
-
     assertFalse(logger.isDebugEnabled());
     assertFalse(logger.isInfoEnabled());
     assertTrue(logger.isWarnEnabled());
@@ -139,7 +150,6 @@ public class BasicLoggerTest extends TestCase {
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.setLevel(Level.ERROR);
     Logger logger = lc.getLogger(BasicLoggerTest.class);
-
     assertFalse(logger.isDebugEnabled());
     assertFalse(logger.isInfoEnabled());
     assertFalse(logger.isWarnEnabled());
@@ -150,5 +160,18 @@ public class BasicLoggerTest extends TestCase {
     assertTrue(logger.isEnabledFor(Level.ERROR));
   }
 
-  
+  public void testEnabledX_Off() throws Exception {
+    LoggerContext lc = new LoggerContext();
+    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.setLevel(Level.OFF);
+    Logger logger = lc.getLogger(BasicLoggerTest.class);
+    assertFalse(logger.isDebugEnabled());
+    assertFalse(logger.isInfoEnabled());
+    assertFalse(logger.isWarnEnabled());
+    assertFalse(logger.isErrorEnabled());
+    assertFalse(logger.isEnabledFor(Level.DEBUG));
+    assertFalse(logger.isEnabledFor(Level.INFO));
+    assertFalse(logger.isEnabledFor(Level.WARN));    
+    assertFalse(logger.isEnabledFor(Level.ERROR));
+  }
 }
