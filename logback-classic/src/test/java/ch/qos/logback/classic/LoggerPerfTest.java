@@ -21,14 +21,14 @@ public class LoggerPerfTest extends TestCase {
 
   final static String KAL = "kal";
   String localhostName = null;
+  static long RUN_LENGTH = 1000*1000*10;
   
   public void setUp() throws Exception {
     localhostName = InetAddress.getLocalHost().getCanonicalHostName();
   }
-  public void testSpeed() {
-    long len = 1000*1000*10;
-    loopBasic(len);
-    double avg = loopBasic(len); 
+  public void testBasic() {
+    loopBasic(RUN_LENGTH);
+    double avg = loopBasic(RUN_LENGTH); 
     
     System.out.println("Running on "+localhostName);
     // check for performance on KAL only
@@ -38,13 +38,26 @@ public class LoggerPerfTest extends TestCase {
     System.out.println("Average log time for disabled statements: "+avg+" nanos.");
   }
   
-  public void testNOPFilterSpeed() {
-    long len = 1000*1000*10;
-    loopNopFilter(len);
-    double avg = loopNopFilter(len);
+  public void testParameterized() {
+
+    loopBasic(RUN_LENGTH);
+    double avg = loopParameterized(RUN_LENGTH); 
     
     System.out.println("Running on "+localhostName);
-    System.out.println("Average log time for disabled statements: "+avg+" nanos.");
+    // check for performance on KAL only
+    if(KAL.equals(localhostName)) {
+      assertTrue(30 > avg);
+    }
+    System.out.println("Average log time for disabled (parameterized) statements: "+avg+" nanos.");
+  }
+  
+  
+  public void testNOPFilter() {
+    loopNopFilter(RUN_LENGTH);
+    double avg = loopNopFilter(RUN_LENGTH);
+    
+    System.out.println("Running on "+localhostName);
+    System.out.println("Average log time for disabled (NOPFilter) statements: "+avg+" nanos.");
     // check for performance on KAL only
     if(KAL.equals(localhostName)) {
       assertTrue(80 > avg);
@@ -58,9 +71,29 @@ public class LoggerPerfTest extends TestCase {
     mopAppender.start();
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.OFF);
+    for(long i = 0; i < len; i++) {
+      logger.debug("Toto");
+    }
     long start = System.nanoTime();
     for(long i = 0; i < len; i++) {
       logger.debug("Toto");
+    }
+    long end = System.nanoTime();
+    return (end-start)/len;
+  }
+
+  double loopParameterized(long len) {
+    LoggerContext lc = new LoggerContext();
+    NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
+    mopAppender.start();
+    Logger logger = lc.getLogger(this.getClass());
+    logger.setLevel(Level.OFF);
+    for(long i = 0; i < len; i++) {
+      logger.debug("Toto {}", i);
+    }
+    long start = System.nanoTime();
+    for(long i = 0; i < len; i++) {
+      logger.debug("Toto {}", i);
     }
     long end = System.nanoTime();
     return (end-start)/len;
@@ -75,6 +108,9 @@ public class LoggerPerfTest extends TestCase {
     lc.addTurboFilter(nopFilter);
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.OFF);
+    for(long i = 0; i < len; i++) {
+      logger.debug("Toto");
+    }
     long start = System.nanoTime();
     for(long i = 0; i < len; i++) {
       logger.debug("Toto");
