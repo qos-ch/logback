@@ -35,13 +35,31 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   static final String SEE_FNP_NOT_SET =
     "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   RollingCalendar rc;
+  long currentTime;
   long nextCheck;
+  //indicate whether the time has been forced or not
+  boolean isTimeForced=false;
   Date lastCheck = new Date();
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
   RenameUtil util = new RenameUtil();
   Compress compress = new Compress();
   String lastGeneratedFileName;
+  
+  public void setCurrentTime(long timeInMillis) {
+	currentTime = timeInMillis;
+	isTimeForced = true;
+  }
+  
+  public long getCurrentTime(){
+	//if time is forced return the time set by user
+	if(isTimeForced){
+	  return currentTime;
+	}
+	else{
+	  return System.currentTimeMillis();
+	}
+  }
   
   public void start() {
     // set the LR for our utility object
@@ -88,8 +106,8 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
         fileNamePattern.getPattern()+"'.");
     rc.printPeriodicity(this);
 
-    long n = System.currentTimeMillis();
-    lastCheck.setTime(n);
+    //currentTime = System.currentTimeMillis();
+    lastCheck.setTime(getCurrentTime());
     nextCheck = rc.getNextCheckMillis(lastCheck);
 
     //Date nc = new Date();
@@ -168,9 +186,9 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   }
 
   public boolean isTriggeringEvent(File activeFile, final Object event) {
-    long n = System.currentTimeMillis();
+    //currentTime= System.currentTimeMillis();
 
-    if (n >= nextCheck) {
+    if (getCurrentTime() >= nextCheck) {
       //addInfo("Time to trigger roll-over");
       // We set the elapsedPeriodsFileName before we set the 'lastCheck' variable
       // The elapsedPeriodsFileName corresponds to the file name of the period
@@ -178,7 +196,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
       elapsedPeriodsFileName = activeFileNamePattern.convertDate(lastCheck);
       //addInfo("elapsedPeriodsFileName set to "+elapsedPeriodsFileName);
 
-      lastCheck.setTime(n);
+      lastCheck.setTime(currentTime);
       nextCheck = rc.getNextCheckMillis(lastCheck);
 
       Date x = new Date();
