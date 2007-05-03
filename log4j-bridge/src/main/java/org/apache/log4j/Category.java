@@ -335,6 +335,8 @@ public class Category {
   
   private ch.qos.logback.classic.Level priorityToLevel(Priority p) {
     switch (p.level) {
+    case Level.TRACE_INT:
+      return ch.qos.logback.classic.Level.TRACE;
     case Priority.DEBUG_INT:
       return ch.qos.logback.classic.Level.DEBUG;
     case Priority.INFO_INT:
