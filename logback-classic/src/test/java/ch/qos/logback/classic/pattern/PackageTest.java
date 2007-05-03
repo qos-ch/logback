@@ -21,6 +21,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(ConverterTest.class);
     suite.addTestSuite(ClassNameAbbreviatorTest.class);
     suite.addTestSuite(MDCConverterTest.class);
+    suite.addTestSuite(MarkerConverterTest.class);
     return suite;
   }
 }
