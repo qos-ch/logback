@@ -370,6 +370,32 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return childLogger;
   }
 
+  public void trace(String msg) {
+    filterAndLog(FQCN, null, Level.TRACE, msg, null, null);
+  }
+
+  public final void trace(String format, Object arg) {
+    filterAndLog(FQCN, null, Level.TRACE, format, arg, null);
+  }
+
+  public void trace(String format, Object arg1, Object arg2) {
+    filterAndLog(FQCN, null, Level.TRACE, format, arg1, arg2, null);
+  }
+
+  public void trace(String format, Object[] argArray) {
+    filterAndLog(FQCN, null, Level.TRACE, format, argArray, null);
+  }
+
+  public void trace(String msg, Throwable t) {
+    if (isDebugEnabled()) {
+      filterAndLog(FQCN, null, Level.TRACE, msg, null, t);
+    }
+  }
+
+  public final void trace(Marker marker, String msg) {
+    filterAndLog(FQCN, marker, Level.TRACE, msg, null, null);
+  }
+  
   public void debug(String msg) {
     filterAndLog(FQCN, null, Level.DEBUG, msg, null, null);
   }
@@ -471,6 +497,23 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog(FQCN, marker, level, msg, param1, param2, t);
   }
 
+  public void trace(Marker marker, String format, Object arg) {
+    filterAndLog(FQCN, marker, Level.TRACE, format, arg, null);
+  }
+
+  public void trace(Marker marker, String format, Object arg1, Object arg2) {
+    filterAndLog(FQCN, marker, Level.TRACE, format, arg1, arg2, null);
+  }
+
+  public void trace(Marker marker, String format, Object[] argArray) {
+    filterAndLog(FQCN, marker, Level.TRACE, format, argArray, null);
+  }
+
+  public void trace(Marker marker, String msg, Throwable t) {
+    filterAndLog(FQCN, marker, Level.TRACE, msg, null, t);
+  }
+
+  
   public void debug(Marker marker, String format, Object arg) {
     filterAndLog(FQCN, marker, Level.DEBUG, format, arg, null);
   }
@@ -567,8 +610,26 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog(FQCN, marker, Level.INFO, msg, null, t);
   }
 
+  public final boolean isTraceEnabled() {
+    return isTraceEnabled(null);
+  }
+
+  
   public final boolean isDebugEnabled() {
     return isDebugEnabled(null);
+  }
+
+  public boolean isTraceEnabled(Marker marker) {
+    final FilterReply decision = callTurboFilters(marker, Level.TRACE);
+    if (decision == FilterReply.NEUTRAL) {
+      return effectiveLevelInt <= Level.TRACE_INT;
+    } else if (decision == FilterReply.DENY) {
+      return false;
+    } else if (decision == FilterReply.ACCEPT) {
+      return true;
+    } else {
+      throw new IllegalStateException("Unknown FilterReply value: " + decision);
+    }
   }
 
   public boolean isDebugEnabled(Marker marker) {
@@ -582,7 +643,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-   
   }
 
   public final boolean isErrorEnabled() {

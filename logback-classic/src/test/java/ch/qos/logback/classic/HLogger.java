@@ -253,6 +253,29 @@ public class HLogger extends MarkerIgnoringBase {
     childHLogger.effectiveLevel = this.effectiveLevel;
     return childHLogger;
   }
+  
+  public final void trace(String msg) {
+    if (effectiveLevel.levelInt <= Level.TRACE_INT) {
+      throw new UnsupportedOperationException("not yet implemented");
+    }
+  }
+
+  public void trace(String msg, Throwable t) {
+    // To change body of implemented methods use File | Settings | File
+    // Templates.
+  }
+
+  public void trace(Object parameterizedMsg, Object param1) {
+    // To change body of implemented methods use File | Settings | File
+    // Templates.
+  }
+
+  public void trace(String parameterizedMsg, Object param1, Object param2) {
+    // To change body of implemented methods use File | Settings | File
+    // Templates.
+  }
+
+  
 
   public final void debug(String msg) {
     if (effectiveLevel.levelInt <= Level.DEBUG_INT) {
@@ -315,9 +338,12 @@ public class HLogger extends MarkerIgnoringBase {
     // Templates.
   }
 
+  public boolean isTraceEnabled() {
+    return false; 
+  }
+  
   public boolean isDebugEnabled() {
-    return false; // To change body of implemented methods use File | Settings |
-    // File Templates.
+    return false; 
   }
 
   public boolean isErrorEnabled() {
@@ -355,6 +381,12 @@ public class HLogger extends MarkerIgnoringBase {
     // Templates.
   }
 
+  public void trace(String format, Object arg) {
+  }
+
+  public void trace(String format, Object[] argArray) {
+  }
+  
   public void debug(String format, Object arg) {
   }
 

@@ -11,10 +11,10 @@
 package ch.qos.logback.classic;
 
 /**
- * Defines the set of levels recognized by the LOGBback, that is {@link #OFF},
- * {@link #ERROR}, {@link #WARN}, {@link #INFO} and {@link #DEBUG},
- * {@link #ALL}. <p/> The <code>Level</code> class is final and cannot be
- * sub-classed.
+ * Defines the set of levels recognized by logback-classic, that is {@link #OFF},
+ * {@link #ERROR}, {@link #WARN}, {@link #INFO}, {@link #DEBUG},
+ * {@link #TRACE} and {@link #ALL}. <p/> The <code>Level</code> class is
+ * final and cannot be sub-classed.
  * </p>
  */
 public final class Level implements java.io.Serializable {
@@ -26,6 +26,7 @@ public final class Level implements java.io.Serializable {
   public static final int WARN_INT = 30000;
   public static final int INFO_INT = 20000;
   public static final int DEBUG_INT = 10000;
+  public static final int TRACE_INT = 5000;
   public static final int ALL_INT = Integer.MIN_VALUE;
 
   public static final Integer OFF_INTEGER = new Integer(OFF_INT);
@@ -33,6 +34,7 @@ public final class Level implements java.io.Serializable {
   public static final Integer WARN_INTEGER = new Integer(WARN_INT);
   public static final Integer INFO_INTEGER = new Integer(INFO_INT);
   public static final Integer DEBUG_INTEGER = new Integer(DEBUG_INT);
+  public static final Integer TRACE_INTEGER = new Integer(DEBUG_INT);
   public static final Integer ALL_INTEGER = new Integer(ALL_INT);
 
   /**
@@ -41,27 +43,33 @@ public final class Level implements java.io.Serializable {
   public static final Level OFF = new Level(OFF_INT, "OFF");
 
   /**
-   * The <code>ERROR</code> levelInt designates error events which may or not
+   * The <code>ERROR</code> level designates error events which may or not
    * be fatal to the application.
    */
   public static final Level ERROR = new Level(ERROR_INT, "ERROR");
 
   /**
-   * The <code>WARN</code> levelInt designates potentially harmful situations.
+   * The <code>WARN</code> level designates potentially harmful situations.
    */
   public static final Level WARN = new Level(WARN_INT, "WARN");
 
   /**
-   * The <code>INFO</code> levelInt designates informational messages
+   * The <code>INFO</code> level designates informational messages
    * highlighting overall progress of the application.
    */
   public static final Level INFO = new Level(INFO_INT, "INFO");
 
   /**
-   * The <code>DEBUG</code> levelInt designates informational events of lower
+   * The <code>DEBUG</code> level designates informational events of lower
    * importance.
    */
   public static final Level DEBUG = new Level(DEBUG_INT, "DEBUG");
+
+  /**
+   * The <code>TRACE</code> level designates informational events of very low
+   * importance.
+   */
+  public static final Level TRACE = new Level(TRACE_INT, "TRACE");
 
   /**
    * The <code>ALL</code> is used to turn on all logging.
@@ -95,12 +103,15 @@ public final class Level implements java.io.Serializable {
 
   /**
    * Convert a Level to an Integer object.
+   * 
    * @return This level's Integer mapping.
    */
   public final Integer toInteger() {
     switch (levelInt) {
     case ALL_INT:
       return ALL_INTEGER;
+    case TRACE_INT:
+      return TRACE_INTEGER;
     case DEBUG_INT:
       return DEBUG_INTEGER;
     case INFO_INT:
@@ -149,6 +160,8 @@ public final class Level implements java.io.Serializable {
     switch (val) {
     case ALL_INT:
       return ALL;
+    case TRACE_INT:
+      return TRACE;
     case DEBUG_INT:
       return DEBUG;
     case INFO_INT:
@@ -175,6 +188,9 @@ public final class Level implements java.io.Serializable {
 
     if (sArg.equalsIgnoreCase("ALL")) {
       return Level.ALL;
+    }
+    if (sArg.equalsIgnoreCase("TRACE")) {
+      return Level.TRACE;
     }
     if (sArg.equalsIgnoreCase("DEBUG")) {
       return Level.DEBUG;

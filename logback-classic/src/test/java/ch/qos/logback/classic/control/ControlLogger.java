@@ -61,6 +61,24 @@ public class ControlLogger extends MarkerIgnoringBase {
     return name.hashCode();
   }
 
+  public final void trace(String o) {
+    if(getEffectiveLevel().levelInt <= Level.TRACE_INT ) {
+      throw new UnsupportedOperationException("not yet implemented");
+    }
+  }
+
+  public void trace(String msg, Throwable t) {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public void trace(String parameterizedMsg, Object param1) {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public void trace(String parameterizedMsg, Object param1, Object param2) {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+  
   public final void debug(String o) {
     if(getEffectiveLevel().levelInt <= Level.DEBUG_INT ) {
       throw new UnsupportedOperationException("not yet implemented");
@@ -111,6 +129,10 @@ public class ControlLogger extends MarkerIgnoringBase {
     //To change body of implemented methods use File | Settings | File Templates.
   }
 
+  public boolean isTraceEnabled() {
+    return false;  
+  }
+  
   public boolean isDebugEnabled() {
     return false;  //To change body of implemented methods use File | Settings | File Templates.
   }
@@ -143,6 +165,8 @@ public class ControlLogger extends MarkerIgnoringBase {
     //To change body of implemented methods use File | Settings | File Templates.
   }
 
+  public void trace(String format, Object[] argArray) {
+  }
   public void debug(String format, Object[] argArray) {
   }
   public void info(String format, Object[] argArray) {
