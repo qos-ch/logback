@@ -80,6 +80,10 @@ public class LoggerTest extends TestCase {
   public void testPrintAPI() {
     Exception e = new Exception("just testing");
 
+    log4jLogger.trace(null);
+    assertEquals(1, appender.list.size());
+    appender.list.clear();
+    
     log4jLogger.debug(null);
     assertEquals(1, appender.list.size());
     appender.list.clear();
@@ -142,6 +146,21 @@ public class LoggerTest extends TestCase {
 
     log4jLogger.error("error message", e);
     assertEquals(1, appender.list.size());
+    appender.list.clear();
+
+  }
+  
+  public void testLogAPI() {
+    log4jLogger.log("x", Level.TRACE, "x", null);
+    assertEquals(0, appender.list.size());
+
+    log4jLogger.log("x", Level.DEBUG, "x", null);
+    log4jLogger.log("x", Level.INFO, "x", null);
+    log4jLogger.log("x", Level.WARN, "x", null);
+    log4jLogger.log("x", Level.ERROR, "x", null);
+    log4jLogger.log("x", Level.FATAL, "x", null);
+
+    assertEquals(5, appender.list.size());
     appender.list.clear();
 
   }
