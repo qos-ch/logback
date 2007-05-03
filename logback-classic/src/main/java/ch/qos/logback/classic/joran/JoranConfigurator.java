@@ -10,6 +10,7 @@
 
 package ch.qos.logback.classic.joran;
 
+import ch.qos.logback.classic.helpers.PlatformInfo;
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.EvaluatorAction;
@@ -59,7 +60,12 @@ public class JoranConfigurator extends JoranConfiguratorBase {
         .addRule(new Pattern("configuration/appender/layout"),
             new LayoutAction());
     
-    rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
+    // add jmxConfigurator only if we have JMX available.
+    // If running under JDK 1.4 (retrotranslateed logback) then we
+    // might not have JMX.
+    if(PlatformInfo.hasJMXObjectName()) {
+      rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
+    }
     rs.addRule(new Pattern("configuration/include"), new IncludeFileAction());
     
     rs.addRule(new Pattern("configuration/consolePlugin"), new ConsolePluginAction());
