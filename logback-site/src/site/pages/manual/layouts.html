@@ -31,16 +31,8 @@ prefix='../';
     </div>
 
     <script src="../templates/creative.js"></script>
-
-		<div class="highlight">
-
-    <p>In order to run the examples in this chapter, you need to make
-    sure that certain jar files are present on the classpath.  Please
-    refer to the <a href="../setup.html">setup page</a> for further
-    details.
-    </p>
-    </div>
-    
+    <script src="../templates/setup.js"></script>
+     
 		<h2>What is a layout?</h2>
 
 		<p>While appenders are responsible for writing logging output to
@@ -287,7 +279,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
    </p>
 
 
-		<a name="PatternLayout"></a>
+		<a name="ClassicPatternLayout"></a>
 		<h3>PatternLayout</h3>
 
 		<p>
@@ -1351,40 +1343,86 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		
 		<p>Here is a sample output produced by <code>HTMLLayout</code>
 		using its default CSS stylesheet:</p>
-		<img src="images/chapter5/htmlLayout1.gif" alt="HTML Layout Sample Image"/>
+		<img src="images/htmlLayout0.gif" alt="HTML Layout Sample Image"/>
 		
 		<p>The content of table columns are specified with the help of a
 		conversion pattern. See <a
-		href="#PatternLayout"><code>PatternLayout</code></a> for
-		documentation on conversion patterns. Thus, the user has full
-		control over the contents and format of the table. You can display
-		any one of the converters <code>PatternLayout</code> knows about.
+		href="#ClassicPatternLayout"><code>PatternLayout</code></a> for
+		documentation on conversion patterns. As such, you have full
+		control over the contents and format of the table. You can select
+		and display any combination of converters
+		<code>PatternLayout</code> knows about.
 		</p>
 
-		<p>One notable point about the use of <code>PatternLayout</code>
-		with <code>HTMLLayout</code> is that conversion specifiers should
-		not be separated by a space or in general any literals. Each
-		specifier found in the pattern will result in a separate column,
-		in particular each literal in the pattern.
+		<p>One notable exception about the use of
+		<code>PatternLayout</code> with <code>HTMLLayout</code> is that
+		conversion specifiers should not be separated by space characters
+		or more generally by literal text. Each specifier found in the
+		pattern willa result in a separate column, in particular for each
+		literal text in the pattern, wasting valuable real estate on your
+		screen.
     </p>
 
-		<p>The pattern <em>%ex</em> used to display exceptions is not the
-		only way to display them. If you use the <em>%em</em> conversion
-		word, a table column will be created to display exception stack
-		traces. In most cases the column will be empty, wasting valuable
-		real-estate on your screen.
+    <p>Here is simple but functional configuration file illustrating
+    the use of <code>HTMLLayout</code>.
+    </p>
+
+<div class="source">&lt;configuration debug="true"&gt;
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+      <b>&lt;pattern&gt;%relative%thread%mdc%level%logger%msg&lt;/pattern&gt;</b>
+    &lt;/layout&gt;
+   &lt;File&gt;/test.html&lt;/File&gt;
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value="debug" /&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;
+</div>
+
+  <p>Launching the <code>TrivialMain</code> application listed below
+  will create the file <em>test.html</em> on your local drive.</p>
+
+<div class="source">import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TrivialMain {
+  public static void main(String[] args) throws InterruptedException {
+    Logger logger = LoggerFactory.getLogger(TrivialMain.class);
+    for(int i = 0; i < 6; i ++) {
+      if(i % 5 == 0) {
+        logger.info("an info message "+i);
+      } else {
+        logger.debug("hello world number" +i);
+      }
+    }
+    logger.error("Finish off with fireworks", new Exception("Just testing"));
+  }
+}</div>
+
+		<p>The contents of <em>test.html</em> should be similar to:
+		</p>
+		<img src="images/htmlLayout1.jpg" alt="HTML Layout Sample Image"/>
+
+    <h3>Stack traces</h3>
+
+		<p> If you use the <em>%em</em> conversion word, to display stack
+		traces, a table column will be created to display exception stack
+		traces. In most cases the column will be empty, wasting screen
+		real-estate. Moreover, printing a stack trace on a separate column
+		does yield very readable results. Fortunately, the <em>%ex</em>
+		conversion word is not the only way to display stack traces.
 		</p>
 
-		<p>
-			Moreover, printing a stack trace on a separate column does yield
-			very readable results. A better solution is available in the
-			form of implementations of the <code>IThrowableRenderer</code>
-			interface.  Such an implementation can assigned to
-			<code>HTMLLayout</code> to manage the display data related to
-			exceptions. By default, a
-			<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
+		<p>A better solution is available through implementations of
+		<code>IThrowableRenderer</code> interface.  Such an implementation
+		can assigned to <code>HTMLLayout</code> to manage the display data
+		related to exceptions. By default, a
+		<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
 			<code>DefaultThrowableRenderer</code></a> is assigned to each
-			<code>HTMLLayout</code> isntance. It writes exceptions on a
+			<code>HTMLLayout</code> instance. It writes exceptions on a
 			<em>new table row</em>, along with its stacktrace, in an easily
 			readable manner, as shown on the figure above.
 		</p>
@@ -1394,25 +1432,30 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 			<a href="../xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">
 			<code>NOPThrowableRenderer</code></a> in the configuration file
 			in order to disable displaying a separate row for the stack
-			trace.
+			trace. We don't have the faintest idea why you would want to do
+			that, but if you did, you could.
 		</p>
 
-		<p>A user-specified external CSS file can be set as the
-		style-sheet of the HTML output. For this purpose, a
-		<code>cssBuilder</code> xml element can be nested within a
-		<code>&lt;layout&gt;</code> element, as shown below.
+    <h3>CSS</h3>
+
+    <p>The presentation of the HTML created by <code>HTMLLayout</code>
+    is controlled through a Cascading Style Sheet (CSS). In the
+    absence of specific instructions, <code>HTMLLayout</code> will
+    default to its internal CSS. However, your can instruct
+    <code>HTMLLayout</code> you use an external CSS file. For this
+    purpose, a <code>cssBuilder</code> element can be nested within a
+    <code>&lt;layout&gt;</code> element, as shown below.
 		</p>
 
 <div class="source"><pre>&lt;layout>
   ...
   &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
-    &lt;param name="url" value="path_to_StyleFile.css" />
+    &lt;url>path_to_StyleFile.css&lt;/url>
   &lt;/cssBuilder>	
   ...
 &lt;/layout></pre></div>
 
-		<p>By default, an internal CSS style is used.</p>
-		
+	
 		<p>The <code>HTMLLayout</code> is often used in conjunction with
 		<code>SMTPAppender</code>, in order to send an email pleasantly
 		formatted in HTML. Here is a typical configuration:
@@ -1421,12 +1464,12 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		<div class="source"><pre>&lt;configuration&gt;
   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
-      &lt;param name="pattern" value="%relative%thread%mdc%level%class%msg" /&gt;
+      &lt;pattern>%relative%thread%mdc%level%class%msg&lt;/pattern&gt;
     &lt;/layout&gt;
-   &lt;param name="From" value="sender.email@domain.net" /&gt;
-   &lt;param name="SMTPHost" value="mail.domain.net" /&gt;
-   &lt;param name="Subject" value="LastEvent: %class - %msg" /&gt;
-   &lt;param name="To" value="destination.email@domain.net" /&gt;
+    &lt;From>sender.email@domain.net&lt;/From>
+    &lt;SMTPHost>mail.domain.net"&lt;/SMTPHost>
+    &lt;Subject>LastEvent: %class - %msg &lt;/Subject>
+    &lt;To>destination.email@domain.net&lt;/To> 
   &lt;/appender&gt;
 
   &lt;root&gt;
@@ -1772,10 +1815,12 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		<a name="AccessHTMLLayout"></a>
 		<h3>HTMLLayout</h3>
 		
-		<p>The access version of 
-		<a href="../xref/ch/qos/logback/access/html/HTMLLayout.html">
-		<code>HTMLLayout</code></a> works like logback classic's
-		version.</p>
+		<p>The <a
+		href="../xref/ch/qos/logback/access/html/HTMLLayout.html"><code>HTMLLayout</code></a>
+		class found in logback-access is similar to the <a
+		href="#ClassicHTMLLayout"><code>HTMLLayout</code></a> class found
+		in logback-classic.
+    </p>
 		
 		<p>By default, it will create a table containing the following data:</p>
 		

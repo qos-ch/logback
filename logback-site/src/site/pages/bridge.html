@@ -80,7 +80,7 @@ prefix='';
     </p>
 
     <p>We are happy to report that several applications are
-    using log4j-bridge in production with success.
+    successfully using log4j-bridge in production.
     </p>
 
 
@@ -91,10 +91,10 @@ prefix='';
     bridge.  For example, direct references to log4j appenders,
     filters or PropertyConfigurator are not supported by log4j-bridge.
     While the number of cases where log4j-bridge is insufficient is
-    not negligible, in a large number of cases where log4j is
-    configured through a configuration file, be it
+    not completely negligible, in a vast majority of cases where log4j
+    is configured through a configuration file, be it
     <em>log4j.properties</em> or <em>log4j.xml</em>, log4j-bridge is
-    sufficient to migrate your application to logback.
+    enough in order to migrate youran application to logback.
     </p>
 
     <h3>What about the overhead?</h3>
@@ -102,15 +102,13 @@ prefix='';
     <p>There overhead of using log4j-bridge instead of log4j directly
     is relatively small. Given that log4j-bridge immediately delegates
     all work to logback, the CPU overhead should be negligible, in the
-    order of a few <em>nanoseconds</em>, i.e. neglible. There memory
-    overhead amount to an entry in a hasmap per logger, which should
-    be usually acceptable even for very large applications consisting
-    of several thousand loggers.  Moreover, given that logback is both
+    order of a few <em>nanoseconds</em>. There is a memory overhead
+    corresponding to an entry in a hasmap per logger, which should be
+    usually acceptable even for very large applications consisting of
+    several thousand loggers.  Moreover, given that logback is both
     much faster and more memory-efficient, the gains made by using
     logback should compensate for the overhead of using log4j-bridge
     instead of log4j directly.</p>
-
-    
 	
 	
 <script src="templates/footer.js"></script>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Chapter3: Logback configuration</title>
+<title>Chapter3: Logback configuration &amp; Joran</title>
 <link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
 <link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
  
@@ -20,51 +20,41 @@ prefix='../';
 </div>
 <div id="content">
 	
-		<h1>Chapter 3: Logback configuration with Joran</h1>
+		<h1>Chapter 3: Logback configuration &amp; Joran</h1>
 
     <div class="quote">
-      <p>In symbols one observes an advantage in discovery which is
-      greatest when they express the exact nature of a thing briefly
-      and, as it were, picture it; then indeed the labor of thought is
-      wonderfully diminished.
+      <p><em>In symbols one observes an advantage in discovery which
+      is greatest when they express the exact nature of a thing
+      briefly and, as it were, picture it; then indeed the labor of
+      thought is wonderfully diminished.</em>
       </p>
       <p>&mdash;GOTTFRIED WILHELM LEIBNIZ</p>
     </div>
 
 
-     <script src="../templates/creative.js"></script>
-
-		<div class="highlight">
-    <p>
-      In order to run the examples in this chapter, you need
-      to make sure that certain jar files are present on the
-      classpath.
-    	Please refer to the <a href="../setup.html">setup page</a>
-    	for further details.
-    </p>
-    </div>
+    <script src="../templates/creative.js"></script>
+    <script src="../templates/setup.js"></script>
     
     <p>Joran stands for a cold north-west wind which, every now and
-    then, blows forcefully on Lake Leman, a.k.a lake Geneva. Located
+    then, blows forcefully on Lake Leman, a.k.a. lake Geneva. Located
     right in the middle of Europe, the Leman lake happens to be the
     continent's largest sweet water reserve.
     </p>
 
     <p>In the first part, we start by presenting ways for configuring
     logback, with many example configuration scripts.  In the <a
-    href="#Joran"> second part</a>, we present Joran as a generic
-    configuration framework, and how you can use it to configure your
-    own applications.
+    href="#Joran">second part</a>, we present Joran, a generic
+    configuration framework, that you can put to use in order to
+    configure your own applications.
     </p>
 
     <h2>Configuration in logback</h2>
 
-    <p>Logback can be configured both programmatically or with
-    configuration script (in XML formal). Here are the steps that
-    logback follows to try to configure itself:
+    <p>Logback can be configured either programmatically or with
+    configuration a script (expressed in XML format). Here are the
+    initialization steps that logback follows to try to configure
+    itself:
     </p>
-
-
 
     <ol>
       <li>
@@ -79,14 +69,13 @@ prefix='../';
       <li><p>In case neither file is found, logback configures itself
       automatically using the <a
       href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>
-      which will direct logging output on the console. </a></p>
+      which will cause output to be directed on the console. </a></p>
       </li>
     </ol>
 
-    <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-
-    <p>The last step is meant to provide basic logging functionnality
-    in case no configuration file is provided. 
+    <p>The third and last step is meant to provide a default (but very
+    basic) logging functionnality in case no configuration file could
+    be found.
     </p>
 
 
@@ -101,10 +90,10 @@ prefix='../';
 
     <h3>Automatically configuring logback</h3>
 
-    <p>The simplest way to configure logback is by letting logback use
-    its <code>BasicConfigurator.configureDefaultContext()</code>
-    method. Let us give a taste of how this is done with the help of
-    an imaginary application called <code>MyApp1</code>.
+    <p>The simplest way to configure logback is by letting logback
+    fallback to its default configuration. Let us give a taste of how
+    this is done in an imaginary application called
+    <code>MyApp1</code>.
     </p>
 
 <em>Example 3.1: Simple example of <code>BasicConfigurator</code> usage 
@@ -126,59 +115,61 @@ public class MyApp1 {
   }
 }</pre></div>
 
-<p>
-There is no invokation of the <code>BasicConfigurator</code> here, since logback
-automatically calls it when no configuration files are found. It creates a rather
-simple logback setup. This call is hardwired to add a <code>ConsoleAppender</code> to
-the root logger. The output is formatting using a <code>PatternLayout</code> set to the
-pattern <em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</em>. Note that
-by default the root logger is assigned to the <code>DEBUG</code> level.
-</p>
+    <p>Assuming the default configuration files
+    <em>logback-test.xml</em> and <em>logback.xml</em> could not be
+    found, logback will default to a minimal configuration hardwired
+    to add a <code>ConsoleAppender</code> to the root logger. The
+    output is formatted using a <code>PatternLayout</code> set to the
+    pattern <em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
+    %msg%n</em>. Moreover, by default the root logger is assigned to
+    the <code>DEBUG</code> level.
+   </p>
 
-<p>
-The output of the command <em>java chapter3.MyApp1</em> should be similar to:
-</p>
+   <p>The output of the command <em>java chapter3.MyApp1</em> should
+   be similar to:
+   </p>
 
 <div class="source"><pre>16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
 16:06:09.046 [main] DEBUG chapter3.Foo - Did it again!
 16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</pre></div>
 
-<p>
-If you are unable to run this command, then make sure that you have set
-your classpath correctly. The scripts provided in the 
-<em>logback-examples/</em> directory will help you setting it up.
-</p>
+   <p>If you are unable to run this command, then make sure that you
+   have set your classpath correctly. The scripts provided in the
+   <em>logback-examples/</em> directory should help you get started.
+   </p>
 
-<p>
-As a side note, let us mention that in logback child loggers link only 
-to their existing ancestors. In particular, the logger named <em>chapter3.Foo</em> 
-is linked directly with the root logger, thereby circumventing the unused 
-<em>chapter3</em> logger. This noticeably improves the performance 
-of hierarchy walks and also slightly reduces logback's memory footprint
-</p>
+   <script src="../templates/setup.js"></script>
 
-<p>
-The <code>MyApp1</code> class uses logback by calling the org.slf4j.LoggerFactory and
-org.slf4j.Logger classes, retrieve the loggers it wishes to use, and log away. 
-For example, the only dependence of the <code>Foo</code> class on logback is the 
-org.slf4j.LoggerFactory and org.slf4j.Logger import. 
-Except code that configures logback (if such code exists) user code does not need to 
-depend on logback. Given that SLF4J permits the use of any implementation under its
-abstraction layer, it is rather easy to migrate large bodies of code from an implementation
-to another. Logback also ships with a module called <em>log4j-bridge</em> that intercepts
-log4j calls and redirects them to the corresponding logback components. Thank to that module,
-one can migrate an entire application using log4j to logback just by replacing jars. More
-information about the <em>log4j-bridge</em> module in its 
-<a href="../bridge.html">specific documentation page</a>.
-</p>
+   <p>The <code>MyApp1</code> application links to logback through
+   calls <code>org.slf4j.LoggerFactory</code> and
+   <code>org.slf4j.Logger</code> classes, retrieve the loggers it
+   wishes to use, and chugs on.  For example, the only dependence of
+   the <code>Foo</code> class on logback are through
+   <code>org.slf4j.LoggerFactory</code> and
+   <code>org.slf4j.Logger</code> imports.  Except code that configures
+   logback (if such code exists) user code does not need to depend on
+   logback. Given that SLF4J permits the use of any implementation
+   under its abstraction layer, it is rather easy to migrate large
+   bodies of code from an implementation to another. Logback also
+   ships with a module called <em>log4j-bridge</em> which intercepts
+   log4j calls and redirects them to the corresponding logback
+   components. With the help of <em>log4j-bridge</em> , you can
+   migrate an entire application using log4j to logback just by
+   replacing jars. More information about the <em>log4j-bridge</em>
+   module can be found on a <a href="../bridge.html">separate
+   page</a>.
+   </p>
 
-<h3>The same using <code>JoranConfigurator</code></h3>
+   <h3>The same with <code>JoranConfigurator</code></h3>
 
-<p>
-The previous example outputs logging information always in the same fixed manner. 
-Fortunately, it is easy to modify <code>MyApp1</code> so that the log output can 
-be controlled at runtime. Here is a slightly modified version called <code>MyApp2</code>.
-</p>
+   <p>The previous example outputs logging information always in the
+   same fixed manner.  How boring! It takes few easy steps to modify
+   <code>MyApp1</code> so that the log output can be controlled at
+   runtime. Here is a slightly modified version called
+   <code>MyApp2</code>.
+   </p>
+
+<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx -->
 
 <em>Example 3.2: Simple example of <code>BasicConfigurator</code> usage  <a href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em>
 <div class="source"><pre>package chapter3;
@@ -189,6 +180,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class MyApp2 {
   final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
@@ -197,12 +189,12 @@ public class MyApp2 {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     
     try {
-      <b>JoranConfigurator configurator = new JoranConfigurator();
+<b>      JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.shutdownAndReset();
       configurator.doConfigure(args[0]);</b>
     } catch (JoranException je) {
-      je.printStackTrace();
+      StatusPrinter.print(lc);
     }
 
     logger.info("Entering application.");
