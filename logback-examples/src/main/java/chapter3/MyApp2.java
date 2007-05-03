@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class MyApp2 {
   final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
@@ -23,13 +24,14 @@ public class MyApp2 {
   public static void main(String[] args) {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     
+
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.shutdownAndReset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      je.printStackTrace();
+      StatusPrinter.print(lc);
     }
 
     logger.info("Entering application.");
