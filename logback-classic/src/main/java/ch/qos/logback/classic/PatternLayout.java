@@ -94,7 +94,9 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
         .put("ex", ThrowableInformationConverter.class.getName());
     defaultConverterMap.put("exception", ThrowableInformationConverter.class
         .getName());
-
+    defaultConverterMap.put("throwable", ThrowableInformationConverter.class
+        .getName());
+    
     defaultConverterMap.put("nopex", NopThrowableInformationConverter.class
         .getName());
     defaultConverterMap.put("nopexception",

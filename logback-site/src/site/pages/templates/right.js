@@ -3,6 +3,10 @@
 
 document.write('<p class="menu_header">New and noteworthy</p>')
 
+document.write('<p class="menu"><a href="http://wizardforge.org/pc?action=showVersion&id=72">Configuration Wizard</a>')
+
+http://wizardforge.org/pc?action=showVersion&id=72
+
 document.write('<p class="menu"><a href="http://www.javadonkey.com/blog/log4j-isdebugenabled-logback/">isDebugEnabled()</a>')
 
 document.write('<p class="menu"><a href="http://xhab.blogspot.com/2007/03/new-logging-experience.html">A new logging experience!</a>')

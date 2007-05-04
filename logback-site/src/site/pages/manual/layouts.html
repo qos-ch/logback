@@ -385,13 +385,14 @@ WARN  [main]: Message 2</pre></div>
 		</p>
 		
 		<table class="bodyTable" border="0" CELLPADDING="8">
-			<th>Conversion Word</th>
-			<th>Effect</th>
+      <tr>
+        <th>Conversion Word</th>
+        <th>Effect</th>
+      </tr>
 
 			<tr class="b">
 				<td align="center">
-					<b>c</b>{<em>length</em>} <br /> 
-					<b>l</b>{<em>length</em>} <br />
+					<b>c</b>{<em>length</em>} <br /> 				
 					<b>lo</b>{<em>length</em>} <br />
 					<b>logger</b>{<em>length</em>} <br />
 				</td>
@@ -719,17 +720,29 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			<tr class="a">
 				<td align="center">
 					<b>ex</b>{<em>length</em>} <br /> 
+          	<b>exception</b>{<em>length</em>} <br /> 
 					<b>throwable</b>{<em>length</em>} <br />
+          <br />
 					<b>ex</b>{length, evaluator-1, ..., evaluator-n} <br />
+					<b>exception</b>{length, evaluator-1, ..., evaluator-n} <br />
 					<b>throwable</b>{length, evaluator-1, ..., evaluator-n}
 				</td>
 
 				<td>
-					<p>
-						Used to output the stack trace of the exception associated
-						with the logging event, if any. By default the full stack trace 
-						will be output. 
+					<p>Used to output the stack trace of the exception
+					associated with the logging event, if any. By default the
+					full stack trace will be output.
 				 </p>
+         
+         <p>If you do not specify the %ex conversion word (or one of
+         its aliases) in the conversion pattern,
+         <code>PatternLayout</code> will automatically add it as the
+         last conversion word, on account of the importance of stack
+         trace information. The $nopex conversion word can be
+         substituted for %ex, in case you do not wish stack trace
+         information to be displayed. See also %nopex conversion word.
+         </p>
+
 				 <p>The <em>throwable</em> conversion word can followed by one of
 						the following options:
 				 </p>
@@ -786,25 +799,43 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
       
       <tr class="b">
         <td align="center">
+          <b>nopex</b> <br />
+          <b>nopexception</b>
+        </td>
+
+        <td>
+          <p>Altough it pretends to handle stack trace data, this
+          conversion word does not output any data, thus, effectively
+          ignoring exceptions.
+          </p>
+
+          <p>The %nopex conversion word allows the user to override
+          PatternLayout's internal safety mechanism which silently
+          adds %ex conversion keyword, even it was not specified in
+          the conversion pattern.
+          </p>
+        </td>
+      </tr>
+
+      <tr class="a">
+        <td align="center">
           <b>marker</b>
         </td>
 
         <td>
-          <p>Used to output the marker associated with the logger
-          request.
-          </p>
+          <p>Used to output the marker associated with the logger 
+         request.</p>
 
-          <p>
-            If there is a single marker available, its name is displayed.
-            In case the marker has children markers, the converter displays
-            the parent's and children's names as shown below.
+          <p>In case the marker contains children markers, the
+          converter displays the parent as well as childrens' names
+          according to the format shown below.
           </p>
           <p>
             <em>parentName [ child1, child2 ]</em>
           </p>
         </td>
       </tr>
-			<tr class="a">
+			<tr class="b">
 
 				<td align="center">
 					<b>%</b>
