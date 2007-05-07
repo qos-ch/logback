@@ -48,8 +48,12 @@ public class Configurator extends ContextAwareBase implements
     LoggerContext lc = (LoggerContext) context;
     addInfo("Shutting down context: " + lc.getName());
     lc.shutdownAndReset();
-    ContextInitializer.autoConfig(lc, lc.getClass().getClassLoader());
-    addInfo("Context: " + lc.getName() + " reloaded.");
+    try {
+      ContextInitializer.autoConfig(lc, lc.getClass().getClassLoader());
+      addInfo("Context: " + lc.getName() + " reloaded.");
+    } catch(JoranException je) {
+      addError("Reloading of context: " + lc.getName() + " failed.", je);
+    }
   }
 
   public void reload(String fileName) throws JoranException {

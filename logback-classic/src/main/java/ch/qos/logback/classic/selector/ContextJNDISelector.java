@@ -94,7 +94,11 @@ public class ContextJNDISelector implements ContextSelector {
         if (configFilePath != null) {
           configureLoggerContextByResource(loggerContext, configFilePath);
         } else {
-          ContextInitializer.autoConfig(loggerContext);
+          try {
+            ContextInitializer.autoConfig(loggerContext);
+          } catch(JoranException je) {
+            StatusPrinter.print(loggerContext);
+          }
         }
       }
       return loggerContext;

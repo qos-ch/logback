@@ -7,7 +7,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class ContextInitializer {
 
@@ -24,26 +23,24 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  public static void autoConfig(LoggerContext loggerContext, ClassLoader classLoader) {
+  public static void autoConfig(LoggerContext loggerContext,
+      ClassLoader classLoader) throws JoranException {
     URL url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
     if (url == null) {
       url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
     }
 
     if (url != null) {
-      try {
-        configureByResource(loggerContext, url);
-      } catch (JoranException je) {
-        StatusPrinter.print(loggerContext);
-      }
+      configureByResource(loggerContext, url);
     } else {
-        BasicConfigurator.configure(loggerContext);
+      BasicConfigurator.configure(loggerContext);
     }
   }
-  
-  public static void autoConfig(LoggerContext loggerContext) {
+
+  public static void autoConfig(LoggerContext loggerContext)
+      throws JoranException {
     ClassLoader tccl = Loader.getTCL();
     autoConfig(loggerContext, tccl);
-   
+
   }
 }
