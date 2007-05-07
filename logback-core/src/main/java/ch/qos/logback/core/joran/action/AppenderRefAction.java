@@ -63,7 +63,7 @@ public class AppenderRefAction extends Action {
           + "]. Did you define it below in the config file?";
       inError = true;
       addError(msg);
-      addError("See " + CoreGlobal.CODES_HREF
+      addError("See " + CoreGlobal.CODES_URL
           + "#appender_order for more details.");
       return;
     }
