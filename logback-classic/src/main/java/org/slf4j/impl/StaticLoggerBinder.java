@@ -20,7 +20,10 @@ import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.selector.DefaultContextSelector;
 import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * 
@@ -32,6 +35,8 @@ import ch.qos.logback.core.util.OptionHelper;
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   private ContextSelector contextSelector;
+
+  final static String NULL_CS_URL = CoreGlobal.CODES_URL + "#null_CS";
 
   /**
    * The unique instance of this class.
@@ -49,8 +54,14 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       // let's configure a default context
       LoggerContext defaultLoggerContext = new LoggerContext();
       defaultLoggerContext.setName("default");
-      ContextInitializer.autoConfig(defaultLoggerContext);
-
+      try {
+        ContextInitializer.autoConfig(defaultLoggerContext);
+      } catch (JoranException je) {
+        // TODO test me
+        Util.reportFailure("Failed to auto configure default logger context",
+            je);
+        StatusPrinter.print(defaultLoggerContext);
+      }
       // See if a special context selector is needed
       String contextSelectorStr = OptionHelper.getSystemProperty(
           ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
@@ -60,17 +71,17 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         // if jndi is specified, let's use the appropriate class
         contextSelector = new ContextJNDISelector(defaultLoggerContext);
       }
-    } catch (Exception e) {
+    } catch (Throwable t) {
       // we should never get here
       Util.reportFailure("Failed to instantiate ["
-          + LoggerContext.class.getName() + "]", e);
+          + LoggerContext.class.getName() + "]", t);
     }
   }
 
   public ILoggerFactory getLoggerFactory() {
     if (contextSelector == null) {
       throw new IllegalStateException(
-          "contextSelector cannot be null. See also http://logback.qos.ch/codes.html#null_CS");
+          "contextSelector cannot be null. See also " + NULL_CS_URL);
     }
     return contextSelector.getLoggerContext();
   }
