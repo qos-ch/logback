@@ -252,7 +252,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
   /**
    * Invoke all the appenders of this logger.
-   *
+   * 
    * @param event
    *          The event to log
    */
@@ -395,7 +395,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   public final void trace(Marker marker, String msg) {
     filterAndLog(FQCN, marker, Level.TRACE, msg, null, null);
   }
-  
+
   public void debug(String msg) {
     filterAndLog(FQCN, null, Level.DEBUG, msg, null, null);
   }
@@ -513,7 +513,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog(FQCN, marker, Level.TRACE, msg, null, t);
   }
 
-  
   public void debug(Marker marker, String format, Object arg) {
     filterAndLog(FQCN, marker, Level.DEBUG, format, arg, null);
   }
@@ -614,7 +613,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return isTraceEnabled(null);
   }
 
-  
   public final boolean isDebugEnabled() {
     return isDebugEnabled(null);
   }
@@ -694,9 +692,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     } else {
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
-    
+
   }
-  
+
   public boolean isEnabledFor(Marker marker, Level level) {
     FilterReply decision = callTurboFilters(marker, level);
     if (decision == FilterReply.NEUTRAL) {
@@ -709,7 +707,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
   }
-  
+
   public boolean isEnabledFor(Level level) {
     return isEnabledFor(null, level);
   }
@@ -803,6 +801,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       Throwable t) {
     Level level = null;
     switch (levelInt) {
+    case LocationAwareLogger.TRACE_INT:
+      level = Level.TRACE;
+      break;
     case LocationAwareLogger.DEBUG_INT:
       level = Level.DEBUG;
       break;
@@ -817,7 +818,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       break;
     default:
       throw new IllegalArgumentException(levelInt
-          + " not a valid level integet");
+          + " not a valid level value");
     }
     filterAndLog(fqcn, marker, level, message, null, t);
   }
