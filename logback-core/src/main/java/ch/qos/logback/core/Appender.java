@@ -26,7 +26,7 @@ public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable {
    * is of type Object.
    * @param event
    */
-  void doAppend(E event);
+  void doAppend(E event) throws LogbackException;
 
   /**
    * Set the {@link Layout} for this appender.
