@@ -36,6 +36,20 @@ prefix='';
   reported</a> by Brian Suksomwong.
   </p>
 
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=63">bug
+  63</a> as reported by La Canea Rosario. Calling log4j (bridge) with
+  the trace level will no longer cause an IllegalStateException to be
+  thrown.
+  </p>
+
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=70">bug
+  70</a> as reported by Dirk Ooms. The %throwable conversion word is
+  now recognized as documented in the logback manual. Moreover, the
+  manual now mentions the %nopex word which can be used to force
+  <code>PatternLayout</code> to ignore the exception contained in the
+  logging request.
+  </p>
+
   <hr width="80%" align="center" />
 
 

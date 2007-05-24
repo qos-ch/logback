@@ -81,10 +81,10 @@ prefix='../';
 
     <p>Assuming the <em>logback-test.xml</em> file is placed under
     <em>src/test/resources</em> folder, Maven will ensure that it
-    won't be included in the artifact it produces. Thus, you can use a
+    won't be included in the artifact produced. Thus, you can use a
     different configuration file, namely <em>logback-test.xml</em>
     during testing, and another file, namely, <em>logback.xml</em>, in
-    production.
+    production. The same principle applies by analogy for Ant.
     </p>
 
 
@@ -171,7 +171,10 @@ public class MyApp1 {
 
 <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx -->
 
-<em>Example 3.2: Simple example of <code>BasicConfigurator</code> usage  <a href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em>
+   <p><em>Example 3.2: Simple example of
+   <code>BasicConfigurator</code> usage <a
+   href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em></p>
+
 <div class="source"><pre>package chapter3;
 
 import org.slf4j.Logger;
@@ -186,16 +189,17 @@ public class MyApp2 {
   final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
 
   public static void main(String[] args) {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    // assume logback is in use
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
     
-    try {
-<b>      JoranConfigurator configurator = new JoranConfigurator();
+    <b>try {
+      JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.shutdownAndReset();
-      configurator.doConfigure(args[0]);</b>
+      configurator.doConfigure(args[0]);
     } catch (JoranException je) {
       StatusPrinter.print(lc);
-    }
+    }</b>
 
     logger.info("Entering application.");
 
@@ -205,16 +209,18 @@ public class MyApp2 {
   }
 }</pre></div>
 
-<p>
-<code>MyApp2</code> fetches the <code>LoggerContext</code>, creates a new
-<code>JoranConfigurator</code>, gives it the context and finally asks that
-the configurator parses a configuration file. A basic configuration file, that
-creates the same components as the default configuration would create, is
-listed below:
-</p>
+  <p><code>MyApp2</code> fetches the <code>LoggerContext</code>
+  currently in effect, creates a new <code>JoranConfigurator</code>,
+  gives it the context and finally asks that the configurator parses a
+  configuration file. A basic configuration file that creates the same
+  logging environment as would the default configuration is listed
+  below:
+  </p>
 
-<em>Example 3.3: Basic configuration file (logback-examples/src/main/java/chapter3/sample0.xml)</em>
-<div class="source"><pre>&lt;configuration>
+  <p><em>Example 3.3: Basic configuration file
+  (logback-examples/src/main/java/chapter3/sample0.xml)</em></p>
+
+  <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -229,29 +235,33 @@ listed below:
   &lt;/root>
 &lt;/configuration></pre></div>
 
-<p>
-Assuming the current directory is <em>logback-examples</em>, try running the 
-<code>MyApp2</code> class by issuing the following command:
-</p>
+  <p>Assuming the current directory is <em>logback-examples</em>, try
+  running the <code>MyApp2</code> class by issuing the following
+  command:
+  </p>
 
-<div class="source"><pre>java chapter3.MyApp2 src/main/java/chapter3/sample0.xml</pre></div>
+  <div class="source"><pre>java chapter3.MyApp2 src/main/java/chapter3/sample0.xml</pre>
+  </div>
 
-<p>
-The ouput of this command is very similar to the output of the previous example, except
-that <code>MyApp2</code> retrieves a logger called <em>chapter3.MyApp2</em> instead of
-<code>chapter3.MyApp1</code>. The output will reflect the difference.
-</p>
+  <p>
+    The ouput of this command is very similar to the output of the
+    previous example, except that <code>MyApp2</code> retrieves a
+    logger called <em>chapter3.MyApp2</em> instead of
+    <code>chapter3.MyApp1</code>. The output will reflect the
+    difference.
+  </p>
 
-<div class="source"><pre>16:09:00.593 [main] INFO  chapter3.MyApp2 - Entering application.
+  <div class="source"><pre>16:09:00.593 [main] INFO  chapter3.MyApp2 - Entering application.
 16:09:00.593 [main] DEBUG chapter3.Foo - Did it again!
 16:09:00.593 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
-<p>
-It is often very useful to define the logback debug configuration property in order 
-to instruct logback to output internal configuration messages on the console. To achieve
-this, one only needs to add an attribute to the main <em>configuration</em> element in the
-configuration file, as shown above:
-</p>
+   <p>It is often very useful to define the logback debug
+   configuration property in order to instruct logback to output
+   internal configuration messages on the console. To achieve this,
+   one only needs to add an attribute to the main
+   <em>configuration</em> element in the configuration file, as shown
+   above:
+   wec</p>
 
 <em>Example 3.4: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
 <div class="source"><pre>&lt;configuration <b>debug="true"</b>>

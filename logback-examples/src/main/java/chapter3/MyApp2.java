@@ -22,6 +22,7 @@ public class MyApp2 {
   final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
 
   public static void main(String[] args) {
+    // assume logback is in use
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     
 
