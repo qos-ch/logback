@@ -263,12 +263,14 @@ public class ConverterTest extends TestCase {
   public void testRelativeTime() throws Exception {
     {
       DynamicConverter<LoggingEvent> converter = new RelativeTimeConverter();
-      Thread.sleep(100);
-      StringBuffer buf = new StringBuffer();
-      converter.write(buf, makeLoggingEvent(null));
-      int rt = Integer.parseInt(buf.toString());
-      if (rt < 50) {
-        fail("relative time should be > 50, but it is " + rt);
+      StringBuffer buf0 = new StringBuffer();
+      converter.write(buf0, makeLoggingEvent(null));
+      StringBuffer buf1 = new StringBuffer();
+      converter.write(buf1, makeLoggingEvent(null));
+      assertEquals(buf0.toString(), buf1.toString());
+      int rt0 = Integer.parseInt(buf0.toString());
+      if (rt0 < 50) {
+        fail("relative time should be > 50, but it is " + rt0);
       }
     }
   }
