@@ -243,11 +243,14 @@
 		</fileSet>	
 				 
 
-				 
+
 		<!-- Website -->
 		<fileSet>
 			<directory>target/site</directory>
 			<outputDirectory>docs/</outputDirectory>
+      <excludes>
+        <exclude>dist/*</exclude>
+      </excludes>
 		</fileSet>
 		
 		<!-- Parent files -->

@@ -228,16 +228,26 @@
           <downloadSources>true</downloadSources>
         </configuration>
       </plugin>   			
-      <plugin>	
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clover-plugin</artifactId>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
         <configuration>
-          <jdk>1.5</jdk>
-          <excludes>
-            <exclude>**/chapter*/</exclude>
-          </excludes>
+          <descriptors>
+            <descriptor>
+              src/main/assembly/dist.xml
+            </descriptor>
+          </descriptors>
+          <finalName>
+            logback-${project.version}
+          </finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <outputDirectory>target/site/dist/</outputDirectory>
         </configuration>
       </plugin>
+
+
+
     </plugins>
   </build>
   
@@ -269,27 +279,6 @@
         </reportSets>
 			</plugin>
 
-      <!-- =================  COBERTURA ================================ -->
-      <!-- run using "mvn cobertura:cobertura -Dmaven.test.skip=true"    -->
-      <!-- ============================================================= -->
-      <!--
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin>
-      -->
-      
-      <!-- ======================= CLOVER ============================== -->
-      <!-- Run with:                                                     -->
-      <!--   mvn  clean clover:instrument clover:aggregate clover:clover --> 
-      <!-- ============================================================= -->
-      <!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clover-plugin</artifactId>
-      </plugin>   
-      -->
-			
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -325,23 +314,6 @@
         </configuration>
       </plugin>
       
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <descriptors>
-            <descriptor>
-              src/main/assembly/dist.xml
-            </descriptor>
-          </descriptors>
-          <finalName>
-            logback-${project.version}
-          </finalName>
-          <appendAssemblyId>false</appendAssemblyId>
-          <outputDirectory>target/dist/</outputDirectory>
-        </configuration>
-      </plugin>
-
     </plugins>
 
   </reporting>
