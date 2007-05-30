@@ -28,7 +28,7 @@ public abstract class DBAppenderTestBase extends TestCase {
     super(name);
   }
 
-  protected void setUp() throws SQLException {
+  public void setUp() throws SQLException {
 
     switch (mode) {
     case NET:
@@ -73,7 +73,7 @@ public abstract class DBAppenderTestBase extends TestCase {
     createTables();
   }
 
-  protected void tearDown() throws SQLException {
+  public void tearDown() throws SQLException {
     dropTables();
 
     if (mode == HsqlMode.MEM) {
