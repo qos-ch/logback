@@ -1,6 +1,6 @@
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 --
--- It is intended for Oracle databases.
+-- It is intended for Oracle 9idatabases.
 
 -- The following lines are useful in cleaning any previous tables 
 
