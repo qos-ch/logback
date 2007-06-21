@@ -14,7 +14,7 @@ import org.hsqldb.jdbcDriver;
 
 public abstract class DBAppenderTestBase extends TestCase {
 
-  public static final String DRIVER_CLASS = "org.hsqldb.jdbcDriver";
+  public static final String HSQLDB_DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   // String serverProps;
   String url = null;
   String user = "sa";

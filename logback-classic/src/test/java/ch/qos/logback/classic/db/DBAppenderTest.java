@@ -33,7 +33,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
     appender.setContext(lc);
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
-    connectionSource.setDriverClass(DRIVER_CLASS);
+    connectionSource.setDriverClass(HSQLDB_DRIVER_CLASS);
     connectionSource.setUrl(url);
     connectionSource.setUser(user);
     connectionSource.setPassword(password);
