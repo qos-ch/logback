@@ -30,6 +30,7 @@ public class Log4j13Calls extends TestCase {
   public void testLog() {
     MDC.put("key", "value1");
     
+    logger.trace("Trace level can be noisy");
     logger.debug("Entering application");
     logger.info("Violets are blue");
     logger.warn("Here is a warning");

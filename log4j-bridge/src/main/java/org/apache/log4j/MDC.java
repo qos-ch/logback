@@ -3,7 +3,7 @@ package org.apache.log4j;
 public class MDC {
 
   public static void put(String key, String value) {
-    ch.qos.logback.classic.MDC.put(key, value);
+    org.slf4j.MDC.put(key, value);
   }
   
   public static void put(String key, Object value) {
@@ -15,14 +15,14 @@ public class MDC {
   }
   
   public static Object get(String key) {
-    return ch.qos.logback.classic.MDC.get(key);
+    return org.slf4j.MDC.get(key);
   }
   
   public static void remove(String key) {
-    ch.qos.logback.classic.MDC.remove(key);
+    org.slf4j.MDC.remove(key);
   }
   
   public static void clear() {
-    ch.qos.logback.classic.MDC.clear();
+    org.slf4j.MDC.clear();
   }
 }

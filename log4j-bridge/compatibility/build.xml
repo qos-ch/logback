@@ -1,7 +1,7 @@
 <project name="testing-log4j-bridge" default="usage" basedir=".">
 
-	<property name="lbversion" value="0.9.1" />
-  <property name="slf4jversion" value="1.3.0" />
+	<property name="lbversion" value="0.9.8-SNAPSHOT" />
+  <property name="slf4jversion" value="1.4.1" />
 	<property name="source.home" value="./src/main/java/" />
 	<property name="javac.dest.12" value="./target/classes12/" />
 	<property name="javac.dest.13" value="./target/classes13/" />

@@ -70,7 +70,7 @@ public class LoggerTest extends TestCase {
   }
 
   public void testIsEnabledAPI() {
-    assertTrue(log4jLogger.isTraceEnabled());
+    assertFalse(log4jLogger.isTraceEnabled());
     assertTrue(log4jLogger.isDebugEnabled());
     assertTrue(log4jLogger.isInfoEnabled());
     assertTrue(log4jLogger.isWarnEnabled());

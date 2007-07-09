@@ -18,12 +18,15 @@ package org.apache.log4j;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.slf4j.spi.LocationAwareLogger;
+
+import ch.qos.logback.classic.Level;
 
 /**
  * <p>
  * This class is a minimal implementation of the origianl
  * org.apache.log4j.Logger class delegating all calls to a
- * {@link ch.qos.logback.classic.Logger} instance.
+ * {@link org.slf4j.Logger.Logger} instance.
  * </p>
  * 
  * <p>
@@ -42,14 +45,18 @@ public class Category {
 
   private String name;
 
-  private ch.qos.logback.classic.Logger lbLogger;
-
+  private org.slf4j.Logger lbLogger;
+  private org.slf4j.spi.LocationAwareLogger locationAwareLogger;
+  
   private static Marker TRACE_MARKER = MarkerFactory.getMarker("TRACE");
   private static Marker FATAL_MARKER = MarkerFactory.getMarker("FATAL");
 
   Category(String name) {
     this.name = name;
-    lbLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(name);
+    lbLogger = LoggerFactory.getLogger(name);
+    if(lbLogger instanceof LocationAwareLogger) {
+      locationAwareLogger = (LocationAwareLogger) lbLogger;
+    }
   }
 
   public static Logger getLogger(String name) {
@@ -79,11 +86,11 @@ public class Category {
   }
 
   /**
-   * Delegates to {@link ch.qos.logback.classic.Logger#isDebugEnabled} 
-   * method of logback, in addition, the call is marked with a marker named "TRACE".
+   * Delegates to {@link ch.qos.logback.classic.Logger#isTraceEnabled} 
+   * method of logback.
    */
   public boolean isTraceEnabled() {
-    return lbLogger.isDebugEnabled(TRACE_MARKER);
+    return lbLogger.isTraceEnabled();
   }
 
   /**
@@ -112,7 +119,9 @@ public class Category {
   }
 
   public boolean isEnabledFor(Level l) {
-    switch (l.level) {
+    switch (l.levelInt) {
+    case Level.TRACE_INT:
+      return lbLogger.isTraceEnabled();
     case Level.DEBUG_INT:
       return lbLogger.isDebugEnabled();
     case Level.INFO_INT:
@@ -121,7 +130,7 @@ public class Category {
       return lbLogger.isWarnEnabled();
     case Level.ERROR_INT:
       return lbLogger.isErrorEnabled();
-    case Level.FATAL_INT:
+    case Priority.FATAL_INT:
       return lbLogger.isErrorEnabled();
     }
     return false;
@@ -329,24 +338,33 @@ public class Category {
   } 
   
   public void log(String FQCN, Priority p, Object msg, Throwable t) {
-    ch.qos.logback.classic.Level level = priorityToLevel(p);
-    lbLogger.filterAndLog(FQCN, null, level, msg.toString(), null, t);
+    int levelInt = priorityToLevelInt(p);
+    if(locationAwareLogger != null) {
+      if(msg != null) {
+        locationAwareLogger.log(null, FQCN, levelInt, msg.toString(), t); 
+      } else {
+        locationAwareLogger.log(null, FQCN, levelInt, null, t); 
+      }
+    } else {
+      throw new UnsupportedOperationException("The logger ["+lbLogger+"] does not seem to be location aware.");
+    }
+   
   }
   
-  private ch.qos.logback.classic.Level priorityToLevel(Priority p) {
+  private int priorityToLevelInt(Priority p) {
     switch (p.level) {
     case Level.TRACE_INT:
-      return ch.qos.logback.classic.Level.TRACE;
+      return LocationAwareLogger.TRACE_INT;
     case Priority.DEBUG_INT:
-      return ch.qos.logback.classic.Level.DEBUG;
+      return LocationAwareLogger.DEBUG_INT;
     case Priority.INFO_INT:
-      return ch.qos.logback.classic.Level.INFO;
+      return LocationAwareLogger.INFO_INT;
     case Priority.WARN_INT:
-      return ch.qos.logback.classic.Level.WARN;
+      return LocationAwareLogger.WARN_INT;
     case Priority.ERROR_INT:
-      return ch.qos.logback.classic.Level.ERROR;
+      return LocationAwareLogger.ERROR_INT;
     case Priority.FATAL_INT:
-      return ch.qos.logback.classic.Level.ERROR;
+      return LocationAwareLogger.ERROR_INT;
     default:
       throw new IllegalStateException("Unknown Priority " + p);
     }
