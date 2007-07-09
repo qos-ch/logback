@@ -13,13 +13,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.net.mock.MockSocketServer;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.LoggerRemoteView;

@@ -16,12 +16,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
+import org.slf4j.impl.LogbackMDCAdapter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.MDC;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -117,7 +118,9 @@ public class LoggingEvent implements Serializable {
     }
     timeStamp = System.currentTimeMillis();
 
-    mdcPropertyMap = MDC.getPropertyMap();
+    // the case is ugly but under the circumstances acceptable
+    LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC.getMDCAdapter();
+    mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
 
   public void setArgumentArray(Object[] argArray) {

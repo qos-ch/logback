@@ -1,8 +1,10 @@
-package ch.qos.logback.classic;
+package org.slf4j.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for
@@ -15,15 +17,16 @@ import java.util.Set;
  * its parent.
  * <p>
  * 
- * For more information about turbo filters, please refer to the online manual at
+ * For more information about MDC, please refer to the online manual at
  * http://logback.qos.ch/manual/mdc.html
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class MDC {
-  private static final ThreadLocal<HashMap<String, String>> threadLocal = new ThreadLocal<HashMap<String, String>>();
+public class LogbackMDCAdapter implements MDCAdapter{
+  
+  private final ThreadLocal<HashMap<String, String>> threadLocal = new ThreadLocal<HashMap<String, String>>();
 
-  private MDC() {
+  LogbackMDCAdapter() {
   }
 
   /**
@@ -40,7 +43,7 @@ public class MDC {
    * and not send a reference to the old map, thus not allowing the remote logback
    * component to see the latest changes.
    */
-  public static void put(String key, String val) {
+  public void put(String key, String val) {
     HashMap<String, String> oldMap = threadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
@@ -58,7 +61,7 @@ public class MDC {
    * <p>
    * This method has no side effects.
    */
-  public static String get(String key) {
+  public String get(String key) {
     HashMap<String, String> hashMap = threadLocal.get();
 
     if ((hashMap != null) && (key != null)) {
@@ -77,7 +80,7 @@ public class MDC {
    * and not send a reference to the old map, thus not allowing the remote logback
    * component to see the latest changes.
    */
-  public static void remove(String key) {
+  public void remove(String key) {
     HashMap<String, String> oldMap = threadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
@@ -92,7 +95,7 @@ public class MDC {
   /**
    * Clear all entries in the MDC.
    */
-  public static void clear() {
+  public void clear() {
     HashMap<String, String> hashMap = threadLocal.get();
 
     if (hashMap != null) {
@@ -105,7 +108,7 @@ public class MDC {
    * Get the current thread's MDC as a map. This method is intended to be used
    * internally.
    */
-  public static Map<String, String> getPropertyMap() {
+  public Map<String, String> getPropertyMap() {
     return threadLocal.get();
   }
 
@@ -113,7 +116,7 @@ public class MDC {
    * Returns the keys in the MDC as a {@link Set}. The returned value
    * can be null.
    */
-  public static Set<String> getKeys() {
+  public Set<String> getKeys() {
     HashMap<String, String> hashMap = threadLocal.get();
 
     if (hashMap != null) {

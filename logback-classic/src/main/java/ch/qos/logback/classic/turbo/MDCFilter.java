@@ -1,10 +1,10 @@
 package ch.qos.logback.classic.turbo;
 
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.MDC;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**

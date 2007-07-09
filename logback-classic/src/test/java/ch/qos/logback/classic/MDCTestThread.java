@@ -1,5 +1,7 @@
 package ch.qos.logback.classic;
 
+import org.slf4j.MDC;
+
 public class MDCTestThread extends Thread {
   
   String val;

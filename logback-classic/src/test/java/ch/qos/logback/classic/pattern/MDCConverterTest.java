@@ -1,9 +1,11 @@
 package ch.qos.logback.classic.pattern;
 
 import junit.framework.TestCase;
+
+import org.slf4j.MDC;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class MDCConverterTest extends TestCase {
