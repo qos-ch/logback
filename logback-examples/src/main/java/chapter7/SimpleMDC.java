@@ -11,9 +11,9 @@
 package chapter7;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;

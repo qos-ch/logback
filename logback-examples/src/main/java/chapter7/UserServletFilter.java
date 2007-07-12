@@ -22,7 +22,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import ch.qos.logback.classic.MDC;
+import org.slf4j.MDC;
 
 /**
  * A simple servlet filter that puts the username

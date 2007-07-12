@@ -2,11 +2,11 @@ package chapter6;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.MDC;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
