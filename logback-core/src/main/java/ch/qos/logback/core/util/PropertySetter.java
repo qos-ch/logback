@@ -231,7 +231,7 @@ public class PropertySetter extends ContextAwareBase {
       Package p = clazz.getPackage();
       if (clazz.isPrimitive()) {
         return X_AS_PROPERTY;
-      } else if ("java.lang".equals(p.getName())) {
+      } else if (p != null && "java.lang".equals(p.getName())) {
         return X_AS_PROPERTY;
       } else if (Duration.class.isAssignableFrom(clazz)) {
         return X_AS_PROPERTY;
