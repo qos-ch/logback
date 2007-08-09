@@ -22,10 +22,11 @@ public class Loader {
   static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
   private static boolean ignoreTCL = false;
-
+  public static final String IGNORE_TCL_PROPERTY_NAME = "logback.ignoreTCL";
+  
   static {
 
-    String ignoreTCLProp = OptionHelper.getSystemProperty("logback.ignoreTCL",
+    String ignoreTCLProp = OptionHelper.getSystemProperty(IGNORE_TCL_PROPERTY_NAME,
         null);
 
     if (ignoreTCLProp != null) {
