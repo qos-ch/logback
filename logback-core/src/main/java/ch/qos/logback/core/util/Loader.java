@@ -25,7 +25,7 @@ public class Loader {
 
   static {
 
-    String ignoreTCLProp = OptionHelper.getSystemProperty("log4j.ignoreTCL",
+    String ignoreTCLProp = OptionHelper.getSystemProperty("logback.ignoreTCL",
         null);
 
     if (ignoreTCLProp != null) {
