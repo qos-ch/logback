@@ -81,6 +81,7 @@ public class Loader {
     return Thread.currentThread().getContextClassLoader();
   }
 
+  @SuppressWarnings("unchecked") 
   public static Class loadClass(String clazz, Context context) throws ClassNotFoundException {
     ClassLoader cl = context.getClass().getClassLoader();
     return cl.loadClass(clazz);
@@ -91,6 +92,7 @@ public class Loader {
    * Class.forname. Under JDK 1.1 only Class.forName is used.
    * 
    */
+  @SuppressWarnings("unchecked")
   public static Class loadClass(String clazz) throws ClassNotFoundException {
     // Just call Class.forName(clazz) if we are running under JDK 1.1
     // or if we are instructed to ignore the TCL.
