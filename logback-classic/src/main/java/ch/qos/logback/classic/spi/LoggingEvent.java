@@ -111,6 +111,9 @@ public class LoggingEvent implements Serializable {
       this.throwableInfo = new ThrowableInformation(throwable);
     }
 
+    // bug 85 (we previously failed to set this.argumentArray)
+    this.argumentArray = argArray;
+    
     if (argArray != null) {
       formattedMessage = MessageFormatter.arrayFormat(message, argArray);
     } else {
