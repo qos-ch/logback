@@ -181,9 +181,14 @@ public class LoggingEvent implements Serializable {
   /**
    * This method should be called prior to serializing an event. It should also
    * be called when using asynchronous logging.
+   * 
+   * <p>Note that due to performance concerns, this method does NOT extract 
+   * caller data. It is the responsability of the calller to extract caller
+   * information.
    */
   public void prepareForDeferredProcessing() {
     this.getThreadName();
+    
   }
 
   public LoggerRemoteView getLoggerRemoteView() {

@@ -14,6 +14,7 @@ import ch.qos.logback.core.CoreGlobal;
 /**
  * The internal representation of caller location information.
  * 
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class CallerData implements java.io.Serializable {
 
@@ -34,6 +35,11 @@ public class CallerData implements java.io.Serializable {
   
   public static String CALLER_DATA_NA = "?#?:?"+CoreGlobal.LINE_SEPARATOR;
 
+  /**
+   * This value is returned in case no caller data could be extracted.
+   */
+  public static CallerData[] EMPTY_CALLER_DATA_ARRAY = new CallerData[0];
+  
   /**
    * Caller's line number.
    */
@@ -83,19 +89,23 @@ public class CallerData implements java.io.Serializable {
     StackTraceElement[] steArray = t.getStackTrace();
     CallerData[] callerDataArray;
     
-    int found = -1;
+    int found = LINE_NA;
     for (int i = 0; i < steArray.length; i++) {
       if(steArray[i].getClassName().equals(fqnOfInvokingClass)) {
         // the caller is assumed to be the next stack frame, hence the +1.
         found = i + 1;
       } else {
-        if(found != -1) {
+        if(found != LINE_NA) {
           break;
         }
       }
-      
     }
 
+    // we failed to extract caller data
+    if(found == LINE_NA) {
+      return EMPTY_CALLER_DATA_ARRAY;
+    }
+    
     callerDataArray = new CallerData[steArray.length - found];
     for (int i = found; i < steArray.length; i++) {
       callerDataArray[i-found] = new CallerData(steArray[i]);
