@@ -167,17 +167,6 @@
       </plugin>
     </plugins>
 
-
-    <testResources>
-      <testResource>
-        <directory>src/test/input</directory>
-        <targetPath>input</targetPath>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <targetPath>/</targetPath>
-      </testResource>
-    </testResources>
   </build>
 
 </project>
