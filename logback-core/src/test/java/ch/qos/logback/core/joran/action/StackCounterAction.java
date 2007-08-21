@@ -25,21 +25,13 @@ public class StackCounterAction extends Action {
 
   public StackCounterAction() {
   }
-  /**
-   * Instantiates an layout of the given class and sets its name.
-   *
-   */
+
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     //String str = "Pushing "+name+"-begin";
     ec.pushObject(name+"-begin");
   }
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
   public void end(InterpretationContext ec, String name) {
-    //String str = "Pushing "+name+"-end";
     ec.pushObject(name+"-end");    
   }
 

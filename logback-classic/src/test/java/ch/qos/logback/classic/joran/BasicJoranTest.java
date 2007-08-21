@@ -19,7 +19,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.classic.util.Constants;
+import ch.qos.logback.classic.util.TestConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -34,7 +34,7 @@ public class BasicJoranTest extends TestCase {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
+    jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
 
     //StatusPrinter.print(loggerContext.getStatusManager());
   
@@ -53,7 +53,7 @@ public class BasicJoranTest extends TestCase {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
+    jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
 
     //StatusPrinter.print(loggerContext.getStatusManager());
   
@@ -72,7 +72,7 @@ public class BasicJoranTest extends TestCase {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
+    jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
 
     StatusPrinter.print(loggerContext);
     
@@ -98,7 +98,7 @@ public class BasicJoranTest extends TestCase {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
+    jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
 
     //StatusPrinter.print(loggerContext.getStatusManager());
     
@@ -114,7 +114,7 @@ public class BasicJoranTest extends TestCase {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/turbo2.xml");
+    jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/turbo2.xml");
 
     //StatusPrinter.print(loggerContext.getStatusManager());
     

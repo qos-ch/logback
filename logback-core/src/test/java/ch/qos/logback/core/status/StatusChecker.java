@@ -45,4 +45,17 @@ public class StatusChecker {
     return false;
   }
   
+  
+  public boolean containsException(Class exceptionType) {
+    Iterator stati = sm.iterator();
+    while(stati.hasNext()) {
+      Status status = (Status) stati.next();
+      Throwable t = status.getThrowable();
+      if(t != null && t.getClass().getName().equals(exceptionType.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
