@@ -5,7 +5,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>0.9.8</version>
   </parent>
  
   <modelVersion>4.0.0</modelVersion>
@@ -124,17 +124,6 @@
         </executions>
       </plugin>
     </plugins>
-
-    <testResources>
-      <testResource>
-        <directory>src/test/input</directory>
-        <targetPath>input</targetPath>
-      </testResource>
-      <testResource>
-        <directory>src/test/witness</directory>
-        <targetPath>witness</targetPath>
-      </testResource>
-    </testResources>
 
   </build>
 
