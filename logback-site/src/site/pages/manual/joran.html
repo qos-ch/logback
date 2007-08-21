@@ -33,27 +33,41 @@ prefix='../';
 
 
     <script src="../templates/creative.js"></script>
-    <script src="../templates/setup.js"></script>
     
     <p>Joran stands for a cold north-west wind which, every now and
-    then, blows forcefully on Lake Leman, a.k.a. lake Geneva. Located
-    right in the middle of Europe, the Leman lake happens to be the
-    continent's largest sweet water reserve.
+    then, blows forcefully on Lake Geneva. Located right in the middle
+    of Europe, the Geneva lake happens to be the continent's largest
+    sweet water reserve.
     </p>
 
     <p>In the first part, we start by presenting ways for configuring
     logback, with many example configuration scripts.  In the <a
     href="#Joran">second part</a>, we present Joran, a generic
-    configuration framework, that you can put to use in order to
+    configuration framework, that you can put into use in order to
     configure your own applications.
     </p>
 
     <h2>Configuration in logback</h2>
 
+    <p>Inserting log requests into the application code requires a
+    fair amount of planning and effort. Observation shows that
+    approximately four percent of code is dedicated to
+    logging. Consequently, even moderately sized applications will
+    contain thousands of logging statements embedded within its
+    code. Given their number, we need powerful tools to manage these
+    log statements.
+    </p>
+
     <p>Logback can be configured either programmatically or with
-    configuration a script (expressed in XML format). Here are the
-    initialization steps that logback follows to try to configure
-    itself:
+    configuration a script (expressed in XML format). By the way,
+    existing log4j users can convert their <em>log4j.properties</em>
+    files to <em>logback.xml</em> using our <a
+    href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
+    web-application.
+    </p>
+
+    <p>Let us begin by discussing the initialization steps that
+    logback follows to try to configure itself:
     </p>
 
     <ol>
@@ -69,13 +83,16 @@ prefix='../';
       <li><p>In case neither file is found, logback configures itself
       automatically using the <a
       href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>
-      which will cause output to be directed on the console. </a></p>
-      </li>
+      which will cause logging output to be directed on the
+      console. 
+      </p> 
+      </li> 
+
     </ol>
 
     <p>The third and last step is meant to provide a default (but very
-    basic) logging functionnality in case no configuration file could
-    be found.
+    basic) logging functionnality in the absence of a configuration
+    file.
     </p>
 
 
@@ -84,7 +101,7 @@ prefix='../';
     won't be included in the artifact produced. Thus, you can use a
     different configuration file, namely <em>logback-test.xml</em>
     during testing, and another file, namely, <em>logback.xml</em>, in
-    production. The same principle applies by analogy for Ant.
+    production. The same principle could apply by analogy for Ant.
     </p>
 
 
@@ -115,61 +132,78 @@ public class MyApp1 {
   }
 }</pre></div>
 
-    <p>Assuming the default configuration files
-    <em>logback-test.xml</em> and <em>logback.xml</em> could not be
-    found, logback will default to a minimal configuration hardwired
-    to add a <code>ConsoleAppender</code> to the root logger. The
-    output is formatted using a <code>PatternLayout</code> set to the
-    pattern <em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
+  <p>This class defines a static logger variable. It then
+  instantiates a Foo object. The Foo class is listed below:
+  </p>
+
+  <em>Example 3.2: Small class doing logging 
+  <a href="../xref/chapter3/Foo.html">(logback-examples/src/main/java/chapter3/Foo.java)</a>
+  </em>
+
+<div class="source"><pre>package chapter3;
+  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+   
+public class Foo {
+  static final Logger logger = LoggerFactory.getLogger(Foo.class);
+  
+  public void doIt() {
+    logger.debug("Did it again!");
+  }
+}</pre></div>
+
+
+
+  <p>In order to run the examples in this chapter, you need to make
+  sure that certain jar files are present on the classpath.  Please
+  refer to the <a href="../setup.html">setup page</a> for further
+  details.
+  </p>
+   
+
+    <p>Assuming the configuration files <em>logback-test.xml</em> or
+    <em>logback.xml</em> could not be found, logback will default to a
+    minimal configuration hardwired to attaching a
+    <code>ConsoleAppender</code> to the root logger.  The output is
+    formatted using a <code>PatternLayout</code> set to the pattern
+    <em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
     %msg%n</em>. Moreover, by default the root logger is assigned to
     the <code>DEBUG</code> level.
    </p>
 
-   <p>The output of the command <em>java chapter3.MyApp1</em> should
-   be similar to:
+   <p>Thus, the output of the command <em>java chapter3.MyApp1</em>
+   should be similar to:
    </p>
 
 <div class="source"><pre>16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
 16:06:09.046 [main] DEBUG chapter3.Foo - Did it again!
 16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</pre></div>
 
-   <p>If you are unable to run this command, then make sure that you
-   have set your classpath correctly. The scripts provided in the
-   <em>logback-examples/</em> directory should help you get started.
-   </p>
-
-   <script src="../templates/setup.js"></script>
 
    <p>The <code>MyApp1</code> application links to logback through
    calls <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> classes, retrieve the loggers it
-   wishes to use, and chugs on.  For example, the only dependence of
-   the <code>Foo</code> class on logback are through
+   wishes to use, and chugs on.  Note that the only dependence of the
+   <code>Foo</code> class on logback are through
    <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> imports.  Except code that configures
-   logback (if such code exists) user code does not need to depend on
-   logback. Given that SLF4J permits the use of any implementation
+   logback (if such code exists) client code does not need to depend
+   on logback. Given that SLF4J permits the use of any implementation
    under its abstraction layer, it is rather easy to migrate large
-   bodies of code from an implementation to another. Logback also
-   ships with a module called <em>log4j-bridge</em> which intercepts
-   log4j calls and redirects them to the corresponding logback
-   components. With the help of <em>log4j-bridge</em> , you can
-   migrate an entire application using log4j to logback just by
-   replacing jars. More information about the <em>log4j-bridge</em>
-   module can be found on a <a href="../bridge.html">separate
-   page</a>.
+   bodies of code from one logging system to another.
    </p>
 
+ 
    <h3>The same with <code>JoranConfigurator</code></h3>
 
    <p>The previous example outputs logging information always in the
    same fixed manner.  How boring! It takes few easy steps to modify
    <code>MyApp1</code> so that the log output can be controlled at
-   runtime. Here is a slightly modified version called
+   runtime. Here is a slightly modified application called
    <code>MyApp2</code>.
    </p>
 
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx -->
 
    <p><em>Example 3.2: Simple example of
    <code>BasicConfigurator</code> usage <a
@@ -235,6 +269,19 @@ public class MyApp2 {
   &lt;/root>
 &lt;/configuration></pre></div>
 
+
+	<p>The above configuration file directs logback to create an
+	<code>ConsoleAppender</code> named <em>STDOUT</em> whose output is
+	format is managed by a <code>PatternLayout</code>. The root logger
+	is configued by setting its level to DEBUG and attaching it the
+	previously created <code>ConsoleAppender</code>.
+  </p>
+
+	<p>Note we could have omitted setting the level of the root logger
+	to DEBUG because that is its default value.
+  </p>
+
+
   <p>Assuming the current directory is <em>logback-examples</em>, try
   running the <code>MyApp2</code> class by issuing the following
   command:
@@ -279,11 +326,11 @@ public class MyApp2 {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-<p>
-This should cause logback to print internal configuration messages in 
-addition to the actual logs. Relaunching the <code>MyApp2</code> application with this
-new configuration file will ouput the following lines:
-</p>
+  <p>This should cause logback to print internal configuration
+  messages in addition to the actual logs. Relaunching the
+  <code>MyApp2</code> application with this new configuration file
+  will ouput the following lines:
+  </p>
 
 <div class="source"><pre>|-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch. \
 qos.logback.core.ConsoleAppender]
@@ -298,14 +345,26 @@ Logger[root]
 16:18:23.687 [main] DEBUG chapter3.Foo - Did it again!
 16:18:23.687 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
-<p>
-At the end of this output, one will immediately recognize the lines that were printed
-before. But right above stand the printing of logback's <code>Status</code> objects.
-<code>Status</code> objects are logback's powerful error reporting mechanism. They provide
-easy and precise access to logback's internal state.
-</p>
+  <p>At the end of this output, you can recognize the lines that were
+  printed in the previous example. You should also notive the
+  logback's internal messages based on <code>Status</code> objects,
+  logback internal reporting mechanism.  <code>Status</code> objects
+  allow easy access to logback's internal state.
+  </p>
 
-<h3>XML Syntax</h3>
+  <h3>XML Syntax</h3>
+
+	<p>To obtain these different logging behaviors we do not need to
+	recompile code.  You can easily configure logging so that output is
+	directed to a UNIX Syslog daemon, or to a log visualizer, or forward
+	logging events to a remote logback server, which would log according
+	to local server policy, for example by forwarding the log event to a
+	second logback server.</p>
+	
+  <p>The remainder of this chapter presents the syntax of the
+  directives allowing all these variations.
+  </p>
+
 
 <h4>Configuring Loggers</h4>
 

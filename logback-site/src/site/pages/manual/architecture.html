@@ -755,466 +755,190 @@ logger.debug("The new entry is {}.", entry);</pre></div>
 		<div class="source"><pre>Object[] paramArray = {newVal, below, above};
 logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div>
 
-    <a name="Configuration"></a>
-    <h3>Configuration</h3>
+  
+  <a name="UnderTheHood"></a>
+  <h3>A peak under the hood</h3>
 
-		<p>Inserting log requests into the application code requires a
-		fair amount of planning and effort. Observation shows that
-		approximately four percent of code is dedicated to
-		logging. Consequently, even moderately sized applications will
-		contain thousands of logging statements embedded within its
-		code. Given their number, it becomes imperative to manage these
-		log statements without the need to modify them manually.
-		</p>
-    
-    <script src="../templates/setup.js"></script>
-    
-    <p>The logback environment is fully configurable programmatically.
-		However, it is far more flexible to configure logback using
-		configuration files. In logback, configuration files are written
-		in XML format.
+  <p>After we have introduced the essential logback components, we are
+  now ready to describe the steps that the logback framework takes
+  when the user invokes a logger's printing method. Let us now analyze
+  the steps logback takes when the user invokes the
+  <code>info()</code> method of a logger named <em>com.wombat</em>.
   </p>
 
-		<p>Existing log4j users can convert their
-		<em>log4j.properties</em> files to <em>logback.xml</em> using our <a
-		href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
-		web-application.
-		</p>
-		
-		<p>
-			Configuring logback from a XML file is an easy task. One just needs to
-			instanciate a <code>JoranConfigurator</code> and pass the configuration
-			file, as the following example demonstrate.
-		</p>
+  <h4>1. Get the filter chain decision</h4>
 
-     <em>Example 2.1: Logback configuration from file (<a
-  href="../xref/chapter2/MyAppWithConfigFile.html">logback-examples/src/main/java/chapter2/MyAppWithConfigFile.java</a>)</em>
+  <p>If it exists, the <code>TurboFilter</code> chain is
+  invoked. Turbo filters can set a context-wide threshold, or to
+  filter out certain events based on information such as
+  <code>Marker</code>, <code>Level</code>, <code>Logger</code>,
+  message, or the <code>Throwable</code> that are associated with each
+  logging request.  If the reply of the filter chain is
+  <code>FilterReply.DENY</code>, then the logging request is
+  dropped. If it is <code>FilterReply.NEUTRAL</code>, then we continue
+  with the next step, i.e. step 2. In case the reply is
+  <code>FilterReply.ACCEPT</code>, we skip the next and directly jump
+  to step 3.
+  </p>
 
-<div class="source"><pre>package chapter2;
+  <h4>2. Apply the Logger level filter</h4>
 
-//Import SLF4J classes.
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+  <p>At this step, logback compares the effective level of the logger
+  with the level of the request. If the logging request is disabled
+  according to this test, then logback will drop the request without
+  further processing. Otherwise, it proceeds to the next step.
+  </p>
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.util.StatusPrinter;
+  <h4>3. Create a <code>LoggingEvent</code> object</h4>
 
-public class MyAppWithConfigFile {
-	
-  public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(MyAppWithConfigFile.class);
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		
-    JoranConfigurator configurator = new JoranConfigurator();
-    configurator.setContext(lc);
-    configurator.doConfigure(args[0]);
+  <p>If the request passed the previous filters, logback will create a
+  <code>ch.qos.logback.classic.LoggingEvent</code> object containing
+  all the relevant parameters of the request, such as the logger of
+  the request, the request level, the message itself, the exception
+  that might have been passed along with the request, the current
+  time, the current thread, various data about the class that issued
+  the logging request and the <code>MDC</code>. Note that some of
+  these fields are initialized lazily, that is only when they are
+  actually needed. The <code>MDC</code> is used to decorate the
+  logging request with additional contextual information. MDC is
+  discussed in a <a href="mdc.html">separate chapter</a>.</p>
 
-    logger.info("Entering application.");
-    Bar bar = new Bar();
-    bar.doIt();
-    logger.info("Exiting application.");
-	
-    StatusPrinter.print(lc.getStatusManager());
-  }
-}</pre></div>	
+  <h4>4. Invoking appenders</h4>
+
+  <p>After the creation of a <code>LoggingEvent</code> object, logback
+  invokes the <code>doAppend()</code> methods of all the applicable
+  appenders, that is, the appenders inherited from the logger context.
+  </p>
 
 
-		<p>This class defines a logger instance variable. 
-		It then instantiates a <code>Bar</code>
-		object. The <code>Bar</code> class is listed below:
-		</p>
+  <p>All appenders shipped with the logback distribution extend the
+  <code>AppenderBase</code> abstract class that implements the
+  <code>doAppend</code> method in a synchronized block ensuring
+  thread-safety.  The <code>doAppend()</code> method of
+  <code>AppenderBase</code> also invokes custom filters attached to
+  the appender, if any such filters exist.  Custom filters, which can
+  be dynamically attached to any appender, are presented in a <a
+  href="filters.html">separate chapter</a>.
+  </p>
 
-		<em>Example 2.2: Sample logging class (<a href="../xref/chapter2/Bar.html">logback-examples/src/main/java/chapter2/Bar.java</a>)</em>
-<div class="source"><pre>package chapter2;
+  <h4>5. Formatting the output</h4>
+
+  <p>It is responsibility of the invoked appender to format the
+  logging event. However, some (but not all) appenders delegate the
+  task of formatting the logging event to a layout. A layout formats
+  the <code>LoggingEvent</code> instance and returns the result as a
+  String. Note that some appenders, such as the
+  <code>SocketAppender</code>, do not transform the logging event into
+  a string but serialize it instead.  Consequently, they do not
+  require nor have a layout.
+  </p>
+
+  <h4>6. Sending out the <code>LoggingEvent</code></h4>
+
+  <p>After the logging event is fully formatted it is sent to its
+  destination by each appender.
+  </p>
   
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+  <p>
+    Here is a sequence UML diagram to show how everything works. You might
+    want to click on the image to display its bigger version.
+  </p>
 
-class Bar {
+  <a href="underTheHood.html"><img src="images/chapter2/underTheHoodSequence2_small.gif" /></a>
 
-  Logger logger = LoggerFactory.getLogger(Bar.class);	
-	
-  public void doIt() {
-    logger.debug("doing my job");
-  }
-}</pre></div>
+  <a name="Performance"></a>
+  <h3>Performance</h3>
 
-		<p><em>MyAppWithConfigFile</em> configures logback by using the
-	   <code>JoranConfigurator</code>.  Joran is a XML interpreter, similar to the
-		commons-digester API, but offering several advantages over
-		commons-digester. Here, it parses the xml file and runs actions
-		depending on the tags it finds.  To setup the <code>JoranConfigurator</code>
-		properly, we passed the <code>LoggerContext</code>. A
-		<code>LoggerContext</code> is the class that creates and manages
-		Loggers in logback.  It is also the class that implements the
-		<code>org.slf4j.ILoggerFactory</code> interface.
-		</p>
-	<p>
-		All
-    other classes only need to retrieve an instance of
-    <code>org.slf4j.Logger</code> by calling
-    <code>LoggerFactory.getLogger()</code>, and then log away. For
-    example, the only dependence of the <code>Bar</code> class is on
-    <code>org.slf4j.Logger</code> and
-    <code>org.slf4j.LoggerFactory</code>. Except code that configures
-    logback (if such code exists) user code does not need to depend on
-    logback, but on SLF4J instead.
-    </p>
+  <p>One of the often-cited arguments against logging is its
+  computational cost.  This is a legitimate concern as even moderately
+  sized applications can generate thousands of log requests. Much
+  effort is spent measuring and tweaking logging performance.
+  Independently of these efforts, the user should still be aware of
+  the following performance issues.
+  </p>
 
-    <p>Let us configure logback with the
-    next XML configuration file:</p>
+  <h4>1. Logging performance when logging is turned off entirely</h4>
 
-	<em>Example 2.3: Basic configuration with a xml file (logback-examples/src/main/java/chapter2/sample-config-1.xml)</em>	
-<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+  <p>
+    You can turn off logging entirely by setting the level of the root logger
+    to <code>Level.OFF</code>, the highest possible level. 
+    When logging is turned off entirely, 
+    the cost of a log request consists of a method invocation plus an 
+    integer comparison. On a 3.2Ghz Pentium D machine this cost is typically 
+    around 20 nanoseconds. 
+  </p>
 
-&lt;configuration&gt;
-
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
-      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
-    &lt;/layout&gt;
-  &lt;/appender&gt;
-
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
-	
-	<p>We first created an <code>Appender</code>, named <em>STDOUT</em>
-	that is of <code>ConsoleAppender</code> type. Its layout is managed
-	by a <code>PatternLayout</code>, that uses the value of the <em>pattern</em> parameter
-	to generate the logging statement. We then configured the root
-	logger, set its level to DEBUG, and linked the newly configured
-	<code>ConsoleAppender</code> to the root logger.</p>
-
-	<p>Note that we've set the root logger level explicitly. Since root
-	logger have a DEBUG level by default we could have omitted this.</p>
-	
-	<p>To run this example, use this command:</p>
-	
-<div class="source"><pre>java chapter2.MyAppWithConfigFile src/main/java/chapter2/sample-config-1.xml</pre></div>
-
-	<p>
-		Here is what you should see in the console:
-	</p>
-	
-<div class="source"><pre>18:15:26.718 [main] INFO  chapter2.MyAppWithConfigFile - Entering application.
-18:15:26.718 [main] DEBUG chapter2.Bar - doing my job
-18:15:26.718 [main] INFO  chapter2.MyAppWithConfigFile - Exiting application.</pre></div>
-
-	
-	<p>Logging to the console is a rather simple example. Let's now
-	configure logback so that it logs on the console, but also to a
-	custom file.</p>
-
-<em>Example 2.4: Configuring logback with multiple appenders (logback-examples/src/main/java/chapter2/sample-config-2.xml)</em>
-<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-
-&lt;configuration>
-
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
-
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
-    &lt;/layout>
-    &lt;File>sample-log.txt&lt;/File>
-  &lt;/appender>
-
-  &lt;root>
-    &lt;level value="debug" />
-    &lt;appender-ref ref="STDOUT" />
-    &lt;appender-ref ref="FILE" />
-  &lt;/root>
-&lt;/configuration></pre></div>
-	
-	<p>Now, all the logging statements are directed to the console and
-	to a file named <em>sample-log.txt</em>.  As you can see, the
-	configuration needed to add an Appender is rather small. The options
-	are declared as xml element, in either Appender configuration. They are
-	read and their value are assigned to the corresponding attribute in
-	the specified java class.
-	</p>
-	
-	<p>Suppose that we do not want to see the DEBUG level statements in
-	the chapter2 package anymore.  This is done by adding the following
-	bold xml snippet to the configuration file, right before the
-	<code>&lt;root&gt;</code> element.</p>
-
-<em>Example 2.5: Configuring a specific logger (logback-examples/src/main/java/chapter2/sample-config-3.xml)</em>	
-<div class="source"><pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-
-&lt;configuration&gt;
-
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>
-
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%-4relative [%thread] %-5level %class - %msg%n&lt;/pattern>
-    &lt;/layout>
-    &lt;File>sample-log.txt&lt;/File>
-  &lt;/appender>
-<b>
-  &lt;logger name="chapter2"&gt;
-    &lt;level value="info" /&gt;
-  &lt;/logger&gt;
-</b>
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
-    &lt;appender-ref ref="STDOUT" /&gt;
-    &lt;appender-ref ref="FILE" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;
-</pre></div>	
-	
-	<p>Once done, the output is modified to show only statements of level INFO and higher:</p>
-	
-<div class="source"><pre>0    [main] INFO  chapter2.MyAppWithConfigFile - Entering application.
-0    [main] INFO  chapter2.MyAppWithConfigFile - Exiting application.</pre></div>
-
-	<p>Note that to obtain these different logging behaviors we did not need to recompile code. 
-	We could just as easily have logged to a UNIX Syslog daemon, redirected all chapter2 output 
-	to a log visualizer, or forwarded logging events to a remote logback server, 
-	which would log according to local server policy, for example by forwarding the log event 
-	to a second logback server.</p>
-	
-	
-	<p>
-		Until now, we always had to specifically load the configuration file and pass it
-		to a logback component. However, this step is not necessary in most cases. When logback
-		is not configured by instanciating <code>JoranConfigurator</code> objects, it follows 
-		a simple policy to configure itself.
-	</p>
-	
-	<ul>
-		<p>Logback first tries to find a file called <em>logback.xml</em> within the classpath.</p>
-		<p>If no such file is found, it checks for another file called <em>logback-test.xml</em>.</p>
-		<p>In case none of these files are found, logback configures itself automatically using the 
-		<a href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code>
-		</a> class.</p>
-	</ul>
-	
-	<p>
-		The first two checks allow for two environments to cooperate nicely. When the application
-		using logback is in development and test process, a special file can be used to setup
-		a logging environment that is developer-friendly. Once in production environment, the 
-		presence of a <em>logback.xml</em> file overrides any <em>logback-test.xml</em> 
-		configuration.
-	</p>
-		
-	<p>
-		The last step is meant to provide very basic logging functionnality in case no configuration
-		file is provided. In that case, the logging requests are output to the console.
-	</p>
-	
-	<p>
-		Letting logback load its configuration file is the most often used way of 
-		configuring. It allows the user to only import SLF4J classes in her code.
-	</p>
-	
-	<p>
-		The last step of logback's configuration policy permits the use of a minimal
-		logging configuration right out of the box. Remember the very first example of 
-		the introduction. The output was generated due to this feature.
-	</p>
+  <p>
+    However, any method invocation involves the "hidden" cost of parameter construction. 
+    For example, for some logger <em>x</em> writing, 
+  </p>
   
-<a name="UnderTheHood"></a>
-<h3>A peak under the hood</h3>
+  <div class="source"><pre>x.debug("Entry number: " + i + "is " + entry[i]);</pre></div>
 
-<p>
-After we have introduced the essential logback components, we are now 
-ready to describe the steps that the logback framework takes when the user invokes 
-a logger's printing method. Let us now analyze the steps logback takes when the 
-user invokes the <code>info()</code> method of a 
-logger named <em>com.wombat</em>.
-</p>
+  <p>
+    incurs the cost of constructing the message parameter, i.e. converting both 
+    integer <code>i</code> and <code>entry[i]</code> to a string, and concatenating 
+    intermediate strings, regardless of whether the message will be logged or not. 
+  </p>
 
-<h4>1. Get the filter chain decision</h4>
+  <p>The cost of parameter construction can be quite high and depends
+  on the size of the parameters involved. To avoid the cost of
+  parameter construction you can take advantage of SLF4J's parametrized
+  logging:
+  </p>
 
-<p>
-Logback's <code>TurboFilter</code> chain is called. These filters may
-be used to prodvide a context-wide threshold, or to filter out certain
-events based on basic logging informations such as <code>Marker</code>, 
-<code>Level</code>, <code>Logger</code>, message, or the <code>Throwable</code>
-that was provided in the logging request.
-If the reply of the filter chain is <code>FilterReply.DENY</code>, then the
-logging request is dropped. If it is <code>FilterReply.NEUTRAL</code>, then
-the next step is processed. In case the reply is <code>FilterReply.ACCEPT</code>,
-the next step is skipped and the logging request is directly processed to step 3.
-</p>
+  <div class="source"><pre>x.debug("Entry number: {} is {}", i, entry[i]);</pre></div>
 
-<h4>2. Apply the Logger level filter</h4>
+  <p>
+    This variant will not incur the cost of parameter
+    construction. Compared to the previous call to the
+    <code>debug()</code> method, it will be faster by a very wide
+    margin.  The message will be formatted only if the request is
+    processed to the appenders.  If it is processed, the component
+    that formats the message offers high performance and does not
+    impact negatively the overall process.  It respectively takes 2
+    and 4 microseconds to format a message with 1 and 3 parameters.
+  </p>
 
-<p>
-Logback compares the effective level of the <em>com.wombat</em> logger
-with the level of the request (in this example: <em>INFO</em>). If the logging
-request is disabled, then logback will drop the request without further processing.
-</p>
+  <p> Please notice that, despite the performance points that we just
+  discussed, inserting logging statements in tight-loops or very
+  frequently invoked code is a lose-lose proposal and is likely to
+  result in degraded performance. Logging in tight-loops slow down
+  your application even if logging is turned off, and if logging is
+  turned on, they will generate massive (and hence useless) output.
+  </p>
 
-<h4>3. Create a <code>LoggingEvent</code> object</h4>
+  <h4>2. The performance of deciding whether to log or not to log when
+  logging is turned on.</h4>
 
-<p>
-If the request passed the previous filter, or if the <code>TurboFilter</code> chain
-gave a <code>FilterReply.ACCEPT</code> result, logback will create a
-<code>ch.qos.logback.classic.LoggingEvent</code> object containing all the 
-relevant parameters of the request such as the logger of the request, the request
-level, the message, the exception that might have been passed along the request,
-the current time, the current thread, several information about the class that 
-issued the logging request and the <code>MDC</code> map. Note that some of these fields
-are initialized lazily, that is only when they are actually needed. The <code>MDC</code> is used to stamp each requests with specific parameters. It is introduced in the <a href="mdc.html">corresponding chapter</a>.</p>
+  <p>
+    In logback, there is no need to walk the logger hierarchy. A
+    logger knows its effective level (that is, its level, once level
+    inheritance has been taken into consideration) when it is
+    created. Should the level of a parent logger be changed, then all
+    child loggers are contacted to take notice of the change. Thus,
+    before accepting or denying a request based on the effective
+    level, the logger can make an quasi-instantaneous decision,
+    without needing to consult its ancestors.
+  </p>
 
-<h4>4. Invoking appenders</h4>
 
-<p>
-After the creation of a <code>LoggingEvent</code> object, logback will proceed 
-to invoke the <code>doAppend()</code> methods of all the applicable appenders, 
-that is, the appenders inherited from the logger context.
-</p>
-<p>
-All appenders shipped with the logback distribution extend the 
-<code>AppenderBase</code> abstract class that implements the 
-<code>doAppend</code> method in a synchronized block ensuring thread-safety. 
-The <code>doAppend()</code> method of <code>AppenderBase</code> also invokes 
-custom filters attached to the appender, if any such filters exist. 
-Custom filters, which can be dynamically attached to any appender, 
-are presented Chapter 6.
-</p>
+  <h4>3. Actual logging (formatting and writing to the output device)</h4>
 
-<h4>5. Formatting the <code>LoggingEvent</code></h4>
+  <p>This is the cost of formatting the log output and sending it to
+  its target destination. Here again, a serious effort was made to
+  make layouts (formatters) perform as quickly as possible.  The same
+  is true for appenders. The typical cost of actually logging is about
+  9 to 12 microseconds when logging to a file on the local machine.
+  It goes up to several milliseconds when logging to a database on a
+  remote server.
+  </p>
 
-<p>
-It is responsibility of the invoked appender to format the 
-logging event. However, most (but not all) appenders delegate 
-the task of formatting the logging event to their layout. Their 
-layout formats the <code>LoggingEvent</code> instance and returns the 
-result as a String. Note that some appenders, such as the 
-<code>SocketAppender</code>, do not transform the logging event 
-into a string but serialize it instead. 
-Consequently, they do not require nor have a layout. 
-</p>
-
-<h4>6. Sending out the <code>LoggingEvent</code></h4>
-
-<p>
-After the logging event is fully formatted it is sent to 
-its destination by each appender.
-</p>
-  
-<p>
-Here is a sequence UML diagram to show how everything works. You might
-want to click on the image to display its bigger version.
-</p>
-
-<a href="underTheHood.html"><img src="images/chapter2/underTheHoodSequence2_small.gif" /></a>
-
-<a name="Performance"></a>
-<h3>Performance</h3>
-
-<p>
-One of the often-cited arguments against logging is its computational cost. 
-This is a legitimate concern as even moderately sized applications can generate 
-thousands of log requests. Much effort is spent measuring and tweaking 
-logging performance.
-Independently of these efforts, the user should still be aware of the following 
-performance issues.
-</p>
-
-<h4>1. Logging performance when logging is turned off entirely</h4>
-
-<p>
-You can turn off logging entirely by setting the level of the root logger
-to <code>Level.OFF</code>, the highest possible level. 
-When logging is turned off entirely, 
-the cost of a log request consists of a method invocation plus an 
-integer comparison. On a 3.2Ghz Pentium D machine this cost is typically 
-around 20 nanoseconds. 
-</p>
-
-<p>
-However, any method invocation involves the "hidden" cost of parameter construction. 
-For example, for some logger <em>x</em> writing, 
-</p>
-
-<div class="source"><pre>x.debug("Entry number: " + i + "is " + entry[i]);</pre></div>
-
-<p>
-incurs the cost of constructing the message parameter, i.e. converting both 
-integer <code>i</code> and <code>entry[i]</code> to a string, and concatenating 
-intermediate strings, regardless of whether the message will be logged or not. 
-</p>
-
-<p>
-The cost of parameter construction can be quite high and depends on the size 
-of the parameters involved. To avoid the cost of parameter construction 
-you can use logback's parametrized logging: 
-</p>
-
-<div class="source"><pre>x.debug("Entry number: {} is {}", i, entry[i]);</pre></div>
-
-<p>
-This will not incur the cost of parameter construction. Compared to the
-previous call to the <code>debug()</code> method, this call will be faster by 
-a very wide margin. 
-The message will be formatted only if the request is processed to the appenders. 
-If it is processed, the component that formats the message offers high performance 
-and does not impact negatively the overall process. 
-It respectively takes 2 and 4 microseconds to format a message with 1 and 3 parameters.
-</p>
-
-<p>
-Please notice that, despite the performance points that we just discussed, inserting 
-logging statements in tight-loops or very frequently invoked code is a lose-lose proposal
-and will not result in high performance. They will slow down your application even 
-if logging is turned off or generate massive (and hence useless) output if enabled. 
-</p>
-
-<h4>2. The performance of deciding whether to log or not to log when logging is turned on.</h4>
-
-<p>
-In logback, there is no need to walk the whole logger hierarchy. A logger knows
-its effective level (that is, its level, once level inheritance has been
-taken into consideration) when it is created. Should the level of a parent logger
-be changed, then all child loggers will be contacted and handle the change. Thus, before
-accepting or denying a request based on the effective level, the logger does not need
-to search its ancestors.
-</p>
-
-<p>
-Given this situation, it takes the same time to decide whether to log or not when logging
-is turned on as it takes when logging is turned off.
-</p>
-
-<h4>3. Actual logging (formatting and writing to the output device)</h4>
-
-<p>
-This is the cost of formatting the log output and sending it to its 
-target destination. Here again, a serious effort was made to make 
-layouts (formatters) perform as quickly as possible. 
-The same is true for appenders. The typical cost of actually logging is 
-about 9 to 12 microseconds when logging to a file on the local machine.
-It goes up to 1 millisecond when logging to a database on a remote server.
-</p>
-
-<p>
-Although feature-rich, one of the foremost design goals of logback was speed 
-of execution, a requirement which is second only to reliability. Some logback 
-components have been rewritten many times to improve performance. 
-</p>
+  <p>Although feature-rich, one of the foremost design goals of
+  logback was speed of execution, a requirement which is second only
+  to reliability. Some logback components have been rewritten several
+  times to improve performance.
+  </p>
 
     
 <script src="../templates/footer.js"></script>
