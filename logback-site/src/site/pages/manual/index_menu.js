@@ -6,6 +6,6 @@ document.write('<p class="menu"><a href="joran.html"><b>Ch3: Logback configurati
 document.write('<p class="menu"><a href="appenders.html"><b>Ch4: Appenders</b></a>');
 document.write('<p class="menu"><a href="layouts.html"><b>Ch5: Layouts</b></a>');
 document.write('<p class="menu"><a href="filters.html"><b>Ch6: Filter chains</b></a>');
-document.write('<p class="menu"><a href="mdc.html"><b>Ch7: Diagnostic Contexts</b></a>');
+document.write('<p class="menu"><a href="mdc.html"><b>Ch7: Mapped Diagnostic Contexts</b></a>');
 document.write('<p class="menu"><a href="contextSelector.html"><b>Ch8: Context Selectors</b></a>');
 
