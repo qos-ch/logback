@@ -22,7 +22,7 @@ import org.slf4j.spi.MDCAdapter;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class LogbackMDCAdapter implements MDCAdapter{
+public class LogbackMDCAdapter implements MDCAdapter  {
   
   private final ThreadLocal<HashMap<String, String>> threadLocal = new ThreadLocal<HashMap<String, String>>();
 
@@ -31,7 +31,8 @@ public class LogbackMDCAdapter implements MDCAdapter{
 
   /**
    * Put a context value (the <code>val</code> parameter) as identified with
-   * the <code>key</code> parameter into the current thread's context map.
+   * the <code>key</code> parameter into the current thread's context map. Note 
+   * that contrary to log4j, the <code>val</code> parameter can be null.
    * 
    * <p>
    * If the current thread does not have a context map it is created as a side
@@ -42,8 +43,14 @@ public class LogbackMDCAdapter implements MDCAdapter{
    * to be certain that the serialization process will operate on the updated map
    * and not send a reference to the old map, thus not allowing the remote logback
    * component to see the latest changes.
+   * 
+   * @throws IllegalArgumentException in case the "key" parameter is null
    */
-  public void put(String key, String val) {
+  public void put(String key, String val) throws IllegalArgumentException {
+    if (key == null) {
+      throw new IllegalArgumentException("key cannot be null");
+    }
+    
     HashMap<String, String> oldMap = threadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
