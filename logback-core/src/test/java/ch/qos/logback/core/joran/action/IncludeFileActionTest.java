@@ -36,7 +36,7 @@ public class IncludeFileActionTest extends TestCase {
       + "includeByResource.xml";
 
   static final String INCLUDED_FILE = INCLUSION_DIR_PREFIX + "included.xml";
-  static final String URL_TO_INCLUDE = "file://./" + INCLUDED_FILE;
+  static final String URL_TO_INCLUDE = "file:./" + INCLUDED_FILE;
 
   static final String INVALID = INCLUSION_DIR_PREFIX + "invalid.xml";
 
@@ -81,12 +81,12 @@ public class IncludeFileActionTest extends TestCase {
     verifyConfig(2);
   }
 
-  // public void testBasicURL() throws JoranException {
-  // System.setProperty(FILE_KEY, URL_TO_INCLUDE);
-  // tc.doConfigure(INCLUDE_BY_URL);
-  // StatusPrinter.print(context);
-  // verifyConfig(2);
-  // }
+   public void testBasicURL() throws JoranException {
+    System.setProperty(FILE_KEY, URL_TO_INCLUDE);
+    tc.doConfigure(INCLUDE_BY_URL);
+    StatusPrinter.print(context);
+    verifyConfig(2);
+  }
 
   public void testNoFileFound() throws JoranException {
     System.setProperty(FILE_KEY, "toto");
