@@ -18,7 +18,7 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(PropertyActionTest.class);
-    suite.addTestSuite(IncludeFileActionTest.class);
+    suite.addTestSuite(IncludeActionTest.class);
     
     return suite;
   }

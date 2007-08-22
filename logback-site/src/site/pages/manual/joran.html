@@ -1027,9 +1027,7 @@ in the example below:
 
 <em>Example 3.18: File include (logback-examples/src/main/java/chapter3/redirectConfig.xml)</em>
 <div class="source"><pre>&lt;configuration>
-
-  &lt;include file="path/to/included/configuration/file" />
-
+  <b>&lt;include file="path/to/configuration/file"/></b>
 &lt;/configuration></pre></div>
 
 <p>
@@ -1054,15 +1052,11 @@ element. For example, a <code>ConsoleAppender</code> would be declared this way:
 
 &lt;/included></pre></div>
 
-<p>
-It is also possible to specify the file to be included by using a
-variable, in any of the ways explained above in this chapter.
-</p>
-
-<p>
-Included a file by specifying an <code>URL</code> is also possible. Instead of
-using the <em>file</em> attribute, add a <em>url</em> attribute to the 
-<em>include</em> element.
+<p>The file to be included can be referenced as a URL or as a
+resource. To reference a URL use the <code>url</code> attribute
+instead of the file attribute in the previous example. To reference a
+resource, use the <code>resource</code> attribute instead of the file
+attribute in the previous example.
 </p>
 
 <a name="Joran"></a>

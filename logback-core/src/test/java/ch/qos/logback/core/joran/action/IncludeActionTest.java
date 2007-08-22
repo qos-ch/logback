@@ -18,7 +18,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class IncludeFileActionTest extends TestCase {
+public class IncludeActionTest extends TestCase {
 
   final static String FILE_KEY = "testing";
 
@@ -42,12 +42,12 @@ public class IncludeFileActionTest extends TestCase {
 
   static final String INCLUDED_AS_RESOURCE = "input/joran/inclusion/includedAsResource.xml";
 
-  public IncludeFileActionTest(String arg0) {
+  public IncludeActionTest(String arg0) {
     super(arg0);
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/inc"), new IncAction());
-    rulesMap.put(new Pattern("x/include"), new IncludeFileAction());
+    rulesMap.put(new Pattern("x/include"), new IncludeAction());
 
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);

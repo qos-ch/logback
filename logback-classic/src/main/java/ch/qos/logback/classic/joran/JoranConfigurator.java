@@ -21,7 +21,7 @@ import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
-import ch.qos.logback.core.joran.action.IncludeFileAction;
+import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.action.MatcherAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -66,7 +66,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     if(PlatformInfo.hasJMXObjectName()) {
       rs.addRule(new Pattern("configuration/jmxConfigurator"), new JMXConfiguratorAction());
     }
-    rs.addRule(new Pattern("configuration/include"), new IncludeFileAction());
+    rs.addRule(new Pattern("configuration/include"), new IncludeAction());
     
     rs.addRule(new Pattern("configuration/consolePlugin"), new ConsolePluginAction());
   }

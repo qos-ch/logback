@@ -2,6 +2,6 @@
 
 <configuration>
 
-  <include file="path/to/included/configuration/file" />
+  <include file="path/to/configuration/file" />
 
 </configuration>

@@ -26,7 +26,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class IncludeFileAction extends Action {
+public class IncludeAction extends Action {
 
   private static final String INCLUDED_TAG = "included";
   private static final String FILE_ATTR = "file";
