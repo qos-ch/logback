@@ -1,7 +1,5 @@
 package ch.qos.logback.core.net;
 
-import java.net.ServerSocket;
-
 import ch.qos.logback.core.AppenderBase;
 
 public class TelnetAppender extends AppenderBase {
