@@ -82,10 +82,12 @@ public class MDC {
 			lets the developer place information in a <em>diagnostic
 			context</em> that can be subsequently retrieved by certain
 			logback components. The <code>MDC</code> manages contextual
-			information on a <em>per thread basis</em>.  Typically, while
-			starting to service a new client request, the developer will
-			insert pertinent contextual information, such as the client id,
-			client's IP address, request parameters etc. into the
+			information on a <em>per thread basis</em>.  A child thread *
+			automatically inherits a <em>copy</em> of the mapped diagnostic
+			context of * its parent. Typically, while starting to service a
+			new client request, the developer will insert pertinent
+			contextual information, such as the client id, client's IP
+			address, request parameters etc. into the
 			<code>MDC</code>. Logback components, if appropriately
 			configured, will automatically include this information in each
 			log entry.
@@ -100,10 +102,10 @@ public class MDC {
 logback-examples/src/main/java/chapter7/SimpleMDC.java)</a></em>
 <div class="source"><pre>package chapter7;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.core.ConsoleAppender;
 
@@ -120,10 +122,14 @@ public class SimpleMDC {
     ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
     appender.setLayout(layout);
     appender.start();
-    Logger root = (Logger)LoggerFactory.getLogger("root");
-    root.addAppender(appender);
     
-    // get a logger
+    // cast root logger to c.q.logback.classic.Logger so that we can attach an
+    // appender to it
+    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+        .getLogger("root");
+    root.addAppender(appender);    
+
+    // get another logger
     Logger logger = (Logger)LoggerFactory.getLogger(SimpleMDC.class);
 
     // We now put the last name
@@ -173,18 +179,21 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		<h3>Advanced Use</h3>
 		
 		<p>
-			Mapped Diagnostic Contexts shine brightest within client server architectures. 
-			Typically, multiple clients will be served by multiple threads on the server. 
-			Although the methods in the <code>MDC</code> class are static, 
-			the diagnostic context is managed on a per thread basis, allowing each server 
-			thread to bear a distinct <code>MDC</code> stamp. <code>MDC</code> operations 
-			such as <code>put()</code> and <code>get()</code> affect the <code>MDC</code> 
-			of the <em>current</em> thread only. The <code>MDC</code> in other threads remain 
-			unaffected. Given that <code>MDC</code> information is managed on a 
-			per thread basis, each thread will have its own copy of the <code>MDC</code>. 
-			Thus, there is no need for the developer to worry about thread-safety or 
-			synchronization when programming with the <code>MDC</code> because 
-			it safely and transparently handles these issues.
+			Mapped Diagnostic Contexts shine brightest within client server
+			architectures.  Typically, multiple clients will be served by
+			multiple threads on the server.  Although the methods in the
+			<code>MDC</code> class are static, the diagnostic context is
+			managed on a per thread basis, allowing each server thread to
+			bear a distinct <code>MDC</code> stamp. <code>MDC</code>
+			operations such as <code>put()</code> and <code>get()</code>
+			affect only the <code>MDC</code> of the <em>current</em> thread,
+			and the children of the current thread. The <code>MDC</code> in
+			other threads remain unaffected. Given that <code>MDC</code>
+			information is managed on a per thread basis, each thread will
+			have its own copy of the <code>MDC</code>.  Thus, there is no
+			need for the developer to worry about thread-safety or
+			synchronization when programming with the <code>MDC</code>
+			because it safely and transparently handles these issues.
 		</p>
 
 		<p>
@@ -485,36 +494,35 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		
 		<h3>Automating access to the <code>MDC</code></h3>
 		
-		<p>
-			As we've seen, the <code>MDC</code> is very useful when dealing with multiple
-			clients. In the case of a web application that manages user authentication, one
-			simple solution could be to set the user's name in the <code>MDC</code> and remove
-			it once the user logs out. Unfortunately, it is not always possible to achieve
-			reliable results using this technique. Since <code>MDC</code> is managing
-			information on a <em>per thread</em> basis, a server that recycles
-			threads might lead to false information contained in the <code>MDC</code>.
+		<p>As we've seen, the <code>MDC</code> is very useful when dealing
+			with multiple clients. In the case of a web application that
+			manages user authentication, one simple solution could be to set
+			the user's name in the <code>MDC</code> and remove it once the
+			user logs out. Unfortunately, it is not always possible to
+			achieve reliable results using this technique. Since
+			<code>MDC</code> manages data on a <em>per thread</em> basis, a
+			server that recycles threads might lead to false information
+			contained in the <code>MDC</code>.
 		</p>
 		
-		<p>
-			To allow the information contained in the <code>MDC</code> to be correct
-			at all times when a request is processed, a solution might be to store the
-			username at the beginning of the process, and remove it at the end of
-			said process. A servlet 
-			<a href="http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html">
-			<code>Filter</code></a> is a good tool to have at
-			hand in such case.
+		<p>To allow the information contained in the <code>MDC</code> to
+			be correct at all times when a request is processed, a possible
+			approach would be to store the username at the beginning of the
+			process, and remove it at the end of said process. A servlet <a
+			href="http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html">
+			<code>Filter</code></a> comes in handy in this case.
 		</p>
 		
-		<p>
-			By using a servlet filter, one can access the request, try to access
-			to relevant user information and store it in the <code>MDC</code>. 
-			Then, after the process of creating the response, one just needs 
-			to remove the user information from the <code>MDC</code>.
+		<p>Within the servlet filter's <code>doFilter</code> method, we
+    	can retreive the relevant user data through the request (or a
+    	cookie threin), store it the <code>MDC</code>.  Subsequent
+    	processing by other filters and servlets will automatically
+    	benefit from the MDC data that was stored previously. Finally,
+    	when our servlet filter ragains control, we have an oppurtunity
+    	to clean MDC data.
 		</p>
 		
-		<p>
-		Here is an implementation of such a filter:
-		</p>
+		<p>Here is an implementation of such a filter:</p>
 
 <em>Example 7.5: User servlet filter (<a href="../xref/chapter7/UserServletFilter.html">
 logback-examples/src/main/java/chapter7/UserServletFilter.java)</a></em>
@@ -547,7 +555,10 @@ public class UserServletFilter implements Filter {
     FilterChain chain) throws IOException, ServletException {
 
     HttpServletRequest req = (HttpServletRequest) request;
+    
     Principal principal = req.getUserPrincipal();
+    // Please note that we could have also used a cookie to 
+    // retreive the user name
 
     if (principal != null) {
       String username = principal.getName();
@@ -587,17 +598,14 @@ public class UserServletFilter implements Filter {
 		If a user information is found, it is registered in the <code>MDC</code>.
 	</p>
 		
-	<p>
-		Once the filter chain has completed, the filter removes the user information
-		from the <code>MDC</code>.
+	<p>Once the filter chain has completed, the filter removes the user
+		information from the <code>MDC</code>.
 	</p>
-	
-	<p>
-		With this filter, the user information is present in the <code>MDC</code> only 
-		the time it takes to process the request. The thread may be reused to process a
-		request for another user without risking to display false information in the
-		logs.
-	</p>
+
+  <p>The approach we just outlined sets MDC data only for the duration
+  of the request and only for the thread processing it. Other threads
+  are unaffected. Furthermore, any given thread will contain correct
+  MDC data any point in time.</p>
 		
 <script src="../templates/footer.js"></script>
 </div>

@@ -7,9 +7,9 @@ import java.util.Set;
 import org.slf4j.spi.MDCAdapter;
 
 /**
- * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for
- * distinguishing interleaved log output from different sources. Log output is
- * typically interleaved when a server handles multiple clients
+ * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument
+ * for distinguishing interleaved log output from different sources. Log output
+ * is typically interleaved when a server handles multiple clients
  * near-simultaneously.
  * <p>
  * <b><em>The MDC is managed on a per thread basis</em></b>. A child thread
@@ -22,17 +22,17 @@ import org.slf4j.spi.MDCAdapter;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class LogbackMDCAdapter implements MDCAdapter  {
-  
-  private final ThreadLocal<HashMap<String, String>> threadLocal = new ThreadLocal<HashMap<String, String>>();
+public class LogbackMDCAdapter implements MDCAdapter {
+
+  private final InheritableThreadLocal<HashMap<String, String>> inheritableThreadLocal = new InheritableThreadLocal<HashMap<String, String>>();
 
   LogbackMDCAdapter() {
   }
 
   /**
    * Put a context value (the <code>val</code> parameter) as identified with
-   * the <code>key</code> parameter into the current thread's context map. Note 
-   * that contrary to log4j, the <code>val</code> parameter can be null.
+   * the <code>key</code> parameter into the current thread's context map.
+   * Note that contrary to log4j, the <code>val</code> parameter can be null.
    * 
    * <p>
    * If the current thread does not have a context map it is created as a side
@@ -40,25 +40,26 @@ public class LogbackMDCAdapter implements MDCAdapter  {
    * 
    * <p>
    * Each time a value is added, a new instance of the map is created. This is
-   * to be certain that the serialization process will operate on the updated map
-   * and not send a reference to the old map, thus not allowing the remote logback
-   * component to see the latest changes.
+   * to be certain that the serialization process will operate on the updated
+   * map and not send a reference to the old map, thus not allowing the remote
+   * logback component to see the latest changes.
    * 
-   * @throws IllegalArgumentException in case the "key" parameter is null
+   * @throws IllegalArgumentException
+   *           in case the "key" parameter is null
    */
   public void put(String key, String val) throws IllegalArgumentException {
     if (key == null) {
       throw new IllegalArgumentException("key cannot be null");
     }
-    
-    HashMap<String, String> oldMap = threadLocal.get();
+
+    HashMap<String, String> oldMap = inheritableThreadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     if (oldMap != null) {
-    	newMap.putAll(oldMap);
+      newMap.putAll(oldMap);
     }
     // the newMap replaces the old one for serialisation's sake
-    threadLocal.set(newMap);
+    inheritableThreadLocal.set(newMap);
     newMap.put(key, val);
   }
 
@@ -69,7 +70,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
    * This method has no side effects.
    */
   public String get(String key) {
-    HashMap<String, String> hashMap = threadLocal.get();
+    HashMap<String, String> hashMap = inheritableThreadLocal.get();
 
     if ((hashMap != null) && (key != null)) {
       return hashMap.get(key);
@@ -83,19 +84,19 @@ public class LogbackMDCAdapter implements MDCAdapter  {
    * 
    * <p>
    * Each time a value is removed, a new instance of the map is created. This is
-   * to be certain that the serialization process will operate on the updated map
-   * and not send a reference to the old map, thus not allowing the remote logback
-   * component to see the latest changes.
+   * to be certain that the serialization process will operate on the updated
+   * map and not send a reference to the old map, thus not allowing the remote
+   * logback component to see the latest changes.
    */
   public void remove(String key) {
-    HashMap<String, String> oldMap = threadLocal.get();
+    HashMap<String, String> oldMap = inheritableThreadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     if (oldMap != null) {
-    	newMap.putAll(oldMap);
+      newMap.putAll(oldMap);
     }
     // the newMap replaces the old one for serialisation's sake
-    threadLocal.set(newMap);
+    inheritableThreadLocal.set(newMap);
     newMap.remove(key);
   }
 
@@ -103,11 +104,11 @@ public class LogbackMDCAdapter implements MDCAdapter  {
    * Clear all entries in the MDC.
    */
   public void clear() {
-    HashMap<String, String> hashMap = threadLocal.get();
+    HashMap<String, String> hashMap = inheritableThreadLocal.get();
 
     if (hashMap != null) {
       hashMap.clear();
-      threadLocal.remove();
+      inheritableThreadLocal.remove();
     }
   }
 
@@ -116,15 +117,15 @@ public class LogbackMDCAdapter implements MDCAdapter  {
    * internally.
    */
   public Map<String, String> getPropertyMap() {
-    return threadLocal.get();
+    return inheritableThreadLocal.get();
   }
 
   /**
-   * Returns the keys in the MDC as a {@link Set}. The returned value
-   * can be null.
+   * Returns the keys in the MDC as a {@link Set}. The returned value can be
+   * null.
    */
   public Set<String> getKeys() {
-    HashMap<String, String> hashMap = threadLocal.get();
+    HashMap<String, String> hashMap = inheritableThreadLocal.get();
 
     if (hashMap != null) {
       return hashMap.keySet();

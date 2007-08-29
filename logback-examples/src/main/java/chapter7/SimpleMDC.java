@@ -10,10 +10,10 @@
 
 package chapter7;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
@@ -31,11 +31,14 @@ public class SimpleMDC {
     ConsoleAppender<LoggingEvent> appender = new ConsoleAppender<LoggingEvent>();
     appender.setLayout(layout);
     appender.start();
-    Logger root = (Logger)LoggerFactory.getLogger("root");
+    // cast root logger to c.q.logback.classic.Logger so that we can attach an
+    // appender to it
+    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+        .getLogger("root");
     root.addAppender(appender);
-    
-    // get a logger
-    Logger logger = (Logger)LoggerFactory.getLogger(SimpleMDC.class);
+
+    // get another logger
+    Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
 
     // We now put the last name
     MDC.put("last", "Parker");
