@@ -129,6 +129,7 @@
 				</executions>
 			</plugin>
 
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>retrotranslator-maven-plugin</artifactId>
@@ -157,6 +158,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
 		</plugins>
 
 	</build>
