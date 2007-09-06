@@ -43,11 +43,11 @@
     
 		<h2>What is an Appender?</h2>
     
-		<p>
-			Logback delegates the task of writing a logging event to appenders. 
-			Appenders must implement the 
-			<a href="../xref/ch/qos/logback/core/Appender.html"><code>ch.qos.logback.core.Appender</code></a> interface. 
-			The salient methods of this interface are summarized below:
+		<p>Logback delegates the task of writing a logging event to
+		components called appenders.  Appenders must implement the <a
+		href="../xref/ch/qos/logback/core/Appender.html"><code>ch.qos.logback.core.Appender</code></a>
+		interface.  The salient methods of this interface are summarized
+		below:
 		</p>
 		<div class="source"><pre>package ch.qos.logback.core;
   
@@ -67,28 +67,35 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 }</pre></div>
 
 	<p>
-		Most of the methods in the <code>Appender</code> interface are made of setter 
-		and getter methods. A notable exception is the <code>doAppend()</code> 
-		method taking an Object instance as its only parameter. 
-		This method is perhaps the most important in the logback framework. 
-		It is responsible for outputting the logging events in a suitable format 
-		to the appropriate output device. Appenders are named entities. 
-		This ensures that they can be referenced by name, a quality confirmed 
-		to be especially significant in configuration scripts. 
-		An appender can contain multiple filters, thus the <code>Appender</code>
-		interface extending the <code>FilterAttachable</code> interface.
-		Filters are discussed in detail in a subsequent chapter.
+		Most of the methods in the <code>Appender</code> interface are
+		made of setter and getter methods. A notable exception is the
+		<code>doAppend()</code> method taking an object instance of type
+		<em>E</em> as its only parameter. The actual type of <em>E</em>
+		would vary depending on the logback module. Within the
+		logback-classic module <em>E</em> would be of type <a
+		href="../apidocs/ch/qos/logback/classic/spi/LoggingEvent.html">LoggingEvent</a>
+		and within the logback-access module it would be of type <a
+		href="../apidocs/ch/qos/logback/access/spi/AccessEvent.html">AccessEvent</a>.
+		The <code>doAppend()</code> method is perhaps the most important
+		in the logback framework.  It is responsible for outputting the
+		logging events in a suitable format to the appropriate output
+		device. Appenders are named entities.  This ensures that they can
+		be referenced by name, a quality confirmed to be especially
+		significant in configuration scripts.  An appender can contain
+		multiple filters, thus the <code>Appender</code> interface
+		extending the <code>FilterAttachable</code> interface.  Filters
+		are discussed in detail in a subsequent chapter.
 	</p>
 	
 	<p>
-		Appenders are ultimately responsible for outputting logging events. 
-		However, they may delegate the actual formatting of the event to a 
-		<code>Layout</code> object. 
-		Each layout is associated with one and only one appender, referred to 
-		as the containing appender. Some appenders have a built-in or fixed 
-		event format, such that they do not require a layout. For example, the 
-		<code>SocketAppender</code> simply serialize logging events before 
-		transmitting them over the wire.
+		Appenders are ultimately responsible for outputting logging
+		events.  However, they may delegate the actual formatting of the
+		event to a <code>Layout</code> object.  Each layout is associated
+		with one and only one appender, referred to as the owning
+		appender. Some appenders have a built-in or fixed event format,
+		such that they do not require a layout. For example, the
+		<code>SocketAppender</code> simply serializes logging events
+		before transmitting them over the wire.
 	</p>
 	
 	<a name="AppenderBase"></a>
@@ -96,16 +103,17 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
 	<p>
 		The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
-		<code>ch.qos.logback.core.AppenderBase</code></a> class is an abstract 
-		class implementing the <code>Appender</code> interface. 
-		It provides basic functionality shared by all appenders, 
-		such as methods for getting or setting their name, their started status, 
-		their layout and their filters. 
-		It is the super-class of all appenders shipped with logback. 
-		Although an abstract class, <code>AppenderBase</code> actually implements the 
-		<code>doAppend()</code> method in the <code>Append</code> interface. 
-		Perhaps the clearest way to discuss <code>AppenderBase</code> class is by 
-		presenting a bit of its actual source code.
+		<code>ch.qos.logback.core.AppenderBase</code></a> class is an
+		abstract class implementing the <code>Appender</code> interface.
+		It provides basic functionality shared by all appenders, such as
+		methods for getting or setting their name, their activation
+		status, their layout and their filters.  It is the super-class of
+		all appenders shipped with logback.  Although an abstract class,
+		<code>AppenderBase</code> actually implements the
+		<code>doAppend()</code> method in the <code>Append</code>
+		interface.  Perhaps the clearest way to discuss
+		<code>AppenderBase</code> class is by presenting an excerpt of
+		actual source code.
 	</p>
 	
 <div class="source"><pre>public synchronized void doAppend(E eventObject) {
@@ -157,21 +165,24 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	<p>
-		The first statement of the <code>doAppend()</code> method, once the <code>try</code> block
-		is reached, is to check whether the <code>started</code> field is true. 
-		If it is not, <code>doAppend()</code> will send a warning message and return. 
-		In other words, once stopped, it is impossible to write to a closed appender. 
-		<code>Appender</code> objects implement the <code>LifeCycle</code> interface, 
-		which implies that they implement <code>start()</code>, <code>stop()</code>
-		and <code>isStarted()</code> methods. After setting all the options of an appender,
-		Joran, logback's configuration framework, calls the <code>start()</code> 
-		method to signal the appender to bind or activate its options.
-		Indeed, depending on the appender, certain options cannot be activated because 
-		of interferences with other options, or appenders can even not start at all if
-		some options are missing. 
-		For example, since file creation depends on truncation mode, 
-		<code>FileAppender</code> cannot act on the value of its <code>File</code> option 
-		until the value of the Append option is also known for certain.
+		The first statement of the <code>doAppend()</code> method, once
+		the <code>try</code> block is reached, is to check whether the
+		<code>started</code> field is true.  If it is not,
+		<code>doAppend()</code> will send a warning message and return.
+		In other words, once stopped, it is impossible to write to a
+		closed appender.  <code>Appender</code> objects implement the
+		<code>LifeCycle</code> interface, which implies that they
+		implement <code>start()</code>, <code>stop()</code> and
+		<code>isStarted()</code> methods. After setting all the options of
+		an appender, Joran, logback's configuration framework, calls the
+		<code>start()</code> method to signal the appender to bind or
+		activate its options.  Indeed, depending on the appender, certain
+		options cannot be activated because of interferences with other
+		options, or appenders can even not start at all if some options
+		are missing.  For example, since file creation depends on
+		truncation mode, <code>FileAppender</code> cannot act on the value
+		of its <code>File</code> option until the value of the Append
+		option is also known for certain.
 	</p>
 	
 	<p>
