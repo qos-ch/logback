@@ -61,7 +61,8 @@ public class UserServletFilter implements Filter {
 
     HttpServletRequest req = (HttpServletRequest) request;
     Principal principal = req.getUserPrincipal();
-    //  we could have also used a cookie to retreive the user name
+    // Please note that we could have also used a cookie to 
+    // retreive the user name
     
     if (principal != null) {
       String username = principal.getName();
