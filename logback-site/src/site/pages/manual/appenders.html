@@ -66,54 +66,52 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   
 }</pre></div>
 
-	<p>
-		Most of the methods in the <code>Appender</code> interface are
-		made of setter and getter methods. A notable exception is the
-		<code>doAppend()</code> method taking an object instance of type
-		<em>E</em> as its only parameter. The actual type of <em>E</em>
-		would vary depending on the logback module. Within the
-		logback-classic module <em>E</em> would be of type <a
-		href="../apidocs/ch/qos/logback/classic/spi/LoggingEvent.html">LoggingEvent</a>
-		and within the logback-access module it would be of type <a
-		href="../apidocs/ch/qos/logback/access/spi/AccessEvent.html">AccessEvent</a>.
-		The <code>doAppend()</code> method is perhaps the most important
-		in the logback framework.  It is responsible for outputting the
-		logging events in a suitable format to the appropriate output
-		device. Appenders are named entities.  This ensures that they can
-		be referenced by name, a quality confirmed to be especially
-		significant in configuration scripts.  An appender can contain
-		multiple filters, thus the <code>Appender</code> interface
-		extending the <code>FilterAttachable</code> interface.  Filters
-		are discussed in detail in a subsequent chapter.
+	<p>Most of the methods in the <code>Appender</code> interface are
+	made of setter and getter methods. A notable exception is the
+	<code>doAppend()</code> method taking an object instance of type
+	<em>E</em> as its only parameter. The actual type of <em>E</em>
+	would vary depending on the logback module. Within the
+	logback-classic module <em>E</em> would be of type <a
+	href="../apidocs/ch/qos/logback/classic/spi/LoggingEvent.html">LoggingEvent</a>
+	and within the logback-access module it would be of type <a
+	href="../apidocs/ch/qos/logback/access/spi/AccessEvent.html">AccessEvent</a>.
+	The <code>doAppend()</code> method is perhaps the most important in
+	the logback framework.  It is responsible for outputting the logging
+	events in a suitable format to the appropriate output device.
+  </p>
+
+  <p>Appenders are named entities.  This ensures that they can be
+  referenced by name, a quality confirmed to be instrumental in
+  configuration scripts. The <code>Appender</code> interface extends
+  the <code>FilterAttachable</code> interface. It follows that one or
+  more filters can be attaqched to an appender instance. Filters are
+  discussed in detail in a subsequent chapter.
 	</p>
 	
-	<p>
-		Appenders are ultimately responsible for outputting logging
-		events.  However, they may delegate the actual formatting of the
-		event to a <code>Layout</code> object.  Each layout is associated
-		with one and only one appender, referred to as the owning
-		appender. Some appenders have a built-in or fixed event format,
-		such that they do not require a layout. For example, the
-		<code>SocketAppender</code> simply serializes logging events
-		before transmitting them over the wire.
+	<p>Appenders are ultimately responsible for outputting logging
+	events.  However, they may delegate the actual formatting of the
+	event to a <code>Layout</code> object.  Each layout is associated
+	with one and only one appender, referred to as the owning
+	appender. Some appenders have a built-in or fixed event
+	format. Consequently, they do not require nor have a layout. For
+	example, the <code>SocketAppender</code> simply serializes logging
+	events before transmitting them over the wire.
 	</p>
 	
 	<a name="AppenderBase"></a>
 	<h2>AppenderBase</h2>
 	
-	<p>
-		The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
-		<code>ch.qos.logback.core.AppenderBase</code></a> class is an
-		abstract class implementing the <code>Appender</code> interface.
-		It provides basic functionality shared by all appenders, such as
-		methods for getting or setting their name, their activation
-		status, their layout and their filters.  It is the super-class of
-		all appenders shipped with logback.  Although an abstract class,
-		<code>AppenderBase</code> actually implements the
-		<code>doAppend()</code> method in the <code>Append</code>
-		interface.  Perhaps the clearest way to discuss
-		<code>AppenderBase</code> class is by presenting an excerpt of
-		actual source code.
+	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
+	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
+	abstract class implementing the <code>Appender</code> interface.  It
+	provides basic functionality shared by all appenders, such as
+	methods for getting or setting their name, their activation status,
+	their layout and their filters.  It is the super-class of all
+	appenders shipped with logback.  Although an abstract class,
+	<code>AppenderBase</code> actually implements the
+	<code>doAppend()</code> method in the <code>Append</code> interface.
+	Perhaps the clearest way to discuss <code>AppenderBase</code> class
+	is by presenting an excerpt of actual source code.
 	</p>
 	
 <div class="source"><pre>public synchronized void doAppend(E eventObject) {
@@ -146,139 +144,143 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   }
 }</pre></div>
 	
-	<p>
-		This implementation of the <code>doAppend()</code> method is synchronized. 
-		It follows that logging to the same appender from different 
-		threads is safe. While a thread, say <em>T</em>, is executing the <code>doAppend()</code> 
-		method, subsequent calls by other threads are queued until <em>T</em> 
-		leaves the <code>doAppend()</code> method, ensuring 
-		<em>T</em>'s exclusive access to the appender. 
+	<p>This implementation of the <code>doAppend()</code> method is
+	synchronized.  It follows that logging to the same appender from
+	different threads is safe. While a thread, say <em>T</em>, is
+	executing the <code>doAppend()</code> method, subsequent calls by
+	other threads are queued until <em>T</em> leaves the
+	<code>doAppend()</code> method, ensuring <em>T</em>'s exclusive
+	access to the appender.
 	</p>
 	
-	<p>
-		The first thing the <code>doAppend()</code> method does is to set the 
-		<code>guard</code> variable to <code>true</code>. This ensures that the method will not
-		call itself and create an infinite loop. Just imagine that a component, called somewhere 
-		beyond the <code>append()</code>
-		method, wants to log something. Its call could be directed to the very same appender
-		that just called it, which would then call it again.
+  <p>The first thing the <code>doAppend()</code> method does is to
+  check whether the guard is set to true. If it is, it immediately
+  exits. If the guard is not set, it is set to true at the next
+  statement. The guard ensures that the <code>doAppend()</code> method
+  will not recursively call itself. Just imagine that a component,
+  called somewhere beyond the <code>append()</code> method, wants to
+  log something. Its call could be directed to the very same appender
+  that just called it.
 	</p>
 	
-	<p>
-		The first statement of the <code>doAppend()</code> method, once
-		the <code>try</code> block is reached, is to check whether the
-		<code>started</code> field is true.  If it is not,
-		<code>doAppend()</code> will send a warning message and return.
-		In other words, once stopped, it is impossible to write to a
-		closed appender.  <code>Appender</code> objects implement the
-		<code>LifeCycle</code> interface, which implies that they
-		implement <code>start()</code>, <code>stop()</code> and
-		<code>isStarted()</code> methods. After setting all the options of
-		an appender, Joran, logback's configuration framework, calls the
-		<code>start()</code> method to signal the appender to bind or
-		activate its options.  Indeed, depending on the appender, certain
-		options cannot be activated because of interferences with other
-		options, or appenders can even not start at all if some options
-		are missing.  For example, since file creation depends on
-		truncation mode, <code>FileAppender</code> cannot act on the value
-		of its <code>File</code> option until the value of the Append
-		option is also known for certain.
+	<p>In the following statement we check whether the
+	<code>started</code> field is true.  If it is not,
+	<code>doAppend()</code> will send a warning message and return.  In
+	other words, once an appender is closed, it is impossible to write
+	to it.  <code>Appender</code> objects implement the
+	<code>LifeCycle</code> interface, which implies that they implement
+	<code>start()</code>, <code>stop()</code> and
+	<code>isStarted()</code> methods.  After setting all the options of
+	an appender, Joran, logback's configuration framework, calls the
+	<code>start()</code> method to signal the appender to activate its
+	options.  Depending on its kind, an appender may fail to start if
+	certain options are missing or because of interferences between
+	various options.  For example, given that file creation depends on
+	truncation mode, <code>FileAppender</code> cannot act on the value
+	of its <code>File</code> option until the value of the Append option
+	is also known with certainty. The explicit activation step ensures
+	that an appender acts on its options <em>after</em> their values
+	become known.
 	</p>
 	
-	<p>
-		If a warning message is sent due to incorrect calls to the
-		<code>doAppend()</code> method, logback's powerful
-		<code>Status</code> error reporting system is used. In case
-		several incorrect calls on <code>doAppend()</code> are issued,
-		<code>AppenderBase</code> does not send an unlimited number of
-		warnings. Once a certain limit is reached, the
-		<code>AppenderBase</code> instance stops its warnings.
+	<p>If the appender could not be started or if it has been stopped, a
+	warning message will be issued through logback's internal status
+	management system. After several attempts, in order to avoid
+	flooding the internal status system with copies of the same warning
+	message, the <code>doAppend()</code> method will stop issuing these
+	warnings.
+  </p>
+
+	<p>The next <code>if</code> statement checks the result of the
+	attached filters.  Depending on the decision resulting from the
+	filter chain, events can be denied or alternatively accepted.  In
+	the absence of a decision by the filter chain, events are accepted
+	by default.
 	</p>
 	
-	<p>
-		The next <code>if</code> statement checks the result of the
-		attached <code>Filter</code> objects.  Depending on the decision
-		resulting from the filter chain, events can be denied or
-		alternatively accepted.  In the absence of a decision by the
-		filter chain, events are accepted by default.
+	<p>The <code>doAppend()</code> method then invokes the derived
+	classes' implementation of the <code>append()</code> method. This
+	method does the actual work of appending the event to the
+	appropriate device.
 	</p>
 	
-	<p>
-		Lastly, the <code>doAppend()</code> method invoke the derived
-		classes' implementation of the <code>append()</code> method, which
-		does the actual work of appending the event to the appropriate
-		device.
-	</p>
+  <p>Finally, the guard is released so as to allow a subsequent
+  invocation of the <code>doAppend()</code> method.
+  </p>
+
+	<p>For the remainder of this manual, we reserve the term "option" or
+	alternatively "property" for any attribute that is inferred
+	dynamically using JavaBeans introspection through setter and getter
+	methods. </p>
 	
-	<p>In appenders, the term option or property is reserved for named
-	attributes that are dynamically inferred using JavaBeans
-	introspection. </p>
+	<h2>Logback-core</h2>
 	
-	<h2>Logback Core</h2>
-	
-	<p>
-		Core is logback's central module. It offers functionnalities that
-		are available to any other module based on logback core. The
-		<code>Appender</code> classes contained in the core module are can
-		be used by any module without any customization.
-	</p>
-	
+	<p>Logback-core lays the foundation upon which the other logback
+	modules are built. In general, the components in logback-core
+	require some, albeit minimal, amount of customisation. However, in
+	the next few sections, we describe several appenders which are ready
+	for use out of the box.
+  </p>
+
+
 	<a name="WriterAppender"></a>
 	<h3>WriterAppender</h3>
 	
 	<p><a
-		href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a>
-		appends events to a <code>java.io.Writer</code>.  This class
-		provides basic services that other appenders build upon.  Users do
-		not usually instantiate <code>WriterAppender</code> objects
-		directly.  Since <code>java.io.Writer</code> type cannot be mapped
-		to a string, there is no way to specify the target
-		<code>Writer</code> object in a configuration script.  Simply put,
-		you cannot configure a <code>WriterAppender</code> from a script.
-		However, this does not mean that <code>WriterAppender</code> lacks
-		configurable options.  These options are described next.
+	href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a>
+	appends events to a <code>java.io.Writer</code>.  This class
+	provides basic services that other appenders build upon.  Users do
+	not usually instantiate <code>WriterAppender</code> objects
+	directly.  Since <code>java.io.Writer</code> type cannot be mapped
+	to a string, as there is no way to specify the target
+	<code>Writer</code> object in a configuration script.  Simply put,
+	you cannot configure a <code>WriterAppender</code> from a script.
+	However, this does not mean that <code>WriterAppender</code> lacks
+	configurable options.  These options are described next.
 	</p>
 	
-	<table class="bodyTable">
-		<tr class="a">
-			<th>Option Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">Encoding</span></b></td>
-			<td><code>String</code></td>
-			<td>
-      	The encoding specifies the method of conversion between 16-bit Unicode 
-				characters into raw 8-bit bytes. This appender will use the local platform's 
-				default encoding unless you specify otherwise using the 
-				<span class="option">Encoding</span> option. 
-				According to the <code>java.lang</code> package documentation, acceptable values 
-				are dependent on the VM implementation although all implementations are 
-				required to support at least the following encodings: 
-				<em>US-ASCII</em>, <em>ISO-8859-1</em>, <em>UTF-8</em>, <em>UTF-16BE</em>,
-				<em>UTF-16LE</em> and <em>UTF-16</em>. 
-				By default, the <span class="option">Encoding</span> option is 
-				<code>null</code> such 
-				that the platform's default encoding is used.
+  <table class="bodyTable">
+    <tr class="a">
+      <th>Option Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+    
+    <tr class="a">
+      <td><b><span class="option">Encoding</span></b></td>
+      <td><code>String</code></td>
+      
+      <td>The encoding specifies the method of conversion between
+      Java's internal 16-bit Unicode representation of characters into
+      raw 8-bit bytes. This appender will use the local platform's
+      default encoding unless you say otherwise by specifying an <span
+      class="option">Encoding</span> value.  According to the
+      <code>java.lang</code> package documentation, acceptable values
+      are dependent on the VM implementation although all
+      implementations are required to support at least the following
+      encodings: <em>US-ASCII</em>, <em>ISO-8859-1</em>,
+      <em>UTF-8</em>, <em>UTF-16BE</em>, <em>UTF-16LE</em> and
+      <em>UTF-16</em>.  As mentioned previously, by default, the <span
+      class="option">Encoding</span> option is <code>null</code> such
+      that the platform's default encoding is used.
 			</td>
 		</tr>
 		<tr class="b">
 			<td><b><span class="option">ImmediateFlush</span></b></td>
 			<td><code>boolean</code></td>
 
-			<td>
-				If set to true, each write of a logging event is followed by a
-				flush operation on the underlying <code>Writer</code>
-				object. Conversely, if the option is set to false, each write
-				will not be followed by a flush.  In general, skipping the
-				flush operation improves logging throughput by roughly 15%.
-				The downside is that if the application exits abruptly, the
-				unwritten characters buffered inside the <code>Writer</code>
-				might be lost.  This can be particularly troublesome as those
-				unwritten characters may contain crucial information needed in
-				identifying the reasons behind a crash.  By default, the <span
-				class="option">ImmediateFlush</span> option is set to true.
+			<td>If the <span class="option">ImmediateFlush</span> option is
+			set to true, then each write of a logging event will be followed
+			by a flush operation on the underlying <code>Writer</code>
+			object. Conversely, if the option is set to false, each write
+			will not be followed by a flush.  In general, skipping the flush
+			operation improves logging throughput by roughly 15%.  The
+			downside is that if the application exits abruptly, the
+			unwritten characters buffered inside the <code>Writer</code>
+			might be lost.  This can be particularly troublesome as those
+			unwritten characters may contain crucial information needed in
+			identifying the reasons behind a crash.  By default, the <span
+			class="option">ImmediateFlush</span> option is set to true.
 				</td>
 
 		</tr>
