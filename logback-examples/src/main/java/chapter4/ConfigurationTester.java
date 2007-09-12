@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2007, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package chapter4;
 
 import org.slf4j.Logger;
@@ -37,6 +46,10 @@ public class ConfigurationTester {
     } catch (JoranException je) {
       je.printStackTrace();
     }
+    // After we've called Joran, let's print information about the 
+    // internal status of logback
+    StatusPrinter.print(lc.getStatusManager());
+    
     logger.debug("**Hello {}", new Bar());
     MDC.put("testKey", "testValueFromMDC");
     MDC.put("testKey2", "value2");
@@ -45,7 +58,5 @@ public class ConfigurationTester {
     }
     Bar bar = new Bar();
     bar.createLoggingRequest();
-
-    StatusPrinter.print(lc.getStatusManager());
   }
 }

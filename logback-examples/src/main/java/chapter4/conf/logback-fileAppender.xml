@@ -3,9 +3,6 @@
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 		<File>testFile.log</File>
 		<Append>true</Append>
-		<Encoding>UTF-8</Encoding>
-		<BufferedIO>false</BufferedIO>
-		<ImmediateFlush>true</ImmediateFlush>
 		
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>

@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 1999-2007, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core;
 
@@ -31,7 +31,7 @@ public class ConsoleAppender<E> extends WriterAppender<E> {
     protected String target = SYSTEM_OUT;
 
     /**
-     * As in most cases, the default constructor does nothing.
+     * As in most logback components, the default constructor does nothing.
      */
     public ConsoleAppender() {
     }

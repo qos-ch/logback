@@ -286,10 +286,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 		</tr>
 	</table>
 	
-	<p>
-		In general, if you disable immediate flushing, then make sure to flush 
-		any output streams when your application exits. Otherwise, log messages 
-		will be lost as illustrated by the next example. 
+	<p>In general, if you disable immediate flushing, then make sure to
+	flush any output streams when your application exits. Otherwise, log
+	messages will be lost as illustrated by the next example.
 	</p>
 	
 	<em>Example 4.1: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
@@ -325,31 +324,29 @@ public class ExitWoes1 {
   }
 }</pre></div>
     
-	<p>
-		This example creates a <code>WriterAppender</code> that uses an 
-		<code>OutputStreamWriter</code> 
-		wrapping a <code>FileOutputStream</code> as its underlying <code>Writer</code> object, 
-		with immediate flushing disabled. It then proceeds to log a single debug message. 
-		According to <code>OutputStreamWriter</code> javadocs, each invocation of a 
-		<code>write()</code>
-		method causes the encoding converter to be invoked on the given character(s). 
-		The resulting bytes are accumulated in a buffer before being written 
-		to the underlying output stream. As astonishing as this may seem, 
-		running <code>ExitWoes1</code> will not produce any output in the file 
-		<em>exitWoes1.log</em>
-		because the Java VM does not flush output streams when it exits. 
-		Calling the <code>shutdownAndReset()</code> method of a <code>LoggerContext</code> 
-		ensures that all 
-		appenders in the hierarchy are closed and their buffers are flushed. The
-		<code>ExitWoes2</code> class uses this statement and outputs a logging
-		request.
+	<p>This example creates a <code>WriterAppender</code> that uses an
+	<code>OutputStreamWriter</code> wrapping a
+	<code>FileOutputStream</code> as its underlying <code>Writer</code>
+	object, with immediate flushing disabled. It then proceeds to log a
+	single debug message.  According to <code>OutputStreamWriter</code>
+	javadocs, each invocation of a <code>write()</code> method causes
+	the encoding converter to be invoked on the given character(s).  The
+	resulting bytes are accumulated in a buffer before being written to
+	the underlying output stream. As astonishing as this may seem,
+	running <code>ExitWoes1</code> will not produce any data in the file
+	<em>exitWoes1.log</em> because the Java VM does not flush output
+	streams when it exits.  Calling the <code>shutdownAndReset()</code>
+	method of a <code>LoggerContext</code> ensures that all appenders in
+	the hierarchy are closed and their buffers are flushed. The <code><a
+	href="../xref/chapter4/ExitWoes2.html">ExitWoes2</a></code> class
+	uses this statement and outputs a logging request.
 	</p>
 	    
-	<p>
-		The <code>WriterAppender</code> is the super class of four other appenders, 
-		namely <code>ConsoleAppender</code>, <code>FileAppender</code> which in turn is 
-		the super class of <code>RollingFileAppender</code>. The next figure illustrates 
-		the class diagram for <code>WriterAppender</code> and its subclasses.
+	<p>The <code>WriterAppender</code> is the super class of three other
+	appenders, namely <code>ConsoleAppender</code>,
+	<code>FileAppender</code> which in turn is the super class of
+	<code>RollingFileAppender</code>. The next figure illustrates the
+	class diagram for <code>WriterAppender</code> and its subclasses.
 	</p>
 	
 	<img src="images/chapter4/fileAppenderUML.png" alt="A UML diagram showing FileAppender"/>
@@ -357,15 +354,16 @@ public class ExitWoes1 {
 	<a name="ConsoleAppender"></a>
 	<h3>ConsoleAppender</h3>
 	
-	<p>
-		The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
-		<code>ConsoleAppender</code></a>, as the name indicates, appends on the console, 
-		or more precisely on <em>System.out</em> or <em>System.err</em>, the former 
-		being the default target. <code>ConsoleAppender</code> formats events with 
-		a layout specified by the user. Both <em>System.out</em> and <em>System.err</em> 
-		are <code>java.io.PrintStream</code> objects. 
-		Consequently, they are wrapped inside an <code>OutputStreamWriter</code> 
-		which buffers I/O operations but not character conversions. 
+	<p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
+	<code>ConsoleAppender</code></a>, as the name indicates, appends on
+	the console, or more precisely on <em>System.out</em> or
+	<em>System.err</em>, the former being the default
+	target. <code>ConsoleAppender</code> formats events with a layout
+	specified by the user. Layouts will be discussed in the next
+	chapter. Both <em>System.out</em> and <em>System.err</em> are
+	<code>java.io.PrintStream</code> objects.  Consequently, they are
+	wrapped inside an <code>OutputStreamWriter</code> which buffers I/O
+	operations but not character conversions.
 	</p>
 	
 	<table class="bodyTable">
@@ -394,8 +392,8 @@ public class ExitWoes1 {
 		</tr>
 	</table>
 	
-	<p>
-		Here is a sample configuration that uses <code>ConsoleAppender</code>.
+	<p>Here is a sample configuration that uses
+	<code>ConsoleAppender</code>.
 	</p>
 
 <em>Example 4.2: ConsoleAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-Console.xml)</em>
@@ -414,29 +412,32 @@ public class ExitWoes1 {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-	<p>
-		To run this example, just issue the following command, 
-		once in the <em>logback-examples</em> directory:
+	<p>After you have set your current path to the
+	<em>logback-examples</em> directory, you can give the above
+	configuration file a whirl by issuing the following command:
 	</p>
-	
-<div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-Console.xml</pre></div>
+
+<div class="source"><pre>java <a
+href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a> src/main/java/chapter4/conf/logback-Console.xml</pre></div>
 	
 	<a name="FileAppender"></a>
 	<h3>FileAppender</h3>
 	
-	<p>
-		The <a href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>, 
-		a subclass of <code>WriterAppender</code>, 
-		appends log events into a file. The file to write to is specified by 
-		the <span class="option">File</span> option. 
-		If the file already exists, it is either appended to, or truncated 
-		depending on the value of the <span class="option">Append</span> option. 
-		It uses a <code>FileOutputStream</code> which is wrapped by an <code>OutputStreamWriter</code>. 
-		Note that <code>OutputStreamWriter</code> buffers I/O operations 
-		but not character conversions. To optimize character conversions one 
-		can set the <span class="option">BufferedIO</span> option to true 
-		which effectively wraps the <code>OutputStreamWriter</code> with 
-		a <code>BufferedWriter</code>. Options for <code>FileAppender</code> are summarized below. 
+	<p>The <a
+	href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
+	a subclass of <code>WriterAppender</code>, appends log events into a
+	file. The target fileis specified by the <span
+	class="option">File</span> option.  If the file already exists, it
+	is either appended to, or truncated depending on the value of the
+	<span class="option">Append</span> option.
+	<code>FileAppender</code> uses a <code>FileOutputStream</code> which
+	is wrapped by an <code>OutputStreamWriter</code>.  Note that
+	<code>OutputStreamWriter</code> buffers I/O operations but not
+	character conversions. To optimize character conversions one can set
+	the <span class="option">BufferedIO</span> option to true which
+	effectively wraps the <code>OutputStreamWriter</code> with a
+	<code>BufferedWriter</code>. Options for <code>FileAppender</code>
+	are summarized below.
 	</p>
 	
 	<table class="bodyTable">
@@ -448,9 +449,11 @@ public class ExitWoes1 {
 		<tr class="b">
 			<td><b><span class="option">Append</span></b></td>
 			<td><code>boolean</code></td>
-			<td>If true, events are appended at the end of an existing file. 
-			Otherwise, if <span class="option">Append</span> is false, any existing 
-			file is truncated. The <span class="option">Append</span> option is set to true by default.</td>
+      <td>If true, events are appended at the end of an existing file.
+      Otherwise, if <span class="option">Append</span> is false, any
+      existing file is truncated. The <span
+      class="option">Append</span> option is set to true by
+      default.</td>
 		</tr>
 		<tr class="a">
 			<td><b><span class="option">Encoding</span></b></td>
@@ -460,17 +463,18 @@ public class ExitWoes1 {
 		<tr class="b">
 			<td><b><span class="option">BufferedIO</span></b></td>
 			<td><code>boolean</code></td>
-			<td>
-				The <span class="option">BufferedIO</span> option is set to false by default. 
-				If set to true, the underlying <code>OutputStreamWriter</code> is wrapped 
-				by a <code>BufferedWriter</code> object. 
-				Setting <span class="option">BufferedIO</span> to true automatically 
-				sets the <span class="option">ImmediateFlush</span> option to false. 
-				The name <span class="option">BufferedIO</span> is slightly misleading because 
-				buffered IO is already supported by <code>OutputStreamWriter</code>. 
-				Setting <span class="option">BufferedIO</span> to true has the effect of 
-				buffering I/O as well as character to raw byte conversions, saving a few 
-				CPU cycles in the process.
+			<td>The <span class="option">BufferedIO</span> option is set to
+			false by default.  If set to true, the underlying
+			<code>OutputStreamWriter</code> is wrapped by a
+			<code>BufferedWriter</code> object.  Setting <span
+			class="option">BufferedIO</span> to true automatically sets the
+			<span class="option">ImmediateFlush</span> option to false.  The
+			name <span class="option">BufferedIO</span> is slightly
+			misleading because buffered IO is already supported by
+			<code>OutputStreamWriter</code>.  Setting <span
+			class="option">BufferedIO</span> to true has the effect of
+			buffering I/O as well as character to raw byte conversions,
+			saving a few CPU cycles in the process.
 			</td>
 		</tr>
 		<tr class="a">
@@ -481,48 +485,48 @@ public class ExitWoes1 {
 		<tr class="b">
 			<td><b><span class="option">File</span></b></td>
 			<td><code>String</code></td>
-			<td>
-				The name of the file to write to. If the file does not exist, it is created. <br />
-				On the MS Windows platform users frequently forget to escape back slashes. 
-				For example, the value <em>c:\temp\test.log</em> is not likely to be interpreted 
-				properly as <em>'\t'</em> is an escape sequence interpreted as a single 
-				tab character <em>(\u0009)</em>. 
-				Correct values can be specified as <em>c:/temp/test.log</em> or 
-				alternatively as <em>c:\\temp\\test.log</em>. 
-				The <span class="option">File</span> option has no default value.
+			<td>The name of the file to write to. If the file does not
+			exist, it is created. On the MS Windows platform users
+			frequently forget to escape back slashes.  For example, the
+			value <em>c:\temp\test.log</em> is not likely to be interpreted
+			properly as <em>'\t'</em> is an escape sequence interpreted as a
+			single tab character <em>(\u0009)</em>.  Correct values can be
+			specified as <em>c:/temp/test.log</em> or alternatively as
+			<em>c:\\temp\\test.log</em>.  The <span
+			class="option">File</span> option has no default value.
 			</td>
 		</tr>
 		<tr class="a">
 			<td><b><span class="option">ImmediateFlush</span></b></td>
 			<td><code>boolean</code></td>
-			<td>
-				See <code>WriterAppender</code> options.
-			</td>
+			<td>See <code>WriterAppender</code> options.</td>
 		</tr>
 	</table>
 	
-	<p>
-		By default, <code>FileAppender</code> performs a flush operation for 
-		each event, ensuring that events are immediately written to disk. 
-		Setting the <span class="option">ImmediateFlush</span> option to false can drastically reduce 
-		I/O activity by letting <code>OutputStreamWriter</code> buffer bytes 
-		before writing them on disk. For short messages, we have observed 2 or 3 
-		fold increases in logging throughput, i.e. the number of logs output 
-		per unit of time. For longer messages, the throughput gains are somewhat 
-		less dramatic, and range between 1.4 and 2 fold. Enabling the 
-		<span class="option">BufferedIO</span> 
-		option, that is buffering character to byte conversions, increases 
-		performance by an additional 10% to 40% compared to only disk 
-		I/O buffering (<span class="option">ImmediateFlush</span>=false). 
-		Performance varies somewhat depending on the host machine as well as JDK version. 
-		Throughput measurements are based on the <code>chapter4.IO</code> application.
-		Please refer to <a href="../xref/chapter4/IO.html">
-		<em>logback-examples/src/main/java/chapter4/IO.java</em></a>
-		for actual source code. 
+	<p>By default, <code>FileAppender</code> performs a flushes each
+	event, ensuring that events are immediately written to disk.
+	Setting the <span class="option">ImmediateFlush</span> option to
+	false can drastically reduce I/O activity by letting
+	<code>OutputStreamWriter</code> buffer bytes before writing them on
+	disk. For short messages, we have observed 2 or 3 fold increases in
+	logging throughput, i.e. the number of logs output per unit of
+	time. For longer messages, the throughput gains are somewhat less
+	dramatic, and range between 1.4 and 2 fold. Enabling the <span
+	class="option">BufferedIO</span> option, that is buffering character
+	to byte conversions, increases performance by an additional 10% to
+	40% compared to only disk I/O buffering (<span
+	class="option">ImmediateFlush</span>=false).  Performance varies
+	somewhat depending on the host machine as well as JDK version.
+	Throughput measurements are based on the <code>chapter4.IO</code>
+	application.  Please refer to <a href="../xref/chapter4/IO.html">
+	<em>logback-examples/src/main/java/chapter4/IO.java</em></a> for
+	actual source code.
 	</p>
 	
-	<p>
-		Configuring <code>FileAppender</code> can be done the following way:
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
+	<p>Configuring <code>FileAppender</code> can be done the following
+	way:
 	</p>
 
 <em>Example 4.3: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
@@ -531,9 +535,6 @@ public class ExitWoes1 {
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;File>testFile.log&lt;/File>
     &lt;Append>true&lt;/Append>
-    &lt;Encoding>UTF-8&lt;/Encoding>
-    &lt;BufferedIO>false&lt;/BufferedIO>
-    &lt;ImmediateFlush>true&lt;/ImmediateFlush>
 		
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
