@@ -55,6 +55,7 @@ public class ConfigurationTester {
     MDC.put("testKey2", "value2");
     for (int i = 0; i < 10; i++) {
       logger.debug("logging statement " + i);
+      Thread.sleep(1000);
     }
     Bar bar = new Bar();
     bar.createLoggingRequest();

@@ -61,7 +61,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     if (getParentFileName() == null) {
       addWarn("The File name option must be set before using this rolling policy.");
       addWarn(SEE_PARENT_FN_NOT_SET);
-      throw new IllegalStateException("The ActiveFileName option must be set.");
+      throw new IllegalStateException("The \"File\" option must be set.");
     }
 
     if (maxIndex < minIndex) {

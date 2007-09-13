@@ -523,10 +523,8 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
 	actual source code.
 	</p>
 	
-  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-
-	<p>Configuring <code>FileAppender</code> can be done the following
-	way:
+	<p>Below is an example of a cconfiguration file for
+	<code>FileAppender</code>:
 	</p>
 
 <em>Example 4.3: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
@@ -547,9 +545,9 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
   &lt;/root>
 &lt;/configuration></pre></div>
 
-	<p>
-		To run this example, use the provided <code>ConfigurationTester</code> by
-		issuing the following command, once in the <em>logback-examples/target/classes</em>:
+	<p>After changing the current directory to
+	<em>logback-examples</em>, run this example by lauching the
+	following command:
 	</p>
 	
 <div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</pre></div>
@@ -558,28 +556,32 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
 	<a name="RollingFileAppender"></a>
 	<h3>RollingFileAppender</h3>
 	
-	<p>
-		<a href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
-		extends <code>FileAppender</code> by 
-		allowing rolling from a log file to another. For example,
-		<code>RollingFileAppender</code> can log to a <em>log.txt</em> file and, 
-		once a certain condition is met, change its logging target to another file.
+	<p><a
+	href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
+	extends <code>FileAppender</code> with the capability to roll log
+	files.  For example, <code>RollingFileAppender</code> can log to a
+	file named <em>log.txt</em> file and, once a certain condition is
+	met, change its logging target to another file.
 	</p>
-	<p>
-		There are two important logback componenents that interact with
-		<code>RollingFileAppender</code>. First, <code>RollingPolicy</code>
-		implementations define the procedure that will be followed when
-		the rollover happens. The second componenent is
-		<code>TriggeringPolicy</code> implementations that are used
-		to check wether the rollover must happen or not at a given time.
+
+	<p>There are two important logback componenents that interact with
+	<code>RollingFileAppender</code>. First, a
+	<code>RollingPolicy</code> instance attached to the
+	<code>RollingFileAppender</code> is responsible for undertaking the
+	action for perfoming a rollover. Second, a
+	<code>TriggeringPolicy</code> instance attached to a
+	<code>RollingFileAppender</code> will determine if and exactly when
+	rollover happens Thus, <code>RollingPolicy</code> is responsible for
+	the <em>what</em> and <code>TriggeringPolicy</code> is responsible
+	for the <em>when</em>.
 	</p>
 	
-	<p>
-		To be of any use, a <code>RollingFileAppender</code> must have
-		both a <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>
-		set up. However, if its <code>RollingPolicy</code> also implements the
-		<code>TriggeringPolicy</code> interface, then only the former needs to be
-		set up.
+	<p>To be of any use, a <code>RollingFileAppender</code> must have
+	both a <code>RollingPolicy</code> and a
+	<code>TriggeringPolicy</code> set up. However, if its
+	<code>RollingPolicy</code> also implements the
+	<code>TriggeringPolicy</code> interface, then only the former needs
+	to be set up.
 	</p>
 	
 	<p>Here are the available options for <code>RollingFileAppender</code>:</p>
@@ -623,10 +625,9 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
 		<tr class="b">
 			<td><b><span class="option">RollingPolicy</span></b></td>
 			<td><code>RollingPolicy</code></td>
-			<td>
-				This option is the component that will dictate 
-				<code>RollingFileAppender</code>'s behaviour when rollover
-				occurs. See more information below.
+			<td>This option is the component that will dictate
+			<code>RollingFileAppender</code>'s behaviour when rollover
+			occurs. See more information below.
 			</td>
 		</tr>	
 		<tr class="a">
@@ -642,9 +643,10 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
 	
 	<h3>Rolling policies</h3>
 	
-	<p><a href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a> 
-	implementations are responsible for the
-	rollover procedure. They manage file renaming and in occasion file deleting.</p>
+	<p><a
+	href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
+	is responsible for the rollover procedure. It manages file renaming
+	and in occasion file deleting.</p>
 	
 	<p>The <code>RollingPolicy</code> interface is presented below:</p>
 	
@@ -660,33 +662,33 @@ public interface RollingPolicy extends LifeCycle {
   public void setParent(FileAppender appender);
 }</pre></div>
 
-	<p>
-		The <code>rollover</code> method proceeds to the file change, renaming or deletion.
-		The <code>getNewActiveFileName()</code> method is called to compute a new file name, with
-		respect to the configuration elements that were injected in the <code>RollingPolicy</code>.
-		Lastly, a <code>RollingPolicy</code> knows about its parent.
+	<p>The <code>rollover</code> method proceeds to the file change,
+	renaming or deletion.  The <code>getNewActiveFileName()</code>
+	method is called to compute a new file name, with respect to the
+	configuration elements that were injected into the
+	<code>RollingPolicy</code>.  Lastly, a <code>RollingPolicy</code> is
+	given a reference to its parent via the <code>setParent</code>
+	method.
 	</p>
 	
 	<a name="FixedWindowRollingPolicy"></a>
 	<h4>FixedWindowRollingPolicy</h4>
 
-	<p>
-		When rolling over, <a href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-		<code>FixedWindowRollingPolicy</code></a>
-		renames files according to a fixed window algorithm as described below.
+	<p>When rolling over, <a
+	href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+	<code>FixedWindowRollingPolicy</code></a> renames files according to
+	a fixed window algorithm as described below.
 	</p>
-	<p>
-		The <span class="option">File</span> option, which is configured in the 
-		<code>FileAppender</code> element, is required. It represents the name of the file
-		to write to. The <span class="option">FileNamePattern</span>
-		option represents the file name pattern for the archived (rolled over) log files. 
-		The <span class="option">FileNamePattern</span> option, which is also required, must include 
-		an integer token, that is the string <em>%i</em>
-		somewhere within the pattern.
+
+	<p>The <span class="option">FileNamePattern</span> option represents
+	the file name pattern for the archived (rolled over) log files.  The
+	<span class="option">FileNamePattern</span> option, which is also
+	required, must include an integer token, that is the string
+	<em>%i</em> somewhere within the pattern.
 	</p>
 	
-	<p>
-		Here are the available options for <code>FixedWindowRollingPolicy</code>
+	<p>Here are the available options for
+	<code>FixedWindowRollingPolicy</code>
 	</p>
 	
 	<table class="bodyTable">
@@ -696,176 +698,141 @@ public interface RollingPolicy extends LifeCycle {
 			<th>Description</th>
 		</tr>
 		<tr class="b">
-			<td><b><span class="option">FileNamePattern</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					This option represents the pattern that will be followed by
-					the <code>FixedWindowRollingPolicy</code> when renaming the
-					log files. If must contain the string <em>%i</em>, which will
-					indicate the position where to insert the file's index.
-				</p>
-				<p>
-					For example, using <em>MyLogFile%i.log</em>, associated with
-					minimum and maximum values of <em>1</em> and <em>3</em> will produce 
-					files named <em>MyLogFile1.log</em>, <em>MyLogFile2.log</em> and
-					<em>MyLogFile3.log</em>.
-				</p>
-				<p>
-					File compression is also specified in the 
-					<span class="option">FileNamePattern</span> option. 
-					<em>MyLogFile%i.log.zip</em> will indicate to the
-					<code>FixedWindowRollingPolicy</code> that the archived file
-					must be compressed using the <em>zip</em> format. The <em>gz</em>
-					format is also supported.
-				</p>
-			</td>
-		</tr>	
-		<tr class="a">
-			<td><b><span class="option">MaxIndex</span></b></td>
+			<td><b><span class="option">MinIndex</span></b></td>
 			<td><code>int</code></td>
 			<td>
-				<p>
-					This option represents the maximum border of the window algorithm.
+				<p>This option represents the lower bound for the window's
+				index.
+				</p>
+			</td>
+		</tr>
+    <tr class="a">
+      <td><b><span class="option">MaxIndex</span></b></td>
+      <td><code>int</code></td>
+			<td>
+        <p>This option represents the upper bound for the window's
+        index.
 				</p>
 			</td>
 		</tr>
 		<tr class="b">
-			<td><b><span class="option">MinIndex</span></b></td>
-			<td><code>int</code></td>
+			<td><b><span class="option">FileNamePattern</span></b></td>
+			<td><code>String</code></td>
 			<td>
-				<p>
-					This option represents the minimum border of the window algorithm.
+				<p>This option represents the pattern that will be followed by
+				the <code>FixedWindowRollingPolicy</code> when renaming the
+				log files. If must contain the string <em>%i</em>, which will
+				indicate the position where the value of the current window
+				index will be inserted.
+				</p>
+				<p>For example, using <em>MyLogFile%i.log</em>, associated
+				with minimum and maximum values of <em>1</em> and <em>3</em>
+				will produce archive files named <em>MyLogFile1.log</em>,
+				<em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
+				</p>
+				<p>Note that file compression is also specified via the <span
+				class="option">FileNamePattern</span> option. For example, the
+				file name pattern <em>MyLogFile%i.log.zip</em> will indicate
+				to the <code>FixedWindowRollingPolicy</code> that the archived
+				file must be compressed using the <em>zip</em> format;
+				<em>gz</em> format is also supported.
 				</p>
 			</td>
-		</tr>
+		</tr>	
+		
 	</table>
 
-	<p>
-		Given that this rollover algorithm requires as many file
-		renaming operations as the window size, large window sizes are
-		discouraged. The current implementation will automatically
-		reduce the window size to 12 when larger values are specified by
-		the user.
+	<p>Given that the fixed window rolling policy requires as many file
+	renaming operations as the window size, large window sizes are
+	strongly discouraged. The current implementation will automatically
+	reduce the window size to 12, when larger values are specified by
+	the user.
 	</p>
 
-	<p>
-		Here is an example of file handling by <code>FixedWindowRollingPolicy</code>.
-		We suppose that the <span class="option">MinIndex</span> is set to <em>1</em> and
-		<span class="option">MaxIndex</span> is set to <em>3</em>. The
-		<span class="option">FileNamePattern</span> option is set to <em>foo%i.log</em>, and
-		the <span class="option">FileNamePattern</span> 
-		option is set to <em>foo.log</em>.
+	<p>Let us go over a more concrete example of the fixed windows
+	rollover policy. Suppose that the <span
+	class="option">MinIndex</span> is set to <em>1</em>, <span
+	class="option">MaxIndex</span> set to <em>3</em>, that <span
+	class="option">FileNamePattern</span> option is set to
+	<em>foo%i.log</em>, and that <span
+	class="option">FileNamePattern</span> option is set to
+	<em>foo.log</em>.
 	</p>
 	
 	<table class="bodyTable">
 		<tr class="a">
-			<th>
-				Steps
-			</th>
-			<th>
-				Active file name
-			</th>
-			<th>
-				Archived file names
-			</th>
+			<th>Number of rollovers</th>
+			<th>Active output target</th>
+			<th>Archived log files</th>
 			<th>Description</th>
 		</tr>
 		<tr class="b">
-			<td>
-				0
-			</td>
-			<td>
-				foo.log
-			</td>
-			<td>
-				-
-			</td>
-			<td>
-				No rollover has happened yet, logback logs 
-				into the initial file.
+			<td>0</td>
+			<td>foo.log</td>
+			<td>-</td>
+			<td>No rollover has happened yet, logback logs into the initial
+			file.
 			</td>
 		</tr>		
 		<tr class="a">
-			<td>
-				1
-			</td>
-			<td>
-				foo.log
-			</td>
-			<td>
-				foo1.log
-			</td>
-			<td>
-				First rollover. <em>foo.log</em> is renamed into <em>foo1.log</em> and
-				a new <em>foo.log</em> file is created and used for the output.
+			<td>1</td>
+			<td>foo.log</td>
+			<td>foo1.log</td>
+			<td>First rollover. <em>foo.log</em> is renamed as
+			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
+			becomes the active output target.
 			</td>
 		</tr>
 		<tr class="b">
-			<td>
-				2
-			</td>
-			<td>
-				foo.log
-			</td>
-			<td>
-				foo2.log, foo1.log
-			</td>
-			<td>
-				Second rollover. <em>foo.log</em> is renamed into <em>foo1.log</em> and
-				the old <em>foo1.log</em> is renamed into <em>foo2.log</em>.
-				Again, a new <em>foo.log</em> file is created and used for the output.
+			<td>2</td>
+			<td>foo.log</td>
+			<td>foo1.log, foo2.log</td>
+			<td>Second rollover. <em>foo1.log</em> is renamed as
+			<em>foo2.log</em>.  <em>foo.log</em> is renamed as
+			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
+			becomes the active output target.
 			</td>
 		</tr>
 		<tr class="a">
-			<td>
-				3
-			</td>
-			<td>
-				foo.log
-			</td>
-			<td>
-				foo3.log, foo2.log, foo1.log
-			</td>
-			<td>
-				Third rollover. <em>foo.log</em> is renamed into <em>foo1.log</em> and
-				the old <em>foo1.log</em> is renamed into <em>foo2.log</em>. As well, the
-				old <em>foo2.log</em> is renamed into <em>foo3.log</em>.
-				A new <em>foo.log</em> file is created and used for the output.
+			<td>3</td>
+			<td>foo.log</td>
+			<td>foo1.log, foo2.log, foo3.log</td>
+			<td>Third rollover.  <em>foo2.log</em> is renamed as
+			<em>foo3.log</em>. <em>foo1.log</em> is renamed as
+			<em>foo2.log</em>.  <em>foo.log</em> is renamed as
+			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
+			becomes the active output target.
 			</td>
 		</tr>
 		<tr class="b">
-			<td>
-				4
-			</td>
-			<td>
-				foo.log
-			</td>
-			<td>
-				foo3.log, foo2.log, foo1.log
-			</td>
-			<td>
-				From the fourth rollover, the old <em>foo3.log</em> file is deleted. The files
-				are all renamed with an increment to their index, and a new <em>foo.log</em>
-				file is created and used for the output.
-				From this moment on, there will always be 4 log files available, each being present
-				for the time of 3 rollovers and being deleted afterwards.
+			<td>4</td>
+			<td>foo.log</td>
+			<td>foo1.log, foo2.log, foo3.log</td>
+			<td>In this and subsequent rounds, the rollover begins by
+			deleting <em>foo3.log</em>. Otherfiles are renamed by
+			incrementing their index as shown in previous steps. In this and
+			subsequent rollovers, there will be three archive logs and one
+			active log file.
 			</td>
 		</tr>
 	</table>
 	
-	<p>
-		Here is a sample configuration to use <code>RollingFileAppender</code>
-		and <code>FixedWindowRollingPolicy</code>.
+	<p>The configuration file below gives an example of configuring
+	<code>RollingFileAppender</code> and
+	<code>FixedWindowRollingPolicy</code>. Note that the <span
+	class="option">File</span> option is mandatory even if it contains
+	some of the same information as conveyed with the <span
+	class="option">FileNamePattern</span> option.
 	</p>
 	
 <em>Example 4.4: Sample configuration of a <code>RollingFileAppender</code> using a 
 <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingFixedWindow.xml)</em>
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;File>testFile.log&lt;/File>
+    <b>&lt;File>test.log&lt;/File></b>
+
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      &lt;FileNamePattern>testFile.%i.log.zip&lt;/FileNamePattern>
+      &lt;FileNamePattern>tests.%i.log.zip&lt;/FileNamePattern>
       &lt;MinIndex>1&lt;/MinIndex>
       &lt;MaxIndex>3&lt;/MaxIndex>
     &lt;/rollingPolicy></b>
@@ -888,28 +855,26 @@ public interface RollingPolicy extends LifeCycle {
 	<h4>TimeBasedRollingPolicy</h4>
 	<p>
 		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
-		<code>TimeBasedRollingPolicy</code></a> is both easy to configure and quite powerful.
-		It allows the rollover to be made based on time conditions. It is possible to specify
-		that the rollover must occur each day, or month, for example.
+		<code>TimeBasedRollingPolicy</code></a> is probably the most
+		popular rolling polciy. It allows defines a rollover policy based
+		on time, say by day or month.
 	</p>
-	<p>
-		<code>TimeBasedRollingPolicy</code>'s only option is the
-		<span class="option">FileNamePattern</span>.
+
+	<p><code>TimeBasedRollingPolicy</code>'s has only one mandatory
+	option, namely <span class="option">FileNamePattern</span>.
 	</p>
 	
-	<p>
-		In order to use
-		<code>TimeBasedRollingPolicy</code>, the
-		<span class="option">FileNamePattern</span> option must be set. It basically 
-		specifies the name of the rolled log files. The value
-		<span class="option">FileNamePattern</span> should consist of the name of the file, 
-		plus a suitably placed <em>%d</em> conversion specifier. 
-		The <em>%d</em> conversion specifier may contain a date and time pattern as
-		specified by the <code>java.text.SimpleDateFormat</code> class. 
-		If the date and time pattern is omitted, then the default pattern
-		of <em>yyyy-MM-dd</em> is assumed. The following examples should
-		clarify the point.
+	<p><span class="option">FileNamePattern</span> option defines the
+	name of the rolled (archived) log files. Its value <span
+	class="option">FileNamePattern</span> should consist of the name of
+	the file, plus a suitably placed <em>%d</em> conversion specifier.
+	The <em>%d</em> conversion specifier may contain a date and time
+	pattern as specified by the <code>java.text.SimpleDateFormat</code>
+	class.  If the date and time pattern is omitted, then the default
+	pattern of <em>yyyy-MM-dd</em> is assumed. The following examples
+	should clarify the point.
 	</p>
+
 	<table class="bodyTable">
 		<tr class="a">
 			<th>
@@ -919,20 +884,18 @@ public interface RollingPolicy extends LifeCycle {
 			<th>Example</th>
 		</tr>
 		<tr class="b">
-			<td class="small">
+      <td class="small">
 				<em>/wombat/folder/foo.%d</em>
 			</td>
-			<td>
-				Daily rollover (at midnight). Due to the omission of the
-				optional time and date pattern for the <em>%d</em> token
-				specifier, the default pattern of <em>yyyy-MM-dd</em> is
-				assumed, which corresponds to daily rollover.
+			<td>Daily rollover (at midnight). Due to the omission of the
+			optional time and date pattern for the <em>%d</em> token
+			specifier, the default pattern of <em>yyyy-MM-dd</em> is
+			assumed, which corresponds to daily rollover.
 			</td>
-			<td>
-				During November 23rd, 2006, logging output will go to
-				the file <em>/wombat/foo.2006-11-23</em>. 
-				At midnight and for the rest of the 24th, logging
-				output will be directed to <em>/wombat/foo.2006-11-24</em>.
+			<td>During November 23rd, 2006, logging output will go to the
+			file <em>/wombat/foo.2006-11-23</em>.  At midnight and for the
+			rest of the 24th, logging output will be directed to
+			<em>/wombat/foo.2006-11-24</em>.
 			</td>
 		</tr>
 		<tr class="a">
@@ -940,26 +903,25 @@ public interface RollingPolicy extends LifeCycle {
 				<em>/wombat/foo.%d{yyyy-MM}.log</em>
 			</td>
 			<td>Rollover at the beginning of each month.</td>
-			<td>
-				During the month of October 2006, logging output will go
-				to <em>/wombat/foo.2006-10.log</em>. 
-				After midnight of October 31st and for the rest of
-				November, logging output will be directed to
-				<em>/wombat/foo.2006-11.log</em>.
+			<td>During the month of October 2006, logging output will go to
+			<em>/wombat/foo.2006-10.log</em>.  After midnight of October
+			31st and for the rest of November, logging output will be
+			directed to <em>/wombat/foo.2006-11.log</em>.
 			</td>
 		</tr>
 		<tr class="b">
 			<td class="small">
 				<em>/wombat/foo.%d{yyyy-ww}.log</em>
 			</td>
-			<td>Rollover at the first day of each week. Note that the first
-			day of the week depends on the locale.</td>
-			<td>
-				During the 23rd week of 2006, the file <em>/wombat/foo.2006-23.log</em> 
-				will contain the actual logging output. 
-				Logging for the 24th week of 2006 will be output to 
-				<em>/wombat/foo.2006-24.log</em> 
-				until it is rolled over at the beginning of the next week.
+
+      <td>Rollover at the first day of each week. Note that the first
+      day of the week depends on the locale.</td>
+
+			<td>During the 23rd week of 2006, the file
+			<em>/wombat/foo.2006-23.log</em> will contain the actual logging
+			output.  Logging for the 24th week of 2006 will be output to
+			<em>/wombat/foo.2006-24.log</em> until it is rolled over at the
+			beginning of the next week.
 			</td>
 		</tr>
 		<tr class="a">
@@ -967,11 +929,11 @@ public interface RollingPolicy extends LifeCycle {
 				<em>/wombat/foo.  &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd-a}.log</em>
 			</td>
 			<td>Rollover at midnight and midday of each day.</td>
-			<td>
-				During the first 12 hours of November 3rd, 2006, the logging
-				will be output to <em>/wombat/foo.2006-11-03-AM.log</em>.
-				After noon, and until  midnight, the logging will be output to
-				<em>/wombat/foo.2006-11-03-PM.log</em>.
+
+			<td>During the first 12 hours of November 3rd, 2006, the logging
+			will be output to <em>/wombat/foo.2006-11-03-AM.log</em>.  After
+			noon, and until midnight, the logging will be output to
+			<em>/wombat/foo.2006-11-03-PM.log</em>.
 			</td>
 		</tr>
 		<tr class="b">
@@ -979,11 +941,11 @@ public interface RollingPolicy extends LifeCycle {
 				<em>/wombat/foo.  &nbsp;&nbsp;/<br/>%d{yyyy-MM-dd_HH}.log</em>
 			</td>
 			<td>Rollover at the top of each hour.</td>
-			<td>
-				Between 11.00,001 and 11.59,999, on November 3rd, 2006, the logging
-				will be output to <em>/wombat/foo.2006-11-03_11.log</em>.
-				After that, and until  12.59,999, the logging will be output to
-				<em>/wombat/foo.2006-11-03_12.log</em>.
+			<td>Between 11.00,001 and 11.59,999, on November 3rd, 2006, the
+			logging will be output to
+			<em>/wombat/foo.2006-11-03_11.log</em>.  After that, and until
+			12.59,999, the logging will be output to
+			<em>/wombat/foo.2006-11-03_12.log</em>.
 			</td>
 		</tr>
 		<tr class="a">
@@ -991,34 +953,36 @@ public interface RollingPolicy extends LifeCycle {
 				<em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
 			</td>
 			<td>Rollover at the beggining of every minute.</td>
-			<td>
-				Between 11.32,001 and 11.32,999, on November 3rd, 2006, the logging
-				will be output to <em>/wombat/foo.2006-11-03_11-32.log</em>.
-				After that, and until  12.33,999, the logging will be output to
-				<em>/wombat/foo.2006-11_12-33.log</em>.
+			<td>Between 11.32,001 and 11.32,999, on November 3rd, 2006, the
+			logging will be output to
+			<em>/wombat/foo.2006-11-03_11-32.log</em>.  After that, and
+			until 12.33,999, the logging will be output to
+			<em>/wombat/foo.2006-11_12-33.log</em>.
 			</td>
 		</tr>
 	</table>
 	
-	<p>
-		Any characters in the pattern outside the ranges <em>['a'..'z']</em> and <em>['A'..'Z']</em> 
-		will be treated as quoted text. For instance, characters like <em>'.'</em>, <em>' '</em>, 
-		<em>'#'</em> and <em>'@'</em> will appear in the resulting time text even when they are not 
-		enclosed within single quotes. Nevertheless, we would recommend against 
-		using the colon <em>":"</em> character anywhere within the 
-		<span class="option">FileNamePattern</span> option. 
-		The text before the colon is interpreted as the protocol specification of a 
-		URL, which is most probably not what you intend. The slash <em>"/"</em> character, a 
-		common date field separator, must also be avoided. It is taken as a file 
-		separator causing the rollover operation to fail because the target file cannot 
-		be created. Although less common, the backslash character <em>"\"</em> is equally troublesome.
+	<p>Any characters in the pattern outside the ranges
+	<em>['a'..'z']</em> and <em>['A'..'Z']</em> will be treated as
+	quoted text. For instance, characters like <em>'.'</em>, <em>'
+	'</em>, <em>'#'</em> and <em>'@'</em> will appear in the resulting
+	time text even when they are not enclosed within single
+	quotes. Nevertheless, we recommend against using the colon
+	<em>":"</em> character anywhere within the <span
+	class="option">FileNamePattern</span> option.  The text before the
+	colon is interpreted as the protocol specification of a URL, which
+	is most probably not what you intend. The slash <em>"/"</em>
+	character, a common date field separator, must also be avoided. It
+	is taken as a file separator causing the rollover operation to fail
+	because the target file cannot be created. Although less common, the
+	backslash character <em>"\"</em> is equally troublesome.
 	</p>
 
-	<p>
-		Just like <code>FixedWindowRollingPolicy</code>, <code>TimeBasedRollingPolicy</code> 
-		supports automatic file compression. 
-		This feature is enabled if the value of the <span class="option">FileNamePattern</span> option 
-		ends with <em>.gz</em> or <em>.zip</em>.
+	<p>Just like <code>FixedWindowRollingPolicy</code>,
+	<code>TimeBasedRollingPolicy</code> supports automatic file
+	compression.  This feature is enabled if the value of the <span
+	class="option">FileNamePattern</span> option ends with <em>.gz</em>
+	or <em>.zip</em>.
 	</p>
 	<table class="bodyTable">
 	  <tr class="a">
@@ -1040,59 +1004,59 @@ public interface RollingPolicy extends LifeCycle {
 	  </tr>
 	</table>
 	
-	<p>
-		As we have seen, the <span class="option">FileNamePattern</span> serves two purposes. First,
-		by studying the pattern, logback computes the requested rollover periodicity. Second,
-		it computes each files' name based on the pattern. It is entirely possible for two different
-		file name patterns to specify the same periodicity.
-		The date patterns <em>yyyy-MM</em> and <em>yyyy@MM</em> both specify monthly 
-		rollover periodicity, although the rolled files will carry different names.
+	<p>The <span class="option">FileNamePattern</span> serves a dual
+	purposes. First, by studying the pattern, logback computes the
+	requested rollover periodicity. Second, it computes each file's
+	name. It is entirely possible for two different patterns to specify
+	the same periodicity.  The (date) patterns <em>yyyy-MM</em> and
+	<em>yyyy@MM</em> both specify monthly rollover, although the
+	resulting archive files will carry different names.
 	</p>
 	
-	<p>
-		Given the use of the <span class="option">FileNamePattern</span>, we see that the
-		<code>TimeBasedRollingPolicy</code> is responsible for the rollover as well as for
-		the triggering of said rollover. Therefore, <code>TimeBasedTriggeringPolicy</code>
-		implements both <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
-		interfaces. A <code>RollingFileAppender</code> that uses
-		<code>TimeBasedRollingPolicy</code> can be started and used correctly even
-		if its configuration does not contain any reference to a <code>TriggeringPolicy</code>.
+	<p>Thus, <code>TimeBasedRollingPolicy</code> caries a responsiblity
+	for rollover as well as for the triggering of said rollover. Put
+	differently, <code>TimeBasedTriggeringPolicy</code> implements both
+	<code>RollingPolicy</code> and <code>TriggeringPolicy</code>
+	interfaces. A <code>RollingFileAppender</code> owning a child
+	<code>TimeBasedRollingPolicy</code> can be started and used
+	correctly even if its does not contain a reference to a
+	<code>TriggeringPolicy</code>.
 	</p>
 	
-	<p>
-		With <code>TimeBasedRollingPolicy</code>, it is possible to
-		decouple the location of the active log file and the archived log files
+	<p>As with <code>FixedWindowRollingPolicy</code>,
+	<code>TimeBasedRollingPolicy</code> decouples the location of the
+	active log file and the archived log files. The <span
+	class="option">File</span> option defines the log file for the
+	current period whereas <em>archived files</em> are those files which
+	have been rolled over in previous periods.
 	</p>
-	<p>
-		The <span class="option">File</span> option defines the log file 
-		for the current period whereas <em>archived files</em> are those files 
-		which have been rolled over in previous periods.
-	</p>
-	<p>
-		By setting the <span class="option">File</span> option you can 
-		decouple the location of the active log file and the location 
-		of the archived log files. The actual logging will be done in the
-		file specified by the <span class="option">File</span> option. This way,
-		the active file name will never change. By not setting the
-		<span class="option">File</span> option, logback uses the 
-		<span class="option">FileNamePattern</span> to name the active file,
-		whose name will change each time a rollover occurs.
-	</p>
-	
-	<p>
-		For various efficiency reasons, rollovers are not time-driven 
-		but depend on the arrival of logging events. For example, on 8th of March 2002, 
-		assuming the <span class="option">FileNamePattern</span> is set to  
-		<em>yyyy-MM-dd</em> (daily rollover), the arrival of the first 
-		event after midnight will trigger rollover. If there are no logging events 
-		during, say 23 minutes and 47 seconds after midnight, 
-		then rollover will occur at 00:23'47 AM on March 9th and not at 0:00 AM. 
-		Thus, depending on the arrival rate of events, rollovers might be triggered 
-		with some latency.  However, regardless of the delay, the rollover algorithm 
-		is known to be correct, in the sense that all logging events generated 
-		during a certain period will be output in the correct file delimiting that period.
+
+	<p>By setting the <span class="option">File</span> option you can
+	decouple the location of the active log file and the location of the
+	archived log files. The logging output will be targeted into the
+	file specified by the <span class="option">File</span> option. It
+	follows that the name of the active log file will not change over
+	time. However, if you choose to omit the <span
+	class="option">File</span> option, then the active file will be
+	computed anew for each period based on the value of <span
+	class="option">FileNamePattern</span>.
 	</p>
 	
+	<p>For various reasons, rollovers are not clock-driven but depend on
+	the arrival of logging events. For example, on 8th of March 2002,
+	assuming the <span class="option">FileNamePattern</span> is set to
+	<em>yyyy-MM-dd</em> (daily rollover), the arrival of the first event
+	after midnight will trigger a rollover. If there are no logging
+	events during, say 23 minutes and 47 seconds after midnight, then
+	rollover will actually occur at 00:23'47 AM on March 9th and not at
+	0:00 AM.  Thus, depending on the arrival rate of events, rollovers
+	might be triggered with some latency.  However, regardless of the
+	delay, the rollover algorithm is known to be correct, in the sense
+	that all logging events generated during a certain period will be
+	output in the correct file delimiting that period.
+	</p>
+	
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 	<p>Here is a sample configuration of a <code>RollingFileAppender</code> which
 	uses a <code>TimeBasedRollingPolicy</code>
 	</p>
@@ -1505,14 +1469,16 @@ public interface TriggeringPolicy extends LifeCycle {
 		</p>
 		
 		<p>
-			One or more <code>JMSTopicSink</code> or <code>JMSQueueSink</code> applications 
-			can register to a JMS server and consume the serialized events. 
-			The consumer of JMS appenders generated events need not be only <code>JMSTopicSink</code> 
-			or <code>JMSQueueSink</code> applications. Any application or MessageDrivenBean 
-			capable of subscribing to the appropriate topic or queue and consuming serialized 
-			logging event messages would be suitable.
-			Additional consumers could be quickly built based on the <code>JMSTopicSink</code> or
-			<code>JMSQueueSink</code> model.
+			One or more <code>JMSTopicSink</code> or
+			<code>JMSQueueSink</code> applications can register to a JMS
+			server and consume the serialized events.  The consumer of JMS
+			appenders generated events need not be only
+			<code>JMSTopicSink</code> or <code>JMSQueueSink</code>
+			applications. Any application or MessageDrivenBean capable of
+			subscribing to the appropriate topic or queue and consuming
+			serialized logging event messages would be suitable.  Additional
+			consumers could be quickly built based on the
+			<code>JMSTopicSink</code> or <code>JMSQueueSink</code> model.
 		</p>
 		
 		<p>
