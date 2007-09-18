@@ -9,6 +9,9 @@
  */
 package org.slf4j.impl;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.Util;
@@ -22,6 +25,7 @@ import ch.qos.logback.classic.selector.DefaultContextSelector;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -70,12 +74,23 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       } else if (contextSelectorStr.equals("JNDI")) {
         // if jndi is specified, let's use the appropriate class
         contextSelector = new ContextJNDISelector(defaultLoggerContext);
+      } else {
+        contextSelector = dynamicalContextSelector(defaultLoggerContext,
+            contextSelectorStr);
       }
     } catch (Throwable t) {
       // we should never get here
       Util.reportFailure("Failed to instantiate ["
           + LoggerContext.class.getName() + "]", t);
     }
+  }
+
+  static ContextSelector dynamicalContextSelector(
+      LoggerContext defaultLoggerContext, String contextSelectorStr) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    Class contextSelectorClass = Loader.loadClass(contextSelectorStr);
+    Constructor cons = contextSelectorClass
+        .getConstructor(new Class[] { LoggerContext.class });
+    return (ContextSelector) cons.newInstance(defaultLoggerContext);
   }
 
   public ILoggerFactory getLoggerFactory() {
