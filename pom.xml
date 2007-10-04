@@ -129,57 +129,23 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
+
     <profile>
-    	<!-- 
-    	  The use of this profile requires to set
-    	  the <path.to.rt.jar> property in the
-    	  MAVEN_HOME/conf/settings.xml file.
-    	  The variable should point to a JDK1.4
-    	  rt.jar file.
-    	-->
-      <id>retrotranslator</id>
-      <properties>
-        <retrotranslator.verify>true</retrotranslator.verify>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>net.sf.retrotranslator</groupId>
-          <artifactId>retrotranslator-runtime</artifactId>
-          <version>1.2.1</version>
-          <scope>compile</scope>
-         </dependency>
-      </dependencies>
-      <build>
-      	<defaultGoal>process-classes</defaultGoal>
-      	<plugins>
-      		<plugin>
-      			<groupId>org.codehaus.mojo</groupId>
-        		<artifactId>retrotranslator-maven-plugin</artifactId>
-        		<version>1.0-alpha-2</version>
-        		<inherited>true</inherited>
-        		<configuration>
-        		  <advanced>true</advanced>
-              <verifyClasspath>
-                <element>${path.to.rt.jar}</element>
-              </verifyClasspath>
-        		</configuration>
-      		</plugin>
-      	</plugins>
-      </build>
-      <pluginRepositories>
-        <pluginRepository>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <id>snapshots.repository.codehaus.org</id>
-          <name>Retrotranslator-Snapshot-Repo</name>
-          <url>http://snapshots.repository.codehaus.org</url>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>    
+      <id>LODH</id>          
+      <distributionManagement>
+        <repository>
+          <id>lodh-release-repository</id>
+          <name>LODH repository</name>
+          <url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-release-repository</url>
+        </repository>
+        <snapshotRepository>
+          <id>lodh-snapshot-repository</id>
+          <name>LODH repository</name>
+          <url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-snapshot-repository</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>       
+      </distributionManagement>
+    </profile>
   </profiles>
   
   <build>
@@ -245,6 +211,24 @@
         </configuration>
       </plugin>
 
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>retrotranslator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>deploy</phase> 
+            <goals>
+              <goal>translate-project</goal>
+            </goals>
+            <configuration>
+              <classifier>jdk14</classifier>
+              <attach>true</attach>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
 
     </plugins>
@@ -352,4 +336,9 @@
     </snapshotRepository>
     
   </distributionManagement>
+
+ 
+  
+ 
+
 </project>

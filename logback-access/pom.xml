@@ -136,19 +136,19 @@
         <version>1.0-alpha-2</version>
         <executions>
           <execution>
-             <phase>process-classes</phase> 
+            <phase>deploy</phase> 
             <goals>
               <goal>translate</goal>
             </goals>
             <configuration>
-	            <filesets>
-						    <fileset>
-						        <directory>${project.build.outputDirectory}</directory>
-						        <includes>
-						            <include>**/*.class</include>
-						        </includes>
-						    </fileset>
-						  </filesets>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>**/*.class</include>
+                  </includes>
+                </fileset>
+              </filesets>
               <destjar>
                 target/${artifactId}-${project.version}-jdk14.jar
               </destjar>

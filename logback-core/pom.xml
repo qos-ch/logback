@@ -95,6 +95,7 @@
         </executions>
       </plugin>
 
+      
       <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -102,7 +103,7 @@
         <version>1.0-alpha-2</version>
         <executions>
           <execution>
-            <phase>process-classes</phase> 
+            <phase>deploy</phase> 
             <goals>
               <goal>translate</goal>
             </goals>
