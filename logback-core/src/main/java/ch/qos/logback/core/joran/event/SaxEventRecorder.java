@@ -187,7 +187,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   }
 
   public void addWarn(String msg, Throwable ex) {
-    addWarn(msg, ex);
+    cai.addWarn(msg, ex);
   }
 
   public Context getContext() {
