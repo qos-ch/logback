@@ -49,7 +49,7 @@ public class StopWatchTest extends TestCase {
     { 
       long d = sw.startTime+6*StopWatch.NANOS_IN_ONE_SECOND;
       String s = sw.stop(d).toString();
-      assertTrue(s.endsWith("6.000 milliseconds."));
+      assertTrue(s.endsWith("6.000 seconds."));
     }    
   }
 
