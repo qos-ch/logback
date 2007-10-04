@@ -129,23 +129,6 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
-
-    <profile>
-      <id>LODH</id>          
-      <distributionManagement>
-        <repository>
-          <id>lodh-release-repository</id>
-          <name>LODH repository</name>
-          <url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-release-repository</url>
-        </repository>
-        <snapshotRepository>
-          <id>lodh-snapshot-repository</id>
-          <name>LODH repository</name>
-          <url>file:////gaugin.dev.biz.lodh.com/maven2/lodh-snapshot-repository</url>
-          <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>       
-      </distributionManagement>
-    </profile>
   </profiles>
   
   <build>
