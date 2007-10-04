@@ -22,7 +22,6 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.TestConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class BasicJoranTest extends TestCase {
 
@@ -55,8 +54,6 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
 
-    //StatusPrinter.print(loggerContext.getStatusManager());
-  
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
@@ -64,8 +61,6 @@ public class BasicJoranTest extends TestCase {
     String msg = "hello world";
     logger.debug(msg);
     assertEquals(0, listAppender.list.size());
-    //LoggingEvent le = (LoggingEvent) listAppender.list.get(0);
-    //assertEquals(msg, le.getMessage());
   }
   
   public void testEval() throws JoranException {
@@ -74,7 +69,7 @@ public class BasicJoranTest extends TestCase {
     jc.setContext(loggerContext);
     jc.doConfigure(TestConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
 
-    StatusPrinter.print(loggerContext);
+    //StatusPrinter.print(loggerContext);
     
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     String msg = "hello world";
@@ -124,10 +119,14 @@ public class BasicJoranTest extends TestCase {
     assertEquals(2, dutf.getUsers().size());
   }
   
-  
+  public void test() {
+    
+  }
   // COMMENTED_OUT_
-  public static Test COMMENTED_OUT_suite() {
+  public static Test suite() {
     TestSuite suite = new TestSuite();
+    //suite.addTestSuite(BasicJoranTest.class);
+    
     suite.addTest(new BasicJoranTest("testLevel"));
     
     //suite.addTest(new BasicJoranTest("testSimpleList"));
