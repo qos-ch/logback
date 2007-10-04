@@ -4,30 +4,41 @@ import java.text.DecimalFormat;
 
 public class StopWatch {
 
-  private static final int STARTED = 1;
-  private static final int STOPPED = 2;
-  private static final int NANOS_IN_ONE_MICROSECOND = 1000;
-  private static final int NANOS_IN_ONE_MILLISECOND = 1000*1000;
-  private static final int NANOS_IN_ONE_SECOND = 1000*1000*1000;
   private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.000");
+  static final long NANOS_IN_ONE_MICROSECOND = 1000;
+  static final long NANOS_IN_ONE_MILLISECOND = NANOS_IN_ONE_MICROSECOND * 1000;
+  static final long NANOS_IN_ONE_SECOND =NANOS_IN_ONE_MILLISECOND * 1000;
   
+
+  enum Status {
+    STARTED, STOPPED;
+  }
+  
+  enum DurationUnit {
+    NANOSECOND, MICROSECOND, MILLISSECOND, SECOND;
+  }
+
   final String name;
   final long startTime;
   long stopTime;
-  int status;
+  Status status;
 
-  StopWatch(String name) {
+  public StopWatch(String name) {
     this.name = name;
     this.startTime = System.nanoTime();
-    this.status = STARTED;
+    this.status = Status.STARTED;
   }
 
-  StopWatch stop() {
-    this.status = STOPPED;
-    this.stopTime = System.nanoTime();
+  public StopWatch stop() {
+    return stop(System.nanoTime());
+  }
+
+  public StopWatch stop(long stopTime) {
+    this.status = Status.STOPPED;
+    this.stopTime = stopTime;
     return this;
   }
-
+  
   @Override
   public String toString() {
     StringBuffer buf = new StringBuffer();
@@ -41,22 +52,24 @@ public class StopWatch {
       break;
     case STOPPED:
       buf.append("STOPPED at ");
-      if(getResultInNanos() < 10*NANOS_IN_ONE_MICROSECOND) {
+      switch (selectDurationUnitForDisplay(getResultInNanos())) {
+      case NANOSECOND:
         buf.append(getResultInNanos());
         buf.append(" nanoseconds.");
-      }
-      else if (getResultInNanos() < 10*NANOS_IN_ONE_MILLISECOND) {
+        break;
+      case MICROSECOND:
         buf.append(getResultInMicros());
         buf.append(" microseconds.");
-      } else if (getResultInNanos() < 5*NANOS_IN_ONE_SECOND)  {
-        
+        break;
+      case MILLISSECOND:
         buf.append(getResultInMillis());
         buf.append(" milliseconds.");
-      } else {
+        break;
+      case SECOND:
         double seconds = getResultInSeconds();
         buf.append(DECIMAL_FORMAT.format(seconds));
         buf.append(" seconds.");
-        
+        break;
       }
       break;
     default:
@@ -65,8 +78,20 @@ public class StopWatch {
     return buf.toString();
   }
 
+  DurationUnit selectDurationUnitForDisplay(long durationInNanos) {
+    if (durationInNanos < 10L * NANOS_IN_ONE_MICROSECOND) {
+      return DurationUnit.NANOSECOND;
+    } else if (durationInNanos < 10L * NANOS_IN_ONE_MILLISECOND) {
+      return DurationUnit.MICROSECOND;
+    } else if (durationInNanos < 5L * NANOS_IN_ONE_SECOND) {
+      return DurationUnit.MILLISSECOND;
+    } else {
+      return DurationUnit.SECOND;
+    }
+  }
+
   public final long getResultInNanos() {
-    if (status == STARTED) {
+    if (status == Status.STARTED) {
       return 0;
     } else {
       return stopTime - startTime;
@@ -80,7 +105,7 @@ public class StopWatch {
   public final long getResultInMillis() {
     return getResultInNanos() / NANOS_IN_ONE_MILLISECOND;
   }
-  
+
   public final double getResultInSeconds() {
     return ((double) getResultInNanos() / NANOS_IN_ONE_SECOND);
   }
