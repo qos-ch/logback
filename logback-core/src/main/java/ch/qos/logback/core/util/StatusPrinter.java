@@ -34,9 +34,10 @@ public class StatusPrinter {
     if (sm == null) {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
+    } else {
+      print(sm);
     }
 
-    print(sm);
   }
 
   public static void print(StatusManager sm) {

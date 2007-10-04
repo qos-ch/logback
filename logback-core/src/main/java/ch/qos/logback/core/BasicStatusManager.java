@@ -19,7 +19,7 @@ import ch.qos.logback.core.status.StatusManager;
 
 public class BasicStatusManager implements StatusManager {
 
-  public static int MAX_COUNT = 200;
+  public static final int MAX_COUNT = 200;
   
   int count = 0;
   List<Status> statusList = new ArrayList<Status>();

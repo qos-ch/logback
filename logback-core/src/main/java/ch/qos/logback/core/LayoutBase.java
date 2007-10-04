@@ -13,7 +13,6 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E>  {
 
-  Context context;
   protected boolean started;
   
   String fileHeader;

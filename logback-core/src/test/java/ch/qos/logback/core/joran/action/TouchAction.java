@@ -20,7 +20,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class TouchAction extends Action {
 
-  public static String KEY = "touched";
+  public static final String KEY = "touched";
   
   public TouchAction() {
   }
