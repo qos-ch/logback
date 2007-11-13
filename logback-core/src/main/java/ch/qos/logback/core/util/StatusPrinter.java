@@ -41,12 +41,12 @@ public class StatusPrinter {
   }
 
   public static void print(StatusManager sm) {
-
-    Iterator it = sm.iterator();
-    while (it.hasNext()) {
-      Status s = (Status) it.next();
-      print("", s);
-     
+    synchronized (sm) {
+      Iterator it = sm.iterator();
+      while (it.hasNext()) {
+        Status s = (Status) it.next();
+        print("", s);
+      }
     }
   }
   
