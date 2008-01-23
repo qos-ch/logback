@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import ch.qos.logback.access.pattern.helpers.DummyRequest;
-import ch.qos.logback.access.pattern.helpers.DummyResponse;
-import ch.qos.logback.access.pattern.helpers.DummyValuesAdapter;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 
 public class ConverterTest extends TestCase {
 
   AccessEvent event;
-  HttpServletRequest request;
-  HttpServletResponse response;
+  DummyRequest request;
+  DummyResponse response;
 
   public void setUp() throws Exception {
     super.setUp();
@@ -161,7 +159,7 @@ public class ConverterTest extends TestCase {
   }
 
   private AccessEvent createEvent() {
-    DummyValuesAdapter dummyAdapter = new DummyValuesAdapter(request, response);
+    DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
     AccessEvent ae = new AccessEvent(request, response, dummyAdapter);
     return ae;
   }

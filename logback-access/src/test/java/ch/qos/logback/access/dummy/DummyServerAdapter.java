@@ -1,6 +1,6 @@
-package ch.qos.logback.access.pattern.helpers;
+package ch.qos.logback.access.dummy;
 
-import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.access.spi.ServerAdapter;
 
@@ -22,12 +22,8 @@ public class DummyServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
   
-  public String getResponseHeader(String key) {
-    return response.getHeader(key);
-  }
-
-  public List<String> getResponseHeaderNameList() {
-    return null;
+  public Map<String, String> builResponseHeaderMap() {
+    return response.headerMap;
   }
 
 }

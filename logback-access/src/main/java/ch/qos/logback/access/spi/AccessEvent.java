@@ -1,10 +1,13 @@
 package ch.qos.logback.access.spi;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -30,14 +33,14 @@ public class AccessEvent implements Serializable {
   private static final long serialVersionUID = -3118194368414470960L;
 
   public final static String NA = "-";
-  public final static String[] NA_STRING_ARRAY = new String[] {AccessEvent.NA};
-  
+  public final static String[] NA_STRING_ARRAY = new String[] { AccessEvent.NA };
+
   public final static String EMPTY = "";
   public static final int SENTINEL = -1;
 
   private transient final HttpServletRequest httpRequest;
   private transient final HttpServletResponse httpResponse;
-
+  
   String requestURI;
   String requestURL;
   String remoteHost;
@@ -51,7 +54,8 @@ public class AccessEvent implements Serializable {
 
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
-
+  Map<String, String> responseHeaderMap;
+  
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
   int localPort = SENTINEL;
@@ -216,7 +220,13 @@ public class AccessEvent implements Serializable {
   }
 
   public Enumeration getRequestHeaderNames() {
+    // post-serialization
+    if (httpRequest == null) {
+      Vector<String> list = new Vector<String>(getRequestHeaderMap().keySet());
+      return list.elements();
+    }
     return httpRequest.getHeaderNames();
+    
   }
 
   public Map<String, String> getRequestHeaderMap() {
@@ -255,14 +265,6 @@ public class AccessEvent implements Serializable {
       buildRequestParameterMap();
     }
     return requestParameterMap;
-}
-  
-  public String getResponseHeader(String key) {
-    return serverAdapter.getResponseHeader(key);
-  }
-
-  public List<String> getResponseHeaderNameList() {
-    return serverAdapter.getResponseHeaderNameList();
   }
 
   /**
@@ -286,7 +288,7 @@ public class AccessEvent implements Serializable {
 
   public String[] getRequestParameter(String key) {
     if (httpRequest != null) {
-     String[] value = httpRequest.getParameterValues(key);
+      String[] value = httpRequest.getParameterValues(key);
       if (value == null) {
         return NA_STRING_ARRAY;
       } else {
@@ -424,6 +426,33 @@ public class AccessEvent implements Serializable {
     return serverAdapter;
   }
 
+  public String getResponseHeader(String key) {
+    synchronized (responseHeaderMap) {
+      if (responseHeaderMap == null) {
+        responseHeaderMap = serverAdapter.builResponseHeaderMap();
+      }
+      return responseHeaderMap.get(key);
+    }
+  }
+
+  public Map<String, String> getResponseHeaderMap() {
+    synchronized (responseHeaderMap) {
+      if (responseHeaderMap == null) {
+        responseHeaderMap = serverAdapter.builResponseHeaderMap();
+      }
+      return responseHeaderMap;
+    }
+  }
+
+  public List<String> getResponseHeaderNameList() {
+    synchronized (responseHeaderMap) {
+      if (responseHeaderMap == null) {
+        responseHeaderMap = serverAdapter.builResponseHeaderMap();
+      }
+      return new ArrayList<String>(responseHeaderMap.keySet());
+    }
+  }
+  
   public void prepareForDeferredProcessing() {
     buildRequestHeaderMap();
     buildRequestParameterMap();

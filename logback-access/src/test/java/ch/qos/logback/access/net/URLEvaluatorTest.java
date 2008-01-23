@@ -1,9 +1,9 @@
 package ch.qos.logback.access.net;
 
 import junit.framework.TestCase;
-import ch.qos.logback.access.pattern.helpers.DummyRequest;
-import ch.qos.logback.access.pattern.helpers.DummyResponse;
-import ch.qos.logback.access.pattern.helpers.DummyServerAdapter;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;

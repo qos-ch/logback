@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import ch.qos.logback.access.pattern.helpers.DummyRequest;
-import ch.qos.logback.access.pattern.helpers.DummyResponse;
-import ch.qos.logback.access.pattern.helpers.DummyServerAdapter;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.BasicContext;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;

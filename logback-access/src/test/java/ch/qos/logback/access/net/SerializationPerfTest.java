@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import junit.framework.TestCase;
-import ch.qos.logback.access.pattern.helpers.DummyRequest;
-import ch.qos.logback.access.pattern.helpers.DummyResponse;
-import ch.qos.logback.access.pattern.helpers.DummyServerAdapter;
+import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.spi.AccessEvent;
 
 public class SerializationPerfTest extends TestCase {
@@ -37,7 +35,7 @@ public class SerializationPerfTest extends TestCase {
     int pauseCounter = 0;
     for (int i = 0; i < loopNumber; i++) {
       try {
-        AccessEvent ae = buildNewAccessEvent();
+        AccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
         //average time for the next method: 5000 nanos
         ae.prepareForDeferredProcessing();
         oos.writeObject(ae);
@@ -65,7 +63,7 @@ public class SerializationPerfTest extends TestCase {
     // System.out.println("Beginning mesured run");
     for (int i = 0; i < loopNumber; i++) {
       try {
-        AccessEvent ae = buildNewAccessEvent();
+        AccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
         t1 = System.nanoTime();
         //average length of the next method: 4000 nanos
         ae.prepareForDeferredProcessing();
@@ -92,13 +90,6 @@ public class SerializationPerfTest extends TestCase {
     //average time: 26-30 microsec = 0.030 millis
   }
   
-  private AccessEvent buildNewAccessEvent() {
-    DummyRequest request = new DummyRequest();
-    DummyResponse response = new DummyResponse();
-    DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-    
-    AccessEvent ae = new AccessEvent(request, response, adapter);
-    return ae;
-  }
+  
 
 }

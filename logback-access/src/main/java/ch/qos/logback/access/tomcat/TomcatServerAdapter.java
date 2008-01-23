@@ -1,7 +1,7 @@
 package ch.qos.logback.access.tomcat;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
@@ -17,7 +17,7 @@ public class TomcatServerAdapter implements ServerAdapter {
 
   Request request;
   Response response;
-
+  
   public TomcatServerAdapter(Request tomcatRequest, Response tomcatResponse) {
     this.request = tomcatRequest;
     this.response = tomcatResponse;
@@ -31,15 +31,16 @@ public class TomcatServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
 
-  public String getResponseHeader(String key) {
-    return response.getHeader(key);
-  }
-
-  public List<String> getResponseHeaderNameList() {
-    List<String> hnList = new ArrayList<String>();
-    for (String name : response.getHeaderNames()) {
-      hnList.add(name);
+  
+  public Map<String, String> builResponseHeaderMap() {
+    Map<String, String> responseHeaderMap = new HashMap<String, String>();
+    for (String key : response.getHeaderNames()) {
+      String value = response.getHeader(key);
+      responseHeaderMap.put(key, value);
     }
-    return hnList;
+    return responseHeaderMap;
   }
+  
+
+
 }

@@ -1,6 +1,6 @@
 package ch.qos.logback.access.spi;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * An interface to access server-specific methods from
@@ -13,7 +13,9 @@ public interface ServerAdapter {
 
   long getContentLength();
   int getStatusCode();
-  String getResponseHeader(String key);
-  List<String> getResponseHeaderNameList();
-
+//  String getResponseHeader(String key);
+//  List<String> getResponseHeaderNameList();
+//  Map<String, String> getResponseHeaderMap();
+  
+  Map<String, String> builResponseHeaderMap();
 }

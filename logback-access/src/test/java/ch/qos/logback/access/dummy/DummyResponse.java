@@ -1,4 +1,4 @@
-package ch.qos.logback.access.pattern.helpers;
+package ch.qos.logback.access.dummy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DummyResponse implements HttpServletResponse {
 
   int status;
-  Map<String, String> headerMap;
+  public Map<String, String> headerMap;
   
   public DummyResponse() {
     headerMap = new HashMap<String, String>();
