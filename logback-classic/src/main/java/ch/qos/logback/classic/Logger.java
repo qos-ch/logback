@@ -254,7 +254,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * Invoke all the appenders of this logger.
    * 
    * @param event
-   *          The event to log
+   *                        The event to log
    */
   public void callAppenders(LoggingEvent event) {
     int writes = 0;
@@ -304,9 +304,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * logger.
    * 
    * @param lastPart
-   *          the suffix (i.e. last part) of the child logger name. This
-   *          parameter may not include dots, i.e. the logger separator
-   *          character.
+   *                        the suffix (i.e. last part) of the child logger
+   *                        name. This parameter may not include dots, i.e. the
+   *                        logger separator character.
    * @return
    */
   Logger createChildByLastNamePart(final String lastPart) {
@@ -387,9 +387,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void trace(String msg, Throwable t) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, null, Level.TRACE, msg, null, t);
-    }
+    filterAndLog(FQCN, null, Level.TRACE, msg, null, t);
   }
 
   public final void trace(Marker marker, String msg) {
@@ -432,7 +430,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       final Level level, final String msg, final Object param, final Throwable t) {
 
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(
-        marker, this, Level.DEBUG, msg, param, t);
+        marker, this, level, msg, param, t);
 
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
@@ -451,7 +449,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       final Object param2, final Throwable t) {
 
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(
-        marker, this, Level.DEBUG, msg, param1, param2, t);
+        marker, this, level, msg, param1, param2, t);
 
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
@@ -470,7 +468,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       final Throwable t) {
 
     final FilterReply decision = loggerContext.getTurboFilterChainDecision(
-        marker, this, Level.DEBUG, msg, params, t);
+        marker, this, level, msg, params, t);
 
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
@@ -817,8 +815,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       level = Level.ERROR;
       break;
     default:
-      throw new IllegalArgumentException(levelInt
-          + " not a valid level value");
+      throw new IllegalArgumentException(levelInt + " not a valid level value");
     }
     filterAndLog(fqcn, marker, level, message, null, t);
   }
