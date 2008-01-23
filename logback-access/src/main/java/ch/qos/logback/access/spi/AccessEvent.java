@@ -14,6 +14,8 @@ import ch.qos.logback.access.Constants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
 
+// Contributors:  Joern Huxhorn (see also bug #110)
+
 /**
  * The Access module's internal representation of logging events. When the
  * logging component instance is called in the container to log then a
@@ -28,6 +30,8 @@ public class AccessEvent implements Serializable {
   private static final long serialVersionUID = -3118194368414470960L;
 
   public final static String NA = "-";
+  public final static String[] NA_STRING_ARRAY = new String[] {AccessEvent.NA};
+  
   public final static String EMPTY = "";
   public static final int SENTINEL = -1;
 
@@ -46,7 +50,7 @@ public class AccessEvent implements Serializable {
   String responseContent;
 
   Map<String, String> requestHeaderMap;
-  Map<String, Object> requestParameterMap;
+  Map<String, String[]> requestParameterMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
@@ -235,17 +239,24 @@ public class AccessEvent implements Serializable {
   }
 
   public void buildRequestParameterMap() {
-    requestParameterMap = new HashMap<String, Object>();
+    requestParameterMap = new HashMap<String, String[]>();
     Enumeration e = httpRequest.getParameterNames();
     if (e == null) {
       return;
     }
     while (e.hasMoreElements()) {
       String key = (String) e.nextElement();
-      requestParameterMap.put(key, httpRequest.getParameter(key));
+      requestParameterMap.put(key, httpRequest.getParameterValues(key));
     }
   }
 
+  public Map<String, String[]> getRequestParameterMap() {
+    if (requestParameterMap == null) {
+      buildRequestParameterMap();
+    }
+    return requestParameterMap;
+}
+  
   public String getResponseHeader(String key) {
     return serverAdapter.getResponseHeader(key);
   }
@@ -273,16 +284,16 @@ public class AccessEvent implements Serializable {
     }
   }
 
-  public String getRequestParameter(String key) {
+  public String[] getRequestParameter(String key) {
     if (httpRequest != null) {
-      Object value = httpRequest.getParameter(key);
+     String[] value = httpRequest.getParameterValues(key);
       if (value == null) {
-        return AccessEvent.NA;
+        return NA_STRING_ARRAY;
       } else {
-        return value.toString();
+        return value;
       }
     } else {
-      return AccessEvent.NA;
+      return NA_STRING_ARRAY;
     }
   }
 
