@@ -411,9 +411,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void debug(String msg, Throwable t) {
-    if (isDebugEnabled()) {
-      filterAndLog(FQCN, null, Level.DEBUG, msg, null, t);
-    }
+    filterAndLog(FQCN, null, Level.DEBUG, msg, null, t);
   }
 
   public final void debug(Marker marker, String msg) {
