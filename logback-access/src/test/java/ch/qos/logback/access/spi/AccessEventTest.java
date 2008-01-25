@@ -8,10 +8,12 @@ import java.io.ObjectOutputStream;
 
 import junit.framework.TestCase;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
+import ch.qos.logback.access.dummy.DummyResponse;
 
 public class AccessEventTest extends TestCase {
 
-  private Object buildSerializedAccessEvent() throws IOException, ClassNotFoundException{
+  private Object buildSerializedAccessEvent() throws IOException,
+      ClassNotFoundException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(baos);
     AccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
@@ -26,19 +28,23 @@ public class AccessEventTest extends TestCase {
     return ois.readObject();
   }
 
-  
   public void testSerialization() throws IOException, ClassNotFoundException {
     Object o = buildSerializedAccessEvent();
     assertNotNull(o);
     AccessEvent aeBack = (AccessEvent) o;
 
-    aeBack.getRequestHeaderNames();
-    aeBack.getResponseHeader("x");
-    aeBack.getResponseHeaderNameList();
-    aeBack.getContentLength();
-    aeBack.getStatusCode();
-    
-    
+    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP, aeBack
+        .getResponseHeaderMap());
+    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("x"), aeBack
+        .getResponseHeader("x"));
+    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("headerName1"),
+        aeBack.getResponseHeader("headerName1"));
+    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.size(), aeBack
+        .getResponseHeaderNameList().size());
+    assertEquals(DummyResponse.DUMMY_DEFAULT_CONTENT_COUNT, aeBack
+        .getContentLength());
+    assertEquals(DummyResponse.DUMMY_DEFAULT_STATUS, aeBack.getStatusCode());
+
   }
 
 }

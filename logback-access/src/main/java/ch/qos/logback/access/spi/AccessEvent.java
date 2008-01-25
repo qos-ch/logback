@@ -2,7 +2,6 @@ package ch.qos.logback.access.spi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +39,7 @@ public class AccessEvent implements Serializable {
 
   private transient final HttpServletRequest httpRequest;
   private transient final HttpServletResponse httpResponse;
-  
+
   String requestURI;
   String requestURL;
   String remoteHost;
@@ -55,7 +54,7 @@ public class AccessEvent implements Serializable {
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
   Map<String, String> responseHeaderMap;
-  
+
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
   int localPort = SENTINEL;
@@ -226,7 +225,7 @@ public class AccessEvent implements Serializable {
       return list.elements();
     }
     return httpRequest.getHeaderNames();
-    
+
   }
 
   public Map<String, String> getRequestHeaderMap() {
@@ -427,35 +426,30 @@ public class AccessEvent implements Serializable {
   }
 
   public String getResponseHeader(String key) {
-    synchronized (responseHeaderMap) {
-      if (responseHeaderMap == null) {
-        responseHeaderMap = serverAdapter.builResponseHeaderMap();
-      }
-      return responseHeaderMap.get(key);
+    buildResponseHeaderMap();
+    return responseHeaderMap.get(key);
+  }
+
+  void buildResponseHeaderMap() {
+    if (responseHeaderMap == null) {
+      responseHeaderMap = serverAdapter.builResponseHeaderMap();
     }
   }
 
   public Map<String, String> getResponseHeaderMap() {
-    synchronized (responseHeaderMap) {
-      if (responseHeaderMap == null) {
-        responseHeaderMap = serverAdapter.builResponseHeaderMap();
-      }
-      return responseHeaderMap;
-    }
+    buildResponseHeaderMap();
+    return responseHeaderMap;
   }
 
   public List<String> getResponseHeaderNameList() {
-    synchronized (responseHeaderMap) {
-      if (responseHeaderMap == null) {
-        responseHeaderMap = serverAdapter.builResponseHeaderMap();
-      }
-      return new ArrayList<String>(responseHeaderMap.keySet());
-    }
+    buildResponseHeaderMap();
+    return new ArrayList<String>(responseHeaderMap.keySet());
   }
-  
+
   public void prepareForDeferredProcessing() {
     buildRequestHeaderMap();
     buildRequestParameterMap();
+    buildResponseHeaderMap();
     getLocalPort();
     getMethod();
     getProtocol();

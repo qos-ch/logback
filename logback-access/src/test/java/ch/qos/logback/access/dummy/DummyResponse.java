@@ -12,17 +12,23 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DummyResponse implements HttpServletResponse {
 
-  int status;
+  public static final int DUMMY_DEFAULT_STATUS = 200;
+  public static final int DUMMY_DEFAULT_CONTENT_COUNT = 1000;
+  public static final Map<String, String> DUMMY_DEFAULT_HDEADER_MAP = new HashMap<String, String>();;
+  
+  static {
+    DUMMY_DEFAULT_HDEADER_MAP.put("headerName1", "headerValue1");
+    DUMMY_DEFAULT_HDEADER_MAP.put("headerName2", "headerValue2");
+  }
+  
+  int status = DUMMY_DEFAULT_STATUS ;
   public Map<String, String> headerMap;
   
   public DummyResponse() {
-    headerMap = new HashMap<String, String>();
-    headerMap.put("headerName1", "headerValue1");
-    headerMap.put("headerName2", "headerValue2");
+    headerMap = DUMMY_DEFAULT_HDEADER_MAP;
   }
 
   public void addCookie(Cookie arg0) {
-
   }
 
   public void addDateHeader(String arg0, long arg1) {
@@ -132,7 +138,7 @@ public class DummyResponse implements HttpServletResponse {
   }
   
   public long getContentCount() {
-    return 10000L;
+    return DUMMY_DEFAULT_CONTENT_COUNT;
   }
   
   public int getStatus() {
