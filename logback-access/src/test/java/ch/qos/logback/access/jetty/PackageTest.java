@@ -16,7 +16,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(JettyBasicTest.suite());
+    suite.addTest(new JUnit4TestAdapter(JettyBasicTest.class));
     return suite;
   }
 }

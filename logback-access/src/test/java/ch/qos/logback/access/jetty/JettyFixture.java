@@ -7,9 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
@@ -26,13 +23,12 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.read.ListAppender;
 
-public class JettyTestSetup extends TestSetup {
+public class JettyFixture {
   RequestLogImpl requestLogImpl;
 
   public static final int PORT = 1234;
   
-  public JettyTestSetup(Test suite, RequestLogImpl impl) {
-    super(suite);
+  public JettyFixture(RequestLogImpl impl) {
     requestLogImpl = impl;
   }
 
@@ -43,9 +39,8 @@ public class JettyTestSetup extends TestSetup {
   Server server;
   String url = "http://localhost:" + PORT + "/";
 
-  public void setUp() throws Exception {
+  public void start() throws Exception {
     // System.out.println("into setUp");
-    super.setUp();
 
     server = new Server();
     Connector connector = new SelectChannelConnector();
@@ -71,9 +66,8 @@ public class JettyTestSetup extends TestSetup {
     Thread.yield();
   }
 
-  public void tearDown() throws Exception {
+  public void stop() throws Exception {
     // System.out.println("into tearDown");
-    super.tearDown();
     server.stop();
     Thread.sleep(1000);
     server = null;
