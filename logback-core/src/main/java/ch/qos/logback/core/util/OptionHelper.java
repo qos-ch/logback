@@ -129,7 +129,7 @@ public class OptionHelper {
    * @throws IllegalArgumentException
    *           if <code>val</code> is malformed.
    */
-  public static String substVars(String val, Map<String, String> primaryMap,
+  public static String substVars(String val, Context context,
       Map<String, String> secondaryMap) {
 
     StringBuffer sbuf = new StringBuffer();
@@ -172,9 +172,7 @@ public class OptionHelper {
           String replacement = null;
 
           // first try the props passed as parameter
-          if (primaryMap != null) {
-            replacement = primaryMap.get(key);
-          }
+          replacement = context.getProperty(key);
 
           if (replacement == null && secondaryMap != null) {
             replacement = secondaryMap.get(key);
@@ -197,7 +195,7 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, primaryMap,
+            String recursiveReplacement = substVars(replacement, context,
                 secondaryMap);
             sbuf.append(recursiveReplacement);
           }

@@ -32,7 +32,7 @@ public class ContextBase implements Context {
     return new HashMap<String, String>(propertyMap);
   }
 
-  public void setProperty(String key, String val) {
+  public void putProperty(String key, String val) {
     this.propertyMap.put(key, val);
   }
 

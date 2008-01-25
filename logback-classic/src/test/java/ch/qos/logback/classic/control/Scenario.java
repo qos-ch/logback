@@ -19,7 +19,7 @@ public class Scenario {
   // the frequency of a set levelInt event for every create logger event
   private final static int CREATE_LOGGER_TO_SET_LEVEL_FREQUENCY = 5;
 
-  private List<TestAction> actionList = new Vector<TestAction>();
+  private List<ControlAction> actionList = new Vector<ControlAction>();
 
   public void addAction(CreateLogger action) {
     actionList.add(action);
@@ -29,15 +29,15 @@ public class Scenario {
     }
   }
 
-  public List<TestAction> getActionList() {
-    return new ArrayList<TestAction>(actionList);
+  public List<ControlAction> getActionList() {
+    return new ArrayList<ControlAction>(actionList);
   }
 
   public int size() {
     return actionList.size();
   }
 
-  public TestAction get(int i) {
-    return (TestAction) actionList.get(i);
+  public ControlAction get(int i) {
+    return (ControlAction) actionList.get(i);
   }
 }

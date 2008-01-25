@@ -24,7 +24,7 @@ import ch.qos.logback.classic.control.CreateLogger;
 import ch.qos.logback.classic.control.Scenario;
 import ch.qos.logback.classic.control.ScenarioMaker;
 import ch.qos.logback.classic.control.SetLevel;
-import ch.qos.logback.classic.control.TestAction;
+import ch.qos.logback.classic.control.ControlAction;
 
 
 public class DynamicLoggerContextTest extends TestCase {
@@ -54,7 +54,7 @@ public class DynamicLoggerContextTest extends TestCase {
     List actionList = s.getActionList();
     int size = actionList.size();
     for (int i = 0; i < size; i++) {
-      TestAction action = (TestAction) actionList.get(i);
+      ControlAction action = (ControlAction) actionList.get(i);
       if (action instanceof CreateLogger) {
         CreateLogger cl = (CreateLogger) action;
         lc.getLogger(cl.getLoggerName());

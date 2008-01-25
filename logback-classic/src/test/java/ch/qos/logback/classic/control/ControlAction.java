@@ -9,6 +9,6 @@
  */
 package ch.qos.logback.classic.control;
 
-public class TestAction {
+public class ControlAction {
 
 }

@@ -18,11 +18,11 @@ public class ContextPropertyAction extends PropertyAction {
     // TODO : test this method
     for(Object o: props.keySet()) {
       String key = (String) o;
-      this.context.setProperty(key, props.getProperty(key));
+      this.context.putProperty(key, props.getProperty(key));
     }
   }
   
   public void setProperty(InterpretationContext ec, String key, String value) {
-    this.context.setProperty(key, value);
+    this.context.putProperty(key, value);
   }
 }

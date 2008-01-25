@@ -10,7 +10,7 @@
 package ch.qos.logback.classic.control;
 
 
-public class CreateLogger extends TestAction {
+public class CreateLogger extends ControlAction {
 
   final String loggerName;
 

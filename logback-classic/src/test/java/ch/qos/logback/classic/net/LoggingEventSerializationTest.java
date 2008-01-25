@@ -62,7 +62,7 @@ public class LoggingEventSerializationTest extends TestCase {
     bos = new ByteArrayOutputStream();
     oos = new ObjectOutputStream(bos);
 
-    lc.setProperty("testKey", "testValue");
+    lc.putProperty("testKey", "testValue");
     LoggingEvent event = createLoggingEvent();
     oos.writeObject(event);
 

@@ -158,7 +158,7 @@ public class SocketAppenderTest extends TestCase {
   private void configureClient() {
     lc = new LoggerContext();
     lc.setName("test");
-    lc.setProperty("testKey", "testValue");
+    lc.putProperty("testKey", "testValue");
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     SocketAppender socketAppender = new SocketAppender();
     socketAppender.setContext(lc);

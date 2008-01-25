@@ -38,15 +38,14 @@ import ch.qos.logback.core.util.OptionHelper;
 public class InterpretationContext extends ContextAwareBase {
   Stack<Object> objectStack;
   Map<String, Object> objectMap;
-  Map<String, String> substitutionMap;
   Interpreter joranInterpreter;
   final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
   
   public InterpretationContext(Context context, Interpreter joranInterpreter) {
+    this.context = context;
     this.joranInterpreter = joranInterpreter;
     objectStack = new Stack<Object> ();
     objectMap = new HashMap<String, Object>(5);
-    substitutionMap = new HashMap<String, String>();
   }
   
   String updateLocationInfo(String msg) {
@@ -111,7 +110,7 @@ public class InterpretationContext extends ContextAwareBase {
 
     // values with leading or trailing spaces are bad. We remove them now.
     value = value.trim();
-    substitutionMap.put(key, value);
+    context.putProperty(key, value);
   }
 
   public void addSubstitutionProperties(Properties props) {
@@ -139,14 +138,14 @@ public class InterpretationContext extends ContextAwareBase {
   
 
   public String getSubstitutionProperty(String key) {
-    return substitutionMap.get(key);
+    return context.getProperty(key);
   }
 
   public String subst(String value) {
     if (value == null) {
       return null;
     }
-    return OptionHelper.substVars(value, substitutionMap, context.getPropertyMap());
+    return OptionHelper.substVars(value, context, null);
   }
   
   public void addInPlayListener(InPlayListener ipl) {

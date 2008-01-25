@@ -86,8 +86,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   @Override
-  public void setProperty(String key, String val) {
-    super.setProperty(key, val);
+  public void putProperty(String key, String val) {
+    super.putProperty(key, val);
     syncRemoteView();
   }
 

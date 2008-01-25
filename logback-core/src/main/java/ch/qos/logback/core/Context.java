@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.core;
 
-import java.util.Map;
-
 import ch.qos.logback.core.status.StatusManager;
 
 
@@ -41,7 +39,7 @@ public interface Context {
    * the returned Map will have no effect (on the original.)
    * @return
    */
-  public Map<String, String> getPropertyMap();
+  //public Map<String, String> getPropertyMap();
 
   /** 
    * Get the property of this context.
@@ -51,7 +49,7 @@ public interface Context {
   /** 
    * Set a property of this context.
    */
-  public void setProperty(String key, String value);
+  public void putProperty(String key, String value);
   
   /**
    * Contexts are named objects.

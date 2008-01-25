@@ -189,7 +189,7 @@ public class LogbackValve extends ValveBase implements Context,
     return propertyMap;
   }
 
-  public void setProperty(String key, String val) {
+  public void putProperty(String key, String val) {
     this.propertyMap.put(key, val);
   }
 

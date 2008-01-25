@@ -98,7 +98,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
   
   public void testContextInfo() throws SQLException {
     LoggingEvent event = createLoggingEvent();
-    lc.setProperty("testKey1", "testValue1");
+    lc.putProperty("testKey1", "testValue1");
     
     appender.append(event);
     

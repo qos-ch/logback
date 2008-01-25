@@ -22,7 +22,7 @@ public class FruitFactory {
     
     Context context = new ContextBase();
     this.fruit = null;
-    context.setProperty("fruitKey", "orange-"+count);
+    context.putProperty("fruitKey", "orange-"+count);
     // for next round
     count++;
     FruitConfigurator fruitConfigurator = new FruitConfigurator(this);

@@ -9,11 +9,12 @@
  */
 package ch.qos.logback.classic.control;
 
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.*;
+public class RandomUtilTest {
 
-public class RandomUtilTest extends TestCase {
-
+  @Test
   public void testGaussian() {
 
     long sum = 0;

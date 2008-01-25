@@ -11,7 +11,7 @@ package ch.qos.logback.classic.control;
 
 import ch.qos.logback.classic.Level;
 
-public class SetLevel extends TestAction {
+public class SetLevel extends ControlAction {
   final String loggerName;
   final Level level;
 

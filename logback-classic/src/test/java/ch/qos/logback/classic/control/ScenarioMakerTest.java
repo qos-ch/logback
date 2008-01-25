@@ -9,12 +9,12 @@
  */
 package ch.qos.logback.classic.control;
 
-import junit.framework.*;
-
 import java.util.List;
 
+import org.junit.Test;
 
-public class ScenarioMakerTest extends TestCase {
+
+public class ScenarioMakerTest {
 
 //  public void test1() {
 //    Scenario s = ScenarioMaker.makeTypeAScenario(10);
@@ -24,9 +24,10 @@ public class ScenarioMakerTest extends TestCase {
 //    }
 //  }
 
+  @Test
   public void testTypeB() {
       Scenario s = ScenarioMaker.makeTypeBScenario(30);
-      List actionList = s.getActionList();
+      List<ControlAction> actionList = s.getActionList();
       for(int i = 0; i < actionList.size(); i++) {
         //System.out.println(actionList.get(i)) ;
       }
