@@ -205,10 +205,10 @@ public class AccessEvent implements Serializable {
     if (requestHeaderMap == null) {
       if (httpRequest != null) {
         buildRequestHeaderMap();
-        result = (String) requestHeaderMap.get(key);
+        result = requestHeaderMap.get(key);
       }
     } else {
-      result = (String) requestHeaderMap.get(key);
+      result = requestHeaderMap.get(key);
     }
 
     if (result != null) {
@@ -270,7 +270,6 @@ public class AccessEvent implements Serializable {
    * Attributes are not serialized
    * 
    * @param key
-   * @return
    */
   public String getAttribute(String key) {
     if (httpRequest != null) {
@@ -306,9 +305,9 @@ public class AccessEvent implements Serializable {
         return AccessEvent.NA;
       }
 
-      for (int i = 0; cookieArray != null && i < cookieArray.length; i++) {
-        if (key.equals(cookieArray[i].getName())) {
-          return cookieArray[i].getValue();
+      for (Cookie cookie : cookieArray) {
+        if (key.equals(cookie.getName())) {
+          return cookie.getValue();
         }
       }
     }
@@ -432,7 +431,7 @@ public class AccessEvent implements Serializable {
 
   void buildResponseHeaderMap() {
     if (responseHeaderMap == null) {
-      responseHeaderMap = serverAdapter.builResponseHeaderMap();
+      responseHeaderMap = serverAdapter.buildResponseHeaderMap();
     }
   }
 

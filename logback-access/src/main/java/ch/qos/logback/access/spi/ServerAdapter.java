@@ -17,5 +17,5 @@ public interface ServerAdapter {
 //  List<String> getResponseHeaderNameList();
 //  Map<String, String> getResponseHeaderMap();
   
-  Map<String, String> builResponseHeaderMap();
+  Map<String, String> buildResponseHeaderMap();
 }

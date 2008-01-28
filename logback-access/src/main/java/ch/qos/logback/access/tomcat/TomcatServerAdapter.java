@@ -32,7 +32,7 @@ public class TomcatServerAdapter implements ServerAdapter {
   }
 
   
-  public Map<String, String> builResponseHeaderMap() {
+  public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     for (String key : response.getHeaderNames()) {
       String value = response.getHeader(key);

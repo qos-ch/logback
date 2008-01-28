@@ -22,7 +22,7 @@ public class DummyServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
   
-  public Map<String, String> builResponseHeaderMap() {
+  public Map<String, String> buildResponseHeaderMap() {
     return response.headerMap;
   }
 

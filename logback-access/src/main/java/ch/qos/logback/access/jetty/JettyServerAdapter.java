@@ -34,8 +34,7 @@ public class JettyServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
 
-  
-  public Map<String, String> builResponseHeaderMap() {
+  public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     HttpFields httpFields = response.getHttpFields();
     Enumeration e = httpFields.getFieldNames();
