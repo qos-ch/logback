@@ -148,8 +148,8 @@ public class SocketAppenderTest extends TestCase {
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }
 
-  private void startServer(int expectedEventNumber) throws InterruptedException {
-    mockSocketServer = new MockSocketServer(expectedEventNumber);
+  private void startServer(int expectedNumberOfEvents) throws InterruptedException {
+    mockSocketServer = new MockSocketServer(expectedNumberOfEvents);
     mockSocketServer.start();
     // give MockSocketServer head start
     Thread.sleep(100);
