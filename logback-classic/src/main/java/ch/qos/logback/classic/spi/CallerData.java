@@ -26,6 +26,9 @@ public class CallerData implements java.io.Serializable {
    */
   public static final String NA = "?";
 
+  // All logger call's in log4j-over-slf4j use the Category class
+  private static final String LOG4J_CATEGORY = "org.apache.log4j.Category";
+  
   /**
    * When caller information is not available this constant is used for the line
    * number.
@@ -91,7 +94,7 @@ public class CallerData implements java.io.Serializable {
     
     int found = LINE_NA;
     for (int i = 0; i < steArray.length; i++) {
-      if(steArray[i].getClassName().equals(fqnOfInvokingClass)) {
+      if(isDirectlyInvokingClass(steArray[i].getClassName(), fqnOfInvokingClass)) {
         // the caller is assumed to be the next stack frame, hence the +1.
         found = i + 1;
       } else {
@@ -113,6 +116,15 @@ public class CallerData implements java.io.Serializable {
     return callerDataArray;
   }
   
+  public static boolean isDirectlyInvokingClass(String currentClass, String fqnOfInvokingClass) {
+    // the check for org.apachje.log4j.Category class is intended to support log4j-over-slf4j
+    // it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
+    if(currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   
   public boolean equals(Object o) {
     // LogLog.info("equals called");
