@@ -36,7 +36,7 @@
   
   <properties>
     <!-- slf4j.version property is used below and in setClasspath.cmd -->
-    <slf4j.version>1.4.3</slf4j.version>  
+    <slf4j.version>1.5.0-SNAPSHOT</slf4j.version>  
     <consolePlugin.version>1.0.1</consolePlugin.version>  
     <retrotranslator.verify>false</retrotranslator.verify>
   </properties>
@@ -71,6 +71,11 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
       
@@ -290,6 +295,7 @@
     <url>http://svn.qos.ch/repos/logback/trunk/</url>
   </scm>
   
+  <!-- disable sending message to logback-dev mailing list
   <ciManagement>
     <system>continuum</system>
     <notifiers>
@@ -301,7 +307,8 @@
       </notifier>
     </notifiers>
   </ciManagement>
-  
+  -->
+
   <distributionManagement>
     <site>
       <id>pixie</id>
