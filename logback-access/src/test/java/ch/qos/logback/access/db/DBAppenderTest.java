@@ -8,13 +8,13 @@ import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.spi.BasicContext;
+import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderTest extends DBAppenderTestBase {
 
-  BasicContext context;
+  AccessContext context;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
@@ -24,7 +24,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
 
   public void setUp() throws SQLException {
     super.setUp();
-    context = new BasicContext();
+    context = new AccessContext();
     context.setName("default");
     appender = new DBAppender();
     appender.setName("DB");

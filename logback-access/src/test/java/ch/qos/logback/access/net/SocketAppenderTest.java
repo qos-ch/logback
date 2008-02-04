@@ -14,16 +14,16 @@ import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.spi.BasicContext;
+import ch.qos.logback.access.spi.AccessContext;
 
 
 public class SocketAppenderTest extends TestCase {
 
-  private BasicContext context;
+  private AccessContext context;
   private MockSocketServer mockSocketServer;
 
   public void testStartFailNoRemoteHost() {
-    context = new BasicContext();
+    context = new AccessContext();
     SocketAppender appender = new SocketAppender();
     appender.setContext(context);
     appender.setPort(123);
@@ -57,7 +57,7 @@ public class SocketAppenderTest extends TestCase {
   }
 
   private void configureClient() {
-    context = new BasicContext();
+    context = new AccessContext();
     context.setName("test");
     SocketAppender socketAppender = new SocketAppender();
     socketAppender.setContext(context);
