@@ -74,27 +74,24 @@ public class OptionHelper {
 
   /**
    * Perform variable substitution in string <code>val</code> from the values
-   * of keys found the primary map passed as first parameter, then in the
-   * secondary map, and last in the system properties.
+   * of keys found in context property map, and if that fails, then in the
+   * system properties.
    * 
    * <p>
    * The variable substitution delimeters are <b>${</b> and <b>}</b>.
    * 
    * <p>
-   * For example, if the primary map parameter contains a property "key1" set as
+   * For example, if the context property map contains a property "key1" set as
    * "value1", then the call
    * 
    * <pre>
-   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, priMap,
-   *     null);
-   * </pre>
-   * 
+   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, context);</pre>
    * will set the variable <code>s</code> to "Value of key is value1.".
    * 
    * <p>
-   * If no value could be found for the specified key, then the secondary map is
-   * searches, and if that fails, the system properties are searched, if that
-   * fails, then substitution defaults to the empty string.
+   * If no value could be found for the specified key in the context map, then 
+   * the system properties are searched, if that fails, then substitution defaults 
+   * to the empty string.
    * 
    * <p>
    * For example, if system properties contains no value for the key
@@ -102,9 +99,7 @@ public class OptionHelper {
    * 
    * <pre>
    * String s = OptionConverter.subsVars(
-   *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, priMap, null);
-   * </pre>
-   * 
+   *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, context);</pre>
    * will set <code>s</code> to "Value of inexistentKey is []".
    * 
    * <p>
@@ -112,9 +107,7 @@ public class OptionHelper {
    * the ":-" operator. For example, the call
    * 
    * <pre>
-   * String s = OptionConverter.subsVars(&quot;Value of key is [${key2:-val2}]&quot;);
-   * </pre>
-   * 
+   * String s = OptionConverter.subsVars(&quot;Value of key is [${key2:-val2}]&quot;, context);</pre>
    * will set <code>s</code> to "Value of key is [val2]" even if the "key2"
    * property is unset.
    * 
@@ -129,8 +122,7 @@ public class OptionHelper {
    * @throws IllegalArgumentException
    *           if <code>val</code> is malformed.
    */
-  public static String substVars(String val, Context context,
-      Map<String, String> secondaryMap) {
+  public static String substVars(String val, Context context) {
 
     StringBuffer sbuf = new StringBuffer();
 
@@ -174,10 +166,6 @@ public class OptionHelper {
           // first try the props passed as parameter
           replacement = context.getProperty(key);
 
-          if (replacement == null && secondaryMap != null) {
-            replacement = secondaryMap.get(key);
-          }
-
           // then try in System properties
           if (replacement == null) {
             replacement = getSystemProperty(key, null);
@@ -195,8 +183,7 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, context,
-                secondaryMap);
+            String recursiveReplacement = substVars(replacement, context);
             sbuf.append(recursiveReplacement);
           }
 

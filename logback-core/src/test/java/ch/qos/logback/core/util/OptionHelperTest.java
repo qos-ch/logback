@@ -31,7 +31,7 @@ public class OptionHelperTest extends TestCase {
   public void testSubstVarsNoSubstitution() {
     String noSubst = "testing if it works";
     
-    String result = OptionHelper.substVars(noSubst, null, null);
+    String result = OptionHelper.substVars(noSubst, null);
     assertEquals(noSubst, result);
   }
  
@@ -40,7 +40,7 @@ public class OptionHelperTest extends TestCase {
     
     try {
       @SuppressWarnings("unused")
-      String result = OptionHelper.substVars(noSubst, null, null);
+      String result = OptionHelper.substVars(noSubst, null);
       fail();
     } catch (IllegalArgumentException e) {
       //ok
@@ -51,15 +51,7 @@ public class OptionHelperTest extends TestCase {
     context.putProperty("v1", "if");
     context.putProperty("v2", "works");
     
-    String result = OptionHelper.substVars(text, context, null);
-    assertEquals(expected, result); 
-  }
-  
-  public void testSubstVarsPrimaryAndSecondary() { 
-    context.putProperty("v1", "if");
-    secondaryMap.put("v2", "works");
-    
-    String result = OptionHelper.substVars(text, context, secondaryMap);
+    String result = OptionHelper.substVars(text, context);
     assertEquals(expected, result); 
   }
   
@@ -68,7 +60,7 @@ public class OptionHelperTest extends TestCase {
     System.setProperty("v1", "if");
     System.setProperty("v2", "works");
     
-    String result = OptionHelper.substVars(text, context, null);
+    String result = OptionHelper.substVars(text, context);
     assertEquals(expected, result); 
     
     System.clearProperty("v1");
@@ -80,7 +72,7 @@ public class OptionHelperTest extends TestCase {
     String textWithDefault = "Testing ${v1} variable substitution ${v2:-toto}";
     String resultWithDefault = "Testing if variable substitution toto";
     
-    String result = OptionHelper.substVars(textWithDefault, context, null);
+    String result = OptionHelper.substVars(textWithDefault, context);
     assertEquals(resultWithDefault, result); 
   }
   
@@ -89,7 +81,7 @@ public class OptionHelperTest extends TestCase {
     context.putProperty("v2", "${v3}");
     context.putProperty("v3", "works");
     
-    String result = OptionHelper.substVars(text, context, null);
+    String result = OptionHelper.substVars(text, context);
     assertEquals(expected, result); 
   }
   

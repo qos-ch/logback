@@ -145,7 +145,7 @@ public class InterpretationContext extends ContextAwareBase {
     if (value == null) {
       return null;
     }
-    return OptionHelper.substVars(value, context, null);
+    return OptionHelper.substVars(value, context);
   }
   
   public void addInPlayListener(InPlayListener ipl) {
