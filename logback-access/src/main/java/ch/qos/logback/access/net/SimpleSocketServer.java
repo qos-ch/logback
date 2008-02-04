@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import ch.qos.logback.access.joran.JoranConfigurator;
-import ch.qos.logback.access.spi.BasicContext;
+import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -43,7 +43,7 @@ public class SimpleSocketServer {
 
   static int port;
   
-  private static BasicContext basicContext;
+  private static AccessContext basicContext;
 
   public static void main(String argv[]) throws Exception {
     if (argv.length == 2) {
@@ -86,7 +86,7 @@ public class SimpleSocketServer {
       usage("Could not interpret port number [" + portStr + "].");
     }
 
-    basicContext = new BasicContext();
+    basicContext = new AccessContext();
     if (configFile.endsWith(".xml")) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(basicContext);

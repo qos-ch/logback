@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
+import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.spi.BasicContext;
 import ch.qos.logback.core.spi.FilterReply;
 
 // Contributors: Moses Hohman <mmhohman@rainbow.uchicago.edu>
@@ -38,10 +38,10 @@ import ch.qos.logback.core.spi.FilterReply;
 public class SocketNode implements Runnable {
 
   Socket socket;
-  BasicContext context;
+  AccessContext context;
   ObjectInputStream ois;
 
-  public SocketNode(Socket socket, BasicContext context) {
+  public SocketNode(Socket socket, AccessContext context) {
     this.socket = socket;
     this.context = context;
     try {
