@@ -38,7 +38,7 @@ public class LoggerContextRemoteView implements Serializable {
   public LoggerContextRemoteView(LoggerContext lc) {
     // this(lc.getName(), lc.getPropertyMap());
     this.name = lc.getName();
-    this.propertyMap = lc.getPropertyMap();
+    this.propertyMap = lc.getCopyOfPropertyMap();
   }
 
   // public LoggerContextRemoteView(String name, Map<String, String>
