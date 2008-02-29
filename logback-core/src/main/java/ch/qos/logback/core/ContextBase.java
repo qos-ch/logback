@@ -28,7 +28,7 @@ public class ContextBase implements Context {
     return sm;
   }
 
-  public Map<String, String> getPropertyMap() {
+  public Map<String, String> getCopyOfPropertyMap() {
     return new HashMap<String, String>(propertyMap);
   }
 
