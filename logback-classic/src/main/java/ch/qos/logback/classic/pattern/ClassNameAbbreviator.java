@@ -66,7 +66,7 @@ public class ClassNameAbbreviator implements Abbreviator {
     return buf.toString();
   }
 
-  int computeIndexes(final String className, int[] dotArray) {
+  static int computeIndexes(final String className, int[] dotArray) {
     int dotCount = 0;
     int k = 0;
     while (true) {
