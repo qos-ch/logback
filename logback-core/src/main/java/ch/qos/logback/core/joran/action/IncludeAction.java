@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.ActionException;
@@ -32,41 +32,27 @@ public class IncludeAction extends Action {
   private static final String FILE_ATTR = "file";
   private static final String URL_ATTR = "url";
   private static final String RESOURCE_ATTR = "resource";
-  private SaxEventRecorder recorder = new SaxEventRecorder();;
+  
+
+  private String attributeInUse;
 
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
 
-    String fileAttribute = attributes.getValue(FILE_ATTR);
-    String urlAttribute = attributes.getValue(URL_ATTR);
-    String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
-    String attributeInUse = null;
+    SaxEventRecorder recorder = new SaxEventRecorder();
+    
+    this.attributeInUse = null;
 
-    if(!checkAttributes(fileAttribute, urlAttribute, resourceAttribute)) {
+    if (!checkAttributes(attributes)) {
       return;
     }
 
-    InputStream in = null;
-
-    if (!OptionHelper.isEmpty(fileAttribute)) {
-      attributeInUse = ec.subst(fileAttribute);
-      in = getInputStreamByFilePath(attributeInUse);
-    }
-
-    if (!OptionHelper.isEmpty(urlAttribute)) {
-      attributeInUse = ec.subst(urlAttribute);
-      in = getInputStreamByUrl(attributeInUse);
-    }
-
-    if (!OptionHelper.isEmpty(resourceAttribute)) {
-      attributeInUse = ec.subst(resourceAttribute);
-      in = getInputStreamByResource(attributeInUse);
-    }
+    InputStream in = getInputStream(ec, attributes);
 
     try {
       if (in != null) {
-        parseAndRecord(in);
+        parseAndRecord(in, recorder);
         in.close();
       }
     } catch (JoranException e) {
@@ -75,27 +61,17 @@ public class IncludeAction extends Action {
       // called if in.close did not work
     }
 
-    if (recorder.saxEventList.size() == 0) {
-      return;
-    }
-
-    // Let's remove the two <included> events before
-    // adding the events to the player.
-    SaxEvent first = recorder.saxEventList.get(0);
-    if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
-      recorder.saxEventList.remove(0);
-    }
-
-    SaxEvent last = recorder.saxEventList.get(recorder.saxEventList.size() - 1);
-    if (last != null && last.qName.equalsIgnoreCase(INCLUDED_TAG)) {
-      recorder.saxEventList.remove(recorder.saxEventList.size() - 1);
-    }
-
+    // remove the <included> tag from the beginning and </included> from the end
+    trimHeadAndTail(recorder);
+    
     ec.getJoranInterpreter().addEvents(recorder.saxEventList);
   }
 
-  private boolean checkAttributes(String fileAttribute,
-      String urlAttribute, String resourceAttribute) {
+  private boolean checkAttributes(Attributes attributes) {
+    String fileAttribute = attributes.getValue(FILE_ATTR);
+    String urlAttribute = attributes.getValue(URL_ATTR);
+    String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
+
     int count = 0;
 
     if (!OptionHelper.isEmpty(fileAttribute)) {
@@ -117,7 +93,8 @@ public class IncludeAction extends Action {
     } else if (count == 1) {
       return true;
     }
-    throw new IllegalStateException("Count value ["+count+"] is not expected");
+    throw new IllegalStateException("Count value [" + count
+        + "] is not expected");
   }
 
   private InputStream getInputStreamByFilePath(String pathToFile) {
@@ -163,7 +140,51 @@ public class IncludeAction extends Action {
     return openURL(url);
   }
 
-  private void parseAndRecord(InputStream inputSource) throws JoranException {
+  InputStream getInputStream(InterpretationContext ec, Attributes attributes) {
+    String fileAttribute = attributes.getValue(FILE_ATTR);
+    String urlAttribute = attributes.getValue(URL_ATTR);
+    String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
+
+    if (!OptionHelper.isEmpty(fileAttribute)) {
+      attributeInUse = ec.subst(fileAttribute);
+      return getInputStreamByFilePath(attributeInUse);
+    }
+
+    if (!OptionHelper.isEmpty(urlAttribute)) {
+      attributeInUse = ec.subst(urlAttribute);
+      return getInputStreamByUrl(attributeInUse);
+    }
+
+    if (!OptionHelper.isEmpty(resourceAttribute)) {
+      attributeInUse = ec.subst(resourceAttribute);
+      return getInputStreamByResource(attributeInUse);
+    }
+    // given previous checkAttributes() check we cannot reach this line
+    throw new IllegalStateException("A input stream should have been returned");
+  }
+
+  private void trimHeadAndTail(SaxEventRecorder recorder) {
+    // Let's remove the two <included> events before
+    // adding the events to the player.
+    
+    List<SaxEvent> saxEventList = recorder.saxEventList;
+    
+    if (saxEventList.size() == 0) {
+      return;
+    }
+    
+    SaxEvent first = saxEventList.get(0);
+    if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+      saxEventList.remove(0);
+    }
+
+    SaxEvent last = saxEventList.get(recorder.saxEventList.size() - 1);
+    if (last != null && last.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+      saxEventList.remove(recorder.saxEventList.size() - 1);
+    }
+  }
+
+  private void parseAndRecord(InputStream inputSource, SaxEventRecorder recorder) throws JoranException {
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
   }

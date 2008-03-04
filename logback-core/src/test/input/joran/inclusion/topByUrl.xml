@@ -2,5 +2,5 @@
 <!DOCTYPE x>
 
 <x>
-  <include file="${testing}" />
+  <include url="${includeKey}" />
 </x>

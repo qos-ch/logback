@@ -2,5 +2,7 @@
 <!DOCTYPE x>
 
 <x>
-  <include url="${testing}" />
+
+  <include resource="${includeKey}" />
+
 </x>

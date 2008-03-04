@@ -24,6 +24,11 @@ public class IncAction extends Action {
   static public int  endCount;
   static public int  errorCount;
 
+  static public void reset() {
+    beginCount = 0;
+    endCount = 0;
+    errorCount = 0;
+  }
   /**
    * Instantiates an layout of the given class and sets its name.
    *

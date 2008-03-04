@@ -24,20 +24,34 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class IncludeActionTest  {
 
-  final static String FILE_KEY = "testing";
-
+  final static String INCLUDE_KEY = "includeKey";
+  final static String SUB_FILE_KEY = "subFileKey";
+  final static String SECOND_FILE_KEY = "secondFileKey";
+  
+  
   Context context = new ContextBase();
   TrivialConfigurator tc;
 
   static final String INCLUSION_DIR_PREFIX = "src/test/input/joran/inclusion/";
 
-  static final String INCLUDE_BY_FILE = INCLUSION_DIR_PREFIX
-      + "includeByFile.xml";
-  static final String INCLUDE_BY_URL = INCLUSION_DIR_PREFIX
-      + "includeByUrl.xml";
+  static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX
+      + "topByFile.xml";
+  
+  static final String SUB_FILE = INCLUSION_DIR_PREFIX
+  + "subByFile.xml";
+  
+  static final String MULTI_INCLUDE_BY_FILE = INCLUSION_DIR_PREFIX
+  + "multiIncludeByFile.xml";
+  
+  static final String SECOND_FILE = INCLUSION_DIR_PREFIX
+  + "second.xml";
+  
+  
+  static final String TOP_BY_URL = INCLUSION_DIR_PREFIX
+      + "topByUrl.xml";
 
   static final String INCLUDE_BY_RESOURCE = INCLUSION_DIR_PREFIX
-      + "includeByResource.xml";
+      + "topByResource.xml";
 
   static final String INCLUDED_FILE = INCLUSION_DIR_PREFIX + "included.xml";
   static final String URL_TO_INCLUDE = "file:./" + INCLUDED_FILE;
@@ -66,19 +80,20 @@ public class IncludeActionTest  {
   @After
   public void tearDown() throws Exception {
     context = null;
-    System.clearProperty(FILE_KEY);
+    System.clearProperty(INCLUDE_KEY);
+    IncAction.reset();
   }
 
   @Test
   public void basicFile() throws JoranException {
-    System.setProperty(FILE_KEY, INCLUDED_FILE);
-    tc.doConfigure(INCLUDE_BY_FILE);
+    System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
+    tc.doConfigure(TOP_BY_FILE);
     verifyConfig(2);
   }
 
   @Test
   public void basicResource() throws JoranException {
-    System.setProperty(FILE_KEY, INCLUDED_AS_RESOURCE);
+    System.setProperty(INCLUDE_KEY, INCLUDED_AS_RESOURCE);
     tc.doConfigure(INCLUDE_BY_RESOURCE);
     StatusPrinter.print(context);
     verifyConfig(2);
@@ -86,16 +101,16 @@ public class IncludeActionTest  {
 
   @Test
    public void testBasicURL() throws JoranException {
-    System.setProperty(FILE_KEY, URL_TO_INCLUDE);
-    tc.doConfigure(INCLUDE_BY_URL);
+    System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
+    tc.doConfigure(TOP_BY_URL);
     StatusPrinter.print(context);
     verifyConfig(2);
   }
 
   @Test
   public void noFileFound() throws JoranException {
-    System.setProperty(FILE_KEY, "toto");
-    tc.doConfigure(INCLUDE_BY_FILE);
+    System.setProperty(INCLUDE_KEY, "toto");
+    tc.doConfigure(TOP_BY_FILE);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
     assertTrue(sc.containsException(FileNotFoundException.class));
@@ -103,8 +118,8 @@ public class IncludeActionTest  {
 
   @Test
   public void withCorruptFile() throws JoranException {
-    System.setProperty(FILE_KEY, INVALID);
-    tc.doConfigure(INCLUDE_BY_FILE);
+    System.setProperty(INCLUDE_KEY, INVALID);
+    tc.doConfigure(TOP_BY_FILE);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
     assertTrue(sc.containsException(SAXParseException.class));
@@ -112,22 +127,42 @@ public class IncludeActionTest  {
 
   @Test
   public void malformedURL() throws JoranException {
-    System.setProperty(FILE_KEY, "htp://logback.qos.ch");
-    tc.doConfigure(INCLUDE_BY_URL);
+    System.setProperty(INCLUDE_KEY, "htp://logback.qos.ch");
+    tc.doConfigure(TOP_BY_URL);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
     assertTrue(sc.containsException(MalformedURLException.class));
   }
 
   @Test
-  public void testUnknownURL() throws JoranException {
-    System.setProperty(FILE_KEY, "http://logback2345.qos.ch");
-    tc.doConfigure(INCLUDE_BY_URL);
+  public void unknownURL() throws JoranException {
+    System.setProperty(INCLUDE_KEY, "http://logback2345.qos.ch");
+    tc.doConfigure(TOP_BY_URL);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
     assertTrue(sc.containsException(UnknownHostException.class));
   }
 
+  @Test
+  public void nestedInclude() throws JoranException {
+    System.setProperty(SUB_FILE_KEY, INCLUDED_FILE);
+    System.setProperty(INCLUDE_KEY, SECOND_FILE);
+    tc.doConfigure(TOP_BY_FILE);
+    StatusPrinter.print(context);
+    verifyConfig(1);
+
+  }
+  
+  @Test
+  public void multiInclude() throws JoranException {
+    System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
+    System.setProperty(SECOND_FILE_KEY, SECOND_FILE);
+    tc.doConfigure(MULTI_INCLUDE_BY_FILE);
+    verifyConfig(3);
+  }
+  
+
+  
   void verifyConfig(int expected) {
     assertEquals(expected, IncAction.beginCount);
     assertEquals(expected, IncAction.endCount);

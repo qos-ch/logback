@@ -90,16 +90,16 @@ public class OptionHelper {
    * <p>
    * If no value could be found for the specified key in the context map, then 
    * the system properties are searched, if that fails, then substitution defaults 
-   * to the empty string.
+   * to appending "_IS_UNDEFINED" to the key name.
    * 
    * <p>
-   * For example, if system properties contains no value for the key
+   * For example, if not the context not the system properties contains no value for the key
    * "inexistentKey", then the call
    * 
    * <pre>
    * String s = OptionConverter.subsVars(
    *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, context);</pre>
-   * will set <code>s</code> to "Value of inexistentKey is []".
+   * will set <code>s</code> to "Value of inexistentKey is [inexistentKey_IS_UNDEFINED]".
    * 
    * <p>
    * Nevertheless, it is possible to specify a default substitution value using
@@ -108,13 +108,14 @@ public class OptionHelper {
    * <pre>
    * String s = OptionConverter.subsVars(&quot;Value of key is [${key2:-val2}]&quot;, context);</pre>
    * will set <code>s</code> to "Value of key is [val2]" even if the "key2"
-   * property is unset.
+   * property is not set.
    * 
    * <p>
    * An {@link java.lang.IllegalArgumentException} is thrown if <code>val</code>
    * contains a start delimeter "${" which is not balanced by a stop delimeter
    * "}".
    * </p>
+
    * 
    * @param val
    *          The string on which variable substitution is performed.
