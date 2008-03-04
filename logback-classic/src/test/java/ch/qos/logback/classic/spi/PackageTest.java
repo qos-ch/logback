@@ -10,6 +10,7 @@
 package ch.qos.logback.classic.spi;
 
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,7 +20,8 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(ContextListenerTest.class);
-    suite.addTestSuite(CallerDataTest.class);
+    suite.addTestSuite(CallerDataTest.class); 
+    suite.addTest(new JUnit4TestAdapter (LoggerComparatorTest.class));
     return suite;
   }
 }
