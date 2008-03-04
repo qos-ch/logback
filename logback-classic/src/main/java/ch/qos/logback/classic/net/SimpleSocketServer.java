@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.classic.net;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,17 +24,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * A simple {@link SocketNode} based server.
  * 
  * <pre>
- *     &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
- *    
- *     where
- * <em>
- * port
- * </em>
- *     is a part number where the server listens and
- * <em>
- * configFile
- * </em>
- *     is an xml configuration file fed to {@link JoranConfigurator}.
+ *      &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
+ * </pre>
+ * 
+ * where <em>port</em> is a port number where the server listens and
+ * <em>configFile</em> is an xml configuration file fed to
+ * {@link JoranConfigurator}.
+ * 
  * </pre>
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -41,36 +38,69 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * 
  * @since 0.8.4
  */
-public class SimpleSocketServer {
+public class SimpleSocketServer extends Thread {
 
-  static Logger logger = LoggerFactory.getLogger(SimpleSocketServer.class);
+  Logger logger = LoggerFactory.getLogger(SimpleSocketServer.class);
 
-  static int port;
+  private final int port;
+  private final LoggerContext lc;
+  private boolean closed = false;
+  private ServerSocket serverSocket;
 
   public static void main(String argv[]) throws Exception {
+    int port = -1;
     if (argv.length == 2) {
-      init(argv[0], argv[1]);
+      port = parsePortNumber(argv[0]);
     } else {
       usage("Wrong number of arguments.");
     }
 
-    runServer();
+    String configFile = argv[1];
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    configureLC(lc, configFile);
+
+    SimpleSocketServer sss = new SimpleSocketServer(lc, port);
+    sss.start();
   }
 
-  static void runServer() {
+  public SimpleSocketServer(LoggerContext lc, int port) {
+    this.lc = lc;
+    this.port = port;
+  }
+
+  public void run() {
     try {
       logger.info("Listening on port " + port);
-      ServerSocket serverSocket = new ServerSocket(port);
-      while (true) {
+      serverSocket = new ServerSocket(port);
+      while (!closed) {
         logger.info("Waiting to accept a new client.");
         Socket socket = serverSocket.accept();
         logger.info("Connected to client at " + socket.getInetAddress());
         logger.info("Starting new socket node.");
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         new Thread(new SocketNode(socket, lc)).start();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      if(closed) {
+        logger.info("Exception in run method for a closed server. This is expected");
+      } else {
+        logger.error("Failure in run method", e);
+      }
+    }
+  }
+
+  
+  public boolean isClosed() {
+    return closed;
+  }
+
+  public void close() {
+    closed = true;
+    if (serverSocket != null) {
+      try {
+        serverSocket.close();
+      } catch (IOException e) {
+        logger.error("Failed to close serverSocket", e);
+      }
     }
   }
 
@@ -81,21 +111,22 @@ public class SimpleSocketServer {
     System.exit(1);
   }
 
-  static void init(String portStr, String configFile) throws JoranException {
+  static int parsePortNumber(String portStr) {
     try {
-      port = Integer.parseInt(portStr);
+      return Integer.parseInt(portStr);
     } catch (java.lang.NumberFormatException e) {
       e.printStackTrace();
       usage("Could not interpret port number [" + portStr + "].");
+      // we won't get here
+      return -1;
     }
+  }
 
-    if (configFile.endsWith(".xml")) {
-      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-      JoranConfigurator configurator = new JoranConfigurator();
-      lc.shutdownAndReset();
-      configurator.setContext(lc);
-      configurator.doConfigure(configFile);
-      //StatusPrinter.print(lc);
-    }
+  static public void configureLC(LoggerContext lc, String configFile)
+      throws JoranException {
+    JoranConfigurator configurator = new JoranConfigurator();
+    lc.shutdownAndReset();
+    configurator.setContext(lc);
+    configurator.doConfigure(configFile);
   }
 }
