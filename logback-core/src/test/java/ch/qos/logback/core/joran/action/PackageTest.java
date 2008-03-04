@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -18,7 +19,7 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(PropertyActionTest.class);
-    suite.addTestSuite(IncludeActionTest.class);
+    suite.addTest(new JUnit4TestAdapter(IncludeActionTest.class));
     
     return suite;
   }

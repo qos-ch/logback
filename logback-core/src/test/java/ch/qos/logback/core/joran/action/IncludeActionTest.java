@@ -1,12 +1,16 @@
 package ch.qos.logback.core.joran.action;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
 import ch.qos.logback.core.Context;
@@ -18,7 +22,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class IncludeActionTest extends TestCase {
+public class IncludeActionTest  {
 
   final static String FILE_KEY = "testing";
 
@@ -42,8 +46,7 @@ public class IncludeActionTest extends TestCase {
 
   static final String INCLUDED_AS_RESOURCE = "input/joran/inclusion/includedAsResource.xml";
 
-  public IncludeActionTest(String arg0) {
-    super(arg0);
+  public IncludeActionTest() {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/inc"), new IncAction());
@@ -53,34 +56,35 @@ public class IncludeActionTest extends TestCase {
     tc.setContext(context);
   }
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     IncAction.beginCount = 0;
     IncAction.errorCount = 0;
     IncAction.endCount = 0;
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @After
+  public void tearDown() throws Exception {
     context = null;
     System.clearProperty(FILE_KEY);
   }
 
-  public void testBasicFile() throws JoranException {
+  @Test
+  public void basicFile() throws JoranException {
     System.setProperty(FILE_KEY, INCLUDED_FILE);
     tc.doConfigure(INCLUDE_BY_FILE);
     verifyConfig(2);
   }
 
-  public void testBasicResource() throws JoranException {
+  @Test
+  public void basicResource() throws JoranException {
     System.setProperty(FILE_KEY, INCLUDED_AS_RESOURCE);
     tc.doConfigure(INCLUDE_BY_RESOURCE);
     StatusPrinter.print(context);
     verifyConfig(2);
   }
 
+  @Test
    public void testBasicURL() throws JoranException {
     System.setProperty(FILE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(INCLUDE_BY_URL);
@@ -88,7 +92,8 @@ public class IncludeActionTest extends TestCase {
     verifyConfig(2);
   }
 
-  public void testNoFileFound() throws JoranException {
+  @Test
+  public void noFileFound() throws JoranException {
     System.setProperty(FILE_KEY, "toto");
     tc.doConfigure(INCLUDE_BY_FILE);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
@@ -96,7 +101,8 @@ public class IncludeActionTest extends TestCase {
     assertTrue(sc.containsException(FileNotFoundException.class));
   }
 
-  public void testWithCorruptFile() throws JoranException {
+  @Test
+  public void withCorruptFile() throws JoranException {
     System.setProperty(FILE_KEY, INVALID);
     tc.doConfigure(INCLUDE_BY_FILE);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
@@ -104,7 +110,8 @@ public class IncludeActionTest extends TestCase {
     assertTrue(sc.containsException(SAXParseException.class));
   }
 
-  public void testMalformedURL() throws JoranException {
+  @Test
+  public void malformedURL() throws JoranException {
     System.setProperty(FILE_KEY, "htp://logback.qos.ch");
     tc.doConfigure(INCLUDE_BY_URL);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
@@ -112,6 +119,7 @@ public class IncludeActionTest extends TestCase {
     assertTrue(sc.containsException(MalformedURLException.class));
   }
 
+  @Test
   public void testUnknownURL() throws JoranException {
     System.setProperty(FILE_KEY, "http://logback2345.qos.ch");
     tc.doConfigure(INCLUDE_BY_URL);
