@@ -22,33 +22,27 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class IncludeActionTest  {
+public class IncludeActionTest {
 
   final static String INCLUDE_KEY = "includeKey";
   final static String SUB_FILE_KEY = "subFileKey";
   final static String SECOND_FILE_KEY = "secondFileKey";
-  
-  
+
   Context context = new ContextBase();
   TrivialConfigurator tc;
 
   static final String INCLUSION_DIR_PREFIX = "src/test/input/joran/inclusion/";
 
-  static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX
-      + "topByFile.xml";
-  
-  static final String SUB_FILE = INCLUSION_DIR_PREFIX
-  + "subByFile.xml";
-  
+  static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX + "topByFile.xml";
+
+  static final String SUB_FILE = INCLUSION_DIR_PREFIX + "subByFile.xml";
+
   static final String MULTI_INCLUDE_BY_FILE = INCLUSION_DIR_PREFIX
-  + "multiIncludeByFile.xml";
-  
-  static final String SECOND_FILE = INCLUSION_DIR_PREFIX
-  + "second.xml";
-  
-  
-  static final String TOP_BY_URL = INCLUSION_DIR_PREFIX
-      + "topByUrl.xml";
+      + "multiIncludeByFile.xml";
+
+  static final String SECOND_FILE = INCLUSION_DIR_PREFIX + "second.xml";
+
+  static final String TOP_BY_URL = INCLUSION_DIR_PREFIX + "topByUrl.xml";
 
   static final String INCLUDE_BY_RESOURCE = INCLUSION_DIR_PREFIX
       + "topByResource.xml";
@@ -100,7 +94,7 @@ public class IncludeActionTest  {
   }
 
   @Test
-   public void testBasicURL() throws JoranException {
+  public void testBasicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
     StatusPrinter.print(context);
@@ -152,7 +146,7 @@ public class IncludeActionTest  {
     verifyConfig(1);
 
   }
-  
+
   @Test
   public void multiInclude() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
@@ -160,9 +154,7 @@ public class IncludeActionTest  {
     tc.doConfigure(MULTI_INCLUDE_BY_FILE);
     verifyConfig(3);
   }
-  
 
-  
   void verifyConfig(int expected) {
     assertEquals(expected, IncAction.beginCount);
     assertEquals(expected, IncAction.endCount);
