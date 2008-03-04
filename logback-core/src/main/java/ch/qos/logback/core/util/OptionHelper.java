@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.core.util;
 
-import java.util.Map;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 
@@ -71,7 +69,8 @@ public class OptionHelper {
   final static char DELIM_STOP = '}';
   final static int DELIM_START_LEN = 2;
   final static int DELIM_STOP_LEN = 1;
-
+  final static String _IS_UNDEFINED = "_IS_UNDEFINED";
+  
   /**
    * Perform variable substitution in string <code>val</code> from the values
    * of keys found in context property map, and if that fails, then in the
@@ -185,6 +184,9 @@ public class OptionHelper {
             // x2=${x1}
             String recursiveReplacement = substVars(replacement, context);
             sbuf.append(recursiveReplacement);
+          } else {
+            // if we could not find a replacement, then signal the error
+            sbuf.append(key+"_IS_UNDEFINED");
           }
 
           i = k + DELIM_STOP_LEN;

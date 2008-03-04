@@ -28,26 +28,33 @@ public class OptionHelperTest extends TestCase {
     super.tearDown();
   }
 
-  public void testSubstVarsNoSubstitution() {
-    String noSubst = "testing if it works";
-    
-    String result = OptionHelper.substVars(noSubst, null);
+  public void testLiteral() {
+    String noSubst = "hello world";
+    String result = OptionHelper.substVars(noSubst, context);
     assertEquals(noSubst, result);
   }
- 
+
+  
+  public void testUndefinedValues() {
+    String withUndefinedValues = "${axyz}";
+    
+    String result = OptionHelper.substVars(withUndefinedValues, context);
+    assertEquals("axyz"+OptionHelper._IS_UNDEFINED, result);
+  }
+  
   public void testSubstVarsVariableNotClosed() {
     String noSubst = "testing if ${v1 works";
     
     try {
       @SuppressWarnings("unused")
-      String result = OptionHelper.substVars(noSubst, null);
+      String result = OptionHelper.substVars(noSubst, context);
       fail();
     } catch (IllegalArgumentException e) {
       //ok
     }
   }
   
-  public void testSubstVarsPrimaryOnly() {
+  public void testSubstVarsContextOnly() {
     context.putProperty("v1", "if");
     context.putProperty("v2", "works");
     
