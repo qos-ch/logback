@@ -66,16 +66,15 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
-    IncAction.beginCount = 0;
-    IncAction.errorCount = 0;
-    IncAction.endCount = 0;
+    IncAction.reset();
   }
 
   @After
   public void tearDown() throws Exception {
     context = null;
     System.clearProperty(INCLUDE_KEY);
-    IncAction.reset();
+    System.clearProperty(SECOND_FILE_KEY);
+    System.clearProperty(SUB_FILE_KEY);
   }
 
   @Test
