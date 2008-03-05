@@ -7,6 +7,7 @@ public class Fruit {
 
   String name;
   List<String> textList = new ArrayList<String>();
+  List<Cake> cakeList = new ArrayList<Cake>();
   
   public Fruit() {
   }
@@ -23,4 +24,7 @@ public class Fruit {
     textList.add(s);
   }
   
+  public void addCake(Cake c) {
+    cakeList.add(c);
+  }
 }
