@@ -1,4 +1,4 @@
-package ch.qos.logback.core.joran.ia;
+package ch.qos.logback.core.joran.implicitAction;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.joran.ia;
+package ch.qos.logback.core.joran.implicitAction;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

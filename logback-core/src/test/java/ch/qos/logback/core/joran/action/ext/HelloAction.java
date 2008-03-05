@@ -7,9 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.joran.action;
-
-
+package ch.qos.logback.core.joran.action.ext;
 
 import org.xml.sax.Attributes;
 
@@ -18,13 +16,24 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
-public class BadEndAction extends Action {
+public class HelloAction extends Action {
 
 
+  public HelloAction() {
+  }
+  /**
+   * Instantiates an layout of the given class and sets its name.
+   *
+   */
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    String str = "Hello "+attributes.getValue("name")+".";
+    ec.getContext().putProperty("hello", str);
   }
 
+  /**
+   * Once the children elements are also parsed, now is the time to activate
+   * the appender options.
+   */
   public void end(InterpretationContext ec, String name) {
-    throw new IllegalStateException("bad end");
   }
 }

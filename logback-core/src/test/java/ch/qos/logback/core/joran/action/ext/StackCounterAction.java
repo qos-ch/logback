@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.core.joran.action;
+package ch.qos.logback.core.joran.action.ext;
 
 
 import org.xml.sax.Attributes;

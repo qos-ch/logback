@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.core.joran.ia;
+package ch.qos.logback.core.joran.implicitAction;
 
 import org.xml.sax.Attributes;
 

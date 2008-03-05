@@ -23,7 +23,7 @@ public class PackageTest extends TestCase {
     suite.addTest(ch.qos.logback.core.joran.event.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.spi.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.replay.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.joran.ia.PackageTest.suite());
+    suite.addTest(ch.qos.logback.core.joran.implicitAction.PackageTest.suite());
     return suite;
   }
 }

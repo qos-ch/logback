@@ -20,11 +20,11 @@ import junit.framework.TestSuite;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.BadBeginAction;
-import ch.qos.logback.core.joran.action.BadEndAction;
-import ch.qos.logback.core.joran.action.HelloAction;
 import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.joran.action.TouchAction;
+import ch.qos.logback.core.joran.action.ext.BadBeginAction;
+import ch.qos.logback.core.joran.action.ext.BadEndAction;
+import ch.qos.logback.core.joran.action.ext.HelloAction;
+import ch.qos.logback.core.joran.action.ext.TouchAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 

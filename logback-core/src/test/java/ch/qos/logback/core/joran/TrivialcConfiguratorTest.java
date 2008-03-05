@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.IncAction;
+import ch.qos.logback.core.joran.action.ext.IncAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 
