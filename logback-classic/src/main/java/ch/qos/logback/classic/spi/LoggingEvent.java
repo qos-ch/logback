@@ -47,6 +47,9 @@ public class LoggingEvent implements Serializable {
    */
   private static final long serialVersionUID = 3022264832697160750L;
 
+  private static final int NULL_ARGUMENT_ARRAY = -1;
+  private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
+
   /**
    * 
    */
@@ -80,7 +83,7 @@ public class LoggingEvent implements Serializable {
   private String message;
   private String formattedMessage;
 
-  private Object[] argumentArray;
+  private transient Object[] argumentArray;
 
   private ThrowableInformation throwableInfo;
 
@@ -113,7 +116,7 @@ public class LoggingEvent implements Serializable {
 
     // bug 85 (we previously failed to set this.argumentArray)
     this.argumentArray = argArray;
-    
+
     if (argArray != null) {
       formattedMessage = MessageFormatter.arrayFormat(message, argArray);
     } else {
@@ -122,7 +125,8 @@ public class LoggingEvent implements Serializable {
     timeStamp = System.currentTimeMillis();
 
     // the case is ugly but under the circumstances acceptable
-    LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC.getMDCAdapter();
+    LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC
+        .getMDCAdapter();
     mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
 
@@ -185,13 +189,13 @@ public class LoggingEvent implements Serializable {
    * This method should be called prior to serializing an event. It should also
    * be called when using asynchronous logging.
    * 
-   * <p>Note that due to performance concerns, this method does NOT extract 
-   * caller data. It is the responsability of the calller to extract caller
+   * <p>
+   * Note that due to performance concerns, this method does NOT extract caller
+   * data. It is the responsability of the calller to extract caller
    * information.
    */
   public void prepareForDeferredProcessing() {
     this.getThreadName();
-    
   }
 
   public LoggerRemoteView getLoggerRemoteView() {
@@ -286,6 +290,20 @@ public class LoggingEvent implements Serializable {
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
     out.writeInt(level.levelInt);
+    if (argumentArray != null) {
+      int len = argumentArray.length;
+      out.writeInt(len);
+      for (int i = 0; i < argumentArray.length; i++) {
+        if (argumentArray[i] != null) {
+          out.writeUTF(argumentArray[i].toString());
+        } else {
+          out.writeUTF(NULL_ARGUMENT_ARRAY_ELEMENT);
+        }
+      }
+    } else {
+      out.writeInt(NULL_ARGUMENT_ARRAY);
+    }
+
   }
 
   private void readObject(ObjectInputStream in) throws IOException,
@@ -293,8 +311,19 @@ public class LoggingEvent implements Serializable {
     in.defaultReadObject();
     int levelInt = in.readInt();
     level = Level.toLevel(levelInt);
+
+    int argArrayLen = in.readInt();
+    if (argArrayLen != NULL_ARGUMENT_ARRAY) {
+      argumentArray = new String[argArrayLen];
+      for (int i = 0; i < argArrayLen; i++) {
+        String val = in.readUTF();
+        if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
+          argumentArray[i] = val;
+        }
+      }
+    }
   }
-  
+
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer('[');
@@ -303,5 +332,4 @@ public class LoggingEvent implements Serializable {
     sb.append("\n");
     return sb.toString();
   }
-
 }

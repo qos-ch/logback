@@ -1,4 +1,8 @@
-package ch.qos.logback.classic.net;
+package ch.qos.logback.classic.spi;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,18 +10,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggerContextRemoteView;
-import ch.qos.logback.classic.spi.LoggerRemoteView;
-import ch.qos.logback.classic.spi.LoggingEvent;
 
-public class LoggingEventSerializationTest extends TestCase {
+public class LoggingEventSerializationTest  {
 
   LoggerContext lc;
   Logger logger;
@@ -26,24 +28,26 @@ public class LoggingEventSerializationTest extends TestCase {
   ObjectOutputStream oos;
   ObjectInputStream inputStream;
 
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     lc = new LoggerContext();
     lc.setName("testContext");
     logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    // create the byte output stream
+    bos = new ByteArrayOutputStream();
+    oos = new ObjectOutputStream(bos);
   }
   
+
+  @After
   public void tearDown() throws Exception {
-    super.tearDown();
+
     lc = null;
     logger = null;
   }
 
+  @Test
   public void testBasic() throws Exception {
-    // create the byte output stream
-    bos = new ByteArrayOutputStream();
-    oos = new ObjectOutputStream(bos);
-
     LoggingEvent event = createLoggingEvent();
     oos.writeObject(event);
 
@@ -57,11 +61,8 @@ public class LoggingEventSerializationTest extends TestCase {
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
 
+  @Test
   public void testContext() throws Exception {
-    // create the byte output stream
-    bos = new ByteArrayOutputStream();
-    oos = new ObjectOutputStream(bos);
-
     lc.putProperty("testKey", "testValue");
     LoggingEvent event = createLoggingEvent();
     oos.writeObject(event);
@@ -85,11 +86,8 @@ public class LoggingEventSerializationTest extends TestCase {
     assertEquals("testValue", props.get("testKey"));
   }
   
+  @Test
   public void testMDC() throws Exception {
-    // create the byte output stream
-    bos = new ByteArrayOutputStream();
-    oos = new ObjectOutputStream(bos);
-
     MDC.put("key", "testValue");
     LoggingEvent event = createLoggingEvent();
     oos.writeObject(event);
@@ -104,11 +102,8 @@ public class LoggingEventSerializationTest extends TestCase {
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
 
+  @Test
   public void testUpdatedMDC() throws Exception {
-    // create the byte output stream
-    bos = new ByteArrayOutputStream();
-    oos = new ObjectOutputStream(bos);
-
     MDC.put("key", "testValue");
     LoggingEvent event1 = createLoggingEvent();
     oos.writeObject(event1);
@@ -130,6 +125,28 @@ public class LoggingEventSerializationTest extends TestCase {
     Map<String, String> MDCPropertyMap = remoteEvent2.getMDCPropertyMap();
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }
+  
+  @Test
+  public void nonSerializableParameters() throws Exception {
+    LoggingEvent event = createLoggingEvent();
+    LuckyCharms lucky0 = new LuckyCharms(0);
+    event.setArgumentArray(new Object[] {lucky0, null});
+    oos.writeObject(event);
+    
+    // create the input stream based on the ouput stream
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+    
+    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();  
+    
+    Object[] aa = remoteEvent.getArgumentArray();
+    assertNotNull(aa);
+    assertEquals(2, aa.length);
+    assertEquals("LC(0)", aa[0]);
+    assertNull(aa[1]);
+  }
+
+
   
   private LoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
