@@ -14,6 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +43,16 @@ public class SocketNode implements Runnable {
   Socket socket;
   LoggerContext context;
   ObjectInputStream ois;
-
+  SocketAddress remoteSocketAddress;
+  
   static Logger logger = (Logger) LoggerFactory.getLogger(SocketNode.class);
-
-  public SocketNode(Socket socket, LoggerContext context) {
+  boolean closed = false;
+  SimpleSocketServer socketServer;
+  
+  public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context) {
+    this.socketServer = socketServer;
     this.socket = socket;
+    remoteSocketAddress = socket.getRemoteSocketAddress();
     this.context = context;
     try {
       ois = new ObjectInputStream(new BufferedInputStream(socket
@@ -67,7 +73,7 @@ public class SocketNode implements Runnable {
     Logger remoteLogger;
 
     try {
-      while (true) {
+      while (!closed) {
         // read an event from the wire
         event = (LoggingEvent) ois.readObject();
         // get a logger from the hierarchy. The name of the logger is taken to
@@ -90,10 +96,28 @@ public class SocketNode implements Runnable {
       logger.error("Unexpected exception. Closing connection.", e);
     }
 
-    try {
-      ois.close();
-    } catch (Exception e) {
-      logger.info("Could not close connection.", e);
+    socketServer.socketNodeClosing(this);
+    close();
+  }
+  
+  void close() {
+    if(closed) {
+      return;
     }
+    closed = true;
+    if (ois != null) {
+      try {
+        ois.close();
+      } catch (IOException e) {
+        logger.warn("Could not close connection.", e);
+      } finally {
+        ois = null;
+      }
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return this.getClass().getName()+remoteSocketAddress.toString();
   }
 }

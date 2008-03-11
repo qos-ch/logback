@@ -10,6 +10,7 @@
 package ch.qos.logback.classic.net;
 
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -20,7 +21,7 @@ public class PackageTest extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(SyslogAppenderTest.class);
     suite.addTestSuite(SMTPAppenderTest.class);
-    suite.addTestSuite(SocketAppenderTest.class);
+    suite.addTest(new JUnit4TestAdapter(SocketAppenderTest.class));
     suite.addTestSuite(JMSTopicAppenderTest.class);
     return suite;
   }

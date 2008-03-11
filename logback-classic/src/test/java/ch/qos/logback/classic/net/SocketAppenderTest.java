@@ -9,10 +9,13 @@
  */
 package ch.qos.logback.classic.net;
 
+
+import static org.junit.Assert.*;
+
 import java.util.Map;
 
-import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -24,8 +27,9 @@ import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class SocketAppenderTest extends TestCase {
+public class SocketAppenderTest  {
 
   static final String LIST_APPENDER_NAME = "la";
   int port = 4560;
@@ -33,9 +37,9 @@ public class SocketAppenderTest extends TestCase {
   LoggerContext serverLC = new LoggerContext();
   ListAppender<LoggingEvent> la = new ListAppender<LoggingEvent>();
   
-  //private MockSocketServer mockSocketServer;
   private SimpleSocketServer simpleSocketServer;
-  
+ 
+  @Test
   public void testStartFailNoRemoteHost() {
     SocketAppender appender = new SocketAppender();
     appender.setContext(lc);
@@ -44,8 +48,9 @@ public class SocketAppenderTest extends TestCase {
     assertEquals(1, lc.getStatusManager().getCount());
   }
 
+  @Test
   public void testRecieveMessage() throws InterruptedException {
-    startServer(1);
+    fireServer();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -65,8 +70,9 @@ public class SocketAppenderTest extends TestCase {
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
 
+  @Test
   public void testRecieveWithContext() throws InterruptedException {
-    startServer(1);
+    fireServer();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -94,8 +100,9 @@ public class SocketAppenderTest extends TestCase {
     assertEquals("testValue", props.get("testKey"));
   }
 
+  @Test
   public void testMessageWithMDC() throws InterruptedException {
-    startServer(1);
+    fireServer();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -117,8 +124,9 @@ public class SocketAppenderTest extends TestCase {
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
   
+  @Test
   public void testMessageWithMarker() throws InterruptedException {
-    startServer(1);
+    fireServer();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -139,8 +147,9 @@ public class SocketAppenderTest extends TestCase {
     assertEquals("testMarker", remoteEvent.getMarker().getName());
   }
 
+  @Test
   public void testMessageWithUpdatedMDC() throws InterruptedException {
-    startServer(2);
+    fireServer();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -169,7 +178,33 @@ public class SocketAppenderTest extends TestCase {
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }
 
-  private void startServer(int expectedNumberOfEvents) throws InterruptedException {
+  @Test
+  public void lateServerLaunch() throws InterruptedException {
+    configureClient();
+    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    logger.debug("test msg");
+
+    fireServer();
+    synchronized (simpleSocketServer) {
+      simpleSocketServer.wait(1000);  
+    }
+    logger.debug("test msg 2");
+    
+    StatusPrinter.print(lc);
+    
+    // Wait max 2 seconds for mock server to finish. However, it should
+    // finish much sooner than that.
+    simpleSocketServer.close();
+    simpleSocketServer.join(2000);
+    assertTrue(simpleSocketServer.isClosed());
+    assertEquals(1, la.list.size());
+
+    LoggingEvent remoteEvent = la.list.get(0);
+    assertEquals("test msg 2", remoteEvent.getMessage());
+    assertEquals(Level.DEBUG, remoteEvent.getLevel());
+  }
+  
+  private void fireServer() throws InterruptedException {
     Logger root = serverLC.getLogger("root");
     la.setName(LIST_APPENDER_NAME);
     la.setContext(serverLC);

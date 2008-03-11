@@ -11,6 +11,8 @@
 package ch.qos.logback.core.util;
 
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
 import ch.qos.logback.core.Context;
@@ -21,6 +23,8 @@ public class StatusPrinter {
   
   private static PrintStream ps = System.out;
 
+  static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss,SSS");
+  
   public static void setPrintStream(PrintStream printStream) {
     ps = printStream;
   }
@@ -57,7 +61,15 @@ public class StatusPrinter {
     } else {
       prefix = indentation + "|-";
     }
-    ps.println(prefix+s);
+    
+    if(simpleDateFormat != null) {
+      Date date = new Date(s.getDate());
+      String dateStr = simpleDateFormat.format(date);
+      ps.print(dateStr);
+      ps.print(" ");
+    } 
+    ps.println(prefix+s);   
+    
     if (s.getThrowable() != null) {
       s.getThrowable().printStackTrace(ps);
     }

@@ -20,9 +20,8 @@ import ch.qos.logback.core.AppenderBase;
 
 /**
  * 
- * This is the base class for module specific SocketAppender 
- * implementations.
- *  
+ * This is the base class for module specific SocketAppender implementations.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -49,7 +48,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   protected int port = DEFAULT_PORT;
   protected ObjectOutputStream oos;
   protected int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
-  
 
   private Connector connector;
 
@@ -72,12 +70,16 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for appender" + name + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
+      addError("No port was configured for appender"
+          + name
+          + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
     }
 
     if (address == null) {
       errorCount++;
-      addError("No remote address was configured for appender" + name + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
+      addError("No remote address was configured for appender"
+          + name
+          + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
     }
 
     connect(address, port);
@@ -149,7 +151,8 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       return;
 
     if (address == null) {
-      addError("No remote host is set for SocketAppender named \"" + this.name
+      addError("No remote host is set for SocketAppender named \""
+          + this.name
           + "\". For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
       return;
     }
@@ -168,6 +171,13 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
           oos.reset();
         }
       } catch (IOException e) {
+        if (oos != null) {
+          try {
+            oos.close();
+          } catch (IOException ignore) {
+          }
+        }
+
         oos = null;
         addWarn("Detected problem with connection: " + e);
         if (reconnectionDelay > 0) {
@@ -176,7 +186,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       }
     }
   }
-  
+
   protected abstract void postProcessEvent(E event);
 
   void fireConnector() {
@@ -228,7 +238,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   public int getPort() {
     return port;
   }
-  
 
   /**
    * The <b>ReconnectionDelay</b> option takes a positive integer representing

@@ -12,6 +12,8 @@ package ch.qos.logback.classic.net;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,8 @@ public class SimpleSocketServer extends Thread {
   private final LoggerContext lc;
   private boolean closed = false;
   private ServerSocket serverSocket;
-
+  private List<SocketNode> socketNodeList = new ArrayList<SocketNode>();
+  
   public static void main(String argv[]) throws Exception {
     int port = -1;
     if (argv.length == 2) {
@@ -77,18 +80,31 @@ public class SimpleSocketServer extends Thread {
         Socket socket = serverSocket.accept();
         logger.info("Connected to client at " + socket.getInetAddress());
         logger.info("Starting new socket node.");
-        new Thread(new SocketNode(socket, lc)).start();
+        SocketNode newSocketNode = new SocketNode(this, socket, lc); 
+        synchronized (socketNodeList) {
+          socketNodeList.add(newSocketNode);
+        }
+        new Thread(newSocketNode).start();
+        signalSocketNodeCreation();
       }
     } catch (Exception e) {
       if(closed) {
-        logger.info("Exception in run method for a closed server. This is expected");
+        logger.info("Exception in run method for a closed server. This is normal.");
       } else {
-        logger.error("Failure in run method", e);
+        logger.error("Unexpected failure in run method", e);
       }
     }
   }
 
-  
+  /**
+   * Signal another thread that we have established a conneciton
+   *  This is useful for testing purposes.
+   */
+  void signalSocketNodeCreation() {
+    synchronized(this) {
+      this.notifyAll();
+    }
+  }
   public boolean isClosed() {
     return closed;
   }
@@ -100,10 +116,29 @@ public class SimpleSocketServer extends Thread {
         serverSocket.close();
       } catch (IOException e) {
         logger.error("Failed to close serverSocket", e);
+      } finally {
+        serverSocket = null;
       }
+    } 
+    
+    synchronized (socketNodeList) {
+      for(SocketNode sn: socketNodeList) {
+        sn.close();
+      }      
+      socketNodeList.clear();
     }
   }
 
+  public void socketNodeClosing(SocketNode sn) {
+    logger.debug("Removing {}", sn);
+
+    // don't allow simultaneous access to the socketNodeList
+    // (e.g. removal whole iterating on the list causes
+    // java.util.ConcurrentModificationException
+    synchronized (socketNodeList) {
+      socketNodeList.remove(sn);      
+    }
+  }
   static void usage(String msg) {
     System.err.println(msg);
     System.err.println("Usage: java " + SimpleSocketServer.class.getName()
