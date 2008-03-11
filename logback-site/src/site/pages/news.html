@@ -45,14 +45,38 @@ prefix='';
    </p>
 
    <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=104">bug
-  104</a>, silly but but nonetheless serious copy-and-paste errors in
-  the c.q.l.classic.Logger class, reported by Joern Huxhorn.
-  </p>
+   104</a>, silly but but nonetheless serious copy-and-paste errors in
+   the c.q.l.classic.Logger class, reported by Joern Huxhorn.
+   </p>
 
-   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=104">bug
+   <p>Having been replaced by <code>SimpleSocketServer</code>, the
+   <code>SocketServer</code> class has been removed.
+   </p>
+  
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=105">bug
+   105</a>, sockets created by <code>SocketAppenderBase</code> is now
+   closed, reported by Joern Huxhorn. More generally,
+   <code>SimpleSocketServer</code> is much more careful to track open
+   client connections and to close them. 
+   </p>
+
+   
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=110">bug
    110</a> in relation with the <code>requestParameterMap</code> field
    in <code>AccessEvent</code> - reported by Joern Huxhorn.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.slf4j.org/show_bug.cgi?id=66">
+   SLF4J bug 66</a> in relation with caller data when using
+   log4j-over-slf4j - reported by Frnack Routier.
   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=129">bug
+   129</a> reported by Michael Franz. As a result, Joran now supports
+   nested as well as multiple file inclusions.
+   </p>
+
 
   <hr width="80%" align="center" />
 
