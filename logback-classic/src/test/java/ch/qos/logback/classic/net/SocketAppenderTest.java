@@ -190,9 +190,9 @@ public class SocketAppenderTest  {
     synchronized (simpleSocketServer) {
       simpleSocketServer.wait(1000);  
     }
-    // give the server a little more time
-    Thread.yield();
+    Thread.yield(); // give the server a little more time
     logger.debug("test msg 2");
+    Thread.yield(); // give the server a little more time
     
     simpleSocketServer.close();
     simpleSocketServer.join(2000);
@@ -213,6 +213,7 @@ public class SocketAppenderTest  {
     root.addAppender(la);
     simpleSocketServer = new SimpleSocketServer(serverLC, port);
     simpleSocketServer.start();
+    Thread.yield();
   }
 
   
