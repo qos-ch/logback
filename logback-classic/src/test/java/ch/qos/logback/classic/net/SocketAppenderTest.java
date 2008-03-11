@@ -32,10 +32,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class SocketAppenderTest  {
 
   static final String LIST_APPENDER_NAME = "la";
-  int port = 4560;
+  int port = 4561;
   LoggerContext lc = new LoggerContext();
   LoggerContext serverLC = new LoggerContext();
   ListAppender<LoggingEvent> la = new ListAppender<LoggingEvent>();
+  SocketAppender socketAppender = new SocketAppender();
   
   private SimpleSocketServer simpleSocketServer;
  
@@ -180,6 +181,7 @@ public class SocketAppenderTest  {
 
   @Test
   public void lateServerLaunch() throws InterruptedException {
+    socketAppender.setReconnectionDelay(20);
     configureClient();
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("test msg");
@@ -188,14 +190,13 @@ public class SocketAppenderTest  {
     synchronized (simpleSocketServer) {
       simpleSocketServer.wait(1000);  
     }
+    // give the server a little more time
+    Thread.yield();
     logger.debug("test msg 2");
     
-    StatusPrinter.print(lc);
-    
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
     simpleSocketServer.close();
     simpleSocketServer.join(2000);
+    StatusPrinter.print(lc);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -212,10 +213,6 @@ public class SocketAppenderTest  {
     root.addAppender(la);
     simpleSocketServer = new SimpleSocketServer(serverLC, port);
     simpleSocketServer.start();
-    //mockSocketServer = new MockSocketServer(expectedNumberOfEvents);
-    //mockSocketServer.start();
-    // give MockSocketServer head start
-    Thread.sleep(100);
   }
 
   
@@ -229,7 +226,6 @@ public class SocketAppenderTest  {
     lc.setName("test");
     lc.putProperty("testKey", "testValue");
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
-    SocketAppender socketAppender = new SocketAppender();
     socketAppender.setContext(lc);
     socketAppender.setName("socket");
     socketAppender.setPort(port);
