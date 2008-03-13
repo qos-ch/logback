@@ -3,9 +3,11 @@ package ch.qos.logback.classic.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
@@ -19,7 +21,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
-public class LoggingEventSerializationTest  {
+public class LoggingEventSerializationTest {
 
   LoggerContext lc;
   Logger logger;
@@ -37,41 +39,27 @@ public class LoggingEventSerializationTest  {
     bos = new ByteArrayOutputStream();
     oos = new ObjectOutputStream(bos);
   }
-  
 
   @After
   public void tearDown() throws Exception {
-
     lc = null;
     logger = null;
+    oos.close();
   }
 
   @Test
-  public void testBasic() throws Exception {
+  public void smoke() throws Exception {
     LoggingEvent event = createLoggingEvent();
-    oos.writeObject(event);
-
-    // create the input stream based on the ouput stream
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    inputStream = new ObjectInputStream(bis);
-
-    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();
-
-    assertEquals("test message", remoteEvent.getMessage());
-    assertEquals(Level.DEBUG, remoteEvent.getLevel());
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
   }
 
   @Test
   public void testContext() throws Exception {
     lc.putProperty("testKey", "testValue");
     LoggingEvent event = createLoggingEvent();
-    oos.writeObject(event);
-
-    // create the input stream based on the ouput stream
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    inputStream = new ObjectInputStream(bis);
-
-    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
 
     LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
     assertNotNull(loggerRemoteView);
@@ -85,19 +73,13 @@ public class LoggingEventSerializationTest  {
     assertNotNull(props);
     assertEquals("testValue", props.get("testKey"));
   }
-  
+
   @Test
   public void testMDC() throws Exception {
     MDC.put("key", "testValue");
     LoggingEvent event = createLoggingEvent();
-    oos.writeObject(event);
-
-    // create the input stream based on the ouput stream
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    inputStream = new ObjectInputStream(bis);
-
-    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();   
-
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
@@ -107,7 +89,7 @@ public class LoggingEventSerializationTest  {
     MDC.put("key", "testValue");
     LoggingEvent event1 = createLoggingEvent();
     oos.writeObject(event1);
-    
+
     MDC.put("key", "updatedTestValue");
     LoggingEvent event2 = createLoggingEvent();
     oos.writeObject(event2);
@@ -117,27 +99,22 @@ public class LoggingEventSerializationTest  {
     inputStream = new ObjectInputStream(bis);
 
     // skip over one object
-    inputStream.readObject();      
-    LoggingEvent remoteEvent2 = (LoggingEvent) inputStream.readObject();  
-    
+    inputStream.readObject();
+    LoggingEvent remoteEvent2 = (LoggingEvent) inputStream.readObject();
+
     // We observe the second logging event. It should provide us with
     // the updated MDC property.
     Map<String, String> MDCPropertyMap = remoteEvent2.getMDCPropertyMap();
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }
-  
+
   @Test
   public void nonSerializableParameters() throws Exception {
     LoggingEvent event = createLoggingEvent();
     LuckyCharms lucky0 = new LuckyCharms(0);
-    event.setArgumentArray(new Object[] {lucky0, null});
-    oos.writeObject(event);
-    
-    // create the input stream based on the ouput stream
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    inputStream = new ObjectInputStream(bis);
-    
-    LoggingEvent remoteEvent = (LoggingEvent) inputStream.readObject();  
+    event.setArgumentArray(new Object[] { lucky0, null });
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
     
     Object[] aa = remoteEvent.getArgumentArray();
     assertNotNull(aa);
@@ -146,12 +123,66 @@ public class LoggingEventSerializationTest  {
     assertNull(aa[1]);
   }
 
+  @Test
+  public void testThrowable() throws Exception {
+    LoggingEvent event = createLoggingEvent();
+    Throwable throwable = new Throwable("just testing");
+    ThrowableInformation th = new ThrowableInformation(throwable);
+    event.setThrowableInformation(th);
 
-  
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
+  }
+
+  @Test
+  public void testSerializeLargeArgs() throws Exception {
+    
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < 100000; i++) {
+      buffer.append("X");
+    }
+    String largeString = buffer.toString();
+    Object[] argArray = new Object[] {new LuckyCharms(2),
+        largeString };
+    
+    LoggingEvent event = createLoggingEvent();
+    event.setArgumentArray(argArray);
+    
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
+    Object[] aa = remoteEvent.getArgumentArray();
+    assertNotNull(aa);
+    assertEquals(2, aa.length);
+    String stringBack = (String) aa[1];
+    
+    assertTrue(stringBack.startsWith("X"));
+    assertEquals(LoggingEvent.UTF_SIZE_LIMIT, stringBack.length());
+  }
+
   private LoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
         Level.DEBUG, "test message", null, null);
     return le;
+  }
+
+  private void checkForEquality(LoggingEvent original,
+      LoggingEvent afterSerialization) {
+    assertEquals(original.getLevel(), afterSerialization.getLevel());
+    assertEquals(original.getFormattedMessage(), afterSerialization
+        .getFormattedMessage());
+    assertEquals(original.getMessage(), afterSerialization.getMessage());
+    assertEquals(original.getThrowableInformation(), afterSerialization
+        .getThrowableInformation());
+
+  }
+
+  private LoggingEvent writeAndRead(LoggingEvent event) throws IOException,
+      ClassNotFoundException {
+    oos.writeObject(event);
+    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+    inputStream = new ObjectInputStream(bis);
+
+    return (LoggingEvent) inputStream.readObject();
   }
 
 }

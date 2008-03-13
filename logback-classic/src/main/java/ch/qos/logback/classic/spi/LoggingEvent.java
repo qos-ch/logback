@@ -49,7 +49,10 @@ public class LoggingEvent implements Serializable {
 
   private static final int NULL_ARGUMENT_ARRAY = -1;
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
-
+  
+  // writeUTF method in ObjectOutputStream has a size limit of 2*16;
+  static final int UTF_SIZE_LIMIT = 0xFFFF;
+  
   /**
    * 
    */
@@ -295,7 +298,7 @@ public class LoggingEvent implements Serializable {
       out.writeInt(len);
       for (int i = 0; i < argumentArray.length; i++) {
         if (argumentArray[i] != null) {
-          out.writeUTF(argumentArray[i].toString());
+          out.writeUTF(cap(argumentArray[i].toString()));
         } else {
           out.writeUTF(NULL_ARGUMENT_ARRAY_ELEMENT);
         }
@@ -306,6 +309,18 @@ public class LoggingEvent implements Serializable {
 
   }
 
+  /**
+   * writeUTF method cannot handle large strings
+   * @param in
+   * @return
+   */
+  final String cap(String in) {
+    if(in.length() > UTF_SIZE_LIMIT) {
+      return in.substring(0, UTF_SIZE_LIMIT);
+    } else {
+      return in;
+    }
+  }
   private void readObject(ObjectInputStream in) throws IOException,
       ClassNotFoundException {
     in.defaultReadObject();

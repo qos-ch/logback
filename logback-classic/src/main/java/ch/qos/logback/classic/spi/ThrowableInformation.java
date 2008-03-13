@@ -9,6 +9,8 @@
  */
 package ch.qos.logback.classic.spi;
 
+import java.util.Arrays;
+
 import ch.qos.logback.classic.ClassicGlobal;
 
 public class ThrowableInformation implements java.io.Serializable {
@@ -100,4 +102,28 @@ public class ThrowableInformation implements java.io.Serializable {
   public String[] getThrowableStrRep() {
     return sa;
   }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 31;
+    int result = 1;
+    result = PRIME * result + Arrays.hashCode(sa);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final ThrowableInformation other = (ThrowableInformation) obj;
+    if (!Arrays.equals(sa, other.sa))
+      return false;
+    return true;
+  }
+  
+  
 }
