@@ -15,8 +15,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import ch.qos.logback.access.Constants;
+
 public class DummyRequest implements HttpServletRequest {
 
+  public final static String  DUMMY_CONTENT_STRING = "request contents";
+  public final static byte[] DUMMY_CONTENT_BYTES = DUMMY_CONTENT_STRING.getBytes(); 
+
+  
+  public static final String DUMMY_RESPONSE_CONTENT_STRING = "response contents";
+  public static final byte[] DUMMY_RESPONSE_CONTENT_BYTES =DUMMY_RESPONSE_CONTENT_STRING.getBytes();
+  
   Hashtable<String, String> headerNames;
   String uri;
 
@@ -130,6 +139,10 @@ public class DummyRequest implements HttpServletRequest {
   public Object getAttribute(String key) {
     if (key.equals("testKey")) {
       return "testKey";
+    } else if (Constants.LB_INPUT_BUFFER.equals(key)) {
+      return DUMMY_CONTENT_BYTES;
+    } else if (Constants.LB_OUTPUT_BUFFER.equals(key)) {
+      return DUMMY_RESPONSE_CONTENT_BYTES;
     } else {
       return null;
     }

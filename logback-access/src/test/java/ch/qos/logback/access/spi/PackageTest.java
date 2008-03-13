@@ -15,7 +15,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(AccessEventTest.class);
+    suite.addTest(new JUnit4TestAdapter(AccessEventSerializationTest.class));
     return suite;
   }
 }

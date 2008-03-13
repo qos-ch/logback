@@ -29,8 +29,9 @@ import ch.qos.logback.access.servlet.Util;
  */
 public class AccessEvent implements Serializable {
 
-  private static final long serialVersionUID = -3118194368414470960L;
-
+  
+  private static final long serialVersionUID = 866718993618836343L;
+  
   public final static String NA = "-";
   public final static String[] NA_STRING_ARRAY = new String[] { AccessEvent.NA };
 
@@ -75,10 +76,22 @@ public class AccessEvent implements Serializable {
     this.serverAdapter = adapter;
   }
 
+  /**
+   * Returns the underlying HttpServletRequest. After serialization the returned 
+   * value will be null. 
+   * 
+   * @return
+   */
   public HttpServletRequest getRequest() {
     return httpRequest;
   }
 
+  /**
+   * Returns the underlying HttpServletResponse. After serialization the returned 
+   * value will be null. 
+   * 
+   * @return
+   */
   public HttpServletResponse getResponse() {
     return httpResponse;
   }
@@ -462,6 +475,7 @@ public class AccessEvent implements Serializable {
 
     getStatusCode();
     getContentLength();
-    // getPostContent();
+    getRequestContent();
+    getResponseContent();
   }
 }
