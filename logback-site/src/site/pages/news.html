@@ -60,8 +60,6 @@ prefix='';
    client connections and to close them. 
    </p>
 
-   
-
    <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=110">bug
    110</a> in relation with the <code>requestParameterMap</code> field
    in <code>AccessEvent</code> - reported by Joern Huxhorn.
@@ -75,6 +73,20 @@ prefix='';
    <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=129">bug
    129</a> reported by Michael Franz. As a result, Joran now supports
    nested as well as multiple file inclusions.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=100">bug
+   100</a> reported by Joern Huxhorn. At serialization time, object
+   array passed as parameter, when the LoggingEvent is are now
+   serialized as strings.
+   </p>
+
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=109">bug
+   109</a> reported by Joern Huxhorn. There should no longer be any
+   NullPointerExceptions thrown by deserialized
+   <code>AccessEvent</code> instances.
+
    </p>
 
 

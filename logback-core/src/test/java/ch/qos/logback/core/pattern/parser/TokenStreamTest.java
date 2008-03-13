@@ -281,23 +281,24 @@ public class TokenStreamTest extends TestCase {
   }
 
   public void testNested() throws ScanException {
-    {
-      List tl = new TokenStream("%(%a%(%b))").tokenize();
-      List<Token> witness = new ArrayList<Token>();
-      witness.add(Token.PERCENT_TOKEN);
-      witness.add(Token.LEFT_PARENTHESIS_TOKEN);
-      witness.add(Token.PERCENT_TOKEN);
-      witness.add(new Token(Token.KEYWORD, "a"));
-      witness.add(Token.PERCENT_TOKEN);
-      witness.add(Token.LEFT_PARENTHESIS_TOKEN);
-      witness.add(Token.PERCENT_TOKEN);
-      witness.add(new Token(Token.KEYWORD, "b"));
-      witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
-      witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
+    List tl = new TokenStream("%(%a%(%b))").tokenize();
+    List<Token> witness = new ArrayList<Token>();
+    witness.add(Token.PERCENT_TOKEN);
+    witness.add(Token.LEFT_PARENTHESIS_TOKEN);
+    witness.add(Token.PERCENT_TOKEN);
+    witness.add(new Token(Token.KEYWORD, "a"));
+    witness.add(Token.PERCENT_TOKEN);
+    witness.add(Token.LEFT_PARENTHESIS_TOKEN);
+    witness.add(Token.PERCENT_TOKEN);
+    witness.add(new Token(Token.KEYWORD, "b"));
+    witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
+    witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
 
-      assertEquals(witness, tl);
-    }
+    assertEquals(witness, tl);
 
+  }
+
+  public void testEscapedParanteheses() throws ScanException {
     {
       List tl = new TokenStream("\\(%h\\)").tokenize();
       List<Token> witness = new ArrayList<Token>();
@@ -305,11 +306,17 @@ public class TokenStreamTest extends TestCase {
       witness.add(Token.PERCENT_TOKEN);
       witness.add(new Token(Token.KEYWORD, "h"));
       witness.add(new Token(Token.LITERAL, ")"));
-
+      assertEquals(witness, tl);
+    }
+    {
+      List tl = new TokenStream("(%h\\)").tokenize();
+      List<Token> witness = new ArrayList<Token>();
+      witness.add(new Token(Token.LITERAL, "("));
+      witness.add(Token.PERCENT_TOKEN);
+      witness.add(new Token(Token.KEYWORD, "h"));
+      witness.add(new Token(Token.LITERAL, ")"));
       assertEquals(witness, tl);
     }
 
-    //
   }
-
 }

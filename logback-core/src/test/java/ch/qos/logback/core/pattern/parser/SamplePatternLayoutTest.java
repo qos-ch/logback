@@ -42,9 +42,25 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     //StatusManager sm = context.getStatusManager();
     //StatusPrinter.print(sm);
     assertEquals("x123", s);
+  }
+
+  public void testParentheses() {
+    PatternLayoutBase<Object> plb = getPatternLayoutBase();
+    Context context = new ContextBase();
+    plb.setContext(context);
+    plb.setPattern("x(%OTT\\)");
+    plb.start();
+    String s = plb.doLayout(new Object());
+    //System.out.println(s);
+    System.out.println(s);
+    
+    //StatusManager sm = context.getStatusManager();
+    //StatusPrinter.print(sm);
+    assertEquals("x(123)", s);
 
   }
 
+  
   @Override
   public Context getContext() {
     return  context;
