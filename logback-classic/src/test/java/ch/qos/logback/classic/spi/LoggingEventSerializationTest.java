@@ -3,7 +3,6 @@ package ch.qos.logback.classic.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -154,9 +153,7 @@ public class LoggingEventSerializationTest {
     assertNotNull(aa);
     assertEquals(2, aa.length);
     String stringBack = (String) aa[1];
-    
-    assertTrue(stringBack.startsWith("X"));
-    assertEquals(LoggingEvent.UTF_SIZE_LIMIT, stringBack.length());
+    assertEquals(largeString, stringBack);
   }
 
   private LoggingEvent createLoggingEvent() {

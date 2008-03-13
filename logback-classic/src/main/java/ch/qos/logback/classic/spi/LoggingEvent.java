@@ -42,16 +42,10 @@ import ch.qos.logback.classic.Logger;
  */
 public class LoggingEvent implements Serializable {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 3022264832697160750L;
+  private static final long serialVersionUID = 3075964498087694229L;
 
   private static final int NULL_ARGUMENT_ARRAY = -1;
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
-  
-  // writeUTF method in ObjectOutputStream has a size limit of 2*16;
-  static final int UTF_SIZE_LIMIT = 0xFFFF;
   
   /**
    * 
@@ -298,9 +292,9 @@ public class LoggingEvent implements Serializable {
       out.writeInt(len);
       for (int i = 0; i < argumentArray.length; i++) {
         if (argumentArray[i] != null) {
-          out.writeUTF(cap(argumentArray[i].toString()));
+          out.writeObject(argumentArray[i].toString());
         } else {
-          out.writeUTF(NULL_ARGUMENT_ARRAY_ELEMENT);
+          out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
         }
       }
     } else {
@@ -309,18 +303,6 @@ public class LoggingEvent implements Serializable {
 
   }
 
-  /**
-   * writeUTF method cannot handle large strings
-   * @param in
-   * @return
-   */
-  final String cap(String in) {
-    if(in.length() > UTF_SIZE_LIMIT) {
-      return in.substring(0, UTF_SIZE_LIMIT);
-    } else {
-      return in;
-    }
-  }
   private void readObject(ObjectInputStream in) throws IOException,
       ClassNotFoundException {
     in.defaultReadObject();
@@ -331,7 +313,7 @@ public class LoggingEvent implements Serializable {
     if (argArrayLen != NULL_ARGUMENT_ARRAY) {
       argumentArray = new String[argArrayLen];
       for (int i = 0; i < argArrayLen; i++) {
-        String val = in.readUTF();
+        Object val = in.readObject();
         if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
           argumentArray[i] = val;
         }
