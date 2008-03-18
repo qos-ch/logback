@@ -16,7 +16,7 @@ import java.util.Map;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
-import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
@@ -47,7 +47,7 @@ public class FileNamePattern extends ContextAwareBase {
     setPattern(patternArg);
     setContext(contextArg);
     parse();
-    DynamicConverter.startConverters(this.headTokenConverter);
+    ConverterUtil.startConverters(this.headTokenConverter);
   }
 
   void parse() {

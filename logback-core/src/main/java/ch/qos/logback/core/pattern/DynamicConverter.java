@@ -52,19 +52,4 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E> impleme
   protected List getOptionList() {
     return optionList;
   }
-  
-  /**
-   * Used to start DynamicConvertes in a chain of converters.
-   * @param head
-   */
-  public static void startConverters(Converter head) {
-    Converter c = head;
-    while (c != null) {
-      if (c instanceof DynamicConverter) {
-        DynamicConverter dc = (DynamicConverter) c;
-        dc.start();
-      }
-      c = c.getNext();
-    }
-  }
 }

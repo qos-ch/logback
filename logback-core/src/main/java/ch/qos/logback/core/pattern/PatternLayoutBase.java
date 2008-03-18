@@ -78,7 +78,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       Node t = p.parse();
       this.head = p.compile(t, getEffectiveConverterMap());
       postCompileProcessing(head);
-      DynamicConverter.startConverters(this.head);
+      ConverterUtil.startConverters(this.head);
       super.start();
     } catch (ScanException sce) {
       StatusManager sm = getContext().getStatusManager();

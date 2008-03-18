@@ -4,7 +4,7 @@ import java.util.Map;
 
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
-import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
@@ -74,7 +74,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
       p.setContext(getContext());
       Node t = p.parse();
       this.head = p.compile(t, getDefaultConverterMap());
-      DynamicConverter.startConverters(this.head);
+      ConverterUtil.startConverters(this.head);
     } catch (ScanException ex) {
       addError("Incorrect pattern found", ex);
       errorCount++;
