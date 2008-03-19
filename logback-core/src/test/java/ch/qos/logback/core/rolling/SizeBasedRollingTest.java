@@ -108,7 +108,7 @@ public class SizeBasedRollingTest extends TestCase {
     
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     swrp.setContext(context);
-    SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
+    SizeBasedTriggeringPolicy<Object> sbtp = new SizeBasedTriggeringPolicy<Object>();
     sbtp.setContext(context);
 
     sbtp.setMaxFileSize("100");
@@ -180,7 +180,7 @@ public class SizeBasedRollingTest extends TestCase {
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
-    SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
+    SizeBasedTriggeringPolicy<Object> sbtp = new SizeBasedTriggeringPolicy<Object>();
     sbtp.setContext(context);
 
     sbtp.setMaxFileSize("100");

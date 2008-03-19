@@ -29,7 +29,7 @@ import ch.qos.logback.core.FileAppender;
  * */
 public class RollingFileAppender<E> extends FileAppender<E> {
   File activeFileCache;
-  TriggeringPolicy triggeringPolicy;
+  TriggeringPolicy<E> triggeringPolicy;
   RollingPolicy rollingPolicy;
 
   /**
@@ -136,12 +136,12 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   public void setRollingPolicy(RollingPolicy policy) {
     rollingPolicy = policy;
     if(rollingPolicy instanceof TriggeringPolicy) {
-      triggeringPolicy = (TriggeringPolicy) policy;
+      triggeringPolicy = (TriggeringPolicy<E>) policy;
     }
     
   }
 
-  public void setTriggeringPolicy(TriggeringPolicy policy) {
+  public void setTriggeringPolicy(TriggeringPolicy<E> policy) {
     triggeringPolicy = policy;
     if(policy instanceof RollingPolicy) {
       rollingPolicy = (RollingPolicy) policy;

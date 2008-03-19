@@ -46,6 +46,7 @@ public class CyclicBuffer<E> {
     init(maxSize);
   }
   
+  @SuppressWarnings("unchecked")
   private void init(int maxSize) {
     this.maxSize = maxSize;
     ea = (E[]) new Object[maxSize];

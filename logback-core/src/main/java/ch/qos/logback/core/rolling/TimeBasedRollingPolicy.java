@@ -29,7 +29,7 @@ import ch.qos.logback.core.rolling.helper.RollingCalendar;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class TimeBasedRollingPolicy extends RollingPolicyBase implements TriggeringPolicy {
+public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements TriggeringPolicy<E> {
   static final String FNP_NOT_SET =
     "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
   static final String SEE_FNP_NOT_SET =
@@ -185,7 +185,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     }
   }
 
-  public boolean isTriggeringEvent(File activeFile, final Object event) {
+  public boolean isTriggeringEvent(File activeFile, final E event) {
     long time= getCurrentTime();
 
     if (time >= nextCheck) {

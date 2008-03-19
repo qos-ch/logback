@@ -23,7 +23,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * @author Ceki G&uuml;lc&uuml;
  * */
 
-public interface TriggeringPolicy extends LifeCycle {
+public interface TriggeringPolicy<E> extends LifeCycle {
   
   /**
    * Should roll-over be triggered at this time?
@@ -32,5 +32,5 @@ public interface TriggeringPolicy extends LifeCycle {
    * @param event A reference to the currently event. 
    * @return true if a roll-over should occur.
    */
-  public boolean isTriggeringEvent(final File activeFile, final Object event);
+  public boolean isTriggeringEvent(final File activeFile, final E event);
 }

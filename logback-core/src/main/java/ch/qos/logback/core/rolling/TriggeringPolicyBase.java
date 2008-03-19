@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-abstract public class TriggeringPolicyBase extends ContextAwareBase implements TriggeringPolicy {
+abstract public class TriggeringPolicyBase<E> extends ContextAwareBase implements TriggeringPolicy<E> {
   
   private boolean start;
 

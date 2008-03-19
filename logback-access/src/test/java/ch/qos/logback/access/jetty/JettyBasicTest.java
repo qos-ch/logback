@@ -61,6 +61,7 @@ public class JettyBasicTest  {
     assertEquals("hello world", result);
 
     ListAppender appender = (ListAppender) requestLogImpl.getAppender("list");
+    assertTrue(appender.list.size()>0);
     AccessEvent event = (AccessEvent) appender.list.get(0);
     assertEquals("127.0.0.1", event.getRemoteHost());
     assertEquals("localhost", event.getServerName());

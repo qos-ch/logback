@@ -26,7 +26,7 @@ import ch.qos.logback.core.util.FileSize;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
+public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
   
   public static final String SEE_SIZE_FORMAT = "http://logback.qos.ch/codes.html#sbtp_size_format";
   /**
@@ -44,7 +44,7 @@ public class SizeBasedTriggeringPolicy extends TriggeringPolicyBase {
       setMaxFileSize(maxFileSize);
   }
 
-  public boolean isTriggeringEvent(final File activeFile, final Object event) {
+  public boolean isTriggeringEvent(final File activeFile, final E event) {
     //System.out.println("Size"+file.length());
     return (activeFile.length() >= maxFileSize.getSize());
   }
