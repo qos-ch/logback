@@ -857,7 +857,7 @@ public interface RollingPolicy extends LifeCycle {
 		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
 		<code>TimeBasedRollingPolicy</code></a> is probably the most
 		popular rolling polciy. It allows defines a rollover policy based
-		on time, say by day or month.
+		on time, say by day or by month.
 	</p>
 
 	<p><code>TimeBasedRollingPolicy</code>'s has only one mandatory
@@ -868,10 +868,10 @@ public interface RollingPolicy extends LifeCycle {
 	name of the rolled (archived) log files. Its value <span
 	class="option">FileNamePattern</span> should consist of the name of
 	the file, plus a suitably placed <em>%d</em> conversion specifier.
-	The <em>%d</em> conversion specifier may contain a date and time
+	The <em>%d</em> conversion specifier may contain a date-and-time
 	pattern as specified by the <code>java.text.SimpleDateFormat</code>
-	class.  If the date and time pattern is omitted, then the default
-	pattern of <em>yyyy-MM-dd</em> is assumed. The following examples
+	class.  If the date-and-time pattern is omitted, then the default
+	pattern <em>yyyy-MM-dd</em> is assumed. The following examples
 	should clarify the point.
 	</p>
 
@@ -1005,30 +1005,19 @@ public interface RollingPolicy extends LifeCycle {
 	</table>
 	
 	<p>The <span class="option">FileNamePattern</span> serves a dual
-	purposes. First, by studying the pattern, logback computes the
-	requested rollover periodicity. Second, it computes each file's
-	name. It is entirely possible for two different patterns to specify
-	the same periodicity.  The (date) patterns <em>yyyy-MM</em> and
+	purpose. First, by studying the pattern, logback computes the
+	requested rollover periodicity. Second, it computes each archived
+	file's name. Note that it is possible for two different patterns to
+	specify the same periodicity. The patterns <em>yyyy-MM</em> and
 	<em>yyyy@MM</em> both specify monthly rollover, although the
 	resulting archive files will carry different names.
 	</p>
-	
-	<p>Thus, <code>TimeBasedRollingPolicy</code> caries a responsiblity
-	for rollover as well as for the triggering of said rollover. Put
-	differently, <code>TimeBasedTriggeringPolicy</code> implements both
-	<code>RollingPolicy</code> and <code>TriggeringPolicy</code>
-	interfaces. A <code>RollingFileAppender</code> owning a child
-	<code>TimeBasedRollingPolicy</code> can be started and used
-	correctly even if its does not contain a reference to a
-	<code>TriggeringPolicy</code>.
-	</p>
-	
-	<p>As with <code>FixedWindowRollingPolicy</code>,
-	<code>TimeBasedRollingPolicy</code> decouples the location of the
-	active log file and the archived log files. The <span
-	class="option">File</span> option defines the log file for the
-	current period whereas <em>archived files</em> are those files which
-	have been rolled over in previous periods.
+
+	<p>Thus, <code>TimeBasedRollingPolicy</code> assumes the
+	responsiblity for rollover as well as for the triggering of said
+	rollover. Indeed, <code>TimeBasedTriggeringPolicy</code> implements
+	both <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
+	interfaces.
 	</p>
 
 	<p>By setting the <span class="option">File</span> option you can
@@ -1041,6 +1030,7 @@ public interface RollingPolicy extends LifeCycle {
 	computed anew for each period based on the value of <span
 	class="option">FileNamePattern</span>.
 	</p>
+	
 	
 	<p>For various reasons, rollovers are not clock-driven but depend on
 	the arrival of logging events. For example, on 8th of March 2002,
@@ -1056,9 +1046,9 @@ public interface RollingPolicy extends LifeCycle {
 	output in the correct file delimiting that period.
 	</p>
 	
-  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-	<p>Here is a sample configuration of a <code>RollingFileAppender</code> which
-	uses a <code>TimeBasedRollingPolicy</code>
+  <p>Here is a sample configuration for
+  <code>RollingFileAppender</code> in conjuction with a
+  <code>TimeBasedRollingPolicy</code>.
 	</p>
 	
 <em>Example 4.5: Sample configuration of a <code>RollingFileAppender</code> using a 
@@ -1084,63 +1074,59 @@ public interface RollingPolicy extends LifeCycle {
 		<a name="TriggeringPolicy"></a>
 		<h3>Triggering policies</h3>
 		
-		<p><a href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
-		implementations are responsible for instructing
-		the <code>RollingFileAppender</code> to rollover.</p>
+		<p><a
+		href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
+		implementations are responsible for instructing the
+		<code>RollingFileAppender</code> to rollover.</p>
 		
-		<p>The <code>TriggeringPolicy</code> interface is pretty simple.</p>
+		<p>The <code>TriggeringPolicy</code> interface contains only one
+		method.</p>
 	
 <div class="source"><pre>package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import ch.qos.logback.core.spi.LifeCycle;
 
-public interface TriggeringPolicy extends LifeCycle {
+public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
-  <b>public boolean isTriggeringEvent(final File activeFile, final Object event);</b>
+  <b>public boolean isTriggeringEvent(final File activeFile, final &lt;E&gt; event);</b>
 }</pre></div>
 
 		<p>
-			The
-			<code>isTriggeringEvent()</code>
-			method takes the active file, and the currently processed
-			logging event. It's implementation decides, based on these
-			parameters, whether the rollover must occur or not, by
-			returning a boolean value.
+			The <code>isTriggeringEvent()</code> method takes as parameters
+			the active file, and the logging event currently being
+			processed. The concrete implementation determines whether the
+			rollover should occur or not, based on the said parameters.
 		</p>
 
 		<a name="SizeBasedTriggeringPolicy"></a>
 		<h4>SizeBasedTriggeringPolicy</h4>
 
-		<p>
-			<a href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
-			<code>SizeBasedTriggeringPolicy</code></a>
-			looks at size of the file being currently written to. If it
-			grows larger than the specified size, the
-			<code>FileAppender</code> using the
-			<code>SizeBasedTriggeringPolicy</code>
-			will proceed to the rollover of the current file and log to
-			a new one.
+		<p><a
+		href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
+		<code>SizeBasedTriggeringPolicy</code></a> looks at size of the
+		currently active file. If it grows larger than the specified size,
+		the <code>FileAppender</code> using the
+		<code>SizeBasedTriggeringPolicy</code> will proceed to the
+		rollover of the existing active file and create a new one.
 		</p>
 
-		<p>
-			This <code>TriggeringPolicy</code>
-			only accepts one parameter, that is the
-			<span class="option">MaxFileSize</span>
-			option. This option's default value is 10 MB.
+		<p>This <code>TriggeringPolicy</code> accepts only one parameter,
+		namely <span class="option">MaxFileSize</span>, with a default
+		value of 10 MB.
 		</p>
 
-		<p>
-			The <span class="option">MaxFileSize</span>
-			option can be specified in a simple and easy way, by
-			specifying the unit that should be used. One can enter any 
-			numeric value, with three possible units, namely <em>KB</em>, 
-			<em>MB</em> and <em>GB</em>. Consequently, values like
-			<em>5MB</em>, <em>500KB</em> or <em>2GB</em> are all valid.
+		<p>The <span class="option">MaxFileSize</span> option can be
+		specified in bytes, kilobytes, megabytes or gigabytes by suffixing
+		a numeric value with <em>KB</em>, <em>MB</em> and respectively
+		<em>GB</em>. For example, <em>5000000</em>, <em>5000KB</em>,
+		<em>5MB</em> and <em>2GB</em> are all valid values, with the first
+		three being also equivalent.
 		</p>
-		<p>
-			Here is a sample configuration with a <code>RollingFileAppender</code>
-			using a <code>SizeBasedTriggeringPolicy</code>.
+
+		<p>Here is a sample configuration with a
+		<code>RollingFileAppender</code> in conjuction with
+		<code>SizeBasedTriggeringPolicy</code>.
 		</p>
 
 <em>Example 4.6: Sample configuration of a <code>RollingFileAppender</code> using a 
@@ -1168,28 +1154,17 @@ public interface TriggeringPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>
-			<code>TriggeringPolicy</code> implementations do not only serve with
-			<code>RollingFileAppender</code> objects. They can also be used to tell
-			<code>SMTPAppender</code>, which will be covered soon, when to send an email
-			containing the last logging events.
-		</p>
-		
-		<p>
-			In that case, the <code>isTriggeringEvent()</code> method takes <em>null</em>
-			as its first parameter (of type <code>File</code>) and takes the logging event
-			as its second parameter. It is based on that last element that the decision is
-			made to send the email or not. By default, a <code>TriggeringPolicy</code> is
-			included with <code>SMTPAppender</code> that triggers the mail each time an event
-			with a <code>Level</code> of <em>ERROR</em> or more is issued.
-		</p>
-
+	
+    <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -->
 		<a name="Classic"></a>
 		<h2>Logback Classic</h2>
-		
-		
-		<p>While logging event are declared as <code>Object</code> in logback core, 
-		they are instances of the <code>LoggingEvent</code> class in logback classic.</p>
+				
+    
+		<p>While logging events are generic in logback-core, within
+		logback-classic they are always instances of
+		<code>LoggingEvent</code>. 
+
+    </p>
 
 		<a name="SocketAppender"></a>
 		<h3>SocketAppender</h3>
