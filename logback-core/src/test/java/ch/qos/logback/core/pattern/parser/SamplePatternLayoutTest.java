@@ -51,13 +51,17 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     plb.setPattern("x(%OTT\\)");
     plb.start();
     String s = plb.doLayout(new Object());
-    //System.out.println(s);
-    System.out.println(s);
-    
-    //StatusManager sm = context.getStatusManager();
-    //StatusPrinter.print(sm);
     assertEquals("x(123)", s);
+  }
 
+  public void testPercentAsLiteral() {
+    PatternLayoutBase<Object> plb = getPatternLayoutBase();
+    Context context = new ContextBase();
+    plb.setContext(context);
+    plb.setPattern("hello \\% world");
+    plb.start();
+    String s = plb.doLayout(new Object());
+    assertEquals("hello % world", s);
   }
 
   
