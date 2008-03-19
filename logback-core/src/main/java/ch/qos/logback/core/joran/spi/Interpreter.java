@@ -66,7 +66,7 @@ public class Interpreter  {
   final private RuleStore ruleStore;
   final private InterpretationContext ec;
   final private ArrayList<ImplicitAction> implicitActions;
-  final private ContextAwareImpl cai;
+  final private CAI_WithLocatorSupport cai;
   Pattern pattern;
   Locator locator;
   EventPlayer player;
@@ -88,7 +88,7 @@ public class Interpreter  {
   Pattern skip = null;
 
   public Interpreter(Context context, RuleStore rs) {
-    this.cai = new ContextAwareImpl(this);
+    this.cai = new CAI_WithLocatorSupport(this);
     this.cai.setContext(context);
     ruleStore = rs; 
     ec = new InterpretationContext(context, this);
@@ -339,6 +339,31 @@ public class Interpreter  {
   public void addEvents(List<SaxEvent> eventList) {
     if (player != null) {
       player.addEvents(eventList);
+    }
+  }
+}
+
+/**
+ * When {@link Interpreter} class is used as the origin of an 
+ * {@link ContextAwareImpl} instance, then XML locator information
+ * is lost. This class preserves locator information (as a string).
+ * 
+ * @author ceki
+ */
+class CAI_WithLocatorSupport extends ContextAwareImpl {
+  
+  CAI_WithLocatorSupport(Interpreter interpreter) {
+    super(interpreter);
+  }
+  
+  @Override
+  protected Object getOrigin() {
+    Interpreter i = (Interpreter) super.getOrigin();
+    Locator locator = i.locator;
+    if(locator != null) {
+      return Interpreter.class.getName()+"@"+locator.getLineNumber()+":"+locator.getColumnNumber();
+    } else {
+      return Interpreter.class.getName()+"@NA:NA";
     }
   }
 }

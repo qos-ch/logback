@@ -38,7 +38,6 @@ public class StringListAppender extends AppenderBase<LoggingEvent> {
 
   public void setLayout(Layout<LoggingEvent> layout) {
     this.layout = layout;
-
   }
 
 }

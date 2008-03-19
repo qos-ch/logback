@@ -12,6 +12,7 @@ package ch.qos.logback.classic.joran;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.StringListAppender;
@@ -22,10 +23,11 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class BasicJoranTest extends TestCase {
+public class JoranConfiguratorTest extends TestCase {
 
-  public BasicJoranTest(String name) {
+  public JoranConfiguratorTest(String name) {
     super(name);
   }
   
@@ -118,19 +120,61 @@ public class BasicJoranTest extends TestCase {
     DebugUsersTurboFilter dutf = (DebugUsersTurboFilter)filter;
     assertEquals(2, dutf.getUsers().size());
   }
+
   
-  public void test() {
+  public void testLevelFilter() throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
+    jc.setContext(loggerContext);
+    jc.doConfigure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/levelFilter.xml");
+
+    StatusPrinter.print(loggerContext);
+
+    Logger logger = loggerContext.getLogger(this.getClass().getName());
+    logger.warn("hello");
+    logger.error("to be ignored");
     
+    @SuppressWarnings("unchecked")
+    ListAppender<LoggingEvent> listAppender = (ListAppender) loggerContext
+        .getLogger("root").getAppender("LIST");
+    
+    assertNotNull(listAppender);
+    assertEquals(1, listAppender.list.size());
+    LoggingEvent back = listAppender.list.get(0);
+    assertEquals(Level.WARN, back.getLevel());
+    assertEquals("hello", back.getMessage());
   }
-  // COMMENTED_OUT_
+  
+  public void testEvaluatorFilter() throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
+    jc.setContext(loggerContext);
+    jc.doConfigure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/evaluatorFilter.xml");
+
+    StatusPrinter.print(loggerContext);
+
+    Logger logger = loggerContext.getLogger(this.getClass().getName());
+    logger.warn("hello");
+    logger.error("to be ignored");
+    
+    @SuppressWarnings("unchecked")
+    ListAppender<LoggingEvent> listAppender = (ListAppender) loggerContext
+        .getLogger("root").getAppender("LIST");
+    
+    assertNotNull(listAppender);
+    assertEquals(1, listAppender.list.size());
+    LoggingEvent back = listAppender.list.get(0);
+    assertEquals(Level.WARN, back.getLevel());
+    assertEquals("hello", back.getMessage());
+  }
+  
+  
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    //suite.addTestSuite(BasicJoranTest.class);
-    
-    suite.addTest(new BasicJoranTest("testLevel"));
-    
-    //suite.addTest(new BasicJoranTest("testSimpleList"));
-
+    suite.addTestSuite(JoranConfiguratorTest.class);
+    //suite.addTest(new JoranConfiguratorTest("testEvaluatorFilter"));
     return suite;
   } 
 }

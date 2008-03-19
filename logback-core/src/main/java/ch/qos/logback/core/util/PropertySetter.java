@@ -25,7 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.FilterReply;
+
 
 /**
  * General purpose Object property setter. Clients repeatedly invokes
@@ -54,7 +54,10 @@ public class PropertySetter extends ContextAwareBase {
   private static final int X_NOT_FOUND = 0;
   private static final int X_AS_COMPONENT = 1;
   private static final int X_AS_PROPERTY = 2;
+  
+  private static final Class[] STING_CLASS_PARAMETER = new Class[] {String.class};
 
+  
   protected Object obj;
   protected Class objClass;
   protected PropertyDescriptor[] propertyDescriptors;
@@ -237,7 +240,7 @@ public class PropertySetter extends ContextAwareBase {
         return X_AS_PROPERTY;
       } else if (FileSize.class.isAssignableFrom(clazz)) {
         return X_AS_PROPERTY;
-      } else if (FilterReply.class.isAssignableFrom(clazz)){
+      } else if (clazz.isEnum()){
         return X_AS_PROPERTY;
       } else {
         return X_AS_COMPONENT;
@@ -367,7 +370,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  String capitalizeFirstLetter(String name) {
+  private String capitalizeFirstLetter(String name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
@@ -401,13 +404,23 @@ public class PropertySetter extends ContextAwareBase {
       return Duration.valueOf(val);
     } else if (FileSize.class.isAssignableFrom(type)) {
       return FileSize.valueOf(val);
-    } else if (FilterReply.class.isAssignableFrom(type)) {
-      return FilterReply.valueOf(v);
+    } else if(type.isEnum()) {
+      return convertEnum(val, type);
     }
 
     return null;
   }
 
+  protected Object convertEnum(String val, Class type) {
+    try {
+      Method m = type.getMethod("valueOf", STING_CLASS_PARAMETER);
+      return m.invoke(null, val);
+    } catch (Exception e) {
+      addError("Failed to convert value ["+val+"] to enum ["+type.getName()+"]", e);
+    }
+    return null;
+  }
+  
   protected Method getMethod(String methodName) {
     if (methodDescriptors == null) {
       introspect();

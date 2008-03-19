@@ -29,7 +29,10 @@ public class PropertySetterTest extends TestCase {
     assertEquals(ContainmentType.AS_COMPONENT_COLLECTION, setter.canContainComponent("Window"));
     assertEquals(ContainmentType.AS_PROPERTY_COLLECTION, setter.canContainComponent("adjective"));
     
+    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("filterReply"));
+    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("houseColor"));
     
+    System.out.println();
   }
 
   public void testSetProperty() {
@@ -136,8 +139,7 @@ public class PropertySetterTest extends TestCase {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     setter.setProperty("houseColor", "BLUE");
-    //TODO fails for now
-    //assertEquals(HouseColor.BLUE, house.getHouseColor());
+    assertEquals(HouseColor.BLUE, house.getHouseColor());
   }
 }
 

@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.WarnStatus;
  * 
  * @author Ceki G&uumllc&uuml;
  */
-final public class ContextAwareImpl implements ContextAware {
+public class ContextAwareImpl implements ContextAware {
 
   private int noContextWarning = 0;
   protected Context context;
@@ -31,6 +31,10 @@ final public class ContextAwareImpl implements ContextAware {
   
   public ContextAwareImpl(Object origin) {
     this.origin = origin;
+  }
+  
+  protected Object getOrigin() {
+    return origin;
   }
   
   public void setContext(Context context) {
@@ -66,27 +70,27 @@ final public class ContextAwareImpl implements ContextAware {
   }
 
   public void addInfo(String msg) {
-    addStatus(new InfoStatus(msg, origin));
+    addStatus(new InfoStatus(msg, getOrigin()));
   }
 
   public void addInfo(String msg, Throwable ex) {
-    addStatus(new InfoStatus(msg, origin, ex));
+    addStatus(new InfoStatus(msg, getOrigin(), ex));
   }
 
   public void addWarn(String msg) {
-    addStatus(new WarnStatus(msg, origin));
+    addStatus(new WarnStatus(msg, getOrigin()));
   }
 
   public void addWarn(String msg, Throwable ex) {
-    addStatus(new WarnStatus(msg, origin, ex));
+    addStatus(new WarnStatus(msg, getOrigin(), ex));
   }
 
   public void addError(String msg) {
-    addStatus(new ErrorStatus(msg, origin));
+    addStatus(new ErrorStatus(msg, getOrigin()));
   }
 
   public void addError(String msg, Throwable ex) {
-    addStatus(new ErrorStatus(msg, origin, ex));
+    addStatus(new ErrorStatus(msg, getOrigin(), ex));
   }
 
 }
