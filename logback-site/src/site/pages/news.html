@@ -81,14 +81,25 @@ prefix='';
    serialized as strings.
    </p>
 
-
    <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=109">bug
    109</a> reported by Joern Huxhorn. There should no longer be any
    NullPointerExceptions thrown by deserialized
    <code>AccessEvent</code> instances.
-
    </p>
 
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=8">bug
+   8</a> reported by Sebastien Pennec. The documentation has been
+   updated to reflect the fact that that in the context of conversion
+   patterns the percent sign carries special meaning, in order to
+   include the percent sign as a literal, it must be escaped with a
+   backslash.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=52">bug
+   52</a> reported by Kenichi Masuko. The bug has been fixed on March
+   8th, 2007. Starting with this release, Joran will support the
+   injection of any enum tpye, not just <code>FilterReply</code>.
+   </p>
 
   <hr width="80%" align="center" />
 
