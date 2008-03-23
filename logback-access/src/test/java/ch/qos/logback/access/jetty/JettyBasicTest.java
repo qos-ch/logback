@@ -1,6 +1,6 @@
 package ch.qos.logback.access.jetty;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
