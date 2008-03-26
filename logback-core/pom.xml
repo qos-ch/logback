@@ -5,7 +5,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
+    <version>0.9.9</version>
   </parent>
  
   <modelVersion>4.0.0</modelVersion>
@@ -93,39 +93,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      
-      <!--
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>retrotranslator-maven-plugin</artifactId>
-        <version>1.0-alpha-2</version>
-        <executions>
-          <execution>
-            <phase>deploy</phase> 
-            <goals>
-              <goal>translate</goal>
-            </goals>
-            <configuration>
-	            <filesets>
-						    <fileset>
-						        <directory>${project.build.outputDirectory}</directory>
-						        <includes>
-						            <include>**/*.class</include>
-						        </includes>
-						    </fileset>
-						  </filesets>
-              <destjar>
-                target/${artifactId}-${project.version}-jdk14.jar
-              </destjar>
-              <verify>${retrotranslator.verify}</verify>
-              <failonwarning>false</failonwarning>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      -->
+      </plugin>         
 
     </plugins>
   </build>
