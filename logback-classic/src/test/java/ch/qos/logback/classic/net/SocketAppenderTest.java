@@ -191,6 +191,7 @@ public class SocketAppenderTest  {
       simpleSocketServer.wait(1000);  
     }
     Thread.yield(); // give the server a little more time
+    Thread.yield();
     logger.debug("test msg 2");
     Thread.yield(); // give the server a little more time
     
