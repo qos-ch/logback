@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
@@ -25,6 +27,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -33,37 +36,10 @@ import ch.qos.logback.core.util.StatusPrinter;
  * This class is an implementation of tomcat's Valve interface, by extending
  * ValveBase.
  * 
- * It can be seen as logback classic's LoggerContext. Appenders can be attached
- * directly to LogbackValve and LogbackValve uses the same StatusManager as
- * LoggerContext does. It also provides containers for properties.
- * <p>
- * To configure tomcat in order to use LogbackValve, the following lines must be
- * added to the tomcat's server.xml, nested in an <code>Engine</code> element:
- * <p>
- * &lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"/&gt;
- * <p>
- * By default, LogbackValve looks for a logback configuration file called
- * logback-access.xml, in the same folder where the tomcat configuration is located,
- * that is $TOMCAT_HOME/conf/logback-access.xml. The format of logback-access configuration file 
- * is only slightly different than for logback-classic. Most of it remains the same:
- * Appenders and Layouts are declared the same way. However, since logback-access has 
- * no notion of declared loggers, logger elements are not allowed.
- * <p>
- * Here is a sample logback.xml file that can be used right away:
+ * <p>For more information on using LogbackValve please refer to the online 
+ * documentation on <a href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
  * 
- * <pre>
- *  &lt;configuration&gt; 
- *    &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; 
- *      &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; 
- *        &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL &quot; /&gt;
- *      &lt;/layout&gt; 
- *    &lt;/appender&gt; 
- *              
- *    &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; 
- *  &lt;/configuration&gt;
- * </pre>
- * 
- * A special, module-specific implementation of PatternLayout was implemented to
+ * <p>A special, module-specific implementation of PatternLayout was implemented to
  * allow http-specific patterns to be used. The
  * {@link ch.qos.logback.access.PatternLayout} provides a way to format the
  * logging output that is just as easy and flexible as the usual PatternLayout.
@@ -76,7 +52,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LogbackValve extends ValveBase implements Context,
+public class LogbackValve extends ValveBase implements Lifecycle, Context,
     AppenderAttachable<AccessEvent>, FilterAttachable {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
@@ -94,11 +70,11 @@ public class LogbackValve extends ValveBase implements Context,
 
   AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   String filename;
+  boolean quiet;
   boolean started;
 
   public LogbackValve() {
     putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
-    start();
   }
 
   public void start() {
@@ -107,9 +83,8 @@ public class LogbackValve extends ValveBase implements Context,
 
       filename = tomcatHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
       getStatusManager().add(
-          new WarnStatus("filename property not set. Assuming [" + filename
+          new InfoStatus("filename property not set. Assuming [" + filename
               + "]", this));
-
     }
     File configFile = new File(filename);
     if (configFile.exists()) {
@@ -118,13 +93,35 @@ public class LogbackValve extends ValveBase implements Context,
         jc.setContext(this);
         jc.doConfigure(filename);
       } catch (JoranException e) {
-        StatusPrinter.print(getStatusManager());
+        // TODO can we do better than printing a stack trace on syserr?
+        e.printStackTrace();
       }
     } else {
       getStatusManager().add(
           new WarnStatus("[" + filename + "] does not exist", this));
     }
+
+    if(!quiet) {
+      StatusPrinter.print(getStatusManager());
+    }
+
     started = true;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+     this.filename = filename;
+  }
+  
+  public boolean isQuiet() {
+    return quiet;
+  }
+
+  public void setQuiet(boolean quiet) {
+    this.quiet = quiet;
   }
 
   public void invoke(Request request, Response response) throws IOException,
@@ -134,11 +131,11 @@ public class LogbackValve extends ValveBase implements Context,
 
     TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
     AccessEvent accessEvent = new AccessEvent(request, response, adapter);
-    
+
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
-    
+
     // TODO better exception handling
     aai.appendLoopOnAppenders(accessEvent);
   }
@@ -232,4 +229,21 @@ public class LogbackValve extends ValveBase implements Context,
     }
     this.name = name;
   }
+
+
+
+  // Methods from catalina Lifecycle
+
+  public void addLifecycleListener(LifecycleListener arg0) {
+    // dummy NOP implementation
+  }
+
+  public LifecycleListener[] findLifecycleListeners() {
+    return new LifecycleListener[0];
+  }
+
+  public void removeLifecycleListener(LifecycleListener arg0) {
+    // dummy NOP implementation
+  }
+
 }

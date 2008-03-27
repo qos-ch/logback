@@ -29,34 +29,47 @@ prefix='';
 
 		<h1>Introduction</h1>
 
+    <p>The logback-access module integrates with Servlet containers
+    such as Jetty or Tomcat to provide rich and powerful HTTP-access
+    log functionality.
+    </p>
+		
 		<p>Logback was designed as a modular framework from the
-		start. Making logback-core reusable under different circumstances,
-		without much recoding was one of our main goals. As such,
-		logback-access builds on top of logback-core. It fully integrates
-		with Servlet containers such as Jetty or Tomcat to provide
-		HTTP-access log functionality.
-		</p>
+		start. Making logback-core reusable under different circumstances
+		without much recoding was one of our main goals. In accordance
+		with this strategy, logback-access builds on top of
+		logback-core. </p>
 
     <a name="tomcat"></a>
-		<h2>Logback-access and Tomcat</h2>
+		<h1>Logback-access under Tomcat</h1>
 		
 		<p>To use logback-access with Tomcat, after downlading the logback
 		distribution, place the files <em>logback-core-VERSION.jar</em>
 		and <em>logback-access-VERSION.jar</em> under
-		$TOMCAT_HOME/server/lib directory, where $TOMCAT_HOME is the
-		folder where you have installed Tomcat. We have tested
-		logback-access module with Tomcat version 5.5.20.
+		$TOMCAT_HOME/<b>server/lib/</b> directory, where $TOMCAT_HOME is
+		the folder where you have installed Tomcat. We have tested
+		logback-access module with Tomcat version 5.5.26.
 		</p>
+
+    <p>If you place the logback-core and logback-access jars in
+    $TOMCAT_HOME/server/lib <em>and</em> your webapps do not use
+    logback-classic, then everything should be fine. If however your
+    webapps do indeed use logback-classic, you must make sure to
+    bundle <code>logback-core.jar</code> under your webapps'
+    WEB-INF/lib directory. An alternative strategy is to place
+    logback-core.jar under $TOMCAT_HOME/common/lib. In that case, you
+    no longer need to place logback-core.jar in your web-apps.
+    </p>
 		
-		<h3>LogbackValve</h3>
+		<h2>LogbackValve</h2>
 
 		<p>The <a
 		href="xref/ch/qos/logback/access/tomcat/LogbackValve.html">
 		<code>ch.qos.logback.access.tomcat.LogbackValve</code></a> class
 		extends Tomcat's <code><a
 		href="http://tomcat.apache.org/tomcat-5.5-doc/catalina/docs/api/org/apache/catalina/valves/ValveBase.html">
-		ValveBase</a></code> class. This class is used to allow external
-		components to be integrated into Tomcat.
+		ValveBase</a></code> class. Valves are usually associated together
+		to form a processing pipeline.
 		</p>
 	
 		<p>To configure Tomcat in order to use <code>LogbackValve</code>,
@@ -73,14 +86,36 @@ prefix='';
 		<em>server.xml</em> is located, that is in
 		<em>$TOMCAT_HOME/conf/</em>. This configuration file contains
 		directives for configuring logback-access components. It is used
-		to specify appenders where the logging requests will be their
-		format, and filters. Please refer to the <a
-		href="#configuration">section discussing</a> this subject further
-		below.
-	</p>
+		to specify appenders where the logging requests will be
+		sent. Please refer to the <a href="#configuration">logback-access
+		configuration section</a> further below.
+    </p>
 		
+    <p>In order to help with troubleshooting, by default, the
+    LogbackValve will print its internal status at its
+    initialization. Typical output would look as:
+    </p>
+    
+    <p class="source">21:56:09,921 |-INFO in c.q.lb.access.j.a.ConfigurationAction - Ignoring debug attribute.
+21:56:09,921 |-INFO in c.q.lb.core.j.a.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+21:56:09,921 |-INFO in c.q.lb.core.j.a.AppenderAction - Naming appender as [STDOUT]
+21:56:10,000 |-INFO in c.q.lb.core.j.a.NestedComponentIA - Pushing component [layout] on top of the object stack.
+21:56:10,015 |-INFO in c.q.lb.core.j.a.AppenderAction - Popping appender named [STDOUT] from the object stack
+21:56:10,015 |-INFO in c.q.lb.core.j.a.AppenderRefAction - Attaching appender named [STDOUT] to ch.qos.logback.access.tomcat.LogbackValve[Catalina]
+21:56:10,015 |-INFO in c.q.lb.access.j.a.ConfigurationAction - End of configuration.</p>
+
+    <p>It is possible to override default status printing by specifing
+    the "quiet" attribute in the <code>Valve</code>
+    element. Similarly, it is also possible to set the filename for
+    the logback-access configuration file. Here is an example.
+    </p>
+
+
+    <div class="source"><pre>&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"
+       quiet="true" filename="c:/my-logback-access.xml"/></pre></div>
+    
     <a name="jetty"></a>
-		<h2>Logback-access and Jetty</h2>
+		<h1>Logback-access under Jetty</h1>
 
 		<p>After downlading the logback distribution, place the files
 		<em>logback-core-VERSION.jar</em> and
@@ -145,7 +180,7 @@ prefix='';
 &lt;/Ref&gt;</pre></div>
 
   <a name="configuration"></a>
-	<h2>Logback-access configuration</h2>
+	<h1>Logback-access configuration</h1>
 	
   <p>Altough similar, the <em>logback-access.xml</em> file is slightly
   different than its more common counterpart in logback-classic.

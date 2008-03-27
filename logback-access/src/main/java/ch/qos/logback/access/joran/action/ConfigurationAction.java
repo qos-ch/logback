@@ -38,8 +38,8 @@ public class ConfigurationAction extends Action {
   }
 
   public void end(InterpretationContext ec, String name) {
+    addInfo("End of configuration.");
     if (debugMode) {
-      addInfo("End of configuration.");
       StatusPrinter.print(context);
     }
     
