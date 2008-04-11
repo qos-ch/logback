@@ -112,29 +112,16 @@ import ch.qos.logback.core.ConsoleAppender;
 
 public class SimpleMDC {
   static public void main(String[] args) throws Exception {
-    // You can put values in the MDC at any time. We first put the
-    // first name
-    <b>MDC.put("first", "Dorothy");</b>
 
-    // Configure logback
-    PatternLayout layout = new PatternLayout();
-    layout.setPattern("%X{first} %X{last} - %m%n");
-    layout.start();
-    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
-    appender.setLayout(layout);
-    appender.start();
+   // You can put values in the MDC at any time. Before anything else 
+    // we put the first name
+    MDC.put("first", "Dorothy");
+
+    [ SNIP ]
     
-    // cast root logger to c.q.logback.classic.Logger so that we can attach an
-    // appender to it
-    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
-        .getLogger("root");
-    root.addAppender(appender);    
-
-    // get another logger
-    Logger logger = (Logger)LoggerFactory.getLogger(SimpleMDC.class);
-
+    Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
     // We now put the last name
-    <b>MDC.put("last", "Parker");</b>
+    MDC.put("last", "Parker");
 
     // The most beautiful two words in the English language according
     // to Dorothy Parker:
@@ -146,22 +133,42 @@ public class SimpleMDC {
     logger.info("I am not a crook.");
     logger.info("Attributed to the former US president. 17 Nov 1973.");
   }
+
+  [ SNIP ]
+
 }</pre></div>
 
-		<p>
-			The main method starts by associating the value <em>Dorothy</em> with 
-			the key <em>first</em> in the <code>MDC</code>. You can place as many 
-			value/key associations in the <code>MDC</code> as you wish. 
-			Multiple insertions with the same key will overwrite older values. 
-			The code then proceeds to configure logback. 
-			Note the usage of the <em>%X</em> specifier within the 
-			<code>PatternLayout</code> conversion pattern. The <em>%X</em> 
-			conversion specifier is employed twice, once for the key <em>first</em> 
-			and once for the key <em>last</em>. After configuring the root logger, 
-			the code associates the value <em>Parker</em> with the key <em>last</em>. 
-			It then invokes the logger twice with different messages. 
-			The code finishes by setting the <code>MDC</code> to different values 
-			and issuing several logging requests. Running SimpleMDC yields:
+		<p>The main method starts by associating the value
+		<em>Dorothy</em> with the key <em>first</em> in the
+		<code>MDC</code>. You can place as many value/key associations in
+		the <code>MDC</code> as you wish.  Multiple insertions with the
+		same key will overwrite older values.  The code then proceeds to
+		configure logback.</p>
+
+    <p>For the sake of consiceness, we have the omitted the code that
+    configures logback with the configuration file <a
+    href="http://tinyurl.com/4gy542">simpleMDC.xml</a>. Here is the
+    relevant section from that file.
+    </p>
+
+ <p class="source">&lt;appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender"> &lt;layout
+    class="ch.qos.logback.classic.PatternLayout">
+    &lt;Pattern><b>%X{first} %X{last}</b> - %m%n&lt;/Pattern>
+    &lt;/layout> &lt;/appender></p>
+    
+
+
+    <p>Note the usage of the <em>%X</em> specifier within the
+    <code>PatternLayout</code> conversion pattern. The <em>%X</em>
+    conversion specifier is employed twice, once for the key named
+    <em>first</em> and once for the key named <em>last</em>. After
+    obtaining a logger corresponding to <code>SimpleMDC.class</code>,
+    the code associates the value <em>Parker</em> with the key named
+    <em>last</em>.  It then invokes the logger twice with different
+    messages.  The code finishes by setting the <code>MDC</code> to
+    different values and issuing several logging requests. Running
+    SimpleMDC yields:
 		</p>
 
 <div class="source"><pre>Dorothy Parker - Check enclosed.
@@ -170,11 +177,11 @@ Richard Nixon - I am not a crook.
 Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 
 
-		<p>
-			The <code>SimpleMDC</code> application illustrates how logback layouts, 
-			if configured appropriately, automatically output <code>MDC</code> information. 
-			Moreover, the information placed into the <code>MDC</code> can be used by 
-			multiple logger invocations.
+		<p>The <code>SimpleMDC</code> application illustrates how logback
+		layouts, if configured appropriately, can automatically output
+		<code>MDC</code> information.  Moreover, the information placed
+		into the <code>MDC</code> can be used by multiple logger
+		invocations.
 		</p>
 		
 		<h3>Advanced Use</h3>
