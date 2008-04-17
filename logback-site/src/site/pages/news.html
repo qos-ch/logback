@@ -36,6 +36,12 @@ prefix='';
   initialization, unless told to be quiet. This greatly helps
   troubleshooting the configration of logback-access under Tomcat.
   </p>
+
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=147">bug
+  147</a> which occured when the user inadvertently attempted to set
+  the layout of a <code>SyslogAppender</code>.  The code now actively
+  prevents this. Documenation has been updated to reflect the change.
+  </p>
   
   <hr width="80%" align="center" />
  

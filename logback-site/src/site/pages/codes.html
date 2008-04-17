@@ -23,13 +23,21 @@
   <h2><a name="top">Logback error messages and their meanings</a></h2>
   
 
-  <p><a name="null_CS" href="#null_CS">
-  contextSelector cannot be null
+  <p><a name="null_CS" href="#null_CS"> The contextSelector cannot be
+  null in <code>StaticLoggerBinder</code>.
   </a>
   </p>
 
-  <p>XXXXXXXXXXX</p>
+  <p>An <code>IllegalStateException</code> is thrown when no
+  ContextSelector could be set for logback's
+  <code>StaticLoggerBinder</code>. In principle, this error can only
+  occur when the context selector is expressly specified by the user,
+  and when that context selector cannot not be instantiated correctly.
+  </p>
 
+  <p>It should not happen when you are using the default or JNDI
+  context selectors.
+  </p>
   <hr/>
 
 
