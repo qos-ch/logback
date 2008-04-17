@@ -5,10 +5,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.Layout;
 
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
+  final static String SYSLOG_LAYOUT_URL = CoreGlobal.CODES_URL + "#syslog_layout";
+  
   Layout<E> layout;
   int facility;
   String facilityStr;
@@ -44,7 +47,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       super.start();
     }
   }
-
+  
   abstract public Layout<E> buildLayout(String facilityStr);
 
   abstract public int getSeverityForEvent(Object eventObject);
@@ -182,15 +185,13 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     this.port = port;
   }
 
-  /**
-   * You can override
-   */
+
   public Layout<E> getLayout() {
     return layout;
   }
 
   public void setLayout(Layout<E> layout) {
-    this.layout = layout;
+    addWarn("The layout of a SyslogAppender cannot be set directly. See also "+SYSLOG_LAYOUT_URL);
   }
 
   @Override

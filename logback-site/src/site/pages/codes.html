@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Logback FAQ</title>
+<title>Logback Error Codes</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
 </head>
 
@@ -23,380 +23,243 @@
   <h2><a name="top">Logback error messages and their meanings</a></h2>
   
 
-  <ol type="1">
+  <p><a name="null_CS" href="#null_CS">
+  contextSelector cannot be null
+  </a>
+  </p>
 
-    <li>
-      <a href="#null_CS">contextSelector cannot be null</a>
-    </li>
+  <p>XXXXXXXXXXX</p>
 
-    <li>
-      <a href="#tbr_fnp_not_set">The <b>FileNamePattern</b> option
-      must be set before using <code>TimeBasedRollingPolicy</code> or
+  <hr/>
+
+
+  <p>
+    <a name="tbr_fnp_not_set" href="#tbr_fnp_not_set">
+      The <b>FileNamePattern</b> option must be set before using
+      <code>TimeBasedRollingPolicy</code> or
       <code>FixedWindowRollingPolicy</code>
-      </a>
-    </li>
+    </a>
+  </p>
 
-    <li>
-      <a href="#fwrp_parentFileName_not_set">The <span
-      class="option">File</span> option must be set before
+  
+  <p>The <b>FileNamePattern</b> option for both
+  <code>TimeBasedRollingPolicy</code> and
+  <code>FixedWindowRollingPolicy</code> is mandatory.
+  </p>
+  
+  <p>See the <a
+  href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+  FixedWindowRollingPolicy javadoc </a> for more information.
+  </p>
+					
+  <hr />
+
+  <p>
+    <a name="fwrp_parentFileName_not_set" href="#fwrp_parentFileName_not_set">
+      The <span class="option">File</span> option must be set before
       <code>FixedWindowRollingPolicy</code>
-      </a>
-    </li>
-    
-    <li>
-      <a href="#socket_no_host">No remote host or address is set
-      for <code>SocketAppender</code>
-      </a>
-    </li>
-    
-    <li>
-      <a href="#socket_no_port">No remote port is set for
-      <code>SocketAppender</code>      
-      </a>
-    </li>
-    
-    
-    <li>
-      <a href="#smtp_no_layout">
-        No <code>Layout</code> is set for appender
-      </a>
-    </li>
-    
-    <li>
-      <a href="#sbtp_size_format">
-        Specified number is not in proper int form, or
-        not expected format.
-      </a>
-    </li>
-    
-    <li>
-      <a href="#rfa_no_tp">
-        No <code>TriggeringPolicy</code> was set for the
-        <code>RollingFileAppender</code>
-      </a>
-    </li>
-    
-    <li>
-      <a href="#rfa_no_rp">
-        No <code>RollingPolicy</code> was set for the
-        <code>RollingFileAppender</code>
-      </a>
-    </li>
-  </ol>
-					
-					
-  <h2>Error codes and their meanings</h2>
-					
-  <dl>
+    </a>
+  </p>
 
-    <dt>
-      <a name="null_CS">
-        contextSelector cannot be null
-      </a>
-    </dt>
-    
-    <dd>
-
-          
-    </dd>
-
-    <dt>
-      <a name="tbr_fnp_not_set">
-        The <b>FileNamePattern</b> option must be set before using
-        <code>TimeBasedRollingPolicy</code> or
-        <code>FixedWindowRollingPolicy</code>
-						
-      </a>
-    </dt>
-          
-    <dd>
-      <p>The <b>FileNamePattern</b> option for both
-      <code>TimeBasedRollingPolicy</code> and
-      <code>FixedWindowRollingPolicy</code> is mandatory.
-      </p>
+  <p>The <span class="option">File</span> option is mandatory with
+  <code>FixedWindowRollingPolicy</code>. Moreover, the <span
+  class="option">File</span> option must be set before the
+  <code>FixedWindowRollingPolicy</code> element.
+  </p>
       
-      <p>See the <a
-      href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-      FixedWindowRollingPolicy javadoc
-      </a> for more information.
-      
-      </p>
-					
-      <table border="0">
-        <tr>
-          <td align="right"><a href="#top">[top]</a></td>
-        </tr>
-      </table>
-      <hr />
-    </dd>
-
-    <dt>
-      <a name="fwrp_parentFileName_not_set">
-        The <span class="option">File</span> option must be set before
-        <code>FixedWindowRollingPolicy</code>
-      </a>
-    </dt>
-
-    <dd>
-      <p>The <span class="option">File</span> option is mandatory with
-      <code>FixedWindowRollingPolicy</code>. Moreover, the <span
-      class="option">File</span> option must be set before the
-      <code>FixedWindowRollingPolicy</code> element.
-      </p>
-      
-      <p>Refer to the logback manual on
-      <a href="manual/appenders.html#FixedWindowRollingPolicy">
-        FixedWindowRollingPolicy
-      </a>
-      for more information.
-      </p>
+  <p>Refer to the logback manual on
+  <a href="manual/appenders.html#FixedWindowRollingPolicy">
+    FixedWindowRollingPolicy </a> for more information.
+  </p>
 			
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-        </table>
-        <hr />
+  <hr />
 
-    </dd>
+  <p>
+    <a name="socket_no_host" href="#socket_no_host">No remote host or
+    address is set for <code>SocketAppender</code>
+    </a>
+  </p>
 
-    <dt>
-      <a name="socket_no_host">No remote host or address is set for
-      <code>SocketAppender</code>						
-      </a>
-    </dt>
-    <dd>
-      <p>A remote host or address is mandatory for SocketAppender.
-      </p>
-      <p>You can specify the remote host in the configuration file
-      like this:
-      </p>
-      
-      <div class="source"><pre>
-&lt;appender name=&quot;SOCKET&quot; class=&quot;ch.qos.logback.classic.net.SocketAppender&quot;&gt;
+  <p>A remote host or address is mandatory for SocketAppender. </p>
+  <p>You can specify the remote host in the configuration file
+  as follows.
+  </p>
+  
+  <p class="source">&lt;appender name="SOCKET"
+  class="ch.qos.logback.classic.net.SocketAppender">
   ...
-  &lt;param name=&quot;remoteHost&quot; value=&quot;127.0.0.1&quot;&gt;&lt;/param&gt;
+  &lt;remoteHost>127.0.0.1&lt;/remoteHost>
   ...
-&lt;/appender&gt;</pre>
-      </div>
-      
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-      </table>
-      <hr />
-    </dd>
+&lt;/appender&gt;</p>
 
-    <dt>
-      <a name="socket_no_port">No remote port is set for
-      <code>SocketAppender</code> 
-      </a>
-    </dt>
+
+  <hr />
+
+  <p>
+    <a name="socket_no_port" href="#socket_no_port">No remote port is set for
+    <code>SocketAppender</code> 
+    </a>
+  </p>
     
-    <dd> 
-      <p>A remote port is mandatory for SocketAppender.
-      </p>
+  <p>A remote port is mandatory for SocketAppender.</p>
       
-      <p>You can specify the remote port in the configuration file
-      like this:
-      </p>
+  <p>You can specify the remote port in the configuration file
+  like this:
+  </p>
       
-      <div class="source"><pre>
-&lt;appender name=&quot;SOCKET&quot; class=&quot;ch.qos.logback.classic.net.SocketAppender&quot;&gt;
+  <p class="source">&lt;appender name="SOCKET" class=&quot;ch.qos.logback.classic.net.SocketAppender&quot;&gt;
   ...
-  &lt;param name=&quot;port&quot; value=&quot;4560&quot;&gt;&lt;/param&gt;
+  &lt;port>4560&lt;/port>
   ...
-&lt;/appender&gt;</pre>
-      </div>
+&lt;/appender&gt;</p>
 				
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-      </table>
-      <hr />
-    </dd>
-    
-    <dt>
-      <a name="smtp_no_layout">No <code>Layout</code> is set for
-      appender</a>
-    </dt>
-    <dd>
-      <p>A <code>Layout</code> is mandatory for
-      <code>SMTPAppender</code> . It allows the appender format the
-      logging events before sending the email. Two layouts are often
-      used with <code>SMTPAppender</code> :
-      <code>PatternLayout</code> and <code>HTMLLayout</code> .
-      </p>
+
+  <hr />
+
+  
+  <p>
+    <a name="smtp_no_layout" href="#smtp_no_layout">
+      No <code>Layout</code> is set for SMTPAppender</a>
+  </p>
+
+  <p>A <code>Layout</code> is mandatory for
+  <code>SMTPAppender</code>. It allows SMPTPAppender to format logging
+  events before sending an email.
+  </p>
       
-      <p>You can specify the <code>Layout</code> in the
-      configuration file like this:
-      </p>
+  <p>You can specify the <code>Layout</code> in a configuration file
+  as follows:
+  </p>
       
-      <div class="source"><pre>
-&lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.classic.net.SMTPAppender&quot;&gt;
+  <p class="source">&lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.classic.net.SMTPAppender&quot;&gt;
   ...
   &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
-  &lt;param name=&quot;pattern&quot; value=&quot;%-4relative [%thread] %-5level %class - %msg%n&quot;&gt;&lt;/param&gt;
- &lt;/layout&gt;
+    &lt;pattern>%date [%thread] %-5level %logger - %msg%n&quot;&gt;&lt;/pattern>
+  &lt;/layout&gt;
   ...
-&lt;/appender&gt;</pre>
+&lt;/appender&gt;</p>
+      
+  <p>SMTPAppender is known to work well with <a
+  href="manual/layouts.html#ClassicPatternLayout">PatternLayout</a>
+  and <a
+  href="manual/layouts.html#ClassicHTMLLayout">HTMLLayout</a>.
+  </p>
 
-      </div>
+
+  <hr />
       
-      <p>You can see more examples in the
-      <a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/html/HTMLLayout.html">
-        HTMLLayout javadoc
-        </a> and the
-        <a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/PatternLayout.html">
-          PatternLayout javadoc
-        </a>
-      </p>
+  <p>
+    <a name="sbtp_size_format" href="#sbtp_size_format">Specified number is not in proper
+    int form, or not expected format.  
+    </a>
+  </p>
+    
+  <p>When you specify the MaxFileSize to be used by the
+  SizeBasedRollingPolicy, logback expects a rather precise
+  format:
+  </p>
+  
+  <ul>
+    <li>The number has to be an integer</li>
+    <li>You can add 'KB', 'MB' or 'GB' after the number.
+    </li>
+  </ul>
       
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-      </table>
-      <hr />
+  <p>Here are some correct values: 500KB, 15MB, 2GB.</p>
+  
+  <hr />
       
-      
-    </dd>
-    <dt>
-      <a name="sbtp_size_format">Specified number is not in proper
-      int form, or not expected format.  
+  <p><a name="rfa_no_tp" href="#rfa_no_tp">No <code>TriggeringPolicy</code> was set for
+  the <code>RollingFileAppender</code>.
+  </a>
+  </p>
+    
+  <p>The <code>RollingFileAppender</code> must be set up with a
+  <code>TriggeringPolicy</code>. It permits the Appender to know when
+  the rollover must be activated.
+  </p>
+  
+  <p>To find more information about <code>TriggeringPolicy</code>
+  objects, please read the following javadocs:
+  </p>
+  
+  <ul>
+    <li>
+      <a
+       href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html"><code>SizeBasedTriggeringPolicy</code>
       </a>
-    </dt>
-    
-    <dd>
-      <p>When you specify the MaxFileSize to be used by the
-      SizeBasedRollingPolicy, logback expects a rather precise
-      format:
-      </p>
-      
-      <ul>
-        <li>The number has to be an integer</li>
-        <li>You can add 'KB', 'MB' or 'GB' after the number.
-        </li>
-      </ul>
-      
-      <p>Here are some correct values: 500KB, 15MB, 2GB.</p>
-      
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-      </table>
-      <hr />
-      
-    </dd>
-    <dt>
-      <a name="rfa_no_tp">No <code>TriggeringPolicy</code> was set
-      for the <code>RollingFileAppender</code>.
+    </li>
+    <li>
+      <a
+       href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html"><code>TimeBasedRollingPolicy</code>
       </a>
-    </dt>
+    </li>
+  </ul>
+  
+  <p>Please note that the <code>TimeBasedRollingPolicy</code>
+  is a TriggeringPolicy <em>and</em> and
+  <code>RollingPolicy</code> at the same time.
+  </p>
+      
+  <hr />
+      
+
+  <p>
+    <a name="rfa_no_rp" href="#rfa_no_rp">No <code>RollingPolicy</code> was set
+    for the <code>RollingFileAppender</code>.
+    </a>
+  </p>
+  
+  <p>The <code>RollingFileAppender</code> must be set up with
+  a <code>RollingPolicy</code>. It permits the Appender to
+  know what to do when a rollover is requested.
+  </p>
     
-    <dd>
-      <p>The <code>RollingFileAppender</code> must be set up with a
-      <code>TriggeringPolicy</code>. It permits the Appender to know
-      when the rollover must be activated.
-      </p>
-      
-      <p>To find more information about <code>TriggeringPolicy</code>
-      objects, please read the following javadocs:
-      </p>
-      
-      <ul>
-        <li>
-          <a
-           href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html"><code>SizeBasedTriggeringPolicy</code>
-          </a>
-        </li>
-        <li>
-          <a
-           href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html"><code>TimeBasedRollingPolicy</code>
-          </a>
-        </li>
-      </ul>
-      
-      <p>Please note that the <code>TimeBasedRollingPolicy</code>
-      is a TriggeringPolicy <em>and</em> and
-      <code>RollingPolicy</code> at the same time.
-      </p>
-      
-      
-      <table border="0">
-        <tr>
-          <td align="right">
-            <a href="#top">[top]</a>
-          </td>
-        </tr>
-      </table>
-      <hr />
-      
-    </dd>
-    <dt>
-      <a name="rfa_no_rp">No <code>RollingPolicy</code> was set
-      for the <code>RollingFileAppender</code>.
+  <p>To find more information about <code>RollingPolicy</code>
+  objects, please read the following javadocs:
+  </p>
+    
+  <ul>
+    <li>
+      <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+        <code>FixedWindowRollingPolicy</code>
       </a>
-    </dt>
-    
-    <dd>
-      <p>The <code>RollingFileAppender</code> must be set up with
-      a <code>RollingPolicy</code>. It permits the Appender to
-      know what to do when a rollover is requested.
-      </p>
-      
-      <p>To find more information about <code>RollingPolicy</code>
-      objects, please read the following javadocs:
-      </p>
-      
-      <ul>
-        <li>
-          <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-            <code>FixedWindowRollingPolicy</code>
-          </a>
-        </li>
-        <li>
-          <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
-            <code>TimeBasedRollingPolicy</code>
-          </a>
-        </li>
-      </ul>
-      
-      <p>Please note that the <code>TimeBasedRollingPolicy</code> is a
-      <code>TriggeringPolicy</code> <em>and</em> and RollingPolicy at
-      the same time.
-      </p>
+    </li>
+    <li>
+      <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+        <code>TimeBasedRollingPolicy</code>
+      </a>
+    </li>
+  </ul>
+  
+  <p>Please note that the <code>TimeBasedRollingPolicy</code> is a
+  <code>TriggeringPolicy</code> <em>and</em> and RollingPolicy at
+  the same time.
+  </p>
+  
+  
+  <hr/>
+  
+  
+  <p><a name="syslog_layout" href="#syslog_layout"> SyslogAppender
+  does not admit a layout parameter.</a>
+  </p>
 
-      
-      <table border="0">
-        <tr>
-          <td align="right">
-                <a href="#top">[top]</a>
-          </td>
-        </tr>
-          </table>
-          
-    </dd>    
 
-    
-    
-    
+  <p>Given that the format of a syslog request follows strict rules,
+  you cannot freely specify the layout to be used with
+  SyslogAppender. However, you can use <span
+  class="option">SuffixPattern</span> option instead to influence the
+  contents of the message sent to the syslog daemon.
+  </p>
+  
+  <p>For more information on SyslogAppeder please refer to the <a
+  href="manual/appenders.html#SyslogAppender">its documentation.</a>
+  </p>
 
-  </dl>
-
+  <hr/>
+  
+  
     <script src="templates/footer.js"></script>
   </div>
 </body>

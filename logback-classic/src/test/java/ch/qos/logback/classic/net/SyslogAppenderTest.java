@@ -9,26 +9,34 @@
  */
 package ch.qos.logback.classic.net;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.TestContants;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.net.mock.MockSyslogServer;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.net.SyslogConstants;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class SyslogAppenderTest extends TestCase {
+public class SyslogAppenderTest {
 
-  public SyslogAppenderTest(String arg0) {
-    super(arg0);
+  @Before
+  public void setUp() throws Exception {
   }
 
-  protected void setUp() throws Exception {
-    super.setUp();
+  @After
+  public void tearDown() throws Exception {
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testBasic() throws InterruptedException {
     int port = MockSyslogServer.PORT + 1;
 
@@ -53,7 +61,7 @@ public class SyslogAppenderTest extends TestCase {
     logger.addAppender(sa);
     String logMsg = "hello";
     logger.debug(logMsg);
-    //StatusPrinter.print(lc.getStatusManager());
+    // StatusPrinter.print(lc.getStatusManager());
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
@@ -73,6 +81,7 @@ public class SyslogAppenderTest extends TestCase {
 
   }
 
+  @Test
   public void testException() throws InterruptedException {
     int port = MockSyslogServer.PORT + 2;
     MockSyslogServer mockServer = new MockSyslogServer(21, port);
@@ -98,29 +107,45 @@ public class SyslogAppenderTest extends TestCase {
     String exMsg = "just testing";
     Exception ex = new Exception(exMsg);
     logger.debug(logMsg, ex);
-    //StatusPrinter.print(lc.getStatusManager());
+    // StatusPrinter.print(lc.getStatusManager());
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
     assertTrue(mockServer.isFinished());
-    
-    //message + 20 lines of stacktrace
+
+    // message + 20 lines of stacktrace
     assertEquals(21, mockServer.getMessageList().size());
-//    int i = 0;
-//    for (String line: mockServer.msgList) {
-//      System.out.println(i++ + ": " + line);
-//    }
-    
+    // int i = 0;
+    // for (String line: mockServer.msgList) {
+    // System.out.println(i++ + ": " + line);
+    // }
+
     String msg = mockServer.getMessageList().get(0);
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
-    
+
     String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
     String threadName = Thread.currentThread().getName();
-    String expectedResult = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
-        + " " + logMsg;
+    String expectedResult = expectedPrefix + "\\[" + threadName + "\\] "
+        + loggerName + " " + logMsg;
     assertTrue(msg.matches(expectedResult));
+  }
+
+  @Test
+  public void bug147() throws JoranException {
+
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    JoranConfigurator configurator = new JoranConfigurator();
+    configurator.setContext(lc);
+    lc.shutdownAndReset();
+    configurator.doConfigure(TestContants.JORAN_ONPUT_PREFIX
+        + "/syslog_147.xml");
+
+    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    logger.info("hello");
+    StatusPrinter.print(lc);
   }
 }

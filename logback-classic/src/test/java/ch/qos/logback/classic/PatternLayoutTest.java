@@ -64,7 +64,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
-    String regex = Contants4T.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
+    String regex = TestContants.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
   }
 
@@ -86,7 +86,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2008-03-18 21:55:54,250 [main] c.q.l.c.pattern.ConverterTest - Some message
-    String regex = Contants4T.ISO_REGEX+" \\[main] c.q.l.c.p.ConverterTest   - Some message\\s*";
+    String regex = TestContants.ISO_REGEX+" \\[main] c.q.l.c.p.ConverterTest   - Some message\\s*";
     System.out.println(val);
     assertTrue(val.matches(regex));
 
@@ -123,7 +123,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
-    String regex = Contants4T.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
+    String regex = TestContants.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
   }
   

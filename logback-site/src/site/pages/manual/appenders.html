@@ -2707,9 +2707,12 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			The gain is a <em>10</em> factor. 
 		</p>
 
-		<a name="SyslogAppender"></a>
-		<h3>SyslogAppender</h3>
-		
+		<h3>
+      <a name="SyslogAppender" href="#SyslogAppender">
+      SyslogAppender
+      </a>
+    </h3>
+
 		<p>
 			The syslog protocol is a very simple protocol: a syslog sender sends a small 
 			message to a syslog receiver. 
@@ -2718,9 +2721,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			<a href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
 		</p>
 		
-		<p>
-			Here are its options:
-		</p>
+		<p>Here are the options upi can pass to a SyslogAppender.</p>
 
 		<table class="bodyTable">
 			<tr class="a">
@@ -2777,21 +2778,22 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 					</p>
 				</td>
 			</tr>
-			<tr class="a">
-				<td>
-					<b>
-						<span class="option">SuffixPattern</span>
-					</b>
+      <tr class="a">
+        <td>
+          <b>
+            <span class="option">SuffixPattern</span>
+          </b>
 				</td>
 				<td>
 					<code>String</code>
 				</td>
 				<td>
-					<p>
-						The <span class="option">SuffixPattern</span> option specifies the format of the 
-						non-standardized part the message sent to the syslog server. By default, its value
-						is <em>[%thread] %logger %msg %exception</em>. Any value that a <code>PatternLayout</code>
-						could use is a correct <span class="option">SuffixPattern</span>.
+					<p>The <span class="option">SuffixPattern</span> option
+					specifies the format of the non-standardized part the
+					message sent to the syslog server. By default, its value is
+					<em>[%thread] %logger %msg</em>. Any value that a
+					<code>PatternLayout</code> could use is a correct <span
+					class="option">SuffixPattern</span> value.
 					</p>
 				</td>
 			</tr>
@@ -2822,7 +2824,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     class="ch.qos.logback.classic.net.SyslogAppender">
     &lt;SyslogHost>remote_home&lt;/SyslogHost>
     &lt;Facility>AUTH&lt;/Facility>
-    &lt;SuffixPattern>%-4relative [%thread] %-5level - %msg&lt;/SuffixPattern>
+    &lt;SuffixPattern>[%thread] %logger %msg&lt;/SuffixPattern>
   &lt;/appender>
 
   &lt;root>
@@ -2831,21 +2833,21 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>
-			When testing this configuration, one should verify that the remote syslog daemon
-			accepts requests from an external source. Experience shows that syslog daemons
-			usually deny such requests by default.
+		<p>When testing this configuration, you should verify that the
+		remote syslog daemon accepts requests from an external
+		source. Experience shows that, by default, syslog daemons usually
+		deny requests coming via a network connection.
 		</p>
 		
 		
 		<a name="Access"></a>
 		<h2>Logback Access</h2>
 		
-		<p>
-			Most of the appenders found in logback classic can be used within
-			logback access. They function mostly in the same way as their logback
-			classic counterpart. In the next section, we will cover their use, but will
-			focuse on the differences with the classic appenders.
+		<p>Most of the appenders found in logback classic can be used
+		within logback access. They function mostly in the same way as
+		their logback classic counterpart. In the next section, we will
+		cover their use, but will focuse on the differences with the
+		classic appenders.
 		</p>
 		
   	<a name="AccessSocketAppender"/>

@@ -19,7 +19,7 @@ public class PackageTest extends TestCase {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(SyslogAppenderTest.class);
+    suite.addTest(new JUnit4TestAdapter(SyslogAppenderTest.class));
     suite.addTestSuite(SMTPAppenderTest.class);
     suite.addTest(new JUnit4TestAdapter(SocketAppenderTest.class));
     suite.addTestSuite(JMSTopicAppenderTest.class);
