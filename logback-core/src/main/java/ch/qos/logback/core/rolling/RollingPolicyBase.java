@@ -10,7 +10,7 @@
 package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.rolling.helper.Compress;
+import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class RollingPolicyBase extends ContextAwareBase implements RollingPolicy {
-  protected int compressionMode = Compress.NONE;
+  protected CompressionMode compressionMode = CompressionMode.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
   
@@ -42,13 +42,13 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
   protected void determineCompressionMode() {
      if (fileNamePatternStr.endsWith(".gz")) {
       addInfo("Will use gz compression");
-      compressionMode = Compress.GZ;
+      compressionMode = CompressionMode.GZ;
     } else if (fileNamePatternStr.endsWith(".zip")) {
       addInfo("Will use zip compression");
-      compressionMode = Compress.ZIP;
+      compressionMode = CompressionMode.ZIP;
     } else {
       addInfo("No compression will be used");
-      compressionMode = Compress.NONE;
+      compressionMode = CompressionMode.NONE;
     }
   }
 

@@ -10,18 +10,19 @@
 
 package ch.qos.logback.core.rolling;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -241,9 +242,7 @@ public class TimeBasedRollingTest extends TestCase {
       tbrp.setCurrentTime(addTime(tbrp.getCurrentTime(), 500));
     }
 
-    // for (int i = 0; i < 3; i++) {
-    // System.out.println(i + " expected filename [" + filenames[i] + "].");
-    // }
+    tbrp.future.get(1000, TimeUnit.MILLISECONDS);
 
     for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
@@ -424,6 +423,9 @@ public class TimeBasedRollingTest extends TestCase {
     // System.out.println(i + " expected filename [" + filenames[i] + "].");
     // }
 
+    // wait for the compression task to finish
+    tbrp.future.get(1000, TimeUnit.MILLISECONDS);
+     
     for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test6." + i + ".gz"));
@@ -432,7 +434,7 @@ public class TimeBasedRollingTest extends TestCase {
     assertTrue(Compare.compare(filenames[2], Constants.TEST_DIR_PREFIX
         + "witness/rolling/tbr-test6.2"));
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(TimeBasedRollingTest.class);

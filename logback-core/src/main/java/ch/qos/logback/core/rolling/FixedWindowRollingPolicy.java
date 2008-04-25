@@ -11,7 +11,8 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 
-import ch.qos.logback.core.rolling.helper.Compress;
+import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
@@ -32,7 +33,6 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   int maxIndex;
   int minIndex;
   RenameUtil util = new RenameUtil();
-  Compress compress = new Compress();
 
   /**
    * It's almost always a bad idea to have a large window size, say over 12.
@@ -47,8 +47,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public void start() {
     // set the LR for our utility object
     util.setContext(this.context);
-    compress.setContext(this.context);
-
+   
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
       determineCompressionMode();
@@ -111,15 +110,23 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       }
 
       // move active file name to min
+      Compressor compressor;
       switch (compressionMode) {
-      case Compress.NONE:
-        util.rename(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+      case NONE:
+        util.rename(getNewActiveFileName(), fileNamePattern
+            .convertInt(minIndex));
         break;
-      case Compress.GZ:
-        compress.GZCompress(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+      case GZ:
+        compressor = new Compressor(CompressionMode.GZ,
+            getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+        compressor.setContext(this.context);
+        compressor.compress();
         break;
-      case Compress.ZIP:
-        compress.ZIPCompress(getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+      case ZIP:
+        compressor = new Compressor(CompressionMode.ZIP,
+            getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+        compressor.setContext(this.context);
+        compressor.compress();
         break;
       }
     }

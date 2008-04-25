@@ -16,7 +16,6 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
@@ -28,37 +27,37 @@ import ch.qos.logback.core.status.WarnStatus;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class Compress extends ContextAwareBase {
-  public static final int NONE = 0;
-  public static final int GZ = 1;
-  public static final int ZIP = 2;
-  /**
-   * String constant representing no compression. The value of this constant is
-   * "NONE".
-   */
-  public static final String NONE_STR = "NONE";
+public class Compressor extends ContextAwareBase {
 
-  /**
-   * String constant representing compression in the GZIP format. The value of
-   * this constant is "GZ".
-   */
-  public static final String GZ_STR = "GZ";
+  final CompressionMode compressionMode;
+  final String nameOfFile2Compress;
+  final String nameOfCompressedFile;
 
-  /**
-   * String constant representing compression in the ZIP format. The value of
-   * this constant is "ZIP".
-   */
-  public static final String ZIP_STR = "ZIP";
-
-  Context context;
-
-  public void ZIPCompress(String nameOfFile2zip) {
-    // Here we rely on the fact that the two argument version of ZIPCompress
-    // automatically adds a .zip extension to the second argument
-    GZCompress(nameOfFile2zip, nameOfFile2zip);
+  
+  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress, String nameOfCompressedFile) {
+    this.compressionMode = compressionMode;
+    this.nameOfFile2Compress = nameOfFile2Compress;
+    this.nameOfCompressedFile = nameOfCompressedFile;
+  }
+  
+  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress) {
+    // Here we rely on the fact that the two argument version of ZIPCompress/GZCompress
+    // automatically adds a .zip/.gz extension to the second argument
+    this(compressionMode, nameOfFile2Compress, nameOfFile2Compress);
   }
 
-  public void ZIPCompress(String nameOfFile2zip, String nameOfZippedFile) {
+  public void compress() {
+    switch(compressionMode) {
+    case GZ: 
+      gzCompress(nameOfFile2Compress, nameOfCompressedFile);
+      break;
+    case ZIP:
+      zipCompress(nameOfFile2Compress, nameOfCompressedFile);
+      break;
+    }
+  }
+
+  private void zipCompress(String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
@@ -111,13 +110,7 @@ public class Compress extends ContextAwareBase {
     }
   }
 
-  public void GZCompress(String nameOfFile2gz) {
-    // Here we rely on the fact that the two argument version of GZCompress
-    // automatically adds a .gz extension to the second argument
-    GZCompress(nameOfFile2gz, nameOfFile2gz);
-  }
-
-  public void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
+  private void gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);
 
     if (!file2gz.exists()) {
