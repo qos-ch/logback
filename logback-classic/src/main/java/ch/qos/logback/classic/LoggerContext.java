@@ -187,6 +187,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public void shutdownAndReset() {
     root.recursiveReset();
+    clearAllTurboFilters();
     fireOnReset();
   }
 
