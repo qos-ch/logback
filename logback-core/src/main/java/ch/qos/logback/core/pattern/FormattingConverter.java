@@ -42,7 +42,7 @@ abstract public class FormattingConverter<E> extends Converter<E> {
 
     if (s == null) {
       if (0 < min)
-        spacePad(buf, min);
+        SpacePadder.spacePad(buf, min);
       return;
     }
 
@@ -56,34 +56,12 @@ abstract public class FormattingConverter<E> extends Converter<E> {
       }
     } else if (len < min) {
       if (formattingInfo.isLeftPad()) {
-        spacePad(buf, min - len);
-        buf.append(s);
+       SpacePadder.leftPad(buf, s, min);
       } else {
-        buf.append(s);
-        spacePad(buf, min - len);
+        SpacePadder.rightPad(buf, s, min);
       }
     } else {
       buf.append(s);
-    }
-  }
-
-  final static String[] SPACES = { " ", "  ", "    ", "        ", // 1,2,4,8 spaces
-      "                ", // 16 spaces
-      "                                " }; // 32 spaces
-
-  /**
-   * Fast space padding method.
-   */
-  static public void spacePad(StringBuffer sbuf, int length) {
-    while (length >= 32) {
-      sbuf.append(SPACES[5]);
-      length -= 32;
-    }
-
-    for (int i = 4; i >= 0; i--) {
-      if ((length & (1 << i)) != 0) {
-        sbuf.append(SPACES[i]);
-      }
     }
   }
 }
