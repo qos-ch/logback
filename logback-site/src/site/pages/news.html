@@ -42,6 +42,14 @@ prefix='';
   the layout of a <code>SyslogAppender</code>.  The code now actively
   prevents this. Documenation has been updated to reflect the change.
   </p>
+
+  <p>The TurboFilterChain in a LoggerContext is <a
+  href="http://svn.qos.ch/viewvc?view=rev&amp;revision=1678">now
+  cleared</a> when the shutdownAndReset method is called. This problem
+  was reported on May 1st, 2008, by Julia Hu on the logback
+  developpers list.
+  </p>
+
   
   <hr width="80%" align="center" />
  
