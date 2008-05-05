@@ -34,6 +34,23 @@ public class ProfilerTest {
   }
 
   @Test
+  public void X() {
+    Profiler profiler = new Profiler("BASIC");
+  
+
+  profiler.start("Subtask_1");
+  doX(1);
+     
+  profiler.start("Subtask_1");
+  for (int i = 0; i < 5; i++) {
+    doX(i);
+  }
+  profiler.start("doOther");
+  doX(2);
+  profiler.stop().print();
+  }
+
+  @Test
   public void testNestedProfiling() {
     Profiler profiler = new Profiler("BAS");
 
@@ -58,12 +75,12 @@ public class ProfilerTest {
   public void doSubtask(Profiler nested) {
     nested.start("n1");
     doX(1);
-    
+
     nested.start("n2");
     doX(5);
     nested.stop();
   }
-  
+
   void doY(int millis) {
     delay(millis);
   }

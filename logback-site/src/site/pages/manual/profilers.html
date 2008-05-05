@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Chapter 5: Layouts</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+
+</head>
+<body>
+		<script>
+prefix='../';	
+</script>
+<script src="../templates/header.js"></script>
+<div id="left">
+  <script src="../templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="index_menu.js"></script>
+</div>
+<div id="content">
+	
+		<h1>Chapter 8: Profilers</h1>
+	
+    <div class="quote">
+      <p>We should forget about small efficiencies, say about 97% of
+      the time: premature optimization is the root of all evil.
+      </p>
+      <p>&mdash; Donald Knuth, JON POSTEL, Structured Programming with
+    go to Statements</p> </div>
+
+    <script src="../templates/creative.js"></script>
+    <script src="../templates/setup.js"></script>
+     
+		<h2>What is a profiler?</h2>
+    
+    <p>According to wikipedia, <a
+    href="http://en.wikipedia.org/wiki/Profiler_%28computer_science%29">profiling</a>
+    is is the investigation of a program's behavior using information
+    gathered as the program runs (i.e. it is a form of dynamic program
+    analysis, as opposed to static code analysis). The usual goal of
+    performance analysis is to determine which parts of a program to
+    optimize for speed or memory usage.
+    </p>
+
+    <p>A logback profiler help the developer gather performance data
+    by managing one or more stopwatches driven by statements inserted
+    in the source code. An example, should make the point clearer.
+    </p>
+
+    <p class="source">
+  doSomethingBasic() {
+   Profiler profiler = new Profiler("BASIC");
+
+   profiler.start("Subtask_1");
+   doSubtaskOne();
+      
+   profiler.start("Subtask_1");
+   for (int i = 0; i &lt; 5; i++) {
+     doSubtaskTwo(i);
+   }
+   profiler.start("Other");
+   doOther();
+   profiler.stop().print();</p>
+
+    <p class="source">+ Profiler [BASIC]
+|-- elapsed time        [Subtask_1]  9.987 milliseconds.
+|-- elapsed time        [Subtask_1] 47.263 milliseconds.
+|-- elapsed time            [Other]  2.790 milliseconds.
+|-- Total elapsed time      [BASIC] 60.092 milliseconds.
+</p>
+</div>

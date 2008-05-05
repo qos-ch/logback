@@ -18,7 +18,7 @@ import ch.qos.logback.core.pattern.SpacePadder;
 
 public class Profiler {
 
-  final static int MIN_SW_NAME_LENGTH = 10;
+  final static int MIN_SW_NAME_LENGTH = 12;
   final static int MIN_SW_ELAPSED_TIME_NUMBER_LENGTH = 6;
 
   final String name;
@@ -27,9 +27,19 @@ public class Profiler {
   List<StopWatch> stopwatchList = new ArrayList<StopWatch>();
   List<Object> childList = new ArrayList<Object>();
 
+  ProfilerRegistry profilerRegistry;
+  
   public Profiler(String name) {
     this.name = name;
     this.globalStopWatch = new StopWatch(name);
+  }
+
+  public ProfilerRegistry getProfilerRegistry() {
+    return profilerRegistry;
+  }
+
+  public void setProfilerRegistry(ProfilerRegistry profilerRegistry) {
+    this.profilerRegistry = profilerRegistry;
   }
 
   public void start(String name) {
@@ -41,6 +51,7 @@ public class Profiler {
 
   public Profiler startNested(String name) {
     Profiler nestedProfiler = new Profiler(name);
+    nestedProfiler.setProfilerRegistry(profilerRegistry);
     childList.add(nestedProfiler);
     return nestedProfiler;
   }

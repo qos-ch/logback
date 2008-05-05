@@ -7,5 +7,6 @@ document.write('<p class="menu"><a href="appenders.html"><b>Ch4: Appenders</b></
 document.write('<p class="menu"><a href="layouts.html"><b>Ch5: Layouts</b></a>');
 document.write('<p class="menu"><a href="filters.html"><b>Ch6: Filter chains</b></a>');
 document.write('<p class="menu"><a href="mdc.html"><b>Ch7: Mapped Diagnostic Contexts</b></a>');
-document.write('<p class="menu"><a href="contextSelector.html"><b>Ch8: Context Selectors</b></a>');
+document.write('<p class="menu"><a href="profilers.html"><b>Ch8: Profilers</b></a>');
+document.write('<p class="menu"><a href="contextSelector.html"><b>Ch9: Context Selectors</b></a>');
 
