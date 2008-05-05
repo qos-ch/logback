@@ -1,7 +1,6 @@
 package ch.qos.logback.access.servlet;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,12 +29,9 @@ class TeeServletInputStream extends ServletInputStream {
       if (len < 0) {
         in = originalSIS;
       } else {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         inputBuffer = new byte[len];
-        int n = 0;
-        while ((n = originalSIS.read(inputBuffer, 0, len)) != -1) {
-          baos.write(inputBuffer, 0, n);
-        }
+        int n = originalSIS.read(inputBuffer, 0, len);
+        assert n == len;
         this.in = new ByteArrayInputStream(inputBuffer);       
         originalSIS.close();
       }

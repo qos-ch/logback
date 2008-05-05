@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   TeeServletOutputStream teeServletOutputStream;
-  PrintWriter writer;
+  PrintWriter teeWriter;
 
   public TeeHttpServletResponse(HttpServletResponse httpServletResponse) {
     super(httpServletResponse);
@@ -27,17 +27,17 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
   @Override
   public PrintWriter getWriter() throws IOException {
-    if (this.writer == null) {
-      this.writer = new PrintWriter(new OutputStreamWriter(getOutputStream()),
+    if (this.teeWriter == null) {
+      this.teeWriter = new PrintWriter(new OutputStreamWriter(getOutputStream()),
           true);
     }
-    return this.writer;
+    return this.teeWriter;
   }
 
   @Override
   public void flushBuffer() {
-    if (this.writer != null) {
-      this.writer.flush();
+    if (this.teeWriter != null) {
+      this.teeWriter.flush();
     }
   }
 
@@ -45,15 +45,15 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
     // teeServletOutputStream can be null if the getOutputStream method is never
     // called.
     if (teeServletOutputStream != null) {
-      return teeServletOutputStream.getOutputBuffer();
+      return teeServletOutputStream.getOutputStreamAsByteArray();
     } else {
       return null;
     }
   }
 
   void finish() throws IOException {
-    if (this.writer != null) {
-      this.writer.close();
+    if (this.teeWriter != null) {
+      this.teeWriter.close();
     }
     if (this.teeServletOutputStream != null) {
       this.teeServletOutputStream.close();

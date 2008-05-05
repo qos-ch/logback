@@ -9,24 +9,24 @@ import javax.servlet.ServletResponse;
 public class TeeServletOutputStream extends ServletOutputStream {
 
   final ServletOutputStream underlyingStream;
-  final ByteArrayOutputStream baos;
+  final ByteArrayOutputStream baosCopy;
 
   TeeServletOutputStream(ServletResponse httpServletResponse)
       throws IOException {
     // System.out.println("TeeServletOutputStream.constructor() called");
     this.underlyingStream = httpServletResponse.getOutputStream();
-    baos = new ByteArrayOutputStream();
+    baosCopy = new ByteArrayOutputStream();
   }
 
-  byte[] getOutputBuffer() {
-    return baos.toByteArray();
+  byte[] getOutputStreamAsByteArray() {
+    return baosCopy.toByteArray();
   }
 
   @Override
   public void write(int val) throws IOException {
     if (underlyingStream != null) {
       underlyingStream.write(val);
-      baos.write(val);
+      baosCopy.write(val);
     }
   }
 
@@ -49,31 +49,27 @@ public class TeeServletOutputStream extends ServletOutputStream {
     // called");
     // System.out.println(new String(byteArray, offset, length));
     underlyingStream.write(byteArray, offset, length);
-    baos.write(byteArray, offset, length);
+    baosCopy.write(byteArray, offset, length);
   }
 
+  @Override
   public void close() throws IOException {
     // System.out.println("CLOSE TeeServletOutputStream.close() called");
 
     // If the servlet accessing the stream is using a writer instead of
-    // an OutputStream, it will probably call os.close() begore calling
-    // writer.close. Thus, the undelying output stream will be called
+    // an OutputStream, it will probably call os.close() before calling
+    // writer.close. Thus, the underlying output stream will be called
     // before the data sent to the writer could be flushed.
   }
 
-  public void finish() throws IOException {
-    flush();
-    underlyingStream.close();
-    baos.close();
-  }
 
+  @Override
   public void flush() throws IOException {
     if (underlyingStream == null) {
       return;
     }
     // System.out.println("FLUSH TeeServletOutputStream.flush() called");
     underlyingStream.flush();
-    baos.flush();
+    baosCopy.flush();
   }
-
 }
