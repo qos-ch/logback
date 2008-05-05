@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 
@@ -45,16 +46,29 @@ public class StatusPrinter {
   }
 
   public static void print(StatusManager sm) {
+    StringBuilder sb = buildStr(sm);
+    ps.println(sb.toString());
+  }
+
+  public static StringBuilder buildStr(StatusManager sm) {
+    StringBuilder sb = new StringBuilder();
     synchronized (sm) {
       Iterator it = sm.iterator();
       while (it.hasNext()) {
         Status s = (Status) it.next();
-        print("", s);
+        buildStr(sb, "", s);
       }
+      return sb;
     }
   }
   
-  private static void print(String indentation, Status s) {
+  private static void appendThrowable(StringBuilder sb, Throwable t) {
+    StackTraceElement[] steArray = t.getStackTrace();
+    for (StackTraceElement ste : steArray) {
+      sb.append(ste.toString()).append(Layout.LINE_SEP);
+    }
+  }
+  private static void buildStr(StringBuilder sb, String indentation, Status s) {
     String prefix;
     if(s.hasChildren()) {
        prefix = indentation + "+ ";
@@ -65,21 +79,19 @@ public class StatusPrinter {
     if(simpleDateFormat != null) {
       Date date = new Date(s.getDate());
       String dateStr = simpleDateFormat.format(date);
-      ps.print(dateStr);
-      ps.print(" ");
+      sb.append(dateStr).append(" ");
     } 
-    ps.println(prefix+s);   
+    sb.append(prefix+s).append(Layout.LINE_SEP);   
     
     if (s.getThrowable() != null) {
-      s.getThrowable().printStackTrace(ps);
+      appendThrowable(sb, s.getThrowable());
     }
     if(s.hasChildren()) {
       Iterator<Status> ite = s.iterator();
       while(ite.hasNext()) {
         Status child = ite.next();
-        print(indentation+"  ", child);
+        buildStr(sb, indentation+"  ", child);
       }
-      
     }
   }
   
