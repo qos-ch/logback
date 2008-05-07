@@ -138,6 +138,7 @@
           <excludes>
             <exclude>**/AllTest.java</exclude>
             <exclude>**/PackageTest.java</exclude>
+             <exclude>**/TestConstants.java</exclude>
             <exclude>**/SerializationPerfsTest.java</exclude>
             <exclude>**/LoggerPerfTest.java</exclude>
           </excludes>
