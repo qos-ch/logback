@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic;
 
-public class TestContants {
+public class TestConstants {
 
   final static public String ISO_REGEX =  "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";
   
