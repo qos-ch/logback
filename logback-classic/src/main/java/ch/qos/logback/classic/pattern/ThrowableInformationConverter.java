@@ -132,7 +132,7 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
     for (int i = 1; i < length; i++) {
       String string = stringRep[i];
 
-      if (string.startsWith(ch.qos.logback.classic.ClassicGlobal.CAUSED_BY)) {
+      if (string.startsWith(CoreGlobal.CAUSED_BY)) {
         // nothing
       } else if (Character.isDigit(string.charAt(0))) {
         buf.append("\t... ");
