@@ -24,6 +24,10 @@ public class ProfilerRegistry {
 
   
   Map<String, Profiler> profilerMap = new HashMap<String, Profiler>();
+
+  public void put(Profiler profiler) {
+    put(profiler.getName(), profiler);
+  }
   
   public void put(String name, Profiler profiler) {
     profilerMap.put(name, profiler);

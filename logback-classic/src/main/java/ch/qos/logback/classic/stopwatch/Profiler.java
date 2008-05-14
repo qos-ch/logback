@@ -16,10 +16,30 @@ import ch.qos.logback.core.pattern.SpacePadder;
 // |-- elapsed time            [doZ]    21 milliseconds.
 // |-- Total elapsed time      [BAS]    78 milliseconds.
 
+// + Profiler [TOP]
+// |--+ Profiler [IIII]
+//    |-- elapsed time                            [A]   0.006 milliseconds.
+//    |-- elapsed time                            [B]  75.777 milliseconds.
+//    |-- elapsed time                       [VVVVVV] 161.589 milliseconds.
+//    |-- Total elapsed time                   [IIII] 240.580 milliseconds.
+// |--+ Profiler [RRRRRRRRR]
+//    |-- elapsed time                           [R0]   9.390 milliseconds.
+//    |-- elapsed time                           [R1]   6.555 milliseconds.
+//    |-- elapsed time                           [R2]   5.995 milliseconds.
+//    |-- elapsed time                           [R3] 115.502 milliseconds.
+//    |-- elapsed time                           [R4]   0.064 milliseconds.
+//    |-- Total elapsed time                      [R] 138.340 milliseconds.
+// |--+ Profiler [S]
+//    |-- Total elapsed time                     [S0]  3.091 milliseconds.
+// |--+ Profiler [P]
+//    |-- elapsed time                           [P0] 87.550 milliseconds.
+//    |-- Total elapsed time                      [P] 87.559 milliseconds.
+// |-- Total elapsed time                  [TOP] 467.548 milliseconds.
+            
 public class Profiler {
 
-  final static int MIN_SW_NAME_LENGTH = 12;
-  final static int MIN_SW_ELAPSED_TIME_NUMBER_LENGTH = 6;
+  final static int MIN_SW_NAME_LENGTH = 24;
+  final static int MIN_SW_ELAPSED_TIME_NUMBER_LENGTH = 9;
 
   final String name;
   final StopWatch globalStopWatch;
@@ -33,20 +53,29 @@ public class Profiler {
     this.name = name;
     this.globalStopWatch = new StopWatch(name);
   }
+  
+  public String getName() {
+    return name;
+  }
 
   public ProfilerRegistry getProfilerRegistry() {
     return profilerRegistry;
   }
 
   public void setProfilerRegistry(ProfilerRegistry profilerRegistry) {
+    if(profilerRegistry == null) {
+      return;
+    }
     this.profilerRegistry = profilerRegistry;
+    profilerRegistry.put(this);
   }
 
-  public void start(String name) {
+  public StopWatch start(String name) {
     stopLastStopWatch();
     StopWatch childSW = new StopWatch(name);
     stopwatchList.add(childSW);
     childList.add(childSW);
+    return childSW;
   }
 
   public Profiler startNested(String name) {
