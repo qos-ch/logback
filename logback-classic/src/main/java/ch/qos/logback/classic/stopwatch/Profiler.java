@@ -70,12 +70,11 @@ public class Profiler {
     profilerRegistry.put(this);
   }
 
-  public StopWatch start(String name) {
+  public void start(String name) {
     stopLastStopWatch();
     StopWatch childSW = new StopWatch(name);
     stopwatchList.add(childSW);
     childList.add(childSW);
-    return childSW;
   }
 
   public Profiler startNested(String name) {
