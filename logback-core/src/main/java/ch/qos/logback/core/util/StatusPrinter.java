@@ -16,20 +16,23 @@ import java.util.Date;
 import java.util.Iterator;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.helpers.ThrowableToStringArray;
 
 public class StatusPrinter {
-  
+
   private static PrintStream ps = System.out;
 
-  static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss,SSS");
-  
+  static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+      "HH:mm:ss,SSS");
+
   public static void setPrintStream(PrintStream printStream) {
     ps = printStream;
   }
-  
+
   public static void print(Context context) {
     if (context == null) {
       throw new IllegalArgumentException("Context argument cannot be null");
@@ -46,53 +49,64 @@ public class StatusPrinter {
   }
 
   public static void print(StatusManager sm) {
-    StringBuilder sb = buildStr(sm);
+    StringBuilder sb = new StringBuilder();
+    buildStr(sb, sm);
     ps.println(sb.toString());
   }
 
-  public static StringBuilder buildStr(StatusManager sm) {
-    StringBuilder sb = new StringBuilder();
+  public static void buildStr(StringBuilder sb, StatusManager sm) {
+
     synchronized (sm) {
       Iterator it = sm.iterator();
       while (it.hasNext()) {
         Status s = (Status) it.next();
         buildStr(sb, "", s);
       }
-      return sb;
     }
   }
-  
+
   private static void appendThrowable(StringBuilder sb, Throwable t) {
-    StackTraceElement[] steArray = t.getStackTrace();
-    for (StackTraceElement ste : steArray) {
-      sb.append(ste.toString()).append(Layout.LINE_SEP);
+    String[] stringRep = ThrowableToStringArray.extractStringRep(t, null);
+
+    for (String s : stringRep) {
+      if (s.startsWith(CoreGlobal.CAUSED_BY)) {
+        // nothing
+      } else if (Character.isDigit(s.charAt(0))) {
+        // if line resembles "48 common frames omitted"
+        sb.append("\t... ");
+      } else {
+        // most of the time. just add a tab+"at"
+        sb.append("\tat ");
+      }
+      sb.append(s).append(CoreGlobal.LINE_SEPARATOR);
     }
   }
+
   private static void buildStr(StringBuilder sb, String indentation, Status s) {
     String prefix;
-    if(s.hasChildren()) {
-       prefix = indentation + "+ ";
+    if (s.hasChildren()) {
+      prefix = indentation + "+ ";
     } else {
       prefix = indentation + "|-";
     }
-    
-    if(simpleDateFormat != null) {
+
+    if (simpleDateFormat != null) {
       Date date = new Date(s.getDate());
       String dateStr = simpleDateFormat.format(date);
       sb.append(dateStr).append(" ");
-    } 
-    sb.append(prefix+s).append(Layout.LINE_SEP);   
-    
+    }
+    sb.append(prefix + s).append(Layout.LINE_SEP);
+
     if (s.getThrowable() != null) {
       appendThrowable(sb, s.getThrowable());
     }
-    if(s.hasChildren()) {
+    if (s.hasChildren()) {
       Iterator<Status> ite = s.iterator();
-      while(ite.hasNext()) {
+      while (ite.hasNext()) {
         Status child = ite.next();
-        buildStr(sb, indentation+"  ", child);
+        buildStr(sb, indentation + "  ", child);
       }
     }
   }
-  
+
 }
