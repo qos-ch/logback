@@ -124,7 +124,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * Return a copy of the current thread's context map. 
    * Returned value may be null.
    */
-  public Map getCopyOfPropertyMap() {
+  public Map getCopyOfContextMap() {
     HashMap<String, String> hashMap = inheritableThreadLocal.get();
     if (hashMap == null) {
       return null;
