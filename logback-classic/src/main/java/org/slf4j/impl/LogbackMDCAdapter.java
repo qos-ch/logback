@@ -147,4 +147,20 @@ public class LogbackMDCAdapter implements MDCAdapter {
       return null;
     }
   }
+
+  
+  @SuppressWarnings("unchecked") 
+  public void setContextMap(Map contextMap) {
+    HashMap<String, String> oldMap = inheritableThreadLocal.get();
+
+    HashMap<String, String> newMap = new HashMap<String, String>();
+    newMap.putAll(contextMap);
+
+    // the newMap replaces the old one for serialisation's sake
+    inheritableThreadLocal.set(newMap);
+    
+    // hints for the garbage collector
+    oldMap.clear();
+    oldMap = null;
+  }
 }
