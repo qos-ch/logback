@@ -3,7 +3,9 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.pattern.util.EscapeUtil;
+import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.pattern.util.IEscapeUtil;
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
 public class OptionTokenizer {
 
@@ -16,15 +18,26 @@ public class OptionTokenizer {
   private static final char DOUBLE_QUOTE_CHAR = '"';
   private static final char SINGLE_QUOTE_CHAR = '\'';
 
-  String pattern;
-  int patternLength;
+  final String pattern;
+  final int patternLength;
+  final IEscapeUtil escapeUtil;
+  
   char quoteChar;
   int pointer = 0;
   int state = EXPECTING_STATE;
 
+  /**
+   * This variant is used in tests
+   * @param pattern
+   */
   OptionTokenizer(String pattern) {
+    this(pattern, new RegularEscapeUtil());
+  }
+  
+  OptionTokenizer(String pattern, IEscapeUtil escapeUtil) {
     this.pattern = pattern;
     patternLength = pattern.length();
+    this.escapeUtil = escapeUtil;
   }
 
   List tokenize() throws ScanException {
@@ -96,7 +109,7 @@ public class OptionTokenizer {
   void escape(String escapeChars, StringBuffer buf) {
     if ((pointer < patternLength)) {
       char next = pattern.charAt(pointer++);
-      EscapeUtil.escape(escapeChars, buf, next, pointer);
+      escapeUtil.escape(escapeChars, buf, next, pointer);
     }
   }
 }

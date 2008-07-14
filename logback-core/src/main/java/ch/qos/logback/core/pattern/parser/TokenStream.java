@@ -12,7 +12,11 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.List;
 import java.util.ArrayList;
 
-import ch.qos.logback.core.pattern.util.EscapeUtil;
+import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.pattern.util.IEscapeUtil;
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
+
+
 
 /**
  * <p>Return a steady stream of tokens. <p/>
@@ -29,7 +33,7 @@ import ch.qos.logback.core.pattern.util.EscapeUtil;
 class TokenStream {
 
   private static final char ESCAPE_CHAR = '\\';
-  private static final char PERCENT_CHAR = '%';
+  private static final char PERCENT_CHAR = CoreGlobal.PERCENT_CHAR; 
   private static final char LEFT_PARENTHESIS = '(';
   private static final char RIGHT_PARENTHESIS = ')';
   private static final char CURLY_LEFT = '{';
@@ -42,15 +46,23 @@ class TokenStream {
 
   final String pattern;
   final int patternLength;
+  final IEscapeUtil escapeUtil;
+  
   int state = LITERAL_STATE;
   int pointer = 0;
 
+  // this variant should be used for testing purposes only
   TokenStream(String pattern) {
+    this(pattern, new RegularEscapeUtil());
+  }
+  
+  TokenStream(String pattern, IEscapeUtil escapeUtil) {
     if(pattern == null) {
       throw new NullPointerException("null pattern string not allowed");
     }
     this.pattern = pattern;
     patternLength = pattern.length();
+    this.escapeUtil = escapeUtil;
   }
 
   List tokenize() throws ScanException {
@@ -133,7 +145,7 @@ class TokenStream {
           } else if (c == ESCAPE_CHAR) {
             if ((pointer < patternLength)) {
               char next = pattern.charAt(pointer++);
-              EscapeUtil.escape("%()", buf, next, pointer);
+              escapeUtil.escape("%()", buf, next, pointer);
             }
           } else {
             buf.append(c);
@@ -167,7 +179,7 @@ class TokenStream {
   void escape(String escapeChars, StringBuffer buf) {
     if ((pointer < patternLength)) {
       char next = pattern.charAt(pointer++);
-      EscapeUtil.escape(escapeChars, buf, next, pointer);
+      escapeUtil.escape(escapeChars, buf, next, pointer);
     }
   }
 

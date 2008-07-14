@@ -1,8 +1,13 @@
 package ch.qos.logback.core.pattern.util;
 
-public class EscapeUtil {
+/**
+ * This implementation is intended for use in PatternLayout.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public class RegularEscapeUtil implements IEscapeUtil {
 
-  public static void escape(String escapeChars, StringBuffer buf, char next,
+  public void escape(String escapeChars, StringBuffer buf, char next,
       int pointer) {
     if (escapeChars.indexOf(next) >= 0) {
       buf.append(next);
@@ -24,14 +29,19 @@ public class EscapeUtil {
         buf.append('\n');
         break;
       default:
-        String echars = "";
-        for (int i = 0; i < escapeChars.length(); i++) {
-          echars += ", \\" + escapeChars.charAt(i);
-        }
+        String commaSeperatedEscapeChars = formatEscapeCharsForListing(escapeChars);
         new IllegalArgumentException("Illegal char '" + next + " at column "
-            + pointer + ". Only \\\\, \\_" + echars
+            + pointer + ". Only \\\\, \\_" + commaSeperatedEscapeChars
             + ", \\t, \\n, \\r combinations are allowed as escape characters.");
       }
+  }
+
+  String formatEscapeCharsForListing(String escapeChars) {
+    String commaSeperatedEscapeChars = "";
+    for (int i = 0; i < escapeChars.length(); i++) {
+      commaSeperatedEscapeChars += ", \\" + escapeChars.charAt(i);
+    }
+    return commaSeperatedEscapeChars;
   }
 
   public static String basicEscape(String s) {

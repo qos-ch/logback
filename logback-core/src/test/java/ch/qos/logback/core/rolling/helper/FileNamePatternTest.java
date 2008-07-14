@@ -20,35 +20,33 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.util.StatusPrinter;
 
-
-
 /**
  * @author Ceki
- *
+ * 
  */
 public class FileNamePatternTest extends TestCase {
-  
+
   Context context = new ContextBase();
-  
+
   public FileNamePatternTest(String arg) {
     super(arg);
   }
-  
-  public void test1() {
-    //System.out.println("Testing [t]");
+
+
+  public void testSmoke() {
+    // System.out.println("Testing [t]");
     FileNamePattern pp = new FileNamePattern("t", context);
     assertEquals("t", pp.convertInt(3));
 
-    //System.out.println("Testing [foo]");
+    // System.out.println("Testing [foo]");
     pp = new FileNamePattern("foo", context);
     assertEquals("foo", pp.convertInt(3));
 
-    //System.out.println("Testing [foo%]");
-    //pp = new FileNamePattern("foo%", context);
-    //StatusPrinter.print(context.getStatusManager());
-    //assertEquals("foo%", pp.convertInt(3));
-  
-    
+    // System.out.println("Testing [foo%]");
+    // pp = new FileNamePattern("foo%", context);
+    // StatusPrinter.print(context.getStatusManager());
+    // assertEquals("foo%", pp.convertInt(3));
+
     pp = new FileNamePattern("%i foo", context);
     StatusPrinter.print(context.getStatusManager());
     assertEquals("3 foo", pp.convertInt(3));
@@ -62,7 +60,6 @@ public class FileNamePatternTest extends TestCase {
     pp = new FileNamePattern("foo.%i.log", context);
     assertEquals("foo.3.log", pp.convertInt(3));
 
-
     pp = new FileNamePattern("%i.foo\\%", context);
     assertEquals("3.foo%", pp.convertInt(3));
 
@@ -70,15 +67,21 @@ public class FileNamePatternTest extends TestCase {
     assertEquals("%foo", pp.convertInt(3));
   }
 
-  public void test2() {
-    //System.out.println("Testing [foo%ibar%i]");
+  // test ways for dealing with flowing i converter, as in "foo%ix"
+  public void testFlowingI() {
+    // System.out.println("Testing [foo%ibar%i]");
 
-    FileNamePattern pp = new FileNamePattern("foo%i\\_bar%i", context);
-    assertEquals("foo3bar3", pp.convertInt(3));
-
+    {
+      FileNamePattern pp = new FileNamePattern("foo%i{}bar%i", context);
+      assertEquals("foo3bar3", pp.convertInt(3));
+    }
+    {
+      FileNamePattern pp = new FileNamePattern("foo%i{}bar%i", context);
+      assertEquals("foo3bar3", pp.convertInt(3));
+    }
   }
 
-  public void test3() {
+  public void testDate() {
     Calendar cal = Calendar.getInstance();
     cal.set(2003, 4, 20, 17, 55);
 
@@ -90,15 +93,20 @@ public class FileNamePatternTest extends TestCase {
     assertEquals("foo2003.05.20 17:55", pp.convertDate(cal.getTime()));
 
     pp = new FileNamePattern("%d{yyyy.MM.dd HH:mm} foo", context);
-     assertEquals("2003.05.20 17:55 foo", pp.convertDate(cal.getTime()));
+    assertEquals("2003.05.20 17:55 foo", pp.convertDate(cal.getTime()));
 
+  }
+  
+  public void testWithBackslash() {
+    FileNamePattern pp = new FileNamePattern("c:\\foo\\bar.%i", context);
+    assertEquals("c:\\foo\\bar.3", pp.convertInt(3));
   }
 
   public static Test xsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new FileNamePatternTest("test1"));
     suite.addTest(new FileNamePatternTest("test2"));
-    //suite.addTest(new FileNamePatternTestCase("test3"));
+    // suite.addTest(new FileNamePatternTestCase("test3"));
 
     return suite;
   }

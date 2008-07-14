@@ -44,5 +44,8 @@ public class CoreGlobal {
    * An empty Class array.
    */
   public final static Class[] EMPTY_CLASS_ARRAY = new Class[] {};
-  static public final String CAUSED_BY = "Caused by: ";
+  public final static String CAUSED_BY = "Caused by: ";
+  
+  
+  public final static char PERCENT_CHAR = '%';
 }

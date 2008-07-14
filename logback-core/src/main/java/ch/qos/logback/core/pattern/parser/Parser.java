@@ -5,6 +5,8 @@ import java.util.Map;
 
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.FormatInfo;
+import ch.qos.logback.core.pattern.util.IEscapeUtil;
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 
@@ -12,14 +14,21 @@ public class Parser<E> extends ContextAwareBase {
 
   final List tokenList;
   int pointer = 0;
+  IEscapeUtil escapeUtil; 
   
   Parser(TokenStream ts) throws ScanException {
     this.tokenList = ts.tokenize();
   }
 
+  // this variant should be used for testing purposes only
   public Parser(String pattern) throws ScanException {
+    this(pattern, new RegularEscapeUtil());
+  }
+  
+  public Parser(String pattern, IEscapeUtil escapeUtil) throws ScanException {
+    this.escapeUtil = escapeUtil;
     try {
-      TokenStream ts = new TokenStream(pattern);
+      TokenStream ts = new TokenStream(pattern, escapeUtil);
       this.tokenList = ts.tokenize();
     } catch (NullPointerException npe) {
       throw new ScanException("Failed to initialize Parser", npe);

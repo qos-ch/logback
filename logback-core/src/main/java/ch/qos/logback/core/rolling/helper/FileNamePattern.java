@@ -20,6 +20,7 @@ import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
+import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 
@@ -52,7 +53,7 @@ public class FileNamePattern extends ContextAwareBase {
 
   void parse() {
     try {
-      Parser<Object> p = new Parser<Object>(pattern);
+      Parser<Object> p = new Parser<Object>(pattern, new AlmostAsIsEscapeUtil());
       p.setContext(context);
       Node t = p.parse();
       this.headTokenConverter = p.compile(t, CONVERTER_MAP);

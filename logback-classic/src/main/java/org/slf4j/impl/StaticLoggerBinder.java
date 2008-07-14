@@ -86,7 +86,10 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   static ContextSelector dynamicalContextSelector(
-      LoggerContext defaultLoggerContext, String contextSelectorStr) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+      LoggerContext defaultLoggerContext, String contextSelectorStr)
+      throws ClassNotFoundException, SecurityException, NoSuchMethodException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException {
     Class contextSelectorClass = Loader.loadClass(contextSelectorStr);
     Constructor cons = contextSelectorClass
         .getConstructor(new Class[] { LoggerContext.class });

@@ -12,7 +12,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.pattern.util.EscapeUtil;
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -65,7 +65,7 @@ abstract public class PropertyAction extends Action {
     } else if (
       !(OptionHelper.isEmpty(name) || OptionHelper.isEmpty(value))
         && OptionHelper.isEmpty(fileName)) {
-      value = EscapeUtil.basicEscape(value);
+      value = RegularEscapeUtil.basicEscape(value);
       // now remove both leading and trailing spaces
       value = value.trim();
       setProperty(ec, name, value);

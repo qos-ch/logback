@@ -10,14 +10,12 @@
 
 package ch.qos.logback.core.pattern.parser;
 
-import junit.framework.*;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import ch.qos.logback.core.pattern.parser.ScanException;
-import ch.qos.logback.core.pattern.parser.Token;
-import ch.qos.logback.core.pattern.parser.TokenStream;
+import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
+
+import junit.framework.TestCase;
 
 public class TokenStreamTest extends TestCase {
 
@@ -317,6 +315,18 @@ public class TokenStreamTest extends TestCase {
       witness.add(new Token(Token.LITERAL, ")"));
       assertEquals(witness, tl);
     }
+  }
 
+  public void testWindowsLikeBackSlashes() throws ScanException {
+    {
+      List tl = new TokenStream("c:\\hello\\world.%i", new AlmostAsIsEscapeUtil())
+          .tokenize();
+
+      List<Token> witness = new ArrayList<Token>();
+      witness.add(new Token(Token.LITERAL, "c:\\hello\\world."));
+      witness.add(Token.PERCENT_TOKEN);
+      witness.add(new Token(Token.KEYWORD, "i"));
+      assertEquals(witness, tl);
+    }
   }
 }

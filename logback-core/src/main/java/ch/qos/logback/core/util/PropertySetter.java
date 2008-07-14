@@ -22,6 +22,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -245,6 +246,20 @@ public class PropertySetter extends ContextAwareBase {
       } else {
         return X_AS_COMPONENT;
       }
+    }
+  }
+  
+  <T> boolean isUnequivocallyInstantiable(Class<T> clazz) {
+    if(clazz.isInterface()) {
+      return false;
+    }
+    try {
+      Constructor<T> pubConstructor = clazz.getConstructor();
+      return true;
+    } catch (SecurityException e) {
+      return false;
+    } catch (NoSuchMethodException e) {
+      return false;
     }
   }
 
