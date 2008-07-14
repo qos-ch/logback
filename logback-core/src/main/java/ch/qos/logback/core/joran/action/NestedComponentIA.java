@@ -102,7 +102,7 @@ public class NestedComponentIA extends ImplicitAction {
       // "About to instantiate component [{}] of type [{}]", localName,
       // className);
 
-      // FIXME: Loading classes should be governed by config file rules.
+      // TODO: Loading classes should be governed by config file rules.
       
       actionData.nestedComponent = Loader.loadClass(className, context).newInstance();
 
