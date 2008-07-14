@@ -43,6 +43,11 @@ prefix='';
   prevents this. Documenation has been updated to reflect the change.
   </p>
 
+  <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-56">bug
+  LBCLASSIC-56c</a> originally reported by Michel Colette. Backslash
+  characters are now correctly interpreted in filename patterns.
+  </p>
+
   <p>The TurboFilterChain in a LoggerContext is <a
   href="http://svn.qos.ch/viewvc?view=rev&amp;revision=1678">now
   cleared</a> when the shutdownAndReset method is called. This problem
