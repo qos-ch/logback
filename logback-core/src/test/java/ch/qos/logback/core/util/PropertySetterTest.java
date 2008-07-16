@@ -12,25 +12,25 @@ public class PropertySetterTest extends TestCase {
   public void testCanContainComponent() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    assertEquals(ContainmentType.AS_SINGLE_COMPONENT, setter.canContainComponent("door"));
+    assertEquals(AggregationType.AS_SINGLE_COMPONENT, setter.canContainComponent("door"));
     
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("count"));
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Count"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("count"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Count"));
     
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("name"));
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Name"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("name"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Name"));
     
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Duration"));
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("fs"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Duration"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("fs"));
     
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("open"));
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("Open"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("open"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Open"));
     
-    assertEquals(ContainmentType.AS_COMPONENT_COLLECTION, setter.canContainComponent("Window"));
-    assertEquals(ContainmentType.AS_PROPERTY_COLLECTION, setter.canContainComponent("adjective"));
+    assertEquals(AggregationType.AS_COMPONENT_COLLECTION, setter.canContainComponent("Window"));
+    assertEquals(AggregationType.AS_PROPERTY_COLLECTION, setter.canContainComponent("adjective"));
     
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("filterReply"));
-    assertEquals(ContainmentType.AS_SINGLE_PROPERTY, setter.canContainComponent("houseColor"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("filterReply"));
+    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("houseColor"));
     
     System.out.println();
   }

@@ -181,7 +181,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  public ContainmentType canContainComponent(String name) {
+  public AggregationType canContainComponent(String name) {
     String cName = capitalizeFirstLetter(name);
 
     Method addMethod = getMethod("add" + cName);
@@ -190,11 +190,11 @@ public class PropertySetter extends ContextAwareBase {
       int type = computeContainmentTpye(addMethod);
       switch (type) {
       case X_NOT_FOUND:
-        return ContainmentType.NOT_FOUND;
+        return AggregationType.NOT_FOUND;
       case X_AS_PROPERTY:
-        return ContainmentType.AS_PROPERTY_COLLECTION;
+        return AggregationType.AS_PROPERTY_COLLECTION;
       case X_AS_COMPONENT:
-        return ContainmentType.AS_COMPONENT_COLLECTION;
+        return AggregationType.AS_COMPONENT_COLLECTION;
       }
     }
 
@@ -213,17 +213,17 @@ public class PropertySetter extends ContextAwareBase {
         // "Found add {} method in class {}", cName, objClass.getName());
         switch (type) {
         case X_NOT_FOUND:
-          return ContainmentType.NOT_FOUND;
+          return AggregationType.NOT_FOUND;
         case X_AS_PROPERTY:
-          return ContainmentType.AS_SINGLE_PROPERTY;
+          return AggregationType.AS_SINGLE_PROPERTY;
         case X_AS_COMPONENT:
-          return ContainmentType.AS_SINGLE_COMPONENT;
+          return AggregationType.AS_SINGLE_COMPONENT;
         }
       }
     }
 
     // we have failed
-    return ContainmentType.NOT_FOUND;
+    return AggregationType.NOT_FOUND;
   }
 
   int computeContainmentTpye(Method setterMethod) {

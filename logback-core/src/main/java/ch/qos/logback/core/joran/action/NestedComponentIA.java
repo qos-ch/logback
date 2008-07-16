@@ -18,7 +18,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.util.ContainmentType;
+import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.PropertySetter;
@@ -54,7 +54,7 @@ public class NestedComponentIA extends ImplicitAction {
     PropertySetter parentBean = new PropertySetter(o);
     parentBean.setContext(context);
 
-    ContainmentType containmentType = parentBean
+    AggregationType containmentType = parentBean
         .canContainComponent(nestedElementTagName);
 
     switch (containmentType) {
@@ -135,7 +135,7 @@ public class NestedComponentIA extends ImplicitAction {
     PropertySetter nestedBean = new PropertySetter(actionData.nestedComponent);
     nestedBean.setContext(context);
 
-    if (nestedBean.canContainComponent("parent") == ContainmentType.AS_SINGLE_COMPONENT) {
+    if (nestedBean.canContainComponent("parent") == AggregationType.AS_SINGLE_COMPONENT) {
       nestedBean.setComponent("parent", actionData.parentBean.getObj());
     }
     if (actionData.nestedComponent instanceof LifeCycle) {

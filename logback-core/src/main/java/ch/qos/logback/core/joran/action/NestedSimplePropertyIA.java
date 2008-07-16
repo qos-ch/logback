@@ -18,7 +18,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.util.ContainmentType;
+import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.PropertySetter;
 
 
@@ -55,7 +55,7 @@ public class NestedSimplePropertyIA extends ImplicitAction {
     PropertySetter parentBean = new PropertySetter(o);
     parentBean.setContext(context);
     
-    ContainmentType containmentType = parentBean.canContainComponent(nestedElementTagName);
+    AggregationType containmentType = parentBean.canContainComponent(nestedElementTagName);
 
     switch (containmentType) {
     case NOT_FOUND:
