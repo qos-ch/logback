@@ -18,8 +18,8 @@ import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
-import ch.qos.logback.core.joran.action.NestedComponentIA;
-import ch.qos.logback.core.joran.action.NestedSimplePropertyIA;
+import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
@@ -68,11 +68,11 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   @Override
   protected void addImplicitRules(Interpreter interpreter) {
     // The following line adds the capability to parse nested components
-    NestedComponentIA nestedIA = new NestedComponentIA();
+    NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
     nestedIA.setContext(context);
     interpreter.addImplicitAction(nestedIA);
 
-    NestedSimplePropertyIA nestedSimpleIA = new NestedSimplePropertyIA();
+    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
     nestedIA.setContext(context);
     interpreter.addImplicitAction(nestedSimpleIA);
   }

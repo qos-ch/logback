@@ -7,6 +7,8 @@
 
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.joran.spi.PropertySetter;
+
 /**
  * Thrown when an error is encountered whilst attempting to set a property
  * using the {@link PropertySetter} utility class.

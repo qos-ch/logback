@@ -1,36 +1,42 @@
-package ch.qos.logback.core.util;
+package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.util.PropertySetter;
 import junit.framework.TestCase;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.action.IADataForComplexProperty;
+import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.util.AggregationType;
+import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertySetterTest extends TestCase {
 
-  public void testCanContainComponent() {
+  public void testCanAggregateComponent() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    assertEquals(AggregationType.AS_SINGLE_COMPONENT, setter.canContainComponent("door"));
+    assertEquals(AggregationType.AS_COMPLEX_PROPERTY, setter.computeAggregationType("door"));
     
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("count"));
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Count"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("count"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Count"));
     
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("name"));
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Name"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("name"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Name"));
     
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Duration"));
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("fs"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Duration"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("fs"));
     
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("open"));
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("Open"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("open"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Open"));
     
-    assertEquals(AggregationType.AS_COMPONENT_COLLECTION, setter.canContainComponent("Window"));
-    assertEquals(AggregationType.AS_PROPERTY_COLLECTION, setter.canContainComponent("adjective"));
+    assertEquals(AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, setter.computeAggregationType("Window"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY_COLLECTION, setter.computeAggregationType("adjective"));
     
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("filterReply"));
-    assertEquals(AggregationType.AS_SINGLE_PROPERTY, setter.canContainComponent("houseColor"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("filterReply"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("houseColor"));
     
     System.out.println();
   }
@@ -72,25 +78,42 @@ public class PropertySetterTest extends TestCase {
     assertEquals("gh", house.getCamelCase());
   }
   
-  public void testSetComponent() {
+  public void testSetComplexProperty() {
     House house = new House();
     Door door = new Door();
     PropertySetter setter = new PropertySetter(house);
-    setter.setComponent("door", door);
+    setter.setComplexProperty("door", door);
     assertEquals(door, house.getDoor());
   }
 
+  public void testSetComplexProperty2() {
+    House house = new House();
+    //Door door = new Door();
+    PropertySetter setter = new PropertySetter(house);
+    
+    IADataForComplexProperty actionData = new IADataForComplexProperty(setter,
+        AggregationType.AS_COMPLEX_PROPERTY, "door");
+    
+    Class clazz = setter.findUnequivocallyInstantiableClass(actionData);
+    assertNotNull(clazz);
+    assertEquals(Door.class.getName(), clazz.getName());
+    //setter.setComplexProperty("door", door);
+    //assertEquals(door, house.getDoor());
+  }
   public void testPropertyCollection() {
     House house = new House();
+    Context context = new ContextBase();
     PropertySetter setter = new PropertySetter(house);
-    setter.addProperty("adjective", "nice");
-    setter.addProperty("adjective", "big");
+    setter.setContext(context);
+    setter.addBasicProperty("adjective", "nice");
+    setter.addBasicProperty("adjective", "big");
+    StatusPrinter.print(context);
     assertEquals(2, house.adjectiveList.size());
     assertEquals("nice", house.adjectiveList.get(0));
     assertEquals("big", house.adjectiveList.get(1));
   }
 
-  public void testComponentCollection() {
+  public void testComplexCollection() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     Window w1 = new Window();
@@ -98,21 +121,21 @@ public class PropertySetterTest extends TestCase {
     Window w2 = new Window();
     w2.handle=20;
     
-    setter.addComponent("window", w1);
-    setter.addComponent("window", w2);
+    setter.addComplexProperty("window", w1);
+    setter.addComplexProperty("window", w2);
     assertEquals(2, house.windowList.size());
     assertEquals(10, house.windowList.get(0).handle);
     assertEquals(20, house.windowList.get(1).handle);
   }
   
-  public void testSetComponentWithCamelCaseName() {
+  public void testSetComplexWithCamelCaseName() {
     House house = new House();
     SwimmingPool pool = new SwimmingPool();
     PropertySetter setter = new PropertySetter(house);
-    setter.setComponent("swimmingPool", pool);
+    setter.setComplexProperty("swimmingPool", pool);
     assertEquals(pool, house.getSwimmingPool());
   }
-
+  
   public void testDuration() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);

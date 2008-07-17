@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.NestedComponentIA;
-import ch.qos.logback.core.joran.action.NestedSimplePropertyIA;
+import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -29,11 +29,11 @@ public class SimpleConfigurator extends GenericConfigurator {
   
   @Override
   protected void addImplicitRules(Interpreter interpreter) {
-    NestedComponentIA nestedIA = new NestedComponentIA();
+    NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
     nestedIA.setContext(context);
     interpreter.addImplicitAction(nestedIA);
 
-    NestedSimplePropertyIA nestedSimpleIA = new NestedSimplePropertyIA();
+    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
     nestedSimpleIA.setContext(context);
     interpreter.addImplicitAction(nestedSimpleIA);
   }

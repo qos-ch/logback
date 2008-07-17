@@ -3,7 +3,6 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 

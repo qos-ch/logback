@@ -13,8 +13,8 @@ import java.util.List;
 
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.joran.action.NestedComponentIA;
-import ch.qos.logback.core.joran.action.NestedSimplePropertyIA;
+import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.Interpreter;
@@ -40,11 +40,11 @@ public class FruitConfigurator extends GenericConfigurator {
 
   @Override
   protected void addImplicitRules(Interpreter interpreter) {
-    NestedComponentIA nestedIA = new NestedComponentIA();
+    NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
     nestedIA.setContext(context);
     interpreter.addImplicitAction(nestedIA);
     
-    NestedSimplePropertyIA nestedSimpleIA = new NestedSimplePropertyIA();
+    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
     nestedIA.setContext(context);
     interpreter.addImplicitAction(nestedSimpleIA);
   }
