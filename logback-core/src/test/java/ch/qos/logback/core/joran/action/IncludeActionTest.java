@@ -71,9 +71,9 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
-    System.out.println("**** Calling IncAction.reset");
+    System.out.print("**** IncAction.reset");
     IncAction.reset();
-    System.out.println("*** after reset = "+IncAction.beginCount);
+    System.out.print("*** after reset = "+IncAction.beginCount);
   }
 
   @After
@@ -101,11 +101,10 @@ public class IncludeActionTest {
 
   @Test 
   public void testBasicURL() throws JoranException {
-    System.out.print("********** in testBasicURL");
-    System.out.println("Before doConfig = "+IncAction.beginCount);
+    System.out.print("*** Before doConfig = "+IncAction.beginCount);
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
-    System.out.println("After doConfig = "+IncAction.beginCount);
+    System.out.println("*** After doConfig = "+IncAction.beginCount);
     StatusPrinter.print(context);
     verifyConfig(2);
   }
