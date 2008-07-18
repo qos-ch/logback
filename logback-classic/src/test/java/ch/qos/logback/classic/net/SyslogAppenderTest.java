@@ -37,7 +37,7 @@ public class SyslogAppenderTest {
   }
 
   @Test
-  public void testBasic() throws InterruptedException {
+  public void basic() throws InterruptedException {
     int port = MockSyslogServer.PORT + 1;
 
     MockSyslogServer mockServer = new MockSyslogServer(1, port);
@@ -82,7 +82,7 @@ public class SyslogAppenderTest {
   }
 
   @Test
-  public void testException() throws InterruptedException {
+  public void tException() throws InterruptedException {
     int port = MockSyslogServer.PORT + 2;
     MockSyslogServer mockServer = new MockSyslogServer(21, port);
     mockServer.start();
