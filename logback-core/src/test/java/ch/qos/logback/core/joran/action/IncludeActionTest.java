@@ -3,11 +3,7 @@ package ch.qos.logback.core.joran.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -71,9 +67,7 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
-    System.out.print("**** IncAction.reset");
     IncAction.reset();
-    System.out.print("*** after reset = "+IncAction.beginCount);
   }
 
   @After
@@ -100,11 +94,9 @@ public class IncludeActionTest {
   }
 
   @Test 
-  public void testBasicURL() throws JoranException {
-    System.out.print("*** Before doConfig = "+IncAction.beginCount);
+  public void basicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
-    System.out.println("*** After doConfig = "+IncAction.beginCount);
     StatusPrinter.print(context);
     verifyConfig(2);
   }
