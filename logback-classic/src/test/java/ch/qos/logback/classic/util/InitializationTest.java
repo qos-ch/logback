@@ -8,6 +8,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 public class InitializationTest extends TestCase {
 
@@ -23,6 +24,7 @@ public class InitializationTest extends TestCase {
 
   protected void tearDown() throws Exception {
     super.tearDown();
+    System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
   }
 
   public void testAutoconfig() {
@@ -42,6 +44,19 @@ public class InitializationTest extends TestCase {
       Appender appender = root.getAppender("STDOUT");
       assertNull(appender);
     }
+  }
 
+  public void testAutoConfigFromSystemProperties() throws JoranException  {
+    doAutoConfigFromSystemProperties(TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml");
+    doAutoConfigFromSystemProperties("autoConfigAsResource.xml");
+    // test passing a URL. note the relative path syntax with file:src/test/...
+    doAutoConfigFromSystemProperties("file:"+TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml"); 
+  }
+  public void doAutoConfigFromSystemProperties(String val) throws JoranException {
+    lc.shutdownAndReset();
+    System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
+    ContextInitializer.autoConfig(lc);
+    Appender appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
+    assertNotNull(appender);
   }
 }
