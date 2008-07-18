@@ -37,7 +37,7 @@ public class JettyBasicTest  {
   }
   
   @Test
-  public void testGetRequest() throws Exception {
+  public void teztGetRequest() throws Exception {
     URL url = new URL("http://localhost:"+ JettyFixture.PORT + "/");
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
@@ -51,7 +51,7 @@ public class JettyBasicTest  {
   }
 
   @Test
-  public void testEventGoesToAppenders() throws Exception {
+  public void teztEventGoesToAppenders() throws Exception {
     URL url = new URL("http://localhost:"+ JettyFixture.PORT + "/");
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
@@ -69,7 +69,7 @@ public class JettyBasicTest  {
   }
 
   @Test
-  public void testPostContentConverter() throws Exception {
+  public void teztPostContentConverter() throws Exception {
     //System.out.println("into test");
     URL url = new URL("http://localhost:"+ JettyFixture.PORT + "/");
     String msg = "test message";
