@@ -29,6 +29,15 @@ public class CoreGlobal {
    */
   static public final String EVALUATOR_MAP = "EVALUATOR_MAP";
 
+  /**
+   * By convention, we assume that the static method named "valueOf" taking 
+   * a string argument can restore a given object from its string 
+   * representation.
+   * 
+   * <p>Classes participating in this convention must be declared
+   * as stringStorable in a (logback) context.
+   */
+  static public final String VALUE_OF = "valueOf";
   
   /**
    * An empty string.

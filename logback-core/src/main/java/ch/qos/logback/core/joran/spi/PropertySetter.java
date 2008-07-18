@@ -23,12 +23,12 @@ import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.joran.action.IADataForComplexProperty;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
-import ch.qos.logback.core.util.Duration;
-import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.PropertySetterException;
 
 /**
@@ -207,7 +207,7 @@ public class PropertySetter extends ContextAwareBase {
     Method adderMethod = getMethod("add" + name);
     return adderMethod;
   }
-  
+
   private Method findSetterMethod(String name) {
     String dName = Introspector.decapitalize(name);
     PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
@@ -219,7 +219,7 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   Class<?> getParameterClassForMethod(Method method) {
-    if(method == null) {
+    if (method == null) {
       return null;
     }
     Class[] classArray = method.getParameterTypes();
@@ -229,21 +229,20 @@ public class PropertySetter extends ContextAwareBase {
       return classArray[0];
     }
   }
+
   private AggregationType computeRawAggregationType(Method method) {
-    Class<?> clazz = getParameterClassForMethod(method);
-    if (clazz == null) {
+    Class<?> parameterClass = getParameterClassForMethod(method);
+    if (parameterClass == null) {
       return AggregationType.NOT_FOUND;
     } else {
-      Package p = clazz.getPackage();
-      if (clazz.isPrimitive()) {
+      Package p = parameterClass.getPackage();
+      if (parameterClass.isPrimitive()) {
         return AggregationType.AS_BASIC_PROPERTY;
       } else if (p != null && "java.lang".equals(p.getName())) {
         return AggregationType.AS_BASIC_PROPERTY;
-      } else if (Duration.class.isAssignableFrom(clazz)) {
+      } else if (isBuildableFromString(parameterClass)) {
         return AggregationType.AS_BASIC_PROPERTY;
-      } else if (FileSize.class.isAssignableFrom(clazz)) {
-        return AggregationType.AS_BASIC_PROPERTY;
-      } else if (clazz.isEnum()) {
+      } else if (parameterClass.isEnum()) {
         return AggregationType.AS_BASIC_PROPERTY;
       } else {
         return AggregationType.AS_COMPLEX_PROPERTY;
@@ -257,9 +256,10 @@ public class PropertySetter extends ContextAwareBase {
     AggregationType at = actionData.getAggregationType();
     switch (at) {
     case AS_COMPLEX_PROPERTY:
-      Method setterMethod = findSetterMethod(actionData.getComplexPropertyName());
-       clazz = getParameterClassForMethod(setterMethod);
-      if(clazz != null && isUnequivocallyInstantiable(clazz)) {
+      Method setterMethod = findSetterMethod(actionData
+          .getComplexPropertyName());
+      clazz = getParameterClassForMethod(setterMethod);
+      if (clazz != null && isUnequivocallyInstantiable(clazz)) {
         return clazz;
       } else {
         return null;
@@ -267,7 +267,7 @@ public class PropertySetter extends ContextAwareBase {
     case AS_COMPLEX_PROPERTY_COLLECTION:
       Method adderMethod = findAdderMethod(actionData.getComplexPropertyName());
       clazz = getParameterClassForMethod(adderMethod);
-      if(clazz != null && isUnequivocallyInstantiable(clazz)) {
+      if (clazz != null && isUnequivocallyInstantiable(clazz)) {
         return clazz;
       } else {
         return null;
@@ -282,18 +282,22 @@ public class PropertySetter extends ContextAwareBase {
     if (clazz.isInterface()) {
       return false;
     }
+    // checking for constructors would be slightly more elegant, but in
+    // classes
+    // without any declared constructors, Class.getConstructor() returns null.
+    Object o;
     try {
-      // checking for constructors would be slightly more elegant, but in classes
-      // without any declared constructors, Class.getConstructor() returns null.
-      Object o = clazz.newInstance();
-      if(o != null) {
+      o = clazz.newInstance();
+      if (o != null) {
         return true;
       } else {
         return false;
       }
-    } catch (Exception e) {
+    } catch (InstantiationException e) {
       return false;
-    } 
+    } catch (IllegalAccessException e) {
+      return false;
+    }
   }
 
   public Class getObjClass() {
@@ -426,9 +430,7 @@ public class PropertySetter extends ContextAwareBase {
     if (val == null) {
       return null;
     }
-
     String v = val.trim();
-
     if (String.class.isAssignableFrom(type)) {
       return val;
     } else if (Integer.TYPE.isAssignableFrom(type)) {
@@ -445,20 +447,47 @@ public class PropertySetter extends ContextAwareBase {
       } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
-    } else if (Duration.class.isAssignableFrom(type)) {
-      return Duration.valueOf(val);
-    } else if (FileSize.class.isAssignableFrom(type)) {
-      return FileSize.valueOf(val);
     } else if (type.isEnum()) {
       return convertEnum(val, type);
+    } else if (isBuildableFromString(type)) {
+      return buildFromString(type, val);
     }
 
     return null;
   }
 
+  boolean isBuildableFromString(Class<?> parameterClass) {
+    try {
+      Method valueOfMethod = parameterClass.getMethod(CoreGlobal.VALUE_OF,
+          STING_CLASS_PARAMETER);
+      int mod = valueOfMethod.getModifiers();
+      if (Modifier.isStatic(mod)) {
+        return true;
+      }
+    } catch (SecurityException e) {
+      // nop
+    } catch (NoSuchMethodException e) {
+      // nop
+    }
+    return false;
+  }
+
+  Object buildFromString(Class type, String val) {
+    try {
+      Method valueOfMethod = type.getMethod(CoreGlobal.VALUE_OF,
+          STING_CLASS_PARAMETER);
+      return valueOfMethod.invoke(null, val);
+    } catch (Exception e) {
+      addError("Failed to invoke " + CoreGlobal.VALUE_OF
+          + "{} method in class [" + type.getName() + "] with value [" + val
+          + "]");
+      return null;
+    }
+  }
+
   protected Object convertEnum(String val, Class type) {
     try {
-      Method m = type.getMethod("valueOf", STING_CLASS_PARAMETER);
+      Method m = type.getMethod(CoreGlobal.VALUE_OF, STING_CLASS_PARAMETER);
       return m.invoke(null, val);
     } catch (Exception e) {
       addError("Failed to convert value [" + val + "] to enum ["
@@ -467,7 +496,6 @@ public class PropertySetter extends ContextAwareBase {
     return null;
   }
 
-  
   protected Method getMethod(String methodName) {
     if (methodDescriptors == null) {
       introspect();
