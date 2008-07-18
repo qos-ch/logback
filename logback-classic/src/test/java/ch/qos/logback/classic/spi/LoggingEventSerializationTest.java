@@ -54,7 +54,7 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void testContext() throws Exception {
+  public void context() throws Exception {
     lc.putProperty("testKey", "testValue");
     LoggingEvent event = createLoggingEvent();
     LoggingEvent remoteEvent = writeAndRead(event);
@@ -74,7 +74,7 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void testMDC() throws Exception {
+  public void MDC() throws Exception {
     MDC.put("key", "testValue");
     LoggingEvent event = createLoggingEvent();
     LoggingEvent remoteEvent = writeAndRead(event);
@@ -84,7 +84,7 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void testUpdatedMDC() throws Exception {
+  public void updatedMDC() throws Exception {
     MDC.put("key", "testValue");
     LoggingEvent event1 = createLoggingEvent();
     oos.writeObject(event1);
@@ -123,7 +123,7 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void testThrowable() throws Exception {
+  public void xThrowable() throws Exception {
     LoggingEvent event = createLoggingEvent();
     Throwable throwable = new Throwable("just testing");
     ThrowableInformation th = new ThrowableInformation(throwable);
@@ -134,7 +134,7 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void testSerializeLargeArgs() throws Exception {
+  public void serializeLargeArgs() throws Exception {
     
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < 100000; i++) {
