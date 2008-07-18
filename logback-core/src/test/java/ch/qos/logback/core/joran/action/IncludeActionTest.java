@@ -71,6 +71,7 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
+    System.out.println("Calling IncAction.reset");
     IncAction.reset();
   }
 
@@ -99,13 +100,12 @@ public class IncludeActionTest {
 
   @Test
   public void testBasicURL() throws JoranException {
+    System.out.print("********** in testBasicURL");
+    System.out.println("Before doConfig = "+IncAction.beginCount);
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    PrintStream ps = new PrintStream(baos);
-    StatusPrinter.setPrintStream(ps);
+    System.out.println("After doConfig = "+IncAction.beginCount);
     StatusPrinter.print(context);
-    if(1==1)throw new JoranException(new String(baos.toByteArray()));
     verifyConfig(2);
   }
 
