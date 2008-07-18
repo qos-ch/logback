@@ -71,8 +71,9 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
-    System.out.println("Calling IncAction.reset");
+    System.out.println("**** Calling IncAction.reset");
     IncAction.reset();
+    System.out.println("*** after reset = "+IncAction.beginCount);
   }
 
   @After
@@ -98,7 +99,7 @@ public class IncludeActionTest {
     verifyConfig(2);
   }
 
-  @Test
+  @Test 
   public void testBasicURL() throws JoranException {
     System.out.print("********** in testBasicURL");
     System.out.println("Before doConfig = "+IncAction.beginCount);
