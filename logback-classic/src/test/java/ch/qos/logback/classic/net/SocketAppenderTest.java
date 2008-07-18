@@ -41,7 +41,7 @@ public class SocketAppenderTest  {
   private SimpleSocketServer simpleSocketServer;
  
   @Test
-  public void testStartFailNoRemoteHost() {
+  public void startFailNoRemoteHost() {
     SocketAppender appender = new SocketAppender();
     appender.setContext(lc);
     appender.setPort(123);
@@ -50,7 +50,7 @@ public class SocketAppenderTest  {
   }
 
   @Test
-  public void testRecieveMessage() throws InterruptedException {
+  public void recieveMessage() throws InterruptedException {
     fireServer();
     configureClient();
 
@@ -72,7 +72,7 @@ public class SocketAppenderTest  {
   }
 
   @Test
-  public void testRecieveWithContext() throws InterruptedException {
+  public void recieveWithContext() throws InterruptedException {
     fireServer();
     configureClient();
 
@@ -102,7 +102,7 @@ public class SocketAppenderTest  {
   }
 
   @Test
-  public void testMessageWithMDC() throws InterruptedException {
+  public void messageWithMDC() throws InterruptedException {
     fireServer();
     configureClient();
 
@@ -126,7 +126,7 @@ public class SocketAppenderTest  {
   }
   
   @Test
-  public void testMessageWithMarker() throws InterruptedException {
+  public void messageWithMarker() throws InterruptedException {
     fireServer();
     configureClient();
 
@@ -149,7 +149,7 @@ public class SocketAppenderTest  {
   }
 
   @Test
-  public void testMessageWithUpdatedMDC() throws InterruptedException {
+  public void messageWithUpdatedMDC() throws InterruptedException {
     fireServer();
     configureClient();
 
