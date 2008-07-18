@@ -144,6 +144,17 @@ public final class Level implements java.io.Serializable {
     return toLevel(sArg, Level.DEBUG);
   }
 
+
+  /**
+   * This method exists in order to comply with Joran's valueOf convention.
+   * @param sArg
+   * @return
+   */
+  public static Level valueOf(String sArg) {
+    return toLevel(sArg, Level.DEBUG);
+  }
+
+  
   /**
    * Convert an integer passed as argument to a Level. If the conversion fails,
    * then this method returns {@link #DEBUG}.
