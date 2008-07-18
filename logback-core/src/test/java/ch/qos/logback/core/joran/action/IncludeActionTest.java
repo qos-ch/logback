@@ -3,7 +3,11 @@ package ch.qos.logback.core.joran.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -97,7 +101,11 @@ public class IncludeActionTest {
   public void testBasicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(baos);
+    StatusPrinter.setPrintStream(ps);
     StatusPrinter.print(context);
+    if(1==1)throw new JoranException(new String(baos.toByteArray()));
     verifyConfig(2);
   }
 
