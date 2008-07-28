@@ -31,7 +31,6 @@ public class AllTest extends TestCase {
     suite.addTest(ch.qos.logback.classic.db.PackageTest.suite()); 
     suite.addTest(ch.qos.logback.classic.spi.PackageTest.suite()); 
     suite.addTest(ch.qos.logback.classic.turbo.PackageTest.suite()); 
-    suite.addTest(ch.qos.logback.classic.stopwatch.PackageTest.suite()); 
     
     return suite;
   }
