@@ -44,13 +44,13 @@ public class SizeBasedRollingTest extends TestCase {
 
   public void setUp() {
     {
-      File target = new File(Constants.TEST_DIR_PREFIX
-          + "output/sizeBased-test2.log");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX
+          + "sizeBased-test2.log");
       target.mkdirs();
       target.delete();
     }
     {
-      File target = new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.log");
       target.mkdirs();
       target.delete();
     }
@@ -80,8 +80,8 @@ public class SizeBasedRollingTest extends TestCase {
 
     sbtp.setMaxFileSize("100");
     sbtp.start();
-    fwrp.setFileNamePattern(Constants.TEST_DIR_PREFIX
-        + "output/sizeBased-test1.%i");
+    fwrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX
+        + "sizeBased-test1.%i");
     try {
       fwrp.start();
       fail("The absence of activeFileName option should have caused an exception.");
@@ -103,8 +103,8 @@ public class SizeBasedRollingTest extends TestCase {
     rfa.setName("ROLLING");
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile(Constants.TEST_DIR_PREFIX
-        + "output/sizeBased-test2.log");
+    rfa.setFile(Constants.OUTPUT_DIR_PREFIX
+        + "sizeBased-test2.log");
     
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     swrp.setContext(context);
@@ -116,8 +116,8 @@ public class SizeBasedRollingTest extends TestCase {
 //    swrp.setActiveFileName(Constants.TEST_DIR_PREFIX
 //        + "output/sizeBased-test2.log");
 
-    swrp.setFileNamePattern(Constants.TEST_DIR_PREFIX
-        + "output/sizeBased-test2.%i");
+    swrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX
+        + "sizeBased-test2.%i");
     swrp.setParent(rfa);
     swrp.start();
 
@@ -142,25 +142,25 @@ public class SizeBasedRollingTest extends TestCase {
       rfa.doAppend("hello");
     }
 
-    assertTrue(new File(Constants.TEST_DIR_PREFIX
-        + "output/sizeBased-test2.log").exists());
-    assertTrue(new File(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.0")
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX
+        + "sizeBased-test2.log").exists());
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sizeBased-test2.0")
         .exists());
-    assertTrue(new File(Constants.TEST_DIR_PREFIX + "output/sizeBased-test2.1")
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sizeBased-test2.1")
         .exists());
 
     // The File.length() method is not accurate under Windows
 
     if (!isWindows()) {
 
-      assertTrue(Compare.compare(Constants.TEST_DIR_PREFIX
-          + "output/sizeBased-test2.log", Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(Constants.OUTPUT_DIR_PREFIX
+          + "sizeBased-test2.log", Constants.TEST_DIR_PREFIX
           + "witness/rolling/sbr-test2.l"));
-      assertTrue(Compare.compare(Constants.TEST_DIR_PREFIX
-          + "output/sizeBased-test2.0", Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(Constants.OUTPUT_DIR_PREFIX
+          + "sizeBased-test2.0", Constants.TEST_DIR_PREFIX
           + "witness/rolling/sbr-test2.0"));
-      assertTrue(Compare.compare(Constants.TEST_DIR_PREFIX
-          + "output/sizeBased-test2.1", Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(Constants.OUTPUT_DIR_PREFIX
+          + "sizeBased-test2.1", Constants.TEST_DIR_PREFIX
           + "witness/rolling/sbr-test2.1"));
     }
 
@@ -176,7 +176,7 @@ public class SizeBasedRollingTest extends TestCase {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
+    rfa.setFile(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.log");
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
@@ -186,8 +186,8 @@ public class SizeBasedRollingTest extends TestCase {
     sbtp.setMaxFileSize("100");
     fwrp.setMinIndex(0);
     //fwrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log");
-    fwrp.setFileNamePattern(Constants.TEST_DIR_PREFIX
-        + "output/sbr-test3.%i.gz");
+    fwrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX
+        + "sbr-test3.%i.gz");
     fwrp.setParent(rfa);
     fwrp.start();
     rfa.setRollingPolicy(fwrp);
@@ -211,11 +211,11 @@ public class SizeBasedRollingTest extends TestCase {
       rfa.doAppend("hello");
     }
 
-    assertTrue(new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.log")
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.log")
         .exists());
-    assertTrue(new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.0.gz")
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.0.gz")
         .exists());
-    assertTrue(new File(Constants.TEST_DIR_PREFIX + "output/sbr-test3.1.gz")
+    assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.1.gz")
         .exists());
 
     if (!isWindows()) {

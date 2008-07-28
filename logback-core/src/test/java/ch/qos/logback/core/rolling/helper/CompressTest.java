@@ -38,8 +38,8 @@ public class CompressTest extends TestCase {
       File dest = new File(Constants.TEST_DIR_PREFIX + "input/compress1.txt");
                                                         
       copy(source, dest);
-      File target = new File(Constants.TEST_DIR_PREFIX
-          + "output/compress1.txt.gz");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX
+          + "compress1.txt.gz");
       target.mkdirs();
       target.delete();
     }
@@ -47,8 +47,8 @@ public class CompressTest extends TestCase {
       File source = new File(Constants.TEST_DIR_PREFIX + "input/compress2.copy");
       File dest = new File(Constants.TEST_DIR_PREFIX + "input/compress2.txt");
       copy(source, dest);
-      File target = new File(Constants.TEST_DIR_PREFIX
-          + "output/compress2.txt.gz");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX
+          + "compress2.txt.gz");
       target.mkdirs();
       target.delete();
     }
@@ -56,8 +56,8 @@ public class CompressTest extends TestCase {
       File source = new File(Constants.TEST_DIR_PREFIX + "input/compress3.copy");
       File dest = new File(Constants.TEST_DIR_PREFIX + "input/compress3.txt");
       copy(source, dest);
-      File target = new File(Constants.TEST_DIR_PREFIX
-          + "output/compress3.txt.zip");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX
+          + "compress3.txt.zip");
       target.mkdirs();
       target.delete();
     }
@@ -69,35 +69,35 @@ public class CompressTest extends TestCase {
   public void test1() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ,
         Constants.TEST_DIR_PREFIX + "input/compress1.txt",
-        Constants.TEST_DIR_PREFIX + "output/compress1.txt.gz");
+        Constants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
     compressor.setContext(context);
     compressor.compress();
 
     StatusPrinter.print(context.getStatusManager());
     assertEquals(0, context.getStatusManager().getCount());
-    assertTrue(Compare.gzCompare(Constants.TEST_DIR_PREFIX
-        + "output/compress1.txt.gz", Constants.TEST_DIR_PREFIX
+    assertTrue(Compare.gzCompare(Constants.OUTPUT_DIR_PREFIX
+        + "compress1.txt.gz", Constants.TEST_DIR_PREFIX
         + "witness/compress1.txt.gz"));
   }
 
   public void test2() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ,
         Constants.TEST_DIR_PREFIX + "input/compress2.txt",
-        Constants.TEST_DIR_PREFIX + "output/compress2.txt");
+        Constants.OUTPUT_DIR_PREFIX + "compress2.txt");
     compressor.setContext(context);
     compressor.compress();
 
     StatusPrinter.print(context.getStatusManager());
     assertEquals(0, context.getStatusManager().getCount());
-    assertTrue(Compare.gzCompare(Constants.TEST_DIR_PREFIX
-        + "output/compress2.txt.gz", Constants.TEST_DIR_PREFIX
+    assertTrue(Compare.gzCompare(Constants.OUTPUT_DIR_PREFIX
+        + "compress2.txt.gz", Constants.TEST_DIR_PREFIX
         + "witness/compress2.txt.gz"));
   }
 
   public void test3() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.ZIP, 
         Constants.TEST_DIR_PREFIX + "input/compress3.txt",
-        Constants.TEST_DIR_PREFIX + "output/compress3.txt");
+        Constants.OUTPUT_DIR_PREFIX + "compress3.txt");
     compressor.setContext(context);
     compressor.compress();
     StatusPrinter.print(context.getStatusManager());

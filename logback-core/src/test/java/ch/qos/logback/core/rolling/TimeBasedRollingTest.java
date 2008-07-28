@@ -60,17 +60,17 @@ public class TimeBasedRollingTest extends TestCase {
     context.setName("test");
     // Delete .log files
     {
-      File target = new File(Constants.TEST_DIR_PREFIX + "output/test4.log");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test4.log");
       target.mkdirs();
       target.delete();
     }
     {
-      File target = new File(Constants.TEST_DIR_PREFIX + "output/test5.log");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test5.log");
       target.mkdirs();
       target.delete();
     }
     {
-      File target = new File(Constants.TEST_DIR_PREFIX + "output/test6.log");
+      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test6.log");
       target.mkdirs();
       target.delete();
     }
@@ -93,7 +93,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setContext(context);
-    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test1-%d{"
+    tbrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test1-%d{"
         + DATE_PATTERN + "}");
     tbrp.setParent(rfa);
     tbrp.setCurrentTime(currentTime);
@@ -105,7 +105,7 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[3];
 
     for (int i = 0; i < 3; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test1-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test1-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
@@ -143,7 +143,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.setLayout(layout);
 
     TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
+    tbrp1.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test2-%d{"
         + DATE_PATTERN + "}");
     tbrp1.setContext(context);
     tbrp1.setParent(rfa1);
@@ -156,7 +156,7 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[3];
 
     for (int i = 0; i < 3; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test2-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test2-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
@@ -179,7 +179,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
     tbrp2.setContext(context);
-    tbrp2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test2-%d{"
+    tbrp2.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test2-%d{"
         + DATE_PATTERN + "}");
     tbrp2.setParent(rfa2);
     tbrp2.setCurrentTime(tbrp1.getCurrentTime());
@@ -213,7 +213,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setContext(context);
-    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test3-%d{"
+    tbrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test3-%d{"
         + DATE_PATTERN + "}.gz");
     tbrp.setParent(rfa);
     tbrp.setCurrentTime(currentTime);
@@ -225,12 +225,12 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[4];
 
     for (int i = 0; i < 2; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test3-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test3-"
           + sdf.format(cal.getTime()) + ".gz";
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[3] = Constants.TEST_DIR_PREFIX + "output/test3-"
+    filenames[3] = Constants.OUTPUT_DIR_PREFIX + "test3-"
         + sdf.format(cal.getTime());
 
     // System.out.println("Waiting until next second and 100 millis.");
@@ -264,12 +264,12 @@ public class TimeBasedRollingTest extends TestCase {
     RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
     rfa1.setContext(context);
     rfa1.setLayout(layout);
-    rfa1.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
+    rfa1.setFile(Constants.OUTPUT_DIR_PREFIX + "test4.log");
 
     TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
     tbrp1.setContext(context);
     // tbrp1.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
-    tbrp1.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
+    tbrp1.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test4-%d{"
         + DATE_PATTERN + "}");
     tbrp1.setParent(rfa1);
     tbrp1.setCurrentTime(currentTime);
@@ -281,11 +281,11 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[3];
 
     for (int i = 0; i < 2; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test4-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test4-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
-    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test4.log";
+    filenames[2] = Constants.OUTPUT_DIR_PREFIX + "test4.log";
 
     // System.out.println("Waiting until next second and 100 millis.");
     tbrp1.setCurrentTime(addTime(currentTime, 1100));
@@ -301,11 +301,11 @@ public class TimeBasedRollingTest extends TestCase {
     RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
     rfa2.setContext(context);
     rfa2.setLayout(layout);
-    rfa2.setFile(Constants.TEST_DIR_PREFIX + "output/test4.log");
+    rfa2.setFile(Constants.OUTPUT_DIR_PREFIX + "test4.log");
 
     TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
     tbrp2.setContext(context);
-    tbrp2.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test4-%d{"
+    tbrp2.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test4-%d{"
         + DATE_PATTERN + "}");
     // tbrp2.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test4.log");
     tbrp2.setParent(rfa2);
@@ -336,11 +336,11 @@ public class TimeBasedRollingTest extends TestCase {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
-    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test5.log");
+    rfa.setFile(Constants.OUTPUT_DIR_PREFIX + "test5.log");
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setContext(context);
-    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test5-%d{"
+    tbrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test5-%d{"
         + DATE_PATTERN + "}");
     // tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test5.log");
     tbrp.setParent(rfa);
@@ -353,12 +353,12 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[4];
 
     for (int i = 0; i < 2; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test5-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test5-"
           + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test5.log";
+    filenames[2] = Constants.OUTPUT_DIR_PREFIX + "test5.log";
 
     // System.out.println("Waiting until next second and 100 millis.");
     tbrp.setCurrentTime(addTime(currentTime, 1100));
@@ -386,11 +386,11 @@ public class TimeBasedRollingTest extends TestCase {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
     rfa.setLayout(layout);
-    rfa.setFile(Constants.TEST_DIR_PREFIX + "output/test6.log");
+    rfa.setFile(Constants.OUTPUT_DIR_PREFIX+ "test6.log");
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setContext(context);
-    tbrp.setFileNamePattern(Constants.TEST_DIR_PREFIX + "output/test6-%d{"
+    tbrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test6-%d{"
         + DATE_PATTERN + "}.gz");
     // tbrp.setActiveFileName(Constants.TEST_DIR_PREFIX + "output/test6.log");
     tbrp.setParent(rfa);
@@ -403,12 +403,12 @@ public class TimeBasedRollingTest extends TestCase {
     String[] filenames = new String[4];
 
     for (int i = 0; i < 2; i++) {
-      filenames[i] = Constants.TEST_DIR_PREFIX + "output/test6-"
+      filenames[i] = Constants.OUTPUT_DIR_PREFIX + "test6-"
           + sdf.format(cal.getTime()) + ".gz";
       cal.add(Calendar.SECOND, 1);
     }
 
-    filenames[2] = Constants.TEST_DIR_PREFIX + "output/test6.log";
+    filenames[2] = Constants.OUTPUT_DIR_PREFIX + "test6.log";
 
     // System.out.println("Waiting until next second and 100 millis.");
     tbrp.setCurrentTime(addTime(currentTime, 1100));
