@@ -83,6 +83,7 @@ public class BogoPerf {
     double ajustedDuration = adjustExpectedDuration(referenceDuraion,
         referenceBIPS);
 
+    System.out.println("raw="+currentDuration);
     if (currentDuration > ajustedDuration * SLACK) {
       throw new AssertionFailedError(currentDuration + " exceeded expected "
           + ajustedDuration + " (adjusted), " + referenceDuraion + " (raw)");
