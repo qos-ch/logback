@@ -9,11 +9,9 @@
  */
 package ch.qos.logback.classic.net;
 
-
 import static org.junit.Assert.*;
 
 import java.util.Map;
-
 
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -29,17 +27,20 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class SocketAppenderTest  {
+public class SocketAppenderTest {
 
   static final String LIST_APPENDER_NAME = "la";
+  static final int JOIN__OR_WAIT_TIMEOUT = 200;
+  static final int SLEEP_AFTER_LOG = 100;
+  
   int port = 4561;
   LoggerContext lc = new LoggerContext();
   LoggerContext serverLC = new LoggerContext();
   ListAppender<LoggingEvent> la = new ListAppender<LoggingEvent>();
   SocketAppender socketAppender = new SocketAppender();
-  
+
   private SimpleSocketServer simpleSocketServer;
- 
+
   @Test
   public void startFailNoRemoteHost() {
     SocketAppender appender = new SocketAppender();
@@ -52,17 +53,16 @@ public class SocketAppenderTest  {
   @Test
   public void recieveMessage() throws InterruptedException {
     fireServer();
+    waitForServerToStart();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("test msg");
-    
-    Thread.sleep(100);
-    
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
+
+    Thread.sleep(SLEEP_AFTER_LOG);
+
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -74,16 +74,15 @@ public class SocketAppenderTest  {
   @Test
   public void recieveWithContext() throws InterruptedException {
     fireServer();
+    waitForServerToStart();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("test msg");
+    Thread.sleep(SLEEP_AFTER_LOG);
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
-    Thread.sleep(100);
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -104,6 +103,7 @@ public class SocketAppenderTest  {
   @Test
   public void messageWithMDC() throws InterruptedException {
     fireServer();
+    waitForServerToStart();
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -111,11 +111,9 @@ public class SocketAppenderTest  {
     MDC.put("key", "testValue");
     logger.debug("test msg");
 
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_AFTER_LOG);
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     ListAppender<LoggingEvent> la = getListAppender();
     assertEquals(1, la.list.size());
@@ -124,23 +122,23 @@ public class SocketAppenderTest  {
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
-  
+
   @Test
   public void messageWithMarker() throws InterruptedException {
     fireServer();
+    waitForServerToStart();
+    
+    //Thread.sleep(SLEEP_AFTER_SERVER_START);
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-    
+
     Marker marker = MarkerFactory.getMarker("testMarker");
     logger.debug(marker, "test msg");
+    Thread.sleep(SLEEP_AFTER_LOG);
 
-    Thread.sleep(100);
-    
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -151,6 +149,8 @@ public class SocketAppenderTest  {
   @Test
   public void messageWithUpdatedMDC() throws InterruptedException {
     fireServer();
+    waitForServerToStart();
+    
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -160,16 +160,13 @@ public class SocketAppenderTest  {
 
     MDC.put("key", "updatedTestValue");
     logger.debug("test msg 2");
+    Thread.sleep(SLEEP_AFTER_LOG);
 
-    Thread.sleep(100);
-    
-    // Wait max 2 seconds for mock server to finish. However, it should
-    // finish much sooner than that.
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     ListAppender<LoggingEvent> la = getListAppender();
-    
+
     assertEquals(2, la.list.size());
 
     // We observe the second logging event. It should provide us with
@@ -187,16 +184,12 @@ public class SocketAppenderTest  {
     logger.debug("test msg");
 
     fireServer();
-    synchronized (simpleSocketServer) {
-      simpleSocketServer.wait(1000);  
-    }
-    Thread.yield(); // give the server a little more time
-    Thread.yield();
+    waitForServerToStart();
     logger.debug("test msg 2");
-    Thread.yield(); // give the server a little more time
+    Thread.sleep(SLEEP_AFTER_LOG);
     
     simpleSocketServer.close();
-    simpleSocketServer.join(2000);
+    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
     StatusPrinter.print(lc);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
@@ -205,7 +198,13 @@ public class SocketAppenderTest  {
     assertEquals("test msg 2", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
-  
+
+  private void waitForServerToStart() throws InterruptedException {
+    synchronized (simpleSocketServer) {
+      simpleSocketServer.wait(JOIN__OR_WAIT_TIMEOUT);
+    }
+  }
+
   private void fireServer() throws InterruptedException {
     Logger root = serverLC.getLogger("root");
     la.setName(LIST_APPENDER_NAME);
@@ -217,12 +216,11 @@ public class SocketAppenderTest  {
     Thread.yield();
   }
 
-  
   ListAppender<LoggingEvent> getListAppender() {
     Logger root = serverLC.getLogger("root");
     return (ListAppender<LoggingEvent>) root.getAppender(LIST_APPENDER_NAME);
   }
-  
+
   private void configureClient() {
     lc = new LoggerContext();
     lc.setName("test");
