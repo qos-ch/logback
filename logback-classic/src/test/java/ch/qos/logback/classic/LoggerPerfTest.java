@@ -15,54 +15,44 @@ import java.net.InetAddress;
 import junit.framework.TestCase;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
+import ch.qos.logback.classic.util.BogoPerf;
 import ch.qos.logback.core.appender.NOPAppender;
 
 public class LoggerPerfTest extends TestCase {
 
   final static String KAL = "kal";
   String localhostName = null;
-  static long RUN_LENGTH = 1000*1000*10;
+  static long NORMAL_RUN_LENGTH = 1000*1000;
+
+  static long REFERENCE_BIPS = 10000;
   
   public void setUp() throws Exception {
     localhostName = InetAddress.getLocalHost().getCanonicalHostName();
   }
   public void testBasic() {
-    loopBasic(RUN_LENGTH);
-    double avg = loopBasic(RUN_LENGTH); 
+    loopBasic(NORMAL_RUN_LENGTH);
+    double avg = loopBasic(NORMAL_RUN_LENGTH); 
     
-    System.out.println("Running on "+localhostName);
-    // check for performance on KAL only
-    if(KAL.equals(localhostName)) {
-      assertTrue(30 > avg);
-    }
-    System.out.println("Average log time for disabled statements: "+avg+" nanos.");
+    long referencePerf = 17;
+    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
+    //System.out.println("Average log time for disabled statements: "+avg+" nanos.");
   }
   
   public void testParameterized() {
-
-    loopBasic(RUN_LENGTH);
-    double avg = loopParameterized(RUN_LENGTH); 
-    
-    System.out.println("Running on "+localhostName);
-    // check for performance on KAL only
-    if(KAL.equals(localhostName)) {
-      assertTrue(30 > avg);
-    }
-    System.out.println("Average log time for disabled (parameterized) statements: "+avg+" nanos.");
+    loopBasic(NORMAL_RUN_LENGTH);
+    double avg = loopParameterized(NORMAL_RUN_LENGTH); 
+    long referencePerf = 36;
+    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
+    //System.out.println("Average log time for disabled (parameterized) statements: "+avg+" nanos.");
   }
   
   
   public void testNOPFilter() {
-    loopNopFilter(RUN_LENGTH);
-    double avg = loopNopFilter(RUN_LENGTH);
-    
-    System.out.println("Running on "+localhostName);
-    System.out.println("Average log time for disabled (NOPFilter) statements: "+avg+" nanos.");
-    // check for performance on KAL only
-    if(KAL.equals(localhostName)) {
-      assertTrue(80 > avg);
-    }
-
+    loopNopFilter(NORMAL_RUN_LENGTH);
+    double avg = loopNopFilter(NORMAL_RUN_LENGTH);
+    //System.out.println("Average log time for disabled (NOPFilter) statements: "+avg+" nanos.");
+    long referencePerf = 48;
+    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
   }
   
   double loopBasic(long len) {

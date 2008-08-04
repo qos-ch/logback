@@ -16,6 +16,7 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(LoggerContextTest.class);
+    suite.addTestSuite(LoggerPerfTest.class);
     suite.addTestSuite(DynamicLoggerContextTest.class);
     suite.addTestSuite(PatternLayoutTest.class);
     suite.addTestSuite(BasicLoggerTest.class);
