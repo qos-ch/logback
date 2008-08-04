@@ -19,7 +19,7 @@ public class BogoPerf {
   }
   
   /**
-   * compute bogoInstructions per second
+   * Compute bogoInstructions per second
    * <p>
    * on a 3.2 Ghz Pentium D CPU (around 2007), we obtain about 10'000 bogoIPS.
    * 
@@ -69,20 +69,54 @@ public class BogoPerf {
     return (2 * lastBogos + INITIAL_BOGO_IPS) / 3;
   }
 
-  public static void assertPerformance(double currentPerformance,
-      long referencePerf, double referenceBIPS)
+  /**
+   * Assertion used for values that <b>decrease</b> with faster CPUs, 
+   * typically the time (duration) needed to perform a task.
+   * 
+   * @param currentDuration
+   * @param referenceDuraion
+   * @param referenceBIPS
+   * @throws AssertionFailedError
+   */
+  public static void assertDuration(double currentDuration,
+      long referenceDuraion, double referenceBIPS)
       throws AssertionFailedError {
-    double ajustedPerf = adjustExpectedValue(referencePerf,
+    double ajustedDuration = adjustExpectedDuration(referenceDuraion,
         referenceBIPS);
-    if (currentPerformance > ajustedPerf * SLACK) {
-      throw new AssertionFailedError(currentPerformance + " exceeded expected "
-          + ajustedPerf + " (adjusted), " + referencePerf + " (raw)");
+    if (currentDuration > ajustedDuration * SLACK) {
+      throw new AssertionFailedError(currentDuration + " exceeded expected "
+          + ajustedDuration + " (adjusted), " + referenceDuraion + " (raw)");
     }
   }
-
-  private static double adjustExpectedValue(long referencePerf,
+  /**
+   * Assertion used for values that <b>increase<b> with faster CPUs, typically 
+   * the number of operations accomplished per unit of time.
+   * 
+   * @param currentPerformance
+   * @param referencePerformance
+   * @param referenceBIPS
+   * @throws AssertionFailedError
+   */
+  public static void assertPerformance(double currentPerformance,
+      long referencePerformance, double referenceBIPS)
+      throws AssertionFailedError {
+    double ajustedPerf = adjustExpectedPerformance(referencePerformance,
+        referenceBIPS);
+    if (currentPerformance*SLACK < ajustedPerf) {
+      throw new AssertionFailedError(currentPerformance + " below expected "
+          + ajustedPerf + " (adjusted), " + referencePerformance + " (raw)");
+    }
+  }
+  
+  private static double adjustExpectedPerformance(long referenceDuration,
       double referenceBIPS) {
     double currentBIPS = currentBIPS();
-    return referencePerf * (referenceBIPS / currentBIPS);
+    return referenceDuration * (currentBIPS/referenceBIPS);
+  }
+  
+  private static double adjustExpectedDuration(long referenceDuration,
+      double referenceBIPS) {
+    double currentBIPS = currentBIPS();
+    return referenceDuration * (referenceBIPS / currentBIPS);
   }
 }

@@ -24,25 +24,25 @@ public class LoggerPerfTest extends TestCase {
   String localhostName = null;
   static long NORMAL_RUN_LENGTH = 1000*1000;
 
-  static long REFERENCE_BIPS = 10000;
+  static long REFERENCE_BIPS = 9324;
   
   public void setUp() throws Exception {
     localhostName = InetAddress.getLocalHost().getCanonicalHostName();
   }
   public void testBasic() {
-    loopBasic(NORMAL_RUN_LENGTH);
-    double avg = loopBasic(NORMAL_RUN_LENGTH); 
+    basicDurationInNanos(NORMAL_RUN_LENGTH);
+    double avg = basicDurationInNanos(NORMAL_RUN_LENGTH); 
     
     long referencePerf = 17;
-    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
     //System.out.println("Average log time for disabled statements: "+avg+" nanos.");
   }
   
   public void testParameterized() {
-    loopBasic(NORMAL_RUN_LENGTH);
-    double avg = loopParameterized(NORMAL_RUN_LENGTH); 
+    basicDurationInNanos(NORMAL_RUN_LENGTH);
+    double avgDuration = loopParameterized(NORMAL_RUN_LENGTH); 
     long referencePerf = 36;
-    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
     //System.out.println("Average log time for disabled (parameterized) statements: "+avg+" nanos.");
   }
   
@@ -52,10 +52,10 @@ public class LoggerPerfTest extends TestCase {
     double avg = loopNopFilter(NORMAL_RUN_LENGTH);
     //System.out.println("Average log time for disabled (NOPFilter) statements: "+avg+" nanos.");
     long referencePerf = 48;
-    BogoPerf.assertPerformance(avg, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
   }
   
-  double loopBasic(long len) {
+  double basicDurationInNanos(long len) {
     LoggerContext lc = new LoggerContext();
     NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
     mopAppender.start();
