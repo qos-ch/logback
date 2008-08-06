@@ -34,11 +34,19 @@ public class AppenderAction<E> extends Action {
   @SuppressWarnings("unchecked")
   public void begin(
     InterpretationContext ec, String localName, Attributes attributes) throws ActionException {
-    String className = attributes.getValue(CLASS_ATTRIBUTE);
-
     // We are just beginning, reset variables
     appender = null;
     inError = false;
+    
+    String className = attributes.getValue(CLASS_ATTRIBUTE);
+    if(OptionHelper.isEmpty(className)) {
+      addError(
+        "Missing class name for appender. Near ["
+          + localName + "] line " + getLineNumber(ec));
+      inError = true;
+      return;
+    }
+
     
     try {
       addInfo("About to instantiate appender of type ["+className+"]");
@@ -66,7 +74,6 @@ public class AppenderAction<E> extends Action {
       // add the appender just created to the appender bag.
       appenderBag.put(appenderName, appender);
 
-      //getLogger().debug("Pushing appender on to the object stack.");
       ec.pushObject(appender);
     } catch (Exception oops) {
       inError = true;

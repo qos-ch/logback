@@ -27,13 +27,13 @@ public class BasicStatusManager implements StatusManager {
   
   // reading SynchronizedCollection the mutex is the returned 
   // synchronized list, we make use of this fact in getCopyOfStatusList
-  List<Status> statusList = Collections
+  final List<Status> statusList = Collections
       .synchronizedList(new ArrayList<Status>());
   int level = Status.INFO;
 
   // reading SynchronizedCollection the mutex is the returned 
   // synchronized list, we make use of this fact in getCopyOfStatusListnerList
-  List<StatusListener> statusListenerList = Collections
+  final List<StatusListener> statusListenerList = Collections
       .synchronizedList(new ArrayList<StatusListener>());
 
   /**
@@ -52,6 +52,15 @@ public class BasicStatusManager implements StatusManager {
       level = newStatus.getLevel();
     }
     statusList.add(newStatus);
+    fireStatusAddEvent(newStatus);
+  }
+  
+  private void fireStatusAddEvent(Status status) {
+    synchronized (statusListenerList) {
+      for(StatusListener sl : statusListenerList) {
+        sl.addStatusEvent(status);
+      }    
+    }  
   }
 
   public synchronized List<Status> getCopyOfStatusList() {
@@ -73,7 +82,7 @@ public class BasicStatusManager implements StatusManager {
   }
 
   public void remove(StatusListener listener) {
-    statusListenerList.add(listener);
+    statusListenerList.remove(listener);
   }
 
   public List<StatusListener> getCopyOfStatusListenerList() {

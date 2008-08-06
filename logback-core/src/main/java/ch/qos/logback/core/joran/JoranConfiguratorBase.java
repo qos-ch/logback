@@ -17,12 +17,13 @@ import java.util.Map;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
+import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
+import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
-import ch.qos.logback.core.joran.action.ContextPropertyAction;
+import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.SubstitutionPropertyAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
@@ -57,6 +58,9 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
         new ContextPropertyAction());
     rs.addRule(new Pattern("configuration/conversionRule"),
         new ConversionRuleAction());
+
+    rs.addRule(new Pattern("configuration/statusListener"),
+        new StatusListenerAction());
 
     rs.addRule(new Pattern("configuration/appender"), new AppenderAction());
     rs.addRule(new Pattern("configuration/appender/appender-ref"),
