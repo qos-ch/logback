@@ -143,7 +143,7 @@ public class Configurator extends ContextAwareBase implements
   
   public List<String> getStatuses() {
     List<String> list = new ArrayList<String>();
-    Iterator<Status> it = context.getStatusManager().iterator();
+    Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
     while(it.hasNext()) {
       list.add(it.next().toString());
     }

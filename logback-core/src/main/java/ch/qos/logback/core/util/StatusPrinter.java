@@ -55,13 +55,10 @@ public class StatusPrinter {
   }
 
   public static void buildStr(StringBuilder sb, StatusManager sm) {
-
-    synchronized (sm) {
-      Iterator it = sm.iterator();
-      while (it.hasNext()) {
-        Status s = (Status) it.next();
-        buildStr(sb, "", s);
-      }
+    Iterator it = sm.getCopyOfStatusList().iterator();
+    while (it.hasNext()) {
+      Status s = (Status) it.next();
+      buildStr(sb, "", s);
     }
   }
 

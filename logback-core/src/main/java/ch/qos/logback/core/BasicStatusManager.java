@@ -10,25 +10,39 @@
 package ch.qos.logback.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
 
 public class BasicStatusManager implements StatusManager {
 
   public static final int MAX_COUNT = 200;
 
+  // This method is synchronized on the instance.
+  // Code
   int count = 0;
-  List<Status> statusList = new ArrayList<Status>();
+  
+  // reading SynchronizedCollection the mutex is the returned 
+  // synchronized list, we make use of this fact in getCopyOfStatusList
+  List<Status> statusList = Collections
+      .synchronizedList(new ArrayList<Status>());
   int level = Status.INFO;
 
-  // This method is synchronized on the instance.
-  // Code iterating on this.iterator is expected to
-  // also synchronize on this (the BasicStatusManager instance)
-  public synchronized void add(Status newStatus) {
-    // System.out.println(newStatus);
+  // reading SynchronizedCollection the mutex is the returned 
+  // synchronized list, we make use of this fact in getCopyOfStatusListnerList
+  List<StatusListener> statusListenerList = Collections
+      .synchronizedList(new ArrayList<StatusListener>());
+
+  /**
+   * Add a new status object.
+   * 
+   * @param Status
+   *                the status message to add
+   */
+  public void add(Status newStatus) {
     if (count > MAX_COUNT) {
       return;
     }
@@ -40,8 +54,10 @@ public class BasicStatusManager implements StatusManager {
     statusList.add(newStatus);
   }
 
-  public Iterator<Status> iterator() {
-    return statusList.iterator();
+  public synchronized List<Status> getCopyOfStatusList() {
+    synchronized (statusList) {
+      return new ArrayList<Status>(statusList);
+    }
   }
 
   public int getLevel() {
@@ -50,6 +66,20 @@ public class BasicStatusManager implements StatusManager {
 
   public int getCount() {
     return count;
+  }
+
+  public void add(StatusListener listener) {
+    statusListenerList.add(listener);
+  }
+
+  public void remove(StatusListener listener) {
+    statusListenerList.add(listener);
+  }
+
+  public List<StatusListener> getCopyOfStatusListenerList() {
+    synchronized (statusListenerList) {
+      return new ArrayList<StatusListener>(statusListenerList);
+    }
   }
 
 }

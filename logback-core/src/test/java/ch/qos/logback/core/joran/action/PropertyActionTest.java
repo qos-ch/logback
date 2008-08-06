@@ -83,13 +83,13 @@ public class PropertyActionTest extends TestCase {
   }
   
   private boolean checkError() {
-    Iterator it = context.getStatusManager().iterator();
+    Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
     ErrorStatus es = (ErrorStatus)it.next();
     return PropertyAction.INVALID_ATTRIBUTES.equals(es.getMessage());
   }
   
   private boolean checkFileErrors() {
-    Iterator it = context.getStatusManager().iterator();
+    Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
     ErrorStatus es1 = (ErrorStatus)it.next();
     boolean result1 = "Could not read properties file [toto].".equals(es1.getMessage());
     ErrorStatus es2 = (ErrorStatus)it.next();
