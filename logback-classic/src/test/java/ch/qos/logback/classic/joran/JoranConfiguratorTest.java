@@ -67,6 +67,15 @@ public class JoranConfiguratorTest extends TestCase {
     assertEquals(0, listAppender.list.size());
   }
   
+  public void testStatusListener() throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
+    jc.setContext(loggerContext);
+    jc.doConfigure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
+    
+    StatusPrinter.print(loggerContext);
+  }
+  
   public void testEval() throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
@@ -199,8 +208,8 @@ public class JoranConfiguratorTest extends TestCase {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(JoranConfiguratorTest.class);
-    //suite.addTest(new JoranConfiguratorTest("testEvaluatorFilter"));
+    //suite.addTestSuite(JoranConfiguratorTest.class);
+    suite.addTest(new JoranConfiguratorTest("testStatusListener"));
     return suite;
   } 
 }
