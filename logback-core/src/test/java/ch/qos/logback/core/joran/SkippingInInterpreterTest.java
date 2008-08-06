@@ -14,9 +14,7 @@ import java.util.HashMap;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
@@ -128,12 +126,4 @@ public class SkippingInInterpreterTest extends TestCase {
     Integer i = (Integer) context.getObject(TouchAction.KEY);
     assertEquals(1, i.intValue());
   }
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    //suite.addTest(new SkippingInInterpreterTest("testSkipSiblings2"));
-    suite.addTestSuite(SkippingInInterpreterTest.class);
-    return suite;
-  }
-
 }
