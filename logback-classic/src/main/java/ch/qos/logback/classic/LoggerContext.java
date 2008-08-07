@@ -31,13 +31,15 @@ import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.StatusListener;
+import ch.qos.logback.core.status.StatusManager;
 
 /**
- * LoggerContext glues many of the logback-classic components together. In principle, 
- * every logback-classic component instance is attached either directly or indirecty 
- * to a LoggerContext instance. Just as importantly LoggerContext implements the 
- * {@link ILoggerFactory} acting as the manufacturing source of {@link Logger} 
- * instances.
+ * LoggerContext glues many of the logback-classic components together. In
+ * principle, every logback-classic component instance is attached either
+ * directly or indirecty to a LoggerContext instance. Just as importantly
+ * LoggerContext implements the {@link ILoggerFactory} acting as the
+ * manufacturing source of {@link Logger} instances.
  * 
  * @author Ceki Gulcu
  */
@@ -160,7 +162,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * reference, otherwise returns <code>null</code>.
    * 
    * @param name
-   *          the name of the logger to search for.
+   *                the name of the logger to search for.
    */
   public Logger exists(String name) {
     return (Logger) loggerCache.get(name);
@@ -180,7 +182,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     Collections.sort(loggerList, new LoggerComparator());
     return loggerList;
   }
-  
+
   public LoggerContextRemoteView getLoggerContextRemoteView() {
     return loggerContextRemoteView;
   }
@@ -189,6 +191,15 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     root.recursiveReset();
     clearAllTurboFilters();
     fireOnReset();
+    // TODO is it a good idea to reset the status listeners?
+    resetStatusListeners();
+  }
+
+  void resetStatusListeners() {
+    StatusManager sm = getStatusManager();
+    for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
+      sm.remove(sl);
+    }
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
@@ -215,7 +226,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return cfai.getTurboFilterChainDecision(marker, logger, level, format,
         params, t);
   }
-  
+
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param, final Throwable t) {
@@ -223,9 +234,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
       return FilterReply.NEUTRAL;
     }
     return cfai.getTurboFilterChainDecision(marker, logger, level, format,
-        new Object[]{param}, t);
+        new Object[] { param }, t);
   }
-  
+
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param1, final Object param2, final Throwable t) {
@@ -233,7 +244,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
       return FilterReply.NEUTRAL;
     }
     return cfai.getTurboFilterChainDecision(marker, logger, level, format,
-        new Object[]{param1, param2}, t);
+        new Object[] { param1, param2 }, t);
   }
 
   public TurboFilter getFirstTurboFilter() {
