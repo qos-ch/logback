@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.core.joran;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -18,7 +19,7 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(SkippingInInterpreterTest.class);
-    suite.addTestSuite(TrivialcConfiguratorTest.class);
+    suite.addTest(new JUnit4TestAdapter(TrivialcConfiguratorTest.class));
     suite.addTest(ch.qos.logback.core.joran.action.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.event.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.spi.PackageTest.suite());

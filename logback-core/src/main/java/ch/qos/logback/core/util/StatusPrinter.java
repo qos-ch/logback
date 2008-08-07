@@ -79,7 +79,7 @@ public class StatusPrinter {
     }
   }
 
-  private static void buildStr(StringBuilder sb, String indentation, Status s) {
+  public static void buildStr(StringBuilder sb, String indentation, Status s) {
     String prefix;
     if (s.hasChildren()) {
       prefix = indentation + "+ ";

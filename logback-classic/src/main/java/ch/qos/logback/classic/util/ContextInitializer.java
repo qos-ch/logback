@@ -59,6 +59,8 @@ public class ContextInitializer {
 
   public static void autoConfig(LoggerContext loggerContext,
       ClassLoader classLoader) throws JoranException {
+    StatusListenerConfigHelper.installIfAsked(loggerContext);
+    
     URL url = findConfigFileURLFromSystemProperties(classLoader);
     if (url == null) {
       url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
@@ -77,6 +79,7 @@ public class ContextInitializer {
       throws JoranException {
     ClassLoader tccl = Loader.getTCL();
     autoConfig(loggerContext, tccl);
-
   }
+  
+
 }
