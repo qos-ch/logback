@@ -63,7 +63,7 @@ public class BasicStatusManager implements StatusManager {
     }  
   }
 
-  public synchronized List<Status> getCopyOfStatusList() {
+  public List<Status> getCopyOfStatusList() {
     synchronized (statusList) {
       return new ArrayList<Status>(statusList);
     }
