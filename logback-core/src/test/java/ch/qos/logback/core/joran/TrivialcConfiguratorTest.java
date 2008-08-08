@@ -25,7 +25,6 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.TrivialStatusListener;
 import ch.qos.logback.core.util.Constants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class TrivialcConfiguratorTest {
 
