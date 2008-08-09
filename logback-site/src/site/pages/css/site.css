@@ -226,6 +226,10 @@ table.bodyTable tr.b {
 	background-color: #eee;
 }
 
+table.bodyTable tr.alt {
+	background-color: #eee;
+}
+
 .author {
 	text-align: left;
 	font-weight: bold;
