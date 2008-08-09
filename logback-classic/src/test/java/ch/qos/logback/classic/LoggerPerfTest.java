@@ -39,7 +39,7 @@ public class LoggerPerfTest extends TestCase {
   }
   
   public void testParameterized() {
-    basicDurationInNanos(NORMAL_RUN_LENGTH);
+    loopParameterized(NORMAL_RUN_LENGTH);
     double avgDuration = loopParameterized(NORMAL_RUN_LENGTH); 
     long referencePerf = 36;
     BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
