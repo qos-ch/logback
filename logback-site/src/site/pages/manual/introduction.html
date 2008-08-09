@@ -168,48 +168,47 @@ public class HelloWorld2 {
 |-INFO in ch.qos.logback.classic.BasicConfigurator@1c1ea29 - Setting up default configuration.</pre></div>
 
 
-  <p>
-    Logback explains that it configured itself using its default
-    policy, which is a basic <code>ConsoleAppender</code>. 
-    An <code>Appender</code> is a class that can be
-    seen as an output destination. Appenders exist for many different
-    destinations including the console, files, Syslog, TCP Socket, JMS and
-    many more. Users can also easily create their own Appenders as
-    appropriate for their specific situation.
+  <p>Logback explains that it configured itself using its default
+  policy, which is a basic <code>ConsoleAppender</code>.  An
+  <code>Appender</code> is a class that can be seen as an output
+  destination. Appenders exist for many different destinations
+  including the console, files, Syslog, TCP Socket, JMS and many
+  more. Users can also easily create their own Appenders as
+  appropriate for their specific situation.
   </p>
 
-  <p>
-    The previous examples are rather simple. However, actual logging
-    in a larger application would not be any different. The general
-    pattern logging statements will not change. Only the configuration
-    process will be different since you will certainly need a more
-    specific configuration than what logback provides by default. 
-    As you will see later on in this document,
-    configuring logback can be done in different flexible and
-    powerfull ways. Note that, normally, you won't need to invoke
-    <code>LoggerStatusPrinter</code>
-    after your log statements.
+  <p>The previous examples are rather simple. Actual logging in a
+  larger application would not be that different. The general pattern
+  for logging statements would not change. nly the configuration
+  process would be different since However, you would probably want to
+  customize or configure logback for according to your needs. Logback
+  configuration will be covered in subsequent chapters.
   </p>
 
-  <p> 
-    Here is a list of the three required steps in order to enable
-    logging in your application.
+  <p>Note that in the above example we have instructed logback to
+  print its internal state by invoking
+  <code>StatusPrinter.print()</code> method. Logback's internal status
+  information can be very useful in diagnosing logback-related
+  problems.
   </p>
 
-  <ol>
+  <p>Here is a list of the three required steps in order to enable
+  logging in your application.
+  </p>
 
-    <p>Configure the logback environment. You can do so in several
-    more or less sophisticated ways. More on this later.</p>
+  <ol> 
+    <li>Configure the logback environment. You can do so in several
+    more or less sophisticated ways. More on this later.</li>
 
-    <p>In every class where you wish to perform logging, retrieve a
+    <li>In every class where you wish to perform logging, retrieve a
     <code>Logger</code> instance by invoking the
     <code>org.slf4j.LoggerFactory</code> class'
     <code>getLogger()</code> method, passing the current class name
-    or the class itself as parameter.</p>
+    or the class itself as parameter.</li>
     
-    <p>Use this logger instance by invoking its printing methods,
+    <li>Use this logger instance by invoking its printing methods,
     namely the debug(), info(), warn() and error(). This will
-    produce logging output on the configured appenders.</p>
+    produce logging output on the configured appenders.</li>
   </ol>
  
   <a name="BuildingLogback"></a>
@@ -233,13 +232,12 @@ public class HelloWorld2 {
 
   <p>Once you have installed Maven2, building the logback project,
   including all its modules, should be as easy as issuing a <code>mvn
-  package</code> command in a terminal or command window from within
-  the directory where you unarchived the logback distribution
-  file. Maven will automatically download the required external
-  libraries and use them. However, certain artefacts cannot be
-  downloaded from the Maven2 repository. At present, time only the JMS
-  API from from SUN Inc. needs to be downloaded and installed
-  separately into your local repository.
+  package</code> command from within the directory where you
+  unarchived the logback distribution. Maven will automatically
+  download the required external libraries. However, certain artefacts
+  cannot be downloaded from the Maven2 repository. At present, time
+  only the JMS API from from SUN Inc. needs to be downloaded and
+  installed separately into your local repository.
   </p>
 
   <p>You can manually download the <a
