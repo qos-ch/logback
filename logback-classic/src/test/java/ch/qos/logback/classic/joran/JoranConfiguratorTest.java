@@ -9,11 +9,10 @@
  */
 package ch.qos.logback.classic.joran;
 
+import junit.framework.TestCase;
+
 import org.slf4j.MDC;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -205,11 +204,4 @@ public class JoranConfiguratorTest extends TestCase {
     LoggingEvent le = (LoggingEvent) listAppender.list.get(0);
     assertEquals("hello user2", le.getMessage());
   }
-  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    //suite.addTestSuite(JoranConfiguratorTest.class);
-    suite.addTest(new JoranConfiguratorTest("testStatusListener"));
-    return suite;
-  } 
 }
