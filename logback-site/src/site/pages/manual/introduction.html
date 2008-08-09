@@ -98,24 +98,21 @@ public class HelloWorld1 {
 
 
     <p>
-      On the first line of the main() method, the variable named <code>logger</code>
-      is assigned a <code>Logger</code>
-      instance retreived by invoking the static method <code>getLogger</code>
-      in the <code>LoggerFactory</code> class. 
-      This logger is named "chapter1.HelloWorld1". The main method proceeds to call the
-      <code>debug</code> method of this logger passing "Hello World" as an argument. 
-      We say that the main
-      method contains a logging statement of level debug with the message "Hello world".
+      On the first line of the main() method, the variable named
+      <code>logger</code> is assigned a <code>Logger</code> instance
+      retrieved by invoking the static <code>getLogger</code> method
+      from the <code>LoggerFactory</code> class.  This logger is named
+      "chapter1.HelloWorld1". The main method proceeds to call the
+      <code>debug</code> method of this logger passing "Hello World"
+      as an argument.  We say that the main method contains a logging
+      statement of level DEBUG with the message "Hello world".
     </p>
 
-    <p>
-      You will note that the above example does not reference any
-      logback classes. In most cases, as far as logging is
-      concerned, your classes will need to import only SLF4J
-      classes. In principle, you will have to import logback
-      classes only for configuring logback. Thus, the vast
-      majority of your classes will only be cognizant of SLF4J API
-      and oblivious to the existence of logback.
+    <p>Note that the above example does not reference any logback
+    classes. In most cases, as far as logging is concerned, your
+    classes will only need to import SLF4J classes. Thus, the vast
+    majority, if not all, of your classes will be cognizant of SLF4J
+    API and oblivious to the existence of logback.
     </p>
 
 
@@ -124,12 +121,11 @@ public class HelloWorld1 {
     </p>
     <div class="source"><pre>java chapter1.HelloWorld1</pre></div>
 
-    <p>
-      Launching the <code>HelloWorld1</code>
-      application will output a single line on the console. By virtue of
-      to logback's default configuration policy, when no default file 
-      is found to configure logback explicitely, logback will add a 
-      <code>ConsoleAppender</code> to the root logger.
+    <p>Launching the <code>HelloWorld1</code> application will output
+    a single line on the console. By virtue of to logback's default
+    configuration policy, when no default configuration file is found,
+    logback will add a <code>ConsoleAppender</code> to the root
+    logger.
     </p>
 
 <div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</pre></div>
@@ -149,14 +145,18 @@ public class HelloWorld1 {
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<b>import ch.qos.logback.classic.util.LoggerStatusPrinter;</b>
+<b>import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;</b>
 
 public class HelloWorld2 {
 
   public static void main(String[] args) {
     Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld2");
     logger.debug("Hello world.");
-    <b>LoggerStatusPrinter.printStatusInDefaultContext();</b>
+
+    // print internal state
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    StatusPrinter.print(lc);</b>
   }
 }</pre></div>
 

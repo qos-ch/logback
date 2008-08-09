@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,10 @@ public class InitializationTest {
   }
 
   @Test
+  @Ignore
+  // this test works only if logback-test.xml or logback.xml files are on the classpath. 
+  // However, this is something we try to avoid in order to simplify the life
+  // of users trying to follows the manual and logback-examples from an IDE
   public void testAutoconfig() {
     Appender appender = root.getAppender("STDOUT");
     assertNotNull(appender);
@@ -47,6 +52,10 @@ public class InitializationTest {
   }
 
   @Test
+  @Ignore  
+  // this test works only if logback-test.xml or logback.xml files are on the classpath. 
+  // However, this is something we try to avoid in order to simplify the life
+  // of users trying to follows the manual and logback-examples from an IDE
   public void testReset() throws JoranException {
     {
       ContextInitializer.autoConfig(lc);
