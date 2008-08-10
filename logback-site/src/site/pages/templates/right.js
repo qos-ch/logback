@@ -4,6 +4,8 @@ document.write('<p class="menu_header">New and noteworthy</p>')
 
 document.write('<p class="menu"><a href="http://stubbisms.wordpress.com/2008/07/15/some-serious-logging-niceness-logback-with-eclipse-plugin/">Logging niceness</a>')
 
+document.write('<p class="menu"><a href="http://wimpi.coalevo.net/2008/04/logger-name-based-filtering-in-logback.html">Filtering by logger name</a>')
+
 document.write('<p class="menu"><a href="http://wizardforge.org/pc?action=showVersion&id=72">Configuration Wizard</a>')
 
 document.write('<p class="menu"><a href="http://xhab.blogspot.com/2007/03/new-logging-experience.html">A new logging experience!</a>')
