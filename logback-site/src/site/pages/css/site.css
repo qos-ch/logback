@@ -9,6 +9,7 @@ body {
   color: #000;  
   padding: 0px;
   margin: 0px;
+  counter-reset: example;  /* Create an example counter scope */
 }
 
 a { 
@@ -166,6 +167,7 @@ p.menu_header {
 
 
 #content {
+  min-width:50em;
   margin: 0px 15em 0px 15em;
   padding: 0px;
   background-color: #ffffff;  
@@ -304,4 +306,10 @@ code {
 .quote {
   align: right;
   padding-left: 12em;
+}
+
+/* --------- numbering --------- */
+.autoEx:before {
+  counter-increment: example;  /* Add 1 to example */
+  content: counter(example)
 }
