@@ -92,7 +92,7 @@ public class StatusPrinter {
       String dateStr = simpleDateFormat.format(date);
       sb.append(dateStr).append(" ");
     }
-    sb.append(prefix + s).append(Layout.LINE_SEP);
+    sb.append(prefix).append(s).append(Layout.LINE_SEP);
 
     if (s.getThrowable() != null) {
       appendThrowable(sb, s.getThrowable());

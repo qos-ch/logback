@@ -20,12 +20,11 @@ public class MyApp2 {
   final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
 
   public static void main(String[] args) {
-    logger.info("Entering application.");
-    
     // print logback's internal status
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     StatusPrinter.print(lc);
     
+    logger.info("Entering application.");
     Foo foo = new Foo();
     foo.doIt();
     logger.info("Exiting application.");
