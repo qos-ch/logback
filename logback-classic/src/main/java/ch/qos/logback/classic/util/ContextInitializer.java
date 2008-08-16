@@ -8,6 +8,8 @@ import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Loader;
 
 // contributors
@@ -24,8 +26,14 @@ public class ContextInitializer {
   final public static String CONFIG_FILE_PROPERTY = "logback.configurationFile";
   final public static String STATUS_LISTENER_CLASS = "logback.statusListenerClass";
   final public static String SYSOUT = "SYSOUT";
-  
-  public static void configureByResource(LoggerContext loggerContext, URL url)
+
+  final LoggerContext loggerContext;
+
+  public ContextInitializer(LoggerContext loggerContext) {
+    this.loggerContext = loggerContext;
+  }
+
+  public void configureByResource(URL url)
       throws JoranException {
     if (url == null) {
       throw new IllegalArgumentException("URL argument cannot be null");
@@ -35,52 +43,68 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  static URL findConfigFileURLFromSystemProperties(ClassLoader classLoader) {
+  private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader) {
     String logbackConfigFile = System.getProperty(CONFIG_FILE_PROPERTY, null);
     if (logbackConfigFile != null) {
+      URL result = null;
       try {
-        return new URL(logbackConfigFile);
+        result = new URL(logbackConfigFile);
+        return result;
       } catch (MalformedURLException e) {
         // so, resource is not a URL:
         // attempt to get the resource from the class path
-        URL urlAsResource = Loader.getResource(logbackConfigFile, classLoader);
-        if (urlAsResource != null) {
-          return urlAsResource;
+        result = Loader.getResource(logbackConfigFile, classLoader);
+        if (result != null) {
+          return result;
         }
         File f = new File(logbackConfigFile);
         if (f.exists() && f.isFile()) {
           try {
-            return f.toURL();
+            result = f.toURL();
+            return result;
           } catch (MalformedURLException e1) {
           }
         }
+      } finally {
+        statusOnResourceSearch(logbackConfigFile, result);
       }
     }
     return null;
   }
 
-  public static void autoConfig(LoggerContext loggerContext,
-      ClassLoader classLoader) throws JoranException {
+  public void autoConfig(ClassLoader classLoader) throws JoranException {
     StatusListenerConfigHelper.installIfAsked(loggerContext);
-    
+
     URL url = findConfigFileURLFromSystemProperties(classLoader);
     if (url == null) {
       url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
+      statusOnResourceSearch(TEST_AUTOCONFIG_FILE, url);
     }
     if (url == null) {
       url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
+      statusOnResourceSearch(AUTOCONFIG_FILE, url);
     }
     if (url != null) {
-      configureByResource(loggerContext, url);
+      configureByResource(url);
     } else {
       BasicConfigurator.configure(loggerContext);
     }
   }
 
-  public static void autoConfig(LoggerContext loggerContext)
-      throws JoranException {
+  public void autoConfig() throws JoranException {
     ClassLoader tccl = Loader.getTCL();
-    autoConfig(loggerContext, tccl);
+    autoConfig(tccl);
+  }
+
+  private void statusOnResourceSearch(String resourceName, URL url) {
+    StatusManager sm = loggerContext.getStatusManager();
+    if (url == null) {
+      sm.add(new InfoStatus("Could not find resource [" + resourceName + "]",
+          loggerContext));
+    } else {
+      sm.add(new InfoStatus("Found resource [" + resourceName + "]",
+          loggerContext));
+    }
   }
 
 }

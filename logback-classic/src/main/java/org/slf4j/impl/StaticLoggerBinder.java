@@ -59,7 +59,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       LoggerContext defaultLoggerContext = new LoggerContext();
       defaultLoggerContext.setName("default");
       try {
-        ContextInitializer.autoConfig(defaultLoggerContext);
+        new ContextInitializer(defaultLoggerContext).autoConfig();
       } catch (JoranException je) {
         // TODO test me
         Util.reportFailure("Failed to auto configure default logger context",

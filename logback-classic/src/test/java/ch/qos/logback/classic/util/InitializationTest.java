@@ -58,7 +58,7 @@ public class InitializationTest {
   // of users trying to follows the manual and logback-examples from an IDE
   public void testReset() throws JoranException {
     {
-      ContextInitializer.autoConfig(lc);
+      new ContextInitializer(lc).autoConfig();
       Appender appender = root.getAppender("STDOUT");
       assertNotNull(appender);
       assertTrue(appender instanceof ConsoleAppender);
@@ -81,7 +81,7 @@ public class InitializationTest {
   public void doAutoConfigFromSystemProperties(String val) throws JoranException {
     //lc.shutdownAndReset();
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
-    ContextInitializer.autoConfig(lc);
+    new ContextInitializer(lc).autoConfig();
     Appender appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
     assertNotNull(appender);
   }

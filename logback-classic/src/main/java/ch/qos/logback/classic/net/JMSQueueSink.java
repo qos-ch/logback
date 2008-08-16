@@ -60,7 +60,7 @@ public class JMSQueueSink implements javax.jms.MessageListener {
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
-    ContextInitializer.autoConfig(loggerContext);
+    new ContextInitializer(loggerContext).autoConfig();
 
     new JMSQueueSink(qcfBindingName, queueBindingName, username, password);
 
