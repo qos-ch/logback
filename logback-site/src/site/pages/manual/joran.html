@@ -5,19 +5,25 @@
 <title>Chapter3: Logback configuration &amp; Joran</title>
 <link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
 <link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+<link type="text/css" rel="stylesheet" href="../ghighlighter/Styles/SyntaxHighlighter.css"></link>
  
 </head>
 <body>
-			<script> 
-prefix='../';	
-</script>
-<script src="../templates/header.js"></script>
+  <script type="text/javascript">prefix='../'</script>
+  <script type="text/javascript" src="../templates/header.js"></script>
+  <script type="text/javascript" language="javascript" src="../ghighlighter/js/shCore.js"></script>
+  <script type="text/javascript" language="javascript" src="../ghighlighter/js/shBrushJava.js"></script>
+  <script type="text/javascript" language="javascript" src="../ghighlighter/js/shBrushXml.js"></script>
+  <script type="text/javascript" language="javascript">
+    window.onload = function () {
+    dp.SyntaxHighlighter.HighlightAll('code');
+    }
+  </script>
+
 <div id="left">
-  <script src="../templates/left.js"></script>
+  <script type="text/javascript" src="../templates/left.js"></script>
 </div>
-<div id="right">
-  <script src="index_menu.js"></script>
-</div>
+<div id="right"><script type="text/javascript" src="index_menu.js"></script></div>
 <div id="content" class="chapter">
 	
 		<h1>Chapter 3: Logback configuration &amp; Joran</h1>
@@ -32,8 +38,27 @@ prefix='../';
     </div>
 
 
-    <script src="../templates/creative.js"></script>
-    
+    <script type="text/javascript" src="../templates/creative.js">
+    </script>
+
+
+    <pre name="code" class="java">
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MyApp1 {
+  final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
+
+  public static void main(String[] args) {
+    logger.info("Entering application.");
+
+    Foo foo = new Foo();
+    foo.doIt();
+    logger.info("Exiting application.");
+  }
+}
+    </pre>
+
     <p>Joran stands for a cold north-west wind which, every now and
     then, blows forcefully on Lake Geneva. Located right in the middle
     of Europe, the Geneva lake happens to be the continent's largest
@@ -47,9 +72,12 @@ prefix='../';
     configure your own applications.
     </p>
 
-    <a name="auto_configuration">
-    </a>
-    <h2>Configuration in logback</h2>
+
+    <h2>    
+      <a name="auto_configuration" href="#auto_configuration">
+        Configuration in logback
+      </a>
+    </h2>
     
     <p>Inserting log requests into the application code requires a
     fair amount of planning and effort. Observation shows that
@@ -251,18 +279,76 @@ public class Foo {
 
   <p>If everything goes well, you should see the following output on the console</p>
 
-   <div class="source"><pre>17:58:31.328 [main] INFO  chapter3.MyApp2 - Entering application.
-17:58:31,171 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - Ignoring debug attribute.
-17:58:31,171 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
-17:58:31,171 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
-17:58:31,328 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Popping appender named [STDOUT] from the object stack
-17:58:31,328 |-INFO in ch.qos.logback.classic.joran.action.LevelAction - root level set to DEBUG
-17:58:31,328 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[root]
+   <div class="source"><pre>17:44:58,578 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml]
+17:44:58,671 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+17:44:58,671 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+17:44:58,687 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+17:44:58,812 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Popping appender named [STDOUT] from the object stack
+17:44:58,812 |-INFO in ch.qos.logback.classic.joran.action.LevelAction - root level set to DEBUG
+17:44:58,812 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[root]
 
-17:58:31.343 [main] DEBUG chapter3.Foo - Did it again!
-17:58:31.343 [main] INFO  chapter3.MyApp2 - Exiting application.
+17:44:58.828 [main] INFO  chapter3.MyApp2 - Entering application.
+17:44:58.828 [main] DEBUG chapter3.Foo - Did it again!
+17:44:58.828 [main] INFO  chapter3.MyApp2 - Exiting application.
 </pre></div>
 
+  <p>At the end of this output, you can recognize the lines that were
+  printed in the previous example. You should also notice the
+  logback's internal messages, a.k.a. <code>Status</code> objects,
+  which allow convient access to logback's internal state.
+  </p>
+
+   <p>Instead of invoking <code>StatusPrinter</code> programmatically
+   from your code, you can instruct the configuration file to dump
+   status data. To achieve this, you need to set the <span
+   class="attr">debug</span> attribute of the <em>configuration</em>
+   element, i.e. the top-most element in the configuration file, as
+   shown below. Please note that this <span class="attr">debug</span>
+   attribute relates only to the status data. It does <em>not</em>
+   affect logback's configuration otherwise, in particuler with
+   respect to logger levels. (Put differently, no, the root logger
+   will <em>not</em> be set to DEBUG.)
+   </p>
+
+<em>Example 3.<span class="autoEx"/>: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
+<div class="source"><pre>&lt;configuration <b>debug="true"</b>>
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre></div>
+  
+   <p>Setting the <code>debug</code> attribute within the
+   &lt;configuration&gt; element will output status information, under
+   the assumption that 
+   </p>
+   <ol>
+     <li>the configuration file is found</li>
+     <li>the configuration file is well-formed XML.</li>
+   </ol>
+     
+   <p>If any of these two conditions is not fulfilled, the Joran
+   cannot interpret <code>debug</code> attribute since the
+   configuration file cannot be read. it follows that no status
+   information will be printed. If you would like to ensure that
+   status information is printed, then, as in <em>MyApp2</em>
+   application above, programmatically invoking
+   <code>StatusPrinter.print()</code> is your safest bet.
+   </p>
+
+   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
    <h3>Invoking <code>JoranConfigurator</code> programmatically</h3>
 
@@ -377,7 +463,7 @@ public class MyApp2 {
    one only needs to add an attribute to the main
    <em>configuration</em> element in the configuration file, as shown
    above:
-   wec</p>
+   </p>
 
 <em>Example 3.<span class="autoEx"/>: Basic configuration file using debug mode (logback-examples/src/main/java/chapter3/sample1.xml)</em>
 <div class="source"><pre>&lt;configuration <b>debug="true"</b>>
@@ -414,15 +500,10 @@ Logger[root]
 16:18:23.687 [main] DEBUG chapter3.Foo - Did it again!
 16:18:23.687 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
-  <p>At the end of this output, you can recognize the lines that were
-  printed in the previous example. You should also notive the
-  logback's internal messages based on <code>Status</code> objects,
-  logback internal reporting mechanism.  <code>Status</code> objects
-  allow easy access to logback's internal state.
-  </p>
 
-  <h3>XML Syntax</h3>
-
+  <h2>
+    <a name="xml_syntax" href="#xml_syntax">XML Syntax</a>
+  </h2>
 	<p>To obtain these different logging behaviors we do not need to
 	recompile code.  You can easily configure logging so that output is
 	directed to a UNIX Syslog daemon, or to a log visualizer, or forward

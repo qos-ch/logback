@@ -283,6 +283,10 @@ code {
 	font-family: Courier, monospace;
 }
 
+.attr {
+	font-family: Courier, monospace;
+  font-style:italic; 
+}
 
 .option {
   border: 1px solid black;
