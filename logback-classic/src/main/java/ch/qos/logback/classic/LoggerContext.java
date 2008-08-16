@@ -286,4 +286,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void stop() {
     started = false;
   }
+  
+  @Override
+  public String toString() {
+    return this.getClass().getName()+"["+getName()+"]";
+  }
 }

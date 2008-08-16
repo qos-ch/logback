@@ -29,7 +29,7 @@ public class ConfigurationAction extends Action {
     if (
       (debugAttrib == null) || debugAttrib.equals("")
         || debugAttrib.equals("false") || debugAttrib.equals("null")) {
-      addInfo("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
+      addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
       //LoggerContext loggerContext = (LoggerContext) context;
       //ConfiguratorBase.attachTemporaryConsoleAppender(context);

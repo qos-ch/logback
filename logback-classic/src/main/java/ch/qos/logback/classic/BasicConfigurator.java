@@ -35,7 +35,7 @@ public class BasicConfigurator {
   public static void configure(LoggerContext lc) {
     StatusManager sm = lc.getStatusManager();
     if(sm != null)  {
-     sm.add(new InfoStatus("Setting up default configuration.", hiddenSingleton));
+     sm.add(new InfoStatus("Setting up default configuration.", lc));
     }
     ConsoleAppender<LoggingEvent> ca = new ConsoleAppender<LoggingEvent>();
     ca.setContext(lc);

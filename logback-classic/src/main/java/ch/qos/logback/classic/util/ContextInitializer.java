@@ -99,7 +99,7 @@ public class ContextInitializer {
   private void statusOnResourceSearch(String resourceName, URL url) {
     StatusManager sm = loggerContext.getStatusManager();
     if (url == null) {
-      sm.add(new InfoStatus("Could not find resource [" + resourceName + "]",
+      sm.add(new InfoStatus("Could NOT find resource [" + resourceName + "]",
           loggerContext));
     } else {
       sm.add(new InfoStatus("Found resource [" + resourceName + "]",
