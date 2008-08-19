@@ -1,11 +1,18 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.core.joran.replay;
 
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
@@ -13,6 +20,9 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 import ch.qos.logback.core.util.StatusPrinter;
 
+/** 
+ * The Fruit* code is intended to test Joran's replay capability
+ * */
 public class FruitConfigurationTest extends TestCase {
 
   FruitContext fruitContext = new FruitContext();
@@ -41,7 +51,7 @@ public class FruitConfigurationTest extends TestCase {
 
       simpleConfigurator.setContext(fruitContext);
 
-      simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/"
+      simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/replay/"
           + filename);
 
       return fruitContext.getFruitShellList();
@@ -51,7 +61,8 @@ public class FruitConfigurationTest extends TestCase {
     }
   }
 
-  public void test1() throws Exception {
+  @org.junit.Test
+  public void fruit1() throws Exception {
     List<FruitShell> fsList = doFirstPart("fruit1.xml");
     assertNotNull(fsList);
     assertEquals(1, fsList.size());
@@ -100,10 +111,4 @@ public class FruitConfigurationTest extends TestCase {
     assertEquals(1.2, ((WeightytFruit) fruit0).getWeight());
   }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    // suite.addTest(new FruitConfigurationTest("testWithSubst"));
-    suite.addTestSuite(FruitConfigurationTest.class);
-    return suite;
-  }
 }

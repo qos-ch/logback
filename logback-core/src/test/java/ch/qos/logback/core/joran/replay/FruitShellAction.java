@@ -15,8 +15,12 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 import ch.qos.logback.core.util.OptionHelper;
 
+/** 
+ * The Fruit* code is intended to test Joran's replay capability
+ * */
 public class FruitShellAction extends Action {
 
   FruitShell fruitShell;
@@ -51,7 +55,7 @@ public class FruitShellAction extends Action {
       inError = true;
       addError(
         "Could not create an FruitShell", oops);
-      throw new ActionException(ActionException.SKIP_CHILDREN, oops);
+      throw new ActionException(SkipCode.SKIP_CHILDREN, oops);
     }
   }
 

@@ -73,7 +73,7 @@
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
-            <exclude>**/AllTest.java</exclude>
+            <exclude>**/All*Test.java</exclude>
             <exclude>**/PackageTest.java</exclude>
             <exclude>**/SizeBasedRollingTest.java</exclude>
           </excludes>
