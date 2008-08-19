@@ -9,10 +9,15 @@
  */
 package ch.qos.logback.core.joran.replay;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
@@ -23,21 +28,9 @@ import ch.qos.logback.core.util.StatusPrinter;
 /** 
  * The Fruit* code is intended to test Joran's replay capability
  * */
-public class FruitConfigurationTest extends TestCase {
+public class FruitConfigurationTest  {
 
   FruitContext fruitContext = new FruitContext();
-
-  public FruitConfigurationTest(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
 
   public List<FruitShell> doFirstPart(String filename) throws Exception {
 
@@ -61,7 +54,7 @@ public class FruitConfigurationTest extends TestCase {
     }
   }
 
-  @org.junit.Test
+  @Test
   public void fruit1() throws Exception {
     List<FruitShell> fsList = doFirstPart("fruit1.xml");
     assertNotNull(fsList);
@@ -75,7 +68,9 @@ public class FruitConfigurationTest extends TestCase {
     assertEquals("blue", fruit0.getName());
   }
 
-  public void test2() throws Exception {
+
+  @Test
+  public void fruit2() throws Exception {
     List<FruitShell> fsList = doFirstPart("fruit2.xml");
     assertNotNull(fsList);
     assertEquals(2, fsList.size());
@@ -93,10 +88,11 @@ public class FruitConfigurationTest extends TestCase {
     Fruit fruit1 = fs1.fruitFactory.buildFruit();
     assertTrue(fruit1 instanceof WeightytFruit);
     assertEquals("orange", fruit1.getName());
-    assertEquals(1.2, ((WeightytFruit) fruit1).getWeight());
+    assertEquals(1.2, ((WeightytFruit) fruit1).getWeight(), 0.01);
   }
 
-  public void testWithSubst() throws Exception {
+  @Test
+  public void withSubst() throws Exception {
     List<FruitShell> fsList = doFirstPart("fruitWithSubst.xml");
     assertNotNull(fsList);
     assertEquals(1, fsList.size());
@@ -108,7 +104,7 @@ public class FruitConfigurationTest extends TestCase {
     Fruit fruit0 = fs0.fruitFactory.buildFruit();
     assertTrue(fruit0 instanceof WeightytFruit);
     assertEquals("orange-" + oldCount, fruit0.getName());
-    assertEquals(1.2, ((WeightytFruit) fruit0).getWeight());
+    assertEquals(1.2, ((WeightytFruit) fruit0).getWeight(), 0.01);
   }
 
 }
