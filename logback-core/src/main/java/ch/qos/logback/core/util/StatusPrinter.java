@@ -18,6 +18,7 @@ import java.util.Iterator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.helpers.ThrowableToStringArray;
@@ -33,6 +34,33 @@ public class StatusPrinter {
     ps = printStream;
   }
 
+  /**
+   * Print the contents of the context statuses, but only if they 
+   * contain errors.
+   * 
+   * @param context
+   */
+  public static void printIfErrorsOccured(Context context) {
+    if (context == null) {
+      throw new IllegalArgumentException("Context argument cannot be null");
+    }
+
+    StatusManager sm = context.getStatusManager();
+    if (sm == null) {
+      ps.println("WARN: Context named \"" + context.getName()
+          + "\" has no status manager");
+    } else {
+      if (sm.getLevel() == ErrorStatus.ERROR) {
+        print(sm);
+      }
+    }
+  }
+
+  /**
+   * Print the contents of the context's status data.
+   * 
+   * @param context
+   */
   public static void print(Context context) {
     if (context == null) {
       throw new IllegalArgumentException("Context argument cannot be null");

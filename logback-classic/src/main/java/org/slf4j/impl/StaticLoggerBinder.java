@@ -64,8 +64,9 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         // TODO test me
         Util.reportFailure("Failed to auto configure default logger context",
             je);
-        StatusPrinter.print(defaultLoggerContext);
       }
+      StatusPrinter.printIfErrorsOccured(defaultLoggerContext);
+
       // See if a special context selector is needed
       String contextSelectorStr = OptionHelper.getSystemProperty(
           ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
