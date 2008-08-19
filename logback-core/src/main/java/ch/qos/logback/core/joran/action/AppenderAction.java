@@ -17,7 +17,6 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -80,7 +79,7 @@ public class AppenderAction<E> extends Action {
       inError = true;
       addError(
         "Could not create an Appender of type ["+className+"].", oops);
-      throw new ActionException(SkipCode.SKIP_CHILDREN, oops);
+      throw new ActionException(oops);
     }
   }
 

@@ -60,9 +60,9 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * @author Ceki G&uuml;lcu&uuml;
  * 
  */
-public class Interpreter  {
+public class Interpreter {
   private static List EMPTY_LIST = new Vector(0);
-  
+
   final private RuleStore ruleStore;
   final private InterpretationContext ec;
   final private ArrayList<ImplicitAction> implicitActions;
@@ -71,7 +71,7 @@ public class Interpreter  {
   Locator locator;
   EventPlayer player;
 
-   /**
+  /**
    * The <id>actionListStack</id> contains a list of actions that are executing
    * for the given XML element.
    * 
@@ -90,7 +90,7 @@ public class Interpreter  {
   public Interpreter(Context context, RuleStore rs) {
     this.cai = new CAI_WithLocatorSupport(this);
     this.cai.setContext(context);
-    ruleStore = rs; 
+    ruleStore = rs;
     ec = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
     pattern = new Pattern();
@@ -109,9 +109,9 @@ public class Interpreter  {
     setDocumentLocator(se.getLocator());
     startElement(se.namespaceURI, se.localName, se.qName, se.attributes);
   }
-  
-  private void startElement(String namespaceURI, String localName, String qName,
-      Attributes atts) {
+
+  private void startElement(String namespaceURI, String localName,
+      String qName, Attributes atts) {
 
     String tagName = getTagName(localName, qName);
 
@@ -120,7 +120,7 @@ public class Interpreter  {
     pattern.push(tagName);
 
     List applicableActionList = getApplicableActionList(pattern, atts);
- 
+
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
@@ -136,7 +136,7 @@ public class Interpreter  {
   public void characters(BodyEvent be) {
 
     setDocumentLocator(be.locator);
-    
+
     String body = be.getText();
     List applicableActionList = (List) actionListStack.peek();
 
@@ -161,7 +161,8 @@ public class Interpreter  {
     if (skip != null) {
       if (skip.equals(pattern)) {
         skip = null;
-        callEndAction(applicableActionList, getTagName(localName, qName));
+        // FIXME
+        // callEndAction(applicableActionList, getTagName(localName, qName));
       }
     } else if (applicableActionList != EMPTY_LIST) {
       callEndAction(applicableActionList, getTagName(localName, qName));
@@ -251,17 +252,12 @@ public class Interpreter  {
       // exceptions
       try {
         action.begin(ec, tagName, atts);
-      } catch (ActionException ae) {
-        switch (ae.getSkipCode()) {
-        case SKIP_CHILDREN:
-          skip = (Pattern) pattern.clone();
-          break;
-        }
-        // getLogger().info("Skip pattern set to [{}]", skip);
-      } catch (Exception e) {
+      } catch (ActionException e) {
         skip = (Pattern) pattern.clone();
-        // getLogger().info("Skip pattern set to [{}]", skip);
-        cai.addError("Exception in Action for tag [" + tagName + "]", e);
+        cai.addError("ActionException in Action for tag [" + tagName + "]", e);
+      } catch (RuntimeException e) {
+        skip = (Pattern) pattern.clone();
+        cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
       }
     }
   }
@@ -277,7 +273,9 @@ public class Interpreter  {
       try {
         action.body(ec, body);
       } catch (ActionException ae) {
-        cai.addError("Exception in end() methd for action [" + action + "]", ae);
+        cai
+            .addError("Exception in end() methd for action [" + action + "]",
+                ae);
       }
     }
   }
@@ -297,16 +295,12 @@ public class Interpreter  {
       try {
         action.end(ec, tagName);
       } catch (ActionException ae) {
-        switch (ae.getSkipCode()) {
-        case SKIP_CHILDREN:
-          // after end() is called there can't be any children
-          break;
-        }
-      } catch (Exception e) {
-        cai.addError("Exception in Action for tag [" + tagName + "]", e);
-        skip = (Pattern) pattern.clone();
-        skip.pop(); // induce the siblings to be skipped
-        // getLogger().info("Skip pattern set to [{}].", skip);
+        // at this point endAction, there is no point in skipping children as
+        // they have been already processed
+        cai.addError("ActionException in Action for tag [" + tagName + "]", ae);
+      } catch (RuntimeException e) {
+        // no point in setting skip
+        cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
       }
     }
   }
@@ -314,11 +308,11 @@ public class Interpreter  {
   public RuleStore getRuleStore() {
     return ruleStore;
   }
-  
+
   public void play(List<SaxEvent> eventList) {
     player.play(eventList);
   }
-  
+
   public void addEvents(List<SaxEvent> eventList) {
     if (player != null) {
       player.addEvents(eventList);
@@ -327,26 +321,27 @@ public class Interpreter  {
 }
 
 /**
- * When {@link Interpreter} class is used as the origin of an 
- * {@link ContextAwareImpl} instance, then XML locator information
- * is lost. This class preserves locator information (as a string).
+ * When {@link Interpreter} class is used as the origin of an
+ * {@link ContextAwareImpl} instance, then XML locator information is lost. This
+ * class preserves locator information (as a string).
  * 
  * @author ceki
  */
 class CAI_WithLocatorSupport extends ContextAwareImpl {
-  
+
   CAI_WithLocatorSupport(Interpreter interpreter) {
     super(interpreter);
   }
-  
+
   @Override
   protected Object getOrigin() {
     Interpreter i = (Interpreter) super.getOrigin();
     Locator locator = i.locator;
-    if(locator != null) {
-      return Interpreter.class.getName()+"@"+locator.getLineNumber()+":"+locator.getColumnNumber();
+    if (locator != null) {
+      return Interpreter.class.getName() + "@" + locator.getLineNumber() + ":"
+          + locator.getColumnNumber();
     } else {
-      return Interpreter.class.getName()+"@NA:NA";
+      return Interpreter.class.getName() + "@NA:NA";
     }
   }
 }

@@ -15,7 +15,6 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 
 public class FruitContextAction extends Action {
 
@@ -34,7 +33,7 @@ public class FruitContextAction extends Action {
       inError = true;
       addError(
         "Could not push context", oops);
-      throw new ActionException(SkipCode.SKIP_CHILDREN, oops);
+      throw new ActionException(oops);
     }
   }
 

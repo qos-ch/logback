@@ -5,7 +5,7 @@
 
   <isolate>
     <!-- badEnd throws an exception in the Action.end method -->
-    <badEnd>
+    <badEnd type="ActionException">
       <touch/>
     </badEnd> 
     <!-- should be skipped -->

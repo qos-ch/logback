@@ -155,6 +155,12 @@ public class IncludeActionTest {
     verifyConfig(3);
   }
 
+  @Test
+  public void errorInDoBegin() {
+    
+  }
+  
+  
   void verifyConfig(int expected) {
     assertEquals(expected, IncAction.beginCount);
     assertEquals(expected, IncAction.endCount);

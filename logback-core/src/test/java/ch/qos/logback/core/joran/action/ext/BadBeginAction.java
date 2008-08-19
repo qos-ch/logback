@@ -13,6 +13,7 @@ package ch.qos.logback.core.joran.action.ext;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
@@ -20,11 +21,30 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 public class BadBeginAction extends Action {
 
 
+  static String EXCEPTION_TYPE = "type";
+  static final int RUNTIME_EDXCEPTION = 0;
+  static final int ACTION_EXCEPTION = 1;
+  
+  int type;
+  
   public BadBeginAction() {
   }
 
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    throw new IllegalStateException("bad begin");
+  public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+    
+    String exType = attributes.getValue(EXCEPTION_TYPE);
+    type = RUNTIME_EDXCEPTION;
+    if("ActionException".equals(exType)) {
+      type = ACTION_EXCEPTION;
+    }
+    
+    switch(type) {
+    case ACTION_EXCEPTION: 
+      throw new ActionException();
+    default:
+      throw new IllegalStateException("bad begin");
+    }
+   
   }
 
   public void end(InterpretationContext ec, String name) {

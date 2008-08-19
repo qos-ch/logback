@@ -15,7 +15,6 @@ import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -58,7 +57,7 @@ public class MatcherAction extends Action {
       inError = true;
       addError("Could not attach matcher to JaninoEventEvaluator",
           oops);
-      throw new ActionException(SkipCode.SKIP_CHILDREN, oops);
+      throw new ActionException(oops);
     }
   }
 

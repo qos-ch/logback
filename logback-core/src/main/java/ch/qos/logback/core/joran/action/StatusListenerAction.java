@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.util.OptionHelper;
@@ -46,7 +45,7 @@ public class StatusListenerAction extends Action {
       inError = true;
       addError(
         "Could not create an StatusListener of type ["+className+"].", e);
-      throw new ActionException(SkipCode.SKIP_CHILDREN, e);
+      throw new ActionException(e);
     }
     
   }
