@@ -13,9 +13,11 @@ package ch.qos.logback.classic;
 import java.net.InetAddress;
 
 import junit.framework.TestCase;
+
+import org.slf4j.helpers.BogoPerf;
+
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
-import ch.qos.logback.classic.util.BogoPerf;
 import ch.qos.logback.core.appender.NOPAppender;
 
 public class LoggerPerfTest extends TestCase {
