@@ -19,28 +19,28 @@ package ch.qos.logback.core.joran.spi;
  */
 public class ActionException extends Exception {
 
+  
+  public enum SkipCode {
+    /**
+     * SKIP_CHILDREN signals the {@link Interpreter} to skip processing all the
+     * nested elements contained within the element causing this ActionException.
+     * 
+     * <p>It is the only recognized skipping mode in Joran.
+     */
+    SKIP_CHILDREN;
+  }
+  
   private static final long serialVersionUID = 2743349809995319806L;
 
-  /**
-   * SKIP_CHILDREN signals the {@link Interpreter} to skip processing all the
-   * nested elements contained within the element causing this ActionException.
-   */
-  public static final int SKIP_CHILDREN = 1;
 
-  /**
-   * SKIP_SIBLINGS signals the {@link Interpreter} to skip processing all the
-   * children of this element as well as all the siblings of this elements,
-   * including any children they may have.
-   */
-  public static final int SKIP_SIBLINGS = 2;
   final Throwable rootCause;
-  final int skipCode;
+  final SkipCode skipCode;
 
-  public ActionException(final int skipCode) {
+  public ActionException(final SkipCode skipCode) {
     this(skipCode, null);
   }
 
-  public ActionException(final int skipCode, final Throwable rootCause) {
+  public ActionException(final SkipCode skipCode, final Throwable rootCause) {
     this.skipCode = skipCode;
     this.rootCause = rootCause;
   }
@@ -49,7 +49,7 @@ public class ActionException extends Exception {
     return rootCause;
   }
 
-  public int getSkipCode() {
+  public SkipCode getSkipCode() {
     return skipCode;
   }
 }

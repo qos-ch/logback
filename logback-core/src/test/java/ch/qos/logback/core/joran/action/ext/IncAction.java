@@ -15,6 +15,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.ActionException.SkipCode;
 
 
 
@@ -39,7 +40,7 @@ public class IncAction extends Action {
     String val = attributes.getValue("increment");
     if(!"1".equals(val)) {
       errorCount++;
-      throw new ActionException(ActionException.SKIP_SIBLINGS);
+      throw new ActionException(SkipCode.SKIP_CHILDREN);
     }
   }
 
