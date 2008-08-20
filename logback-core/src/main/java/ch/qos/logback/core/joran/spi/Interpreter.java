@@ -114,23 +114,32 @@ public class Interpreter {
       String qName, Attributes atts) {
 
     String tagName = getTagName(localName, qName);
-
-    // System.out.println("startElement [" + tagName + "]");
-
     pattern.push(tagName);
 
-    List applicableActionList = getApplicableActionList(pattern, atts);
+    if (skip != null) {
+      // every startElement pushes an action list
+      pushEmptyActionList();
+      return;
+    }
 
+    List applicableActionList = getApplicableActionList(pattern, atts);
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
     } else {
-      actionListStack.add(EMPTY_LIST);
-
+      // every startElement pushes an action list
+      pushEmptyActionList();
       String errMsg = "no applicable action for [" + tagName
           + "], current pattern is [" + pattern + "]";
       cai.addError(errMsg);
     }
+  }
+  
+  /**
+   * This method is used to 
+   */
+  private void pushEmptyActionList() {
+    actionListStack.add(EMPTY_LIST);
   }
 
   public void characters(BodyEvent be) {
@@ -155,14 +164,13 @@ public class Interpreter {
   }
 
   private void endElement(String namespaceURI, String localName, String qName) {
+    // given that an action list is always pushed for every startElement, we need
+    // to always pop for every endElement
     List applicableActionList = (List) actionListStack.pop();
-    // System.out.println("endElement ["+getTagName(localName, qName)+"]");
-
+   
     if (skip != null) {
       if (skip.equals(pattern)) {
         skip = null;
-        // FIXME
-        // callEndAction(applicableActionList, getTagName(localName, qName));
       }
     } else if (applicableActionList != EMPTY_LIST) {
       callEndAction(applicableActionList, getTagName(localName, qName));
@@ -237,17 +245,9 @@ public class Interpreter {
       return;
     }
 
-    if (skip != null) {
-      // getLogger().debug("Skipping invoking begin() method for [{}].",
-      // pattern);
-      return;
-    }
-
     Iterator i = applicableActionList.iterator();
-
     while (i.hasNext()) {
       Action action = (Action) i.next();
-
       // now let us invoke the action. We catch and report any eventual
       // exceptions
       try {
