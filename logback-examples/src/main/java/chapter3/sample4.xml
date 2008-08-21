@@ -10,12 +10,9 @@
 		</layout>
 	</appender>
 
-	<logger name="chapter3">
-		<level value="INFO" />
-	</logger>
+	<logger name="chapter3" level="INFO" />
 
-	<root>
-		<level value="OFF" />
+	<root level="OFF">
 		<appender-ref ref="STDOUT" />
 	</root>
 

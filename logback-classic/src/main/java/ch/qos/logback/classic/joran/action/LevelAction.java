@@ -1,13 +1,12 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
@@ -15,17 +14,18 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-
+/**
+ * Action to handle the <level> element nested within <logger> element. 
+ * 
+ * <p>This action is <b>deprecated</b>. Use the level attribute within the logger
+ * element.
+ * 
+ * @author Ceki Gulcu
+ */
 public class LevelAction extends Action {
-
-  static final String VALUE_ATTR = "value";
-  static final String CLASS_ATTR = "class";
-  static final String INHERITED = "INHERITED";
-  static final String NULL = "NULL";
-  static final String EMPTY_STR = "";
-  static final Class[] ONE_STRING_PARAM = new Class[] {String.class};
 
   boolean inError = false;
 
@@ -42,11 +42,11 @@ public class LevelAction extends Action {
 
     String loggerName = l.getName();
 
-    String levelStr = attributes.getValue(VALUE_ATTR);
+    String levelStr = attributes.getValue(ActionConst.VALUE_ATTR);
     //addInfo("Encapsulating logger name is [" + loggerName
     //    + "], level value is  [" + levelStr + "].");
 
-    if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
+    if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
       l.setLevel(null);
     } else {
       l.setLevel(Level.toLevel(levelStr, Level.DEBUG));

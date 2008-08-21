@@ -25,9 +25,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * Most of the work for configuring log4j is done by Actions.
  *
- * Methods of an Action are invoked while an XML file is parsed through.
+ * <p>Methods of an Action are invoked while an XML file is parsed through.
  *
- * This class is largely copied from the relevant class in the commons-digester
+ * <p>This class is largely inspired from the relevant class in the commons-digester
  * project of the Apache Software Foundation.
  *
  * @author Craig McClanahan
@@ -42,6 +42,7 @@ public abstract class Action extends ContextAwareBase {
   public static final String FILE_ATTRIBUTE = "file";
   public static final String CLASS_ATTRIBUTE = "class";
   public static final String PATTERN_ATTRIBUTE = "pattern";
+  
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
   /**

@@ -32,11 +32,14 @@ public class MyApp3 {
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
+      // the context was probably already configured by default configuration
+      // rules
       lc.shutdownAndReset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      StatusPrinter.print(lc);
+      je.printStackTrace();
     }
+    StatusPrinter.printIfErrorsOccured(lc);
 
     logger.info("Entering application.");
 
