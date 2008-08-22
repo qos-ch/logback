@@ -487,8 +487,8 @@ public class MyApp2 {
   <p>Setting the level of a logger or root logger is as simple as
   declaring it and setting its level, as the next example
   illustrates. Suppose we are no longer interested in seeing any DEBUG
-  level logs from any component belonging to the chapter3 package. The
-  following configuration file shows how to achieve that.
+  messages from any component belonging to the "chapter3" package. The
+  following configuration file shows how.
   </p>
 
 <em>Example 3.<span class="autoEx"/>: Setting the level of a logger (logback-examples/src/main/java/chapter3/sample2.xml)</em>
@@ -500,13 +500,11 @@ public class MyApp2 {
     &lt;/layout>
   &lt;/appender>
 
-  <b class="red">&lt;logger name="chapter3" level="INFO"/></b>
+  <b>&lt;logger name="chapter3" level="INFO"/></b>
 
-  
-  &lt;root>		
-    &lt;!-- The following level element is not necessary since the -->
-    &lt;!-- level of the root level is set to DEBUG by default.    -->
-    &lt;level value="DEBUG" />
+  &lt;!-- Strictly speaking, the level attribute is not necessary since --&gt;
+  &lt;!-- the level of the root level is set to DEBUG by default.       --&gt;
+  &lt;root level="DEBUG">		
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>  
   
@@ -537,48 +535,40 @@ the level of the <em>chapter3.Foo</em> logger to <code>DEBUG</code>.
     &lt;/layout>
   &lt;/appender>
 
-  <b>&lt;logger name="chapter3">
-    &lt;level value="INFO" />
-  &lt;/logger>
+  <b>&lt;logger name="chapter3" level="INFO" />
+  &lt;logger name="chapter3.Foo" level="DEBUG" /></b>
 
-  &lt;logger name="chapter3.Foo">
-    &lt;level value="DEBUG" />
-  &lt;/logger></b>
-
-  &lt;root>
-    &lt;!-- The following level element is not necessary since the -->
-    &lt;!-- level of the root level is set to DEBUG by default.    -->
-    &lt;level value="DEBUG" />
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 
 &lt;/configuration></pre></div>
 
-<p>Running <code>MyApp2</code> with this configuration file will
-result in the following output on the console:
-</p>
+  <p>Running <code>MyApp2</code> with this configuration file will
+  result in the following output on the console:
+  </p>
 
 <div class="source"><pre>17:39:27.593 [main] INFO  chapter3.MyApp2 - Entering application.
 17:39:27.593 [main] DEBUG chapter3.Foo - Did it again!
 17:39:27.593 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
 
-<p>
-After <code>JoranConfigurator</code> configures logback using the <em>sample3.xml</em> 
-file, the logger settings, more specifically their levels, are summarized in the following table. 
-</p>
+   <p>After <code>JoranConfigurator</code> configures logback using
+   the <em>sample3.xml</em> file, the logger settings, more
+   specifically their levels, are summarized in the following table.
+   </p>
 
-<table>
+<table class="bodyTable">
 	<tr>
 		<th>Logger name</th>
 		<th>Assigned Level</th>
 		<th>Effective Level</th>
 	</tr>
-	<tr>
-		<td>root</td>
-		<td><code>DEBUG</code></td>
-		<td><code>DEBUG</code></td>
-	</tr>
-		<tr>
+  <tr>
+    <td>root</td>
+    <td><code>DEBUG</code></td>
+    <td><code>DEBUG</code></td>
+  </tr>
+  <tr class="alt">
 		<td>chapter3</td>
 		<td><code>INFO</code></td>
 		<td><code>INFO</code></td>
@@ -588,25 +578,27 @@ file, the logger settings, more specifically their levels, are summarized in the
 		<td><code>null</code></td>
 		<td><code>INFO</code></td>
 	</tr>
-		<tr>
+  <tr class="alt">
 		<td>chapter3.Foo</td>
 		<td><code>DEBUG</code></td>
 		<td><code>DEBUG</code></td>
 	</tr>
 </table>
 
-<p>It follows that the two logging statements of level
-<code>INFO</code> in the <code>MyApp2</code> class are enabled while
-the <code>debug</code> statement in <code>Foo.doIt()</code> method
-will also print without hindrance. Note that the level of the root
-logger is always set to a non-null value, which is <code>DEBUG</code>
-by default.  One rather important point to remember is that the
-logger-level filter depends on the effective level of the logger being
-invoked, not the level of the logger where the appenders are
-attached. The configuration file <em>sample4.xml</em> is a case in
-point:
-</p>
-<em>Example 3.<span class="autoEx"/>: Logger level sample (logback-examples/src/main/java/chapter3/sample4.xml)</em>
+  <p>It follows that the two logging statements of level
+  <code>INFO</code> in the <code>MyApp2</code> class as well as the
+  DEBUG messages in <code>Foo.doIt()</code> are all enabled. Note that
+  the level of the root logger is always set to a non-null value,
+  which is DEBUG by default.  One rather important point to remember
+  is that the <a
+  href="architecture.html#basic_selection">basic-selection rule</a>
+  depends on the effective level of the logger being invoked, not the
+  level of the logger where appenders are attached. The configuration
+  file <em>sample4.xml</em> is a case in point:
+  </p>
+
+  <em>Example 3.<span class="autoEx"/>: Logger level sample
+  (logback-examples/src/main/java/chapter3/sample4.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -618,81 +610,78 @@ point:
     &lt;/layout>
   &lt;/appender>
 
-  <b>&lt;logger name="chapter3">
-    &lt;level value="INFO" />
-  &lt;/logger></b>
+  <b>&lt;logger name="chapter3" level="INFO" /></b>
 
-  &lt;root>
-    <b>&lt;level value="OFF" /></b>
+  &lt;root <b>level="OFF"</b>>
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 
 &lt;/configuration></pre></div>
 
-<p>
-The following table lists the loggers and their level setting after applying the 
-<em>sample4.xml</em> configuration file.  
-</p>
+  <p>The following table lists the loggers and their level setting
+  after applying the <em>sample4.xml</em> configuration file.
+  </p>
 
-<table>
-	<tr>
-		<th>Logger name</th>
-		<th>Assigned Level</th>
-		<th>Effective Level</th>
-	</tr>
-	<tr>
-		<td>root</td>
-		<td><code>OFF</code></td>
-		<td><code>OFF</code></td>
-	</tr>
-		<tr>
-		<td>chapter3</td>
-		<td><code>INFO</code></td>
-		<td><code>INFO</code></td>
-	</tr>
-		<tr>
-		<td>chapter3.MyApp2</td>
-		<td><code>null</code></td>
-		<td><code>INFO</code></td>
-	</tr>
-		<tr>
-		<td>chapter3.Foo</td>
-		<td><code>null</code></td>
-		<td><code>INFO</code></td>
-	</tr>
-</table>
+  <table class="bodyTable">
+    <tr>
+      <th>Logger name</th>
+      <th>Assigned Level</th>
+      <th>Effective Level</th>
+    </tr>
+    <tr>
+      <td>root</td>
+      <td><code>OFF</code></td>
+      <td><code>OFF</code></td>
+    </tr>
+    <tr class="alt">
+      <td>chapter3</td>
+      <td><code>INFO</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+    <tr>
+      <td>chapter3.MyApp2</td>
+      <td><code>null</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+    <tr class="alt">
+      <td>chapter3.Foo</td>
+      <td><code>null</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+  </table>
 
-<p>The ConsoleAppender named <em>STDOUT</em>, the only configured
-appender in <em>sample4.xml</em>, is attached to the root logger whose
-level is set to <code>OFF</code>. However, running MyApp2 with
-configuration script <em>sample4.xml</em> will output:
-</p>
+  <p>The ConsoleAppender named <em>STDOUT</em>, the only configured
+  appender in <em>sample4.xml</em>, is attached to the root logger
+  whose level is set to <code>OFF</code>. However, running MyApp2 with
+  configuration script <em>sample4.xml</em> will output:
+  </p>
 
-<div class="source"><pre>17:52:23.609 [main] INFO  chapter3.MyApp2 - Entering application.
-17:52:23.609 [main] INFO  chapter3.MyApp2 - Exiting application.</pre></div>
+  <div class="source"><pre>17:52:23.609 [main] INFO chapter3.MyApp2 -
+Entering application.  17:52:23.609 [main] INFO chapter3.MyApp2 -
+Exiting application.</pre></div>
 
-<p>Thus, the level of the root logger has no apparent effect because
-the loggers in <code>chapter3.MyApp2</code> and
-<code>chapter3.Foo</code> classes, namely <em>chapter3.MyApp2</em> and
-<em>chapter3.Foo</em>, inherit their level from the <em>chapter3</em>
-logger which has its level set to <code>INFO</code>.  As noted
-previously, the <em>chapter3</em> logger exists by virtue of its
-declaration in the configuration file - even if the Java source code
-does not directly refer to it.
-</p>
+  <p>Thus, the level of the root logger has no apparent effect because
+  the loggers in <code>chapter3.MyApp2</code> and
+  <code>chapter3.Foo</code> classes, namely <em>chapter3.MyApp2</em>
+  and <em>chapter3.Foo</em>, inherit their level from the
+  <em>chapter3</em> logger which has its level set to
+  <code>INFO</code>.  As noted previously, the <em>chapter3</em>
+  logger exists by virtue of its declaration in the configuration file
+  - even if the Java source code does not directly refer to it.
+  </p>
 
-<h4>Configuring Appenders</h4>
+  <h4>Configuring Appenders</h4>
 
-<p>
-Appenders are configured using <em>appender</em> elements. These elements admit 
-two attributes <em>name</em> and <em>class</em> both of which are mandatory. 
-The <em>name</em> attribute specifies the name of the appender whereas 
-the <em>class</em> attribute specifies the fully qualified name of the class 
-of which the named appender will be an instance. 
-The <em>appender</em> may contain zero or one <em>layout</em> elements and 
-zero or more <em>filter</em> elements. Appart from these two basic elements, 
-<em>appender</em> elements may contain any element that corresponds to a setter
-method of the appender class, to configure the appender's options.
+  <p>Appenders are configured using <em>appender</em> elements. These
+  elements admit two attributes <em>name</em> and <em>class</em> both
+  of which are mandatory.  The <em>name</em> attribute specifies the
+  name of the appender whereas the <em>class</em> attribute specifies
+  the fully qualified name of the class of which the named appender
+  will be an instance.  The <em>appender</em> may contain zero or one
+  <em>layout</em> elements and zero or more <em>filter</em>
+  elements. Appart from these two basic elements, <em>appender</em>
+  elements may contain any element that corresponds to a setter method
+  of the appender class, to configure the appender's options.
 </p>
 
 <p>
