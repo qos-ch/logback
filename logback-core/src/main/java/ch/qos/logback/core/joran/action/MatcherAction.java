@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,11 +23,7 @@ public class MatcherAction extends Action {
   final static String REGEX = "regex";
   private boolean inError = false;
   
-  /**
-   * Instantiates an appender of the given class and sets its name.
-   * 
-   * The appender thus generated is placed in the ExecutionContext appender bag.
-   */
+
   public void begin(InterpretationContext ec, String localName, Attributes attributes)
       throws ActionException {
     

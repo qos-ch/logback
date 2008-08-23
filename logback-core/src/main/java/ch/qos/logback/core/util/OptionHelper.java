@@ -172,7 +172,7 @@ public class OptionHelper {
           }
 
           // if replacement is still null, use the defaultReplacement which
-          // still be null
+          // can be null as well
           if (replacement == null) {
             replacement = defaultReplacement;
           }

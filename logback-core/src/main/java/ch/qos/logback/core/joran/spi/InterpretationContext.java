@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * 
- * The ExecutionContext contains the contextual state of a Joran parsing
+ * An InterpretationContext contains the contextual state of a Joran parsing
  * session. {@link Action} objects depend on this context to exchange 
  * and store information.
  * 
@@ -134,8 +134,6 @@ public class InterpretationContext extends ContextAwareBase {
       addSubstitutionProperty(key, propertyMap.get(key));
     }
   }
-
-  
 
   public String getSubstitutionProperty(String key) {
     return context.getProperty(key);

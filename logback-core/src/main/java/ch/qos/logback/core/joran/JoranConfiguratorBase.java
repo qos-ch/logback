@@ -84,12 +84,12 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   @Override
   protected void buildInterpreter() {
     super.buildInterpreter();
-    Map<String, Object> omap = interpreter.getExecutionContext().getObjectMap();
+    Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
   }
 
   public InterpretationContext getExecutionContext() {
-    return interpreter.getExecutionContext();
+    return interpreter.getInterpretationContext();
   }
 }

@@ -82,7 +82,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
     this.interpreter = new Interpreter(context, rs);
-    InterpretationContext ec = interpreter.getExecutionContext();
+    InterpretationContext ec = interpreter.getInterpretationContext();
     ec.setContext(context);
     addImplicitRules(interpreter);
   }

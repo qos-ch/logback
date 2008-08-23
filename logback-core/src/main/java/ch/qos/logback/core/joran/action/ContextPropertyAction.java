@@ -12,7 +12,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 public class ContextPropertyAction extends PropertyAction {
   
   /**
-   * Add all the properties found in the argument named 'props' to an ExecutionContext.
+   * Add all the properties found in the argument named 'props' to an InterpretationContext.
    */
   public void setProperties(InterpretationContext ec, Properties props) {
     // TODO : test this method

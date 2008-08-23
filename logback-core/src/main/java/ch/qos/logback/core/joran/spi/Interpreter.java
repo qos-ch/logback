@@ -98,7 +98,15 @@ public class Interpreter {
     player = new EventPlayer(this);
   }
 
+  
+  /**
+   * @deprecated replaced by {@link #getInterpretationContext()}
+   */
   public InterpretationContext getExecutionContext() {
+    return getInterpretationContext();
+  }
+  
+  public InterpretationContext getInterpretationContext() {
     return ec;
   }
 

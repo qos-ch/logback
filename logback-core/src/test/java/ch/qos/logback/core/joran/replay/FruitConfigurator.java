@@ -33,7 +33,7 @@ public class FruitConfigurator extends GenericConfigurator {
   final public void doConfigure(final List<SaxEvent> eventList)
       throws JoranException {
     buildInterpreter();
-    interpreter.getExecutionContext().pushObject(ff);
+    interpreter.getInterpretationContext().pushObject(ff);
     EventPlayer player = new EventPlayer(interpreter);
     player.play(eventList);
   }
