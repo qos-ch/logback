@@ -1,9 +1,9 @@
 <configuration>
 
-	<substitutionProperty name="user.home.dir" value="/home/sebastien" />
+	<substitutionProperty name="USER_HOME" value="/home/sebastien" />
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>${user.home.dir}/myApp.log</file>
+		<file>${USER_HOME}/myApp.log</file>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>%msg%n</Pattern>
 		</layout>

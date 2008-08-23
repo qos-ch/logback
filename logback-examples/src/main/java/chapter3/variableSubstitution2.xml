@@ -1,18 +1,9 @@
 <configuration>
 
-	<appender name="FILE"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${user.home.dir}/myApp.log</file>
-		<rollingPolicy
-			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>
-				myApp-%d{yyyy-MM-dd-HH}.log
-			</FileNamePattern>
-		</rollingPolicy>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>${USER_HOME}/myApp.log</file>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>
-				%date %level [%thread] %logger{10} [%file : %line] %msg%n
-			</Pattern>
+			<Pattern>%msg%n</Pattern>
 		</layout>
 	</appender>
 
