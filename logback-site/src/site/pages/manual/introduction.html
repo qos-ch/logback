@@ -69,6 +69,10 @@ prefix='../';
     <em>logback-classic.jar</em> on the classpath.
     </p>
 
+    <p>The <em>logback-*.jar</em> files are part of the logback
+    distribution whereas <em>slf4j-api-${slf4j.version}.jar</em> ships
+    with <a href="http://www.slf4j.org">SLF4J</a>, a separate project.
+    </p>
 
     <p>Let us now begin experimenting with logback.</p>
 
@@ -88,24 +92,24 @@ public class HelloWorld1 {
   }
 }</pre></div>
 
-    <p>
-      The <code>HelloWorld</code> class is defined in the
-      <code>chapter1</code> package. It starts by importing the <code>Logger</code>
-      and <code>LoggerFactory</code>
-      classes defined in the SLF4J API, more specifically within the <code>org.slf4j</code>
-      package.
+    <p><code>HelloWorld</code> class is defined in the
+    <code>chapter1</code> package. It starts by importing the <a
+    href="http://slf4j.org/api/org/slf4j/Logger.html"><code>Logger</code></a>
+    and <a
+    href="http://slf4j.org/api/org/slf4j/LoggerFactory.html"><code>LoggerFactory</code></a>
+    classes defined in the SLF4J API, more specifically within the
+     <code>org.slf4j</code> package.
     </p>
 
 
-    <p>
-      On the first line of the main() method, the variable named
-      <code>logger</code> is assigned a <code>Logger</code> instance
-      retrieved by invoking the static <code>getLogger</code> method
-      from the <code>LoggerFactory</code> class.  This logger is named
-      "chapter1.HelloWorld1". The main method proceeds to call the
-      <code>debug</code> method of this logger passing "Hello World"
-      as an argument.  We say that the main method contains a logging
-      statement of level DEBUG with the message "Hello world".
+    <p>On the first line of the main() method, the variable named
+    <code>logger</code> is assigned a <code>Logger</code> instance
+    retrieved by invoking the static <code>getLogger</code> method
+    from the <code>LoggerFactory</code> class.  This logger is named
+    "chapter1.HelloWorld1". The main method proceeds to call the
+    <code>debug</code> method of this logger passing "Hello World" as
+    an argument.  We say that the main method contains a logging
+    statement of level DEBUG with the message "Hello world".
     </p>
 
     <p>Note that the above example does not reference any logback
@@ -130,14 +134,12 @@ public class HelloWorld1 {
 
 <div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</pre></div>
 
-    <p>
-      Logback can report information about its internal state
-      using a built-in status system. Important events occuring
-      during logback's lifetime can be accessed through a
-      <code>StatusManager</code>. For the time being, let us instruct logback to print its
-      internal state. This is accomplished by a static method in
-      the <code>LoggerStatusPrinter</code>
-      class.
+    <p>Logback can report information about its internal state using a
+    built-in status system. Important events occuring during logback's
+    lifetime can be accessed through a <code>StatusManager</code>. For
+    the time being, let us instruct logback to print its internal
+    state. This is accomplished by a static method in the
+    <code>LoggerStatusPrinter</code> class.
     </p>
 
 <em>Example 1.2: Printing Logger Status (<a href="../xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
@@ -164,11 +166,16 @@ public class HelloWorld2 {
    <p>Running the <code>HelloWorld2</code> application will produce
    the following output:</p>
 
-<div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld2 - Hello world.
-|-INFO in ch.qos.logback.classic.BasicConfigurator@1c1ea29 - Setting up default configuration.</pre></div>
+<div class="source"><pre>12:49:22.203 [main] DEBUG chapter1.HelloWorld2 - Hello world.
+12:49:22,078 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Setting up default configuration.
+</pre></div>
 
 
-  <p>Logback explains that it configured itself using its default
+  <p>Logback explains that having failed to find the
+  <em>logback-test.xml</em> and <em>logback.xml</em> configuration
+  files (discussed later), it configured itself using its default
   policy, which is a basic <code>ConsoleAppender</code>.  An
   <code>Appender</code> is a class that can be seen as an output
   destination. Appenders exist for many different destinations
@@ -176,6 +183,9 @@ public class HelloWorld2 {
   more. Users can also easily create their own Appenders as
   appropriate for their specific situation.
   </p>
+
+  <p>Note that in case of errors, logback will automatically print its
+  internal state on the console.</p>
 
   <p>The previous examples are rather simple. Actual logging in a
   larger application would not be that different. The general pattern
