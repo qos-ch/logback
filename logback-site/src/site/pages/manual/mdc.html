@@ -50,12 +50,11 @@
    	the SLF4J API: Mapped Diagnostic Contexts (MDC).
 		</p>
 		
-		<p>
-			To uniquely stamp each request, the user puts contextual
-			information into the <code><a
-			href="http://www.slf4j.org/api/org/slf4j/MDC.html">MDC</a></code>,
-			the abbreviation of Mapped Diagnostic Context.  The public
-			interface of the MDC class is shown below.
+		<p>To uniquely stamp each request, the user puts contextual
+		information into the <code><a
+		href="http://www.slf4j.org/api/org/slf4j/MDC.html">MDC</a></code>,
+		the abbreviation of Mapped Diagnostic Context.  The salient parts
+		of the MDC class is shown below.
 		</p>
 
 <div class="source"><pre>package org.slf4j;
@@ -73,9 +72,6 @@ public class MDC {
 
   //Clear all entries in the MDC.
   <b>public static void clear();</b>
-
-  //Returns the keys in the MDC as a Set. The returned value can be null.
-  <b>public static Set&lt;String> getKeys();</b>
 }</pre></div>
 
 		<p>The <code>MDC</code> class contains only static methods.  It
@@ -615,6 +611,28 @@ public class UserServletFilter implements Filter {
   are unaffected. Furthermore, any given thread will contain correct
   MDC data any point in time.</p>
 		
+
+
+  <h3>MDC And Managed Threads</h3>
+
+  <p>A copy of mapped diagnostic context can not always be inherited
+  by worker thread from the initiating thread. This is the case when
+  <code>java.util.concurrent.Executors</code> is used for thread
+  management. For instance, <code>newCachedThreadPool</code> method
+  creates a <code>ThreadPoolExecutor</code> and like other thread
+  pooling code it has intricate thread creation logic.
+  </p>
+
+  <p>In such cases, it is recommended that
+  <code>MDC.getCopyOfContextMap()</code> is invoked on the original
+  (master) thread before submitting a task to the executor.  When the
+  task runs, as its first action, it should invoke
+  <code>MDC.setContextMapValues()</code> to associate the stored copy
+  of the orinal MDC values with the new <code>Executor</code> managed
+  thread.
+  </p>
+
+
 <script src="../templates/footer.js"></script>
 </div>
 </body>

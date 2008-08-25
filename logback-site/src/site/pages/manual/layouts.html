@@ -1414,12 +1414,16 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 
    	<a name="ClassicHTMLLayout"></a>
 
-		<h3>HTMLLayout</h3>
-		
-    <p><a href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
-    <code>HTMLLayout</code></a> outputs logging events in an HTML
-    table where each row of the table corresponds to a logging
-    event.</p>
+    <h2>Generating logs in HTML format</h2>
+	
+	  <p>Logback provides a special <a
+	  href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a>,
+	  namely <a
+	  href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
+	  <code>HTMLLayout</code></a>, to generate logs directly in HTML
+	  format. <code>HTMLLayout</code> outputs logging events in an HTML
+	  table where each row of the table corresponds to a logging
+	  event.</p>
 		
 		<p>Here is a sample output produced by <code>HTMLLayout</code>
 		using its default CSS stylesheet:</p>
@@ -1438,11 +1442,11 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		<code>PatternLayout</code> with <code>HTMLLayout</code> is that
 		conversion specifiers should not be separated by space characters
 		or more generally by literal text. Each specifier found in the
-		pattern willa result in a separate column, in particular for each
-		literal text in the pattern, wasting valuable real estate on your
-		screen.
-    </p>
-
+		pattern will result in a separate column.  Likewise a separate
+		column will be generated for each block of literal text found in
+		the pattern potentially wasting valuable real estate on your
+		screen.</p>
+     
     <p>Here is simple but functional configuration file illustrating
     the use of <code>HTMLLayout</code>.
     </p>
@@ -1488,18 +1492,19 @@ public class TrivialMain {
 
     <h3>Stack traces</h3>
 
-		<p> If you use the <em>%em</em> conversion word, to display stack
-		traces, a table column will be created to display exception stack
-		traces. In most cases the column will be empty, wasting screen
+		<p> If you use the <em>%em</em> conversion word to display stack
+		traces, a table column will be created to display stack traces. In
+		most cases the column will be empty, wasting screen
 		real-estate. Moreover, printing a stack trace on a separate column
-		does yield very readable results. Fortunately, the <em>%ex</em>
-		conversion word is not the only way to display stack traces.
+		does not yield very readable results. Fortunately, the
+		<em>%ex</em> conversion word is not the only way to display stack
+		traces.
 		</p>
 
 		<p>A better solution is available through implementations of
 		<code>IThrowableRenderer</code> interface.  Such an implementation
-		can assigned to <code>HTMLLayout</code> to manage the display data
-		related to exceptions. By default, a
+		can be assigned to <code>HTMLLayout</code> to manage the display
+		data related to exceptions. By default, a
 		<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
 			<code>DefaultThrowableRenderer</code></a> is assigned to each
 			<code>HTMLLayout</code> instance. It writes exceptions on a
@@ -1508,12 +1513,12 @@ public class TrivialMain {
 		</p>
 
 		<p>If for some reason, you still wish to use the <em>%ex</em>
-		pattern, then you can specify
-			<a href="../xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">
-			<code>NOPThrowableRenderer</code></a> in the configuration file
-			in order to disable displaying a separate row for the stack
-			trace. We don't have the faintest idea why you would want to do
-			that, but if you did, you could.
+		pattern, then you can specify <a
+		href="../xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">
+		<code>NOPThrowableRenderer</code></a> in the configuration file in
+		order to disable displaying a separate row for the stack trace. We
+		don't have the faintest idea why you would want to do that, but if
+		you wished, you could.
 		</p>
 
     <h3>CSS</h3>
@@ -1522,8 +1527,8 @@ public class TrivialMain {
     is controlled through a Cascading Style Sheet (CSS). In the
     absence of specific instructions, <code>HTMLLayout</code> will
     default to its internal CSS. However, your can instruct
-    <code>HTMLLayout</code> you use an external CSS file. For this
-    purpose, a <code>cssBuilder</code> element can be nested within a
+    <code>HTMLLayout</code> to use an external CSS file. For this
+    purpose a <code>cssBuilder</code> element can be nested within a
     <code>&lt;layout&gt;</code> element, as shown below.
 		</p>
 
@@ -1600,268 +1605,249 @@ public class TrivialMain {
 		<a name="AccessPatternLayout"></a>
 
 		<h3>PatternLayout</h3>
-		<p> <a href="../xref/ch/qos/logback/access/PatternLayout.html">
+
+		<p><a href="../xref/ch/qos/logback/access/PatternLayout.html">
 		<code>PatternLayout</code></a> in logback-access can be configured
-		in the same way as it's classic counterpart, with the notable
-		exception of the available conversion specifiers, as appropriate
-		for HTTP servlet request and response.
-		</p>
+		much in the same way as its classic counterpart. However it
+		features additional conversion specifiers suited for logging
+		particular bits of information availalbe only in HTTP servlet
+		requests and HTTP servlet responses.
+    </p>
 
 		<p>Below is a list of conversion specifiers for 
 		<code>PatternLayout</code> in logback-access.</p>
 		
 		<table  class="bodyTable" border="0" CELLPADDING="8">
-			<th align="center">Conversion Word</th>
-			<th align="center">Effect</th>
-
-		<tr class="a">
-			<td align="center"><b>a / remoteIP</b></td>
-			<td>
-				<p>
-					Remote IP address.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td align="center"><b>A / localIP</b></td>
-			<td>
-				<p>
-					Local IP address.
-				</p>
-			</td>
-		</tr>		
-		<tr class="a">
-			<td align="center"><b>b / B / byteSent</b></td>
-			<td>
-				<p>
-					Response's content length.
-				</p>
-			</td>
-		</tr>				
-		<tr class="b">
-			<td align="center"><b>h / clientHost</b></td>
-			<td>
-				<p>
-					Remote host.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td align="center"><b>H / protocol</b></td>
-			<td>
-				<p>
-					Request protocol.
-				</p>
-			</td>
-		</tr>
-    <tr class="b">
-      <td align="center"><b>l</b></td>
-			<td>
-				<p>
-					Remote log name. In logback-access, this converter always
-					returns the value "-".
-				</p>
-			</td>
-		</tr>
-
-		<tr class="a">
-			<td align="center"><b>reqParameter{paramName}</b></td>
-			<td>
-				<p>
-					Parameter of the response.
-				</p>
-				<p>This conversion word takes the first option in braces and looks
-				for the corresponding parameter in the request.</p>
-				<p><b>%reqParameter{input_data}</b> 
-				displays the corresponding parameter.</p>
-			</td>
-		</tr>		
-		<tr class="b">
-			<td align="center"><b>i{header} / header{header}</b></td>
-			<td>
-				<p>
-					Request header.
-				</p>
-				<p>This conversion word takes the first option in braces and looks
-				for the corresponding header in the request.</p>
-				<p><b>%header{Referer}</b> displays the referer of the request.</p>
-        <p>
-        If no option is specified, it displays every available header.
-        </p>
-			</td>
-		</tr>	
-		<tr class="a">
-			<td align="center"><b>m / requestMethod</b></td>
-			<td>
-				<p>
-					Request method.
-				</p>
-			</td>
-		</tr>		
-		<tr class="b">
-			<td align="center"><b>r / requestURL</b></td>
-			<td>
-				<p>
-					URL requested.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td align="center"><b>s / statusCode</b></td>
-			<td>
-				<p>
-					Status code of the request.
-				</p>
-			</td>
-		</tr>		
-		<tr class="b">
-			<td align="center"><b>t / date</b></td>
-			<td>
-					<p>
-						Used to output the date of the logging event.
-						The date conversion specifier may be followed by
-						a set of braces containing a date and time
-						pattern strings used by
-						<code>java.text.SimpleDateFormat</code>
-						.
-						<em>ABSOLUTE</em>
-						,
-						<em>DATE</em>
-						or
-						<em>ISO8601</em>
-						can also be used.
+      <tr>
+        <th align="center">Conversion Word</th>
+        <th align="center">Effect</th>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>a / remoteIP</b></td>
+        <td>
+          <p>
+            Remote IP address.
+          </p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>A / localIP</b></td>
+        <td>
+          <p>
+            Local IP address.
+          </p>
+        </td>
+      </tr>		
+      <tr class="a">
+        <td align="center"><b>b / B / byteSent</b></td>
+        <td>
+          <p>
+            Response's content length.
+          </p>
+        </td>
+      </tr>				
+      <tr class="b">
+        <td align="center"><b>h / clientHost</b></td>
+        <td>
+          <p>
+            Remote host.
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>H / protocol</b></td>
+        <td>
+          <p>
+            Request protocol.
+          </p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>l</b></td>
+        <td>
+          <p>
+            Remote log name. In logback-access, this converter always
+            returns the value "-".
+          </p>
+        </td>
+      </tr>
+      
+      <tr class="a">
+        <td align="center"><b>reqParameter{paramName}</b></td>
+        <td>
+          <p>
+            Parameter of the response.
+          </p>
+          <p>This conversion word takes the first option in braces and looks
+          for the corresponding parameter in the request.</p>
+          <p><b>%reqParameter{input_data}</b> 
+          displays the corresponding parameter.</p>
+        </td>
+      </tr>		
+      <tr class="b">
+        <td align="center"><b>i{header} / header{header}</b></td>
+        <td>
+          <p>
+            Request header.
+          </p>
+          <p>This conversion word takes the first option in braces and looks
+          for the corresponding header in the request.</p>
+          <p><b>%header{Referer}</b> displays the referer of the request.</p>
+          <p>
+            If no option is specified, it displays every available header.
+          </p>
+        </td>
+      </tr>	
+      <tr class="a">
+        <td align="center"><b>m / requestMethod</b></td>
+        <td>
+          <p>
+            Request method.
+          </p>
+        </td>
+      </tr>		
+      <tr class="b">
+        <td align="center"><b>r / requestURL</b></td>
+        <td>
+          <p>
+            URL requested.
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>s / statusCode</b></td>
+        <td>
+          <p>
+            Status code of the request.
+          </p>
+        </td>
+      </tr>		
+      <tr class="b">
+        <td align="center"><b>t / date</b></td>
+        <td>
+          <p>Used to output the date of the logging event.  The date
+          conversion specifier may be followed by a set of braces
+          containing a date and time pattern strings used by
+          <code>java.text.SimpleDateFormat</code>.  <em>ABSOLUTE</em>,
+          <em>DATE</em> or <em>ISO8601</em> are also valid values.
 					</p>
-					<p>
-						For example,
-						<b>%d{HH:mm:ss,SSS}</b>
-						,
-						<b>
-							%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}
-						</b>
-						or
-						<b>%d{DATE}</b>
-						. If no date format specifier is given then
-						ISO8601 format is assumed.
+					<p>For example, <b>%d{HH:mm:ss,SSS}</b>,
+					<b>%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}</b> or
+					<b>%d{DATE}</b>.  If no date format specifier is given then
+					ISO8601 format is assumed.
 					</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td align="center"><b>u / user</b></td>
-			<td>
-				<p>
-					Remote user.
-				</p>
-			</td>
-		</tr>		
-		<tr class="b">
-			<td align="center"><b>U / requestURI</b></td>
-			<td>
-				<p>
-					Requested URI.
-				</p>
-			</td>
-		</tr>		
-		<tr class="a">
-			<td align="center"><b>v / server</b></td>
-			<td>
-				<p>
-					Server name.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td align="center"><b>localPort</b></td>
-			<td>
-				<p>
-					Local port.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td align="center"><b>reqAttribute{attributeName}</b></td>
-			<td>
-				<p>
-					Attribute of the request.
-				</p>
-				<p>This conversion word takes the first option in braces and looks
-				for the corresponding attribute in the request.</p>
-				<p><b>%reqAttribute{SOME_ATTRIBUTE}</b> 
-				displays the corresponding attribute.</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td align="center"><b>reqCookie{cookie}</b></td>
-			<td>
-				<p>
-					Request cookie.
-				</p>
-				<p>This conversion word takes the first option in braces and looks
-				for the corresponding cookie in the request.</p>
-				<p><b>%cookie{COOKIE_NAME}</b> displays corresponding cookie.</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td align="center"><b>responseHeader{header}</b></td>
-			<td>
-				<p>
-					Header of the response.
-				</p>
-				<p>This conversion word takes the first option in braces and looks
-				for the corresponding header in the response.</p>
-				<p><b>%header{Referer}</b> displays the referer of the response.</p>
-			</td>
-		</tr>
-    <tr class="b">
-      <td align="center"><b>requestContent</b></td>
-      <td>
-        <p>
-          This conversion word displays the content of the request, that is the
-          request's <code>InputStream</code>. It is used in conjunction with a
-          <a href="../xref/ch/qos/logback/access/servlet/TeeFilter.html">
-          <code>TeeFilter</code></a>, a <code>javax.servlet.Filter</code> that 
-          replaces the original <code>HttpServletRequest</code> 
-          by a <a href="../xref/ch/qos/logback/access/servlet/TeeHttpServletRequest.html">
-          <code>TeeHttpServletRequest</code></a>. The latter object allows
-          access to the requet's <code>InputStream</code> multiple times without
-          any loss of data.
-        </p>
-      </td>
-    </tr>
-    <tr class="a">
-      <td align="center"><b>fullRequest</b></td>
-      <td>
-        <p>This converter outputs the data associated with the
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>u / user</b></td>
+        <td>
+          <p>
+            Remote user.
+          </p>
+        </td>
+      </tr>		
+      <tr class="b">
+        <td align="center"><b>U / requestURI</b></td>
+        <td>
+          <p>
+            Requested URI.
+          </p>
+        </td>
+      </tr>		
+      <tr class="a">
+        <td align="center"><b>v / server</b></td>
+        <td>
+          <p>Server name.</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>localPort</b></td>
+        <td>
+          <p>Local port.</p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>reqAttribute{attributeName}</b></td>
+        <td>
+          <p>Attribute of the request.</p>
+          <p>This conversion word takes the first option in braces and looks
+          for the corresponding attribute in the request.</p>
+          <p><b>%reqAttribute{SOME_ATTRIBUTE}</b> 
+          displays the corresponding attribute.</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>reqCookie{cookie}</b></td>
+        <td>
+          <p>Request cookie.</p>
+          <p>This conversion word takes the first option in braces and looks
+          for the corresponding cookie in the request.</p>
+          <p><b>%cookie{COOKIE_NAME}</b> displays corresponding cookie.</p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>responseHeader{header}</b></td>
+        <td>
+          <p>
+            Header of the response.
+          </p>
+          <p>This conversion word takes the first option in braces and looks
+          for the corresponding header in the response.</p>
+          <p><b>%header{Referer}</b> displays the referer of the response.</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>requestContent</b></td>
+        <td>
+          <p>This conversion word displays the content of the request,
+          that is the request's <code>InputStream</code>. It is used
+          in conjunction with a <a
+          href="../xref/ch/qos/logback/access/servlet/TeeFilter.html">
+          <code>TeeFilter</code></a>, a
+          <code>javax.servlet.Filter</code> that replaces the original
+          <code>HttpServletRequest</code> by a <a
+          href="../xref/ch/qos/logback/access/servlet/TeeHttpServletRequest.html">
+          <code>TeeHttpServletRequest</code></a>. The latter object
+          allows access to the requet's <code>InputStream</code>
+          multiple times without any loss of data.
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>fullRequest</b></td>
+        <td>
+          <p>This converter outputs the data associated with the
           request, including all headers and request contents.
-        </p>
-      </td>
-    </tr>
-    <tr class="b">
-      <td align="center"><b>responseContent</b></td>
-      <td>
-        <p>
-          This conversion word displays the content of the response, that is the
-          response's <code>InputStream</code>. It is used in conjunction with a
+          </p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center"><b>responseContent</b></td>
+        <td>
+          <p>This conversion word displays the content of the
+          response, that is the response's
+          <code>InputStream</code>. It is used in conjunction with a
           <a href="../xref/ch/qos/logback/access/servlet/TeeFilter.html">
-          <code>TeeFilter</code></a>, a <code>javax.servlet.Filter</code> that 
-          replaces the original <code>HttpServletResponse</code> 
-          by a <a href="../xref/ch/qos/logback/access/servlet/TeeHttpServletResponse.html">
-          <code>TeeHttpServletResponse</code></a>. The latter object allows
-          access to the requet's <code>InputStream</code> multiple times without
-          any loss of data.
-        </p>
-      </td>
-    </tr>
-    <tr class="a">
-      <td align="center"><b>fullResponse</b></td>
-      <td>
-        <p>
-          This conversion word takes all the available data
+          <code>TeeFilter</code></a>, a
+          <code>javax.servlet.Filter</code> that replaces the original
+          <code>HttpServletResponse</code> by a <a
+          href="../xref/ch/qos/logback/access/servlet/TeeHttpServletResponse.html">
+          <code>TeeHttpServletResponse</code></a>. The latter object
+          allows access to the requet's <code>InputStream</code>
+          multiple times without any loss of data.
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center"><b>fullResponse</b></td>
+        <td>
+          <p>This conversion word takes all the available data
           associatede with the response, inclusing all headers of the
           response and response contents.
-        </p>
-      </td>
-    </tr>
-		</table>
+          </p>
+        </td>
+      </tr>
+    </table>
 		
 		<p>Logback access' <code>PatternLayout</code> also recognize three keywords, which
 		act like shortcuts to a certain pattern.</p>
@@ -1887,10 +1873,10 @@ public class TrivialMain {
 	 	which displays client host, remote log name, user, date, requested URL, status code 
 	 	and response's content length</p>
 	 	
-	 	<p>The <em>combined</em> keyword is a shortcut to 
-	 	<em>%h %l %u %t \"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em>. This pattern begins
-	 	much like the <em>common</em> pattern but also displays two request headers, namely
-	 	 referer, and user-agent.</p>
+	 	<p>The <em>combined</em> keyword is a shortcut for <em>%h %l %u %t
+	 	\"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em>. This pattern
+	 	begins much like the <em>common</em> pattern but also displays two
+	 	request headers, namely referer, and user-agent.</p>
 
 		<a name="AccessHTMLLayout"></a>
 		<h3>HTMLLayout</h3>
@@ -1898,37 +1884,49 @@ public class TrivialMain {
 		<p>The <a
 		href="../xref/ch/qos/logback/access/html/HTMLLayout.html"><code>HTMLLayout</code></a>
 		class found in logback-access is similar to the <a
-		href="#ClassicHTMLLayout"><code>HTMLLayout</code></a> class found
-		in logback-classic.
+		href="#ClassicHTMLLayout"><code>HTMLLayout</code></a> class from
+		logback-classic.
     </p>
 		
 		<p>By default, it will create a table containing the following data:</p>
 		
 		<ul>
-			<p>Remote IP</p>
-			<p>Date</p>
-			<p>Request URL</p>
-			<p>Status code</p>
-			<p>Content Length</p>
+			<li>Remote IP</li>
+			<li>Date</li>
+			<li>Request URL</li>
+			<li>Status code</li>
+			<li>Content Length</li>
 		</ul>
 		
-		<p>Here is a sample output produced by <code>HTMLLayout</code> in logback-access:</p>
+		<p>Here is a sample output produced by <code>HTMLLayout</code> in
+		logback-access:</p>
 		<img src="images/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
-		<p>What is better than a real world example? Our own log4j
+		<p>What can be better than a real world example? Our own log4j
 		properties to logback <a
 		href="http://logback.qos.ch/translator/">translator</a> makes use
 		of logback-access to showcase a live ouput, using a
 		<code>RollingFileAppender</code> and <code>HTMLLayout</code>.</p>
 		
-		<p>You can see the file by <a
-		href="http://logback.qos.ch/translator/logs/access.html">following
-		this link</a>.</p>
+		<p>What can be better than a real world example? Our own log4j
+		properties for logback <a
+		href="http://logback.qos.ch/translator/">translator</a> makes use
+		of logback-access to demonstrate live ouput from
+		<code>RollingFileAppender</code> with <code>HTMLLayout</code>.</p>
 
-		<p>Just like any access log, each visit the <a
-		href="http://logback.qos.ch/translator/">translator</a>
-		web-application will add a new entry to the access logs.
-    </p>
+
+    <p>On every new user request to our <a
+    href="http://logback.qos.ch/translator/">translator</a>
+    web-application, a new entry will be added to the access logs,
+    which you can view by <a
+    href="http://logback.qos.ch/translator/logs/access.html">following
+    this link</a>.</p>
+
+
+    
+
+
+ 
 
 <script src="../templates/footer.js"></script>
 </div>

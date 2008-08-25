@@ -298,9 +298,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
@@ -309,16 +310,19 @@ public class ExitWoes1 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    lc.shutdownAndReset(); // we want to override the default-config.
     WriterAppender&lt;LoggingEvent> writerAppender = new WriterAppender&lt;LoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout&lt;LoggingEvent>());
+    writerAppender.setLayout(new EchoLayout&lt;&lt;LoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
     writerAppender.setImmediateFlush(false);
     writerAppender.start();
+    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.addAppender(writerAppender);
 
-    Logger logger = LoggerFactory.getLogger(ExitWoes1.class);
+    Logger logger = lc.getLogger(ExitWoes1.class);
 
     logger.debug("Hello world.");
   }
@@ -681,11 +685,10 @@ public interface RollingPolicy extends LifeCycle {
 	</p>
 
 	<p>The <span class="option">FileNamePattern</span> option represents
-	the file name pattern for the archived (rolled over) log files.  The
-	<span class="option">FileNamePattern</span> option, which is also
-	required, must include an integer token, that is the string
+	the file name pattern for the archived (rolled over) log files.
+	This option is required and must include an integer token
 	<em>%i</em> somewhere within the pattern.
-	</p>
+  </p>
 	
 	<p>Here are the available options for
 	<code>FixedWindowRollingPolicy</code>
@@ -865,14 +868,13 @@ public interface RollingPolicy extends LifeCycle {
 	</p>
 	
 	<p><span class="option">FileNamePattern</span> option defines the
-	name of the rolled (archived) log files. Its value <span
-	class="option">FileNamePattern</span> should consist of the name of
-	the file, plus a suitably placed <em>%d</em> conversion specifier.
-	The <em>%d</em> conversion specifier may contain a date-and-time
-	pattern as specified by the <code>java.text.SimpleDateFormat</code>
-	class.  If the date-and-time pattern is omitted, then the default
-	pattern <em>yyyy-MM-dd</em> is assumed. The following examples
-	should clarify the point.
+	name of the rolled (archived) log files. Its value should consist of
+	the name of the file, plus a suitably placed <em>%d</em> conversion
+	specifier.  The <em>%d</em> conversion specifier may contain a
+	date-and-time pattern as specified by the
+	<code>java.text.SimpleDateFormat</code> class.  If the date-and-time
+	pattern is omitted, then the default pattern <em>yyyy-MM-dd</em> is
+	assumed. The following examples should clarify the point.
 	</p>
 
 	<table class="bodyTable">

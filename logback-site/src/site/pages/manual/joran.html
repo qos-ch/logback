@@ -460,7 +460,8 @@ public class MyApp3 {
   the root logger is already named, it does not admit a name attribute
   either. The value of the level attribute can be set to one of the
   case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or
-  OFF. Note that the level of the root logger cannot be inherited.
+  OFF. Note that the level of the root logger cannot be set to
+  INHERITED or NULL.
   </p>
 
 
@@ -992,16 +993,15 @@ public class MyApp3 {
    <div class="source"><pre>USER_HOME=/home/sebastien</pre></div>
 
    <p>Nested variabled subsitution is also supported. By nested, we
-   mean that the value definition of a variable contains referenced to
-   other variables. Here is an example. Suppose you wish to use
-   variables to specify not only the destination directory but also
-   the file name, and combine those variable in a third variable
-   called "destination". The properties file shown below gives an
-   example.
+   mean that the value definition of a variable contains references to
+   other variables. Suppose you wish to use variables to specify not
+   only the destination directory but also the file name, and combine
+   those two variables in a third variable called "destination". The
+   properties file shown below gives an example.
    </p>
 
 
-   <em>Example 3.<span class="autoEx"/>: Recursive use of variables
+   <em>Example 3.<span class="autoEx"/>: Nested variable references
    (logback-examples/src/main/java/chapter3/variables2.properties)</em>
 
    <div class="source"><pre>USER_HOME=/home/sebastien

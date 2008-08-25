@@ -54,48 +54,55 @@ prefix='../';
 		<h2>Logback Classic</h2>
 		
 		<a name="Filter"></a>
-		<p><code>Filter</code> objects all implement the 
-		<a href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a> 
-		abstract class. The <code>decide(Object event)</code> method is passed a
-		newly created <code>LoggingEvent</code> object.
+
+		<p><code>Filter</code> objects all extend the <a
+		href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a>
+		abstract class. The <code>decide(Object event)</code> method is
+		passed a newly created <code>LoggingEvent</code> object.
 		</p>
 		
 		<h3>Filter chains</h3>
-		<p>
-			This abstract class assumes that filters be organized in a linear chain. 
-			Its member field next points to the next filter in the chain, or 
-			<code>null</code> if there are no further filters in the chain. 
-			Figure 6.1 depicts a sample filter chain consisting of three filters.
+
+		<p>This abstract class assumes that filters are organized in a
+		linear chain.  Its member field next points to the next filter in
+		the chain, or <code>null</code> if there are no further filters in
+		the chain.  Figure 6.1 depicts a sample filter chain consisting of
+		three filters.
 		</p>
 		
 		<img src="images/chapter6/filterChain.gif" alt="A sample filter chain"/>
 
-    <p>
-    	Filters are based on ternary logic. The <code>decide(Object event)</code> 
-    	method of each filter is called in sequence. This method returns one of the 
-    	enumerations <code>FilterReply.DENY</code>, <code>FilterReply.NEUTRAL</code> or 
-    	<code>FilterReply.ACCEPT</code>. If the returned value is <code>FilterReply.DENY</code>, 
-    	then the log event is dropped immediately without consulting the 
-    	remaining filters. If the value returned is <code>FilterReply.NEUTRAL</code>, 
-    	then the next filter in the chain is consulted. If there are no further filters 
-    	to consult, then the logging event is processed normally. 
-    	If the returned value is <code>FilterReply.ACCEPT</code>, then the logging 
-    	event is processed immediately skipping the remaining filters.
+    <p>Filters are based on ternary logic. The <code>decide(Object
+    event)</code> method of each filter is called in sequence.  This
+    method returns one of the <a
+    href="../xref/ch/qos/logback/core/spi/FilterReply.html"><code>FilterReply</code></a>
+    enumeration values, i.e. one of <code>FilterReply.DENY</code>,
+    <code>FilterReply.NEUTRAL</code> or
+    <code>FilterReply.ACCEPT</code>.  If the returned value is
+    <code>FilterReply.DENY</code>, then the log event is dropped
+    immediately without consulting the remaining filters. If the value
+    returned is <code>FilterReply.NEUTRAL</code>, then the next filter
+    in the chain is consulted. If there are no further filters to
+    consult, then the logging event is processed normally.  If the
+    returned value is <code>FilterReply.ACCEPT</code>, then the
+    logging event is processed immediately skipping the remaining
+    filters.
     </p>
     
-    <p>
-    	In logback-classic, <code>Filter</code> objects can only be added to <code>Appender</code>
-    	instances. By adding filters to an appender you can filter events by various 
-    	criteria, such as the contents of the log message, the contents of the MDC, 
-    	the time of day or any other part of the logging event.
+    <p>In logback-classic <code>Filter</code> objects can only be
+    added to <code>Appender</code> instances. By adding filters to an
+    appender you can filter events by various criteria, such as the
+    contents of the log message, the contents of the MDC, the time of
+    day or any other part of the logging event.
     </p>
     
 		<h3>Implementing your own Filter</h3>
 		
-		<p>
-			Creating your own filter is not difficult. All you have to do is extend the <code>Filter</code> 
-			abstract class. The only method that you will have to implement is the <code>decide()</code> 
-			method, allowing you to contentrate only on the behaviour of your filter.
+		<p>Creating your own filter is not difficult. All you have to do
+		is extend the <code>Filter</code> abstract class. The only method
+		that you will have to implement is the <code>decide()</code>
+		method, allowing you to contentrate only on the behaviour of your
+		filter.
 		</p>
 		
 		<p>
@@ -168,14 +175,14 @@ public class SampleFilter extends Filter {
 		
 		<h3>Logback Filters</h3>
 		
-		<p>
-			As the moment, there are two filters that ship with logback.
-			<a href="../xref/ch/qos/logback/classic/LevelFilter.html">
-			<code>LevelFilter</code></a> provides event filtering based on a <code>Level</code> value. 
-			It the event's level is equal to the configured level, the filter accepts of denies
-			the event, depending on its configuration. It allows you to choose the
-			behaviour of logback for a precise given level. Here is a sample configuration that
-			uses <code>LevelFilter</code>.
+		<p>At the moment, there are two filters that ship with logback. <a
+		href="../xref/ch/qos/logback/classic/LevelFilter.html">
+		<code>LevelFilter</code></a> provides event filtering based on a
+		<code>Level</code> value.  It the event's level is equal to the
+		configured level, the filter accepts of denies the event,
+		depending on its configuration. It allows you to choose the
+		behaviour of logback for a precise given level. Here is a sample
+		configuration that uses <code>LevelFilter</code>.
 		</p>
 		
 <em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
@@ -227,46 +234,126 @@ public class SampleFilter extends Filter {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<h3>Evaluator Filters</h3>
+
+    <h3>Evaluator Filters taking Java Expressions</h3>
+
 		    
-		<p>
-			A special category of filters ships with logback. The
-    	<a href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
-    	<code>EvaluatorFilter</code></a> objects use an 
-    	<a href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-    	<code>EventEvaluator</code></a>
-    	to decide wether to accept or deny the request. This allows unprecedented
-    	flexibility in the way that you can affect the logging event's filtering.
+    <p>A special category of filters is implemented by the <a
+    href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
+    <code>EvaluatorFilter</code></a> class. These filters use an <a
+    href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+    <code>EventEvaluator</code></a> object to decide wether to accept
+    or deny a request. This allows unprecedented flexibility in the
+    way that you can affect filtering of logging events.
     </p>
-    
-    <p>
-			Creating a customized filter that makes use of <code>EventEvaluator</code> objects
-			works the same way as seen previously, except that one must extend the 
-			<code>EvaluatorFilter</code> class, instead of the <code>Filter</code>
-			or <code>AbstractMatcherFilter</code> classes.
+
+    <p>As a user, you do not need to worry about the actual
+    plumbing. All you need to do is to give a name to the evaluator
+    and to specify an <em>evaluation expression</em>, that is a
+    boolean expression in regular Java syntax. These evaluation
+    expressions are compiled on-the-fly during the interpretation of
+    the configration file. It is the users reponsibility to ensure
+    that the expression is boolean, that it evaluates to true or
+    false.  In evaluation expressions, logback implicitly exposes
+    various fields of a logging event as variables. The list of these
+    implicit variables is given below. The scope of evaluation
+    expressions is limited to the logging event.
 		</p>
-    
-    <a name="EventEvaluator"></a>
-    <h3>Event Evaluators</h3>
-    
-    <p>
-    	Events evaluators allow the user to enter java expressions, using 
-    	components of a logging event, and to check each logging event
-    	against the compiled expression.
+		
+		
+		<table class="bodyTable">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+			</tr>
+      <tr>
+				<td>event</td>
+				<td><code>LoggingEvent</code></td>
+
+        <td>The raw logging event associated with the logging
+        request. All of the following variables are also available
+        from the event. For example, <code>event.getMessage()</code>
+        returns the same String value as the <em>message</em> variable
+        described next.
+        </td>
+			</tr>
+
+      <tr class="alt">
+				<td>message</td>
+        <td><code>String</code></td>
+        <td>The message of the logging request.</td>
+			</tr>
+			<tr>
+				<td>logger</td>
+				<td><code>LoggerRemoteView</code></td>
+				<td>This object is a proxy for the logger object where the
+				logging request was issued. It can be viewed as a regular
+				logger object. However, it has some nice performance
+				properties, especially with respect to serialization.
+        </td>
+			</tr>
+
+			<tr  class="alt">
+				<td>level</td>
+				<td><code>int</code></td>
+				<td>The int value corresponding to the level. To help create
+				easily expressions involving levels, the default value
+				<em>DEBUG</em>, <em>INFO</em>, <em>WARN</em> and
+				<em>ERROR</em> are also available. Thus, using <em>level &gt;
+				INFO</em> is a correct expression.
+				</td>
+			</tr>
+			<tr>
+				<td>timeStamp
+				</td>
+				<td><code>long</code></td>
+				<td>The timestamp corresponding to the logging event's
+				creation.
+				</td>
+			</tr>
+			<tr  class="alt">
+				<td>marker</td>
+				<td><code>Marker</code></td>
+        <td>The <code>Marker</code> object associated with the logging
+        request.
+				</td>
+			</tr>
+			<tr>
+				<td>mdc
+				</td>
+				<td><code>Map</code></td>
+				<td>A map containing all the MDC values at the time of the 
+				creation of the logging event. A value can be access by using the
+				following expression: <em>mdc.get("myKey")</em>.
+				</td>
+			</tr>
+			<tr  class="alt">
+				<td>throwable</td>
+				<td><code>Throwable</code></td>
+				<td>The exception associated with the logging event
+				</td>
+			</tr>
+		</table>
+
+		
+		<p>The behaviour of the <code>EvaluatorFilter</code> is also
+		affected by its <span class="option">OnMatch</span> and <span
+		class="option">OnMismatch</span> options taking values of type
+		<code>FilterReply</code>, i.e. DENY, ACCEPT, NEUTRAL.
     </p>
     
-    <p>
-    	Let's see a sample configuration.
-    </p>
-    
+    <p>Here is a concrete example.</p>
+
 <em>Example 6.5: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator name="myEval">
-        &lt;expression>message.contains("billing")&lt;/expression>
+        &lt;expression><span class="green">message.contains("billing")</span>&lt;/expression>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
@@ -284,122 +371,31 @@ public class SampleFilter extends Filter {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>
-			The bold part in the previous configuration adds an <code>EvaluatorFilter</code>
-			to a <code>ConsoleAppender</code>. An <code>EventEvaluator</code> is then given to
-			the filter. The <em>expression</em> element contains a recognizable java expression.
-			Notice that the <em>message</em> variable is defined implicitly. Logback provides
-			access to the internal components of a logging event and lets the user build her
-			expression at will.
-		</p>
-		
-		<p>
-			The implicit variables available to the <code>EventEvaluator</code> are described below:
-		</p>
-		
-		<table>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Description</th>
-			</tr>
-			<tr>
-				<td>event
-				</td>
-				<td><code>LoggingEvent</code></td>
-				<td>The logging event associated with the logging request.
-				All of the following variables are also available from the event. For example, 
-				<code>event.getMessage()</code> returns the same String value as the <em>message</em>
-				variable.
-				</td>
-			</tr>
-			<tr>
-				<td>message
-				</td>
-				<td><code>String</code></td>
-				<td>The message created with the logging request.
-				</td>
-			</tr>
-			<tr>
-				<td>logger
-				</td>
-				<td><code>LoggerRemoteView</code></td>
-				<td>This object can be treated like a usual logger. In case the logging event
-				is serialized and sent to a remote machine, the usual logger object is
-				dropped and replaced by a <code>LoggerRemoteView</code> object, which
-				performs much better when serialized.
-				</td>
-			</tr>
-			<tr>
-				<td>level
-				</td>
-				<td><code>int</code></td>
-				<td>The int value corresponding to the level. To help create easily
-				expressions involving levels, the default value <em>DEBUG</em>, 
-				<em>INFO</em>, <em>WARN</em> and <em>ERROR</em> are also available. Thus,
-				using <em>level &gt; INFO</em> is a correct expression.
-				</td>
-			</tr>
-			<tr>
-				<td>timeStamp
-				</td>
-				<td><code>long</code></td>
-				<td>The timestamp corresponding to the logging event's creation.
-				</td>
-			</tr>
-			<tr>
-				<td>marker
-				</td>
-				<td><code>Marker</code></td>
-				<td>The <code>Marker</code> object associated with the logging request.
-				</td>
-			</tr>
-			<tr>
-				<td>mdc
-				</td>
-				<td><code>Map</code></td>
-				<td>A map containing all the MDC values at the time of the 
-				creation of the logging event. A value can be access by using the
-				following expression: <em>mdc.get("myKey")</em>.
-				</td>
-			</tr>
-			<tr>
-				<td>throwable
-				</td>
-				<td><code>Throwable</code></td>
-				<td>The exception that was passed to the logger when it
-				was requested.
-				</td>
-			</tr>
-		</table>
-		
-		<p>
-			The behaviour of the filter is also defined by its <span class="option">OnMatch</span>
-			and <span class="option">OnMismatch</span> options. The configuration specifies thanks
-			to these elements the replies that the <code>EvaluatorFilter</code> must give once its
-			expression has been evaluated. The example above returns the value <code>FilterReply.ACCEPT</code> 
-			when the message of the logging event contains the String <em>important</em>. 
-			If <em>important</em> is not contained in the message, then the filter lets the next filter 
-			evaluate this logging event.
-		</p>
-		
-		<p>
-			Let us see an example of <code>EvaluatorFilter</code>. The <code>FilterEvents</code>
-			class issues ten logging requests, numbered from 0 to 9.
-		</p>
-		
-		<p>
-			First, let us run the <code>FilterEvents</code> class with a configuration that does
-			not contain any filters. This can be done by issuing the following command:
+		<p>The bold part in the previous configuration adds an
+		<code>EvaluatorFilter</code> to a <code>ConsoleAppender</code>. An
+		<code>EventEvaluator</code> is then injected into the
+		<code>EvaluatorFilter</code>. The <em>expression</em> element
+		corresponds to the evaluation expression described previously. The
+		expression <code>message.contains("billing")</code> returns a
+    boolean value. Notice that the <em>message</em> variable is
+		defined implicitly.
+    </p>
+
+		<p>This evalutor filter will drop all logging events whose message
+		contains the string "billing".
+    </p>
+
+    <p>The <a
+    href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
+    class issues ten logging requests, numbered from 0 to 9. Let us
+    rist run <code>FilterEvents</code> class without any filters:
 		</p>
 		
 <div class="source"><pre>
 java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 </pre></div>
 		
-		<p>
-			All requests will be displayed, as shown below:
-		</p>
+		<p>All requests will be displayed, as shown below:</p>
 
 <div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
 0    [main] INFO  chapter6.FilterEvents - logging statement 1
@@ -412,27 +408,15 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 0    [main] INFO  chapter6.FilterEvents - logging statement 8
 0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
 
-		<p>
-		Suppose that we want to get rid of the billing information. We
-		can use an <code>EvaluatorFilter</code> configured as follows:
-		</p>
 
-<div class="source"><pre>&lt;configuration>
-  ...
-  &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-    &lt;evaluator name="myEval">
-      &lt;expression>message.contains("billing")&lt;/expression>
-    &lt;/evaluator>
-    &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-    &lt;OnMatch>DENY&lt;/OnMatch>
-  &lt;/filter>
-  ...
-&lt;/configuration></pre></div>
 
-		<p>
-			This filter will deny any logging event whose message
-			contains the String <em>billing</em>. If we run the <code>FilterEvents</code> 
-			class again, we obtain the following output:
+		<p>Suppose that we want to get rid of the billing information.
+		The <em>basicEventEvaluator.xml</em> configuration file just
+		desribed, does exactly what we want.</p>
+
+    <p>Running with filters:</p>
+    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/basicEventEvaluator.xml</p>
+    <p>we obtain:
 		</p>
 		
 <div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
@@ -468,12 +452,12 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
    		request is issued. Their scope is wider than appender-attached filters.
    	</p>
    	
-   	<p>
-   		More importantly, they are called before the <code>LoggingEvent</code> object creation. 
-   		Their decision is made based on some of the logging event's components. They require 
-   		no logging event instanciation, nor any other treatement to provide their 
-   		filtering functionnalities. They are much more performant than the usual
-   		<code>Filter</code> objects.
+   	<p>More importantly, they are called before the
+   	<code>LoggingEvent</code> object creation.  Their decision is made
+   	based on some of the logging event's components. They require no
+   	logging event instantiation, nor any other treatement to provide
+   	their filtering functionnalities. They are much more performant
+   	than the usual <code>Filter</code> objects.
    	</p>
    	
    	<h3>Implementing your own TurboFilter</h3>
@@ -663,33 +647,34 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 		</p>
 		
 		  
-    <h2>Logback Access</h2>
+    <h2>Logback-access</h2>
     
-    <p>
-    	Logback access benefits from most of the possibilities available
-    	to the classic module. <code>Filter</code> objects are available and work
-    	in the same way as their classic counterpart. They handle access' implementation
-    	of logging events: <code>AccessEvent</code>. 
-    	Thus, a customized filter
-    	for logback access is follows strictly the same rules than one for the 
-    	classic module, except for the event implemenation recieved as a parameter.
-    	On the other hand,
-    	<code>TurboFilter</code> objects are not available to the access module.
+    <p>Logback-access offers most of the features available with
+    logback-classic. <code>Filter</code> objects are available and
+    work in the same way as their logback-classic counterparts. They
+    handle access' implementation of logging events:
+    <code>AccessEvent</code>.  Thus, a customized filter for logback
+    access follows strictly the same rules as those for
+    logback-classic, except for the event type recieved as parameter.
+    On the other hand, <code>TurboFilter</code> objects are supported
+    by logback-access.
     </p>
     
     <h3>Filters</h3>
     
-    <p>
-    	<code>EvaluatorFilter</code> objects, with their expressions, are available to
-    	the access module. However, the variables that one can use to build an expression
-    	are different. Only the <code>AccessEvent</code> object can be used, by inserting the
-    	<em>event</em> variable in the expression. Although less wide than its classic
-    	counterpart, the access evaluation filter is just as powerfull. All the
-    	request and response components are reachable from the <em>event</em> variable.
+    <p><code>EvaluatorFilter</code> objects with java expressions
+    supplied in in <code>evaluator</code> configuration elements are
+    supported by logback-access. However, list implicit variables
+    available for constructing an expression are different. Only the
+    <code>AccessEvent</code> object can be used by inserting the
+    <em>event</em> variable in the expression. Nevertheless the access
+    <code>evaluator</code> is just as powerfull. All the request and
+    response components are reachable from the <em>event</em>
+    variable.
     </p>    
     
-    <p>
-    	Here is a sample configuration that will ensure that any 404 error will be displayed:
+    <p>Here is a sample configuration that will ensure that any 404
+    error will be logged:
     </p>
    	
 <em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
@@ -714,10 +699,9 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
   &lt;appender-ref ref="STDOUT" />
 &lt;/configuration></pre></div>
 
-		<p>
-			We might imagine a slightly more complex use of filters to ensure the display of 404 errors, but
-			to prevent polluting the output with endless accesses to CSS files. Here is what such a configuration
-			would look like:
+		<p>We might imagine a slightly more complex use of filters to
+		ensure logging of 404 errors, except those returned on access to
+		CSS resources. Here is what such a configuration would look like:
 		</p>	
 
 <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
