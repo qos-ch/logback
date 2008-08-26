@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.classic.pattern.CallerDataConverter;
+import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.DateConverter;
 import ch.qos.logback.classic.pattern.FileOfCallerConverter;
@@ -27,11 +28,9 @@ import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
 import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
-import ch.qos.logback.classic.pattern.ThrowableHandlingConverter;
 import ch.qos.logback.classic.pattern.ThrowableInformationConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
-import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 /**
@@ -109,57 +108,14 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
   }
 
-  /**
-   * This implementation checks if any of the converters in the chain handles
-   * exceptions. If not, then this method adds a ThrowableInformationConverter
-   * instance to the end of the chain.
-   * <p>
-   * This allows appenders using this layout to output exception information
-   * event if the user forgets to add %ex to the pattern. Note that the
-   * appenders defined in the Core package are not aware of exceptions nor
-   * LoggingEvents.
-   * <p>
-   * If for some reason the user wishes to NOT print exceptions, then she can
-   * add %nopex to the pattern.
-   * 
-   * 
-   */
-  protected void postCompileProcessing(Converter<LoggingEvent> head) {
-    if (!chainHandlesThrowable(head)) {
-      Converter<LoggingEvent> tail = findTail(head);
-      Converter<LoggingEvent> exConverter = new ThrowableInformationConverter();
-      if (tail == null) {
-        head = exConverter;
-      } else {
-        tail.setNext(exConverter);
-      }
-    }
-    setContextForConverters(head);
+  public PatternLayout() {
+    this.postCompileProcessor = new EnsureExceptionHandling();
   }
-
+  
   public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
   }
-
-  /**
-   * This method computes whether a chain of converters handles exceptions or
-   * not.
-   * 
-   * @param head
-   *          The first element of the chain
-   * @return true if can handle throwables contained in logging events
-   */
-  public static boolean chainHandlesThrowable(Converter head) {
-    Converter c = head;
-    while (c != null) {
-      if (c instanceof ThrowableHandlingConverter) {
-        return true;
-      }
-      c = c.getNext();
-    }
-    return false;
-  }
-
+  
   public String doLayout(LoggingEvent event) {
     if (!isStarted()) {
       return CoreGlobal.EMPTY_STRING;

@@ -48,7 +48,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   private String from;
   private String subjectStr = null;
   private String smtpHost;
-
+  private int smtpPort = 25;
+  
   protected Message msg;
 
   protected EventEvaluator eventEvaluator;
@@ -72,7 +73,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);
     }
-
+    props.put("mail.smtp.port", Integer.toString(smtpPort));
+    
+    
     Session session = Session.getInstance(props, null);
     // session.setDebug(true);
     msg = new MimeMessage(session);
@@ -283,6 +286,23 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     return smtpHost;
   }
 
+  /**
+   * The port where the SMTP server is running. Default value is 25. 
+   * 
+   * @param port
+   */
+  public void setSMTPPort(int port) {
+    this.smtpPort = port;
+  }
+  
+  /**
+   * @see #setSMTPPort(int)
+   * @return
+   */
+  public int getSMTPPort() {
+    return smtpPort;
+  }
+  
   /**
    * The <b>To</b> option takes a string value which should be 
    * an e-mail address of one of the recipients.

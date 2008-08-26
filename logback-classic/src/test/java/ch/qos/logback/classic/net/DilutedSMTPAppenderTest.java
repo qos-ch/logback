@@ -1,21 +1,28 @@
 package ch.qos.logback.classic.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import javax.mail.Address;
 import javax.mail.MessagingException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
 
-public class SMTPAppenderTest extends TestCase {
+public class DilutedSMTPAppenderTest {
 
   SMTPAppender appender;
 
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     LoggerContext lc = new LoggerContext();
     appender = new SMTPAppender();
     appender.setContext(lc);
@@ -28,11 +35,22 @@ public class SMTPAppenderTest extends TestCase {
     appender.start();
   }
 
+  private static Layout<LoggingEvent> buildLayout(LoggerContext lc) {
+    PatternLayout layout = new PatternLayout();
+    layout.setContext(lc);
+    layout.setFileHeader("Some header\n");
+    layout.setPattern("%-4relative [%thread] %-5level %class - %msg%n");
+    layout.setFileFooter("Some footer");
+    layout.start();
+    return layout;
+  }
+  
+  @After
   public void tearDown() throws Exception {
-    super.tearDown();
     appender = null;
   }
 
+  @Test
   public void testStart() {
     try {
       Address[] addressArray = appender.getMessage().getFrom();
@@ -55,6 +73,7 @@ public class SMTPAppenderTest extends TestCase {
     }
   }
 
+  @Test
   public void testAppendNonTriggeringEvent() {
     LoggingEvent event = new LoggingEvent();
     event.setThreadName("thead name");
@@ -63,36 +82,34 @@ public class SMTPAppenderTest extends TestCase {
     assertEquals(1, appender.cb.length());
   }
 
+  @Test
   public void testEntryConditionsCheck() {
     appender.checkEntryConditions();
     assertEquals(0, appender.getContext().getStatusManager().getCount());
   }
 
+  @Test
   public void testEntryConditionsCheckNoMessage() {
     appender.setMessage(null);
     appender.checkEntryConditions();
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
 
-  public void setTriggeringPolicy() {
+  @Test
+  public void testTriggeringPolicy() {
     appender.setEvaluator(null);
     appender.checkEntryConditions();
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
-
+  
+  @Test
   public void testEntryConditionsCheckNoLayout() {
     appender.setLayout(null);
     appender.checkEntryConditions();
     assertEquals(1, appender.getContext().getStatusManager().getCount());
   }
+  
+  
 
-  private static Layout<LoggingEvent> buildLayout(LoggerContext lc) {
-    PatternLayout layout = new PatternLayout();
-    layout.setContext(lc);
-    layout.setFileHeader("Some header\n");
-    layout.setPattern("%-4relative [%thread] %-5level %class - %msg%n");
-    layout.setFileFooter("Some footer");
-    layout.start();
-    return layout;
-  }
+  
 }

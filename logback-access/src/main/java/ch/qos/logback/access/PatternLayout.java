@@ -14,6 +14,7 @@ import java.util.Map;
 
 import ch.qos.logback.access.pattern.ContentLengthConverter;
 import ch.qos.logback.access.pattern.DateConverter;
+import ch.qos.logback.access.pattern.EnsureLineSeparation;
 import ch.qos.logback.access.pattern.FullRequestConverter;
 import ch.qos.logback.access.pattern.FullResponseConverter;
 import ch.qos.logback.access.pattern.LineSeparatorConverter;
@@ -37,7 +38,6 @@ import ch.qos.logback.access.pattern.ResponseHeaderConverter;
 import ch.qos.logback.access.pattern.ServerNameConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 /**
@@ -146,9 +146,12 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
   }
 
+  
   public PatternLayout() {
     // set a default value for pattern
     setPattern(CLF_PATTERN);
+    // by default postCompileProcessor the is an EnsureLineSeparation instance
+    this.postCompileProcessor = new EnsureLineSeparation();
   }
 
   /**
@@ -156,24 +159,6 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
    */
   public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
-  }
-
-  /**
-   * Add a line separator so that each line is on a separate line.
-   */
-  @SuppressWarnings("unchecked")
-  @Override
-  protected void postCompileProcessing(Converter<AccessEvent> head) {
-    Converter<AccessEvent> tail = findTail(head);
-    Converter<AccessEvent> newLineConverter = new LineSeparatorConverter();
-    if (tail == null) {
-      head = newLineConverter;
-    } else {
-      if (!(tail instanceof LineSeparatorConverter)) {
-        tail.setNext(newLineConverter);
-      }
-    }
-    setContextForConverters(head);
   }
 
   public String doLayout(AccessEvent event) {

@@ -27,7 +27,8 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   Converter<E> head;
   String pattern;
-
+  protected PostCompileProcessor<E> postCompileProcessor;
+  
   Map<String, String> instanceConverterMap = new HashMap<String, String>();
   
   /**
@@ -77,7 +78,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       }
       Node t = p.parse();
       this.head = p.compile(t, getEffectiveConverterMap());
-      postCompileProcessing(head);
+      if(postCompileProcessor != null) {
+        postCompileProcessor.process(head);
+      }
+      setContextForConverters(head);
       ConverterUtil.startConverters(this.head);
       super.start();
     } catch (ScanException sce) {
@@ -87,18 +91,12 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     }
   }
 
-  /**
-   * Let derived classes perform postCompile processing. However, PatternLayout 
-   * found in the classic module needs to add a converter for exception handling 
-   * if there isn't one already.
-   * 
-   * @param head
-   */
-  protected void postCompileProcessing(Converter<E> head) {
+  public void setPostCompileProcessor(
+      PostCompileProcessor<E> postCompileProcessor) {
+    this.postCompileProcessor = postCompileProcessor;
   }
   
   protected void setContextForConverters(Converter<E> head) {
-    
     Context context = getContext();
     Converter c = head;
     while (c != null) {
@@ -129,19 +127,6 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   public String toString() {
     return this.getClass().getName() + "(" + getPattern() + ")";
-  }
-
-  protected Converter<E> findTail(Converter<E> head) {
-    Converter<E> c = head;
-    while (c != null) {
-      Converter<E> next = c.getNext();
-      if (next == null) {
-        break;
-      } else {
-        c = next;
-      }
-    }
-    return c;
   }
 
   public Map<String, String> getInstanceConverterMap() {
