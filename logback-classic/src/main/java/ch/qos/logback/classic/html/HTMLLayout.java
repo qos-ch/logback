@@ -55,8 +55,8 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
   }
 
   public String doLayout(LoggingEvent event) {
-    StringBuffer buf = new StringBuffer();
-    handleTableClosing(buf);
+    StringBuilder buf = new StringBuilder();
+    startNewTableIfLimitReached(buf);
 
     boolean odd = true;
     if (((counter++) & 1) == 0) {
@@ -89,7 +89,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     return buf.toString();
   }
 
-  private void appendEventToBuffer(StringBuffer buf, Converter<LoggingEvent> c,
+  private void appendEventToBuffer(StringBuilder buf, Converter<LoggingEvent> c,
       LoggingEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));

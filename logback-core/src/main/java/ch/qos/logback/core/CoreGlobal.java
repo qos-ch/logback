@@ -57,4 +57,11 @@ public class CoreGlobal {
   
   
   public final static char PERCENT_CHAR = '%';
+  
+  /** 
+   * Number of rows before in an HTML table before, 
+   * we close the table and create a new one
+   */
+  public static final int TABLE_ROW_LIMIT = 10000;
+
 }

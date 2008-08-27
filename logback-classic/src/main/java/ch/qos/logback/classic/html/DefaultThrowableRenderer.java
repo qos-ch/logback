@@ -20,7 +20,7 @@ public class DefaultThrowableRenderer implements IThrowableRenderer {
     this.throwable = t;
   }
   
-  public void render(StringBuffer sbuf, String[] s) {
+  public void render(StringBuilder sbuf, String[] s) {
     if (s != null) {
       int len = s.length;
       if (len == 0) {
@@ -38,7 +38,7 @@ public class DefaultThrowableRenderer implements IThrowableRenderer {
     }
   }
   
-  public void render(StringBuffer sbuf, Object eventObject) {
+  public void render(StringBuilder sbuf, Object eventObject) {
     LoggingEvent event = (LoggingEvent)eventObject;
     ThrowableInformation ti = event.getThrowableInformation();
     if (ti != null) {

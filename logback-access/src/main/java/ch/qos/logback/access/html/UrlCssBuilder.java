@@ -34,8 +34,8 @@ public class UrlCssBuilder implements CssBuilder {
     this.url = url;
   }
   
-  public void addCss(StringBuffer sbuf) {
-    sbuf.append("<LINK REL=StyleSheet HREF=\"");
+  public void addCss(StringBuilder sbuf) {
+    sbuf.append("<link REL=StyleSheet HREF=\"");
     sbuf.append(url);
     sbuf.append("\" TITLE=\"Basic\" />");
   }

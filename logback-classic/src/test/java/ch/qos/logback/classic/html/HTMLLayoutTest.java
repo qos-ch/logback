@@ -1,35 +1,36 @@
 package ch.qos.logback.classic.html;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableInformation;
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.read.ListAppender;
 
-public class HTMLLayoutTest extends TestCase {
+public class HTMLLayoutTest {
 
   LoggerContext lc;
   Logger logger;
   HTMLLayout layout;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     lc = new LoggerContext();
     lc.setName("default");
 
@@ -46,17 +47,17 @@ public class HTMLLayoutTest extends TestCase {
     appender.start();
   }
 
-  @Override
+  @After
   public void tearDown() throws Exception {
-    super.tearDown();
     lc = null;
     layout = null;
   }
 
   @SuppressWarnings("unchecked")
-  public void testHeader() {
+  @Test
+  public void testHeader() throws Exception {
     String header = layout.getFileHeader();
-    //System.out.println(header);
+    // System.out.println(header);
 
     Document doc = parseOutput(header + "</body></html>");
     Element rootElement = doc.getRootElement();
@@ -64,11 +65,12 @@ public class HTMLLayoutTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
-  public void testPresentationHeader() {
+  @Test
+  public void testPresentationHeader() throws Exception {
     String header = layout.getFileHeader();
     String presentationHeader = layout.getPresentationHeader();
     header = header + presentationHeader;
-    //System.out.println(header);
+    // System.out.println(header);
 
     Document doc = parseOutput(header + "</table></body></html>");
     Element rootElement = doc.getRootElement();
@@ -80,9 +82,10 @@ public class HTMLLayoutTest extends TestCase {
     assertEquals("Thread", elementList.get(1).getText());
     assertEquals("Message", elementList.get(2).getText());
   }
-  
+
+  @Test
   public void testAppendThrowable() throws Exception {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     String[] strArray = { "test1", "test2" };
     DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout
         .getThrowableRenderer();
@@ -93,12 +96,32 @@ public class HTMLLayoutTest extends TestCase {
     assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
   }
 
+  @Test
   public void testDoLayout() throws Exception {
     LoggingEvent le = createLoggingEvent();
-    String result = layout.doLayout(le);
+
+    String result = layout.getFileHeader();
+    result += layout.getPresentationHeader();
+    result += layout.doLayout(le);
+    result += layout.getPresentationFooter();
+    result += layout.getFileFooter();
+
     Document doc = parseOutput(result);
-    Element trElement = doc.getRootElement();
-    assertEquals(3, trElement.elements().size());
+    Element rootElement = doc.getRootElement();
+    rootElement.toString();
+
+    // the rest of this test is very dependent of the output generated
+    // by HTMLLayout. Given that the XML parser already verifies
+    // that the result conforms to xhtml-strict, we may want to
+    // skip the assertions below. However, the assertions below are another
+    // *independent* way to check the output format.
+
+    // head, body
+    assertEquals(2, rootElement.elements().size());
+    Element bodyElement = (Element) rootElement.elements().get(1);
+    Element tableElement = (Element) bodyElement.elements().get(3);
+    assertEquals("table", tableElement.getName());
+    Element trElement = (Element) tableElement.elements().get(1);
     {
       Element tdElement = (Element) trElement.elements().get(0);
       assertEquals("DEBUG", tdElement.getText());
@@ -111,11 +134,11 @@ public class HTMLLayoutTest extends TestCase {
       Element tdElement = (Element) trElement.elements().get(2);
       assertEquals("test message", tdElement.getText());
     }
-    // System.out.println(result);
   }
 
   @SuppressWarnings("unchecked")
-  public void testDoLayoutWithException() throws Exception {
+  @Test
+  public void layoutWithException() throws Exception {
     layout.setPattern("%level %thread %msg %ex");
     LoggingEvent le = createLoggingEvent();
     le.setThrowableInformation(new ThrowableInformation(new Exception(
@@ -141,16 +164,23 @@ public class HTMLLayoutTest extends TestCase {
     assertTrue(exceptionElement.getText().contains(
         "java.lang.Exception: test Exception"));
   }
-
-  // public void testLog() {
-  // for (int i = 1; i <= 10; i++) {
-  // if (i == 5 || i == 8) {
-  // logger.debug("test", new Exception("test exception"));
-  // } else {
-  // logger.debug("test message" + i);
-  // }
-  // }
-  // }
+  
+  @Test
+  public void rawLimit() throws Exception {
+    StringBuilder sb = new StringBuilder();
+    String header = layout.getFileHeader();
+    assertTrue(header.startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
+    sb.append(header);
+    sb.append(layout.getPresentationHeader());
+    for(int i = 0; i < CoreGlobal.TABLE_ROW_LIMIT*3; i++) {
+      sb.append(layout.doLayout( new LoggingEvent(this.getClass().getName(), logger,
+          Level.DEBUG, "test message"+i, null, null)));
+    }
+    sb.append(layout.getPresentationFooter());
+    sb.append(layout.getFileFooter());
+    // check that the output adheres to xhtml-strict.dtd
+    parseOutput(sb.toString());
+  }
 
   private LoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
@@ -158,65 +188,11 @@ public class HTMLLayoutTest extends TestCase {
     return le;
   }
 
-  Document parseOutput(String output) {
-
+  Document parseOutput(String output) throws Exception {
     EntityResolver resolver = new XHTMLEntityResolver();
-    
     SAXReader reader = new SAXReader();
+    reader.setValidation(true);
     reader.setEntityResolver(resolver);
-    Document doc = null;
-    
-    try {  
-      doc = reader.read(new ByteArrayInputStream(output.getBytes()));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return doc;
-
-    // try {
-    //      
-    // Document document = DocumentHelper.parseText(output);
-    // return document;
-    // } catch (Exception e) {
-    // System.err.println(e);
-    // fail();
-    // }
-    // return null;
-  }
-}
-
-class XHTMLEntityResolver implements EntityResolver {
-
-
-  // key: public id, value: relative path to DTD file
-  static Map<String, String> entityMap = new HashMap<String, String>();
-
-  static {
-    entityMap.put("-//W3C//DTD XHTML 1.0 Strict//EN",
-        "/dtd/xhtml1-strict.dtd");
-    entityMap.put("-//W3C//ENTITIES Latin 1 for XHTML//EN",
-        "/dtd/xhtml-lat1.ent");
-    entityMap.put("-//W3C//ENTITIES Symbols for XHTML//EN",
-        "/dtd/xhtml-symbol.ent");
-    entityMap.put("-//W3C//ENTITIES Special for XHTML//EN",
-        "/dtd/xhtml-special.ent");
-  }
-
-  public InputSource resolveEntity(String publicId, String systemId) {
-    //System.out.println(publicId);
-    final String relativePath = (String)entityMap.get(publicId);
-
-    if (relativePath != null) {
-      Class clazz = getClass();
-      InputStream in =
-        clazz.getResourceAsStream(relativePath);
-      if (in == null) {
-        return null;
-      } else {
-        return new InputSource(in);
-      }
-    } else {
-      return null;
-    }
+    return reader.read(new ByteArrayInputStream(output.getBytes()));
   }
 }

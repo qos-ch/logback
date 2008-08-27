@@ -113,6 +113,10 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
     PatternLayout pl = new PatternLayout();
     pl.setContext(getContext());
     pl.setPattern(subjectStr);
+    // we don't want a ThrowableInformationConverter appended
+    // to the end of the converter chain
+    // This fixes issue LBCLASSIC-67
+    pl.setPostCompileProcessor(null);
     pl.start();
     return pl;
   }

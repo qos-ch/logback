@@ -56,8 +56,8 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
   }
 
   public String doLayout(AccessEvent event) {
-    StringBuffer buf = new StringBuffer();
-    handleTableClosing(buf);
+    StringBuilder buf = new StringBuilder();
+    startNewTableIfLimitReached(buf);
 
     boolean odd = true;
     if (((counter++) & 1) == 0) {
@@ -84,7 +84,7 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
     return buf.toString();
   }
 
-  private void appendEventToBuffer(StringBuffer buf, Converter<AccessEvent> c,
+  private void appendEventToBuffer(StringBuilder buf, Converter<AccessEvent> c,
       AccessEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));

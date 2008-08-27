@@ -24,8 +24,8 @@ public class DefaultCssBuilder implements CssBuilder {
   public DefaultCssBuilder() {
   }
 
-  public void addCss(StringBuffer sbuf) {
-    sbuf.append("<STYLE  type=\"text/css\">");
+  public void addCss(StringBuilder sbuf) {
+    sbuf.append("<style  type=\"text/css\">");
     sbuf.append(LINE_SEP);
     sbuf
         .append("table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }");
@@ -66,7 +66,7 @@ public class DefaultCssBuilder implements CssBuilder {
         .append("TD.Exception { background: #A2AEE8; font-family: courier, monospace;}");
     sbuf.append(LINE_SEP);
 
-    sbuf.append("</STYLE>");
+    sbuf.append("</style>");
     sbuf.append(LINE_SEP);
   }
 }

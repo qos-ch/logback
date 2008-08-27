@@ -2,6 +2,7 @@ package ch.qos.logback.core.html;
 
 import java.util.Map;
 
+import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
@@ -22,7 +23,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 
   protected String title = "Logback Log Messages";
 
-  //It is the responsability of derived classes to set
+  //It is the responsibility of derived classes to set
   //this variable in their constructor to a default value.
   protected CssBuilder cssBuilder;
 
@@ -30,8 +31,6 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 
   // counter keeping track of the rows output
   protected long counter = 0;
-  // max number of rows before we close the table and create a new one
-  protected static final int ROW_LIMIT = 10000;
   
   /**
    * Set the <b>ConversionPattern </b> option. This is the string which controls
@@ -118,15 +117,15 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
    */
   @Override
   public String getFileHeader() {
-    StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
+    StringBuilder sbuf = new StringBuilder();
+    sbuf.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
     sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
     sbuf.append(LINE_SEP);
     sbuf.append("<html>");
     sbuf.append(LINE_SEP);
-    sbuf.append("<head>");
+    sbuf.append("  <head>");
     sbuf.append(LINE_SEP);
-    sbuf.append("<title>");
+    sbuf.append("    <title>");
     sbuf.append(title);
     sbuf.append("</title>");
     sbuf.append(LINE_SEP);
@@ -138,7 +137,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 //      cssBuilder.addExternalCSS(sbuf);
 //    }
     sbuf.append(LINE_SEP);
-    sbuf.append("</head>");
+    sbuf.append("  </head>");
     sbuf.append(LINE_SEP);
     sbuf.append("<body>");
     sbuf.append(LINE_SEP);
@@ -147,25 +146,24 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   }
   
   public String getPresentationHeader() {
-    StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<hr size=\"1\" noshade=\"true\" width=\"50%\" align=\"left\" />");
+    StringBuilder sbuf = new StringBuilder();
+    sbuf.append("<hr/>");
     sbuf.append(LINE_SEP);
-    sbuf.append("Log session start time ");
+    sbuf.append("<p>Log session start time ");
     sbuf.append(new java.util.Date());
-    sbuf.append("<br />");
+    sbuf.append("</p><p></p>");
     sbuf.append(LINE_SEP);
-    sbuf.append("<br />");
     sbuf.append(LINE_SEP);
     sbuf.append("<table cellspacing=\"0\">");
     sbuf.append(LINE_SEP);
 
-    createTableHeader(sbuf);
+    buildHeaderRowForTable(sbuf);
     
     return sbuf.toString();
   }
 
 
-  private void createTableHeader(StringBuffer sbuf) {
+  private void buildHeaderRowForTable(StringBuilder sbuf) {
     Converter c = head;
     String name;
     sbuf.append("<tr class=\"header\">");
@@ -189,7 +187,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   }
   
   public String getPresentationFooter() {
-    StringBuffer sbuf = new StringBuffer();
+    StringBuilder sbuf = new StringBuilder();
     sbuf.append("</table>");
     return sbuf.toString();    
   }
@@ -199,21 +197,21 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
    */
   @Override
   public String getFileFooter() {
-    StringBuffer sbuf = new StringBuffer();
+    StringBuilder sbuf = new StringBuilder();
     sbuf.append(LINE_SEP);
     sbuf.append("</body></html>");
     return sbuf.toString();
   }
   
-  protected void handleTableClosing(StringBuffer sbuf) {
-    if (this.counter >= ROW_LIMIT) {
+  protected void startNewTableIfLimitReached(StringBuilder sbuf) {
+    if (this.counter >= CoreGlobal.TABLE_ROW_LIMIT) {
       counter = 0;
       sbuf.append("</table>");
       sbuf.append(LINE_SEP);
-      sbuf.append("<br />");
+      sbuf.append("<p></p>");
       sbuf.append("<table cellspacing=\"0\">");
       sbuf.append(LINE_SEP);
-      createTableHeader(sbuf);
+      buildHeaderRowForTable(sbuf);
     }
   }
 

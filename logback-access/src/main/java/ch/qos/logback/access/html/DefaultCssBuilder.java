@@ -24,8 +24,8 @@ public class DefaultCssBuilder implements CssBuilder {
   public DefaultCssBuilder() {
   }
 
-  public void addCss(StringBuffer sbuf) {
-    sbuf.append("<STYLE  type=\"text/css\">");
+  public void addCss(StringBuilder sbuf) {
+    sbuf.append("<style  type=\"text/css\">");
     sbuf.append("table{ ");
     sbuf.append("margin-left: 2em; ");
     sbuf.append("margin-right: 2em; ");
@@ -76,6 +76,6 @@ public class DefaultCssBuilder implements CssBuilder {
     sbuf.append(LINE_SEP);
     sbuf.append("  }");
     sbuf.append("}");
-    sbuf.append("</STYLE>");
+    sbuf.append("</style>");
   }
 }

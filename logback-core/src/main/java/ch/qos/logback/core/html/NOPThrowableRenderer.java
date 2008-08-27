@@ -5,7 +5,7 @@ import ch.qos.logback.core.html.IThrowableRenderer;
 
 public class NOPThrowableRenderer implements IThrowableRenderer {
 
-  public void render(StringBuffer sbuf, Object event) {
+  public void render(StringBuilder sbuf, Object event) {
     return;
   }
 
