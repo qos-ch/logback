@@ -74,8 +74,6 @@ public class DefaultCssBuilder implements CssBuilder {
     sbuf.append("font-size: larger; ");
     sbuf.append("}");
     sbuf.append(LINE_SEP);
-    sbuf.append("  }");
-    sbuf.append("}");
     sbuf.append("</style>");
   }
 }
