@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileOutputStream;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
@@ -13,7 +12,6 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Logger;
@@ -24,7 +22,6 @@ import ch.qos.logback.classic.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.html.HTMLLayoutBase;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
