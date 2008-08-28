@@ -31,6 +31,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  */
 public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
 
+  // value "%logger{20} - %m" is referenced in the docs!
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
   static final String DEFAULT_EVALUATOR_EXPRESSION = "level >= ERROR";
   
