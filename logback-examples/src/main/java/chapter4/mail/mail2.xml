@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- ======================================================= -->
-<!-- Sample SMTPAppender configuration using the HTMLLayout  -->
-<!-- ======================================================= -->
-
 <configuration>
 	  
   <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">

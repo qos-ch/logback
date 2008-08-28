@@ -29,10 +29,11 @@ prefix='';
 
   <hr width="80%" align="center" />
 
-  <h3>XXth of XXX 2008 - Release of version 0.9.10</h3>
+  <h3>XXth of September 2008 - Release of version 0.9.10</h3>
 
-  <p>Logback-classic now prints its internal status in case of
-  errors. This has been a frequently requested feature.
+  <p>In case of errors during initialization, logback-classic now
+  <em>automatically</em> prints out its internal status. This has been
+  a frequently requested feature.
   </p>
 
   <p>The LogbackValve in logback-access (ensuring integration with
@@ -57,6 +58,29 @@ prefix='';
   cleared</a> when the shutdownAndReset method is called. This problem
   was reported on May 1st, 2008, by Julia Hu on the logback
   developpers list.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-48">LBCORE-48</a>.  During
+  rollover, compression of large files would bring all logging to a
+  halt. In this latest release, the rolled over file is first renamed,
+  which is a relatively fast operation, and only then is the renamed
+  file compressed asyncronously (in a separate thread).
+  </p>
+
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-27</a> reported by
+  Peter Royal. SMTPAppender now outputs its presentation footer and
+  file footer in the the correct order.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-67">LBCLASSIC-67</a>
+  reported by Alessandro Fustini. SMTPAppender now correctly
+  configures the layout used to format the subject line of the
+  outgoing email. It no longer appends a lengthy stack trace to the
+  subject line.
   </p>
 
   <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>

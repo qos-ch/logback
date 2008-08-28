@@ -33,15 +33,13 @@ public class EMail {
     int runLength = Integer.parseInt(args[0]);
     String configFile = args[1];
 
-    if (configFile.endsWith(".xml")) {
-      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-      JoranConfigurator configurator = new JoranConfigurator();
-      lc.shutdownAndReset();
-      configurator.setContext(lc);
-      configurator.doConfigure(configFile);
-      StatusPrinter.print(lc);
-    }
-
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    JoranConfigurator configurator = new JoranConfigurator();
+    lc.shutdownAndReset();
+    configurator.setContext(lc);
+    configurator.doConfigure(configFile);
+    StatusPrinter.printIfErrorsOccured(lc);
+    
     Logger logger = LoggerFactory.getLogger(EMail.class);
 
     for (int i = 1; i <= runLength; i++) {
@@ -53,6 +51,8 @@ public class EMail {
     }
 
     logger.error("At last an error.", new Exception("Just testing"));
+    
+    StatusPrinter.printIfErrorsOccured(lc);
   }
 
   static void usage(String msg) {
