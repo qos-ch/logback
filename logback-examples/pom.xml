@@ -15,18 +15,13 @@
 	<name>Logback Examples Module</name>
 
 	<url>http://logback.qos.ch</url>
-	<description>
-		<!-- 
-			Never _never_ let Eclipse's auto format function add
-			a line return in the description.
-			The generated jar will contain a corrupt MANIFEST file.
-		-->
+	<description>	
 		Logback: the generic, reliable, fast and flexible logging library for Java.
 	</description>
 	<licenses>
 		<license>
-			<name> GNU Lesser General Public License</name>
-      		<url>http://www.gnu.org/licenses/lgpl.html</url>			
+      <name> GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>			
 		</license>
 	</licenses>
 
@@ -61,6 +56,9 @@
 		
 	</dependencies>
 
+
+
+
 	<build>
 		<resources>
 			<resource>
@@ -77,6 +75,31 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <property name="slf4jJAR" 
+                          value="${settings.localRepository}/org/slf4j/slf4j-api/${slf4j.version}/slf4j-api-${slf4j.version}.jar"/>
+                <echo>Copying ${slf4jJAR} to lib/</echo>
+                <delete>
+                  <fileset dir="lib/" includes="slf4j-*SNAPSHOT.jar"/>
+                </delete>
+                <copy file="${slf4jJAR}" todir="lib/"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
 		</plugins>		
 	</build>
 
