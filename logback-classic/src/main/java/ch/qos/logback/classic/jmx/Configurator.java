@@ -49,7 +49,7 @@ public class Configurator extends ContextAwareBase implements
     addInfo("Shutting down context: " + lc.getName());
     lc.shutdownAndReset();
     try {
-      new ContextInitializer(lc).autoConfig(lc.getClass().getClassLoader());
+      new ContextInitializer(lc).autoConfig();
       addInfo("Context: " + lc.getName() + " reloaded.");
     } catch(JoranException je) {
       addError("Reloading of context: " + lc.getName() + " failed.", je);

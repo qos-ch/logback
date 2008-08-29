@@ -81,7 +81,7 @@ public class SimpleMDC {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.shutdownAndReset();
-      URL url = Loader.getResourceByTCL("chapter7/simpleMDC.xml");
+      URL url = Loader.getResourceBySelfClassLoader("chapter7/simpleMDC.xml");
       configurator.doConfigure(url);
     } catch (JoranException je) {
       StatusPrinter.print(lc);

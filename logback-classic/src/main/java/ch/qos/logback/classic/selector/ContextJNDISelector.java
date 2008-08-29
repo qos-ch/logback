@@ -115,7 +115,7 @@ public class ContextJNDISelector implements ContextSelector {
 
   private void configureLoggerContextByResource(LoggerContext context,
       String configFilePath) {
-    URL url = Loader.getResourceByTCL(configFilePath);
+    URL url = Loader.getResourceBySelfClassLoader(configFilePath);
     if (url != null) {
       try {
         JoranConfigurator configurator = new JoranConfigurator();

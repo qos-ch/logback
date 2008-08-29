@@ -130,7 +130,7 @@ public class IncludeAction extends Action {
   }
 
   private InputStream getInputStreamByResource(String resourceAttribute) {
-    URL url = Loader.getResourceByTCL(resourceAttribute);
+    URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
     if (url == null) {
       String errMsg = "Could not find resource corresponding to ["
           + resourceAttribute + "]";

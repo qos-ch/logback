@@ -1885,9 +1885,9 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;/root>
 &lt;/configuration></pre></div>		
 		
-		<a name="SMTPAppender"/>
-		<h3>SMTPAppender</h3>
-		
+   <h3><a name="SMTPAppender" href="#SMTPAppender">SMTPAppender</a></h3>
+
+
 		<p>The <a
 		href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
 		accumulates logging events in a fixed-size buffer and sends them
@@ -1901,59 +1901,65 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 		
 		<table class="bodyTable">
-			<tr class="a">
-			<th>Option Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">SMTPHost</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				The host name of the SMTP server. This parameter is mandatory.
+      <tr class="a">
+        <th>Option Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><b><span class="option">SMTPHost</span></b></td>
+        <td><code>String</code></td>
+        <td>The host name of the SMTP server. This parameter is mandatory.</td>
+      </tr>
+
+      <tr class="alt">
+        <td><b><span class="option">SMTPPort</span></b></td>
+        <td><code>int</code></td>
+        <td>The port where the SMTP server is listening. Defaults to
+        25.</td>
+      </tr>
+
+      <tr>
+        <td><b><span class="option">To</span></b></td>
+        <td><code>String</code></td>
+        <td>The email address of the recipient. Multiple recipients
+        can be specified by using several &lt;To&gt; elements.</td>
+      </tr>
+      <tr class="alt">
+        <td><b><span class="option">From</span></b></td>
+        <td><code>String</code></td>
+        <td>The stated originator of the email messages sent by
+        <code>SMTPAppender</code>.
+        </td>
+      </tr>
+      <tr>
+        <td><b><span class="option">Subject</span></b></td>
+        <td><code>String</code></td>
+        <td> 
+          <p>The subject of the email. It can be any value accepted as
+          a valid conversion pattern by <a
+          href="layouts.html#ClassicPatternLayout">PatternLayout</a>. Layouts
+          will be discussed in the next chapter.
+          </p>
+          
+          <p>The outgoing email message will have a subject line
+          corresponding to applying the pattern on the logging event
+          that triggered the email message.
+          </p>
+
+          <p>Assuming the <span class="option">Subject</span> option
+          is set to "Log: %logger - %msg" and the triggerring event's
+          logger is named "com.foo.Bar", and contains the message
+          "Hello world", then the outgoing email will have the subject
+          line "Log: com.foo.Bar - Hello World".
+          </p>
+
+          <p>By default, this option is set to "%logger{20} - %m".</p>
 			</td>
 		</tr>
-		<tr class="a">
-			<td><b><span class="option">To</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				The email address of the recipient. Multiple recipients can
-				be specified by using several &lt;To&gt; elements.
-			</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">From</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				The stated originator of the email messages sent by 
-				<code>SMTPAppender</code>.
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">Subject</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The subject of the email. The String can contain a <code>Pattern</code>
-					that <code>PatternLayout</code> uses. In that case, the subject
-					is created just before the transmission of the email, with information
-					about the last logging event that was issued.
-				</p>
-				<p>
-					For example, setting <em>Log: %logger - %msg</em> as the
-					<span class="option">Subject</span> option will send an email with
-					the logger name and message string of the event that triggered the 
-					email transmission.
-				</p>
-				<p>
-					By default, <code>SMTPAppender</code> will form a subject with
-					logger name and the message of the last logging event.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
+		<tr class="alt">
 			<td><b><span class="option">BufferSize</span></b></td>
-			<td><code>String</code></td>
+			<td><code>int</code></td>
 			<td>
 				The <span class="option">BufferSize</span> option takes a positive 
 				integer representing the maximum number of logging events to collect in a 
@@ -1962,7 +1968,7 @@ Context ctx = new InitialContext(env);</pre></div>
 				The default size of the cyclic buffer is 512.
 			</td>
 		</tr>
-		<tr class="a">
+		<tr >
 			<td><b><span class="option">Evaluator</span></b></td>
 			<td><code>String</code></td>
 			<td>
@@ -1971,17 +1977,21 @@ Context ctx = new InitialContext(env);</pre></div>
 				<code>SMTPAppender</code>'s <code>Evaluator</code> can be given
 				by adding an attribute to the newly created element.
 				</p>
-				<p>
-				More details about the use of event evaluators with <code>SMTPAppender</code>
-				follow further down this document.
+
+        <p>More details about the use of event evaluators with
+        <code>SMTPAppender</code> follow further down this document.
 				</p>
-				<p>In the absence of this option, 
-				<code>SMTPAppender</code> is assigned a default event evaluator which triggers 
-				email transmission as a response to any event of level <em>ERROR</em> or higher.  
+				
+        <p>In the absence of this option, <code>SMTPAppender</code> is
+        assigned a default event evaluator which triggers email
+        transmission as a response to any event of level
+        <em>ERROR</em> or higher.
 				</p>
-        <p><code>EventEvaluator</code> objects are subclasses of the <code>JaninoEventEvaluatorBase</code>
-        which depends on Janino. See the <a href="../dependencies.html">dependencies page</a> 
-        for more information.
+
+        <p><code>EventEvaluator</code> objects are subclasses of the
+        <code>JaninoEventEvaluatorBase</code> which depends on
+        Janino. See the <a href="../dependencies.html">dependencies
+        page</a> for more information.
         </p>
 			</td>
 		</tr>
@@ -1990,7 +2000,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		<p>The SMTPAppender keeps only the last <span
 		class="option">BufferSize</span> logging events in its cyclic
 		buffer, throwing away older events when its buffer becomes full.
-		The number of logging events delivered in any e-mail sent by
+		Thus, the number of logging events delivered in any e-mail sent by
 		<code>SMTPAppender</code> is upper-bounded by <span
 		class="option">BufferSize</span>. This keeps memory requirements
 		bounded while still delivering a reasonable amount of application
@@ -2033,6 +2043,7 @@ Context ctx = new InitialContext(env);</pre></div>
     &lt;To>EMAIL-DESTINATION&lt;/To>
     &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- a second destination is optional --&gt;
     &lt;From>SENDER-EMAIL&lt;/From>
+    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>%date %-5level %logger{35} - %message%n&lt;/Pattern>
     &lt;/layout>	    
@@ -2044,26 +2055,29 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;/root>  
 &lt;/configuration></pre></div>
 
-		<p>
-			Before trying out <code>chapter4.mail.Email</code> application with the above 
-			configuration file, you must set the <span class="option">SMTPHost</span>, 
-			<span class="option">To</span> and <span class="option">From</span> options 
-			to values appropriate for your environment. Once you have set the proper values, 
-			change directory to <em>logback-examples</em> and execute the following command:
+		<p>Before trying out <code>chapter4.mail.Email</code> application
+		with the above configuration file, you must set the <span
+		class="option">SMTPHost</span>, <span class="option">To</span> and
+		<span class="option">From</span> options to values appropriate for
+		your environment. Once you have set the correct values in the
+		configuration file, execute the following command:
 		</p>
 		
 <div class="source"><pre>java chapter4.mail.EMail 300 src/main/java/chapter4/mail/mail.xml</pre></div>
 
-		<p>
-			The chosen recipient should see an email message containing 300 logging events 
-			formatted by <code>PatternLayout</code>.
+		<p>The recipient you specified should receive an email message
+		containing 300 logging events formatted by
+		<code>PatternLayout</code> The figure below is the resulting email
+		message as shown by Mozialla Thunderbird.
 		</p>
+    
+    <p><img src="images/chapter4/smtpAppender1.jpg" alt="resulting email"/></p>
 		
-		<p>
-			In another configuration file <em>mail2.xml</em>, the values for the 
-			<span class="option">SMTPHost</span>, <span class="option">To</span> 
-			and <span class="option">From</span> options are determined by variable 
-			substitution. Here is the relevant part of <em>mail2.xml</em>.
+		<p>In the next exampleconfiguration file <em>mail2.xml</em>, the
+		values for the <span class="option">SMTPHost</span>, <span
+		class="option">To</span> and <span class="option">From</span>
+		options are determined by variable substitution. Here is the
+		relevant part of <em>mail2.xml</em>.
 		</p>		
 
 <div class="source"><pre>
@@ -2075,41 +2089,66 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;/appender>
 </pre></div>
 		
-		<p>
-			You can supply the various values on the command line:
-		</p>
+		<p>You can pass the required parameters on the command line:</p>
 		
 <div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com 
   -DsmtpHost=some_smtp_host src/main/java/chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
 </pre></div>
 
-		<p>
-			Be sure to replace with the correct values appropriate for your environment.
+		<p>Be sure to replace with values as appropriate for your
+		environment.
 		</p>
 		
-		<p>
-			Given that the default size of the cyclic buffer is 512, 
-			the recipient should see an email message containing 512 events conveniently 
-			formatted in an HTML table. Note that this run of the <code>chapter4.mail.Email</code> 
-			application generated 10'000 events of which only the last 512 were included in the email. 
+		<p>Note that in this latest example, <code>PatternLayout</code>
+		was replaced by <code>HTMLLayout</code> which formats logs as an
+		HTML table. You can change the list and order of columns as well
+		as the CSS of the table. Please refer to <a
+		href="layouts.html#ClassicHTMLLayout">HTMLLayout</a> documentation
+		for further details.
+    </p>
+    
+    <p>Given that the default size of the cyclic buffer is 512, the
+    recipient should see an email message containing 512 events
+    conveniently formatted in an HTML table. Note that this run of the
+    <code>chapter4.mail.Email</code> application generated 10'000
+    events of which only the last 512 were included in the outgoing
+    email.
 		</p>
 		
-		<p>
-			By default, the <code>SMTPAppender</code> will initiate the transmission of an email 
-			message as a response to an event of level <em>ERROR</em> or higher. 
-			However, it is possible to override this default behavior by providing a custom 
-			implementation of the <code>EventEvaluator</code> interface. 
+    <p><img src="images/chapter4/smtpAppender2.jpg" alt="2nd email"/></p>
+
+    <p>Email clients such as Mozilla Thunderbird, Eurdora or MS
+    Outlook, offer reasonably good CSS support for HTML email.
+    However, they sometimes automatically downgrade HTML to
+    plaintext. For example, to view HTML email in Thunderbird, the
+    "View&rarr;Message&nbsp;Body&nbsp;As&rarr;Original HTML" option
+    must be set. Yahoo!Mail's support for HTML email, in particular
+    its CSS support is very good. GMail on the other hand, while it
+    honors the basic HTML table structure, it ignores the internal-CSS
+    formatting. Gmail supports inline-CSS formatitng but since
+    inline-CSS would make the resulting output too voluminous,
+    <code>HTMLLayout</code> does not use inline-CSS. 
+    </p>
+
+    <h3>Triggering event</h3>
+
+		<p>By default, the <code>SMTPAppender</code> will initiate the
+		transmission of an email message as a response to an event of
+		level <em>ERROR</em> or higher.  However, it is possible to
+		override this default behavior by providing a custom
+		implementation of the <code>EventEvaluator</code> interface.
 		</p>
 		
-		<p>
-			The <code>SMTPAppender</code> submits each incoming event to its evaluator 
-			by calling <code>evaluate()</code> method in order to check whether 
-			the event should trigger an email or just be placed in the cyclic buffer. 
-			When the evaluator gives a positive answer to its evaluation, an email is sent.
-			The <code>SMTPAppender</code> contains one and only one evaluator object. 
-			This object may possess its own state. For illustrative purposes, 
-			the <code>CounterBasedEvaluator</code> class listed next, implements an
-			event evaluator whereby every 1024th event triggers an email message.
+		<p>The <code>SMTPAppender</code> submits each incoming event to
+		its evaluator by calling <code>evaluate()</code> method in order
+		to check whether the event should trigger an email or just be
+		placed in the cyclic buffer.  When the evaluator gives a positive
+		answer to its evaluation, an email is sent.  The
+		<code>SMTPAppender</code> contains one and only one evaluator
+		object.  This object may possess its own state. For illustrative
+		purposes, the <code>CounterBasedEvaluator</code> class listed
+		next, implements an event evaluator whereby every 1024th event
+		triggers an email message.
 		</p>
 
 <em>Example 4.11: A <code>EventEvaluator</code> implementation

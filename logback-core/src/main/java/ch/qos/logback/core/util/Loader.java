@@ -23,41 +23,24 @@ public class Loader {
 
   private static boolean ignoreTCL = false;
   public static final String IGNORE_TCL_PROPERTY_NAME = "logback.ignoreTCL";
-  
+
   static {
 
-    String ignoreTCLProp = OptionHelper.getSystemProperty(IGNORE_TCL_PROPERTY_NAME,
-        null);
+    String ignoreTCLProp = OptionHelper.getSystemProperty(
+        IGNORE_TCL_PROPERTY_NAME, null);
 
     if (ignoreTCLProp != null) {
       ignoreTCL = OptionHelper.toBoolean(ignoreTCLProp, true);
     }
   }
 
-  
   /**
-   * This method will search for <code>resource</code> in different places.
-   * The search order is as follows:
+   * Search for a resource using the classloader passed as parameter.
    * 
-   * <ol>
-   * 
-   * <p>
-   * <li>Search for <code>resource</code> using the thread context class
-   * loader under Java2. This step is performed only if the <code>
-   skipTCL</code>
-   * parameter is false.</li>
-   * 
-   * <p>
-   * <li>If the above step fails, search for <code>resource</code> using the
-   * class loader that loaded this class (<code>Loader</code>).</li>
-   * 
-   * <p>
-   * <li>Try one last time with
-   * <code>ClassLoader.getSystemResource(resource)</code>, that is is using
-   * the system class loader in JDK 1.2 and virtual machine's built-in class
-   * loader in JDK 1.1.
-   * 
-   * </ol>
+   * @param resource
+   *                the resource name to look for
+   * @param classLoader
+   *                the classloader used for the search
    */
   public static URL getResource(String resource, ClassLoader classLoader) {
     try {
@@ -67,10 +50,21 @@ public class Loader {
     }
   }
 
-  public static URL getResourceByTCL(String resource) {
-    return getResource(resource, getTCL());
+  /**
+   * Attempt to find a resource by using the classloader that loaded this class,
+   * namely Loader.class.
+   * 
+   * @param resource
+   * @return
+   */
+  public static URL getResourceBySelfClassLoader(String resource) {
+    return getResource(resource, Loader.class.getClassLoader());
   }
-  
+
+//  private static URL getResourceByTCL(String resource) {
+//    return getResource(resource, getTCL());
+//  }
+
   /**
    * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
    * under JDK 1.1 or anything else goes wrong the method returns
@@ -81,11 +75,13 @@ public class Loader {
     return Thread.currentThread().getContextClassLoader();
   }
 
-  @SuppressWarnings("unchecked") 
-  public static Class loadClass(String clazz, Context context) throws ClassNotFoundException {
+  @SuppressWarnings("unchecked")
+  public static Class loadClass(String clazz, Context context)
+      throws ClassNotFoundException {
     ClassLoader cl = context.getClass().getClassLoader();
     return cl.loadClass(clazz);
   }
+
   /**
    * If running under JDK 1.2 load the specified class using the
    * <code>Thread</code> <code>contextClassLoader</code> if that fails try

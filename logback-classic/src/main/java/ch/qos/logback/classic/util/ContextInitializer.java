@@ -43,7 +43,7 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader) {
+  private URL findConfigFileURLFromSystemProperties() {
     String logbackConfigFile = System.getProperty(CONFIG_FILE_PROPERTY, null);
     if (logbackConfigFile != null) {
       URL result = null;
@@ -53,7 +53,7 @@ public class ContextInitializer {
       } catch (MalformedURLException e) {
         // so, resource is not a URL:
         // attempt to get the resource from the class path
-        result = Loader.getResource(logbackConfigFile, classLoader);
+        result = Loader.getResourceBySelfClassLoader(logbackConfigFile);
         if (result != null) {
           return result;
         }
@@ -72,16 +72,16 @@ public class ContextInitializer {
     return null;
   }
 
-  public void autoConfig(ClassLoader classLoader) throws JoranException {
+  public void autoConfig() throws JoranException {
     StatusListenerConfigHelper.installIfAsked(loggerContext);
 
-    URL url = findConfigFileURLFromSystemProperties(classLoader);
+    URL url = findConfigFileURLFromSystemProperties();
     if (url == null) {
-      url = Loader.getResource(TEST_AUTOCONFIG_FILE, classLoader);
+      url = Loader.getResourceBySelfClassLoader(TEST_AUTOCONFIG_FILE);
       statusOnResourceSearch(TEST_AUTOCONFIG_FILE, url);
     }
     if (url == null) {
-      url = Loader.getResource(AUTOCONFIG_FILE, classLoader);
+      url = Loader.getResourceBySelfClassLoader(AUTOCONFIG_FILE);
       statusOnResourceSearch(AUTOCONFIG_FILE, url);
     }
     if (url != null) {
@@ -89,11 +89,6 @@ public class ContextInitializer {
     } else {
       BasicConfigurator.configure(loggerContext);
     }
-  }
-
-  public void autoConfig() throws JoranException {
-    ClassLoader tccl = Loader.getTCL();
-    autoConfig(tccl);
   }
 
   private void statusOnResourceSearch(String resourceName, URL url) {
