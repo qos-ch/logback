@@ -29,7 +29,7 @@ public class ThrowableInformation implements java.io.Serializable {
   }
   
   /**
-   * The string representation of the exceptopn (throwable) that this object
+   * The string representation of the throwable  that this object
    * represents.
    */
   public String[] getThrowableStrRep() {
