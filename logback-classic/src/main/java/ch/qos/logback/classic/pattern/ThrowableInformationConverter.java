@@ -98,6 +98,7 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
     int length = (lengthOption > stringRep.length) ? stringRep.length
         : lengthOption;
 
+    // an evaluator match will cause stack printing to be skipped 
     if (evaluatorList != null) {
       boolean printStack = true;
       for (int i = 0; i < evaluatorList.size(); i++) {

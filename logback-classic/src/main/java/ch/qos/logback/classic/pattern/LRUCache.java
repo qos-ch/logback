@@ -40,6 +40,8 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
   }
   
   List<K> keyList() {
-    return new ArrayList<K>(keySet());
+    ArrayList<K> al = new ArrayList<K>();
+    al.addAll(keySet());
+    return al;
   }
 }

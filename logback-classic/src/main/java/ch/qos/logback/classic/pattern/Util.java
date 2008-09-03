@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.slf4j.Marker;
 
+import ch.qos.logback.core.helpers.PackageInfo;
+
 /**
  * 
  * @author James Strachan
@@ -77,12 +79,14 @@ public class Util {
    * Uses the context class path or the current global class loader to deduce
    * the file that the given class name comes from
    */
-  static String getJarNameOfClass(String className) {
+  static String getJarNameOfClass0(String className) {
     try {
       Class type = findClass(className);
       if (type != null) {
         URL resource = type.getClassLoader().getResource(
             type.getName().replace('.', '/') + ".class");
+         
+         
         // "jar:file:/C:/java/../repo/groupId/artifact/1.3/artifact-1.3.jar!/com/some/package/Some.class
         if (resource != null) {
           String text = resource.toString();
@@ -107,7 +111,41 @@ public class Util {
     }
     return "na";
   }
-
+  
+  static String getJarNameOfClass1(String className) {
+    try {
+      Class type = findClass(className);
+      if (type != null) {
+        
+        
+        // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
+        URL resource = type.getProtectionDomain().getCodeSource().getLocation();
+        if (resource != null) {
+          String text = resource.toString();
+            // now lets remove all but the file name
+          int  idx = text.lastIndexOf('/');
+          if (idx > 0) {
+            text = text.substring(idx + 1);
+          }
+          idx = text.lastIndexOf('\\');
+          if (idx > 0) {
+            text = text.substring(idx + 1);
+          }
+           return text;
+        }
+      }
+    } catch (Exception e) {
+      // ignore
+    }
+    return "na";
+  }
+  
+  
+  
+  static String getJarNameOfClass(String className) {
+    return getJarNameOfClass1(className);
+  }
+  
   static private Class findClass(String className) {
     try {
       return Thread.currentThread().getContextClassLoader()

@@ -4,8 +4,9 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import ch.qos.logback.core.helpers.PackageInfo;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
@@ -37,7 +38,7 @@ public class UtilTest {
         PackageInfo pi = Util.getPackageInfo(className);
         System.out.println("  at " + className + "." + ste.getMethodName()
             + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ") ["
-            + pi.jarName + ":" + pi.version + "]");
+            + pi.getJarName() + ":" + pi.getVersion() + "]");
       }
     }
   }
@@ -68,17 +69,16 @@ public class UtilTest {
   }
 
   @Test
-  @Ignore
   public void perfTest() {
     int len = 1000;
     loop(len, false);
     double d0 = loop(len, false);
 
-    System.out.println("false " + d0);
+    System.out.println("ve=false " + d0);
 
     loop(len, true);
     double d1 = loop(len, true);
 
-    System.out.println("false " + d1);
+    System.out.println("ve=true " + d1);
   }
 }

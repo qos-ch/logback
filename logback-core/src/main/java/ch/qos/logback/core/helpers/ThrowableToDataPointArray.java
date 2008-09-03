@@ -1,57 +1,56 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2005, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
+
 package ch.qos.logback.core.helpers;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.qos.logback.core.CoreGlobal;
 
+public class ThrowableToDataPointArray {
 
-public class ThrowableToStringArray {
+  static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
 
-  public static String[] extractStringRep(Throwable t, StackTraceElement[] parentSTE) {
-    String[] result;
+  public static ThrowableDataPoint[] convert(Throwable t) {
+    List<ThrowableDataPoint> tdpList = new LinkedList<ThrowableDataPoint>();
+    extract(tdpList, t, null);
+    return tdpList.toArray(TEMPLATE_ARRAY);
+  }
 
+  private static void extract(List<ThrowableDataPoint> tdpList, Throwable t,
+      StackTraceElement[] parentSTE) {
     StackTraceElement[] ste = t.getStackTrace();
     final int numberOfcommonFrames = findNumberOfCommonFrames(ste, parentSTE);
 
-    final String[] firstArray;
-    if (numberOfcommonFrames == 0) {
-      firstArray = new String[ste.length + 1];
-    } else {
-      firstArray = new String[ste.length - numberOfcommonFrames + 2];
-    }
-
-    firstArray[0] = formatFirstLine(t, parentSTE);
+    tdpList.add(firstLineToDataPoint(t, parentSTE));
     for (int i = 0; i < (ste.length - numberOfcommonFrames); i++) {
-      firstArray[i + 1] = ste[i].toString();
+      tdpList.add(new ThrowableDataPoint(ste[i]));
     }
-
+    
+    //   buf.append("\tat ");
+    
+    
     if (numberOfcommonFrames != 0) {
-      firstArray[firstArray.length - 1] = numberOfcommonFrames
-          + " common frames omitted";
+      tdpList.add(new ThrowableDataPoint("\t... "+numberOfcommonFrames
+          + " common frames omitted"));
     }
 
     Throwable cause = t.getCause();
     if (cause != null) {
-      final String[] causeArray = ThrowableToStringArray.extractStringRep(cause, ste);
-      String[] tmp = new String[firstArray.length + causeArray.length];
-      System.arraycopy(firstArray, 0, tmp, 0, firstArray.length);
-      System
-          .arraycopy(causeArray, 0, tmp, firstArray.length, causeArray.length);
-      result = tmp;
-    } else {
-      result = firstArray;
+      extract(tdpList, cause, ste);
     }
-    return result;
   }
-  
-  private static String formatFirstLine(Throwable t, StackTraceElement[] parentSTE) {
+
+  private static ThrowableDataPoint firstLineToDataPoint(Throwable t,
+      StackTraceElement[] parentSTE) {
     String prefix = "";
     if (parentSTE != null) {
       prefix = CoreGlobal.CAUSED_BY;
@@ -61,9 +60,9 @@ public class ThrowableToStringArray {
     if (t.getMessage() != null) {
       result += ": " + t.getMessage();
     }
-    return result;
+    return new ThrowableDataPoint(result);
   }
-  
+
   private static int findNumberOfCommonFrames(StackTraceElement[] ste,
       StackTraceElement[] parentSTE) {
     if (parentSTE == null) {

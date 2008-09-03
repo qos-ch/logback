@@ -31,7 +31,7 @@ public class T_LRUCache<K> {
   }
 
   @SuppressWarnings("unchecked")
-  public void put(K k) {
+  synchronized public void put(K k) {
     sequenceNumber++;
     T_Entry<K> te = getEntry(k);
     if (te != null) {
@@ -47,7 +47,7 @@ public class T_LRUCache<K> {
   }
 
   @SuppressWarnings("unchecked")
-  public K get(K k) {
+  synchronized public K get(K k) {
     T_Entry<K> te = getEntry(k);
     if (te == null) {
       return null;
@@ -58,7 +58,7 @@ public class T_LRUCache<K> {
     }
   }
 
-  public List<K> ketList() {
+  synchronized public List<K> keyList() {
     List<K> keyList = new ArrayList<K>();
     for (T_Entry<K> e : cacheList) {
       keyList.add(e.k);
@@ -86,3 +86,4 @@ public class T_LRUCache<K> {
   }
 
 }
+

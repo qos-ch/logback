@@ -11,28 +11,29 @@ import ch.qos.logback.classic.pattern.lru.T_LRUCache;
 
 public class Simulator {
 
-  
   Random random;
-  
+
   int worldSize;
   int get2PutRatio;
-  
-  public Simulator(int worldSize, int get2PutRatio) {
+  boolean multiThreaded;
+
+  public Simulator(int worldSize, int get2PutRatio, boolean multiThreaded) {
     this.worldSize = worldSize;
     this.get2PutRatio = get2PutRatio;
     long seed = System.nanoTime();
-    System.out.println("seed is "+seed);
+    // System.out.println("seed is "+seed);
     random = new Random(seed);
+    this.multiThreaded = multiThreaded;
   }
-  
+
   public List<Event> generateScenario(int len) {
     List<Event> scenario = new ArrayList<Event>();
-    
-    for(int i = 0; i < len; i++) {
-      
+
+    for (int i = 0; i < len; i++) {
+
       int r = random.nextInt(get2PutRatio);
       boolean put = false;
-      if(r == 0) {
+      if (r == 0) {
         put = true;
       }
       r = random.nextInt(worldSize);
@@ -41,30 +42,40 @@ public class Simulator {
     }
     return scenario;
   }
-  
-  public void simulate(List<Event> scenario, LRUCache<String, String> lruCache, T_LRUCache<String> tlruCache) {
-    for(Event<String> e: scenario) {
-      if(e.put) {
+
+  public void simulate(List<Event> scenario, LRUCache<String, String> lruCache,
+      T_LRUCache<String> tlruCache) {
+    for (Event<String> e : scenario) {
+      if (e.put) {
         lruCache.put(e.k, e.k);
         tlruCache.put(e.k);
       } else {
+        @SuppressWarnings("unused")
         String r0 = lruCache.get(e.k);
+        @SuppressWarnings("unused")
         String r1 = tlruCache.get(e.k);
-        if(r0 != null) {
-          assertEquals(r0, e.k);
+        if (!multiThreaded) {
+          // if the simulation is used in a multi-threaded
+          // context, then the state of lruCache may be different than
+          // that of tlruCache. In single threaded mode, they should
+          // return the same values all the time
+          if (r0 != null) {
+            assertEquals(r0, e.k);
+          }
+          assertEquals(r0, r1);
         }
-        assertEquals(r0, r1);
       }
     }
   }
-  
-//  void compareAndDumpIfDifferent(LRUCache<String, String> lruCache, T_LRUCache<String> tlruCache) {
-//    lruCache.dump();
-//    tlruCache.dump();
-//    if(!lruCache.keyList().equals(tlruCache.ketList())) {
-//      lruCache.dump();
-//      tlruCache.dump();
-//      throw new AssertionFailedError("s");
-//    }
-//  }
+
+  // void compareAndDumpIfDifferent(LRUCache<String, String> lruCache,
+  // T_LRUCache<String> tlruCache) {
+  // lruCache.dump();
+  // tlruCache.dump();
+  // if(!lruCache.keyList().equals(tlruCache.ketList())) {
+  // lruCache.dump();
+  // tlruCache.dump();
+  // throw new AssertionFailedError("s");
+  // }
+  // }
 }
