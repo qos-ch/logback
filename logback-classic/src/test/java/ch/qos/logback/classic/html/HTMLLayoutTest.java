@@ -12,6 +12,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.EntityResolver;
 
@@ -19,8 +20,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableInformation;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.read.ListAppender;
 
 public class HTMLLayoutTest {
@@ -86,7 +88,7 @@ public class HTMLLayoutTest {
   @Test
   public void testAppendThrowable() throws Exception {
     StringBuilder buf = new StringBuilder();
-    String[] strArray = { "test1", "test2" };
+    ThrowableDataPoint[] strArray = { new ThrowableDataPoint("test1"), new ThrowableDataPoint("test2") };
     DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout
         .getThrowableRenderer();
     renderer.render(buf, strArray);
@@ -141,7 +143,7 @@ public class HTMLLayoutTest {
   public void layoutWithException() throws Exception {
     layout.setPattern("%level %thread %msg %ex");
     LoggingEvent le = createLoggingEvent();
-    le.setThrowableInformation(new ThrowableInformation(new Exception(
+    le.setThrowableProxy(new ThrowableProxy(new Exception(
         "test Exception")));
     String result = layout.doLayout(le);
 
@@ -166,6 +168,7 @@ public class HTMLLayoutTest {
   }
   
   @Test
+  @Ignore
   public void rawLimit() throws Exception {
     StringBuilder sb = new StringBuilder();
     String header = layout.getFileHeader();

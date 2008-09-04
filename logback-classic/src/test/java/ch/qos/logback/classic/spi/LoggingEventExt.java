@@ -82,7 +82,7 @@ public class LoggingEventExt implements Externalizable {
 
 	private Logger logger;
 
-	private ThrowableInformation throwableInfo;
+	private ThrowableProxy throwableInfo;
 
 	private CallerData[] callerDataArray;
 
@@ -105,7 +105,7 @@ public class LoggingEventExt implements Externalizable {
 		this.message = message;
 
 		if (throwable != null) {
-			this.throwableInfo = new ThrowableInformation(throwable);
+			this.throwableInfo = new ThrowableProxy(throwable);
 		}
 		
 		if (argArray != null) {
@@ -148,14 +148,14 @@ public class LoggingEventExt implements Externalizable {
 	 * Returns the throwable information contained within this event. May be
 	 * <code>null</code> if there is no such information.
 	 */
-	public ThrowableInformation getThrowableInformation() {
+	public ThrowableProxy getThrowableInformation() {
 		return throwableInfo;
 	}
 
 	/**
 	 * Set this event's throwable information.
 	 */
-	public void setThrowableInformation(ThrowableInformation ti) {
+	public void setThrowableInformation(ThrowableProxy ti) {
 		if (throwableInfo != null) {
 			throw new IllegalStateException(
 					"ThrowableInformation has been already set.");

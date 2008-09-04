@@ -11,17 +11,19 @@ package ch.qos.logback.classic.spi;
 
 import java.util.Arrays;
 
-import ch.qos.logback.core.helpers.ThrowableToStringArray;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.helpers.ThrowableDataPoint;
+import ch.qos.logback.core.helpers.ThrowableToDataPointArray;
 
-public class ThrowableInformation implements java.io.Serializable {
+public class ThrowableProxy implements java.io.Serializable {
 
   private static final long serialVersionUID = 6307784764626694851L;
-  private String[] sa;
+  private ThrowableDataPoint[] tdpArray;
   private transient final Throwable throwable;
 
-  public ThrowableInformation(Throwable throwable) {
+  public ThrowableProxy(Throwable throwable) {
     this.throwable = throwable;
-    sa = ThrowableToStringArray.extractStringRep(throwable, null);
+    tdpArray = ThrowableToDataPointArray.convert(throwable);
   }
 
   public Throwable getThrowable() {
@@ -29,18 +31,17 @@ public class ThrowableInformation implements java.io.Serializable {
   }
   
   /**
-   * The string representation of the throwable  that this object
-   * represents.
+   * The data point representation of the throwable proxy.
    */
-  public String[] getThrowableStrRep() {
-    return sa;
+  public ThrowableDataPoint[] getThrowableDataPointArray() {
+    return tdpArray;
   }
 
   @Override
   public int hashCode() {
     final int PRIME = 31;
     int result = 1;
-    result = PRIME * result + Arrays.hashCode(sa);
+    result = PRIME * result + Arrays.hashCode(tdpArray);
     return result;
   }
 
@@ -52,11 +53,10 @@ public class ThrowableInformation implements java.io.Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    final ThrowableInformation other = (ThrowableInformation) obj;
-    if (!Arrays.equals(sa, other.sa))
+    final ThrowableProxy other = (ThrowableProxy) obj;
+    if (!Arrays.equals(tdpArray, other.tdpArray))
       return false;
     return true;
   }
-  
   
 }

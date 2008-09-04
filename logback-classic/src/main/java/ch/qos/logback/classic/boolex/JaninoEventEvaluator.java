@@ -102,8 +102,8 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     values[i++] = new Long(loggingEvent.getTimeStamp());
     values[i++] = loggingEvent.getMarker();
     values[i++] = loggingEvent.getMDCPropertyMap();
-    if (loggingEvent.getThrowableInformation() != null) {
-      values[i++] = loggingEvent.getThrowableInformation().getThrowable();
+    if (loggingEvent.getThrowableProxy() != null) {
+      values[i++] = loggingEvent.getThrowableProxy().getThrowable();
     } else {
       values[i++] = null;
     }

@@ -88,7 +88,7 @@ public class DBAppenderTest extends DBAppenderTestBase {
     rs = stmt.executeQuery("SELECT * FROM logging_event_exception where event_id = 0");
     int i = 0;
     while (rs.next()) {
-      assertEquals(event.getThrowableInformation().getThrowableStrRep()[i], rs.getString(3));
+      assertEquals(event.getThrowableProxy().getThrowableDataPointArray()[i].toString(), rs.getString(3));
       i++;
     }
     

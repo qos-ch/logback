@@ -22,6 +22,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(ContextListenerTest.class);
     suite.addTestSuite(CallerDataTest.class); 
     suite.addTest(new JUnit4TestAdapter (LoggerComparatorTest.class));
+    suite.addTest(new JUnit4TestAdapter (LoggingEventSerializationTest.class));
     return suite;
   }
 }

@@ -126,8 +126,8 @@ public class LoggingEventSerializationTest {
   public void xThrowable() throws Exception {
     LoggingEvent event = createLoggingEvent();
     Throwable throwable = new Throwable("just testing");
-    ThrowableInformation th = new ThrowableInformation(throwable);
-    event.setThrowableInformation(th);
+    ThrowableProxy tp = new ThrowableProxy(throwable);
+    event.setThrowableProxy(tp);
 
     LoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
@@ -168,8 +168,11 @@ public class LoggingEventSerializationTest {
     assertEquals(original.getFormattedMessage(), afterSerialization
         .getFormattedMessage());
     assertEquals(original.getMessage(), afterSerialization.getMessage());
-    assertEquals(original.getThrowableInformation(), afterSerialization
-        .getThrowableInformation());
+    
+    System.out.println();
+    
+    assertEquals(original.getThrowableProxy(), afterSerialization
+        .getThrowableProxy());
 
   }
 

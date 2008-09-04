@@ -22,6 +22,7 @@ import java.util.Set;
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DBAppenderBase;
+import ch.qos.logback.core.helpers.ThrowableDataPoint;
 
 /**
  * The DBAppender inserts logging events into three database tables in a format
@@ -90,8 +91,8 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     Map<String, String> mergedMap = mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
 
-    if (event.getThrowableInformation() != null) {
-      insertThrowable(event.getThrowableInformation().getThrowableStrRep(), connection, eventId);
+    if (event.getThrowableProxy() != null) {
+      insertThrowable(event.getThrowableProxy().getThrowableDataPointArray(), connection, eventId);
     }
   }
 
@@ -176,16 +177,16 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     }
   }
   
-  protected void insertThrowable(String[] strRep, Connection connection,
+  protected void insertThrowable(ThrowableDataPoint[] tdpArray, Connection connection,
       int eventId) throws SQLException {
 
     PreparedStatement insertExceptionStatement = connection
         .prepareStatement(insertExceptionSQL);
 
-    for (short i = 0; i < strRep.length; i++) {
+    for (short i = 0; i < tdpArray.length; i++) {
       insertExceptionStatement.setInt(1, eventId);
       insertExceptionStatement.setShort(2, i);
-      insertExceptionStatement.setString(3, strRep[i]);
+      insertExceptionStatement.setString(3, tdpArray[i].toString());
       if (cnxSupportsBatchUpdates) {
         insertExceptionStatement.addBatch();
       } else {

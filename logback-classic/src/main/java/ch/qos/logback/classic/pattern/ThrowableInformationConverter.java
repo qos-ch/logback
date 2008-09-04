@@ -14,11 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableInformation;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
@@ -87,15 +88,15 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
   public String convert(LoggingEvent event) {
     StringBuffer buf = new StringBuffer(32);
 
-    ThrowableInformation information = event.getThrowableInformation();
+    ThrowableProxy information = event.getThrowableProxy();
 
     if (information == null) {
       return CoreGlobal.EMPTY_STRING;
     }
 
-    String[] stringRep = information.getThrowableStrRep();
+    ThrowableDataPoint[] tdpArray = information.getThrowableDataPointArray();
 
-    int length = (lengthOption > stringRep.length) ? stringRep.length
+    int length = (lengthOption > tdpArray.length) ? tdpArray.length
         : lengthOption;
 
     // an evaluator match will cause stack printing to be skipped 
@@ -129,9 +130,9 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
       }
     }
 
-    buf.append(stringRep[0]).append(CoreGlobal.LINE_SEPARATOR);
+    buf.append(tdpArray[0]).append(CoreGlobal.LINE_SEPARATOR);
     for (int i = 1; i < length; i++) {
-      String string = stringRep[i];
+      String string = tdpArray[i].toString();
 
       if (string.startsWith(CoreGlobal.CAUSED_BY)) {
         // nothing

@@ -16,6 +16,7 @@ import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 import ch.qos.logback.core.net.SyslogWriter;
 
@@ -77,11 +78,11 @@ public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
     
     String prefix = prefixLayout.doLayout(event);
     
-    if (event.getThrowableInformation() != null) {
-      String[] strRep = event.getThrowableInformation().getThrowableStrRep();
+    if (event.getThrowableProxy() != null) {
+      ThrowableDataPoint[] strRep = event.getThrowableProxy().getThrowableDataPointArray();
       try {
-        for (String line : strRep) {
-          sw.write(prefix + line);
+        for (ThrowableDataPoint line : strRep) {
+          sw.write(prefix + line.toString());
           sw.flush();
         }
       } catch (IOException e) {

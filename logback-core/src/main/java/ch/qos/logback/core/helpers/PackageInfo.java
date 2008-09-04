@@ -9,7 +9,11 @@
  */
 package ch.qos.logback.core.helpers;
 
-public class PackageInfo {
+import java.io.Serializable;
+
+public class PackageInfo implements Serializable {
+
+  private static final long serialVersionUID = 637783570208674312L;
 
   String jarName;
   String version;

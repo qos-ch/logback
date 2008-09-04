@@ -83,7 +83,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     buf.append("</tr>");
     buf.append(LINE_SEP);
 
-    if (event.getThrowableInformation() != null) {
+    if (event.getThrowableProxy() != null) {
       throwableRenderer.render(buf, event);
     }
     return buf.toString();

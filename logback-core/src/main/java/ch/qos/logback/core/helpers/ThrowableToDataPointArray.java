@@ -15,6 +15,12 @@ import java.util.List;
 
 import ch.qos.logback.core.CoreGlobal;
 
+/**
+ * Convert a throwable into an array of ThrowableDataPoint objects.
+ * 
+ *  
+ * @author Ceki G&uuml;lc&uuml;
+ */
 public class ThrowableToDataPointArray {
 
   static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
@@ -34,9 +40,6 @@ public class ThrowableToDataPointArray {
     for (int i = 0; i < (ste.length - numberOfcommonFrames); i++) {
       tdpList.add(new ThrowableDataPoint(ste[i]));
     }
-    
-    //   buf.append("\tat ");
-    
     
     if (numberOfcommonFrames != 0) {
       tdpList.add(new ThrowableDataPoint("\t... "+numberOfcommonFrames

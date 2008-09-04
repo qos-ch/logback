@@ -82,7 +82,7 @@ public class LoggingEvent implements Serializable {
 
   private transient Object[] argumentArray;
 
-  private ThrowableInformation throwableInfo;
+  private ThrowableProxy throwableProxy;
 
   private CallerData[] callerDataArray;
   private LoggerRemoteView loggerRemoteView;
@@ -108,7 +108,7 @@ public class LoggingEvent implements Serializable {
     this.message = message;
 
     if (throwable != null) {
-      this.throwableInfo = new ThrowableInformation(throwable);
+      this.throwableProxy = new ThrowableProxy(throwable);
     }
 
     // bug 85 (we previously failed to set this.argumentArray)
@@ -166,19 +166,19 @@ public class LoggingEvent implements Serializable {
    * Returns the throwable information contained within this event. May be
    * <code>null</code> if there is no such information.
    */
-  public ThrowableInformation getThrowableInformation() {
-    return throwableInfo;
+  public ThrowableProxy getThrowableProxy() {
+    return throwableProxy;
   }
 
   /**
    * Set this event's throwable information.
    */
-  public void setThrowableInformation(ThrowableInformation ti) {
-    if (throwableInfo != null) {
+  public void setThrowableProxy(ThrowableProxy tp) {
+    if (throwableProxy != null) {
       throw new IllegalStateException(
-          "ThrowableInformation has been already set.");
+          "ThrowableProxy has been already set.");
     } else {
-      throwableInfo = ti;
+      throwableProxy = tp;
     }
   }
 
