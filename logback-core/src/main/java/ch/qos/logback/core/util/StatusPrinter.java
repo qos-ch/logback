@@ -91,7 +91,7 @@ public class StatusPrinter {
   }
 
   private static void appendThrowable(StringBuilder sb, Throwable t) {
-    String[] stringRep = ThrowableToStringArray.extractStringRep(t, null);
+    String[] stringRep = ThrowableToStringArray.convert(t);
 
     for (String s : stringRep) {
       if (s.startsWith(CoreGlobal.CAUSED_BY)) {

@@ -21,8 +21,8 @@ import java.util.Set;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.core.db.DBAppenderBase;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
 
 /**
  * The DBAppender inserts logging events into three database tables in a format

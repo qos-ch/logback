@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package ch.qos.logback.core.helpers;
+package ch.qos.logback.classic.spi;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,16 +25,17 @@ public class ThrowableToDataPointArray {
 
   static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
 
-  public static ThrowableDataPoint[] convert(Throwable t) {
+  
+  static public ThrowableDataPoint[] convert(Throwable t) {
     List<ThrowableDataPoint> tdpList = new LinkedList<ThrowableDataPoint>();
     extract(tdpList, t, null);
     return tdpList.toArray(TEMPLATE_ARRAY);
   }
 
-  private static void extract(List<ThrowableDataPoint> tdpList, Throwable t,
+  static private void extract(List<ThrowableDataPoint> tdpList, Throwable t,
       StackTraceElement[] parentSTE) {
     StackTraceElement[] ste = t.getStackTrace();
-    final int numberOfcommonFrames = findNumberOfCommonFrames(ste, parentSTE);
+    final int numberOfcommonFrames = STEUtil.findNumberOfCommonFrames(ste, parentSTE);
 
     tdpList.add(firstLineToDataPoint(t, parentSTE));
     for (int i = 0; i < (ste.length - numberOfcommonFrames); i++) {
@@ -66,25 +67,6 @@ public class ThrowableToDataPointArray {
     return new ThrowableDataPoint(result);
   }
 
-  private static int findNumberOfCommonFrames(StackTraceElement[] ste,
-      StackTraceElement[] parentSTE) {
-    if (parentSTE == null) {
-      return 0;
-    }
-
-    int steIndex = ste.length - 1;
-    int parentIndex = parentSTE.length - 1;
-    int count = 0;
-    while (steIndex >= 0 && parentIndex >= 0) {
-      if (ste[steIndex].equals(parentSTE[parentIndex])) {
-        count++;
-      } else {
-        break;
-      }
-      steIndex--;
-      parentIndex--;
-    }
-    return count;
-  }
+ 
 
 }

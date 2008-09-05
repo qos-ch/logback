@@ -20,9 +20,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.CoreGlobal;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.read.ListAppender;
 
 public class HTMLLayoutTest {

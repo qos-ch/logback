@@ -9,49 +9,43 @@
  */
 package ch.qos.logback.core.helpers;
 
-import ch.qos.logback.core.CoreGlobal;
+import java.util.LinkedList;
+import java.util.List;
 
+import ch.qos.logback.core.CoreGlobal;
 
 public class ThrowableToStringArray {
 
-  public static String[] extractStringRep(Throwable t, StackTraceElement[] parentSTE) {
-    String[] result;
+  public static String[] convert(Throwable t) {
+    List<String> strList = new LinkedList<String>();
+    extract(strList, t, null);
+    return strList.toArray(new String[0]);
+
+  }
+
+  private static void extract(List<String> strList, Throwable t,
+      StackTraceElement[] parentSTE) {
 
     StackTraceElement[] ste = t.getStackTrace();
     final int numberOfcommonFrames = findNumberOfCommonFrames(ste, parentSTE);
 
-    final String[] firstArray;
-    if (numberOfcommonFrames == 0) {
-      firstArray = new String[ste.length + 1];
-    } else {
-      firstArray = new String[ste.length - numberOfcommonFrames + 2];
-    }
-
-    firstArray[0] = formatFirstLine(t, parentSTE);
+    strList.add(formatFirstLine(t, parentSTE));
     for (int i = 0; i < (ste.length - numberOfcommonFrames); i++) {
-      firstArray[i + 1] = ste[i].toString();
+      strList.add("\tat "+ste[i].toString());
     }
 
     if (numberOfcommonFrames != 0) {
-      firstArray[firstArray.length - 1] = numberOfcommonFrames
-          + " common frames omitted";
+      strList.add("\t... "+numberOfcommonFrames + " common frames omitted");
     }
 
     Throwable cause = t.getCause();
     if (cause != null) {
-      final String[] causeArray = ThrowableToStringArray.extractStringRep(cause, ste);
-      String[] tmp = new String[firstArray.length + causeArray.length];
-      System.arraycopy(firstArray, 0, tmp, 0, firstArray.length);
-      System
-          .arraycopy(causeArray, 0, tmp, firstArray.length, causeArray.length);
-      result = tmp;
-    } else {
-      result = firstArray;
+      ThrowableToStringArray.extract(strList, cause, ste);
     }
-    return result;
   }
-  
-  private static String formatFirstLine(Throwable t, StackTraceElement[] parentSTE) {
+
+  private static String formatFirstLine(Throwable t,
+      StackTraceElement[] parentSTE) {
     String prefix = "";
     if (parentSTE != null) {
       prefix = CoreGlobal.CAUSED_BY;
@@ -63,7 +57,7 @@ public class ThrowableToStringArray {
     }
     return result;
   }
-  
+
   private static int findNumberOfCommonFrames(StackTraceElement[] ste,
       StackTraceElement[] parentSTE) {
     if (parentSTE == null) {

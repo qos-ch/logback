@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.pattern;
+package ch.qos.logback.classic.spi;
 
 import java.util.Random;
 
@@ -6,15 +6,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.helpers.PackageInfo;
-
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 
-public class UtilTest {
+public class PackageInfoTest {
 
   int diff = 1024 + new Random().nextInt(10000);
-
+ 
   @Before
   public void setUp() throws Exception {
   }
@@ -33,17 +31,19 @@ public class UtilTest {
     } catch (Throwable e) {
       // e.printStackTrace();
       StackTraceElement[] stea = e.getStackTrace();
-      for (StackTraceElement ste : stea) {
-        String className = ste.getClassName();
-        PackageInfo pi = Util.getPackageInfo(className);
-        System.out.println("  at " + className + "." + ste.getMethodName()
-            + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ") ["
-            + pi.getJarName() + ":" + pi.getVersion() + "]");
-      }
+      PackageInfoCalculator pic = new PackageInfoCalculator();
+      
+      ThrowableDataPoint[] tdpa = ThrowableToDataPointArray.convert(e);
+      pic.computePackageInfo(tdpa);
+      
+      
+      //for (ThrowableDataPoint ste : stea) {
+///
+   //   }
     }
   }
 
-  public void doPerf(boolean versionExtraction) {
+  public void doPerf(boolean withPI) {
     try {
       ServerSetup serverSetup = new ServerSetup(-1, "localhost",
           ServerSetup.PROTOCOL_SMTP);
@@ -51,34 +51,35 @@ public class UtilTest {
       // greenMail.start();
     } catch (Throwable e) {
       StackTraceElement[] stea = e.getStackTrace();
-      if (versionExtraction) {
+      
+      if (withPI) {
+        PackageInfoCalculator pic = new PackageInfoCalculator();
         for (StackTraceElement ste : stea) {
           String className = ste.getClassName();
-          PackageInfo pi = Util.getPackageInfo(className);
+          //PackageInfo pi = pic.compute(className);
         }
       }
     }
   }
 
-  double loop(int len, boolean ve) {
+  double loop(int len, boolean withPI) {
     long start = System.nanoTime();
     for (int i = 0; i < len; i++) {
-      doPerf(ve);
+      doPerf(withPI);
     }
     return (1.0*System.nanoTime() - start)/len/1000;
   }
 
   @Test
   public void perfTest() {
-    int len = 1000;
+    int len = 10000;
     loop(len, false);
-    double d0 = loop(len, false);
-
-    System.out.println("ve=false " + d0);
-
     loop(len, true);
-    double d1 = loop(len, true);
+    
+    double d0 = loop(len, false);
+    System.out.println("without package info " + d0+" microseconds");
 
-    System.out.println("ve=true " + d1);
+    double d1 = loop(len, true);
+    System.out.println("with    package info " + d1 +" microseconds");
   }
 }

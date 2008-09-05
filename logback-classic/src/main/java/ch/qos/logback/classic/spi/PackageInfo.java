@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.helpers;
+package ch.qos.logback.classic.spi;
 
 import java.io.Serializable;
 
@@ -30,4 +30,5 @@ public class PackageInfo implements Serializable {
   public String getVersion() {
     return version;
   }
+  
 }

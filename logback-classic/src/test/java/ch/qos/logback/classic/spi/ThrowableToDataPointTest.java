@@ -1,4 +1,4 @@
-package ch.qos.logback.core.helpers;
+package ch.qos.logback.classic.spi;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.ThrowableToDataPointArray;
 import ch.qos.logback.core.Layout;
 
 public class ThrowableToDataPointTest {

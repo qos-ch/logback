@@ -14,20 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * Add a stack trace i case the event contains a Throwable.
+ * Add a stack trace in case the event contains a Throwable.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class ThrowableInformationConverter extends ThrowableHandlingConverter {
+public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
   int lengthOption;
   List<EventEvaluator> evaluatorList = null;
@@ -85,8 +85,12 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
     super.stop();
   }
 
+  protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
+    // nop
+  }
+  
   public String convert(LoggingEvent event) {
-    StringBuffer buf = new StringBuffer(32);
+    StringBuilder buf = new StringBuilder(32);
 
     ThrowableProxy information = event.getThrowableProxy();
 
@@ -133,15 +137,9 @@ public class ThrowableInformationConverter extends ThrowableHandlingConverter {
     buf.append(tdpArray[0]).append(CoreGlobal.LINE_SEPARATOR);
     for (int i = 1; i < length; i++) {
       String string = tdpArray[i].toString();
-
-      if (string.startsWith(CoreGlobal.CAUSED_BY)) {
-        // nothing
-      } else if (Character.isDigit(string.charAt(0))) {
-        buf.append("\t... ");
-      } else {
-        buf.append("\tat ");
-      }
-      buf.append(string).append(CoreGlobal.LINE_SEPARATOR);
+      buf.append(string);
+      extraData(buf, tdpArray[i]); // allow other data to be appended
+      buf.append(CoreGlobal.LINE_SEPARATOR);
     }
 
     return buf.toString();

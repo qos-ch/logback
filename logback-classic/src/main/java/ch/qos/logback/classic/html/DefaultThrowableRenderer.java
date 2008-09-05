@@ -3,8 +3,8 @@ package ch.qos.logback.classic.html;
 import static ch.qos.logback.core.Layout.LINE_SEP;
 import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.html.IThrowableRenderer;
 
 public class DefaultThrowableRenderer implements IThrowableRenderer {

@@ -18,6 +18,7 @@ public class AllCoreTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(ch.qos.logback.core.util.PackageTest.suite());
+    suite.addTest(ch.qos.logback.core.helpers.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.pattern.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.appender.PackageTest.suite());

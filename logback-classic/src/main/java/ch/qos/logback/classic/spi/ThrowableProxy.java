@@ -11,25 +11,34 @@ package ch.qos.logback.classic.spi;
 
 import java.util.Arrays;
 
-import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
-import ch.qos.logback.core.helpers.ThrowableToDataPointArray;
 
 public class ThrowableProxy implements java.io.Serializable {
 
   private static final long serialVersionUID = 6307784764626694851L;
   private ThrowableDataPoint[] tdpArray;
   private transient final Throwable throwable;
+  private transient PackageInfoCalculator packageInfoCalculator;
 
   public ThrowableProxy(Throwable throwable) {
     this.throwable = throwable;
-    tdpArray = ThrowableToDataPointArray.convert(throwable);
+    this.tdpArray =  ThrowableToDataPointArray.convert(throwable);
   }
 
   public Throwable getThrowable() {
     return throwable;
   }
   
+  
+  public PackageInfoCalculator getPackageInfoCalculator() {
+    // if original instance (non-deserialized), and packageInfoCalculator
+    // is not already initialized, then create an instance
+    // here we assume that (throwable == null) for deserialized instances 
+    if(throwable != null && packageInfoCalculator == null) {
+      packageInfoCalculator = new PackageInfoCalculator();
+    }
+    return packageInfoCalculator;
+  }
+
   /**
    * The data point representation of the throwable proxy.
    */

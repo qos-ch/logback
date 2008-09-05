@@ -11,7 +11,7 @@
 package ch.qos.logback.classic.db;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

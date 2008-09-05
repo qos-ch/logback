@@ -28,7 +28,7 @@ import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
 import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
-import ch.qos.logback.classic.pattern.ThrowableInformationConverter;
+import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
@@ -90,10 +90,10 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
     defaultConverterMap.put("mdc", MDCConverter.class.getName());
 
     defaultConverterMap
-        .put("ex", ThrowableInformationConverter.class.getName());
-    defaultConverterMap.put("exception", ThrowableInformationConverter.class
+        .put("ex", ThrowableProxyConverter.class.getName());
+    defaultConverterMap.put("exception", ThrowableProxyConverter.class
         .getName());
-    defaultConverterMap.put("throwable", ThrowableInformationConverter.class
+    defaultConverterMap.put("throwable", ThrowableProxyConverter.class
         .getName());
     
     defaultConverterMap.put("nopex", NopThrowableInformationConverter.class

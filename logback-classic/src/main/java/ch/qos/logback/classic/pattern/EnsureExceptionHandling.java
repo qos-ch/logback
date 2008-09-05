@@ -30,7 +30,7 @@ public class EnsureExceptionHandling implements PostCompileProcessor<LoggingEven
   public void process(Converter<LoggingEvent> head) {
     if (!chainHandlesThrowable(head)) {
       Converter<LoggingEvent> tail = ConverterUtil.findTail(head);
-      Converter<LoggingEvent> exConverter = new ThrowableInformationConverter();
+      Converter<LoggingEvent> exConverter = new ThrowableProxyConverter();
       if (tail == null) {
         head = exConverter;
       } else {

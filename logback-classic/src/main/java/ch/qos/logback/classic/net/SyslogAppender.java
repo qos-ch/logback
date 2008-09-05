@@ -14,9 +14,9 @@ import java.io.IOException;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.helpers.ThrowableDataPoint;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 import ch.qos.logback.core.net.SyslogWriter;
 

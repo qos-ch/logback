@@ -1,6 +1,8 @@
-package ch.qos.logback.core.helpers;
+package ch.qos.logback.classic.spi;
 
 import java.io.Serializable;
+
+
 
 public class StackTraceElementProxy implements Serializable {
 
@@ -24,8 +26,11 @@ public class StackTraceElementProxy implements Serializable {
     return steAsString;
   }
   
-  public PackageInfo getPI() {
-    // compute pi from ste
+  void setPackageInfo(PackageInfo pi) {
+    this.pi = pi;
+  }
+  
+  public PackageInfo getPackageInfo() {
     return pi;
   }
 

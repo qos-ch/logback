@@ -7,9 +7,11 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.helpers;
+package ch.qos.logback.classic.spi;
 
 import java.io.Serializable;
+
+
 
 /**
  * A container for either raw strings or StackTraceElementProxy instances.
@@ -21,7 +23,7 @@ public class ThrowableDataPoint implements Serializable {
 
   private static final long serialVersionUID = -2891376879381358469L;
 
-  enum ThrowableDataPointType {
+  public enum ThrowableDataPointType {
     RAW, STEP;
   }
 
@@ -43,6 +45,10 @@ public class ThrowableDataPoint implements Serializable {
     return type;
   }
 
+  public StackTraceElementProxy getStackTraceElementProxy() {
+    return step;
+  }
+  
   @Override
   public String toString() {
     switch (type) {

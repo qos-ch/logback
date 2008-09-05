@@ -11,6 +11,7 @@ import org.junit.Test;
 import ch.qos.logback.classic.pattern.lru.Event;
 import ch.qos.logback.classic.pattern.lru.T_LRUCache;
 
+@Ignore
 public class LRUCacheTest {
 
   @Test

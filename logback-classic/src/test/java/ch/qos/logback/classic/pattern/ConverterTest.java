@@ -116,14 +116,14 @@ public class ConverterTest extends TestCase {
 
   public void testException() {
     {
-      DynamicConverter<LoggingEvent> converter = new ThrowableInformationConverter();
+      DynamicConverter<LoggingEvent> converter = new ThrowableProxyConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // System.out.println(buf);
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new ThrowableInformationConverter();
+      DynamicConverter<LoggingEvent> converter = new ThrowableProxyConverter();
       this.optionList.add("3");
       converter.setOptionList(this.optionList);
       StringBuffer buf = new StringBuffer();
