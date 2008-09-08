@@ -9,36 +9,39 @@
  */
 package ch.qos.logback.classic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.control.ControlAction;
 import ch.qos.logback.classic.control.ControlLogger;
 import ch.qos.logback.classic.control.ControlLoggerContext;
 import ch.qos.logback.classic.control.CreateLogger;
 import ch.qos.logback.classic.control.Scenario;
 import ch.qos.logback.classic.control.ScenarioMaker;
 import ch.qos.logback.classic.control.SetLevel;
-import ch.qos.logback.classic.control.ControlAction;
 
 
-public class DynamicLoggerContextTest extends TestCase {
+public class DynamicLoggerContextTest  {
   LoggerContext lc;
 
-
+  
+  @Test
   public void test3() {
     dynaTest(3);
   }
 
+  @Test
   public void test30() {
     dynaTest(30);
   }
 
+  @Test
   public void test1000() {
     dynaTest(1000);
   }
