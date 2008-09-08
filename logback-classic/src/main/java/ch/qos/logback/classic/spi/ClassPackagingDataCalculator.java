@@ -46,12 +46,12 @@ public class ClassPackagingDataCalculator {
   void populateFrames(StackTraceElementProxy[] stepArray) {
     // in the initial part of this method we populate package informnation for 
     // common stack frames
-    Throwable t = new Throwable("local stack reference");
-    StackTraceElement[] localteSTEArray = t.getStackTrace();
-    int commonFrames = STEUtil.findNumberOfCommonFrames(localteSTEArray,
+    final Throwable t = new Throwable("local stack reference");
+    final StackTraceElement[] localteSTEArray = t.getStackTrace();
+    final int commonFrames = STEUtil.findNumberOfCommonFrames(localteSTEArray,
         stepArray);
-    int localFirstCommon = localteSTEArray.length - commonFrames;
-    int stepFirstCommon = stepArray.length - commonFrames;
+    final int localFirstCommon = localteSTEArray.length - commonFrames;
+    final int stepFirstCommon = stepArray.length - commonFrames;
 
     ClassLoader lastExactClassLoader = null;
     ClassLoader firsExactClassLoader = null;
@@ -79,8 +79,8 @@ public class ClassPackagingDataCalculator {
     populateUncommonFrames(commonFrames, stepArray, firsExactClassLoader);
   }
 
-  int findSTEStartIndex(ThrowableDataPoint[] tdpArray, int from) {
-    int len = tdpArray.length;
+  int findSTEStartIndex(final ThrowableDataPoint[] tdpArray, final int from) {
+    final int len = tdpArray.length;
     if (from < 0 || from >= len) {
       return -1;
     }
@@ -92,7 +92,7 @@ public class ClassPackagingDataCalculator {
     return -1;
   }
   
-  private StackTraceElementProxy[] getSTEPArray(ThrowableDataPoint[] tdpArray, int from) {
+  private StackTraceElementProxy[] getSTEPArray(final ThrowableDataPoint[] tdpArray, final int from) {
     List<StackTraceElementProxy> stepList = new LinkedList<StackTraceElementProxy>();
     int len = tdpArray.length;
     if (from < 0 || from >= len) {

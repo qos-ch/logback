@@ -20,6 +20,7 @@ import org.slf4j.MarkerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.TestConstants;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.net.SyslogConstants;
@@ -73,7 +74,7 @@ public class ConverterTest extends TestCase {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("74", buf.toString());
+      assertEquals("75", buf.toString());
     }
   }
 
@@ -97,7 +98,8 @@ public class ConverterTest extends TestCase {
     DynamicConverter<LoggingEvent> converter = new ThreadConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
-    assertEquals("main", buf.toString());
+    String regex = TestConstants.NAKED_MAIN_REGEX;
+    assertTrue(buf.toString().matches(regex));
   }
 
   public void testMessage() {
@@ -264,9 +266,11 @@ public class ConverterTest extends TestCase {
     {
       DynamicConverter<LoggingEvent> converter = new RelativeTimeConverter();
       StringBuffer buf0 = new StringBuffer();
-      converter.write(buf0, makeLoggingEvent(null));
       StringBuffer buf1 = new StringBuffer();
-      converter.write(buf1, makeLoggingEvent(null));
+      LoggingEvent e0 = makeLoggingEvent(null);
+      LoggingEvent e1 = makeLoggingEvent(null);
+      converter.write(buf0, e0);
+      converter.write(buf1, e1);
       assertEquals(buf0.toString(), buf1.toString());
       int rt0 = Integer.parseInt(buf0.toString());
       if (rt0 < 50) {

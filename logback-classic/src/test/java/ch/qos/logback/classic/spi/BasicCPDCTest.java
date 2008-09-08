@@ -60,7 +60,6 @@ public class BasicCPDCTest {
     } catch (Throwable e) {
       ThrowableProxy tp = new ThrowableProxy(e);
       if (withClassPackagingCalculation) {
-        tp.getClassPackagingDataCalculator();
         ClassPackagingDataCalculator cpdc = tp
             .getClassPackagingDataCalculator();
         ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
@@ -79,7 +78,7 @@ public class BasicCPDCTest {
 
   @Test
   public void perfTest() {
-    int len = 500;
+    int len = 1000;
     loop(len, false);
     loop(len, true);
 
@@ -89,7 +88,7 @@ public class BasicCPDCTest {
     double d1 = loop(len, true);
     System.out.println("with    packaging info " + d1 + " microseconds");
     assertTrue("computing class packaging data (" + d1
-        + ") should have been less than six times the time it takes to process an exception" + (d0 * 6),
+        + ") should have been less than six times the time it takes to process an exception " + (d0 * 6),
         d0 * 6 > d1);
   }
 }
