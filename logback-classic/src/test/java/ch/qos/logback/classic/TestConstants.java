@@ -12,6 +12,7 @@ package ch.qos.logback.classic;
 public class TestConstants {
 
   final static public String ISO_REGEX =  "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";
-  
+  final static public String MAIN_REGEX =  "\\[[mM]ain(\\sThread)?\\]";
+      
   final static public String JORAN_ONPUT_PREFIX = "src/test/input/joran";
 }

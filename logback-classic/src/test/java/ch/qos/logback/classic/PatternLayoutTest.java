@@ -24,7 +24,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
-
+import static  ch.qos.logback.classic.TestConstants.*;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
@@ -64,7 +64,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
-    String regex = TestConstants.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
+    String regex = ISO_REGEX+" INFO "+MAIN_REGEX+" c.q.l.c.pattern.ConverterTest - Some message\\s*";
+
     assertTrue(val.matches(regex));
   }
 
@@ -86,8 +87,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2008-03-18 21:55:54,250 [main] c.q.l.c.pattern.ConverterTest - Some message
-    String regex = TestConstants.ISO_REGEX+" \\[main] c.q.l.c.p.ConverterTest   - Some message\\s*";
-    System.out.println(val);
+    String regex = ISO_REGEX+" "+MAIN_REGEX+" c.q.l.c.p.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
 
   }
@@ -123,7 +123,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
-    String regex = TestConstants.ISO_REGEX+" INFO \\[main] c.q.l.c.pattern.ConverterTest - Some message\\s*";
+    String regex = TestConstants.ISO_REGEX+" INFO "+MAIN_REGEX+" c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
   }
   
