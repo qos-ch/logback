@@ -14,9 +14,18 @@ import ch.qos.logback.core.LayoutBase;
 public class DummyLayout<E> extends LayoutBase<E> {
 
   public static final String DUMMY = "dummy"+LINE_SEP;
+  String val = DUMMY;
+  
+  public DummyLayout() {
+  }
+  
+  public DummyLayout(String val) {
+    this.val = val;
+  }
   
   public String doLayout(E event) {
-    return DUMMY;
+    return val;
   }
 
+  
 }

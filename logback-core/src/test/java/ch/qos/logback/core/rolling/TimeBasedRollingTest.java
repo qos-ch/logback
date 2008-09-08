@@ -242,7 +242,7 @@ public class TimeBasedRollingTest extends TestCase {
       tbrp.setCurrentTime(addTime(tbrp.getCurrentTime(), 500));
     }
 
-    tbrp.future.get(1000, TimeUnit.MILLISECONDS);
+    tbrp.future.get(2000, TimeUnit.MILLISECONDS);
 
     for (int i = 0; i < 2; i++) {
       assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX

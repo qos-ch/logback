@@ -16,11 +16,15 @@
 
 package ch.qos.logback.core.rolling;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
@@ -36,12 +40,10 @@ import ch.qos.logback.core.util.Constants;
  * @author S&eacute;bastien Pennec
  * 
  */
-public class SizeBasedRollingTest extends TestCase {
+public class SizeBasedRollingTest  {
 
-  public SizeBasedRollingTest(String name) {
-    super(name);
-  }
 
+  @Before
   public void setUp() {
     {
       File target = new File(Constants.OUTPUT_DIR_PREFIX
@@ -56,6 +58,7 @@ public class SizeBasedRollingTest extends TestCase {
     }
   }
 
+  @After
   public void tearDown() {
   }
 
@@ -63,6 +66,7 @@ public class SizeBasedRollingTest extends TestCase {
    * Test whether FixedWindowRollingPolicy throws an exception when the
    * ActiveFileName is not set.
    */
+  @Test
   public void test1() throws Exception {
     // We purposefully use the \n as the line separator.
     // This makes the regression test system independent.
@@ -95,10 +99,11 @@ public class SizeBasedRollingTest extends TestCase {
   /**
    * Test basic rolling functionality.
    */
+  @Test
   public void test2() throws Exception {
     Context context = new ContextBase();
 
-    DummyLayout<Object> layout = new DummyLayout<Object>();
+    DummyLayout<Object> layout = new DummyLayout<Object>("0123456789");
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setName("ROLLING");
     rfa.setLayout(layout);
@@ -170,9 +175,10 @@ public class SizeBasedRollingTest extends TestCase {
   /**
    * Same as testBasic but also with GZ compression.
    */
+  @Test
   public void test3() throws Exception {
     Context context = new ContextBase();
-    DummyLayout<Object> layout = new DummyLayout<Object>();
+    DummyLayout<Object> layout = new DummyLayout<Object>("0123456789");
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
@@ -206,7 +212,7 @@ public class SizeBasedRollingTest extends TestCase {
     // }
     // }
 
-    for (int i = 0; i < 45; i++) {
+    for (int i = 0; i < 25; i++) {
       Thread.sleep(10);
       rfa.doAppend("hello");
     }
@@ -221,13 +227,13 @@ public class SizeBasedRollingTest extends TestCase {
     if (!isWindows()) {
 
       assertTrue(Compare.compare(
-          "Constants.TEST_DIR_PREFIXoutput/sbr-test3.log",
+          Constants.OUTPUT_DIR_PREFIX+"sbr-test3.log",
           Constants.TEST_DIR_PREFIX + "witness/rolling/sbr-test3.l"));
       assertTrue(Compare.gzCompare(
-          "Constants.TEST_DIR_PREFIXoutput/sbr-test3.0.gz",
+          Constants.OUTPUT_DIR_PREFIX+"sbr-test3.0.gz",
           Constants.TEST_DIR_PREFIX + "witness/rolling/sbr-test3.0.gz"));
       assertTrue(Compare.gzCompare(
-          "Constants.TEST_DIR_PREFIXoutput/sbr-test3.1.gz",
+          Constants.OUTPUT_DIR_PREFIX+"sbr-test3.1.gz",
           Constants.TEST_DIR_PREFIX + "witness/rolling/sbr-test3.1.gz"));
     }
 
@@ -236,11 +242,5 @@ public class SizeBasedRollingTest extends TestCase {
 
   boolean isWindows() {
     return System.getProperty("os.name").indexOf("Windows") != -1;
-  }
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(SizeBasedRollingTest.class);
-    return suite;
   }
 }
