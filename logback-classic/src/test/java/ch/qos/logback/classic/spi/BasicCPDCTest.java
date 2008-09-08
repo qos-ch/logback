@@ -28,11 +28,12 @@ public class BasicCPDCTest {
       }
     }
   }
-  
-  @Test public  void otherJD() {
+
+  @Test
+  public void otherJD() {
     System.out.println(SystemInfo.getJavaVendor());
   }
-  
+
   @Test
   public void smoke() throws Exception {
     Throwable t = new Throwable("x");
@@ -87,8 +88,17 @@ public class BasicCPDCTest {
 
     double d1 = loop(len, true);
     System.out.println("with    packaging info " + d1 + " microseconds");
-    assertTrue("computing class packaging data (" + d1
-        + ") should have been less than six times the time it takes to process an exception " + (d0 * 6),
-        d0 * 6 > d1);
+
+    int slackFactor = 6;  
+    if (!SystemInfo.getJavaVendor().contains("Sun")) {
+      // be more lenient with other JDKs
+      slackFactor = 10;
+    } 
+    assertTrue(
+        "computing class packaging data ("
+            + d1
+            + ") should have been less than "+slackFactor+" times the time it takes to process an exception "
+            + (d0 * slackFactor), d0 * slackFactor > d1);
+
   }
 }
