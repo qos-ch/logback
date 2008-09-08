@@ -45,6 +45,11 @@ public class ScenarioMaker {
     // add an empty string to get going
     queue.add("");
 
+    // add another string to reduce the probability of having an 
+    // empty queue (this happens when we create several leaf nodes
+    // successively
+    queue.add("xxxx");
+    
     while (loggerCreationCount < len) {
       if (queue.isEmpty()) {
         throw new IllegalStateException("Queue cannot be empty.");
