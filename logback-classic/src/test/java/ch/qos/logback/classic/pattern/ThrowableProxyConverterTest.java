@@ -12,6 +12,7 @@ import org.junit.Test;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.TeztHelper;
 
 public class ThrowableProxyConverterTest {
 
@@ -45,7 +46,7 @@ public class ThrowableProxyConverterTest {
 
   @Test
   public void nested() {
-    Throwable t = makeNestedException(1);
+    Throwable t = TeztHelper.makeNestedException(1);
     verify(t);
   }
 
@@ -59,11 +60,5 @@ public class ThrowableProxyConverterTest {
     assertEquals(sw.toString(), result);
   }
 
-  Throwable makeNestedException(int level) {
-    if (level == 0) {
-      return new Exception("nesting level=" + level);
-    }
-    Throwable cause = makeNestedException(level - 1);
-    return new Exception("nesting level =" + level, cause);
-  }
+
 }

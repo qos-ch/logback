@@ -10,7 +10,7 @@ public class StackTraceElementProxy implements Serializable {
 
   final StackTraceElement ste;
   private String steAsString;
-  private PackageInfo pi;
+  private ClassPackagingData cpd;
   
   StackTraceElementProxy(StackTraceElement ste) {
     if(ste == null) {
@@ -26,12 +26,12 @@ public class StackTraceElementProxy implements Serializable {
     return steAsString;
   }
   
-  void setPackageInfo(PackageInfo pi) {
-    this.pi = pi;
+  void setPackageInfo(ClassPackagingData cpd) {
+    this.cpd = cpd;
   }
   
-  public PackageInfo getPackageInfo() {
-    return pi;
+  public ClassPackagingData getClassPackagingData() {
+    return cpd;
   }
 
   @Override

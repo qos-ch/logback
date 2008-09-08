@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.PackageInfo;
+import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 
@@ -20,9 +20,9 @@ public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
   protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
     StackTraceElementProxy step = tdp.getStackTraceElementProxy();
     if(step != null) {
-      PackageInfo pi = step.getPackageInfo();
+      ClassPackagingData pi = step.getClassPackagingData();
       if(pi != null) {
-        builder.append(" [").append(pi.getJarName()).append(':').append(pi.getVersion()).append(']');
+        builder.append(" [").append(pi.getCodeLocation()).append(':').append(pi.getVersion()).append(']');
       }
     }
   }

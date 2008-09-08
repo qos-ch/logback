@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.spi.PackageInfo;
+import ch.qos.logback.classic.spi.ClassPackagingData;
 
 /**
  * 
@@ -22,7 +22,7 @@ import ch.qos.logback.classic.spi.PackageInfo;
  */
 public class Util {
 
-  static Map<String, PackageInfo> cache = new HashMap<String, PackageInfo>();
+  static Map<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
 
   static public boolean match(Marker marker, Marker[] markerArray) {
     if (markerArray == null) {

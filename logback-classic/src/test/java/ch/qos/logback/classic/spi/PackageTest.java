@@ -24,6 +24,7 @@ public class PackageTest extends TestCase {
     suite.addTest(new JUnit4TestAdapter (LoggerComparatorTest.class));
     suite.addTest(new JUnit4TestAdapter (LoggingEventSerializationTest.class));
     suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.spi.ThrowableToDataPointTest.class));
+    suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.spi.BasicCPDCTest.class));
     return suite;
   }
 }

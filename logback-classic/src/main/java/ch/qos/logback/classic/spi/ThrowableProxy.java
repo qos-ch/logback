@@ -11,32 +11,32 @@ package ch.qos.logback.classic.spi;
 
 import java.util.Arrays;
 
+import ch.qos.logback.core.CoreGlobal;
 
 public class ThrowableProxy implements java.io.Serializable {
 
   private static final long serialVersionUID = 6307784764626694851L;
   private ThrowableDataPoint[] tdpArray;
   private transient final Throwable throwable;
-  private transient PackageInfoCalculator packageInfoCalculator;
+  private transient ClassPackagingDataCalculator classPackagingDataCalculator;
 
   public ThrowableProxy(Throwable throwable) {
     this.throwable = throwable;
-    this.tdpArray =  ThrowableToDataPointArray.convert(throwable);
+    this.tdpArray = ThrowableToDataPointArray.convert(throwable);
   }
 
   public Throwable getThrowable() {
     return throwable;
   }
-  
-  
-  public PackageInfoCalculator getPackageInfoCalculator() {
-    // if original instance (non-deserialized), and packageInfoCalculator
+
+  public ClassPackagingDataCalculator getClassPackagingDataCalculator() {
+    // if original instance (non-deserialized), and classPackagingDataCalculator
     // is not already initialized, then create an instance
-    // here we assume that (throwable == null) for deserialized instances 
-    if(throwable != null && packageInfoCalculator == null) {
-      packageInfoCalculator = new PackageInfoCalculator();
+    // here we assume that (throwable == null) for deserialized instances
+    if (throwable != null && classPackagingDataCalculator == null) {
+      classPackagingDataCalculator = new ClassPackagingDataCalculator();
     }
-    return packageInfoCalculator;
+    return classPackagingDataCalculator;
   }
 
   /**
@@ -67,5 +67,31 @@ public class ThrowableProxy implements java.io.Serializable {
       return false;
     return true;
   }
-  
+
+  public void fullDump() {
+    StringBuilder builder = new StringBuilder();
+    for (ThrowableDataPoint tdp : getThrowableDataPointArray()) {
+      String string = tdp.toString();
+      builder.append(string);
+      extraData(builder, tdp);
+      builder.append(CoreGlobal.LINE_SEPARATOR);
+    }
+    System.out.println(builder.toString());
+  }
+
+  protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
+    StackTraceElementProxy step = tdp.getStackTraceElementProxy();
+    if (step != null) {
+      ClassPackagingData cpd = step.getClassPackagingData();
+      if (cpd != null) {
+        if(!cpd.isExact()){
+          builder.append(" ~[")  ;
+        } else {
+          builder.append(" [")  ;
+        }
+        builder.append(cpd.getCodeLocation()).append(':').append(
+            cpd.getVersion()).append(']');
+      }
+    }
+  }
 }
