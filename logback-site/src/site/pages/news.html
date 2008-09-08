@@ -83,6 +83,28 @@ prefix='';
   subject line.
   </p>
 
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-68">LBCLASSIC-68</a>
+  reported by Gili Tzabari. In environments where the TCCL (Thread
+  Context Class Laoder) was not set, logback was unable to located its
+  default configuraiton files. Logback now uses the class loader that
+  loaded logback itself to locate its resources instead of the
+  TCCL. This approach is simpler and deemed to cover more
+  environments, i.e. more widely applicable.
+  </p>
+
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBGENERAL-24">LBGENERAL-24</a>
+  reported by Thorbj&oslash;rn Ravn Andersen. Logback now relies on
+  Geronimo JMS API specifications instead of Sun's JMS API
+  specification, the latter requiring manual installation. With
+  Geronimo JMS, logback can be built using Maven without needing to
+  manually install any dependencies.
+  </p>
+
+
   <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>
   </p>
 

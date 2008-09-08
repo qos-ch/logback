@@ -244,20 +244,7 @@ public class HelloWorld2 {
   including all its modules, should be as easy as issuing a <code>mvn
   package</code> command from within the directory where you
   unarchived the logback distribution. Maven will automatically
-  download the required external libraries. However, certain artefacts
-  cannot be downloaded from the Maven2 repository. At present, time
-  only the JMS API from from SUN Inc. needs to be downloaded and
-  installed separately into your local repository.
-  </p>
-
-  <p>You can manually download the <a
-  href="http://java.sun.com/products/jms/docs.html">JMS API from
-  Sun</a>. Once you have downloaded the <em>jms.jar</em> file, you can
-  install it in your local Maven 2 repository by issuing the command:
-  </p>
-
-  <p class="source">mvn install:install-file -DgroupId=javax.jms -DartifactId=jms -Dversion=1.1 /
-     -Dpackaging=jar -Dfile=/path/to/jms.jar.file
+  download the required external libraries. 
   </p>
 
   <p>Logback distributions contain complete source code such that you
@@ -266,8 +253,34 @@ public class HelloWorld2 {
   adhere to the conditions of the LGPL License. 
   </p>
 
+  <p>Logback has been built and tested with the follwing JDKs.</p>
 
+  <table class="bodyTable">
+    <tr>
+      <th>JDK</th>
+      <th>Operating System</th>
+    </tr>
 
+    <tr>
+      <td>Sun JDK 1.5.0.06</td>
+      <td>Windows XP</td>
+    </tr>
+
+    <tr class="alt">
+      <td>Sun JDK 1.5.0.08</td>
+      <td>Linux 64bit AMD</td>
+    </tr>
+
+    <tr>
+      <td>WebLogic JRockit 1.5.0.14</td>
+      <td>Linux 64bit AMD</td>
+    </tr>
+
+    <tr class="alt">
+      <td>IBM JDK 1.6.0.1</td>
+      <td>Linux 64bit AMD</td>
+    </tr>
+  </table>
 
 
 <script src="../templates/footer.js"></script>
