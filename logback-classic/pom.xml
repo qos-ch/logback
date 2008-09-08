@@ -94,11 +94,15 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.jms</groupId>
-      <artifactId>jms</artifactId>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
+
+        
+
 
     <dependency>
       <groupId>javax.servlet</groupId>
