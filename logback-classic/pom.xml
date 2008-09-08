@@ -151,7 +151,7 @@
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
-            <exclude>**/AllTest.java</exclude>
+            <exclude>**/AllClassicTest.java</exclude>
             <exclude>**/PackageTest.java</exclude>
              <exclude>**/TestConstants.java</exclude>
             <exclude>**/SerializationPerfsTest.java</exclude>
