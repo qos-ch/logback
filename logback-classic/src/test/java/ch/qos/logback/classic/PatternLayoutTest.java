@@ -9,22 +9,19 @@
  */
 package ch.qos.logback.classic;
 
+import static ch.qos.logback.classic.TestConstants.ISO_REGEX;
+import static ch.qos.logback.classic.TestConstants.MAIN_REGEX;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
-import static  ch.qos.logback.classic.TestConstants.*;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
@@ -81,13 +78,13 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   public void testCompositePattern() {
     PatternLayout pl = new PatternLayout();
-    pl.setPattern("%-56(%d [%t] %lo{20}) - %m%n");
+    pl.setPattern("%-56(%d %lo{20}) - %m%n");
     Context context = new LoggerContext();
     pl.setContext(context);
     pl.start();
     String val = pl.doLayout(getEventObject());
-    // 2008-03-18 21:55:54,250 [main] c.q.l.c.pattern.ConverterTest - Some message
-    String regex = ISO_REGEX+" "+MAIN_REGEX+" c.q.l.c.p.ConverterTest - Some message\\s*";
+    // 2008-03-18 21:55:54,250 c.q.l.c.pattern.ConverterTest          - Some message
+    String regex = ISO_REGEX+" c.q.l.c.p.ConverterTest          - Some message\\s*";
     assertTrue(val.matches(regex));
 
   }
