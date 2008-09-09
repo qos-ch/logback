@@ -16,6 +16,7 @@ import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.DateConverter;
+import ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter;
 import ch.qos.logback.classic.pattern.FileOfCallerConverter;
 import ch.qos.logback.classic.pattern.LevelConverter;
 import ch.qos.logback.classic.pattern.LineOfCallerConverter;
@@ -89,20 +90,25 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
     defaultConverterMap.put("X", MDCConverter.class.getName());
     defaultConverterMap.put("mdc", MDCConverter.class.getName());
 
-    defaultConverterMap
-        .put("ex", ThrowableProxyConverter.class.getName());
+    defaultConverterMap.put("ex", ThrowableProxyConverter.class.getName());
     defaultConverterMap.put("exception", ThrowableProxyConverter.class
         .getName());
     defaultConverterMap.put("throwable", ThrowableProxyConverter.class
         .getName());
-    
+
+    defaultConverterMap.put("xEx", ExtendedThrowableProxyConverter.class.getName());
+    defaultConverterMap.put("xException", ExtendedThrowableProxyConverter.class
+        .getName());
+    defaultConverterMap.put("xThrowable", ExtendedThrowableProxyConverter.class
+        .getName());
+
     defaultConverterMap.put("nopex", NopThrowableInformationConverter.class
         .getName());
     defaultConverterMap.put("nopexception",
         NopThrowableInformationConverter.class.getName());
 
     defaultConverterMap.put("caller", CallerDataConverter.class.getName());
-    
+
     defaultConverterMap.put("marker", MarkerConverter.class.getName());
 
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
@@ -111,11 +117,11 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
   public PatternLayout() {
     this.postCompileProcessor = new EnsureExceptionHandling();
   }
-  
+
   public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
   }
-  
+
   public String doLayout(LoggingEvent event) {
     if (!isStarted()) {
       return CoreGlobal.EMPTY_STRING;

@@ -292,22 +292,19 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
 			customized at will by tweaking the conversion pattern of
 			<code>PatternLayout</code>.
 		</p>   
-		<p>
-			The conversion pattern of
-			<code>PatternLayout</code>
-			is closely related to the conversion pattern of the
-			<code>printf()</code>
-			function in the C programming language. A conversion pattern
-			is composed of literal text and format control expressions
-			called conversion specifiers. You are free to insert any
-			literal text within the conversion pattern. Each conversion
-			specifier starts with a percent sign (%) and is followed by
-			optional format modifiers, a conversion word and optional 
-			parameters between braces. The
-			conversion word controls the type of data to use, e.g.
-			logger name, level, date, thread name. The format modifiers
-			control such things as field width, padding, and left or
-			right justification. The following is a simple example.
+
+    <p>The conversion pattern of <code>PatternLayout</code> is closely
+    related to the conversion pattern of the <code>printf()</code>
+    function in the C programming language. A conversion pattern is
+    composed of literal text and format control expressions called
+    conversion specifiers. You are free to insert any literal text
+    within the conversion pattern. Each conversion specifier starts
+    with a percent sign (%) and is followed by optional format
+    modifiers, a conversion word and optional parameters between
+    braces. The conversion word controls the type of data to use, e.g.
+    logger name, level, date, thread name. The format modifiers
+    control such things as field width, padding, and left or right
+    justification. The following is a simple example.
 		</p>
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
@@ -385,13 +382,13 @@ WARN  [main]: Message 2</pre></div>
 		listed on the left column, they should be considered as aliases.
 		</p>
 		
-		<table class="bodyTable" border="0" CELLPADDING="8">
+		<table class="bodyTable" border="0">
       <tr>
         <th>Conversion Word</th>
         <th>Effect</th>
       </tr>
 
-			<tr class="b">
+			<tr>
 				<td align="center">
 					<b>c</b>{<em>length</em>} <br /> 				
 					<b>lo</b>{<em>length</em>} <br />
@@ -399,17 +396,15 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 
 				<td>
-					<p>
-						Used to output the name of the logger at the origin of the
-						logging event.
+					<p>Used to output the name of the logger at the origin of
+					the logging event.
 					</p>
 
-					<p>
-						This conversion word can take an integer as first and only
-						option. The converter's abbreviation algorithm will
-						shorten the logger name, usually without significant loss
-						of meaning. The next table provides examples of the
-						abbreviation algorithm in action.
+					<p>This conversion word can take an integer as first and
+					only option. The converter's abbreviation algorithm will
+					shorten the logger name, usually without significant loss of
+					meaning. The next table provides examples of the
+					abbreviation algorithm in action.
           </p>
 
 					<table class="bodyTable" border="0" cellpadding="8">
@@ -449,7 +444,8 @@ WARN  [main]: Message 2</pre></div>
 					</table>
 				</td>
 			</tr>
-			<tr class="a">
+
+			<tr class="alt">
 				<td align="center">
 					<b>C</b>{<em>length</em>} <br /> 
 					<b>class</b>{<em>length</em>} <br />
@@ -474,12 +470,12 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 			</tr>
 
-			<tr class="b">
-				<td align="center">
-					<b>d</b>{<em>pattern</em>} <br /> 
-					<b>date</b>{<em>pattern</em>} <br />
-				</td>
-				<td>
+			<tr>
+        <td align="center">
+          <b>d</b>{<em>pattern</em>} <br /> 
+          <b>date</b>{<em>pattern</em>} <br />
+        </td>
+        <td>
 					<p>Used to output the date of the logging event.  The date
 					conversion word may be followed by an option enclosed
 					between braces.</p>
@@ -521,7 +517,7 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 			</tr>
 
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>F / file</b>
 				</td>
@@ -538,7 +534,7 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 			</tr>
 
-			<tr class="b">
+			<tr>
 				<td align="center">
 					<b>caller{depth}</b>
 					<b>caller{depth, evaluator-1, ... evaluator-n}</b>
@@ -588,7 +584,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				</td>
 			</tr>
 
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>L / line</b>
 				</td>
@@ -607,7 +603,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			</tr>
 
 
-			<tr class="b">
+			<tr>
 				<td align="center">
 					<b>m / msg / message</b>
 				</td>
@@ -617,7 +613,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				</td>
 			</tr>
 
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>M / method</b>
 				</td>
@@ -635,7 +631,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				</td>
 			</tr>
 
-			<tr class="b">
+			<tr>
 				<td align="center">
 					<b>n</b>
 				</td>
@@ -656,14 +652,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
 			</tr>
 
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>p / le / level</b>
 				</td>
 				<td>Used to output the level of the logging event.</td>
 			</tr>
 
-			<tr class="b">
+			<tr>
 
 				<td align="center">
 					<b>r / relative</b>
@@ -677,7 +673,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			</tr>
 
 
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>t / thread</b>
 				</td>
@@ -689,7 +685,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
 			</tr>
 
-			<tr class="b">
+			<tr>
 				<td align="center">
 					<b>X</b>{<em>key</em>} <br /> 
 					<b>mdc</b>{<em>key</em>} <br />
@@ -718,7 +714,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
 				</td>
 			</tr>
-			<tr class="a">
+			<tr class="alt">
 				<td align="center">
 					<b>ex</b>{<em>length</em>} <br /> 
           	<b>exception</b>{<em>length</em>} <br /> 
@@ -748,14 +744,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 						the following options:
 				 </p>
 				 <ul>
-				   <p><em>short</em>: prints the first line of the stack trace</p>
-				   <p><em>full</em>: prints the full stack trace</p>
-				   <p>Any integer: prints the given number of lines of the stack trace</p>
+				   <li><em>short</em>: prints the first line of the stack trace</li>
+				   <li><em>full</em>: prints the full stack trace</li>
+				   <li>Any integer: prints the given number of lines of the stack trace</li>
 				 </ul>
 				 
 				 <p>Here are some examples:</p>
 				 
-				 <table  class="bodyTable" CELLPADDING="8">
+				 <table  class="bodyTable">
 						<tr class="a">
 							<th>Conversion Pattern</th>
 							<th>Result</th>
@@ -787,17 +783,75 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 						</tr>
 				 </table>
 					
-					<p>
-						This conversion word can also use evaluators to test logging events
-						against a given criteria before creating the output. For example, 
-						using <b>%ex{full, EX_DISPLAY_EVAL}</b> will display the full 
-						stacktrace of the exception, only if the evaluator called <em>EX_DISPLAY_EVAL</em>
-						returns a <b>negative</b> answer. Evaluators are described
-						further down in this document. 
+					<p>This conversion word can also use evaluators to test
+					logging events against a given criteria before creating the
+					output. For example, using <b>%ex{full, EX_DISPLAY_EVAL}</b>
+					will display the full stacktrace of the exception, only if
+					the evaluator called <em>EX_DISPLAY_EVAL</em> returns a
+					<b>negative</b> answer. Evaluators are described further
+					down in this document.
 					</p>
 				</td>
 			</tr>
       
+
+      <tr>
+				<td align="center">
+					<b>xEx</b>{<em>length</em>} <br /> 
+          <b>xException</b>{<em>length</em>} <br /> 
+					<b>xThrowable</b>{<em>length</em>} <br />
+          <br />
+					<b>xEx</b>{length, evaluator-1, ..., evaluator-n} <br />
+					<b>xException</b>{length, evaluator-1, ..., evaluator-n} <br />
+					<b>xThrowable</b>{length, evaluator-1, ..., evaluator-n}
+				</td>
+
+				<td>
+					<p>Same as the %exception conversion keyword with the
+					addition of class packaging information.</p>
+          
+          <p>At the end of each stack frame of the exception, a string
+          consisting of the jar file containing the relevant class
+          followed by the "Implementation-Version" as found in that
+          jar's manifest will be added. This innovative technique was
+          <a
+          href="http://macstrac.blogspot.com/2008/09/better-stack-traces-in-java-with-log4j.html">suggested
+          by James Strachan</a>. If the information is uncertain, then
+          the class packaging data will be preceded by a tilde, i.e.
+          the '~' character.
+          </p>
+
+          <p>Here is an example:</p>
+
+          <p class="source">java.lang.NullPointerException
+	at com.xyz.Wombat(Wombat.java:57) <b><span class="red">~</span>[wombat-1.3.jar:1.3]</b>
+	at  com.xyz.Wombat(Wombat.java:76) ~[wombat-1.3.jar:1.3]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.5.0_06]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[na:1.5.0_06]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[na:1.5.0_06]
+	at java.lang.reflect.Method.invoke(Method.java:585) ~[na:1.5.0_06]
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59) [junit-4.4.jar:na]
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98) [junit-4.4.jar:na]
+  ...etc </p>
+
+          <p>Logback goes to great lengths to ensure that the class
+          packaging information it displays is correct, even in
+          arbirarily complex class loader hierarchies.  However, when
+          it is not able to guarantee the absolute correctness of the
+          information, then it will prefix the data with a tilde, i.e.
+          the '~' character. Thus, it is theoretically possible for
+          the printed class packaging information to differ from the
+          real class packaging information. So, in the above example,
+          given that packaging data for the Wombat class is preceded
+          by a tilde, it possible that the correct packaging data is
+          in reality [wombat.jar:1.7].
+          </p>
+          
+        </td>
+
+
+      </tr>
+
       <tr class="b">
         <td align="center">
           <b>nopex</b> <br />

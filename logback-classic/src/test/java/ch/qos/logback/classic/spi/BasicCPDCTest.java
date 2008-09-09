@@ -34,6 +34,24 @@ public class BasicCPDCTest {
     System.out.println(SystemInfo.getJavaVendor());
   }
 
+//  @Test
+//  public void withGreenMail() {
+//    try {
+//      ServerSetup serverSetup = new ServerSetup(-1, "localhost",
+//          ServerSetup.PROTOCOL_SMTP);
+//      GreenMail greenMail = new GreenMail((ServerSetup) null);
+//      // greenMail.start();
+//    } catch (Throwable e) {
+//      ThrowableProxy tp = new ThrowableProxy(e);
+//      ClassPackagingDataCalculator cpdc = tp.getClassPackagingDataCalculator();
+//      ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
+//      cpdc.calculate(tdpArray);
+//      verify(tdpArray);
+//      tp.fullDump();
+//    }
+//  }
+  
+    
   @Test
   public void smoke() throws Exception {
     Throwable t = new Throwable("x");
@@ -42,6 +60,7 @@ public class BasicCPDCTest {
     ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
     cpdc.calculate(tdpArray);
     verify(tdpArray);
+    tp.fullDump();
   }
 
   @Test
