@@ -14,270 +14,310 @@ prefix='';
 <div id="left">
   <script src="templates/left.js"></script>
 </div>
-<div id="right">
-  <script src="templates/right.js"></script>
-</div>
 <div id="content">
 	
 	
-<h2>Logback Demo</h2>
+  <h2>Logback Demo</h2>
 
-<p>
-	Welcome to the logback demo! This document will take you through 
-	tour that will show you some of the major features of logback.
-</p>
+  <p>Welcome to the logback demo! This document will take you through
+  a tour of some of logback's major features.
+  </p>
 
-<h3>Installation</h3>
+  <h3>Installation</h3>
 
-<p>
-	First, please download the logback demo. You will need to install a
+  <p>	First, please download the logback demo. You will need to install a
 	<a href="http://subversion.tigris.org/">Subversion</a> client and
 	issue the following command on a console:
-</p>
+  </p>
   
-<div class="source"><pre>svn co http://svn.qos.ch/repos/logback-demo/trunk logback-demo</pre></div>
+  <div class="source"><pre>svn co http://svn.qos.ch/repos/logback-demo/tags/STABLE logback-demo</pre></div>
 
-<p>This will checkout a copy of the logback demonstration web-app to a
-directory called <em>logback-demo</em>. The logback demo can be
-packaged as a <em>war</em> file and deployed to an application
-server. We strongly recommend the use of <a
-href="http://maven.apache.org/">Maven2</a> to do this task, since all
-it will take to compile, package and run a server with the demo is a
-single command.
-</p>
+  <p>This will checkout a copy of the logback demonstration
+  web-application to a directory called <em>logback-demo</em>. The
+  logback demo can be packaged as a <em>war</em> file and deployed to
+  an application server. We strongly recommend the use of <a
+  href="http://maven.apache.org/">Maven2</a> to accomplish this task,
+  since it takes a single command in order to compile, package and run
+  this demo.
+  </p>
 
-<p>
-	Using Maven, let's package the files and run the demo for the first time. 
-  From the <em>logback-demo</em> directory, issue the following command:
-</p>
+  <p>	Using Maven, let's package the files and run the demo for the first
+	time.  From the <em>logback-demo</em> directory, issue the following
+	command:
+  </p>
 
-<div class="source"><pre>mvn package jetty:run</pre></div>
+  <div class="source"><pre>mvn package jetty:run</pre></div>
     
-<p>Then, visit <em>http://localhost:8080/logback-demo/</em> to view
-the main page of the logback demo.
-</p>
+  <p>Then, visit <a
+  href="http://localhost:8080/logback-demo/">http://localhost:8080/logback-demo/</a>
+  to view the main page of the logback demo.
+  </p>
 
-<h3>Logback Classic</h3>
+  <h3>Logback-classic</h3>
 
-<p>For now, logback uses two components: one
-<code>ConsoleAppender</code> and one
-<code>RollingFileAppender</code>. The <code>RollingFileAppender</code>
-sends logging events to a file called <em>logFile.log</em> and will
-rollover the active file every minute. The old file will be renamed
-and compressed to <em>zip</em> file. The <code>ConsoleAppender</code>
-will output the logging requests to the console, and shorten the
-logger names to gain some space in the console window, without making
-the names unreadable. For example,
-<code>ch.qos.logback.demo.prime.NumberCruncherImpl </code> will be
-displayed as <code>c.q.l.d.prime.NumberCruncherImpl</code>.
-</p>
+  <p>By default (or as packaged), logback-demo configures
+  logback-classic with two appenders: a <code>ConsoleAppender</code>
+  and a <code>RollingFileAppender</code>. The
+  <code>RollingFileAppender</code> sends logging events to a file
+  called <em>logFile.log</em> and will rollover the active file every
+  minute. The old file will be renamed and compressed to <em>zip</em>
+  file. The <code>ConsoleAppender</code> will output the logging
+  requests to the console, and shorten the logger names to gain space
+  on the console window, without loss of legibility. For example,
+  <code>ch.qos.logback.demo.prime.NumberCruncherImpl </code> will be
+  abbreviated as <code>c.q.l.d.prime.NumberCruncherImpl</code>.
+  </p>
 
-<p>You can study the configuration file that is used by editing the
-file called <em>logback.xml</em>, located in the
-<em>src/main/resources/</em> directory of the demo. You might want to
-keep this file in an editor window, since we will modify its content
-several times thoughout the demo.
-</p>
+  <p>We highly encourage you to study the <em>logback.xml</em>
+  configuratiun file located under the <em>src/main/resources/</em>
+  folder. You might want to keep open this file in an editor window,
+  since we will modify its contents thoughout the demo.
+  </p>
 
-<p>Let's now visit the <em>ViewStatii</em> page, via the navigation
-menu on the left hand of the navigator window. This page contains the
-content of the <code>Status</code> objects that were created until
-now. <code>Status</code> objects are a part of logback's powerful
-internal reporting framework. They allow you to see what is going on
-in logback, and check that a configuration file has been parsed
-correctly, or that a rollover has occured as expected.
-</p>
+  <p>Let us now visit the <em>ViewStatii</em> page, via the navigation
+  menu on the left hand side of your browser's window. This page
+  contains the content of the <code>Status</code> objects that were
+  created up until now. <code>Status</code> objects are a part of
+  logback's internal reporting framework. They allow you to see what
+  is going on inside logback, and check that a configuration file has
+  been parsed correctly, or that a rollovers occur as expected.
+  </p>
 
-<p>After you're back to the main window, visiting the <em>View
-logs</em> page does not impress much at the moment. Let us uncomment
-the <strong>two</strong> parts of the config file that are below the
-<em>Cyclic buffer</em> comment.  A <code>CyclicBuffer</code> is a
-class that keeps track of logging events and holds these objects for
-immediate or differed display. The first element that you will need to
-uncomment is the <em>appender</em> element. This element describes and
-configures the <code>CyclicBuffer</code>.  The second element, found
-at the end of the configuration file, is a <em>appender-ref</em>
-element.  It is used to link the appender to a given logger.  Now
-reload the web-app by exiting the previous command with
-<em>CTRL-C</em> and issuing it again: <em>mvn package jetty:run</em>.
-</p>
+  <p>You should be seeing log messages printed on the console and the
+  contents of "logFile.log" file rolled over every minute.
+  </p>
 
-<p>Now, the <em>View logs</em> page looks prettier. By virtue of the
-<code>CyclicBufferAppender</code>, this page can fetch the last events
-and present them through a servlet. We see that each 3 seconds a line
-is added to the logs. The formatting of this page is made with a
-<code>HTMLLayout</code>. This component creates a nice and readable
-table containing the logging events, based on a pattern that describes
-the information one wants to see in the table.
-</p>
+  <p>If you visit the <em>View logs</em> page (by clicking on the link
+  located in the menu on the left), you should see empty contemts. Let
+  us change that by uncommenting <strong>two</strong> parts in the
+  config file.</p>
 
-<p>Having the logs that we see on the web page cluttered with
-scheduled <em>Howdydy-diddly-ho</em> messages is not very
-comfortable. To get rid of these logs, now that we've verified that
-they work, we can add an <code>EvaluatorFilter</code> to the
-Appender. Uncomment the part named <em>Cyclic buffer with
-Evaluator</em>. You may then comment the first Basic Cyclic buffer
-<em>appender</em> element.</p>
+  <p>Remove the comments around </p>
 
-<p>Let's take a look at the filter we've just added:
-</p>
+  <p class="source">&lt;!-- Basic Cyclic buffer
+&lt;appender name="CYCLIC" class="ch.qos.logback.core.read.CyclicBufferAppender">
+  &lt;MaxSize>512&lt;/MaxSize>
+&lt;/appender>
+--&gt;</p>
+  <p>and around</p>
 
-<div class="source"><pre>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+  <p class="source">&lt;!-- Part I: Basic Cyclic buffer
+&lt;appender-ref ref="CYCLIC" />
+--&gt;</p>
+
+  <p>The <code>&lt;appender-ref></code> element element, found at the
+  end of the configuration file links an appender to a given logger,
+  in this particular case the root logger.
+  </p>
+
+  <p>A <code>CyclicBuffer</code> keeps track of incoming logging event
+  stream in a <a
+  href="http://en.wikipedia.org/wiki/Circular_buffer">circular
+  buffer</a> for later display. After having removed the comments
+  around the two elemetns shown above, reload the logback-demo
+  web-application by exiting the previous "mvn" command with
+  <em>CTRL-C</em> and issuing it again:
+  </p>
+
+  <p class="source">mvn package  jetty:run</p>
+
+  <p>This time <em>View logs</em> page should have contents.</p>
+
+  <img src="images/cyclicView.png" alt="view logs"/>
+
+
+  <p>By virtue of <code>CyclicBufferAppender</code>, this page can
+  fetch the last events and present them through a servlet. We see
+  that every ten seconds a line is added to the logs. The formatting
+  of this page is made with a <code>HTMLLayout</code>. This component
+  creates a table containing logging events, based on a pattern that
+  describes the information you wish to see in the table.
+  </p>
+
+  <p>Having the logs cluttered with repetitive
+  <em>Howdydy-diddly-ho</em> messages is wasteful. We can get rid of
+  them with an appropriate filter. Uncomment the block entitled
+  <em>Cyclic buffer with Evaluator</em>. You should then comment the
+  block entitled "Basic Cyclic buffer" that we uncommmented
+  earlier.</p>
+
+  <p>Let's take a look at the filter we've just added: </p>
+
+<p class="source">&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
   &lt;evaluator name="loggingTaskEval">
     &lt;expression>
-      logger.getName().contains("LoggingTask") &amp;amp;&amp;amp;
+      <b>logger.getName().contains("LoggingTask") &amp;amp;&amp;amp;
       message.contains("Howdydy-diddly-ho") &amp;amp;&amp;amp;
-      (timeStamp - event.getStartTime()) >= 20000
+      (timeStamp - event.getStartTime()) >= 20000</b>
     &lt;/expression>
   &lt;/evaluator>
   &lt;OnMatch>DENY&lt;/OnMatch>
-&lt;/filter></pre></div>
+&lt;/filter></p>
 
-<p>The expression element contains a familiar java statement. This
-expression checks that the name of the logger contains the String
-<em>LoggingTask</em>, but also that the message accompagnying the log
-contains <em>Howdydy-diddly-ho</em>.  Moreover, in order to be sure
-that the <em>Howdydy-diddly-ho</em> task actually works, we add to the
-expression a last statement that allows logs to be processed for the
-first 20 seconds after the application launch.  The variables used in
-this statement (<code>logger</code>, <code>message</code> and
-<code>event</code>) are made available by logback before the filter
-evaluates the expression.  The <em>OnMatch</em> element allows the
-user to choose the filter's behaviour once the expression was
-evaluated to true. A similar <em>OnMismatch</em> element exists.
-</p>
+  <p>The <code>&lt;expression></code> element uses the familiar
+  Java-language syntax. It checks that the name of the logger contains
+  the String <em>LoggingTask</em>, but also that its message contains
+  the string <em>Howdydy-diddly-ho</em>.  Moreover, in order to be
+  sure that the <em>Howdydy-diddly-ho</em> task actually works, we add
+  a last condition which checks that that at least 20 seconds have
+  elapsed after application launch. The variables references in the
+  expression, namely (<code>logger</code>, <code>message</code> and
+  <code>event</code>) are implicitly made available by logback.  The
+  <code>&lt;OnMatch></code> element lets the user specify the filter's
+  behaviour once the expression matched (evaluated to true).
+  </p>
 
-<p>After a restart, the <em>Vew logs</em> page shows the
-<em>Howdydy-diddly-ho</em> logs for the first 20 seconds only. Trying
-a prime calculations on the <em>Prime number</em> page will add
-several lines to the <em>View logs</em> page.
-</p>
+  <p>After a restart, the <em>Vew logs</em> page will shows the
+  <em>Howdydy-diddly-ho</em> logs, but only for the first 20
+  seconds. If you wish to see new logging events to be shown on the
+  "View logs" page, then visit the "Prime number" page.
+  </p>
 
-<h4>Turbo Filters</h4>
+  <h4>Turbo Filters</h4>
 
-<p>Logback ships with a special category of filters:
-<code>TurboFilter</code> objects are ultra-fast, context-wide
-filters. They reveals themselves very useful to test MDC values, for
-examples and to add context-wide conditions to allow or deny logging
-events. Let's uncomment the part named <em>TurboFilter: MDC value</em>
-in the <em>logback.xml</em> file.
-</p>
+  <p>Logback support with a special category of filters called
+  TurboFilters.  <code>TurboFilter</code> objects are ultra-fast,
+  context-wide filters. They can be very useful by setting
+  context-wide (i.e. global) conditions for enabling or disabling
+  logging events.
+  </p>
 
-<p>This part adds a <code>TurboFilter</code> object to the context. It
-allows to have a typical output for every client that uses the demo
-application, but a different one for one given user. Here, the filter
-will accept all the requests that are associated with a MDC value of
-<em>sebastien</em> bound to the <em>username</em> key.
-</p>
+  <p>Remove the comments around the block entitled "TurboFilter: MDC
+  value".</p>
 
-<p>To view the consequences of such a <code>TurboFilter</code>, we are
-going to stop all logging activity, except for a specific user. To
-achieve that, the simplest way is to set the root logger's level to
-<code>OFF</code>. Modify the <em>level</em> element, nested inside the
-<em>root</em> element of <em>logback.xml</em>. Its <em>value</em>
-attribute should be <em>OFF</em> instead of <em>DEBUG</em>. Next,
-restart the server as we've done previously.
-</p>
+  <p class="source">&lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
+  &lt;MDCKey>username&lt;/MDCKey>
+  &lt;Value>sebastien&lt;/Value>
+  &lt;OnMatch>ACCEPT&lt;/OnMatch>
+&lt;/turboFilter></p>
 
-<p>Once on the demo main webpage again, perform a few actions
-(i.e. calculate a few prime numbers) and watch the <em>View logs</em>
-page. The table should be empty.
-</p>
 
-<p>Now log in the application using the username <em>sebastien</em>
-and perform a few prime calculations again. The <em>View logs</em>
-page now shows the logs that were generated by the calculation
-classes. Moreover, each log is associated with the name of the user
-who provoked the logging event. Please log off before continuing the
-demo, using the <em>logout</em> button on the left.
-</p>
+  <p>This <code>&lt;turboFilter></code> element adds a
+  <code>TurboFilter</code> to the logging context which will enable
+  events if the MDC contains a key named "username" set to the value
+  "sebastien". The logback-demo application contains a <a
+  href="http://java.sun.com/products/servlet/Filters.html">servlet
+  filter</a> which will set the MDC key "username" with the name of
+  the currently logged in user.</p>
 
-<h4>Parametrized logging</h4>
 
-<p>Parametrized logging is a feature that will be a great asset for
-any performance-critical system. Usually, a logging request is issued
-like this:
-</p>
+  <p>For the purpose of this demo, let us disable all logging by
+  setting the root logger's level to <code>OFF</code>.
+  </p>
+
+  <p class="source">&lt;root>
+  &lt;level <b>value="OFF"</b>/>
+  ...
+&lt;/root></p>
+
+  <p>Now restart the server as previously</p>
+
+  <p>Once on the demo main webpage again, perform a number of actions
+  (e.g. calculate a few prime numbers) and visit the <em>View
+  logs</em> page. The table should be empty.
+  </p>
+
+  <p>Now log in into the logback-demo web-application with the
+  username <em>sebastien</em> and perform a few prime
+  computations. The <em>View logs</em> page should show the logging
+  events thgat were generated. Moreover, each logging event will have
+  an MDC field associated with the name of the logged in user, in this
+  case, sebastien. Please log off before continuing the demo, using
+  the <em>logout</em> button on the left.
+  </p>
+
+ <img src="images/turboFilterForMDC.png" alt="mdc filters"/>
+
+ <h4>Parametrized logging</h4>
+
+ <p><a
+ href="http://www.slf4j.org/faq.html#logging_performance">Parametrized
+ logging </a> is not a logback feature per se. It is part of
+ SLF4J. Usually, a logging request is issued as follows:
+ </p>
 
 <div class="source"><pre>logger.debug("Hello, my name is" + username + ", I am " + age + " years old.");</pre></div>
 
-<p>By issuing this line, the cost of constructing the String cannot be
-saved when the log request is not processed. For example, using the
-<code>debug()</code> method when, as we've just done, the root level
-is any value higher that <em>DEBUG</em> will result in a loss of time
-because all calls to the <code>debug()</code> method will eventually
-be dropped.
-</p>
+  <p>In the above call, the cost of constructing the message of type
+  String is borne even if the log request is disabled. 
+  </p>
 
-<p>Logback offers the following method:
-</p>
+  <p>SLF4J offers the following alternative:
+  </p>
 
 <div class="source"><pre>logger.debug("Hello, my name is {}, I am {} years old", username, age);</pre></div>
 
-<p>As you can see, the variables are not inserted in the message
-yet. Both the message and the values will be saved and used later, if
-the logging event is processed.
-</p>
+  <p>In this alternative, the final log message will be formatted only
+  if the log statement is enabled.
+  </p>
 
-<p>Let us now run a test to see what kind of gain can we expect from
-this different message formatting approach. First, go to the <em>Prime
-number</em> page and run a few calculations. Check the time it takes
-to compute the results. To see a clearer difference between the two
-formatting methods, you might want to try the two big integers that
-are listed below the prime number textbox.
-</p>
+  <p>At present, let us see what kind of gain can we expect from this
+  alternative approach. First, go to the <em>Prime number</em> page
+  and compute factors for intergers of your choice. Check the time it
+  takes to compute the results. To see a clearer difference between
+  the two formatting methods, you might want to try the two big
+  integers that are listed below the prime number textbox. Jot down
+  the time it takes to compute the result.
+  </p>
 
-<p>Now let us edit the <code>NumberCruncherImpl</code> class, to
-switch the log methods.  You will find this class in the
-<em>src/main/java/ch/qos/logback/demo/prime/</em> directory. On line
-54 and 55, just uncomment the parametrized logging line and comment
-out the other line. Restart the server with <em>mvn package
-jetty:run</em> and re-run the calculations you tried beforehand.
-</p>
+  <p>Now let us edit the <code>NumberCruncherImpl</code> class in
+  order to use parametrized logging.  You will find this class in the
+  <em>src/main/java/ch/qos/logback/demo/prime/</em> directory. Comment
+  line 54 (doing unconditional message concatenation) and uncomment
+  line 55 (parameterized logging). Restart the server with <em>mvn
+  package jetty:run</em> and re-run the factorization you tried
+  beforehand.
+  </p>
 
-<p>The durations should be obviously different. Remember that we had
-turned off all logging in the previous step of this demo. With the
-initial formatting method, we were constructing the logging message
-(<em>"Trying "+i+" as a factor."</em>) a huge amount of times,
-actually each time a factor was tried for these big numbers.  With the
-paramatrized logging, the construction of the message was postponed
-and, since logging was turned off, not processed. We see here that the
-cost of the <b>non-</b>logging was taken down to a very small figure,
-dividing the total cost of the calculation by a non-negligeable
-factor.
-</p>
+  <p>The time required to complete the computation should much lower
+  this time. Remember that we have turned off all logging in the
+  previous step of this demo. In the initial version, we were
+  constructing the message (<em>"Trying "+i+" as a factor."</em>) each
+  time a factor was tested.  With the paramatrized logging, the
+  construction of the message was postponed and, since logging was
+  turned off, never done. Thus, parameterized logging can
+  significantly reduce the cost of disabled log statements.
+  </p>
 
-<h4>Markers</h4>
+  <h4>Markers</h4>
 
-<p>SLF4J allows the use of Marker objects.  For example, one could use
-<em>TRACE</em> markers, to enrich some specific logging statements. In
-our demo applications, the <em>Howdydy-diddly-ho</em> logging
-statements are bound to a <em>TRACE</em> marker.  On the other hand,
-one could want that such marked statements be dropped and not logged
-anywhere. <code>TurboFilter</code> objects can do that in an elegant
-and flexible way. Let us uncomment the <em>TurboFilter: Marker
-value</em> section in the <em>logback.xml</em> file as well as set the
-root logger's level back to <em>DEBUG</em>, and reload via the
-<em>Reload configuration</em> page.
-</p>
+  <p>You can color log statements with <em>markers</em>. Markers are
+  part of the SLF4J API. If you look at the LoggingTask class (part of
+  logback-demo) which includes the <em>Howdydy-diddly-ho</em> log
+  statement, you should see that it is bound to a marker named
+  <code>HOWDY</code> marker.  Assume we wish to drop log statements
+  bearing the <code>HOWDY</code> marker.  Here is the
+  <code>TurboFilter</code> to do just that.
+  </p>
 
-<p>The logging statements that contained the
-<em>Howdydy-diddly-ho</em> do not appear anymore because they were
-associated with a <em>TRACE</em> marker. You can check that by
-visiting the <em>View Logs</em> page and reloading it every three
-seconds for several times.
-</p>
+  <p class="source">&lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    &lt;Name>HOWDY_FILTER&lt;/Name>
+		&lt;Marker>HOWDY&lt;/Marker>
+		&lt;OnMatch>DENY&lt;/OnMatch>
+	&lt;/turboFilter> </p>
+  
+  <p>After you have set the root logger's level back to <em>DEBUG</em>
+  and uncommented the MarkerFilter block in <em>logback.xml</em>,
+  restart the server.
+  </p>
 
-<h3>Logback Access</h3>
 
-<p>Access logging is another important feature offered by
-logback. Give a look at what appears on the console while browsing the
-logback-demo website. Each access is logged to the console, with some
-information about the event. The configuration file that we will edit
-in the next few steps is called <em>logback-access.xml</em> and is
-located in the <em>src/etc/</em> directory.  The necessary
-configuration is listed below:
-</p>
+  <p>The logs bearing the <em>Howdydy-diddly-ho</em> message should no
+  longer appear as they associated with a HOWDY marker. You can check
+  that by visiting the <em>View Logs</em> page.
+  </p>
+
+  <h2>Logback Access</h2>
+
+  <p>Access logging is another important feature offered by
+  logback. By default, the logback-demo web-application is configured
+  so that each time you access it, an access log is printed on the
+  console. The details of access logs are configured by the
+  <em>logback-access.xml</em> file located under the <em>src/etc/</em>
+  directory.
+  </p>
+
+  <p>Here is a rather minimal configuration for logback-access:</p>
 
 <div class="source"><pre>&lt;configuration>
  
@@ -292,25 +332,24 @@ configuration is listed below:
   
 &lt;/configuration></pre></div>
 
-<p>To see more clearly the output produced by logback access, you
-might want set the root logger's level to <em>OFF</em>, in the first
-logback configuration file, called <em>logback.xml</em> and located in
-<em>src/main/resources/</em>. It will clear the console from the logs
-made by the demo application and only display those that are generated
-by logback access.
-</p>
+  <p>Note that logback-classic and logback-access are configured via
+  different files, <em>logback.xml</em> and respectively
+  <em>logback-acces.xml</em>. At present time, you might want to turn
+  off logging for logback-classic by setting the level of the root
+  logger to OFF. Logback-access will be unaffected by this change.
+  </p>
 
-<p>To see the logs produced by logback access, just visit a few pages
-and look at your console. The information contained in each line has
-been specified in the configuration file. The
-<code>ConsoleAppender</code> named <em>STDOUT</em> contains a
-<code>PatternLayout</code> component.  This very component that one
-uses in logback classic to display either the message, logger name or
-level of the request is used in logback access to display the request
-method, requested page, status code and many others.
-</p>
+  <p>To see the logs produced by logback access, just visit a few
+  pages and look at your console. The information contained in each
+  line has been specified in the configuration file. The
+  <code>ConsoleAppender</code> named <em>STDOUT</em> contains a
+  <code>PatternLayout</code> component.  This very component that one
+  uses in logback classic to display either the message, logger name
+  or level of the request is used in logback access to display the
+  request method, requested page, status code and many others.
+  </p>
 
-<p>Here is a sample output of this appender.</p>
+<p>Here is a sample output for this appender.</p>
 
 <div class="source"><pre>127.0.0.1 - - 22/01/2007:14:35:40 +0100 GET /logback-demo/ViewStatii.do HTTP/1.1 200 3660
 127.0.0.1 - - 22/01/2007:14:35:41 +0100 GET /logback-demo/index.jsp HTTP/1.1 200 2389
@@ -325,16 +364,16 @@ method, requested page, status code and many others.
 127.0.0.1 - - 22/01/2007:14:35:54 +0100 GET /logback-demo/login.jsp HTTP/1.1 200 1214
 127.0.0.1 - - 22/01/2007:14:35:55 +0100 GET /logback-demo/Logout.do HTTP/1.1 200 1000</pre></div>
 
-<h4>Filtering</h4>
+  <h4>Filtering</h4>
 
-<p>In this next part, we are going to add some information to the
-console.  Let us imagine that we want to log the numbers that are
-tried on the <em>Lottery</em> page. We will need a second
-<code>ConsoleAppender</code> that will only print a given information
-(e.g. the guessed number, along with some hints about the player). The
-appender will also have to print that information only when a certain
-page is accessed.
-</p>
+  <p>In this next part, we are going to add some information to the
+  console.  Let us imagine that we want to log the numbers that are
+  tried on the <em>Lottery</em> page. We will need a second
+  <code>ConsoleAppender</code> that will only print a given information
+  (e.g. the guessed number, along with some hints about the player). The
+  appender will also have to print that information only when a certain
+  page is accessed.
+  </p>
 
 <p>The configuration lines that are necessary are listed below.
 </p>
