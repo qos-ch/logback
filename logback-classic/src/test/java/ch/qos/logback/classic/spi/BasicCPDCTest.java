@@ -108,7 +108,7 @@ public class BasicCPDCTest {
     double d1 = loop(len, true);
     System.out.println("with    packaging info " + d1 + " microseconds");
 
-    int slackFactor = 6;  
+    int slackFactor = 8;  
     if (!SystemInfo.getJavaVendor().contains("Sun")) {
       // be more lenient with other JDKs
       slackFactor = 10;
