@@ -1,17 +1,20 @@
 package ch.qos.logback.classic.pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class ExtendedThrowableProxyConverterTest {
@@ -39,13 +42,31 @@ public class ExtendedThrowableProxyConverterTest {
   }
 
   @Test
+  public void integration() {
+    PatternLayout pl = new PatternLayout();
+    pl.setContext(lc);
+    pl.setPattern("%m%n");
+    pl.start();
+    LoggingEvent e = createLoggingEvent(new Exception("x"));
+    String res = pl.doLayout(e);
+
+    // make sure that at least some package data was output
+    Pattern p = Pattern.compile(" \\[junit.*\\]");
+    Matcher m = p.matcher(res);
+    int i = 0;
+    while(m.find()) {
+      i++;
+    }
+    assertTrue(i+ " should be larger than 5", i > 5);
+  }
+
+  @Test
   public void smoke() {
     Exception t = new Exception("smoke");
     verify(t);
   }
 
   @Test
-  @Ignore
   public void nested() {
     Throwable t = makeNestedException(1);
     verify(t);

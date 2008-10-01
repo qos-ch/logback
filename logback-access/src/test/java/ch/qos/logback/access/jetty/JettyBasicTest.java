@@ -22,7 +22,7 @@ public class JettyBasicTest  {
   
   @BeforeClass
   static public void startServer() throws Exception {
-    System.out.println("*** JettyBasicTest.startServer called");
+    //System.out.println("*** JettyBasicTest.startServer called");
     requestLogImpl = new RequestLogImpl();
     JettyFixture fixture = new JettyFixture(requestLogImpl);
     fixture.start();
@@ -30,7 +30,7 @@ public class JettyBasicTest  {
   
   @AfterClass
   static  public void stopServer() throws Exception {
-    System.out.println("*** JettyBasicTest.stopServer called");
+    //System.out.println("*** JettyBasicTest.stopServer called");
     if(fixture != null) {
       fixture.stop();
     }
@@ -59,7 +59,7 @@ public class JettyBasicTest  {
     String result = Util.readToString(connection.getInputStream());
 
     assertEquals("hello world", result);
-
+    //Thread.sleep(100);
     ListAppender appender = (ListAppender) requestLogImpl.getAppender("list");
     assertTrue(appender.list.size()>0);
     AccessEvent event = (AccessEvent) appender.list.get(0);

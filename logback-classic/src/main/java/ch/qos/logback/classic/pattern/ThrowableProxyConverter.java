@@ -89,6 +89,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     // nop
   }
   
+  protected void prepareLoggingEvent(LoggingEvent event) {
+    // nop  
+  }
+  
   public String convert(LoggingEvent event) {
     StringBuilder buf = new StringBuilder(32);
 
@@ -134,6 +138,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
     }
 
+    prepareLoggingEvent(event);
+    
     buf.append(tdpArray[0]).append(CoreGlobal.LINE_SEPARATOR);
     for (int i = 1; i < length; i++) {
       String string = tdpArray[i].toString();

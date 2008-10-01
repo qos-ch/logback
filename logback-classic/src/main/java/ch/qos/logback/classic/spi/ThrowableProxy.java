@@ -18,8 +18,9 @@ public class ThrowableProxy implements java.io.Serializable {
   private static final long serialVersionUID = 6307784764626694851L;
   private ThrowableDataPoint[] tdpArray;
   private transient final Throwable throwable;
-  private transient ClassPackagingDataCalculator classPackagingDataCalculator;
-
+  private transient PackagingDataCalculator packagingDataCalculator;
+  private boolean calculatedPackageData = false;
+  
   public ThrowableProxy(Throwable throwable) {
     this.throwable = throwable;
     this.tdpArray = ThrowableToDataPointArray.convert(throwable);
@@ -27,18 +28,29 @@ public class ThrowableProxy implements java.io.Serializable {
 
   public Throwable getThrowable() {
     return throwable;
-  }
+  } 
 
-  public ClassPackagingDataCalculator getClassPackagingDataCalculator() {
-    // if original instance (non-deserialized), and classPackagingDataCalculator
-    // is not already initialized, then create an instance
+  public PackagingDataCalculator getPackagingDataCalculator() {
+    // if original instance (non-deserialized), and packagingDataCalculator
+    // is not already initialized, then create an instance.
     // here we assume that (throwable == null) for deserialized instances
-    if (throwable != null && classPackagingDataCalculator == null) {
-      classPackagingDataCalculator = new ClassPackagingDataCalculator();
+    if (throwable != null && packagingDataCalculator == null) {
+      packagingDataCalculator = new PackagingDataCalculator();
     }
-    return classPackagingDataCalculator;
+    return packagingDataCalculator;
   }
 
+  public void calculatePackagingData() {
+    if(calculatedPackageData) {
+      return;
+    }
+    PackagingDataCalculator pdc = this.getPackagingDataCalculator();
+    if(pdc != null) {
+      calculatedPackageData = true;
+      pdc.calculate(tdpArray);
+    }
+  }
+	
   /**
    * The data point representation of the throwable proxy.
    */

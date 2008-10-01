@@ -11,12 +11,13 @@ package ch.qos.logback.classic;
 
 import static ch.qos.logback.classic.TestConstants.ISO_REGEX;
 import static ch.qos.logback.classic.TestConstants.MAIN_REGEX;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Context;
@@ -30,13 +31,10 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   LoggingEvent le;
   List optionList = new ArrayList();
 
-  public PatternLayoutTest(String arg0) {
-    super(arg0);
-
+  public PatternLayoutTest() {
+    super();
     Exception ex = new Exception("Bogus exception");
-
     le = makeLoggingEvent(ex);
-    // ex.printStackTrace();
   }
   
   LoggingEvent makeLoggingEvent(Exception ex) {
@@ -53,6 +51,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     return new PatternLayout();
   }
 
+  @Test
   public void testOK() {
     PatternLayout pl = new PatternLayout();
     pl.setPattern("%d %le [%t] %lo{30} - %m%n");
@@ -66,6 +65,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(val.matches(regex));
   }
 
+  @Test
   public void testNoExeptionHandler() {
     PatternLayout pl = new PatternLayout();
     pl.setPattern("%m%n");
@@ -76,6 +76,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(val.contains("java.lang.Exception: Bogus exception"));
   }
 
+  @Test
   public void testCompositePattern() {
     PatternLayout pl = new PatternLayout();
     pl.setPattern("%-56(%d %lo{20}) - %m%n");
@@ -89,6 +90,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   }
   
+  @Test
   public void testNopExeptionHandler() {
     PatternLayout pl = new PatternLayout();
     pl.setPattern("%nopex %m%n");
@@ -99,6 +101,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
   }
   
+  @Test
   public void testWithParenthesis() {
     PatternLayout pl = new PatternLayout();
     pl.setPattern("\\(%msg:%msg\\) %msg");
@@ -111,6 +114,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertEquals("(Some message:Some message) Some message", val);
   }
   
+  @Test
   public void testWithLettersComingFromLog4j() {
     PatternLayout pl = new PatternLayout();
     //Letters: p = level and c = logger
@@ -122,13 +126,6 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
     String regex = TestConstants.ISO_REGEX+" INFO "+MAIN_REGEX+" c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
-  }
-  
-  static public Test suite() {
-    TestSuite suite = new TestSuite();
-    //suite.addTest(new PatternLayoutTest("testNopExeptionHandler"));
-    suite.addTestSuite(PatternLayoutTest.class);
-    return suite;
   }
 
   @Override

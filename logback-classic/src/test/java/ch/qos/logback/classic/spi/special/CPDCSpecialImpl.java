@@ -1,7 +1,7 @@
 package ch.qos.logback.classic.spi.special;
 
 import ch.qos.logback.classic.spi.CPDCSpecial;
-import ch.qos.logback.classic.spi.ClassPackagingDataCalculator;
+import ch.qos.logback.classic.spi.PackagingDataCalculator;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 
 
@@ -18,8 +18,8 @@ public class CPDCSpecialImpl implements CPDCSpecial {
   private void nesting() {
     throwable = new Throwable("x");
     throwableProxy = new ThrowableProxy(throwable);
-    ClassPackagingDataCalculator cpdc = new ClassPackagingDataCalculator();
-    cpdc.calculate(throwableProxy.getThrowableDataPointArray());
+    PackagingDataCalculator pdc = new PackagingDataCalculator();
+    pdc.calculate(throwableProxy.getThrowableDataPointArray());
   }
   
   public Throwable getThrowable() {

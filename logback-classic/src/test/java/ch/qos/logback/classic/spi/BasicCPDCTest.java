@@ -51,14 +51,19 @@ public class BasicCPDCTest {
 //    }
 //  }
   
-    
+ 
+  @Test
+  public void integration() throws Exception {
+  
+  }
+  
   @Test
   public void smoke() throws Exception {
     Throwable t = new Throwable("x");
     ThrowableProxy tp = new ThrowableProxy(t);
-    ClassPackagingDataCalculator cpdc = tp.getClassPackagingDataCalculator();
+    PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
     ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-    cpdc.calculate(tdpArray);
+    pdc.calculate(tdpArray);
     verify(tdpArray);
     tp.fullDump();
   }
@@ -67,9 +72,9 @@ public class BasicCPDCTest {
   public void nested() throws Exception {
     Throwable t = TeztHelper.makeNestedException(3);
     ThrowableProxy tp = new ThrowableProxy(t);
-    ClassPackagingDataCalculator cpdc = tp.getClassPackagingDataCalculator();
+    PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
     ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-    cpdc.calculate(tdpArray);
+    pdc.calculate(tdpArray);
     verify(tdpArray);
   }
 
@@ -80,10 +85,10 @@ public class BasicCPDCTest {
     } catch (Throwable e) {
       ThrowableProxy tp = new ThrowableProxy(e);
       if (withClassPackagingCalculation) {
-        ClassPackagingDataCalculator cpdc = tp
-            .getClassPackagingDataCalculator();
+        PackagingDataCalculator pdc = tp
+            .getPackagingDataCalculator();
         ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-        cpdc.calculate(tdpArray);
+        pdc.calculate(tdpArray);
       }
     }
   }

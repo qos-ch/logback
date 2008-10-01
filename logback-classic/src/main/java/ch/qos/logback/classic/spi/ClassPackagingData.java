@@ -42,5 +42,37 @@ public class ClassPackagingData implements Serializable {
   public boolean isExact() {
     return exact;
   }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 31;
+    int result = 1;
+    result = PRIME * result + ((codeLocation == null) ? 0 : codeLocation.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final ClassPackagingData other = (ClassPackagingData) obj;
+    if (codeLocation == null) {
+      if (other.codeLocation != null)
+        return false;
+    } else if (!codeLocation.equals(other.codeLocation))
+      return false;
+    if (exact != other.exact)
+      return false;
+    if (version == null) {
+      if (other.version != null)
+        return false;
+    } else if (!version.equals(other.version))
+      return false;
+    return true;
+  }
   
 }

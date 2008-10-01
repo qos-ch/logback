@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class SocketAppenderTest {
 
   static final String LIST_APPENDER_NAME = "la";
-  static final int JOIN__OR_WAIT_TIMEOUT = 200;
+  static final int JOIN_OR_WAIT_TIMEOUT = 200;
   static final int SLEEP_AFTER_LOG = 100;
   
   int port = 4561;
@@ -62,7 +62,7 @@ public class SocketAppenderTest {
     Thread.sleep(SLEEP_AFTER_LOG);
 
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -82,7 +82,7 @@ public class SocketAppenderTest {
     Thread.sleep(SLEEP_AFTER_LOG);
 
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -113,7 +113,7 @@ public class SocketAppenderTest {
 
     Thread.sleep(SLEEP_AFTER_LOG);
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     ListAppender<LoggingEvent> la = getListAppender();
     assertEquals(1, la.list.size());
@@ -138,7 +138,7 @@ public class SocketAppenderTest {
     Thread.sleep(SLEEP_AFTER_LOG);
 
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
@@ -163,7 +163,7 @@ public class SocketAppenderTest {
     Thread.sleep(SLEEP_AFTER_LOG);
 
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
     ListAppender<LoggingEvent> la = getListAppender();
 
@@ -185,11 +185,13 @@ public class SocketAppenderTest {
 
     fireServer();
     waitForServerToStart();
+    Thread.sleep(SLEEP_AFTER_LOG); // allow time for client and server to connect
     logger.debug("test msg 2");
     Thread.sleep(SLEEP_AFTER_LOG);
     
     simpleSocketServer.close();
-    simpleSocketServer.join(JOIN__OR_WAIT_TIMEOUT);
+    Thread.sleep(SLEEP_AFTER_LOG);
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     StatusPrinter.print(lc);
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
@@ -201,7 +203,7 @@ public class SocketAppenderTest {
 
   private void waitForServerToStart() throws InterruptedException {
     synchronized (simpleSocketServer) {
-      simpleSocketServer.wait(JOIN__OR_WAIT_TIMEOUT);
+      simpleSocketServer.wait(JOIN_OR_WAIT_TIMEOUT);
     }
   }
 

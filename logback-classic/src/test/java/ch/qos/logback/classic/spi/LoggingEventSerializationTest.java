@@ -123,16 +123,28 @@ public class LoggingEventSerializationTest {
   }
 
   @Test
-  public void xThrowable() throws Exception {
+  public void _Throwable() throws Exception {
     LoggingEvent event = createLoggingEvent();
     Throwable throwable = new Throwable("just testing");
     ThrowableProxy tp = new ThrowableProxy(throwable);
     event.setThrowableProxy(tp);
-
     LoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
   }
 
+  @Test
+  public void extendendeThrowable() throws Exception {
+    LoggingEvent event = createLoggingEvent();
+    Throwable throwable = new Throwable("just testing");
+    ThrowableProxy tp = new ThrowableProxy(throwable);
+    event.setThrowableProxy(tp);
+    tp.calculatePackagingData();
+
+    LoggingEvent remoteEvent = writeAndRead(event);
+    checkForEquality(event, remoteEvent);
+  }
+  
+  
   @Test
   public void serializeLargeArgs() throws Exception {
     

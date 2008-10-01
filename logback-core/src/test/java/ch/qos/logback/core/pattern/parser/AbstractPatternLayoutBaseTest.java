@@ -9,7 +9,11 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -20,16 +24,13 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
-abstract public class AbstractPatternLayoutBaseTest<E> extends TestCase {
-
-  public AbstractPatternLayoutBaseTest(String arg0) {
-    super(arg0);
-  }
-
+abstract public class AbstractPatternLayoutBaseTest<E> {
+  
   abstract public PatternLayoutBase<E> getPatternLayoutBase();
   abstract public E getEventObject();
   abstract public Context getContext();
-   
+  
+  @Test
   public void testUnStarted() {
     PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
@@ -45,6 +46,7 @@ abstract public class AbstractPatternLayoutBaseTest<E> extends TestCase {
    * converters. ExceptionalConverter throws an exception if it's convert
    * method is called before being started.
    */
+  @Test
   public void testConverterStart() {
     PatternLayoutBase<E> plb = getPatternLayoutBase();
     plb.setContext(getContext());
@@ -56,6 +58,7 @@ abstract public class AbstractPatternLayoutBaseTest<E> extends TestCase {
     //System.out.println("========="+result);
   }
 
+  @Test
   public void testStarted() {
     PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
@@ -66,6 +69,7 @@ abstract public class AbstractPatternLayoutBaseTest<E> extends TestCase {
     StatusPrinter.print(sm);
   }
 
+  @Test
   public void testNullPattern() {
     //System.out.println("testNullPattern");
     PatternLayoutBase<E> plb = getPatternLayoutBase();

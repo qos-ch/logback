@@ -9,6 +9,10 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
@@ -17,10 +21,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   Context context = new ContextBase();
-  public SamplePatternLayoutTest(String arg) {
-    super(arg);
-  }
-  
 
   public PatternLayoutBase<Object> getPatternLayoutBase() {
     return new SamplePatternLayout<Object>();
@@ -30,6 +30,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     return new Object();
   }
   
+  @Test
   public void testOK() {
     PatternLayoutBase<Object> plb = getPatternLayoutBase();
     Context context = new ContextBase();
@@ -44,6 +45,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertEquals("x123", s);
   }
 
+  @Test
   public void testParentheses() {
     PatternLayoutBase<Object> plb = getPatternLayoutBase();
     Context context = new ContextBase();
@@ -54,6 +56,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertEquals("x(123)", s);
   }
 
+  @Test
   public void testPercentAsLiteral() {
     PatternLayoutBase<Object> plb = getPatternLayoutBase();
     Context context = new ContextBase();

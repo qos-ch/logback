@@ -24,13 +24,32 @@ import ch.qos.logback.classic.spi.ThrowableDataPoint.ThrowableDataPointType;
  * @author James Strachan
  * @Ceki G&uuml;lc&uuml;
  */
-public class ClassPackagingDataCalculator {
+public class PackagingDataCalculator {
 
   final static StackTraceElementProxy[] STEP_ARRAY_TEMPLATE = new StackTraceElementProxy[0];
 
   HashMap<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
 
-  public ClassPackagingDataCalculator() {
+  private static boolean GET_CALLER_CLASS_METHOD_AVAILABLE = false;
+  
+  static {
+    // if either the Reflection class or the getCallerClass method
+    // are unavailable, then we won't invoke Reflection.getCallerClass()
+    // This approach ensures that this class will *run* on JDK's lacking
+    // sun.reflect.Reflection class. However, this class will *not compile*
+    // on JDKs lacking sun.reflect.Reflection.
+    try {
+      Reflection.getCallerClass(2);
+      GET_CALLER_CLASS_METHOD_AVAILABLE = true;
+    } catch(NoClassDefFoundError e) {
+    } catch(NoSuchMethodError e) {
+    } catch(Throwable e) {
+      System.err.println("Unexpected exception");
+      e.printStackTrace();
+    }
+  }
+  
+  public PackagingDataCalculator() {
   }
 
   public void calculate(ThrowableDataPoint[] tdpArray) {
@@ -58,8 +77,11 @@ public class ClassPackagingDataCalculator {
     
     int missfireCount = 0;
     for (int i = 0; i < commonFrames; i++) {
-      Class callerClass = Reflection.getCallerClass(localFirstCommon + i
+      Class callerClass = null;
+      if(GET_CALLER_CLASS_METHOD_AVAILABLE) {
+        callerClass = Reflection.getCallerClass(localFirstCommon + i
           - missfireCount + 1);
+      }
       StackTraceElementProxy step = stepArray[stepFirstCommon + i];
       String stepClassname = step.ste.getClassName();
       

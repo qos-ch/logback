@@ -10,6 +10,7 @@
 
 package ch.qos.logback.core.pattern.parser;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,7 +24,7 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(ParserTest.class);
     suite.addTestSuite(FormatInfoTest.class);
     suite.addTestSuite(CompilerTest.class);
-    suite.addTestSuite(SamplePatternLayoutTest.class);
+    suite.addTest(new JUnit4TestAdapter(SamplePatternLayoutTest.class));
     return suite;
   }
 }
