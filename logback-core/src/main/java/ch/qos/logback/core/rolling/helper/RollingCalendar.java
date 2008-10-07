@@ -19,36 +19,23 @@ import java.util.TimeZone;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-
-
 /**
- * RollingCalendar is a helper class to 
- * {@link ch.qos.logback.core.rolling.TimeBasedRollingPolicy } 
- * or similar timed-based rolling policies. Given a periodicity type and the 
- * current time, it computes the start of the next interval.
- *
+ * RollingCalendar is a helper class to
+ * {@link ch.qos.logback.core.rolling.TimeBasedRollingPolicy } or similar
+ * timed-based rolling policies. Given a periodicity type and the current time,
+ * it computes the start of the next interval (i.e. the triggering date).
+ * 
  * @author Ceki G&uuml;lc&uuml;
- *
- * */
+ * 
+ */
 public class RollingCalendar extends GregorianCalendar {
 
   private static final long serialVersionUID = -5937537740925066161L;
 
-
   // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
 
-  // The code assumes that the following constants are in a increasing
-  // sequence.
-  public static final int TOP_OF_TROUBLE = -1;
-  public static final int TOP_OF_SECOND = 0;
-  public static final int TOP_OF_MINUTE = 1;
-  public static final int TOP_OF_HOUR = 2;
-  public static final int HALF_DAY = 3;
-  public static final int TOP_OF_DAY = 4;
-  public static final int TOP_OF_WEEK = 5;
-  public static final int TOP_OF_MONTH = 6;
-  int type = TOP_OF_TROUBLE;
+  PeriodicityType type = PeriodicityType.ERRONEOUS;
 
   public RollingCalendar() {
     super();
@@ -59,15 +46,15 @@ public class RollingCalendar extends GregorianCalendar {
   }
 
   public void init(String datePattern) {
-    type = computeTriggeringPeriod(datePattern);
+    type = computePeriodicity(datePattern);
   }
 
-  private void setType(int type) {
+  private void setType(PeriodicityType type) {
     this.type = type;
   }
 
-  public long getNextCheckMillis(Date now) {
-    return getNextCheckDate(now).getTime();
+  public long getNextTriggeringMillis(Date now) {
+    return getNextTriggeringDate(now).getTime();
   }
 
   // This method computes the roll over period by looping over the
@@ -78,32 +65,32 @@ public class RollingCalendar extends GregorianCalendar {
   // formatting is done in GMT and not local format because the test
   // logic is based on comparisons relative to 1970-01-01 00:00:00
   // GMT (the epoch).
-  public int computeTriggeringPeriod(String datePattern) {
-    RollingCalendar rollingCalendar =
-      new RollingCalendar(GMT_TIMEZONE, Locale.getDefault());
+  public PeriodicityType computePeriodicity(String datePattern) {
+    RollingCalendar rollingCalendar = new RollingCalendar(GMT_TIMEZONE, Locale
+        .getDefault());
 
     // set sate to 1970-01-01 00:00:00 GMT
     Date epoch = new Date(0);
 
     if (datePattern != null) {
-      for (int i = TOP_OF_SECOND; i <= TOP_OF_MONTH; i++) {
+      for (PeriodicityType i : PeriodicityType.VALID_ORDERED_LIST) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
-        simpleDateFormat.setTimeZone(GMT_TIMEZONE); // do all date formatting in GMT
+        simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
 
         String r0 = simpleDateFormat.format(epoch);
         rollingCalendar.setType(i);
 
-        Date next = new Date(rollingCalendar.getNextCheckMillis(epoch));
+        Date next = new Date(rollingCalendar.getNextTriggeringMillis(epoch));
         String r1 = simpleDateFormat.format(next);
 
-        //System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
+        // System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
         if ((r0 != null) && (r1 != null) && !r0.equals(r1)) {
           return i;
         }
       }
     }
-
-    return TOP_OF_TROUBLE; // Deliberately head for trouble...
+    // we failed
+    return PeriodicityType.ERRONEOUS; 
   }
 
   public void printPeriodicity(ContextAwareBase cab) {
@@ -148,20 +135,20 @@ public class RollingCalendar extends GregorianCalendar {
     }
   }
 
-  public Date getNextCheckDate(Date now) {
+  public Date getRelativeDate(Date now, int periods) {
     this.setTime(now);
 
     switch (type) {
     case TOP_OF_SECOND:
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.SECOND, 1);
+      this.add(Calendar.SECOND, periods);
 
       break;
 
     case TOP_OF_MINUTE:
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.MINUTE, 1);
+      this.add(Calendar.MINUTE, periods);
 
       break;
 
@@ -169,23 +156,7 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.MINUTE, 0);
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.HOUR_OF_DAY, 1);
-
-      break;
-
-    case HALF_DAY:
-      this.set(Calendar.MINUTE, 0);
-      this.set(Calendar.SECOND, 0);
-      this.set(Calendar.MILLISECOND, 0);
-
-      int hour = get(Calendar.HOUR_OF_DAY);
-
-      if (hour < 12) {
-        this.set(Calendar.HOUR_OF_DAY, 12);
-      } else {
-        this.set(Calendar.HOUR_OF_DAY, 0);
-        this.add(Calendar.DAY_OF_MONTH, 1);
-      }
+      this.add(Calendar.HOUR_OF_DAY, periods);
 
       break;
 
@@ -194,7 +165,7 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.MINUTE, 0);
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.DATE, 1);
+      this.add(Calendar.DATE, periods);
 
       break;
 
@@ -204,7 +175,7 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.MINUTE, 0);
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.WEEK_OF_YEAR, 1);
+      this.add(Calendar.WEEK_OF_YEAR, periods);
 
       break;
 
@@ -214,7 +185,7 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.MINUTE, 0);
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
-      this.add(Calendar.MONTH, 1);
+      this.add(Calendar.MONTH, periods);
 
       break;
 
@@ -223,5 +194,9 @@ public class RollingCalendar extends GregorianCalendar {
     }
 
     return getTime();
+  }
+  
+  public Date getNextTriggeringDate(Date now) {
+    return getRelativeDate(now, 1);
   }
 }

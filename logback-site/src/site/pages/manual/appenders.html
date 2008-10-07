@@ -925,20 +925,8 @@ public interface RollingPolicy extends LifeCycle {
 			<em>/wombat/foo.2006-24.log</em> until it is rolled over at the
 			beginning of the next week.
 			</td>
-		</tr>
+		</tr>	
 		<tr class="a">
-			<td class="small">
-				<em>/wombat/foo.  &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd-a}.log</em>
-			</td>
-			<td>Rollover at midnight and midday of each day.</td>
-
-			<td>During the first 12 hours of November 3rd, 2006, the logging
-			will be output to <em>/wombat/foo.2006-11-03-AM.log</em>.  After
-			noon, and until midnight, the logging will be output to
-			<em>/wombat/foo.2006-11-03-PM.log</em>.
-			</td>
-		</tr>
-		<tr class="b">
 			<td class="small">
 				<em>/wombat/foo.  &nbsp;&nbsp;/<br/>%d{yyyy-MM-dd_HH}.log</em>
 			</td>
@@ -950,7 +938,7 @@ public interface RollingPolicy extends LifeCycle {
 			<em>/wombat/foo.2006-11-03_12.log</em>.
 			</td>
 		</tr>
-		<tr class="a">
+		<tr class="b">
 			<td class="small">
 				<em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
 			</td>

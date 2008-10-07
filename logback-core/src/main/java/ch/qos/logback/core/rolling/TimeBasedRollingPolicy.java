@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.concurrent.Future;
 
+import sun.misc.Cleaner;
+
 import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
@@ -20,6 +22,7 @@ import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
+import ch.qos.logback.core.rolling.helper.TimeBasedCleaner;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -48,6 +51,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   String lastGeneratedFileName;
   Future<?> future;
 
+  TimeBasedCleaner tbCleaner;
+  
   public void setCurrentTime(long timeInMillis) {
     currentTime = timeInMillis;
     isTimeForced = true;
@@ -109,8 +114,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
     // currentTime = System.currentTimeMillis();
     lastCheck.setTime(getCurrentTime());
-    nextCheck = rc.getNextCheckMillis(lastCheck);
+    nextCheck = rc.getNextTriggeringMillis(lastCheck);
 
+    tbCleaner = new TimeBasedCleaner(fileNamePattern, rc, 5);
     // Date nc = new Date();
     // nc.setTime(nextCheck);
   }
@@ -130,6 +136,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       }
     }
 
+    tbCleaner.clean(new Date(getCurrentTime()));
+    
     // let's update the parent active file name
     setParentFileName(getNewActiveFileName());
 
@@ -172,13 +180,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    * file equals the file name for the current period as computed by the
    * <b>FileNamePattern</b> option.
    * 
-   * The RollingPolicy must know wether it is responsible for changing the name
+   * <p>The RollingPolicy must know wether it is responsible for changing the name
    * of the active file or not. If the active file name is set by the user via
    * the configuration file, then the RollingPolicy must let it like it is. If
    * the user does not specify an active file name, then the RollingPolicy
    * generates one.
    * 
-   * To be sure that the file name used by the parent class has been generated
+   * <p>To be sure that the file name used by the parent class has been generated
    * by the RollingPolicy and not specified by the user, we keep track of the
    * last generated name object and compare its reference to the parent file
    * name. If they match, then the RollingPolicy knows it's responsible for the
@@ -210,7 +218,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       // addInfo("elapsedPeriodsFileName set to "+elapsedPeriodsFileName);
 
       lastCheck.setTime(time);
-      nextCheck = rc.getNextCheckMillis(lastCheck);
+      nextCheck = rc.getNextTriggeringMillis(lastCheck);
 
       Date x = new Date();
       x.setTime(nextCheck);
