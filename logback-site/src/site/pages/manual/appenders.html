@@ -557,8 +557,10 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
 <div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</pre></div>
 	
 	
-	<a name="RollingFileAppender"></a>
-	<h3>RollingFileAppender</h3>
+	
+	<h3>
+  <a name="RollingFileAppender" 
+     href="#RollingFileAppender">RollingFileAppender</a></h3>
 	
 	<p><a
 	href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
@@ -674,9 +676,11 @@ public interface RollingPolicy extends LifeCycle {
 	given a reference to its parent via the <code>setParent</code>
 	method.
 	</p>
-	
-	<a name="FixedWindowRollingPolicy"></a>
-	<h4>FixedWindowRollingPolicy</h4>
+
+	<h4>	
+    <a name="FixedWindowRollingPolicy" 
+       href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
+  </h4>
 
 	<p>When rolling over, <a
 	href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
@@ -854,17 +858,20 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre></div>
 	
-	<a name="TimeBasedRollingPolicy"></a>
-	<h4>TimeBasedRollingPolicy</h4>
+  <h4>
+    <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
+  </h4>
+
 	<p>
 		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
-		<code>TimeBasedRollingPolicy</code></a> is probably the most
-		popular rolling polciy. It allows defines a rollover policy based
-		on time, say by day or by month.
+		<code>TimeBasedRollingPolicy</code></a> is possibly the most
+		popular rolling polciy. It defines a rollover policy based on
+		time, say by day or by month.
 	</p>
 
-	<p><code>TimeBasedRollingPolicy</code>'s has only one mandatory
-	option, namely <span class="option">FileNamePattern</span>.
+	<p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
+	mandatory <span class="option">FileNamePattern</span> property and
+	the optinal <span class="option">MaxHistory</span> property.
 	</p>
 	
 	<p><span class="option">FileNamePattern</span> option defines the
@@ -1010,17 +1017,24 @@ public interface RollingPolicy extends LifeCycle {
 	interfaces.
 	</p>
 
-	<p>By setting the <span class="option">File</span> option you can
+	<p>By setting the <span class="option">File</span> property you can
 	decouple the location of the active log file and the location of the
 	archived log files. The logging output will be targeted into the
-	file specified by the <span class="option">File</span> option. It
+	file specified by the <span class="option">File</span> property. It
 	follows that the name of the active log file will not change over
 	time. However, if you choose to omit the <span
-	class="option">File</span> option, then the active file will be
+	class="option">File</span> property, then the active file will be
 	computed anew for each period based on the value of <span
 	class="option">FileNamePattern</span>.
 	</p>
 	
+  <p>The <span class="option">MaxHistory</span> property controls the
+  maximum number of archive files to keep, deleting older files. For
+  example, if you specify monthly rollover, and set <span
+  class="option">MaxHistory</span> to 6, then 6 months worth of
+  archives files will be kept with files older than 6 months deleted.
+  </p>
+
 	
 	<p>For various reasons, rollovers are not clock-driven but depend on
 	the arrival of logging events. For example, on 8th of March 2002,
@@ -1048,6 +1062,8 @@ public interface RollingPolicy extends LifeCycle {
     &lt;File>logFile.log&lt;/File>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;FileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
+      &lt;!-- keep 30 days worth of history -->
+      &lt;MaxHistory>30&lt;/MaxHistory>
     &lt;/rollingPolicy></b>
 
     &lt;layout class="ch.qos.logback.classic.PatternLayout">

@@ -3,6 +3,8 @@
    <File>logFile.log</File>
    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
      <FileNamePattern>logFile.%d{yyyy-MM-dd}.log</FileNamePattern>
+     <!-- keep 30 days worth of history -->
+     <MaxHistory>30</MaxHistory> 
    </rollingPolicy>
 
    <layout class="ch.qos.logback.classic.PatternLayout">
