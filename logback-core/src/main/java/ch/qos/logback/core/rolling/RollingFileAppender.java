@@ -133,6 +133,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * is automatically set to be the policy argument.
    * @param policy
    */
+  @SuppressWarnings("unchecked")
   public void setRollingPolicy(RollingPolicy policy) {
     rollingPolicy = policy;
     if(rollingPolicy instanceof TriggeringPolicy) {
