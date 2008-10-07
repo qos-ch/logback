@@ -323,10 +323,10 @@ public class LoggingEvent implements Serializable {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer('[');
+    StringBuilder sb = new StringBuilder();
+    sb.append('[');
     sb.append(level).append("] ");
     sb.append(getFormattedMessage());
-    sb.append("\n");
     return sb.toString();
   }
 }
