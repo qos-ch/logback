@@ -98,7 +98,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
-      this.setFile();
+      this.openFile();
     } catch (IOException e) {
       addError(
         "setFile(" + fileName + ", false) call failed.", e);
