@@ -10,11 +10,13 @@
 package ch.qos.logback.core;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.util.FileUtil;
 
 /**
  * FileAppender appends log events to a file.
@@ -79,7 +81,7 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   /**
    * If the value of <b>File</b> is not <code>null</code>, then
-   * {@link #setFile} is called with the values of <b>File</b> and <b>Append</b>
+   * {@link #openFile} is called with the values of <b>File</b> and <b>Append</b>
    * properties.
    */
   public void start() {
@@ -96,7 +98,7 @@ public class FileAppender<E> extends WriterAppender<E> {
             this));
       }
       try {
-        setFile();
+        openFile();
       } catch (java.io.IOException e) {
         errors++;
 
@@ -136,11 +138,18 @@ public class FileAppender<E> extends WriterAppender<E> {
    * @throws IOException
    * 
    */
-  public synchronized void setFile() throws IOException {
+  public synchronized void openFile() throws IOException {
     closeWriter();
 
+    File file = new File(fileName);
+    if(FileUtil.mustCreateParentDirectories(file)) {
+      boolean result = FileUtil.createMissingParentDirectories(file);
+      if(!result) {
+        addError("Failed to create parent directories for ["+file.getAbsolutePath()+"]");
+      }
+    }
+    
     this.writer = createWriter(new FileOutputStream(fileName, append));
-
     if (bufferedIO) {
       this.writer = new BufferedWriter(this.writer, bufferSize);
     }

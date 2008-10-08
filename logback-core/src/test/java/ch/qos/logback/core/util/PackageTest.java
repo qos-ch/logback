@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.core.util;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -20,6 +21,7 @@ public class PackageTest extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(DurationTest.class);
     suite.addTestSuite(FileSizeTest.class);
+    suite.addTest(new JUnit4TestAdapter(FileUtilTest.class));
     suite.addTestSuite(OptionHelperTest.class);
     suite.addTestSuite(StatusPrinterTest.class);
     suite.addTestSuite(TimeUtilTest.class);
