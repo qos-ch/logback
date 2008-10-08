@@ -74,6 +74,15 @@ prefix='';
   thus controlling then number of archived log files.</p>
 
   <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-42">LBCORE-42</a>. If the
+  parent directory of the log file does not exist, then FileAppender
+  will create it, including any necessary but nonexistent parent
+  directories. 
+  </p>
+
+
+
+  <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-27</a> reported by
   Peter Royal. SMTPAppender now outputs its presentation footer and
   file footer in the the correct order.
