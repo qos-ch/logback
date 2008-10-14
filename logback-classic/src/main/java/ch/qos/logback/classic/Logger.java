@@ -193,7 +193,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     if (level == null) {
       effectiveLevelInt = newParentLevel.levelInt;
 
-      // propagate the parent levelInt change to this logger's children
+      
       // propagate the parent levelInt change to this logger's children
       if (childrenList != null) {
         int len = childrenList.size();
