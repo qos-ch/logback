@@ -234,7 +234,7 @@ public class SMTPAppender_SubethaSMTPTest {
     MessageListenerAdapter mla = (MessageListenerAdapter)wiser.getServer().getMessageHandlerFactory();
     mla.setAuthenticationHandlerFactory(new TrivialAuthHandlerFactory());
     
-    smtpAppender.setStartTLS(true);
+    smtpAppender.setSTARTTLS(true);
     smtpAppender.setUsername("xx");
     smtpAppender.setPassword("xx");    
   
@@ -259,7 +259,7 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setSMTPPort(587);
     
     smtpAppender.addTo("XXX@gmail.com");
-    smtpAppender.setStartTLS(true);
+    smtpAppender.setSTARTTLS(true);
     smtpAppender.setUsername("XXX@gmail.com");
     smtpAppender.setPassword("XXX");    
   
@@ -280,7 +280,7 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setSMTPPort(465);
     
     smtpAppender.addTo("XXX@gmail.com");
-    smtpAppender.setSsl(true);
+    smtpAppender.setSSL(true);
     smtpAppender.setUsername("XXX@gmail.com");
     smtpAppender.setPassword("XXX");    
   

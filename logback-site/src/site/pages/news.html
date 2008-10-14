@@ -81,7 +81,6 @@ prefix='';
   </p>
 
 
-
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-27</a> reported by
   Peter Royal. SMTPAppender now outputs its presentation footer and
@@ -110,13 +109,19 @@ prefix='';
 
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBGENERAL-24">LBGENERAL-24</a>
+  reported by Hung Tang. SMTPAppender now supports plain
+  username/password authentication as well as both the STARTTLS
+  command and SSL connections.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-17">LBCORE-17</a>
   reported by Thorbj&oslash;rn Ravn Andersen. Logback now relies on
   Geronimo JMS API specifications instead of Sun's JMS API
   specification, the latter requiring manual installation. With
   Geronimo JMS, logback can be built using Maven without needing to
   manually install any dependencies.
   </p>
-
 
   <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>
   </p>

@@ -58,7 +58,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   private String subjectStr = null;
   private String smtpHost;
   private int smtpPort = 25;
-  private boolean startTLS = false;
+  private boolean starttls = false;
   private boolean ssl = false;
 
   String username;
@@ -96,14 +96,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       props.put("mail.smtp.auth", "true");
     }
 
-    if (isStartTLS() && isSsl()) {
+    if (isSTARTTLS() && isSSL()) {
       addError("Both SSL and StartTLS cannot be enabled simultaneously");
     } else {
-      if (isStartTLS()) {
+      if (isSTARTTLS()) {
         props.setProperty("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
       }
-      if (isSsl()) {
+      if (isSSL()) {
         String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         props.put("mail.smtp.socketFactory.port", Integer.toString(smtpPort));
         props.put("mail.smtp.socketFactory.class", SSL_FACTORY);
@@ -358,19 +358,19 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     this.msg = msg;
   }
 
-  public boolean isStartTLS() {
-    return startTLS;
+  public boolean isSTARTTLS() {
+    return starttls;
   }
 
-  public void setStartTLS(boolean startTLS) {
-    this.startTLS = startTLS;
+  public void setSTARTTLS(boolean startTLS) {
+    this.starttls = startTLS;
   }
 
-  public boolean isSsl() {
+  public boolean isSSL() {
     return ssl;
   }
 
-  public void setSsl(boolean ssl) {
+  public void setSSL(boolean ssl) {
     this.ssl = ssl;
   }
 

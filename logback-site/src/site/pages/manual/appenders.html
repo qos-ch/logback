@@ -1920,14 +1920,14 @@ Context ctx = new InitialContext(env);</pre></div>
         <td><code>String</code></td>
         <td>The host name of the SMTP server. This parameter is mandatory.</td>
       </tr>
-
+      
       <tr class="alt">
         <td><b><span class="option">SMTPPort</span></b></td>
         <td><code>int</code></td>
         <td>The port where the SMTP server is listening. Defaults to
         25.</td>
       </tr>
-
+      
       <tr>
         <td><b><span class="option">To</span></b></td>
         <td><code>String</code></td>
@@ -1964,46 +1964,79 @@ Context ctx = new InitialContext(env);</pre></div>
           </p>
 
           <p>By default, this option is set to "%logger{20} - %m".</p>
-			</td>
-		</tr>
-		<tr class="alt">
-			<td><b><span class="option">BufferSize</span></b></td>
-			<td><code>int</code></td>
-			<td>
-				The <span class="option">BufferSize</span> option takes a positive 
-				integer representing the maximum number of logging events to collect in a 
-				cyclic buffer. When the <span class="option">BufferSize</span> is reached, 
-				oldest events are deleted as new events are added to the buffer. 
-				The default size of the cyclic buffer is 512.
-			</td>
-		</tr>
-		<tr >
-			<td><b><span class="option">Evaluator</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>This option is declared by creating a new <code>&lt;EventEvaluator/></code>
-				element. The name of the class that the user wishes to use as the
-				<code>SMTPAppender</code>'s <code>Evaluator</code> can be given
-				by adding an attribute to the newly created element.
-				</p>
+        </td>
+      </tr>
+      <tr class="alt">
+        <td><b><span class="option">BufferSize</span></b></td>
+        <td><code>int</code></td>
+        <td>
+          The <span class="option">BufferSize</span> option takes a positive 
+          integer representing the maximum number of logging events to collect in a 
+          cyclic buffer. When the <span class="option">BufferSize</span> is reached, 
+          oldest events are deleted as new events are added to the buffer. 
+          The default size of the cyclic buffer is 512.
+        </td>
+      </tr>
+      <tr >
+        <td><b><span class="option">Evaluator</span></b></td>
+        <td><code>String</code></td>
+        <td>
+          <p>This option is declared by creating a new <code>&lt;EventEvaluator/></code>
+          element. The name of the class that the user wishes to use as the
+          <code>SMTPAppender</code>'s <code>Evaluator</code> can be given
+          by adding an attribute to the newly created element.
+          </p>
+          
+          <p>More details about the use of event evaluators with
+          <code>SMTPAppender</code> follow further down this document.
+          </p>
+          
+          <p>In the absence of this option, <code>SMTPAppender</code> is
+          assigned a default event evaluator which triggers email
+          transmission as a response to any event of level
+          <em>ERROR</em> or higher.
+          </p>
+          
+          <p><code>EventEvaluator</code> objects are subclasses of the
+          <code>JaninoEventEvaluatorBase</code> which depends on
+          Janino. See the <a href="../dependencies.html">dependencies
+          page</a> for more information.
+          </p>
+        </td>
+      </tr>
+      <tr class="alt">
+        <td><b><span class="option">Username</span></b></td>
+        <td><code>String</code></td>
+        <td>The username value to use during plain user/password
+        authentication. By default, this parameter is null.
+        </td>
+      </tr>
+      <tr >
+        <td><b><span class="option">Password</span></b></td>
+        <td><code>String</code></td>
+        <td>The password value to use for plain user/password
+        authentication. By default, this parameter is null.
+        </td>
+      </tr>
+      <tr class="alt">
+        <td><b><span class="option">STARTTLS</span></b></td>
+        <td><code>boolean</code></td>
+        <td>If this parameter is set to true, then this appender will
+        issue the STARTTLS command (if the server supports it) causing
+        the connection to switch to SSL. Note that the connection is
+        initally non-encrypted. By default, this parameter is set to
+        false.
+        </td>
+      </tr>
+      <tr >
+        <td><b><span class="option">SSL</span></b></td>
+        <td><code>boolean</code></td>
+        <td>If this parameter is set to true, then this appender will
+        open an SSL conneciton to the server. By default, this
+        parameter is set to false.
+        </td>
+      </tr>
 
-        <p>More details about the use of event evaluators with
-        <code>SMTPAppender</code> follow further down this document.
-				</p>
-				
-        <p>In the absence of this option, <code>SMTPAppender</code> is
-        assigned a default event evaluator which triggers email
-        transmission as a response to any event of level
-        <em>ERROR</em> or higher.
-				</p>
-
-        <p><code>EventEvaluator</code> objects are subclasses of the
-        <code>JaninoEventEvaluatorBase</code> which depends on
-        Janino. See the <a href="../dependencies.html">dependencies
-        page</a> for more information.
-        </p>
-			</td>
-		</tr>
 		</table>		
 		
 		<p>The SMTPAppender keeps only the last <span
@@ -2230,26 +2263,63 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;/root>  
 &lt;/configuration></pre></div>
 
+    
+    <h3>Authentication/STARTTLS/SSL</h3>
 
+    <p>SMTPAppender supports plain user/password authentication as
+    well as both STARTTLS and SSL.
+    </p>
+
+    <p>The next example shows you how to configure SMTPAppender for
+    gmail with SSL. </p>
+    
+<em>Example 4.13: <code>SMTPAppender</code> to GMAIL using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
+
+<div class="source"><pre>&lt;configuration>
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
+    &lt;SMTPPort>465&lt;/SMTPPort>
+    &lt;SSL>true&lt;/SSL>
+    &lt;Username>USERNAME@gmail.com&lt;/Username>
+    &lt;Password>PASSWORD&lt;/Password></b>
+
+    &lt;To>${to}&lt;/To>
+    &lt;From>${from}&lt;/From>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="EMAIL" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
+
+    <p>For a STARTTLS with gmail refer to the configuration file
+    <em>logback-examples/src/main/java/chapter4/mail/gmailSTARTTLS.xml)</em>
+
+    </p>
 
 		<a name="DBAppender"></a>
 		<h3>DBAppender</h3>
 		
-		<p>
-			The <a href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a> 
-			inserts loggin events into three database tables in a format
-			independent of the Java programming language. 
+		<p>The <a
+		href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a>
+		inserts loggin events into three database tables in a format
+		independent of the Java programming language.
 		</p>
-		<p>
-			These three tables are <em>logging_event</em>, <em>logging_event_property</em> and
-			<em>logging_event_exception</em>. They all must exist before <code>DBAppender</code>
-			can be used. Logback ships with SQL scripts that will create the tables. 
-			They can be found in the found in the 
-			<em>logback-classic/src/main/java/ch/qos/logback/classic/db/dialect</em> directory. There
-			is a specific script for each of the most popular database systems. 
-			If the script for your particular type of database system is missing, it should be
-			quite easy to write one, taking example on the already existing scripts. If
-			you send them to us, we will gladly include missing scripts in future releases.
+
+		<p>These three tables are <em>logging_event</em>,
+		<em>logging_event_property</em> and
+		<em>logging_event_exception</em>. They all must exist before
+		<code>DBAppender</code> can be used. Logback ships with SQL
+		scripts that will create the tables.  They can be found in the
+		found in the
+		<em>logback-classic/src/main/java/ch/qos/logback/classic/db/dialect</em>
+		directory. There is a specific script for each of the most popular
+		database systems.  If the script for your particular type of
+		database system is missing, it should be quite easy to write one,
+		taking example on the already existing scripts. If you send them
+		to us, we will gladly include missing scripts in future releases.
 		</p>
 
 		<p>
