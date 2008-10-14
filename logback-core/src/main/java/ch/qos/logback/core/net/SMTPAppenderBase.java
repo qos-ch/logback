@@ -32,14 +32,23 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 
 /**
- * An abstract class that provides basic support for sending events to an email
+ * An abstract class that provides support for sending events to an email
  * address.
+ * 
+ * <p>
+ * Authentication through plain user password is supported. Both STARTTLS and SSL are 
+ * also supported. Note that STARTTLS differs from SSL in that, in STARTTLS, the connection 
+ * is non-encrypted and only after the STARTTLS command is issued by the client 
+ * (if the server supports it) does the connection switch to SSL. In SSL mode, the connection 
+ * is SSL from the start.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
+
+  // private final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
   protected Layout<E> layout;
   protected Layout<E> subjectLayout;
@@ -49,7 +58,12 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   private String subjectStr = null;
   private String smtpHost;
   private int smtpPort = 25;
-  
+  private boolean startTLS = false;
+  private boolean ssl = false;
+
+  String username;
+  String password;
+
   protected Message msg;
 
   protected EventEvaluator eventEvaluator;
@@ -74,10 +88,32 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       props.put("mail.smtp.host", smtpHost);
     }
     props.put("mail.smtp.port", Integer.toString(smtpPort));
+
+    LoginAuthenticator loginAuthenticator = null;
+
+    if (username != null) {
+      loginAuthenticator = new LoginAuthenticator(username, password);
+      props.put("mail.smtp.auth", "true");
+    }
+
+    if (isStartTLS() && isSsl()) {
+      addError("Both SSL and StartTLS cannot be enabled simultaneously");
+    } else {
+      if (isStartTLS()) {
+        props.setProperty("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+      }
+      if (isSsl()) {
+        String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        props.put("mail.smtp.socketFactory.port", Integer.toString(smtpPort));
+        props.put("mail.smtp.socketFactory.class", SSL_FACTORY);
+        props.put("mail.smtp.socketFactory.fallback", "true");
+      }
+    }
+
+    // props.put("mail.debug", "true");
     
-    
-    Session session = Session.getInstance(props, null);
-    // session.setDebug(true);
+    Session session = Session.getInstance(props, loginAuthenticator);
     msg = new MimeMessage(session);
 
     try {
@@ -131,10 +167,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    */
   public boolean checkEntryConditions() {
     if (!this.started) {
-      addError("Attempting to append to a non-started appender: " + this.getName());
+      addError("Attempting to append to a non-started appender: "
+          + this.getName());
       return false;
     }
-    
+
     if (this.msg == null) {
       addError("Message object not configured.");
       return false;
@@ -174,7 +211,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     for (int i = 0; i < addressList.size(); i++) {
       try {
         InternetAddress[] tmp = InternetAddress.parse(addressList.get(i), true);
-        //one <To> element should contain one email address
+        // one <To> element should contain one email address
         iaArray[i] = tmp[0];
       } catch (AddressException e) {
         addError("Could not parse address [" + addressList.get(i) + "].", e);
@@ -221,7 +258,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       if (footer != null) {
         sbuf.append(footer);
       }
- 
 
       if (subjectLayout != null) {
         msg.setSubject(subjectLayout.doLayout(lastEventObject));
@@ -288,14 +324,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The port where the SMTP server is running. Default value is 25. 
+   * The port where the SMTP server is running. Default value is 25.
    * 
    * @param port
    */
   public void setSMTPPort(int port) {
     this.smtpPort = port;
   }
-  
+
   /**
    * @see #setSMTPPort(int)
    * @return
@@ -303,10 +339,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   public int getSMTPPort() {
     return smtpPort;
   }
-  
+
   /**
-   * The <b>To</b> option takes a string value which should be 
-   * an e-mail address of one of the recipients.
+   * The <b>To</b> option takes a string value which should be an e-mail
+   * address of one of the recipients.
    */
   public void addTo(String to) {
     this.to.add(to);
@@ -320,6 +356,22 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   // for testing purpose only
   public void setMessage(Message msg) {
     this.msg = msg;
+  }
+
+  public boolean isStartTLS() {
+    return startTLS;
+  }
+
+  public void setStartTLS(boolean startTLS) {
+    this.startTLS = startTLS;
+  }
+
+  public boolean isSsl() {
+    return ssl;
+  }
+
+  public void setSsl(boolean ssl) {
+    this.ssl = ssl;
   }
 
   /**
@@ -339,4 +391,21 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
 }
