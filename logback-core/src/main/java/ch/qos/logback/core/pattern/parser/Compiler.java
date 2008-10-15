@@ -19,14 +19,13 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 class Compiler<E> extends ContextAwareBase {
 
   Converter<E> head;
   Converter<E> tail;
   final Node top;
   final Map converterMap;
-  
+
   Compiler(final Node top, final Map converterMap) {
     this.top = top;
     this.converterMap = converterMap;
@@ -43,7 +42,8 @@ class Compiler<E> extends ContextAwareBase {
         CompositeNode cn = (CompositeNode) n;
         CompositeConverter<E> compositeConverter = new CompositeConverter<E>();
         compositeConverter.setFormattingInfo(cn.getFormatInfo());
-        Compiler<E> childCompiler = new Compiler<E>(cn.getChildNode(), converterMap);
+        Compiler<E> childCompiler = new Compiler<E>(cn.getChildNode(),
+            converterMap);
         childCompiler.setContext(context);
         Converter<E> childConverter = childCompiler.compile();
         compositeConverter.setChildConverter(childConverter);
@@ -61,7 +61,8 @@ class Compiler<E> extends ContextAwareBase {
           // it with a dummy LiteralConverter indicating an error.
           Converter<E> errConveter = new LiteralConverter<E>("%PARSER_ERROR_"
               + kn.getValue());
-          addStatus(new ErrorStatus("["+kn.getValue()+"] is not a valid conversion word", this));
+          addStatus(new ErrorStatus("[" + kn.getValue()
+              + "] is not a valid conversion word", this));
           addToList(errConveter);
         }
 
@@ -79,9 +80,10 @@ class Compiler<E> extends ContextAwareBase {
     }
   }
 
-  
   /**
-   * Attempt to create a converter using the information found in 'converterMap'.
+   * Attempt to create a converter using the information found in
+   * 'converterMap'.
+   * 
    * @param kn
    * @return
    */
@@ -90,26 +92,29 @@ class Compiler<E> extends ContextAwareBase {
     String keyword = (String) kn.getValue();
     String converterClassStr = (String) converterMap.get(keyword);
 
-    // FIXME: Better error handling
     if (converterClassStr != null) {
       try {
         return (DynamicConverter) OptionHelper.instantiateByClassName(
             converterClassStr, DynamicConverter.class, context);
       } catch (Exception e) {
+        addError("Failed to instantiate converter class [" + converterClassStr
+            + "]", e);
         return null;
       }
     } else {
+      addError("There is no conversion class registered for conversion word ["
+          + keyword + "]");
       return null;
     }
   }
 
-//  public void setStatusManager(StatusManager statusManager) {
-//    this.statusManager = statusManager;
-//  }
-//  
-//  void addStatus(Status status) {
-//    if(statusManager != null) {
-//      statusManager.add(status);
-//    }
-//  }
+  // public void setStatusManager(StatusManager statusManager) {
+  // this.statusManager = statusManager;
+  // }
+  //  
+  // void addStatus(Status status) {
+  // if(statusManager != null) {
+  // statusManager.add(status);
+  // }
+  // }
 }
