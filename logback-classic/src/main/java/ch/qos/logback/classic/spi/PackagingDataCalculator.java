@@ -10,6 +10,7 @@
 package ch.qos.logback.classic.spi;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class PackagingDataCalculator {
   HashMap<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
 
   private static boolean GET_CALLER_CLASS_METHOD_AVAILABLE = false;
-  
+
   static {
     // if either the Reflection class or the getCallerClass method
     // are unavailable, then we won't invoke Reflection.getCallerClass()
@@ -41,29 +42,29 @@ public class PackagingDataCalculator {
     try {
       Reflection.getCallerClass(2);
       GET_CALLER_CLASS_METHOD_AVAILABLE = true;
-    } catch(NoClassDefFoundError e) {
-    } catch(NoSuchMethodError e) {
-    } catch(Throwable e) {
+    } catch (NoClassDefFoundError e) {
+    } catch (NoSuchMethodError e) {
+    } catch (Throwable e) {
       System.err.println("Unexpected exception");
       e.printStackTrace();
     }
   }
-  
+
   public PackagingDataCalculator() {
   }
 
   public void calculate(ThrowableDataPoint[] tdpArray) {
     int steStart = 0;
     StackTraceElementProxy[] stepArray = new StackTraceElementProxy[0];
-    do  {
-      steStart = findSTEStartIndex(tdpArray, steStart+stepArray.length);
+    do {
+      steStart = findSTEStartIndex(tdpArray, steStart + stepArray.length);
       stepArray = getSTEPArray(tdpArray, steStart);
       populateFrames(stepArray);
-    } while(steStart != -1);
+    } while (steStart != -1);
   }
 
   void populateFrames(StackTraceElementProxy[] stepArray) {
-    // in the initial part of this method we populate package informnation for 
+    // in the initial part of this method we populate package informnation for
     // common stack frames
     final Throwable t = new Throwable("local stack reference");
     final StackTraceElement[] localteSTEArray = t.getStackTrace();
@@ -74,20 +75,33 @@ public class PackagingDataCalculator {
 
     ClassLoader lastExactClassLoader = null;
     ClassLoader firsExactClassLoader = null;
-    
+
     int missfireCount = 0;
     for (int i = 0; i < commonFrames; i++) {
       Class callerClass = null;
-      if(GET_CALLER_CLASS_METHOD_AVAILABLE) {
+      if (GET_CALLER_CLASS_METHOD_AVAILABLE) {
         callerClass = Reflection.getCallerClass(localFirstCommon + i
-          - missfireCount + 1);
+            - missfireCount + 1);
       }
+
+
+
       StackTraceElementProxy step = stepArray[stepFirstCommon + i];
       String stepClassname = step.ste.getClassName();
+
+      if (callerClass == null) {
+        System.out.println("***********************************");
+        System.out.println("localFirstCommon=" + localFirstCommon + ", i=" + i
+            + ", missfireCount=" + missfireCount);
+        System.out.println("sum=" + (localFirstCommon + i - missfireCount + 1));
+        System.out.println("stepClassname="+stepClassname);
+        t.printStackTrace();
+        System.out.println(Arrays.toString(stepArray));
+      }
       
       if (stepClassname.equals(callerClass.getName())) {
         lastExactClassLoader = callerClass.getClassLoader();
-        if(firsExactClassLoader == null) {
+        if (firsExactClassLoader == null) {
           firsExactClassLoader = callerClass.getClassLoader();
         }
         ClassPackagingData pi = calculateByExactType(callerClass);
@@ -113,8 +127,9 @@ public class PackagingDataCalculator {
     }
     return -1;
   }
-  
-  private StackTraceElementProxy[] getSTEPArray(final ThrowableDataPoint[] tdpArray, final int from) {
+
+  private StackTraceElementProxy[] getSTEPArray(
+      final ThrowableDataPoint[] tdpArray, final int from) {
     List<StackTraceElementProxy> stepList = new LinkedList<StackTraceElementProxy>();
     int len = tdpArray.length;
     if (from < 0 || from >= len) {
@@ -131,9 +146,10 @@ public class PackagingDataCalculator {
     }
     return stepList.toArray(STEP_ARRAY_TEMPLATE);
   }
-  
-  void populateUncommonFrames(int commonFrames, StackTraceElementProxy[] stepArray, ClassLoader firstExactClassLoader) {
-    int uncommonFrames = stepArray.length-commonFrames;
+
+  void populateUncommonFrames(int commonFrames,
+      StackTraceElementProxy[] stepArray, ClassLoader firstExactClassLoader) {
+    int uncommonFrames = stepArray.length - commonFrames;
     for (int i = 0; i < uncommonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
       ClassPackagingData pi = computeBySTEP(step, firstExactClassLoader);
@@ -154,7 +170,8 @@ public class PackagingDataCalculator {
     return cpd;
   }
 
-  private ClassPackagingData computeBySTEP(StackTraceElementProxy step, ClassLoader lastExactClassLoader) {
+  private ClassPackagingData computeBySTEP(StackTraceElementProxy step,
+      ClassLoader lastExactClassLoader) {
     String className = step.ste.getClassName();
     ClassPackagingData cpd = cache.get(className);
     if (cpd != null) {
@@ -167,8 +184,7 @@ public class PackagingDataCalculator {
     cache.put(className, cpd);
     return cpd;
   }
-  
-  
+
   String getImplementationVersion(Class type) {
     Package aPackage = type.getPackage();
     if (aPackage != null) {
@@ -192,7 +208,7 @@ public class PackagingDataCalculator {
           String locationStr = resource.toString();
           // now lets remove all but the file name
           String result = getCodeLocation(locationStr, '/');
-          if(result != null) {
+          if (result != null) {
             return result;
           }
           return getCodeLocation(locationStr, '\\');
@@ -203,13 +219,12 @@ public class PackagingDataCalculator {
     }
     return "na";
   }
-  
 
   private String getCodeLocation(String locationStr, char separator) {
     int idx = locationStr.lastIndexOf(separator);
-    if(isFolder(idx, locationStr)) {
-      idx = locationStr.lastIndexOf(separator, idx-1);
-      return locationStr.substring(idx+1);
+    if (isFolder(idx, locationStr)) {
+      idx = locationStr.lastIndexOf(separator, idx - 1);
+      return locationStr.substring(idx + 1);
     } else if (idx > 0) {
       return locationStr.substring(idx + 1);
     }
@@ -217,48 +232,50 @@ public class PackagingDataCalculator {
   }
 
   private boolean isFolder(int idx, String text) {
-    return (idx != -1 && idx+1 == text.length());
+    return (idx != -1 && idx + 1 == text.length());
   }
-  
+
   private Class loadClass(ClassLoader cl, String className) {
-    if(cl == null) {
+    if (cl == null) {
       return null;
     }
     try {
       return cl.loadClass(className);
     } catch (ClassNotFoundException e1) {
       return null;
-    }  catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace(); // this is unexpected
       return null;
     }
-    
+
   }
-  
+
   /**
    * 
-   * @param lastGuaranteedClassLoader may be null
+   * @param lastGuaranteedClassLoader
+   *                may be null
    * @param className
    * @return
    */
-  private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
+  private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader,
+      String className) {
     Class result = loadClass(lastGuaranteedClassLoader, className);
-    if(result != null) {
+    if (result != null) {
       return result;
     }
     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-    if(tccl != lastGuaranteedClassLoader) {
+    if (tccl != lastGuaranteedClassLoader) {
       result = loadClass(tccl, className);
     }
-    if(result != null) {
+    if (result != null) {
       return result;
     }
-    
+
     try {
       return Class.forName(className);
     } catch (ClassNotFoundException e1) {
       return null;
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace(); // this is unexpected
       return null;
     }
