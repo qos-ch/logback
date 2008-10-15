@@ -10,7 +10,6 @@
 package ch.qos.logback.classic.spi;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,23 +82,10 @@ public class PackagingDataCalculator {
         callerClass = Reflection.getCallerClass(localFirstCommon + i
             - missfireCount + 1);
       }
-
-
-
       StackTraceElementProxy step = stepArray[stepFirstCommon + i];
       String stepClassname = step.ste.getClassName();
 
-      if (callerClass == null) {
-        System.out.println("***********************************");
-        System.out.println("localFirstCommon=" + localFirstCommon + ", i=" + i
-            + ", missfireCount=" + missfireCount);
-        System.out.println("sum=" + (localFirstCommon + i - missfireCount + 1));
-        System.out.println("stepClassname="+stepClassname);
-        t.printStackTrace();
-        System.out.println(Arrays.toString(stepArray));
-      }
-      
-      if (stepClassname.equals(callerClass.getName())) {
+      if (callerClass != null && stepClassname.equals(callerClass.getName())) {
         lastExactClassLoader = callerClass.getClassLoader();
         if (firsExactClassLoader == null) {
           firsExactClassLoader = callerClass.getClassLoader();
