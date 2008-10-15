@@ -164,6 +164,7 @@ public class PackagingDataCalculator {
       return cpd;
     }
     Class type = bestEffortLoadClass(lastExactClassLoader, className);
+    System.out.println("********** type is null for class "+className);
     String version = getImplementationVersion(type);
     String codeLocation = getCodeLocation(type);
     cpd = new ClassPackagingData(codeLocation, version, false);
@@ -172,6 +173,9 @@ public class PackagingDataCalculator {
   }
 
   String getImplementationVersion(Class type) {
+    if(type == null) {
+      return "na";
+    }
     Package aPackage = type.getPackage();
     if (aPackage != null) {
       String v = aPackage.getImplementationVersion();
@@ -238,8 +242,8 @@ public class PackagingDataCalculator {
 
   /**
    * 
-   * @param lastGuaranteedClassLoader
-   *                may be null
+   * @param lastGuaranteedClassLoader may be null
+   *                
    * @param className
    * @return
    */
