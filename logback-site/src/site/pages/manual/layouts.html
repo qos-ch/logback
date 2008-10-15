@@ -361,13 +361,13 @@ WARN  [main]: Message 2</pre></div>
 		</p>
 
 		<p>In PatternLayout, parenthesis can be used to group conversion
-			patterns. It follows that the '(' and ')' carry special meaning
-			and need to be escaped to be used as literals. Parentheses can
-			be escaped by preceding the the opening and closing parenthesis
-			by backslash, but since backslash itself carries special meaning
-			in Java, we need two backslahes, as in "\\(" and "\\)". In
-			practice however, only the opening parenthesis needs to be
-			escaped to be used as a literal.
+		patterns. <b>It follows that the '(' and ')' carry special meaning
+		and need to be escaped to be used as literals. </b> Parentheses
+		can be escaped by preceding the the opening and closing
+		parenthesis by backslash, but since backslash itself carries
+		special meaning in Java, we need two backslashes, as in "\\(" and
+		"\\)". Note that strictly speaking, only the closing parenthesis
+		needs to be escaped to be used as a literal.
 		</p>
 
 		<p>As mentionned previously, certain conversion specifiers can
@@ -1055,7 +1055,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
     <p>In logback, parentheses within the pattern string are treated
     as grouping tokens. Thus, it is possible to group a sub-pattern
-    and apply formatting directives to that sub-pattern.
+    and apply formatting directives on that sub-pattern.
     </p>
 
     <p>For example, the pattern</p> 
@@ -1079,7 +1079,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 13:09:40 [btpool0-7] INFO c.q.l.d.prime.NumberCruncherImpl - Found factor 2
     </p>
 
-    <p>with the "%-30()" grouping applied it would be</p>
+    <p>with the "%-30()" grouping it would be</p>
 
     <p class="source">13:09:30 [main]            DEBUG c.q.logback.demo.ContextListener - Classload hashcode is 13995234
 13:09:30 [main]            DEBUG c.q.logback.demo.ContextListener - Initializing for ServletContext
@@ -1095,9 +1095,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     <p>The latter form is more comfortable to read, especially for
     long log files.</p>
     
-    <p>If you need to treat the parenthesis character as a literal, it
-    needs to be escaped by preceding the parentheses with a
-    backslash. As in, <b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\)</b>.
+    <p>If you need to treat the parenthesis character as a literal,
+    they needs to be escaped by preceding each parenthesis with a
+    backslash. As in, <b>\(</b>%d{HH:mm:ss.SSS}
+    [%thread]<b>\)</b>. Strictly speaking, only the closing parentesis
+    needs to be escaped. Thus, "%d&nbsp;[%thread]<b>\)</b>" is
+    equivalent to "<b>\(</b>%d&nbsp;[%thread]<b>\)</b>".
     </p>
     
 
