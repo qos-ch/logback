@@ -56,19 +56,14 @@ public class ConversionRuleAction extends Action {
     }
 
     try {
-      //getLogger().debug(
-      //  "About to add conversion rule [{}, {}] to layout", conversionWord, converterClass);
-
-      //LoggerRepository repository = (LoggerRepository) ec.getObjectStack().get(0);
-
       Map<String, String> ruleRegistry = (Map) context.getObject(CoreGlobal.PATTERN_RULE_REGISTRY);
       if(ruleRegistry == null) {
         ruleRegistry = new HashMap<String, String>();
         context.putObject(CoreGlobal.PATTERN_RULE_REGISTRY, ruleRegistry);
       }
       // put the new rule into the rule registry
+      addInfo("registering conversion word "+conversionWord+" with class ["+converterClass+"]");
       ruleRegistry.put(conversionWord, converterClass);
-      
     } catch (Exception oops) {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";
