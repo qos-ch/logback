@@ -17,12 +17,12 @@ import java.io.Writer;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * WriterAppender appends events to a hava.io.Writer. 
- * This class provides basic services that other appenders build upon.
+ * WriterAppender appends events to a hava.io.Writer. This class provides basic
+ * services that other appenders build upon.
  * 
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#WriterAppender
- *
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#WriterAppender
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class WriterAppender<E> extends AppenderBase<E> {
@@ -97,16 +97,14 @@ public class WriterAppender<E> extends AppenderBase<E> {
   public void start() {
     int errors = 0;
     if (this.layout == null) {
-      addStatus(
-          new ErrorStatus("No layout set for the appender named \"" + name
-              + "\".", this));
+      addStatus(new ErrorStatus("No layout set for the appender named \""
+          + name + "\".", this));
       errors++;
     }
 
     if (this.writer == null) {
-      addStatus(
-          new ErrorStatus("No writer set for the appender named \"" + name
-              + "\".", this));
+      addStatus(new ErrorStatus("No writer set for the appender named \""
+          + name + "\".", this));
       errors++;
     }
     // only error free appenders should be activated
@@ -147,9 +145,8 @@ public class WriterAppender<E> extends AppenderBase<E> {
         this.writer.close();
         this.writer = null;
       } catch (IOException e) {
-        addStatus(
-            new ErrorStatus("Could not close writer for WriterAppener.", this,
-                e));
+        addStatus(new ErrorStatus("Could not close writer for WriterAppener.",
+            this, e));
       }
     }
   }
@@ -205,48 +202,48 @@ public class WriterAppender<E> extends AppenderBase<E> {
   }
 
   void writeHeader() {
-    if (layout != null) {
-      String h = layout.getFileHeader();
+    if (layout != null && (this.writer != null)) {
+      try {
 
-      if ((h != null) && (this.writer != null)) {
-        try {
+        String h = layout.getFileHeader();
+        if (h != null) {
           this.writer.write(h);
-          String ph = layout.getPresentationHeader();
-          if (ph != null) {
-            this.writer.write(ph);
-          }
-          // append a line separator. This should be useful in most cases and should 
-          // not hurt. 
+        }
+        String ph = layout.getPresentationHeader();
+        if (ph != null) {
+          this.writer.write(ph);
+        }
+        // If at least one of file header or presentation header were not null, then append a line separator. 
+        // This should be useful in most cases and should not hurt.
+        if ((h != null) || (ph != null)) {
           this.writer.write(Layout.LINE_SEP);
           this.writer.flush();
-        } catch (IOException ioe) {
-          this.started = false;
-          addStatus(new ErrorStatus(
-              "Failed to write header for appender named [" + name + "].",
-              this, ioe));
         }
+      } catch (IOException ioe) {
+        this.started = false;
+        addStatus(new ErrorStatus("Failed to write header for appender named ["
+            + name + "].", this, ioe));
       }
     }
   }
 
   void writeFooter() {
-    if (layout != null) {
-      String h = layout.getFileFooter();
-      if ((h != null) && (this.writer != null)) {
-        try {
-          this.writer.write(h);
-          String pf = layout.getPresentationFooter();
-          if (pf != null) {
-            this.writer.write(pf);
-          }
-          // flushing is mandatory if the writer is not later closed.
-          this.writer.flush();
-        } catch (IOException ioe) {
-          this.started = false;
-          addStatus(new ErrorStatus(
-              "Failed to write footer for appender named [" + name + "].",
-              this, ioe));
+    if (layout != null && this.writer != null) {
+      try {
+        String pf = layout.getPresentationFooter();
+        if (pf != null) {
+          this.writer.write(pf);
         }
+        String h = layout.getFileFooter();
+        if (h != null) {
+          this.writer.write(h);
+        }
+        // flushing is mandatory if the writer is not later closed.
+        this.writer.flush();
+      } catch (IOException ioe) {
+        this.started = false;
+        addStatus(new ErrorStatus("Failed to write footer for appender named ["
+            + name + "].", this, ioe));
       }
     }
   }
@@ -258,7 +255,7 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * be closed when the appender instance is closed.
    * 
    * @param writer
-   *          An already opened Writer.
+   *                An already opened Writer.
    */
   public synchronized void setWriter(Writer writer) {
     // close any previously opened writer

@@ -85,12 +85,12 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   public void testClose() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
-    dummyLayout.setFileFooter("closed");
+    dummyLayout.setFileFooter("CLOSED");
     ca.setLayout(dummyLayout);
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
-    assertEquals(DummyLayout.DUMMY + "closed", tee.toString());
+    assertEquals(DummyLayout.DUMMY + "CLOSED", tee.toString());
   }
 
 
