@@ -29,7 +29,7 @@ prefix='';
 
   <hr width="80%" align="center" />
 
-  <h3>XXth of September 2008 - Release of version 0.9.10</h3>
+  <h3>XXth of October 2008 - Release of version 0.9.10</h3>
 
   <p>In case of errors during initialization, logback-classic now
   <em>automatically</em> prints out its internal status. This has been
@@ -60,6 +60,8 @@ prefix='';
   developpers list.
   </p>
 
+  <!-- ========================== LB CORE ================== -->
+
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCORE-48">LBCORE-48</a>.  During
   rollover, compression of large files would bring all logging to a
@@ -77,15 +79,43 @@ prefix='';
   href="http://jira.qos.ch/browse/LBCORE-42">LBCORE-42</a>. If the
   parent directory of the log file does not exist, then FileAppender
   will create it, including any necessary but nonexistent parent
-  directories. 
+  directories.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-17">LBCORE-17</a> reported by
+  Thorbj&oslash;rn Ravn Andersen. Logback now relies on Geronimo JMS
+  API specifications instead of Sun's JMS API specification, the
+  latter requiring manual installation. With Geronimo JMS, logback can
+  be built using Maven without needing to manually install any
+  dependencies.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-23">LBCORE-23</a>. In
+  PatternLayout, parenthesis can be used to group conversion
+  patterns. It follows that the '(' and ')' carry special meaning and
+  need to be escaped to be used as literals. This is now properly
+  documented.
+  </p>
+
+  <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-55</a> reported by
+  Natan Cox. <code>WriterAppender</code> now outputs its presentation
+  footer and file footer in the the correct order.
   </p>
 
 
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-27</a> reported by
-  Peter Royal. SMTPAppender now outputs its presentation footer and
-  file footer in the the correct order.
+  Peter Royal. <code>SMTPAppender</code> now outputs its presentation
+  footer and file footer in the the correct order.
   </p>
+
+  <!-- ========================== LB CLASSIC ================== -->
 
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCLASSIC-67">LBCLASSIC-67</a>
@@ -114,17 +144,7 @@ prefix='';
   command and SSL connections.
   </p>
 
-  <p>Fixed issue <a
-  href="http://jira.qos.ch/browse/LBCORE-17">LBCORE-17</a>
-  reported by Thorbj&oslash;rn Ravn Andersen. Logback now relies on
-  Geronimo JMS API specifications instead of Sun's JMS API
-  specification, the latter requiring manual installation. With
-  Geronimo JMS, logback can be built using Maven without needing to
-  manually install any dependencies.
-  </p>
-
-  <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>
-  </p>
+ 
 
 
   <p><a href="http://jira.qos.ch/browse/LBCLASSIC-53">LBCLASSIC-53</a>
