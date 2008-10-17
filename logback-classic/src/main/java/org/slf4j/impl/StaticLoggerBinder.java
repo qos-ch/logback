@@ -48,12 +48,12 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
   
   /**
-   * Version tag used to check compatibility. The value of this field is
-   * modified with each release.
+   * Declare the version of the SLF4J API this implementation is compiled against. 
+   * The value of this field is usually modified with each release. 
    */
-  //to avoid constant folding by the compiler, VERSION field should *not* be final
-  public static String VERSION = "1.5.4-SNAPSHOT";
-  
+  // to avoid constant folding by the compiler, this field must *not* be final
+  public static String REQUESTED_API_VERSION = "1.5.5";  // !final
+    
   private static final String loggerFactoryClassStr = ContextSelector.class
       .getName();
 
