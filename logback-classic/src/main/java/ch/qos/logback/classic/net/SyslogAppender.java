@@ -31,15 +31,13 @@ import ch.qos.logback.core.net.SyslogWriter;
  */
 public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
 
-  String prefixPattern;
-  PatternLayout prefixLayout;
-
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
 
-  public Layout<LoggingEvent> buildLayout(String facilityStr) {
+  PatternLayout prefixLayout = new PatternLayout();
 
-    prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
-    prefixLayout = new PatternLayout();
+  public Layout<LoggingEvent> buildLayout(String facilityStr) {
+    String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
+  
     prefixLayout.getInstanceConverterMap().put("syslogStart",
         SyslogStartConverter.class.getName());
     prefixLayout.setPattern(prefixPattern);
