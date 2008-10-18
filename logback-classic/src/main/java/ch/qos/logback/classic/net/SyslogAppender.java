@@ -85,7 +85,6 @@ public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
         }
       } catch (IOException e) {
       }
-
     }
 
   }

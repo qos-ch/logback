@@ -1,3 +1,13 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+
 package ch.qos.logback.core.net;
 
 import java.io.IOException;
@@ -8,6 +18,13 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreGlobal;
 import ch.qos.logback.core.Layout;
 
+/**
+ * Base class for SyslogAppender.
+ * 
+ * @author Ceki G&uumllc&uuml;
+ *
+ * @param <E>
+ */
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   final static String SYSLOG_LAYOUT_URL = CoreGlobal.CODES_URL + "#syslog_layout";
