@@ -8,7 +8,7 @@
     <badEnd type="ActionException">
       <touch/>
     </badEnd> 
-    <!-- should be skipped -->
+    <!-- should not be skipped -->
     <touch/> 
   </isolate>
 

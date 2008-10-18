@@ -19,6 +19,8 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 public class HelloAction extends Action {
 
 
+  static final public String PROPERTY_KEY = "name";
+  
   public HelloAction() {
   }
   /**
@@ -27,7 +29,7 @@ public class HelloAction extends Action {
    */
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String str = "Hello "+attributes.getValue("name")+".";
-    ec.getContext().putProperty("hello", str);
+    ec.getContext().putProperty(PROPERTY_KEY, str);
   }
 
   /**
