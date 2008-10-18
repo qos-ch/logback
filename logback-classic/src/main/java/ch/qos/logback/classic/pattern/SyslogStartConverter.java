@@ -41,7 +41,8 @@ public class SyslogStartConverter extends ClassicConverter {
   
     localHostName = getLocalHostname();
     try {
-      simpleFormat = new SimpleDateFormat("MMM dd hh:mm:ss", new DateFormatSymbols(Locale.US));
+      // hours should be in 0-23, see also http://jira.qos.ch/browse/LBCLASSIC-48
+      simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss", new DateFormatSymbols(Locale.US));
     } catch (IllegalArgumentException e) {
       addError("Could not instantiate SimpleDateFormat", e);
       errorCount++;
