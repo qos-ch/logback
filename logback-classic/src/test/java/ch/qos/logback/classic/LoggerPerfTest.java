@@ -9,89 +9,111 @@
  */
 package ch.qos.logback.classic;
 
+import static org.junit.Assert.assertTrue;
 
-import java.net.InetAddress;
-
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.appender.NOPAppender;
 
-public class LoggerPerfTest extends TestCase {
+public class LoggerPerfTest {
 
-  final static String KAL = "kal";
-  String localhostName = null;
-  static long NORMAL_RUN_LENGTH = 1000*1000;
-
+  long NANOS_IN_ONE_SEC = 1000*1000*1000L;
+  static long NORMAL_RUN_LENGTH = 1000 * 1000;
+  static long SHORTENED_RUN_LENGTH = 500 * 1000;
   static long REFERENCE_BIPS = 9324;
-  
+
+  @Before
   public void setUp() throws Exception {
-    localhostName = InetAddress.getLocalHost().getCanonicalHostName();
   }
-  public void testBasic() {
-    basicDurationInNanos(NORMAL_RUN_LENGTH);
-    double avg = basicDurationInNanos(NORMAL_RUN_LENGTH); 
-    
+
+  @Test
+  public void testDurationOfDisabledLogWithStraightStringParameter() {
+    computeDurationOfDisabledLogWithStraightStringParameter(NORMAL_RUN_LENGTH);
+    double avg = computeDurationOfDisabledLogWithStraightStringParameter(NORMAL_RUN_LENGTH);
+
     long referencePerf = 17;
     BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
-    //System.out.println("Average log time for disabled statements: "+avg+" nanos.");
   }
-  
-  public void testParameterized() {
-    loopParameterized(NORMAL_RUN_LENGTH);
-    double avgDuration = loopParameterized(NORMAL_RUN_LENGTH); 
+
+  double computeDurationOfDisabledLogWithStraightStringParameter(long len) {
+    LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(this.getClass());
+    logger.setLevel(Level.OFF);
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto");
+    }
+    long start = System.nanoTime();
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto");
+    }
+    long end = System.nanoTime();
+    return (end - start) / len;
+  }
+
+  @Test
+  public void testDurationOfDisabledLogWithParameters() {
+    computeDurationOfDisabledLogWithParameters(NORMAL_RUN_LENGTH);
+    double avgDuration = computeDurationOfDisabledLogWithParameters(NORMAL_RUN_LENGTH);
     long referencePerf = 36;
     BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
-    //System.out.println("Average log time for disabled (parameterized) statements: "+avg+" nanos.");
   }
   
+  double computeDurationOfDisabledLogWithParameters(long len) {
+    LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(this.getClass());
+    logger.setLevel(Level.OFF);
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto {}", i);
+    }
+    long start = System.nanoTime();
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto {}", i);
+    }
+    long end = System.nanoTime();
+    return (end - start) / len;
+  }
+
+  @Test
+  public void testDurationOfEnabledWithStraightStringParameter() {
+    computeDurationOfEnabledLogWithStraightStringParameter(SHORTENED_RUN_LENGTH);
+    double avgDuration = computeDurationOfEnabledLogWithStraightStringParameter(SHORTENED_RUN_LENGTH);
+    long referencePerf = 500;
+    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
+    System.out.println("avgDuration="+avgDuration);
+  }
   
-  public void testNOPFilter() {
-    loopNopFilter(NORMAL_RUN_LENGTH);
-    double avg = loopNopFilter(NORMAL_RUN_LENGTH);
-    //System.out.println("Average log time for disabled (NOPFilter) statements: "+avg+" nanos.");
+  double computeDurationOfEnabledLogWithStraightStringParameter(long len) {
+    LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(this.getClass());
+    logger.setLevel(Level.ALL);
+    NOPAppender<LoggingEvent> nopAppender = new NOPAppender<LoggingEvent>();
+    nopAppender.start();
+    logger.addAppender(nopAppender);
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto", i);
+    }
+    long start = System.nanoTime();
+    for (long i = 0; i < len; i++) {
+      logger.debug("Toto");
+    }
+    long end = System.nanoTime();
+    return (end - start) / len;
+  }
+
+  @Test
+  public void testComputeDurationOfDisabledLogsWithNOPFilter() {
+    computeDurationOfDisabledLogsWithNOPFilter(NORMAL_RUN_LENGTH);
+    double avg = computeDurationOfDisabledLogsWithNOPFilter(NORMAL_RUN_LENGTH);
     long referencePerf = 48;
     BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
   }
-  
-  double basicDurationInNanos(long len) {
-    LoggerContext lc = new LoggerContext();
-    NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
-    mopAppender.start();
-    Logger logger = lc.getLogger(this.getClass());
-    logger.setLevel(Level.OFF);
-    for(long i = 0; i < len; i++) {
-      logger.debug("Toto");
-    }
-    long start = System.nanoTime();
-    for(long i = 0; i < len; i++) {
-      logger.debug("Toto");
-    }
-    long end = System.nanoTime();
-    return (end-start)/len;
-  }
 
-  double loopParameterized(long len) {
-    LoggerContext lc = new LoggerContext();
-    NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
-    mopAppender.start();
-    Logger logger = lc.getLogger(this.getClass());
-    logger.setLevel(Level.OFF);
-    for(long i = 0; i < len; i++) {
-      logger.debug("Toto {}", i);
-    }
-    long start = System.nanoTime();
-    for(long i = 0; i < len; i++) {
-      logger.debug("Toto {}", i);
-    }
-    long end = System.nanoTime();
-    return (end-start)/len;
-  }
-  
-  double loopNopFilter(long len) {
+  double computeDurationOfDisabledLogsWithNOPFilter(long len) {
     LoggerContext lc = new LoggerContext();
     NOPAppender<LoggingEvent> mopAppender = new NOPAppender<LoggingEvent>();
     NOPTurboFilter nopFilter = new NOPTurboFilter();
@@ -100,15 +122,92 @@ public class LoggerPerfTest extends TestCase {
     lc.addTurboFilter(nopFilter);
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.OFF);
-    for(long i = 0; i < len; i++) {
+    for (long i = 0; i < len; i++) {
       logger.debug("Toto");
     }
     long start = System.nanoTime();
-    for(long i = 0; i < len; i++) {
+    for (long i = 0; i < len; i++) {
       logger.debug("Toto");
     }
     long end = System.nanoTime();
-    return (end-start)/len;
+    return (end - start) / len;
   }
-  
+
+  @Test
+  public void testThreadedLogging() throws InterruptedException {
+    LoggerContext lc = new LoggerContext();
+    SleepAppender<LoggingEvent> appender = new SleepAppender<LoggingEvent>();
+    
+    int MILLIS_PER_CALL = 250;
+    int NANOS_PER_CALL = 250*1000*1000;;
+    appender.setDuration(MILLIS_PER_CALL);
+    appender.start();
+    Logger logger = lc.getLogger(this.getClass());
+    logger.addAppender(appender);
+    logger.setLevel(Level.DEBUG);
+    long start;
+    long end;
+    int threadCount = 10;
+    int iterCount = 5;
+    TestRunner[] threads = new TestRunner[threadCount];
+    for (int i = 0; i < threads.length; ++i) {
+      threads[i] = new TestRunner(logger, iterCount);
+    }
+    start = System.nanoTime();
+    for (Thread thread : threads) {
+      thread.start();
+    }
+    for (TestRunner thread : threads) {
+      thread.join();
+    }
+    end = System.nanoTime();
+    double tolerance = threadCount * .125; // Very little thread contention
+    // should occur in this test.
+    double max = ((((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC) * iterCount) * tolerance;
+    double serialized = (((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC) * iterCount
+        * threadCount;
+    double actual = ((double) (end - start)) / NANOS_IN_ONE_SEC;
+    System.out
+        .printf(
+            "Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n",
+            actual, max, serialized);
+    assertTrue("Exceeded maximum expected time.", actual < max);
+  }
+
+  // ============================================================
+  private static class TestRunner extends Thread {
+    private Logger logger;
+    private long len;
+
+    public TestRunner(Logger logger, long len) {
+      this.logger = logger;
+      this.len = len;
+    }
+
+    public void run() {
+      Thread.yield();
+      for (long i = 0; i < len; i++) {
+        logger.debug("Toto");
+      }
+    }
+  }
+
+  // ============================================================
+  public static class SleepAppender<E> extends UnsynchronizedAppenderBase<E> {
+    private static long duration = 500;
+
+    public void setDuration(long millis) {
+      duration = millis;
+    }
+
+    @Override
+    protected void append(E eventObject) {
+      try {
+        Thread.sleep(duration);
+      } catch (InterruptedException ie) {
+        // Ignore
+      }
+    }
+  }
+  // ============================================================
 }
