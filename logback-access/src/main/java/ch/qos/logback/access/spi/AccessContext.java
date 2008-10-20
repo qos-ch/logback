@@ -39,7 +39,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
     return aai.detachAppender(appender);
   }
 
-  public Appender<AccessEvent> detachAppender(String name) {
+  public boolean detachAppender(String name) {
     return aai.detachAppender(name);
   }
 
@@ -51,7 +51,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
     return aai.isAttached(appender);
   }
 
-  public Iterator iteratorForAppenders() {
+  public Iterator<Appender<AccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 

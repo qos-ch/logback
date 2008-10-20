@@ -66,6 +66,26 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    */
   private List<Logger> childrenList;
 
+  /**
+   * It is assumed that once the 'aai' variable is set to a non-null value, it
+   * will never be reset to null. it is further assumed that only place where
+   * the 'aai'ariable is set is within the addAppender method. This method is
+   * synchronized on 'this' (Logger) protecting against simultaneous
+   * re-configuration of this logger (a very unlikely scenario).
+   * 
+   * <p>
+   * It is further assumed that the AppenderAttachableImpl is responsible for
+   * its internal synchronization and thread safety. Thus, we can get away with
+   * *not* synchronizing on the 'aai' (check null/ read) because
+   * <p>
+   * 1) the 'aai' variable is immutable once set to non-null
+   * <p>
+   * 2) 'aai' is getAndSet only within addAppender which is synchronized
+   * <p>
+   * 3) all the other methods check whether 'aai' is null
+   * <p>
+   * 4) AppenderAttachableImpl is thread safe
+   */
   private transient AppenderAttachableImpl<LoggingEvent> aai;
   /**
    * Additivity is set to true by default, that is children inherit the
@@ -193,7 +213,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     if (level == null) {
       effectiveLevelInt = newParentLevel.levelInt;
 
-      
       // propagate the parent levelInt change to this logger's children
       if (childrenList != null) {
         int len = childrenList.size();
@@ -209,19 +228,21 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * Remove all previously added appenders from this logger instance. <p/> This
    * is useful when re-reading configuration information.
    */
-  public synchronized void detachAndStopAllAppenders() {
+  public void detachAndStopAllAppenders() {
     if (aai != null) {
       aai.detachAndStopAllAppenders();
     }
   }
 
-  public synchronized Appender<LoggingEvent> detachAppender(String name) {
+  public boolean detachAppender(String name) {
     if (aai == null) {
-      return null;
+      return false;
     }
     return aai.detachAppender(name);
   }
 
+  // this method MUST be synchronized. See comments on 'aai' field for further
+  // details.
   public synchronized void addAppender(Appender<LoggingEvent> newAppender) {
     if (aai == null) {
       aai = new AppenderAttachableImpl<LoggingEvent>();
@@ -236,7 +257,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return aai.isAttached(appender);
   }
 
-  public synchronized Iterator iteratorForAppenders() {
+  @SuppressWarnings("unchecked")
+  public Iterator<Appender<LoggingEvent>> iteratorForAppenders() {
     if (aai == null) {
       return Collections.EMPTY_LIST.iterator();
     }
@@ -254,22 +276,16 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * Invoke all the appenders of this logger.
    * 
    * @param event
-   *                        The event to log
+   *                The event to log
    */
   public void callAppenders(LoggingEvent event) {
     int writes = 0;
-    // System.out.println("callAppenders");
     for (Logger l = this; l != null; l = l.parent) {
-      // System.out.println("l="+l.getName());
-      // Protected against simultaneous call to addAppender, removeAppender,...
-      synchronized (l) {
-        writes += l.appendLoopOnAppenders(event);
-        if (!l.additive) {
-          break;
-        }
+      writes += l.appendLoopOnAppenders(event);
+      if (!l.additive) {
+        break;
       }
     }
-
     // No appenders in hierarchy
     if (writes == 0) {
       loggerContext.noAppenderDefinedWarning(this);
@@ -277,17 +293,17 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   private int appendLoopOnAppenders(LoggingEvent event) {
-    int size = 0;
     if (aai != null) {
-      size = aai.appendLoopOnAppenders(event);
+      return aai.appendLoopOnAppenders(event);
+    } else {
+      return 0;
     }
-    return size;
   }
 
   /**
    * Remove the appender passed as parameter form the list of appenders.
    */
-  public synchronized boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender appender) {
     if (aai == null) {
       return false;
     }
@@ -304,9 +320,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * logger.
    * 
    * @param lastPart
-   *                        the suffix (i.e. last part) of the child logger
-   *                        name. This parameter may not include dots, i.e. the
-   *                        logger separator character.
+   *                the suffix (i.e. last part) of the child logger name. This
+   *                parameter may not include dots, i.e. the logger separator
+   *                character.
    * @return
    */
   Logger createChildByLastNamePart(final String lastPart) {

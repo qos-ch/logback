@@ -25,6 +25,8 @@ import ch.qos.logback.core.Appender;
 
 public class HLogger extends MarkerIgnoringBase {
 
+  private static final long serialVersionUID = 1L;
+
   static int instanceCount = 0;
 
   /**

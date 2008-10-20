@@ -23,6 +23,7 @@ public class AllCoreTest extends TestCase {
     suite.addTest(ch.qos.logback.core.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.joran.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.appender.PackageTest.suite());
+    suite.addTest(ch.qos.logback.core.spi.PackageTest.suite());
     suite.addTest(ch.qos.logback.core.rolling.PackageTest.suite());
     return suite;
   }

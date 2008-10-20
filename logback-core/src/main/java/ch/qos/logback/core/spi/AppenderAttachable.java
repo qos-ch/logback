@@ -27,7 +27,7 @@ public interface AppenderAttachable<E> {
   /**
    * Get an iterator for appenders contained in the parent object.
    */
-  public Iterator iteratorForAppenders();
+  public Iterator<Appender<E>> iteratorForAppenders();
 
   /**
    * Get an appender by name.
@@ -41,9 +41,9 @@ public interface AppenderAttachable<E> {
   public boolean isAttached(Appender<E> appender);
 
   /**
-   * Detach all previously added appenders.
+   * Detach and stop all previously added appenders.
    */
-  void detachAndStopAllAppenders();
+  void detachAndStopAllAppenders(); 
 
   /**
    * Detach the appender passed as parameter from the list of appenders.
@@ -54,5 +54,5 @@ public interface AppenderAttachable<E> {
    * Detach the appender with the name passed as parameter from the list of
    * appenders.
    */
-  Appender<E> detachAppender(String name);
+  boolean detachAppender(String name);
 }

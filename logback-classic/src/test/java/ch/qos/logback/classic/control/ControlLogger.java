@@ -17,6 +17,8 @@ import ch.qos.logback.classic.Level;
  * See javadoc for ControlLoggerContext.
  */
 public class ControlLogger extends MarkerIgnoringBase {
+
+  private static final long serialVersionUID = 1L;
   final ControlLogger parent;
   final String name;
   Level level;

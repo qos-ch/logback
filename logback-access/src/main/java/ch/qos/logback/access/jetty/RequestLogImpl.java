@@ -166,7 +166,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
       getStatusManager().add(
           new InfoStatus("RequestLog added to RequestLogRegistry with name: "
               + getName(), this));
-      
+
       started = true;
 
     } catch (JoranException e) {
@@ -198,7 +198,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public boolean isStopping() {
     return false;
   }
-  
+
   public boolean isStopped() {
     return !started;
   }
@@ -211,7 +211,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     aai.addAppender(newAppender);
   }
 
-  public Iterator iteratorForAppenders() {
+  public Iterator<Appender<AccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
@@ -232,7 +232,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return aai.detachAppender(appender);
   }
 
-  public Appender<AccessEvent> detachAppender(String name) {
+  public boolean detachAppender(String name) {
     return aai.detachAppender(name);
   }
 

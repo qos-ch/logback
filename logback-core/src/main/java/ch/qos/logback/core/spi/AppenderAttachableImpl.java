@@ -9,9 +9,8 @@
  */
 package ch.qos.logback.core.spi;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.qos.logback.core.Appender;
 
@@ -22,20 +21,17 @@ import ch.qos.logback.core.Appender;
  */
 public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-  final private List<Appender<E>> appenderList = new ArrayList<Appender<E>>();
+  final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
 
   /**
    * Attach an appender. If the appender is already in the list in won't be
    * added again.
    */
   public void addAppender(Appender<E> newAppender) {
-    // Null values for newAppender parameter are strictly forbidden.
     if (newAppender == null) {
-      throw new IllegalArgumentException("Cannot null as an appener");
+      throw new IllegalArgumentException("Null argument disallowed");
     }
-    if (!appenderList.contains(newAppender)) {
-      appenderList.add(newAppender);
-    }
+    appenderList.addIfAbsent(newAppender);
   }
 
   /**
@@ -43,12 +39,9 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public int appendLoopOnAppenders(E e) {
     int size = 0;
-    Appender<E> appender;
-
-    size = appenderList.size();
-    for (int i = 0; i < size; i++) {
-      appender = (Appender<E>) appenderList.get(i);
+    for (Appender<E> appender : appenderList) {
       appender.doAppend(e);
+      size++;
     }
     return size;
   }
@@ -57,9 +50,9 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Get all attached appenders as an Enumeration. If there are no attached
    * appenders <code>null</code> is returned.
    * 
-   * @return Enumeration An enumeration of attached appenders.
+   * @return Iterator An iterator of attached appenders.
    */
-  public Iterator iteratorForAppenders() {
+  public Iterator<Appender<E>> iteratorForAppenders() {
     return appenderList.iterator();
   }
 
@@ -74,18 +67,11 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (name == null) {
       return null;
     }
-
-    int size = appenderList.size();
-    Appender<E> appender;
-
-    for (int i = 0; i < size; i++) {
-      appender = appenderList.get(i);
-
+    for (Appender<E> appender : appenderList) {
       if (name.equals(appender.getName())) {
         return appender;
       }
     }
-
     return null;
   }
 
@@ -99,18 +85,11 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (appender == null) {
       return false;
     }
-
-    int size = appenderList.size();
-    Appender a;
-
-    for (int i = 0; i < size; i++) {
-      a = (Appender) appenderList.get(i);
-
+    for (Appender<E> a : appenderList) {
       if (a == appender) {
         return true;
       }
     }
-
     return false;
   }
 
@@ -118,13 +97,9 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove and stop all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
-    int len = appenderList.size();
-
-    for (int i = 0; i < len; i++) {
-      Appender a = (Appender) appenderList.get(i);
+    for (Appender<E> a : appenderList) {
       a.stop();
     }
-
     appenderList.clear();
   }
 
@@ -143,18 +118,15 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove the appender with the name passed as parameter form the list of
    * appenders.
    */
-  public Appender<E> detachAppender(String name) {
+  public boolean detachAppender(String name) {
     if (name == null) {
-      return null;
+      return false;
     }
-
-    int size = appenderList.size();
-
-    for (int i = 0; i < size; i++) {
-      if (name.equals((appenderList.get(i)).getName())) {
-        return appenderList.remove(i);
+    for (Appender<E> a : appenderList) {
+      if (name.equals((a).getName())) {
+        return appenderList.remove(a);
       }
     }
-    return null;
+    return false;
   }
 }
