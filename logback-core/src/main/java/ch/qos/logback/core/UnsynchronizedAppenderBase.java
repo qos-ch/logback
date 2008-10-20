@@ -13,28 +13,33 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
-import ch.qos.logback.core.spi.FilterReply; 
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
 /**
- * Sets a skeleton implementation for appenders.
+ * Similar to AppenderBase except that derived appenders need to handle 
+ * thread synchronization on their own.
  * 
- * <p>
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#AppenderBase
- *
  * @author Ceki G&uuml;lc&uuml;
+ * @author Ralph Goers
  */
-abstract public class AppenderBase<E> extends ContextAwareBase implements
+abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements
     Appender<E>, FilterAttachable {
 
   protected boolean started = false;
 
+  // using a ThreadLocal instead of a boolean add 75 nanoseconds per
+  // doAppend invocation. This is tolerable as doAppend takes at least a few microseconds
+  // on a real appender
   /**
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
-  private boolean guard = false;
+  private ThreadLocal<Boolean> guard = new ThreadLocal<Boolean>() {
+    protected Boolean initialValue() {
+      return false;
+    }
+  };
 
   /**
    * Appenders are named.
@@ -49,21 +54,20 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
 
   private int statusRepeatCount = 0;
   private int exceptionCount = 0;
-  
+
   static final int ALLOWED_REPEATS = 5;
 
-  
   public synchronized void doAppend(E eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
 
     // prevent re-entry.
-    if (guard) {
+    if (guard.get()) {
       return;
     }
 
     try {
-      guard = true;
+      guard.set(true);
 
       if (!this.started) {
         if (statusRepeatCount++ < ALLOWED_REPEATS) {
@@ -77,16 +81,16 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
       if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
         return;
       }
-      
+
       // ok, we now invoke derived class' implementation of append
       this.append(eventObject);
 
-    } catch(Exception e) {
+    } catch (Exception e) {
       if (exceptionCount++ < ALLOWED_REPEATS) {
-        addError("Appender ["+name+"] failed to append.", e);
+        addError("Appender [" + name + "] failed to append.", e);
       }
-    }  finally {
-      guard = false;
+    } finally {
+      guard.set(false);
     }
   }
 
@@ -130,7 +134,7 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
   public FilterReply getFilterChainDecision(Object event) {
     return fai.getFilterChainDecision(event);
   }
-  
+
   public Layout<E> getLayout() {
     return null;
   }
