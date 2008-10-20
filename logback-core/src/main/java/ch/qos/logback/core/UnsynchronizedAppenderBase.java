@@ -57,7 +57,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
 
   static final int ALLOWED_REPEATS = 5;
 
-  public synchronized void doAppend(E eventObject) {
+  public void doAppend(E eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
 
