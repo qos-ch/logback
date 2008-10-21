@@ -38,6 +38,8 @@ CREATE TRIGGER logging_event_id_seq_trig
     FROM   DUAL;  
   END;
 /
+-- the / suffix may or may not be needed depending on your SQL Client
+
 
 CREATE TABLE logging_event_property
   (
