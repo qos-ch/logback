@@ -1,8 +1,9 @@
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 --
--- It is intended for Oracle 9i databases. Tested on version 9.2
+-- It is intended for Oracle 9i, 10g and 11g databases. Tested on version 9.2, 10g and 
+-- 11g.
 
--- The following lines are useful in cleaning any previous tables 
+-- The following lines are useful in cleaning any previously existing tables 
 
 --drop TRIGGER logging_event_id_seq_trig; 
 --drop SEQUENCE logging_event_id_seq; 
@@ -29,6 +30,11 @@ CREATE TABLE logging_event
   );
 
 
+-- the / suffix may or may not be needed depending on your SQL Client
+-- Some SQL Clients, e.g. SQuirrel SQL has trouble with the following
+-- trigger creation command, while SQLPlus (the basic SQL Client which
+-- ships with Oracle) has no trouble at all.
+
 CREATE TRIGGER logging_event_id_seq_trig
   BEFORE INSERT ON logging_event
   FOR EACH ROW  
@@ -38,7 +44,6 @@ CREATE TRIGGER logging_event_id_seq_trig
     FROM   DUAL;  
   END;
 /
--- the / suffix may or may not be needed depending on your SQL Client
 
 
 CREATE TABLE logging_event_property
