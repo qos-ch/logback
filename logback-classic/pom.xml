@@ -171,8 +171,46 @@
         </configuration>
       </plugin>
     </plugins>
-
-
   </build>
+
+	<profiles>
+    
+		<profile>
+      <!-- Integration tests require the host-orion profile -->
+			<id>host-orion</id>
+	
+			<dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>5.0.8</version>
+          <scope>test</scope>
+				</dependency>
+
+        <dependency>
+          <groupId>postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>8.2-507.jdbc3</version>
+        </dependency>
+
+        <!-- locally installed artifact -->        
+				<dependency>
+					<groupId>com.microsoft.sqlserver</groupId>
+					<artifactId>sqljdbc</artifactId>
+					<version>2.0</version>
+          <scope>test</scope>
+				</dependency>
+        <!-- locally installed artifact -->
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId>
+          <version>10.2.0.1</version>
+          <scope>test</scope>
+				</dependency>
+			</dependencies>
+
+		</profile>
+
+	</profiles>
 
 </project>

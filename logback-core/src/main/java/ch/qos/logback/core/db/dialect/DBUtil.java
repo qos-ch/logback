@@ -12,7 +12,6 @@ package ch.qos.logback.core.db.dialect;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import ch.qos.logback.core.db.ConnectionSource;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -28,25 +27,25 @@ public class DBUtil extends ContextAwareBase {
   private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
 
-  public static int discoverSQLDialect(DatabaseMetaData meta) {
-    int dialectCode = 0;
+  public static SQLDialectCode discoverSQLDialect(DatabaseMetaData meta) {
+    SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
 
     try {
 
       String dbName = meta.getDatabaseProductName().toLowerCase();
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
-        return ConnectionSource.POSTGRES_DIALECT;
+        return SQLDialectCode.POSTGRES_DIALECT;
       } else if (dbName.indexOf(MYSQL_PART) != -1) {
-        return ConnectionSource.MYSQL_DIALECT;
+        return SQLDialectCode.MYSQL_DIALECT;
       } else if (dbName.indexOf(ORACLE_PART) != -1) {
-        return ConnectionSource.ORACLE_DIALECT;
+        return SQLDialectCode.ORACLE_DIALECT;
       } else if (dbName.indexOf(MSSQL_PART) != -1) {
-        return ConnectionSource.MSSQL_DIALECT;
+        return SQLDialectCode.MSSQL_DIALECT;
       } else if (dbName.indexOf(HSQL_PART) != -1) {
-        return ConnectionSource.HSQL_DIALECT;
+        return SQLDialectCode.HSQL_DIALECT;
       } else {
-        return ConnectionSource.UNKNOWN_DIALECT;
+        return SQLDialectCode.UNKNOWN_DIALECT;
       }
     } catch (SQLException sqle) {
       // we can't do much here
@@ -55,27 +54,27 @@ public class DBUtil extends ContextAwareBase {
     return dialectCode;
   }
 
-  public static SQLDialect getDialectFromCode(int dialectCode) {
+  public static SQLDialect getDialectFromCode(SQLDialectCode sqlDialectType) {
     SQLDialect sqlDialect = null;
 
-    switch (dialectCode) {
-    case ConnectionSource.POSTGRES_DIALECT:
+    switch (sqlDialectType) {
+    case POSTGRES_DIALECT:
       sqlDialect = new PostgreSQLDialect();
 
       break;
-    case ConnectionSource.MYSQL_DIALECT:
+    case MYSQL_DIALECT:
       sqlDialect = new MySQLDialect();
 
       break;
-    case ConnectionSource.ORACLE_DIALECT:
+    case ORACLE_DIALECT:
       sqlDialect = new OracleDialect();
 
       break;
-    case ConnectionSource.MSSQL_DIALECT:
+    case MSSQL_DIALECT:
       sqlDialect = new MsSQLDialect();
 
       break;
-    case ConnectionSource.HSQL_DIALECT:
+    case HSQL_DIALECT:
       sqlDialect = new HSQLDBDialect();
 
       break;

@@ -56,11 +56,11 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     sql.append("caller_line) ");
     sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?,?)");
     insertSQL = sql.toString();
-    //
-    // PreparedStatement.getGeneratedKeys added in JDK 1.4
-    //
+    
+    // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
     Method getGeneratedKeysMethod;
     try {
+      // the 
       getGeneratedKeysMethod = PreparedStatement.class.getMethod(
           "getGeneratedKeys", (Class[]) null);
     } catch (Exception ex) {
@@ -77,16 +77,16 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
       PreparedStatement insertStatement) throws Throwable {
     LoggingEvent event = (LoggingEvent) eventObject;
 
-    addLoggingEvent(insertStatement, event);
-    // This is very expensive... should we do it every time?
-    addCallerData(insertStatement, event.getCallerData());
+    bindLoggingEventWithInsertStatement(insertStatement, event);
+    // This is expensive... should we do it every time?
+    bindCallerDataWithPreparedStatement(insertStatement, event.getCallerData());
 
     int updateCount = insertStatement.executeUpdate();
     if (updateCount != 1) {
       addWarn("Failed to insert loggingEvent");
     }
 
-    int eventId = getEventId(insertStatement, connection);
+    int eventId = selectEventId(insertStatement, connection);
 
     Map<String, String> mergedMap = mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
@@ -96,7 +96,7 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     }
   }
 
-  void addLoggingEvent(PreparedStatement stmt, LoggingEvent event)
+  void bindLoggingEventWithInsertStatement(PreparedStatement stmt, LoggingEvent event)
       throws SQLException {
     stmt.setLong(1, event.getTimeStamp());
     stmt.setString(2, event.getFormattedMessage());
@@ -106,7 +106,7 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     stmt.setShort(6, DBHelper.computeReferenceMask(event));
   }
 
-  void addCallerData(PreparedStatement stmt, CallerData[] callerDataArray)
+  void bindCallerDataWithPreparedStatement(PreparedStatement stmt, CallerData[] callerDataArray)
       throws SQLException {
     CallerData callerData = callerDataArray[0];
     if (callerData != null) {

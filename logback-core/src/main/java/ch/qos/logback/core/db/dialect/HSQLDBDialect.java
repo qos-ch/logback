@@ -7,17 +7,18 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.db.dialect; 
+package ch.qos.logback.core.db.dialect;
 
-/** 
- * The HSQLDB dialect. 
+/**
+ * The HSQLDB dialect.
  * 
  * @author Ceki G&uuml;lc&uuml;
-*/ 
-public class HSQLDBDialect implements SQLDialect { 
- public static final String SELECT_CURRVAL = "CALL IDENTITY()"; 
+ */
+public class HSQLDBDialect implements SQLDialect {
+  public static final String SELECT_CURRVAL = "CALL IDENTITY()";
 
- public String getSelectInsertId() { 
-   return SELECT_CURRVAL; 
- } 
+  public String getSelectInsertId() {
+    return SELECT_CURRVAL;
+  }
+  
 }

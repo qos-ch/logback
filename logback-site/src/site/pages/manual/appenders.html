@@ -2299,8 +2299,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
     </p>
 
-		<a name="DBAppender"></a>
-		<h3>DBAppender</h3>
+    <h3>
+      <a name="DBAppender" href="#DBAppender">DBAppender</a>
+		</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a>
@@ -2322,79 +2323,88 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		to us, we will gladly include missing scripts in future releases.
 		</p>
 
-		<p>
-			If your JDBC driver supports the
-			<code>getGeneratedKeys</code> method introduced in
-			JDBC 3.0 specification, then no more steps are required, excluding usual
-			configuration. 
-		</p>
-		<p>
-			Otherwise, there must be an <code>SQLDialect</code> appropriate for your
-			database system. Currently, we have dialects for PostgreSQL,
-			MySQL, Oracle and MsSQL. As mentioned previously, an
-			<code>SQLDialect</code> is required only if the JDBC driver for your
-			database system does not support the <code>getGeneratedKeys</code>
-			method.
+		<p>If your JDBC driver supports the <code>getGeneratedKeys</code>
+		method introduced in JDBC 3.0 specification, assuming you have
+		created the appropriate database tables as mentioned above, then
+		no more steps are required, excluding usual logback configuration.
 		</p>
 
-		<p>
-			The table below summarizes the database types and their support of the 
-			<code>getGeneratedKeys()</code> method.
+    <p>Otherwise, there must be an <code>SQLDialect</code> appropriate
+    for your database system. Currently, we have dialects for
+    PostgreSQL, MySQL, Oracle and MS SQL Server. </p>
+
+		<p>The table below summarizes the database types and their support
+		of the <code>getGeneratedKeys()</code> method.
 		</p>
 
 		<table class="bodyTable" border="1" cellpadding="4">
 			<tr class="a">
 				<th>RDBMS</th>
-				<th>
+        <th>tested version(s)
+        </th>
+        <th>tested JDBC driver version(s)
+				</th>
+        <th>
 					supports
 					<br />
 					<code>getGeneratedKeys()</code>
 					method
-				</th>
-				<th>
-					specific
-					<br />
-					SQLDialect support
-				</th>
+				</th>			
 			</tr>
-			<tr class="b">
-				<td>PostgreSQL</td>
-				<td>NO</td>
-				<td>present and used</td>
-			</tr>
-			<tr class="a">
-				<td>MySQL</td>
-				<td>YES</td>
-				<td>present, but not actually needed or used</td>
-			</tr>
-			<tr class="b">
-				<td>Oracle</td>
-				<td>YES</td>
-				<td>present, but not actually needed or used</td>
-			</tr>
-			<tr class="a">
+
+      <tr >
 				<td>DB2</td>
-				<td>YES</td>
-				<td>not present, and not needed or used</td>
+        <td>untested</td>
+				<td>untested</td>
+				<td>unknown</td>
 			</tr>
-			<tr class="b">
-				<td>MsSQL</td>
-				<td>YES</td>
-				<td>not present, and not needed or used</td>
-			</tr>
-			<tr class="a">
-				<td>HSQL</td>
+
+      <tr class="alt">
+        <td>HSQL</td>
+        <td>1.8.0.7</td>
+        <td>-</td>
 				<td>NO</td>
-				<td>present and used</td>
 			</tr>
+
+      <tr >
+        <td>Microsoft SQL Server</td>
+        <td>2005</td>
+        <td>2.0.1008.2 (sqljdbc.jar)</td>
+				<td>YES</td>
+			</tr>
+
+      <tr class="alt">
+				<td>MySQL</td>
+        <td>5.0.22</td>
+        <td>5.0.8 (mysql-connector.jar)</td>        
+				<td>YES</td>
+			</tr>
+
+			<tr>
+				<td>PostgreSQL</td>
+        <td>
+        </td>
+        <td>
+        </td>
+				<td>NO</td>
+			</tr>
+		
+			<tr >
+				<td>Oracle</td>
+        <td>10g</td>
+        <td>10.2.0.1 (ojdbc14.jar)</td>
+				<td>YES (10.2.0.1)</td>
+			</tr>
+	
+	
+			
 		</table>
 		
-		<p>
-			Experiments show that writing a single event
-			into the database takes approximately 10 milliseconds, on a
-			"standard" PC. If pooled connections are used, this figure
-			drops to around 1 milliseconds. Note that most JDBC drivers
-			already ship with connection pooling support.
+		<p>Experiments show that writing a single event into the database
+		takes approximately 10 milliseconds, on a "standard" PC. If pooled
+		connections are used, this figure drops to around 1
+		milliseconds. Note that most JDBC drivers already ship with
+		connection pooling support.
 		</p>
 		
 		<p>

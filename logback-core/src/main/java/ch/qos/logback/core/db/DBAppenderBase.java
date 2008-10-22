@@ -35,8 +35,9 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
   protected SQLDialect sqlDialect;
 
   protected abstract Method getGeneratedKeysMethod();
+
   protected abstract String getInsertSQL();
-  
+
   @Override
   public void start() {
 
@@ -45,6 +46,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
           "DBAppender cannot function without a connection source");
     }
 
+    System.out.println(connectionSource.supportsGetGeneratedKeys());
     sqlDialect = DBUtil
         .getDialectFromCode(connectionSource.getSQLDialectCode());
     if (getGeneratedKeysMethod() != null) {
@@ -71,7 +73,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * @param connectionSource
-   *          The connectionSource to set.
+   *                The connectionSource to set.
    */
   public void setConnectionSource(ConnectionSource connectionSource) {
     this.connectionSource = connectionSource;
@@ -83,10 +85,13 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     try {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
-
-      PreparedStatement insertStatement = connection
-          .prepareStatement(getInsertSQL());
-
+      PreparedStatement insertStatement;
+      if (cnxSupportsGetGeneratedKeys) {
+        insertStatement = connection.prepareStatement(getInsertSQL(),
+            new String[] {"EVENT_ID"});
+      } else {
+        insertStatement = connection.prepareStatement(getInsertSQL());
+      }
       subAppend(eventObject, connection, insertStatement);
 
       // we no longer need the insertStatement
@@ -94,7 +99,6 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
         insertStatement.close();
         insertStatement = null;
       }
-
       connection.commit();
     } catch (Throwable sqle) {
       addError("problem appending event", sqle);
@@ -106,7 +110,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
   protected abstract void subAppend(Object eventObject, Connection connection,
       PreparedStatement statement) throws Throwable;
 
-  protected int getEventId(PreparedStatement insertStatement,
+  protected int selectEventId(PreparedStatement insertStatement,
       Connection connection) throws SQLException, InvocationTargetException {
     ResultSet rs = null;
     Statement idStatement = null;
@@ -139,8 +143,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     }
 
     // A ResultSet cursor is initially positioned before the first row;
-    // the
-    // first call to the method next makes the first row the current row
+    // the first call to the method next makes the first row the current row
     rs.next();
     int eventId = rs.getInt(1);
 

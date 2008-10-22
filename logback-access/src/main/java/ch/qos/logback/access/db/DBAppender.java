@@ -79,7 +79,7 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
     }
     
     if (insertHeaders) {
-      int eventId = getEventId(insertStatement, connection);
+      int eventId = selectEventId(insertStatement, connection);
       addRequestHeaders(event, connection, eventId);
     }
   }

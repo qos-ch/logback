@@ -15,6 +15,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import ch.qos.logback.core.db.dialect.SQLDialectCode;
+
 /**
  * The DataSourceConnectionSource is an implementation of
  * {@link ConnectionSource} that obtains the Connection in the recommended JDBC
@@ -47,7 +49,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
         discoverConnnectionProperties();
       }
       if (!supportsGetGeneratedKeys()
-          && getSQLDialectCode() == ConnectionSource.UNKNOWN_DIALECT) {
+          && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
         addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
     }

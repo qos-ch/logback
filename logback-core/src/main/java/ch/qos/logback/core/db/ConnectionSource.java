@@ -12,6 +12,7 @@ package ch.qos.logback.core.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.LifeCycle;
 
 
@@ -27,12 +28,6 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public interface ConnectionSource extends LifeCycle {
 
-  final int UNKNOWN_DIALECT = 0;
-  final int POSTGRES_DIALECT = 1;
-  final int MYSQL_DIALECT = 2;
-  final int ORACLE_DIALECT = 3;
-  final int MSSQL_DIALECT = 4;
-  final int HSQL_DIALECT = 5;  
   /**
    *  Obtain a {@link java.sql.Connection} for use.  The client is
    *  responsible for closing the {@link java.sql.Connection} when it is no
@@ -48,7 +43,7 @@ public interface ConnectionSource extends LifeCycle {
    * dialect is not needed if the JDBC driver supports the getGeneratedKeys 
    * method.
    */
-  int getSQLDialectCode();
+  SQLDialectCode getSQLDialectCode();
   
   /**
    * If the connection supports the JDBC 3.0 getGeneratedKeys method, then

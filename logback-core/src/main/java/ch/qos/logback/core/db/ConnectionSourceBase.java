@@ -14,6 +14,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import ch.qos.logback.core.db.dialect.DBUtil;
+import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 
@@ -28,7 +29,7 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
   private String password = null;
 
   // initially we have an unkonw dialect
-  private int dialectCode = UNKNOWN_DIALECT;
+  private SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
   private boolean supportsGetGeneratedKeys = false;
   private boolean supportsBatchUpdates = false;
 
@@ -50,6 +51,10 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
       supportsGetGeneratedKeys = util.supportsGetGeneratedKeys(meta);
       supportsBatchUpdates = util.supportsBatchUpdates(meta);
       dialectCode = DBUtil.discoverSQLDialect(meta);
+      System.out.println("Driver name="+meta.getDriverName());
+      System.out.println("Driver version="+meta.getDriverVersion());
+      System.out.println("supportsGetGeneratedKeys="+supportsGetGeneratedKeys);
+      
     } catch (SQLException se) {
       addWarn("Could not discover the dialect to use.", se);
     }
@@ -62,7 +67,7 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
     return supportsGetGeneratedKeys;
   }
 
-  public final int getSQLDialectCode() {
+  public final SQLDialectCode getSQLDialectCode() {
     return dialectCode;
   }
 
