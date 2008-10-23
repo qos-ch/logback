@@ -34,7 +34,6 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Constants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Test the way Interpreter skips child elements in case of exceptions thrown by
@@ -83,7 +82,6 @@ public class SkippingInInterpreterTest {
       assertEquals(expectedInt, i);
     }
 
-    StatusPrinter.print(context);
     // check the existence of an ERROR status
     List<Status> statusList = sm.getCopyOfStatusList();
     Status s0 = statusList.get(0);
