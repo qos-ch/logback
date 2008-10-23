@@ -16,7 +16,8 @@
 
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -24,11 +25,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.DummyLayout;
+import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
 
@@ -156,7 +157,7 @@ public class SizeBasedRollingTest  {
 
     // The File.length() method is not accurate under Windows
 
-    if (!isWindows()) {
+    if (!Env.isWindows()) {
 
       assertTrue(Compare.compare(Constants.OUTPUT_DIR_PREFIX
           + "sizeBased-test2.log", Constants.TEST_DIR_PREFIX
@@ -224,7 +225,7 @@ public class SizeBasedRollingTest  {
     assertTrue(new File(Constants.OUTPUT_DIR_PREFIX + "sbr-test3.1.gz")
         .exists());
 
-    if (!isWindows()) {
+    if (!Env.isWindows()) {
 
       assertTrue(Compare.compare(
           Constants.OUTPUT_DIR_PREFIX+"sbr-test3.log",
@@ -240,7 +241,5 @@ public class SizeBasedRollingTest  {
     // StatusPrinter.print(context.getStatusManager());
   }
 
-  boolean isWindows() {
-    return System.getProperty("os.name").indexOf("Windows") != -1;
-  }
+
 }
