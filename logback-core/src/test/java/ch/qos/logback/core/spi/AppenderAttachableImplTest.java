@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * This test case verifies all the methods of AppenderAttableImpl work properly.
  *
- * @author Raplh Goers
+ * @author Ralph Goers
  */
 public class AppenderAttachableImplTest {
 
