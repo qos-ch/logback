@@ -19,12 +19,13 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.appender.NOPAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class LoggerPerfTest {
 
   long NANOS_IN_ONE_SEC = 1000*1000*1000L;
   static long NORMAL_RUN_LENGTH = 1000 * 1000;
-  static long SHORTENED_RUN_LENGTH = 500 * 1000;
+  static long SHORTENED_RUN_LENGTH = 1000 * 1000;
   static long REFERENCE_BIPS = 9324;
 
   @Before
@@ -79,15 +80,15 @@ public class LoggerPerfTest {
   }
 
   @Test
-  public void testDurationOfEnabledWithStraightStringParameter() {
-    computeDurationOfEnabledLogWithStraightStringParameter(SHORTENED_RUN_LENGTH);
-    double avgDuration = computeDurationOfEnabledLogWithStraightStringParameter(SHORTENED_RUN_LENGTH);
+  public void testDurationOfEnabledLog() {
+    computeDurationOfEnabledLog(SHORTENED_RUN_LENGTH);
+    double avgDuration = computeDurationOfEnabledLog(SHORTENED_RUN_LENGTH);
     long referencePerf = 500;
-    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
     System.out.println("avgDuration="+avgDuration);
+    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
   }
   
-  double computeDurationOfEnabledLogWithStraightStringParameter(long len) {
+  double computeDurationOfEnabledLog(long len) {
     LoggerContext lc = new LoggerContext();
     Logger logger = lc.getLogger(this.getClass());
     logger.setLevel(Level.ALL);
@@ -102,6 +103,8 @@ public class LoggerPerfTest {
       logger.debug("Toto");
     }
     long end = System.nanoTime();
+    StatusPrinter.print(lc);
+    
     return (end - start) / len;
   }
 
