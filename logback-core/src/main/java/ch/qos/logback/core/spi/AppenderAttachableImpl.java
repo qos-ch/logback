@@ -9,8 +9,12 @@
  */
 package ch.qos.logback.core.spi;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import ch.qos.logback.core.Appender;
 
@@ -21,7 +25,10 @@ import ch.qos.logback.core.Appender;
  */
 public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-  final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
+  final private List<Appender<E>> appenderList = new ArrayList<Appender<E>>();
+  final private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+  private final Lock r = rwLock.readLock();
+  private final Lock w = rwLock.writeLock();
 
   /**
    * Attach an appender. If the appender is already in the list in won't be
@@ -31,7 +38,12 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (newAppender == null) {
       throw new IllegalArgumentException("Null argument disallowed");
     }
-    appenderList.addIfAbsent(newAppender);
+    w.lock();
+    if (!appenderList.contains(newAppender)) {
+      appenderList.add(newAppender);
+    }
+    w.unlock();
+
   }
 
   /**
@@ -39,9 +51,14 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public int appendLoopOnAppenders(E e) {
     int size = 0;
-    for (Appender<E> appender : appenderList) {
-      appender.doAppend(e);
-      size++;
+    r.lock();
+    try {
+      for (Appender<E> appender : appenderList) {
+        appender.doAppend(e);
+        size++;
+      }
+    } finally {
+      r.unlock();
     }
     return size;
   }
@@ -53,7 +70,11 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * @return Iterator An iterator of attached appenders.
    */
   public Iterator<Appender<E>> iteratorForAppenders() {
-    return appenderList.iterator();
+    List<Appender<E>> copy;
+    r.lock();
+    copy = new ArrayList<Appender<E>>(appenderList);
+    r.unlock();
+    return copy.iterator();
   }
 
   /**
@@ -67,11 +88,15 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (name == null) {
       return null;
     }
+    r.lock();
+
     for (Appender<E> appender : appenderList) {
       if (name.equals(appender.getName())) {
+        r.unlock();
         return appender;
       }
     }
+    r.unlock();
     return null;
   }
 
@@ -85,11 +110,14 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (appender == null) {
       return false;
     }
+    r.lock();
     for (Appender<E> a : appenderList) {
       if (a == appender) {
+        r.unlock();
         return true;
       }
     }
+    r.unlock();
     return false;
   }
 
@@ -97,10 +125,15 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove and stop all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
-    for (Appender<E> a : appenderList) {
-      a.stop();
-    }
+    try {
+     w.lock();
+      for (Appender<E> a : appenderList) {
+       a.stop();
+     }
     appenderList.clear();
+    } finally {
+      w.unlock();
+    }
   }
 
   /**
@@ -111,7 +144,10 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (appender == null) {
       return false;
     }
-    return appenderList.remove(appender);
+    w.lock();
+    boolean result = appenderList.remove(appender);
+    w.unlock();
+    return result;
   }
 
   /**
@@ -122,11 +158,14 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (name == null) {
       return false;
     }
+    w.lock();
     for (Appender<E> a : appenderList) {
       if (name.equals((a).getName())) {
+        w.unlock();
         return appenderList.remove(a);
       }
     }
+    w.unlock();
     return false;
   }
 }
