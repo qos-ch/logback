@@ -19,14 +19,13 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.appender.NOPAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class LoggerPerfTest {
 
   long NANOS_IN_ONE_SEC = 1000*1000*1000L;
   static long NORMAL_RUN_LENGTH = 1000 * 1000;
-  static long SHORTENED_RUN_LENGTH = 1000 * 1000;
-  static long REFERENCE_BIPS = 9324;
+  static long SHORTENED_RUN_LENGTH = 500 * 1000;
+  static long REFERENCE_BIPS = 9000;
 
   @Before
   public void setUp() throws Exception {
@@ -96,15 +95,13 @@ public class LoggerPerfTest {
     nopAppender.start();
     logger.addAppender(nopAppender);
     for (long i = 0; i < len; i++) {
-      logger.debug("Toto", i);
+      logger.debug("Toto");
     }
     long start = System.nanoTime();
     for (long i = 0; i < len; i++) {
       logger.debug("Toto");
     }
     long end = System.nanoTime();
-    StatusPrinter.print(lc);
-    
     return (end - start) / len;
   }
 
