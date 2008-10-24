@@ -5,6 +5,7 @@
 
 CREATE SEQUENCE access_event_id_seq MINVALUE 1 START WITH 1;
 
+
 CREATE TABLE access_event 
   (
     timestmp          NUMBER(20) NOT NULL,
@@ -20,6 +21,10 @@ CREATE TABLE access_event
     event_id          NUMBER(10) PRIMARY KEY
   );
 
+-- the / suffix may or may not be needed depending on your SQL Client
+-- Some SQL Clients, e.g. SQuirrel SQL has trouble with the following
+-- trigger creation command, while SQLPlus (the basic SQL Client which
+-- ships with Oracle) has no trouble at all.
 
 CREATE TRIGGER access_event_id_seq_trig
   BEFORE INSERT ON access_event
@@ -29,7 +34,7 @@ CREATE TRIGGER access_event_id_seq_trig
     INTO   :NEW.event_id 
     FROM   DUAL;  
   END access_event_id_seq_trig;
-
+/
 
 CREATE TABLE access_event_header
   (
