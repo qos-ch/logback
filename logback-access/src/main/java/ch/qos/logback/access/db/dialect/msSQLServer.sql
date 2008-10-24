@@ -4,7 +4,7 @@
 DROP TABLE access_event_header
 DROP TABLE access_event 
 
-CREATE TABLE logging_event 
+CREATE TABLE access_event 
   ( 
     timestmp          BIGINT NOT NULL,
    	requestURI        VARCHAR(254),
