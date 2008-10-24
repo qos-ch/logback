@@ -12,7 +12,7 @@ import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class DBAppenderTest extends DBAppenderTestBase {
+public class DBAppenderTest extends DBAppenderTestInfrastructure {
 
   AccessContext context;
   DBAppender appender;

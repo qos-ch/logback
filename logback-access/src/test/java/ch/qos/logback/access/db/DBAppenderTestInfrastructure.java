@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import org.hsqldb.Server;
 
-public abstract class DBAppenderTestBase extends TestCase {
+public abstract class DBAppenderTestInfrastructure extends TestCase {
 
   public static final String DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   String serverProps;
@@ -19,7 +19,7 @@ public abstract class DBAppenderTestBase extends TestCase {
   Server server;
   boolean isNetwork = true;
 
-  public DBAppenderTestBase(String name) {
+  public DBAppenderTestInfrastructure(String name) {
     super(name);
   }
 
