@@ -7,7 +7,7 @@ CREATE SEQUENCE access_event_id_seq MINVALUE 1 START WITH 1;
 
 CREATE TABLE access_event 
   (
-    timestmp          BIGINT NOT NULL,
+    timestmp          NUMBER(20) NOT NULL,
    	requestURI        VARCHAR(254),
     requestURL        VARCHAR(254),
     remoteHost        VARCHAR(254),
