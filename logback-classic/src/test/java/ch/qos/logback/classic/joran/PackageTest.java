@@ -15,7 +15,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(JoranConfiguratorTest.class);
+    suite.addTest(new JUnit4TestAdapter(JoranConfiguratorTest.class));
     suite.addTestSuite(EvaluatorJoranTest.class);
     return suite;
   }
