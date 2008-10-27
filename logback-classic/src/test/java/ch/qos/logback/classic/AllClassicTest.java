@@ -17,7 +17,8 @@ public class AllClassicTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
- 
+
+    suite.addTest(org.slf4j.impl.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.control.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.joran.PackageTest.suite());

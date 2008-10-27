@@ -24,7 +24,9 @@ import org.slf4j.spi.MDCAdapter;
  */
 public class LogbackMDCAdapter implements MDCAdapter {
 
-  private final InheritableThreadLocal<HashMap<String, String>> inheritableThreadLocal = new InheritableThreadLocal<HashMap<String, String>>();
+  //final CopyOnInheritThreadLocal copyOnInheritThreadLocal = new CopyOnInheritThreadLocal();
+
+  final CopyOnInheritThreadLocal copyOnInheritThreadLocal = new CopyOnInheritThreadLocal();
 
   LogbackMDCAdapter() {
   }
@@ -45,21 +47,21 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * logback component to see the latest changes.
    * 
    * @throws IllegalArgumentException
-   *           in case the "key" parameter is null
+   *                 in case the "key" parameter is null
    */
   public void put(String key, String val) throws IllegalArgumentException {
     if (key == null) {
       throw new IllegalArgumentException("key cannot be null");
     }
 
-    HashMap<String, String> oldMap = inheritableThreadLocal.get();
+    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     if (oldMap != null) {
       newMap.putAll(oldMap);
     }
     // the newMap replaces the old one for serialisation's sake
-    inheritableThreadLocal.set(newMap);
+    copyOnInheritThreadLocal.set(newMap);
     newMap.put(key, val);
   }
 
@@ -70,7 +72,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * This method has no side effects.
    */
   public String get(String key) {
-    HashMap<String, String> hashMap = inheritableThreadLocal.get();
+    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
 
     if ((hashMap != null) && (key != null)) {
       return hashMap.get(key);
@@ -89,14 +91,14 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * logback component to see the latest changes.
    */
   public void remove(String key) {
-    HashMap<String, String> oldMap = inheritableThreadLocal.get();
+    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     if (oldMap != null) {
       newMap.putAll(oldMap);
     }
     // the newMap replaces the old one for serialisation's sake
-    inheritableThreadLocal.set(newMap);
+    copyOnInheritThreadLocal.set(newMap);
     newMap.remove(key);
   }
 
@@ -104,11 +106,11 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * Clear all entries in the MDC.
    */
   public void clear() {
-    HashMap<String, String> hashMap = inheritableThreadLocal.get();
+    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
 
     if (hashMap != null) {
       hashMap.clear();
-      inheritableThreadLocal.remove();
+      copyOnInheritThreadLocal.remove();
     }
   }
 
@@ -117,15 +119,15 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * internally.
    */
   public Map<String, String> getPropertyMap() {
-    return inheritableThreadLocal.get();
+    return copyOnInheritThreadLocal.get();
   }
 
   /**
-   * Return a copy of the current thread's context map. 
-   * Returned value may be null.
+   * Return a copy of the current thread's context map. Returned value may be
+   * null.
    */
   public Map getCopyOfContextMap() {
-    HashMap<String, String> hashMap = inheritableThreadLocal.get();
+    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
     if (hashMap == null) {
       return null;
     } else {
@@ -133,13 +135,12 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
   }
 
-  
   /**
    * Returns the keys in the MDC as a {@link Set}. The returned value can be
    * null.
    */
   public Set<String> getKeys() {
-    HashMap<String, String> hashMap = inheritableThreadLocal.get();
+    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
 
     if (hashMap != null) {
       return hashMap.keySet();
@@ -148,17 +149,16 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
   }
 
-  
-  @SuppressWarnings("unchecked") 
+  @SuppressWarnings("unchecked")
   public void setContextMap(Map contextMap) {
-    HashMap<String, String> oldMap = inheritableThreadLocal.get();
+    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     newMap.putAll(contextMap);
 
     // the newMap replaces the old one for serialisation's sake
-    inheritableThreadLocal.set(newMap);
-    
+    copyOnInheritThreadLocal.set(newMap);
+
     // hints for the garbage collector
     oldMap.clear();
     oldMap = null;
