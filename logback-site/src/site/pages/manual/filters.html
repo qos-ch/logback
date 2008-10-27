@@ -105,10 +105,11 @@ prefix='../';
 		filter.
 		</p>
 		
-		<p>
-			The next class is all it takes to implement one's own filter. All it does is accept
-			logging events who's message contains the String <em>sample</em>. The filter will give a 
-			neutral response to any logging event who's message does not contain this String.
+		<p>The next class is all it takes to implement one's own
+		filter. All it does is accept logging events who's message
+		contains the String <em>sample</em>. The filter will give a
+		neutral response to any logging event who's message does not
+		contain this String.
 		</p>
 		
 <em>Example 6.1: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
@@ -156,17 +157,17 @@ public class SampleFilter extends Filter {
   &lt;/root>
 &lt;/configuration></pre></div>
 
-		<p>
-			Thanks to Joran, logback's powerful configuration framework, adding
-			an option to such a filter is very easy. Just add the corresponding
-			getter and setter methods in the class, and you can specify the
-			option's value in an xml element, nested within the <em>filter</em> element.
+		<p>Thanks to Joran, logback's powerful configuration framework,
+		adding an option to such a filter is very easy. Just add the
+		corresponding getter and setter methods in the class, and you can
+		specify the option's value in an xml element, nested within the
+		<em>filter</em> element.
 		</p>
 		
-		<p>
-			In case you want to implement a filter that provides different behaviour
-			depending on the result of its test (say, a filter that would accept or deny
-			an event depending on the content of its message), you can extend the
+		<p>In case you want to implement a filter that provides different
+		behaviour depending on the result of its test (say, a filter that
+		would accept or deny an event depending on the content of its
+		message), you can extend the
 			<a href="../xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">
 			<code>AbstractMatcherFilter</code></a> class. It will provide your filter with 
 			two attribute: <em>OnMatch</em> and <em>OnMismatch</em>, that can be configured
@@ -433,32 +434,32 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 		<a name="TurboFilter"></a>
 		<h3>TurboFilters</h3>
     
-    <p>
-    	<code>TurboFilter</code> objects all extend the 
+    <p><code>TurboFilter</code> objects all extend the
     	<a href="../xref/ch/qos/logback/classic/turbo/TurboFilter.html">
-    	<code>TurboFilter</code></a> abstract class. Like the usual filters, they
-    	use ternary logic to return their evaluation of the logging event.
+    	<code>TurboFilter</code></a> abstract class. Like the regular
+    	filters, they use ternary logic to return their evaluation of
+    	the logging event.
     </p>
     
-    <p>
-    	Overall, they work much like the previously mentionned filters. However, 
-    	there are two main differences between <code>Filter</code> and 
-    	<code>TurboFilter</code> objects.
+    <p>Overall, they work much like the previously mentionned
+    filters. However, there are two main differences between
+    <code>Filter</code> and <code>TurboFilter</code> objects.
     </p>
     
-   	<p>	
-   		<code>TurboFilter</code> objects are tied to the logging context. Hence, they
-   		are called not only when a given appender is used, but each and every time a logging
-   		request is issued. Their scope is wider than appender-attached filters.
+   	<p><code>TurboFilter</code> objects are tied to the logging
+   	context. Hence, they are called not only when a given appender is
+   	used, but each and every time a logging request is issued. Their
+   	scope is wider than appender-attached filters.
    	</p>
    	
    	<p>More importantly, they are called before the
-   	<code>LoggingEvent</code> object creation.  Their decision is made
-   	based on some of the logging event's components. They require no
-   	logging event instantiation, nor any other treatement to provide
-   	their filtering functionnalities. They are much more performant
-   	than the usual <code>Filter</code> objects.
-   	</p>
+   	<code>LoggingEvent</code> object creation.
+   	<code>TurboFilter</code> objects do not require the instantiation
+   	of a logging event to filter a logging request. As such, turbo
+   	filters are intended for high performance filtering of logging
+   	event, even before they are created.
+    </p>
+
    	
    	<h3>Implementing your own TurboFilter</h3>
     
@@ -519,21 +520,20 @@ public class SampleTurboFilter extends TurboFilter {
 }
 </pre></div>
 
-		<p>
-			The <code>TurboFilter</code> above accepts events that contain a specific marker.
-			If said marker is not found, then the filter passes the responsability to
-			the next filter in the chain.
+		<p>The <code>TurboFilter</code> above accepts events that contain
+		a specific marker.  If said marker is not found, then the filter
+		passes the responsability to the next filter in the chain.
 		</p>
 		
-		<p>
-			To allow more flexibility, the marker that will be tested can be specified
-			in the configuration file. Hence the getter and setter methods. We also implemented
-			the <code>start()</code> method, to check that the option has been specified during the
-			configuration process.
+		<p>To allow more flexibility, the marker that will be tested can
+		be specified in the configuration file. Hence the getter and
+		setter methods. We also implemented the <code>start()</code>
+		method, to check that the option has been specified during the
+		configuration process.
 		</p>
 		
-		<p>
-			Here is a sample configuration that makes use of the newly created <code>TurboFilter</code>.
+		<p>Here is a sample configuration that makes use of our newly
+		created <code>TurboFilter</code>.
 		</p>
 		
 <em>Example 6.7: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
@@ -556,18 +556,20 @@ public class SampleTurboFilter extends TurboFilter {
   &lt;/root>
 &lt;/configuration></pre></div>   
 
-   	<p>
-   		Logback classic ships with several <code>TurboFilter</code> classes ready for use.
-   		The 
-   		<a href="../xref/ch/qos/logback/classic/turbo/MDCFilter.html"><code>MDCFilter</code></a> 
-   		check the presence of a given value in the MDC. On the other hand, 
-   		<a href="../xref/ch/qos/logback/classic/turbo/MarkerFilter.html"><code>MarkerFilter</code></a> 
-   		checks for the presence of a specific marker associated with the logging request.
+   	<p>Logback classic ships with several <code>TurboFilter</code>
+   	classes ready for use.  The <a
+   	href="../xref/ch/qos/logback/classic/turbo/MDCFilter.html"><code>MDCFilter</code></a>
+   	check the presence of a given value in the MDC whereas <a
+   	href="../apidocs/ch/qos/logback/classic/turbo/DynamicThresholdFilter.html"><code>DynamicThresholdFilter</code></a>
+   	allows filtering based on MDC key/level thresold associations. On
+   	the other hand, <a
+   	href="../xref/ch/qos/logback/classic/turbo/MarkerFilter.html"><code>MarkerFilter</code></a>
+   	checks for the presence of a specific marker associated with the
+   	logging request.
    	</p>
    	
-   	<p>
-   		Here is a sample configuration, using both <code>MDCFilter</code> and 
-   		<code>MarkerFilter</code>.
+   	<p>Here is a sample configuration, using both
+   	<code>MDCFilter</code> and <code>MarkerFilter</code>.
    	</p>
    	
 <em>Example 6.8: <code>MDCFilter</code> and <code>MarkerFilter</code> 

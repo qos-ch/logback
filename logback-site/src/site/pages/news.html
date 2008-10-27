@@ -29,7 +29,7 @@ prefix='';
 
   <hr width="80%" align="center" />
 
-  <h3>XXth of October 2008 - Release of version 0.9.10</h3>
+  <h3>27th of October 2008 - Release of version 0.9.10</h3>
 
   <p>In case of errors during initialization, logback-classic now
   <em>automatically</em> prints out its internal status. This has been
@@ -82,6 +82,11 @@ prefix='';
   directories.
   </p>
 
+  <p>Fixed <a href="http://jira.qos.ch/browse/LBCORE-15">LBCORE-15</a>
+  reported by Klaus Unger and others. DBAppender should now work with
+  Oracle 9, 10g and 11g, regardless of the JDBC driver type used.
+  </p>
+
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCORE-17">LBCORE-17</a> reported by
   Thorbj&oslash;rn Ravn Andersen. Logback now relies on Geronimo JMS
@@ -99,7 +104,10 @@ prefix='';
   documented.
   </p>
 
-  <p><a href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a>
+  <p>The location of the default configuration file can be specified
+  by a system property. This feature was requested in <a
+  href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a> by Ted
+  Graham, Matt Fowles, Ivan Biddles and Ralph Goers.
   </p>
 
   <p>Fixed issue <a
@@ -151,10 +159,12 @@ prefix='';
   as 0-23 and not as 1-12 as previously.
   </p>
 
-  <p><a href="http://jira.qos.ch/browse/LBCLASSIC-53">LBCLASSIC-53</a>
+  <p>Added a new TurboFilter called DynamicThresholdFilter which can
+  filter events depending on MDC values based on a variery of criteria
+  such as company name, product or the end user. This filter was
+  contributed by Ralph Goers in <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-53">LBCLASSIC-53</a>.  
   </p>
-  
-
   
   <hr width="80%" align="center" />
  
