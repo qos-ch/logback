@@ -1,0 +1,46 @@
+
+
+- Logger has a hashtable keeping track of its children.  
+
+- LoggerContext has reference to root logger and no other data
+structure.
+
+
+- Results are based on calling testReal() with the value 1'000.
+
+  static public void testReal() {
+    LoggerContext lc = new LoggerContext();
+    Scenario s = ScenarioMaker.makeType1Scenario(len);
+    List actionList = s.getActionList();
+    int size = actionList.size();
+    for (int i = 0; i < size; i++) {
+      Action action = (Action) actionList.get(i);
+      if (action instanceof CreateLogger) {
+        CreateLogger cl = (CreateLogger) action;
+        lc.getLogger(cl.getLoggerName());
+      }
+    }
+  }
+
+  Other parameters of interest:
+
+  private final static int AVERAGE_ID_LEN = 16;
+  private final static int AVERAGE_ID_DEV = 8;
+  private final static int AVERAGE_LOGGER_DEPTH = 4;
+  private final static int LOGGER_DEPT_DEV = 2;
+
+java.lang.String	       8,291	198,984	
+char[ ]	                 6,961	412,296	
+java.util.HashMap$Entry	 3,847	 92,328	
+com.logback.Logger	     3,824	152,960	
+<class>[ ]	             3,144	262,304	
+java.util.HashMap	       2,862	114,480
+
+
+Each Logger instance takes up about 152 bytes of memory.
+Each Logger instance takes up about  16 bytes of memory.
+
+CPU Usage:
+==========
+
+22.5% or 901ms spent in LoggerContext.getLogger().

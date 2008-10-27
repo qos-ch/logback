@@ -1,0 +1,175 @@
+<project name="lbcore" default="usage" basedir=".">
+
+	<property file="build.properties" />
+
+	<!-- The base directory relative to which most targets are built -->
+	<property name="base" value="." />
+
+	<property name="target" value="../../target" />
+	
+	<!-- The directory where source files are stored. -->
+
+	<property name="project.source.home" value="../src/main/java/" />
+	<property name="project.classes.home" value="${target}/classes/" />
+
+	<property name="tests.source.home" value="./java/" />
+
+	<!-- The stem where most LB core source code is located. -->
+	<property name="stem" value="com/logback/core" />
+
+	<!-- Destination for compiled files -->
+	<property name="javac.dest" value="${target}/test-classes/" />
+
+
+	<path id="tests.classpath">
+		<pathelement location="${project.source.home}" />
+		<pathelement location="${project.classes.home}" />
+		<pathelement location="${tests.source.home}" />
+		<pathelement location="${javac.dest}" />
+		<pathelement location="./resources" />
+		<fileset dir="../../lib/">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+
+	<!-- ================================================================= -->
+	<!--                        TARGETS                                    -->
+	<!-- ================================================================= -->
+
+
+
+	<!-- ================================================================= -->
+	<!-- Default target                                                    -->
+	<!-- ================================================================= -->
+
+	<target name="usage">
+		<echo>
+      
+      These are the targets supported by this ANT build scpript:
+      
+      build - compile all project files, if a certain library is missing, 
+              then the compilation of its dependents are skipped.
+     
+      all - run all available tests
+    </echo>
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="${javac.dest}" />
+		<mkdir dir="./output" />
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Check if prerequisites are available                              -->
+	<!-- ================================================================= -->
+
+	<target name="check" depends="junitCheck">
+	</target>
+
+	<target name="junitCheck">
+		<available classname="junit.framework.Test" property="junit-present">
+			<classpath refid="tests.classpath" />
+		</available>
+
+		<fail unless="junit-present">
+      Could not find junit classes. Is the file junit.jar missing? 
+      See the documentation for the junit task in the Apache Ant Manual.
+    </fail>
+	</target>
+
+	<!-- Clean the parent project                                          -->
+	<!-- ================================================================= -->
+	<target name="parentClean">
+		<ant dir=".." target="clean" inheritRefs="true" />
+	</target>
+
+
+
+	<!-- ================================================================= -->
+	<!-- Build the parent project                                          -->
+	<!-- ================================================================= -->
+	<target name="parentBuild">
+		<ant dir="../.." target="build" inheritRefs="false" />
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Compile test cases and related source files.                      -->
+	<!-- ================================================================= -->
+	<target name="build" depends="prepare">
+		<property name="haltonfailure" value="yes" />
+		<javac srcdir="${tests.source.home}" destdir="${javac.dest}" excludes="${stem}/xynz/toto.java" deprecation="${deprecation}" debug="on">
+			<classpath refid="tests.classpath" />
+		</javac>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Remove all generated files such as compiled class files and test  -->
+	<!-- case output.                                                     -->
+	<!-- ================================================================= -->
+	<target name="clean">
+		<delete dir="${javac.dest}/" />
+		<delete dir="./output/" />
+	</target>
+
+	<target name="cleanOutputDir">
+		<delete>
+			<fileset dir="./output/" includes="**" />
+		</delete>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Run all tests                                                     -->
+	<!-- ================================================================= -->
+	<target name="all" depends="build, AllUnit, Compress, Renaming,
+		                       TimeBasedRolling,
+			                   SkipInInterpreter" />
+
+
+	<target name="AllUnit" depends="check, build, cleanOutputDir">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath refid="tests.classpath" />
+			<formatter type="plain" usefile="false" />
+			<test name="ch.qos.logback.core.AllTest" />
+		</junit>
+	</target>
+
+	<target name="Compress" depends="check, build, cleanOutputDir">
+		<!-- The input files are erased as a result of compression. We -->
+		<!-- need to "create" them afresh for each test.               -->
+		<copy file="input/compress1.copy" toFile="input/compress1.txt" />
+		<copy file="input/compress2.copy" toFile="input/compress2.txt" />
+		<copy file="input/compress3.copy" toFile="input/compress3.txt" />
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath refid="tests.classpath" />
+			<formatter type="plain" usefile="false" />
+			<test name="ch.qos.logback.core.rolling.helper.CompressTest" />
+		</junit>
+	</target>
+
+	<target name="Renaming" depends="check, build, cleanOutputDir">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+				<classpath refid="tests.classpath" />
+				<formatter type="plain" usefile="false" />
+				<test name="ch.qos.logback.core.rolling.RenamingTest" />
+		</junit>
+	</target>
+	
+	<target name="TimeBasedRolling" depends="check, build, cleanOutputDir">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+				<classpath refid="tests.classpath" />
+				<formatter type="plain" usefile="false" />
+				<test name="ch.qos.logback.core.rolling.TimeBasedRollingTest" />
+		</junit>
+	</target>
+	
+ 	<target name="SkipInInterpreter" depends="check, build, cleanOutputDir">
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+		  <classpath refid="tests.classpath"/>
+	      <formatter type="plain" usefile="false" />
+		  <test name="ch.qos.logback.core.joran.SkippingInInterpreterTest" />
+		</junit>
+ 	</target>
+			
+	
+</project>

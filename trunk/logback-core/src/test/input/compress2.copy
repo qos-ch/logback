@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>LOGBack Home</title>
+  </properties>
+
+
+<body>
+
+  <h1>LOGBack project</h1>
+
+  <p>LOGBack is intended as a successor to the popular log4j
+  project. It was also designed by Ceki G&#252;lc&#252;, the founder
+  of the log4j project. It builds upon exerience gained in building
+  industrial-strength logging systems going back as far as 1999.
+  </p>
+
+  <p>LOGBack's basic architecture is sufficiently generic so as to
+  apply under different circumstances. At present time, LOGBack is
+  divided into three modules, Core, Classic and Access.
+  </p>
+
+  <p>The Core module lays the groundwork for the other two
+  modules. The Classic module can be assimilated to an improved
+  version of log4j. The Access module integrates with Servlet
+  containers to provide HTPP-access log functionality. Note that you
+  can easily build your own modules on top of the Core module.
+  </p>
+
+
+</body>
+</document>
+

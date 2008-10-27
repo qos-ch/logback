@@ -1,0 +1,704 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>News</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
+</head>
+<body>
+	<script>
+prefix='';	
+</script>
+
+<script src="templates/header.js"></script>
+<div id="left">
+  <script src="templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="templates/right.js"></script>
+</div>
+<div id="content">
+	
+  <h2>Logback News</h2>
+  
+  <p>You can receive logback-related announcements by subscribing to
+  the <a
+  href="http://www.qos.ch/mailman/listinfo/logback-announce">logback
+  announce</a> mailing list.</p>
+
+
+  <hr width="80%" align="center" />
+
+  <h3>27th of October 2008 - Release of version 0.9.10</h3>
+
+  <p>In case of errors during initialization, logback-classic now
+  <em>automatically</em> prints out its internal status. This has been
+  a frequently requested feature.
+  </p>
+
+  <p>The LogbackValve in logback-access (ensuring integration with
+  Tomcat), will now systematically print its internal status upon
+  initialization, unless told to be quiet. This greatly helps
+  troubleshooting the configration of logback-access under Tomcat.
+  </p>
+
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=147">bug
+  147</a> which occured when the user inadvertently attempted to set
+  the layout of a <code>SyslogAppender</code>.  The code now actively
+  prevents this. Documenation has been updated to reflect the change.
+  </p>
+
+  <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-56">bug
+  LBCLASSIC-56c</a> originally reported by Michel Colette. Backslash
+  characters are now correctly interpreted in filename patterns.
+  </p>
+
+  <p>The TurboFilterChain in a LoggerContext is <a
+  href="http://svn.qos.ch/viewvc?view=rev&amp;revision=1678">now
+  cleared</a> when the shutdownAndReset method is called. This problem
+  was reported on May 1st, 2008, by Julia Hu on the logback
+  developpers list.
+  </p>
+
+  <!-- ========================== LB CORE ================== -->
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-48">LBCORE-48</a>.  During
+  rollover, compression of large files would bring all logging to a
+  halt. In this latest release, the rolled over file is first renamed,
+  which is a relatively fast operation, and only then is the renamed
+  file compressed asyncronously (in a separate thread).
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-11">LBCORE-11</a>.  It is now
+  possible to instruct TimeBasedRollingPolicy to delete old files,
+  thus controlling then number of archived log files.</p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-42">LBCORE-42</a>. If the
+  parent directory of the log file does not exist, then FileAppender
+  will create it, including any necessary but nonexistent parent
+  directories.
+  </p>
+
+  <p>Fixed <a href="http://jira.qos.ch/browse/LBCORE-15">LBCORE-15</a>
+  reported by Klaus Unger and others. DBAppender should now work with
+  Oracle 9, 10g and 11g, regardless of the JDBC driver type used.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-17">LBCORE-17</a> reported by
+  Thorbj&oslash;rn Ravn Andersen. Logback now relies on Geronimo JMS
+  API specifications instead of Sun's JMS API specification, the
+  latter requiring manual installation. With Geronimo JMS, logback can
+  be built using Maven without needing to manually install any
+  dependencies.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-23">LBCORE-23</a>. In
+  PatternLayout, parenthesis can be used to group conversion
+  patterns. It follows that the '(' and ')' carry special meaning and
+  need to be escaped to be used as literals. This is now properly
+  documented.
+  </p>
+
+  <p>The location of the default configuration file can be specified
+  by a system property. This feature was requested in <a
+  href="http://jira.qos.ch/browse/LBCORE-32">LBCORE-32</a> by Ted
+  Graham, Matt Fowles, Ivan Biddles and Ralph Goers.
+  </p>
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-55">LBCORE-55</a> reported by
+  Natan Cox. <code>WriterAppender</code> now outputs its presentation
+  footer and file footer in the the correct order.
+  </p>
+
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCORE-27">LBCORE-27</a> reported by
+  Peter Royal. <code>SMTPAppender</code> now outputs its presentation
+  footer and file footer in the the correct order.
+  </p>
+
+  <!-- ========================== LB CLASSIC ================== -->
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-67">LBCLASSIC-67</a>
+  reported by Alessandro Fustini. SMTPAppender now correctly
+  configures the layout used to format the subject line of the
+  outgoing email. It no longer appends a lengthy stack trace to the
+  subject line.
+  </p>
+
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-68">LBCLASSIC-68</a>
+  reported by Gili Tzabari. In environments where the TCCL (Thread
+  Context Class Laoder) was not set, logback was unable to located its
+  default configuraiton files. Logback now uses the class loader that
+  loaded logback itself to locate its resources instead of the
+  TCCL. This approach is simpler and deemed to cover more
+  environments, i.e. more widely applicable.
+  </p>
+
+
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBGENERAL-24">LBGENERAL-24</a>
+  reported by Hung Tang. SMTPAppender now supports plain
+  username/password authentication as well as both the STARTTLS
+  command and SSL connections.
+  </p>
+
+ 
+  <p>Fixed issue <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-48">LBCLASSIC-48</a>
+  reported by Peter Royal. SyslogAppender now correctly outputs hours
+  as 0-23 and not as 1-12 as previously.
+  </p>
+
+  <p>Added a new TurboFilter called DynamicThresholdFilter which can
+  filter events depending on MDC values based on a variery of criteria
+  such as company name, product or the end user. This filter was
+  contributed by Ralph Goers in <a
+  href="http://jira.qos.ch/browse/LBCLASSIC-53">LBCLASSIC-53</a>.  
+  </p>
+  
+  <hr width="80%" align="center" />
+ 
+
+
+  <h3>26th of March 2008 - Release of version 0.9.9</h3>
+  
+   <p>MDC data in now inherited by child threads. This behaviour was
+   already specified in the javadocs. The issue was raised by Martin
+   Benda in <a href="http://bugzilla.qos.ch/show_bug.cgi?id=64">bug
+   64</a> and independently by Peter Huber.
+   </p>
+
+   <p>Logback no longer includes retro-weaver generted jars for JDK
+   1.4. There seemes to be little interest in JDK 1.4 builds. Calling
+   retro-weaver increases logback's build time by a few seconds each
+   time &ndash; seconds in which we can do more productive things.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=104">bug
+   104</a>, silly but but nonetheless serious copy-and-paste errors in
+   the c.q.l.classic.Logger class, reported by Joern Huxhorn.
+   </p>
+
+   <p>Having been replaced by <code>SimpleSocketServer</code>, the
+   <code>SocketServer</code> class has been removed.
+   </p>
+  
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=105">bug
+   105</a>, sockets created by <code>SocketAppenderBase</code> is now
+   closed, reported by Joern Huxhorn. More generally,
+   <code>SimpleSocketServer</code> is much more careful to track open
+   client connections and to close them. 
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=110">bug
+   110</a> in relation with the <code>requestParameterMap</code> field
+   in <code>AccessEvent</code> - reported by Joern Huxhorn.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.slf4j.org/show_bug.cgi?id=66">
+   SLF4J bug 66</a> in relation with caller data when using
+   log4j-over-slf4j - reported by Frnack Routier.
+  </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=129">bug
+   129</a> reported by Michael Franz. As a result, Joran now supports
+   nested as well as multiple file inclusions.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=100">bug
+   100</a> reported by Joern Huxhorn. At serialization time, object
+   array passed as parameter, when the LoggingEvent is are now
+   serialized as strings.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=109">bug
+   109</a> reported by Joern Huxhorn. There should no longer be any
+   NullPointerExceptions thrown by deserialized
+   <code>AccessEvent</code> instances.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=8">bug
+   8</a> reported by Sebastien Pennec. The documentation has been
+   updated to reflect the fact that that in the context of conversion
+   patterns the percent sign carries special meaning, in order to
+   include the percent sign as a literal, it must be escaped with a
+   backslash.
+   </p>
+
+   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=52">bug
+   52</a> reported by Kenichi Masuko. The bug has been fixed on March
+   8th, 2007. Starting with this release, Joran will support the
+   injection of any enum tpye, not just <code>FilterReply</code>.
+   </p>
+
+  <hr width="80%" align="center" />
+
+
+  <h3>22th of August 2007 - Release of version 0.9.8</h3>
+  
+  <p>This version of logback synchronizes with SLF4J version 1.4.3. In
+  particular, logback now natively supports SLF4J's MDC API introduced
+  in SLF4J version 1.4.1. If you are using SLF4J version 1.4.1 or
+  later please make sure upgrade to logback version 0.9.8 or later.
+  </p>
+
+  <p>Fixed a number of documentation related bugs, in particular <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=90">bug 90</a> reported
+  by Luc Maisonobe and <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=90">bug 88</a> reported
+  by Sebastian Davids.
+  </p>
+
+  <p>It is now possible to include configuration file fragments (in
+  XML) as a resource. Previously, it was only possible to include a
+  file by specifying a path to a file or a URL.  This feature was
+  requested by Michael Newcomb in <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=89">bug 89</a>.
+  </p>
+
+  <p>Fixed caller data extraction problem as reported in <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=78">bug 78</a> by Hans
+  van der Meer.
+  </p>
+
+  <p>The LoggingEvent class' constructor now correctly takes into
+  account the argument array passed by the user. This problem was
+  reported in <a href="http://bugzilla.qos.ch/show_bug.cgi?id=85">bug
+  85</a> by Robert Christian.
+  </p>
+
+  <hr width="80%" align="center" />
+
+
+  <h3>29th of May 2007 - Release of version 0.9.7</h3>
+
+
+  <p>This release corrects packaging bugs <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=75">75</a> and <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=76">76</a> related to
+  the migration of logback to SLF4J version 1.4.0. There are no other
+  changes.
+  </p>
+
+
+  <hr width="80%" align="center" />
+
+  <h3>23rd of May 2007 - Release of version 0.9.6</h3>
+
+
+  <p>Logback is now aligned and compatible with SLF4J version 1.4.0,
+  thus correcting <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=73">bug 73</a> as
+  reported by Andy Gerweck.
+  </p>
+
+  <p>Fixed <code>NoClassDefFoundError</code> problem when running
+  under JDK 1.4 <a
+  href="http://www.qos.ch/pipermail/logback-user/2007-April/000206.html">as
+  reported</a> by Brian Suksomwong.
+  </p>
+
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=63">bug
+  63</a> as reported by La Canea Rosario. Calling log4j (bridge) with
+  the trace level will no longer cause an IllegalStateException to be
+  thrown.
+  </p>
+
+  <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=70">bug
+  70</a> as reported by Dirk Ooms. The %throwable conversion word is
+  now recognized as documented in the logback manual. Moreover, the
+  manual now mentions the %nopex word which can be used to force
+  <code>PatternLayout</code> to ignore the exception contained in the
+  logging request.
+  </p>
+
+  
+  <p>As in most releases, the documentation has been improved.</p>
+
+  <hr width="80%" align="center" />
+
+
+  <h3>April 2nd, 2007 - Release of version 0.9.5</h3>
+
+  <p>Fixed methods <code>isInfoEnabled</code>,
+  <code>isWarnEnabled</code> and <code>isErrorEnabled</code> methods
+  in <code>ch.qos.logback.classic.Logger</code> class which failed to
+  work correctly. This bug was reported today by Pavel Kral on the
+  slf4j-user list. 
+  </p>
+
+  <p>Contrary to previous versions of logback, the various
+  Logger.isXYZEnabled(Marker) methods now take into account the marker
+  information passed as parameter.
+  </p>
+
+
+  <p>As discussed in <a
+  href="http://bugzilla.qos.ch/show_bug.cgi?id=54">bug 54</a>, during
+  automatic initialization, it makes better sense to first check for
+  <em>logback-test.xml</em> file and only if that fails, to check for
+  <em>logback.xml</em>. Maven2 will guarantee that the
+  logback-test.xml file, if places undder test/resources will not be
+  included in the artifact it produces.
+  </p>
+
+
+  <hr width="80%" align="center" />
+  
+  <h3>March 29th, 2007 - Release of version 0.9.4</h3>
+    
+  <p>Significant bug fixes made to <code>c.q.l.access.TeeFilter</code>
+  and Co. Images and other binary files are now intercepted and
+  replayed correctly. As for "x-www-form-urlencoded" post requests,
+  their input buffer is left untouched. In a best-effort attempt, the
+  input buffer for "x-www-form-urlencoded" post requests is later
+  reconstructed through the request parameters. However, it may differ
+  from the original buffer.
+  </p>
+    
+  <p>The logback team released today the first version of a plugin for
+  Eclipse that allows developpers to visualize logs generated by a
+  running application.  It offers several nice features. Please check
+  the <a href="consolePlugin.html">console plugin-in guide</a> for
+  more details.
+  </p>
+
+
+  <h3>March 20th, 2007 - Release of version 0.9.3</h3>
+  
+  <p>Includes in configuration files are now supported by Joran,
+  logback's configuration framework. A file can contain an
+  <em>include</em> element that has a <em>file</em> or <em>url</em>
+  attribute pointing to a configuration file.  See the <a
+  href="manual/joran.html#Include">chapter about configuration</a>
+  in the logback's online manual for more information.
+  </p>
+    
+  <p>Corrected bug 53 reported by Wilkins Poe. There is now a <a
+  href="dependencies.html">dependencies page</a> that shows the
+  requirements of each of logback's modules.
+  </p>
+    
+  <p>After a <a
+  href="http://www.slf4j.org/pipermail/user/2007-March/000297.html">
+  discussion on the SLF4J mailing list</a> started by Franck Routier,
+  a correction has been made when logging using the
+  <em>JCL104-over-slf4j</em> module. Logback now correctly shows the
+  caller location information.
+  </p>
+    
+  <p>As in most logback releases, the documentation has been improved.
+  </p>
+    
+
+    <h3>March 5th, 2007 - Release of version 0.9.2</h3>
+    
+    <p>The documentation is now in the <em>docs/</em> directory to allow an
+    easier access to the logback manual and website for offline viewing.
+    </p>
+
+		<h3>March 5th, 2007 - Release of version 0.9.1</h3>
+
+    <p>Logback-class now depends on SLF4J version 1.3.0 instead of
+    1.2.</p>
+
+    <p>Numerous improvements to the documentation.</p>
+
+		<p><a href="http://bugzilla.qos.ch/show_bug.cgi?id=46">Bug #46</a>
+		reported by Mark Renyolds has been fixed. The
+		<code>TimeUtilTest</code> should now run fine under any time
+		zone.</p>
+		
+    <p><a href="http://bugzilla.qos.ch/show_bug.cgi?id=45">Bug
+    #45</a>, also reported by Mark Reynolds, has been fixed. There
+    should be no <code>ClassCastException</code> thrown anymore when
+    passing an <code>Object</code> to the printing methods using the
+    log4j-bridge module. </p>
+
+    <hr width="80%" align="center" />
+
+		<h3>January 31st, 2007 - Release of version 0.9</h3>
+
+    <p>
+      This version contains a new component, namely the
+      <code>ContextSelector</code>, that provides context separation
+      and management when logback is used by several web-apps running
+      under the same server. A <a
+      href="manual/contextSelector.html">new chapter</a> was added to
+      the logback manual to detail the use of the
+      <code>ContextSelector</code>, along with its associated
+      components.
+    </p>
+    
+    <p>
+      The <code>JMXConfigurator</code> has been improved. It now shows
+      the context's Status objects, which lets users check the
+      internal state of logback.
+    </p>
+    
+    <p>
+      The logback manual's chapter 2, about <a
+      href="manual/architecture.html">logback's architecture</a>, has
+      been updated with two sections: Under the hood and Performance.
+    </p>
+    
+		<hr width="80%" align="center" />
+
+    <h3>January 23th, 2007 - Release of version 0.8.1</h3>
+
+    <p>
+      This version contains new components in the Access module,
+      allowing users to display the full HttpServletRequest or
+      HttpServletResponse of an access event.
+    </p>
+    
+    <p>
+      The documentation section has been updated. The short introduction was split
+      into the chapter 1 and chapter 2 of the logback manual. The chapters about
+      Appenders and Layouts have been updated to document new components of logback.
+    </p>
+    
+    <p>A demonstration webApp presenting logback's major components is
+    available.  A document explains how to run it, and provides a
+    step-by-step visit of the demo.
+    </p>
+    
+    <p>A first translation of logback jars to JDK1.4 is present in
+    this release.
+    </p>
+
+    
+		<hr width="80%" align="center" />
+
+		<h3>January 12th, 2007 - Release of version 0.8</h3>
+
+		<p>This version contains a whole new chapter, namely Chapter 3,
+		about logback configuration. Several other documentation pages
+		have been improved.
+		</p>
+		
+		<p>Logback now uses Generics in many components.
+		</p>
+		
+		<p>Several new components have been added to logback. A JMX
+		Configurator now allows users to see and modify loggers or reload
+		configuration among other possibilities.  A <a
+		href="jmxConfig.html">document</a> about this configurator is
+		available in the <a href="documentation.html">corresponding
+		section</a> of the site. We'd like to thank Sebastian Davids for
+		his ideas and contributions to this component.
+		</p>
+		
+		<p>A JMSTopicAppender and JMSQueueAppender are now available, as
+		well as two new filters: LevelFilter and ThresholdFilter. A
+		refactoring was done in the filters objects to ease the
+		implementation of custom filters.
+		</p>
+		
+		<hr width="80%" align="center" />
+
+		
+		<h3>December 19th, 2006 - Release of version 0.7.1</h3>
+		
+		<p>Version 0.7.1 of logback has been released.
+		</p>
+		
+		<p>This version contains more detailled information about logback
+		access module, and its JMX components. A <a
+		href="access.html">dedicated page</a> explains how to configure
+		and use logback access in Tomcat and Jetty, and access some of its
+		components via JMX.
+		</p>
+		
+    <hr width="80%" align="center" />
+
+		<h3>December 18th, 2006 - Release of version 0.7</h3>
+		
+		<p>
+		   Version 0.7 of logback has been released.
+		</p>
+		
+		<p>
+			Logback now ships with a new module: <em>log4j-bridge</em>. This new module
+			can be used to intercept log4j calls and redirects them to logback components.
+			More information about this module can be found in the corresponding 
+			<a href="bridge.html">documentation page</a>.
+		</p>
+		
+		<p>
+			The documentation has been vastly updated. Two new chapters,
+			namely Filters and MDC, are available in the manual section.
+		</p>
+
+    <hr width="80%" align="center" />
+
+		<h3>November 30th, 2006 - Release of version 0.6</h3>
+
+    <p>Version 0.6 of logback has been released.
+    </p>
+
+		<p>Logback classic now supports automatic configuration, allowing
+		test and production environment
+		configuration. <code>TurboFilters</code> make their first
+		appearance in a logback release. They provide ultra-fast filtering
+		possibilities.  The logging context now supports listeners which
+		will be contacted each time the context is reset or
+		started. <code>SMTPAppender</code> allows for much more flexible
+		configuration than before.
+		</p>
+		
+		<p>
+			In logback access, new Appenders are available, namely
+			<code>SocketAppender</code> and <code>DBAppender</code>.
+			Logback access now supports filtering and event evaluations. A
+			<code>CountingFilter</code> has been added. It provides
+			statistical views of server access, reachable via JMX.
+		</p>
+		
+		<p>
+			The documentation has also been improved. A complete new chapter
+			has been added about Appenders, the short introduction to logback
+			classic has been updated and a new module, containing many configuration
+			examples has been added.
+		</p>
+		
+		<p>
+			Logback now uses continous integration in its development.
+		</p>
+		
+		<p>
+			Tests have been improved, many new have been added. 
+			This release also provides some bug fixes.
+		</p>
+
+		<hr width="80%" align="center" />
+		
+		<h3>October 26th, 2006 - Release of version 0.5</h3>
+
+    <p>
+      Version 0.5 of logback has been released.
+  </p>
+		
+    <p>
+			This release offers a important improvements in Joran. In
+			particular, Joran can now replay configuration elements.
+        </p>
+
+    <p>	
+			As in the previous release, a major area of work is the
+			documentation which is being continously improved.
+  </p>
+
+		<hr width="80%" align="center" />
+		
+		<h3>October 9th, 2006 - Release of version 0.4</h3>
+		<p>
+      Version 0.3 of logback has been released.
+		</p>
+		
+    <p>
+			This release includes an improved access module, with specific
+			implementations for the Jetty and Tomcat servers. Documentation
+			was also added to show how to integrate logback-access with
+			Jetty.
+  </p>
+
+    <p>	
+      As for the classic module, several appenders and layouts have
+      been added or improved.  The error reporting of logback has also
+      been enhanced, presenting the user with a link to an online page
+      explaining possible reasons for the error.
+  </p>
+
+    <p>	
+			A joran documentation was added, with examples in the core
+			module.
+  </p>
+	
+		<hr width="80%" align="center" />
+				
+		<h3>September 8th, 2006 - Release of version 0.3</h3>
+		<p>
+      Version 0.3 of logback has been released.
+		</p>
+
+		<p>
+			This release offers several new Appenders, support for Mapped
+			Diagnostic Context, improved tests and documentation<br />
+		</p>
+
+    <p>	
+			In response to a bug report by Rickard Nilsson on the logback
+			mailing list, a bug affecting parametrized logging was fixed.
+  </p>
+
+    <p>	
+			We also released a <a
+			href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
+			webapp that converts <em>log4j.properties</em> files to joran
+			configuration files (in XML format).<br />
+  </p>
+	
+		<hr width="80%" align="center" />
+		
+		<h3>August 23th, 2006 - Release of version 0.2.5</h3>
+
+    <p>
+      Version 0.2.5 of logback has been released.
+  </p>
+
+		<p>
+			This release offers better documentation. With a number of
+			correction mande in the short introduction to logback-classic.
+		</p>
+
+		<hr width="80%" align="center" />
+		
+		
+		<h3>August 15th, 2006 - Release of version 0.2</h3>
+		<p>
+      Version 0.2 of logback has been released.
+		</p>
+
+    <p>
+			It offers better tests, a few more functionalities, and enhanced
+			documentation.  We also improved the site design to make it
+			simpler and more efficient.
+  </p>
+
+		<hr width="80%" align="center" />
+	
+		<h3>July 26th, 2006 - Release of version 0.1</h3>
+
+    <p>
+			Version 0.1 of logback has been released.
+  </p>
+
+		<hr width="80%" align="center" />
+
+		<h3>February 9th, 2006 - Logback web-site goes live</h3>
+		<p>
+			The logback web-site goes live on the 9th of February. At
+			its present state, it is pretty primitive but updates will
+			follow.
+		</p>
+	
+	
+	
+	
+	
+	
+<script src="templates/footer.js"></script>
+</div>
+</body>
+</html>

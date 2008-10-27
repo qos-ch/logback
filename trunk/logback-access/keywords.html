@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+  <head>
+  </head>
+
+  <body>
+    
+    <table border="1">
+      
+      <tr>
+        <th>keyword </th>
+        <th>Label</th>
+        <th>Jetty</th>
+        <th>Resin</th>
+        <th>Tomcat</th>
+        <th>Observations</th>  
+      </tr>
+
+     <tr>
+        <td>a</td>
+        <td>remote IP address</td>
+        <td>NA</td>
+        <td>NA</td>
+        <td>request.getRemoteAddr() [S] </td>
+        <td>RemoteIPAddressConverter</td>
+      </tr>
+
+      <tr>
+        <td>A</td>
+        <td>local IP address</td>
+        <td></td>
+        <td></td>
+        <td> InetAddress.getLocalHost().getHostAddress() [S] </td>
+        <td>LocalIPAddressConverter</td>
+      </tr>
+
+      <tr>
+        <td>b</td>
+        <td>Content length</td>
+        <td>request.getConnection().getGenerator().getContentWritten();</td>
+        <td>Unless statusCode==304, response.getContentLength()</td>
+        <td>response.getContentCount();</td>
+        <td>JettyContentLengthConverter, ResinContentLengthConverter</td>
+      </tr>
+
+      <tr>
+        <td>c</td>
+        <td>Cookie</td>
+        <td>request cookies (dumps all of them}</td>
+
+        <td>dumps cookies by name, request cookie first, if
+        unavailable then response cookie</td>
+
+        <td>request cookies, by name</td>
+        <td>RequestCookieConverter</td>
+      </tr>
+
+      <tr>
+        <td>h</td>
+        <td>remote IP addr</td>
+        <td>request.getRemoteAddr() [S]</td>
+        <td>request.printRemoteAddr,  IP address string in textual presentation</td>
+        <td>request.getRemoteHost() [S]</td>
+        <td>RemoteHostConverter</td>
+      </tr>
+
+      <tr>
+        <td>H</td>
+        <td>request protocol</td>
+        <td></td>
+        <td></td>
+        <td>request.getProtocol()</td>
+        <td>RequestProtocolConverter</td>
+      </tr>
+
+
+      <tr>
+        <td>i</td>
+        <td>Incoming header</td>
+        <td>NA</td>
+        <td>request.getHeader(name) [S]</td>
+        <td>request.getHeader(header) [S]</td>
+        <td>RequestHeaderConverter</td>
+      </tr>
+    
+       <tr>
+        <td>l</td>
+        <td>Remote logical username from identd</td>
+        <td>always '-'</td>
+        <td>always '-'</td>
+        <td>always '-'</td>
+        <td>NAConverter</td>
+      </tr>
+
+      <tr>
+        <td>n</td>
+        <td>attribute in the ServletRequest</td>
+        <td>NA</td>
+        <td>request.getAttribute(name) [S] </td>
+        <td>NA</td>
+        <td>RequestAttributeConverter, in tomcat %r is used</td>
+      </tr>
+
+       <tr>
+        <td>o</td>
+        <td>response header</td>
+        <td></td>
+        <td>reponse.getHeader(name) [NS]</td>
+        <td></td>
+        <td>not implemented altough response.setHeader() method is available</td>
+      </tr>
+
+      <tr>
+        <td>r</td>
+        <td>First line of the request (method and request URI)</td>
+        <td>request.getMethod()+ request.getUri() [NS] +request.getProtocol()</td>
+        <td>request.getMethod() + request.getUriBuffer() [NS] + request.getProtocol()</td>
+        <td>request.getMethod() + request.getRequestURI() +  request.getQueryString() + '?' + request.getProtocol();</td>
+        <td>RequestURLConverter</td>
+      </tr>
+
+      <tr>
+        <td>{}r</td>
+        <td>attribute in the ServletRequest</td>
+        <td>NA</td>
+        <td>NA</td>
+        <td>request.getAttribute(name) [S]</td>
+        <td>RequestAttributeConverter, in resin %n is used</td>
+      </tr>
+
+      <tr>
+        <td>s</td>
+        <td>status code</td>
+        <td>response.getStatus() [NS] </td>
+        <td>response.getStatusCode() [NS]</td>
+        <td>response.getStatus() [NS]</td>
+        <td>suprisingly, not in the Servlet API</td>
+      </tr>
+
+      <tr>
+        <td>{}t</td>
+        <td>request time stamp</td>
+        <td>getTimeStamp() [NS]</td>
+        <td>based on current time</td>
+        <td>based on current time</td>
+        <td>DateConverter</td>
+      </tr>
+
+
+      <tr>
+        <td>T</td>
+        <td>request processing duration in seconds</td>
+        <td>NA</td>
+        <td>request.getStartTime() - Alarm.getExactTime()</td>
+        <td>Valve measures invocation time</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>D</td>
+        <td>request processing duration in millis</td>
+        <td></td>
+        <td>request.getStartTime() - Alarm.getExactTime()</td>
+        <td>Valve measures invocation time</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>u</td>
+        <td>remote user</td>
+        <td>request.getRemoteUser() [S]</td>
+        <td>request.getRemoteUser() [S]</td>
+        <td>request.getRemoteUser() [S]</td>
+        <td>RemoteUserConverter</td>
+      </tr>
+
+      <tr>
+        <td>U</td>
+        <td>Requested URI path</td>
+        <td>NA</td>
+        <td> request.getRequestURI() [S}</td>
+        <td> request.getRequestURI() [S}</td>
+        <td>RequestURIConverter</td>
+      </tr>
+
+ 
+
+</table>
+
+
+Tomcat
+======
+%a - Remote IP address
+%A - Local IP address
+%b - Bytes sent, excluding HTTP headers, or '-' if zero
+%B - Bytes sent, excluding HTTP headers
+%h - Remote host name (or IP address if resolveHosts is false)
+%H - Request protocol
+%l - Remote logical username from identd (always returns '-')
+%m - Request method (GET, POST, etc.)
+%p - Local port on which this request was received
+%q - Query string (prepended with a '?' if it exists)
+%r - First line of the request (method and request URI)
+%s - HTTP status code of the response
+%S - User session ID
+%t - Date and time, in Common Log Format
+%u - Remote user that was authenticated (if any), else '-'
+%U - Requested URL path
+%v - Local server name
+%D - Time taken to process the request, in millis
+%T - Time taken to process the request, in seconds
+
+Resin
+=====
+
+
+
+</html>

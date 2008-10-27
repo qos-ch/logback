@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	  
+<configuration>
+
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+       <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+         <driverClass>${driverClass}</driverClass>
+         <jdbcUrl>${url}</jdbcUrl>
+         <serverName>${serverName}</serverName>
+         <databaseName>${databaseName}</databaseName>
+         <user>${user}</user>
+         <password>${password}</password>
+         <!--
+         <param name="initialConnections" value="10"/>
+         <param name="maxConnections" value="10"/>
+       
+         <param name="max-connections" value="100"/>                                                    
+         <param name="min-connections" value="5" />                                                     
+         <param name="inactivity-timeout" value="200"/>        
+         -->                                         
+       </dataSource>
+
+     </connectionSource>
+  </appender>
+  
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="DB" />
+  </root>  
+</configuration>
+
+

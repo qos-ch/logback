@@ -1,0 +1,319 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-parent</artifactId>
+  <version>0.9.10</version>
+  <packaging>pom</packaging>
+  <name>Logback-Parent</name>
+  
+  <url>http://logback.qos.ch</url>
+  
+  <organization>
+    <name>QOS.ch</name>
+    <url>http://www.qos.ch</url>
+  </organization>
+  <inceptionYear>2005</inceptionYear>
+     
+  <modules>
+    <module>logback-core</module>
+    <module>logback-classic</module>
+    <module>logback-access</module>
+    <module>logback-site</module>
+    <module>logback-examples</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <properties>
+    <!-- slf4j.version property is used below and in setClasspath.cmd -->
+    <slf4j.version>1.5.5</slf4j.version>
+    <slf4j.ext.version>1.0-alpha0</slf4j.ext.version>
+    <consolePlugin.version>1.1.0</consolePlugin.version>  
+  </properties>
+  
+  <dependencyManagement>
+    <dependencies>
+      <!-- Project modules -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-access</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-ext</artifactId>
+        <version>${slf4j.ext.version}</version>
+      </dependency>
+		
+      <dependency>
+        <groupId>janino</groupId>
+        <artifactId>janino</artifactId>
+        <version>2.4.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+      </dependency>
+      <dependency>
+        <groupId>hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>1.8.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>tomcat</groupId>
+        <artifactId>catalina</artifactId>
+        <version>5.5.15</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>servlet-api-2.5</artifactId>
+        <version>6.1.1</version>
+      </dependency>           
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jms_1.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>    
+      <dependency>
+			  <groupId>javax.servlet</groupId>
+			  <artifactId>servlet-api</artifactId>
+			  <version>2.5</version>
+		</dependency> 
+    </dependencies>
+  </dependencyManagement>
+  
+  <profiles>    
+    <profile>
+      <id>testSkip</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+  </profiles>
+  
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-1</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-idea-plugin</artifactId>
+        <configuration>
+          <jdkLevel>1.5</jdkLevel>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+        </configuration>
+      </plugin>   			
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>
+              src/main/assembly/dist.xml
+            </descriptor>
+          </descriptors>
+          <finalName>
+            logback-${project.version}
+          </finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <outputDirectory>target/site/dist/</outputDirectory>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+  
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+          <javadocDir>target/site/apidocs/</javadocDir>
+          <linkJavadoc>true</linkJavadoc>
+        </configuration>
+      </plugin>
+      <plugin>  
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>
+          maven-project-info-reports-plugin
+        </artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+            </reports>
+          </reportSet>
+        </reportSets>
+			</plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+          <links>
+            <link>
+              http://java.sun.com/j2se/1.5.0/docs/api
+            </link>
+          </links>
+          <groups>
+            <group>
+              <title>Logback Core</title>
+              <packages>ch.qos.logback.core:ch.qos.logback.core.*</packages>
+            </group>
+            <group>
+              <title>Logback Classic</title>
+              <packages>ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*</packages>
+            </group>
+            <group>
+              <title>Logback Access</title>
+              <packages>ch.qos.logback.access:ch.qos.logback.access.*</packages>
+            </group>
+            <group>
+              <title>SLF4J</title>
+              <packages>org.slf4j:org.slf4j.*</packages>
+            </group>
+            <group>
+              <title>Examples</title>
+              <packages>chapter*:joran*</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+
+  </reporting>
+
+  <scm>
+    <connection>scm:svn:http://svn.qos.ch/repos/logback/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk/</developerConnection>
+    <url>http://svn.qos.ch/repos/logback/trunk/</url>
+  </scm>
+  
+  <!-- disable sending message to logback-dev mailing list
+  <ciManagement>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+          <address>logback-dev@qos.ch</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  -->
+
+  <distributionManagement>
+    <site>
+      <id>pixie</id>
+      <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
+    </site>
+    
+    <repository>
+      <id>pixie</id>
+      <url>scp://pixie/var/mvnrepo/</url>
+    </repository>
+    
+    <snapshotRepository>
+      <id>pixie-snapshot</id>
+      <url>scp://pixie/var/mvnrepo-snapshots/</url>
+    </snapshotRepository>
+    
+  </distributionManagement>
+
+ 
+  
+ 
+
+</project>

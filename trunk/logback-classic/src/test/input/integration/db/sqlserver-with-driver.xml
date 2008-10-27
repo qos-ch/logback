@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>com.microsoft.sqlserver.jdbc.SQLServerDriver</driverClass>
+			<url>jdbc:sqlserver://localhost:1987;databaseName=logback;</url>
+			<user>logback</user>
+			<password>logback</password>
+		</connectionSource>
+	</appender>
+	
+	<root>
+		<level value="debug" />
+		<appender-ref ref="DB" />
+	</root>
+</configuration>

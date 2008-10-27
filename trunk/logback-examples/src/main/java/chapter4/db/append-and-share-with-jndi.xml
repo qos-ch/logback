@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	  
+<configuration>
+  <!-- We create a joran rule that will instance and bind the appropriate
+       data source instance to JNDI. -->   
+  <newRule pattern="configuration/bindDataSourceToJNDI" 
+           actionClass="ch.qos.logback.core.db.BindDataSourceToJNDIAction"/>
+  	    
+  <bindDataSourceToJNDI />
+  
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+       
+       <dataSource class="${dataSourceClass}">
+          <!-- Joran cannot substitute variables
+       	 that are not attribute values. Therefore, we cannot
+       	 declare the next parameter like the others. 
+       	 -->
+         <param name="${url-key:-url}" value="${url}"/>
+         <serverName>${serverName}</serverName>
+         <databaseName>${databaseName}</databaseName>   
+       </dataSource>
+       
+       <user>${user}</user>
+       <password>${password}</password>>
+     </connectionSource>
+  </appender>
+  
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="DB" />
+  </root>  
+  
+</configuration>
+
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.access.db.DBAppender">
+		<connectionSource
+			class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>oracle.jdbc.OracleDriver</driverClass>
+			<url>jdbc:oracle:thin:@localhost:1522:xe</url>
+			<user>hr</user>
+			<password>hr</password>
+		</connectionSource>
+	</appender>
+
+
+	<appender-ref ref="DB" />
+</configuration>

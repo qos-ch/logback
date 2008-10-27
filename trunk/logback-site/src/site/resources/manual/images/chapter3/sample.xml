@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>myApp.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern> myApp-%d{yyyy-MM-dd-HH-mm-ss}.log</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n</Pattern>
+		</layout>
+	</appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%msg%n</Pattern>
+		</layout>
+	</appender>
+	<logger name="chapter3">
+		<appender-ref ref="FILE"/>
+	</logger>
+	<logger name="chapter4">
+		<appender-ref ref="FILE"/>
+	</logger>
+	<root>
+		<level value="debug"/>
+		<appender-ref ref="STDOUT"/>
+	</root>
+</configuration>

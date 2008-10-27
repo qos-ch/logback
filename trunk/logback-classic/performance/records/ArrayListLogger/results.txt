@@ -1,0 +1,74 @@
+
+
+- Logger has reference to its parent. It also holds a reference to its
+  children in an ArrayList.
+
+- LoggerContext has a cache of existing loggers in a map. This
+  significantly improves the performance of retrival of existing
+  loggers.
+
+
+Memomy footprint for 1000 loggers:
+==================================
+
+The memory consumption of various logger implementations are shown
+next.
+
+  400 kB - 6,579 alloc. com.logback.LoggerCreation.tesLOG4JLoggers	
+  394 kB - 6,821 alloc. com.logback.LoggerCreation.testHashLoggers	
+  255 kB - 7,505 alloc. com.logback.LoggerCreation.testJULLoggers	
+  115 kB - 3,308 alloc. com.logback.LoggerCreation.testListLoggers	
+   75 kB - 2,784 alloc. com.logback.LoggerCreation.testControlLoggers
+
+One can see that the ArrayList implementation is twice as memory
+efficient as the JUL implementation and 4 times as efficient as the
+LOG4J implementation.
+
+The logger cache adds a memory overhead but very significantly
+improves the efficiency of retreiving an existing logger.
+
+The mem foorprint without the logger cache:
+
+ 73 kB - 2,046 alloc. com.logback.LoggerCreation.testListLoggers
+
+
+Speed  of retrieval of an existing logger:
+==========================================
+
+Logger         94 nanoseconds per retrieval.
+Log4j Logger 2234 nanoseconds per retrieval.
+ControlLogger 101 nanoseconds per retrieval.
+JUL           165 nanoseconds per retrieval.
+
+We can see that log4j is particularly bad in this area. This can be
+traced back to the fact that o.a.l.Hierarchy instantiates a
+CategoryKey for every call to the Hierarchy.getLogger method.
+
+Speed of creating of a logger:
+==============================
+
+Emtpy logger creation:  1229 nanoseconds per creation.
+List  logger creation: 13139 nanoseconds per creation.
+JUL   logger creation: 61990 nanoseconds per creation.
+LOG4J logger creation: 23503 nanoseconds per creation.
+Contl logger creation:  6746 nanoseconds per creation.
+Hash  logger creation: 14520 nanoseconds per creation.
+
+One can see that the ArrayList logger implementation creates loggers
+about six times faster than JUL and 2 times faster than LOG4J.
+
+Cost of a (disabled) debug call:
+================================
+
+SLF4J List  logger 17 nanoseconds per call.
+SLF4J Log4j logger 33 nanoseconds per call.
+SLF4J JDK14 Logger 33 nanoseconds per call.
+
+DIRECT List  logger:  3 nanoseconds per call.
+DIRECT LOG4J logger: 30 nanoseconds per call.
+DIRECT JUL   logger:  4 nanoseconds per call.
+
+For direct calls, JUL and ArrayList logger impl are roughly equivalent
+(even if LB is a little faster), log4j is about 10 times slower.
+
+For calls through the SLF4J interface, LB is almost twice as fast.

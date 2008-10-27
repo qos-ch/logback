@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+     <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+       
+       <dataSource class="${pooledDataSourceClass}">
+         <!-- Joran cannot substitute variables
+       	 that are not attribute values. Therefore, we cannot
+       	 declare the next parameter like the others. 
+       	 -->
+         <param name="${url-key:-url}" value="${url}"/>
+         <serverName>${serverName}</serverName>
+         <databaseName>${databaseName}</databaseName>
+         <user>${user}</user>
+         <password>${password}</password>
+                
+         <initialConnections>10</initialConnections>
+         <maxConnections>10</maxConnections>
+       </dataSource>
+
+     </connectionSource>
+  </appender>
+
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="DB" />
+  </root>  
+</configuration>
+
+

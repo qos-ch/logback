@@ -1,0 +1,110 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+package ch.qos.logback.core.joran.replay;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.junit.Test;
+
+import ch.qos.logback.core.joran.SimpleConfigurator;
+import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.StatusPrinter;
+
+/** 
+ * The Fruit* code is intended to test Joran's replay capability
+ * */
+public class FruitConfigurationTest  {
+
+  FruitContext fruitContext = new FruitContext();
+
+  public List<FruitShell> doFirstPart(String filename) throws Exception {
+
+    try {
+      HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+      rulesMap.put(new Pattern("group/fruitShell"), new FruitShellAction());
+      rulesMap.put(new Pattern("group/fruitShell/fruit"),
+          new FruitFactoryAction());
+      rulesMap.put(new Pattern("group/fruitShell/fruit/*"), new NOPAction());
+      SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
+
+      simpleConfigurator.setContext(fruitContext);
+
+      simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/replay/"
+          + filename);
+
+      return fruitContext.getFruitShellList();
+    } catch (Exception je) {
+      StatusPrinter.print(fruitContext);
+      throw je;
+    }
+  }
+
+  @Test
+  public void fruit1() throws Exception {
+    List<FruitShell> fsList = doFirstPart("fruit1.xml");
+    assertNotNull(fsList);
+    assertEquals(1, fsList.size());
+
+    FruitShell fs0 = fsList.get(0);
+    assertNotNull(fs0);
+    assertEquals("fs0", fs0.getName());
+    Fruit fruit0 = fs0.fruitFactory.buildFruit();
+    assertTrue(fruit0 instanceof Fruit);
+    assertEquals("blue", fruit0.getName());
+  }
+
+
+  @Test
+  public void fruit2() throws Exception {
+    List<FruitShell> fsList = doFirstPart("fruit2.xml");
+    assertNotNull(fsList);
+    assertEquals(2, fsList.size());
+
+    FruitShell fs0 = fsList.get(0);
+    assertNotNull(fs0);
+    assertEquals("fs0", fs0.getName());
+    Fruit fruit0 = fs0.fruitFactory.buildFruit();
+    assertTrue(fruit0 instanceof Fruit);
+    assertEquals("blue", fruit0.getName());
+
+    FruitShell fs1 = fsList.get(1);
+    assertNotNull(fs1);
+    assertEquals("fs1", fs1.getName());
+    Fruit fruit1 = fs1.fruitFactory.buildFruit();
+    assertTrue(fruit1 instanceof WeightytFruit);
+    assertEquals("orange", fruit1.getName());
+    assertEquals(1.2, ((WeightytFruit) fruit1).getWeight(), 0.01);
+  }
+
+  @Test
+  public void withSubst() throws Exception {
+    List<FruitShell> fsList = doFirstPart("fruitWithSubst.xml");
+    assertNotNull(fsList);
+    assertEquals(1, fsList.size());
+
+    FruitShell fs0 = fsList.get(0);
+    assertNotNull(fs0);
+    assertEquals("fs0", fs0.getName());
+    int oldCount = FruitFactory.count;
+    Fruit fruit0 = fs0.fruitFactory.buildFruit();
+    assertTrue(fruit0 instanceof WeightytFruit);
+    assertEquals("orange-" + oldCount, fruit0.getName());
+    assertEquals(1.2, ((WeightytFruit) fruit0).getWeight(), 0.01);
+  }
+
+}

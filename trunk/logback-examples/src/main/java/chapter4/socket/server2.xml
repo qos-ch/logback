@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- ==================================================================== -->
+<!-- This config file is intended to be used by a SocketServer that logs  -->
+<!-- events received from various clients on the console. The interesting -->
+<!-- point to note is that it is a configuration file like any other.     -->   
+<!-- ==================================================================== -->
+
+<configuration>
+
+  <!-- Notice the %file and %line patterns in the Pattern. -->	  
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %-5level [%thread] [%file:%line] %logger - %message%n</Pattern>
+    </layout>	    
+  </appender>
+
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="CONSOLE" />
+  </root>  
+</configuration>
+
+
+

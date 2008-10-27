@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>com.mysql.jdbc.Driver</driverClass>
+			<url>jdbc:mysql://host_name:3306/datebase_name</url>
+			<user>username</user>
+			<password>password</password>
+		</connectionSource>
+	</appender>
+	
+	<root>
+		<level value="debug" />
+		<appender-ref ref="DB" />
+	</root>
+</configuration>

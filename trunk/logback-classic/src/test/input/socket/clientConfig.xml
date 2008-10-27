@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<param name="pattern"
+				value="CLI: %-4relative [%thread] %-5level %class - %msg%n" />
+		</layout>
+	</appender>
+
+	<appender name="SOCKET"
+		class="ch.qos.logback.classic.net.SocketAppender">
+		<param name="remoteHost" value="127.0.0.1" />
+		<param name="port" value="4560" />
+	</appender>
+
+	<root>
+		<level value="debug" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="SOCKET" />
+	</root>
+</configuration>

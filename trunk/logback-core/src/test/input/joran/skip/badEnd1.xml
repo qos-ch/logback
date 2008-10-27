@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE test>
+
+<test>
+
+  <!-- this action throws an exception in the Action.end method -->
+  <badEnd>
+    <touch/>
+    <touch/>
+  </badEnd>  
+  
+
+  <hello name="John Doe"></hello>
+  
+</test>

@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Chapter 8: Profilers</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+
+</head>
+<body>
+  <script>
+prefix='../';	
+</script>
+<script src="../templates/header.js"></script>
+<div id="left">
+  <script src="../templates/left.js"></script>
+</div>
+<div id="right">
+  <script src="index_menu.js"></script>
+</div>
+<div id="content">
+	
+		<h1>Chapter 8: Profilers</h1>
+
+    <div class="quote">
+      <p>We should forget about small efficiencies, say about 97% of
+      the time: premature optimization is the root of all evil.
+      </p>
+      <p>&mdash; Donald Knuth, JON POSTEL, Structured Programming with
+    go to Statements</p> </div>
+
+    <script src="../templates/creative.js"></script>
+    <script src="../templates/setup.js"></script>
+
+		<h2>What is a profiler?</h2>
+    
+    <p>According to wikipedia, <a
+    href="http://en.wikipedia.org/wiki/Profiler_%28computer_science%29">profiling</a>
+    is is the investigation of a program's behavior using information
+    gathered as the program runs (i.e. it is a form of dynamic program
+    analysis, as opposed to static code analysis). The usual goal of
+    performance analysis is to determine which parts of a program to
+    optimize for speed or memory usage.
+    </p>
+
+    <p>A logback profiler will help the developer to gather
+    performance data. Essentially, a profiler consists of one or more
+    stopwatches. Stopwatches are driven (started/stopped) by
+    statements in the source code. An example, should make the point
+    clearer.
+    </p>
+
+    <h2>Basic example</h2>
+
+    <em>Example 8.1: Using the profiler (<a
+    href="../xref/chapter8/ProfilerUsageExample.html">
+    logback-examples/src/main/java/chapter8/ProfilerUsageExample.java</a>)</em>
+
+    <p class="source">package chapter8;
+
+import ch.qos.logback.classic.stopwatch.Profiler;
+
+public class ProfilerUsageExample {
+
+  public static void main(String[] args) {
+    <b>Profiler profiler = new Profiler("BASIC");</b>
+    <b>profiler.start("A");</b>
+    doA();
+       
+    <b>profiler.start("B");</b>
+    for (int i = 0; i &lt; 5; i++) {
+      doSubtaskTwo(i);
+    }
+    <b>profiler.start("doOther");</b>
+    doOther();
+    <b>profiler.stop().print();</b>
+  }
+  ... cut </p>
+
+  <p>Running the above example will output the following output.</p>
+
+    <p class="source">+ Profiler [BASIC]
+|-- elapsed time                [A]  0.288 milliseconds.
+|-- elapsed time                [B] 24.717 milliseconds.
+|-- elapsed time            [Other] 22.085 milliseconds.
+|-- Total elapsed time      [BASIC] 50.691 milliseconds.</p>
+
+  
+   <p>Instantiating a profiler starts a global stopwatch. Each call to
+   the start() method starts a new and named stopwatch. In addition to
+   sarting a named stopwatch, the start() method also causes the
+   previous stopwatch to stop. Thus, the call to
+   <code>profiler.start("A")</code> starts a stopwatch named "A". The
+   subsequent call to <code>profiler.start("B")</code> starts
+   stopwatch "B" and simultanously stops the stopwatch named
+   "A". Invoking the <code>stop()</code> on a profiler method stops
+   the last stopwatch as well as the global stopwatch which was
+   started when the profiler was instantiated.
+   </p>
+
+
+   <h2>Profiler nesting</h2>
+   
+   <p>Profilers can also be nested. By nesting profilers, it is
+   possible to measure a subtask which itself has subtasks that need
+   to be timed. </p>
+   
+</div>
+
