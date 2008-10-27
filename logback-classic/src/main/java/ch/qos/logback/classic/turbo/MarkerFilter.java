@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.turbo;
 
 import org.slf4j.Marker;
@@ -13,11 +22,11 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class MarkerFilter extends MatchingFilter {
 
-  Marker marker2Match;
+  Marker markerToMatch;
 
   @Override
   public void start() {
-    if(marker2Match != null) {
+    if(markerToMatch != null) {
       super.start();
     } else {
       addError("The marker property must be set for ["+getName()+"]");
@@ -34,7 +43,7 @@ public class MarkerFilter extends MatchingFilter {
       return onMismatch;
     } 
     
-    if(marker2Match.contains(marker)) {
+    if(markerToMatch.contains(marker)) {
       return onMatch;
     } else {
       return onMismatch;
@@ -44,11 +53,11 @@ public class MarkerFilter extends MatchingFilter {
   /**
    * The marker to match in the event.
    * 
-   * @param marker2Match
+   * @param markerToMatch
    */
   public void setMarker(String markerStr) {
     if(markerStr != null) {
-      this.marker2Match = MarkerFactory.getMarker(markerStr);
+      this.markerToMatch = MarkerFactory.getMarker(markerStr);
     }
   }
 }
