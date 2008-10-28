@@ -1,38 +1,43 @@
 package ch.qos.logback.core.joran.action;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.Constants;
 
-public class PropertyActionTest extends TestCase {
+public class PropertyActionTest  {
 
   Context context;
   InterpretationContext ec;
-  SubstitutionPropertyAction spAction;
+  PropertyAction spAction;
   DummyAttributes atts = new DummyAttributes();
   
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     context = new ContextBase();
     ec = new InterpretationContext(context, null);
-    spAction = new SubstitutionPropertyAction();
+    spAction = new PropertyAction();
     spAction.setContext(context);
-    super.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     context = null; 
     spAction = null;
     atts = null;
-    super.tearDown();
   }
   
+  @Test
   public void testBegin() {
     atts.setValue("name", "v1");
     atts.setValue("value", "work");
@@ -40,6 +45,7 @@ public class PropertyActionTest extends TestCase {
     assertEquals("work", ec.getSubstitutionProperty("v1"));
   }
   
+  @Test
   public void testBeginNoValue() {
     atts.setValue("name", "v1");
     spAction.begin(ec, null, atts);
@@ -47,6 +53,7 @@ public class PropertyActionTest extends TestCase {
     assertTrue(checkError());
   }
 
+  @Test
   public void testBeginNoName() {
     atts.setValue("value", "v1");
     spAction.begin(ec, null, atts);
@@ -54,12 +61,14 @@ public class PropertyActionTest extends TestCase {
     assertTrue(checkError());
   }
   
+  @Test
   public void testBeginNothing() {
     spAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
   } 
   
+  @Test
   public void testFileNotLoaded() {
     atts.setValue("file", "toto");
     atts.setValue("value", "work");
@@ -68,17 +77,45 @@ public class PropertyActionTest extends TestCase {
     assertTrue(checkError());
   }
   
+  @Test
+  public void testLoadFileWithPrerequisiteSubsitution() {
+    context.putProperty("STEM", Constants.TEST_DIR_PREFIX + "input/joran");
+    atts.setValue("file", "${STEM}/propertyActionTest.properties");
+    spAction.begin(ec, null, atts);
+    assertEquals("tata", ec.getSubstitutionProperty("v1"));
+    assertEquals("toto", ec.getSubstitutionProperty("v2"));
+  }
+
+  @Test
   public void testLoadFile() {
     atts.setValue("file", Constants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
     assertEquals("tata", ec.getSubstitutionProperty("v1"));
     assertEquals("toto", ec.getSubstitutionProperty("v2"));
   }
+
+  @Test
+  public void testLoadResource() {
+    atts.setValue("resource", "asResource/joran/propertyActionTest.properties");
+    spAction.begin(ec, null, atts);
+    assertEquals("tata", ec.getSubstitutionProperty("r1"));
+    assertEquals("toto", ec.getSubstitutionProperty("r2"));
+  }
   
+  @Test
+  public void testLoadResourceWithPrerequisiteSubsitution() {
+    context.putProperty("STEM", "asResource/joran");
+    atts.setValue("resource", "${STEM}/propertyActionTest.properties");
+    spAction.begin(ec, null, atts);
+    assertEquals("tata", ec.getSubstitutionProperty("r1"));
+    assertEquals("toto", ec.getSubstitutionProperty("r2"));
+  }
+  
+  @Test
   public void testLoadNotPossible() {
     atts.setValue("file", "toto");
     spAction.begin(ec, null, atts);
-    assertEquals(2, context.getStatusManager().getCount());
+    assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkFileErrors());
   }
   
@@ -91,9 +128,6 @@ public class PropertyActionTest extends TestCase {
   private boolean checkFileErrors() {
     Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
     ErrorStatus es1 = (ErrorStatus)it.next();
-    boolean result1 = "Could not read properties file [toto].".equals(es1.getMessage());
-    ErrorStatus es2 = (ErrorStatus)it.next();
-    boolean result2 = "Ignoring configuration file [toto].".equals(es2.getMessage());
-    return result1 && result2;
+    return "Could not read properties file [toto].".equals(es1.getMessage());
   }
 }

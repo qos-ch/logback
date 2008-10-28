@@ -87,6 +87,8 @@ public class FileAppender<E> extends WriterAppender<E> {
   public void start() {
     int errors = 0;
     if (fileName != null) {
+      addInfo("filename set to ["+fileName+"]");
+      
       // In case both bufferedIO and immediateFlush are set, the former
       // takes priority because 'immediateFlush' is set to true by default.
       // If the user explicitly set bufferedIO, then we should follow her

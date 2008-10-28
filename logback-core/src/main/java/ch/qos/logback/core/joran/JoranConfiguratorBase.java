@@ -23,8 +23,8 @@ import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
+import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
-import ch.qos.logback.core.joran.action.SubstitutionPropertyAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
@@ -52,10 +52,18 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
+   
+    rs.addRule(new Pattern("configuration/property"),
+        new PropertyAction());
+    
     rs.addRule(new Pattern("configuration/substitutionProperty"),
-        new SubstitutionPropertyAction());
+        new PropertyAction());
+    
+    // the contextProperty pattern is deprecated. It is undocumented
+    // and will be dropped in future versions of logback
     rs.addRule(new Pattern("configuration/contextProperty"),
         new ContextPropertyAction());
+    
     rs.addRule(new Pattern("configuration/conversionRule"),
         new ConversionRuleAction());
 

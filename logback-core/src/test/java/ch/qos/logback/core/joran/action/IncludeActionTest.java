@@ -53,7 +53,7 @@ public class IncludeActionTest {
 
   static final String INVALID = INCLUSION_DIR_PREFIX + "invalid.xml";
 
-  static final String INCLUDED_AS_RESOURCE = "input/joran/inclusion/includedAsResource.xml";
+  static final String INCLUDED_AS_RESOURCE = "asResource/joran/inclusion/includedAsResource.xml";
 
   public IncludeActionTest() {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();

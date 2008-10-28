@@ -43,7 +43,6 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
       appenderList.add(newAppender);
     }
     w.unlock();
-
   }
 
   /**

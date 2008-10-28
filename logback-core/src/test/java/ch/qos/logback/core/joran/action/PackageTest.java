@@ -18,7 +18,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(PropertyActionTest.class);
+    suite.addTest(new JUnit4TestAdapter(PropertyActionTest.class));
     suite.addTest(new JUnit4TestAdapter(IncludeActionTest.class));
     
     return suite;

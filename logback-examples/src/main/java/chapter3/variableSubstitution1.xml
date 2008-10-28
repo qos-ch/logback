@@ -1,6 +1,6 @@
 <configuration>
 
-	<substitutionProperty name="USER_HOME" value="/home/sebastien" />
+	<property name="USER_HOME" value="/home/sebastien" />
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 		<file>${USER_HOME}/myApp.log</file>
@@ -9,8 +9,7 @@
 		</layout>
 	</appender>
 
-	<root>
-		<level value="debug" />
+	<root level="debug">
 		<appender-ref ref="FILE" />
 	</root>
 </configuration>
