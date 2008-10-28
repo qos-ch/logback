@@ -48,7 +48,7 @@
    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <classifier>tests</classifier>
+      <type>test-jar</type>
       <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <classifier>tests</classifier>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
 

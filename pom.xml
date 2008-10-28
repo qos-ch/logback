@@ -54,7 +54,7 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${project.version}</version>
-        <classifier>tests</classifier>
+        <type>test-jar</type>
       </dependency>
       
       <dependency>
