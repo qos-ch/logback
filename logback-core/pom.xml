@@ -75,7 +75,6 @@
           <excludes>
             <exclude>**/All*Test.java</exclude>
             <exclude>**/PackageTest.java</exclude>
-            <exclude>**/SizeBasedRollingTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
