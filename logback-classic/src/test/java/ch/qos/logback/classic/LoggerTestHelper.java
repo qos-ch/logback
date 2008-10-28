@@ -19,7 +19,4 @@ public class LoggerTestHelper extends TestCase {
     }
     assertEquals(effectiveLevel, logger.getEffectiveLevel());
   }
-
-
-
 }
