@@ -62,6 +62,9 @@ public class DateConverter extends ClassicConverter {
       return timesmapStr;
     } else {
       lastTimestamp = timestamp;
+      // SimpleDateFormat is not thread safe. However, since
+      // the AppenderBase.doAppend is synchronized, we are should be
+      // OK. See also http://jira.qos.ch/browse/LBCLASSIC-36
       timesmapStr = simpleFormat.format(new Date(timestamp));
       return timesmapStr;
     }
