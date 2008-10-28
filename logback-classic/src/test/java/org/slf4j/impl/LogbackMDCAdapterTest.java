@@ -27,6 +27,45 @@ public class LogbackMDCAdapterTest {
   int diff = new Random().nextInt();
 
   /**
+   * Test that CopyOnInheritThreadLocal does not barf when the 
+   * MDC hashmap is null
+   * 
+   * @throws InterruptedException
+   */
+  @Test
+  public void lbclassic77() throws InterruptedException {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+
+    HashMap<String, String> parentHM = getHashMapFromMDCAdapter(lma);
+    assertNull(parentHM);
+    
+    ChildThreadForMDCAdapter childThread = new ChildThreadForMDCAdapter(lma);
+    childThread.start();
+    childThread.join();
+    assertTrue(childThread.successul);
+    assertNull(childThread.childHM);
+  }
+  
+  class ChildThreadForMDCAdapter extends Thread {
+
+    LogbackMDCAdapter logbackMDCAdapter;
+    boolean successul;
+    HashMap<String, String> childHM;
+
+    ChildThreadForMDCAdapter(LogbackMDCAdapter logbackMDCAdapter) {
+      this.logbackMDCAdapter = logbackMDCAdapter;
+    }
+    
+    @Override
+    public void run() {
+      childHM = getHashMapFromMDCAdapter(logbackMDCAdapter);
+      logbackMDCAdapter.get("");
+      successul = true;
+    }
+  }
+
+  // ================================================= 
+  /**
    * Test that LogbackMDCAdapter copies its hashmap when a child
    * thread inherits it.
    * 
@@ -38,32 +77,33 @@ public class LogbackMDCAdapterTest {
     String otherMDCKey = "o" + diff;
     MDC.put(mdcKey, mdcKey + A_SUFFIX);
 
-    HashMap<String, String> parentHM = getHM();
+    HashMap<String, String> parentHM = getHashMapFromMDC();
 
-    MyThread myThread = new MyThread(mdcKey, otherMDCKey);
-    myThread.start();
-    myThread.join();
+    ChildThreadForMDC childThread = new ChildThreadForMDC(mdcKey, otherMDCKey);
+    childThread.start();
+    childThread.join();
 
     assertNull(MDC.get(otherMDCKey));
-    assertTrue(myThread.successul);
-    assertTrue(parentHM != myThread.childHM);
+    assertTrue(childThread.successul);
+    assertTrue(parentHM != childThread.childHM);
   }
 
-  class MyThread extends Thread {
+   
+  class ChildThreadForMDC extends Thread {
 
     String mdcKey;
     String otherMDCKey;
     boolean successul;
     HashMap<String, String> childHM;
 
-    MyThread(String mdcKey, String otherMDCKey) {
+    ChildThreadForMDC(String mdcKey, String otherMDCKey) {
       this.mdcKey = mdcKey;
       this.otherMDCKey = otherMDCKey;
     }
 
     @Override
     public void run() {
-      childHM = getHM();
+      childHM = getHashMapFromMDC();
 
       MDC.put(otherMDCKey, otherMDCKey + A_SUFFIX);
       assertNotNull(MDC.get(mdcKey));
@@ -73,10 +113,14 @@ public class LogbackMDCAdapterTest {
     }
   }
 
-  HashMap<String, String> getHM() {
+  HashMap<String, String> getHashMapFromMDCAdapter(LogbackMDCAdapter lma) {
+    CopyOnInheritThreadLocal copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
+    return copyOnInheritThreadLocal.get();
+  }
+
+  HashMap<String, String> getHashMapFromMDC() {
     LogbackMDCAdapter lma = (LogbackMDCAdapter) MDC.getMDCAdapter();
     CopyOnInheritThreadLocal copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
     return copyOnInheritThreadLocal.get();
-
   }
 }
