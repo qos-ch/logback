@@ -918,7 +918,7 @@ public class MyApp3 {
 
   <div class="source"><pre>&lt;configuration>
 
-  <b>&lt;substitutionProperty name="USER_HOME" value="/home/sebastien" /></b>
+  <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
 
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
@@ -976,20 +976,19 @@ public class MyApp3 {
 
   <div class="source"><pre>&lt;configuration>
 
-  <b>&lt;substitutionProperty file="variables1.properties" /></b>
+  <b>&lt;property file="src/main/java/chapter3/variables1.properties" /></b>
 
- &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
-    <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
-  &lt;/appender>
+  &lt;appender name="FILE"
+     class="ch.qos.logback.core.FileAppender">
+     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
+     &lt;layout class="ch.qos.logback.classic.PatternLayout">
+       &lt;Pattern>%msg%n&lt;/Pattern>
+     &lt;/layout>
+   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
-    &lt;appender-ref ref="FILE" />
-  &lt;/root>
+   &lt;root level="debug">
+     &lt;appender-ref ref="FILE" />
+   &lt;/root>
 &lt;/configuration></pre></div>
 
    <p>This configuration file contains a reference to a file named
@@ -1003,6 +1002,31 @@ public class MyApp3 {
    (logback-examples/src/main/java/chapter3/variables1.properties)</em>
 
    <div class="source"><pre>USER_HOME=/home/sebastien</pre></div>
+
+   <p>You may also reference a resource on the class path instead of a
+   file.</p>
+
+  <div class="source"><pre>&lt;configuration>
+
+  <b>&lt;property resource="resource1.properties" /></b>
+
+  &lt;appender name="FILE"
+     class="ch.qos.logback.core.FileAppender">
+     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
+     &lt;layout class="ch.qos.logback.classic.PatternLayout">
+       &lt;Pattern>%msg%n&lt;/Pattern>
+     &lt;/layout>
+   &lt;/appender>
+
+   &lt;root level="debug">
+     &lt;appender-ref ref="FILE" />
+   &lt;/root>
+&lt;/configuration></pre></div>
+
+
+   
+
+   <h4>Nested variable substitution</h4>
 
    <p>Nested variabled subsitution is also supported. By nested, we
    mean that the value definition of a variable contains references to
@@ -1031,7 +1055,7 @@ fileName=myApp.log
 
     <div class="source"><pre>&lt;configuration>
 
-  &lt;substitutionProperty file="variables2.properties" />
+  &lt;property file="variables2.properties" />
 
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
@@ -1047,7 +1071,7 @@ fileName=myApp.log
   &lt;/root>
 &lt;/configuration></pre></div>
 
-  <h3>Default substitution values for variables</h3>
+  <h4>Default substitution values for variables</h4>
 
   <p>Under certain circumstances, it may be desirable for a variable
   to have a default value in case it is not declared or its value is
