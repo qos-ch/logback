@@ -14,6 +14,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertyActionTest  {
 
@@ -38,7 +39,7 @@ public class PropertyActionTest  {
   }
   
   @Test
-  public void testBegin() {
+  public void nameValuePair() {
     atts.setValue("name", "v1");
     atts.setValue("value", "work");
     spAction.begin(ec, null, atts);
@@ -46,7 +47,16 @@ public class PropertyActionTest  {
   }
   
   @Test
-  public void testBeginNoValue() {
+  public void nameValuePairWithPrerequisiteSubsitution() {
+    context.putProperty("w", "wor");
+    atts.setValue("name", "v1");
+    atts.setValue("value", "${w}k");
+    spAction.begin(ec, null, atts);
+    assertEquals("work", ec.getSubstitutionProperty("v1"));
+  }
+  
+  @Test
+  public void noValue() {
     atts.setValue("name", "v1");
     spAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
@@ -54,7 +64,7 @@ public class PropertyActionTest  {
   }
 
   @Test
-  public void testBeginNoName() {
+  public void noName() {
     atts.setValue("value", "v1");
     spAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
@@ -62,10 +72,11 @@ public class PropertyActionTest  {
   }
   
   @Test
-  public void testBeginNothing() {
+  public void noAttributes() {
     spAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
+    StatusPrinter.print(context);
   } 
   
   @Test
