@@ -1,12 +1,13 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
+
 package ch.qos.logback.core;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * The <code>immediateFlush</code> variable is set to <code>true</code> by
    * default.
    */
-  protected boolean immediateFlush = true;
+  private boolean immediateFlush = true;
 
   /**
    * The encoding to use when opening an InputStream.
@@ -47,18 +48,18 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * The <code>encoding</code> variable is set to <code>null</null> by default 
    * which results in the use of the system's default encoding.
    */
-  protected String encoding;
+  private String encoding;
 
   /**
    * This is the {@link Writer Writer} where we will write to.
    */
-  protected Writer writer;
+  private Writer writer;
 
   /**
    * The layout variable does not need to be set if the appender implementation
    * has its own layout.
    */
-  protected Layout<E> layout;
+  private Layout<E> layout;
 
   /**
    * The default constructor does nothing.

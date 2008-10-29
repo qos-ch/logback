@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Writer;
 
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -87,14 +88,14 @@ public class FileAppender<E> extends WriterAppender<E> {
   public void start() {
     int errors = 0;
     if (fileName != null) {
-      addInfo("filename set to ["+fileName+"]");
-      
+      addInfo("filename set to [" + fileName + "]");
+
       // In case both bufferedIO and immediateFlush are set, the former
       // takes priority because 'immediateFlush' is set to true by default.
       // If the user explicitly set bufferedIO, then we should follow her
       // directives.
       if (bufferedIO) {
-        immediateFlush = false;
+        setImmediateFlush(false);
         addStatus(new InfoStatus(
             "Setting immediateFlush to false on account of bufferedIO option",
             this));
@@ -118,22 +119,20 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   /**
-   * <p>
-   * Sets and <i>opens</i> the file where the log output will go. The specified
-   * file must be writable.
+   * <p> Sets and <i>opens</i> the file where the log output will go. The
+   * specified file must be writable.
    * 
-   * <p>
-   * If there was already an opened file, then the previous file is closed
+   * <p> If there was already an opened file, then the previous file is closed
    * first.
    * 
-   * <p>
-   * <b>Do not use this method directly. To configure a FileAppender or one of
-   * its subclasses, set its properties one by one and then call start().</b>
+   * <p> <b>Do not use this method directly. To configure a FileAppender or one
+   * of its subclasses, set its properties one by one and then call start().</b>
    * 
    * @param filename
-   *          The path to the log file.
+   *                The path to the log file.
    * @param append
-   *          If true will append to fileName. Otherwise will truncate fileName.
+   *                If true will append to fileName. Otherwise will truncate
+   *                fileName.
    * @param bufferedIO
    * @param bufferSize
    * 
@@ -141,21 +140,20 @@ public class FileAppender<E> extends WriterAppender<E> {
    * 
    */
   public synchronized void openFile() throws IOException {
-    closeWriter();
-
     File file = new File(fileName);
-    if(FileUtil.mustCreateParentDirectories(file)) {
+    if (FileUtil.mustCreateParentDirectories(file)) {
       boolean result = FileUtil.createMissingParentDirectories(file);
-      if(!result) {
-        addError("Failed to create parent directories for ["+file.getAbsolutePath()+"]");
+      if (!result) {
+        addError("Failed to create parent directories for ["
+            + file.getAbsolutePath() + "]");
       }
     }
-    
-    this.writer = createWriter(new FileOutputStream(fileName, append));
+
+    Writer w = createWriter(new FileOutputStream(fileName, append));
     if (bufferedIO) {
-      this.writer = new BufferedWriter(this.writer, bufferSize);
+      w = new BufferedWriter(w, bufferSize);
     }
-    writeHeader();
+    setWriter(w);
   }
 
   public boolean isBufferedIO() {
