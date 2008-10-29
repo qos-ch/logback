@@ -40,6 +40,7 @@ public class ContextBase implements Context {
    * @param statusManager
    *                the new status manager
    */
+  // added in response to http://jira.qos.ch/browse/LBCORE-35
   public void setStatusManager(StatusManager statusManager) {
     if (sm == null) {
       throw new IllegalArgumentException("null StatusManager not allowed");
