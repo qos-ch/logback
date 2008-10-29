@@ -28,6 +28,7 @@ import ch.qos.logback.core.Layout;
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   final static String SYSLOG_LAYOUT_URL = CoreGlobal.CODES_URL + "#syslog_layout";
+  final static int MSG_SIZE_LIMIT = 256*1024;
   
   Layout<E> layout;
   int facility;
@@ -77,6 +78,9 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
     try {
       String msg = layout.doLayout(eventObject);
+      if(msg != null && msg.length() > MSG_SIZE_LIMIT) {
+        msg = msg.substring(0, MSG_SIZE_LIMIT);
+      }
       sw.write(msg);
       sw.flush();
       postProcess(eventObject, sw);
