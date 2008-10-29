@@ -27,6 +27,7 @@ public class BasicStatusManager implements StatusManager {
 
   // reading SynchronizedCollection source code, we learn that the mutex is the
   // returned synchronized list, we make use of this fact in getCopyOfStatusList
+  // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
   final protected List<Status> statusList = Collections
       .synchronizedList(new ArrayList<Status>());
   int level = Status.INFO;
@@ -34,6 +35,7 @@ public class BasicStatusManager implements StatusManager {
   // reading SynchronizedCollection source code, we learn that the mutex is the
   // returned synchronized list, we make use of this fact in
   // getCopyOfStatusListnerList
+  // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
   final protected List<StatusListener> statusListenerList = Collections
       .synchronizedList(new ArrayList<StatusListener>());
 
