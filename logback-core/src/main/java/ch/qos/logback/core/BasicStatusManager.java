@@ -27,14 +27,14 @@ public class BasicStatusManager implements StatusManager {
 
   // reading SynchronizedCollection source code, we learn that the mutex is the
   // returned synchronized list, we make use of this fact in getCopyOfStatusList
-  final List<Status> statusList = Collections
+  final protected List<Status> statusList = Collections
       .synchronizedList(new ArrayList<Status>());
   int level = Status.INFO;
 
   // reading SynchronizedCollection source code, we learn that the mutex is the
   // returned synchronized list, we make use of this fact in
   // getCopyOfStatusListnerList
-  final List<StatusListener> statusListenerList = Collections
+  final protected List<StatusListener> statusListenerList = Collections
       .synchronizedList(new ArrayList<StatusListener>());
 
   /**
