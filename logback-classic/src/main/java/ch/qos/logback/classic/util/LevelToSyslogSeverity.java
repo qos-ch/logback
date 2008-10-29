@@ -17,8 +17,8 @@ import ch.qos.logback.core.net.SyslogConstants;
 public class LevelToSyslogSeverity {
 
   /*
-   * Convert a level to equivalent syslog severity. Only levels for printing methods
-   * i.e DEBUG, WARN, INFO and ERROR are converted.
+   * Convert a level to equivalent syslog severity. Only levels for printing
+   * methods i.e TRACE, DEBUG, WARN, INFO and ERROR are converted.
    * 
    */
   static public int convert(LoggingEvent event) {
@@ -33,6 +33,8 @@ public class LevelToSyslogSeverity {
     case Level.INFO_INT:
       return SyslogConstants.INFO_SEVERITY;
     case Level.DEBUG_INT:
+      return SyslogConstants.DEBUG_SEVERITY;
+    case Level.TRACE_INT:
       return SyslogConstants.DEBUG_SEVERITY;
     default:
       throw new IllegalArgumentException("Level " + level
