@@ -17,13 +17,18 @@ public class StackTraceElementProxy implements Serializable {
     this.ste = ste;
   }
 
+  
   public String getSTEAsString() {
     if (steAsString == null) {
       steAsString = "\tat " + ste.toString();
     }
     return steAsString;
   }
-
+  
+  public StackTraceElement getStackTraceElement() {
+    return ste;
+  }
+  
   void setPackageInfo(ClassPackagingData cpd) {
     this.cpd = cpd;
   }
