@@ -7,7 +7,9 @@ public class StackTraceElementProxy implements Serializable {
   private static final long serialVersionUID = -4832130320500439038L;
 
   final StackTraceElement ste;
-  private String steAsString;
+  // save a byte or two during serialization, as we can
+  // reconstruct this field from 'ste'
+  transient private String steAsString;
   private ClassPackagingData cpd;
 
   StackTraceElementProxy(StackTraceElement ste) {
@@ -29,7 +31,7 @@ public class StackTraceElementProxy implements Serializable {
     return ste;
   }
   
-  void setPackageInfo(ClassPackagingData cpd) {
+  void setClassPackagingData(ClassPackagingData cpd) {
     this.cpd = cpd;
   }
 

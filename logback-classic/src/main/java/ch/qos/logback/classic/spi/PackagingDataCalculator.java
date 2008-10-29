@@ -91,11 +91,11 @@ public class PackagingDataCalculator {
           firsExactClassLoader = callerClass.getClassLoader();
         }
         ClassPackagingData pi = calculateByExactType(callerClass);
-        step.setPackageInfo(pi);
+        step.setClassPackagingData(pi);
       } else {
         missfireCount++;
         ClassPackagingData pi = computeBySTEP(step, lastExactClassLoader);
-        step.setPackageInfo(pi);
+        step.setClassPackagingData(pi);
       }
     }
     populateUncommonFrames(commonFrames, stepArray, firsExactClassLoader);
@@ -139,7 +139,7 @@ public class PackagingDataCalculator {
     for (int i = 0; i < uncommonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
       ClassPackagingData pi = computeBySTEP(step, firstExactClassLoader);
-      step.setPackageInfo(pi);
+      step.setClassPackagingData(pi);
     }
   }
 
