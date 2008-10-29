@@ -20,8 +20,8 @@ import org.mortbay.util.ByteArrayISO8859Writer;
 
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.ConsoleAppender;
-import ch.qos.logback.core.read.ListAppender;
 
 public class JettyFixture {
   RequestLogImpl requestLogImpl;
@@ -76,7 +76,7 @@ public class JettyFixture {
 
   private void buildContext() {
 
-    ListAppender<AccessEvent> appender = new ListAppender<AccessEvent>();
+    NotifyingListAppender appender = new NotifyingListAppender();
     appender.setContext(requestLogImpl);
     appender.setName("list");
     appender.start();
