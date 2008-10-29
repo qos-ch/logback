@@ -1,9 +1,17 @@
 package ch.qos.logback.classic.db;
 
+import static org.junit.Assert.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -12,19 +20,28 @@ import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 
-public class DBAppenderTest extends DBAppenderTestBase {
+public class DBAppenderTest  {
 
   LoggerContext lc;
   Logger logger;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  public DBAppenderTest(String name) {
-    super(name);
+  static DBAppenderTestFixture DB_APPENDER_TEST_FIXTURE;
+  
+  @BeforeClass
+  public  static  void fixtureSetUp() throws SQLException {
+    DB_APPENDER_TEST_FIXTURE = new DBAppenderTestFixture();
+    DB_APPENDER_TEST_FIXTURE.setUp();
   }
-
+  
+  @AfterClass
+  public static void fixtureTearDown() throws SQLException {
+    DB_APPENDER_TEST_FIXTURE.tearDown();
+  }
+  
+  @Before
   public void setUp() throws SQLException {
-    super.setUp();
     lc = new LoggerContext();
     lc.setName("default");
     logger = lc.getLogger("root");
@@ -33,23 +50,24 @@ public class DBAppenderTest extends DBAppenderTestBase {
     appender.setContext(lc);
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
-    connectionSource.setDriverClass(HSQLDB_DRIVER_CLASS);
-    connectionSource.setUrl(url);
-    connectionSource.setUser(user);
-    connectionSource.setPassword(password);
+    connectionSource.setDriverClass(DBAppenderTestFixture.HSQLDB_DRIVER_CLASS);
+    connectionSource.setUrl(DB_APPENDER_TEST_FIXTURE.url);
+    connectionSource.setUser(DB_APPENDER_TEST_FIXTURE.user);
+    connectionSource.setPassword(DB_APPENDER_TEST_FIXTURE.password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
     appender.start();
   }
   
+  @After
   public void tearDown() throws SQLException {
-    super.tearDown();
     logger = null;
     lc = null;
     appender = null;
     connectionSource = null;
   }
 
+  @Test
   public void testAppendLoggingEvent() throws SQLException {
     LoggingEvent event = createLoggingEvent();
 

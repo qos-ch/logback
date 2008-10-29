@@ -1,18 +1,18 @@
 package ch.qos.logback.classic.db;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
 
-public abstract class DBAppenderTestBase extends TestCase {
+public class DBAppenderTestFixture  {
 
   public static final String HSQLDB_DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   // String serverProps;
@@ -24,8 +24,7 @@ public abstract class DBAppenderTestBase extends TestCase {
   // boolean isNetwork = true;
   HsqlMode mode = HsqlMode.MEM;
 
-  public DBAppenderTestBase(String name) {
-    super(name);
+  public DBAppenderTestFixture() {
   }
 
   public void setUp() throws SQLException {
@@ -92,7 +91,7 @@ public abstract class DBAppenderTestBase extends TestCase {
     // return DriverManager.getConnection(url, user, password);
   }
 
-  void createTables() throws SQLException {
+  private void createTables() throws SQLException {
     Connection conn = newConnection();
     assertNotNull(conn);
     StringBuffer buf = new StringBuffer();
@@ -129,7 +128,7 @@ public abstract class DBAppenderTestBase extends TestCase {
     query(conn, buf.toString());
   }
 
-  void dropTables() throws SQLException {
+  private  void dropTables() throws SQLException {
     Connection conn = newConnection();
     StringBuffer buf = new StringBuffer();
     buf.append("DROP TABLE logging_event_exception IF EXISTS;");
@@ -144,7 +143,7 @@ public abstract class DBAppenderTestBase extends TestCase {
     query(conn, buf.toString());
   }
 
-  void query(Connection conn, String expression) throws SQLException {
+  private  void query(Connection conn, String expression) throws SQLException {
 
     Statement st = null;
     st = conn.createStatement();

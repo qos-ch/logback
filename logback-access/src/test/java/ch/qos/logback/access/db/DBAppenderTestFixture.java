@@ -5,11 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
-
 import org.hsqldb.Server;
 
-public abstract class DBAppenderTestInfrastructure extends TestCase {
+public class DBAppenderTestFixture  {
 
   public static final String DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   String serverProps;
@@ -19,11 +17,8 @@ public abstract class DBAppenderTestInfrastructure extends TestCase {
   Server server;
   boolean isNetwork = true;
 
-  public DBAppenderTestInfrastructure(String name) {
-    super(name);
-  }
 
-  protected void setUp() throws SQLException {
+  void setUp() throws SQLException {
     if (isNetwork) {
       if (url == null) {
         url = "jdbc:hsqldb:hsql://localhost/test";
@@ -55,7 +50,7 @@ public abstract class DBAppenderTestInfrastructure extends TestCase {
     createTables();
   }
 
-  protected void tearDown() throws SQLException {
+  void tearDown() throws SQLException {
     dropTables();
     if (isNetwork) {
       server.stop();
@@ -67,7 +62,7 @@ public abstract class DBAppenderTestInfrastructure extends TestCase {
     return DriverManager.getConnection(url, user, password);
   }
 
-  void createTables() throws SQLException {
+  private void createTables() throws SQLException {
     Connection conn = newConnection();
     StringBuffer buf = new StringBuffer();
     buf.append("CREATE TABLE access_event (");
@@ -94,7 +89,7 @@ public abstract class DBAppenderTestInfrastructure extends TestCase {
     query(conn, buf.toString());
   }
 
-  void dropTables() throws SQLException {
+  private  void dropTables() throws SQLException {
     Connection conn = newConnection();
     
     StringBuffer buf = new StringBuffer();
@@ -106,7 +101,7 @@ public abstract class DBAppenderTestInfrastructure extends TestCase {
     query(conn, buf.toString());
   }
 
-  void query(Connection conn, String expression) throws SQLException {
+  private  void query(Connection conn, String expression) throws SQLException {
     Statement st = null;
     st = conn.createStatement();
 
