@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.util;
 
 
@@ -45,7 +54,7 @@ public class InitializationTest {
   // this test works only if logback-test.xml or logback.xml files are on the classpath. 
   // However, this is something we try to avoid in order to simplify the life
   // of users trying to follows the manual and logback-examples from an IDE
-  public void testAutoconfig() {
+  public void atoconfig() {
     Appender appender = root.getAppender("STDOUT");
     assertNotNull(appender);
     assertTrue(appender instanceof ConsoleAppender);
@@ -56,7 +65,7 @@ public class InitializationTest {
   // this test works only if logback-test.xml or logback.xml files are on the classpath. 
   // However, this is something we try to avoid in order to simplify the life
   // of users trying to follows the manual and logback-examples from an IDE
-  public void testReset() throws JoranException {
+  public void reset() throws JoranException {
     {
       new ContextInitializer(lc).autoConfig();
       Appender appender = root.getAppender("STDOUT");
@@ -71,7 +80,7 @@ public class InitializationTest {
   }
 
   @Test
-  public void testAutoConfigFromSystemProperties() throws JoranException  {
+  public void autoConfigFromSystemProperties() throws JoranException  {
     doAutoConfigFromSystemProperties(TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml");
     doAutoConfigFromSystemProperties("autoConfigAsResource.xml");
     // test passing a URL. note the relative path syntax with file:src/test/...
@@ -87,7 +96,7 @@ public class InitializationTest {
   }
   
   @Test
-  public void teztAutoStatusListener() throws JoranException {
+  public void autoStatusListener() throws JoranException {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS, TrivialStatusListener.class.getName());
     List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertEquals(0, sll.size());
@@ -97,7 +106,7 @@ public class InitializationTest {
   }
   
   @Test
-  public void teztAutoOnConsoleStatusListener() throws JoranException {
+  public void autoOnConsoleStatusListener() throws JoranException {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS,  ContextInitializer.SYSOUT);
     List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertEquals(0, sll.size());
