@@ -1,13 +1,12 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2008, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package chapter3;
 
 /**
@@ -26,7 +25,7 @@ public class MyApp3 {
   final static Logger logger = LoggerFactory.getLogger(MyApp3.class);
 
   public static void main(String[] args) {
-    // assume logback is in use
+    // assume SLF4J is bound to logback in the current environment
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     try {

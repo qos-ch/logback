@@ -24,15 +24,16 @@ public class BasicStatusManager implements StatusManager {
   // This method is synchronized on the instance.
   // Code
   int count = 0;
-  
-  // reading SynchronizedCollection the mutex is the returned 
-  // synchronized list, we make use of this fact in getCopyOfStatusList
+
+  // reading SynchronizedCollection source code, we learn that the mutex is the
+  // returned synchronized list, we make use of this fact in getCopyOfStatusList
   final List<Status> statusList = Collections
       .synchronizedList(new ArrayList<Status>());
   int level = Status.INFO;
 
-  // reading SynchronizedCollection the mutex is the returned 
-  // synchronized list, we make use of this fact in getCopyOfStatusListnerList
+  // reading SynchronizedCollection source code, we learn that the mutex is the
+  // returned synchronized list, we make use of this fact in
+  // getCopyOfStatusListnerList
   final List<StatusListener> statusListenerList = Collections
       .synchronizedList(new ArrayList<StatusListener>());
 
@@ -54,13 +55,13 @@ public class BasicStatusManager implements StatusManager {
     statusList.add(newStatus);
     fireStatusAddEvent(newStatus);
   }
-  
+
   private void fireStatusAddEvent(Status status) {
     synchronized (statusListenerList) {
-      for(StatusListener sl : statusListenerList) {
+      for (StatusListener sl : statusListenerList) {
         sl.addStatusEvent(status);
-      }    
-    }  
+      }
+    }
   }
 
   public List<Status> getCopyOfStatusList() {
