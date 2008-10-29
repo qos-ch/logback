@@ -17,15 +17,34 @@ import ch.qos.logback.core.status.StatusManager;
 public class ContextBase implements Context {
 
   private String name;
-  StatusManager sm = new BasicStatusManager();
+  private StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
   // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
-  
+
   public StatusManager getStatusManager() {
     return sm;
+  }
+
+  /**
+   * Set the {@link StatusManager} for this context. Note that by default this
+   * context is initialized with a {@link BasicStatusManager}. A null value for
+   * the 'statusManager' argument is not allowed.
+   * 
+   * <p>
+   * A malicious attacker can set the status manager to a dummy instance,
+   * disabling internal error reporting.
+   * 
+   * @param statusManager
+   *                the new status manager
+   */
+  public void setStatusManager(StatusManager statusManager) {
+    if (sm == null) {
+      throw new IllegalArgumentException("null StatusManager not allowed");
+    }
+    this.sm = statusManager;
   }
 
   public Map<String, String> getCopyOfPropertyMap() {
@@ -48,7 +67,6 @@ public class ContextBase implements Context {
     objectMap.put(key, value);
   }
 
-  
   public String getName() {
     return name;
   }
