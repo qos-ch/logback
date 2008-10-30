@@ -105,6 +105,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public final Logger getLogger(final String name) {
 
+    if(name == null) {
+      throw new IllegalArgumentException("name argument cannot be null");
+    }
+    
     // if we are asking for the root logger, then let us return it without
     // wasting time
     if (ROOT_NAME.equalsIgnoreCase(name)) {

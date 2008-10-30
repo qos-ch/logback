@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -9,25 +9,33 @@
  */
 package ch.qos.logback.classic;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.core.status.StatusManager;
 
-public class LoggerContextTest extends TestCase {
+public class LoggerContextTest {
   LoggerContext lc;
 
-  protected void setUp() throws Exception {
-   Logger.instanceCount = 0;
-   lc = new LoggerContext();
-   lc.setName("x");
+  @Before
+  public void setUp() throws Exception {
+    Logger.instanceCount = 0;
+    lc = new LoggerContext();
+    lc.setName("x");
   }
 
-  public void testRootGetLogger()  {
+  @Test
+  public void testRootGetLogger() {
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     assertEquals(Level.DEBUG, root.getLevel());
     assertEquals(Level.DEBUG, root.getEffectiveLevel());
   }
 
-  public void testLoggerX()  {
+  @Test
+  public void testLoggerX() {
     Logger x = lc.getLogger("x");
     assertNotNull(x);
     assertEquals("x", x.getName());
@@ -35,31 +43,44 @@ public class LoggerContextTest extends TestCase {
     assertEquals(Level.DEBUG, x.getEffectiveLevel());
   }
 
-  public void testEmpty()  {
+  @Test
+  public void testNull() {
+    try {
+      lc.getLogger((String) null);
+      fail("null should cause an exception");
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
+  @Test
+  public void testEmpty() {
     Logger empty = lc.getLogger("");
     LoggerTestHelper.assertNameEquals(empty, "");
     LoggerTestHelper.assertLevels(null, empty, Level.DEBUG);
 
     Logger dot = lc.getLogger(".");
     LoggerTestHelper.assertNameEquals(dot, ".");
-//    LoggerTestHelper.assertNameEquals(dot.parent, "");
-//    LoggerTestHelper.assertNameEquals(dot.parent.parent, "root");
+    // LoggerTestHelper.assertNameEquals(dot.parent, "");
+    // LoggerTestHelper.assertNameEquals(dot.parent.parent, "root");
 
-//    assertNull(dot.parent.parent.parent);
+    // assertNull(dot.parent.parent.parent);
     LoggerTestHelper.assertLevels(null, dot, Level.DEBUG);
 
     assertEquals(3, Logger.instanceCount);
   }
 
+  @Test
   public void testDotDot() {
     Logger dotdot = lc.getLogger("..");
     assertEquals(4, Logger.instanceCount);
     LoggerTestHelper.assertNameEquals(dotdot, "..");
-//    LoggerTestHelper.assertNameEquals(dotdot.parent, ".");
-//    LoggerTestHelper.assertNameEquals(dotdot.parent.parent, "");
-//    LoggerTestHelper.assertNameEquals(dotdot.parent.parent.parent, "root");
+    // LoggerTestHelper.assertNameEquals(dotdot.parent, ".");
+    // LoggerTestHelper.assertNameEquals(dotdot.parent.parent, "");
+    // LoggerTestHelper.assertNameEquals(dotdot.parent.parent.parent, "root");
   }
-  public void testLoggerXY()  {
+
+  @Test
+  public void testLoggerXY() {
     assertEquals(1, Logger.instanceCount);
 
     Logger xy = lc.getLogger("x.y");
@@ -78,26 +99,28 @@ public class LoggerContextTest extends TestCase {
     assertEquals(3, Logger.instanceCount);
   }
 
-   public void testLoggerMultipleChildren()  {
-     assertEquals(1, Logger.instanceCount);
-     Logger xy0 = lc.getLogger("x.y0");
-     LoggerTestHelper.assertNameEquals(xy0, "x.y0");
+  @Test
+  public void testLoggerMultipleChildren() {
+    assertEquals(1, Logger.instanceCount);
+    Logger xy0 = lc.getLogger("x.y0");
+    LoggerTestHelper.assertNameEquals(xy0, "x.y0");
 
-     Logger xy1 = lc.getLogger("x.y1");
-     LoggerTestHelper.assertNameEquals(xy1, "x.y1");
+    Logger xy1 = lc.getLogger("x.y1");
+    LoggerTestHelper.assertNameEquals(xy1, "x.y1");
 
-     LoggerTestHelper.assertLevels(null, xy0, Level.DEBUG);
-     LoggerTestHelper.assertLevels(null, xy1, Level.DEBUG);
-     assertEquals(4, Logger.instanceCount);
+    LoggerTestHelper.assertLevels(null, xy0, Level.DEBUG);
+    LoggerTestHelper.assertLevels(null, xy1, Level.DEBUG);
+    assertEquals(4, Logger.instanceCount);
 
-     for(int i = 0; i < 100; i++) {
-        Logger xy_i = lc.getLogger("x.y"+i);
-        LoggerTestHelper.assertNameEquals(xy_i, "x.y"+i);
-       LoggerTestHelper.assertLevels(null, xy_i, Level.DEBUG);
-     }
-     assertEquals(102, Logger.instanceCount);
-   }
+    for (int i = 0; i < 100; i++) {
+      Logger xy_i = lc.getLogger("x.y" + i);
+      LoggerTestHelper.assertNameEquals(xy_i, "x.y" + i);
+      LoggerTestHelper.assertLevels(null, xy_i, Level.DEBUG);
+    }
+    assertEquals(102, Logger.instanceCount);
+  }
 
+  @Test
   public void testMultiLevel() {
     Logger wxyz = lc.getLogger("w.x.y.z");
     LoggerTestHelper.assertNameEquals(wxyz, "w.x.y.z");
@@ -110,22 +133,24 @@ public class LoggerContextTest extends TestCase {
     LoggerTestHelper.assertLevels(null, lc.getLogger("w.x.y"), Level.INFO);
     LoggerTestHelper.assertLevels(null, wxyz, Level.INFO);
   }
-  
-  public void testStatusWithUnconfiguredContext() {
-  	Logger logger = lc.getLogger(LoggerContextTest.class);
-  	
-  	for (int i = 0; i < 3; i++) {
-  		logger.debug("test");
-  	}
 
-  	logger = lc.getLogger("x.y.z");
-  	
-  	for (int i = 0; i < 3; i++) {
-  		logger.debug("test");
-  	}
-  	
-  	StatusManager sm = lc.getStatusManager();
-  	assertTrue("StatusManager has recieved too many messages", sm.getCount() == 1);
+  @Test
+  public void testStatusWithUnconfiguredContext() {
+    Logger logger = lc.getLogger(LoggerContextTest.class);
+
+    for (int i = 0; i < 3; i++) {
+      logger.debug("test");
+    }
+
+    logger = lc.getLogger("x.y.z");
+
+    for (int i = 0; i < 3; i++) {
+      logger.debug("test");
+    }
+
+    StatusManager sm = lc.getStatusManager();
+    assertTrue("StatusManager has recieved too many messages",
+        sm.getCount() == 1);
   }
 
 }
