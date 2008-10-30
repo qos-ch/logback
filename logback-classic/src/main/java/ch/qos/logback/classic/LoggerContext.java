@@ -59,9 +59,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   // cost of a very slightly higher memory footprint.
   private Hashtable<String, Logger> loggerCache;
 
-  LoggerContextRemoteView loggerContextRemoteView;
-
-  TurboFilterAttachableImpl cfai = null;
+  private LoggerContextRemoteView loggerContextRemoteView;
+  private TurboFilterAttachableImpl turboFilterAI = null;
 
   boolean started = false;
 
@@ -207,55 +206,55 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
-    if (cfai == null) {
-      cfai = new TurboFilterAttachableImpl();
+    if (turboFilterAI == null) {
+      turboFilterAI = new TurboFilterAttachableImpl();
     }
-    cfai.addTurboFilter(newFilter);
+    turboFilterAI.addTurboFilter(newFilter);
   }
 
   public void clearAllTurboFilters() {
-    if (cfai == null) {
+    if (turboFilterAI == null) {
       return;
     }
-    cfai.clearAllTurboFilters();
-    cfai = null;
+    turboFilterAI.clearAllTurboFilters();
+    turboFilterAI = null;
   }
 
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object[] params, final Throwable t) {
-    if (cfai == null) {
+    if (turboFilterAI == null) {
       return FilterReply.NEUTRAL;
     }
-    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
         params, t);
   }
 
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param, final Throwable t) {
-    if (cfai == null) {
+    if (turboFilterAI == null) {
       return FilterReply.NEUTRAL;
     }
-    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
         new Object[] { param }, t);
   }
 
   final public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param1, final Object param2, final Throwable t) {
-    if (cfai == null) {
+    if (turboFilterAI == null) {
       return FilterReply.NEUTRAL;
     }
-    return cfai.getTurboFilterChainDecision(marker, logger, level, format,
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
         new Object[] { param1, param2 }, t);
   }
 
   public TurboFilter getFirstTurboFilter() {
-    if (cfai == null) {
+    if (turboFilterAI == null) {
       return null;
     }
-    return cfai.getFirstTurboFilter();
+    return turboFilterAI.getFirstTurboFilter();
   }
 
   public void addListener(ContextListener listener) {
