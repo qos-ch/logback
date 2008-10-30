@@ -16,7 +16,6 @@ import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -69,31 +68,27 @@ public class TimeBasedRollingTest {
   Calendar cal = Calendar.getInstance();
   long currentTime; // initialized in setUp()
   long nextRolloverThreshold; // initialized in setUp()
-  List<String> filenameList = new ArrayList<String>();
+  List<String> expectedFilenameList = new ArrayList<String>();
 
   @Before
   public void setUp() {
     context.setName("test");
-    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.MILLISECOND, 333);
     currentTime = cal.getTimeInMillis();
     recomputeRolloverThreshold(currentTime);
+    System.out.println("currentTime=" + sdf.format(new Date(currentTime)));
 
     // Delete .log files
-    {
-      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test4.log");
-      target.mkdirs();
-      target.delete();
-    }
-    {
-      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test5.log");
-      target.mkdirs();
-      target.delete();
-    }
-    {
-      File target = new File(Constants.OUTPUT_DIR_PREFIX + "test6.log");
-      target.mkdirs();
-      target.delete();
-    }
+    deleteStaleLogFile("test4.log");
+    deleteStaleLogFile("test4B.log");
+    deleteStaleLogFile("test5.log");
+    deleteStaleLogFile("test6.log");
+  }
+
+  void deleteStaleLogFile(String filename) {
+    File target = new File(Constants.OUTPUT_DIR_PREFIX + filename);
+    target.mkdirs();
+    target.delete();
   }
 
   @After
@@ -122,61 +117,35 @@ public class TimeBasedRollingTest {
     rfa.start();
   }
 
-  void addFileName(String testId, Date date, boolean compression) {
-    String fn = Constants.OUTPUT_DIR_PREFIX + testId + sdf.format(date);
-    if (compression) {
-      fn += ".gz";
-    }
-    filenameList.add(fn);
-  }
-
-  String[] computeFilenames(String testStr, boolean compression, String lastFile) {
-    String[] filenames = new String[3];
-    int oneBeforeLast = filenames.length - 1;
-    for (int i = 0; i < oneBeforeLast; i++) {
-      filenames[i] = Constants.OUTPUT_DIR_PREFIX + testStr
-          + sdf.format(cal.getTime());
-      if (compression) {
-        filenames[i] += ".gz";
-      }
-      cal.add(Calendar.SECOND, 1);
-    }
-    if (lastFile != null) {
-      filenames[oneBeforeLast] = Constants.OUTPUT_DIR_PREFIX + lastFile;
-    } else {
-      filenames[oneBeforeLast] = Constants.OUTPUT_DIR_PREFIX + testStr
-          + sdf.format(cal.getTime());
-    }
-    return filenames;
-  }
-
   /**
    * Test rolling without compression, file option left blank, no stop/start
    */
   @Test
   public void noCompression_FileBlank_NoRestart_1() throws Exception {
-    String testId = "test1-";
+    String testId = "test1";
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "%d{"
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     // compute the current filename
-    addFileName(testId, getTimeForElapsedPeriod(), false);
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
     tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
-      addFileNameIfNecessary(testId, false);
       rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
       incCurrentTime(500);
       tbrp1.setCurrentTime(currentTime);
     }
 
+    System.out.println(expectedFilenameList);
+
     int i = 0;
-    for (String fn : filenameList) {
+    for (String fn : expectedFilenameList) {
       assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test1." + i++));
+          + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
 
@@ -185,19 +154,21 @@ public class TimeBasedRollingTest {
    */
   @Test
   public void noCompression_FileBlank_StopRestart_2() throws Exception {
-    String testId = "test2-";
+    String testId = "test2";
 
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "%d{"
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
-    addFileName(testId, getTimeForElapsedPeriod(), false);
+    // a new file is created by virtue of rfa.start();
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
+
     incCurrentTime(1100);
     tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
-      addFileNameIfNecessary(testId, false);
       rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
       incCurrentTime(500);
       tbrp1.setCurrentTime(currentTime);
     }
@@ -205,20 +176,20 @@ public class TimeBasedRollingTest {
     rfa1.stop();
 
     initRFA(rfa2, null);
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + "test2-%d{"
+    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", tbrp1.getCurrentTime(), 0);
 
     for (int i = 0; i <= 2; i++) {
-      addFileNameIfNecessary(testId, false);
-      rfa2.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      rfa2.doAppend("World---" + i);
       incCurrentTime(100);
       tbrp2.setCurrentTime(currentTime);
     }
 
     int i = 0;
-    for (String fn : filenameList) {
+    for (String fn : expectedFilenameList) {
       assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test2." + i++));
+          + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
 
@@ -227,35 +198,31 @@ public class TimeBasedRollingTest {
    */
   @Test
   public void withCompression_FileBlank_NoRestart_3() throws Exception {
-    String testId = "test3-";
+    String testId = "test3";
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "%d{"
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}.gz", currentTime, 0);
 
-    String[] filenames = computeFilenames(testId, true, null);
-
-    addFileName(testId, getTimeForElapsedPeriod(), true);
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
     incCurrentTime(1100);
     tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
-      addFileNameIfNecessary(testId, true);
+      // when i == 2, file name should not have .gz extension
+      addExpectedFileNamedIfItsTime_ByDate(testId, i != 2);
       rfa1.doAppend("Hello---" + i);
-      tbrp1.setCurrentTime(addTime(tbrp1.getCurrentTime(), 500));
+      incCurrentTime(500);
+      tbrp1.setCurrentTime(currentTime);
     }
 
     tbrp1.future.get(2000, TimeUnit.MILLISECONDS);
 
-    System.out.println(Arrays.toString(filenames));
-    System.out.println(filenameList.toString());
-
-    for (int i = 0; i < 2; i++) {
-      assertTrue(Compare.gzCompare(filenameList.get(i),
-          Constants.TEST_DIR_PREFIX + "witness/rolling/tbr-test3." + i + ".gz"));
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
+      i++;
     }
-
-    assertTrue(Compare.compare(filenameList.get(2), Constants.TEST_DIR_PREFIX
-        + "witness/rolling/tbr-test3.2"));
   }
 
   /**
@@ -263,95 +230,89 @@ public class TimeBasedRollingTest {
    */
   @Test
   public void noCompression_FileSet_StopRestart_4() throws Exception {
-    initRFA(rfa1, Constants.OUTPUT_DIR_PREFIX + "test4.log");
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + "test4-%d{"
+    String testId = "test4";
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
-    String[] filenames = computeFilenames("test4-", false, "test4.log");
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
-    System.out.println("CT=" + sdf.format(new Date(currentTime)));
-    System.out.println("tbrp1 CT="
-        + sdf.format(new Date(tbrp1.getCurrentTime())));
-
-    tbrp1.setCurrentTime(addTime(currentTime, 1100));
-
-    System.out.println("tbrp1 CT="
-        + sdf.format(new Date(tbrp1.getCurrentTime())));
+    incCurrentTime(1100);
+    tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
-      tbrp1.setCurrentTime(addTime(tbrp1.getCurrentTime(), 500));
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
 
-    initRFA(rfa2, Constants.OUTPUT_DIR_PREFIX + "test4.log");
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + "test4-%d{"
-        + DATE_PATTERN + "}", tbrp1.getCurrentTime(), tbrp1.getCurrentTime());
+    initRFA(rfa2, testId2FileName(testId));
+    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}", currentTime, currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("World---" + i);
-      tbrp2.setCurrentTime(addTime(tbrp2.getCurrentTime(), 100));
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(100);
+      tbrp2.setCurrentTime(currentTime);
     }
 
-    for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test4." + i));
+    massageExpectedFilesToCorresponToCurrentTarget("test4.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
 
   @Test
   public void noCompression_FileSet_StopRestart_WithLongWait_4B()
       throws Exception {
-    initRFA(rfa1, Constants.OUTPUT_DIR_PREFIX + "test4B.log");
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + "test4B-%d{"
+    String testId = "test4B";
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
-    String[] filenames = computeFilenames("test4B-", false, "test4B.log");
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
-    System.out.println("CT=" + sdf.format(new Date(currentTime)));
-    System.out.println("tbrp1 CT="
-        + sdf.format(new Date(tbrp1.getCurrentTime())));
-
-    tbrp1.setCurrentTime(addTime(currentTime, 1100));
-
-    System.out.println("tbrp1 CT="
-        + sdf.format(new Date(tbrp1.getCurrentTime())));
+    incCurrentTime(1100);
+    tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
-      tbrp1.setCurrentTime(addTime(tbrp1.getCurrentTime(), 500));
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
-    System.out.println("post stop tbrp1 CT="
-        + sdf.format(new Date(tbrp1.getCurrentTime())));
+
+    long fileTimestamp = currentTime;
+    incCurrentTime(2000);
 
     initRFA(rfa2, Constants.OUTPUT_DIR_PREFIX + "test4B.log");
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + "test4B-%d{"
-        + DATE_PATTERN + "}", tbrp1.getCurrentTime() + 3000, tbrp1
-        .getCurrentTime());
-
-    System.out.println("tbrp2 CT="
-        + sdf.format(new Date(tbrp2.getCurrentTime())));
+    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId +"-%d{"
+        + DATE_PATTERN + "}", currentTime, fileTimestamp);
 
     for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("World---" + i);
-      System.out.println("in loop tbrp2 CT="
-          + sdf.format(new Date(tbrp2.getCurrentTime())));
-      tbrp2.setCurrentTime(addTime(tbrp2.getCurrentTime(), 500));
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(100);
+      tbrp2.setCurrentTime(currentTime);
     }
 
-    System.out.println("tbrp2 CT="
-        + sdf.format(new Date(tbrp2.getCurrentTime())));
+    massageExpectedFilesToCorresponToCurrentTarget("test4B.log");
 
-    if (1 == 1) {
-      return;
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-test4B." + i++));
     }
-    for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test4." + i));
-    }
+
   }
 
   /**
@@ -359,22 +320,30 @@ public class TimeBasedRollingTest {
    */
   @Test
   public void noCompression_FileSet_NoRestart_5() throws Exception {
-    initRFA(rfa1, Constants.OUTPUT_DIR_PREFIX + "test5.log");
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + "test5-%d{"
+    String testId = "test5";
+
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
-    String[] filenames = computeFilenames("test5-", false, "test5.log");
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
-    tbrp1.setCurrentTime(addTime(currentTime, 1100));
+    incCurrentTime(1100);
+    tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
-      tbrp1.setCurrentTime(addTime(tbrp1.getCurrentTime(), 500));
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.setCurrentTime(currentTime);
     }
 
-    for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test5." + i));
+    massageExpectedFilesToCorresponToCurrentTarget("test5.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-test5." + i++));
     }
   }
 
@@ -383,45 +352,91 @@ public class TimeBasedRollingTest {
    */
   @Test
   public void withCompression_FileSet_NoRestart_6() throws Exception {
-    initRFA(rfa1, Constants.OUTPUT_DIR_PREFIX + "test6.log");
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + "test6-%d{"
+
+    String testId = "test6";
+
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}.gz", currentTime, 0);
 
-    String[] filenames = computeFilenames("test6-", true, "test6.log");
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
 
-    tbrp1.setCurrentTime(addTime(currentTime, 1100));
+    incCurrentTime(1100);
+    tbrp1.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
-      tbrp1.setCurrentTime(addTime(tbrp1.getCurrentTime(), 500));
+      addExpectedFileNamedIfItsTime_ByDate(testId, true);
+      incCurrentTime(500);
+      tbrp1.setCurrentTime(currentTime);
     }
 
     // wait for the compression task to finish
     tbrp1.future.get(1000, TimeUnit.MILLISECONDS);
 
-    for (int i = 0; i < 2; i++) {
-      assertTrue(Compare.gzCompare(filenames[i], Constants.TEST_DIR_PREFIX
-          + "witness/rolling/tbr-test6." + i + ".gz"));
-    }
+    massageExpectedFilesToCorresponToCurrentTarget("test6.log");
 
-    assertTrue(Compare.compare(filenames[2], Constants.TEST_DIR_PREFIX
-        + "witness/rolling/tbr-test6.2"));
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
+      i++;
+    }
   }
 
   // =========================================================================
   // utility methods
   // =========================================================================
 
-  void addFileNameIfNecessary(String testId, boolean compression) {
+  String testId2FileName(String testId) {
+    return Constants.OUTPUT_DIR_PREFIX + testId + ".log";
+  }
+
+  void massageExpectedFilesToCorresponToCurrentTarget(String file) {
+    // we added one too many files by date
+    expectedFilenameList.remove(expectedFilenameList.size() - 1);
+    // since file is set, we have to add it
+    addExpectedFileName_ByFile(file);
+  }
+
+  String addGZIfNotLast(int i) {
+    int lastIndex = expectedFilenameList.size() - 1;
+    if (i != lastIndex) {
+      return ".gz";
+    } else {
+      return "";
+    }
+  }
+
+  void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
+    String fn = Constants.OUTPUT_DIR_PREFIX + testId + "-" + sdf.format(date);
+    if (gzExtension) {
+      fn += ".gz";
+    }
+    expectedFilenameList.add(fn);
+  }
+
+  void addExpectedFileNamedIfItsTime_ByDate(String testId, boolean gzExtension) {
     if (passThresholdTime(nextRolloverThreshold)) {
-      addFileName(testId, getTimeForElapsedPeriod(), compression);
+      addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(),
+          gzExtension);
       recomputeRolloverThreshold(currentTime);
     }
   }
 
-  Date getTimeForElapsedPeriod() {
+  void addExpectedFileName_ByFile(String filenameSuffix) {
+    String fn = Constants.OUTPUT_DIR_PREFIX + filenameSuffix;
+    expectedFilenameList.add(fn);
+  }
+
+  Date getDateOfCurrentPeriodsStart() {
     long delta = currentTime % 1000;
     return new Date(currentTime - delta);
+  }
+
+  Date getDateOfPastPeriodsStart() {
+    long delta = currentTime % 1000;
+    return new Date(currentTime - delta - 1000);
   }
 
   static long addTime(long currentTime, long timeToWait) {
@@ -440,5 +455,10 @@ public class TimeBasedRollingTest {
 
   void incCurrentTime(long increment) {
     currentTime += increment;
+  }
+
+  void printLongAsDate(String msg, long time) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
+    System.out.println(msg + sdf.format(new Date(time)));
   }
 }
