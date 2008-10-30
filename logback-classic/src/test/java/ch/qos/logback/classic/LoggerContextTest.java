@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.status.StatusManager;
 
