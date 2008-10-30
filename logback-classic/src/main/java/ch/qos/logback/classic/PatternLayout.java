@@ -31,7 +31,7 @@ import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 /**
@@ -124,7 +124,7 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
 
   public String doLayout(LoggingEvent event) {
     if (!isStarted()) {
-      return CoreGlobal.EMPTY_STRING;
+      return CoreConstants.EMPTY_STRING;
     }
     return writeLoopOnConverters(event);
   }

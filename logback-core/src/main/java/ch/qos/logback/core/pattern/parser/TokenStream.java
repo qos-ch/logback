@@ -12,7 +12,7 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.List;
 import java.util.ArrayList;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
@@ -33,7 +33,7 @@ import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 class TokenStream {
 
   private static final char ESCAPE_CHAR = '\\';
-  private static final char PERCENT_CHAR = CoreGlobal.PERCENT_CHAR; 
+  private static final char PERCENT_CHAR = CoreConstants.PERCENT_CHAR; 
   private static final char LEFT_PARENTHESIS = '(';
   private static final char RIGHT_PARENTHESIS = ')';
   private static final char CURLY_LEFT = '{';

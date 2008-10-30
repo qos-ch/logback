@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -120,7 +120,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       ec.popObject();
 
       try {
-        Map<String, EventEvaluator> evaluatorMap = (Map<String, EventEvaluator>) context.getObject(CoreGlobal.EVALUATOR_MAP);
+        Map<String, EventEvaluator> evaluatorMap = (Map<String, EventEvaluator>) context.getObject(CoreConstants.EVALUATOR_MAP);
         evaluatorMap.put(evaluator.getName(), evaluator);
       } catch (Exception ex) {
         addError(

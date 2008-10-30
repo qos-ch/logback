@@ -2,7 +2,7 @@ package ch.qos.logback.core.html;
 
 import java.util.Map;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
@@ -204,7 +204,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   }
   
   protected void startNewTableIfLimitReached(StringBuilder sbuf) {
-    if (this.counter >= CoreGlobal.TABLE_ROW_LIMIT) {
+    if (this.counter >= CoreConstants.TABLE_ROW_LIMIT) {
       counter = 0;
       sbuf.append("</table>");
       sbuf.append(LINE_SEP);

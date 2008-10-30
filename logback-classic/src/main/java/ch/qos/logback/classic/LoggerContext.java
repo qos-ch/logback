@@ -27,7 +27,7 @@ import ch.qos.logback.classic.spi.TurboFilterAttachable;
 import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -72,7 +72,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     this.root = new Logger(ROOT_NAME, null, this);
     this.root.setLevel(Level.DEBUG);
     loggerCache.put(ROOT_NAME, root);
-    putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
+    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
     size = 1;
   }
 

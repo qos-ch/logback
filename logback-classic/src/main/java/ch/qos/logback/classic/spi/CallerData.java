@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.spi;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * The internal representation of caller location information.
@@ -36,7 +36,7 @@ public class CallerData implements java.io.Serializable {
   public static final int LINE_NA = -1;
 
   
-  public static String CALLER_DATA_NA = "?#?:?"+CoreGlobal.LINE_SEPARATOR;
+  public static String CALLER_DATA_NA = "?#?:?"+CoreConstants.LINE_SEPARATOR;
 
   /**
    * This value is returned in case no caller data could be extracted.

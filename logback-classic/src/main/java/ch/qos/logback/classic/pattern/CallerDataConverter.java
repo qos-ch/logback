@@ -16,7 +16,7 @@ import java.util.Map;
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -55,7 +55,7 @@ public class CallerDataConverter extends ClassicConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         if (context != null) {
-          Map evaluatorMap = (Map) context.getObject(CoreGlobal.EVALUATOR_MAP);
+          Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
           EventEvaluator ee = (EventEvaluator) evaluatorMap.get(evaluatorStr);
           if (ee != null) {
             addEvaluator(ee);
@@ -103,7 +103,7 @@ public class CallerDataConverter extends ClassicConverter {
       }
 
       if (!printCallerData) {
-        return CoreGlobal.EMPTY_STRING;
+        return CoreConstants.EMPTY_STRING;
       }
     }
 
@@ -116,7 +116,7 @@ public class CallerDataConverter extends ClassicConverter {
         buf.append(i);
         buf.append("\t at ");
         buf.append(cda[i]);
-        buf.append(CoreGlobal.LINE_SEPARATOR);
+        buf.append(CoreConstants.LINE_SEPARATOR);
       }
       return buf.toString();
     } else {

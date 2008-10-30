@@ -11,7 +11,7 @@ package ch.qos.logback.classic.spi;
 
 import java.util.Arrays;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableProxy implements java.io.Serializable {
 
@@ -86,7 +86,7 @@ public class ThrowableProxy implements java.io.Serializable {
       String string = tdp.toString();
       builder.append(string);
       extraData(builder, tdp);
-      builder.append(CoreGlobal.LINE_SEPARATOR);
+      builder.append(CoreConstants.LINE_SEPARATOR);
     }
     System.out.println(builder.toString());
   }

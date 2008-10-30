@@ -12,7 +12,7 @@ import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -120,7 +120,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   boolean started = false;
 
   public RequestLogImpl() {
-    putObject(CoreGlobal.EVALUATOR_MAP, new HashMap());
+    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
 
   public void log(Request jettyRequest, Response jettyResponse) {

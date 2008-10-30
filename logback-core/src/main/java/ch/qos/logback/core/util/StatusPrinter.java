@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
@@ -94,7 +94,7 @@ public class StatusPrinter {
     String[] stringRep = ThrowableToStringArray.convert(t);
 
     for (String s : stringRep) {
-      if (s.startsWith(CoreGlobal.CAUSED_BY)) {
+      if (s.startsWith(CoreConstants.CAUSED_BY)) {
         // nothing
       } else if (Character.isDigit(s.charAt(0))) {
         // if line resembles "48 common frames omitted"
@@ -103,7 +103,7 @@ public class StatusPrinter {
         // most of the time. just add a tab+"at"
         sb.append("\tat ");
       }
-      sb.append(s).append(CoreGlobal.LINE_SEPARATOR);
+      sb.append(s).append(CoreConstants.LINE_SEPARATOR);
     }
   }
 

@@ -34,7 +34,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.html.HTMLLayout;
 import ch.qos.logback.classic.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -175,7 +175,7 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.start();
     Logger logger = lc.getLogger("test");
     logger.addAppender(smtpAppender);
-    for (int i = 0; i < CoreGlobal.TABLE_ROW_LIMIT * 3; i++) {
+    for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
       logger.debug("hello " + i);
     }
     logger.error("en error", new Exception("an exception"));

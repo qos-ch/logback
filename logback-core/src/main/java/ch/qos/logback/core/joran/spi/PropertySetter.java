@@ -25,7 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.action.IADataForComplexProperty;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
@@ -458,7 +458,7 @@ public class PropertySetter extends ContextAwareBase {
 
   boolean isBuildableFromString(Class<?> parameterClass) {
     try {
-      Method valueOfMethod = parameterClass.getMethod(CoreGlobal.VALUE_OF,
+      Method valueOfMethod = parameterClass.getMethod(CoreConstants.VALUE_OF,
           STING_CLASS_PARAMETER);
       int mod = valueOfMethod.getModifiers();
       if (Modifier.isStatic(mod)) {
@@ -474,11 +474,11 @@ public class PropertySetter extends ContextAwareBase {
 
   Object buildFromString(Class type, String val) {
     try {
-      Method valueOfMethod = type.getMethod(CoreGlobal.VALUE_OF,
+      Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF,
           STING_CLASS_PARAMETER);
       return valueOfMethod.invoke(null, val);
     } catch (Exception e) {
-      addError("Failed to invoke " + CoreGlobal.VALUE_OF
+      addError("Failed to invoke " + CoreConstants.VALUE_OF
           + "{} method in class [" + type.getName() + "] with value [" + val
           + "]");
       return null;
@@ -487,7 +487,7 @@ public class PropertySetter extends ContextAwareBase {
 
   protected Object convertEnum(String val, Class type) {
     try {
-      Method m = type.getMethod(CoreGlobal.VALUE_OF, STING_CLASS_PARAMETER);
+      Method m = type.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
       return m.invoke(null, val);
     } catch (Exception e) {
       addError("Failed to convert value [" + val + "] to enum ["

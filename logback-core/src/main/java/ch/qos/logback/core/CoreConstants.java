@@ -1,6 +1,6 @@
 package ch.qos.logback.core;
 
-public class CoreGlobal {
+public class CoreConstants {
 
   // Note that the line.separator property can be looked up even by
   // applets.

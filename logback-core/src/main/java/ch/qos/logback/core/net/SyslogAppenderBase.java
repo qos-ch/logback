@@ -15,7 +15,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 
 /**
@@ -27,7 +27,7 @@ import ch.qos.logback.core.Layout;
  */
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
-  final static String SYSLOG_LAYOUT_URL = CoreGlobal.CODES_URL + "#syslog_layout";
+  final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL + "#syslog_layout";
   final static int MSG_SIZE_LIMIT = 256*1024;
   
   Layout<E> layout;

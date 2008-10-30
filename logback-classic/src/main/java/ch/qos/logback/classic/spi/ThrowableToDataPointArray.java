@@ -13,7 +13,7 @@ package ch.qos.logback.classic.spi;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * Convert a throwable into an array of ThrowableDataPoint objects.
@@ -57,7 +57,7 @@ public class ThrowableToDataPointArray {
       StackTraceElement[] parentSTE) {
     String prefix = "";
     if (parentSTE != null) {
-      prefix = CoreGlobal.CAUSED_BY;
+      prefix = CoreConstants.CAUSED_BY;
     }
 
     String result = prefix + t.getClass().getName();

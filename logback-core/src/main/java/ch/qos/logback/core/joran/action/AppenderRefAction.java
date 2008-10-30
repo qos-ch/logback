@@ -13,7 +13,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.util.OptionHelper;
@@ -63,7 +63,7 @@ public class AppenderRefAction extends Action {
           + "]. Did you define it below in the config file?";
       inError = true;
       addError(msg);
-      addError("See " + CoreGlobal.CODES_URL
+      addError("See " + CoreConstants.CODES_URL
           + "#appender_order for more details.");
       return;
     }

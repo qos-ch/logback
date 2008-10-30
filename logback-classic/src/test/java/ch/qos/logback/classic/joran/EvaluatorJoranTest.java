@@ -22,7 +22,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztConstants;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.joran.spi.JoranException;
 
@@ -36,7 +36,7 @@ public class EvaluatorJoranTest extends TestCase {
     jc.doConfigure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleEvaluator.xml");
     
     
-    Map evalMap = (Map) loggerContext.getObject(CoreGlobal.EVALUATOR_MAP);
+    Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);
     //StatusPrinter.print(loggerContext.getStatusManager());
     JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
@@ -58,7 +58,7 @@ public class EvaluatorJoranTest extends TestCase {
     
     //StatusPrinter.print(loggerContext.getStatusManager());
     
-    Map evalMap = (Map) loggerContext.getObject(CoreGlobal.EVALUATOR_MAP);
+    Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);
     //StatusPrinter.print(loggerContext.getStatusManager());
     

@@ -21,13 +21,13 @@ public class SerializationPerfsTest extends TestCase {
   /**
    * <p>
    * Run the test with a MockSocketServer or with a NOPOutputStream
-   * </p>
+   * 
    * <p>
    * Run with external mock can be done using the ExternalMockSocketServer. It
    * needs to be launched from a separate JVM. The ExternalMockSocketServer does
    * not consume the events but passes through the available bytes that it is
-   * recieving.
-   * </p>
+   * receiving.
+   * 
    * <p>
    * For example, with 4 test methods, you can launch the
    * ExternalMockSocketServer this way:

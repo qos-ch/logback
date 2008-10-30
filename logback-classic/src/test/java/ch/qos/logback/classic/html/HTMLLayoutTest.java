@@ -23,7 +23,7 @@ import ch.qos.logback.classic.TestConstants;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.read.ListAppender;
 
 public class HTMLLayoutTest {
@@ -177,7 +177,7 @@ public class HTMLLayoutTest {
     assertTrue(header.startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
     sb.append(header);
     sb.append(layout.getPresentationHeader());
-    for(int i = 0; i < CoreGlobal.TABLE_ROW_LIMIT*3; i++) {
+    for(int i = 0; i < CoreConstants.TABLE_ROW_LIMIT*3; i++) {
       sb.append(layout.doLayout( new LoggingEvent(this.getClass().getName(), logger,
           Level.DEBUG, "test message"+i, null, null)));
     }

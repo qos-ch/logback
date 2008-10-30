@@ -23,7 +23,7 @@ import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.selector.DefaultContextSelector;
 import ch.qos.logback.classic.util.ContextInitializer;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
@@ -40,7 +40,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   private ContextSelector contextSelector;
 
-  final static String NULL_CS_URL = CoreGlobal.CODES_URL + "#null_CS";
+  final static String NULL_CS_URL = CoreConstants.CODES_URL + "#null_CS";
 
   /**
    * The unique instance of this class.

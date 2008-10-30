@@ -10,7 +10,7 @@
 package ch.qos.logback.core.util;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * @author Ceki Gulcu
@@ -254,7 +254,7 @@ public class OptionHelper {
   }
 
   public static boolean isEmpty(String val) {
-    return ((val == null) || CoreGlobal.EMPTY_STRING.equals(val));
+    return ((val == null) || CoreConstants.EMPTY_STRING.equals(val));
   }
 
 }

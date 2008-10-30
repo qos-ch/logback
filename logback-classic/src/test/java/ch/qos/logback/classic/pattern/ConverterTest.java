@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.TestConstants;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
@@ -113,7 +113,7 @@ public class ConverterTest extends TestCase {
     DynamicConverter<LoggingEvent> converter = new LineSeparatorConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
-    assertEquals(CoreGlobal.LINE_SEPARATOR, buf.toString());
+    assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
   }
 
   public void testException() {

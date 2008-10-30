@@ -9,7 +9,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 
@@ -71,7 +71,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
       fullNameList.add(m.getName());
     }
     
-    return (String[]) fullNameList.toArray(CoreGlobal.EMPTY_STRING_ARRAY);
+    return (String[]) fullNameList.toArray(CoreConstants.EMPTY_STRING_ARRAY);
   }
 
   protected Class[] getParameterTypes() {
@@ -80,7 +80,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     for(int i = 0; i < matcherList.size(); i++) {
       fullTypeList.add(Matcher.class);
     }
-    return (Class[]) fullTypeList.toArray(CoreGlobal.EMPTY_CLASS_ARRAY);
+    return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
   protected Object[] getParameterValues(Object event) {

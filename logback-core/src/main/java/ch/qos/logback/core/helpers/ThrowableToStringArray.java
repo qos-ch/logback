@@ -12,7 +12,7 @@ package ch.qos.logback.core.helpers;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableToStringArray {
 
@@ -48,7 +48,7 @@ public class ThrowableToStringArray {
       StackTraceElement[] parentSTE) {
     String prefix = "";
     if (parentSTE != null) {
-      prefix = CoreGlobal.CAUSED_BY;
+      prefix = CoreConstants.CAUSED_BY;
     }
 
     String result = prefix + t.getClass().getName();

@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -65,7 +65,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       for (int i = 1; i < optionListSize; i++) {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
-        Map evaluatorMap = (Map) context.getObject(CoreGlobal.EVALUATOR_MAP);
+        Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
         EventEvaluator ee = (EventEvaluator) evaluatorMap.get(evaluatorStr);
         addEvaluator(ee);
       }
@@ -99,7 +99,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     ThrowableProxy information = event.getThrowableProxy();
 
     if (information == null) {
-      return CoreGlobal.EMPTY_STRING;
+      return CoreConstants.EMPTY_STRING;
     }
 
     ThrowableDataPoint[] tdpArray = information.getThrowableDataPointArray();
@@ -134,18 +134,18 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
 
       if (!printStack) {
-        return CoreGlobal.EMPTY_STRING;
+        return CoreConstants.EMPTY_STRING;
       }
     }
 
     prepareLoggingEvent(event);
     
-    buf.append(tdpArray[0]).append(CoreGlobal.LINE_SEPARATOR);
+    buf.append(tdpArray[0]).append(CoreConstants.LINE_SEPARATOR);
     for (int i = 1; i < length; i++) {
       String string = tdpArray[i].toString();
       buf.append(string);
       extraData(buf, tdpArray[i]); // allow other data to be appended
-      buf.append(CoreGlobal.LINE_SEPARATOR);
+      buf.append(CoreConstants.LINE_SEPARATOR);
     }
 
     return buf.toString();

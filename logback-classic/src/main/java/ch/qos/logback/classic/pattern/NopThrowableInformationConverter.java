@@ -2,7 +2,7 @@ package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 
 
@@ -24,7 +24,7 @@ import ch.qos.logback.core.CoreGlobal;
 public class NopThrowableInformationConverter extends ThrowableHandlingConverter {
 
   public String convert(LoggingEvent event) {
-    return CoreGlobal.EMPTY_STRING;
+    return CoreConstants.EMPTY_STRING;
   }
  
 }

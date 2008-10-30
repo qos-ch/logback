@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -56,10 +56,10 @@ public class ConversionRuleAction extends Action {
     }
 
     try {
-      Map<String, String> ruleRegistry = (Map) context.getObject(CoreGlobal.PATTERN_RULE_REGISTRY);
+      Map<String, String> ruleRegistry = (Map) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
       if(ruleRegistry == null) {
         ruleRegistry = new HashMap<String, String>();
-        context.putObject(CoreGlobal.PATTERN_RULE_REGISTRY, ruleRegistry);
+        context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
       }
       // put the new rule into the rule registry
       addInfo("registering conversion word "+conversionWord+" with class ["+converterClass+"]");

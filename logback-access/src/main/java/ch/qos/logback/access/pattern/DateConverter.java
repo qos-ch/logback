@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.CoreGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 
 
@@ -29,11 +29,11 @@ public class DateConverter extends AccessConverter {
     
     String datePattern = getFirstOption();
     if(datePattern == null) {
-      datePattern = CoreGlobal.CLF_DATE_PATTERN;
+      datePattern = CoreConstants.CLF_DATE_PATTERN;
     }
     
-    if (datePattern.equals(CoreGlobal.ISO8601_STR)) {
-      datePattern = CoreGlobal.ISO8601_PATTERN;
+    if (datePattern.equals(CoreConstants.ISO8601_STR)) {
+      datePattern = CoreConstants.ISO8601_PATTERN;
     } 
     
     try {
@@ -43,7 +43,7 @@ public class DateConverter extends AccessConverter {
       addWarn(
         "Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
       // default to the ISO8601 format
-      simpleFormat = new SimpleDateFormat(CoreGlobal.CLF_DATE_PATTERN);
+      simpleFormat = new SimpleDateFormat(CoreConstants.CLF_DATE_PATTERN);
     }
     
     List optionList = getOptionList();
