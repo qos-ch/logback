@@ -29,13 +29,11 @@ import ch.qos.logback.classic.Logger;
  * is made to log then a <code>LoggingEvent</code> instance is created. This
  * instance is passed around to the different Logback components.
  * 
- * <p>
- * Writers of Logback components such as appenders should be aware of that some
- * of the LoggingEvent fields are initialized lazily. Therefore, an appender
- * wishing to output data to be later correctly read by a receiver, must
- * initialize "lazy" fields prior to writing them out. See the
- * {@link #prepareForDeferredProcessing()} method for the exact list.
- * </p>
+ * <p> Writers of Logback components such as appenders should be aware of that
+ * some of the LoggingEvent fields are initialized lazily. Therefore, an
+ * appender wishing to output data to be later correctly read by a receiver,
+ * must initialize "lazy" fields prior to writing them out. See the
+ * {@link #prepareForDeferredProcessing()} method for the exact list. </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -46,7 +44,7 @@ public class LoggingEvent implements Serializable {
 
   private static final int NULL_ARGUMENT_ARRAY = -1;
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
-  
+
   /**
    * 
    */
@@ -56,8 +54,7 @@ public class LoggingEvent implements Serializable {
    * Fully qualified name of the calling Logger class. This field does not
    * survive serialization.
    * 
-   * <p>
-   * Note that the getCallerInformation() method relies on this fact.
+   * <p> Note that the getCallerInformation() method relies on this fact.
    */
   transient String fqnOfLoggerClass;
 
@@ -69,16 +66,14 @@ public class LoggingEvent implements Serializable {
   /**
    * Level of logging event.
    * 
-   * <p>
-   * This field should not be accessed directly. You shoud use the {@link
-   * #getLevel} method instead.
-   * </p>
+   * <p> This field should not be accessed directly. You shoud use the {@link
+   * #getLevel} method instead. </p>
    * 
    */
   private transient Level level;
 
   private String message;
-  private String formattedMessage;
+  private transient String formattedMessage;
 
   private transient Object[] argumentArray;
 
@@ -114,11 +109,6 @@ public class LoggingEvent implements Serializable {
     // bug 85 (we previously failed to set this.argumentArray)
     this.argumentArray = argArray;
 
-    if (argArray != null) {
-      formattedMessage = MessageFormatter.arrayFormat(message, argArray);
-    } else {
-      formattedMessage = message;
-    }
     timeStamp = System.currentTimeMillis();
 
     // the case is ugly but under the circumstances acceptable
@@ -151,9 +141,9 @@ public class LoggingEvent implements Serializable {
 
   /**
    * @param threadName
-   *          The threadName to set.
+   *                The threadName to set.
    * @throws IllegalStateException
-   *           If threadName has been already set.
+   *                 If threadName has been already set.
    */
   public void setThreadName(String threadName) throws IllegalStateException {
     if (this.threadName != null) {
@@ -175,8 +165,7 @@ public class LoggingEvent implements Serializable {
    */
   public void setThrowableProxy(ThrowableProxy tp) {
     if (throwableProxy != null) {
-      throw new IllegalStateException(
-          "ThrowableProxy has been already set.");
+      throw new IllegalStateException("ThrowableProxy has been already set.");
     } else {
       throwableProxy = tp;
     }
@@ -186,9 +175,8 @@ public class LoggingEvent implements Serializable {
    * This method should be called prior to serializing an event. It should also
    * be called when using asynchronous logging.
    * 
-   * <p>
-   * Note that due to performance concerns, this method does NOT extract caller
-   * data. It is the responsability of the calller to extract caller
+   * <p> Note that due to performance concerns, this method does NOT extract
+   * caller data. It is the responsability of the calller to extract caller
    * information.
    */
   public void prepareForDeferredProcessing() {
@@ -246,10 +234,8 @@ public class LoggingEvent implements Serializable {
    * null at the time of its invocation, this method extracts location
    * information. The collected information is cached for future use.
    * 
-   * <p>
-   * Note that after serialization it is impossible to correctly extract caller
-   * information.
-   * </p>
+   * <p> Note that after serialization it is impossible to correctly extract
+   * caller information. </p>
    */
   public CallerData[] getCallerData() {
     // we rely on the fact that fqnOfLoggerClass does not survive
@@ -276,7 +262,19 @@ public class LoggingEvent implements Serializable {
     this.marker = marker;
   }
 
+  // computer formatted lazy as suggested in
+  // http://jira.qos.ch/browse/LBCLASSIC-47
   public String getFormattedMessage() {
+    if (formattedMessage != null) {
+      return formattedMessage;
+    }
+
+    if (argumentArray != null) {
+      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray);
+    } else {
+      formattedMessage = message;
+    }
+
     return formattedMessage;
   }
 
