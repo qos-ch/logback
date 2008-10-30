@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
-import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventBuilder;
+import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
 
 public class SerializationPerfsTest extends TestCase {
@@ -181,7 +181,7 @@ public class SerializationPerfsTest extends TestCase {
   // }
 
   public void testWithSerialization() throws Exception {
-    Builder builder = new LoggingEventBuilder();
+    Builder builder = new TrivialLoggingEventBuilder();
     runPerfTest(builder, "LoggingEvent object serialization");
   }
 }

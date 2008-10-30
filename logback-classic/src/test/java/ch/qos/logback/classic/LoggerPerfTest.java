@@ -17,6 +17,7 @@ import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.appender.NOPAppender;
 import ch.qos.logback.core.testUtil.Env;
@@ -26,8 +27,8 @@ public class LoggerPerfTest {
   long NANOS_IN_ONE_SEC = 1000*1000*1000L;
   static long NORMAL_RUN_LENGTH = 1000 * 1000;
   static long SHORTENED_RUN_LENGTH = 500 * 1000;
-  static long REFERENCE_BIPS = 9000;
-
+  
+  
   @Before
   public void setUp() throws Exception {
   }
@@ -38,7 +39,7 @@ public class LoggerPerfTest {
     double avg = computeDurationOfDisabledLogWithStraightStringParameter(NORMAL_RUN_LENGTH);
 
     long referencePerf = 17;
-    BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 
   double computeDurationOfDisabledLogWithStraightStringParameter(long len) {
@@ -61,7 +62,7 @@ public class LoggerPerfTest {
     computeDurationOfDisabledLogWithParameters(NORMAL_RUN_LENGTH);
     double avgDuration = computeDurationOfDisabledLogWithParameters(NORMAL_RUN_LENGTH);
     long referencePerf = 36;
-    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avgDuration, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
   
   double computeDurationOfDisabledLogWithParameters(long len) {
@@ -88,7 +89,7 @@ public class LoggerPerfTest {
     computeDurationOfEnabledLog(SHORTENED_RUN_LENGTH);
     double avgDuration = computeDurationOfEnabledLog(SHORTENED_RUN_LENGTH);
     long referencePerf = 500;
-    BogoPerf.assertDuration(avgDuration, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avgDuration, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
   
   double computeDurationOfEnabledLog(long len) {
@@ -114,7 +115,7 @@ public class LoggerPerfTest {
     computeDurationOfDisabledLogsWithNOPFilter(NORMAL_RUN_LENGTH);
     double avg = computeDurationOfDisabledLogsWithNOPFilter(NORMAL_RUN_LENGTH);
     long referencePerf = 48;
-    BogoPerf.assertDuration(avg, referencePerf, REFERENCE_BIPS);
+    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 
   double computeDurationOfDisabledLogsWithNOPFilter(long len) {

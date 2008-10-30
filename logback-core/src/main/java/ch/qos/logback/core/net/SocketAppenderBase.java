@@ -17,6 +17,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * 
@@ -52,16 +53,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   private Connector connector;
 
   protected int counter = 0;
-
-  // reset the ObjectOutputStream every 70 calls
-  private static final int RESET_FREQUENCY = 70;
-
-  // /**
-  // * Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
-  // */
-  // public void activateOptions() {
-  // connect(address, port);
-  // }
 
   /**
    * Start this appender.
@@ -163,7 +154,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
         oos.writeObject(event);
         // addInfo("=========Flushing.");
         oos.flush();
-        if (++counter >= RESET_FREQUENCY) {
+        if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
           counter = 0;
           // Failing to reset the object output stream every now and
           // then creates a serious memory leak.

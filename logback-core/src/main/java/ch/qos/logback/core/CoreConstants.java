@@ -63,5 +63,16 @@ public class CoreConstants {
    * we close the table and create a new one
    */
   public static final int TABLE_ROW_LIMIT = 10000;
+  
+  
+  // reset the ObjectOutputStream every 70 calls
+  // this avoid serious memory leaks
+  public static final int OOS_RESET_FREQUENCY = 70;
+  
+  /**
+   * The reference bogo instructions per second on
+   * Ceki's machine (Orion)
+   */
+  public static long REFERENCE_BIPS = 9000;
 
 }

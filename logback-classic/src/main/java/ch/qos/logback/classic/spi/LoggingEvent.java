@@ -73,6 +73,10 @@ public class LoggingEvent implements Serializable {
   private transient Level level;
 
   private String message;
+
+  // we gain significant space at serialization time by marking
+  // formattedMessage as transient and constructing it lazily in
+  // getFormmatedMessage()
   private transient String formattedMessage;
 
   private transient Object[] argumentArray;

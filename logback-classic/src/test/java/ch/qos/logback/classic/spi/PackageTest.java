@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.classic.spi;
 
@@ -23,8 +23,9 @@ public class PackageTest extends TestCase {
     suite.addTestSuite(CallerDataTest.class); 
     suite.addTest(new JUnit4TestAdapter (LoggerComparatorTest.class));
     suite.addTest(new JUnit4TestAdapter (LoggingEventSerializationTest.class));
-    suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.spi.ThrowableToDataPointTest.class));
-    suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.spi.BasicCPDCTest.class));
+    suite.addTest(new JUnit4TestAdapter(LoggingEventSerializationPerfTest.class));
+    suite.addTest(new JUnit4TestAdapter(ThrowableToDataPointTest.class));
+    suite.addTest(new JUnit4TestAdapter(BasicCPDCTest.class));
     return suite;
   }
 }
