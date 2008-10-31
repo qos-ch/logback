@@ -26,25 +26,28 @@ import ch.qos.logback.core.ConsoleAppender;
 public class JettyFixture {
   RequestLogImpl requestLogImpl;
 
-  public static final int PORT = 1234;
+  private final int port;
+  Server server;
+  String url;
   
-  public JettyFixture(RequestLogImpl impl) {
+  public JettyFixture(RequestLogImpl impl, int port) {
     requestLogImpl = impl;
+    this.port = port;
+    url = "http://localhost:" + port + "/";
   }
 
   public String getName() {
     return "Jetty Test Setup";
   }
 
-  Server server;
-  String url = "http://localhost:" + PORT + "/";
+  public String getUrl() {
+    return url;
+  }
 
   public void start() throws Exception {
-    // System.out.println("into setUp");
-
     server = new Server();
     Connector connector = new SelectChannelConnector();
-    connector.setPort(PORT);
+    connector.setPort(port);
     server.setConnectors(new Connector[] { connector });
 
     ContextHandler context = new ContextHandler();

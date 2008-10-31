@@ -15,31 +15,34 @@ import org.junit.Test;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class JettyBasicTest {
 
-  static RequestLogImpl requestLogImpl;
-  static JettyFixture fixture;
+  static RequestLogImpl REQYEST_LOG_IMPL;
+  static JettyFixture JETTY_FIXTURE;
 
+  static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
+  
   @BeforeClass
   static public void startServer() throws Exception {
     // System.out.println("*** JettyBasicTest.startServer called");
-    requestLogImpl = new RequestLogImpl();
-    JettyFixture fixture = new JettyFixture(requestLogImpl);
-    fixture.start();
+    REQYEST_LOG_IMPL = new RequestLogImpl();
+    JETTY_FIXTURE = new JettyFixture(REQYEST_LOG_IMPL, RANDOM_SERVER_PORT);
+    JETTY_FIXTURE.start();
   }
 
   @AfterClass
   static public void stopServer() throws Exception {
     // System.out.println("*** JettyBasicTest.stopServer called");
-    if (fixture != null) {
-      fixture.stop();
+    if (JETTY_FIXTURE != null) {
+      JETTY_FIXTURE.stop();
     }
   }
 
   @Test
   public void getRequest() throws Exception {
-    URL url = new URL("http://localhost:" + JettyFixture.PORT + "/");
+    URL url = new URL("http://localhost:" + RANDOM_SERVER_PORT + "/");
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
 
@@ -47,14 +50,14 @@ public class JettyBasicTest {
 
     assertEquals("hello world", result);
 
-    NotifyingListAppender listAppender = (NotifyingListAppender) requestLogImpl
+    NotifyingListAppender listAppender = (NotifyingListAppender) REQYEST_LOG_IMPL
         .getAppender("list");
     listAppender.list.clear();
   }
 
   @Test
   public void eventGoesToAppenders() throws Exception {
-    URL url = new URL("http://localhost:" + JettyFixture.PORT + "/");
+    URL url = new URL(JETTY_FIXTURE.getUrl());
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoInput(true);
 
@@ -62,7 +65,7 @@ public class JettyBasicTest {
 
     assertEquals("hello world", result);
 
-    NotifyingListAppender listAppender = (NotifyingListAppender) requestLogImpl
+    NotifyingListAppender listAppender = (NotifyingListAppender) REQYEST_LOG_IMPL
         .getAppender("list");
     synchronized (listAppender) {
       listAppender.wait(100);
@@ -77,8 +80,7 @@ public class JettyBasicTest {
 
   @Test
   public void postContentConverter() throws Exception {
-    // System.out.println("into test");
-    URL url = new URL("http://localhost:" + JettyFixture.PORT + "/");
+    URL url = new URL(JETTY_FIXTURE.getUrl());
     String msg = "test message";
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -99,7 +101,7 @@ public class JettyBasicTest {
 
     // StatusPrinter.print(requestLogImpl.getStatusManager());
 
-    NotifyingListAppender listAppender = (NotifyingListAppender) requestLogImpl
+    NotifyingListAppender listAppender = (NotifyingListAppender) REQYEST_LOG_IMPL
         .getAppender("list");
 
     synchronized (listAppender) {

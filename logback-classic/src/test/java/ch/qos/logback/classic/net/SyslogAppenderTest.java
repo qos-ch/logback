@@ -24,6 +24,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.net.mock.MockSyslogServer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.net.SyslogConstants;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest {
@@ -38,8 +39,8 @@ public class SyslogAppenderTest {
 
   @Test
   public void basic() throws InterruptedException {
-    int port = MockSyslogServer.PORT + 1;
-
+    int port = RandomUtil.getRandomServerPort();
+    
     MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
     // give MockSyslogServer head start
@@ -83,7 +84,8 @@ public class SyslogAppenderTest {
 
   @Test
   public void tException() throws InterruptedException {
-    int port = MockSyslogServer.PORT + 2;
+    int port = RandomUtil.getRandomServerPort();
+    
     MockSyslogServer mockServer = new MockSyslogServer(21, port);
     mockServer.start();
     // give MockSyslogServer head start

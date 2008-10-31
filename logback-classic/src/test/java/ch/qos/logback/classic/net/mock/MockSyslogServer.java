@@ -20,8 +20,6 @@ import java.util.List;
  */
 public class MockSyslogServer extends Thread {
 
-  public static final int PORT = 14500;
-
   final int loopLen;
   final int port;
   
