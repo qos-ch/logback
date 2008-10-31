@@ -25,7 +25,6 @@ import ch.qos.logback.classic.net.mock.MockSyslogServer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest {
 
@@ -40,7 +39,7 @@ public class SyslogAppenderTest {
   @Test
   public void basic() throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
-    
+
     MockSyslogServer mockServer = new MockSyslogServer(1, port);
     mockServer.start();
     // give MockSyslogServer head start
@@ -62,7 +61,6 @@ public class SyslogAppenderTest {
     logger.addAppender(sa);
     String logMsg = "hello";
     logger.debug(logMsg);
-    // StatusPrinter.print(lc.getStatusManager());
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
@@ -71,14 +69,13 @@ public class SyslogAppenderTest {
     assertEquals(1, mockServer.getMessageList().size());
     String msg = mockServer.getMessageList().get(0);
 
+    String threadName = Thread.currentThread().getName();
+
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
-    String threadName = Thread.currentThread().getName();
-    System.out.println("msg is \""+msg+"\"");
-    System.out.println("threadName is \""+threadName+"\"");
+    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.]* ";
     assertTrue(msg.matches(first + "\\[" + threadName + "\\] " + loggerName
         + " " + logMsg));
 
@@ -87,7 +84,7 @@ public class SyslogAppenderTest {
   @Test
   public void tException() throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
-    
+
     MockSyslogServer mockServer = new MockSyslogServer(21, port);
     mockServer.start();
     // give MockSyslogServer head start
@@ -130,7 +127,7 @@ public class SyslogAppenderTest {
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
+    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.]* ";
     String threadName = Thread.currentThread().getName();
     String expectedResult = expectedPrefix + "\\[" + threadName + "\\] "
         + loggerName + " " + logMsg;
@@ -138,7 +135,7 @@ public class SyslogAppenderTest {
   }
 
   @Test
-  public void bug147() throws JoranException {
+  public void LBCLASSIC_50() throws JoranException {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -146,10 +143,9 @@ public class SyslogAppenderTest {
     configurator.setContext(lc);
     lc.shutdownAndReset();
     configurator.doConfigure(TestConstants.JORAN_ONPUT_PREFIX
-        + "/syslog_147.xml");
+        + "/syslog_LBCLASSIC_50.xml");
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     logger.info("hello");
-    StatusPrinter.print(lc);
   }
 }
