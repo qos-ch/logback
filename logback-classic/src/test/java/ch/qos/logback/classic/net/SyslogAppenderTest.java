@@ -77,6 +77,8 @@ public class SyslogAppenderTest {
 
     String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} \\w* ";
     String threadName = Thread.currentThread().getName();
+    System.out.println("msg is \""+msg+"\"");
+    System.out.println("threadName is \""+threadName+"\"");
     assertTrue(msg.matches(first + "\\[" + threadName + "\\] " + loggerName
         + " " + logMsg));
 
