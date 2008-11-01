@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.RootLogger;
-import org.slf4j.impl.JDK14LoggerFactory;
+//import org.slf4j.impl.JDK14LoggerFactory;
 
 import ch.qos.logback.classic.HLogger;
 import ch.qos.logback.classic.HLoggerContext;
@@ -29,15 +29,15 @@ import ch.qos.logback.classic.control.ScenarioMaker;
 
 
 public class SpeedOfDisabledDebug {
-  static LoggerContext listLoggerContext = new LoggerContext();
+  static LoggerContext loggerContext = new LoggerContext();
   static HLoggerContext hashLoggerContext = new HLoggerContext();
   static ControlLoggerContext controlContext = new ControlLoggerContext();
   static Hierarchy log4jHierarchy = new Hierarchy(new RootLogger(org.apache.log4j.Level.OFF));
-  static JDK14LoggerFactory jdk14FA = new JDK14LoggerFactory();
+  //static JDK14LoggerFactory jdk14FA = new JDK14LoggerFactory();
   static String loggerName;
 
   public static void main(String[] args) throws IOException {
-    listLoggerContext.getRootLogger().setLevel(Level.OFF);
+    loggerContext.getLogger(LoggerContext.ROOT_NAME).setLevel(Level.OFF);
     hashLoggerContext.getRootLogger().setLevel(Level.OFF);
     controlContext.getRootLogger().setLevel(Level.OFF);
     //LogManager
@@ -47,22 +47,22 @@ public class SpeedOfDisabledDebug {
     loggerName = ((CreateLogger) s.get(1000)).getLoggerName();
     System.out.println("Logger name is "+loggerName);
     
-    final Logger listLogger = listLoggerContext.getLogger(loggerName);
+    final org.slf4j.Logger slf4jLogger = loggerContext.getLogger(loggerName);
     final HLogger hashLogger = hashLoggerContext.getLogger(loggerName);
     final ControlLogger controlLogger = controlContext.getLogger(loggerName);
-    final org.apache.log4j.Logger log4jLogger = log4jHierarchy.getLogger(loggerName);
-    final org.slf4j.Logger jdk14Logger = jdk14FA.getLogger(loggerName);
+    //final org.apache.log4j.Logger log4jLogger = log4jHierarchy.getLogger(loggerName);
+    //final java.util.logging.Logger jdk14Logger = java.util.logging.Logger.getLogger(loggerName);
     int x1 = 1000*1000;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       x1 *= 2;
       System.out.println("======= len=" + x1);
 
       speedTestSLF4JLogger(hashLogger, x1, "Hash logger ");
-      speedTestSLF4JLogger(listLogger, x1, "List logger ");
+      speedTestSLF4JLogger(slf4jLogger, x1, "Logback logger ");
 
       speedTestSLF4JLogger(controlLogger, x1, "Control logger ");
-      speedTestSLF4JLogger(log4jLogger, x1, "Log4j logger ");
-      speedTestSLF4JLogger(jdk14Logger, x1, "JDK14 Logger ");
+      //speedTestSLF4JLogger(log4jLogger, x1, "Log4j logger ");
+      //speedTestSLF4JLogger(jdk14Logger, x1, "JDK14 Logger ");
       speedTestHashLogger(x1);
       speedTestListLogger(x1);
       speedTestControlLogger(x1);
@@ -73,6 +73,7 @@ public class SpeedOfDisabledDebug {
 
 
   static void speedTestSLF4JLogger(final org.slf4j.Logger logger, final int len, String loggerType) {
+    logger.debug("some message");
     long start = System.nanoTime();
     for (int i = 0; i < len; i++) {
       logger.debug("some message");
@@ -82,14 +83,14 @@ public class SpeedOfDisabledDebug {
   }
 
   static void speedTestListLogger(final int len) {
-    final Logger logger = listLoggerContext.getLogger(loggerName);
+    final Logger logger = loggerContext.getLogger(loggerName);
 
     long start = System.nanoTime();
     for (int i = 0; i < len; i++) {
       logger.debug("some message");
     }
     long result = System.nanoTime() - start;
-    System.out.println("DIRECT List logger: " + (result / len));
+    System.out.println("DIRECT logback logger: " + (result / len));
   }
 
   static void speedTestHashLogger(final int len) {
