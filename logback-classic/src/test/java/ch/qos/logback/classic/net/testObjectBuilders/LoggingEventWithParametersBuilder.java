@@ -40,9 +40,6 @@ public class LoggingEventWithParametersBuilder implements Builder {
     le.setLoggerRemoteView(logger.getLoggerRemoteView());
     le.setThreadName("threadName");
 
-    if (i == 2) {
-      System.out.println(le.getFormattedMessage());
-    }
     return le;
   }
 }

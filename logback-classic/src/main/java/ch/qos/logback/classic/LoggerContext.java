@@ -23,8 +23,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.spi.ContextListener;
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
-import ch.qos.logback.classic.spi.TurboFilterAttachable;
-import ch.qos.logback.classic.spi.TurboFilterAttachableImpl;
+import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
@@ -44,7 +43,7 @@ import ch.qos.logback.core.status.StatusManager;
  * @author Ceki Gulcu
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory,
-    TurboFilterAttachable, LifeCycle {
+    LifeCycle {
 
   public static final String ROOT_NAME = "root";
 
@@ -60,10 +59,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   private Hashtable<String, Logger> loggerCache;
 
   private LoggerContextRemoteView loggerContextRemoteView;
-  private TurboFilterAttachableImpl turboFilterAI = null;
+  private final TurboFilterList turboFilterAI = new TurboFilterList();
 
   boolean started = false;
 
+  public TurboFilterList getTurboFilterAI() {
+    return turboFilterAI;
+  }
+  
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
@@ -104,10 +107,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public final Logger getLogger(final String name) {
 
-    if(name == null) {
+    if (name == null) {
       throw new IllegalArgumentException("name argument cannot be null");
     }
-    
+
     // if we are asking for the root logger, then let us return it without
     // wasting time
     if (ROOT_NAME.equalsIgnoreCase(name)) {
@@ -206,55 +209,41 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
-    if (turboFilterAI == null) {
-      turboFilterAI = new TurboFilterAttachableImpl();
-    }
-    turboFilterAI.addTurboFilter(newFilter);
+    turboFilterAI.add(newFilter);
   }
 
   public void clearAllTurboFilters() {
-    if (turboFilterAI == null) {
-      return;
-    }
-    turboFilterAI.clearAllTurboFilters();
-    turboFilterAI = null;
+    turboFilterAI.clear();
   }
 
-  final public FilterReply getTurboFilterChainDecision(final Marker marker,
+  final public FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object[] params, final Throwable t) {
-    if (turboFilterAI == null) {
+    if (turboFilterAI.size() == 0) {
       return FilterReply.NEUTRAL;
     }
-    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
-        params, t);
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level,
+        format, params, t);
   }
 
-  final public FilterReply getTurboFilterChainDecision(final Marker marker,
+  final public FilterReply getTurboFilterChainDecision_1(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param, final Throwable t) {
-    if (turboFilterAI == null) {
+    if (turboFilterAI.size() == 0) {
       return FilterReply.NEUTRAL;
     }
-    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
-        new Object[] { param }, t);
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level,
+        format, new Object[] { param }, t);
   }
 
-  final public FilterReply getTurboFilterChainDecision(final Marker marker,
+  final public FilterReply getTurboFilterChainDecision_2(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object param1, final Object param2, final Throwable t) {
-    if (turboFilterAI == null) {
+    if (turboFilterAI.size() == 0) {
       return FilterReply.NEUTRAL;
     }
-    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level, format,
-        new Object[] { param1, param2 }, t);
-  }
-
-  public TurboFilter getFirstTurboFilter() {
-    if (turboFilterAI == null) {
-      return null;
-    }
-    return turboFilterAI.getFirstTurboFilter();
+    return turboFilterAI.getTurboFilterChainDecision(marker, logger, level,
+        format, new Object[] { param1, param2 }, t);
   }
 
   public void addListener(ContextListener listener) {
@@ -289,9 +278,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void stop() {
     started = false;
   }
-  
+
   @Override
   public String toString() {
-    return this.getClass().getName()+"["+getName()+"]";
+    return this.getClass().getName() + "[" + getName() + "]";
   }
 }
