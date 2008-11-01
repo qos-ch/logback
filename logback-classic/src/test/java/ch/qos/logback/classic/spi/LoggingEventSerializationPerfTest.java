@@ -16,6 +16,7 @@ import ch.qos.logback.classic.net.testObjectBuilders.Builder;
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventWithParametersBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.testUtil.Env;
 
 public class LoggingEventSerializationPerfTest {
 
@@ -56,6 +57,9 @@ public class LoggingEventSerializationPerfTest {
 
   @Test
   public void testPerformance() {
+    if (Env.isLinux()) {
+      return;
+    }
     TrivialLoggingEventBuilder builder = new TrivialLoggingEventBuilder();
 
     doLoop(builder, LOOP_LEN);
