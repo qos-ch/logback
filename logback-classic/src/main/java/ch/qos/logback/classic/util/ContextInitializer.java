@@ -60,7 +60,7 @@ public class ContextInitializer {
         File f = new File(logbackConfigFile);
         if (f.exists() && f.isFile()) {
           try {
-            result = f.toURL();
+            result = f.toURI().toURL();
             return result;
           } catch (MalformedURLException e1) {
           }
