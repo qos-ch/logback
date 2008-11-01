@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Random;
-
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
@@ -22,6 +20,7 @@ import ch.qos.logback.classic.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -29,7 +28,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 
 public class SMTPAppender_GreenTest {
 
-  int diff = 1024 + new Random().nextInt(10000);
+  int port = RandomUtil.getRandomServerPort();
   GreenMail greenMail;
   SMTPAppender smtpAppender;
   LoggerContext lc = new LoggerContext();
@@ -40,7 +39,7 @@ public class SMTPAppender_GreenTest {
 
   @Before
   public void setUp() throws Exception {
-    ServerSetup serverSetup = new ServerSetup(diff, "localhost",
+    ServerSetup serverSetup = new ServerSetup(port, "localhost",
         ServerSetup.PROTOCOL_SMTP);
     greenMail = new GreenMail(serverSetup);
     greenMail.start();
@@ -53,7 +52,7 @@ public class SMTPAppender_GreenTest {
     smtpAppender.setName("smtp");
     smtpAppender.setFrom("user@host.dom");
     smtpAppender.setSMTPHost("localhost");
-    smtpAppender.setSMTPPort(diff);
+    smtpAppender.setSMTPPort(port);
     smtpAppender.setSubject(TEST_SUBJECT);
     smtpAppender.addTo("nospam@qos.ch");
     // smtpAppender.start();
