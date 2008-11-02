@@ -20,7 +20,7 @@ import ch.qos.logback.core.testUtil.Env;
 
 public class LoggingEventSerializationPerfTest {
 
-  static int LOOP_LEN = 10 * 1000;
+  static int LOOP_LEN = 100 * 1000;
 
   NOPOutputStream noos = new NOPOutputStream();
   ObjectOutputStream oos;
@@ -81,6 +81,9 @@ public class LoggingEventSerializationPerfTest {
   
   @Test
   public void testPerformanceWithParameters() {
+    if (Env.isLinux()) {
+      return;
+    }
     LoggingEventWithParametersBuilder builder = new LoggingEventWithParametersBuilder();
 
     doLoop(builder, LOOP_LEN);
@@ -89,7 +92,7 @@ public class LoggingEventSerializationPerfTest {
 
     long actualSize = (long) (noos.size()/(1024*1.1d));
     
-    double baosSizeLimit = 1300;
+    double baosSizeLimit = 13000;
     assertTrue("actualSize " + actualSize + " should be less than "
         + baosSizeLimit, baosSizeLimit > actualSize);
 
