@@ -37,7 +37,7 @@ public class PropertyAction extends Action {
 
   static final String RESOURCE_ATTRIBUTE = "resource";
 
-  static String INVALID_ATTRIBUTES = "In <substitutionProperty> element, either the \"file\" attribute alone, or "
+  static String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
       + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
 
   /**

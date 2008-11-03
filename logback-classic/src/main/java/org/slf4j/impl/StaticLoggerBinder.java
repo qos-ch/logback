@@ -99,7 +99,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       throws ClassNotFoundException, SecurityException, NoSuchMethodException,
       IllegalArgumentException, InstantiationException, IllegalAccessException,
       InvocationTargetException {
-    Class contextSelectorClass = Loader.loadClass(contextSelectorStr);
+    Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
     Constructor cons = contextSelectorClass
         .getConstructor(new Class[] { LoggerContext.class });
     return (ContextSelector) cons.newInstance(defaultLoggerContext);

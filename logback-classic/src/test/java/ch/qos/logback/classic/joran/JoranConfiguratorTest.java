@@ -99,7 +99,7 @@ public class JoranConfiguratorTest {
     // and place the relevant object correctly.
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
 
-    TurboFilter filter = loggerContext.getTurboFilterAI().get(0);
+    TurboFilter filter = loggerContext.getTurboFilterList().get(0);
     assertTrue(filter instanceof NOPTurboFilter);
   }
 
@@ -113,7 +113,7 @@ public class JoranConfiguratorTest {
 
     // StatusPrinter.print(loggerContext.getStatusManager());
 
-    TurboFilter filter = loggerContext.getTurboFilterAI().get(0);
+    TurboFilter filter = loggerContext.getTurboFilterList().get(0);
     assertTrue(filter instanceof DebugUsersTurboFilter);
     DebugUsersTurboFilter dutf = (DebugUsersTurboFilter) filter;
     assertEquals(2, dutf.getUsers().size());

@@ -133,9 +133,9 @@ public class TurboFilteringInLoggerTest extends TestCase {
 
   public void testLoggingContextShutdownAndReset() {
     addYesFilter();
-    assertNotNull(context.getTurboFilterAI().get(0));
+    assertNotNull(context.getTurboFilterList().get(0));
     context.shutdownAndReset();
-    assertEquals(0, context.getTurboFilterAI().size());
+    assertEquals(0, context.getTurboFilterList().size());
   }
   
 }

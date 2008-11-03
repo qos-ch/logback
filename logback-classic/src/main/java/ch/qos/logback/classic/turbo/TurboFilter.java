@@ -32,12 +32,7 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
   private String name;
   boolean start = false;  
  
-  
-  /**
-   * Points to the next filter in the filter chain.
-   */
-  private TurboFilter turboNext;
-
+ 
   /**
    * Make a decision based on the multiple parameters passed as arguments.
    * The returned value should be one of <code>{@link FilterReply#DENY}</code>, 
@@ -65,20 +60,8 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
   public void stop() {
     this.start = false;
   }
-  /**
-   * Set the next filter pointer.
-   */
-  public void setNext(TurboFilter next) {
-    this.turboNext = next;
-  }
 
-  /**
-   * Return the pointer to the next filter;
-   */
-  public TurboFilter getNext() {
-    return turboNext;
-  }
-  
+
   public String getName() {
     return name;
   }
