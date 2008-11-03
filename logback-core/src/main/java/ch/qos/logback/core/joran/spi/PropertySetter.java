@@ -426,7 +426,7 @@ public class PropertySetter extends ContextAwareBase {
   /**
    * Convert <code>val</code> a String parameter to an object of a given type.
    */
-  protected Object convertArg(String val, Class type) {
+  protected Object convertArg(String val, Class<?> type) {
     if (val == null) {
       return null;
     }
@@ -472,7 +472,7 @@ public class PropertySetter extends ContextAwareBase {
     return false;
   }
 
-  Object buildFromString(Class type, String val) {
+  Object buildFromString(Class<?> type, String val) {
     try {
       Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF,
           STING_CLASS_PARAMETER);
@@ -485,7 +485,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  protected Object convertEnum(String val, Class type) {
+  protected Object convertEnum(String val, Class<?> type) {
     try {
       Method m = type.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
       return m.invoke(null, val);
