@@ -21,6 +21,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderIntegrationTest {
@@ -69,7 +70,10 @@ public class DBAppenderIntegrationTest {
     
   }
   
-  static boolean isConformingHost() {
+  static boolean isConformingHostAndJDK16OrHigher() {
+    if(!Env.isJDK6OrHigher()) {
+      return false;
+    }
     for (String conformingHost : CONFORMING_HOST_LIST) {
       if (conformingHost.equalsIgnoreCase(LOCAL_HOST_NAME)) {
         return true;
@@ -81,7 +85,7 @@ public class DBAppenderIntegrationTest {
   @Test
   public void sqlserver() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHost()) {
+    if (!isConformingHostAndJDK16OrHigher()) {
       return;
     }
     doTest("src/test/input/integration/db/sqlserver-with-driver.xml");
@@ -90,7 +94,7 @@ public class DBAppenderIntegrationTest {
   @Test
   public void oracle10g() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHost()) {
+    if (!isConformingHostAndJDK16OrHigher()) {
       return;
     }
     doTest("src/test/input/integration/db/oracle10g-with-driver.xml");
@@ -100,7 +104,7 @@ public class DBAppenderIntegrationTest {
   @Ignore
   public void oracle11g() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHost()) {
+    if (!isConformingHostAndJDK16OrHigher()) {
       return;
     }
     doTest("src/test/input/integration/db/oracle11g-with-driver.xml");
@@ -109,7 +113,7 @@ public class DBAppenderIntegrationTest {
   @Test
   public void mysql() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHost()) {
+    if (!isConformingHostAndJDK16OrHigher()) {
       return;
     }
     doTest("src/test/input/integration/db/mysql-with-driver.xml");
@@ -118,7 +122,7 @@ public class DBAppenderIntegrationTest {
   @Test
   public void postgres() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHost()) {
+    if (!isConformingHostAndJDK16OrHigher()) {
       return;
     }
     doTest("src/test/input/integration/db/postgresql-with-driver.xml");
