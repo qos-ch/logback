@@ -14,8 +14,21 @@ public class Env {
   static public boolean isWindows() {
     return System.getProperty("os.name").indexOf("Windows") != -1;
   }
-  
+
   static public boolean isLinux() {
     return System.getProperty("os.name").indexOf("Linux") != -1;
   }
+
+  static public boolean isJDK6OrHigher() {
+    String javaVersion = System.getProperty("java.version");
+    if (javaVersion == null) {
+      return false;
+    }
+    if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
