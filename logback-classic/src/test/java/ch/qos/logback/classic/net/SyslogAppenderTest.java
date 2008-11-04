@@ -141,7 +141,7 @@ public class SyslogAppenderTest {
 
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
-    lc.shutdownAndReset();
+    lc.reset();
     configurator.doConfigure(TestConstants.JORAN_ONPUT_PREFIX
         + "/syslog_LBCLASSIC_50.xml");
 

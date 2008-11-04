@@ -11,7 +11,7 @@ public class JMSQueueAppenderTestApp {
   public static void main(String[] args) {
     Logger logger = (Logger)LoggerFactory.getLogger(JMSTopicAppenderTestApp.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.shutdownAndReset();
+    lc.reset();
     
     JMSQueueAppender appender = new JMSQueueAppender();
     appender.setContext(lc);

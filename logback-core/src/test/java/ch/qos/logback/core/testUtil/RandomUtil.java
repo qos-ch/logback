@@ -21,4 +21,11 @@ public class RandomUtil {
     return r + 1024;
   }
 
+  public static int getPositiveInt() {
+    int r = random.nextInt();
+    if (r < 0) {
+      r = -r;
+    }
+    return r;
+  }
 }

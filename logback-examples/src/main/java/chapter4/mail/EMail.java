@@ -35,7 +35,7 @@ public class EMail {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     JoranConfigurator configurator = new JoranConfigurator();
-    lc.shutdownAndReset();
+    lc.reset();
     configurator.setContext(lc);
     configurator.doConfigure(configFile);
     StatusPrinter.printIfErrorsOccured(lc);

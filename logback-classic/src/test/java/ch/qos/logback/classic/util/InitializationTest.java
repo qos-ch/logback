@@ -46,7 +46,7 @@ public class InitializationTest {
   public void tearDown() throws Exception {
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
     System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
-    lc.shutdownAndReset();
+    lc.reset();
   }
 
   @Test
@@ -73,7 +73,7 @@ public class InitializationTest {
       assertTrue(appender instanceof ConsoleAppender);
     }
     {
-      lc.shutdownAndReset();
+      lc.reset();
       Appender appender = root.getAppender("STDOUT");
       assertNull(appender);
     }

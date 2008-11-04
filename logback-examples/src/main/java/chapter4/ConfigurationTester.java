@@ -41,7 +41,7 @@ public class ConfigurationTester {
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
-      lc.shutdownAndReset();
+      lc.reset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
       je.printStackTrace();

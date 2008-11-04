@@ -43,7 +43,7 @@ public class ContextDetachingSCL implements ServletContextListener {
       if (context != null) {
         Logger logger = context.getLogger(LoggerContext.ROOT_NAME);
         logger.warn("Shutting down context " + loggerContextName);
-        context.shutdownAndReset();
+        context.reset();
       } else {
         System.out.println("No context named " + loggerContextName + " was found.");
       }

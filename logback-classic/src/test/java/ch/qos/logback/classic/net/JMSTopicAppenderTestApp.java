@@ -11,7 +11,7 @@ public class JMSTopicAppenderTestApp {
   public static void main(String[] args) {
     Logger logger = (Logger)LoggerFactory.getLogger(JMSTopicAppenderTestApp.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.shutdownAndReset();
+    lc.reset();
     
     JMSTopicAppender appender = new JMSTopicAppender();
     appender.setContext(lc);

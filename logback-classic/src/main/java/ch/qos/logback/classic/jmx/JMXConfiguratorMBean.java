@@ -9,18 +9,19 @@
  */
 package ch.qos.logback.classic.jmx;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
 
 import ch.qos.logback.core.joran.spi.JoranException;
 
-public interface ConfiguratorMBean {
+public interface JMXConfiguratorMBean {
   
-  public void reload();
+  public void reloadDefaultConfiguration() throws JoranException;
   
-  public void reload(String fileName) throws JoranException;
+  public void reloadByFileName(String fileName) throws JoranException, FileNotFoundException;
   
-  public void reload(URL url) throws JoranException;
+  public void reloadByURL(URL url) throws JoranException;
   
   public void setLoggerLevel(String loggerName, String levelStr);
   

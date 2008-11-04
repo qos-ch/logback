@@ -2,7 +2,7 @@ package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.classic.LoggerContext;
 
-public class BasicContextListener implements ContextListener {
+public class BasicContextListener implements LoggerContextListener {
 
   boolean updated = false;
   LoggerContext context;

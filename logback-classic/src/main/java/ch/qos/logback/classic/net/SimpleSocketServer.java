@@ -160,7 +160,7 @@ public class SimpleSocketServer extends Thread {
   static public void configureLC(LoggerContext lc, String configFile)
       throws JoranException {
     JoranConfigurator configurator = new JoranConfigurator();
-    lc.shutdownAndReset();
+    lc.reset();
     configurator.setContext(lc);
     configurator.doConfigure(configFile);
   }

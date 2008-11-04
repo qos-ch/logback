@@ -23,7 +23,7 @@ public class Log4jInvocation {
   @Before
   public void fixture() {
     lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.shutdownAndReset();
+    lc.reset();
 
     listAppender = new DummyLBAppender();
     listAppender.setContext(lc);

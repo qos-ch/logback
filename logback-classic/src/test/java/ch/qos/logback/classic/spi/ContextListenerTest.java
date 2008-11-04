@@ -16,7 +16,7 @@ public class ContextListenerTest extends TestCase {
   }
   
   public void testNotifyOnReset() {
-    context.shutdownAndReset();
+    context.reset();
     assertTrue(listener.updated);
     assertEquals(listener.context, context);
   }

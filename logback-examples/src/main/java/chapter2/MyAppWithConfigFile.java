@@ -26,7 +26,7 @@ public class MyAppWithConfigFile {
 
     try {
       JoranConfigurator configurator = new JoranConfigurator();
-      lc.shutdownAndReset();
+      lc.reset();
       configurator.setContext(lc);
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {

@@ -45,7 +45,7 @@ public class SocketClient2 {
     if (configFile.endsWith(".xml")) {
       LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
       JoranConfigurator configurator = new JoranConfigurator();
-      lc.shutdownAndReset();
+      lc.reset();
       configurator.setContext(lc);
       configurator.doConfigure(configFile);
     }

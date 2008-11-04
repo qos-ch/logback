@@ -25,7 +25,7 @@ public class ExitWoes1 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.shutdownAndReset(); // we want to override the default-config.
+    lc.reset(); // we want to override the default-config.
     WriterAppender<LoggingEvent> writerAppender = new WriterAppender<LoggingEvent>();
     writerAppender.setContext(lc);
     writerAppender.setLayout(new EchoLayout<LoggingEvent>());

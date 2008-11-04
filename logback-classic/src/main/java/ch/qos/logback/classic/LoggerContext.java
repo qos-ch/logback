@@ -20,7 +20,7 @@ import java.util.List;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.spi.ContextListener;
+import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterList;
@@ -50,7 +50,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
-  final private List<ContextListener> contextListenerList = new ArrayList<ContextListener>();
+  final private List<LoggerContextListener> loggerContextListenerList = new ArrayList<LoggerContextListener>();
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
   // practice, it performs a little faster than the map returned by
@@ -189,15 +189,24 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return loggerContextRemoteView;
   }
 
-  public void shutdownAndReset() {
+  public void reset() {
     root.recursiveReset();
     clearAllTurboFilters();
     fireOnReset();
     // TODO is it a good idea to reset the status listeners?
     resetStatusListeners();
+    resetListeners();
   }
 
-  void resetStatusListeners() {
+  /**
+   * @deprecated Please use reset() method instead
+   */
+
+  public void shutdownAndReset() {
+    reset();
+  }
+
+  private void resetStatusListeners() {
     StatusManager sm = getStatusManager();
     for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
       sm.remove(sl);
@@ -207,7 +216,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public TurboFilterList getTurboFilterList() {
     return turboFilterList;
   }
-  
+
   public void addTurboFilter(TurboFilter newFilter) {
     turboFilterList.add(newFilter);
   }
@@ -246,25 +255,36 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
         format, new Object[] { param1, param2 }, t);
   }
 
-  public void addListener(ContextListener listener) {
-    contextListenerList.add(listener);
+  // === start listeners ==============================================
+  public void addListener(LoggerContextListener listener) {
+    loggerContextListenerList.add(listener);
   }
 
-  public void removeListener(ContextListener listener) {
-    contextListenerList.remove(listener);
+  public void removeListener(LoggerContextListener listener) {
+    loggerContextListenerList.remove(listener);
+  }
+
+  private void resetListeners() {
+    loggerContextListenerList.clear();
+  }
+
+  public List<LoggerContextListener> getCopyOfListenerList() {
+    return new ArrayList<LoggerContextListener>(loggerContextListenerList);
   }
 
   private void fireOnReset() {
-    for (ContextListener listener : contextListenerList) {
+    for (LoggerContextListener listener : loggerContextListenerList) {
       listener.onReset(this);
     }
   }
 
   private void fireOnStart() {
-    for (ContextListener listener : contextListenerList) {
+    for (LoggerContextListener listener : loggerContextListenerList) {
       listener.onStart(this);
     }
   }
+
+  // === end listeners ==============================================
 
   public boolean isStarted() {
     return started;
@@ -276,6 +296,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void stop() {
+    reset();
     started = false;
   }
 

@@ -59,7 +59,7 @@ public class SimpleMDC {
     // Configure logback
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
-    loggerContext.shutdownAndReset();
+    loggerContext.reset();
     PatternLayout layout = new PatternLayout();
     layout.setContext(loggerContext);
     layout.setPattern("%X{first} %X{last} - %m%n");
@@ -80,7 +80,7 @@ public class SimpleMDC {
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
-      lc.shutdownAndReset();
+      lc.reset();
       URL url = Loader.getResourceBySelfClassLoader("chapter7/simpleMDC.xml");
       configurator.doConfigure(url);
     } catch (JoranException je) {

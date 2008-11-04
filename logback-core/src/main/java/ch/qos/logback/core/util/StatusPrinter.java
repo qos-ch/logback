@@ -14,14 +14,15 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.helpers.ThrowableToStringArray;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.helpers.ThrowableToStringArray;
 
 public class StatusPrinter {
 
@@ -35,8 +36,8 @@ public class StatusPrinter {
   }
 
   /**
-   * Print the contents of the context statuses, but only if they 
-   * contain errors.
+   * Print the contents of the context statuses, but only if they contain
+   * errors.
    * 
    * @param context
    */
@@ -78,18 +79,29 @@ public class StatusPrinter {
 
   public static void print(StatusManager sm) {
     StringBuilder sb = new StringBuilder();
-    buildStr(sb, sm);
+    buildStrFromStatusManager(sb, sm);
     ps.println(sb.toString());
   }
 
-  public static void buildStr(StringBuilder sb, StatusManager sm) {
-    Iterator it = sm.getCopyOfStatusList().iterator();
+  public static void print(List<Status> statusList) {
+    StringBuilder sb = new StringBuilder();
+    buildStrFromStatusList(sb, statusList);
+    ps.println(sb.toString());
+  }
+  
+
+  private static void buildStrFromStatusList(StringBuilder sb, List<Status> statusList) {
+    Iterator it = statusList.iterator();
     while (it.hasNext()) {
       Status s = (Status) it.next();
       buildStr(sb, "", s);
     }
   }
 
+  private static void buildStrFromStatusManager(StringBuilder sb, StatusManager sm) {
+    buildStrFromStatusList(sb, sm.getCopyOfStatusList());
+  }
+  
   private static void appendThrowable(StringBuilder sb, Throwable t) {
     String[] stringRep = ThrowableToStringArray.convert(t);
 

@@ -33,8 +33,7 @@ public class ContextInitializer {
     this.loggerContext = loggerContext;
   }
 
-  public void configureByResource(URL url)
-      throws JoranException {
+  public void configureByResource(URL url) throws JoranException {
     if (url == null) {
       throw new IllegalArgumentException("URL argument cannot be null");
     }
@@ -43,7 +42,7 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  private URL findConfigFileURLFromSystemProperties() {
+  private URL findConfigFileURLFromSystemProperties(boolean updateStatus) {
     String logbackConfigFile = System.getProperty(CONFIG_FILE_PROPERTY, null);
     if (logbackConfigFile != null) {
       URL result = null;
@@ -66,24 +65,38 @@ public class ContextInitializer {
           }
         }
       } finally {
-        statusOnResourceSearch(logbackConfigFile, result);
+        if (updateStatus) {
+          statusOnResourceSearch(logbackConfigFile, result);
+        }
       }
     }
     return null;
   }
 
-  public void autoConfig() throws JoranException {
-    StatusListenerConfigHelper.installIfAsked(loggerContext);
+  public URL findURLOfDefaultConfigurationFile(boolean updateStatus) {
+    URL url = findConfigFileURLFromSystemProperties(updateStatus);
+    if (url != null) {
+      return url;
+    }
 
-    URL url = findConfigFileURLFromSystemProperties();
-    if (url == null) {
-      url = Loader.getResourceBySelfClassLoader(TEST_AUTOCONFIG_FILE);
+    url = Loader.getResourceBySelfClassLoader(TEST_AUTOCONFIG_FILE);
+    if (updateStatus) {
       statusOnResourceSearch(TEST_AUTOCONFIG_FILE, url);
     }
-    if (url == null) {
-      url = Loader.getResourceBySelfClassLoader(AUTOCONFIG_FILE);
+    if (url != null) {
+      return url;
+    }
+
+    url = Loader.getResourceBySelfClassLoader(AUTOCONFIG_FILE);
+    if (updateStatus) {
       statusOnResourceSearch(AUTOCONFIG_FILE, url);
     }
+    return url;
+  }
+
+  public void autoConfig() throws JoranException {
+    StatusListenerConfigHelper.installIfAsked(loggerContext);
+    URL url = findURLOfDefaultConfigurationFile(true);
     if (url != null) {
       configureByResource(url);
     } else {

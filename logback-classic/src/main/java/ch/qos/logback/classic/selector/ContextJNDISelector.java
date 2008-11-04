@@ -119,7 +119,7 @@ public class ContextJNDISelector implements ContextSelector {
     if (url != null) {
       try {
         JoranConfigurator configurator = new JoranConfigurator();
-        context.shutdownAndReset();
+        context.reset();
         configurator.setContext(context);
         configurator.doConfigure(url);
       } catch (JoranException e) {
