@@ -16,7 +16,6 @@ public class PackageTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new JUnit4TestAdapter(RandomUtilTest.class));
-    suite.addTest(new JUnit4TestAdapter(ScenarioMakerTest.class));
     return suite;
   }
 }
