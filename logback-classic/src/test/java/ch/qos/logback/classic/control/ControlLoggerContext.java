@@ -16,15 +16,18 @@ import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.Level;
 
 /**
- * LoggerContext quite optimized for logger retrieval.
+ * This logger context quite optimized for logger retrieval.
  * 
- * It uses a single loggerMap where the key is the logger name and 
- * the value is the logger.
+ * <p>It uses a single loggerMap where the key is the logger name and the value
+ * is the logger.
  * 
- * This approach acts a lower limit for what is acheivable for low memory usage 
- * as well as low creation/retreival times. However, this simplicity also results 
- * in slow effective level evaluation, the most frequently exercised part of the API.
+ * <p>This approach acts a lower limit for what is achievable for low memory
+ * usage as well as low creation/retrieval times. However, this simplicity also
+ * results in slow effective level evaluation, the most frequently exercised
+ * part of the API.
  * 
+ * <p>This class is expected to contain correct results, and serve to verify
+ * the correctness of a more sophisticated implementation.
  * 
  * @author ceki
  */
@@ -33,8 +36,8 @@ public class ControlLoggerContext {
   private ControlLogger root;
   //
   // Hashtable loggerMap = new Hashtable();
-   Map<String, ControlLogger> loggerMap = new HashMap<String, ControlLogger>();
-   
+  Map<String, ControlLogger> loggerMap = new HashMap<String, ControlLogger>();
+
   public ControlLoggerContext() {
     this.root = new ControlLogger("root", null);
     this.root.setLevel(Level.DEBUG);
@@ -42,7 +45,7 @@ public class ControlLoggerContext {
 
   /**
    * Return this contexts root logger
-   *
+   * 
    * @return
    */
   public ControlLogger getRootLogger() {
@@ -75,7 +78,8 @@ public class ControlLoggerContext {
       while (true) {
         i = name.indexOf(ClassicGlobal.LOGGER_SEPARATOR, i);
         if (i == -1) {
-          //System.out.println("FINAL-Creating logger named [" + name + "] with parent " + parent.getName());
+          // System.out.println("FINAL-Creating logger named [" + name + "] with
+          // parent " + parent.getName());
           cl = new ControlLogger(name, parent);
           loggerMap.put(name, cl);
           return cl;
@@ -83,7 +87,8 @@ public class ControlLoggerContext {
           String parentName = name.substring(0, i);
           ControlLogger p = (ControlLogger) loggerMap.get(parentName);
           if (p == null) {
-            //System.out.println("INTERMEDIARY-Creating logger [" + parentName + "] with parent " + parent.getName());
+            // System.out.println("INTERMEDIARY-Creating logger [" + parentName
+            // + "] with parent " + parent.getName());
             p = new ControlLogger(parentName, parent);
             loggerMap.put(parentName, p);
           }
@@ -95,7 +100,7 @@ public class ControlLoggerContext {
     }
   }
 
-  public Map getLoggerMap() {
+  public Map<String, ControlLogger> getLoggerMap() {
     return loggerMap;
   }
 }

@@ -12,57 +12,57 @@ package ch.qos.logback.classic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
-import ch.qos.logback.classic.control.ControlAction;
 import ch.qos.logback.classic.control.ControlLogger;
 import ch.qos.logback.classic.control.ControlLoggerContext;
 import ch.qos.logback.classic.control.CreateLogger;
-import ch.qos.logback.classic.control.Scenario;
+import ch.qos.logback.classic.control.ScenarioAction;
 import ch.qos.logback.classic.control.ScenarioMaker;
 import ch.qos.logback.classic.control.SetLevel;
+import ch.qos.logback.classic.control.TestScenario;
 
 
-public class DynamicLoggerContextTest  {
+public class ScenarioBasedLoggerContextTest  {
   LoggerContext lc;
 
   
   @Test
-  public void test3() {
-    dynaTest(3);
+  public void testLen3() {
+    doScenarioedTest(3);
   }
 
   @Test
-  public void test30() {
-    dynaTest(30);
+  public void testLength_30() {
+    doScenarioedTest(30);
   }
 
   @Test
-  public void test1000() {
-    dynaTest(1000);
+  public void testLength_20000() {
+    doScenarioedTest(20*1000);
   }
-  //public void test50000() {
-    //dynaTest(50000);
-  //}
 
+  @Test
+  public void testLengthLong() {
+    doScenarioedTest(500*1000);
+  }
 
-  private void dynaTest(int len) {
+  private void doScenarioedTest(int len) {
     LoggerContext lc = new LoggerContext();
     ControlLoggerContext controlContext = new ControlLoggerContext();
-    Scenario s = ScenarioMaker.makeTypeBScenario(len);
+    TestScenario s = ScenarioMaker.makeRealisticCreationScenario(len);
     List actionList = s.getActionList();
     int size = actionList.size();
     for (int i = 0; i < size; i++) {
-      ControlAction action = (ControlAction) actionList.get(i);
+      ScenarioAction action = (ScenarioAction) actionList.get(i);
       if (action instanceof CreateLogger) {
         CreateLogger cl = (CreateLogger) action;
         lc.getLogger(cl.getLoggerName());
         controlContext.getLogger(cl.getLoggerName());
-      } else {
+      } else if (action instanceof SetLevel) {
         SetLevel sl = (SetLevel) action;
         Logger l = lc.getLogger(sl.getLoggerName());
         ControlLogger controlLogger = controlContext.getLogger(sl.getLoggerName());
@@ -71,29 +71,29 @@ public class DynamicLoggerContextTest  {
       }
     }
 
-    compare(controlContext, lc);
+    compareLoggerContexts(controlContext, lc);
   }
 
-  void compare(ControlLoggerContext controlLC, LoggerContext lc) {
-    Map controlLoggerMap = controlLC.getLoggerMap();
+  void compareLoggerContexts(ControlLoggerContext controlLC, LoggerContext lc) {
+    Map<String, ControlLogger> controlLoggerMap = controlLC.getLoggerMap();
 
     assertEquals(controlLoggerMap.size()+1, lc.size());
 
-    for (Iterator i = controlLoggerMap.keySet().iterator(); i.hasNext();) {
-      String loggerName = (String) i.next();
+    for (String loggerName: controlLoggerMap.keySet()) {
+        
       Logger logger = lc.exists(loggerName);
       ControlLogger controlLogger = (ControlLogger) controlLoggerMap.get(loggerName);
       if (logger == null) {
-        throw new IllegalStateException("HLoggerr" + loggerName + " should exist");
+        throw new IllegalStateException("logger" + loggerName + " should exist");
       }
       assertEquals(loggerName, logger.getName());
       assertEquals(loggerName, controlLogger.getName());
 
-      assertCompare(controlLogger, logger);
+      compareLoggers(controlLogger, logger);
     }
   }
 
-  void assertCompare(ControlLogger controlLogger, Logger logger) {
+  void compareLoggers(ControlLogger controlLogger, Logger logger) {
     assertEquals(controlLogger.getName(), logger.getName());
     assertEquals(controlLogger.getEffectiveLevel(), logger.getEffectiveLevel());
 

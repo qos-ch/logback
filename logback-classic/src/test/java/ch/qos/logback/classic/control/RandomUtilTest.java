@@ -21,7 +21,7 @@ public class RandomUtilTest {
     int len = 100000;
     int AVERAGE = 5;
     for(int i = 0; i < len; i++) {
-      sum += RandomUtil.gaussianAsPositiveInt(AVERAGE, 2);
+      sum += ScenarioRandomUtil.gaussianAsPositiveInt(AVERAGE, 2);
     }
 
     double resultingAverage =   sum/(1.0*len);

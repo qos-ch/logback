@@ -2,6 +2,7 @@ package ch.qos.logback.classic.jmx;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
@@ -13,8 +14,9 @@ import javax.management.ObjectName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -86,13 +88,31 @@ public class JMXConfiguratorTest {
   }
 
   @Test
-  public void getLoggerLevel() {
+  public void getLoggerLevel_LBCLASSIC_78() {
     String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()
         + ",Type=" + this.getClass().getName();
 
     ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
     JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
-    configurator.getLoggerLevel(testLogger.getName());
+    assertEquals("", configurator.getLoggerLevel(testLogger.getName()));
+    MBeanUtil.unregister(lc, mbs, on, this);
+  }
+
+  
+  @Test
+  public void setLoggerLevel_LBCLASSIC_79() {
+    String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()
+        + ",Type=" + this.getClass().getName();
+
+    ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+    JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+    configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
+    assertEquals(Level.DEBUG,  testLogger.getLevel());
+    
+    configurator.setLoggerLevel(testLogger.getName(), "null");
+    assertNull(testLogger.getLevel());
+       
+    MBeanUtil.unregister(lc, mbs, on, this);
   }
 
 }
