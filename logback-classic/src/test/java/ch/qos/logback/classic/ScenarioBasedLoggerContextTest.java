@@ -24,7 +24,7 @@ import ch.qos.logback.classic.control.CreateLogger;
 import ch.qos.logback.classic.control.ScenarioAction;
 import ch.qos.logback.classic.control.ScenarioMaker;
 import ch.qos.logback.classic.control.SetLevel;
-import ch.qos.logback.classic.control.TestScenario;
+import ch.qos.logback.classic.control.Scenario;
 
 
 public class ScenarioBasedLoggerContextTest  {
@@ -55,7 +55,7 @@ public class ScenarioBasedLoggerContextTest  {
   private void doScenarioedTest(int len) {
     LoggerContext lc = new LoggerContext();
     ControlLoggerContext controlContext = new ControlLoggerContext();
-    TestScenario s = ScenarioMaker.makeRealisticCreationScenario(len);
+    Scenario s = ScenarioMaker.makeRealisticCreationScenario(len);
     List actionList = s.getActionList();
     int size = actionList.size();
     for (int i = 0; i < size; i++) {

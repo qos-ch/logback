@@ -21,8 +21,9 @@ public class ScenarioMaker {
   // the frequency of a set levelInt event for every create logger event
   private final static int CREATE_LOGGER_TO_SET_LEVEL_FREQUENCY = 5;
   private final static int SECOND_SET_LEVEL_FREQUENCY = 3;
-  
-  
+
+  private static long count = 0;
+
   /**
    * Makes a scenario with len logger creations. Logger names are generated
    * independently such that the overwhelming majority of logger names will be
@@ -32,19 +33,19 @@ public class ScenarioMaker {
    * @param len
    * @return
    */
-  static public TestScenario makeTypeAScenario(int len) {
-    TestScenario scenario = new TestScenario();
+  static public Scenario makeTypeAScenario(int len) {
+    Scenario scenario = new Scenario();
     ;
     for (int i = 0; i < len; i++) {
-      String loggerName = ScenarioRandomUtil.randomLoggerName(AVERAGE_LOGGER_DEPTH,
-          LOGGER_DEPT_DEV);
+      String loggerName = ScenarioRandomUtil.randomLoggerName(
+          AVERAGE_LOGGER_DEPTH, LOGGER_DEPT_DEV);
       scenario.add(new CreateLogger(loggerName));
     }
     return scenario;
   }
 
-  static public TestScenario makeRealisticCreationScenario(int len) {
-    TestScenario scenario = new TestScenario();
+  static public Scenario makeRealisticCreationScenario(int len) {
+    Scenario scenario = new Scenario();
     LinkedList<String> queue = new LinkedList<String>();
     int loggerCreationCount = 0;
 
@@ -52,9 +53,14 @@ public class ScenarioMaker {
     queue.add("");
 
     while (loggerCreationCount < len) {
+      if ((count % 100) == 0) {
+        System.out.println("count=" + count);
+      }
+
       String loggerName = (String) queue.removeFirst();
-      int randomChildrenCount = ScenarioRandomUtil.randomChildrenCount(loggerName);
-     
+      int randomChildrenCount = ScenarioRandomUtil
+          .randomChildrenCount(loggerName);
+
       if (randomChildrenCount == 0) {
         scenario.add(new CreateLogger(loggerName));
         addSetLevelSubScenario(scenario, loggerName);
@@ -64,9 +70,11 @@ public class ScenarioMaker {
           String childName;
           if (loggerName.equals("")) {
             childName = ScenarioRandomUtil.randomId();
+            count += childName.length();
           } else {
             childName = loggerName + ClassicGlobal.LOGGER_SEPARATOR
                 + ScenarioRandomUtil.randomId();
+            count += childName.length();
           }
           queue.add(childName);
           addSetLevelSubScenario(scenario, loggerName);
@@ -76,17 +84,16 @@ public class ScenarioMaker {
     }
     return scenario;
   }
-  
-  static void addSetLevelSubScenario(TestScenario scenario, String loggerName) {
-    if(ScenarioRandomUtil.oneInFreq(CREATE_LOGGER_TO_SET_LEVEL_FREQUENCY)) {
+
+  static void addSetLevelSubScenario(Scenario scenario, String loggerName) {
+    if (ScenarioRandomUtil.oneInFreq(CREATE_LOGGER_TO_SET_LEVEL_FREQUENCY)) {
       Level l = ScenarioRandomUtil.randomLevel();
       scenario.add(new SetLevel(l, loggerName));
-      if(ScenarioRandomUtil.oneInFreq(SECOND_SET_LEVEL_FREQUENCY)) {
+      if (ScenarioRandomUtil.oneInFreq(SECOND_SET_LEVEL_FREQUENCY)) {
         l = ScenarioRandomUtil.randomLevel();
         scenario.add(new SetLevel(l, loggerName));
       }
     }
   }
-  
-  
+
 }
