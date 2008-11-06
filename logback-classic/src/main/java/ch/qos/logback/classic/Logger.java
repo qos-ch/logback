@@ -127,39 +127,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return parent == null;
   }
 
-  /**
-   * Get a child by its suffix.
-   * 
-   * <p> IMPORTANT: Calls to this method must be within a synchronized block on
-   * this logger!
-   * 
-   * @param suffix
-   * @return
-   */
-  Logger getChildBySuffix(final String suffix) {
-    if (childrenList == null) {
-      return null;
-    } else {
-      int len = this.childrenList.size();
-      int childNameOffset;
-      if (isRootLogger()) {
-        childNameOffset = 0;
-      } else {
-        childNameOffset = this.name.length() + 1;
-      }
-
-      for (int i = 0; i < len; i++) {
-        final Logger childLogger = (Logger) childrenList.get(i);
-        final String childName = childLogger.getName();
-
-        if (suffix.equals(childName.substring(childNameOffset))) {
-          return childLogger;
-        }
-      }
-      // no child found
-      return null;
-    }
-  }
+  // Logger getChildBySuffix(final String suffix) method was here and got
+  // removed.
 
   Logger getChildByName(final String childName) {
     if (childrenList == null) {
@@ -185,7 +154,15 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       return;
     }
     level = newLevel;
-    effectiveLevelInt = newLevel.levelInt;
+    if (newLevel == null) {
+      if (isRootLogger()) {
+        throw new IllegalArgumentException("The level of the root logger cannot be set to null");
+      } else {
+        effectiveLevelInt = parent.effectiveLevelInt;
+      }
+    } else {
+      effectiveLevelInt = newLevel.levelInt;
+    }
     if (childrenList != null) {
       int len = childrenList.size();
       for (int i = 0; i < len; i++) {
@@ -390,8 +367,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       final Marker marker, final Level level, final String msg,
       final Object[] params, final Throwable t) {
 
-    final FilterReply decision = loggerContext.getTurboFilterChainDecision_0_3OrMore(
-        marker, this, level, msg, params, t);
+    final FilterReply decision = loggerContext
+        .getTurboFilterChainDecision_0_3OrMore(marker, this, level, msg,
+            params, t);
 
     if (decision == FilterReply.NEUTRAL) {
       if (effectiveLevelInt > level.levelInt) {
@@ -403,7 +381,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
     buildLoggingEventAndAppend(localFQCN, marker, level, msg, params, t);
   }
-  
+
   private final void filterAndLog_1(final String localFQCN,
       final Marker marker, final Level level, final String msg,
       final Object param, final Throwable t) {
@@ -423,7 +401,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
         new Object[] { param }, t);
   }
 
-
   private final void filterAndLog_2(final String localFQCN,
       final Marker marker, final Level level, final String msg,
       final Object param1, final Object param2, final Throwable t) {
@@ -442,8 +419,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     buildLoggingEventAndAppend(localFQCN, marker, level, msg, new Object[] {
         param1, param2 }, t);
   }
-
-
 
   private void buildLoggingEventAndAppend(final String localFQCN,
       final Marker marker, final Level level, final String msg,
@@ -493,7 +468,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
   }
 
-  final public  boolean isDebugEnabled() {
+  final public boolean isDebugEnabled() {
     return isDebugEnabled(null);
   }
 
@@ -509,7 +484,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
   }
-  
+
   final public void debug(String msg) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, null);
   }
@@ -593,7 +568,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   public boolean isInfoEnabled() {
     return isInfoEnabled(null);
   }
-  
+
   public boolean isInfoEnabled(Marker marker) {
     FilterReply decision = callTurboFilters(marker, Level.INFO);
     if (decision == FilterReply.NEUTRAL) {
@@ -606,7 +581,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
   }
-  
+
   public void info(String msg) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, null, null);
   }
@@ -664,8 +639,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     }
   }
 
-
-
   public final boolean isErrorEnabled() {
     return isErrorEnabled(null);
   }
@@ -682,7 +655,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       throw new IllegalStateException("Unknown FilterReply value: " + decision);
     }
   }
-
 
   public boolean isWarnEnabled() {
     return isWarnEnabled(null);
@@ -783,8 +755,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @return the reply given by the TurboFilters
    */
   private FilterReply callTurboFilters(Marker marker, Level level) {
-    return loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this, level, null,
-        null, null);
+    return loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this,
+        level, null, null, null);
   }
 
   /**

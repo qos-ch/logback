@@ -31,6 +31,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusListenerAsList;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -55,6 +56,12 @@ public class JMXConfigurator extends ContextAwareBase implements
   final MBeanServer mbs;
   final ObjectName objectName;
 
+
+  @Override
+  protected void finalize() {
+    System.out.println("**************** JMXConfigurator finalized");
+  }
+  
   public JMXConfigurator(LoggerContext loggerContext, MBeanServer mbs,
       ObjectName objectName) {
     this.context = loggerContext;
@@ -105,20 +112,27 @@ public class JMXConfigurator extends ContextAwareBase implements
     }
   }
 
+  void addStatusListener(StatusListener statusListener) {
+    StatusManager sm = loggerContext.getStatusManager();
+    sm.add(statusListener);
+  }
+  
   public void reloadByURL(URL url) throws JoranException {
     StatusListenerAsList statusListenerAsList = new StatusListenerAsList();
-    StatusManager sm = loggerContext.getStatusManager();
-    sm.add(statusListenerAsList);
 
+    addStatusListener(statusListenerAsList);
     addInfo("Resetting context: " + loggerContext.getName());
     loggerContext.reset();
+    addStatusListener(statusListenerAsList);
 
+    
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       configurator.doConfigure(url);
       addInfo("Context: " + loggerContext.getName() + " reloaded.");
     } finally {
+      System.out.println("*************** printing");
       StatusPrinter.print(statusListenerAsList.getStatusList());
     }
   }
@@ -156,7 +170,7 @@ public class JMXConfigurator extends ContextAwareBase implements
 
     LoggerContext lc = (LoggerContext) context;
     Logger logger = lc.exists(loggerName);
-    if (logger != null) {
+    if (logger != null && logger.getLevel() != null) {
       return logger.getLevel().toString();
     } else {
       return EMPTY;
@@ -205,6 +219,7 @@ public class JMXConfigurator extends ContextAwareBase implements
    * unregistered
    */
   public void onReset(LoggerContext context) {
+    System.out.println("Unregistering JMXConfigurator");
     if (mbs.isRegistered(objectName)) {
       try {
         addInfo("Unregistering mbean [" + objectName + "]");

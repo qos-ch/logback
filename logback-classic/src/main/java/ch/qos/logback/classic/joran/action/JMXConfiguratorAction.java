@@ -34,7 +34,7 @@ public class JMXConfiguratorAction extends Action {
     ObjectName objectName = MBeanUtil.string2ObjectName(context, this,
         objectNameAsStr);
 
-    if (objectName == null) {
+    if (objectName != null) {
       MBeanUtil.register((LoggerContext) context, objectName, this);
     }
 

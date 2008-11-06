@@ -65,6 +65,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public LoggerContext() {
     super();
+    System.out.println(" LoggerContext()=============================================================");
     this.loggerCache = new Hashtable<String, Logger>();
     this.loggerContextRemoteView = new LoggerContextRemoteView(this);
     this.root = new Logger(ROOT_NAME, null, this);
@@ -128,7 +129,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     // in between as well (if they don't already exist)
     String childName;
     while (true) {
-      int h = name.indexOf('.', i);
+      int h = name.indexOf(ClassicGlobal.LOGGER_SEPARATOR, i);
       if (h == -1) {
         childName = name;
       } else {
@@ -189,6 +190,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return loggerContextRemoteView;
   }
 
+  @Override
+  protected void finalize() {
+    System.out.println("**************** LoggerContext finalized");
+  }
   public void reset() {
     root.recursiveReset();
     clearAllTurboFilters();
@@ -300,8 +305,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     started = false;
   }
 
-  @Override
-  public String toString() {
-    return this.getClass().getName() + "[" + getName() + "]";
-  }
+//  @Override
+//  public String toString() {
+//    return this.getClass().getName() + "[" + getName() + "]";
+//  }
 }

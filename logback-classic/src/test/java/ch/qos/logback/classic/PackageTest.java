@@ -19,7 +19,7 @@ public class PackageTest extends TestCase {
     suite.addTest(new JUnit4TestAdapter(LoggerPerfTest.class));
     suite.addTest(new JUnit4TestAdapter(DynamicLoggerContextTest.class));
     suite.addTest(new JUnit4TestAdapter(PatternLayoutTest.class));
-    suite.addTestSuite(BasicLoggerTest.class);
+    suite.addTest(new JUnit4TestAdapter(LoggerTest.class));
     suite.addTest(new JUnit4TestAdapter(LoggerSerializationTest.class));
     suite.addTestSuite(MessageFormattingTest.class);
     suite.addTestSuite(MDCTest.class);

@@ -12,18 +12,19 @@ import javax.management.ObjectName;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class JMXConfiguratorTest {
 
   static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
   LoggerContext lc = new LoggerContext();
+  Logger testLogger  = lc.getLogger(this.getClass());
+
   List<LoggerContextListener> listenerList;
   int diff = RandomUtil.getPositiveInt();
 
@@ -72,15 +73,26 @@ public class JMXConfiguratorTest {
     listenerList = lc.getCopyOfListenerList();
     assertEquals(1, listenerList.size());
     assertTrue(listenerList.contains(jmxConfigurator0));
-    
+
     JMXConfigurator jmxConfigurator1 = MBeanUtil.register(lc, on, this);
     listenerList = lc.getCopyOfListenerList();
     assertEquals(1, listenerList.size());
-    assertFalse("old configurator should be absent", listenerList.contains(jmxConfigurator0));
-    assertTrue("new configurator should be present", listenerList.contains(jmxConfigurator1));
-    
-    StatusPrinter.print(lc);
+    assertFalse("old configurator should be absent", listenerList
+        .contains(jmxConfigurator0));
+    assertTrue("new configurator should be present", listenerList
+        .contains(jmxConfigurator1));
 
+    // StatusPrinter.print(lc);
+  }
+
+  @Test
+  public void getLoggerLevel() {
+    String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()
+        + ",Type=" + this.getClass().getName();
+
+    ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+    JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+    configurator.getLoggerLevel(testLogger.getName());
   }
 
 }
