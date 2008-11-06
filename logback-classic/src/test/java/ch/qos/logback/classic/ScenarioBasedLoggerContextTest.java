@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.control.ControlLogger;
@@ -46,8 +47,9 @@ public class ScenarioBasedLoggerContextTest  {
   }
 
   @Test
+  @Ignore
   public void testLengthLong() {
-    doScenarioedTest(500*1000);
+    doScenarioedTest(100*1000);
   }
 
   private void doScenarioedTest(int len) {
