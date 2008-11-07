@@ -51,8 +51,8 @@ public class MBeanUtil {
     try {
       MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
-      JMXConfigurator jmxConfigurator = new JMXConfigurator(loggerContext,
-          mbs, objectName);
+      JMXConfigurator jmxConfigurator = new JMXConfigurator(loggerContext, mbs,
+          objectName);
 
       if (mbs.isRegistered(objectName)) {
         StatusUtil.addWarn(loggerContext, caller,
@@ -67,11 +67,6 @@ public class MBeanUtil {
       return null;
     }
   }
-  
- 
-
-
-  
 
   public static void unregister(LoggerContext loggerContext, MBeanServer mbs,
       ObjectName objectName, Object caller) {
@@ -82,10 +77,12 @@ public class MBeanUtil {
         mbs.unregisterMBean(objectName);
       } catch (InstanceNotFoundException e) {
         // this is theoretically impossible
-        e.printStackTrace();
+        StatusUtil.addError(loggerContext, caller, "Failed to unregister mbean"
+            + objectName, e);
       } catch (MBeanRegistrationException e) {
-        // this also is theoretically impossible
-        e.printStackTrace();
+        // this is theoretically impossible
+        StatusUtil.addError(loggerContext, caller, "Failed to unregister mbean"
+            + objectName, e);
       }
     } else {
       StatusUtil.addInfo(loggerContext, caller, "mbean [" + objectName

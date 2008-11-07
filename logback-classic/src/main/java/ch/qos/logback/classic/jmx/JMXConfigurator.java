@@ -52,29 +52,34 @@ public class JMXConfigurator extends ContextAwareBase implements
 
   private static String EMPTY = "";
 
-  final LoggerContext loggerContext;
-  final MBeanServer mbs;
-  final ObjectName objectName;
-
+  LoggerContext loggerContext;
+  MBeanServer mbs;
+  ObjectName objectName;
+  String objectNameAsString;
+  
+  boolean started;
 
   @Override
-  protected void finalize() {
-    System.out.println("**************** JMXConfigurator finalized");
+  public void finalize() {
+    System.out.println("....... finalize() "+this);
   }
   
   public JMXConfigurator(LoggerContext loggerContext, MBeanServer mbs,
       ObjectName objectName) {
+    System.out.println("....... constructor() "+this);
+    started = true;
     this.context = loggerContext;
     this.loggerContext = loggerContext;
     this.mbs = mbs;
     this.objectName = objectName;
+    this.objectNameAsString = objectName.toString();
     removePreviousInstanceAsListener();
     loggerContext.addListener(this);
+
   }
 
   private void removePreviousInstanceAsListener() {
     List<LoggerContextListener> lcll = loggerContext.getCopyOfListenerList();
-
     for (LoggerContextListener lcl : lcll) {
       if (lcl instanceof JMXConfigurator) {
         JMXConfigurator jmxConfigurator = (JMXConfigurator) lcl;
@@ -132,7 +137,6 @@ public class JMXConfigurator extends ContextAwareBase implements
       configurator.doConfigure(url);
       addInfo("Context: " + loggerContext.getName() + " reloaded.");
     } finally {
-      System.out.println("*************** printing");
       StatusPrinter.print(statusListenerAsList.getStatusList());
     }
   }
@@ -219,30 +223,46 @@ public class JMXConfigurator extends ContextAwareBase implements
    * unregistered
    */
   public void onReset(LoggerContext context) {
+    if(!started) {
+      addInfo("onReset() method called on a stopped JMXActivator [" + objectNameAsString + "]");;
+    }
     System.out.println("Unregistering JMXConfigurator");
+    
     if (mbs.isRegistered(objectName)) {
       try {
-        addInfo("Unregistering mbean [" + objectName + "]");
+        addInfo("Unregistering mbean [" + objectNameAsString + "]");
         mbs.unregisterMBean(objectName);
       } catch (InstanceNotFoundException e) {
         // this is theoretically impossible
-        addError("Unable to find a verifiably registered mbean [" + objectName
+        addError("Unable to find a verifiably registered mbean [" + objectNameAsString
             + "]", e);
       } catch (MBeanRegistrationException e) {
-        addError("Failed to unregister [" + objectName + "]", e);
+        addError("Failed to unregister [" + objectNameAsString + "]", e);
       }
     } else {
-      addInfo("mbean [" + objectName
+      addInfo("mbean [" + objectNameAsString
           + "] was not in the mbean registry. This is OK.");
     }
-
+    stop();
+  }
+  
+  private void clearFields() {
+    System.out.println("Clearing fields");
+    mbs = null;
+    objectName = null;
+    loggerContext = null;
   }
 
+  private void stop() {
+    started = false;
+    clearFields();
+  }
   public void onStart(LoggerContext context) {
+    // nop
   }
 
-  @Override
-  public String toString() {
-    return this.getClass().getName() + "(" + context.getName() + ")";
-  }
+//  @Override
+//  public String toString() {
+//    return this.getClass().getName() + "(" + context.getName() + ")";
+//  }
 }

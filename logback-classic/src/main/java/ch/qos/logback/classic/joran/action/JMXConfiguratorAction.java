@@ -14,8 +14,10 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class JMXConfiguratorAction extends Action {
 
-  static String OBJECT_NAME_ATTRIBUTE_NAME = "objectName";
-
+  static final String OBJECT_NAME_ATTRIBUTE_NAME = "objectName";
+  static final String SUFFIX_ATTRIBUTE_NAME = "suffix";
+  static final char JMX_NAME_SEPARATOR = ',';
+  
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
@@ -24,6 +26,9 @@ public class JMXConfiguratorAction extends Action {
     String objectNameAsStr;
     String objectNameAttributeVal = attributes
         .getValue(OBJECT_NAME_ATTRIBUTE_NAME);
+    String suffixAttributeVal = attributes
+    .getValue(SUFFIX_ATTRIBUTE_NAME);
+
     if (OptionHelper.isEmpty(objectNameAttributeVal)) {
       objectNameAsStr = MBeanUtil.getObjectNameFor((LoggerContext) context,
           JMXConfigurator.class);
@@ -31,6 +36,13 @@ public class JMXConfiguratorAction extends Action {
       objectNameAsStr = objectNameAttributeVal;
     }
 
+    if(!OptionHelper.isEmpty(suffixAttributeVal)) {
+      if(suffixAttributeVal.indexOf(0) != JMX_NAME_SEPARATOR) {
+        objectNameAsStr += JMX_NAME_SEPARATOR;
+      }
+      objectNameAsStr += suffixAttributeVal;
+    }
+    
     ObjectName objectName = MBeanUtil.string2ObjectName(context, this,
         objectNameAsStr);
 
