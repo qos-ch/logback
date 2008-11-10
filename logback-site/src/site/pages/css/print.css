@@ -36,3 +36,16 @@ table.bodyTable th {
 	vertical-align: text-top;
 	text-align:center;
 }
+
+
+.source { 
+  background:#eee;
+  border-top: 1px solid #DDDDDD;
+  border-bottom: 1px solid #DDDDDD; 
+  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
+  padding-bottom: 0.5ex;
+  padding-top: 0.5ex;
+  padding-left: 1ex;
+  white-space: pre;
+}
+

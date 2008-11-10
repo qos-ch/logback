@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>JMX Configuration</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+
+</head>
+<body>
+  <script>
+    prefix='../';	
+  </script>
+  <script src="../templates/header.js"></script>
+  <div id="left">
+    <script src="../templates/left.js"></script>
+  </div>
+  <div id="right">
+    <script src="index_menu.js"></script>
+  </div>
+  <div id="content">
+	
+    <h2>JMX Configurator</h2>
+    
+		<p>As its name indicates, <code>JMXConfigurator</code> allows
+		configuration of logback via JMX. In a nutshell, it lets you
+		reconfigure logback from the default configuration file, from a
+		designated file or URL, list loggers and modify logger levels.
+		</p>
+		
+		<h3>Using the JMX Configurator</h3>
+    
+    
+		<p>If your server run on JDK 1.6 or later, then you can just
+		invoke <code>jconsole</code> application on the commmand line and
+		then connect to your server's MBeanServer. If you are running an
+		older JVM, then you should read the section on <a
+		href="jmxEnablingServer">JMX enabling your server</a>.
+    </p>
+
+    <p><code>JMXConfigurator</code> is enabled by a single line in
+    your logback configuration file, as shown below:
+		</p>
+
+<div class="source"><pre>&lt;configuration>
+  <b>&lt;jmxConfigurator /></b>
+
+  &lt;appender name="console" class="ch.qos.logback.classic.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%date [%thread] %-5level %logger{25} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value="debug"/>
+    &lt;appender-ref ref="console" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
+		
+    <p>After you connect to your server with <em>jconsole</em>, on the
+    MBeans panel, under "ch.qos.logback.classic.jmx.Configurator"
+    folder you should see several operations to choose from, as shown
+    in the figure below:
+    </p>
+    
+    <img src="images/chapter9/jmxConfigurator.gif" alt="jmxConfigurator"/>   
+
+		<p>Thus, you can</p>
+		
+		<ul>
+      <li>Reload logback configuration using the default configuration
+      file </li>
+
+      <li>Reload the configuration with the specified URL</li>
+      <li>Reload the configuration with the specified file</li>
+
+			<li>Set the level of a specified logger. To set to null, pass
+			the string "null" as value.</li>
+      <li>Get the level of a specified logger. Returned value can be
+      null.</li>
+			<li>Get the <a href="architecture.html#effectiveLevel">effective
+			level</a> of a specified logger</li>
+		</ul>
+		
+    <p><code>JMXConfigurator</code> exposes the list of existing
+    loggers and a status list as attributes.</p>
+    
+    <p>The status list can help you diagnose logbacks internal
+    state.</p>
+
+    <img src="images/chapter9/statusList.gif" alt="statusList.gif"/>   
+
+
+    <!-- ============ JMX enabling your  server ================== -->
+
+    <h3>
+      <a name="jmxEnablingServer" href="#jmxEnablingServer">JMX enabling your
+      server</a>
+    </h3>
+
+    <p>If your server runs with JDK 1.6 or later, your server should
+    be JMX enabled by default.</p>
+
+		<p>For older JVMs, we suggest that you refer JMX-related
+		documentation of your web-server. Such documentation is available
+		for both <a
+		href="http://tomcat.apache.org/tomcat-6.0-doc/monitoring.html">Tomcat</a>
+		and <a
+		href="http://docs.codehaus.org/display/JETTY/JMX">Jetty</a>. In
+		this document, we very briefly describe the required steps for
+		Tomcat and Jetty.
+		</p>
+
+    <!-- ================ Configuring Jetty ================== -->
+
+		<h4>Enabling JMX in Jetty (tested under JDK 1.5 and JDK 1.6)</h4>
+		
+		<p>The following has been tested under JDK 1.5 and 1.6.  Under JDK
+		1.6 and later, your server is already JMX enabled by default and
+		you can, but do not need to, follow the steps discussed below.
+		Under JDK 1.5, adding JMX support in Jetty requires a number of
+		additions to the <em>$JETTY_HOME/etc/jetty.xml</em> configuration
+		file. Here are the elements that need to be added:
+		</p>
+
+    <p class="source">&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" 
+      name="getPlatformMBeanServer"/>
+
+&lt;Get id="Container" name="container">
+  &lt;Call name="addEventListener">
+    &lt;Arg>
+      &lt;New class="org.mortbay.management.MBeanContainer">
+        &lt;Arg>&lt;Ref id="MBeanServer"/>&lt;/Arg>
+        &lt;Call name="start" />
+      &lt;/New>
+    &lt;/Arg>
+  &lt;/Call>
+&lt;/Get> </p>
+
+    <p>If you wish to access the MBeans exposed by Jetty with
+    jconsole, then you need start jetty with the
+    "com.sun.management.jmxremote" system property.
+    </p>
+
+    <p>For a standalone version of Jetty, this translates to </p>
+
+    
+    <p class="source">java <b>-Dcom.sun.management.jmxremote</b> -jar start.jar [config files]</p>
+
+    <p>And if you wish to launch jetty as a Maven plugin, then you
+    need set the "com.sun.management.jmxremote" system property via
+    the <code>MAVEN_OPTS</code> shell variable, as follows
+    </p>
+
+    <p class="source"><b>MAVEN_OPTS="-Dcom.sun.management.jmxremote</b>"
+mvn jetty:run</p>
+
+    <p>You can then access via <code>jconsole</code>.</p>
+
+    <img src="images/chapter9/jconsole15_jetty.gif" alt="jconsole15_jetty.gif"/>   
+
+    <h4>MX4J with Jetty (tested under JDK 1.5 and 1.6)</h4>
+
+    <p>Assuming you have already downloaded <a
+    href="http://mx4j.sourceforge.net/">MX4J</a>, you then need to
+    modify the jetty configuration file by adding an instruction to
+    set the management port.
+    </p>
+    
+    <p class="source">&lt;Call id="MBeanServer"
+    class="java.lang.management.ManagementFactory"
+    name="getPlatformMBeanServer"/>
+
+&lt;Get id="Container" name="container">
+  &lt;Call name="addEventListener">
+    &lt;Arg>
+      &lt;New class="org.mortbay.management.MBeanContainer">
+        &lt;Arg>&lt;Ref id="MBeanServer"/>&lt;/Arg>
+        <b>&lt;Set name="managementPort">8082&lt;/Set></b>
+        &lt;Call name="start" />
+      &lt;/New>
+    &lt;/Arg>
+  &lt;/Call>
+&lt;/Get> 
+    </p>
+    
+    <p>Moreover, <em>mx4j-tools.jar</em> needs to be added to Jetty's
+    class path.
+    </p>
+
+    <p>If you are running jetty as a Maven plug-in, then you need to add 
+    <em>mx4j-tools</em> as a dependency.</p>
+
+    <p class="source">&lt;plugin>
+  &lt;groupId>org.mortbay.jetty&lt;/groupId>
+  &lt;artifactId>maven-jetty-plugin&lt;/artifactId>
+  &lt;configuration>
+    &lt;jettyConfig>path/to/jetty.xml&lt;/jettyConfig>
+    ...
+  &lt;/configuration>
+  <b>&lt;dependencies>
+    &lt;dependency>
+      &lt;groupId>mx4j&lt;/groupId>
+      &lt;artifactId>mx4j-tools&lt;/artifactId>
+      &lt;version>3.0.1&lt;/version>
+    &lt;/dependency>
+  &lt;/dependencies></b>
+&lt;/plugin></p>
+
+		<p>After Jetty is started with the above configuration,
+		<code>JMXConfigurator</code> will be available at the following
+		URL (search for "ch.qos.logback.classic"):
+		</p>
+
+    <p class="source"><a href="http://localhost:8082/">http://localhost:8082/</a></p>
+
+    <!-- ================ Tomcat ================== -->
+		
+		<h4>Configuring JMX for Tomcat (tested under JDK 1.5 and 1.6)</h4>
+    
+    <p>If you are using JDK 1.6 and later, your server is already JMX
+    enabled by default and you can, but do not need to, follow the
+    steps discussed below. Under JDK 1.5, Tomcat requires the addition
+    of the following lines to the
+    <em>$TOMCAT_HOME/bin/catalina.bat/sh</em> shell script:
+		</p>
+		
+    <p class="source">CATALINA_OPTS="-Dcom.sun.management.jmxremote"</p>
+
+		<p>Once started with these options, Tomcat's JMX compoenents can
+		be accessed with <code>jconsole</code> by issuing the following
+		command in a shell:
+		</p>
+    
+    <p class="source">jconsole</p>
+
+    <img src="images/chapter9/jconsole15_tomcat.gif" alt="jconsole15_tomcat.gif"/>   
+
+
+    <h4>MX4J with Tomcat</h4>
+    
+		<p>You might prefer to access JMX components via a web-based
+		interface provided by MX4J.  In that case, here are the required
+		steps:
+		</p>
+		
+    <p>Assuming you have already downloaded <a
+    href="http://mx4j.sourceforge.net/">MX4J</a>, placethe
+    <em>mx4j-tools.jar</em> file under the <em>$TOMCAT_HOME/bin/</em>
+    directory. Then, add the following lines to the
+    <em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:
+		</p>
+
+    <p class="source">&lt;!-- at the beginning of the file -->
+CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+
+&lt;!-- in the "Add on extra jar files to CLASSPATH" section -->
+CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-tools.jar</p>
+
+		<p>Finally, declare a new <code>Connector</code> in the
+		<em>$TOMCAT_HOME/conf/server.xml</em> file:
+		</p>
+
+		
+    <p class="source">&lt;Connector port="0" 
+  handler.list="mx"
+  mx.enabled="true" 
+  mx.httpHost="localhost" 
+  mx.httpPort="8082" 
+  protocol="AJP/1.3" /></p>
+  
+  	<p>Once Tomcat is started, you should be able to find
+  	JMXConfigurator by pointing your browser at the following URL
+  	(search for "ch.qos.logback.classic"):
+  	</p>
+
+    <p class="source"><a href="http://localhost:8082">http://localhost:8082/</a></p>
+
+
+		
+	
+	
+<script src="templates/footer.js"></script>
+</div>
+</body>
+</html>
