@@ -1,24 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>JMX Configuration</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
-
-</head>
-<body>
-  <script>
-    prefix='../';	
-  </script>
-  <script src="../templates/header.js"></script>
-  <div id="left">
-    <script src="../templates/left.js"></script>
-  </div>
-  <div id="right">
-    <script src="index_menu.js"></script>
-  </div>
-  <div id="content">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" type="text/css" href="../css/site.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/sitePrint.css" media="print" />
+    <title>JMX Configuration</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      prefix='../';	
+    </script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="index_menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
 	
     <h2>JMX Configurator</h2>
     
@@ -63,6 +62,9 @@
     in the figure below:
     </p>
     
+    <p><a name="jmxConfigurator" href="#jmxConfigurator">Screen-shot
+    of <code>JMXConfigurator</code> viewed in
+    <code>jconsole</code></a></p>
     <img src="images/chapter9/jmxConfigurator.gif" alt="jmxConfigurator"/>   
 
 		<p>Thus, you can</p>
@@ -90,7 +92,95 @@
 
     <img src="images/chapter9/statusList.gif" alt="statusList.gif"/>   
 
+    <h3><a name="leak" href="#leak">Avoiding memory leaks</a></h3>
 
+    <p>If your application is deployed in a web-server or an
+    application server, the registration of an
+    <code>JMXConfigurator</code> instance creates a reference from the
+    system class loader into your application which will prevent it
+    from being garbage collected when it is stopped or re-deployed,
+    resulting in a severe memory leak.</p>
+
+    <p>Thus, unless your application is standalone java application,
+    you MUST unregister the <code>JMXConfigurator</code> instance from
+    the JVM's Mbeans server. Invoking the <code>reset</code>() method
+    of the appropriate <code>LoggerContext</code> will automatically
+    unregister any JMXConfigurator instance. A good place to reset the
+    logger context is in the the <code>contextDestroyed</code>()
+    method of a
+    <code>javax.servlet.ServletContextListener</code>. Here is sample
+    code:</p>
+
+    <p class="source">import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+
+public class MyContextListener implements ServletContextListener {
+
+  public void contextDestroyed(ServletContextEvent sce) {
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    <b>lc.reset();</b>
+  }
+
+  public void contextInitialized(ServletContextEvent sce) {
+  }
+} </p>
+
+
+  
+
+
+
+    <!-- ============ Multiple web-applications  ================== -->
+
+    
+    <h2>
+      <a name="multiple" href="#multiple"><code>JMXConfigurator</code>
+      with multiple web-applications</a>
+    </h2>
+
+    <p>If you deploy multiple web-applications in the same server,
+    then, and assuming you have not overriden the default <a
+    href="contextSelector.html">context selector</a>, and assuming you
+    have placed a copy of <em>logback-*.jar</em> and
+    <em>slf4j-api.jar</em> under the <em>WEB-INF/lib</em> folder of
+    each web-application, by default each <code>JMXConfigurator</code>
+    instance will be registered under the same name, that is,
+    "ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator". In
+    other words, by default the various <code>JMXConfigurator</code>
+    instances associated with the logger contexts in each of your
+    web-applications will collide.
+    </p>
+    
+    <p>To avoid such undesirable collisions, you can instruct each
+    <code>JMXConfigurator</code> instance to have a different name by
+    setting the "contextName" attribute of the
+    <code>&lt;jmxConfigurator></code> element in the logback
+    configuration file.
+    </p>
+
+    <p>For example, if you deploy two web-applications named "Koala"
+    and "Wombat", then you would write in Koala's logback
+    configuration
+    </p>
+    
+    <p class="source">&lt;jmxConfigurator <b>contextName="Koala"</b> /></p>
+
+    <p>and in Wombat logback configuration file, you would write:</p>
+
+    <p class="source">&lt;jmxConfigurator <b>contextName="Womcat"</b> /></p>
+
+    <p>In jconsole's MBeans panel, you would two distinct
+    <code>JMXConfigurator</code> instances:</p>
+
+    <img src="images/chapter9/multiple.gif" alt="multiple.gif"/>   
+
+    <p>You may fully control the name under which JMXConfigurator is
+    registered with MBeans server with the help of the "objectName"
+    attribute of <code>&lt;jmxConfigurator></code> element.</p>
+    
     <!-- ============ JMX enabling your  server ================== -->
 
     <h3>
@@ -107,8 +197,8 @@
 		href="http://tomcat.apache.org/tomcat-6.0-doc/monitoring.html">Tomcat</a>
 		and <a
 		href="http://docs.codehaus.org/display/JETTY/JMX">Jetty</a>. In
-		this document, we very briefly describe the required steps for
-		Tomcat and Jetty.
+		this document, we briefly describe the required configuration
+		steps for Tomcat and Jetty.
 		</p>
 
     <!-- ================ Configuring Jetty ================== -->
@@ -116,11 +206,11 @@
 		<h4>Enabling JMX in Jetty (tested under JDK 1.5 and JDK 1.6)</h4>
 		
 		<p>The following has been tested under JDK 1.5 and 1.6.  Under JDK
-		1.6 and later, your server is already JMX enabled by default and
-		you can, but do not need to, follow the steps discussed below.
-		Under JDK 1.5, adding JMX support in Jetty requires a number of
-		additions to the <em>$JETTY_HOME/etc/jetty.xml</em> configuration
-		file. Here are the elements that need to be added:
+		1.6 and later, your server is JMX enabled by default and you can,
+		but do not need to, follow the steps discussed below.  Under JDK
+		1.5, adding JMX support in Jetty requires a number of additions to
+		the <em>$JETTY_HOME/etc/jetty.xml</em> configuration file. Here
+		are the elements that need to be added:
 		</p>
 
     <p class="source">&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" 
@@ -137,34 +227,42 @@
   &lt;/Call>
 &lt;/Get> </p>
 
-    <p>If you wish to access the MBeans exposed by Jetty with
-    jconsole, then you need start jetty with the
-    "com.sun.management.jmxremote" system property.
+    <p>If you wish to access the MBeans exposed by Jetty via the
+    <code>jconsole</code> application, then you need start jetty after
+    having set the "com.sun.management.jmxremote" java system
+    property.
     </p>
 
-    <p>For a standalone version of Jetty, this translates to </p>
+    <p>For a standalone version of Jetty, this translates to: </p>
 
     
     <p class="source">java <b>-Dcom.sun.management.jmxremote</b> -jar start.jar [config files]</p>
 
     <p>And if you wish to launch jetty as a Maven plugin, then you
     need set the "com.sun.management.jmxremote" system property via
-    the <code>MAVEN_OPTS</code> shell variable, as follows
+    the <code>MAVEN_OPTS</code> shell variable:
     </p>
 
     <p class="source"><b>MAVEN_OPTS="-Dcom.sun.management.jmxremote</b>"
 mvn jetty:run</p>
 
-    <p>You can then access via <code>jconsole</code>.</p>
+    <p>You can then access the MBeans exposed by Jetty as well as
+    logback's <code>JMXConfigurator</code> via
+    <code>jconsole</code>.</p>
 
     <img src="images/chapter9/jconsole15_jetty.gif" alt="jconsole15_jetty.gif"/>   
 
+    <p>After you are connected, you should be able to access
+    <code>JMXXConfigurator</code> as shown in the <a
+    href="#jmxConfigurator">screenshot</a> above.</p>
+
     <h4>MX4J with Jetty (tested under JDK 1.5 and 1.6)</h4>
 
-    <p>Assuming you have already downloaded <a
+    <p>Ig you wish to acces <code>JMXConfigurator</code> via MX4J's
+    HTTP interface and assuming you have already downloaded <a
     href="http://mx4j.sourceforge.net/">MX4J</a>, you then need to
-    modify the jetty configuration file by adding an instruction to
-    set the management port.
+    modify the jetty configuration file discussed previously by adding
+    an instruction to set the management port.
     </p>
     
     <p class="source">&lt;Call id="MBeanServer"
@@ -214,6 +312,11 @@ mvn jetty:run</p>
 
     <p class="source"><a href="http://localhost:8082/">http://localhost:8082/</a></p>
 
+    <p>Below is a screen shot view of the MX4J interface.</p>
+
+    <img src="images/chapter9/mx4j_jetty.gif" alt="mx4j_jetty.gif"/>   
+
+
     <!-- ================ Tomcat ================== -->
 		
 		<h4>Configuring JMX for Tomcat (tested under JDK 1.5 and 1.6)</h4>
@@ -227,17 +330,21 @@ mvn jetty:run</p>
 		
     <p class="source">CATALINA_OPTS="-Dcom.sun.management.jmxremote"</p>
 
-		<p>Once started with these options, Tomcat's JMX compoenents can
-		be accessed with <code>jconsole</code> by issuing the following
-		command in a shell:
+		<p>Once started with these options, Mbeans exposed by Tomcat as
+		well logback's <code>JMXConfigurator</code> can be accessed with
+		<code>jconsole</code> by issuing the following command in a shell:
 		</p>
     
     <p class="source">jconsole</p>
 
     <img src="images/chapter9/jconsole15_tomcat.gif" alt="jconsole15_tomcat.gif"/>   
 
+    <p>After you are connected, you should be able to access
+    <code>JMXXConfigurator</code> as shown in the <a
+    href="#jmxConfigurator">screenshot</a> above.</p>
 
-    <h4>MX4J with Tomcat</h4>
+
+    <h4>MX4J with Tomcat (tested under JDK 1.5 and 1.6)</h4>
     
 		<p>You might prefer to access JMX components via a web-based
 		interface provided by MX4J.  In that case, here are the required
@@ -276,6 +383,9 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-tools.jar</p>
 
     <p class="source"><a href="http://localhost:8082">http://localhost:8082/</a></p>
 
+    <p>Below is a screen shot view of the MX4J interface.</p>
+
+    <img src="images/chapter9/mx4j_tomcat.gif" alt="mx4j_tomcat.gif"/>   
 
 		
 	
