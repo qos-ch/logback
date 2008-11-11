@@ -22,7 +22,7 @@ div.source {
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
   background:#eee;
-  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
+  font-family: Courier, "MS Courier New", Prestige, monospace;
   padding-bottom: 0.5ex;
   padding-top: 0.5ex;
   padding-left: 1ex;
@@ -33,7 +33,7 @@ div.source {
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
   background:#eee;
-  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
+  font-family: Courier, "MS Courier New", Prestige, monospace;
   padding-bottom: 0ex;
   padding-top: 0ex;
   padding-left: 1ex;
@@ -61,18 +61,18 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-	font-weight: 900;
-	font-size: x-large;
+  font-weight: 900;
+  font-size: x-large;
 }
 
 h3 {
-	font-weight: normal;
-	font-size: large;
+  font-weight: normal;
+  font-size: large;
 }
 
 h4 {
-	font-weight: large;
-	font-size: normal;
+  font-weight: bold;
+  font-size: medium;
 }
 
 .footer {
@@ -209,7 +209,7 @@ code {
 }
 
 .quote {
-  align: right;
+   text-align: right;
   padding-left: 12em;
 }
 

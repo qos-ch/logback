@@ -1,22 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Logback Console Plugin for Eclipse</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Logback Console Plugin for Eclipse</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
 
-</head>
-<body>
-	<script>
-prefix='';	
-</script>
+    
+  </head>
+  <body>
+    <script type="text/javascript">prefix='';</script>
 
-<script src="templates/header.js"></script>
-<div id="left">
-  <script src="templates/left.js"></script>
-</div>
-<div id="content">
+    <script src="templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
 	
     <h2>Logback Console Plugin for Eclipse</h2>
     
@@ -121,7 +123,7 @@ prefix='';
     You should see two buttons, along with the usual three Eclipse icons:
    </p>
    
-   <img src="images/plugin/buttons.gif" />
+   <img src="images/plugin/buttons.gif" alt="buttons.gif"/>
    
    <p>
     The first button on the left clears the console. The second button toggles
@@ -141,7 +143,7 @@ prefix='';
     below:
    </p>
    
-   <img src="images/plugin/sampleLogs.gif" />
+   <img src="images/plugin/sampleLogs.gif" alt="sampleLogs.gif"/>
    
    <p>
     All events with the <em>WARN</em> level are displayed in orange. <em>ERROR</em>
@@ -162,7 +164,7 @@ prefix='';
     an editor revealing the selected class.
    </p>
    
-   <img src="images/plugin/stackTrace.gif" />
+   <img src="images/plugin/stackTrace.gif" alt="stackTrace.gif"/>
    
    <h3>Configuring the logback plugin</h3>
    
@@ -177,7 +179,7 @@ prefix='';
     The first item in this menu opens the plugin's preference window.
    </p>
    
-   <img src="images/plugin/prefs.gif" />
+   <img src="images/plugin/prefs.gif" alt="prefs.gif" />
    
    <p>
     In this window, you can configure the pattern that will be used by the plugin
@@ -203,12 +205,12 @@ prefix='';
     </li>
    </ul>
    
-   <p>
-    An important point about this pattern is that, if it is modified, the changes
-    are immediately reflected on the <strong>current content</strong> of the logback view.
-    That means that if you would like to display an <code>MDC</code> value, or any other
-    information that the <code>PatternLayout</code> provides, you can change it even 
-    <em>after</em> the logs have been requested.
+   <p>An important point about this pattern is that, if it is
+   modified, the changes are immediately reflected on the
+   <strong>current content</strong> of the logback view.  That means
+   that if you would like to display an <code>MDC</code> value, or any
+   other information that the <code>PatternLayout</code> provides, you
+   can change it even <em>after</em> the logs have been requested.
    </p>
    
    <p>
@@ -243,7 +245,7 @@ prefix='';
     opens the filter configuration window:
    </p>
 
-   <img src="images/plugin/filterWindow.gif" />
+   <img src="images/plugin/filterWindow.gif" alt="filterWindow.gif"/>
    
    <p>
     The upper part of the window lists the filters that are currently
@@ -294,7 +296,7 @@ prefix='';
     saved the filter.
    </p>
  
-   <img src="images/plugin/createFilter.gif" />
+   <img src="images/plugin/createFilter.gif" alt="createFilter.gif" />
    
    <p>
     We've just created a filter that will drop any requests whose
@@ -321,7 +323,7 @@ prefix='';
    </p>
    
    
-<script src="templates/footer.js"></script>
+   <script src="templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>

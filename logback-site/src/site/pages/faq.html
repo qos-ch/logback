@@ -1,180 +1,184 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Logback FAQ</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
-</head>
-<body>
-	<script>
-prefix='';	
-</script>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Logback FAQ</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
 
-<script src="templates/header.js"></script>
-<div id="left">
-  <script src="templates/left.js"></script>
-</div>
-<div id="content">
+  </head>
+  <body>
+    <script type="text/javascript">prefix='';</script>
+
+    <script src="templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
 	
- <h2>
-     <a name="top">Frequently Asked Questions</a>
-  </h2>
+    <h2>
+      <a name="top">Frequently Asked Questions</a>
+    </h2>
+      
+    <h3>Logback project</h3>
 
-  <h3>Logback project</h3>
-
-   <ol type="1">
-    <li><a href="#why_lgpl">Why is logback distributed under LGPL and
-    not the Apache Software License?</a>
-    </li>
-   </ol>
+    <ol type="1">
+      <li><a href="#why_lgpl">Why is logback distributed under LGPL and
+      not the Apache Software License?</a>
+      </li>
+    </ol>
   
                       
-  <h3>Logback Classic</h3>
-
-  
-  <ol type="1">    
-    <li>
-      <a href="#logger_serialization">Are logback loggers
-      serializable?</a>
-    </li>  
-
-    <li>
-      <a href="#auto_config">How does the automatic configuration
-      work?</a>
-    </li>  
-    <li>
-      <a href="#setup_jetty">How can Jetty be instructed to use
-      logback-classic as its logging implementataion?
-      </a>
-    </li>
-  </ol>
-
-  <!-- =============================================================== -->
-  <!-- =============================================================== -->
-  <!-- =============================================================== -->
-  <!-- =============================================================== -->
-
-        
-  <div class="section">
-    <h2>Logback project</h2>
+    <h3>Logback Classic</h3>
     
-    <dl>
-      <dt> 
-        <a name="why_lgpl" href="#why_lgpl">Why is logback distributed
-        under LGPL and not the Apache Software License?</a>
-      </dt>
-
-      <dd>
-        <p>The logback project is distributed under the LGPL license
-        in order to emphasize the fact that it is a related but
-        <em>different</em> project than log4j.
-        </p>
-        
-        <p>Given that Java v7 will be distributed under GPL, we expect
-        GPL and LGPL to become even more prevalent in the Java world.
-        </p>
-
-        <p>In short, LGPL is a reasonable and widely-accepted
-        license. Let well alone.
-        </p>
-      </dd>
-    </dl>
-  </div>
-
-  <div class="section">
-    <h2>Logback-classic</h2>
-    <dl>
-
-      <!-- ========================================================= -->
-
-      <dt>
-        <a name="auto_config" href="#auto_config">
-          How does the automatic configuration work?
+    
+    <ol type="1">    
+      <li>
+        <a href="#logger_serialization">Are logback loggers
+        serializable?</a>
+      </li>  
+      
+      <li>
+        <a href="#auto_config">How does the automatic configuration
+        work?</a>
+      </li>  
+      <li>
+        <a href="#setup_jetty">How can Jetty be instructed to use
+        logback-classic as its logging implementataion?
         </a>
-      </dt>
-      <dd>
-        <p>This question is answered in the <a
-        href="manual/joran.html#auto_configuration">relevant
-        section</a> of the logback manual.
-        </p>
-
-      </dd>
-
-      <hr/>
+      </li>
+    </ol>
+    
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- =============================================================== -->
+  
+        
+    <div class="section">
+      <h2>Logback project</h2>
       
-      <!-- ========================================================= -->
-      
- 
+      <dl>
+        <dt> 
+          <a name="why_lgpl" href="#why_lgpl">Why is logback distributed
+          under LGPL and not the Apache Software License?</a>
+        </dt>
+        
+        <dd>
+          <p>The logback project is distributed under the LGPL license
+          in order to emphasize the fact that it is a related but
+          <em>different</em> project than log4j.
+          </p>
+          
+          <p>Given that Java v7 will be distributed under GPL, we expect
+          GPL and LGPL to become even more prevalent in the Java world.
+          </p>
+          
+          <p>In short, LGPL is a reasonable and widely-accepted
+          license. Let well alone.
+          </p>
+        </dd>
+      </dl>
+    </div>
+    
+    <div class="section">
+      <h2>Logback-classic</h2>
+      <dl>
+        
+        <!-- ========================================================= -->
+        
+        <dt>
+          <a name="auto_config" href="#auto_config">
+            How does the automatic configuration work?
+          </a>
+        </dt>
+        <dd>
+          <p>This question is answered in the <a
+          href="manual/joran.html#auto_configuration">relevant
+          section</a> of the logback manual.
+          </p>
 
-      <dt>
-        <a name="logger_serialization" href="#logger_serialization">
+        </dd>
+        
+        <hr/>
+        
+        <!-- ========================================================= -->
+        
+        <dt>
+          <a name="logger_serialization" href="#logger_serialization">
           Are logback loggers serializable?</a>
-      </dt>
-      <dd>
-        <p>Yes. A logback logger <em>is</em> an SLF4J logger and SLF4J
-        loggers are serializable. This means that an object
-        referencing a logger will be alble to log after its
-        deserialization.
-        </p>
-
-        <p>The deserialized logger instance will be generated by
-        <code>org.slf4j.LoggerFactory</code>.  Thus, it is possible
-        for a logback logger to be deserialized as a log4j or j.u.l.
-        logger, depending on the deserialization environment.</p>
-      </dd>
-
-      <hr/>
-      <!-- ========================================================= -->
-
-      <dt>
-        <a name="setup_jetty"  href="#">
-          How can Jetty be instructed to use logback-classic as its
-          logging implementataion?
-        </a>
-      </dt>
-
-      <dd>
-        <p>The Jetty application server uses SLF4J for its internal
-        logging.
-        </p>
-
-        <p>The following jar files must be present in the
-        <em>JETTY_HOME/lib</em> directory.
-        </p>
-
-        <p>Logback-classic is based on the SLF4J api. Therefore, the
-        <em>slf4j-api-VERSION.jar</em> jar must be present. This jar
-        can be downloaded from the <a
-        href="http://www.slf4j.org/">SLF4J</a> project.
-        </p>
-        <p>Logback's own jars must also be present, namely
-        <em>logback-core-VERSION.jar</em> and
-        <em>logback-classic-VERSION.jar</em> .
-        </p>
-
-        <p> To configure logback-classic, a file called
-        <em>logback.xml</em> should be placed in the
-        <em>JETTY_HOME/resources</em> directory. You can find sample
-        configuration files in the
-        <em>logback-examples/src/main/java/chapter4/conf/</em> folder
-        shipping within the logback distribution.
-        </p>
+        </dt>
+        <dd>
+          <p>Yes. A logback logger <em>is</em> an SLF4J logger and SLF4J
+          loggers are serializable. This means that an object
+          referencing a logger will be alble to log after its
+          deserialization.
+          </p>
+          
+          <p>The deserialized logger instance will be generated by
+          <code>org.slf4j.LoggerFactory</code>.  Thus, it is possible
+          for a logback logger to be deserialized as a log4j or j.u.l.
+          logger, depending on the deserialization environment.</p>
+        </dd>
         
-      </dd>
+        <hr/>
+        <!-- ========================================================= -->
+        
+        <dt>
+          <a name="setup_jetty"  href="#">
+            How can Jetty be instructed to use logback-classic as its
+            logging implementataion?
+          </a>
+        </dt>
+        
+        <dd>
+          <p>The Jetty application server uses SLF4J for its internal
+          logging.
+          </p>
+          
+          <p>The following jar files must be present in the
+          <em>JETTY_HOME/lib</em> directory.
+          </p>
+          
+          <p>Logback-classic is based on the SLF4J api. Therefore, the
+          <em>slf4j-api-VERSION.jar</em> jar must be present. This jar
+          can be downloaded from the <a
+          href="http://www.slf4j.org/">SLF4J</a> project.
+          </p>
+          <p>Logback's own jars must also be present, namely
+          <em>logback-core-VERSION.jar</em> and
+          <em>logback-classic-VERSION.jar</em> .
+          </p>
+          
+          <p> To configure logback-classic, a file called
+          <em>logback.xml</em> should be placed in the
+          <em>JETTY_HOME/resources</em> directory. You can find sample
+          configuration files in the
+          <em>logback-examples/src/main/java/chapter4/conf/</em> folder
+          shipping within the logback distribution.
+          </p>
 
-      <hr />
+        </dd>
+        
+        <hr />          
 
+        
+        
+        <!-- end of definitions -->
+      </dl>
+      
+      
+    </div>
 
-    <!-- end of definitions -->
-    </dl>
-
-
-  </div>
+  <script src="templates/footer.js" type="text/javascript"></script>
+  
 </div>
   
 
 	
-<script src="templates/footer.js"></script>
-</div>
+
 </body>
 </html>

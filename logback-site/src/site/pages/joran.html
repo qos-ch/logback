@@ -1,129 +1,135 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Using Joran</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
- 
-</head>
-<body>
-  <script type="text/javascript">prefix='./'</script>
-  <script type="text/javascript" src="templates/header.js"></script>
-<div id="left">
-  <script type="text/javascript" src="templates/left.js"></script>
-</div>
-<div id="content">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Using Joran</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
 
-  <h2>Using Joran in your own applications</h2>
+  </head>
+  <body>
+    <script type="text/javascript">prefix='./'</script>
+    <script type="text/javascript" src="templates/header.js"></script>
+    <div id="left">
+      <script type="text/javascript" src="templates/left.js"></script>
+    </div>
+    <div id="content">
+      
+    <h2>Using Joran in your own applications</h2>
 
-  <p>As we've seen, logback relies on Joran, a mature, flexible and
-  powerful configuration framework. Many of the capabilities offered
-  by logback modules are possible with the help of Joran.
-  </p>
+    <p>As we've seen, logback relies on Joran, a mature, flexible and
+    powerful configuration framework. Many of the capabilities offered
+    by logback modules are possible with the help of Joran.
+    </p>
 
-  <p>Joran is actually a generic configuration system which can be
-  used independently of logging. To emphaises this point, we should
-  mention that the logback-core module does not have a notion of
-  loggers. In that spirit, many of the examples related to this
-  tutorial, have nothing to do with loggers, appenders or layouts.
-  </p>
+    <p>Joran is actually a generic configuration system which can be
+    used independently of logging. To emphaises this point, we should
+    mention that the logback-core module does not have a notion of
+    loggers. In that spirit, many of the examples related to this
+    tutorial, have nothing to do with loggers, appenders or layouts.
+    </p>
 
-  <p class="red" style="text-decoration: line-through;">The examples
-  for this chapter can be found under
-  <em>LOGBACK_HOME/logback-examples/src/main/java/chapter3</em>.
-  </p>
+    <p class="red" style="text-decoration: line-through;">The examples
+    for this chapter can be found under
+    <em>LOGBACK_HOME/logback-examples/src/main/java/chapter3</em>.
+    </p>
 
-  <p>To install joran, simply <a href="../download.html">download</a>
-  logback and add <em>logback-core-${version}.jar</em> to your
-  classpath.</p>
-  
-  <h2>Historical perspective</h2>
+    <p>To install joran, simply <a href="../download.html">download</a>
+    logback and add <em>logback-core-${version}.jar</em> to your
+    classpath.</p>
+    
+    <h2>Historical perspective</h2>
 
-  <p>One of the most powerful features of the Java language is
-  reflection. Reflection makes it possible to configure software
-  systems declaratively. For example, many important properties of an
-  EJB are configured with the <em>ejb.xml</em> file. While EJBs are
-  written in Java, many of their properties are specified within the
-  <em>ejb.xml</em> file. Similarly, logback settings can be specified
-  in a configuration file, expressed in XML format.
-  </p>
+    <p>One of the most powerful features of the Java language is
+    reflection. Reflection makes it possible to configure software
+    systems declaratively. For example, many important properties of an
+    EJB are configured with the <em>ejb.xml</em> file. While EJBs are
+    written in Java, many of their properties are specified within the
+    <em>ejb.xml</em> file. Similarly, logback settings can be specified
+    in a configuration file, expressed in XML format.
+    </p>
 
-  <p>In log4j, logback's predecessor, <code>DOMConfigurator</code>
-  which shipped with log4j version 1.2.x could also parse
-  configuration files written in XML. The <code>DOMConfigurator</code>
-  was written in a way that forced to tweak it each time the structure
-  of the configuration file changed. The modified code had to be
-  recompiled and redeployed. Just as importantly, the code of the
-  DOMConfigurator consists of loops dealing with children elements
-  containing many interspersed if/else statements. One could not help
-  but notice that that particular code reeked of redundancy.  The <a
-  href="http://jakarta.apache.org/commons/digester/">digester
-  project</a> has shown that it is possible to parse XML files using
-  pattern matching rules. At parse time, digester will apply the rules
-  that match previously stated patterns. Rule classes are usually
-  quite small and specialized. Consequently, they are relatively easy
-  to understand and to maintain.
-  </p>
+    <p>In log4j, logback's predecessor, <code>DOMConfigurator</code>
+    which shipped with log4j version 1.2.x could also parse
+    configuration files written in XML. The
+    <code>DOMConfigurator</code> was written in a way that forced to
+    tweak it each time the structure of the configuration file
+    changed. The modified code had to be recompiled and
+    redeployed. Just as importantly, the code of the DOMConfigurator
+    consists of loops dealing with children elements containing many
+    interspersed if/else statements. One could not help but notice
+    that that particular code reeked of redundancy.  The <a
+    href="http://jakarta.apache.org/commons/digester/">digester
+    project</a> has shown that it is possible to parse XML files using
+    pattern matching rules. At parse time, digester will apply the
+    rules that match previously stated patterns. Rule classes are
+    usually quite small and specialized. Consequently, they are
+    relatively easy to understand and to maintain.
+    </p>
 
-  <p>Joran is heavily inspired by the commons-digester project but
-  uses a slightly different terminology. In commons-digester, a rule
-  can be seen as consisting of a pattern and a rule, as shown by the
-  <code>Digester.addRule(String pattern, Rule rule)</code> method. We
-  find it unnecessarily confusing to have a rule to consist of itself,
-  not recursively but with a different meaning. In Joran, a rule
-  consists of a pattern and an action. An action is invoked when a
-  match occurs for the corresponding pattern. This relation between
-  patterns and actions lies at the core of Joran.  Quite remarkably,
-  one can deal with quite complex requirements by using simple
-  patterns, or more precisely with exact matches and wildcard
-  matches. For example, the pattern <em>a/b</em> will match a
-  <code>&lt;b></code> element nested within an <code>&lt;a></code>
-  element but not a <code>&lt;c></code> element, even if nested within
-  a <code>&lt;b></code> element. It is also possible to match a
-  particular XML element, regardless of its nesting level, by using
-  the <em>*</em> wildcard character. For example, the pattern
-  <em>*/a</em> will match an <code>&lt;a></code> element at any
-  nesting position within the document. Other types of patterns, for
-  example <em>a/*</em>, are not currently supported by Joran.
-  </p>
+    <p>Joran is heavily inspired by the commons-digester project but
+    uses a slightly different terminology. In commons-digester, a rule
+    can be seen as consisting of a pattern and a rule, as shown by the
+    <code>Digester.addRule(String pattern, Rule rule)</code>
+    method. We find it unnecessarily confusing to have a rule to
+    consist of itself, not recursively but with a different
+    meaning. In Joran, a rule consists of a pattern and an action. An
+    action is invoked when a match occurs for the corresponding
+    pattern. This relation between patterns and actions lies at the
+    core of Joran.  Quite remarkably, one can deal with quite complex
+    requirements by using simple patterns, or more precisely with
+    exact matches and wildcard matches. For example, the pattern
+    <em>a/b</em> will match a <code>&lt;b></code> element nested
+    within an <code>&lt;a></code> element but not a
+    <code>&lt;c></code> element, even if nested within a
+    <code>&lt;b></code> element. It is also possible to match a
+    particular XML element, regardless of its nesting level, by using
+    the <em>*</em> wildcard character. For example, the pattern
+    <em>*/a</em> will match an <code>&lt;a></code> element at any
+    nesting position within the document. Other types of patterns, for
+    example <em>a/*</em>, are not currently supported by Joran.
+    </p>
 
-  <h2>SAX or DOM?</h2>
+    <h2>SAX or DOM?</h2>
 
-  <p>Due to the event-based architecture of the SAX API, a tool based
-  on SAX cannot easily deal with forward references, that is,
-  references to elements which are defined later than the current
-  element being processed. Elements with cyclical references are
-  equally problematic. More generally, the DOM API allows the user to
-  perform searches on all the elements and make forward jumps.
-  </p>
+    <p>Due to the event-based architecture of the SAX API, a tool based
+    on SAX cannot easily deal with forward references, that is,
+    references to elements which are defined later than the current
+    element being processed. Elements with cyclical references are
+    equally problematic. More generally, the DOM API allows the user to
+    perform searches on all the elements and make forward jumps.
+    </p>
+    
+    <p>This extra flexibility initially led us to choose the DOM API
+    as the underlying parsing API for Joran. After some
+    experimentation, it quickly became clear that dealing with jumps
+    to distant elements while parsing the DOM tree did not make sense
+    when the interpretation rules were expressed in the form of
+    patterns and actions. <em>Joran only needs to be given the
+    elements in the XML document in a sequential, depth-first
+    order.</em>
+    </p>
 
-  <p>This extra flexibility initially led us to choose the DOM API as
-  the underlying parsing API for Joran. After some experimentation, it
-  quickly became clear that dealing with jumps to distant elements
-  while parsing the DOM tree did not make sense when the
-  interpretation rules were expressed in the form of patterns and
-  actions. <em>Joran only needs to be given the elements in the XML
-  document in a sequential, depth-first order.</em>
-  </p>
-
-  <p>Joran was first implemented in DOM. However, the author migrated
-  to SAX in order to benefit location information, available only with
-  the SAX API. Location information allows Joran to display the exact
-  line and column number where an error occured, which comes in quite
-  handy when hunting down problems.
-  </p>
-
-
-  <h2>Actions</h2>
-
-  <p>Actions extend the
-  <code>ch.qos.logback.core.joran.action.Action</code> class which
-  consists of the following abstract methods.
-  </p>
+    <p>Joran was first implemented in DOM. However, the author migrated
+    to SAX in order to benefit location information, available only with
+    the SAX API. Location information allows Joran to display the exact
+    line and column number where an error occured, which comes in quite
+    handy when hunting down problems.
+    </p>
+    
+    
+    <h2>Actions</h2>
+    
+    <p>Actions extend the
+    <code>ch.qos.logback.core.joran.action.Action</code> class which
+    consists of the following abstract methods.
+    </p>
 
 
-<div class="source"><pre>package ch.qos.logback.core.joran.action;
+    <p class="source">package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
@@ -144,46 +150,46 @@ public abstract class Action {
   * have been processed. 
   */
   public abstract void end(ExecutionContext ec, String name);
-}</pre></div>
+}</p>
 
-  <p>Thus, every action must implement the begin and end methods.</p>
+   <p>Thus, every action must implement the begin and end methods.</p>
 
 
-  <h2>Execution context</h2>
+   <h2>Execution context</h2>
 
-  <p>To allow various actions to collaborate, the invocation of begin
-  and end methods include an execution context as the first
-  parameter. The execution context includes an object stack, an object
-  map, an error list and a reference to the Joran interpreter invoking
-  the action. Please see the
-  <code>ch.qos.logback.core.joran.spi.ExecutionContext</code> class
-  for the exact list of fields contained in the execution context.
-  </p>
+   <p>To allow various actions to collaborate, the invocation of begin
+   and end methods include an execution context as the first
+   parameter. The execution context includes an object stack, an object
+   map, an error list and a reference to the Joran interpreter invoking
+   the action. Please see the
+   <code>ch.qos.logback.core.joran.spi.ExecutionContext</code> class
+   for the exact list of fields contained in the execution context.
+   </p>
+   
+   <p>Actions can collaborate together by fetching, pushing or popping
+   objects from the common object stack, or by putting and fetching
+   keyed objects on the common object map. Actions can report any error
+   conditions by adding error items on the execution context's
+   <code>StatusManager</code>.
+   </p>
+   
+   <a name="helloWorld"></a>
+   <h3>A hello world example</h3>
+   
+   <p>The <em>logback-examples/src/main/java/chapter3/helloWorld/</em>
+   directory includes a trivial action and Joran interpreter setup
+   which just displays <em>Hello World</em> when a &lt;hello-world&gt;
+   element is encountered in an XML file.  It also includes the basic
+   steps which are necessary to set up and invoke a Joran interpreter.
+   </p>
 
-  <p>Actions can collaborate together by fetching, pushing or popping
-  objects from the common object stack, or by putting and fetching
-  keyed objects on the common object map. Actions can report any error
-  conditions by adding error items on the execution context's
-  <code>StatusManager</code>.
-  </p>
-
-  <a name="helloWorld"></a>
-  <h3>A hello world example</h3>
-
-  <p>The <em>logback-examples/src/main/java/chapter3/helloWorld/</em>
-  directory includes a trivial action and Joran interpreter setup
-  which just displays <em>Hello World</em> when a &lt;hello-world&gt;
-  element is encountered in an XML file.  It also includes the basic
-  steps which are necessary to set up and invoke a Joran interpreter.
-  </p>
-
-  <p>The <em>hello.xml</em> file contains only one element, without
-  any other nested elements. The <a
-  href="../xref/chapter3/helloWorld/HelloWorldAction.html">
-  <code>HelloWorldAction</code></a> class is a trivial implementation:
-  it only prints "Hello World" in the console when it's
-  <code>begin()</code> method is called.
-  </p>
+   <p>The <em>hello.xml</em> file contains only one element, without
+   any other nested elements. The <a
+   href="../xref/chapter3/helloWorld/HelloWorldAction.html">
+   <code>HelloWorldAction</code></a> class is a trivial implementation:
+   it only prints "Hello World" in the console when it's
+   <code>begin()</code> method is called.
+   </p>
 
   <p> <a
   href="../xref/chapter3/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
@@ -505,7 +511,7 @@ for &lt;xyz>, current pattern is [/foo/xyz]</pre></div>
   </p>
 
 
-<script src="templates/footer.js"></script>
+  <script src="templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>

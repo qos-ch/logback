@@ -1,28 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Logback Access</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
-</head>
-<body>
-	<script>
-prefix='';	
-</script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<script src="templates/header.js"></script>
-<div id="left">
-  <script src="templates/left.js"></script>
-</div>
-<div id="content">  
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Logback Access</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
+
+  </head>
+  <body>
+    <script type="text/javascript">prefix='';</script>
+    
+    <script src="templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="content">  
 	
-			<h2>Access log with logback, Jetty and Tomcat</h2>
-		<div class="author">
+    <h2>Access log with logback, Jetty and Tomcat</h2>
+
+    <div class="author">
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
 		</div>
 
 
-   <script src="../templates/creative.js"></script>
+    <script src="../templates/creative.js" type="text/javascript"></script>
 
 		<h1>Introduction</h1>
 
@@ -460,7 +464,8 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
   <p>Here is a sample logback-access.xml configuration file which will
   output the full contents of the request and response on the console.
   </p>
-<div class="source">&lt;configuration&gt;
+
+  <p class="source">&lt;configuration&gt;
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
     &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;      
       &lt;Pattern&gt;%fullRequest%n%n%fullResponse&lt;/Pattern&gt;
@@ -468,14 +473,12 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
   &lt;/appender&gt;
 	
   &lt;appender-ref ref="STDOUT" /&gt;
-&lt;/configuration&gt;
-</div>
+&lt;/configuration&gt;</p>
 
-<p>Few clicks accessing the <a href="demo.html">logback-demo</a>
-application configured as outlined above, yeilds:
-</p>
+  <p>Few clicks accessing the <a href="demo.html">logback-demo</a>
+  application configured as outlined above, yeilds:</p>
 
-<div class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
+  <p class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
 Host: localhost:8080
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) Gecko/20070312 Firefox/1.5.0.11
 Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
@@ -503,13 +506,13 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
 
 &lt;h2&gt;Logback demo center&lt;/h2&gt;
 
-[snip, so that text is reasonably sized]</div>
+[snip, so that text is reasonably sized]</p>
 
-<p>&nbsp;</p>
+  <p>&nbsp;</p>
 
+
+  <script src="templates/footer.js" type="text/javascript"></script>
 </div>
-<script src="templates/footer.js"></script>
-
 
 </body>
 </html>
