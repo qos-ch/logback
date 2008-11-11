@@ -12,77 +12,6 @@ body {
   counter-reset: example;  /* Create an example counter scope */
 }
 
-a { 
- color: #0000CC;
- background-color:transparent;
- text-decoration: none; 
-}
-
-#content a:hover {
- text-decoration: underline;
-}
-
-div.source {
- margin-top: 1em;
-}
-
-.source { 
-  border-top: 1px solid #DDDDDD;
-  border-bottom: 1px solid #DDDDDD;
-  background:#eee;
-  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
-  padding-bottom: 0.5ex;
-  padding-top: 0.5ex;
-  padding-left: 1ex;
-  white-space: pre;
-}
-
-.command { 
-  border-top: 1px solid #DDDDDD;
-  border-bottom: 1px solid #DDDDDD;
-  background:#eee;
-  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
-  padding-bottom: 0ex;
-  padding-top: 0ex;
-  padding-left: 1ex;
-  white-space: pre;
-}
-
-pre { 
- padding: 0px;
- margin: 0px; 
- background-color:transparent;
- font-family: Courier, Monaco, Monospace;
-}
-
-.alignright {
- margin-top: 0; 
- text-align: right;
- font-size: 10px;
-}
-
-
-h1, h2, h3, h4 {
-  color: #333;
-  padding-top: 0ex; 
-  background-color: transparent;
-}
-
-h2 {
-	font-weight: 900;
-	font-size: x-large;
-}
-
-h3 {
-	font-weight: normal;
-	font-size: large;
-}
-
-h4 {
-	font-weight: large;
-	font-size: normal;
-}
-
 .footer {
   text-align: right;
   color: #564b47;
@@ -101,28 +30,6 @@ p.menu {
  margin-bottom: 0px;
 }
 
-.small { 
-	font-size: smaller;
-}
-
-strong { 
-  /*font-size: 13px;*/
-  font-weight: bold;
-}
-
-/*  positioning-layers static and absolute */
-
-#breadcrumbs {
-	padding: 3px 10px 3px 10px;
-  margin: 0px 4px 0px 4px;
-	font-size: small;
-	border: 1px solid #CCCCCC;
-	/*border-bottom: 1px solid #aaa;
-  /* background-color: #ccc; lime;
-  border-color: #663300;*/
-	background-color: #ffd0a0;
-	/*max-width: 77em;*/
-}
 
 #left {
   position: absolute;
@@ -165,14 +72,6 @@ p.menu_header {
   background-color: #fff; 
 }
 
-
-#content {
-  min-width:50em;
-  margin: 0px 15em 0px 15em;
-  padding: 0px;
-  background-color: #ffffff;  
-}
-
 #right {
   position: absolute;
   right: 0px;        
@@ -193,127 +92,24 @@ p.menu_header {
 	height: 30px;
 }
 
+#headerLine {
+  background-color:#FFD0A0;
+  border:1px solid #CCCCCC;
+  font-size:small;
+  margin:0 4px;
+  padding:3px 10px;
+}
+
+#content {
+  min-width:50em;
+  margin: 0px 15em 0px 15em;
+  padding: 0px;
+  background-color: #ffffff;  
+}
+
 #content img {
 	border:none;
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
-}
-
-table.bodyTable {
-	padding: 0px;
-	width: 100%;
-	margin-left: -2px;
-	margin-right: -2px;
-}
-
-table.bodyTable th {
-	color: white;
-	background-color: #bbb;
-	font-weight: bold;
-}
-
-
-table.bodyTable td {
-  padding-left: 0.5ex;
-  padding-bottom: 0.5ex;
-}
-
-
-table.bodyTable tr.a {
-	background-color: #ddd;
-}
-
-table.bodyTable tr.b {
-	background-color: #eee;
-}
-
-table.bodyTable tr.alt {
-	background-color: #eee;
-}
-
-.author {
-	text-align: left;
-	font-weight: bold;
-}
-
-.definition {
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 5px 50px 5px 50px;
-	text-align: justify;
-	background-color: #E6E64C;
-}
-
-.deftitle {
-	font-weight: bold;
-}
-
-
-.big {
-  font-size: 130%;
-}
-
-.green {
-	color: green;
-}
-
-.white_bg {
-	background-color: #FFFFFF;
-}
-
-
-.blue {
-	color: blue;	
-}
-.red {
-	color: red;
-}
-
-.redBold {
-	color: red;
-	font-weight: bold;	
-}
-.greenBold {
-	color: green;	
-  font-weight: bold;	
-}
-
-code {
-	font-family: Courier, monospace;
-}
-
-.attr {
-	font-family: Courier, monospace;
-  font-style:italic; 
-}
-
-.option {
-  border: 1px solid black;
-  font-family: Arial, sans-serif;	
-}
-
-.highlight {
-  width: 300px;
-  float: right;	
-  display: inline;
-  font-weight: bolder;
-  border:1px solid #000;
-  background:#FFCC99;	
-  padding-top: 0px;
-  padding-left: 1ex;
-  padding-right: 1ex;
-  margin-left: 3em;
-  margin-right: 3em;
-}
-
-.quote {
-  align: right;
-  padding-left: 12em;
-}
-
-/* --------- numbering --------- */
-.autoEx:before {
-  counter-increment: example;  /* Add 1 to example */
-  content: counter(example)
 }

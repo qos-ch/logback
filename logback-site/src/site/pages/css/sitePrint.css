@@ -9,7 +9,7 @@ body {
 #left, #right {
 	width: 0px;
 	height: 0px;
-  dispay: none;
+  display: none;
 	visibility:hidden;
 }
 
