@@ -1,36 +1,36 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Chapter 6: Filters</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="../css/sitePrint.css" />
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Chapter 6: Filters</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
 
-</head>
-<body>
-			<script>
-prefix='../';	
-</script>
-<script src="../templates/header.js"></script>
-<div id="left">
-  <script src="../templates/left.js"></script>
-</div>
-<div id="right">
-  <script src="index_menu.js"></script>
-</div>
-<div id="content">
+
+  </head>
+  <body>
+    <script type="text/javascript">prefix='../';</script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
 	
-  <h1>Chapter 6: Filter chains</h1>
+    <h1>Chapter 6: Filter chains</h1>
 
-  <div class="quote">
-    <p><em>Have lots of ideas and throw away the bad ones. You aren't
-    going to have good ideas unless you have lots of ideas and some
-    sort of principle of selection.</em></p>
+    <div class="quote">
+      <p><em>Have lots of ideas and throw away the bad ones. You aren't
+      going to have good ideas unless you have lots of ideas and some
+      sort of principle of selection.</em></p>
+      
+      <p>&mdash;LINUS PAULING</p>
+    </div>
 
-    <p>&mdash;LINUS PAULING</p>
-  </div>
-
-  <script src="../templates/creative.js"></script>
+    <script src="../templates/creative.js" type="text/javascript"></script>
 
 		
 		<p>As we have seen, logback has several built-in ways for
@@ -44,7 +44,7 @@ prefix='../';
 			filtering policy.
 		</p>
 
-   <script src="../templates/setup.js"></script>
+    <script src="../templates/setup.js" type="text/javascript"></script>
 
 		<p>
 			There are two main types of filters, namely <code>Filter</code> and 
@@ -706,8 +706,8 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 		CSS resources. Here is what such a configuration would look like:
 		</p>	
 
-<em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
-<div class="source"><pre>&lt;configuration>
+    <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
+    <p class="source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -733,8 +733,11 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />
-&lt;/configuration></pre></div>	
-		
-	</div>
+&lt;/configuration>
+    </p>
+	
+    <script src="../templates/footer.js" type="text/javascript"></script>
+
+  </div>
 </body>
 </html>

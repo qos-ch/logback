@@ -1,24 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Chapter3: Logback configuration &amp; Joran</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="../css/sitePrint.css" />
-
- 
-</head>
-<body>
-  <script type="text/javascript">prefix='../'</script>
-  <script type="text/javascript" src="../templates/header.js"></script>
-<div id="left">
-  <script type="text/javascript" src="../templates/left.js"></script>
-</div>
-<div id="right"><script type="text/javascript" src="index_menu.js"></script></div>
-<div id="content" class="chapter">
-	
-		<h1>Chapter 3: Logback configuration &amp; Joran</h1>
-
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Chapter3: Logback configuration &amp; Joran</title>
+    
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+  </head>
+  <body>
+    <script type="text/javascript">prefix='../'</script>
+    <script src="../templates/header.js" type="text/javascript">
+    </script>
+    <div id="left">
+      <script src="../templates/left.js" type="text/javascript">
+      </script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content" class="chapter">
+      
+      <h1>Chapter 3: Logback configuration &amp; Joran</h1>
+      
     <div class="quote">
       <p><em>In symbols one observes an advantage in discovery which
       is greatest when they express the exact nature of a thing
@@ -29,7 +33,7 @@
     </div>
 
 
-    <script type="text/javascript" src="../templates/creative.js">
+    <script src="../templates/creative.js" type="text/javascript">
     </script>
 
 
@@ -1170,13 +1174,13 @@ fileName=myApp.log
   <em>Example 3.<span class="autoEx"/>: File include
   (logback-examples/src/main/java/chapter3/includedConfig.xml)</em>
 
-  <div class="source"><pre><b class="green">&lt;included></b>
+  <p class="source"><b class="green">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>"%d - %m%n"&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
-<b class="green">&lt;/included></b></pre></div>
+<b class="green">&lt;/included></b></p>
 
   <p>The file to be included can be referenced as a file, as a URL or
   as a resource. To reference a file use the <span
@@ -1189,7 +1193,7 @@ fileName=myApp.log
 
 
 
-<script src="../templates/footer.js"></script>
+  <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>

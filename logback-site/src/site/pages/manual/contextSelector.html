@@ -1,48 +1,47 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Chapter 8: Context Selector</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../css/site.css" />
-<link rel="stylesheet" type="text/css" media="print" href="../css/sitePrint.css" />
-
-</head>
-<body>
-			<script>
-prefix='../';	
-</script>
-<script src="../templates/header.js"></script>
-<div id="left">
-  <script src="../templates/left.js"></script>
-</div>
-<div id="right">
-  <script src="index_menu.js"></script>
-</div>
-<div id="content">	
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Chapter 8: Context Selector</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+    
+  </head>
+  <body>
+    <script type="text/javascript">prefix='../';</script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">	
 	
-	<h2>Chapter 9: Context Selectors</h2>
+    <h2>Chapter 9: Context Selectors</h2>
+      
+    <div class="quote">
+      <p><em>It is not knowledge, but the act of learning, not
+      possession but the act of getting there, which grants the greatest
+      enjoyment. When I have clarified and exhausted a subject, then I
+      turn away from it, in order to go into darkness again; the
+      never-satisfied man is so strange if he has completed a structure,
+      then it is not in order to dwell in it peacefully, but in order to
+      begin another. I imagine the world conqueror must feel thus, who,
+      after one kingdom is scarcely conquered, stretches out his arms
+      for others.</em></p>
 
-  <div class="quote">
-    <p><em>It is not knowledge, but the act of learning, not
-    possession but the act of getting there, which grants the greatest
-    enjoyment. When I have clarified and exhausted a subject, then I
-    turn away from it, in order to go into darkness again; the
-    never-satisfied man is so strange if he has completed a structure,
-    then it is not in order to dwell in it peacefully, but in order to
-    begin another. I imagine the world conqueror must feel thus, who,
-    after one kingdom is scarcely conquered, stretches out his arms
-    for others.</em></p>
+      <p>&mdash;KARL FRIEDRICH GAUSS, Letter to Bolyai, 1808.</p>
 
-    <p>&mdash;KARL FRIEDRICH GAUSS, Letter to Bolyai, 1808.</p>
+      <p><em>Style, like sheer silk, too often hides eczema.</em></p>
+      
+      <p>&mdash;ALBERT CAMUS, <em>The Fall</em></p>
 
-    <p><em>Style, like sheer silk, too often hides eczema.</em></p>
+    </div>
 
-    <p>&mdash;ALBERT CAMUS, <em>The Fall</em></p>
-
-  </div>
-
-  <script src="../templates/creative.js"></script>		
-  <script src="../templates/setup.js"></script>
+    <script src="../templates/creative.js" type="text/javascript"></script>		
+    <script src="../templates/setup.js" type="text/javascript"></script>
 
     <h3>Introduction</h3>
 
@@ -131,10 +130,10 @@ prefix='../';
     <em>Configuration</em> element:
     </p>
 
-<div class="source"><pre>&lt;Call class="java.lang.System" name="setProperty">
+    <p class="source">&lt;Call class="java.lang.System" name="setProperty">
   &lt;Arg>logback.ContextSelector&lt;/Arg>
   &lt;Arg>JNDI&lt;/Arg>
-&lt;/Call></pre></div>
+&lt;/Call></p>
 
    <p>Be aware that adding a <em>-Dlogback.ContextSelector=JNDI</em>
    to the java command when starting the server will not work. By
@@ -176,35 +175,34 @@ prefix='../';
    xml configuration file. It can be declared as shown below:
    </p>
 
-<div class="source"><pre>&lt;env-entry>
+   <p class="source">&lt;env-entry>
   &lt;description>URL for configuring logback context&lt;/description>
   &lt;env-entry-name>logback/configuration-resource&lt;/env-entry-name>
   &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
   &lt;env-entry-value>logback-app-A.xml&lt;/env-entry-value>
-&lt;/env-entry></pre></div>
+&lt;/env-entry></p>
 
    <p>Specifying only the name of the file will lead logback to search
    for it in the Web application's <em>WEB-INF/classes/</em>
    directory.</p>
 
-   <p>
-   When the Web application is recycled or shutdown, it is very often
-   useful to recycle the associated <code>LoggerContext</code>. This
-   can be done by installing a <code>ServletContextListener</code>
-   which will detach the context from the <code>ContextSelector</code>
-   and shut it down.
+   <p>When the Web application is recycled or shutdown, it is very
+   often useful to recycle the associated
+   <code>LoggerContext</code>. This can be done by installing a
+   <code>ServletContextListener</code> which will detach the context
+   from the <code>ContextSelector</code> and shut it down.
    </p>
 
-<p>
-The <a href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html">
-<code>ContextDetachingSCL</code></a> class which
-ships with logback does exactly that. To use it, add the following
-lines to your Web application's <em>web.xml</em> file.
-</p>
+   <p>The <a
+   href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html">
+   <code>ContextDetachingSCL</code></a> class which ships with logback
+   does exactly that. To use it, add the following lines to your Web
+   application's <em>web.xml</em> file.
+   </p>
 
-<div class="source"><pre>&lt;listener>
+   <p class="source">&lt;listener>
   &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
-&lt;/listener></pre></div>
+&lt;/listener></p>
 
 
   <p>Using the <code>ContextJNDISelector</code> might slow down your
@@ -233,27 +231,26 @@ lines to your Web application's <em>web.xml</em> file.
   <code>LoggerContext</code>.
   </p>
 
-  <p>The <code>LoggerContextFilter</code> can be used by adding the following
-lines to your Web application's <em>web.xml</em> file.
-</p>
+  <p>The <code>LoggerContextFilter</code> can be used by adding the
+  following lines to your Web application's <em>web.xml</em> file.
+  </p>
 
-<div class="source"><pre>&lt;filter>
+  <p class="source">&lt;filter>
   &lt;filter-name>LoggerContextFilter&lt;/filter-name>
   &lt;filter-class>ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class>
 &lt;/filter>
 &lt;filter-mapping>
   &lt;filter-name>LoggerContextFilter&lt;/filter-name>
   &lt;url-pattern>/*&lt;/url-pattern>
-&lt;/filter-mapping></pre></div>
+&lt;/filter-mapping></p>
 
-<h4>Some recommandations</h4>
+  <h4>Some recommandations</h4>
 
-<p>
-To avoid confusion, it is prudent to name each Web application
-in the <em>web.xml</em> file, as in:
-</p>
+  <p>To avoid confusion, it is prudent to name each Web application in
+  the <em>web.xml</em> file, as in:
+  </p>
 
-<div class="source"><pre>&lt;display-name>Name_Of_My_WebApp&lt;/display-name></pre></div>
+  <p class="source">&lt;display-name>Name_Of_My_WebApp&lt;/display-name></p>
 
   <p>We recommend that you name logback configuration resources
   uniquely. In particualar, avoid naming the logback configuration
@@ -272,9 +269,9 @@ in the <em>web.xml</em> file, as in:
   configured using the same file as that used to configure the default
   context. Such involuntary sharing of the same configuration by
   multiple repositories will result in corrupt log output.
-</p>
+  </p>
 
-<script src="../templates/footer.js"></script>
+  <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>
