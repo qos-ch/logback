@@ -945,13 +945,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 		conversion specifier.
 		</p>
 
-		<table class="bodyTable" BORDER="0" CELLPADDING="8">
-			<th>Format modifier</th>
-			<th>Left justify</th>
-			<th>Minimum width</th>
-			<th>Maximum width</th>
-			<th>Comment</th>
-
+		<table class="bodyTable" border="0" cellpadding="8">
+      <tr>
+        <th>Format modifier</th>
+        <th>Left justify</th>
+        <th>Minimum width</th>
+        <th>Maximum width</th>
+        <th>Comment</th>
+      </tr>
 			<tr class="a">
 				<td align="center">%20logger</td>
 				<td align="center">false</td>
@@ -1024,10 +1025,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 		the width of output.</p>
 
 
-		<table  class="bodyTable" BORDER="0" CELLPADDING="8">
-			<th>Format modifier</th>
-			<th>Logger name</th>
-			<th>Result</th>		
+		<table  class="bodyTable" border="0" cellpadding="8">
+      <tr>
+        <th>Format modifier</th>
+        <th>Logger name</th>
+        <th>Result</th>		
+      </tr>
 			<tr class="b">
 				<td align="center">[%20.20logger]</td>
 				<td align="center">main.Name</td>
@@ -1534,7 +1537,7 @@ import org.slf4j.LoggerFactory;
 public class TrivialMain {
   public static void main(String[] args) throws InterruptedException {
     Logger logger = LoggerFactory.getLogger(TrivialMain.class);
-    for(int i = 0; i < 6; i ++) {
+    for(int i = 0; i &lt; 6; i ++) {
       if(i % 5 == 0) {
         logger.info("an info message "+i);
       } else {
@@ -1676,7 +1679,7 @@ public class TrivialMain {
 		<p>Below is a list of conversion specifiers for 
 		<code>PatternLayout</code> in logback-access.</p>
 		
-		<table  class="bodyTable" border="0" CELLPADDING="8">
+		<table  class="bodyTable" border="0" cellpadding="8">
       <tr>
         <th align="center">Conversion Word</th>
         <th align="center">Effect</th>

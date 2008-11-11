@@ -32,21 +32,21 @@
     client and issue the following command on a console:
     </p>
   
-  <p class="source">svn co http://svn.qos.ch/repos/logback-demo/tags/STABLE logback-demo</p>
+    <p class="source">svn co http://svn.qos.ch/repos/logback-demo/tags/STABLE logback-demo</p>
 
-  <p>This will checkout a copy of the logback demonstration
-  web-application to a directory called <em>logback-demo</em>. The
-  logback demo can be packaged as a <em>war</em> file and deployed to
-  an application server. We strongly recommend the use of <a
-  href="http://maven.apache.org/">Maven2</a> to accomplish this task,
-  since it takes a single command in order to compile, package and run
-  this demo.
-  </p>
+    <p>This will checkout a copy of the logback demonstration
+    web-application to a directory called <em>logback-demo</em>. The
+    logback demo can be packaged as a <em>war</em> file and deployed
+    to an application server. We strongly recommend the use of <a
+    href="http://maven.apache.org/">Maven2</a> to accomplish this
+    task, since it takes a single command in order to compile, package
+    and run this demo.
+    </p>
 
-  <p>	Using Maven, let's package the files and run the demo for the first
-	time.  From the <em>logback-demo</em> directory, issue the following
-	command:
-  </p>
+    <p>	Using Maven, let's package the files and run the demo for the first
+    time.  From the <em>logback-demo</em> directory, issue the following
+    command:
+    </p>
 
   <div class="source"><pre>mvn package jetty:run</pre></div>
     
@@ -377,10 +377,10 @@
   page is accessed.
   </p>
 
-<p>The configuration lines that are necessary are listed below.
-</p>
+  <p>The configuration lines that are necessary are listed below.
+  </p>
 
-<div class="source"><pre>&lt;appender name="STDOUT_LOTTERY"
+  <p class="source">&lt;appender name="STDOUT_LOTTERY"
   class="ch.qos.logback.core.ConsoleAppender">
   &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
     &lt;evaluator name="lotto_eval">
@@ -400,162 +400,90 @@
       LOTTERY: %A [%r] Guess=%reqParameter{guessed_number}
     &lt;/Pattern>
   &lt;/layout>
-&lt;/appender></pre></div>
+&lt;/appender></p>
 
-<p>This appender will use a <code>PatternLayout</code> to format its
-output.  The <em>%reqParameter</em> conversion word is used to extract
-the guessed number from the request, and print it.
-</p>
-
-<p>It also uses an <code>EvaluatorFilter</code> that will prevent the
-appender to display anything when the access' request url does not
-match the given expression. You can see that it is easy to specify a
-RegExp, name it and use it in the expression that will be
-evaluated. In that case, we only entered the name of the
-<em>lottery.do</em> action.
-</p>
-
-<p>Let us uncomment the two elements with the <em>Lottery to
-Console</em> comments and restart the server. Now, try to play the
-lottery. You will see more lines in the Console that you've seen until
-now. At every try, logback will produce a log as shown below:
-</p>
-
-<div class="source"><pre>LOTTERY: 192.168.1.6 [POST /logback-demo/Lottery.do HTTP/1.1] Guess=321</pre></div>
-
-<h4>Sending emails</h4>
-
-<p>Logback access provides several components that are usually used by
-the classic module. For example, a <code>SMTPAppender</code> can be
-used to send an email when a specific event occurs. Here, we will
-contact the lottery administrator each time a winner is detected. To
-achieve this, we will add a <code>SMTPAppender</code> to the existing
-configuration. Please uncomment the part of
-<em>logback-access.xml</em> named <em>Lottery to Email</em>. Do not
-forget to uncomment the <em>appender-ref</em> element, at the end of
-the configuration file, referencing the appender called
-<em>SMTP</em>. In the appender element, notice the use of a
-<code>URLEvaluator</code>. This evaluator allows us to only specify
-one or more URLs that have to be watched. When one of them are
-accessed, an email is sent.
-</p>
-
-<p>A reload of the configuration has to be done before we can test
-this new component. Once done, try to play the lottery with the number
-<em>99</em>.  You should see a congratulation message but, most
-importantly, the specified recipients should have a new mail in their
-mailbox. The content of the email is a nicely formatted HTML table
-with informations about the access that have occured before the
-triggering event.
-</p>
-
-<h3>JMX</h3>
-
-<p>Logback publishes several components via JMX. This allows you to
-see the status of certain objects, and change several configuration
-parameters.  Publishing logback's components via JMX is possible with
-Jetty and Tomcat.
-</p>
-
-<p>
-To see logback access' components, visit the following page:
-</p>
-
-<div class="source"><pre>http://localhost:8082/</pre></div>
-
-<p>The domain <em>ch.qos.logback.access.jetty</em> contains an entry
-that allows you to see the <em>RequestLogImpl</em> component. This
-component is used to plug logback in Jetty's internal
-achitecture. Clicking on it reveals the status of several parameters,
-such as the started status, and two methods are available to start and
-stop the <em>RequestLogImpl</em>.
-</p>
-
-<p>To see the influence of the available operations, place the
-terminal window and your web browser such that you can see them
-both. Stop the <em>RequestLogImlp</em> and reload a few times the main
-page of the demo. Nothing should be displayed. If you start the
-<em>RequestLogImpl</em> again, the requests will be shown in the
-terminal window.
-</p>
-
-<p>In the <em>logback-access.xml</em> configuration file, uncomment
-the <em>JMX</em> part and restart the server. A
-<code>CountingFilter</code> will now be available in the
-<em>ch.qos.logback.access</em> domain. Clicking on it will display
-several statistical figures corresponding to server accesses. Loading
-some application pages will make these figures grow and show a
-time-sensitive picture of the server activity.
-</p>
-
-
-<p>These is more to discover with logback and JMX. In the
-<em>logback.xml</em> file, placed in the <em>src/main/resources</em>
-directory, uncomment the <code>JMXConfigurator</code> element. Once
-done, restart the server.
-</p>
-
-<p>By refreshing the previously loaded JMX page, you should see a new
-component, under the domain <em>ch.qos.logback.classic</em>. It is the
-<code>JMXConfigurator</code>.  Clicking on it reveals its content. Its
-possibilities are listed below:
-</p>
-
-<ul>
-  <p>
-    Reload the configuration using the same file that was
-    previously used.
+  <p>This appender will use a <code>PatternLayout</code> to format its
+  output.  The <em>%reqParameter</em> conversion word is used to
+  extract the guessed number from the request, and print it.
   </p>
-  <p>
-    Reload the configuration using a file whose path is passed as
-    a parameter.
+
+  <p>It also uses an <code>EvaluatorFilter</code> that will prevent
+  the appender to display anything when the access' request url does
+  not match the given expression. You can see that it is easy to
+  specify a RegExp, name it and use it in the expression that will be
+  evaluated. In that case, we only entered the name of the
+  <em>lottery.do</em> action.
   </p>
-  <p>
-    Reload the configuration using a file whose URL is passed as a
-    parameter.
+
+  <p>Let us uncomment the two elements with the <em>Lottery to
+  Console</em> comments and restart the server. Now, try to play the
+  lottery. You will see more lines in the Console that you've seen until
+  now. At every try, logback will produce a log as shown below:
   </p>
-  <p>Get the level of a logger</p>
-  <p>Change the level setting of a specified logger.</p>
-  <p>Change a list of all declared loggers.</p>
-  <p>Change the level setting of a specified logger.</p>
-</ul>
 
-<p> In the last case, you must specify the name of the logger you wish
-  to alter, and its new level.
-</p>
+  <p class="source">LOTTERY: 192.168.1.6 [POST /logback-demo/Lottery.do HTTP/1.1] Guess=321</p>>
 
-<p>Checking the level of a logger is an easy task. Enter the name of
-the logger in the appropriate field and click the <em>Invoke</em>
-button. You should be able to verify that the logger named
-<em>root</em> has its level set to <em>OFF</em>.
-</p>
+  <h4>Sending emails</h4>
 
+  <p>Logback access provides several components that are usually used
+  by the classic module. For example, a <code>SMTPAppender</code> can
+  be used to send an email when a specific event occurs. Here, we will
+  contact the lottery administrator each time a winner is detected. To
+  achieve this, we will add a <code>SMTPAppender</code> to the
+  existing configuration. Please uncomment the part of
+  <em>logback-access.xml</em> named <em>Lottery to Email</em>. Do not
+  forget to uncomment the <em>appender-ref</em> element, at the end of
+  the configuration file, referencing the appender called
+  <em>SMTP</em>. In the appender element, notice the use of a
+  <code>URLEvaluator</code>. This evaluator allows us to only specify
+  one or more URLs that have to be watched. When one of them are
+  accessed, an email is sent.
+  </p>
 
-<p>Let us test the level setting possibility of the configurator.  The
-<em>Prime Number</em> page requests two types of logs. When the
-calculation checks if a number is a factor, a <em>DEBUG</em> log is
-displayed. When the calculation has found a factor, a <em>INFO</em>
-log is displayed.
-</p>
+  <p>A reload of the configuration has to be done before we can test
+  this new component. Once done, try to play the lottery with the
+  number <em>99</em>.  You should see a congratulation message but,
+  most importantly, the specified recipients should have a new mail in
+  their mailbox. The content of the email is a nicely formatted HTML
+  table with informations about the access that have occured before
+  the triggering event.
+  </p>
 
-<p>Let us first set the level of the logger named
-<em>ch.qos.logback.demo.prime</em> to <em>DEBUG</em>. Run a prime
-calculation directly, without restarting the server. The <em>View
-logs</em> page should show the <em>DEBUG</em> and <em>INFO</em> logs.
-</p>
+  <h3>JMX</h3>
 
-<p>Now, if you set the level of the <em>ch.qos.logback.demo.prime</em>
-logger to <em>INFO</em>, and run a prime calculation again, you should
-not see the <em>DEBUG</em> level logs anymore.
-</p>
+  <p>Logback publishes several components via JMX. This allows you to
+  see the status of certain objects, and change several configuration
+  parameters.  Publishing logback's components via JMX is possible
+  with Jetty and Tomcat. For more information about JMXConfigurator
+  please refer to the <a href="manual/jmxConfig.html">relevant
+  chapter</a> in the manual.
+  </p>
 
-<p>This demo of logback is now over. Do not hesitate to play around
-with the configuration files.  You might want to check the <a
-href="http://logback.qos.ch/documentation.html"> logback documentation
-page</a> for more information about any component you'd like to test.
-</p>
+  <p>Let us test the level setting possibility of the configurator.
+  The <em>Prime Number</em> page requests two types of logs. When the
+  calculation checks if a number is a factor, a <em>DEBUG</em> log is
+  displayed. When the calculation has found a factor, a <em>INFO</em>
+  log is displayed.
+  </p>
+
+  <p>Let us first set the level of the logger named
+  <em>ch.qos.logback.demo.prime</em> to <em>DEBUG</em>. Run a prime
+  calculation directly, without restarting the server. The <em>View
+  logs</em> page should show the <em>DEBUG</em> and <em>INFO</em> logs.
+  </p>
+  
+  <p>Now, if you set the level of the <em>ch.qos.logback.demo.prime</em>
+  logger to <em>INFO</em>, and run a prime calculation again, you should
+  not see the <em>DEBUG</em> level logs anymore.
+  </p>
+  
+  <p>This demo of logback is now over. Do not hesitate to play around
+  with the configuration files.  You might want to check the <a
+  href="http://logback.qos.ch/documentation.html"> logback documentation
+  page</a> for more information about any component you'd like to test.
+  </p>
 	
-<script src="templates/footer.js" type="text/javascript"></script>
+  <script src="templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>

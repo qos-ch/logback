@@ -75,8 +75,11 @@ h4 {
   font-size: medium;
 }
 
+table.footer {
+  width: 100%;
+}
+
 .footer {
-  text-align: right;
   color: #564b47;
   background-color: #fff;
   padding:0px;

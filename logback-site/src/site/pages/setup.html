@@ -1,89 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Setup</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/site.css" />
-</head>
-<body>
-	<script>
-prefix='';	
-</script>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Setup</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
 
-<script src="templates/header.js"></script>
-<div id="left">
-  <script src="templates/left.js"></script>
-</div>
-<div id="right">
-  <script src="templates/right.js"></script>
-</div>
-<div id="content">
+  </head>
+  <body>
+    <script type="text/javascript">prefix='';	</script>
+
+    <script src="templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="templates/left.js" type="text/javascript"></script>
+    </div>
+  
+    <div id="content">
 	
 	
-  <h2>Classpath Setup</h2>
+    <h2>Classpath Setup</h2>
 
-  <p>In order to run the examples provided in the documentation, you
-  need to add the following jars to your class path:
-  </p>
+    <p>In order to run the examples provided in the documentation, you
+    need to add the following jars to your class path:
+    </p>
 
-  <ul>
-    <li>logback-core-${version}.jar</li>
-    <li>logback-classic-${version}.jar</li>
-    <li>logback-examples-${version}.jar</li>
-    <li>slf4j-api-${slf4j.version}.jar</li>
-  </ul>
+    <ul>
+      <li>logback-core-${version}.jar</li>
+      <li>logback-classic-${version}.jar</li>
+      <li>logback-examples-${version}.jar</li>
+      <li>slf4j-api-${slf4j.version}.jar</li>
+    </ul>
+    
+    <p>The <em>logback-*.jar</em> files are part of the logback
+    distribution whereas <em>slf4j-api-${slf4j.version}.jar</em> ships
+    with <a href="http://www.slf4j.org">SLF4J</a>, a separate project.
+    </p>
+    
+    <h3>Running from the command line</h3>
+    
+    <p>Assuming your current directory is
+    <em>$LOGBACK_HOME/logback-examples</em>, where
+    <em>$LOGBACK_HOME</em> stands for the directory where you
+    installed logback, you can launch the first sample application,
+    <em>chapter1.HelloWord1</em> with the following command:
+    </p>
 
-  <p>The <em>logback-*.jar</em> files are part of the logback
-  distribution whereas <em>slf4j-api-${slf4j.version}.jar</em> ships
-  with <a href="http://www.slf4j.org">SLF4J</a>, a separate project.
-  </p>
-
-  <h3>Running from the command line</h3>
-
-  <p>Assuming your current directory is
-  <em>$LOGBACK_HOME/logback-examples</em>, where
-  <em>$LOGBACK_HOME</em> stands for the directory where you installed
-  logback, you can launch the first sample application,
-  <em>chapter1.HelloWord1</em> with the following command:
-  </p>
-
-<div class="source"><pre>java -cp
- lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
+    <p class="source">java -cp lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
  ../logback-classic-${version}.jar;logback-examples-${version}.jar\
- chapter1.HelloWorld1</pre></div>
+ chapter1.HelloWorld1</p>
 
- <p>It is more convenient to set the CLASSPATH environment variable
- once and for all before running the examples.
- </p>
+   <p>It is more convenient to set the CLASSPATH environment variable
+   once and for all before running the examples.
+   </p>
 
- <p>The <em>setClasspath.cmd</em> script located in the
- $LOGBACK_HOME/logback-examples folder will configure the class path
- for the MS Windows platform. For Unix, you can use
- <em>setClasspath.sh</em>.
- </p>
+   <p>The <em>setClasspath.cmd</em> script located in the
+   $LOGBACK_HOME/logback-examples folder will configure the class path
+   for the MS Windows platform. For Unix, you can use
+   <em>setClasspath.sh</em>.
+   </p>
 
- <p>Please edit the script in order to adapt the <em>LB_HOME</em> variable 
- to match your local environment.</p>
+   <p>Please edit the script in order to adapt the <em>LB_HOME</em> variable 
+   to match your local environment.</p>
+   
+   <p>Please be aware that many examples will launch java classes
+   along with configuration files. To access these files by using the
+   same commands as written in the documentation, you will need to
+   issue the commands from within the
+   <em>$LOGBACK_HOME/logback-examples</em> directory.
+   </p>
 
- <p>Please be aware that many examples will launch java classes along
- with configuration files. To access these files by using the same
- commands as written in the documentation, you will need to issue the
- commands from within the <em>$LOGBACK_HOME/logback-examples</em>
- directory.
- </p>
-
- <h3>Using an IDE, e.g. Eclipse</h3>
-
- <p>You can import the logback project into Eclipse. Since logback
- uses maven as its build system, the "maven eclipse:eclipse" command
- will create the <em>.classpath</em> and <em>.project</em> files for
- Eclipse. You can then import the logback project into Eclipse in one
- or two clicks.</p>
+   <h3>Using an IDE, e.g. Eclipse</h3>
+   
+   <p>You can import the logback project into Eclipse. Since logback
+   uses maven as its build system, the "maven eclipse:eclipse" command
+   will create the <em>.classpath</em> and <em>.project</em> files for
+   Eclipse. You can then import the logback project into Eclipse in one
+   or two clicks.</p>
 
 	
 	
 	
-<script src="templates/footer.js"></script>
+   <script src="templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>
