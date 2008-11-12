@@ -11,7 +11,7 @@ package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.ClassicGlobal;
 
-public class ClassNameAbbreviator implements Abbreviator {
+public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
   static private final int BUF_LIMIT = 256;
   static private final int MAX_DOTS = 12;
@@ -19,19 +19,19 @@ public class ClassNameAbbreviator implements Abbreviator {
   final int targetLength;
   StringBuffer buf;
 
-  public ClassNameAbbreviator(int targetLength) {
+  public TargetLengthBasedClassNameAbbreviator(int targetLength) {
     this.targetLength = targetLength;
     buf = new StringBuffer(targetLength);
   }
 
-  public String abbreviate(String className) {
-    if (className == null) {
+  public String abbreviate(String fqClassName) {
+    if (fqClassName == null) {
       throw new IllegalArgumentException("Class name may not be null");
     }
 
-    int inLen = className.length();
+    int inLen = fqClassName.length();
     if (inLen < targetLength) {
-      return className;
+      return fqClassName;
     }
 
     if (buf.capacity() > BUF_LIMIT) {
@@ -42,29 +42,30 @@ public class ClassNameAbbreviator implements Abbreviator {
     int[] dotArray = new int[MAX_DOTS];
     int[] lengthArray = new int[MAX_DOTS];
 
-    int dotCount = computeIndexes(className, dotArray);
+    int dotCount = computeIndexes(fqClassName, dotArray);
 
-    //System.out.println();
-    //System.out.println("Dot count for [" + className + "] is " + dotCount);
+    // System.out.println();
+    // System.out.println("Dot count for [" + className + "] is " + dotCount);
     // if there are not dots than abbreviation is not possible
     if (dotCount == 0) {
-      return className;
+      return fqClassName;
     }
-    //printArray("dotArray:    ", dotArray);
-    computeLengthArray(className, dotArray, lengthArray, dotCount);
-    //printArray("lengthArray: ", lengthArray);
+    // printArray("dotArray: ", dotArray);
+    computeLengthArray(fqClassName, dotArray, lengthArray, dotCount);
+    // printArray("lengthArray: ", lengthArray);
     for (int i = 0; i <= dotCount; i++) {
       if (i == 0) {
-        buf.append(className.substring(0, lengthArray[i] - 1));
+        buf.append(fqClassName.substring(0, lengthArray[i] - 1));
       } else {
-        buf.append(className.substring(dotArray[i - 1], dotArray[i - 1]
+        buf.append(fqClassName.substring(dotArray[i - 1], dotArray[i - 1]
             + lengthArray[i]));
       }
-      //System.out.println("i=" + i + ", buf=" + buf);
+      // System.out.println("i=" + i + ", buf=" + buf);
     }
 
     return buf.toString();
   }
+
 
   static int computeIndexes(final String className, int[] dotArray) {
     int dotCount = 0;
@@ -85,9 +86,9 @@ public class ClassNameAbbreviator implements Abbreviator {
   void computeLengthArray(final String className, int[] dotArray,
       int[] lengthArray, int dotCount) {
     int toTrim = className.length() - targetLength;
-    //System.out.println("toTrim=" + toTrim);
-    
-    //int toTrimAvarage = 0;
+    // System.out.println("toTrim=" + toTrim);
+
+    // int toTrimAvarage = 0;
 
     int len;
     for (int i = 0; i < dotCount; i++) {
@@ -99,7 +100,7 @@ public class ClassNameAbbreviator implements Abbreviator {
       // System.out.println("i=" + i + ", available = " + available);
 
       len = (available < 1) ? available : 1;
-      //System.out.println("i=" + i + ", toTrim = " + toTrim);
+      // System.out.println("i=" + i + ", toTrim = " + toTrim);
 
       if (toTrim > 0) {
         len = (available < 1) ? available : 1;

@@ -45,29 +45,35 @@
     <code>NullPointerException</code> would be thrown.
     </p>
 
-  <p>In reponse to <a
-  href="http://jira.qos.ch/browse/LBCLASSIC-61">LBCLASSIC-61</a>, <a
-  href="http://jira.qos.ch/browse/LBCLASSIC-33">LBCLASSIC-33</a>, <a
-  href="http://jira.qos.ch/browse/LBCLASSIC-14">LBCLASSIC-24</a> and
-  <a href="http://jira.qos.ch/browse/LBCLASSIC-24">LBCLASSIC-14</a>
-  JMXConfigurator has been redesigned. 
-  </p>
+    <p>In reponse to <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-61">LBCLASSIC-61</a>, <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-33">LBCLASSIC-33</a>, <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-14">LBCLASSIC-24</a> and
+    <a href="http://jira.qos.ch/browse/LBCLASSIC-24">LBCLASSIC-14</a>
+    JMXConfigurator has been redesigned.
+    </p>
 
-  <p>Fixed improvement request <a
-  href="http://jira.qos.ch/browse/LBCLASSIC-59">LBCLASSIC-59</a>
-  relation to StatusListeners, originally submitted by Anton Tagunov.
-  </p>
+    <p>Fixed improvement request <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-59">LBCLASSIC-59</a>
+    relation to StatusListeners, originally submitted by Anton Tagunov.
+    </p>
 
-  <p>In response to <a href="http://jira.qos.ch/browse/LBCLASSIC-54">
-  LBCLASSIC-54</a> support for turbo filters has refactored. The
-  present code is safe under concurrent access while still offering
-  good performance.
-  </p>
+    <p>The logger and class name converters now consider zero as
+    having special meaning, and will return the simple class name,
+    removing the package name prefix. This feature was asked by
+    Silvano Maffeis.</p>
+    
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-54"> LBCLASSIC-54</a>
+    support for turbo filters has refactored. The present code is safe
+    under concurrent access while still offering good performance.
+    </p>
 
-  <p>Fixed <a href="http://jira.qos.ch/browse/LBCORE-43">LBCORE-43</a>
-  reported by Bruno Navert. Configuration files can now look up
-  property files from classpath resources.
-  </p>
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCORE-43">LBCORE-43</a> reported
+    by Bruno Navert. Configuration files can now look up property
+    files from classpath resources.
+    </p>
 
 
   <!-- ======================== minor ================== -->

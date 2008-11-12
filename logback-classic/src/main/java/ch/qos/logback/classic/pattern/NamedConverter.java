@@ -29,8 +29,10 @@ public abstract class NamedConverter extends ClassicConverter {
     if (optStr != null) {
       try {
         int targetLen = Integer.parseInt(optStr);
-        if (targetLen > 0) {
-          abbreviator = new ClassNameAbbreviator(targetLen);
+        if (targetLen == 0) {
+          abbreviator = new ClassNameOnlyAbbreviator();
+        } else if (targetLen > 0) {
+          abbreviator = new TargetLengthBasedClassNameAbbreviator(targetLen);
         }
       } catch (NumberFormatException nfe) {
         // FIXME: better error reporting

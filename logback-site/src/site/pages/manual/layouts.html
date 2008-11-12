@@ -208,7 +208,8 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 			the logging request was sent.
 		</p>
 		<p>Here is the implementation of this class:</p>
-<div class="source"><pre>package chapter5;
+
+    <p class="source">package chapter5;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -247,7 +248,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     sbuf.append(LINE_SEP);
     return sbuf.toString();
   }
-}</pre></div>
+}</p>
 
 
     <p>The addition of the corresponding setter method is all that is
@@ -260,7 +261,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     </p> 
 
 
-<div class="source"><pre>&lt;configuration>
+    <p class="source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -274,25 +275,22 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     &lt;level value="debug" />
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
-   <p>
-    
-   </p>
+   <p></p>
 
 
 
 		<h3><a name="ClassicPatternLayout"
 		href="#ClassicPatternLayout">PatternLayout</a></h3>
 
-		<p>
-			Logback classic ships with a flexible layout called <a
-			href="../xref/ch/qos/logback/classic/PatternLayout.html">
-			<code>PatternLayout</code></a>.  As all layouts,
-			<code>PatternLayout</code> takes a logging event and returns a
-			<code>String</code>. However, this <code>String</code> can be
-			customized at will by tweaking the conversion pattern of
-			<code>PatternLayout</code>.
+		<p>Logback classic ships with a flexible layout called <a
+		href="../xref/ch/qos/logback/classic/PatternLayout.html">
+		<code>PatternLayout</code></a>.  As all layouts,
+		<code>PatternLayout</code> takes a logging event and returns a
+		<code>String</code>. However, this <code>String</code> can be
+		customized at will by tweaking the conversion pattern of
+		<code>PatternLayout</code>.
 		</p>   
 
     <p>The conversion pattern of <code>PatternLayout</code> is closely
@@ -301,7 +299,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     composed of literal text and format control expressions called
     conversion specifiers. You are free to insert any literal text
     within the conversion pattern. Each conversion specifier starts
-    with a percent sign (%) and is followed by optional format
+    with a percent sign '%' and is followed by optional format
     modifiers, a conversion word and optional parameters between
     braces. The conversion word controls the type of data to use, e.g.
     logger name, level, date, thread name. The format modifiers
@@ -341,25 +339,23 @@ public class PatternSample {
   } 
 }</pre></div>
 
-		<p>
-			The conversion pattern is set to be <b>"%-5level [%thread]:
-			%message%n"</b>. Running PatternSample will yield the following
-			output on the console.
+		<p>The conversion pattern is set to be <b>"%-5level [%thread]:
+		%message%n"</b>. Running PatternSample will yield the following
+		output on the console.
 		</p>
-		<div class="source"><pre>DEBUG [main]: Message 1 
-WARN  [main]: Message 2</pre></div>
-		<p>
-			Note that in the conversion pattern <b>"%-5level [%thread]:
-			%message%n"</b> there is no explicit separator between literal
-			text and conversion specifiers. When parsing a conversion
-			pattern,
-			<code>PatternLayout</code>
-			is capable of differentiating between literal text (space
-			characters, the brackets, colon character) and conversion
-			specifiers. In the example above, the conversion specifier
-			%-5level means the level of the logging event should be left
-			justified to a width of five characters. Format specifiers
-			will be explained in a short moment.
+
+		<p class="source">DEBUG [main]: Message 1 
+WARN  [main]: Message 2</p>
+
+    <p>Note that in the conversion pattern <b>"%-5level [%thread]:
+    %message%n"</b> there is no explicit separator between literal
+    text and conversion specifiers. When parsing a conversion pattern,
+    <code>PatternLayout</code> is capable of differentiating between
+    literal text (space characters, the brackets, colon character) and
+    conversion specifiers. In the example above, the conversion
+    specifier %-5level means the level of the logging event should be
+    left justified to a width of five characters. Format specifiers
+    will be explained in a short moment.
 		</p>
 
 		<p>In PatternLayout, parenthesis can be used to group conversion
@@ -402,43 +398,52 @@ WARN  [main]: Message 2</pre></div>
 					the logging event.
 					</p>
 
-					<p>This conversion word can take an integer as first and
+					<p>This conversion word can take an integer as its first and
 					only option. The converter's abbreviation algorithm will
 					shorten the logger name, usually without significant loss of
-					meaning. The next table provides examples of the
-					abbreviation algorithm in action.
+					meaning. Setting the value of this option to zero will cause
+					the conversoin specifier to return the string right to the
+					rightmost dot character. The next table provides examples of
+					the abbreviation algorithm in action.
           </p>
 
-					<table class="bodyTable" border="0" cellpadding="8">
-						<tr class="a">
+					<table class="bodyTable dark" border="0" cellpadding="8">
+						<tr>
 							<th>Conversion specifier</th>
 							<th>Logger name</th>
 							<th>Result</th>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%logger</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>mainPackage.sub.sample.Bar</td>
 						</tr>
-						<tr class="a">
+
+            <tr>
+							<td>%logger{0}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>Bar</td>
+						</tr>
+
+						<tr>
 							<td>%logger{10}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.s.s.Bar</td>
 						</tr>
 
-						<tr class="a">
+						<tr>
 							<td>%logger{15}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.s.sample.Bar</td>
 						</tr>
 
-						<tr class="a">
+						<tr>
 							<td>%logger{16}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>m.sub.sample.Bar</td>
 						</tr>
 
-						<tr class="a">
+						<tr>
 							<td>%logger{26}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>mainPackage.sub.sample.Bar</td>
@@ -459,12 +464,15 @@ WARN  [main]: Message 2</pre></div>
 					</p>
 					<p> Just like the <em>%logger</em> conversion word above,
 					this word can take an interger as it's first option and use
-					its abbreviation algorithm to shorten the class name.  By
+					its abbreviation algorithm to shorten the class name. Zero
+					carries special meaning and w will cause the simple class
+					name to be output without its package name prefix. By
 					default the class name is output in full.
 					</p>
-					<p>Generating the caller class information is not
-					particularly fast.  Thus, it's use should be avoided unless
-					execution speed is not an issue.
+
+          <p>Generating the caller class information is not
+          particularly fast.  Thus, it's use should be avoided unless
+          execution speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -491,24 +499,24 @@ WARN  [main]: Message 2</pre></div>
 					actual date is Friday 20th of October, 2006 and that the
 					author finished his meal a short while ago.</p>
 					
-					<table class="bodyTable" cellpadding="8">
-						<tr class="a">
+					<table class="bodyTable dark" cellpadding="8">
+						<tr>
 							<th>Conversion Pattern</th>
 							<th>Result</th>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%date</td>
 							<td>2006-10-20 14:46:49,812</td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%date{ISO8601}</td>
 							<td>2006-10-20 14:46:49,812</td>
 						</tr>			
-						<tr class="a">
+						<tr>
 							<td>%date{HH:mm:ss.SSS}</td>
 							<td>14:46:49.812</td>
 						</tr>
-						<tr class="a">
+						<tr>
 							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
 							<td>20 oct. 2006;14:46:49.812	</td>
 						</tr>
@@ -522,7 +530,7 @@ WARN  [main]: Message 2</pre></div>
 				</td>
 
 				<td>
-					<p> Used to output the file name of the Java source file
+					<p>Used to output the file name of the Java source file
 					where the logging request was issued.
 					</p>
 

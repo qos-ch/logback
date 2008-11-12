@@ -124,6 +124,11 @@ table.bodyTable td {
 }
 
 
+/* apply to tr elements of tables which are both bodytable and dark */
+table[class="bodyTable dark"] tr {
+	background-color: #ddd;
+}
+
 table.bodyTable tr.a {
 	background-color: #ddd;
 }
@@ -178,6 +183,7 @@ table.bodyTable tr.alt {
 	color: red;
 	font-weight: bold;	
 }
+
 .greenBold {
 	color: green;	
   font-weight: bold;	

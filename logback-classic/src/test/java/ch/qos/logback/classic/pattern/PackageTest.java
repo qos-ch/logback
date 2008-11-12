@@ -10,6 +10,7 @@
 package ch.qos.logback.classic.pattern;
 
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -18,8 +19,8 @@ public class PackageTest extends TestCase {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(ConverterTest.class);
-    suite.addTestSuite(ClassNameAbbreviatorTest.class);
+    suite.addTest(new JUnit4TestAdapter(ConverterTest.class));
+    suite.addTest(new JUnit4TestAdapter(TargetLengthBasedClassNameAbbreviatorTest.class));
     suite.addTestSuite(MDCConverterTest.class);
     suite.addTestSuite(MarkerConverterTest.class);
     return suite;
