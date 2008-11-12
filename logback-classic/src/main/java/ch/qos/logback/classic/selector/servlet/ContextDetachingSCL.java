@@ -42,8 +42,9 @@ public class ContextDetachingSCL implements ServletContextListener {
       LoggerContext context = selector.detachLoggerContext(loggerContextName);
       if (context != null) {
         Logger logger = context.getLogger(LoggerContext.ROOT_NAME);
-        logger.warn("Shutting down context " + loggerContextName);
-        context.reset();
+        logger.warn("Stopping logger context " + loggerContextName);
+        // when the web-app is destroyed, its logger context should be stopped
+        context.stop();
       } else {
         System.out.println("No context named " + loggerContextName + " was found.");
       }

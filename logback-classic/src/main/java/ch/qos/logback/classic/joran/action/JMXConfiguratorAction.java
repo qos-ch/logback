@@ -1,5 +1,8 @@
 package ch.qos.logback.classic.joran.action;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.xml.sax.Attributes;
@@ -15,7 +18,7 @@ import ch.qos.logback.core.util.OptionHelper;
 public class JMXConfiguratorAction extends Action {
 
   static final String OBJECT_NAME_ATTRIBUTE_NAME = "objectName";
-  static final String SUFFIX_ATTRIBUTE_NAME = "suffix";
+  static final String CONTEXT_NAME_ATTRIBUTE_NAME = "contextName";
   static final char JMX_NAME_SEPARATOR = ',';
   
   @Override
@@ -23,31 +26,44 @@ public class JMXConfiguratorAction extends Action {
       throws ActionException {
     addInfo("begin");
 
+
+    String contextName = context.getName();
+    String contextNameAttributeVal = attributes
+    .getValue(CONTEXT_NAME_ATTRIBUTE_NAME);
+    if(!OptionHelper.isEmpty(contextNameAttributeVal)) {
+      contextName = contextNameAttributeVal;
+    }
+
     String objectNameAsStr;
     String objectNameAttributeVal = attributes
         .getValue(OBJECT_NAME_ATTRIBUTE_NAME);
-    String suffixAttributeVal = attributes
-    .getValue(SUFFIX_ATTRIBUTE_NAME);
-
     if (OptionHelper.isEmpty(objectNameAttributeVal)) {
-      objectNameAsStr = MBeanUtil.getObjectNameFor((LoggerContext) context,
+      objectNameAsStr = MBeanUtil.getObjectNameFor(contextName,
           JMXConfigurator.class);
     } else {
       objectNameAsStr = objectNameAttributeVal;
     }
 
-    if(!OptionHelper.isEmpty(suffixAttributeVal)) {
-      if(suffixAttributeVal.indexOf(0) != JMX_NAME_SEPARATOR) {
-        objectNameAsStr += JMX_NAME_SEPARATOR;
-      }
-      objectNameAsStr += suffixAttributeVal;
-    }
-    
     ObjectName objectName = MBeanUtil.string2ObjectName(context, this,
         objectNameAsStr);
-
-    if (objectName != null) {
-      MBeanUtil.register((LoggerContext) context, objectName, this);
+    if (objectName == null) {
+      addError("Failed to for ObjectName for ["+objectNameAsStr+"]");
+      return;
+    }
+    
+    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    if(!MBeanUtil.isRegistered(mbs, objectName)) {
+      // register only of the named JMXConfigurator has not been previously
+      // registered. Unregistering an MBean within invocation of itself
+      // caused jconsole to throw an NPE. (This occurs when the reload* method
+      // unregisters the 
+      JMXConfigurator jmxConfigurator = new JMXConfigurator((LoggerContext) context, mbs,
+          objectName);
+      try {     
+        mbs.registerMBean(jmxConfigurator, objectName);
+      } catch (Exception e) {
+        addError("Failed to create mbean", e);
+      }
     }
 
   }

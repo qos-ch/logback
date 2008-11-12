@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.classic.jmx;
 
-import java.lang.management.ManagementFactory;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
@@ -25,8 +23,8 @@ public class MBeanUtil {
 
   static final String DOMAIN = "ch.qos.logback.classic";
 
-  static public String getObjectNameFor(Context context, Class type) {
-    String objectNameAsStr = DOMAIN + ":Name=" + context.getName() + ",Type="
+  static public String getObjectNameFor(String contextName, Class type) {
+    String objectNameAsStr = DOMAIN + ":Name=" + contextName + ",Type="
         + type.getName();
     return objectNameAsStr;
   }
@@ -46,25 +44,17 @@ public class MBeanUtil {
     }
   }
 
-  public static JMXConfigurator register(LoggerContext loggerContext,
-      ObjectName objectName, Object caller) {
+  public static boolean isRegistered(MBeanServer mbs, ObjectName objectName) {
+    return mbs.isRegistered(objectName);
+  }
+
+  public static void createAndRegisterJMXConfigurator(
+      MBeanServer mbs, LoggerContext loggerContext,
+      JMXConfigurator jmxConfigurator, ObjectName objectName, Object caller) {
     try {
-      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-      JMXConfigurator jmxConfigurator = new JMXConfigurator(loggerContext, mbs,
-          objectName);
-
-      if (mbs.isRegistered(objectName)) {
-        StatusUtil.addWarn(loggerContext, caller,
-            "Unregistering existing MBean named ["
-                + objectName.getCanonicalName() + "]");
-        mbs.unregisterMBean(objectName);
-      }
       mbs.registerMBean(jmxConfigurator, objectName);
-      return jmxConfigurator;
     } catch (Exception e) {
       StatusUtil.addError(loggerContext, caller, "Failed to create mbean", e);
-      return null;
     }
   }
 

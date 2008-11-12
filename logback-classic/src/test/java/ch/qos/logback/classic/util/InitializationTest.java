@@ -46,7 +46,7 @@ public class InitializationTest {
   public void tearDown() throws Exception {
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
     System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
-    lc.reset();
+    lc.reset(); // we are going to need this context
   }
 
   @Test
@@ -73,7 +73,7 @@ public class InitializationTest {
       assertTrue(appender instanceof ConsoleAppender);
     }
     {
-      lc.reset();
+      lc.stop();
       Appender appender = root.getAppender("STDOUT");
       assertNull(appender);
     }
@@ -88,7 +88,7 @@ public class InitializationTest {
   }
   
   public void doAutoConfigFromSystemProperties(String val) throws JoranException {
-    //lc.shutdownAndReset();
+    //lc.reset();
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
     new ContextInitializer(lc).autoConfig();
     Appender appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");

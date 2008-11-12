@@ -306,7 +306,7 @@ public class ExitWoes1 {
 
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.shutdownAndReset(); // we want to override the default-config.
+    lc.reset(); // we want to override the default-config.
     WriterAppender&lt;LoggingEvent> writerAppender = new WriterAppender&lt;LoggingEvent>();
     writerAppender.setContext(lc);
     writerAppender.setLayout(new EchoLayout&lt;&lt;LoggingEvent>());
@@ -335,7 +335,7 @@ public class ExitWoes1 {
 	the underlying output stream. As astonishing as this may seem,
 	running <code>ExitWoes1</code> will not produce any data in the file
 	<em>exitWoes1.log</em> because the Java VM does not flush output
-	streams when it exits.  Calling the <code>shutdownAndReset()</code>
+	streams when it exits.  Calling the <code>stop()</code>
 	method of a <code>LoggerContext</code> ensures that all appenders in
 	the hierarchy are closed and their buffers are flushed. The <code><a
 	href="../xref/chapter4/ExitWoes2.html">ExitWoes2</a></code> class
@@ -1212,31 +1212,34 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			lost due to server unavailability.
 		</p>
 		
-		<p>
-			Even if a <code>SocketAppender</code> is no longer attached to any logger, 
-			it will not be garbage collected in the presence of a connector thread. 
-			A connector thread exists only if the connection to the server is down. 
-			To avoid this garbage collection problem, you should close the <code>SocketAppender</code> 
-			explicitly. Long lived applications which create/destroy many 
-			<code>SocketAppender</code> instances should be aware of this 
-			garbage collection problem. Most other applications can safely ignore it. 
-			If the JVM hosting the <code>SocketAppender</code> exits before the 
-			<code>SocketAppender</code> is closed, either explicitly or subsequent 
-			to garbage collection, then there might be untransmitted data in the 
-			pipe which may be lost. This is a common problem on Windows based systems.  
-			To avoid lost data, it is usually sufficient to <code>close()</code> the 
-			<code>SocketAppender</code> either explicitly or by calling the 
-			<code>LoggerContext</code>'s <code>shutdownAndReset()</code> method before exiting the application.
+		<p>Even if a <code>SocketAppender</code> is no longer attached to
+		any logger, it will not be garbage collected in the presence of a
+		connector thread.  A connector thread exists only if the
+		connection to the server is down.  To avoid this garbage
+		collection problem, you should close the
+		<code>SocketAppender</code> explicitly. Long lived applications
+		which create/destroy many <code>SocketAppender</code> instances
+		should be aware of this garbage collection problem. Most other
+		applications can safely ignore it.  If the JVM hosting the
+		<code>SocketAppender</code> exits before the
+		<code>SocketAppender</code> is closed, either explicitly or
+		subsequent to garbage collection, then there might be
+		untransmitted data in the pipe which may be lost. This is a common
+		problem on Windows based systems.  To avoid lost data, it is
+		usually sufficient to <code>close()</code> the
+		<code>SocketAppender</code> either explicitly or by calling the
+		<code>LoggerContext</code>'s <code>stop()</code>
+		method before exiting the application.
 		</p>
 		
-		<p>
-			The remote server is identified by the <span class="option">RemoteHost</span> and 
-			<span class="option">Port</span> options. 
-			<code>SocketAppender</code> options are listed in the following table.
+		<p>The remote server is identified by the <span
+		class="option">RemoteHost</span> and <span
+		class="option">Port</span> options.  <code>SocketAppender</code>
+		options are listed in the following table.
 		</p>
 
-	<table class="bodyTable">
-			<tr class="a">
+    <table class="bodyTable">
+      <tr class="a">
 			<th>Option Name</th>
 			<th>Type</th>
 			<th>Description</th>

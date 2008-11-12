@@ -12,9 +12,7 @@
     <title>JMX Configuration</title>
   </head>
   <body>
-    <script type="text/javascript">
-      prefix='../';	
-    </script>
+    <script type="text/javascript">prefix='../';</script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -46,7 +44,7 @@
     your logback configuration file, as shown below:
 		</p>
 
-<div class="source"><pre>&lt;configuration>
+    <p class="source">&lt;configuration>
   <b>&lt;jmxConfigurator /></b>
 
   &lt;appender name="console" class="ch.qos.logback.classic.ConsoleAppender">
@@ -59,7 +57,7 @@
     &lt;level value="debug"/>
     &lt;appender-ref ref="console" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 		
     <p>After you connect to your server with <em>jconsole</em>, on the
     MBeans panel, under "ch.qos.logback.classic.jmx.Configurator"
@@ -126,16 +124,12 @@ public class MyContextListener implements ServletContextListener {
 
   public void contextDestroyed(ServletContextEvent sce) {
     <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
-    <b>lc.reset();</b>
+    <b>lc.stop();</b>
   }
 
   public void contextInitialized(ServletContextEvent sce) {
   }
 } </p>
-
-
-  
-
 
 
     <!-- ============ Multiple web-applications  ================== -->

@@ -14,7 +14,7 @@ public class TurboFilteringInLoggerTest extends TestCase {
   LoggerContext context;
   Logger logger;
   Marker blueMarker = MarkerFactory.getMarker(BLUE);
-  
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -40,7 +40,7 @@ public class TurboFilteringInLoggerTest extends TestCase {
     filter.start();
     context.addTurboFilter(filter);
   }
-  
+
   private void addAcceptBLUEFilter() {
     MarkerFilter filter = new MarkerFilter();
     filter.setMarker(BLUE);
@@ -48,7 +48,7 @@ public class TurboFilteringInLoggerTest extends TestCase {
     filter.start();
     context.addTurboFilter(filter);
   }
-  
+
   private void addDenyBLUEFilter() {
     MarkerFilter filter = new MarkerFilter();
     filter.setMarker(BLUE);
@@ -56,8 +56,6 @@ public class TurboFilteringInLoggerTest extends TestCase {
     filter.start();
     context.addTurboFilter(filter);
   }
-  
-  
 
   public void testIsDebugEnabledWithYesFilter() {
     addYesFilter();
@@ -131,13 +129,13 @@ public class TurboFilteringInLoggerTest extends TestCase {
     assertFalse(logger.isDebugEnabled(blueMarker));
   }
 
-  public void testLoggingContextShutdownAndReset() {
+  public void testLoggingContextReset() {
     addYesFilter();
     assertNotNull(context.getTurboFilterList().get(0));
     context.reset();
     assertEquals(0, context.getTurboFilterList().size());
   }
-  
+
 }
 
 class YesFilter extends TurboFilter {

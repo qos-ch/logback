@@ -63,9 +63,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   boolean started = false;
 
+  
   public LoggerContext() {
     super();
-    System.out.println(" LoggerContext()=============================================================");
     this.loggerCache = new Hashtable<String, Logger>();
     this.loggerContextRemoteView = new LoggerContextRemoteView(this);
     this.root = new Logger(ROOT_NAME, null, this);
@@ -190,25 +190,15 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return loggerContextRemoteView;
   }
 
-  @Override
-  protected void finalize() {
-    System.out.println("**************** LoggerContext finalized");
-  }
+  /**
+   * This method closes all appenders,
+   */
   public void reset() {
     root.recursiveReset();
     clearAllTurboFilters();
     fireOnReset();
-    // TODO is it a good idea to reset the status listeners?
+    resetListenersExceptResetResistant();
     resetStatusListeners();
-    resetListeners();
-  }
-
-  /**
-   * @deprecated Please use reset() method instead
-   */
-
-  public void shutdownAndReset() {
-    reset();
   }
 
   private void resetStatusListeners() {
@@ -269,7 +259,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     loggerContextListenerList.remove(listener);
   }
 
-  private void resetListeners() {
+  private void resetListenersExceptResetResistant() {
+    List<LoggerContextListener> toRetain = new ArrayList<LoggerContextListener>();
+    
+    for(LoggerContextListener lcl: loggerContextListenerList) {
+      if(lcl.isResetResistant()) {
+        toRetain.add(lcl);
+      }
+    }
+    loggerContextListenerList.retainAll(toRetain);
+  }
+  
+  private void resetAllListeners() {
     loggerContextListenerList.clear();
   }
 
@@ -289,6 +290,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     }
   }
 
+  private void fireOnStop() {
+    for (LoggerContextListener listener : loggerContextListenerList) {
+      listener.onStop(this);
+    }
+  }
+  
   // === end listeners ==============================================
 
   public boolean isStarted() {
@@ -302,11 +309,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public void stop() {
     reset();
+    fireOnStop();
+    resetAllListeners();
     started = false;
   }
 
-//  @Override
-//  public String toString() {
-//    return this.getClass().getName() + "[" + getName() + "]";
-//  }
+   @Override
+  public String toString() {
+    return this.getClass().getName() + "[" + getName() + "]";
+  }
 }

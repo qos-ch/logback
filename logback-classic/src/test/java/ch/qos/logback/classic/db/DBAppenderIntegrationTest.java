@@ -46,7 +46,8 @@ public class DBAppenderIntegrationTest {
 
   @After
   public void tearDown() throws Exception {
-    lc.reset();
+    // lc will never be used again
+    lc.stop();
   }
 
   public void doTest(String configFile) throws JoranException {

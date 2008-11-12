@@ -2,6 +2,7 @@ package ch.qos.logback.classic.jmx;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,21 +24,23 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class JMXConfiguratorTest {
 
-  static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+  MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
   LoggerContext lc = new LoggerContext();
   Logger testLogger  = lc.getLogger(this.getClass());
 
   List<LoggerContextListener> listenerList;
   int diff = RandomUtil.getPositiveInt();
 
+  
   @Before
   public void setUp() throws Exception {
     lc.setName("context-" + diff);
+    assertNotNull(mbs);
   }
 
   @After
   public void tearDown() throws Exception {
-    lc.reset();
+    lc.stop();
   }
 
   @Override
@@ -46,45 +49,69 @@ public class JMXConfiguratorTest {
   }
 
   @Test
-  public void contextListening() {
-    String objectNameAsStr = "ch.qos.logback.toto" + ":Name=" + lc.getName()
+  public void contextReset() throws Exception {
+    String randomizedObjectNameAsStr = "ch.qos.logback."+diff + ":Name=" + lc.getName()
         + ",Type=" + this.getClass().getName();
-    ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
 
-    MBeanUtil.register(lc, on, this);
+    ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
+    JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
+    mbs.registerMBean(jmxConfigurator, objectName);
+    
     listenerList = lc.getCopyOfListenerList();
     assertEquals(1, listenerList.size());
+    
     lc.reset();
+    
+    // check that after lc.reset, jmxConfigurator should still be
+    // registered as a listener in the loggerContext and also as an
+    // MBean in mbs
+    listenerList = lc.getCopyOfListenerList();
+    assertEquals(1, listenerList.size());
+    assertTrue(listenerList.contains(jmxConfigurator));
+
+    assertTrue(mbs.isRegistered(objectName));
+  }
+  
+  @Test
+  public void contextStop() throws Exception {
+    String randomizedObjectNameAsStr = "ch.qos.logback."+diff + ":Name=" + lc.getName()
+        + ",Type=" + this.getClass().getName();
+
+    ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
+    JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
+    mbs.registerMBean(jmxConfigurator, objectName);
+    
+    listenerList = lc.getCopyOfListenerList();
+    assertEquals(1, listenerList.size());
+    
+    lc.stop();
+    
+    // check that after lc.stop, jmxConfigurator is no longer
+    // registered as a listener in the loggerContext nor as an
+    // MBean in mbs
     listenerList = lc.getCopyOfListenerList();
     assertEquals(0, listenerList.size());
 
-    MBeanUtil.register(lc, on, this);
-    listenerList = lc.getCopyOfListenerList();
-    assertEquals(1, listenerList.size());
-
+    assertFalse(mbs.isRegistered(objectName));
   }
 
   @Test
-  public void testRemovalOfPreviousIntanceFromTheContextListenerList() {
+  public void testNonRemovalOfPreviousIntanceFromTheContextListenerList() {
     String objectNameAsStr = "ch.qos.logback.toto" + ":Name=" + lc.getName()
         + ",Type=" + this.getClass().getName();
-
-    ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
-    JMXConfigurator jmxConfigurator0 = MBeanUtil.register(lc, on, this);
-
+    ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+    JMXConfigurator jmxConfigurator0 = new JMXConfigurator(lc, mbs, objectName);
+    
     listenerList = lc.getCopyOfListenerList();
-    assertEquals(1, listenerList.size());
     assertTrue(listenerList.contains(jmxConfigurator0));
 
-    JMXConfigurator jmxConfigurator1 = MBeanUtil.register(lc, on, this);
+    JMXConfigurator jmxConfigurator1 = new JMXConfigurator(lc, mbs, objectName);
     listenerList = lc.getCopyOfListenerList();
     assertEquals(1, listenerList.size());
-    assertFalse("old configurator should be absent", listenerList
+    assertTrue("old configurator should be present", listenerList
         .contains(jmxConfigurator0));
-    assertTrue("new configurator should be present", listenerList
+    assertFalse("new configurator should be absent", listenerList
         .contains(jmxConfigurator1));
-
-    // StatusPrinter.print(lc);
   }
 
   @Test

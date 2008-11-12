@@ -42,7 +42,7 @@ public class ExitWoes2 {
 
     logger.debug("Hello world.");
     
-    lc.reset();
+    lc.stop();
     
     StatusPrinter.print(lc);
   }

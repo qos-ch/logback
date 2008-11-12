@@ -56,39 +56,42 @@ public class JMXConfigurator extends ContextAwareBase implements
   MBeanServer mbs;
   ObjectName objectName;
   String objectNameAsString;
-  
+
+  // whether to output status events on the console when reloading the
+  // configuration
+  boolean debug = true;
+
   boolean started;
 
-  @Override
-  public void finalize() {
-    System.out.println("....... finalize() "+this);
-  }
-  
   public JMXConfigurator(LoggerContext loggerContext, MBeanServer mbs,
       ObjectName objectName) {
-    System.out.println("....... constructor() "+this);
     started = true;
     this.context = loggerContext;
     this.loggerContext = loggerContext;
     this.mbs = mbs;
     this.objectName = objectName;
     this.objectNameAsString = objectName.toString();
-    removePreviousInstanceAsListener();
-    loggerContext.addListener(this);
-
+    if (previouslyRegisteredListenerWithSameObjectName()) {
+      addError("Previously registered JMXConfigurator named ["
+          + objectNameAsString + "] in the logger context named ["
+          + loggerContext.getName() + "]");
+    } else {
+      // register as a listener only if there are no homonyms
+      loggerContext.addListener(this);
+    }
   }
 
-  private void removePreviousInstanceAsListener() {
+  private boolean previouslyRegisteredListenerWithSameObjectName() {
     List<LoggerContextListener> lcll = loggerContext.getCopyOfListenerList();
     for (LoggerContextListener lcl : lcll) {
       if (lcl instanceof JMXConfigurator) {
         JMXConfigurator jmxConfigurator = (JMXConfigurator) lcl;
         if (objectName.equals(jmxConfigurator.objectName)) {
-          addInfo("Removing previous JMXConfigurator from the logger context listener list");
-          loggerContext.removeListener(lcl);
+          return true;
         }
       }
     }
+    return false;
   }
 
   public void reloadDefaultConfiguration() throws JoranException {
@@ -121,23 +124,31 @@ public class JMXConfigurator extends ContextAwareBase implements
     StatusManager sm = loggerContext.getStatusManager();
     sm.add(statusListener);
   }
-  
+
+  void removeStatusListener(StatusListener statusListener) {
+    StatusManager sm = loggerContext.getStatusManager();
+    sm.remove(statusListener);
+  }
+
   public void reloadByURL(URL url) throws JoranException {
     StatusListenerAsList statusListenerAsList = new StatusListenerAsList();
 
     addStatusListener(statusListenerAsList);
     addInfo("Resetting context: " + loggerContext.getName());
     loggerContext.reset();
+    // after a reset the statusListenerAsList gets removed as a listener
     addStatusListener(statusListenerAsList);
 
-    
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       configurator.doConfigure(url);
       addInfo("Context: " + loggerContext.getName() + " reloaded.");
     } finally {
-      StatusPrinter.print(statusListenerAsList.getStatusList());
+      removeStatusListener(statusListenerAsList);
+      if (debug) {
+        StatusPrinter.print(statusListenerAsList.getStatusList());
+      }
     }
   }
 
@@ -219,23 +230,23 @@ public class JMXConfigurator extends ContextAwareBase implements
   }
 
   /**
-   * When the associated LoggerContext is reset, this configurator must be
+   * When the associated LoggerContext is stopped, this configurator must be
    * unregistered
    */
-  public void onReset(LoggerContext context) {
-    if(!started) {
-      addInfo("onReset() method called on a stopped JMXActivator [" + objectNameAsString + "]");;
+  public void onStop(LoggerContext context) {
+    if (!started) {
+      addInfo("onStop() method called on a stopped JMXActivator ["
+          + objectNameAsString + "]");
+      return;
     }
-    System.out.println("Unregistering JMXConfigurator");
-    
     if (mbs.isRegistered(objectName)) {
       try {
         addInfo("Unregistering mbean [" + objectNameAsString + "]");
         mbs.unregisterMBean(objectName);
       } catch (InstanceNotFoundException e) {
         // this is theoretically impossible
-        addError("Unable to find a verifiably registered mbean [" + objectNameAsString
-            + "]", e);
+        addError("Unable to find a verifiably registered mbean ["
+            + objectNameAsString + "]", e);
       } catch (MBeanRegistrationException e) {
         addError("Failed to unregister [" + objectNameAsString + "]", e);
       }
@@ -245,9 +256,21 @@ public class JMXConfigurator extends ContextAwareBase implements
     }
     stop();
   }
-  
+
+  public void onReset(LoggerContext context) {
+    addInfo("onReset() method called JMXActivator [" + objectNameAsString + "]");
+  }
+
+  /**
+   * JMXConfigrator should not be removed subsequent to a LoggerContext reset.
+   * 
+   * @return
+   */
+  public boolean isResetResistant() {
+    return true;
+  }
+
   private void clearFields() {
-    System.out.println("Clearing fields");
     mbs = null;
     objectName = null;
     loggerContext = null;
@@ -257,12 +280,13 @@ public class JMXConfigurator extends ContextAwareBase implements
     started = false;
     clearFields();
   }
+
   public void onStart(LoggerContext context) {
     // nop
   }
 
-//  @Override
-//  public String toString() {
-//    return this.getClass().getName() + "(" + context.getName() + ")";
-//  }
+  @Override
+  public String toString() {
+    return this.getClass().getName() + "(" + context.getName() + ")";
+  }
 }
