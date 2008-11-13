@@ -36,16 +36,14 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * is a good chance that the last few logs events are not actually written to
    * persistent media if and when the application crashes.
    * 
-   * <p>
-   * The <code>immediateFlush</code> variable is set to <code>true</code> by
-   * default.
+   * <p> The <code>immediateFlush</code> variable is set to <code>true</code>
+   * by default.
    */
   private boolean immediateFlush = true;
 
   /**
-   * The encoding to use when opening an InputStream.
-   * <p>
-   * The <code>encoding</code> variable is set to <code>null</null> by default 
+   * The encoding to use when opening an InputStream. <p> The
+   * <code>encoding</code> variable is set to <code>null</null> by default 
    * which results in the use of the system's default encoding.
    */
   private String encoding;
@@ -71,14 +69,12 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * If the <b>ImmediateFlush</b> option is set to <code>true</code>, the
    * appender will flush at the end of each write. This is the default behavior.
    * If the option is set to <code>false</code>, then the underlying stream
-   * can defer writing to physical medium to a later time.
-   * <p>
-   * Avoiding the flush operation at the end of each append results in a
-   * performance gain of 10 to 20 percent. However, there is safety tradeoff
-   * involved in skipping flushing. Indeed, when flushing is skipped, then it is
-   * likely that the last few log events will not be recorded on disk when the
-   * application exits. This is a high price to pay even for a 20% performance
-   * gain.
+   * can defer writing to physical medium to a later time. <p> Avoiding the
+   * flush operation at the end of each append results in a performance gain of
+   * 10 to 20 percent. However, there is safety tradeoff involved in skipping
+   * flushing. Indeed, when flushing is skipped, then it is likely that the last
+   * few log events will not be recorded on disk when the application exits.
+   * This is a high price to pay even for a 20% performance gain.
    */
   public void setImmediateFlush(boolean value) {
     immediateFlush = value;
@@ -127,8 +123,7 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * Stop this appender instance. The underlying stream or writer is also
    * closed.
    * 
-   * <p>
-   * Stopped appenders cannot be reused.
+   * <p> Stopped appenders cannot be reused.
    */
   public synchronized void stop() {
     closeWriter();
@@ -205,21 +200,17 @@ public class WriterAppender<E> extends AppenderBase<E> {
   void writeHeader() {
     if (layout != null && (this.writer != null)) {
       try {
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, layout.getFileHeader());
+        appendIfNotNull(sb, layout.getPresentationHeader());
+        if (sb.length() > 0) {
+          sb.append(Layout.LINE_SEP);
+          // If at least one of file header or presentation header were not
+          // null, then append a line separator.
+          // This should be useful in most cases and should not hurt.
+          writerWrite(sb.toString(), true);
+        }
 
-        String h = layout.getFileHeader();
-        if (h != null) {
-          this.writer.write(h);
-        }
-        String ph = layout.getPresentationHeader();
-        if (ph != null) {
-          this.writer.write(ph);
-        }
-        // If at least one of file header or presentation header were not null, then append a line separator. 
-        // This should be useful in most cases and should not hurt.
-        if ((h != null) || (ph != null)) {
-          this.writer.write(Layout.LINE_SEP);
-          this.writer.flush();
-        }
       } catch (IOException ioe) {
         this.started = false;
         addStatus(new ErrorStatus("Failed to write header for appender named ["
@@ -228,19 +219,21 @@ public class WriterAppender<E> extends AppenderBase<E> {
     }
   }
 
+  private void appendIfNotNull(StringBuilder sb, String s) {
+    if (s != null) {
+      sb.append(s);
+    }
+  }
+
   void writeFooter() {
     if (layout != null && this.writer != null) {
       try {
-        String pf = layout.getPresentationFooter();
-        if (pf != null) {
-          this.writer.write(pf);
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, layout.getPresentationFooter());
+        appendIfNotNull(sb, layout.getFileFooter());
+        if (sb.length() > 0) {
+          writerWrite(sb.toString(), true); // force flush
         }
-        String h = layout.getFileFooter();
-        if (h != null) {
-          this.writer.write(h);
-        }
-        // flushing is mandatory if the writer is not later closed.
-        this.writer.flush();
       } catch (IOException ioe) {
         this.started = false;
         addStatus(new ErrorStatus("Failed to write footer for appender named ["
@@ -250,10 +243,9 @@ public class WriterAppender<E> extends AppenderBase<E> {
   }
 
   /**
-   * <p>
-   * Sets the Writer where the log output will go. The specified Writer must be
-   * opened by the user and be writable. The <code>java.io.Writer</code> will
-   * be closed when the appender instance is closed.
+   * <p> Sets the Writer where the log output will go. The specified Writer must
+   * be opened by the user and be writable. The <code>java.io.Writer</code>
+   * will be closed when the appender instance is closed.
    * 
    * @param writer
    *                An already opened Writer.
@@ -266,11 +258,16 @@ public class WriterAppender<E> extends AppenderBase<E> {
     writeHeader();
   }
 
+  protected void writerWrite(String s, boolean flush) throws IOException {
+    this.writer.write(s);
+    if (flush) {
+      this.writer.flush();
+    }
+  }
+
   /**
-   * Actual writing occurs here.
-   * <p>
-   * Most subclasses of <code>WriterAppender</code> will need to override this
-   * method.
+   * Actual writing occurs here. <p> Most subclasses of
+   * <code>WriterAppender</code> will need to override this method.
    * 
    * @since 0.9.0
    */
@@ -280,10 +277,7 @@ public class WriterAppender<E> extends AppenderBase<E> {
     }
 
     try {
-      this.writer.write(this.layout.doLayout(event));
-      if (this.immediateFlush) {
-        this.writer.flush();
-      }
+      writerWrite(this.layout.doLayout(event), this.immediateFlush);
     } catch (IOException ioe) {
       // as soon as an exception occurs, move to non-started state
       // and add a single ErrorStatus to the SM.

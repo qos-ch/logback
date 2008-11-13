@@ -1,7 +1,7 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -117,7 +117,7 @@ public class IO extends Thread {
       threads[i].start();
     }
 
-    // wait for them to stop, compute the average throughputs
+    // wait for them to stop, compute the average throughput
     double sum = 0;
 
     for (int i = 0; i < numThreads; i++) {
@@ -131,8 +131,8 @@ public class IO extends Thread {
       counterThread.join();
     }
 
-    System.out.println("On average throughput of " + (sum / numThreads) +
-      " logs per millisecond.");
+    System.out.println("On average throughput of " + (sum / numThreads)*1000 +
+      " logs per microsecond.");
     System.out.println("------------------------------------------------");
   }
 
@@ -143,16 +143,16 @@ public class IO extends Thread {
       msg = msgLong;
     }
 
-    long before = System.currentTimeMillis();
+    long before = System.nanoTime();
 
     for (int i = 0; i < len; i++) {
       logger.debug(msg);
     }
 
-    throughput = (len * 1.0) / (System.currentTimeMillis() - before);
+    throughput = (len * 1.0) / (System.nanoTime() - before);
     System.out.println(getName() + ", buffered: " + buffered +
       ", immediateFlush: " + immediateFlush + ", throughput: " + throughput +
-      " logs per millisecond.");
+      " logs per nanosecond.");
   }
 }
 
@@ -162,14 +162,14 @@ class Counter extends Thread {
   public double counter = 0;
 
   public void run() {
-    long before = System.currentTimeMillis();
+    long before = System.nanoTime();
 
     while (!interrupted) {
-      counter += 0.001;
+      counter += 1.0;
     }
 
-    double tput = (counter * 1.0) / (System.currentTimeMillis() - before);
+    double tput = (counter * 1.0) / (System.nanoTime() - before);
     System.out.println("Counter thread " + getName() +
-      " incremented counter by " + tput + " per millisecond.");
+      " incremented counter by " + tput + " per nanosecond.");
   }
 }

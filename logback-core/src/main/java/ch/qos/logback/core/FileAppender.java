@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -50,6 +52,10 @@ public class FileAppender<E> extends WriterAppender<E> {
    * The size of the IO buffer. Default is 8K.
    */
   protected int bufferSize = 8 * 1024;
+
+  private boolean safeMode = false;
+
+  private FileChannel fileChannel = null;
 
   /**
    * As in most cases, the default constructor does nothing.
@@ -149,7 +155,11 @@ public class FileAppender<E> extends WriterAppender<E> {
       }
     }
 
-    Writer w = createWriter(new FileOutputStream(fileName, append));
+    FileOutputStream fileOutputStream = new FileOutputStream(fileName, append);
+    if (safeMode) {
+      fileChannel = fileOutputStream.getChannel();
+    }
+    Writer w = createWriter(fileOutputStream);
     if (bufferedIO) {
       w = new BufferedWriter(w, bufferSize);
     }
@@ -172,7 +182,48 @@ public class FileAppender<E> extends WriterAppender<E> {
     this.bufferSize = bufferSize;
   }
 
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public boolean isSafeMode() {
+    return safeMode;
+  }
+
+  public void setSafeMode(boolean safeMode) {
+    this.safeMode = safeMode;
+  }
+
   public void setAppend(boolean append) {
     this.append = append;
+  }
+
+  @Override
+  protected void writerWrite(String s, boolean flush) throws IOException {
+    if (safeMode && fileChannel != null) {
+      FileLock fileLock = null;
+      try {
+        fileLock = fileChannel.lock();
+        long position = fileChannel.position();
+        long size = fileChannel.size();
+        if(size != position) {
+          //System.out.println("position size mismatch, pos ="+position+" size="+size);
+          fileChannel.position(size);
+        } else {
+          //System.out.println(position+" size="+size);
+        }
+        super.writerWrite(s, true);
+      } finally {
+        if (fileLock != null) {
+          fileLock.release();
+        }
+      }
+    } else {
+      super.writerWrite(s, flush);
+    }
   }
 }
