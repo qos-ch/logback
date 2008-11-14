@@ -15,15 +15,10 @@ echo "run length $2"
 #CLASSPATH="${CLASSPATH}:../logback-core/target/classes"
 #CLASSPATH="${CLASSPATH}:../logback-examples/lib/slf4j-api-1.5.5.jar"
 
-#if [ -f $1 ]
-#then
-# echo Removing $1 before tests
-# rm $1;
-#fi
 
 if [ $# -lt 3 ]
 then 
-  echo "Usage: generateInSafeMode.sh filename runLen stamp0 ... stampN"
+  echo "Usage: generateLogsInSafeMode.sh filename runLen stamp0 ... stampN"
   exit 1;
 fi
 

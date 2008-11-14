@@ -1,5 +1,9 @@
+# Use this script both generate and check the results.  It only works
+# if there is only one instance of this script
+
 echo "File name $1"
 echo "run length $2"
+
 
 
 
@@ -15,11 +19,11 @@ echo "run length $2"
 #CLASSPATH="${CLASSPATH}:../logback-core/target/classes"
 #CLASSPATH="${CLASSPATH}:../logback-examples/lib/slf4j-api-1.5.5.jar"
 
-#if [ -f $1 ]
-#then
-# echo Removing $1 before tests
-# rm $1;
-#fi
+if [ -f $1 ]
+then
+ echo Removing $1 before tests
+ rm $1;
+fi
 
 if [ $# -lt 3 ]
 then 
