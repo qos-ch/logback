@@ -17,8 +17,6 @@ import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.util.FileUtil;
 
 /**
@@ -53,7 +51,7 @@ public class FileAppender<E> extends WriterAppender<E> {
    */
   protected int bufferSize = 8 * 1024;
 
-  private boolean safeMode = false;
+  private boolean prudent = false;
 
   private FileChannel fileChannel = null;
 
@@ -68,20 +66,49 @@ public class FileAppender<E> extends WriterAppender<E> {
    * the file to append to.
    */
   public void setFile(String file) {
-    // Trim spaces from both ends. The users probably does not want
-    // trailing spaces in file names.
-    String val = file.trim();
-    fileName = val;
+    if(file == null) {
+      fileName = file;
+    } else {
+      // Trim spaces from both ends. The users probably does not want
+      // trailing spaces in file names.
+      String val = file.trim();
+      fileName = val;      
+
+    }
+
   }
 
   /**
-   * Returns the value of the <b>Append</b> option.
+   * @deprecated Use isAppend instead
    */
   public boolean getAppend() {
     return append;
   }
 
-  /** Returns the value of the <b>File</b> option. */
+  /**
+   * Returns the value of the <b>Append</b> property.
+   */
+  public boolean isAppend() {
+    return append;
+  }
+
+  
+  /**
+   * This method is used by derived classes to obtain the raw file property.
+   * Regular users should not be using calling method.
+   * 
+   * @return the value of the file property
+   */
+  final public String rawFileProperty() {
+    return fileName;
+  }
+
+  /**
+   * Returns the value of the <b>File</b> property.
+   * 
+   * <p>This method may be overridden by derived classes.
+   * 
+   */
   public String getFile() {
     return fileName;
   }
@@ -93,8 +120,24 @@ public class FileAppender<E> extends WriterAppender<E> {
    */
   public void start() {
     int errors = 0;
-    if (fileName != null) {
-      addInfo("filename set to [" + fileName + "]");
+    if (getFile() != null) {
+      addInfo("File property is set to [" + fileName + "]");
+
+      if (prudent) {
+        if (isAppend() == false) {
+          setAppend(true);
+          addWarn("Setting \"Append\" property to true on account of \"Prudent\" mode");
+        }
+        if (getImmediateFlush() == false) {
+          setImmediateFlush(true);
+          addWarn("Setting \"ImmediateFlush\" to true on account of \"Prudent\" mode");
+        }
+
+        if (bufferedIO == true) {
+          setBufferedIO(false);
+          addWarn("Setting \"BufferedIO\" property to false on account of \"Prudent\" mode");
+        }
+      }
 
       // In case both bufferedIO and immediateFlush are set, the former
       // takes priority because 'immediateFlush' is set to true by default.
@@ -102,22 +145,18 @@ public class FileAppender<E> extends WriterAppender<E> {
       // directives.
       if (bufferedIO) {
         setImmediateFlush(false);
-        addStatus(new InfoStatus(
-            "Setting immediateFlush to false on account of bufferedIO option",
-            this));
+        addInfo("Setting \"ImmediateFlush\" property to false on account of \"bufferedIO\" property");
       }
+
       try {
-        openFile();
+        openFile(getFile());
       } catch (java.io.IOException e) {
         errors++;
-
-        addStatus(new ErrorStatus("setFile(" + fileName + "," + append
-            + ") call failed.", this, e));
+        addError("openFile(" + fileName + "," + append + ") call failed.", e);
       }
     } else {
       errors++;
-      addStatus(new ErrorStatus("File option not set for appender [" + name
-          + "].", this));
+      addError("\"File\" property not set for appender named [" + name + "].");
     }
     if (errors == 0) {
       super.start();
@@ -145,8 +184,8 @@ public class FileAppender<E> extends WriterAppender<E> {
    * @throws IOException
    * 
    */
-  public synchronized void openFile() throws IOException {
-    File file = new File(fileName);
+  public synchronized void openFile(String file_name) throws IOException {
+    File file = new File(file_name);
     if (FileUtil.mustCreateParentDirectories(file)) {
       boolean result = FileUtil.createMissingParentDirectories(file);
       if (!result) {
@@ -155,8 +194,8 @@ public class FileAppender<E> extends WriterAppender<E> {
       }
     }
 
-    FileOutputStream fileOutputStream = new FileOutputStream(fileName, append);
-    if (safeMode) {
+    FileOutputStream fileOutputStream = new FileOutputStream(file_name, append);
+    if (prudent) {
       fileChannel = fileOutputStream.getChannel();
     }
     Writer w = createWriter(fileOutputStream);
@@ -182,46 +221,50 @@ public class FileAppender<E> extends WriterAppender<E> {
     this.bufferSize = bufferSize;
   }
 
-  public String getFileName() {
-    return fileName;
+  /**
+   * @see #setPrudent(boolean)
+   * 
+   * @return true if in prudent mode
+   */
+  public boolean isPrudent() {
+    return prudent;
   }
 
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
-  }
-
-  public boolean isSafeMode() {
-    return safeMode;
-  }
-
-  public void setSafeMode(boolean safeMode) {
-    this.safeMode = safeMode;
+  /**
+   * When prudent is set to true, file appenders from multiple JVMs can safely
+   * write to the same file.
+   * 
+   * @param prudent
+   */
+  public void setPrudent(boolean prudent) {
+    this.prudent = prudent;
   }
 
   public void setAppend(boolean append) {
     this.append = append;
   }
 
+  final private void safeWrite(String s) throws IOException {
+    FileLock fileLock = null;
+    try {
+      fileLock = fileChannel.lock();
+      long position = fileChannel.position();
+      long size = fileChannel.size();
+      if (size != position) {
+        fileChannel.position(size);
+      }
+      super.writerWrite(s, true);
+    } finally {
+      if (fileLock != null) {
+        fileLock.release();
+      }
+    }
+  }
+
   @Override
   protected void writerWrite(String s, boolean flush) throws IOException {
-    if (safeMode && fileChannel != null) {
-      FileLock fileLock = null;
-      try {
-        fileLock = fileChannel.lock();
-        long position = fileChannel.position();
-        long size = fileChannel.size();
-        if(size != position) {
-          //System.out.println("position size mismatch, pos ="+position+" size="+size);
-          fileChannel.position(size);
-        } else {
-          //System.out.println(position+" size="+size);
-        }
-        super.writerWrite(s, true);
-      } finally {
-        if (fileLock != null) {
-          fileLock.release();
-        }
-      }
+    if (prudent && fileChannel != null) {
+      safeWrite(s);
     } else {
       super.writerWrite(s, flush);
     }

@@ -37,6 +37,10 @@ public class RenameUtil extends ContextAwareBase {
    * @throws RolloverFailure
    */
   public void rename(String from, String to) throws RolloverFailure {
+    if(from.equals(to)) {
+      addWarn("From and to file are the same ["+from+"]. Skipping.");
+      return;
+    }
     File fromFile = new File(from);
 
     if (fromFile.exists()) {

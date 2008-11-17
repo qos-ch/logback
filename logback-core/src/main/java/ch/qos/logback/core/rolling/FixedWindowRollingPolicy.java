@@ -27,8 +27,9 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
-  static final String FNP_NOT_SET = "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
+  static final String FNP_NOT_SET = "The \"FileNamePattern\" property must be set before using FixedWindowRollingPolicy. ";
   static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
+  static final String PRUDENT_MODE_UNSUPPORTED = "See also http://logback.qos.ch/codes.html#tbr_fnp_prudent_unsupported";
   static final String SEE_PARENT_FN_NOT_SET = "Please refer to http://logback.qos.ch/codes.html#fwrp_parentFileName_not_set";
   int maxIndex;
   int minIndex;
@@ -52,14 +53,20 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
       determineCompressionMode();
     } else {
-      addWarn(FNP_NOT_SET);
-      addWarn(SEE_FNP_NOT_SET);
+      addError(FNP_NOT_SET);
+      addError(SEE_FNP_NOT_SET);
       throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
     }
 
-    if (getParentFileName() == null) {
-      addWarn("The File name option must be set before using this rolling policy.");
-      addWarn(SEE_PARENT_FN_NOT_SET);
+    if(isParentPrudent()) {
+      addError("Prudent mode is not supported with FixedWindowRollingPolicy.");
+      addError(PRUDENT_MODE_UNSUPPORTED);
+      throw new IllegalStateException("Prudent mode is not supported.");
+    }
+    
+    if (getParentsRawFileProperty() == null) {
+      addError("The File name property must be set before using this rolling policy.");
+      addError(SEE_PARENT_FN_NOT_SET);
       throw new IllegalStateException("The \"File\" option must be set.");
     }
 
@@ -113,18 +120,18 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       Compressor compressor;
       switch (compressionMode) {
       case NONE:
-        util.rename(getNewActiveFileName(), fileNamePattern
+        util.rename(getActiveFileName(), fileNamePattern
             .convertInt(minIndex));
         break;
       case GZ:
         compressor = new Compressor(CompressionMode.GZ,
-            getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+            getActiveFileName(), fileNamePattern.convertInt(minIndex));
         compressor.setContext(this.context);
         compressor.compress();
         break;
       case ZIP:
         compressor = new Compressor(CompressionMode.ZIP,
-            getNewActiveFileName(), fileNamePattern.convertInt(minIndex));
+            getActiveFileName(), fileNamePattern.convertInt(minIndex));
         compressor.setContext(this.context);
         compressor.compress();
         break;
@@ -137,8 +144,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
    * 
    * @see {@link setActiveFileName}.
    */
-  public String getNewActiveFileName() {
-    return getParentFileName();
+  public String getActiveFileName() {
+    return getParentsRawFileProperty();
   }
 
   public int getMaxIndex() {
@@ -155,5 +162,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 
   public void setMinIndex(int minIndex) {
     this.minIndex = minIndex;
+  }
+
+  public CompressionMode getCompressionMode() {
+    return compressionMode;
   }
 }

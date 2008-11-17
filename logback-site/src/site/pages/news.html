@@ -38,6 +38,15 @@
     files at initialization if their timestamp warrants it.
     </p>
 
+    <p>Added support for file appending in <a
+    href="manual/appenders.html#prudent">prudent mode</a>. Thus,
+    multiple <code>FileAppender</code> instances running on multiple
+    JVMs can safely write to the same log file. With certain
+    limitations, prudent mode extends to
+    <code>RollingFileAppender</code>.
+    </p>
+
+
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCLASSIC-83">LBCLASSIC-83</a>.
     It is now possible to set the level of a logger to null, even if

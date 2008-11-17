@@ -166,16 +166,16 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	to it.  <code>Appender</code> objects implement the
 	<code>LifeCycle</code> interface, which implies that they implement
 	<code>start()</code>, <code>stop()</code> and
-	<code>isStarted()</code> methods.  After setting all the options of
+	<code>isStarted()</code> methods.  After setting all the properties of
 	an appender, Joran, logback's configuration framework, calls the
 	<code>start()</code> method to signal the appender to activate its
-	options.  Depending on its kind, an appender may fail to start if
-	certain options are missing or because of interferences between
-	various options.  For example, given that file creation depends on
+	properties.  Depending on its kind, an appender may fail to start if
+	certain properties are missing or because of interferences between
+	various properties.  For example, given that file creation depends on
 	truncation mode, <code>FileAppender</code> cannot act on the value
 	of its <code>File</code> option until the value of the Append option
 	is also known with certainty. The explicit activation step ensures
-	that an appender acts on its options <em>after</em> their values
+	that an appender acts on its properties <em>after</em> their values
 	become known.
 	</p>
 	
@@ -219,8 +219,10 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   </p>
 
 
-	<a name="WriterAppender"></a>
-	<h3>WriterAppender</h3>
+	
+	<h3>
+    <a name="WriterAppender" href="#WriterAppender">WriterAppender</a>
+  </h3>
 	
 	<p><a
 	href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a>
@@ -232,12 +234,12 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<code>Writer</code> object in a configuration script.  Simply put,
 	you cannot configure a <code>WriterAppender</code> from a script.
 	However, this does not mean that <code>WriterAppender</code> lacks
-	configurable options.  These options are described next.
+	configurable properties.  These properties are described next.
 	</p>
 	
   <table class="bodyTable">
     <tr class="a">
-      <th>Option Name</th>
+      <th>Property Name</th>
       <th>Type</th>
       <th>Description</th>
     </tr>
@@ -287,8 +289,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	messages will be lost as illustrated by the next example.
 	</p>
 	
-	<em>Example 4.1: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
-<div class="source"><pre>package chapter4;
+	<em>Example 4.<span class="autoEx"/>: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
+
+  <p class="source">package chapter4;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -322,7 +325,7 @@ public class ExitWoes1 {
 
     logger.debug("Hello world.");
   }
-}</pre></div>
+}</p>
     
 	<p>This example creates a <code>WriterAppender</code> that uses an
 	<code>OutputStreamWriter</code> wrapping a
@@ -351,36 +354,38 @@ public class ExitWoes1 {
 	
 	<img src="images/chapter4/fileAppenderUML.png" alt="A UML diagram showing FileAppender"/>
 	
-	<a name="ConsoleAppender"></a>
-	<h3>ConsoleAppender</h3>
+
+	<h3>	
+    <a name="ConsoleAppender" href="#ConsoleAppender">ConsoleAppender</a>
+  </h3>
 	
-	<p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
-	<code>ConsoleAppender</code></a>, as the name indicates, appends on
-	the console, or more precisely on <em>System.out</em> or
-	<em>System.err</em>, the former being the default
-	target. <code>ConsoleAppender</code> formats events with a layout
-	specified by the user. Layouts will be discussed in the next
-	chapter. Both <em>System.out</em> and <em>System.err</em> are
-	<code>java.io.PrintStream</code> objects.  Consequently, they are
-	wrapped inside an <code>OutputStreamWriter</code> which buffers I/O
-	operations but not character conversions.
+  <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
+  <code>ConsoleAppender</code></a>, as the name indicates, appends on
+  the console, or more precisely on <em>System.out</em> or
+  <em>System.err</em>, the former being the default
+  target. <code>ConsoleAppender</code> formats events with a layout
+  specified by the user. Layouts will be discussed in the next
+  chapter. Both <em>System.out</em> and <em>System.err</em> are
+  <code>java.io.PrintStream</code> objects.  Consequently, they are
+  wrapped inside an <code>OutputStreamWriter</code> which buffers I/O
+  operations but not character conversions.
 	</p>
 	
 	<table class="bodyTable">
 			<tr class="a">
-			<th>Option Name</th>
+			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
 		</tr>
 		<tr class="b">
 			<td><b><span class="option">Encoding</span></b></td>
 			<td><code>String</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
+			<td>See <code>WriterAppender</code> properties.</td>
 		</tr>
 		<tr class="a">
 			<td><b><span class="option">ImmediateFlush</span></b></td>
 			<td><code>boolean</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
+			<td>See <code>WriterAppender</code> properties.</td>
 		</tr>
 		<tr class="b">
 			<td><b><span class="option">Target</span></b></td>
@@ -396,8 +401,8 @@ public class ExitWoes1 {
 	<code>ConsoleAppender</code>.
 	</p>
 
-<em>Example 4.2: ConsoleAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-Console.xml)</em>
-<div class="source"><pre>&lt;configuration>
+  <em>Example 4.<span class="autoEx"/>: ConsoleAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-Console.xml)</em>
+  <p class="source">&lt;configuration>
 
   <b>&lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -410,130 +415,167 @@ public class ExitWoes1 {
     &lt;level value="debug" />
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
-	<p>After you have set your current path to the
-	<em>logback-examples</em> directory, you can give the above
-	configuration file a whirl by issuing the following command:
-	</p>
+   <p>After you have set your current path to the
+   <em>logback-examples</em> directory, you can give the above
+   configuration file a whirl by issuing the following command:
+	 </p>
 
-<div class="source"><pre>java <a
-href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a> src/main/java/chapter4/conf/logback-Console.xml</pre></div>
+   <p class="source">java <a
+   href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a> src/main/java/chapter4/conf/logback-Console.xml</p>
 	
-	<a name="FileAppender"></a>
-	<h3>FileAppender</h3>
 	
-	<p>The <a
-	href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
-	a subclass of <code>WriterAppender</code>, appends log events into a
-	file. The target fileis specified by the <span
-	class="option">File</span> option.  If the file already exists, it
-	is either appended to, or truncated depending on the value of the
-	<span class="option">Append</span> option.
-	<code>FileAppender</code> uses a <code>FileOutputStream</code> which
-	is wrapped by an <code>OutputStreamWriter</code>.  Note that
-	<code>OutputStreamWriter</code> buffers I/O operations but not
-	character conversions. To optimize character conversions one can set
-	the <span class="option">BufferedIO</span> option to true which
-	effectively wraps the <code>OutputStreamWriter</code> with a
-	<code>BufferedWriter</code>. Options for <code>FileAppender</code>
-	are summarized below.
-	</p>
+   <h3>
+     <a name="FileAppender" href="#FileAppender">FileAppender</a>
+   </h3>
 	
-	<table class="bodyTable">
-			<tr class="a">
-			<th>Option Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">Append</span></b></td>
-			<td><code>boolean</code></td>
-      <td>If true, events are appended at the end of an existing file.
-      Otherwise, if <span class="option">Append</span> is false, any
-      existing file is truncated. The <span
-      class="option">Append</span> option is set to true by
-      default.</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">Encoding</span></b></td>
-			<td><code>String</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">BufferedIO</span></b></td>
-			<td><code>boolean</code></td>
-			<td>The <span class="option">BufferedIO</span> option is set to
-			false by default.  If set to true, the underlying
-			<code>OutputStreamWriter</code> is wrapped by a
-			<code>BufferedWriter</code> object.  Setting <span
-			class="option">BufferedIO</span> to true automatically sets the
-			<span class="option">ImmediateFlush</span> option to false.  The
-			name <span class="option">BufferedIO</span> is slightly
-			misleading because buffered IO is already supported by
-			<code>OutputStreamWriter</code>.  Setting <span
-			class="option">BufferedIO</span> to true has the effect of
-			buffering I/O as well as character to raw byte conversions,
-			saving a few CPU cycles in the process.
+   <p>The <a
+   href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
+   a subclass of <code>WriterAppender</code>, appends log events into
+   a file. The target fileis specified by the <span
+   class="option">File</span> option.  If the file already exists, it
+   is either appended to, or truncated depending on the value of the
+   <span class="option">Append</span> option.
+   <code>FileAppender</code> uses a <code>FileOutputStream</code>
+   which is wrapped by an <code>OutputStreamWriter</code>.  Note that
+   <code>OutputStreamWriter</code> buffers I/O operations but not
+   character conversions. To optimize character conversions one can
+   set the <span class="option">BufferedIO</span> option to true which
+   effectively wraps the <code>OutputStreamWriter</code> with a
+   <code>BufferedWriter</code>. Properties for <code>FileAppender</code>
+   are summarized below.
+   </p>
+	
+   <table class="bodyTable properties">
+     <tr>
+       <th>Property Name</th>
+       <th>Type</th>
+       <th>Description</th>
+     </tr>
+     <tr class="alt">
+       <td><b><span class="option">Append</span></b></td>
+       <td><code>boolean</code></td>
+       <td>If true, events are appended at the end of an existing
+       file.  Otherwise, if <span class="option">Append</span> is
+       false, any existing file is truncated. The <span
+       class="option">Append</span> option is set to true by
+       default.
+       </td>
+     </tr>
+     <tr >
+       <td><b><span class="option">Encoding</span></b></td>
+       <td><code>String</code></td>
+       <td>See <code>WriterAppender</code> properties.</td>
+     </tr>
+     <tr class="alt">
+       <td><b><span class="option">BufferedIO</span></b></td>
+       <td><code>boolean</code></td>
+       <td>The <span class="option">BufferedIO</span> option is set to
+       false by default.  If set to true, the underlying
+       <code>OutputStreamWriter</code> is wrapped by a
+       <code>BufferedWriter</code> object.  Setting <span
+       class="option">BufferedIO</span> to true automatically sets the
+       <span class="option">ImmediateFlush</span> option to false.
+       The name <span class="option">BufferedIO</span> is slightly
+       misleading because buffered IO is already supported by
+       <code>OutputStreamWriter</code>.  Setting <span
+       class="option">BufferedIO</span> to true has the effect of
+       buffering I/O as well as character to raw byte conversions,
+       saving a few CPU cycles in the process.
 			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">BufferSize</span></b></td>
-			<td><code>int</code></td>
-			<td>Size of <code>BufferedWriter</code> buffer. The default value is 8192.</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">File</span></b></td>
-			<td><code>String</code></td>
-			<td>The name of the file to write to. If the file does not
-			exist, it is created. On the MS Windows platform users
-			frequently forget to escape back slashes.  For example, the
-			value <em>c:\temp\test.log</em> is not likely to be interpreted
-			properly as <em>'\t'</em> is an escape sequence interpreted as a
-			single tab character <em>(\u0009)</em>.  Correct values can be
-			specified as <em>c:/temp/test.log</em> or alternatively as
-			<em>c:\\temp\\test.log</em>.  The <span
-			class="option">File</span> option has no default value.
+     </tr>
+     <tr >
+       <td><b><span class="option">BufferSize</span></b></td>
+       <td><code>int</code></td>
+       <td>Size of <code>BufferedWriter</code> buffer. The default value is 8192.</td>
+     </tr>
+     <tr class="alt">
+       <td><b><span class="option">File</span></b></td>
+       <td><code>String</code></td>
+       <td>The name of the file to write to. If the file does not
+       exist, it is created. On the MS Windows platform users
+       frequently forget to escape back slashes.  For example, the
+       value <em>c:\temp\test.log</em> is not likely to be interpreted
+       properly as <em>'\t'</em> is an escape sequence interpreted as
+       a single tab character <em>(\u0009)</em>.  Correct values can
+       be specified as <em>c:/temp/test.log</em> or alternatively as
+       <em>c:\\temp\\test.log</em>.  The <span
+       class="option">File</span> option has no default value.
 
-      <p>If the parent directory of the file does now exist, the
-      FileAppender will automatically create it, including any
-      necessary but nonexistent parent directories.
-      </p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">ImmediateFlush</span></b></td>
-			<td><code>boolean</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
-		</tr>
-	</table>
-	
-	<p>By default, <code>FileAppender</code> performs a flushes each
-	event, ensuring that events are immediately written to disk.
-	Setting the <span class="option">ImmediateFlush</span> option to
-	false can drastically reduce I/O activity by letting
-	<code>OutputStreamWriter</code> buffer bytes before writing them on
-	disk. For short messages, we have observed 2 or 3 fold increases in
-	logging throughput, i.e. the number of logs output per unit of
-	time. For longer messages, the throughput gains are somewhat less
-	dramatic, and range between 1.4 and 2 fold. Enabling the <span
-	class="option">BufferedIO</span> option, that is buffering character
-	to byte conversions, increases performance by an additional 10% to
-	40% compared to only disk I/O buffering (<span
-	class="option">ImmediateFlush</span>=false).  Performance varies
-	somewhat depending on the host machine as well as JDK version.
-	Throughput measurements are based on the <code>chapter4.IO</code>
-	application.  Please refer to <a href="../xref/chapter4/IO.html">
-	<em>logback-examples/src/main/java/chapter4/IO.java</em></a> for
-	actual source code.
-	</p>
-	
-	<p>Below is an example of a cconfiguration file for
-	<code>FileAppender</code>:
-	</p>
+       <p>If the parent directory of the file does now exist, the
+       FileAppender will automatically create it, including any
+       necessary but nonexistent parent directories.
+       </p>
+       </td>
+     </tr>
+     <tr >
+       <td><b><span class="option">ImmediateFlush</span></b></td>
+       <td><code>boolean</code></td>
+       <td>See <code>WriterAppender</code> properties.</td>
+     </tr>
 
-<em>Example 4.3: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
-<div class="source"><pre>&lt;configuration>
+     <tr class="alt">
+       <td><b><span class="option bold"><a name="prudent"
+       href="#prudent">Prudent</a></span></b></td>
+       <td><code>boolean</code></td>
+
+       <td>
+         <p>In prudent mode, <code>FileAppeder</code> will safely
+         write to the specified file, even in the presence of other
+         <code>FileAppender</code> instances running in different
+         JVMs, potentially running on different hosts. The default
+         value for prudent mode is <code>false</code>.
+         </p>
+
+         <p>Prudent mode implies that <span
+         class="option">Append</span> and <span
+         class="option">ImmediateFlush</span> properties are
+         autmatically set to true and the <span
+         class="option">BufferedIO</span> set to false.
+         </p>
+
+         <p>Prudent mode will approximately triple (x3) the cost of
+         writing a logging event. On an "average" PC writing to a file
+         located on a local hard disk, when prudent mode is off, it
+         takes about 10 microseconds to write a single logging
+         event. When prudent mode is on, it takes approximately 30
+         microseconds to output a single logging event. This
+         translates to logging throughput of 100'00 events per second
+         when prudent mode is off and 30'000 events per second in
+         prudent mode.
+         </p>
+       </td>
+       
+     </tr>
+   </table>
+	
+ 	 <p>By default, <code>FileAppender</code> performs a flushes each
+ 	 event, ensuring that events are immediately written to disk.
+ 	 Setting the <span class="option">ImmediateFlush</span> option to
+ 	 false can drastically reduce I/O activity by letting
+ 	 <code>OutputStreamWriter</code> buffer bytes before writing them on
+ 	 disk. For short messages, we have observed 2 or 3 fold increases in
+ 	 logging throughput, i.e. the number of logs output per unit of
+ 	 time. For longer messages, the throughput gains are somewhat less
+ 	 dramatic, and range between 1.4 and 2 fold. Enabling the <span
+ 	 class="option">BufferedIO</span> option, that is buffering
+ 	 character to byte conversions, increases performance by an
+ 	 additional 10% to 40% compared to only disk I/O buffering (<span
+ 	 class="option">ImmediateFlush</span>=false).  Performance varies
+ 	 somewhat depending on the host machine as well as JDK version.
+ 	 Throughput measurements are based on the <code>chapter4.IO</code>
+ 	 application.  Please refer to <a href="../xref/chapter4/IO.html">
+ 	 <em>logback-examples/src/main/java/chapter4/IO.java</em></a> for
+ 	 actual source code.
+ 	 </p>
+	
+   <p>Below is an example of a cconfiguration file for
+   <code>FileAppender</code>:
+	 </p>
+
+   <em>Example 4.<span class="autoEx"/>: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
+   <p class="source">&lt;configuration>
 
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;File>testFile.log&lt;/File>
@@ -548,116 +590,134 @@ href="../xref/chapter4/ConfigurationTester.html">chapter4.ConfigurationTester</a
     &lt;level value="debug" />
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
-	<p>After changing the current directory to
-	<em>logback-examples</em>, run this example by lauching the
-	following command:
-	</p>
+   <p>After changing the current directory to
+   <em>logback-examples</em>, run this example by lauching the
+   following command:
+   </p>
 	
-<div class="source"><pre>java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</pre></div>
+   <p class="source">java chapter4.ConfigurationTester src/main/java/chapter4/conf/logback-fileAppender.xml</p>
 	
 	
 	
-	<h3>
-  <a name="RollingFileAppender" 
-     href="#RollingFileAppender">RollingFileAppender</a></h3>
+   <h3>
+     <a name="RollingFileAppender" 
+   href="#RollingFileAppender">RollingFileAppender</a></h3>
+   
+   <p><a
+	 href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
+	 extends <code>FileAppender</code> with the capability to roll log
+	 files.  For example, <code>RollingFileAppender</code> can log to a
+	 file named <em>log.txt</em> file and, once a certain condition is
+	 met, change its logging target to another file.
+   </p>
+     
+   <p>There are two important logback componenents that interact with
+   <code>RollingFileAppender</code>. First, a
+   <code>RollingPolicy</code> instance attached to the
+   <code>RollingFileAppender</code> is responsible for undertaking the
+   action for perfoming a rollover. Second, a
+   <code>TriggeringPolicy</code> instance attached to a
+   <code>RollingFileAppender</code> will determine if and exactly when
+   rollover happens Thus, <code>RollingPolicy</code> is responsible
+   for the <em>what</em> and <code>TriggeringPolicy</code> is
+   responsible for the <em>when</em>.
+   </p>
 	
-	<p><a
-	href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
-	extends <code>FileAppender</code> with the capability to roll log
-	files.  For example, <code>RollingFileAppender</code> can log to a
-	file named <em>log.txt</em> file and, once a certain condition is
-	met, change its logging target to another file.
-	</p>
+   <p>To be of any use, a <code>RollingFileAppender</code> must have
+   both a <code>RollingPolicy</code> and a
+   <code>TriggeringPolicy</code> set up. However, if its
+   <code>RollingPolicy</code> also implements the
+   <code>TriggeringPolicy</code> interface, then only the former needs
+   to be set up.
+   </p>
+	
+   <p>Here are the available properties for <code>RollingFileAppender</code>:</p>
+	
+   <table class="bodyTable">
+     <tr class="a">
+       <th>Property Name</th>
+       <th>Type</th>
+       <th>Description</th>
+     </tr>
+     <tr class="b">
+       <td><b><span class="option">Append</span></b></td>
+       <td><code>boolean</code></td>
+       <td>See <code>FileAppender</code> properties.</td>
+     </tr>	
+     <tr class="a">
+       <td><b><span class="option">BufferedIO</span></b></td>
+       <td><code>boolean</code></td>
+       <td>See <code>FileAppender</code> properties.</td>
+     </tr>		
+     <tr class="b">
+       <td><b><span class="option">BufferSize</span></b></td>
+       <td><code>int</code></td>
+       <td>See <code>FileAppender</code> properties.</td>
+     </tr>	
+     <tr class="a">
+       <td><b><span class="option">Encoding</span></b></td>
+       <td><code>String</code></td>
+       <td>See <code>WriterAppender</code> properties.</td>
+     </tr>	
+     <tr class="b">
+       <td><b><span class="option">File</span></b></td>
+       <td><code>String</code></td>
+       <td>See <code>FileAppender</code> properties.</td>
+     </tr>	
+     <tr class="a">
+       <td><b><span class="option">ImmediateFlush</span></b></td>
+       <td><code>boolean</code></td>
+       <td>See <code>WriterAppender</code> properties.</td>
+     </tr>	
+     <tr class="b">
+       <td><b><span class="option">RollingPolicy</span></b></td>
+       <td><code>RollingPolicy</code></td>
+       <td>This option is the component that will dictate
+       <code>RollingFileAppender</code>'s behaviour when rollover
+       occurs. See more information below.
+       </td>
+     </tr>	
+     <tr class="a">
+       <td><b><span class="option">TriggeringPolicy</span></b></td>
+       <td><code>TriggeringPolicy</code></td>
+       <td>
+         This option is the component that will tell 
+         <code>RollingFileAppender</code> when to activate the rollover
+         procedure. See more information below.
+       </td>
+     </tr>	
+     <tr class="b">
+       <td><span class="option"><b>Prudent</b></span></td>
+       <td><code>boolean</code></td>
+       <td>Prudent mode is supported by
+       <code>RollingFileAppender</code> in conjunction with <a
+       href="#TimeBasedRollingPolicy"><code>TimeBasedRollingPolicy</code></a>
+       with two restrictions. In prudent mode, file compression is not
+       supported nor allowed. Moreover, the <span
+       class="option">File</span> property of
+       <code>FileAppender</code> cannot be set.
 
-	<p>There are two important logback componenents that interact with
-	<code>RollingFileAppender</code>. First, a
-	<code>RollingPolicy</code> instance attached to the
-	<code>RollingFileAppender</code> is responsible for undertaking the
-	action for perfoming a rollover. Second, a
-	<code>TriggeringPolicy</code> instance attached to a
-	<code>RollingFileAppender</code> will determine if and exactly when
-	rollover happens Thus, <code>RollingPolicy</code> is responsible for
-	the <em>what</em> and <code>TriggeringPolicy</code> is responsible
-	for the <em>when</em>.
-	</p>
+       <p><a
+       href="#FixedWindowRollingPolicy"><code>FixedWindowRollingPolicy</code></a>
+       is not supported in prudent mode.</p>
+
+       <p>See also <code>FileAppender</code> properties.</p>
+       </td>
+     </tr>
+   </table>
 	
-	<p>To be of any use, a <code>RollingFileAppender</code> must have
-	both a <code>RollingPolicy</code> and a
-	<code>TriggeringPolicy</code> set up. However, if its
-	<code>RollingPolicy</code> also implements the
-	<code>TriggeringPolicy</code> interface, then only the former needs
-	to be set up.
-	</p>
+   <h3>Rolling policies</h3>
 	
-	<p>Here are the available options for <code>RollingFileAppender</code>:</p>
+   <p><a
+   href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
+   is responsible for the rollover procedure. It manages file renaming
+   and in occasion file deleting.</p>
 	
-	<table class="bodyTable">
-			<tr class="a">
-			<th>Option Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">Append</span></b></td>
-			<td><code>boolean</code></td>
-			<td>See <code>FileAppender</code> options.</td>
-		</tr>	
-		<tr class="a">
-			<td><b><span class="option">BufferedIO</span></b></td>
-			<td><code>boolean</code></td>
-			<td>See <code>FileAppender</code> options.</td>
-		</tr>		
-		<tr class="b">
-			<td><b><span class="option">BufferSize</span></b></td>
-			<td><code>int</code></td>
-			<td>See <code>FileAppender</code> options.</td>
-		</tr>	
-		<tr class="a">
-			<td><b><span class="option">Encoding</span></b></td>
-			<td><code>String</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
-		</tr>	
-		<tr class="b">
-			<td><b><span class="option">File</span></b></td>
-			<td><code>String</code></td>
-			<td>See <code>FileAppender</code> options.</td>
-		</tr>	
-		<tr class="a">
-			<td><b><span class="option">ImmediateFlush</span></b></td>
-			<td><code>boolean</code></td>
-			<td>See <code>WriterAppender</code> options.</td>
-		</tr>	
-		<tr class="b">
-			<td><b><span class="option">RollingPolicy</span></b></td>
-			<td><code>RollingPolicy</code></td>
-			<td>This option is the component that will dictate
-			<code>RollingFileAppender</code>'s behaviour when rollover
-			occurs. See more information below.
-			</td>
-		</tr>	
-		<tr class="a">
-			<td><b><span class="option">TriggeringPolicy</span></b></td>
-			<td><code>TriggeringPolicy</code></td>
-			<td>
-				This option is the component that will tell 
-				<code>RollingFileAppender</code> when to activate the rollover
-				procedure. See more information below.
-			</td>
-		</tr>	
-	</table>
-	
-	<h3>Rolling policies</h3>
-	
-	<p><a
-	href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
-	is responsible for the rollover procedure. It manages file renaming
-	and in occasion file deleting.</p>
-	
-	<p>The <code>RollingPolicy</code> interface is presented below:</p>
-	
-<div class="source"><pre>package ch.qos.logback.core.rolling;
+   <p>The <code>RollingPolicy</code> interface is presented below:</p>
+   
+   <p class="source">package ch.qos.logback.core.rolling;  
 
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -667,113 +727,112 @@ public interface RollingPolicy extends LifeCycle {
   <b>public void rollover() throws RolloverFailure;</b>
   public String getNewActiveFileName();
   public void setParent(FileAppender appender);
-}</pre></div>
+}</p>
 
-	<p>The <code>rollover</code> method proceeds to the file change,
-	renaming or deletion.  The <code>getNewActiveFileName()</code>
-	method is called to compute a new file name, with respect to the
-	configuration elements that were injected into the
-	<code>RollingPolicy</code>.  Lastly, a <code>RollingPolicy</code> is
-	given a reference to its parent via the <code>setParent</code>
-	method.
-	</p>
+   <p>The <code>rollover</code> method proceeds to the file change,
+   renaming or deletion.  The <code>getNewActiveFileName()</code>
+   method is called to compute a new file name, with respect to the
+   configuration elements that were injected into the
+   <code>RollingPolicy</code>.  Lastly, a <code>RollingPolicy</code>
+   is given a reference to its parent via the <code>setParent</code>
+   method.
+   </p>
 
-	<h4>	
-    <a name="FixedWindowRollingPolicy" 
-       href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
-  </h4>
+   <h4>	
+     <a name="FixedWindowRollingPolicy" 
+     href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
+   </h4>
 
-	<p>When rolling over, <a
-	href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-	<code>FixedWindowRollingPolicy</code></a> renames files according to
-	a fixed window algorithm as described below.
-	</p>
+   <p>When rolling over, <a
+   href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+   <code>FixedWindowRollingPolicy</code></a> renames files according
+   to a fixed window algorithm as described below.
+   </p>
 
-	<p>The <span class="option">FileNamePattern</span> option represents
-	the file name pattern for the archived (rolled over) log files.
-	This option is required and must include an integer token
-	<em>%i</em> somewhere within the pattern.
-  </p>
+   <p>The <span class="option">FileNamePattern</span> option
+   represents the file name pattern for the archived (rolled over) log
+   files.  This option is required and must include an integer token
+   <em>%i</em> somewhere within the pattern.
+   </p>
 	
-	<p>Here are the available options for
-	<code>FixedWindowRollingPolicy</code>
-	</p>
+   <p>Here are the available properties for
+   <code>FixedWindowRollingPolicy</code>
+   </p>
 	
-	<table class="bodyTable">
-			<tr class="a">
-			<th>Option Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">MinIndex</span></b></td>
-			<td><code>int</code></td>
-			<td>
-				<p>This option represents the lower bound for the window's
-				index.
-				</p>
-			</td>
-		</tr>
-    <tr class="a">
-      <td><b><span class="option">MaxIndex</span></b></td>
-      <td><code>int</code></td>
-			<td>
-        <p>This option represents the upper bound for the window's
-        index.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">FileNamePattern</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>This option represents the pattern that will be followed by
-				the <code>FixedWindowRollingPolicy</code> when renaming the
-				log files. If must contain the string <em>%i</em>, which will
-				indicate the position where the value of the current window
-				index will be inserted.
-				</p>
-				<p>For example, using <em>MyLogFile%i.log</em>, associated
-				with minimum and maximum values of <em>1</em> and <em>3</em>
-				will produce archive files named <em>MyLogFile1.log</em>,
-				<em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
-				</p>
-				<p>Note that file compression is also specified via the <span
-				class="option">FileNamePattern</span> option. For example, the
-				file name pattern <em>MyLogFile%i.log.zip</em> will indicate
-				to the <code>FixedWindowRollingPolicy</code> that the archived
-				file must be compressed using the <em>zip</em> format;
-				<em>gz</em> format is also supported.
-				</p>
-			</td>
-		</tr>	
-		
-	</table>
+   <table class="bodyTable">
+     <tr class="a">
+       <th>Property Name</th>
+       <th>Type</th>
+       <th>Description</th>
+     </tr>
+     <tr class="b">
+       <td><b><span class="option">MinIndex</span></b></td>
+       <td><code>int</code></td>
+       <td>
+         <p>This option represents the lower bound for the window's
+         index.
+         </p>
+       </td>
+     </tr>
+     <tr class="a">
+       <td><b><span class="option">MaxIndex</span></b></td>
+       <td><code>int</code></td>
+       <td>
+         <p>This option represents the upper bound for the window's
+         index.
+         </p>
+       </td>
+     </tr>
+     <tr class="b">
+       <td><b><span class="option">FileNamePattern</span></b></td>
+       <td><code>String</code></td>
+       <td>
+         <p>This option represents the pattern that will be followed
+         by the <code>FixedWindowRollingPolicy</code> when renaming
+         the log files. If must contain the string <em>%i</em>, which
+         will indicate the position where the value of the current
+         window index will be inserted.
+         </p>
+         <p>For example, using <em>MyLogFile%i.log</em>, associated
+         with minimum and maximum values of <em>1</em> and <em>3</em>
+         will produce archive files named <em>MyLogFile1.log</em>,
+         <em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
+         </p>
+         <p>Note that file compression is also specified via the <span
+         class="option">FileNamePattern</span> option. For example, the
+         file name pattern <em>MyLogFile%i.log.zip</em> will indicate
+         to the <code>FixedWindowRollingPolicy</code> that the archived
+         file must be compressed using the <em>zip</em> format;
+         <em>gz</em> format is also supported.
+         </p>
+       </td>
+     </tr>			
+   </table>
+   
+   <p>Given that the fixed window rolling policy requires as many file
+   renaming operations as the window size, large window sizes are
+   strongly discouraged. The current implementation will automatically
+   reduce the window size to 12, when larger values are specified by
+   the user.
+   </p>
 
-	<p>Given that the fixed window rolling policy requires as many file
-	renaming operations as the window size, large window sizes are
-	strongly discouraged. The current implementation will automatically
-	reduce the window size to 12, when larger values are specified by
-	the user.
-	</p>
-
-	<p>Let us go over a more concrete example of the fixed windows
-	rollover policy. Suppose that the <span
-	class="option">MinIndex</span> is set to <em>1</em>, <span
-	class="option">MaxIndex</span> set to <em>3</em>, that <span
-	class="option">FileNamePattern</span> option is set to
-	<em>foo%i.log</em>, and that <span
-	class="option">FileNamePattern</span> option is set to
-	<em>foo.log</em>.
-	</p>
+   <p>Let us go over a more concrete example of the fixed windows
+   rollover policy. Suppose that the <span
+   class="option">MinIndex</span> is set to <em>1</em>, <span
+   class="option">MaxIndex</span> set to <em>3</em>, that <span
+   class="option">FileNamePattern</span> option is set to
+   <em>foo%i.log</em>, and that <span
+   class="option">FileNamePattern</span> option is set to
+   <em>foo.log</em>.
+   </p>
 	
-	<table class="bodyTable">
-		<tr class="a">
-			<th>Number of rollovers</th>
-			<th>Active output target</th>
-			<th>Archived log files</th>
-			<th>Description</th>
-		</tr>
+   <table class="bodyTable">
+     <tr class="a">
+       <th>Number of rollovers</th>
+       <th>Active output target</th>
+       <th>Archived log files</th>
+       <th>Description</th>
+     </tr>
 		<tr class="b">
 			<td>0</td>
 			<td>foo.log</td>
@@ -781,61 +840,62 @@ public interface RollingPolicy extends LifeCycle {
 			<td>No rollover has happened yet, logback logs into the initial
 			file.
 			</td>
-		</tr>		
-		<tr class="a">
-			<td>1</td>
-			<td>foo.log</td>
-			<td>foo1.log</td>
-			<td>First rollover. <em>foo.log</em> is renamed as
-			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
-			becomes the active output target.
-			</td>
-		</tr>
-		<tr class="b">
-			<td>2</td>
-			<td>foo.log</td>
-			<td>foo1.log, foo2.log</td>
-			<td>Second rollover. <em>foo1.log</em> is renamed as
-			<em>foo2.log</em>.  <em>foo.log</em> is renamed as
-			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
-			becomes the active output target.
-			</td>
-		</tr>
-		<tr class="a">
-			<td>3</td>
-			<td>foo.log</td>
-			<td>foo1.log, foo2.log, foo3.log</td>
-			<td>Third rollover.  <em>foo2.log</em> is renamed as
-			<em>foo3.log</em>. <em>foo1.log</em> is renamed as
-			<em>foo2.log</em>.  <em>foo.log</em> is renamed as
-			<em>foo1.log</em>. A new <em>foo.log</em> file is created and
-			becomes the active output target.
-			</td>
-		</tr>
-		<tr class="b">
-			<td>4</td>
-			<td>foo.log</td>
-			<td>foo1.log, foo2.log, foo3.log</td>
-			<td>In this and subsequent rounds, the rollover begins by
-			deleting <em>foo3.log</em>. Otherfiles are renamed by
-			incrementing their index as shown in previous steps. In this and
-			subsequent rollovers, there will be three archive logs and one
-			active log file.
-			</td>
-		</tr>
-	</table>
+     </tr>		
+     <tr class="a">
+       <td>1</td>
+       <td>foo.log</td>
+       <td>foo1.log</td>
+       <td>First rollover. <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="b">
+       <td>2</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log</td>
+       <td>Second rollover. <em>foo1.log</em> is renamed as
+       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="a">
+       <td>3</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log, foo3.log</td>
+       <td>Third rollover.  <em>foo2.log</em> is renamed as
+       <em>foo3.log</em>. <em>foo1.log</em> is renamed as
+       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="b">
+       <td>4</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log, foo3.log</td>
+       <td>In this and subsequent rounds, the rollover begins by
+       deleting <em>foo3.log</em>. Otherfiles are renamed by
+       incrementing their index as shown in previous steps. In this and
+       subsequent rollovers, there will be three archive logs and one
+       active log file.
+       </td>
+     </tr>
+   </table>
 	
-	<p>The configuration file below gives an example of configuring
-	<code>RollingFileAppender</code> and
-	<code>FixedWindowRollingPolicy</code>. Note that the <span
-	class="option">File</span> option is mandatory even if it contains
-	some of the same information as conveyed with the <span
-	class="option">FileNamePattern</span> option.
-	</p>
+   <p>The configuration file below gives an example of configuring
+   <code>RollingFileAppender</code> and
+   <code>FixedWindowRollingPolicy</code>. Note that the <span
+   class="option">File</span> option is mandatory even if it contains
+   some of the same information as conveyed with the <span
+   class="option">FileNamePattern</span> option.
+   </p>
 	
-<em>Example 4.4: Sample configuration of a <code>RollingFileAppender</code> using a 
-<code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingFixedWindow.xml)</em>
-<div class="source"><pre>&lt;configuration>
+   <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+   <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingFixedWindow.xml)</em>
+
+   <p class="source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;File>test.log&lt;/File></b>
 
@@ -857,124 +917,125 @@ public interface RollingPolicy extends LifeCycle {
     &lt;level value="debug" />
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 	
-  <h4>
-    <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
-  </h4>
+   <h4>
+     <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
+   </h4>
 
-	<p>
-		<a href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
-		<code>TimeBasedRollingPolicy</code></a> is possibly the most
-		popular rolling polciy. It defines a rollover policy based on
-		time, say by day or by month.
-	</p>
+   <p><a
+   href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+   <code>TimeBasedRollingPolicy</code></a> is possibly the most
+   popular rolling polciy. It defines a rollover policy based on time,
+   say by day or by month.
+   </p>
 
-	<p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
-	mandatory <span class="option">FileNamePattern</span> property and
-	the optinal <span class="option">MaxHistory</span> property.
-	</p>
+   <p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
+   mandatory <span class="option">FileNamePattern</span> property and
+   the optinal <span class="option">MaxHistory</span> property.
+   </p>
 	
-	<p><span class="option">FileNamePattern</span> option defines the
-	name of the rolled (archived) log files. Its value should consist of
-	the name of the file, plus a suitably placed <em>%d</em> conversion
-	specifier.  The <em>%d</em> conversion specifier may contain a
-	date-and-time pattern as specified by the
-	<code>java.text.SimpleDateFormat</code> class.  If the date-and-time
-	pattern is omitted, then the default pattern <em>yyyy-MM-dd</em> is
-	assumed. The following examples should clarify the point.
-	</p>
-
-	<table class="bodyTable">
-		<tr class="a">
-			<th>
-				<span class="option">FileNamePattern</span>
-			</th>
-			<th>Roll-over schedule</th>
-			<th>Example</th>
-		</tr>
-		<tr class="b">
-      <td class="small">
-				<em>/wombat/folder/foo.%d</em>
-			</td>
-			<td>Daily rollover (at midnight). Due to the omission of the
-			optional time and date pattern for the <em>%d</em> token
-			specifier, the default pattern of <em>yyyy-MM-dd</em> is
-			assumed, which corresponds to daily rollover.
-			</td>
-			<td>During November 23rd, 2006, logging output will go to the
-			file <em>/wombat/foo.2006-11-23</em>.  At midnight and for the
-			rest of the 24th, logging output will be directed to
-			<em>/wombat/foo.2006-11-24</em>.
-			</td>
-		</tr>
-		<tr class="a">
-			<td class="small">
-				<em>/wombat/foo.%d{yyyy-MM}.log</em>
-			</td>
-			<td>Rollover at the beginning of each month.</td>
-			<td>During the month of October 2006, logging output will go to
-			<em>/wombat/foo.2006-10.log</em>.  After midnight of October
-			31st and for the rest of November, logging output will be
-			directed to <em>/wombat/foo.2006-11.log</em>.
-			</td>
-		</tr>
-		<tr class="b">
-			<td class="small">
-				<em>/wombat/foo.%d{yyyy-ww}.log</em>
-			</td>
-
-      <td>Rollover at the first day of each week. Note that the first
-      day of the week depends on the locale.</td>
-
-			<td>During the 23rd week of 2006, the file
-			<em>/wombat/foo.2006-23.log</em> will contain the actual logging
-			output.  Logging for the 24th week of 2006 will be output to
-			<em>/wombat/foo.2006-24.log</em> until it is rolled over at the
-			beginning of the next week.
-			</td>
-		</tr>	
-		<tr class="a">
-			<td class="small">
-				<em>/wombat/foo.  &nbsp;&nbsp;/<br/>%d{yyyy-MM-dd_HH}.log</em>
-			</td>
-			<td>Rollover at the top of each hour.</td>
-			<td>Between 11.00,001 and 11.59,999, on November 3rd, 2006, the
-			logging will be output to
-			<em>/wombat/foo.2006-11-03_11.log</em>.  After that, and until
-			12.59,999, the logging will be output to
-			<em>/wombat/foo.2006-11-03_12.log</em>.
-			</td>
-		</tr>
-		<tr class="b">
-			<td class="small">
-				<em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
-			</td>
-			<td>Rollover at the beggining of every minute.</td>
-			<td>Between 11.32,001 and 11.32,999, on November 3rd, 2006, the
-			logging will be output to
-			<em>/wombat/foo.2006-11-03_11-32.log</em>.  After that, and
-			until 12.33,999, the logging will be output to
-			<em>/wombat/foo.2006-11_12-33.log</em>.
-			</td>
-		</tr>
-	</table>
-	
-	<p>Any characters in the pattern outside the ranges
-	<em>['a'..'z']</em> and <em>['A'..'Z']</em> will be treated as
-	quoted text. For instance, characters like <em>'.'</em>, <em>'
-	'</em>, <em>'#'</em> and <em>'@'</em> will appear in the resulting
-	time text even when they are not enclosed within single
-	quotes. Nevertheless, we recommend against using the colon
-	<em>":"</em> character anywhere within the <span
-	class="option">FileNamePattern</span> option.  The text before the
-	colon is interpreted as the protocol specification of a URL, which
-	is most probably not what you intend. The slash <em>"/"</em>
-	character, a common date field separator, must also be avoided. It
-	is taken as a file separator causing the rollover operation to fail
-	because the target file cannot be created. Although less common, the
-	backslash character <em>"\"</em> is equally troublesome.
-	</p>
+   <p><span class="option">FileNamePattern</span> option defines the
+   name of the rolled (archived) log files. Its value should consist
+   of the name of the file, plus a suitably placed <em>%d</em>
+   conversion specifier.  The <em>%d</em> conversion specifier may
+   contain a date-and-time pattern as specified by the
+   <code>java.text.SimpleDateFormat</code> class.  If the
+   date-and-time pattern is omitted, then the default pattern
+   <em>yyyy-MM-dd</em> is assumed. The following examples should
+   clarify the point.
+   </p>
+   
+   <table class="bodyTable">
+     <tr class="a">
+       <th>
+         <span class="option">FileNamePattern</span>
+       </th>
+       <th>Roll-over schedule</th>
+       <th>Example</th>
+     </tr>
+     <tr class="b">
+       <td class="small">
+         <em>/wombat/folder/foo.%d</em>
+       </td>
+       <td>Daily rollover (at midnight). Due to the omission of the
+       optional time and date pattern for the <em>%d</em> token
+       specifier, the default pattern of <em>yyyy-MM-dd</em> is
+       assumed, which corresponds to daily rollover.
+       </td>
+       <td>During November 23rd, 2006, logging output will go to the
+       file <em>/wombat/foo.2006-11-23</em>.  At midnight and for the
+       rest of the 24th, logging output will be directed to
+       <em>/wombat/foo.2006-11-24</em>.
+       </td>
+     </tr>
+     <tr class="a">
+       <td class="small">
+         <em>/wombat/foo.%d{yyyy-MM}.log</em>
+       </td>
+       <td>Rollover at the beginning of each month.</td>
+       <td>During the month of October 2006, logging output will go to
+       <em>/wombat/foo.2006-10.log</em>.  After midnight of October
+       31st and for the rest of November, logging output will be
+       directed to <em>/wombat/foo.2006-11.log</em>.
+       </td>
+     </tr>
+     <tr class="b">
+       <td class="small">
+         <em>/wombat/foo.%d{yyyy-ww}.log</em>
+       </td>
+       
+       <td>Rollover at the first day of each week. Note that the first
+       day of the week depends on the locale.</td>
+       
+       <td>During the 23rd week of 2006, the file
+       <em>/wombat/foo.2006-23.log</em> will contain the actual logging
+       output.  Logging for the 24th week of 2006 will be output to
+       <em>/wombat/foo.2006-24.log</em> until it is rolled over at the
+       beginning of the next week.
+       </td>
+     </tr>	
+     <tr class="a">
+       <td class="small">
+         <em>/wombat/foo.  &nbsp;&nbsp;/<br/>%d{yyyy-MM-dd_HH}.log</em>
+       </td>
+       <td>Rollover at the top of each hour.</td>
+       <td>Between 11.00,001 and 11.59,999, on November 3rd, 2006, the
+       logging will be output to
+       <em>/wombat/foo.2006-11-03_11.log</em>.  After that, and until
+       12.59,999, the logging will be output to
+       <em>/wombat/foo.2006-11-03_12.log</em>.
+       </td>
+     </tr>
+     <tr class="b">
+       <td class="small">
+         <em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
+       </td>
+       <td>Rollover at the beggining of every minute.</td>
+       <td>Between 11.32,001 and 11.32,999, on November 3rd, 2006, the
+       logging will be output to
+       <em>/wombat/foo.2006-11-03_11-32.log</em>.  After that, and
+       until 12.33,999, the logging will be output to
+       <em>/wombat/foo.2006-11_12-33.log</em>.
+       </td>
+     </tr>
+   </table>
+   
+   <p>Any characters in the pattern outside the ranges
+   <em>['a'..'z']</em> and <em>['A'..'Z']</em> will be treated as
+   quoted text. For instance, characters like <em>'.'</em>, <em>'
+   '</em>, <em>'#'</em> and <em>'@'</em> will appear in the resulting
+   time text even when they are not enclosed within single
+   quotes. Nevertheless, we recommend against using the colon
+   <em>":"</em> character anywhere within the <span
+   class="option">FileNamePattern</span> option.  The text before the
+   colon is interpreted as the protocol specification of a URL, which
+   is most probably not what you intend. The slash <em>"/"</em>
+   character, a common date field separator, must also be avoided. It
+   is taken as a file separator causing the rollover operation to fail
+   because the target file cannot be created. Although less common,
+   the backslash character <em>"\"</em> is equally troublesome.
+   </p>
 
 	<p>Just like <code>FixedWindowRollingPolicy</code>,
 	<code>TimeBasedRollingPolicy</code> supports automatic file
@@ -1056,9 +1117,9 @@ public interface RollingPolicy extends LifeCycle {
   <code>TimeBasedRollingPolicy</code>.
 	</p>
 	
-<em>Example 4.5: Sample configuration of a <code>RollingFileAppender</code> using a 
-<code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingTimeBased.xml)</em>
-<div class="source"><pre>&lt;configuration>
+  <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+  <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingTimeBased.xml)</em>
+  <p class="source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>logFile.log&lt;/File>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -1076,7 +1137,37 @@ public interface RollingPolicy extends LifeCycle {
     &lt;level value="debug" />
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
+
+    <p>The next configuration sample illustrates the use
+    <code>RollingFileAppender</code> associated with
+    <code>TimeBasedRollingPolicy</code> in <span class="option">Prudent</span>
+    mode.
+    </p>
+
+  <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+  <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-PrudentTimeBasedRolling.xml)</em>
+  <p class="source">&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;!-- Support multiple-JVM writing to the same log file --></b>
+    <b>&lt;Prudent>true&lt;/Prudent></b>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
+      &lt;MaxHistory>30&lt;/MaxHistory> 
+    &lt;/rollingPolicy>
+
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender> 
+
+  &lt;root>
+    &lt;level value="debug" />
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></p>
+
+    
 
 		<a name="TriggeringPolicy"></a>
 		<h3>Triggering policies</h3>
@@ -1089,7 +1180,7 @@ public interface RollingPolicy extends LifeCycle {
 		<p>The <code>TriggeringPolicy</code> interface contains only one
 		method.</p>
 	
-<div class="source"><pre>package ch.qos.logback.core.rolling;
+    <p class="source">package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -1097,13 +1188,12 @@ import ch.qos.logback.core.spi.LifeCycle;
 public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
   <b>public boolean isTriggeringEvent(final File activeFile, final &lt;E&gt; event);</b>
-}</pre></div>
+}</p>
 
-		<p>
-			The <code>isTriggeringEvent()</code> method takes as parameters
-			the active file, and the logging event currently being
-			processed. The concrete implementation determines whether the
-			rollover should occur or not, based on the said parameters.
+		<p>The <code>isTriggeringEvent()</code> method takes as parameters
+		the active file, and the logging event currently being
+		processed. The concrete implementation determines whether the
+		rollover should occur or not, based on the said parameters.
 		</p>
 
 		<a name="SizeBasedTriggeringPolicy"></a>
@@ -1136,9 +1226,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		<code>SizeBasedTriggeringPolicy</code>.
 		</p>
 
-<em>Example 4.6: Sample configuration of a <code>RollingFileAppender</code> using a 
-<code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingSizeBased.xml)</em>
-<div class="source"><pre>&lt;configuration>
+    <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+    <code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingSizeBased.xml)</em>
+    <p class="source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>testFile.log&lt;/File>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -1159,7 +1249,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;level value="debug" />
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
 	
     <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -->
@@ -1173,43 +1263,45 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     </p>
 
-		<a name="SocketAppender"></a>
-		<h3>SocketAppender</h3>
+		<h3> 
+      <a name="SocketAppender" href="#SocketAppender">SocketAppender</a>
+    </h3>
 		
-		<p>
-			The appenders covered this far were only able to log on local resources. 
-			In contrast, the <a href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
-			<code>SocketAppender</code></a> is designed to log to a 
-			remote entity by transmitting serialized <code>LoggingEvent</code> objects over the wire. 
-			Remote logging is non-intrusive as far as the logging event is concerned. 
-			On the receiving end after de-serialization, the event can be logged as 
-			if it were generated locally. Multiple <code>SocketAppender</code> instances 
-			running of different machines can direct their logging output 
-			to a central log server whose format is fixed. 
-			<code>SocketAppender</code> does not admit an 
-			associated layout because it sends serialized events to a remote server. 
-			<code>SocketAppender</code> operates above the 
-			<em>Transmission Control Protocol (TCP)</em> 
-			layer which provides a reliable, sequenced, flow-controlled end-to-end octet stream. 
-			Consequently, if the remote server is reachable, then log events 
-			will eventually arrive there. Otherwise, if the remote server is down or 
-			unreachable, the logging events will simply be dropped. If and when the server 
-			comes back up, then event transmission will be resumed transparently. 
-			This transparent reconnection is performed by a connector thread which 
-			periodically attempts to connect to the server.
+		<p>The appenders covered this far were only able to log on local
+		resources.  In contrast, the <a
+		href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
+		<code>SocketAppender</code></a> is designed to log to a remote
+		entity by transmitting serialized <code>LoggingEvent</code>
+		objects over the wire.  Remote logging is non-intrusive as far as
+		the logging event is concerned.  On the receiving end after
+		de-serialization, the event can be logged as if it were generated
+		locally. Multiple <code>SocketAppender</code> instances running of
+		different machines can direct their logging output to a central
+		log server whose format is fixed.  <code>SocketAppender</code>
+		does not admit an associated layout because it sends serialized
+		events to a remote server.  <code>SocketAppender</code> operates
+		above the <em>Transmission Control Protocol (TCP)</em> layer which
+		provides a reliable, sequenced, flow-controlled end-to-end octet
+		stream.  Consequently, if the remote server is reachable, then log
+		events will eventually arrive there. Otherwise, if the remote
+		server is down or unreachable, the logging events will simply be
+		dropped. If and when the server comes back up, then event
+		transmission will be resumed transparently.  This transparent
+		reconnection is performed by a connector thread which periodically
+		attempts to connect to the server.
 		</p>
 		
-		<p>
-			Logging events are automatically buffered by the native TCP implementation. 
-			This means that if the link to server is slow but still faster than the 
-			rate of event production by the client, the client will not be affected by 
-			the slow network connection. However, if the network connection is slower 
-			then the rate of event production, then the client can only progress at the 
-			network rate. In particular, in the extreme case where the network link 
-			to the server is down, the client will be eventually blocked. 
-			Alternatively, if the network link is up, but the server is down, 
-			the client will not be blocked, although the log events will be 
-			lost due to server unavailability.
+		<p>Logging events are automatically buffered by the native TCP
+		implementation.  This means that if the link to server is slow but
+		still faster than the rate of event production by the client, the
+		client will not be affected by the slow network
+		connection. However, if the network connection is slower then the
+		rate of event production, then the client can only progress at the
+		network rate. In particular, in the extreme case where the network
+		link to the server is down, the client will be eventually blocked.
+		Alternatively, if the network link is up, but the server is down,
+		the client will not be blocked, although the log events will be
+		lost due to server unavailability.
 		</p>
 		
 		<p>Even if a <code>SocketAppender</code> is no longer attached to
@@ -1234,108 +1326,108 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
 		<p>The remote server is identified by the <span
 		class="option">RemoteHost</span> and <span
-		class="option">Port</span> options.  <code>SocketAppender</code>
-		options are listed in the following table.
+		class="option">Port</span> properties.
+		<code>SocketAppender</code> properties are listed in the following
+		table.
 		</p>
 
     <table class="bodyTable">
       <tr class="a">
-			<th>Option Name</th>
+			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">IncludeCallerData</span></b></td>
-			<td><code>boolean</code></td>
-			<td>
-				<p>
-					The <span class="option">IncludeCallerData</span> option takes a boolean value. 
-					If true, the caller data will be available to the remote host. 
-					By default no caller data is sent to the server.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">Port</span></b></td>
-			<td><code>int</code></td>
-			<td>
-				<p>
-					The port number of the remote server.
-				</p>
-			</td>
-		</tr>	
-		<tr class="b">
-			<td><b><span class="option">ReconnectionDelay</span></b></td>
-			<td><code>int</code></td>
-			<td>
-					The <span class="option">ReconnectionDelay</span> option takes a 
-					positive integer representing the number of milliseconds to wait between 
-					each failed connection attempt to the server. 
-					The default value of this option is 30'000 which corresponds to 30 seconds. 
-					Setting this option to zero turns off reconnection capability. 
-					Note that in case of successful connection to the server, there will be no 
-					connector thread present.
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">RemoteHost</span></b></td>
-			<td><code>String</code></td>
-			<td>
-					The host name of the server.
-			</td>
-		</tr>		
-	</table>
+      </tr>
+      <tr class="b">
+        <td><b><span class="option">IncludeCallerData</span></b></td>
+        <td><code>boolean</code></td>
+        <td>
+          <p>
+            The <span class="option">IncludeCallerData</span> option takes a boolean value. 
+            If true, the caller data will be available to the remote host. 
+            By default no caller data is sent to the server.
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td><b><span class="option">Port</span></b></td>
+        <td><code>int</code></td>
+        <td>
+          <p>
+            The port number of the remote server.
+          </p>
+        </td>
+      </tr>	
+      <tr class="b">
+        <td><b><span class="option">ReconnectionDelay</span></b></td>
+        <td><code>int</code></td>
+        <td>
+          The <span class="option">ReconnectionDelay</span> option takes a 
+          positive integer representing the number of milliseconds to wait between 
+          each failed connection attempt to the server. 
+          The default value of this option is 30'000 which corresponds to 30 seconds. 
+          Setting this option to zero turns off reconnection capability. 
+          Note that in case of successful connection to the server, there will be no 
+          connector thread present.
+        </td>
+      </tr>
+      <tr class="a">
+        <td><b><span class="option">RemoteHost</span></b></td>
+        <td><code>String</code></td>
+        <td>
+          The host name of the server.
+        </td>
+      </tr>		
+    </table>
+    
+    <p>The standard logback distribution includes a simple log server
+    application named
+    <code>ch.qos.logback.classic.net.SimpleSocketServer</code> that
+    can service multiple <code>SocketAppender</code> clients. It waits
+    for logging events from <code>SocketAppender</code> clients. After
+    reception by <code>SimpleSocketServer</code>, the events are
+    logged according to local server policy.  The
+    <code>SimpleSocketServer</code> application takes two parameters:
+    port and configFile; where port is the port to listen on and
+    configFile is configuration script in XML format.
+    </p>
 	
-	<p>
-		The standard logback distribution includes a simple log server application named
-		<code>ch.qos.logback.classic.net.SimpleSocketServer</code> that can service multiple 
-		<code>SocketAppender</code> clients. It waits for logging events from 
-		<code>SocketAppender</code> clients. After reception by 
-		<code>SimpleSocketServer</code>, the events are logged according to local server policy. 
-		The <code>SimpleSocketServer</code> application takes two parameters: 
-		port and configFile; where port is the port to listen on and configFile is 
-		configuration script in XML format. 
-	</p>
-	
-	<p>
-		Assuming you are in the <em>logback-examples/</em> directory, 
-		start <code>SimpleSocketServer</code> with the following command:
-	</p>
-	
-<div class="source"><pre>java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
-  src/main/java/chapter4/socket/server1.xml
-</pre></div>
+    <p>
+      Assuming you are in the <em>logback-examples/</em> directory, 
+      start <code>SimpleSocketServer</code> with the following command:
+    </p>
+    
+    <p class="source">java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
+  src/main/java/chapter4/socket/server1.xml</p>
 
-	<p>
-		where 6000 is the port number to listen on and <em>server1.xml</em> is a 
-		configuration script that adds a <code>ConsoleAppender</code> and a 
-		<code>RollingFileAppender</code> to the root logger. 
-		After you have started <code>SimpleSocketServer</code>, you can send it 
-		log events from multiple clients using <code>SocketAppender</code>.  
-		The examples associated with this manual include two such clients: 
-		<code>chapter4.SocketClient1</code> and <code>chapter4.SocketClient2</code> 
-		Both clients wait for the user to type a line of text on the console. 
-		The text is encapsulated in a logging event of level debug and then sent 
-		to the remote server. The two clients differ in the configuration of the 
-		<code>SocketAppender</code>. <code>SocketClient1</code> configures the appender 
-		programmatically while <code>SocketClient2</code> requires a configuration file. 
-	</p>
+    <p>where 6000 is the port number to listen on and
+    <em>server1.xml</em> is a configuration script that adds a
+    <code>ConsoleAppender</code> and a
+    <code>RollingFileAppender</code> to the root logger.  After you
+    have started <code>SimpleSocketServer</code>, you can send it log
+    events from multiple clients using <code>SocketAppender</code>.
+    The examples associated with this manual include two such clients:
+    <code>chapter4.SocketClient1</code> and
+    <code>chapter4.SocketClient2</code> Both clients wait for the user
+    to type a line of text on the console.  The text is encapsulated
+    in a logging event of level debug and then sent to the remote
+    server. The two clients differ in the configuration of the
+    <code>SocketAppender</code>. <code>SocketClient1</code> configures
+    the appender programmatically while <code>SocketClient2</code>
+    requires a configuration file.
+    </p>
 	
-	<p>
-		Assuming <code>SimpleSocketServer</code> is running on the local host, 
-		you connect to it with the following command:
-	</p>
+    <p>Assuming <code>SimpleSocketServer</code> is running on the
+    local host, you connect to it with the following command:
+    </p>
 	
-<div class="source"><pre>java chapter4.socket.SocketClient1 localhost 6000</pre></div>
+    <p class="source">java chapter4.socket.SocketClient1 localhost 6000</p>
 
-		<p>
-			Each line that you type should appear on the console of the
-			<code>SimpleSocketServer</code>
-			launched in the previous step. If you stop and restart the
-			<code>SimpleSocketServer</code>
-			the client will transparently reconnect to the new server
-			instance, although the events generated while disconnected
-			will be simply (and irrevocably) lost.
+		<p>Each line that you type should appear on the console of the
+		<code>SimpleSocketServer</code> launched in the previous step. If
+		you stop and restart the <code>SimpleSocketServer</code> the
+		client will transparently reconnect to the new server instance,
+		although the events generated while disconnected will be simply
+		(and irrevocably) lost.
 		</p>
 
 		<p>
@@ -1348,7 +1440,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			and attaches it to the root logger.
 		</p>
 
-		<em>Example 4.7: SocketAppender configuration (logback-examples/src/main/java/chapter4/socket/client1.xml)</em>
+		<em>Example 4.<span class="autoEx"/>: SocketAppender configuration (logback-examples/src/main/java/chapter4/socket/client1.xml)</em>
 <div class="source"><pre>&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
@@ -1369,44 +1461,42 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		<p>
 			Note that in the above configuration scripts the values for the 
 			<span class="option">RemoteHost</span>, <span class="option">Port</span> and
-			<span class="option">IncludeCallerData</span> options
+			<span class="option">IncludeCallerData</span> properties
 			are not given directly but as substituted variable keys. The values for the variables 
 			can be specified as system properties: 
 		</p>
 	
-<div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=false \
-  chapter4.socket.SocketClient2 src/main/java/chapter4/socket/client1.xml
-</pre></div>
+    <p class="source">java -Dhost=localhost -Dport=6000 -DincludeCallerData=false \
+  chapter4.socket.SocketClient2 src/main/java/chapter4/socket/client1.xml</p>
 
-		<p>
-			This command should give similar results to the previous
+		<p>This command should give similar results to the previous
 			<code>SocketClient1</code>
 			example.
 		</p>
 		
-		<p>
-			Allow us to repeat for emphasis that serialization of logging events is not 
-			intrusive. A de-serialized event carries the same information as any other 
-			logging event. It can be manipulated as if it were generated locally; 
-			except that serialized logging events by default do not include caller 
-			data. Here is an example to illustrate the point. First, start 
-			<code>SimpleSocketServer</code> with the following command:
+		<p>Allow us to repeat for emphasis that serialization of logging
+		events is not intrusive. A de-serialized event carries the same
+		information as any other logging event. It can be manipulated as
+		if it were generated locally; except that serialized logging
+		events by default do not include caller data. Here is an example
+		to illustrate the point. First, start
+		<code>SimpleSocketServer</code> with the following command:
 		</p>
 
-<div class="source"><pre>  java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
-  src/main/java/chapter4/socket/server2.xml
-</pre></div>
+    <p class="source"> java ch.qos.logback.classic.net.SimpleSocketServer 6000 \
+  src/main/java/chapter4/socket/server2.xml</p>
 
-		<p>
-			The configuration file <em>server2.xml</em> creates a <code>ConsoleAppender</code> 
-			whose layout outputs the callers file name and line number along with other 
-			information. If you run <code>SocketClient2</code> with the configuration file 
-			<em>client1.xml</em> as previously, you will notice that the output on the 
-			server side will contain two question marks between parentheses instead of 
-			the file name and the line number of the caller:
+   <p>The configuration file <em>server2.xml</em> creates a
+   <code>ConsoleAppender</code> whose layout outputs the callers file
+   name and line number along with other information. If you run
+   <code>SocketClient2</code> with the configuration file
+   <em>client1.xml</em> as previously, you will notice that the output
+   on the server side will contain two question marks between
+   parentheses instead of the file name and the line number of the
+   caller:
 		</p>
 
-<div class="source"><pre>2006-11-06 17:37:30,968 DEBUG [Thread-0] [?:?] chapter4.socket.SocketClient2 - Hi</pre></div>
+    <p class="source">2006-11-06 17:37:30,968 DEBUG [Thread-0] [?:?] chapter4.socket.SocketClient2 - Hi</p>
 
 		<p>
 			The outcome can be easily changed by instructing the <code>SocketAppender</code> 
@@ -1467,12 +1557,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		<p>
-			Here are <code>JMSAppenderBase</code>'s options:
+			Here are <code>JMSAppenderBase</code>'s properties:
 		</p>
 		
 	<table class="bodyTable">
 			<tr class="a">
-			<th>Option Name</th>
+			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
 		</tr>
@@ -1769,13 +1859,13 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 		
 		<p>
-			Some options are proper to <code>JMSTopicAppender</code>. They are 
+			Some properties are proper to <code>JMSTopicAppender</code>. They are 
 			listed below.
 		</p>
 		
 		<table class="bodyTable">
 			<tr class="a">
-			<th>Option Name</th>
+			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
 		</tr>
@@ -1803,7 +1893,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			<code>JMSTopicAppender</code> is rather straightforward to configure:
 		</p>
 
-		<em>Example 4.8: JMSTopicAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSTopic.xml)</em>
+		<em>Example 4.<span class="autoEx"/>: JMSTopicAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSTopic.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="Topic"
@@ -1838,13 +1928,13 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 		
 		<p>
-			Some options are proper to <code>JMSQueueAppender</code>. They are 
+			Some properties are proper to <code>JMSQueueAppender</code>. They are 
 			listed below.
 		</p>
 		
 		<table class="bodyTable">
 			<tr class="a">
-			<th>Option Name</th>
+			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
 		</tr>
@@ -1872,7 +1962,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			A typical <code>JMSQueueAppender</code> configuration file looks very
 			similar to that of a <code>JMSTopicAppender</code>.
 		</p>
-		<em>Example 4.9: JMSQueueAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSQueue.xml)</em>
+		<em>Example 4.<span class="autoEx"/>: JMSQueueAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSQueue.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="Queue"
@@ -1904,13 +1994,13 @@ Context ctx = new InitialContext(env);</pre></div>
 		higher.
 		</p>
 		
-		<p>The various options for <code>SMTPAppender</code> are
+		<p>The various properties for <code>SMTPAppender</code> are
 		summarized in the following table.
 		</p>
 		
 		<table class="bodyTable">
       <tr class="a">
-        <th>Option Name</th>
+        <th>Property Name</th>
         <th>Type</th>
         <th>Description</th>
       </tr>
@@ -2076,7 +2166,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		<code>Email</code> application:
 		</p>	
 		
-<em>Example 4.10: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
+<em>Example 4.<span class="autoEx"/>: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
 <div class="source"><pre>&lt;configuration>
 	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2099,7 +2189,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		<p>Before trying out <code>chapter4.mail.Email</code> application
 		with the above configuration file, you must set the <span
 		class="option">SMTPHost</span>, <span class="option">To</span> and
-		<span class="option">From</span> options to values appropriate for
+		<span class="option">From</span> properties to values appropriate for
 		your environment. Once you have set the correct values in the
 		configuration file, execute the following command:
 		</p>
@@ -2117,7 +2207,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		<p>In the next exampleconfiguration file <em>mail2.xml</em>, the
 		values for the <span class="option">SMTPHost</span>, <span
 		class="option">To</span> and <span class="option">From</span>
-		options are determined by variable substitution. Here is the
+		properties are determined by variable substitution. Here is the
 		relevant part of <em>mail2.xml</em>.
 		</p>		
 
@@ -2192,7 +2282,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		triggers an email message.
 		</p>
 
-<em>Example 4.11: A <code>EventEvaluator</code> implementation
+<em>Example 4.<span class="autoEx"/>: A <code>EventEvaluator</code> implementation
 that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapter4/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapter4/mail/CounterBasedEvaluator.java</a>)</em>
 <div class="source"><pre>package chapter4.mail;
 
@@ -2243,7 +2333,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			as its event evaluator.
 		</p>
 
-<em>Example 4.12: <code>SMTPAppender</code> with custom 
+<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with custom 
 <code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
 
 <div class="source"><pre>&lt;configuration>
@@ -2272,7 +2362,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     <p>The next example shows you how to configure SMTPAppender for
     gmail with SSL. </p>
     
-<em>Example 4.13: <code>SMTPAppender</code> to GMAIL using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
+<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to GMAIL using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
 
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2589,7 +2679,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			The following configuration file is what one would need.
 		</p>
 		
-<em>Example 4.13: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
+<em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
 <div class="source"><pre>&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2668,7 +2758,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			<code>javax.sql.DataSource</code>.
 		</p>
 	
-<em>Example 4.14: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
+<em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2780,7 +2870,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			configuration file, logging events are sent to a MySQL database,
 			without any pooling.
 		</p>
-<em>Example 4.15: <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
+<em>Example 4.<span class="autoEx"/> <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -2816,8 +2906,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			in the classpath.
 		</p>
 
-<em>Example 4.16: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
-<div class="source"><pre>&lt;configuration>
+    <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
+    <p class="source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource
@@ -2836,7 +2926,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;level value="debug" />
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
 		<p>
 			With this new configuration, sending 500 logging requests to
@@ -2859,11 +2949,11 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			<a href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
 		</p>
 		
-		<p>Here are the options upi can pass to a SyslogAppender.</p>
+		<p>Here are the properties upi can pass to a SyslogAppender.</p>
 
 		<table class="bodyTable">
 			<tr class="a">
-				<th>Option Name</th>
+				<th>Property Name</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
@@ -2955,7 +3045,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			Here is a sample configuration using a <code>SyslogAppender</code>.
 		</p>
 		
-<em>Example 4.17: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
+<em>Example 4.<span class="autoEx"/>: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="SYSLOG"
@@ -3000,7 +3090,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			if it were generated locally.
 		</p>
 		<p>
-			The options of access' <code>SocketAppender</code> are the same as those available
+			The properties of access' <code>SocketAppender</code> are the same as those available
 			for classic's <code>SocketAppender</code>.
 		</p>
 
@@ -3020,7 +3110,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Here is a sample configuration of a <code>SMTPAppender</code> in the access environnement.
 		</p>
-<em>Example 4.18: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
+<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
 <div class="source"><pre>&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
   &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
@@ -3158,14 +3248,14 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			</table>
 
 		<p>
-			All options of classic's <code>DBAppender</code> are available
+			All properties of classic's <code>DBAppender</code> are available
 			in access' <code>DBAppender</code>. The latter offers one more option,
 			described below.
 		</p>
 		
 		<table class="bodyTable">
 			<tr class="a">
-				<th>Option Name</th>
+				<th>Property Name</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
@@ -3188,7 +3278,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Here is a sample configuration that uses <code>DBAppender</code>.
 		</p>
-<em>Example 4.19: DBAppender configuration (logback-examples/src/main/java/chapter4/conf/access/logback-DB.xml)</em>		
+
+    <em>Example 4.<span class="autoEx"/>: DBAppender configuration (logback-examples/src/main/java/chapter4/conf/access/logback-DB.xml)</em>		
 <div class="source"><pre>&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
@@ -3221,8 +3312,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     thus a few more methods are needed.
     </p>
     
-<em>Example 4.20: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
-<div class="source"><pre>package chapter4;
+    <em>Example 4.<span class="autoExec"/>: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
+    <p class="source">package chapter4;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
@@ -3276,36 +3367,33 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
   public void setLayout(Layout&lt;LoggingEvent> layout) {
     this.layout = layout;
   }
-}</pre></div>
+}</p>
 
-		<p>
-			The <code>start()</code> method checks for the presence of a <code>Layout</code>.
-			In case none is found, the appender is not started.
+		<p>The <code>start()</code> method checks for the presence of a
+		<code>Layout</code>.  In case none is found, the appender is not
+		started.
 		</p>
 		
-		<p>
-			This custom appender illustrates a two points:
+		<p>This custom appender illustrates a two points:
 		</p>
 		
 		<ul>
-			<li>
-				All options that follow the setter/getter JavaBeans conventions 
-				are handled transparently. The <code>start()</code> method, that is 
-				called automatically, has the responsability to check that the given
-				options are coherent.
+			<li>All properties that follow the setter/getter JavaBeans
+			conventions are handled transparently. The <code>start()</code>
+			method, that is called automatically, has the responsability to
+			check that the given properties are coherent.
 			</li>
-			<li>
-				The <code>AppenderBase.doAppend()</code> method invokes the append() 
-				method of its derived classes where actual output operations occur. 
-				It is in this method that appenders format events by invoking their layouts.
+			<li>The <code>AppenderBase.doAppend()</code> method invokes the
+			append() method of its derived classes where actual output
+			operations occur.  It is in this method that appenders format
+			events by invoking their layouts.
 			</li>
 		</ul>
 		
-		<p>
-			The <code>CountingConsoleAppender</code> can be configured like
-			any appender.  See sample file
-			<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
-			for an example.
+		<p>The <code>CountingConsoleAppender</code> can be configured like
+		any appender.  See sample file
+		<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
+		for an example.
 		</p>
   
 

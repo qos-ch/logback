@@ -129,6 +129,11 @@ table[class="bodyTable dark"] tr {
 	background-color: #ddd;
 }
 
+/* apply to tr elements of tables which are both bodytable and dark */
+table[class="bodyTable properties"] tr {
+	vertical-align: top;
+}
+
 table.bodyTable tr.a {
 	background-color: #ddd;
 }

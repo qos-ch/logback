@@ -10,7 +10,10 @@
 package ch.qos.logback.core.appender;
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Context;
@@ -19,21 +22,20 @@ import ch.qos.logback.core.status.StatusChecker;
 
 
 
-abstract public class AbstractAppenderTest<E> extends TestCase {
+abstract public class AbstractAppenderTest<E>  {
   
-  AbstractAppenderTest(String arg) {
-    super(arg);
-  }
   
   abstract protected AppenderBase<E> getAppender();
   abstract protected AppenderBase<E> getConfiguredAppender();
 
+  @Test
   public void testNewAppender() {
     // new appenders should be inactive
     AppenderBase appender = getAppender();
     assertFalse( appender.isStarted()); 
   }
   
+  @Test
   public void testConfiguredAppender() {
     AppenderBase appender = getConfiguredAppender();
     appender.start();
@@ -44,6 +46,7 @@ abstract public class AbstractAppenderTest<E> extends TestCase {
     
   }
   
+  @Test
   public void testNoStart() {
     AppenderBase<E> appender = getAppender();
     Context context = new ContextBase();

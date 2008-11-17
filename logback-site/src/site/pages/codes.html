@@ -81,6 +81,20 @@
   </p>
 			
   <hr />
+  <p>
+    <a name="tbr_fnp_prudent_unsupported"
+    href="#tbr_fnp_prudent_unsupported">Prudent mode is not supported
+    with <code>FixedWindowRollingPolicy</code>.</a>
+  </p>
+
+  <p>Given that <code>FixedWindowRollingPolicy</code> performs
+  multiple file rename operations suring roll over, and that these
+  operations cannot be guaranteed to be safe in a multi-JVM context,
+  prudent mode is not allowed in conjuction with a
+  <code>FixedWindowRollingPolicy</code>.
+  </p>
+
+  <hr/>
 
   <p>
     <a name="socket_no_host" href="#socket_no_host">No remote host or

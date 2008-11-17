@@ -9,18 +9,19 @@
  */
 package ch.qos.logback.core.appender;
 
+import static org.junit.Assert.*;
+
 import java.io.StringWriter;
+
+import org.junit.Test;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.layout.NopLayout;
 
 
-public class DummyAppenderTest extends AbstractAppenderTest {
+public class DummyAppenderTest {
 
-  public DummyAppenderTest(String arg) {
-    super(arg);
-  }
   
   protected AppenderBase getAppender() {
     return new DummyAppender(new StringWriter());
@@ -33,6 +34,7 @@ public class DummyAppenderTest extends AbstractAppenderTest {
     return da;
   }
 
+  @Test
   public void testBasic() {
     StringWriter sw = new StringWriter();
     DummyAppender<Object> da = new DummyAppender<Object>(sw);

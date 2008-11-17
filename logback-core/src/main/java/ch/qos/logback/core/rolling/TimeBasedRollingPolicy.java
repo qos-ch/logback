@@ -47,7 +47,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
   RenameUtil util = new RenameUtil();
-  String lastGeneratedFileName;
+  String latestActiveFileName;
   Future<?> future;
 
   int maxHistory = NO_DELETE_HISTORY;
@@ -117,18 +117,23 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     if (lastCheck == null) {
       lastCheck = new Date();
       lastCheck.setTime(getCurrentTime());
-      if (getParentFileName() != null) {
-        File currentFile = new File(getParentFileName());
+      if (getParentsRawFileProperty() != null) {
+        File currentFile = new File(getParentsRawFileProperty());
         if (currentFile.exists() && currentFile.canRead()) {
           lastCheck.setTime(currentFile.lastModified());
         }
       }
     }
     nextCheck = rc.getNextTriggeringMillis(lastCheck);
-    
+
     if (maxHistory != NO_DELETE_HISTORY) {
       tbCleaner = new TimeBasedCleaner(fileNamePattern, rc, maxHistory);
     }
+  }
+
+  
+  public CompressionMode getCompressionMode() {
+    return compressionMode;
   }
 
   
@@ -138,38 +143,41 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     this.lastCheck = _lastCheck;
   }
 
+  boolean rolloverTargetIsParentFile() {
+    return (getParentsRawFileProperty() != null && getParentsRawFileProperty()
+        .equals(elapsedPeriodsFileName));
+  }
+
   public void rollover() throws RolloverFailure {
 
     // when rollover is called the elapsed period's file has
     // been already closed. This is a working assumption of this method.
-
-    if (getParentFileName() == null && compressionMode != CompressionMode.NONE) {
-      doCompression(false, elapsedPeriodsFileName, elapsedPeriodsFileName);
+    
+    if(compressionMode == CompressionMode.NONE) {
+      if (getParentsRawFileProperty() != null) {
+        util.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
+      }
     } else {
-      if (compressionMode == CompressionMode.NONE) {
-        util.rename(getParentFileName(), elapsedPeriodsFileName);
+      if(getParentsRawFileProperty() == null) {
+        doCompression(false, elapsedPeriodsFileName, elapsedPeriodsFileName);
       } else {
-        doCompression(true, getParentFileName(), elapsedPeriodsFileName);
+        doCompression(true, elapsedPeriodsFileName, elapsedPeriodsFileName);
       }
     }
-
+    
     if (tbCleaner != null) {
       tbCleaner.clean(new Date(getCurrentTime()));
     }
-
-    // let's update the parent active file name
-    setParentFileName(getNewActiveFileName());
-
   }
 
-  void doCompression(boolean rename, String nameOfFile2Compress,
+  void doCompression(boolean renameToTempFile, String nameOfFile2Compress,
       String nameOfCompressedFile) throws RolloverFailure {
     Compressor compressor = null;
 
-    if (rename) {
-      String renameTarget = nameOfFile2Compress + System.nanoTime() + ".tmp";
-      util.rename(getParentFileName(), renameTarget);
-      nameOfFile2Compress = renameTarget;
+    if (renameToTempFile) {
+      String tmpTarget = nameOfFile2Compress + System.nanoTime() + ".tmp";
+      util.rename(getParentsRawFileProperty(), tmpTarget);
+      nameOfFile2Compress = tmpTarget;
     }
 
     switch (compressionMode) {
@@ -199,7 +207,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    * file equals the file name for the current period as computed by the
    * <b>FileNamePattern</b> option.
    * 
-   * <p> The RollingPolicy must know wether it is responsible for changing the
+   * <p>The RollingPolicy must know whether it is responsible for changing the
    * name of the active file or not. If the active file name is set by the user
    * via the configuration file, then the RollingPolicy must let it like it is.
    * If the user does not specify an active file name, then the RollingPolicy
@@ -212,15 +220,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    * the change of the file name.
    * 
    */
-  public String getNewActiveFileName() {
-    if (getParentFileName() == null
-        || getParentFileName() == lastGeneratedFileName) {
+  public String getActiveFileName() {
+    if (getParentsRawFileProperty() == null) {
       String newName = activeFileNamePattern.convertDate(lastCheck);
-      addInfo("Generated a new name for RollingFileAppender: " + newName);
-      lastGeneratedFileName = newName;
+      latestActiveFileName = newName;
       return newName;
     } else {
-      return getParentFileName();
+      return getParentsRawFileProperty();
     }
   }
 
@@ -228,7 +234,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     long time = getCurrentTime();
 
     if (time >= nextCheck) {
-      // We set the elapsedPeriodsFileName before we set the 'lastCheck' variable
+      // We set the elapsedPeriodsFileName before we set the 'lastCheck'
+      // variable
       // The elapsedPeriodsFileName corresponds to the file name of the period
       // that just elapsed.
       elapsedPeriodsFileName = activeFileNamePattern.convertDate(lastCheck);

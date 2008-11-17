@@ -9,11 +9,15 @@
  */
 package ch.qos.logback.core.appender;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.ConsoleAppender;
@@ -28,12 +32,9 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   TeeOutputStream tee;
   PrintStream original;
 
-  public ConsoleAppenderTest(String arg) {
-    super(arg);
 
-  }
-
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     original = System.out;
     // tee will output bytes on System out but it will also
     // collect them so that the output can be compared against
@@ -47,13 +48,13 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     System.setOut(new PrintStream(tee));
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @After
+  public void tearDown() throws Exception {
     System.setOut(original);
   }
 
   @Override
-  protected AppenderBase<Object> getAppender() {
+  public AppenderBase<Object> getAppender() {
     return new ConsoleAppender<Object>();
   } 
 
@@ -64,6 +65,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     return ca;
   }
 
+  @org.junit.Test
   public void testBasic() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     ca.setLayout(new DummyLayout<Object>());
@@ -72,6 +74,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     assertEquals(DummyLayout.DUMMY, tee.toString());
   }
   
+  @org.junit.Test
   public void testOpen() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
@@ -82,6 +85,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.stop();
     assertEquals("open"+Layout.LINE_SEP+DummyLayout.DUMMY, tee.toString());
   }
+  
+  @Test
   public void testClose() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
@@ -95,7 +100,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
 
 
-  
+  @Test  
   public void testUTF16BE() throws UnsupportedEncodingException {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     ca.setLayout(new DummyLayout<Object>());
@@ -107,10 +112,5 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     assertEquals(DummyLayout.DUMMY, new String(tee.toByteArray(), encodingName));
   }
 
-  public static Test xxsuite() {
-    TestSuite suite = new TestSuite();
-    //suite.addTest(new ConsoleAppenderTest("testOpen"));
-    suite.addTestSuite(ConsoleAppenderTest.class);
-    return suite;
-  }
+
 }

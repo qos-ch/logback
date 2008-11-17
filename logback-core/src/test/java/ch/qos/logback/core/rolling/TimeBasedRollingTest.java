@@ -29,6 +29,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -76,7 +77,7 @@ public class TimeBasedRollingTest {
     cal.set(Calendar.MILLISECOND, 333);
     currentTime = cal.getTimeInMillis();
     recomputeRolloverThreshold(currentTime);
-    System.out.println("currentTime=" + sdf.format(new Date(currentTime)));
+    System.out.println("at setUp() currentTime=" + sdf.format(new Date(currentTime)));
 
     // Delete .log files
     deleteStaleLogFile("test4.log");
@@ -112,8 +113,8 @@ public class TimeBasedRollingTest {
     if (lastCheck != 0) {
       tbrp.setLastCheck(new Date(lastCheck));
     }
-    tbrp.start();
     rfa.setRollingPolicy(tbrp);
+    tbrp.start();
     rfa.start();
   }
 
@@ -140,7 +141,8 @@ public class TimeBasedRollingTest {
       tbrp1.setCurrentTime(currentTime);
     }
 
-    System.out.println(expectedFilenameList);
+    StatusPrinter.print(context);
+    //System.out.println(expectedFilenameList);
 
     int i = 0;
     for (String fn : expectedFilenameList) {

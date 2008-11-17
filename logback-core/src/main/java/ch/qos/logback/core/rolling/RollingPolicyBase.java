@@ -77,11 +77,11 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     this.parent = appender;
   }
 
-  public String getParentFileName() {
-    return parent.getFile();
+  public boolean isParentPrudent() {
+    return parent.isPrudent();
   }
   
-  protected void setParentFileName(String newFileName) {
-    parent.setFile(newFileName);
+  public String getParentsRawFileProperty() {
+    return parent.rawFileProperty();
   }
 }
