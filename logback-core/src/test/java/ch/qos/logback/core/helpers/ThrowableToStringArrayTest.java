@@ -1,6 +1,6 @@
 package ch.qos.logback.core.helpers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableToStringArrayTest {
 
@@ -31,7 +31,7 @@ public class ThrowableToStringArrayTest {
     StringBuilder sb = new StringBuilder();
     for (String tdp : sa) {
       sb.append(tdp.toString());
-      sb.append(Layout.LINE_SEP);
+      sb.append(CoreConstants.LINE_SEPARATOR);
     }
     String expected = sw.toString();
     String result = sb.toString().replace("common frames omitted", "more");

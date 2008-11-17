@@ -204,7 +204,7 @@ public class WriterAppender<E> extends AppenderBase<E> {
         appendIfNotNull(sb, layout.getFileHeader());
         appendIfNotNull(sb, layout.getPresentationHeader());
         if (sb.length() > 0) {
-          sb.append(Layout.LINE_SEP);
+          sb.append(CoreConstants.LINE_SEPARATOR);
           // If at least one of file header or presentation header were not
           // null, then append a line separator.
           // This should be useful in most cases and should not hurt.

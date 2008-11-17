@@ -1,7 +1,7 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -9,7 +9,9 @@
  */
 package ch.qos.logback.classic.html;
 
-import static ch.qos.logback.core.Layout.LINE_SEP;
+
+import ch.qos.logback.core.CoreConstants;
+import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.core.html.CssBuilder;
 
 /**
@@ -26,47 +28,47 @@ public class DefaultCssBuilder implements CssBuilder {
 
   public void addCss(StringBuilder sbuf) {
     sbuf.append("<style  type=\"text/css\">");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf
         .append("table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("TR.even { background: #FFFFFF; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("TR.odd { background: #EAEAEA; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf
         .append("TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(CoreConstants.LINE_SEPARATOR);
 
     sbuf
         .append("TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf
         .append("TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("TD.Thread { text-align: left; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("TD.Level { text-align: right; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("TD.Logger { text-align: left; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf
         .append("TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }");
-    sbuf.append(LINE_SEP);
+    sbuf.append(CoreConstants.LINE_SEPARATOR);
 
     sbuf
         .append("TD.Exception { background: #A2AEE8; font-family: courier, monospace;}");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     sbuf.append("</style>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
   }
 }

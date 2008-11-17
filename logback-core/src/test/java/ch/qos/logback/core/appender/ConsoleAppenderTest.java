@@ -18,10 +18,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.ConsoleAppender;
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.layout.NopLayout;
 import ch.qos.logback.core.util.TeeOutputStream;
@@ -83,7 +82,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
-    assertEquals("open"+Layout.LINE_SEP+DummyLayout.DUMMY, tee.toString());
+    assertEquals("open"+CoreConstants.LINE_SEPARATOR+DummyLayout.DUMMY, tee.toString());
   }
   
   @Test

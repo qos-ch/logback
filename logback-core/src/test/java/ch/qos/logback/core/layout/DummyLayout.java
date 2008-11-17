@@ -9,11 +9,12 @@
  */
 package ch.qos.logback.core.layout;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 
 public class DummyLayout<E> extends LayoutBase<E> {
 
-  public static final String DUMMY = "dummy"+LINE_SEP;
+  public static final String DUMMY = "dummy"+CoreConstants.LINE_SEPARATOR;
   String val = DUMMY;
   
   public DummyLayout() {

@@ -11,6 +11,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.OptionHelper;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -43,7 +44,7 @@ public class ContextInitializer {
   }
 
   private URL findConfigFileURLFromSystemProperties(boolean updateStatus) {
-    String logbackConfigFile = System.getProperty(CONFIG_FILE_PROPERTY, null);
+    String logbackConfigFile = OptionHelper.getSystemProperty(CONFIG_FILE_PROPERTY);
     if (logbackConfigFile != null) {
       URL result = null;
       try {

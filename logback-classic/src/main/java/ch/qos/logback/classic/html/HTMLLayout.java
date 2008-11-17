@@ -17,6 +17,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.pattern.Converter;
+import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
  * 
@@ -65,7 +66,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
 
     String level = event.getLevel().toString().toLowerCase();
 
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
     buf.append("<tr class=\"");
     buf.append(level);
     if (odd) {
@@ -73,7 +74,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     } else {
       buf.append(" even\">");
     }
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
 
     Converter<LoggingEvent> c = head;
     while (c != null) {
@@ -81,7 +82,7 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
       c = c.getNext();
     }
     buf.append("</tr>");
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
 
     if (event.getThrowableProxy() != null) {
       throwableRenderer.render(buf, event);
@@ -96,6 +97,6 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     buf.append("\">");
     buf.append(c.convert(event));
     buf.append("</td>");
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
   }
 }

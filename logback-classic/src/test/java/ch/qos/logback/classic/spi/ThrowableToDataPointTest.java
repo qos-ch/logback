@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,9 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
-import ch.qos.logback.classic.spi.ThrowableToDataPointArray;
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableToDataPointTest {
 
@@ -33,7 +31,7 @@ public class ThrowableToDataPointTest {
     StringBuilder sb = new StringBuilder();
     for (ThrowableDataPoint tdp : tdpArray) {
       sb.append(tdp.toString());
-      sb.append(Layout.LINE_SEP);
+      sb.append(CoreConstants.LINE_SEPARATOR);
     }
     String expected = sw.toString();
     String result = sb.toString().replace("common frames omitted", "more");

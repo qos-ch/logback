@@ -3,6 +3,7 @@ package ch.qos.logback.core.html;
 import java.util.Map;
 
 import ch.qos.logback.core.CoreConstants;
+import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
@@ -120,15 +121,15 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     StringBuilder sbuf = new StringBuilder();
     sbuf.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"");
     sbuf.append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("<html>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("  <head>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("    <title>");
     sbuf.append(title);
     sbuf.append("</title>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     
     cssBuilder.addCss(sbuf);
 //    if (cssBuilder == null) {
@@ -136,11 +137,11 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
 //    } else {
 //      cssBuilder.addExternalCSS(sbuf);
 //    }
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("  </head>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("<body>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     return sbuf.toString();
   }
@@ -148,14 +149,14 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   public String getPresentationHeader() {
     StringBuilder sbuf = new StringBuilder();
     sbuf.append("<hr/>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("<p>Log session start time ");
     sbuf.append(new java.util.Date());
     sbuf.append("</p><p></p>");
-    sbuf.append(LINE_SEP);
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("<table cellspacing=\"0\">");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
 
     buildHeaderRowForTable(sbuf);
     
@@ -167,7 +168,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     Converter c = head;
     String name;
     sbuf.append("<tr class=\"header\">");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     while (c != null) {
       name = computeConverterName(c);
       if (name == null) {
@@ -179,11 +180,11 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
       sbuf.append("\">");
       sbuf.append(computeConverterName(c));
       sbuf.append("</td>");
-      sbuf.append(LINE_SEP);
+      sbuf.append(LINE_SEPARATOR);
       c = c.getNext();
     }
     sbuf.append("</tr>");
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
   }
   
   public String getPresentationFooter() {
@@ -198,7 +199,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   @Override
   public String getFileFooter() {
     StringBuilder sbuf = new StringBuilder();
-    sbuf.append(LINE_SEP);
+    sbuf.append(LINE_SEPARATOR);
     sbuf.append("</body></html>");
     return sbuf.toString();
   }
@@ -207,10 +208,10 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     if (this.counter >= CoreConstants.TABLE_ROW_LIMIT) {
       counter = 0;
       sbuf.append("</table>");
-      sbuf.append(LINE_SEP);
+      sbuf.append(LINE_SEPARATOR);
       sbuf.append("<p></p>");
       sbuf.append("<table cellspacing=\"0\">");
-      sbuf.append(LINE_SEP);
+      sbuf.append(LINE_SEPARATOR);
       buildHeaderRowForTable(sbuf);
     }
   }

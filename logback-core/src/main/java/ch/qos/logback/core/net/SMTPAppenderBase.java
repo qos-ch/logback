@@ -30,6 +30,7 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * An abstract class that provides support for sending events to an email
@@ -83,7 +84,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * Start the appender
    */
   public void start() {
-    Properties props = new Properties(System.getProperties());
+    Properties props = new Properties(OptionHelper.getSystemProperties());
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);
     }

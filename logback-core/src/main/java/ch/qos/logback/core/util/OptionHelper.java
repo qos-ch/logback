@@ -9,6 +9,9 @@
  */
 package ch.qos.logback.core.util;
 
+
+import java.util.Properties;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 
@@ -198,7 +201,7 @@ public class OptionHelper {
 
   /**
    * Very similar to <code>System.getProperty</code> except that the
-   * {@link SecurityException} is hidden.
+   * {@link SecurityException} is absorbed.
    * 
    * @param key
    *          The key to search for.
@@ -210,12 +213,41 @@ public class OptionHelper {
   public static String getSystemProperty(String key, String def) {
     try {
       return System.getProperty(key, def);
-    } catch (Throwable e) { // MS-Java throws
-      // com.ms.security.SecurityExceptionEx
+    } catch (SecurityException e) {
       return def;
     }
   }
 
+  /**
+   * Very similar to <code>System.getProperty</code> except that the
+   * {@link SecurityException} is absorbed.
+   * 
+   * @param key
+   *          The key to search for.
+
+   * @return the string value of the system property.
+   */
+  public static String getSystemProperty(String key) {
+    try {
+      return System.getProperty(key);
+    } catch (SecurityException e) {
+      return null;
+    }
+  }
+  /**
+   * Very similar to {@link System#getProperties()} except that the
+   * {@link SecurityException} is absorbed.
+   * 
+   * @return the system properties
+   */
+  public static Properties getSystemProperties() {
+    try {
+      return System.getProperties();
+    } catch (SecurityException e) {
+      return new Properties();
+    }
+  }
+  
   static public String[] extractDefaultReplacement(String key) {
     String[] result = new String[2];
     result[0] = key;

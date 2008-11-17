@@ -23,6 +23,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * This class is logback's implementation of jetty's RequestLog interface.
@@ -139,7 +140,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public void start() {
 
     if (filename == null) {
-      String jettyHomeProperty = System.getProperty("jetty.home");
+      String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
 
       filename = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
       getStatusManager().add(

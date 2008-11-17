@@ -18,7 +18,6 @@ import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.helpers.ThrowableToStringArray;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
@@ -132,7 +131,7 @@ public class StatusPrinter {
       String dateStr = simpleDateFormat.format(date);
       sb.append(dateStr).append(" ");
     }
-    sb.append(prefix).append(s).append(Layout.LINE_SEP);
+    sb.append(prefix).append(s).append(CoreConstants.LINE_SEPARATOR);
 
     if (s.getThrowable() != null) {
       appendThrowable(sb, s.getThrowable());

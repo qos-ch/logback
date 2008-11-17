@@ -17,6 +17,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.html.NOPThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
+import static  ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
  * 
@@ -64,14 +65,14 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
       odd = false;
     }
 
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
     buf.append("<tr class=\"");
     if (odd) {
       buf.append(" odd\">");
     } else {
       buf.append(" even\">");
     }
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
 
     Converter<AccessEvent> c = head;
     while (c != null) {
@@ -79,7 +80,7 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
       c = c.getNext();
     }
     buf.append("</tr>");
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
 
     return buf.toString();
   }
@@ -91,6 +92,6 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
     buf.append("\">");
     buf.append(c.convert(event));
     buf.append("</td>");
-    buf.append(LINE_SEP);
+    buf.append(LINE_SEPARATOR);
   }
 }

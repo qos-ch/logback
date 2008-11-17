@@ -8,8 +8,8 @@ import ch.qos.logback.core.util.OptionHelper;
 public class StatusListenerConfigHelper {
 
   static void installIfAsked(LoggerContext loggerContext) {
-    String slClass = System.getProperty(
-        ContextInitializer.STATUS_LISTENER_CLASS, null);
+    String slClass = OptionHelper.getSystemProperty(
+        ContextInitializer.STATUS_LISTENER_CLASS);
     if (!OptionHelper.isEmpty(slClass)) {
       addStatusListener(loggerContext, slClass);
     }

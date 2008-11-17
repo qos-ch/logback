@@ -1,6 +1,7 @@
 package chapter5;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 
 public class MySampleLayout2 extends LayoutBase<LoggingEvent> {
@@ -34,7 +35,7 @@ public class MySampleLayout2 extends LayoutBase<LoggingEvent> {
     sbuf.append(event.getLoggerRemoteView().getName());
     sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
-    sbuf.append(LINE_SEP);
+    sbuf.append(CoreConstants.LINE_SEPARATOR);
     return sbuf.toString();
   }
 }

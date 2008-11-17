@@ -94,7 +94,7 @@ public class HTMLLayoutTest {
         .getThrowableRenderer();
     renderer.render(buf, strArray);
     // System.out.println(buf.toString());
-    String[] result = buf.toString().split(HTMLLayout.LINE_SEP);
+    String[] result = buf.toString().split(CoreConstants.LINE_SEPARATOR);
     assertEquals("<tr><td class=\"Exception\" colspan=\"6\">test1", result[0]);
     assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
   }

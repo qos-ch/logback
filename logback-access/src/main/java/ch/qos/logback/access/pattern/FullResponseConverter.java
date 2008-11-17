@@ -3,7 +3,7 @@ package ch.qos.logback.access.pattern;
 import java.util.List;
 
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.CoreConstants;
 
 public class FullResponseConverter extends AccessConverter {
 
@@ -16,18 +16,18 @@ public class FullResponseConverter extends AccessConverter {
     buf.append(statusCode);
     buf.append(" ");
     buf.append(getStatusCodeDescription(statusCode));
-    buf.append(Layout.LINE_SEP);
+    buf.append(CoreConstants.LINE_SEPARATOR);
     
     List<String> hnList = ae.getResponseHeaderNameList();
     for(String headerName: hnList) {
       buf.append(headerName);
       buf.append(": ");
       buf.append(ae.getResponseHeader(headerName));
-      buf.append(Layout.LINE_SEP);
+      buf.append(CoreConstants.LINE_SEPARATOR);
     }
-    buf.append(Layout.LINE_SEP);
+    buf.append(CoreConstants.LINE_SEPARATOR);
     buf.append(ae.getResponseContent());
-    buf.append(Layout.LINE_SEP);
+    buf.append(CoreConstants.LINE_SEPARATOR);
     return buf.toString();
   }
 

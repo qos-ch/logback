@@ -13,9 +13,6 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
 public interface Layout<E> extends ContextAware, LifeCycle {
-  // Note that the line.separator property can be looked up even by applets.
-  public static final String LINE_SEP = System.getProperty("line.separator");
-  public static final int LINE_SEP_LEN = LINE_SEP.length();
   
   /**
    * Transform an event (of type Object) and return it as a String after 

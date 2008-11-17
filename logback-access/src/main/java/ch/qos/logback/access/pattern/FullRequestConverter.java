@@ -3,7 +3,7 @@ package ch.qos.logback.access.pattern;
 import java.util.Enumeration;
 
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * This class is tied to the <code>fullRequest</code> conversion word.
@@ -20,7 +20,7 @@ public class FullRequestConverter extends AccessConverter {
   public String convert(AccessEvent ae) {
     StringBuffer buf = new StringBuffer();
     buf.append(ae.getRequestURL());
-    buf.append(Layout.LINE_SEP);
+    buf.append(CoreConstants.LINE_SEPARATOR);
     
     Enumeration headerNames = ae.getRequestHeaderNames();
     while(headerNames.hasMoreElements()) {
@@ -28,9 +28,9 @@ public class FullRequestConverter extends AccessConverter {
       buf.append(name);
       buf.append(": ");
       buf.append(ae.getRequestHeader(name));
-      buf.append(Layout.LINE_SEP);
+      buf.append(CoreConstants.LINE_SEPARATOR);
     }
-    buf.append(Layout.LINE_SEP);
+    buf.append(CoreConstants.LINE_SEPARATOR);
     buf.append(ae.getRequestContent());
     return buf.toString();
   }

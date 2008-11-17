@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.html;
 
-import static ch.qos.logback.core.Layout.LINE_SEP;
+import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
@@ -29,11 +29,11 @@ public class DefaultThrowableRenderer implements IThrowableRenderer {
       }
       sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
       sbuf.append(Transform.escapeTags(tdpArray[0].toString()));
-      sbuf.append(LINE_SEP);
+      sbuf.append(LINE_SEPARATOR);
       for (int i = 1; i < len; i++) {
         sbuf.append(TRACE_PREFIX);
         sbuf.append(Transform.escapeTags(tdpArray[i].toString()));
-        sbuf.append(LINE_SEP);
+        sbuf.append(LINE_SEPARATOR);
       }
       sbuf.append("</td></tr>");
     }
