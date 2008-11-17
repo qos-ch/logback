@@ -46,6 +46,9 @@ public class BasicStatusManager implements StatusManager {
    *                the status message to add
    */
   public void add(Status newStatus) {
+    // LBCORE-72: fire event before the count check 
+    fireStatusAddEvent(newStatus);
+    
     if (count > MAX_COUNT) {
       return;
     }
@@ -55,7 +58,7 @@ public class BasicStatusManager implements StatusManager {
       level = newStatus.getLevel();
     }
     statusList.add(newStatus);
-    fireStatusAddEvent(newStatus);
+
   }
 
   private void fireStatusAddEvent(Status status) {
