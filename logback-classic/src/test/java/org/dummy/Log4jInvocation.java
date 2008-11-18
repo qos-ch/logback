@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package org.dummy;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +21,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
+/**
+ * Used to test log4j-over-slf4j
+ * 
+ * @author Ceki Gulcu
+ *
+ */
 public class Log4jInvocation {
 
   static final String HELLO = "Hello";
