@@ -1,4 +1,4 @@
-package org.dummy;
+package org.slf4j.impl;
 
 import static org.junit.Assert.*;
 

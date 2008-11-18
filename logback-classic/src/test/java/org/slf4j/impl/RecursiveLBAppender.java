@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package org.dummy;
+package org.slf4j.impl;
 
 import java.util.ArrayList;
 import java.util.List;

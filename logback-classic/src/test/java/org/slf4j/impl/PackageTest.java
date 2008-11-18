@@ -15,6 +15,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
+    suite.addTest(new JUnit4TestAdapter(RecursiveInitializationTest.class));
     suite.addTest(new JUnit4TestAdapter(LogbackMDCAdapterTest.class));
     return suite;
   }
