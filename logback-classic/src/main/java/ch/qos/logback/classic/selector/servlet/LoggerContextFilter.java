@@ -57,7 +57,7 @@ public class LoggerContextFilter implements Filter {
       FilterChain chain) throws IOException, ServletException {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    ContextSelector selector = StaticLoggerBinder.SINGLETON.getContextSelector();
+    ContextSelector selector = StaticLoggerBinder.getSingleton().getContextSelector();
     ContextJNDISelector sel = null;
 
     if (selector instanceof ContextJNDISelector) {

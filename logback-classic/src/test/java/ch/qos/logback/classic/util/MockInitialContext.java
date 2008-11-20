@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.net.mock;
+package ch.qos.logback.classic.util;
 
 import java.util.HashMap;
 import java.util.Map;

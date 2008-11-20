@@ -15,7 +15,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTestSuite(ContextJNDISelectorTest.class);
+    suite.addTest(new JUnit4TestAdapter(ContextJNDISelectorTest.class));
     suite.addTestSuite(ContextDetachingSCLTest.class);
     return suite;
   }

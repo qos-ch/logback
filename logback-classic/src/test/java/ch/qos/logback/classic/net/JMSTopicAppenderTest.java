@@ -7,12 +7,12 @@ import javax.naming.Context;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.net.mock.MockInitialContext;
-import ch.qos.logback.classic.net.mock.MockInitialContextFactory;
 import ch.qos.logback.classic.net.mock.MockTopic;
 import ch.qos.logback.classic.net.mock.MockTopicConnectionFactory;
 import ch.qos.logback.classic.net.mock.MockTopicPublisher;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.MockInitialContext;
+import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.ContextBase;
 
 public class JMSTopicAppenderTest extends TestCase {

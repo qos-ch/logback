@@ -1,10 +1,11 @@
-package ch.qos.logback.classic.net.mock;
+package ch.qos.logback.classic.util;
 
 import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
+
 
 public class MockInitialContextFactory implements InitialContextFactory {
   static MockInitialContext mic;

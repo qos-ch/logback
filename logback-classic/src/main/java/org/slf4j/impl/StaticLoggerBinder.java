@@ -38,46 +38,61 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
-  private ContextSelector contextSelector;
+  /**
+   * Declare the version of the SLF4J API this implementation is compiled
+   * against. The value of this field is usually modified with each release.
+   */
+  // to avoid constant folding by the compiler, this field must *not* be final
+  public static String REQUESTED_API_VERSION = "1.5.6"; // !final
 
   final static String NULL_CS_URL = CoreConstants.CODES_URL + "#null_CS";
 
   /**
    * The unique instance of this class.
    */
-  public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+  private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
   
-  /**
-   * Declare the version of the SLF4J API this implementation is compiled against. 
-   * The value of this field is usually modified with each release. 
-   */
-  // to avoid constant folding by the compiler, this field must *not* be final
-  public static String REQUESTED_API_VERSION = "1.5.5";  // !final
-    
-  private static final String loggerFactoryClassStr = ContextSelector.class
-      .getName();
+  static {
+    SINGLETON.init();
+  }
+  
+  private boolean initialized = false;
+  private LoggerContext defaultLoggerContext = new LoggerContext();
+  private ContextSelector contextSelector;
 
+  
   private StaticLoggerBinder() {
-    initialize();
+    defaultLoggerContext.setName("default");
   }
 
-  public void initialize() {
+  public static StaticLoggerBinder getSingleton() {
+    return SINGLETON; 
+  }
+  
+  /**
+   * Package access for testing purposes.
+   */
+  static void reset() {
+    SINGLETON = new StaticLoggerBinder();
+    SINGLETON.init();
+  }
+  
+  /**
+   * Package access for testing purposes.
+   */
+  void init() {
     try {
-      // let's configure a default context
-      LoggerContext defaultLoggerContext = new LoggerContext();
-      defaultLoggerContext.setName("default");
       try {
         new ContextInitializer(defaultLoggerContext).autoConfig();
       } catch (JoranException je) {
-        // TODO test me
         Util.reportFailure("Failed to auto configure default logger context",
             je);
       }
       StatusPrinter.printIfErrorsOccured(defaultLoggerContext);
 
       // See if a special context selector is needed
-      String contextSelectorStr = OptionHelper.getSystemProperty(
-          ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, null);
+      String contextSelectorStr = OptionHelper
+          .getSystemProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR);
       if (contextSelectorStr == null) {
         contextSelector = new DefaultContextSelector(defaultLoggerContext);
       } else if (contextSelectorStr.equals("JNDI")) {
@@ -87,6 +102,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         contextSelector = dynamicalContextSelector(defaultLoggerContext,
             contextSelectorStr);
       }
+      initialized = true;
     } catch (Throwable t) {
       // we should never get here
       Util.reportFailure("Failed to instantiate ["
@@ -106,6 +122,10 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   public ILoggerFactory getLoggerFactory() {
+    if(!initialized) {
+      return defaultLoggerContext;
+    }
+    
     if (contextSelector == null) {
       throw new IllegalStateException(
           "contextSelector cannot be null. See also " + NULL_CS_URL);
@@ -114,7 +134,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   public String getLoggerFactoryClassStr() {
-    return loggerFactoryClassStr;
+    return contextSelector.getClass().getName();
   }
 
   /**

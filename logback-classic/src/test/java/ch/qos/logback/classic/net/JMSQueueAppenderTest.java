@@ -4,12 +4,12 @@ import javax.jms.ObjectMessage;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.net.mock.MockInitialContext;
-import ch.qos.logback.classic.net.mock.MockInitialContextFactory;
 import ch.qos.logback.classic.net.mock.MockQueue;
 import ch.qos.logback.classic.net.mock.MockQueueConnectionFactory;
 import ch.qos.logback.classic.net.mock.MockQueueSender;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.MockInitialContext;
+import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.ContextBase;
 
 public class JMSQueueAppenderTest extends TestCase {

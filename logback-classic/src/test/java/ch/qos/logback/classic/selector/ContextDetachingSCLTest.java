@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.ClassicGlobal;
-import ch.qos.logback.classic.net.mock.MockInitialContext;
-import ch.qos.logback.classic.net.mock.MockInitialContextFactory;
 import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
+import ch.qos.logback.classic.util.MockInitialContext;
+import ch.qos.logback.classic.util.MockInitialContextFactory;
 
 public class ContextDetachingSCLTest extends TestCase {
   
@@ -43,7 +43,7 @@ public class ContextDetachingSCLTest extends TestCase {
   }
   
   public void testDetach() {
-    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.SINGLETON.getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
     listener.contextDestroyed(null);
     assertEquals(0, selector.getCount());
   }
@@ -51,14 +51,14 @@ public class ContextDetachingSCLTest extends TestCase {
   public void testDetachWithMissingContext() {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "tata");
-    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.SINGLETON.getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
     assertEquals("tata", selector.getLoggerContext().getName());
 
     mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "titi");
     assertEquals("titi", selector.getLoggerContext().getName());
     listener.contextDestroyed(null);
 
-    assertEquals(1, selector.getCount());
+    assertEquals(2, selector.getCount());
   }
   
 }
