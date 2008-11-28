@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@ public class RootLoggerAction extends Action {
     LoggerContext loggerContext = (LoggerContext) this.context;
     root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
 
-    String levelStr = attributes.getValue(ActionConst.LEVEL_ATTRIBUTE);
+    String levelStr =  ec.subst(attributes.getValue(ActionConst.LEVEL_ATTRIBUTE));
     if (!OptionHelper.isEmpty(levelStr)) {
       Level level = Level.toLevel(levelStr);
       addInfo("Setting level of ROOT logger to " + level);

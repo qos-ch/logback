@@ -5,9 +5,8 @@
 
   <appender name="LIST" class="ch.qos.logback.core.read.ListAppender" />
 
-  <logger name="ch.qos.logback.classic.joran" level="INFO" />
-
-  <root level="DEBUG">
+  <root level="${logback.level}">
+  
     <appender-ref ref="LIST" />
   </root>
 

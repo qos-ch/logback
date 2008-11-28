@@ -42,7 +42,7 @@ public class LevelAction extends Action {
 
     String loggerName = l.getName();
 
-    String levelStr = attributes.getValue(ActionConst.VALUE_ATTR);
+    String levelStr = ec.subst(attributes.getValue(ActionConst.VALUE_ATTR));
     //addInfo("Encapsulating logger name is [" + loggerName
     //    + "], level value is  [" + levelStr + "].");
 

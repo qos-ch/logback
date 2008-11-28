@@ -1,7 +1,6 @@
 <configuration>
 
-  <appender name="LIST"
-            class="ch.qos.logback.core.read.ListAppender">
+  <appender name="LIST" class="ch.qos.logback.core.read.ListAppender">
 
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <OnMatch>DENY</OnMatch>
@@ -9,8 +8,7 @@
     </filter>
   </appender>
 
-  <root>
-    <level value="debug" />
+  <root level="debug">
     <appender-ref ref="LIST" />
   </root>
 </configuration>

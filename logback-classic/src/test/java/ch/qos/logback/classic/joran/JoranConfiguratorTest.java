@@ -67,6 +67,36 @@ public class JoranConfiguratorTest {
   }
 
   @Test
+  public void testRootLoggerLevelSettingBySystemProperty() throws JoranException {
+    String propertyName = "logback.level";
+   
+    System.setProperty(propertyName, "INFO");
+    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/rootLevelByProperty.xml");
+    StatusPrinter.print(loggerContext);
+    ListAppender listAppender = (ListAppender) root.getAppender("LIST");
+    assertEquals(0, listAppender.list.size());
+    String msg = "hello world";
+    logger.debug(msg);
+    assertEquals(0, listAppender.list.size());
+    System.clearProperty(propertyName);
+  }
+  
+  @Test
+  public void testLoggerLevelSettingBySystemProperty() throws JoranException {
+    String propertyName = "logback.level";
+   
+    System.setProperty(propertyName, "DEBUG");
+    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/loggerLevelByProperty.xml");
+    StatusPrinter.print(loggerContext);
+    ListAppender listAppender = (ListAppender) root.getAppender("LIST");
+    assertEquals(0, listAppender.list.size());
+    String msg = "hello world";
+    logger.debug(msg);
+    assertEquals(1, listAppender.list.size());
+    System.clearProperty(propertyName);
+  }
+  
+  @Test
   public void testStatusListener() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
 

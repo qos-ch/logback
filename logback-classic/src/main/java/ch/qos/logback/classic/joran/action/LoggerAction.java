@@ -50,7 +50,8 @@ public class LoggerAction extends Action {
 
     logger = loggerContext.getLogger(loggerName);
 
-    String levelStr = attributes.getValue(LEVEL_ATTRIBUTE);
+    String levelStr =  ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
+    
     if (!OptionHelper.isEmpty(levelStr)) {
       if (ActionConst.INHERITED.equalsIgnoreCase(levelStr)
           || ActionConst.NULL.equalsIgnoreCase(levelStr)) {

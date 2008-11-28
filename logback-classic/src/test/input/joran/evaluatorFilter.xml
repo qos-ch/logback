@@ -13,8 +13,7 @@
     </filter>
   </appender>
 
-  <root>
-    <level value="debug" />
+  <root level="debug">
     <appender-ref ref="LIST" />
   </root>
 </configuration>
