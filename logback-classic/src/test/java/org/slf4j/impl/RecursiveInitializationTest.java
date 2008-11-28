@@ -1,9 +1,7 @@
 package org.slf4j.impl;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
 import java.util.Random;
 
 import org.junit.After;
@@ -17,7 +15,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
-
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class RecursiveInitializationTest {
 
@@ -27,7 +25,9 @@ public class RecursiveInitializationTest {
   public void setUp() throws Exception {
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY,
         "recursiveInit.xml");
+    StaticLoggerBinderFriend.reset();
     LoggerFactoryFriend.reset();
+
   }
 
   @After
@@ -43,25 +43,9 @@ public class RecursiveInitializationTest {
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
+    StatusPrinter.printIfErrorsOccured(loggerContext);
     StatusManager sm = loggerContext.getStatusManager();
-
-    assertEquals("Was expecting no errors", Status.INFO, sm.getLevel());
-    
-    List<Status> statusList = sm.getCopyOfStatusList();
-//    int errorCount = 0;
-//    
-//    for(Status s: statusList) {
-//      if(s.getLevel() == Status.ERROR) {
-//        errorCount++;
-//        System.out.println("==========================");
-//        System.out.println(s);
-//        System.out.println("==========================");
-//        
-//        assertNull("Status ["+s+"] has a throwable", s.getThrowable());
-//      }
-//    }
-    // Error msg: No appenders present in context [default] for logger [ResursiveLBAppender..].
-//    assertEquals("Expecting only one error", 1, errorCount);
-    }
+    assertEquals("Was expecting no errors", Status.WARN, sm.getLevel());
+  }
 
 }

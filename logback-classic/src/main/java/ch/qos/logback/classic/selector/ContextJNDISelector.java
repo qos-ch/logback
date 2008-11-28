@@ -22,13 +22,14 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.slf4j.Logger;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.classic.util.JNDIUtil;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -54,6 +55,14 @@ public class ContextJNDISelector implements ContextSelector {
     contextMap = Collections
         .synchronizedMap(new HashMap<String, LoggerContext>());
     defaultContext = context;
+  }
+
+  public LoggerContext getDefaultLoggerContext() {
+    return defaultContext;
+  }
+
+  public LoggerContext detachLoggerContext(String loggerContextName) {
+    return contextMap.remove(loggerContextName);
   }
 
   public LoggerContext getLoggerContext() {
@@ -87,49 +96,68 @@ public class ContextJNDISelector implements ContextSelector {
         loggerContext = new LoggerContext();
         loggerContext.setName(contextName);
         contextMap.put(contextName, loggerContext);
-
-        // Do we have a dedicated configuration file?
-        String configFilePath = JNDIUtil.lookup(ctx,
-            JNDI_CONFIGURATION_RESOURCE);
-        if (configFilePath != null) {
-          configureLoggerContextByResource(loggerContext, configFilePath);
+        URL url = findConfigFileURL(ctx, loggerContext);
+        if (url != null) {
+          configureLoggerContextByURL(loggerContext, url);
         } else {
           try {
             new ContextInitializer(loggerContext).autoConfig();
-          } catch(JoranException je) {
-            StatusPrinter.print(loggerContext);
+          } catch (JoranException je) {
           }
         }
+        StatusPrinter.printIfErrorsOccured(loggerContext);
       }
       return loggerContext;
     }
   }
 
-  public LoggerContext getDefaultLoggerContext() {
-    return defaultContext;
+  private String conventionalConfigFileName(String contextName) {
+    return "logback-" + contextName + ".xml";
   }
 
-  public LoggerContext detachLoggerContext(String loggerContextName) {
-    return contextMap.remove(loggerContextName);
-  }
+  private URL findConfigFileURL(Context ctx, LoggerContext loggerContext) {
+    StatusManager sm = loggerContext.getStatusManager();
 
-  private void configureLoggerContextByResource(LoggerContext context,
-      String configFilePath) {
-    URL url = Loader.getResourceBySelfClassLoader(configFilePath);
-    if (url != null) {
-      try {
-        JoranConfigurator configurator = new JoranConfigurator();
-        context.reset();
-        configurator.setContext(context);
-        configurator.doConfigure(url);
-      } catch (JoranException e) {
-        StatusPrinter.print(context);
+    String jndiEntryForConfigResource = JNDIUtil.lookup(ctx,
+        JNDI_CONFIGURATION_RESOURCE);
+    // Do we have a dedicated configuration file?
+    if (jndiEntryForConfigResource != null) {
+      sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource
+          + "]", this));
+      URL url = urlByResourceName(sm, jndiEntryForConfigResource);
+      if (url == null) {
+        String msg = "The jndi resource [" + jndiEntryForConfigResource
+            + "] for context [" + loggerContext.getName()
+            + "] does not lead to a valid file";
+        sm.add(new WarnStatus(msg, this));
       }
+      return url;
     } else {
-      Logger logger = defaultContext.getLogger(LoggerContext.ROOT_NAME);
-      logger.warn("The provided URL for context" + context.getName()
-          + " does not lead to a valid file");
+      String resourceByConvention = conventionalConfigFileName(loggerContext
+          .getName());
+      return urlByResourceName(sm, resourceByConvention);
     }
+  }
+
+  private URL urlByResourceName(StatusManager sm, String resourceName) {
+    sm.add(new InfoStatus("Searching for [" + resourceName + "]",
+        this));
+    URL url = Loader.getResource(resourceName, Loader.getTCL());
+    if (url != null) {
+      return url;
+    }
+    return Loader.getResourceBySelfClassLoader(resourceName);
+  }
+
+  private void configureLoggerContextByURL(LoggerContext context, URL url) {
+    try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      context.reset();
+      configurator.setContext(context);
+      configurator.doConfigure(url);
+    } catch (JoranException e) {
+    }
+    StatusPrinter.printIfErrorsOccured(context);
   }
 
   public List<String> getContextNames() {

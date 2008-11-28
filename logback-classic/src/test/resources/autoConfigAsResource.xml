@@ -2,15 +2,14 @@
 
 <configuration>
 
-	<appender name="AUTO_BY_SYSTEM_PROPERTY" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<pattern>%msg%n"</pattern>
-		</layout>
-	</appender>
+  <appender name="AUTO_BY_SYSTEM_PROPERTY"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%msg%n"</pattern>
+    </layout>
+  </appender>
 
-	<root>
-		<level value="debug" />
-		<appender-ref ref="AUTO_BY_SYSTEM_PROPERTY" />
-
-	</root>
+  <root level="debug">
+    <appender-ref ref="AUTO_BY_SYSTEM_PROPERTY" />
+  </root>
 </configuration>

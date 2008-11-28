@@ -84,31 +84,35 @@
     files from classpath resources.
     </p>
 
-
-  <!-- ======================== minor ================== -->
-
-  <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-69">bug
-  LBCLASSIC-69</a> reported by Anton Tagunov. The
-  LevelToSyslogSeverity now correctly handles the TRACE level.
-  </p>
-
-  <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-57">bug
-  LBCLASSIC-57</a> reported by Anton Tagunov. SyslogAppender could
-  overwhelm the Syslog server with very large messages. SyslogAppender
-  now limits its message size to 256K.
-  </p>
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-86">LBCLASSIC-86</a>
+    related to <code>AccessControlException</code> thrown when run in
+    a JVM with a <code>SecurityManager</code>.
+    </p>
 
 
-  <p>Fixed issue <a
-  href="http://jira.qos.ch/browse/LBCLASSIC-49">LBCLASSIC-49</a>
-  reported by Oliver Lietz. The getLogger() method in
-  <code>LoggerContext</code> class will now throw an
-  <code>IllegalArgumentException</code> when invoked with a null
-  argument.
-  </p>
+    <!-- ======================== minor ================== -->
+
+    <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-69">bug
+    LBCLASSIC-69</a> reported by Anton Tagunov. The
+    LevelToSyslogSeverity now correctly handles the TRACE level.
+    </p>
+
+    <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-57">bug
+    LBCLASSIC-57</a> reported by Anton Tagunov. SyslogAppender could
+    overwhelm the Syslog server with very large messages. SyslogAppender
+    now limits its message size to 256K.
+    </p>
 
 
-  
+    <p>Fixed issue <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-49">LBCLASSIC-49</a>
+    reported by Oliver Lietz. The getLogger() method in
+    <code>LoggerContext</code> class will now throw an
+    <code>IllegalArgumentException</code> when invoked with a null
+    argument.
+    </p>
+
 
   <hr width="80%" align="center" />
 
