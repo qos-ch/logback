@@ -20,8 +20,8 @@ import java.util.List;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerComparator;
+import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
@@ -29,9 +29,9 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.WarnStatus;
 
 /**
  * LoggerContext glues many of the logback-classic components together. In
@@ -63,7 +63,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   boolean started = false;
 
-  
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
@@ -174,7 +173,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final void noAppenderDefinedWarning(final Logger logger) {
     if (noAppenderWarning++ == 0) {
       getStatusManager().add(
-          new ErrorStatus("No appenders present in context [" + getName()
+          new WarnStatus("No appenders present in context [" + getName()
               + "] for logger [" + logger.getName() + "].", logger));
     }
   }
@@ -261,15 +260,15 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   private void resetListenersExceptResetResistant() {
     List<LoggerContextListener> toRetain = new ArrayList<LoggerContextListener>();
-    
-    for(LoggerContextListener lcl: loggerContextListenerList) {
-      if(lcl.isResetResistant()) {
+
+    for (LoggerContextListener lcl : loggerContextListenerList) {
+      if (lcl.isResetResistant()) {
         toRetain.add(lcl);
       }
     }
     loggerContextListenerList.retainAll(toRetain);
   }
-  
+
   private void resetAllListeners() {
     loggerContextListenerList.clear();
   }
@@ -295,7 +294,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
       listener.onStop(this);
     }
   }
-  
+
   // === end listeners ==============================================
 
   public boolean isStarted() {
@@ -314,7 +313,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     started = false;
   }
 
-   @Override
+  @Override
   public String toString() {
     return this.getClass().getName() + "[" + getName() + "]";
   }
