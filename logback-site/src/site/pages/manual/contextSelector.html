@@ -45,12 +45,34 @@
     <script src="../templates/creative.js" type="text/javascript"></script>		
     <script src="../templates/setup.js" type="text/javascript"></script>
 
-    <h3>Introduction</h3>
+    <h2>The problem: Logging Separation</h2>
 
-    <p>When working with multiple Web applications, all running on the
-    same server, the multiplication of <code>LoggerContext</code>
-    objects can be tricky.
+    <p>The chapter deals with a relatively difficult problem of
+    providing a separate logging environment for multiple applications
+    running on the same web or EJB container. In the remainder of this
+    chapter the term "application" will be used to refer either a
+    web-application or a J2EE application interchangeably.  In a
+    separated logging environment, each application can configure
+    logback in different ways such that the settings of one
+    application does not interfere with the settings of another. A
+    variant of this problem is the separation of application logging
+    and the logging of the container itself.
     </p>
+
+    <h2>A simple and easy approach</h2>
+
+    <p>Assuming you container supports child first class loading,
+    separation of logging can be accomplished by embedding a copy of
+    slf4j and logback jar files in each application. For
+    web-applications, placing slf4j and logback jar files under the
+    <em>WEB-INF/lib</em> directory of the web-application is
+    sufficient to endow each web-application with a separate logging
+    environment.
+    </p>
+
+    
+    
+
 
     <p>Logback provides a mechanism for dealing with multiple
     contexts, without corruption of data, nor collision between logger
