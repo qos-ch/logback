@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -10,38 +10,18 @@
 
 package ch.qos.logback.core.joran.spi;
 
-import ch.qos.logback.core.joran.spi.Pattern;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * Test pattern manipulation code.
  * 
  * @author Ceki Gulcu
  */
-public class PatternTest extends TestCase {
-  /**
-   * Constructor for PatternTestCase.
-   * 
-   * @param name
-   */
-  public PatternTest(String name) {
-    super(name);
-  }
+public class PatternTest {
 
-  /*
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  /*
-   * @see TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void test1() {
     Pattern p = new Pattern("a");
     assertEquals(1, p.size());
@@ -49,6 +29,7 @@ public class PatternTest extends TestCase {
     assertEquals("a", p.get(0));
   }
 
+  @Test
   public void testSuffix() {
     Pattern p = new Pattern("a/");
     assertEquals(1, p.size());
@@ -56,6 +37,7 @@ public class PatternTest extends TestCase {
     assertEquals("a", p.get(0));
   }
   
+  @Test
   public void test2() {
     Pattern p = new Pattern("a/b");
     assertEquals(2, p.size());
@@ -64,6 +46,7 @@ public class PatternTest extends TestCase {
     assertEquals("b", p.get(1));
   }
 
+  @Test
   public void test3() {
     Pattern p = new Pattern("a123/b1234/cvvsdf");
     assertEquals(3, p.size());
@@ -72,6 +55,7 @@ public class PatternTest extends TestCase {
     assertEquals("cvvsdf", p.get(2));
   }
 
+  @Test
   public void test4() {
     Pattern p = new Pattern("/a123/b1234/cvvsdf");
     assertEquals(3, p.size());
@@ -80,12 +64,14 @@ public class PatternTest extends TestCase {
     assertEquals("cvvsdf", p.get(2));
   }
 
+  @Test
   public void test5() {
     Pattern p = new Pattern("//a");
     assertEquals(1, p.size());
     assertEquals("a", p.get(0));
   }
 
+  @Test
   public void test6() {
     Pattern p = new Pattern("//a//b");
     assertEquals(2, p.size());
@@ -95,6 +81,7 @@ public class PatternTest extends TestCase {
 
   
   // test tail matching
+  @Test
   public void testTailMatch() {
     {
       Pattern p = new Pattern("/a/b");
@@ -123,6 +110,7 @@ public class PatternTest extends TestCase {
   }
   
   // test prefix matching
+  @Test
   public void testPrefixMatch() {
     {
       Pattern p = new Pattern("/a/b");

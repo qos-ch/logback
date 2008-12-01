@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -12,20 +12,12 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 
-
 public class Pattern {
-  
+
   // contains String instances
-  ArrayList<String> components;
+  ArrayList<String> partList = new ArrayList<String>();
 
   public Pattern() {
-    components = new ArrayList<String>();
-  }
-  
-  public Object clone() {
-    Pattern p = new Pattern();
-    p.components.addAll(this.components);
-    return p;
   }
 
   /**
@@ -50,48 +42,54 @@ public class Pattern {
       // System.out.println("k is "+ k);
       if (k == -1) {
         String lastPart = p.substring(lastIndex);
-        if(lastPart != null && lastPart.length() > 0) {
-          components.add(p.substring(lastIndex));
+        if (lastPart != null && lastPart.length() > 0) {
+          partList.add(p.substring(lastIndex));
         }
         break;
       } else {
         String c = p.substring(lastIndex, k);
 
         if (c.length() > 0) {
-          components.add(c);
+          partList.add(c);
         }
 
         lastIndex = k + 1;
       }
     }
 
-    //System.out.println(components);
+    // System.out.println(components);
+  }
+
+  public Object clone() {
+    Pattern p = new Pattern();
+    p.partList.addAll(this.partList);
+    return p;
   }
 
   public void push(String s) {
-    components.add(s);
+    partList.add(s);
   }
 
   public int size() {
-    return components.size();
+    return partList.size();
   }
 
   public String get(int i) {
-    return (String) components.get(i);
+    return (String) partList.get(i);
   }
 
   public void pop() {
-    if (!components.isEmpty()) {
-      components.remove(components.size() - 1);
+    if (!partList.isEmpty()) {
+      partList.remove(partList.size() - 1);
     }
   }
-  
+
   public String peekLast() {
-    if (!components.isEmpty()) {
-      int size = components.size();
-      return (String) components.get(size - 1);
+    if (!partList.isEmpty()) {
+      int size = partList.size();
+      return (String) partList.get(size - 1);
     } else {
-     return null;
+      return null;
     }
   }
 
@@ -105,8 +103,8 @@ public class Pattern {
       return 0;
     }
 
-    int lSize = this.components.size();
-    int rSize = p.components.size();
+    int lSize = this.partList.size();
+    int rSize = p.partList.size();
 
     // no match possible for empty sets
     if ((lSize == 0) || (rSize == 0)) {
@@ -118,8 +116,8 @@ public class Pattern {
 
     // loop from the end to the front
     for (int i = 1; i <= minLen; i++) {
-      String l = (String) this.components.get(lSize - i);
-      String r = (String) p.components.get(rSize - i);
+      String l = (String) this.partList.get(lSize - i);
+      String r = (String) p.partList.get(rSize - i);
 
       if (l.equals(r)) {
         match++;
@@ -141,8 +139,8 @@ public class Pattern {
       return 0;
     }
 
-    int lSize = this.components.size();
-    int rSize = p.components.size();
+    int lSize = this.partList.size();
+    int rSize = p.partList.size();
 
     // no match possible for empty sets
     if ((lSize == 0) || (rSize == 0)) {
@@ -153,10 +151,10 @@ public class Pattern {
     int match = 0;
 
     for (int i = 0; i < minLen; i++) {
-      String l = (String) this.components.get(i);
-      String r = (String) p.components.get(i);
+      String l = (String) this.partList.get(i);
+      String r = (String) p.partList.get(i);
 
-      //if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
+      // if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
       if (l.equals(r)) {
         match++;
       } else {
@@ -167,23 +165,21 @@ public class Pattern {
     return match;
   }
 
-  
-  
   @Override
   public boolean equals(Object o) {
-    //System.out.println("in equals:" +this+ " vs. " + o);
+    // System.out.println("in equals:" +this+ " vs. " + o);
     if ((o == null) || !(o instanceof Pattern)) {
       return false;
     }
 
-    //System.out.println("both are Patterns");
+    // System.out.println("both are Patterns");
     Pattern r = (Pattern) o;
 
     if (r.size() != size()) {
       return false;
     }
 
-    //System.out.println("both are size compatible");
+    // System.out.println("both are size compatible");
     int len = size();
 
     for (int i = 0; i < len; i++) {
@@ -204,7 +200,7 @@ public class Pattern {
     for (int i = 0; i < len; i++) {
       hc ^= get(i).hashCode();
 
-      //System.out.println("i = "+i+", hc="+hc);
+      // System.out.println("i = "+i+", hc="+hc);
     }
 
     return hc;
@@ -212,10 +208,10 @@ public class Pattern {
 
   @Override
   public String toString() {
-    int size = components.size();
+    int size = partList.size();
     String result = "";
-    for(int i = 0; i < size; i++) {
-      result +=  "[" + components.get(i) + "]";
+    for (int i = 0; i < size; i++) {
+      result += "[" + partList.get(i) + "]";
     }
     return result;
   }
