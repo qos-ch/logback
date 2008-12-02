@@ -1,11 +1,11 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.spi;
 
@@ -19,7 +19,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import ch.qos.logback.core.Appender;
 
 /**
- * A straightforward implementation of the {@link AppenderAttachable} interface.
+ * A ReentrantReadWriteLock based implementation of the
+ * {@link AppenderAttachable} interface.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -38,11 +39,14 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (newAppender == null) {
       throw new IllegalArgumentException("Null argument disallowed");
     }
-    w.lock();
-    if (!appenderList.contains(newAppender)) {
-      appenderList.add(newAppender);
+    try {
+      w.lock();
+      if (!appenderList.contains(newAppender)) {
+        appenderList.add(newAppender);
+      }
+    } finally {
+      w.unlock();
     }
-    w.unlock();
   }
 
   /**
@@ -50,8 +54,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public int appendLoopOnAppenders(E e) {
     int size = 0;
-    r.lock();
     try {
+      r.lock();
       for (Appender<E> appender : appenderList) {
         appender.doAppend(e);
         size++;
@@ -70,33 +74,40 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public Iterator<Appender<E>> iteratorForAppenders() {
     List<Appender<E>> copy;
-    r.lock();
-    copy = new ArrayList<Appender<E>>(appenderList);
-    r.unlock();
+    try {
+      r.lock();
+      copy = new ArrayList<Appender<E>>(appenderList);
+    } finally {
+      r.unlock();
+    }
     return copy.iterator();
   }
 
   /**
    * Look for an attached appender named as <code>name</code>.
    * 
-   * <p>
-   * Return the appender with that name if in the list. Return null otherwise.
+   * <p> Return the appender with that name if in the list. Return null
+   * otherwise.
    * 
    */
   public Appender<E> getAppender(String name) {
     if (name == null) {
       return null;
     }
-    r.lock();
+    Appender<E> found = null;
 
-    for (Appender<E> appender : appenderList) {
-      if (name.equals(appender.getName())) {
-        r.unlock();
-        return appender;
+    try {
+      r.lock();
+      for (Appender<E> appender : appenderList) {
+        if (name.equals(appender.getName())) {
+          found = appender;
+          break;
+        }
       }
+    } finally {
+      r.unlock();
     }
-    r.unlock();
-    return null;
+    return found;
   }
 
   /**
@@ -109,15 +120,19 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (appender == null) {
       return false;
     }
-    r.lock();
-    for (Appender<E> a : appenderList) {
-      if (a == appender) {
-        r.unlock();
-        return true;
+    boolean attached = false;
+    try {
+      r.lock();
+      for (Appender<E> a : appenderList) {
+        if (a == appender) {
+          attached = true;
+          break;
+        }
       }
+    } finally {
+      r.unlock();
     }
-    r.unlock();
-    return false;
+    return attached;
   }
 
   /**
@@ -125,11 +140,11 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public void detachAndStopAllAppenders() {
     try {
-     w.lock();
+      w.lock();
       for (Appender<E> a : appenderList) {
-       a.stop();
-     }
-    appenderList.clear();
+        a.stop();
+      }
+      appenderList.clear();
     } finally {
       w.unlock();
     }
@@ -143,9 +158,13 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (appender == null) {
       return false;
     }
-    w.lock();
-    boolean result = appenderList.remove(appender);
-    w.unlock();
+    boolean result;
+    try {
+      w.lock();
+      result = appenderList.remove(appender);
+    } finally {
+      w.unlock();
+    }
     return result;
   }
 
@@ -157,14 +176,18 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (name == null) {
       return false;
     }
-    w.lock();
-    for (Appender<E> a : appenderList) {
-      if (name.equals((a).getName())) {
-        w.unlock();
-        return appenderList.remove(a);
+    boolean removed = false;
+    try {
+      w.lock();
+      for (Appender<E> a : appenderList) {
+        if (name.equals((a).getName())) {
+          removed = appenderList.remove(a);
+          break;
+        }
       }
+    } finally {
+      w.unlock();
     }
-    w.unlock();
-    return false;
+    return removed;
   }
 }
