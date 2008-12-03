@@ -9,22 +9,17 @@
  */
 package ch.qos.logback.core.util;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-
-public class PackageTest extends TestCase {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(DurationTest.class);
-    suite.addTestSuite(FileSizeTest.class);
-    suite.addTest(new JUnit4TestAdapter(FileUtilTest.class));
-    suite.addTestSuite(OptionHelperTest.class);
-    suite.addTestSuite(StatusPrinterTest.class);
-    suite.addTestSuite(TimeUtilTest.class);
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses({
+  DurationTest.class,
+  FileSizeTest.class,
+  FileUtilTest.class,
+  OptionHelperTest.class,
+  StatusPrinterTest.class,
+  TimeUtilTest.class})
+public class PackageTest {
 }

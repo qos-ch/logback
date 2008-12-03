@@ -9,10 +9,15 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.Converter;
@@ -22,24 +27,16 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
-public class CompilerTest extends TestCase {
+public class CompilerTest  {
 
   Map<String, String> converterMap = new HashMap<String, String>();
   Context context = new ContextBase();
   
-  public CompilerTest(String arg0) {
-    super(arg0);
+  @Before public void setUp() {
     converterMap.put("OTT", Converter123.class.getName());
     converterMap.put("hello", ConverterHello.class.getName());
   }
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
 
   String write(final Converter<Object> head, Object event) {
     StringBuffer buf = new StringBuffer();
@@ -51,6 +48,7 @@ public class CompilerTest extends TestCase {
     return buf.toString();
   }
 
+  @Test
   public void testLiteral() throws Exception {
     Parser<Object> p = new Parser<Object>("hello");
     Node t = p.parse();
@@ -59,6 +57,7 @@ public class CompilerTest extends TestCase {
     assertEquals("hello", result);
   }
 
+  @Test
   public void testBasic() throws Exception {
     {
       Parser<Object> p = new Parser<Object>("abc %hello");
@@ -78,6 +77,7 @@ public class CompilerTest extends TestCase {
     }
   }
 
+  @Test
   public void testFormat() throws Exception {
     {
       Parser<Object> p = new Parser<Object>("abc %7hello");
@@ -149,6 +149,7 @@ public class CompilerTest extends TestCase {
     }
   }
 
+  @Test
   public void testComposite() throws Exception {
 //    {
 //      Parser<Object> p = new Parser<Object>("%(ABC)");
@@ -178,6 +179,7 @@ public class CompilerTest extends TestCase {
     }
   }
 
+  @Test
   public void testCompositeFormatting() throws Exception {
     {
       Parser<Object> p = new Parser<Object>("xyz %4.10(ABC)");
@@ -225,6 +227,7 @@ public class CompilerTest extends TestCase {
     }
   }
 
+  @Test
   public void testUnknownWord() throws Exception {
     Parser<Object> p = new Parser<Object>("%unknown");
     p.setContext(context);
@@ -235,6 +238,7 @@ public class CompilerTest extends TestCase {
         .containsMatch("\\[unknown] is not a valid conversion word"));
   }
 
+  @Test
   public void testWithNopEscape() throws Exception {
     {
       Parser<Object> p = new Parser<Object>("xyz %hello\\_world");

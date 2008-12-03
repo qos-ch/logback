@@ -9,24 +9,19 @@
  */
 package ch.qos.logback.core.joran.event;
 
+import static org.junit.Assert.*;
+
 import java.io.FileInputStream;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.junit.Test;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.joran.event.BodyEvent;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.event.StartEvent;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Constants;
@@ -36,30 +31,16 @@ import ch.qos.logback.core.util.Constants;
  * 
  * @author Ceki Gulcu
  */
-public class EventRecorderTest extends TestCase {
+public class EventRecorderTest {
 
   Context context =  new ContextBase();
 
-  public EventRecorderTest(String name) {
-    super(name);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  /*
-   * @see TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
 
   SAXParser createParser() throws Exception {
     SAXParserFactory spf = SAXParserFactory.newInstance();
     return spf.newSAXParser();
   }
-  
+
   public List<SaxEvent> doTest(String filename) throws Exception {
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
@@ -82,6 +63,7 @@ public class EventRecorderTest extends TestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void test1() throws Exception {
     List<SaxEvent> seList = doTest("event1.xml");
     StatusManager sm = context.getStatusManager();
@@ -91,6 +73,7 @@ public class EventRecorderTest extends TestCase {
     
   }
 
+  @Test
   public void test2() throws Exception {
     List<SaxEvent> seList = doTest("ampEvent.xml");
     StatusManager sm = context.getStatusManager();
@@ -102,6 +85,7 @@ public class EventRecorderTest extends TestCase {
     assertEquals("xxx & yyy", be.getText());
   }
 
+  @Test
   public void test3() throws Exception {
     List<SaxEvent> seList = doTest("inc.xml");
     StatusManager sm = context.getStatusManager();
@@ -113,13 +97,6 @@ public class EventRecorderTest extends TestCase {
     Attributes attr = se.getAttributes();
     assertNotNull(attr);
     assertEquals("1", attr.getValue("increment"));
-  }
-
-  public static Test XXXsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new EventRecorderTest("test2"));
-    // suite.addTestSuite(SkippingInInterpreterTest.class);
-    return suite;
   }
 
 }

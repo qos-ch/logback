@@ -9,16 +9,12 @@
  */
 package ch.qos.logback.core.joran.replay;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses({FruitConfigurationTest.class})
+public class PackageTest {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(FruitConfigurationTest.class));
-    return suite;
-  }
 }

@@ -1,19 +1,23 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2008, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
 package ch.qos.logback.core.joran.spi;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.ContextBase;
@@ -23,23 +27,9 @@ import ch.qos.logback.core.joran.action.Action;
  * 
  * @author Ceki Gulcu
  */
-public class SimpleStoreTest extends TestCase {
+public class SimpleStoreTest  {
 
-  public SimpleStoreTest(String name) {
-    super(name);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  /*
-   * @see TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void test1() throws Exception {
     // Document doc = getW3Document("file:input/joran/parser1.xml");
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
@@ -71,6 +61,7 @@ public class SimpleStoreTest extends TestCase {
 
   }
 
+  @Test
   public void testSlashSuffix() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     Pattern pa = new Pattern("a/");
@@ -86,6 +77,8 @@ public class SimpleStoreTest extends TestCase {
 
  
   }
+  
+  @Test
   public void testTail1() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
@@ -101,6 +94,7 @@ public class SimpleStoreTest extends TestCase {
   }
 
   
+  @Test
   public void testTail2() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/c"), new XAction());
@@ -115,6 +109,7 @@ public class SimpleStoreTest extends TestCase {
     }
   }
   
+  @Test
   public void testTail3() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
@@ -131,6 +126,7 @@ public class SimpleStoreTest extends TestCase {
     }
   }
 
+  @Test
   public void testTail4() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("*/b"), new XAction());
@@ -148,6 +144,7 @@ public class SimpleStoreTest extends TestCase {
     }
   }
   
+  @Test
   public void testSuffix() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("a"), new XAction());
@@ -159,6 +156,7 @@ public class SimpleStoreTest extends TestCase {
     assertTrue(r.get(0) instanceof YAction);
   }
   
+  @Test
   public void testDeepSuffix() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("a"), new XAction(1));
@@ -168,6 +166,7 @@ public class SimpleStoreTest extends TestCase {
     assertNull(r);
   }
 
+  @Test
   public void testPrefixSuffixInteraction1() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("a"), new ZAction());
@@ -184,6 +183,7 @@ public class SimpleStoreTest extends TestCase {
     assertEquals(3, xaction.id);
   }
 
+  @Test
   public void testPrefixSuffixInteraction2() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
     srs.addRule(new Pattern("testGroup"), new XAction());

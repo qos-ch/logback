@@ -1,9 +1,12 @@
 package ch.qos.logback.core.joran.spi;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.IADataForComplexProperty;
@@ -13,8 +16,9 @@ import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class PropertySetterTest extends TestCase {
+public class PropertySetterTest  {
 
+  @Test
   public void testCanAggregateComponent() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
@@ -41,6 +45,7 @@ public class PropertySetterTest extends TestCase {
     System.out.println();
   }
 
+  @Test
   public void testSetProperty() {
     {
       House house = new House();
@@ -67,6 +72,7 @@ public class PropertySetterTest extends TestCase {
     }
   }
 
+  @Test
   public void testSetCamelProperty() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
@@ -78,6 +84,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals("gh", house.getCamelCase());
   }
   
+  @Test
   public void testSetComplexProperty() {
     House house = new House();
     Door door = new Door();
@@ -86,6 +93,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(door, house.getDoor());
   }
 
+  @Test
   public void testSetComplexProperty2() {
     House house = new House();
     //Door door = new Door();
@@ -100,6 +108,8 @@ public class PropertySetterTest extends TestCase {
     //setter.setComplexProperty("door", door);
     //assertEquals(door, house.getDoor());
   }
+  
+  @Test
   public void testPropertyCollection() {
     House house = new House();
     Context context = new ContextBase();
@@ -113,6 +123,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals("big", house.adjectiveList.get(1));
   }
 
+  @Test
   public void testComplexCollection() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
@@ -128,6 +139,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(20, house.windowList.get(1).handle);
   }
   
+  @Test
   public void testSetComplexWithCamelCaseName() {
     House house = new House();
     SwimmingPool pool = new SwimmingPool();
@@ -136,6 +148,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(pool, house.getSwimmingPool());
   }
   
+  @Test
   public void testDuration() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
@@ -143,6 +156,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(1400, house.getDuration().getMilliseconds());
   }
 
+  @Test
   public void testFileSize() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
@@ -150,6 +164,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(2*1024, house.getFs().getSize());
   }
   
+  @Test
   public void testFilterReply() {
     //test case reproducing bug #52
     House house = new House();
@@ -158,6 +173,7 @@ public class PropertySetterTest extends TestCase {
     assertEquals(FilterReply.ACCEPT, house.getFilterReply());
   }
   
+  @Test
   public void testEnum() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);

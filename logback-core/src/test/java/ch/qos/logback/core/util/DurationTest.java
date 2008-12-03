@@ -10,25 +10,18 @@
 
 package ch.qos.logback.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class DurationTest extends TestCase {
+import org.junit.Test;
+
+
+public class DurationTest  {
 
   static long HOURS_CO = 60*60;
   static long DAYS_CO = 24*60*60;
   
-  public DurationTest(String name) {
-    super(name);
-  }
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void test() {
     {
       Duration d = Duration.valueOf("12");

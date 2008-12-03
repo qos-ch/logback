@@ -9,16 +9,11 @@
  */
 package ch.qos.logback.core.joran.event;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(EventRecorderTest.class);
-    suite.addTestSuite(InPlayFireTest.class);
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses({EventRecorderTest.class, InPlayFireTest.class})
+public class PackageTest {
 }

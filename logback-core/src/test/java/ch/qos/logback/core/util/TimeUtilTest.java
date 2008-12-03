@@ -1,25 +1,16 @@
 package ch.qos.logback.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class TimeUtilTest extends TestCase {
+import org.junit.Test;
 
-  public TimeUtilTest(String arg0) {
-    super(arg0);
-  }
+public class TimeUtilTest  {
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testSecond() {
     // Mon Nov 20 18:05:17,522 CET 2006
     long now = 1164042317522L;
@@ -29,7 +20,8 @@ public class TimeUtilTest extends TestCase {
     assertEquals(expected - now, 478);
     assertEquals(expected, computed);
   }
-
+  
+  @Test
   public void testMinute() {
     // Mon Nov 20 18:05:17,522 CET 2006
     long now = 1164042317522L;
@@ -40,7 +32,8 @@ public class TimeUtilTest extends TestCase {
     assertEquals(expected - now, 1000 * 42 + 478);
     assertEquals(expected, computed);
   }
-
+  
+  @Test
   public void testHour() {
     // Mon Nov 20 18:05:17,522 GMT 2006
     long now = 1164045917522L;
@@ -53,7 +46,8 @@ public class TimeUtilTest extends TestCase {
     assertEquals(expected - now, 1000 * (42 + 60 * 54) + 478);
     assertEquals(expected, computed);
   }
-
+  
+  @Test
   public void testDay() {
     // Mon Nov 20 18:05:17 GMT 2006
     long now = 1164045917522L;
@@ -66,7 +60,8 @@ public class TimeUtilTest extends TestCase {
     assertEquals(expected - now, 1000 * (3600 * 5 + 60 * 54 + 42) + 478);
     assertEquals(expected, computed);
   }
-
+  
+  @Test
   public void testWeek() {
     // Mon Nov 20 18:05:17 GMT 2006
     long now = 1164045917522L;
@@ -91,7 +86,8 @@ public class TimeUtilTest extends TestCase {
         1000 * (3600 * (5 + 24 * (5 + dayOffset)) + 60 * 54 + 42) + 478);
     assertEquals(expected, computed);
   }
-
+  
+  @Test
   public void testMonth() {
     // Mon Nov 20 18:05:17 GMT 2006
     long now = 1164045917522L;

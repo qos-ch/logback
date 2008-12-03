@@ -9,45 +9,18 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
 import ch.qos.logback.core.pattern.FormatInfo;
-import ch.qos.logback.core.pattern.parser.CompositeNode;
-import ch.qos.logback.core.pattern.parser.FormattingNode;
-import ch.qos.logback.core.pattern.parser.KeywordNode;
-import ch.qos.logback.core.pattern.parser.Node;
-import ch.qos.logback.core.pattern.parser.Parser;
 
-public class ParserTest extends TestCase {
+public class ParserTest {
 
-  /*
-   * @see TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  /*
-   * @see TestCase#tearDown()
-   */
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  /**
-   * Constructor for PatternTest.
-   * 
-   * @param arg0
-   */
-  public ParserTest(String arg0) {
-    super(arg0);
-  }
-
+  @Test
   public void testBasic() throws Exception {
     Parser p = new Parser("hello");
     Node t = p.parse();
@@ -55,6 +28,7 @@ public class ParserTest extends TestCase {
     assertEquals("hello", t.getValue());
   }
 
+  @Test
   public void testKeyword() throws Exception {
 
     {
@@ -78,6 +52,7 @@ public class ParserTest extends TestCase {
     }
   }
 
+  @Test
   public void testComposite() throws Exception {
     {
       Parser p = new Parser("hello%(%child)");
@@ -156,7 +131,8 @@ public class ParserTest extends TestCase {
 
     }
   }
-
+  
+  @Test
   public void testNested() throws Exception {
     {
       Parser p = new Parser("%top %(%child%(%h))");
@@ -175,6 +151,7 @@ public class ParserTest extends TestCase {
     }
   }
 
+  @Test
   public void testFormattingInfo() throws Exception {
     {
       Parser p = new Parser("%45x");
@@ -218,6 +195,7 @@ public class ParserTest extends TestCase {
     }
   }
 
+  @Test
   public void testOptions() throws Exception {
     {
       Parser p = new Parser("%45x{'test '}");
@@ -243,6 +221,7 @@ public class ParserTest extends TestCase {
     }
   }
 
+  @Test
   public void testCompositeFormatting() throws Exception {
 
     {
@@ -258,11 +237,5 @@ public class ParserTest extends TestCase {
 
       assertEquals(witness, t);
     }
-  }
-
-  public static Test Xsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new ParserTest("testFormattingInfo"));
-    return suite;
   }
 }

@@ -10,21 +10,16 @@
 
 package ch.qos.logback.core.pattern.parser;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(TokenStreamTest.class);
-    suite.addTestSuite(OptionTokenizerTest.class);
-    suite.addTestSuite(ParserTest.class);
-    suite.addTestSuite(FormatInfoTest.class);
-    suite.addTestSuite(CompilerTest.class);
-    suite.addTest(new JUnit4TestAdapter(SamplePatternLayoutTest.class));
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses({TokenStreamTest.class,
+  OptionTokenizerTest.class,
+  ParserTest.class,
+  FormatInfoTest.class,
+  CompilerTest.class,
+  SamplePatternLayoutTest.class})
+public class PackageTest {
 }

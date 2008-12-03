@@ -9,22 +9,17 @@
  */
 package ch.qos.logback.core.joran;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses({SkippingInInterpreterTest.class, TrivialcConfiguratorTest.class, ch.qos.logback.core.joran.action.PackageTest.class,
+  ch.qos.logback.core.joran.event.PackageTest.class,
+  ch.qos.logback.core.joran.spi.PackageTest.class,
+  ch.qos.logback.core.joran.replay.PackageTest.class,
+  ch.qos.logback.core.joran.implicitAction.PackageTest.class
+ })
+public class PackageTest {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(SkippingInInterpreterTest.class));
-    suite.addTest(new JUnit4TestAdapter(TrivialcConfiguratorTest.class));
-    suite.addTest(ch.qos.logback.core.joran.action.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.joran.event.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.joran.spi.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.joran.replay.PackageTest.suite());
-    suite.addTest(ch.qos.logback.core.joran.implicitAction.PackageTest.suite());
-    return suite;
-  }
 }

@@ -7,12 +7,12 @@
     <artifactId>logback-parent</artifactId>
     <version>0.9.12-SNAPSHOT</version>
   </parent>
- 
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-core</artifactId>
-	<version>${parent.version}</version>
+  <version>${parent.version}</version>
   <packaging>jar</packaging>
   <name>Logback Core Module</name>
 
@@ -51,6 +51,15 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>2.4</version>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
 
@@ -92,7 +101,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>         
+      </plugin>
 
     </plugins>
   </build>

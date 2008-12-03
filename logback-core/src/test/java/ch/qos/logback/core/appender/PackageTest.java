@@ -10,18 +10,14 @@
 
 package ch.qos.logback.core.appender;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class PackageTest extends TestCase {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(DummyAppenderTest.class));
-    suite.addTest(new JUnit4TestAdapter(ConsoleAppenderTest.class));
-    suite.addTest(new JUnit4TestAdapter(FileAppenderTest.class));
-    return suite;
-  }
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( { DummyAppenderTest.class, ConsoleAppenderTest.class,
+  FileAppenderTest.class})
+    
+public class PackageTest {
 }

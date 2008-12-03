@@ -1,14 +1,19 @@
 package ch.qos.logback.core.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 
-import junit.framework.TestCase;
 
-public class OptionHelperTest extends TestCase {
+public class OptionHelperTest  {
 
   String text = "Testing ${v1} variable substitution ${v2}";
   String expected = "Testing if variable substitution works";
@@ -17,24 +22,19 @@ public class OptionHelperTest extends TestCase {
   
   
   
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     secondaryMap = new HashMap<String, String>();
-    super.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testLiteral() {
     String noSubst = "hello world";
     String result = OptionHelper.substVars(noSubst, context);
     assertEquals(noSubst, result);
   }
 
-  
+  @Test
   public void testUndefinedValues() {
     String withUndefinedValues = "${axyz}";
     
@@ -42,6 +42,7 @@ public class OptionHelperTest extends TestCase {
     assertEquals("axyz"+OptionHelper._IS_UNDEFINED, result);
   }
   
+  @Test
   public void testSubstVarsVariableNotClosed() {
     String noSubst = "testing if ${v1 works";
     
@@ -53,7 +54,7 @@ public class OptionHelperTest extends TestCase {
       //ok
     }
   }
-  
+  @Test
   public void testSubstVarsContextOnly() {
     context.putProperty("v1", "if");
     context.putProperty("v2", "works");
@@ -62,7 +63,7 @@ public class OptionHelperTest extends TestCase {
     assertEquals(expected, result); 
   }
   
-  
+  @Test
   public void testSubstVarsSystemProperties() { 
     System.setProperty("v1", "if");
     System.setProperty("v2", "works");
@@ -74,6 +75,7 @@ public class OptionHelperTest extends TestCase {
     System.clearProperty("v2");
   }
   
+  @Test
   public void testSubstVarsWithDefault() {   
     context.putProperty("v1", "if");
     String textWithDefault = "Testing ${v1} variable substitution ${v2:-toto}";
@@ -83,6 +85,7 @@ public class OptionHelperTest extends TestCase {
     assertEquals(resultWithDefault, result); 
   }
   
+  @Test
   public void testSubstVarsRecursive() {
     context.putProperty("v1", "if");
     context.putProperty("v2", "${v3}");

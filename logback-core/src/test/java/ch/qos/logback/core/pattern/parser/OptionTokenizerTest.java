@@ -10,16 +10,16 @@
 
 package ch.qos.logback.core.pattern.parser;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.pattern.parser.OptionTokenizer;
-import ch.qos.logback.core.pattern.parser.ScanException;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class OptionTokenizerTest  {
 
-public class OptionTokenizerTest extends TestCase {
-
+  @Test
   public void testEmpty() throws ScanException {
     {
       List ol = new OptionTokenizer("").tokenize();
@@ -34,6 +34,7 @@ public class OptionTokenizerTest extends TestCase {
     }
   }
 
+  @Test
   public void testSimple() throws ScanException {
     {
       List ol = new OptionTokenizer("abc").tokenize();
@@ -43,6 +44,7 @@ public class OptionTokenizerTest extends TestCase {
     }
   }
 
+  @Test
   public void testSingleQuote() throws ScanException {
     {
       List ol = new OptionTokenizer("' '").tokenize();
@@ -73,6 +75,7 @@ public class OptionTokenizerTest extends TestCase {
     }
   }
 
+  @Test
   public void testDoubleQuote() throws ScanException {
     {
       List ol = new OptionTokenizer("\" \"").tokenize();
@@ -103,6 +106,7 @@ public class OptionTokenizerTest extends TestCase {
     }
   }
 
+  @Test
   public void testMultiple() throws ScanException {
     {
       List ol = new OptionTokenizer("a, b").tokenize();

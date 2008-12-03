@@ -9,12 +9,17 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
 import ch.qos.logback.core.pattern.FormatInfo;
 
-import junit.framework.TestCase;
 
-public class FormatInfoTest extends TestCase {
+public class FormatInfoTest  {
 
+  @Test
   public void testEndingInDot() {
     try {
       FormatInfo.valueOf("45.");
@@ -24,6 +29,7 @@ public class FormatInfoTest extends TestCase {
     }
   }
 
+  @Test
   public void testBasic() {
     {
       FormatInfo fi = FormatInfo.valueOf("45");
@@ -41,6 +47,7 @@ public class FormatInfoTest extends TestCase {
     }
   }
 
+  @Test
   public void testRightPad() {
     {
       FormatInfo fi = FormatInfo.valueOf("-40");
@@ -70,6 +77,7 @@ public class FormatInfoTest extends TestCase {
     }
   }
 
+  @Test
   public void testMinOnly() {
     {
       FormatInfo fi = FormatInfo.valueOf("49");
@@ -88,6 +96,7 @@ public class FormatInfoTest extends TestCase {
 
   }
 
+  @Test
   public void testMaxOnly() {
     {
       FormatInfo fi = FormatInfo.valueOf(".49");
@@ -103,7 +112,5 @@ public class FormatInfoTest extends TestCase {
       witness.setLeftTruncate(false);
       assertEquals(witness, fi);
     }
-
   }
-
 }

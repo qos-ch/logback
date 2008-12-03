@@ -10,26 +10,19 @@
 
 package ch.qos.logback.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class FileSizeTest extends TestCase {
+import org.junit.Test;
+
+
+public class FileSizeTest{
 
   static long KB_CO = 1024;
   static long MB_CO = 1024*1024;
   static long GB_CO = 1024*MB_CO;
   
-  public FileSizeTest(String name) {
-    super(name);
-  }
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void test() {
     {
       FileSize fs = FileSize.valueOf("8");

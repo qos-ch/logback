@@ -1,9 +1,14 @@
 package ch.qos.logback.core.util;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -11,37 +16,35 @@ import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 
-public class StatusPrinterTest extends TestCase {
+public class StatusPrinterTest {
 
   ByteArrayOutputStream outputStream;
   PrintStream ps;
   
-  public StatusPrinterTest(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     outputStream = new ByteArrayOutputStream();
     ps = new PrintStream(outputStream);
     StatusPrinter.setPrintStream(ps);
-    super.setUp();
   }
 
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     StatusPrinter.setPrintStream(System.out);
     ps = null;
     outputStream = null;
-    super.tearDown();
   }
   
+  @Test
   public void testBasic() {
     Context context = new ContextBase();
     context.getStatusManager().add(new InfoStatus("test", this));
     StatusPrinter.print(context);
     String result = outputStream.toString();
-    assertTrue(result.contains("|-INFO in testBasic"));
+    assertTrue(result.contains("|-INFO in "+this.getClass().getName()));
   }
 
+  @Test
   public void testNested() {
     Status s0 = new ErrorStatus("test0", this);
     Status s1 = new InfoStatus("test1", this);
@@ -67,11 +70,12 @@ public class StatusPrinterTest extends TestCase {
 
     StatusPrinter.print(context);
     String result = outputStream.toString();
-    assertTrue(result.contains("+ INFO in testNested"));
-    assertTrue(result.contains("+ WARN in testNested"));
-    assertTrue(result.contains("    |-WARN in testNested"));
+    assertTrue(result.contains("+ INFO in "+this.getClass().getName()));
+    assertTrue(result.contains("+ WARN in "+this.getClass().getName()));
+    assertTrue(result.contains("    |-WARN in "+this.getClass().getName()));
   }
-  
+
+  @Test
   public void testWithException() {
     Status s0 = new ErrorStatus("test0", this);
     Status s1 = new InfoStatus("test1", this, new Exception("testEx"));
@@ -95,8 +99,8 @@ public class StatusPrinterTest extends TestCase {
     context.getStatusManager().add(s2);
     StatusPrinter.print(context);  
     String result = outputStream.toString();
-    assertTrue(result.contains("|-ERROR in testWithException"));
-    assertTrue(result.contains("+ INFO in testWithException"));
+    assertTrue(result.contains("|-ERROR in "+this.getClass().getName()));
+    assertTrue(result.contains("+ INFO in "+this.getClass().getName()));
     assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinterTest.testWithException"));
   }
   

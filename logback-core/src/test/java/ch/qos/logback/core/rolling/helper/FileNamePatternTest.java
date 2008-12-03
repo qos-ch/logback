@@ -9,30 +9,26 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import static org.junit.Assert.*;
+
 import java.util.Calendar;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * @author Ceki
  * 
  */
-public class FileNamePatternTest extends TestCase {
+public class FileNamePatternTest {
 
   Context context = new ContextBase();
 
-  public FileNamePatternTest(String arg) {
-    super(arg);
-  }
-
-
+  @Test
   public void testSmoke() {
     // System.out.println("Testing [t]");
     FileNamePattern pp = new FileNamePattern("t", context);
@@ -67,6 +63,7 @@ public class FileNamePatternTest extends TestCase {
     assertEquals("%foo", pp.convertInt(3));
   }
 
+  @Test
   // test ways for dealing with flowing i converter, as in "foo%ix"
   public void testFlowingI() {
     // System.out.println("Testing [foo%ibar%i]");
@@ -81,6 +78,7 @@ public class FileNamePatternTest extends TestCase {
     }
   }
 
+  @Test
   public void testDate() {
     Calendar cal = Calendar.getInstance();
     cal.set(2003, 4, 20, 17, 55);
@@ -96,18 +94,12 @@ public class FileNamePatternTest extends TestCase {
     assertEquals("2003.05.20 17:55 foo", pp.convertDate(cal.getTime()));
 
   }
-  
+
+  @Test
   public void testWithBackslash() {
     FileNamePattern pp = new FileNamePattern("c:\\foo\\bar.%i", context);
     assertEquals("c:\\foo\\bar.3", pp.convertInt(3));
   }
 
-  public static Test xsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new FileNamePatternTest("test1"));
-    suite.addTest(new FileNamePatternTest("test2"));
-    // suite.addTest(new FileNamePatternTestCase("test3"));
 
-    return suite;
-  }
 }

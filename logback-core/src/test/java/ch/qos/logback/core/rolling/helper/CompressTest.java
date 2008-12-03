@@ -9,6 +9,9 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.util.Compare;
@@ -26,10 +31,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 /**
  * @author Ceki Gulcu
  */
-public class CompressTest extends TestCase {
+public class CompressTest  {
 
   Context context = new ContextBase();
 
+  @Before
   public void setUp() throws IOException {
     // Copy source files
     // Delete output files
@@ -63,9 +69,8 @@ public class CompressTest extends TestCase {
     }
   }
 
-  public void tearDown() {
-  }
 
+  @Test
   public void test1() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ,
         Constants.TEST_DIR_PREFIX + "input/compress1.txt",
@@ -80,6 +85,7 @@ public class CompressTest extends TestCase {
         + "witness/compress1.txt.gz"));
   }
 
+  @Test
   public void test2() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ,
         Constants.TEST_DIR_PREFIX + "input/compress2.txt",
@@ -94,6 +100,7 @@ public class CompressTest extends TestCase {
         + "witness/compress2.txt.gz"));
   }
 
+  @Test
   public void test3() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.ZIP, 
         Constants.TEST_DIR_PREFIX + "input/compress3.txt",

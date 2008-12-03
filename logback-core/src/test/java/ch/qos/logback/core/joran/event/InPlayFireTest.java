@@ -9,9 +9,13 @@
  */
 package ch.qos.logback.core.joran.event;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
@@ -20,11 +24,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.Constants;
 
-public class InPlayFireTest extends TestCase {
+public class InPlayFireTest  {
 
   Context context = new ContextBase();
   HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
 
+  @Test
   public void testBasic() throws JoranException {
     ListenAction listenAction = new ListenAction();
     
@@ -44,6 +49,7 @@ public class InPlayFireTest extends TestCase {
     assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
   }
 
+  @Test
   public void testReplay() throws JoranException {
     ListenAction listenAction = new ListenAction();
     

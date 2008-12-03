@@ -10,33 +10,28 @@
 
 package ch.qos.logback.core.pattern.parser;
 
+
+
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
 
-import junit.framework.TestCase;
+public class TokenStreamTest  {
 
-public class TokenStreamTest extends TestCase {
 
-  public TokenStreamTest(String arg0) {
-    super(arg0);
-  }
-
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testEmpty() throws ScanException {
     List tl = new TokenStream("").tokenize();
     List witness = new ArrayList();
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testSingleLiteral() throws ScanException {
     List tl = new TokenStream("hello").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -44,6 +39,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testLiteralWithPercent() throws ScanException {
     {
       List tl = new TokenStream("hello\\%world").tokenize();
@@ -67,6 +63,7 @@ public class TokenStreamTest extends TestCase {
     }
   }
 
+  @Test
   public void testBasic() throws ScanException {
 
     // test "%c"
@@ -101,6 +98,7 @@ public class TokenStreamTest extends TestCase {
     }
   }
 
+  @Test
   public void testComplexNR() throws ScanException {
     List tl = new TokenStream("%d{1234} [%34.-67toto] %n").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -117,6 +115,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testEmptyP() throws ScanException {
     List tl = new TokenStream("()").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -125,6 +124,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testEmptyP2() throws ScanException {
     List tl = new TokenStream("%()").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -134,6 +134,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testEscape() throws ScanException {
     {
       List tl = new TokenStream("\\%").tokenize();
@@ -186,6 +187,7 @@ public class TokenStreamTest extends TestCase {
     }
   }
 
+  @Test
   public void testOptions() throws ScanException {
     {
       List tl = new TokenStream("%x{t}").tokenize();
@@ -224,6 +226,7 @@ public class TokenStreamTest extends TestCase {
     }
   }
 
+  @Test
   public void testSimpleP() throws ScanException {
     List tl = new TokenStream("%(hello %class{.4?})").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -237,6 +240,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testSimpleP2() throws ScanException {
     List tl = new TokenStream("X %a %-12.550(hello %class{.4?})").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -255,6 +259,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testMultipleRecursion() throws ScanException {
     List tl = new TokenStream("%-1(%d %45(%class %file))").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -278,6 +283,7 @@ public class TokenStreamTest extends TestCase {
     assertEquals(witness, tl);
   }
 
+  @Test
   public void testNested() throws ScanException {
     List tl = new TokenStream("%(%a%(%b))").tokenize();
     List<Token> witness = new ArrayList<Token>();
@@ -296,6 +302,7 @@ public class TokenStreamTest extends TestCase {
 
   }
 
+  @Test
   public void testEscapedParanteheses() throws ScanException {
     {
       List tl = new TokenStream("\\(%h\\)").tokenize();
@@ -317,6 +324,7 @@ public class TokenStreamTest extends TestCase {
     }
   }
 
+  @Test
   public void testWindowsLikeBackSlashes() throws ScanException {
     {
       List tl = new TokenStream("c:\\hello\\world.%i", new AlmostAsIsEscapeUtil())
