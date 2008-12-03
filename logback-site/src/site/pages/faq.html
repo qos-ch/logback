@@ -45,6 +45,14 @@
         <a href="#auto_config">How does the automatic configuration
         work?</a>
       </li>  
+
+      <li>
+        <a href="#sharedConfiguration">Is it possible for multiple JEE
+        applications to share the same configuration file but without
+        stepping on each other's toes?
+        </a>
+      </li>
+
       <li>
         <a href="#setup_jetty">How can Jetty be instructed to use
         logback-classic as its logging implementataion?
@@ -99,11 +107,11 @@
           <p>This question is answered in the <a
           href="manual/joran.html#auto_configuration">relevant
           section</a> of the logback manual.
-          </p>
-
+          </p>        
+          <hr/>
         </dd>
         
-        <hr/>
+
         
         <!-- ========================================================= -->
         
@@ -122,9 +130,65 @@
           <code>org.slf4j.LoggerFactory</code>.  Thus, it is possible
           for a logback logger to be deserialized as a log4j or j.u.l.
           logger, depending on the deserialization environment.</p>
+
+          <hr/>
         </dd>
         
-        <hr/>
+
+        <!-- ========================================================= -->
+   
+        <dt>
+          <a name="sharedConfiguration" href="#sharedConfiguration">
+          Is it possible for multiple JEE applications to share the
+          same configuration file but without stepping on each other's
+          toes?</a>
+        </dt>
+        <dd>
+          <p>Yes, it is. Using <a
+          href="manual/joran.html#variableSubstitution">variable
+          substitution</a>, it is possible to have a single
+          configuration file to output logs to different destinations
+          depending on each JEE application. Here is a sample
+          configuration file designed for this purpose.</p>
+          
+          <p class="source">&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    &lt;!-- "application-name" is a variable --&gt;
+    &lt;File><b>c:/logs/${application-name}.log</b>&lt;/File>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d %p %t %c - %m%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+  &lt;root level="debug">
+    &lt;appender-ref ref="FILE"/>
+  &lt;/root>
+&lt;/configuration> </p>
+
+          <p>Assuming each JEE application loads a different copy of
+          logback classes into memory, if we can somehow inject a
+          different value for <code><em>application-name</em></code>
+          each time an application starts, logs will be output to
+          different files. We just need to initialize logback with the
+          above configuration file while injecting a different value
+          for <code><em>application-name</em></code> variable. Here is
+          sample code that programmatically configures logback. It
+          should be invoked during the initialization of your JEE
+          applications.
+          </p>
+
+          <p class="source">  LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+  // inject the name of the current application as "applicaiton-name" 
+  // property of the LoggerContext
+  <b>context.putProperty("application-name", NAME_OF_CURRENT_APPLICATION);</b>
+  JoranConfigurator jc = new JoranConfigurator();
+  jc.setContext(context);
+  context.reset(); // override default configuration
+  jc.doConfigure("/path/to/the/above/configuration/file.xml"); </p>
+
+          <hr/>
+        </dd>
+        
+
         <!-- ========================================================= -->
         
         <dt>
@@ -139,31 +203,34 @@
           logging.
           </p>
           
-          <p>The following jar files must be present in the
-          <em>JETTY_HOME/lib</em> directory.
-          </p>
-          
-          <p>Logback-classic is based on the SLF4J api. Therefore, the
-          <em>slf4j-api-VERSION.jar</em> jar must be present. This jar
-          can be downloaded from the <a
-          href="http://www.slf4j.org/">SLF4J</a> project.
-          </p>
-          <p>Logback's own jars must also be present, namely
-          <em>logback-core-VERSION.jar</em> and
-          <em>logback-classic-VERSION.jar</em> .
-          </p>
-          
-          <p> To configure logback-classic, a file called
-          <em>logback.xml</em> should be placed in the
-          <em>JETTY_HOME/resources</em> directory. You can find sample
-          configuration files in the
-          <em>logback-examples/src/main/java/chapter4/conf/</em> folder
-          shipping within the logback distribution.
+          <p>Logback jar files must be present on Jetty's class
+          path. These files are
+          <em>logback-core-${project.version}.jar</em> and
+          <em>logback-classic-${project.version}.jar</em>. These files
+          should be placed under the <em>$JETTY_HOME/lib</em>
+          directory.
           </p>
 
+          
+          <p>Since Jetty's uses an older version of SLF4J internally,
+          we recommend that the old version be replaced by
+          <em>slf4j-api-${slf4j.version}.jar</em>. This file can be
+          downloaded from the <a
+          href="http://www.slf4j.org/download.html">SLF4J</a> project.
+          </p>
+        
+          
+          <p>For automaticly configuring logback-classic, you can
+          place the file <em>logback.xml</em> under the
+          <em>$JETTY_HOME/resources</em> directory. You can find
+          sample configuration files in the
+          <em>logback-examples/src/main/java/chapter4/conf/</em>
+          folder shipping within the logback distribution.
+          </p>
+
+          <hr/>                    
         </dd>
         
-        <hr />          
 
         
         
