@@ -41,9 +41,8 @@ public class LoggerAction extends Action {
 
     if (OptionHelper.isEmpty(loggerName)) {
       inError = true;
-      String line = ", around line " + getLineNumber(ec) + " column "
-          + getColumnNumber(ec);
-      String errorMsg = "No 'name' attribute in element " + name + line;
+      String aroundLine = getLineColStr(ec);
+      String errorMsg = "No 'name' attribute in element " + name + ", around " +aroundLine;
       addError(errorMsg);
       return;
     }
