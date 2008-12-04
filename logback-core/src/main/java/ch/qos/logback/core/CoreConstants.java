@@ -11,6 +11,10 @@ public class CoreConstants {
   public static final String CODES_URL = "http://logback.qos.ch/codes.html";
   
   /**
+   * The default context name.
+   */
+  public static final String DEFAULT_CONTEXT_NAME = "default";
+  /**
    * Customized pattern conversion rules are stored under this key in the
    * {@link Context} object store.
    */

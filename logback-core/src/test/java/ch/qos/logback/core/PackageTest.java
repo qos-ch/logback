@@ -5,6 +5,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({WriterAppenderTest.class})
+@SuiteClasses( { ContextBaseTest.class, WriterAppenderTest.class })
 public class PackageTest {
 }

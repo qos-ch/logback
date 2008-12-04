@@ -25,6 +25,7 @@ import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.TeztConstants;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -99,10 +100,16 @@ public class JoranConfiguratorTest {
   @Test
   public void testStatusListener() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
-
     StatusPrinter.print(loggerContext);
   }
 
+  @Test
+  public void contextRename() throws JoranException {
+    loggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
+    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/contextRename.xml");
+    assertEquals("wombat", loggerContext.getName());
+  }
+  
   @Test
   public void testEval() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");

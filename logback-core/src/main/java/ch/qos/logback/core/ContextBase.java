@@ -33,15 +33,14 @@ public class ContextBase implements Context {
    * context is initialized with a {@link BasicStatusManager}. A null value for
    * the 'statusManager' argument is not allowed.
    * 
-   * <p>
-   * A malicious attacker can set the status manager to a dummy instance,
+   * <p> A malicious attacker can set the status manager to a dummy instance,
    * disabling internal error reporting.
    * 
    * @param statusManager
    *                the new status manager
    */
-  // added in response to http://jira.qos.ch/browse/LBCORE-35
   public void setStatusManager(StatusManager statusManager) {
+    // this method was added in response to http://jira.qos.ch/browse/LBCORE-35
     if (sm == null) {
       throw new IllegalArgumentException("null StatusManager not allowed");
     }
@@ -72,10 +71,23 @@ public class ContextBase implements Context {
     return name;
   }
 
-  public void setName(String name) {
-    if (this.name != null) {
+  /**
+   * The context name can be set only if it is not already set, or if the
+   * current name is the default context name, namely "default", or if the
+   * current name and the old name are the same.
+   * 
+   * @throws IllegalStateException
+   *                 if the context already has a name, other than "default".
+   */
+  public void setName(String name) throws IllegalStateException {
+    if (name != null && name.equals(this.name)) {
+      return; // idempotent naming
+    }
+    if (this.name == null
+        || CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
+      this.name = name;
+    } else {
       throw new IllegalStateException("Context has been already given a name");
     }
-    this.name = name;
   }
 }

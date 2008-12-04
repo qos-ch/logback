@@ -62,7 +62,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   
   private StaticLoggerBinder() {
-    defaultLoggerContext.setName("default");
+    defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
   }
 
   public static StaticLoggerBinder getSingleton() {
