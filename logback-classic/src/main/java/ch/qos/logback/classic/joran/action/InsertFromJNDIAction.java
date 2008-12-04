@@ -60,6 +60,7 @@ public class InsertFromJNDIAction extends Action {
       if(OptionHelper.isEmpty(envEntryValue)) {
         addError("["+envEntryName+"] has null or empty value");
       } else {
+        addInfo("Setting context variable ["+asName+"] to ["+envEntryValue+"]");
         context.putProperty(asName, envEntryValue);
       }
     } catch (NamingException e) {

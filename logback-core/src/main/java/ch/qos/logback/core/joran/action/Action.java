@@ -10,7 +10,6 @@
 
 package ch.qos.logback.core.joran.action;
 
-
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
@@ -19,47 +18,46 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-
-
 /**
- *
+ * 
  * Most of the work for configuring log4j is done by Actions.
- *
+ * 
  * <p>Methods of an Action are invoked while an XML file is parsed through.
- *
- * <p>This class is largely inspired from the relevant class in the commons-digester
- * project of the Apache Software Foundation.
- *
+ * 
+ * <p>This class is largely inspired from the relevant class in the
+ * commons-digester project of the Apache Software Foundation.
+ * 
  * @author Craig McClanahan
  * @author Christopher Lenz
  * @author Ceki G&uuml;lc&uuml;
- *
+ * 
  */
 public abstract class Action extends ContextAwareBase {
-  
+
   public static final String NAME_ATTRIBUTE = "name";
   public static final String VALUE_ATTRIBUTE = "value";
   public static final String FILE_ATTRIBUTE = "file";
   public static final String CLASS_ATTRIBUTE = "class";
   public static final String PATTERN_ATTRIBUTE = "pattern";
-  
+
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
   /**
    * Called when the parser first encounters an element.
-   *
+   * 
    * The return value indicates whether child elements should be processed. If
    * the returned value is 'false', then child elements are ignored.
    */
-  public abstract void begin(
-    InterpretationContext ec, String name, Attributes attributes) throws ActionException ;
+  public abstract void begin(InterpretationContext ec, String name,
+      Attributes attributes) throws ActionException;
 
-
-  public void body(InterpretationContext ec, String body) throws ActionException {
+  public void body(InterpretationContext ec, String body)
+      throws ActionException {
     // NOP
   }
 
-  public abstract void end(InterpretationContext ec, String name) throws ActionException;
+  public abstract void end(InterpretationContext ec, String name)
+      throws ActionException;
 
   public String toString() {
     return this.getClass().getName();
@@ -81,5 +79,11 @@ public abstract class Action extends ContextAwareBase {
       return locator.getLineNumber();
     }
     return -1;
+  }
+
+  protected String getLineColStr(InterpretationContext ec) {
+    String line = "line: " + getLineNumber(ec) + ", column: "
+        + getColumnNumber(ec);
+    return line;
   }
 }

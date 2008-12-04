@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.classic;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,7 +20,7 @@ public class AllClassicTest extends TestCase {
     TestSuite suite = new TestSuite();
 
     suite.addTest(org.slf4j.impl.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.PackageTest.suite());
+    suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.PackageTest.class));
     suite.addTest(ch.qos.logback.classic.util.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.control.PackageTest.suite());
     suite.addTest(ch.qos.logback.classic.joran.PackageTest.suite());

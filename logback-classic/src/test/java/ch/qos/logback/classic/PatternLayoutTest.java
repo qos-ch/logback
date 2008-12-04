@@ -11,11 +11,13 @@ package ch.qos.logback.classic;
 
 import static ch.qos.logback.classic.TestConstants.ISO_REGEX;
 import static ch.qos.logback.classic.TestConstants.MAIN_REGEX;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.pattern.ConverterTest;
@@ -26,7 +28,9 @@ import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
-  LoggerContext lc = new LoggerContext();
+  
+  private PatternLayout pl = new PatternLayout();
+  private LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
   LoggingEvent le;
   List optionList = new ArrayList();
@@ -36,7 +40,12 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     Exception ex = new Exception("Bogus exception");
     le = makeLoggingEvent(ex);
   }
-  
+ 
+  @Before
+  public void setUp() {
+    pl.setContext(lc);
+  }
+
   LoggingEvent makeLoggingEvent(Exception ex) {
     return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class
         .getName(), logger, Level.INFO, "Some message", ex, null);
@@ -53,10 +62,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   @Test
   public void testOK() {
-    PatternLayout pl = new PatternLayout();
     pl.setPattern("%d %le [%t] %lo{30} - %m%n");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
@@ -67,10 +73,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   @Test
   public void testNoExeptionHandler() {
-    PatternLayout pl = new PatternLayout();
     pl.setPattern("%m%n");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     String val = pl.doLayout(le);
     assertTrue(val.contains("java.lang.Exception: Bogus exception"));
@@ -78,10 +81,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   @Test
   public void testCompositePattern() {
-    PatternLayout pl = new PatternLayout();
     pl.setPattern("%-56(%d %lo{20}) - %m%n");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2008-03-18 21:55:54,250 c.q.l.c.pattern.ConverterTest          - Some message
@@ -92,10 +92,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   
   @Test
   public void testNopExeptionHandler() {
-    PatternLayout pl = new PatternLayout();
     pl.setPattern("%nopex %m%n");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     String val = pl.doLayout(le);
     assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
@@ -103,10 +100,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   
   @Test
   public void testWithParenthesis() {
-    PatternLayout pl = new PatternLayout();
     pl.setPattern("\\(%msg:%msg\\) %msg");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     le = makeLoggingEvent(null);
     String val = pl.doLayout(le);
@@ -116,11 +110,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   
   @Test
   public void testWithLettersComingFromLog4j() {
-    PatternLayout pl = new PatternLayout();
     //Letters: p = level and c = logger
     pl.setPattern("%d %p [%t] %c{30} - %m%n");
-    Context context = new LoggerContext();
-    pl.setContext(context);
     pl.start();
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some message
@@ -128,6 +119,15 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertTrue(val.matches(regex));
   }
 
+  @Test
+  public void contextNameTest() {
+    pl.setPattern("%contextName");
+    lc.setName("aValue");
+    pl.start();
+    String val = pl.doLayout(getEventObject());
+    assertEquals("aValue", val);
+  }
+  
   @Override
   public Context getContext() {
     return lc;

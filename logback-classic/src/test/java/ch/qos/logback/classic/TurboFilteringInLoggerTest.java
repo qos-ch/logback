@@ -1,34 +1,36 @@
 package ch.qos.logback.classic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.turbo.MarkerFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
-import junit.framework.TestCase;
 
-public class TurboFilteringInLoggerTest extends TestCase {
+
+public class TurboFilteringInLoggerTest  {
 
   static final String BLUE = "BLUE";
   LoggerContext context;
   Logger logger;
   Marker blueMarker = MarkerFactory.getMarker(BLUE);
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     context = new LoggerContext();
     context.setName("test");
     context.start();
     logger = context.getLogger(TurboFilteringInLoggerTest.class);
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+ 
   private void addYesFilter() {
     YesFilter filter = new YesFilter();
     filter.start();
@@ -57,78 +59,91 @@ public class TurboFilteringInLoggerTest extends TestCase {
     context.addTurboFilter(filter);
   }
 
+  @Test
   public void testIsDebugEnabledWithYesFilter() {
     addYesFilter();
     logger.setLevel(Level.INFO);
     assertTrue(logger.isDebugEnabled());
   }
 
+  @Test
   public void testIsInfoEnabledWithYesFilter() {
     addYesFilter();
     logger.setLevel(Level.WARN);
     assertTrue(logger.isInfoEnabled());
   }
 
+  @Test
   public void testIsWarnEnabledWithYesFilter() {
     addYesFilter();
     logger.setLevel(Level.ERROR);
     assertTrue(logger.isWarnEnabled());
   }
 
+  @Test
   public void testIsErrorEnabledWithYesFilter() {
     addYesFilter();
     logger.setLevel(Level.OFF);
     assertTrue(logger.isErrorEnabled());
   }
 
+  @Test
   public void testIsEnabledForWithYesFilter() {
     addYesFilter();
     logger.setLevel(Level.ERROR);
     assertTrue(logger.isEnabledFor(Level.INFO));
   }
 
+  @Test
   public void testIsEnabledForWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);
     assertFalse(logger.isEnabledFor(Level.INFO));
   }
 
+  @Test
   public void testIsDebugEnabledWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);
     assertFalse(logger.isDebugEnabled());
   }
 
+  @Test
   public void testIsInfoEnabledWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);
     assertFalse(logger.isInfoEnabled());
   }
 
+  @Test
   public void testIsWarnEnabledWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);
     assertFalse(logger.isWarnEnabled());
   }
 
+  @Test
   public void testIsErrorEnabledWithNoFilter() {
     addNoFilter();
     logger.setLevel(Level.DEBUG);
     assertFalse(logger.isErrorEnabled());
   }
 
+  @Test
   public void testIsErrorEnabledWithAcceptBlueFilter() {
     addAcceptBLUEFilter();
     logger.setLevel(Level.ERROR);
     assertTrue(logger.isDebugEnabled(blueMarker));
   }
 
+  @Test
   public void testIsErrorEnabledWithDenyBlueFilter() {
     addDenyBLUEFilter();
     logger.setLevel(Level.ALL);
     assertFalse(logger.isDebugEnabled(blueMarker));
   }
 
+  @Test
   public void testLoggingContextReset() {
     addYesFilter();
     assertNotNull(context.getTurboFilterList().get(0));

@@ -9,21 +9,17 @@
  */
 package ch.qos.logback.classic;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses( { LoggerContextTest.class, LoggerPerfTest.class,
+    ScenarioBasedLoggerContextTest.class, PatternLayoutTest.class,
+    LoggerTest.class, LoggerSerializationTest.class,
+    MessageFormattingTest.class, MDCTest.class,
+    TurboFilteringInLoggerTest.class })
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(LoggerContextTest.class));
-    suite.addTest(new JUnit4TestAdapter(LoggerPerfTest.class));
-    suite.addTest(new JUnit4TestAdapter(ScenarioBasedLoggerContextTest.class));
-    suite.addTest(new JUnit4TestAdapter(PatternLayoutTest.class));
-    suite.addTest(new JUnit4TestAdapter(LoggerTest.class));
-    suite.addTest(new JUnit4TestAdapter(LoggerSerializationTest.class));
-    suite.addTestSuite(MessageFormattingTest.class);
-    suite.addTestSuite(MDCTest.class);
-    suite.addTestSuite(TurboFilteringInLoggerTest.class);
-    return suite;
-  }
+    
+public class PackageTest {
 }

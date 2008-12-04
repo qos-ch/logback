@@ -19,7 +19,7 @@ import ch.qos.logback.core.status.Status;
 
 
 /**
- * This class serves the super-class of all converters in LOGBack. It extends
+ * This class serves the super-class of all converters in logback. It extends
  * {@link DynamicConverter} and also implements {@link LoggerContextAware}.
  * 
  * @author Ceki Gulcu

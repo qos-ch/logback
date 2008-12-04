@@ -9,7 +9,9 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class ConverterTest {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("67", buf.toString());
+      assertEquals("69", buf.toString());
     }
   }
 
@@ -132,14 +134,14 @@ public class ConverterTest {
   @Test
   public void testLogger() {
     {
-      DynamicConverter<LoggingEvent> converter = new LoggerConverter();
+      ClassicConverter converter = new LoggerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals(this.getClass().getName(), buf.toString());
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new LoggerConverter();
+      ClassicConverter converter = new LoggerConverter();
       this.optionList.add("20");
       converter.setOptionList(this.optionList);
       converter.start();
@@ -317,4 +319,14 @@ public class ConverterTest {
     assertEquals("someValue", result);
   }
 
+  @Test
+  public void contextNameConverter() {
+    ClassicConverter converter = new ContextNameConverter();
+    converter.setContext(lc);
+    lc.setName("aValue");
+    LoggingEvent event = makeLoggingEvent(null);
+
+    String result = converter.convert(event);
+    assertEquals("aValue", result);
+  }
 }
