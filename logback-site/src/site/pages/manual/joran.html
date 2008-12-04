@@ -1148,8 +1148,9 @@ fileName=myApp.log
   "golden".</p>
   
 
-  <a name="Include"></a>
-  <h3>File inclusion</h3>
+ 
+  <h3><a name="fileInclusion" href="#fileInclusion">File
+  inclusion</a></h3>
 
   <p>Joran supports including parts of a configuration file from
   another file. This is done by declaring a <code>&lt;include></code>
@@ -1192,8 +1193,75 @@ fileName=myApp.log
   </p>
 
 
+  <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>
 
+  <p>As mentioned <a href="architecture.html#LoggerContext">in an
+  earlier chapter</a>, every logger is attached to logger context. By
+  default, the logger context is called "default". However, you can
+  set a different name with the help of the
+  <code>&lt;contextName></code> configuration directive. Note that
+  once set, the logger context name <a
+  href="../apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)">cannot
+  be changed</a>. Setting the context name is a simple and
+  straightforward method in order to distinguish between multiple
+  applications logging to the same target.
+  </p>
+  
+  <em>Example 3.<span class="autoEx"/>: Set the context name and display it
+  (logback-examples/src/main/java/chapter3/contextName.xml)</em>
+  <p class="source">&lt;configuration>
+  <b>&lt;contextName>myAppName&lt;/contextName></b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
 
+  &lt;root level="debug">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></p>
+
+  <p>This last examples illustrates naming of the logger
+  context. Adding the the <a
+  href="layouts.html#conversionWord">contextName conversion word</a>
+  in layout's pattern will output the said name.</p>
+
+   <h3><a name="insertFromJNDI" href="#insertFromJNDI">Obtaining
+   variables from JNDI</a></h3>
+
+   <p>Under certain circumstances, you may want to make use of
+   env-entries in JNDI. The <code>&lt;insertFromJNDI></code>
+   configuration directive extracts an env-entry from JNDI and inserts
+   it as variable specified by the <span class="attr">as</span>
+   attribute.
+   </p>
+
+   <em>Example 3.<span class="autoEx"/>: Insert as properties env-entries obtained via JNDI
+  (logback-examples/src/main/java/chapter3/insertFromJNDI.xml)</em>
+   <p class="source">&lt;configuration>
+  <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
+  <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d %contextName %level %msg %logger{50}%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+&lt;/configuration></p>
+
+  <p>In this last example, the "java:comp/env/appName" env-entry is
+  inserted as the <span class="variable">appName</span> property. Note
+  that the <code>&lt;contextName></code> directive sets the context
+  name based on the value of the <span class="variable">appName</span>
+  property inserted by the previous <code>&lt;insertFromJNDI></code>
+  directive..
+
+</p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>

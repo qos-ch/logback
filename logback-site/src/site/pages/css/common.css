@@ -100,7 +100,7 @@ p.menu {
 	font-size: smaller;
 }
 
-strong { 
+.strong { 
   /*font-size: 13px;*/
   font-weight: bold;
 }
@@ -197,6 +197,13 @@ table.bodyTable tr.alt {
 code {
 	font-family: Courier, monospace;
 }
+
+.variable {
+	font-family: Courier, monospace;
+  font-style:italic;  
+}
+
+
 
 .attr {
 	font-family: Courier, monospace;

@@ -77,11 +77,12 @@
 		<p>The <code>Logger</code> class is part of the logback-classic
 		module. On the other hand, the <code>Appender</code> and
 		<code>Layout</code> interfaces are part of logback-core. As a
-		general-purpose module, logback-core has no notion of loggers.
+		general-purpose module, logback-core has no notion of
+		loggers.
 		</p>
     
-    <a name="LoggerContext"></a>
-    <h3>Logger context</h3>
+    <h3><a name="LoggerContext" href="#LoggerContext">Logger
+    context</a></h3>
 
 		<p>The first and foremost advantage of any logging API over plain
 		<code>System.out.println</code> resides in its ability to disable
@@ -89,13 +90,16 @@
 		unhindered. This capability assumes that the logging space, that
 		is, the space of all possible logging statements, is categorized
 		according to some developer-chosen criteria.  In logback-classic,
-		this categorization is an inherent part of loggers.
+		this categorization is an inherent part of loggers.  Every single
+		loggers is attached to a <code>LoggerContext</code> which is
+		responsible for manufacturing loggers as well as arranging them in
+		a tree like hierarchy.
 		</p>
 			
-		<p>
-			Loggers are named entities. Their names are case-sensitive and
-			they follow the hierarchical naming rule:
+		<p>Loggers are named entities. Their names are case-sensitive and
+		they follow the hierarchical naming rule:
 		</p>
+
 		<div class="definition">
 			<div class="deftitle">Named Hierarchy</div>
 			<p>
@@ -107,44 +111,42 @@
 			</p>
 		</div>
 
-		<p>
-			For example, the logger named <code>"com.foo"</code>
-			is a parent of the logger named <code>"com.foo.Bar"</code>. 
-			Similarly, <code>"java"</code>
-			is a parent of <code>"java.util"</code> and an ancestor of
-			<code>"java.util.Vector"</code>. 
-			This naming scheme should be familiar to most developers.
-		</p>
-		<p>
-			The root logger resides at the top of the logger hierarchy.  It
-			is exceptional in that it is part of every hierarchy at its
-			inception. Like every logger, it can be retrieved by its name,
-			as follows:
-		</p>
-		<div class="source"><pre>Logger rootLogger = LoggerFactory.getLogger(<a href="../apidocs/constant-values.html#ch.qos.logback.classic.LoggerContext.ROOT_NAME">LoggerContext.<em>ROOT_NAME</em></a>);</pre></div>
-
-		<p>
-			All other loggers are also retrieved with the class static
-			<code>getLogger</code> method found in the <a
-			href="http://www.slf4j.org/api/org/slf4j/Logger.html">org.slf4j.LoggerFactory</a>
-			class. This method takes the name of the desired logger as a
-			parameter. Some of the basic methods in the <code>Logger</code>
-			interface are listed below.
+		<p>For example, the logger named <code>"com.foo"</code> is a
+		parent of the logger named <code>"com.foo.Bar"</code>.  Similarly,
+		<code>"java"</code> is a parent of <code>"java.util"</code> and an
+		ancestor of <code>"java.util.Vector"</code>.  This naming scheme
+		should be familiar to most developers.
 		</p>
 
-		<div class="source"><pre>package org.slf4j; 
+		<p>The root logger resides at the top of the logger hierarchy.  It
+		is exceptional in that it is part of every hierarchy at its
+		inception. Like every logger, it can be retrieved by its name, as
+		follows:
+		</p>
+		
+    <p class="source">Logger rootLogger = LoggerFactory.getLogger(<a href="../apidocs/constant-values.html#ch.qos.logback.classic.LoggerContext.ROOT_NAME">LoggerContext.<em>ROOT_NAME</em></a>);</p>
+
+		<p>All other loggers are also retrieved with the class static
+		<code>getLogger</code> method found in the <a
+		href="http://www.slf4j.org/api/org/slf4j/Logger.html">org.slf4j.LoggerFactory</a>
+		class. This method takes the name of the desired logger as a
+		parameter. Some of the basic methods in the <code>Logger</code>
+		interface are listed below.
+		</p>
+
+		<p class="source">package org.slf4j; 
 public interface Logger {
 
   // Printing methods: 
+  public void trace(String message);
   public void debug(String message);
   public void info(String message); 
   public void warn(String message); 
   public void error(String message); 
-  public void fatal(String message); 
-}</pre></div>
+}</p>
 
 		<p>Loggers may be assigned levels. The set of possible levels,
-		that is DEBUG, INFO, WARN and ERROR are defined in the
+		that is TRACE, DEBUG, INFO, WARN and ERROR are defined in the
 		<code>ch.qos.logback.classic.Level</code> class. Note that in
 		logback, the level class is final and cannot be derived, as a much
 		more flexible approach exist in the form of <code>Marker</code>
@@ -166,15 +168,13 @@ public interface Logger {
 			</p>
 		</div>
 	
-		<p>
-			To ensure that all loggers can eventually inherit a level, the
-			root logger always has an assigned level. By default, this level
-			is DEBUG.
+		<p>To ensure that all loggers can eventually inherit a level, the
+		root logger always has an assigned level. By default, this level
+		is DEBUG.
 		</p>
-		<p>
-			Below are four examples with various assigned level values and
-			the resulting effective (inherited) levels according to the
-			level inheritance rule.
+		<p>Below are four examples with various assigned level values and
+		the resulting effective (inherited) levels according to the level
+		inheritance rule.
 		</p>
 
 		<em>Example 1</em>

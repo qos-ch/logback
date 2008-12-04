@@ -96,6 +96,13 @@
     a JVM with a <code>SecurityManager</code>.
     </p>
 
+    <p>Invoking the <code>LoggerContext.reset()</code> method resets
+    logger levels to their default value, that is <code>DEBUG</code>
+    for the root logger and <code>null</code> for all other
+    loggers. This was requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-90">LBCLASSIC-90</a> by
+    Mateusz Jedruch.
+    </p>
 
     <!-- ======================== minor ================== -->
 

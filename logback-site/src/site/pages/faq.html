@@ -54,6 +54,12 @@
       </li>
 
       <li>
+        <a href="#overrideFromCL">
+          How can I disable logging from the command line?            
+        </a>
+      </li>
+
+      <li>
         <a href="#setup_jetty">How can Jetty be instructed to use
         logback-classic as its logging implementataion?
         </a>
@@ -188,6 +194,49 @@
           <hr/>
         </dd>
         
+
+        <!-- ========================================================= -->
+
+        <dt>
+          <a name="overrideFromCL" href="#overrideFromCL">
+            How can I disable logging from the command line?
+          </a>
+        </dt>
+        <dd>
+          <p>Logback does not allow disabling logging from the command
+          line. However, if the configuration file allows it, you can
+          set the level of logers on the command line via a java
+          system property. Here is such a configuration file.</p>
+
+          <p class="source">&lt;configuration>
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%d [%thread] %level %logger - %m%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+  &lt;root level="<b>${root-level:-INFO}</b>">
+    &lt;appender-ref ref="CONSOLE"/>
+  &lt;/root>
+&lt;/configuration></p>
+
+
+          <p>Making use of <a
+          href="manual/joran.html#variableSubstitution">variable
+          substitution</a> as well as <a
+          href="manual/joran.html#defaultValuesForVariables">default
+          values for variables</a>, if the <span
+          class="variable">root-level</span> system property is set to
+          <code>OFF</code>, then all logging will be turned
+          off. However, if it is not set, it will assume the default
+          value of <code>INFO</code>.  Note that you can set the <span
+          class="variable">root-level</span> system property to any
+          level value of your choice. The value <code>OFF</code> is
+          just an example.
+
+          </p>
+          <hr/>
+        </dd>
+
 
         <!-- ========================================================= -->
         
