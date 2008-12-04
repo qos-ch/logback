@@ -320,8 +320,18 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return childLogger;
   }
 
+  private void localLevelReset() {
+    effectiveLevelInt = DEBUG_INT;
+    if(isRootLogger()) {
+      level = Level.DEBUG;
+    } else {
+      level = null;
+    }
+  }
+  
   void recursiveReset() {
     detachAndStopAllAppenders();
+    localLevelReset();
     additive = true;
     if (childrenList == null) {
       return;

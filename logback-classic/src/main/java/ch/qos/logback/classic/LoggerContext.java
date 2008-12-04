@@ -200,6 +200,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     resetStatusListeners();
   }
 
+  
   private void resetStatusListeners() {
     StatusManager sm = getStatusManager();
     for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
