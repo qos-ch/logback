@@ -62,17 +62,19 @@ abstract public class StatusBase implements Status {
     if (childrenList == null) {
       return false;
     }
-
-    // TODO also search in childrens' childrens
+    // TODO also search in childrens' children
     return childrenList.remove(statusToRemove);
-
   }
 
   public int getLevel() {
     return level;
   }
 
-  public int getEffectiveLevel() {
+  // status messages are not supposed to contains cycles.
+  // cyclic status arrangements are like to cause deadlocks
+  // when this method is called from different thread on
+  // different status objects lying on the same cycle
+  public synchronized int getEffectiveLevel() {
     int result = level;
     int effLevel;
 
@@ -85,7 +87,6 @@ abstract public class StatusBase implements Status {
         result = effLevel;
       }
     }
-
     return result;
   }
 
