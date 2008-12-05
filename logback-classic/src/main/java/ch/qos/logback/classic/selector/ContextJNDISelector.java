@@ -46,13 +46,13 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class ContextJNDISelector implements ContextSelector {
 
-  private final Map<String, LoggerContext> contextMap;
+  private final Map<String, LoggerContext> synchronizedContextMap;
   private final LoggerContext defaultContext;
 
   private static final ThreadLocal<LoggerContext> threadLocal = new ThreadLocal<LoggerContext>();
 
   public ContextJNDISelector(LoggerContext context) {
-    contextMap = Collections
+    synchronizedContextMap = Collections
         .synchronizedMap(new HashMap<String, LoggerContext>());
     defaultContext = context;
   }
@@ -62,7 +62,7 @@ public class ContextJNDISelector implements ContextSelector {
   }
 
   public LoggerContext detachLoggerContext(String loggerContextName) {
-    return contextMap.remove(loggerContextName);
+    return synchronizedContextMap.remove(loggerContextName);
   }
 
   public LoggerContext getLoggerContext() {
@@ -89,13 +89,13 @@ public class ContextJNDISelector implements ContextSelector {
       return defaultContext;
     } else {
       // Let's see if we already know such a context
-      LoggerContext loggerContext = contextMap.get(contextName);
+      LoggerContext loggerContext = synchronizedContextMap.get(contextName);
 
       if (loggerContext == null) {
         // We have to create a new LoggerContext
         loggerContext = new LoggerContext();
         loggerContext.setName(contextName);
-        contextMap.put(contextName, loggerContext);
+        synchronizedContextMap.put(contextName, loggerContext);
         URL url = findConfigFileURL(ctx, loggerContext);
         if (url != null) {
           configureLoggerContextByURL(loggerContext, url);
@@ -162,12 +162,12 @@ public class ContextJNDISelector implements ContextSelector {
 
   public List<String> getContextNames() {
     List<String> list = new ArrayList<String>();
-    list.addAll(contextMap.keySet());
+    list.addAll(synchronizedContextMap.keySet());
     return list;
   }
 
   public LoggerContext getLoggerContext(String name) {
-    return contextMap.get(name);
+    return synchronizedContextMap.get(name);
   }
 
   /**
@@ -176,7 +176,7 @@ public class ContextJNDISelector implements ContextSelector {
    * @return the number of managed contexts
    */
   public int getCount() {
-    return contextMap.size();
+    return synchronizedContextMap.size();
   }
 
   /**
