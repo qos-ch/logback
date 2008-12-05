@@ -1,0 +1,19 @@
+<configuration>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>myApp.log</file>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

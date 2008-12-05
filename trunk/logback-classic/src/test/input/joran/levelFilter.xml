@@ -1,0 +1,14 @@
+<configuration>
+
+  <appender name="LIST" class="ch.qos.logback.core.read.ListAppender">
+
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <OnMatch>DENY</OnMatch>
+      <level>ERROR</level>
+    </filter>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

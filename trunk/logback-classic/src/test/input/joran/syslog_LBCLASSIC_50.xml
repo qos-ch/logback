@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+  <appender name="aSYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    <SyslogHost>127.0.0.1</SyslogHost>
+    <Facility>LOCAL7</Facility>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%d %p [%t] %c::%m%n</pattern>
+    </layout>
+  </appender>
+  <root>
+    <level value="TRACE"/>
+    <appender-ref ref="aSYSLOG"/>
+  </root>
+</configuration>

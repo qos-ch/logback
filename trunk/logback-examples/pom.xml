@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-parent</artifactId>
+		<version>0.9.13</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>logback-examples</artifactId>
+	<version>${parent.version}</version>
+	<packaging>jar</packaging>
+	<name>Logback Examples Module</name>
+
+	<url>http://logback.qos.ch</url>
+	<description>
+		Logback: the generic, reliable, fast and flexible logging
+		library for Java.
+	</description>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-ext</artifactId>
+      <version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<property name="slf4jJAR"
+									value="${settings.localRepository}/org/slf4j/slf4j-api/${slf4j.version}/slf4j-api-${slf4j.version}.jar" />
+								<echo>Copying ${slf4jJAR} to lib/</echo>
+								<delete>
+									<fileset dir="lib/"
+										includes="slf4j-*SNAPSHOT.jar" />
+								</delete>
+								<copy file="${slf4jJAR}" todir="lib/" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

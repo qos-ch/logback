@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<appender name="stdout"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<param name="pattern" value="SERV: %p %t %c - %m%n" />
+		</layout>
+	</appender>
+
+	<root>
+		<level value="debug" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="rolling" />
+	</root>
+</configuration>

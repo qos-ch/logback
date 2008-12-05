@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE test>
+
+<test>
+
+  <isolate>
+    <!-- badEnd throws an exception in the Action.end method -->
+    <badEnd type="ActionException">
+      <touch/>
+    </badEnd> 
+    <!-- should not be skipped -->
+    <touch/> 
+  </isolate>
+
+  <hello name="John Doe"></hello>
+  
+</test>

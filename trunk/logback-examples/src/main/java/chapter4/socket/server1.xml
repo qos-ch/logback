@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- ==================================================================== -->
+<!-- This config file is intended to be used by a SocketServer that logs  -->
+<!-- events received from various clients on the console and to a file    -->
+<!-- that is rolled over when appropriate. The interesting point to note  -->
+<!-- is that it is a configuration file like any other.                   -->   
+<!-- ==================================================================== -->
+
+<configuration>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+  
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %-5level [%thread] %logger - %message%n</Pattern>
+    </layout>	    
+  
+  </appender>
+
+  <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>rolling.log</File>
+    
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>rolling.%i.log</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>3</MaxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>8KB</MaxFileSize>
+		</triggeringPolicy>
+		
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%relative %-5level %logger - %message%n</Pattern>
+    </layout>	    
+  </appender>
+
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="ROLLING" />
+  </root>  
+</configuration>
+
+
+

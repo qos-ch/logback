@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<group>
+  <fruitShell name="fs0">
+    <fruit class="ch.qos.logback.core.joran.replay.Fruit">
+       <name>blue</name>
+    </fruit> 
+  </fruitShell>
+
+  <fruitShell name="fs1">
+    <fruit class="ch.qos.logback.core.joran.replay.WeightytFruit">
+      <name>orange</name>
+      <weight>1.2</weight>
+    </fruit> 
+  </fruitShell>
+</group>

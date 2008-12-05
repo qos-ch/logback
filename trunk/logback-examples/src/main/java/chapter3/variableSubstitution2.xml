@@ -1,0 +1,13 @@
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${USER_HOME}/myApp.log</file>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

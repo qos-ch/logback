@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+  <appender name="AUTO_BY_SYSTEM_PROPERTY"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%msg%n"</pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="AUTO_BY_SYSTEM_PROPERTY" />
+  </root>
+</configuration>

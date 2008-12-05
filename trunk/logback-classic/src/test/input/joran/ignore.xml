@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+  <evaluator name="IGNORE_EVAL">
+   <Expression>(marker.contains("IGNORE"))</Expression>
+  </evaluator>
+
+ <appender name="LIST" class="ch.qos.logback.core.read.ListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %level - %m%n%ex{full, IGNORE_EVAL}</Pattern>
+    </layout>
+  </appender>
+  
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE" />
+  </root>
+  
+</configuration>
+  
