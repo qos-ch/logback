@@ -54,8 +54,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
   // practice, it performs a little faster than the map returned by
-  // Collections.synchronizedMap at the
-  // cost of a very slightly higher memory footprint.
+  // Collections.synchronizedMap at the cost of a very slightly higher memory footprint.
   private Hashtable<String, Logger> loggerCache;
 
   private LoggerContextRemoteView loggerContextRemoteView;
@@ -151,11 +150,11 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     }
   }
 
-  private synchronized void incSize() {
+  private void incSize() {
     size++;
   }
 
-  synchronized int size() {
+  int size() {
     return size;
   }
 
