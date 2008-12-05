@@ -189,4 +189,13 @@ public class LoggerTest {
     loggerTest.setLevel(null);
     assertEquals(root.getEffectiveLevel(), loggerTest.getEffectiveLevel());
   }
+  
+  @Test
+  public void setLevelToNull_LBCLASSIC_91() {
+    loggerTest.setLevel(Level.DEBUG);
+    lc.getLogger(loggerTest.getName() + ".child");
+    loggerTest.setLevel(null);
+    assertEquals(root.getEffectiveLevel(), loggerTest.getEffectiveLevel());
+  }
+
 }

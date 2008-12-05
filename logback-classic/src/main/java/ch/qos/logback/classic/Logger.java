@@ -163,12 +163,13 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     } else {
       effectiveLevelInt = newLevel.levelInt;
     }
+    
     if (childrenList != null) {
       int len = childrenList.size();
       for (int i = 0; i < len; i++) {
         Logger child = (Logger) childrenList.get(i);
         // tell child to handle parent levelInt change
-        child.handleParentLevelChange(newLevel);
+        child.handleParentLevelChange(effectiveLevelInt);
       }
     }
   }
@@ -179,18 +180,18 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * 
    * @param newParentLevel
    */
-  private synchronized void handleParentLevelChange(Level newParentLevel) {
+  private synchronized void handleParentLevelChange(int newParentLevelInt) {
     // changes in the parent levelInt affect children only if their levelInt is
     // null
     if (level == null) {
-      effectiveLevelInt = newParentLevel.levelInt;
+      effectiveLevelInt = newParentLevelInt;
 
       // propagate the parent levelInt change to this logger's children
       if (childrenList != null) {
         int len = childrenList.size();
         for (int i = 0; i < len; i++) {
           Logger child = (Logger) childrenList.get(i);
-          child.handleParentLevelChange(newParentLevel);
+          child.handleParentLevelChange(newParentLevelInt);
         }
       }
     }
