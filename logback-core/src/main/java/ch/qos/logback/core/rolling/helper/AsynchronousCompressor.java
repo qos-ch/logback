@@ -13,7 +13,9 @@ public class AsynchronousCompressor {
   
   public Future<?> compressAsynchronously() {
     ExecutorService executor = Executors.newScheduledThreadPool(1);
-    return executor.submit(new CompressionRunnable(compressor));
+    Future<?> future = executor.submit(new CompressionRunnable(compressor));
+    executor.shutdown();
+    return future;
   }
   
 }
