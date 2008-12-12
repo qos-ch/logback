@@ -24,6 +24,7 @@ import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -78,10 +79,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   abstract protected void addImplicitRules(Interpreter interpreter);
 
+  protected Pattern initialPattern() {
+    return new Pattern();
+  }
+  
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
-    this.interpreter = new Interpreter(context, rs);
+    this.interpreter = new Interpreter(context, rs, initialPattern());
     InterpretationContext ec = interpreter.getInterpretationContext();
     ec.setContext(context);
     addImplicitRules(interpreter);

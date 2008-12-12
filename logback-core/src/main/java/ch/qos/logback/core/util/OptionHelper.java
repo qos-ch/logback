@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.spi.PropertyContainer;
 
 /**
  * @author Ceki Gulcu
@@ -125,7 +126,7 @@ public class OptionHelper {
    * @throws IllegalArgumentException
    *           if <code>val</code> is malformed.
    */
-  public static String substVars(String val, Context context) {
+  public static String substVars(String val, PropertyContainer pc) {
 
     StringBuffer sbuf = new StringBuffer();
 
@@ -167,7 +168,7 @@ public class OptionHelper {
           String replacement = null;
 
           // first try the props passed as parameter
-          replacement = context.getProperty(key);
+          replacement = pc.getProperty(key);
 
           // then try in System properties
           if (replacement == null) {
@@ -186,7 +187,7 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, context);
+            String recursiveReplacement = substVars(replacement, pc);
             sbuf.append(recursiveReplacement);
           } else {
             // if we could not find a replacement, then signal the error

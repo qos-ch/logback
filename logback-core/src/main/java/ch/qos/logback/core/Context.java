@@ -9,10 +9,11 @@
  */
 package ch.qos.logback.core;
 
+import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
 
 
-public interface Context {
+public interface Context extends PropertyContainer {
 
 	
   StatusManager getStatusManager();

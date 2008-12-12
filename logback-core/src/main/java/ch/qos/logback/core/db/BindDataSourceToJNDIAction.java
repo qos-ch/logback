@@ -40,7 +40,7 @@ public class BindDataSourceToJNDIAction extends Action {
    */
   public void begin(
       InterpretationContext ec, String localName, Attributes attributes) {
-    String dsClassName = ec.getSubstitutionProperty(DATA_SOURCE_CLASS);
+    String dsClassName = ec.getProperty(DATA_SOURCE_CLASS);
 
     if (OptionHelper.isEmpty(dsClassName)) {
       addWarn("dsClassName is a required parameter");
@@ -49,9 +49,9 @@ public class BindDataSourceToJNDIAction extends Action {
       return;
     }
 
-    String urlStr = ec.getSubstitutionProperty(URL);
-    String userStr = ec.getSubstitutionProperty(USER);
-    String passwordStr = ec.getSubstitutionProperty(PASSWORD);
+    String urlStr = ec.getProperty(URL);
+    String userStr = ec.getProperty(USER);
+    String passwordStr = ec.getProperty(PASSWORD);
 
     try {
       DataSource ds =

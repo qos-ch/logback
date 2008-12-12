@@ -43,7 +43,7 @@ public class PropertyActionTest  {
     atts.setValue("name", "v1");
     atts.setValue("value", "work");
     spAction.begin(ec, null, atts);
-    assertEquals("work", ec.getSubstitutionProperty("v1"));
+    assertEquals("work", ec.getProperty("v1"));
   }
   
   @Test
@@ -52,7 +52,7 @@ public class PropertyActionTest  {
     atts.setValue("name", "v1");
     atts.setValue("value", "${w}k");
     spAction.begin(ec, null, atts);
-    assertEquals("work", ec.getSubstitutionProperty("v1"));
+    assertEquals("work", ec.getProperty("v1"));
   }
   
   @Test
@@ -93,24 +93,24 @@ public class PropertyActionTest  {
     context.putProperty("STEM", Constants.TEST_DIR_PREFIX + "input/joran");
     atts.setValue("file", "${STEM}/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
-    assertEquals("tata", ec.getSubstitutionProperty("v1"));
-    assertEquals("toto", ec.getSubstitutionProperty("v2"));
+    assertEquals("tata", ec.getProperty("v1"));
+    assertEquals("toto", ec.getProperty("v2"));
   }
 
   @Test
   public void testLoadFile() {
     atts.setValue("file", Constants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
-    assertEquals("tata", ec.getSubstitutionProperty("v1"));
-    assertEquals("toto", ec.getSubstitutionProperty("v2"));
+    assertEquals("tata", ec.getProperty("v1"));
+    assertEquals("toto", ec.getProperty("v2"));
   }
 
   @Test
   public void testLoadResource() {
     atts.setValue("resource", "asResource/joran/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
-    assertEquals("tata", ec.getSubstitutionProperty("r1"));
-    assertEquals("toto", ec.getSubstitutionProperty("r2"));
+    assertEquals("tata", ec.getProperty("r1"));
+    assertEquals("toto", ec.getProperty("r2"));
   }
   
   @Test
@@ -118,8 +118,8 @@ public class PropertyActionTest  {
     context.putProperty("STEM", "asResource/joran");
     atts.setValue("resource", "${STEM}/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
-    assertEquals("tata", ec.getSubstitutionProperty("r1"));
-    assertEquals("toto", ec.getSubstitutionProperty("r2"));
+    assertEquals("tata", ec.getProperty("r1"));
+    assertEquals("toto", ec.getProperty("r2"));
   }
   
   @Test

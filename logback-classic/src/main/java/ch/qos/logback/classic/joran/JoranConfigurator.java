@@ -10,6 +10,7 @@
 
 package ch.qos.logback.classic.joran;
 
+import ch.qos.logback.classic.hoard.HoardAction;
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
@@ -25,6 +26,7 @@ import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.action.MatcherAction;
+import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
@@ -51,6 +53,10 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("*/evaluator/matcher"),
         new MatcherAction());
 
+    rs.addRule(new Pattern("configuration/appender/hoard"), new HoardAction());
+    rs.addRule(new Pattern("configuration/appender/hoard/*"), new NOPAction());
+    
+    
     rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
     rs.addRule(new Pattern("configuration/logger/level"), new LevelAction());
 

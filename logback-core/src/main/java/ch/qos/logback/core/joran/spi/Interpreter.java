@@ -12,6 +12,7 @@ package ch.qos.logback.core.joran.spi;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -64,7 +65,7 @@ public class Interpreter {
   private static List EMPTY_LIST = new Vector(0);
 
   final private RuleStore ruleStore;
-  final private InterpretationContext ec;
+  final private InterpretationContext interpretationContext;
   final private ArrayList<ImplicitAction> implicitActions;
   final private CAI_WithLocatorSupport cai;
   Pattern pattern;
@@ -87,18 +88,20 @@ public class Interpreter {
    */
   Pattern skip = null;
 
-  public Interpreter(Context context, RuleStore rs) {
+  public Interpreter(Context context, RuleStore rs, Pattern initialPattern) {
     this.cai = new CAI_WithLocatorSupport(this);
     this.cai.setContext(context);
     ruleStore = rs;
-    ec = new InterpretationContext(context, this);
+    interpretationContext = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
-    pattern = new Pattern();
+    this.pattern = initialPattern;
     actionListStack = new Stack<List>();
     player = new EventPlayer(this);
   }
-
   
+  public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
+    interpretationContext.setPropertiesMap(propertiesMap);
+  }
   /**
    * @deprecated replaced by {@link #getInterpretationContext()}
    */
@@ -107,7 +110,7 @@ public class Interpreter {
   }
   
   public InterpretationContext getInterpretationContext() {
-    return ec;
+    return interpretationContext;
   }
 
   public void startDocument() {
@@ -241,7 +244,7 @@ public class Interpreter {
 
     // logger.debug("set of applicable patterns: " + applicableActionList);
     if (applicableActionList == null) {
-      applicableActionList = lookupImplicitAction(pattern, attributes, ec);
+      applicableActionList = lookupImplicitAction(pattern, attributes, interpretationContext);
     }
 
     return applicableActionList;
@@ -259,7 +262,7 @@ public class Interpreter {
       // now let us invoke the action. We catch and report any eventual
       // exceptions
       try {
-        action.begin(ec, tagName, atts);
+        action.begin(interpretationContext, tagName, atts);
       } catch (ActionException e) {
         skip = (Pattern) pattern.clone();
         cai.addError("ActionException in Action for tag [" + tagName + "]", e);
@@ -279,7 +282,7 @@ public class Interpreter {
     while (i.hasNext()) {
       Action action = (Action) i.next();
       try {
-        action.body(ec, body);
+        action.body(interpretationContext, body);
       } catch (ActionException ae) {
         cai
             .addError("Exception in end() methd for action [" + action + "]",
@@ -301,7 +304,7 @@ public class Interpreter {
       // now let us invoke the end method of the action. We catch and report
       // any eventual exceptions
       try {
-        action.end(ec, tagName);
+        action.end(interpretationContext, tagName);
       } catch (ActionException ae) {
         // at this point endAction, there is no point in skipping children as
         // they have been already processed
@@ -321,9 +324,9 @@ public class Interpreter {
     player.play(eventList);
   }
 
-  public void addEvents(List<SaxEvent> eventList) {
+  public void addEventsDynamically(List<SaxEvent> eventList) {
     if (player != null) {
-      player.addEvents(eventList);
+      player.addEventsDynamically(eventList);
     }
   }
 }

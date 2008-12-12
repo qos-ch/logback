@@ -24,30 +24,38 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
-
 
 /**
  * 
  * An InterpretationContext contains the contextual state of a Joran parsing
- * session. {@link Action} objects depend on this context to exchange 
- * and store information.
+ * session. {@link Action} objects depend on this context to exchange and store
+ * information.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class InterpretationContext extends ContextAwareBase {
+public class InterpretationContext extends ContextAwareBase implements
+    PropertyContainer {
   Stack<Object> objectStack;
   Map<String, Object> objectMap;
+  Map<String, String> propertiesMap;
+
   Interpreter joranInterpreter;
   final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
-  
+
   public InterpretationContext(Context context, Interpreter joranInterpreter) {
     this.context = context;
     this.joranInterpreter = joranInterpreter;
-    objectStack = new Stack<Object> ();
+    objectStack = new Stack<Object>();
     objectMap = new HashMap<String, Object>(5);
+    propertiesMap = new HashMap<String, String>(5);
   }
-  
+
+  void setPropertiesMap(Map<String, String> propertiesMap) {
+    this.propertiesMap = propertiesMap;
+  }
+
   String updateLocationInfo(String msg) {
     Locator locator = joranInterpreter.getLocator();
 
@@ -57,7 +65,7 @@ public class InterpretationContext extends ContextAwareBase {
       return msg;
     }
   }
-  
+
   public Locator getLocator() {
     return joranInterpreter.getLocator();
   }
@@ -135,31 +143,40 @@ public class InterpretationContext extends ContextAwareBase {
     }
   }
 
-  public String getSubstitutionProperty(String key) {
-    return context.getProperty(key);
+  /**
+   * If a key is found in propertiesMap then return it. Otherwise, delegate to
+   * the context.
+   */
+  public String getProperty(String key) {
+    String v = propertiesMap.get(key);
+    if (v != null) {
+      return v;
+    } else {
+      return context.getProperty(key);
+    }
   }
 
   public String subst(String value) {
     if (value == null) {
       return null;
     }
-    return OptionHelper.substVars(value, context);
+    return OptionHelper.substVars(value, this);
   }
-  
+
   public void addInPlayListener(InPlayListener ipl) {
-    if(listenerList.contains(ipl)) {
-      addWarn("InPlayListener "+ipl+" has been already registered");
+    if (listenerList.contains(ipl)) {
+      addWarn("InPlayListener " + ipl + " has been already registered");
     } else {
       listenerList.add(ipl);
     }
   }
-  
+
   public boolean removeInPlayListener(InPlayListener ipl) {
     return listenerList.remove(ipl);
   }
-  
+
   void fireInPlay(SaxEvent event) {
-    for(InPlayListener ipl: listenerList) {
+    for (InPlayListener ipl : listenerList) {
       ipl.inPlay(event);
     }
   }

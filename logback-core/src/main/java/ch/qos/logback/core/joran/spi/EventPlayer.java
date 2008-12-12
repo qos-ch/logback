@@ -51,7 +51,7 @@ public class EventPlayer {
     }
   }
   
-  public void addEvents(List<SaxEvent> eventList) {
+  public void addEventsDynamically(List<SaxEvent> eventList) {
     this.eventList.addAll(currentIndex+2, eventList);
   }
 }
