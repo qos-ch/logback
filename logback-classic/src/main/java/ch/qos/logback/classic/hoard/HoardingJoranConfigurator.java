@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.ActionConst;
@@ -55,10 +56,11 @@ public class HoardingJoranConfigurator  extends GenericConfigurator {
     interpreter.setInterpretationContextPropertiesMap(propertiesMap);
   }
 
-  public Appender getAppender() {
+  @SuppressWarnings("unchecked")
+  public Appender<LoggingEvent> getAppender() {
     Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
     HashMap map = (HashMap) omap.get(ActionConst.APPENDER_BAG);
     Collection values = map.values();
-    return (Appender) values.iterator().next();
+    return (Appender<LoggingEvent>) values.iterator().next();
   }
 }

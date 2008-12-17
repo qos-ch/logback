@@ -7,15 +7,8 @@
     class="ch.qos.logback.classic.hoard.HoardingAppender">
 
     <mdcKey>userid</mdcKey>
-    <default>asdad</default>
     <hoard>
-      <appender name="FILE-${userid}" class="ch.qos.logback.core.FileAppender">
-        <File>${userid}.log</File>
-        <Append>true</Append>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-          <Pattern>%d [%thread] %level %logger{35} - %msg%n</Pattern>
-        </layout>
-      </appender>
+      <appender name="list-${userid}" class="ch.qos.logback.core.read.ListAppender"/>
     </hoard>
   </appender>
 

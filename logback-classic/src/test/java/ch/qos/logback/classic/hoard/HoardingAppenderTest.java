@@ -9,13 +9,21 @@
  */
 package ch.qos.logback.classic.hoard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.junit.Test;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class HoardingAppenderTest {
@@ -32,6 +40,29 @@ public class HoardingAppenderTest {
     jc.doConfigure(file);
   }
 
+  @Test
+  public void unsetDefaultValueProperty() throws JoranException {
+    configure(PREFIX + "unsetDefaultValueProperty.xml");
+    logger.debug("hello");
+    HoardingAppender ha = (HoardingAppender) root.getAppender("HOARD");
+    assertFalse(ha.isStarted());
+    
+  }
+
+  @Test
+  public void smoke() throws JoranException {
+    configure(PREFIX + "smoke.xml");
+    logger.debug("smoke");
+    long timestamp = 0;
+    HoardingAppender ha = (HoardingAppender) root.getAppender("HOARD");
+    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha.appenderTracker.get("smoke", timestamp);
+    StatusPrinter.print(loggerContext);
+    
+    assertNotNull(listAppender);
+    List<LoggingEvent> eventList = listAppender.list;
+    assertEquals(1, listAppender.list.size());
+    assertEquals("smoke", eventList.get(0).getMessage());
+  }
 
   @Test
   public void testLevel() throws JoranException {
