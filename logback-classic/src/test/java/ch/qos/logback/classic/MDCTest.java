@@ -12,7 +12,10 @@ package ch.qos.logback.classic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashMap;
+
 import org.junit.Test;
+import org.slf4j.MDC;
 
 public class MDCTest {
 
@@ -37,4 +40,9 @@ public class MDCTest {
 
   }
 
+  @Test
+  public void testLBCLASSIC_98() {
+    MDC.setContextMap(new HashMap<String, String>());
+  }
+  
 }
