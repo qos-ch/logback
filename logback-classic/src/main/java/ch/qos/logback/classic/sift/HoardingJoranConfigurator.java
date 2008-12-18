@@ -6,16 +6,13 @@ import java.util.Map;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
-import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class HoardingJoranConfigurator  extends GenericConfigurator {
+public class HoardingJoranConfigurator  extends SiftingJoranConfiguratorBase<LoggingEvent> {
 
   String key;
   String value;
@@ -24,22 +21,12 @@ public class HoardingJoranConfigurator  extends GenericConfigurator {
     this.key = key;
     this.value = value;
   }
+  
   @Override
   protected Pattern initialPattern() {
     return new Pattern("configuration");
   }
   
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-    NestedComplexPropertyIA nestedComplexIA = new NestedComplexPropertyIA();
-    nestedComplexIA.setContext(context);
-    interpreter.addImplicitAction(nestedComplexIA);
-    
-    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
-    nestedSimpleIA.setContext(context);
-    interpreter.addImplicitAction(nestedSimpleIA);
-  }
-
   @Override
   protected void addInstanceRules(RuleStore rs) {
     rs.addRule(new Pattern("configuration/appender"), new AppenderAction());

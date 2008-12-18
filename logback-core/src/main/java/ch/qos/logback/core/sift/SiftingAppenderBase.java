@@ -33,9 +33,9 @@ public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBa
   String mdcKey;
   String defaultValue;
 
-  AppenderFactory<E, K> appenderFactory;
+  AppenderFactoryBase<E, K> appenderFactory;
 
-  void setAppenderFactory(AppenderFactory<E, K> appenderFactory) {
+  public void setAppenderFactory(AppenderFactoryBase<E, K> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
 

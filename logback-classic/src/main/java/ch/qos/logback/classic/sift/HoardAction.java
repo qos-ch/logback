@@ -27,7 +27,7 @@ public class HoardAction  extends Action implements InPlayListener {
     Object o = ec.peekObject();
     if (o instanceof HoardingAppender) {
       HoardingAppender ha = (HoardingAppender) o; 
-      AppenderFactory appenderFactory = new AppenderFactory(context, seList);
+      AppenderFactory appenderFactory = new AppenderFactory(context, seList, ha.getMdcKey());
       ha.setAppenderFactory(appenderFactory);
     }
   }

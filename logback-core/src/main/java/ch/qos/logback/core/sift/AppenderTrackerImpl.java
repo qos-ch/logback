@@ -45,7 +45,7 @@ public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
     moveToTail(entry);
   }
 
-  public synchronized Appender<E> get(String key, long timestamp) {
+  public synchronized Appender<E> get(K key, long timestamp) {
     Entry existing = map.get(key);
     if (existing == null) {
       return null;

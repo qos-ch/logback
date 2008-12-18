@@ -19,7 +19,7 @@ public interface AppenderTracker<E, K> {
   static int THRESHOLD = 30 * 60 * MILLIS_IN_ONE_SECOND; // 30 minutes
 
   void put(K key, Appender<E> value, long timestamp);
-  Appender<E> get(String key, long timestamp);
+  Appender<E> get(K key, long timestamp);
   void stopStaleAppenders(long timestamp);
   List<K> keyList();
   List<Appender<E>> valueList();

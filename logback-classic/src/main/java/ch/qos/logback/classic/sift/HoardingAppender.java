@@ -12,9 +12,7 @@ package ch.qos.logback.classic.sift;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.sift.SiftingAppenderBase;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -27,19 +25,12 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki Gulcu
  */
-public class HoardingAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
+public class HoardingAppender extends SiftingAppenderBase<LoggingEvent, String> {
 
-  AppenderTracker<LoggingEvent> appenderTracker = new AppenderTrackerImpl<LoggingEvent>();
-  //Map<String, Appender<LoggingEvent>> appenderMap = new Hashtable<String, Appender<LoggingEvent>>();
 
   String mdcKey;
   String defaultValue;
 
-  AppenderFactory appenderFactory;
-
-  void setAppenderFactory(AppenderFactory appenderFactory) {
-    this.appenderFactory = appenderFactory;
-  }
 
   @Override
   public void start() {
@@ -58,43 +49,22 @@ public class HoardingAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
   }
 
   @Override
-  public void stop() {
-    for (Appender<LoggingEvent> appender : appenderTracker.valueList()) {
-      appender.stop();
+  protected String getDiscriminatingValue(LoggingEvent event) {
+    String mdcValue = MDC.get(mdcKey);
+    if (mdcValue == null) {
+      return defaultValue;
+    } else {
+      return mdcValue;
     }
   }
+
 
   @Override
-  protected void append(LoggingEvent loggingEvent) {
-    if (!isStarted()) {
-      return;
-    }
-
-    String mdcValue = MDC.get(mdcKey);
-
-    if (mdcValue == null) {
-      mdcValue = defaultValue;
-    }
-
-    long timestamp = loggingEvent.getTimeStamp();
-    
-    Appender<LoggingEvent> appender = appenderTracker.get(mdcValue, timestamp);
-
-    if (appender == null) {
-      try {
-        appender = appenderFactory.buildAppender(context, mdcKey, mdcValue);
-        if (appender != null) {
-          appenderTracker.put(mdcValue, appender, timestamp);
-        }
-      } catch (JoranException e) {
-        addError("Failed to build appender for " + mdcKey + "=" + mdcValue, e);
-        return;
-      }
-    }
-    appenderTracker.stopStaleAppenders(timestamp);
-    appender.doAppend(loggingEvent);
+  protected long getTimestamp(LoggingEvent event) {
+    return event.getTimeStamp();
   }
 
+  
   public String getMdcKey() {
     return mdcKey;
   }
@@ -126,5 +96,7 @@ public class HoardingAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
   public void setDefaultValue(String defaultValue) {
     this.defaultValue = defaultValue;
   }
+
+
 
 }

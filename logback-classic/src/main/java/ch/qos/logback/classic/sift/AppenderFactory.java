@@ -1,49 +1,33 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.sift;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.sift.AppenderFactoryBase;
+import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class AppenderFactory {
+public class AppenderFactory extends AppenderFactoryBase<LoggingEvent, String>{
 
-  final List<SaxEvent> eventList;
-  Context context;
+  String mdcKey;
   
-  AppenderFactory(Context context, List<SaxEvent> eventList) {
-    this.context = context;
-    this.eventList = new ArrayList<SaxEvent>(eventList);
-    removeHoardElement();
-
+  AppenderFactory(Context context, List<SaxEvent> eventList, String mdcKey) {
+      super(context, eventList);
+      this.mdcKey = mdcKey;
   }
 
-  void removeHoardElement() {
-    eventList.remove(0);
-    eventList.remove(eventList.size() - 1);
-    System.out.println(eventList);
-  }
-
-  Appender<LoggingEvent> buildAppender(Context context, String mdcKey,
-      String mdcValue) throws JoranException {
-    //HoardingContext hoardingContext = new HoardingContext(context, mdcKey,
-    //    mdcValue);
-    HoardingJoranConfigurator hjc = new HoardingJoranConfigurator(mdcKey, mdcValue);
-    hjc.setContext(context);
-
-    hjc.doConfigure(eventList);
-
-    StatusPrinter.print(context);
-
-    return hjc.getAppender();
-  }
-
-  public List<SaxEvent> getEventList() {
-    return eventList;
+  public SiftingJoranConfiguratorBase<LoggingEvent> getSiftingJoranConfigurator(String k) {
+    return new HoardingJoranConfigurator(mdcKey, k);
   }
 
 }
