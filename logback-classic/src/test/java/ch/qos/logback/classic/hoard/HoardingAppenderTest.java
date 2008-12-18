@@ -16,7 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.MDC;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -56,8 +58,8 @@ public class HoardingAppenderTest {
     long timestamp = 0;
     HoardingAppender ha = (HoardingAppender) root.getAppender("HOARD");
     ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha.appenderTracker.get("smoke", timestamp);
-    StatusPrinter.print(loggerContext);
     
+    StatusPrinter.print(loggerContext);
     assertNotNull(listAppender);
     List<LoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
@@ -65,11 +67,28 @@ public class HoardingAppenderTest {
   }
 
   @Test
-  public void testLevel() throws JoranException {
-    configure(PREFIX + "hoard0.xml");
-    logger.debug("ss");
-    //StatusPrinter.print(loggerContext);
+  public void testWholeCycle() throws JoranException {
+    String mdcKey = "cycle";
+    configure(PREFIX + "completeCycle.xml");
+    MDC.put(mdcKey, "a");
+    logger.debug("smoke");
+    long timestamp = System.currentTimeMillis();
+    HoardingAppender ha = (HoardingAppender) root.getAppender("HOARD");
+    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha.appenderTracker.get("a", timestamp);
+    StatusPrinter.print(loggerContext);
+    
+    assertNotNull(listAppender);
+    List<LoggingEvent> eventList = listAppender.list;
+    assertEquals(1, listAppender.list.size());
+    assertEquals("smoke", eventList.get(0).getMessage());
+
+    MDC.remove(mdcKey);
+    LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null, null);
+    le.setTimeStamp(timestamp+AppenderTracker.THRESHOLD*2);
+    ha.doAppend(le);
+    assertFalse(listAppender.isStarted());
+    assertEquals(1, ha.appenderTracker.keyList().size());
+    assertEquals("cycleDefault", ha.appenderTracker.keyList().get(0));
     
   }
-
 }

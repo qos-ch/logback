@@ -10,15 +10,11 @@
 package ch.qos.logback.classic.turbo;
 
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
-  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(MarkerFilterTest.class);
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses( { MarkerFilterTest.class, DuplicateMessageFilterTest.class})
+public class PackageTest  {
 }

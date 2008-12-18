@@ -52,7 +52,7 @@ public class AppenderAction<E> extends Action {
 
       appender.setContext(context);
 
-      String appenderName = attributes.getValue(NAME_ATTRIBUTE);
+      String appenderName = ec.subst(attributes.getValue(NAME_ATTRIBUTE));
 
       if (OptionHelper.isEmpty(appenderName)) {
         addWarn("No appender name given for appender of type " + className

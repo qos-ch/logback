@@ -24,9 +24,17 @@ public class AppenderTrackerTest {
     la.setContext(context);
     la.start();
   }
+
   
   @Test
-  public void empty() {
+  public void empty0() {
+    long now = 3000;
+    appenderTracker.stopStaleAppenders(now);
+    assertEquals(0, appenderTracker.keyList().size());
+  }
+  
+  @Test
+  public void empty1() {
     long now = 3000;
     assertNull(appenderTracker.get("a", now++));
     now += AppenderTrackerImpl.THRESHOLD+1000;

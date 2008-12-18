@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="true">
+
+  <appender name="HOARD"
+    class="ch.qos.logback.classic.hoard.HoardingAppender">
+
+    <mdcKey>cycle</mdcKey>
+    <defaultValue>cycleDefault</defaultValue>
+    <hoard>
+      <appender name="list-${cycle}" class="ch.qos.logback.core.read.ListAppender"/>
+    </hoard>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="HOARD" />
+  </root>
+
+</configuration>

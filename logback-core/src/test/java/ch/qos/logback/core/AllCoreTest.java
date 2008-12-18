@@ -14,7 +14,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ch.qos.logback.core.util.PackageTest.class,
+@SuiteClasses({BasicStatusManagerTest.class,
+  ch.qos.logback.core.util.PackageTest.class,
   ch.qos.logback.core.helpers.PackageTest.class,
   ch.qos.logback.core.pattern.PackageTest.class,
   ch.qos.logback.core.PackageTest.class,

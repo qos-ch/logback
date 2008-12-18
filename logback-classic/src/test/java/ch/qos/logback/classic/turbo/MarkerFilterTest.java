@@ -1,30 +1,23 @@
 package ch.qos.logback.classic.turbo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.core.spi.FilterReply;
 
-import junit.framework.TestCase;
-
-public class MarkerFilterTest extends TestCase {
+public class MarkerFilterTest {
 
   static String MARKER_NAME = "toto";
   
   Marker totoMarker = MarkerFactory.getMarker(MARKER_NAME);
   
-  public MarkerFilterTest(String arg0) {
-    super(arg0);
-  }
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testNoMarker() {
     MarkerFilter mkt = new MarkerFilter();
     mkt.start();
@@ -33,7 +26,9 @@ public class MarkerFilterTest extends TestCase {
     assertEquals(FilterReply.NEUTRAL, mkt.decide(null, null, null, null, null, null));
 
   }
-  
+
+
+  @Test
   public void testBasic() {
     MarkerFilter mkt = new MarkerFilter();
     mkt.setMarker(MARKER_NAME);

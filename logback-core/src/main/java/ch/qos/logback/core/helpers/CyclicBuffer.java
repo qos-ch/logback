@@ -10,14 +10,14 @@
 
 package ch.qos.logback.core.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
+ * CyclicBuffer holds values in a cyclic array.
  * 
- * CyclicBuffer is used by other appenders to hold
- * objects for immediate or differed display.
- * <p>
- * This buffer gives read access to any element in the buffer not just the first
- * or last element.
+ * <p>It allows read access to any element in the buffer not just the first or
+ * last element.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -35,7 +35,7 @@ public class CyclicBuffer<E> {
    * The <code>maxSize</code> argument must a positive integer.
    * 
    * @param maxSize
-   *          The maximum number of elements in the buffer.
+   *                The maximum number of elements in the buffer.
    */
   @SuppressWarnings("unchecked")
   public CyclicBuffer(int maxSize) throws IllegalArgumentException {
@@ -45,7 +45,7 @@ public class CyclicBuffer<E> {
     }
     init(maxSize);
   }
-  
+
   @SuppressWarnings("unchecked")
   private void init(int maxSize) {
     this.maxSize = maxSize;
@@ -54,10 +54,9 @@ public class CyclicBuffer<E> {
     last = 0;
     numElems = 0;
   }
-  
+
   /**
-   * Clears the buffer
-   * and resets all attributes.
+   * Clears the buffer and resets all attributes.
    */
   public void clear() {
     init(this.maxSize);
@@ -94,7 +93,6 @@ public class CyclicBuffer<E> {
     return maxSize;
   }
 
-
   /**
    * Get the oldest (first) element in the buffer. The oldest element is removed
    * from the buffer.
@@ -110,6 +108,14 @@ public class CyclicBuffer<E> {
     }
     return r;
   }
+  
+  public List<E> asList() {
+    List<E> tList = new ArrayList<E>();
+    for(int i = 0; i < length(); i++) {
+      tList.add(get(i));
+    }
+    return tList;
+  }
 
   /**
    * Get the number of elements in the buffer. This number is guaranteed to be
@@ -123,7 +129,7 @@ public class CyclicBuffer<E> {
    * Resize the cyclic buffer to <code>newSize</code>.
    * 
    * @throws IllegalArgumentException
-   *           if <code>newSize</code> is negative.
+   *                 if <code>newSize</code> is negative.
    */
   @SuppressWarnings("unchecked")
   public void resize(int newSize) {
