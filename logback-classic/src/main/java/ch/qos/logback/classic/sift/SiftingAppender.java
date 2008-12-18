@@ -12,6 +12,7 @@ package ch.qos.logback.classic.sift;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -25,7 +26,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki Gulcu
  */
-public class HoardingAppender extends SiftingAppenderBase<LoggingEvent, String> {
+public class SiftingAppender extends SiftingAppenderBase<LoggingEvent, String> {
 
 
   String mdcKey;
@@ -56,6 +57,10 @@ public class HoardingAppender extends SiftingAppenderBase<LoggingEvent, String> 
     } else {
       return mdcValue;
     }
+  }
+  
+  AppenderTracker<LoggingEvent, String> getAppenderTracker() {
+    return appenderTracker;
   }
 
 

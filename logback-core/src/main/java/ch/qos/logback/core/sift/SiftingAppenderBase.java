@@ -9,7 +9,6 @@
  */
 package ch.qos.logback.core.sift;
 
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -25,10 +24,12 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki Gulcu
  */
-public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBase<E> {
+public abstract class SiftingAppenderBase<E, K> extends
+    UnsynchronizedAppenderBase<E> {
 
   protected AppenderTracker<E, K> appenderTracker = new AppenderTrackerImpl<E, K>();
-  //Map<String, Appender<LoggingEvent>> appenderMap = new Hashtable<String, Appender<LoggingEvent>>();
+  // Map<String, Appender<LoggingEvent>> appenderMap = new Hashtable<String,
+  // Appender<LoggingEvent>>();
 
   String mdcKey;
   String defaultValue;
@@ -41,18 +42,7 @@ public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBa
 
   @Override
   public void start() {
-    int errors = 0;
-    if (OptionHelper.isEmpty(mdcKey)) {
-      errors++;
-      addError("The \"mdcKey\" property must be set");
-    }
-    if (OptionHelper.isEmpty(defaultValue)) {
-      errors++;
-      addError("The \"defaultValue\" property must be set");
-    }
-    if (errors == 0) {
-      super.start();
-    }
+    super.start();
   }
 
   @Override
@@ -63,18 +53,18 @@ public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBa
   }
 
   abstract protected K getDiscriminatingValue(E event);
+
   abstract protected long getTimestamp(E event);
-   
+
   @Override
   protected void append(E event) {
     if (!isStarted()) {
       return;
     }
 
-    
     K value = getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
-    
+
     Appender<E> appender = appenderTracker.get(value, timestamp);
 
     if (appender == null) {
@@ -107,6 +97,5 @@ public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBa
   public String getDefaultValue() {
     return defaultValue;
   }
-
 
 }

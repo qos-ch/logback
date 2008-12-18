@@ -3,7 +3,7 @@
 
 <configuration debug="true">
 
-  <appender name="HOARD"
+  <appender name="SIFT"
     class="ch.qos.logback.classic.hoard.HoardingAppender">
 
     <mdcKey>userid</mdcKey>
@@ -20,7 +20,7 @@
   </appender>
 
   <root level="DEBUG">
-    <appender-ref ref="HOARD" />
+    <appender-ref ref="SIFT" />
   </root>
 
 </configuration>

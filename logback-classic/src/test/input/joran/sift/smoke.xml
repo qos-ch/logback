@@ -3,17 +3,18 @@
 
 <configuration debug="true">
 
-  <appender name="HOARD"
-    class="ch.qos.logback.classic.hoard.HoardingAppender">
+  <appender name="SIFT"
+    class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <mdcKey>userid</mdcKey>
+    <defaultValue>smoke</defaultValue>
     <hoard>
       <appender name="list-${userid}" class="ch.qos.logback.core.read.ListAppender"/>
     </hoard>
   </appender>
 
   <root level="DEBUG">
-    <appender-ref ref="HOARD" />
+    <appender-ref ref="SIFT" />
   </root>
 
 </configuration>

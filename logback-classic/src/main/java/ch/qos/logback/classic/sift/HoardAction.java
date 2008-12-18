@@ -25,8 +25,8 @@ public class HoardAction  extends Action implements InPlayListener {
   public void end(InterpretationContext ec, String name) throws ActionException {
     ec.removeInPlayListener(this);
     Object o = ec.peekObject();
-    if (o instanceof HoardingAppender) {
-      HoardingAppender ha = (HoardingAppender) o; 
+    if (o instanceof SiftingAppender) {
+      SiftingAppender ha = (SiftingAppender) o; 
       AppenderFactory appenderFactory = new AppenderFactory(context, seList, ha.getMdcKey());
       ha.setAppenderFactory(appenderFactory);
     }

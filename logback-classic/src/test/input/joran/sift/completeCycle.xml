@@ -3,8 +3,8 @@
 
 <configuration debug="true">
 
-  <appender name="HOARD"
-    class="ch.qos.logback.classic.hoard.HoardingAppender">
+  <appender name="SIFT"
+    class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <mdcKey>cycle</mdcKey>
     <defaultValue>cycleDefault</defaultValue>
@@ -14,7 +14,7 @@
   </appender>
 
   <root level="DEBUG">
-    <appender-ref ref="HOARD" />
+    <appender-ref ref="SIFT" />
   </root>
 
 </configuration>
