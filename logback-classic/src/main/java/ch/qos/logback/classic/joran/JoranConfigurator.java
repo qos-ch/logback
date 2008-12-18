@@ -10,7 +10,6 @@
 
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.hoard.HoardAction;
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
@@ -21,6 +20,7 @@ import ch.qos.logback.classic.joran.action.LayoutAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
 import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
+import ch.qos.logback.classic.sift.HoardAction;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;

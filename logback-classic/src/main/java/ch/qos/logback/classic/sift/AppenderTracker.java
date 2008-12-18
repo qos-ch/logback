@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import java.util.List;
 

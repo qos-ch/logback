@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.qos.logback.classic.hoard.AppenderTracker;
+import ch.qos.logback.classic.sift.AppenderTracker;
 import ch.qos.logback.core.Appender;
 
 /**

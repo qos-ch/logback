@@ -7,13 +7,13 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({HoardingAppenderTest.class})
+@SuiteClasses({SiftingAppenderTest.class})
 public class PackageTest  {
 }

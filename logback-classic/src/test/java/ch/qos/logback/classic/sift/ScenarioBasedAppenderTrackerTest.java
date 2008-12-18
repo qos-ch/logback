@@ -7,12 +7,14 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ch.qos.logback.classic.sift.AppenderTracker;
 
 public class ScenarioBasedAppenderTrackerTest {
 

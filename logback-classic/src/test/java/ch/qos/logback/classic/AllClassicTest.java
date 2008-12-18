@@ -35,7 +35,7 @@ public class AllClassicTest extends TestCase {
     suite.addTest(ch.qos.logback.classic.spi.PackageTest.suite());
     suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.turbo.PackageTest.class));
     suite.addTest(new JUnit4TestAdapter(
-        ch.qos.logback.classic.hoard.PackageTest.class));
+        ch.qos.logback.classic.sift.PackageTest.class));
 
     return suite;
   }

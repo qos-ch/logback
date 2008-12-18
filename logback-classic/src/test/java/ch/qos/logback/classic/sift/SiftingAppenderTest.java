@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,13 +22,15 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.sift.AppenderTracker;
+import ch.qos.logback.classic.sift.HoardingAppender;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class HoardingAppenderTest {
+public class SiftingAppenderTest {
 
   static String PREFIX = TeztConstants.TEST_DIR_PREFIX + "input/joran/hoard/";
   		

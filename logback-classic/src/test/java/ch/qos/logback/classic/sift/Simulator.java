@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,8 @@ import java.util.Random;
 
 import ch.qos.logback.classic.hoard.tracker.SimulationEvent;
 import ch.qos.logback.classic.hoard.tracker.AppenderTrackerTImpl;
+import ch.qos.logback.classic.sift.AppenderTracker;
+import ch.qos.logback.classic.sift.AppenderTrackerImpl;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.appender.NOPAppender;
 

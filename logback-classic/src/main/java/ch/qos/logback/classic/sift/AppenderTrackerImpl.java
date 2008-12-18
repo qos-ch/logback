@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.hoard;
+package ch.qos.logback.classic.sift;
 
 import java.util.HashMap;
 import java.util.LinkedList;
