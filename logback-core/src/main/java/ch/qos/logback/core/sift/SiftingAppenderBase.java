@@ -27,7 +27,7 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SiftingAppenderBase<E, K> extends UnsynchronizedAppenderBase<E> {
 
-  AppenderTracker<E, K> appenderTracker = new AppenderTrackerImpl<E, K>();
+  protected AppenderTracker<E, K> appenderTracker = new AppenderTrackerImpl<E, K>();
   //Map<String, Appender<LoggingEvent>> appenderMap = new Hashtable<String, Appender<LoggingEvent>>();
 
   String mdcKey;

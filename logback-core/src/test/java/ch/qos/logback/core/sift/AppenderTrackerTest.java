@@ -8,8 +8,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.classic.sift.AppenderTracker;
-import ch.qos.logback.classic.sift.AppenderTrackerImpl;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.read.ListAppender;

@@ -14,8 +14,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import ch.qos.logback.classic.sift.AppenderTracker;
-
 public class ScenarioBasedAppenderTrackerTest {
 
   Simulator simulator;
