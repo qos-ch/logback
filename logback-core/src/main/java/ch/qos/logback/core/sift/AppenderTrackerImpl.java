@@ -21,9 +21,9 @@ import ch.qos.logback.core.Appender;
  * longer than THRESHOLD, stop it.
  * @author Ceki Gulcu
  */
-public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
+public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
 
-  Map<K, Entry> map = new HashMap<K, Entry>();
+  Map<String, Entry> map = new HashMap<String, Entry>();
  
   Entry head; // least recently used entries are towards the head
   Entry tail; // most recently used entries are towards the tail
@@ -36,7 +36,7 @@ public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
   }
 
 
-  public synchronized void put(K key, Appender<E> value, long timestamp) {
+  public synchronized void put(String key, Appender<E> value, long timestamp) {
     Entry entry = map.get(key);
     if (entry == null) {
       entry = new Entry(key, value, timestamp);
@@ -45,7 +45,7 @@ public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
     moveToTail(entry);
   }
 
-  public synchronized Appender<E> get(K key, long timestamp) {
+  public synchronized Appender<E> get(String key, long timestamp) {
     Entry existing = map.get(key);
     if (existing == null) {
       return null;
@@ -70,8 +70,8 @@ public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
     }
   } 
 
-  public List<K> keyList() {
-    List<K> result = new LinkedList<K>();
+  public List<String> keyList() {
+    List<String> result = new LinkedList<String>();
     Entry e = head;
     while (e != tail) {
       result.add(e.key);
@@ -151,11 +151,11 @@ public class AppenderTrackerImpl<E, K> implements AppenderTracker<E, K> {
     Entry next;
     Entry prev;
 
-    K key;
+    String key;
     Appender<E> value;
     long timestamp;
 
-    Entry(K k, Appender<E> v, long timestamp) {
+    Entry(String k, Appender<E> v, long timestamp) {
       this.key = k;
       this.value = v;
       this.timestamp = timestamp;

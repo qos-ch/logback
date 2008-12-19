@@ -26,7 +26,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki Gulcu
  */
-public class SiftingAppender extends SiftingAppenderBase<LoggingEvent, String> {
+public class SiftingAppender extends SiftingAppenderBase<LoggingEvent> {
 
 
   String mdcKey;
@@ -59,7 +59,7 @@ public class SiftingAppender extends SiftingAppenderBase<LoggingEvent, String> {
     }
   }
   
-  AppenderTracker<LoggingEvent, String> getAppenderTracker() {
+  AppenderTracker<LoggingEvent> getAppenderTracker() {
     return appenderTracker;
   }
 

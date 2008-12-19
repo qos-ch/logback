@@ -23,7 +23,7 @@ import ch.qos.logback.core.sift.AppenderTracker;
  * 
  * @author Ceki Gulcu
  */
-public class AppenderTrackerTImpl implements AppenderTracker<Object, String> {
+public class AppenderTrackerTImpl implements AppenderTracker<Object> {
 
   List<TEntry> entryList = new LinkedList<TEntry>();
   long lastCheck = 0;

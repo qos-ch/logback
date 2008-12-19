@@ -12,7 +12,6 @@ package ch.qos.logback.core.sift;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * This appender can contains other appenders which it can build dynamically
@@ -24,13 +23,13 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki Gulcu
  */
-public abstract class SiftingAppenderBase<E, K> extends
+public abstract class SiftingAppenderBase<E> extends
     UnsynchronizedAppenderBase<E> {
 
-  protected AppenderTracker<E, K> appenderTracker = new AppenderTrackerImpl<E, K>();
-  AppenderFactoryBase<E, K> appenderFactory;
+  protected AppenderTracker<E> appenderTracker = new AppenderTrackerImpl<E>();
+  AppenderFactoryBase<E> appenderFactory;
 
-  public void setAppenderFactory(AppenderFactoryBase<E, K> appenderFactory) {
+  public void setAppenderFactory(AppenderFactoryBase<E> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
 
@@ -46,7 +45,7 @@ public abstract class SiftingAppenderBase<E, K> extends
     }
   }
 
-  abstract protected K getDiscriminatingValue(E event);
+  abstract protected String getDiscriminatingValue(E event);
   abstract protected long getTimestamp(E event);
 
   @Override
@@ -55,7 +54,7 @@ public abstract class SiftingAppenderBase<E, K> extends
       return;
     }
 
-    K value = getDiscriminatingValue(event);
+    String value = getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
 
     Appender<E> appender = appenderTracker.get(value, timestamp);

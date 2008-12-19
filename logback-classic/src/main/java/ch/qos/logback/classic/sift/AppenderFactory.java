@@ -17,7 +17,7 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.sift.AppenderFactoryBase;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class AppenderFactory extends AppenderFactoryBase<LoggingEvent, String>{
+public class AppenderFactory extends AppenderFactoryBase<LoggingEvent>{
 
   String mdcKey;
   

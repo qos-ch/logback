@@ -28,7 +28,7 @@ import ch.qos.logback.core.sift.tracker.SimulationEvent;
  */
 public class Simulator {
 
-  AppenderTrackerImpl<Object, String> appenderTracker = new AppenderTrackerImpl<Object, String>();
+  AppenderTrackerImpl<Object> appenderTracker = new AppenderTrackerImpl<Object>();
   AppenderTrackerTImpl t_appenderTracker = new AppenderTrackerTImpl();
 
   List<String> keySpace = new ArrayList<String>();
@@ -79,7 +79,7 @@ public class Simulator {
   }
 
   void play(SimulationEvent simulationEvent,
-      AppenderTracker<Object, String> appenderTracker) {
+      AppenderTracker<Object> appenderTracker) {
     String mdcValue = simulationEvent.key;
     long timestamp = simulationEvent.timestamp;
     Appender<Object> appender = appenderTracker.get(mdcValue, timestamp);

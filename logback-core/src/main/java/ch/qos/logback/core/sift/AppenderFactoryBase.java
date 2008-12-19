@@ -17,7 +17,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.JoranException;
 
-public abstract class AppenderFactoryBase<E, K> {
+public abstract class AppenderFactoryBase<E> {
 
   final List<SaxEvent> eventList;
   Context context;
@@ -35,9 +35,9 @@ public abstract class AppenderFactoryBase<E, K> {
     System.out.println(eventList);
   }
 
-  public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(K k);
+  public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(String k);
   
-  Appender<E> buildAppender(Context context, K k) throws JoranException {
+  Appender<E> buildAppender(Context context, String k) throws JoranException {
     SiftingJoranConfiguratorBase<E> sjc = getSiftingJoranConfigurator(k);
     sjc.setContext(context);
     sjc.doConfigure(eventList);

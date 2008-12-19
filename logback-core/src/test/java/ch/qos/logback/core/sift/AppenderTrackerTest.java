@@ -16,7 +16,7 @@ public class AppenderTrackerTest {
 
   
   Context context = new ContextBase();
-  AppenderTracker<Object, String> appenderTracker = new AppenderTrackerImpl<Object, String>();
+  AppenderTracker<Object> appenderTracker = new AppenderTrackerImpl<Object>();
   ListAppender<Object> la = new ListAppender<Object>();
   
   @Before
