@@ -2,16 +2,7 @@
 
 <configuration>
 
-  <turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
-    <MDCKey>username</MDCKey>
-    <Value>sebastien</Value>
-    <OnMatch>ACCEPT</OnMatch>
-  </turboFilter>
-
-  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
-    <Marker>billing</Marker>
-    <OnMatch>DENY</OnMatch>
-  </turboFilter>
+  <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter" />
 
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">

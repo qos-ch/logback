@@ -33,13 +33,13 @@ public class FilterEvents {
     for (int i = 0; i < 10; i++) {
       if (i == 3)  {
         MDC.put("username", "sebastien");
-        logger.debug("logging statement " + i);
+        logger.debug("logging statement {}", i);
         MDC.remove("username");
       } else if (i == 6) {
         Marker billing = MarkerFactory.getMarker("billing");
-        logger.error(billing, "billing statement " + i);
+        logger.error(billing, "billing statement {}", i);
       } else {
-        logger.info("logging statement " + i);
+        logger.info("logging statement {}", i);
       }
     }
   }

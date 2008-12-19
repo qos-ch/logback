@@ -29,6 +29,37 @@
     <hr width="80%" align="center" />
 
 
+    <h3>xx of December 2008 - Release of version 0.9.14</h3>
+
+    <p>Corrected a serious dead-lock problem occuring during
+    configuration. It was reported in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-81">LBCLASSIC-81</a> by
+    Holger Mense.</p>
+
+    <p>Corrected thread leakage observed with
+    <code>TimeBasedRollingPolicy</code>'s
+    <code>AsynchronousCompressor</code>. This bug was reported in <a
+    href="http://jira.qos.ch/browse/LBCORE-78">LBCORE-78</a> by Szel
+    Zoltan.</p>
+
+    <p>Added <a
+    href="manual/filters.html#DuplicateMessageFilter">DuplicateMessageFilter</a>,
+    a turbo filter which detects duplicate messages, and beyond a
+    certain number of repetitions, drops repeated messages.</p>
+
+    
+    <p><code>BasicStatusManager</code>'s internal buffer is now split
+    into two parts, the header part and the tail part. The header part
+    stores the fist H status messages whereas the tail part stores the
+    last T messages. At present time H=T=150, although these values may
+    change in future releases.</p>
+
+    <p>Fixed <code>NullPointerException</code> thrown when calling
+    <code>setContextMap</code> on a fresh MDC. <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-98">Issue was</a>
+    reported by Francois Terrier.
+    </p>
+
     <h3>5th of December 2008 - Release of version 0.9.13</h3>
 
     <p>A <code>NullPointerException</code> was being thrown when a the

@@ -29,7 +29,7 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
   int getMessageCount(String msg) {
     Integer i = super.get(msg);
     if(i == null) {
-      i = 1;
+      i = 0;
     } else {
       i = new Integer(i.intValue()+1);
     }

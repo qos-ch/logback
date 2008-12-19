@@ -414,12 +414,21 @@ public class MyApp3 {
   </p>
 
    <p>Given a <code>StatusManager</code> you an access all the status
-   data associated with a logback context. You may also attach a
-   <code>StatusListener</code> to a <code>StatusManager</code> so that
-   you can take immediate action in response to status messages,
-   especially to messages occuring after logback
-   configuration. Registering a status listener is a convenient way to
-   supervise logback's internal state without human intervention.
+   data associated with a logback context. To keep memory usage at
+   reasonable levels, the default <code>StatusManager</code>
+   implementation stores the status messages in two separate parts,
+   the header part and the tail part. The header part stores the fist
+   <em>H</em> status messages whereas the tail part stores the last
+   <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
+   although these values may change in future releases.</p>
+
+
+   <p>You may also attach a <code>StatusListener</code> to a
+   <code>StatusManager</code> so that you can take immediate action in
+   response to status messages, especially to messages occurring after
+   logback configuration. Registering a status listener is a
+   convenient way to supervise logback's internal state without human
+   intervention.
    </p>
 
    <p>Logback ships with a <code>StatusListener</code> implementation

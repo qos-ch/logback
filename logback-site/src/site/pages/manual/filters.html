@@ -390,7 +390,7 @@ public class SampleFilter extends Filter {
 
     <p>The <a
     href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
-    class issues ten logging requests, numbered from 0 to 9. Let us
+    application issues ten logging requests, numbered 0 to 9. Let us
     rist run <code>FilterEvents</code> class without any filters:
 		</p>
 		
@@ -422,7 +422,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     <p>we obtain:
 		</p>
 		
-<div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
+    <p class="source">0    [main] INFO  chapter6.FilterEvents - logging statement 0
 0    [main] INFO  chapter6.FilterEvents - logging statement 1
 0    [main] INFO  chapter6.FilterEvents - logging statement 2
 0    [main] DEBUG chapter6.FilterEvents - logging statement 3
@@ -430,11 +430,10 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 0    [main] INFO  chapter6.FilterEvents - logging statement 5
 0    [main] INFO  chapter6.FilterEvents - logging statement 7
 0    [main] INFO  chapter6.FilterEvents - logging statement 8
-0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
+0    [main] INFO  chapter6.FilterEvents - logging statement 9</p>
 		
 		
-		<a name="TurboFilter"></a>
-		<h3>TurboFilters</h3>
+    <h2><a name="TurboFilter" href="#TurboFilter">TurboFilters</a></h2>
     
     <p><code>TurboFilter</code> objects all extend the
     	<a href="../xref/ch/qos/logback/classic/turbo/TurboFilter.html">
@@ -601,31 +600,32 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
   &lt;/root>  
 &lt;/configuration></pre></div>
 
-		<p>
-			You can see this configuration in action by issuing the following command:
+		<p>You can see this configuration in action by issuing the
+		following command:
 		</p>
     
-<div class="source"><pre>
-java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
-</pre></div>
+    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml</p>
 
-		<p>
-			As we've seen previously, the <code>FilterEvents</code> class creates 10 logging requests, 
-			each with its number from 0 to 9. All of the requests are of level <em>INFO</em>,
-			just like the configured overall level, except for two requests. 
-			The 3rd request, is a <em>DEBUG</em> level corresponding to the key <em>username</em>.
-			This obviously satisfies the first <code>TurboFilter</code> declared in the previous 
-			configuration file. The 6th request, a <em>ERROR</em> level request, 
-			which is issued along with the <em>billing</em> marker, matches 
-			the second <code>TurboFilter</code>.
+		<p>As we've seen previously, the <a
+		href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
+		application issues 10 logging requests, numbered 0 to 9. Except
+		for requests 3 and 6, all of the requests are of level
+		<em>INFO</em>, the same level as the one assigned to the root
+		logger. The 3rd request, is issued at the the <em>DEBUG</em>
+		level, which is below the effective level. However, since the MDC
+		key "username" is set to "sebastien" just before the 3rd request
+		and removed just afterwards, the <code>MDCFilter</code>
+		specifically accepts the request (and only that request). The 6th
+		request, issued at the <em>ERROR</em> level, is marked as
+		"billing". As such, it is denied by the MarkerFilter (the second
+		turbo filter in the configuration).
 		</p>
 		
-		<p>	
-			Here is the output of the previous command:
+		<p>Thus, the output of <code>FilterEvents</code> application
+		configured with <em>turboFilters.xml</em> file shown above is:
 		</p>
 
-<div class="source"><pre>
-2006-12-04 15:17:22,859 [main] INFO  chapter6.FilterEvents - logging statement 0
+    <p class="source">2006-12-04 15:17:22,859 [main] INFO  chapter6.FilterEvents - logging statement 0
 2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 1
 2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 2
 2006-12-04 15:17:22,875 [main] DEBUG chapter6.FilterEvents - logging statement 3
@@ -633,24 +633,119 @@ java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml
 2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 5
 2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 7
 2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 8
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 9
-</pre></div>
+2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 9</p>
 			
 			
-		<p>
-			One can see that the 3rd request, who should not be displayed if we
-			only followed the overall <em>INFO</em> level, appears anyway, because
-			it matched the first <code>TurboFilter</code> requirements and was accepted.
+		<p>One can see that the 3rd request, which should not be displayed
+		if we only followed the overall <em>INFO</em> level, appears
+		anyway, because it matched the first <code>TurboFilter</code>
+		requirements and was accepted.
 		</p>    
 		
-		<p>
-			On the other hand, the 6th request, that is a <em>ERROR</em> level request
-			should have been displayed. But it satisfied the second <code>TurboFilter</code>
-			whose <span class="option">OnMatch</span> option is set to <em>DENY</em>. 
-			Thus, the 6th request was not displayed.
+		<p>On the other hand, the 6th request, that is a <em>ERROR</em>
+		level request should have been displayed. But it satisfied the
+		second <code>TurboFilter</code> whose <span
+		class="option">OnMatch</span> option is set to <em>DENY</em>.
+		Thus, the 6th request was not displayed.
 		</p>
 		
+
+
 		  
+    <h3><a name="DuplicateMessageFilter"
+    href="#DuplicateMessageFilter">DuplicateMessageFilter</a></h3>
+
+    <p>The <code>DuplicateMessageFilter</code> merits a separate
+    presentation.  This filter detects duplicate messages, and beyond
+    a certain number of repetitions, drops repeated messages.
+    </p>
+
+    <p>To detect repetition, this filter uses simple String equality
+    between messages. It does not detect messages which are very
+    similar, varying only by few characters. For example, if you
+    write:
+    </p>
+
+    <p class="source">logger.debug("Hello "+name0);
+logger.debug("Hello "+name1);</p>
+  
+    <p>Assuming <code>name0</code> and <code>name1</code> have
+    different values, the two "Hello" messages will be considered as
+    unrelated. Depending on user demand, future releases may check for
+    string similarity, eliminating repetitions of similar but not
+    identical messages.
+    </p>
+
+    <p>Note that in case of parameterized logging, only the raw
+    message is taken into consideration. For example, in the next two
+    requests, the raw messages, i.e. "Hello {}.", are identical, and
+    thus considered as repetitions.
+    </p>
+
+    <p class="source">logger.debug("Hello {}.", name0);
+logger.debug("Hello {}.", name1);</p>
+  
+    <p>The number of allowed repetitions can be specified by the <span
+    class="option">AllowedRepetitions</span> property. For example, if
+    the said property is set to 1, then the 2nd and subsequent
+    occurrences of the same message will be dropped. Similarly, if the
+    said property is set to 2, then the 3rd and subsequent occurrences
+    of the same message will be dropped. By default, the <span
+    class="option">AllowedRepetitions</span> property is set to 5.
+    </p>
+
+    <p>In order to detect repetitions, this filter needs to keep
+    references to old messages in an internal cache. The size of this
+    cache is determined by the <span class="option">CacheSize</span>
+    property. By the default, this is set to 100.
+    </p>
+
+    
+<em>Example: <code>DuplicateMessageFilter</code> 
+configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em>
+<div class="source"><pre>&lt;configuration>
+
+  <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
+
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
+  &lt;/layout>
+  &lt;/appender>
+
+  &lt;root level="info">
+    &lt;appender-ref ref="console" />
+  &lt;/root>  
+&lt;/configuration></pre></div>
+
+  <p>Thus, the output for <code>FilterEvents</code> application
+  configured with <em>duplicateMessage.xml</em> is:
+  </p>
+
+    <p class="source">2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 0
+2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 1
+2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 2
+2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 4
+2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 5
+2008-12-19 15:04:26,171 [main] ERROR chapter6.FilterEvents - billing statement 6</p>
+
+    <p>"logging statement 0" is the first <em>occurrence</em> of the
+    message "logging statement {}". "logging statement 1" is the first
+    <em>repetition</em>, "logging statement 2" is the second
+    repetition. Interestingly enough, "logging statement 3" of level
+    DEBUG, is the <em>third</em> repetition, even though it is later
+    dropped by virtue of the <a
+    href="architecture.html#basic_selection">basic selection
+    rule</a>. This can be explained by the fact that turbo filters are
+    invoked before other types of filters, including the basic
+    selection rule. Thus, <code>DuplicateMessageFilter</code>
+    considers "logging statement 3" as a repetition, oblivious to the
+    fact that it will be dropped further down in the processing
+    chain. "logging statement 4" is the fourth repetition and "logging
+    statement 5" the fifth. Statements 6 and beyond are dropped
+    because only 5 repetitions are allowed by default.
+    </p>
+
     <h2>Logback-access</h2>
     
     <p>Logback-access offers most of the features available with

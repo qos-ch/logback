@@ -15,22 +15,36 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
 
+/**
+ * 
+ * See {@link http://logback.qos.ch/manual/filters.html#DuplicateMessageFilter}
+ * for details.
+ * 
+ * @author Ceki Gulcu
+ * 
+ */
 public class DuplicateMessageFilter extends TurboFilter {
 
-  static final int DEFAULT_CACHE_SIZE = 100;
-  static final int DEFAULT_ALLOWED_REPETITIONS = 5;
- 
+  /**
+   * The default cache size.
+   */
+  public static final int DEFAULT_CACHE_SIZE = 100;
+  /**
+   * The default number of allows repetitions.
+   */
+  public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+
   public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
   public int cacheSize = DEFAULT_CACHE_SIZE;
-  
+
   private LRUMessageCache msgCache;
-  
+
   @Override
   public void start() {
     msgCache = new LRUMessageCache(cacheSize);
     super.start();
   }
- 
+
   @Override
   public void stop() {
     msgCache.clear();
@@ -42,7 +56,7 @@ public class DuplicateMessageFilter extends TurboFilter {
   public FilterReply decide(Marker marker, Logger logger, Level level,
       String format, Object[] params, Throwable t) {
     int count = msgCache.getMessageCount(format);
-    if(count <= allowedRepetitions) {
+    if (count <= allowedRepetitions) {
       return FilterReply.NEUTRAL;
     } else {
       return FilterReply.DENY;
@@ -53,6 +67,11 @@ public class DuplicateMessageFilter extends TurboFilter {
     return allowedRepetitions;
   }
 
+  /**
+   * The allowed number of repetitions before
+   * 
+   * @param allowedRepetitions
+   */
   public void setAllowedRepetitions(int allowedRepetitions) {
     this.allowedRepetitions = allowedRepetitions;
   }
@@ -64,5 +83,5 @@ public class DuplicateMessageFilter extends TurboFilter {
   public void setCacheSize(int cacheSize) {
     this.cacheSize = cacheSize;
   }
-  
+
 }

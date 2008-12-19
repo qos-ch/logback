@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.turbo;
 
 import static org.junit.Assert.*;
@@ -13,7 +22,7 @@ public class DuplicateMessageFilterTest {
   @Test
   public void smoke() {
     DuplicateMessageFilter dmf = new DuplicateMessageFilter();
-    dmf.setAllowedRepetitions(1);
+    dmf.setAllowedRepetitions(0);
     dmf.start();
     assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "x", null, null));
     assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "y", null, null));
@@ -36,7 +45,7 @@ public class DuplicateMessageFilterTest {
   @Test
   public void many() {
     DuplicateMessageFilter dmf = new DuplicateMessageFilter();
-    dmf.setAllowedRepetitions(1);
+    dmf.setAllowedRepetitions(0);
     int cacheSize = 10;
     int margin  = 2;
     dmf.setCacheSize(cacheSize);

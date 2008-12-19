@@ -28,12 +28,6 @@ public abstract class SiftingAppenderBase<E, K> extends
     UnsynchronizedAppenderBase<E> {
 
   protected AppenderTracker<E, K> appenderTracker = new AppenderTrackerImpl<E, K>();
-  // Map<String, Appender<LoggingEvent>> appenderMap = new Hashtable<String,
-  // Appender<LoggingEvent>>();
-
-  String mdcKey;
-  String defaultValue;
-
   AppenderFactoryBase<E, K> appenderFactory;
 
   public void setAppenderFactory(AppenderFactoryBase<E, K> appenderFactory) {
@@ -53,7 +47,6 @@ public abstract class SiftingAppenderBase<E, K> extends
   }
 
   abstract protected K getDiscriminatingValue(E event);
-
   abstract protected long getTimestamp(E event);
 
   @Override
@@ -80,22 +73,6 @@ public abstract class SiftingAppenderBase<E, K> extends
     }
     appenderTracker.stopStaleAppenders(timestamp);
     appender.doAppend(event);
-  }
-
-  public String getMdcKey() {
-    return mdcKey;
-  }
-
-  public void setMdcKey(String mdcKey) {
-    this.mdcKey = mdcKey;
-  }
-
-  /**
-   * @see #setDefaultValue(String)
-   * @return
-   */
-  public String getDefaultValue() {
-    return defaultValue;
   }
 
 }

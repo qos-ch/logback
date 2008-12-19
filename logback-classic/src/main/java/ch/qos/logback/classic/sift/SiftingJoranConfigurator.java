@@ -12,12 +12,12 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class HoardingJoranConfigurator  extends SiftingJoranConfiguratorBase<LoggingEvent> {
+public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<LoggingEvent> {
 
   String key;
   String value;
   
-  HoardingJoranConfigurator(String key, String value) {
+  SiftingJoranConfigurator(String key, String value) {
     this.key = key;
     this.value = value;
   }

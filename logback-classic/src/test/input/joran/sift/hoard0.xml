@@ -4,11 +4,11 @@
 <configuration debug="true">
 
   <appender name="SIFT"
-    class="ch.qos.logback.classic.hoard.HoardingAppender">
+    class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <mdcKey>userid</mdcKey>
     <default>asdad</default>
-    <hoard>
+    <sift>
       <appender name="FILE-${userid}" class="ch.qos.logback.core.FileAppender">
         <File>${userid}.log</File>
         <Append>true</Append>
@@ -16,7 +16,7 @@
           <Pattern>%d [%thread] %level %logger{35} - %msg%n</Pattern>
         </layout>
       </appender>
-    </hoard>
+    </sift>
   </appender>
 
   <root level="DEBUG">

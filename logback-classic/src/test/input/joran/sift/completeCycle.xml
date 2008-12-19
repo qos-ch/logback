@@ -8,9 +8,9 @@
 
     <mdcKey>cycle</mdcKey>
     <defaultValue>cycleDefault</defaultValue>
-    <hoard>
+    <sift>
       <appender name="list-${cycle}" class="ch.qos.logback.core.read.ListAppender"/>
-    </hoard>
+    </sift>
   </appender>
 
   <root level="DEBUG">

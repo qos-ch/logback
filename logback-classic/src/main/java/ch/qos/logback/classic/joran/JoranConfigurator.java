@@ -20,7 +20,7 @@ import ch.qos.logback.classic.joran.action.LayoutAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
 import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
-import ch.qos.logback.classic.sift.HoardAction;
+import ch.qos.logback.classic.sift.SiftAction;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
@@ -53,8 +53,8 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("*/evaluator/matcher"),
         new MatcherAction());
 
-    rs.addRule(new Pattern("configuration/appender/hoard"), new HoardAction());
-    rs.addRule(new Pattern("configuration/appender/hoard/*"), new NOPAction());
+    rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
+    rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());
     
     
     rs.addRule(new Pattern("configuration/logger"), new LoggerAction());

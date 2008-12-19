@@ -11,7 +11,7 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-public class HoardAction  extends Action implements InPlayListener {
+public class SiftAction  extends Action implements InPlayListener {
   List<SaxEvent> seList;
   
   @Override

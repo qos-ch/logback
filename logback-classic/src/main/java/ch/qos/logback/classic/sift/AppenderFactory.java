@@ -27,7 +27,7 @@ public class AppenderFactory extends AppenderFactoryBase<LoggingEvent, String>{
   }
 
   public SiftingJoranConfiguratorBase<LoggingEvent> getSiftingJoranConfigurator(String k) {
-    return new HoardingJoranConfigurator(mdcKey, k);
+    return new SiftingJoranConfigurator(mdcKey, k);
   }
 
 }

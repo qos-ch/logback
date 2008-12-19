@@ -8,9 +8,9 @@
 
     <mdcKey>userid</mdcKey>
     <defaultValue>smoke</defaultValue>
-    <hoard>
+    <sift>
       <appender name="list-${userid}" class="ch.qos.logback.core.read.ListAppender"/>
-    </hoard>
+    </sift>
   </appender>
 
   <root level="DEBUG">
