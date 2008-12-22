@@ -1,36 +1,42 @@
 package ch.qos.logback.access.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessEvent;
 
-public class ConverterTest extends TestCase {
+public class ConverterTest  {
 
   AccessEvent event;
   DummyRequest request;
   DummyResponse response;
 
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     request = new DummyRequest();
     response = new DummyResponse();
     event = createEvent();
   }
 
+  @After
   public void tearDown() throws Exception {
-    super.tearDown();
     event = null;
     request = null;
     response = null;
   }
 
+  @Test
   public void testContentLengthConverter() {
     ContentLengthConverter converter = new ContentLengthConverter();
     converter.start();
@@ -38,6 +44,7 @@ public class ConverterTest extends TestCase {
     assertEquals(Long.toString(event.getServerAdapter().getContentLength()), result);
   }
 
+  @Test
   public void testDateConverter() {
     DateConverter converter = new DateConverter();
     converter.start();
@@ -52,6 +59,7 @@ public class ConverterTest extends TestCase {
     assertEquals(Integer.toString(request.getLocalPort()), result);
   }
 
+  @Test
   public void testRemoteHostConverter() {
     RemoteHostConverter converter = new RemoteHostConverter();
     converter.start();
@@ -59,6 +67,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getRemoteHost(), result);
   }
 
+  @Test
   public void testRemoteIPAddressConverter() {
     RemoteIPAddressConverter converter = new RemoteIPAddressConverter();
     converter.start();
@@ -66,6 +75,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getRemoteAddr(), result);
   }
 
+  @Test
   public void testRemoteUserConverter() {
     RemoteUserConverter converter = new RemoteUserConverter();
     converter.start();
@@ -73,6 +83,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getRemoteUser(), result);
   }
 
+  @Test
   public void testRequestAttributeConverter() {
     RequestAttributeConverter converter = new RequestAttributeConverter();
     List<String> optionList = new ArrayList<String>();
@@ -83,6 +94,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getAttribute("testKey"), result);
   }
 
+  @Test
   public void testRequestCookieConverter() {
     RequestCookieConverter converter = new RequestCookieConverter();
     List<String> optionList = new ArrayList<String>();
@@ -94,6 +106,7 @@ public class ConverterTest extends TestCase {
     assertEquals(cookie.getValue(), result);
   }
 
+  @Test
   public void testRequestHeaderConverter() {
     RequestHeaderConverter converter = new RequestHeaderConverter();
     List<String> optionList = new ArrayList<String>();
@@ -104,6 +117,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getHeader("headerName1"), result);
   }
 
+  @Test
   public void testRequestMethodConverter() {
     RequestMethodConverter converter = new RequestMethodConverter();
     converter.start();
@@ -111,6 +125,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getMethod(), result);
   }
 
+  @Test
   public void testRequestProtocolConverter() {
     RequestProtocolConverter converter = new RequestProtocolConverter();
     converter.start();
@@ -118,6 +133,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getProtocol(), result);
   }
 
+  @Test
   public void testRequestURIConverter() {
     RequestURIConverter converter = new RequestURIConverter();
     converter.start();
@@ -125,6 +141,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getRequestURI(), result);
   }
 
+  @Test
   public void testRequestURLConverter() {
     RequestURLConverter converter = new RequestURLConverter();
     converter.start();
@@ -134,6 +151,7 @@ public class ConverterTest extends TestCase {
     assertEquals(expected, result);
   }
 
+  @Test
   public void testResponseHeaderConverter() {
      ResponseHeaderConverter converter = new ResponseHeaderConverter();
      List<String> optionList = new ArrayList<String>();
@@ -144,6 +162,7 @@ public class ConverterTest extends TestCase {
      assertEquals(request.getHeader("headerName1"), result);
   }
 
+  @Test
   public void testServerNameConverter() {
     ServerNameConverter converter = new ServerNameConverter();
     converter.start();
@@ -151,6 +170,7 @@ public class ConverterTest extends TestCase {
     assertEquals(request.getServerName(), result);
   }
   
+  @Test
   public void testStatusCodeConverter() {
     StatusCodeConverter converter = new StatusCodeConverter();
     converter.start();

@@ -9,14 +9,13 @@
  */
 package ch.qos.logback.access.net;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({URLEvaluatorTest.class, SocketAppenderTest.class})
 public class PackageTest extends TestCase {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(URLEvaluatorTest.class);
-    suite.addTestSuite(SocketAppenderTest.class);
-    return suite;
-  }
 }

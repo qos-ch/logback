@@ -1,0 +1,15 @@
+<configuration>
+
+  <appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">
+    <KeyName>uri</KeyName>
+    <Discriminator class="ch.qos.logback.access.sift.AccessEventDiscriminator">
+      <FieldName>REQUEST_URI</FieldName>
+      <DefaultValue>NA</DefaultValue>
+    </Discriminator>
+    <sift>
+      <appender name="${uri}" class="ch.qos.logback.core.read.ListAppender"/>
+    </sift>
+  </appender>
+
+  <appender-ref ref="SIFTING" />
+</configuration>

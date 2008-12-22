@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.access.jetty;
 
 import java.io.IOException;
@@ -7,15 +16,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
-import org.mortbay.jetty.handler.ContextHandler;
-import org.mortbay.jetty.handler.RequestLogHandler;
-import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.util.ByteArrayISO8859Writer;
 
 import ch.qos.logback.access.PatternLayout;
@@ -23,62 +27,26 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.ConsoleAppender;
 
-public class JettyFixture {
-  RequestLogImpl requestLogImpl;
-
-  private final int port;
-  Server server;
-  String url;
+public class JettyFixture extends JettyFixtureBase {
+  
+  Handler handler = new BasicHandler();
   
   public JettyFixture(RequestLogImpl impl, int port) {
-    requestLogImpl = impl;
-    this.port = port;
+    super(impl, port);
     url = "http://localhost:" + port + "/";
   }
 
-  public String getName() {
-    return "Jetty Test Setup";
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
   public void start() throws Exception {
-    server = new Server();
-    Connector connector = new SelectChannelConnector();
-    connector.setPort(port);
-    server.setConnectors(new Connector[] { connector });
-
-    ContextHandler context = new ContextHandler();
-    context.setContextPath("/");
-    context.setResourceBase(".");
-    context.setClassLoader(Thread.currentThread().getContextClassLoader());
-    server.addHandler(context);
-
-    RequestLogHandler requestLogHandler = new RequestLogHandler();
-    buildContext();
-    requestLogHandler.setRequestLog(requestLogImpl);
-    server.addHandler(requestLogHandler);
-
-    Handler handler = new BasicHandler();
-    context.addHandler(handler);
-
-    server.start();
-    
+    super.start();
     Thread.yield();
   }
 
   public void stop() throws Exception {
-    // System.out.println("into tearDown");
-    server.stop();
-    Thread.sleep(1000);
-    server = null;
-    requestLogImpl = null;
+    super.stop();
+    Thread.sleep(500);
   }
 
-  private void buildContext() {
-
+  protected void buildContext() {
     NotifyingListAppender appender = new NotifyingListAppender();
     appender.setContext(requestLogImpl);
     appender.setName("list");
@@ -96,6 +64,11 @@ public class JettyFixture {
 
     requestLogImpl.addAppender(appender);
     requestLogImpl.addAppender(console);
+  }
+
+  @Override
+  protected Handler getHandler() {
+    return handler;
   }
 
 }

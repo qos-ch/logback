@@ -109,7 +109,7 @@
           <reportFormat>plain</reportFormat>
           <disableXmlReport>true</disableXmlReport>
           <excludes>
-            <exclude>**/AllTest.java</exclude>
+            <exclude>**/AllAccessTest.java</exclude>
             <exclude>**/PackageTest.java</exclude>
             <exclude>**/SerializationPerfTest.java</exclude>
           </excludes>

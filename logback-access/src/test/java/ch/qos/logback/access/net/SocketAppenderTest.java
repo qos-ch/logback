@@ -9,19 +9,24 @@
  */
 package ch.qos.logback.access.net;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
-import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.AccessContext;
+import ch.qos.logback.access.spi.AccessEvent;
 
 
-public class SocketAppenderTest extends TestCase {
+public class SocketAppenderTest {
 
   private AccessContext context;
   private MockSocketServer mockSocketServer;
 
+  @Test
   public void testStartFailNoRemoteHost() {
     context = new AccessContext();
     SocketAppender appender = new SocketAppender();
@@ -31,6 +36,7 @@ public class SocketAppenderTest extends TestCase {
     assertEquals(1, context.getStatusManager().getCount());
   }
 
+  @Test
   public void testRecieveMessage() throws InterruptedException {
     startServer(1);
     configureClient();

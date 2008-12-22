@@ -32,7 +32,6 @@ public abstract class AppenderFactoryBase<E> {
   void removeHoardElement() {
     eventList.remove(0);
     eventList.remove(eventList.size() - 1);
-    System.out.println(eventList);
   }
 
   public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(String k);

@@ -7,16 +7,14 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
-package ch.qos.logback.access.filter;
-
-import junit.framework.TestCase;
+package ch.qos.logback.access.sift;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({StatsByDayTest.class})
-public class PackageTest extends TestCase {
+@SuiteClasses({SiftingAppenderTest.class})
+public class PackageTest  {
+
 }

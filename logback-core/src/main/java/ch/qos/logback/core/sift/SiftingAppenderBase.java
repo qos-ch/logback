@@ -28,13 +28,22 @@ public abstract class SiftingAppenderBase<E> extends
 
   protected AppenderTracker<E> appenderTracker = new AppenderTrackerImpl<E>();
   AppenderFactoryBase<E> appenderFactory;
-
+  
+  Discriminator<E> discriminator;
+  
   public void setAppenderFactory(AppenderFactoryBase<E> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
 
   @Override
   public void start() {
+    if(discriminator == null) {
+      addError("Missing discriminator. Aborting");
+      return;
+    }
+    if(!discriminator.isStarted()) {
+      addError("Discriminator has not started successfully. Aborting");
+    }
     super.start();
   }
 
@@ -45,7 +54,6 @@ public abstract class SiftingAppenderBase<E> extends
     }
   }
 
-  abstract protected String getDiscriminatingValue(E event);
   abstract protected long getTimestamp(E event);
 
   @Override
@@ -54,7 +62,7 @@ public abstract class SiftingAppenderBase<E> extends
       return;
     }
 
-    String value = getDiscriminatingValue(event);
+    String value = discriminator.getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
 
     Appender<E> appender = appenderTracker.get(value, timestamp);
@@ -72,6 +80,14 @@ public abstract class SiftingAppenderBase<E> extends
     }
     appenderTracker.stopStaleAppenders(timestamp);
     appender.doAppend(event);
+  }
+
+  public Discriminator<E> getDiscriminator() {
+    return discriminator;
+  }
+
+  public void setDiscriminator(Discriminator<E> discriminator) {
+    this.discriminator = discriminator;
   }
 
 }

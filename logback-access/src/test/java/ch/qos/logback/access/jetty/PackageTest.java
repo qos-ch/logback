@@ -10,13 +10,12 @@
 
 package ch.qos.logback.access.jetty;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses({JettyBasicTest.class})
+public class PackageTest  {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(JettyBasicTest.class));
-    return suite;
-  }
 }

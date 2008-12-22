@@ -9,13 +9,13 @@
  */
 package ch.qos.logback.access.pattern;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses({ConverterTest.class})
+public class PackageTest  {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(ConverterTest.class);
-    return suite;
-  }
+
 }

@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.classic.sift;
 
-import org.slf4j.MDC;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
@@ -44,21 +42,12 @@ public class SiftingAppender extends SiftingAppenderBase<LoggingEvent> {
       errors++;
       addError("The \"defaultValue\" property must be set");
     }
+    setDiscriminator(new MDCBasedDiscriminator(mdcKey, defaultValue));
     if (errors == 0) {
       super.start();
     }
   }
 
-  @Override
-  protected String getDiscriminatingValue(LoggingEvent event) {
-    String mdcValue = MDC.get(mdcKey);
-    if (mdcValue == null) {
-      return defaultValue;
-    } else {
-      return mdcValue;
-    }
-  }
-  
   AppenderTracker<LoggingEvent> getAppenderTracker() {
     return appenderTracker;
   }

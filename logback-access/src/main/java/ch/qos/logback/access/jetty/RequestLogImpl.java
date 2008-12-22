@@ -133,12 +133,10 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
-    // TODO better exception handling
     aai.appendLoopOnAppenders(accessEvent);
   }
 
   public void start() {
-
     if (filename == null) {
       String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
 

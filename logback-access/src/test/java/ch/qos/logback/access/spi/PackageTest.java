@@ -9,13 +9,13 @@
  */
 package ch.qos.logback.access.spi;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({AccessEventSerializationTest.class})
 public class PackageTest extends TestCase {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(AccessEventSerializationTest.class));
-    return suite;
-  }
 }
