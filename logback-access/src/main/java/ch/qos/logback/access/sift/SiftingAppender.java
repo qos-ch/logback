@@ -10,9 +10,10 @@
 package ch.qos.logback.access.sift;
 
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.sift.AppenderTracker;
+import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * This appender can contains other appenders which it can build dynamically
@@ -26,18 +27,9 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class SiftingAppender extends SiftingAppenderBase<AccessEvent> {
 
-  String keyName;
-
   @Override
   public void start() {
-    int errors = 0;
-    if (OptionHelper.isEmpty(keyName)) {
-      errors++;
-      addError("The \"keyName\" property must be set");
-    }
-    if (errors == 0) {
-      super.start();
-    }
+    super.start();
   }
 
   AppenderTracker<AccessEvent> getAppenderTracker() {
@@ -49,12 +41,9 @@ public class SiftingAppender extends SiftingAppenderBase<AccessEvent> {
     return event.getTimeStamp();
   }
 
-  public String getKeyName() {
-    return keyName;
+  @Override
+  @DefaultClass(AccessEventDiscriminator.class)
+  public void setDiscriminator(Discriminator<AccessEvent> discriminator) {
+    super.setDiscriminator(discriminator);
   }
-
-  public void setKeyName(String keyName) {
-    this.keyName = keyName;
-  }
-
 }

@@ -7,12 +7,15 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.core.sift;
+package ch.qos.logback.core.joran.spi;
 
-import ch.qos.logback.core.spi.LifeCycle;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-
-public interface Discriminator<E> extends LifeCycle {
-  String getDiscriminatingValue(E e);
-  String getKey();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface DefaultClass {
+  Class value();
 }

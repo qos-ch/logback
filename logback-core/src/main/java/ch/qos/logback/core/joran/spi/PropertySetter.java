@@ -22,6 +22,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -37,8 +38,7 @@ import ch.qos.logback.core.util.PropertySetterException;
  * the Object specified in the constructor. This class relies on the JavaBeans
  * {@link Introspector} to analyze the given Object Class using reflection.
  * 
- * <p>
- * Usage:
+ * <p> Usage:
  * 
  * <pre>
  * PropertySetter ps = new PropertySetter(anObject);
@@ -97,11 +97,10 @@ public class PropertySetter extends ContextAwareBase {
    * setter argument type and partly from the value specified in the call to
    * this method.
    * 
-   * <p>
-   * If the setter expects a String no conversion is necessary. If it expects an
-   * int, then an attempt is made to convert 'value' to an int using new
-   * Integer(value). If the setter expects a boolean, the conversion is by new
-   * Boolean(value).
+   * <p> If the setter expects a String no conversion is necessary. If it
+   * expects an int, then an attempt is made to convert 'value' to an int using
+   * new Integer(value). If the setter expects a boolean, the conversion is by
+   * new Boolean(value).
    * 
    * @param name
    *                name of the property
@@ -529,5 +528,37 @@ public class PropertySetter extends ContextAwareBase {
 
   public Object getObj() {
     return obj;
+  }
+
+  public <T extends Annotation> T getAnnotation(String name,
+      Class<T> annonationClass, AggregationType aggregationType) {
+    String cName = capitalizeFirstLetter(name);
+    Method relevantMethod;
+    if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
+      relevantMethod = getMethod("add" + cName);
+    } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
+      relevantMethod = findSetterMethod(cName);
+    } else {
+      throw new IllegalStateException(aggregationType + " not allowed here");
+    }
+    if (relevantMethod != null) {
+      return relevantMethod.getAnnotation(annonationClass);
+    } else {
+      return null;
+    }
+  }
+
+  public String getDefaultClassNameByAnnonation(String name,
+      AggregationType aggregationType) {
+
+    DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class,
+        aggregationType);
+    if (defaultClassAnnon != null) {
+      Class defaultClass = defaultClassAnnon.value();
+      if (defaultClass != null) {
+        return defaultClass.getName();
+      }
+    }
+    return null;
   }
 }

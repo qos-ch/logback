@@ -180,6 +180,15 @@ public class PropertySetterTest  {
     setter.setProperty("houseColor", "BLUE");
     assertEquals(HouseColor.BLUE, house.getHouseColor());
   }
+  
+  
+  @Test
+  public void testDefaultClassAnnonation() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    String spClassName = setter.getDefaultClassNameByAnnonation("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY);
+    assertEquals(SwimmingPool.class.getName(), spClassName);
+  }
 }
 
 class House {
@@ -237,6 +246,7 @@ class House {
     this.open = open;
   }
   
+  @DefaultClass(SwimmingPool.class)
   public void setSwimmingPool(SwimmingPool pool) {
     this.pool = pool;
   }

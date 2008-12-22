@@ -3,13 +3,15 @@
 
 <configuration debug="true">
 
-  <appender name="SIFT"
-    class="ch.qos.logback.classic.sift.SiftingAppender">
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 
-    <mdcKey>userid</mdcKey>
-    <defaultValue>smoke</defaultValue>
+    <discriminator>
+      <Key>userid</Key>
+      <defaultValue>smoke</defaultValue>
+    </discriminator>
     <sift>
-      <appender name="list-${userid}" class="ch.qos.logback.core.read.ListAppender"/>
+      <appender name="list-${userid}"
+        class="ch.qos.logback.core.read.ListAppender" />
     </sift>
   </appender>
 

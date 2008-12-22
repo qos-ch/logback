@@ -25,6 +25,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
   static final String PREFIX = "src/test/input/jetty/";
@@ -51,11 +52,14 @@ public class SiftingAppenderTest {
     rli.setFileName(PREFIX + "sifting.xml");
     jettyFixture.start();
 
+
+    StatusPrinter.print(rli);
     invokeServer("/");
     invokeServer("/x");
     invokeServer("/x");
     invokeServer("/y");
 
+    
     SiftingAppender siftingAppender = (SiftingAppender) rli
         .getAppender("SIFTING");
     List<String> keyList = siftingAppender.getAppenderTracker().keyList();

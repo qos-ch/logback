@@ -14,12 +14,11 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
- * This appender can contains other appenders which it can build dynamically
- * depending on MDC values. The built appender is specified as part of a
- * configuration file.
- * 
- * <p>See the logback manual for further details.
- * 
+ * This appender serves as the base class for actual SiftingAppenders
+ * implemented by the logback-classic and logback-access modules. In a nutshell,
+ * a SiftingAppender contains other appenders which it can build dynamically
+ * depending on discriminating values supplied by event currently being
+ * processed. The built appender is specified as part of a configuration file.
  * 
  * @author Ceki Gulcu
  */
@@ -28,23 +27,27 @@ public abstract class SiftingAppenderBase<E> extends
 
   protected AppenderTracker<E> appenderTracker = new AppenderTrackerImpl<E>();
   AppenderFactoryBase<E> appenderFactory;
-  
+
   Discriminator<E> discriminator;
-  
+
   public void setAppenderFactory(AppenderFactoryBase<E> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
 
   @Override
   public void start() {
-    if(discriminator == null) {
+    int errors = 0;
+    if (discriminator == null) {
       addError("Missing discriminator. Aborting");
-      return;
+      errors++;
     }
-    if(!discriminator.isStarted()) {
+    if (!discriminator.isStarted()) {
       addError("Discriminator has not started successfully. Aborting");
+      errors++;
     }
-    super.start();
+    if (errors == 0) {
+      super.start();
+    }
   }
 
   @Override
@@ -90,4 +93,12 @@ public abstract class SiftingAppenderBase<E> extends
     this.discriminator = discriminator;
   }
 
+  
+  public String getDiscriminatorKey() {
+    if(discriminator != null) {
+      return discriminator.getKey();
+    } else {
+      return null;
+    }
+  }
 }

@@ -74,7 +74,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
 
       return true;
     default:
-      addError("PropertySetter.canContainComponent returned " + aggregationType);
+      addError("PropertySetter.computeAggregationType returned " + aggregationType);
       return false;
     }
   }
@@ -87,9 +87,13 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         .peek();
 
     String className = attributes.getValue(CLASS_ATTRIBUTE);
-
     // perform variable name substitution
     className = ec.subst(className);
+    if (className == null) {
+      PropertySetter parentBean = actionData.parentBean;
+      className = parentBean.getDefaultClassNameByAnnonation(actionData
+          .getComplexPropertyName(), actionData.getAggregationType());
+    }
 
     if (OptionHelper.isEmpty(className)) {
       Class clazz = actionData.parentBean

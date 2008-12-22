@@ -11,9 +11,9 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-public class SiftAction  extends Action implements InPlayListener {
+public class SiftAction extends Action implements InPlayListener {
   List<SaxEvent> seList;
-  
+
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
       throws ActionException {
@@ -26,22 +26,19 @@ public class SiftAction  extends Action implements InPlayListener {
     ec.removeInPlayListener(this);
     Object o = ec.peekObject();
     if (o instanceof SiftingAppender) {
-      SiftingAppender ha = (SiftingAppender) o; 
-      AppenderFactory appenderFactory = new AppenderFactory(context, seList, ha.getMdcKey());
-      ha.setAppenderFactory(appenderFactory);
+      SiftingAppender sa = (SiftingAppender) o;
+      AppenderFactory appenderFactory = new AppenderFactory(context, seList, sa
+          .getDiscriminatorKey());
+      sa.setAppenderFactory(appenderFactory);
     }
   }
 
   public void inPlay(SaxEvent event) {
     seList.add(event);
-    System.out.println(event);
   }
 
   public List<SaxEvent> getSeList() {
     return seList;
   }
-
-    
-
 
 }

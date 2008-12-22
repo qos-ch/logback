@@ -32,6 +32,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   }
 
   String defaultValue;
+  String key;
   FieldName fieldName;
   String optionalKey;
 
@@ -154,6 +155,14 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
    */
   public void setDefaultValue(String defaultValue) {
     this.defaultValue = defaultValue;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   

@@ -47,9 +47,8 @@ public class SiftingAppenderTest {
   public void unsetDefaultValueProperty() throws JoranException {
     configure(PREFIX + "unsetDefaultValueProperty.xml");
     logger.debug("hello");
-    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    assertFalse(ha.isStarted());
-    
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    assertFalse(sa.isStarted());
   }
 
   @Test

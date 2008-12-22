@@ -3,13 +3,15 @@
 
 <configuration debug="true">
 
-  <appender name="SIFT"
-    class="ch.qos.logback.classic.sift.SiftingAppender">
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 
-    <mdcKey>cycle</mdcKey>
-    <defaultValue>cycleDefault</defaultValue>
+    <discriminator>
+      <Key>cycle</Key>
+      <defaultValue>cycleDefault</defaultValue>
+    </discriminator>
     <sift>
-      <appender name="list-${cycle}" class="ch.qos.logback.core.read.ListAppender"/>
+      <appender name="list-${cycle}"
+        class="ch.qos.logback.core.read.ListAppender" />
     </sift>
   </appender>
 
