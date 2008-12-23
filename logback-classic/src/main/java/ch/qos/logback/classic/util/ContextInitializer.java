@@ -80,7 +80,7 @@ public class ContextInitializer {
       return url;
     }
 
-    url = Loader.getResourceBySelfClassLoader(TEST_AUTOCONFIG_FILE);
+    url = Loader.getResource(TEST_AUTOCONFIG_FILE, this.getClass().getClassLoader());
     if (updateStatus) {
       statusOnResourceSearch(TEST_AUTOCONFIG_FILE, url);
     }
@@ -88,7 +88,7 @@ public class ContextInitializer {
       return url;
     }
 
-    url = Loader.getResourceBySelfClassLoader(AUTOCONFIG_FILE);
+    url = Loader.getResource(AUTOCONFIG_FILE, this.getClass().getClassLoader());
     if (updateStatus) {
       statusOnResourceSearch(AUTOCONFIG_FILE, url);
     }
