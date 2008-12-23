@@ -3067,27 +3067,227 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		deny requests coming via a network connection.
 		</p>
 		
+
+    <h3><a name="SiftingAppender"
+    href="#SiftingAppender">SiftingAppender</a></h3>
+
+    <p>As its name implies, a <code>SiftingAppender</code> can be used
+    to separate (or sift) logging according to some runtime attribute.
+    For example, <code>SiftingAppender</code> can separate logging
+    events into distinct log files, one file per user. 
+    </p>
+
+
+    <p><code>SiftingAppender</code> embeds and manages multiple
+    appenders which it builds dynamically depending on discriminating
+    values. The built appender is specified in a configuration file
+    within the <code>SiftingAppender</code> definition itself.  By
+    default, <code>SiftingAppender</code> uses MDC key/value pairs as
+    a discriminator.
+    </p>
+ 
+    <p>After configuring logback, the <a
+    href="../xref/chapter4/sift/SiftExample.html">SiftExample</a>
+    application logs a message stating that the application has
+    started. It then sets the MDC key "userid" to "Alice" and logs a
+    message. Here is the salient code:</p>
+   
+    <p class="source">logger.debug("Application started");
+MDC.put("userid", "Alice");
+logger.debug("Alice says hello"); </p>
+
+    <p>The next configuration file illustrates the use of
+    <code>SiftingAppender</code>.</p>
+
+
+    <em>Example 4.<span class="autoEx"/>: <code>SiftingAppender</code>
+    configuration
+    (logback-examples/src/main/java/chapter4/sift/byUserid.xml)</em>
+
+    <p class="source">&lt;configuration>
+
+  <b>&lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender"></b>
+    &lt;!-- in the absence of the class attribute, it is assumed that the
+         desired discriminator type is
+         ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
+    <b>&lt;discriminator></b>
+      <b>&lt;Key><span class="green">userid</span>&lt;/Key></b>
+      <b>&lt;DefaultValue>unknown&lt;/DefaultValue></b>
+    <b>&lt;/discriminator></b>
+    <b>&lt;sift></b>
+      <b>&lt;appender name="FILE-<span class="green">${userid}</span>" class="ch.qos.logback.core.FileAppender"></b>
+        <b>&lt;File><span class="green">${userid}</span>.log&lt;/File></b>
+        <b>&lt;Append>false&lt;/Append></b>
+        <b>&lt;layout class="ch.qos.logback.classic.PatternLayout"></b>
+          <b>&lt;Pattern>%d [%thread] %level %mdc %logger{35} - %msg%n&lt;/Pattern></b>
+        <b>&lt;/layout></b>
+      <b>&lt;/appender></b>
+    <b>&lt;/sift></b>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SIFT" />
+  &lt;/root>
+&lt;/configuration></p>
+    
+    
+    <p>In the absence of a class attribute, it is assumed that the
+    discriminator type is <a
+    href="xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>. It
+    will use the MDC value associated with the <span
+    class="option">Key</span> property as a districimator. If that
+    value is null, then the value associated with the <span
+    class="option">DefaultValue</span> property will be used.
+    </p>
+
+    <p>The <code>SiftingAppender</code> is unique in its capacity to
+    reference and configure nested appenders. In the above example,
+    within the <code>SiftingAppender</code> there will be nested
+    FileAppender instances, each instance identified by the value
+    associated with the "userid" MDC key. Whenever the "userid" MDC
+    key is assigned a new value, a new <code>FileAppender</code>
+    instance will be built from scratch. The SiftingAppender keeps
+    track of the appenders it creates. Appenders unused for 30 minutes
+    will be automatically closed and discarded.
+    </p>
+
+    <p>It is not enough to have different appender instances, each
+    instance must output to a distinct target resource. To allow such
+    differentiation, within the nested appender (FileAppender above),
+    the key passed to the discriminator, "userid" in the above
+    example, becomes a <a
+    href="joran.html#variableSubstitution">variable</a>. Consequently,
+    this variable can be used to differentiate the actual resource
+    used by a given nested appender.
+    </p>
+
+    <p>Running <code>SiftExample</code> application with the
+    "byUserid.xml" configuration file shown above, will result in two
+    distinct log files, "unknown.log" and "Alice.log".
+		</p>
+
+
+		<h3><a name="WriteYourOwnAppender"
+		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>
+
+
+    <p>You can easily write your appender by sub-classing <code>AppenderBase</code>. 
+    It handles support for filters, status among other functionality shared by most appenders. 
+    The derived class only needs to implement one method, namely 
+    <code>append(Object eventObject)</code>.
+    </p>
+
+    <p>The <code>CountingConsoleAppender</code>, which we list next, appends a limited 
+    number of incoming events on the console. It shuts down after the limit is reached.
+    It uses a <code>Layout</code> to format the events and accepts a parameter, 
+    thus a few more methods are needed.
+    </p>
+    
+    <em>Example 4.<span class="autoExec"/>: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
+    <p class="source">package chapter4;
+
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
+
+
+public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
+  static int DEFAULT_LIMIT = 16;
+  int counter = 0;
+  int limit = DEFAULT_LIMIT;
+  
+  private Layout&lt;LoggingEvent> layout;
+
+  public CountingConsoleAppender() {
+  }
+
+  public void setLimit(int limit) {
+    this.limit = limit;
+  }
+
+  public int getLimit() {
+    return limit;
+  }  
+  
+  @Override
+  public void start() {
+    if (this.layout == null) {
+      addError("No layout set for the appender named ["+ name +"].");
+      return;
+    }
+    
+    super.start();
+  }
+
+  public void append(LoggingEvent event) {
+
+    if (counter >= limit) {
+      return;
+    }
+
+    // output the events as formatted by our layout
+    System.out.print(this.layout.doLayout(event));
+
+    // prepare for next event
+    counter++;
+  }
+
+  public Layout&lt;LoggingEvent> getLayout() {
+    return layout;
+  }
+
+  public void setLayout(Layout&lt;LoggingEvent> layout) {
+    this.layout = layout;
+  }
+}</p>
+
+		<p>The <code>start()</code> method checks for the presence of a
+		<code>Layout</code>.  In case none is found, the appender is not
+		started.
+		</p>
 		
-		<a name="Access"></a>
-		<h2>Logback Access</h2>
+		<p>This custom appender illustrates a two points:
+		</p>
 		
-		<p>Most of the appenders found in logback classic can be used
-		within logback access. They function mostly in the same way as
-		their logback classic counterpart. In the next section, we will
-		cover their use, but will focuse on the differences with the
-		classic appenders.
+		<ul>
+			<li>All properties that follow the setter/getter JavaBeans
+			conventions are handled transparently. The <code>start()</code>
+			method, that is called automatically, has the responsability to
+			check that the given properties are coherent.
+			</li>
+			<li>The <code>AppenderBase.doAppend()</code> method invokes the
+			append() method of its derived classes where actual output
+			operations occur.  It is in this method that appenders format
+			events by invoking their layouts.
+			</li>
+		</ul>
+		
+		<p>The <code>CountingConsoleAppender</code> can be configured like
+		any appender.  See sample file
+		<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
+		for an example.
+		</p>
+  
+
+		<h2><a name="logback_access" href="#logback_access">Logback
+		Access</a></h2>
+		
+		<p>Most of the appenders found in logback-classic have their
+		equivalent in logback-access. These work essentialy in the same
+		way as their locback-classic counterparts. In the next section, we
+		will cover their use.
 		</p>
 		
   	<a name="AccessSocketAppender"/>
 		<h3>SocketAppender</h3>
 		
-		<p>
-			The <a href="../xref/ch/qos/logback/access/net/SocketAppender.html">
-			<code>SocketAppender</code></a> is designed to log to a 
-			remote entity by transmitting serialized <code>AccessEvent</code> objects over the wire. 
-			Remote logging is non-intrusive as far as the access event is concerned. 
-			On the receiving end after de-serialization, the event can be logged as 
-			if it were generated locally.
+		<p>The <a
+		href="../xref/ch/qos/logback/access/net/SocketAppender.html">
+		<code>SocketAppender</code></a> is designed to log to a remote
+		entity by transmitting serialized <code>AccessEvent</code> objects
+		over the wire.  Remote logging is non-intrusive as far as the
+		access event is concerned.  On the receiving end after
+		de-serialization, the event can be logged as if it were generated
+		locally.
 		</p>
 		<p>
 			The properties of access' <code>SocketAppender</code> are the same as those available
@@ -3280,7 +3480,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 
     <em>Example 4.<span class="autoEx"/>: DBAppender configuration (logback-examples/src/main/java/chapter4/conf/access/logback-DB.xml)</em>		
-<div class="source"><pre>&lt;configuration>
+    <p class="source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
@@ -3293,109 +3493,31 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;/appender>
 
   &lt;appender-ref ref="DB" />
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
 
-    <a name="WriteYourOwnAppender"></a>
-		<h2>Writing your own Appender</h2>
-
-
-    <p>You can easily write your appender by sub-classing <code>AppenderBase</code>. 
-    It handles support for filters, status among other functionality shared by most appenders. 
-    The derived class only needs to implement one method, namely 
-    <code>append(Object eventObject)</code>.
+    <h3><a name="AccessSiftingAppender"
+    href="#AccessSiftingAppender">SiftingAppender</a></h3>
+   
+    <p>The SiftingAppender in logback-access is quite similar to its
+    logbacl-classic counterpart. The main difference is that in
+    logback-access the default discriminator, namely <a
+    href="../xref/ch/qos/logback/access/sift/AccessEventDiscriminator.html">AccessEventDiscriminator</a>,
+    is not MDC based. As its name suggests, AccessEventDiscriminator,
+    uses a designated field in AccessEvent as basis for selecting a
+    nested appender. If the value of the designated field is null,
+    then the value specified in the <span
+    class="option">DefaultValue</span> property is used. 
     </p>
 
-    <p>The <code>CountingConsoleAppender</code>, which we list next, appends a limited 
-    number of incoming events on the console. It shuts down after the limit is reached.
-    It uses a <code>Layout</code> to format the events and accepts a parameter, 
-    thus a few more methods are needed.
-    </p>
+    <p>The desginated AccessEvent field can be one of COOKIE,
+    REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT,
+    REQUEST_URI. Note that the fiest three fields require that the
+    <span class="option">AdditionalKey</span> property to be
+    specified.</p>
     
-    <em>Example 4.<span class="autoExec"/>: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
-    <p class="source">package chapter4;
-
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 
 
-public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
-  static int DEFAULT_LIMIT = 16;
-  int counter = 0;
-  int limit = DEFAULT_LIMIT;
-  
-  private Layout&lt;LoggingEvent> layout;
-
-  public CountingConsoleAppender() {
-  }
-
-  public void setLimit(int limit) {
-    this.limit = limit;
-  }
-
-  public int getLimit() {
-    return limit;
-  }  
-  
-  @Override
-  public void start() {
-    if (this.layout == null) {
-      addError("No layout set for the appender named ["+ name +"].");
-      return;
-    }
-    
-    super.start();
-  }
-
-  public void append(LoggingEvent event) {
-
-    if (counter >= limit) {
-      return;
-    }
-
-    // output the events as formatted by our layout
-    System.out.print(this.layout.doLayout(event));
-
-    // prepare for next event
-    counter++;
-  }
-
-  public Layout&lt;LoggingEvent> getLayout() {
-    return layout;
-  }
-
-  public void setLayout(Layout&lt;LoggingEvent> layout) {
-    this.layout = layout;
-  }
-}</p>
-
-		<p>The <code>start()</code> method checks for the presence of a
-		<code>Layout</code>.  In case none is found, the appender is not
-		started.
-		</p>
-		
-		<p>This custom appender illustrates a two points:
-		</p>
-		
-		<ul>
-			<li>All properties that follow the setter/getter JavaBeans
-			conventions are handled transparently. The <code>start()</code>
-			method, that is called automatically, has the responsability to
-			check that the given properties are coherent.
-			</li>
-			<li>The <code>AppenderBase.doAppend()</code> method invokes the
-			append() method of its derived classes where actual output
-			operations occur.  It is in this method that appenders format
-			events by invoking their layouts.
-			</li>
-		</ul>
-		
-		<p>The <code>CountingConsoleAppender</code> can be configured like
-		any appender.  See sample file
-		<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
-		for an example.
-		</p>
-  
 
     <script src="../templates/footer.js" type="text/javascript"></script>
 

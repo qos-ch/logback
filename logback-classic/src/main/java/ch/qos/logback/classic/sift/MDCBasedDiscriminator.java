@@ -16,16 +16,30 @@ import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class MDCBasedDiscriminator extends ContextAwareBase implements Discriminator<LoggingEvent> {
+/**
+ * MDCBasedDiscriminator essentially returns the value mapped to an MDC key. If
+ * the said value is null, then a default value is returned.
+ * 
+ * <p>Both Key and the DefaultValue are user specified properties.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * 
+ */
+public class MDCBasedDiscriminator extends ContextAwareBase implements
+    Discriminator<LoggingEvent> {
 
-  String key;
-  String defaultValue;
-
-  boolean started = false;
+  private String key;
+  private String defaultValue;
+  private boolean started = false;
 
   public MDCBasedDiscriminator() {
   }
 
+  /**
+   * Return the value associated with an MDC entry desginated by the Key
+   * property. If that value is null, then return the value assigned to the
+   * DefaultValue property.
+   */
   public String getDiscriminatingValue(LoggingEvent event) {
     String mdcValue = MDC.get(key);
     if (mdcValue == null) {
@@ -76,18 +90,15 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements Discrimin
 
   /**
    * The default MDC value in case the MDC is not set for
-   * {@link #setMdcKey(String) mdcKey}.
+   * {@link #setKey(String) mdcKey}.
    * 
-   * <p> For example, if {@link #setMdcKey(String) mdcKey} is set to the value
+   * <p> For example, if {@link #setKey(String) Key} is set to the value
    * "someKey", and the MDC is not set for "someKey", then this appender will
-   * use the default value, which you can set with the help of method.
+   * use the default value, which you can set with the help of this method.
    * 
    * @param defaultValue
    */
   public void setDefaultValue(String defaultValue) {
     this.defaultValue = defaultValue;
   }
-
-  
-
 }

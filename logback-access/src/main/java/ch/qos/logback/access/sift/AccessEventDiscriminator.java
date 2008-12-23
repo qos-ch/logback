@@ -16,16 +16,27 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+/**
+ * 
+ * AccessEventDiscriminator's job is to return the value of a designated field in
+ * an {@link AccessEvent} instance.
+ * 
+ * <p>The field is specified via the {@link FieldName} property. 
+
+ * @author Ceki G&uuml;lc&uuml;
+ * 
+ */
 public class AccessEventDiscriminator extends ContextAwareBase implements
     Discriminator<AccessEvent> {
 
   boolean started = false;
 
   /**
-   * Allowed field names are: COOKIE, REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE,
-   * REMOTE_ADDRESS, LOCAL_PORT,REQUEST_URI
+   * At present time the followed fields can be designated: 
+   * COOKIE, REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, 
+   * LOCAL_PORT,REQUEST_URI
    * 
-   * <p> The first three field names require a key attribute.
+   * <p> The first three fields require an additional key.
    */
   public enum FieldName {
     COOKIE, REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT, REQUEST_URI
@@ -34,7 +45,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   String defaultValue;
   String key;
   FieldName fieldName;
-  String optionalKey;
+  String additionalKey;
 
   public String getDiscriminatingValue(AccessEvent acccessEvent) {
     String rawValue = getRawDiscriminatingValue(acccessEvent);
@@ -48,11 +59,11 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   public String getRawDiscriminatingValue(AccessEvent acccessEvent) {
     switch (fieldName) {
     case COOKIE:
-      return acccessEvent.getCookie(optionalKey);
+      return acccessEvent.getCookie(additionalKey);
     case LOCAL_PORT:
       return String.valueOf(acccessEvent.getLocalPort());
     case REQUEST_ATTRIBUTE:
-      return acccessEvent.getAttribute(optionalKey);
+      return acccessEvent.getAttribute(additionalKey);
     case SESSION_ATTRIBUTE:
       return getSessionAttribute(acccessEvent);
     case REMOTE_ADDRESS:
@@ -78,7 +89,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     if (req != null) {
       HttpSession session = req.getSession(false);
       if (session != null) {
-        Object v = session.getAttribute(optionalKey);
+        Object v = session.getAttribute(additionalKey);
         if (v != null) {
           return v.toString();
         }
@@ -107,7 +118,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     case SESSION_ATTRIBUTE:
     case REQUEST_ATTRIBUTE:
     case COOKIE:
-      if (optionalKey == null) {
+      if (additionalKey == null) {
         addError("\"OptionalKey\" property is mandatory for field name "+fieldName.toString());
         errorCount++;
       }
@@ -130,15 +141,15 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     return fieldName;
   }
 
-  public String getOptionalKey() {
-    return optionalKey;
-  }
-
-  public void setOptionalKey(String optionalKey) {
-    this.optionalKey = optionalKey;
-  }
-
   
+  public String getAdditionalKey() {
+    return additionalKey;
+  }
+
+  public void setAdditionalKey(String additionalKey) {
+    this.additionalKey = additionalKey;
+  }
+
   /**
    * @see #setDefaultValue(String)
    * @return
