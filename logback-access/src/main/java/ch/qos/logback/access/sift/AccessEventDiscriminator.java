@@ -38,7 +38,9 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
    * REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS,
    * LOCAL_PORT,REQUEST_URI
    * 
-   * <p> The first three fields require an additional key.
+   * <p> The first three fields require an additional key. For the
+   * SESSION_ATTRIBUTE field, the additional key named "id" has special meaning
+   * as it is mapped to the session id of the current http request.
    */
   public enum FieldName {
     COOKIE, REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT, REQUEST_URI
@@ -61,16 +63,19 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   public String getRawDiscriminatingValue(AccessEvent acccessEvent) {
     switch (fieldName) {
     case COOKIE:
+      // tested
       return acccessEvent.getCookie(additionalKey);
     case LOCAL_PORT:
       return String.valueOf(acccessEvent.getLocalPort());
     case REQUEST_ATTRIBUTE:
+      // tested
       return getRequestAttribute(acccessEvent);
     case SESSION_ATTRIBUTE:
       return getSessionAttribute(acccessEvent);
     case REMOTE_ADDRESS:
       return acccessEvent.getRemoteAddr();
     case REQUEST_URI:
+      // tested
       return getRequestURI(acccessEvent);
     default:
       return null;
@@ -79,13 +84,13 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
 
   private String getRequestAttribute(AccessEvent acccessEvent) {
     String attr = acccessEvent.getAttribute(additionalKey);
-    if(AccessEvent.NA.equals(attr)) {
+    if (AccessEvent.NA.equals(attr)) {
       return null;
     } else {
       return attr;
     }
   }
-  
+
   private String getRequestURI(AccessEvent acccessEvent) {
     String uri = acccessEvent.getRequestURI();
     if (uri != null && uri.length() >= 1 && uri.charAt(0) == '/') {
@@ -97,18 +102,9 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
 
   private String getSessionAttribute(AccessEvent acccessEvent) {
     HttpServletRequest req = acccessEvent.getRequest();
-    System.out.println("req=" + req);
     if (req != null) {
       HttpSession session = req.getSession(false);
-      System.out.println("session=" + session);
       if (session != null) {
-        Enumeration ee = session.getAttributeNames();
-        while(ee.hasMoreElements()) {
-          String k = (String) ee.nextElement();
-          Object v = session.getAttribute(k);
-          System.out.println("Session "+k+"="+v);
-        }
-
         if ("id".equalsIgnoreCase(additionalKey)) {
           return session.getId();
         } else {

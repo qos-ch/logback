@@ -3512,11 +3512,47 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
 
     <p>The desginated AccessEvent field can be one of COOKIE,
     REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT,
-    REQUEST_URI. Note that the fiest three fields require that the
-    <span class="option">AdditionalKey</span> property to be
+    REQUEST_URI. Note that the first three fields require that the
+    <span class="option">AdditionalKey</span> property also to be
     specified.</p>
     
+    <p>Below is an example configuration file.</p>
 
+    <em>Example 4.<span class="autoEx"/>: SiftingAppender configuration (logback-examples/src/main/java/chapter4/conf/sift/access-siftingFile.xml)</em>		
+    
+    <p class="source">&lt;configuration>
+  &lt;appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">
+    &lt;Discriminator class="ch.qos.logback.access.sift.AccessEventDiscriminator">
+      &lt;Key>id&lt;/Key>
+      &lt;FieldName>SESSION_ATTRIBUTE&lt;/FieldName>
+      &lt;AdditionalKey>username&lt;/AdditionalKey>
+      &lt;DefaultValue>NA&lt;/DefaultValue>
+    &lt;/Discriminator>
+    &lt;sift>
+       &lt;appender name="${id}" class="ch.qos.logback.core.FileAppender">
+        &lt;File>byUser/${id}.log&lt;/File>
+        &lt;layout class="ch.qos.logback.access.PatternLayout">
+          &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
+        &lt;/layout>
+      &lt;/appender>
+    &lt;/sift>
+  &lt;/appender>
+  &lt;appender-ref ref="SIFTING" />
+&lt;/configuration></p>
+
+
+    <p>In the above configuration file, a <code>SiftingAppender</code>
+    nests <code>FileAppender</code> instances. The key "id" is
+    designated as a variable which will be availabe to the nested
+    <code>FileAppender</code> instances. The default discriminator,
+    namely <code>AccessEventDiscriminator</code>, will search for
+    "username" session attribute in each <code>AccessEvent</code>. If
+    no such attribute is available, then the default value "NA" will
+    be used.  Thus, assuming the session attribute named "username"
+    contains the username of each logged on user, there will be a log
+    file under the <em>byUser/</em> folder (of the current folder)
+    named after each user containing the access logs for that user.
+    </p>
 
 
     <script src="../templates/footer.js" type="text/javascript"></script>
