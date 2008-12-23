@@ -9,6 +9,8 @@
  */
 package ch.qos.logback.access.sift;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -18,11 +20,11 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * 
- * AccessEventDiscriminator's job is to return the value of a designated field in
- * an {@link AccessEvent} instance.
+ * AccessEventDiscriminator's job is to return the value of a designated field
+ * in an {@link AccessEvent} instance.
  * 
- * <p>The field is specified via the {@link FieldName} property. 
-
+ * <p>The field is specified via the {@link FieldName} property.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
@@ -32,8 +34,8 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   boolean started = false;
 
   /**
-   * At present time the followed fields can be designated: 
-   * COOKIE, REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, 
+   * At present time the followed fields can be designated: COOKIE,
+   * REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS,
    * LOCAL_PORT,REQUEST_URI
    * 
    * <p> The first three fields require an additional key.
@@ -63,7 +65,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     case LOCAL_PORT:
       return String.valueOf(acccessEvent.getLocalPort());
     case REQUEST_ATTRIBUTE:
-      return acccessEvent.getAttribute(additionalKey);
+      return getRequestAttribute(acccessEvent);
     case SESSION_ATTRIBUTE:
       return getSessionAttribute(acccessEvent);
     case REMOTE_ADDRESS:
@@ -75,6 +77,15 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     }
   }
 
+  private String getRequestAttribute(AccessEvent acccessEvent) {
+    String attr = acccessEvent.getAttribute(additionalKey);
+    if(AccessEvent.NA.equals(attr)) {
+      return null;
+    } else {
+      return attr;
+    }
+  }
+  
   private String getRequestURI(AccessEvent acccessEvent) {
     String uri = acccessEvent.getRequestURI();
     if (uri != null && uri.length() >= 1 && uri.charAt(0) == '/') {
@@ -86,12 +97,25 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
 
   private String getSessionAttribute(AccessEvent acccessEvent) {
     HttpServletRequest req = acccessEvent.getRequest();
+    System.out.println("req=" + req);
     if (req != null) {
       HttpSession session = req.getSession(false);
+      System.out.println("session=" + session);
       if (session != null) {
-        Object v = session.getAttribute(additionalKey);
-        if (v != null) {
-          return v.toString();
+        Enumeration ee = session.getAttributeNames();
+        while(ee.hasMoreElements()) {
+          String k = (String) ee.nextElement();
+          Object v = session.getAttribute(k);
+          System.out.println("Session "+k+"="+v);
+        }
+
+        if ("id".equalsIgnoreCase(additionalKey)) {
+          return session.getId();
+        } else {
+          Object v = session.getAttribute(additionalKey);
+          if (v != null) {
+            return v.toString();
+          }
         }
       }
     }
@@ -119,7 +143,8 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     case REQUEST_ATTRIBUTE:
     case COOKIE:
       if (additionalKey == null) {
-        addError("\"OptionalKey\" property is mandatory for field name "+fieldName.toString());
+        addError("\"OptionalKey\" property is mandatory for field name "
+            + fieldName.toString());
         errorCount++;
       }
     }
@@ -141,7 +166,6 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     return fieldName;
   }
 
-  
   public String getAdditionalKey() {
     return additionalKey;
   }
@@ -176,5 +200,4 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     this.key = key;
   }
 
-  
 }
