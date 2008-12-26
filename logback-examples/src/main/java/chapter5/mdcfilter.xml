@@ -3,8 +3,7 @@
   <appender name="STDOUT"
             class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <param name="Pattern"
-        value="%-4relative [%thread] %-5level %X{testKey} - %msg%n" />
+      <Pattern>%-4relative [%thread] %-5level %X{testKey} - %msg%n"</Pattern>
     </layout>
 
     <filter class="ch.qos.logback.core.filter.EvaluatorFilter">  
@@ -17,8 +16,7 @@
     </filter>
   </appender>
 
-  <root>
-    <level value="debug" />
+  <root level="debug">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
