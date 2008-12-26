@@ -7,7 +7,8 @@
 
    <Expression>m.matches(message)</Expression>
 
-   <matcher name="m">
+   <matcher>
+     <Name>m</Name>
      <regex>^hello.*</regex>
      <CaseSensitive>false</CaseSensitive>
    </matcher>

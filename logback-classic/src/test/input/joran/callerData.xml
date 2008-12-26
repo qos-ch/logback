@@ -5,7 +5,8 @@
 
   <evaluator name="helloEval">
     <Expression>m.matches(message)</Expression>
-    <matcher name="m">
+    <matcher>
+      <name>m</name>
       <regex>^hello.*</regex>
       <CaseSensitive>false</CaseSensitive>
     </matcher>  

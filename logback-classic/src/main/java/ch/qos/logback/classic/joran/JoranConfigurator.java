@@ -25,7 +25,6 @@ import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
-import ch.qos.logback.core.joran.action.MatcherAction;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -50,8 +49,6 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/contextName"), new ContextNameAction());
     rs.addRule(new Pattern("configuration/insertFromJNDI"), new InsertFromJNDIAction());
     rs.addRule(new Pattern("*/evaluator"), new EvaluatorAction());
-    rs.addRule(new Pattern("*/evaluator/matcher"),
-        new MatcherAction());
 
     rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
     rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());

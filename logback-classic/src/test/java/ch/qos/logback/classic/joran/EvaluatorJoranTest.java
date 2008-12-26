@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.classic.joran;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -41,16 +42,15 @@ public class EvaluatorJoranTest  {
     
     Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);
-    //StatusPrinter.print(loggerContext.getStatusManager());
     JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
     assertNotNull(evaluator);
     
     Logger logger = loggerContext.getLogger("xx");
-    LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
-    //StatusPrinter.print(loggerContext.getStatusManager());
-    assertTrue(evaluator.evaluate(event));
+    LoggingEvent event0 = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
+    assertTrue(evaluator.evaluate(event0));
     
-    //StatusPrinter.print(loggerContext.getStatusManager());
+    LoggingEvent event1 = new LoggingEvent("foo", logger, Level.DEBUG, "random blurb", null, null);
+    assertFalse(evaluator.evaluate(event1));
   }
   
   @Test
