@@ -11,7 +11,6 @@ package ch.qos.logback.core;
 
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
@@ -24,7 +23,7 @@ import ch.qos.logback.core.status.WarnStatus;
  * @author Ralph Goers
  */
 abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements
-    Appender<E>, FilterAttachable {
+    Appender<E> {
 
   protected boolean started = false;
 
@@ -46,7 +45,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
    */
   protected String name;
 
-  private FilterAttachableImpl fai = new FilterAttachableImpl();
+  private FilterAttachableImpl<E> fai = new FilterAttachableImpl<E>();
 
   public String getName() {
     return name;
@@ -119,7 +118,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     return this.getClass().getName() + "[" + name + "]";
   }
 
-  public void addFilter(Filter newFilter) {
+  public void addFilter(Filter<E> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -131,7 +130,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     fai.clearAllFilters();
   }
 
-  public FilterReply getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
   }
 

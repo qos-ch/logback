@@ -74,7 +74,8 @@ public class NestedComplexPropertyIA extends ImplicitAction {
 
       return true;
     default:
-      addError("PropertySetter.computeAggregationType returned " + aggregationType);
+      addError("PropertySetter.computeAggregationType returned "
+          + aggregationType);
       return false;
     }
   }
@@ -89,43 +90,34 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     // perform variable name substitution
     className = ec.subst(className);
-    if (className == null) {
+
+    // guess class name via implicit rules
+    if (OptionHelper.isEmpty(className)) {
       PropertySetter parentBean = actionData.parentBean;
-      className = parentBean.getDefaultClassNameByAnnonation(actionData
+      className = parentBean.getClassNameViaImplicitRules(actionData
           .getComplexPropertyName(), actionData.getAggregationType());
     }
 
     if (OptionHelper.isEmpty(className)) {
-      Class clazz = actionData.parentBean
-          .findUnequivocallyInstantiableClass(actionData);
-      if (clazz != null) {
-        className = clazz.getName();
-      } else {
-        actionData.inError = true;
-        String errMsg = "No class name attribute in [" + localName + "]";
-        addError(errMsg);
-
-        return;
-      }
+      actionData.inError = true;
+      String errMsg = "No class name attribute in [" + localName + "]";
+      addError(errMsg);
+      return;
     }
 
     try {
-      // getLogger().debug(
-      // "About to instantiate component [{}] of type [{}]", localName,
-      // className);
-
-      actionData.nestedComplexProperty = Loader.loadClass(className, context)
-          .newInstance();
+      actionData.setNestedComplexProperty(Loader.loadClass(className, context)
+          .newInstance());
 
       // pass along the repository
-      if (actionData.nestedComplexProperty instanceof ContextAware) {
-        ((ContextAware) actionData.nestedComplexProperty)
+      if (actionData.getNestedComplexProperty() instanceof ContextAware) {
+        ((ContextAware) actionData.getNestedComplexProperty())
             .setContext(this.context);
       }
       // getLogger().debug(
       addInfo("Pushing component [" + localName
           + "] on top of the object stack.");
-      ec.pushObject(actionData.nestedComplexProperty);
+      ec.pushObject(actionData.getNestedComplexProperty());
     } catch (Exception oops) {
       actionData.inError = true;
       String msg = "Could not create component [" + localName + "] of type ["
@@ -145,8 +137,8 @@ public class NestedComplexPropertyIA extends ImplicitAction {
       return;
     }
 
-    PropertySetter nestedBean = new PropertySetter(
-        actionData.nestedComplexProperty);
+    PropertySetter nestedBean = new PropertySetter(actionData
+        .getNestedComplexProperty());
     nestedBean.setContext(context);
 
     // have the nested element point to its parent if possible
@@ -154,34 +146,26 @@ public class NestedComplexPropertyIA extends ImplicitAction {
       nestedBean.setComplexProperty("parent", actionData.parentBean.getObj());
     }
     // start the nested complex attribute if it implements LifeCycle
-    if (actionData.nestedComplexProperty instanceof LifeCycle) {
-      ((LifeCycle) actionData.nestedComplexProperty).start();
+    if (actionData.getNestedComplexProperty() instanceof LifeCycle) {
+      ((LifeCycle) actionData.getNestedComplexProperty()).start();
     }
 
     Object o = ec.peekObject();
 
-    if (o != actionData.nestedComplexProperty) {
+    if (o != actionData.getNestedComplexProperty()) {
       addError("The object on the top the of the stack is not the component pushed earlier.");
     } else {
-      // getLogger().debug("Removing component from the object stack");
       ec.popObject();
-
       // Now let us attach the component
       switch (actionData.aggregationType) {
       case AS_COMPLEX_PROPERTY:
-        // addInfo("Setting ["+tagName+"}] to parent of type
-        // ["+actionData.parentBean.getObjClass()+"]");
-
-        actionData.parentBean.setComplexProperty(tagName,
-            actionData.nestedComplexProperty);
+        actionData.parentBean.setComplexProperty(tagName, actionData
+            .getNestedComplexProperty());
 
         break;
       case AS_COMPLEX_PROPERTY_COLLECTION:
-        // getLogger().debug(
-        // "Adding [{}] to parent of type [{}]", tagName,
-        // actionData.parentBean.getObjClass());
-        actionData.parentBean.addComplexProperty(tagName,
-            actionData.nestedComplexProperty);
+        actionData.parentBean.addComplexProperty(tagName, actionData
+            .getNestedComplexProperty());
 
         break;
       }

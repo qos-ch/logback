@@ -18,10 +18,10 @@ import ch.qos.logback.core.spi.FilterReply;
  *
  * @author S&eacute;bastien Pennec
  */
-public class AccessContext extends ContextBase implements AppenderAttachable<AccessEvent>, FilterAttachable {
+public class AccessContext extends ContextBase implements AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
 
   AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
-  FilterAttachableImpl fai = new FilterAttachableImpl();
+  FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
   
   public void callAppenders(AccessEvent event) {
     aai.appendLoopOnAppenders(event);
@@ -55,7 +55,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
     return aai.iteratorForAppenders();
   }
 
-  public void addFilter(Filter newFilter) {
+  public void addFilter(Filter<AccessEvent> newFilter) {
    fai.addFilter(newFilter); 
   }
 
@@ -63,7 +63,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
     fai.clearAllFilters();
   }
 
-  public FilterReply getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 

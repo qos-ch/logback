@@ -16,11 +16,11 @@ import ch.qos.logback.core.filter.Filter;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface FilterAttachable {
+public interface FilterAttachable<E> {
   /**
    * Add a filter.
    */
-  public void addFilter(Filter newFilter);
+  public void addFilter(Filter<E> newFilter);
 
   /**
    * Get first filter in the chain.
@@ -34,5 +34,5 @@ public interface FilterAttachable {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then  NEUTRAL is returned.
    */
-  public FilterReply getFilterChainDecision(Object event);
+  public FilterReply getFilterChainDecision(E event);
 }

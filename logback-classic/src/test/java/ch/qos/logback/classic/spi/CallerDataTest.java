@@ -1,21 +1,15 @@
 package ch.qos.logback.classic.spi;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class CallerDataTest extends TestCase {
+import org.junit.Test;
 
-  public CallerDataTest(String name) {
-    super(name);
-  }
+public class CallerDataTest  {
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
+  @Test
   public void testBasic() {
     Throwable t = new Throwable();
     StackTraceElement[] steArray = t.getStackTrace();
@@ -31,6 +25,7 @@ public class CallerDataTest extends TestCase {
    * extracted, CallerData.extract does not throw an exception
    *
    */
+  @Test
   public void testDeferredProcessing() {
     CallerData[] cda = CallerData.extract(new Throwable(), "com.inexistent.foo");
     assertNotNull(cda);

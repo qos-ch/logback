@@ -1,7 +1,10 @@
 package ch.qos.logback.core.joran.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,39 +12,51 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.joran.action.IADataForComplexProperty;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class PropertySetterTest  {
+public class PropertySetterTest {
 
   @Test
   public void testCanAggregateComponent() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    assertEquals(AggregationType.AS_COMPLEX_PROPERTY, setter.computeAggregationType("door"));
-    
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("count"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Count"));
-    
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("name"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Name"));
-    
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Duration"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("fs"));
-    
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("open"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("Open"));
-    
-    assertEquals(AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, setter.computeAggregationType("Window"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY_COLLECTION, setter.computeAggregationType("adjective"));
-    
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("filterReply"));
-    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("houseColor"));
-    
+    assertEquals(AggregationType.AS_COMPLEX_PROPERTY, setter
+        .computeAggregationType("door"));
+
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("count"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("Count"));
+
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("name"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("Name"));
+
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("Duration"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("fs"));
+
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("open"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("Open"));
+
+    assertEquals(AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, setter
+        .computeAggregationType("Window"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY_COLLECTION, setter
+        .computeAggregationType("adjective"));
+
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("filterReply"));
+    assertEquals(AggregationType.AS_BASIC_PROPERTY, setter
+        .computeAggregationType("houseColor"));
+
     System.out.println();
   }
 
@@ -58,7 +73,7 @@ public class PropertySetterTest  {
       assertEquals("jack", house.getName());
       assertTrue(house.isOpen());
     }
-    
+
     {
       House house = new House();
       PropertySetter setter = new PropertySetter(house);
@@ -76,14 +91,14 @@ public class PropertySetterTest  {
   public void testSetCamelProperty() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    
+
     setter.setProperty("camelCase", "trot");
     assertEquals("trot", house.getCamelCase());
-    
+
     setter.setProperty("camelCase", "gh");
     assertEquals("gh", house.getCamelCase());
   }
-  
+
   @Test
   public void testSetComplexProperty() {
     House house = new House();
@@ -94,20 +109,25 @@ public class PropertySetterTest  {
   }
 
   @Test
-  public void testSetComplexProperty2() {
+  public void testgetClassNameViaImplicitRules() {
     House house = new House();
-    //Door door = new Door();
     PropertySetter setter = new PropertySetter(house);
-    
-    IADataForComplexProperty actionData = new IADataForComplexProperty(setter,
-        AggregationType.AS_COMPLEX_PROPERTY, "door");
-    
-    Class clazz = setter.findUnequivocallyInstantiableClass(actionData);
-    assertNotNull(clazz);
-    assertEquals(Door.class.getName(), clazz.getName());
-    //setter.setComplexProperty("door", door);
-    //assertEquals(door, house.getDoor());
+    String className = setter.getClassNameViaImplicitRules("door",
+        AggregationType.AS_COMPLEX_PROPERTY);
+    assertEquals(Door.class.getName(), className);
   }
+
+  
+  
+  @Test
+  public void testgetComplexPropertyColleClassNameViaImplicitRules() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    String className = setter.getClassNameViaImplicitRules("window",
+        AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
+    assertEquals(Window.class.getName(), className);
+  }
+
   
   @Test
   public void testPropertyCollection() {
@@ -128,26 +148,26 @@ public class PropertySetterTest  {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     Window w1 = new Window();
-    w1.handle=10;
+    w1.handle = 10;
     Window w2 = new Window();
-    w2.handle=20;
-    
+    w2.handle = 20;
+
     setter.addComplexProperty("window", w1);
     setter.addComplexProperty("window", w2);
     assertEquals(2, house.windowList.size());
     assertEquals(10, house.windowList.get(0).handle);
     assertEquals(20, house.windowList.get(1).handle);
   }
-  
+
   @Test
   public void testSetComplexWithCamelCaseName() {
     House house = new House();
-    SwimmingPool pool = new SwimmingPool();
+    SwimmingPool pool = new SwimmingPoolImpl();
     PropertySetter setter = new PropertySetter(house);
     setter.setComplexProperty("swimmingPool", pool);
     assertEquals(pool, house.getSwimmingPool());
   }
-  
+
   @Test
   public void testDuration() {
     House house = new House();
@@ -161,18 +181,18 @@ public class PropertySetterTest  {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     setter.setProperty("fs", "2 kb");
-    assertEquals(2*1024, house.getFs().getSize());
+    assertEquals(2 * 1024, house.getFs().getSize());
   }
-  
+
   @Test
   public void testFilterReply() {
-    //test case reproducing bug #52
+    // test case reproducing bug #52
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
     setter.setProperty("filterReply", "ACCEPT");
     assertEquals(FilterReply.ACCEPT, house.getFilterReply());
   }
-  
+
   @Test
   public void testEnum() {
     House house = new House();
@@ -180,14 +200,21 @@ public class PropertySetterTest  {
     setter.setProperty("houseColor", "BLUE");
     assertEquals(HouseColor.BLUE, house.getHouseColor());
   }
-  
-  
+
   @Test
   public void testDefaultClassAnnonation() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    String spClassName = setter.getDefaultClassNameByAnnonation("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY);
-    assertEquals(SwimmingPool.class.getName(), spClassName);
+    Method relevantMethod = setter.getRelevantMethod("SwimmingPool",
+        AggregationType.AS_COMPLEX_PROPERTY);
+    assertNotNull(relevantMethod);
+    String spClassName = setter.getDefaultClassNameByAnnonation("SwimmingPool",
+        relevantMethod);
+    assertEquals(SwimmingPoolImpl.class.getName(), spClassName);
+
+    String classNameViaImplicitRules = setter.getClassNameViaImplicitRules(
+        "SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY);
+    assertEquals(SwimmingPoolImpl.class.getName(), classNameViaImplicitRules);
   }
 }
 
@@ -202,10 +229,10 @@ class House {
   FileSize fs;
   HouseColor houseColor;
   FilterReply reply;
-  
+
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
-  
+
   public String getCamelCase() {
     return camelCase;
   }
@@ -245,20 +272,19 @@ class House {
   public void setOpen(boolean open) {
     this.open = open;
   }
-  
-  @DefaultClass(SwimmingPool.class)
+
+  @DefaultClass(SwimmingPoolImpl.class)
   public void setSwimmingPool(SwimmingPool pool) {
     this.pool = pool;
   }
-  
+
   public SwimmingPool getSwimmingPool() {
     return pool;
   }
-  
+
   public void addWindow(Window w) {
     windowList.add(w);
   }
-  
 
   public void addAdjective(String s) {
     adjectiveList.add(s);
@@ -279,23 +305,23 @@ class House {
   public void setFs(FileSize fs) {
     this.fs = fs;
   }
-  
+
   public void setHouseColor(HouseColor color) {
     this.houseColor = color;
   }
-  
+
   public HouseColor getHouseColor() {
     return houseColor;
   }
-  
+
   public void setFilterReply(FilterReply reply) {
     this.reply = reply;
   }
-  
+
   public FilterReply getFilterReply() {
     return reply;
   }
-  
+
 }
 
 class Door {
@@ -306,7 +332,10 @@ class Window {
   int handle;
 }
 
-class SwimmingPool {
+interface SwimmingPool {
+}
+
+class SwimmingPoolImpl implements SwimmingPool {
   int length;
   int width;
   int depth;

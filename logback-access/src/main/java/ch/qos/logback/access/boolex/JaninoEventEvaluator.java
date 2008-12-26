@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.access.boolex;
 
 import java.util.ArrayList;
@@ -8,16 +17,13 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 
-
-
-public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
+public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<AccessEvent> {
 
   public final static List<String> DEFAULT_PARAM_NAME_LIST = new ArrayList<String>();
   public final static List<Class> DEFAULT_PARAM_TYPE_LIST = new ArrayList<Class>();
   
   static {
     DEFAULT_PARAM_NAME_LIST.add("event");
-    
     DEFAULT_PARAM_TYPE_LIST.add(AccessEvent.class);
   }
   
@@ -51,14 +57,14 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
-  protected Object[] getParameterValues(Object event) {
-    AccessEvent loggingEvent = (AccessEvent) event;
+  protected Object[] getParameterValues(AccessEvent event) {
+    AccessEvent accessEvent = (AccessEvent) event;
     final int matcherListSize = matcherList.size();
     
     int i = 0;
     Object[] values = new Object[DEFAULT_PARAM_NAME_LIST.size()+matcherListSize];
 
-    values[i++] = loggingEvent;
+    values[i++] = accessEvent;
     
     for(int j = 0; j < matcherListSize; j++) {
       values[i++] = (Matcher) matcherList.get(j);

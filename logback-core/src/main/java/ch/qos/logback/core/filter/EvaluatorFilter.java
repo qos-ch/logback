@@ -22,9 +22,9 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author S&eacute;bastien Pennec
  */
 
-public class EvaluatorFilter extends AbstractMatcherFilter {
+public class EvaluatorFilter<E> extends AbstractMatcherFilter<E> {
 
-  EventEvaluator evaluator;
+  EventEvaluator<E> evaluator;
     
   @Override
   public void start() {
@@ -35,16 +35,16 @@ public class EvaluatorFilter extends AbstractMatcherFilter {
     }
   }
   
-  public EventEvaluator getEvaluator() {
+  public EventEvaluator<E> getEvaluator() {
     return evaluator;
   }
 
                  
-  public void setEvaluator(EventEvaluator evaluator) {
+  public void setEvaluator(EventEvaluator<E> evaluator) {
     this.evaluator = evaluator;
   }
 
-  public FilterReply decide(Object event) {
+  public FilterReply decide(E event) {
     // let us not throw an exception
     // see also bug #17.
     if(!isStarted() || !evaluator.isStarted()) {

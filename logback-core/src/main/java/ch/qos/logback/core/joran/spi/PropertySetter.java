@@ -177,7 +177,7 @@ public class PropertySetter extends ContextAwareBase {
   public AggregationType computeAggregationType(String name) {
     String cName = capitalizeFirstLetter(name);
 
-    Method addMethod = getMethod("add" + cName);
+    Method addMethod = findAdderMethod(cName);
 
     // if the
     if (addMethod != null) {
@@ -217,7 +217,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  Class<?> getParameterClassForMethod(Method method) {
+  private Class<?> getParameterClassForMethod(Method method) {
     if (method == null) {
       return null;
     }
@@ -277,13 +277,19 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  boolean isUnequivocallyInstantiable(Class<?> clazz) {
+  /**
+   * Can the given clazz instantiable with certainty?
+   * 
+   * @param clazz The class to test for instantiability
+   * @return true if clazz can be instantiated, and false otherwise.
+   */
+  private boolean isUnequivocallyInstantiable(Class<?> clazz) {
     if (clazz.isInterface()) {
       return false;
     }
-    // checking for constructors would be slightly more elegant, but in
-    // classes
-    // without any declared constructors, Class.getConstructor() returns null.
+    // checking for constructors would be more elegant, but in
+    // classes without any declared constructors, Class.getConstructor()
+    // returns null.
     Object o;
     try {
       o = clazz.newInstance();
@@ -339,7 +345,7 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     name = capitalizeFirstLetter(name);
-    Method adderMethod = getMethod("add" + name);
+    Method adderMethod = findAdderMethod(name);
 
     if (adderMethod == null) {
       addError("No adder for property [" + name + "].");
@@ -530,17 +536,22 @@ public class PropertySetter extends ContextAwareBase {
     return obj;
   }
 
-  public <T extends Annotation> T getAnnotation(String name,
-      Class<T> annonationClass, AggregationType aggregationType) {
+  Method getRelevantMethod(String name, AggregationType aggregationType) {
     String cName = capitalizeFirstLetter(name);
     Method relevantMethod;
     if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
-      relevantMethod = getMethod("add" + cName);
+      relevantMethod = findAdderMethod(cName);
     } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
       relevantMethod = findSetterMethod(cName);
     } else {
       throw new IllegalStateException(aggregationType + " not allowed here");
     }
+    return relevantMethod;
+  }
+
+  <T extends Annotation> T getAnnotation(String name, Class<T> annonationClass,
+      Method relevantMethod) {
+
     if (relevantMethod != null) {
       return relevantMethod.getAnnotation(annonationClass);
     } else {
@@ -548,11 +559,9 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  public String getDefaultClassNameByAnnonation(String name,
-      AggregationType aggregationType) {
-
+  String getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
     DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class,
-        aggregationType);
+        relevantMethod);
     if (defaultClassAnnon != null) {
       Class defaultClass = defaultClassAnnon.value();
       if (defaultClass != null) {
@@ -561,4 +570,36 @@ public class PropertySetter extends ContextAwareBase {
     }
     return null;
   }
+
+  String getByConcreteType(String name, Method relevantMethod) {
+    
+    Class<?> paramType = getParameterClassForMethod(relevantMethod);
+    if (paramType == null) {
+      return null;
+    }
+    
+    boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
+    if(isUnequivocallyInstantiable) {
+      return paramType.getName();
+    } else {
+      return null;
+    }
+
+  }
+
+  public String getClassNameViaImplicitRules(String name,
+      AggregationType aggregationType) {
+
+    // find the relevant method for the given property name and aggregationType
+    Method relevantMethod = getRelevantMethod(name, aggregationType);
+    if (relevantMethod == null) {
+
+    }
+    String byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
+    if (byAnnotation != null) {
+      return byAnnotation;
+    }
+    return getByConcreteType(name, relevantMethod);
+  }
+
 }

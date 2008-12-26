@@ -9,14 +9,14 @@
  */
 package org.slf4j.impl;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class PackageTest extends TestCase {
+import ch.qos.logback.classic.LoggerPerfTest;
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(RecursiveInitializationTest.class));
-    suite.addTest(new JUnit4TestAdapter(LogbackMDCAdapterTest.class));
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses( { RecursiveInitializationTest.class, LoggerPerfTest.class})
+public class PackageTest {
+
 }

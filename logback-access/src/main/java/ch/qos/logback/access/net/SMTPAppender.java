@@ -47,7 +47,7 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
    * Use <code>evaluator</code> passed as parameter as the {@link
    * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(EventEvaluator evaluator) {
+  public SMTPAppender(EventEvaluator<AccessEvent> evaluator) {
     this.eventEvaluator = evaluator;
   }
 

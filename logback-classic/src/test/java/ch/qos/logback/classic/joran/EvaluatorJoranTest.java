@@ -1,18 +1,20 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.classic.joran;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -27,9 +29,10 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 
-public class EvaluatorJoranTest extends TestCase {
+public class EvaluatorJoranTest  {
 
-  public void xtest() throws NullPointerException, EvaluationException, JoranException {
+  @Test
+  public void testSimpleEvaluator() throws NullPointerException, EvaluationException, JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
@@ -50,6 +53,7 @@ public class EvaluatorJoranTest extends TestCase {
     //StatusPrinter.print(loggerContext.getStatusManager());
   }
   
+  @Test
   public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
@@ -80,6 +84,7 @@ public class EvaluatorJoranTest extends TestCase {
     //StatusPrinter.print(loggerContext.getStatusManager());
   }
   
+  @Test
   public void testMultipleConditionsInExpression() throws NullPointerException, EvaluationException {
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger("xx");

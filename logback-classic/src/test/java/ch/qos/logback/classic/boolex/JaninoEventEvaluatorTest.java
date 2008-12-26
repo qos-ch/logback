@@ -1,7 +1,10 @@
 package ch.qos.logback.classic.boolex;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -13,16 +16,14 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 
-public class JaninoEventEvaluatorTest extends TestCase {
+public class JaninoEventEvaluatorTest  {
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(ConverterTest.class);
 
   Matcher matcherX = new Matcher();
 
-  public JaninoEventEvaluatorTest(String arg0) {
-    super(arg0);
-
+  public JaninoEventEvaluatorTest() {
     matcherX.setName("x");
     matcherX.setRegex("^Some\\s.*");
     matcherX.start();
@@ -36,6 +37,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     return e;
   }
 
+  @Test
   public void testBasic() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("message.equals(\"Some message\")");
@@ -47,6 +49,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
+  @Test
   public void testLevel() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("level > DEBUG");
@@ -58,6 +61,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
+  @Test
   public void testtimeStamp() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("timeStamp > 10");
@@ -68,6 +72,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
+  @Test
   public void testWithMatcher() throws Exception {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
@@ -80,6 +85,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
+  @Test
   public void testMarker() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("marker.contains(\"BLUE\")");
@@ -92,6 +98,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     assertTrue(jee.evaluate(event));
   }
 
+  @Test
   public void testWithNullMarker() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("marker.contains(\"BLUE\")");
@@ -108,6 +115,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     }
   }
 
+  @Test
   public void testComplex() throws Exception {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
@@ -127,6 +135,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testBogusExp1() {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
@@ -145,6 +154,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
   }
 
   // check that eval stops after errors
+  @Test
   public void testBogusExp2() {
 
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
@@ -185,6 +195,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     //System.out.println(msg + (end - start) / LEN + " nanos");
   }
 
+  @Test
   public void testLoop1() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("timeStamp > 10");
@@ -194,6 +205,7 @@ public class JaninoEventEvaluatorTest extends TestCase {
     loop(jee, "timestamp > 10]: ");
   }
 
+  @Test
   public void testLoop2() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("x.matches(message)");

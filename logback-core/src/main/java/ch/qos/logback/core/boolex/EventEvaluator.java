@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * @author Ceki G&uuml;lc&uuml;
  */
 
-public interface EventEvaluator extends ContextAware, LifeCycle {
+public interface EventEvaluator<E> extends ContextAware, LifeCycle {
   
 
   /**
@@ -40,7 +40,7 @@ public interface EventEvaluator extends ContextAware, LifeCycle {
    * @throws NullPointerException can be thrown in presence of null values
    * @throws EvaluationException Thrown during evaluation
    */
-  boolean evaluate(Object event) throws NullPointerException, EvaluationException;
+  boolean evaluate(E event) throws NullPointerException, EvaluationException;
   
   
   

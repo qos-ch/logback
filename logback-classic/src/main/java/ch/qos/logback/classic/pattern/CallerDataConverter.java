@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.classic.pattern;
 
@@ -21,7 +21,6 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.status.ErrorStatus;
 
-
 /**
  * This converter outputs caller data depending on depth and marker data.
  * 
@@ -30,11 +29,12 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class CallerDataConverter extends ClassicConverter {
 
   int depth = 5;
-  List<EventEvaluator> evaluatorList = null;
+  List<EventEvaluator<LoggingEvent>> evaluatorList = null;
 
   final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
-  
+
+  @SuppressWarnings("unchecked")
   public void start() {
     String depthStr = getFirstOption();
     if (depthStr == null) {
@@ -55,8 +55,10 @@ public class CallerDataConverter extends ClassicConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         if (context != null) {
-          Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
-          EventEvaluator ee = (EventEvaluator) evaluatorMap.get(evaluatorStr);
+          Map evaluatorMap = (Map) context
+              .getObject(CoreConstants.EVALUATOR_MAP);
+          EventEvaluator<LoggingEvent> ee = (EventEvaluator<LoggingEvent>) evaluatorMap
+              .get(evaluatorStr);
           if (ee != null) {
             addEvaluator(ee);
           }
@@ -66,9 +68,9 @@ public class CallerDataConverter extends ClassicConverter {
 
   }
 
-  private void addEvaluator(EventEvaluator ee) {
+  private void addEvaluator(EventEvaluator<LoggingEvent> ee) {
     if (evaluatorList == null) {
-      evaluatorList = new ArrayList<EventEvaluator>();
+      evaluatorList = new ArrayList<EventEvaluator<LoggingEvent>>();
     }
     evaluatorList.add(ee);
   }
@@ -79,7 +81,7 @@ public class CallerDataConverter extends ClassicConverter {
     if (evaluatorList != null) {
       boolean printCallerData = false;
       for (int i = 0; i < evaluatorList.size(); i++) {
-        EventEvaluator ee = (EventEvaluator) evaluatorList.get(i);
+        EventEvaluator<LoggingEvent> ee = evaluatorList.get(i);
         try {
           if (ee.evaluate(le)) {
             printCallerData = true;
@@ -94,8 +96,9 @@ public class CallerDataConverter extends ClassicConverter {
             ErrorStatus errorStatus = new ErrorStatus(
                 "Exception thrown for evaluator named [" + ee.getName() + "].",
                 this, eex);
-            errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors." +
-                                "We don't want the StatusManager to get flooded.", this));
+            errorStatus.add(new ErrorStatus(
+                "This was the last warning about this evaluator's errors."
+                    + "We don't want the StatusManager to get flooded.", this));
             addStatus(errorStatus);
           }
 

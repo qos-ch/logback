@@ -8,11 +8,6 @@ import ch.qos.logback.core.pattern.PostCompileProcessor;
 public class EnsureExceptionHandling implements
     PostCompileProcessor<LoggingEvent> {
 
-  // public void process(Converter head) {
-  // // TODO Auto-generated method stub
-  //
-  // }
-
   /**
    * This implementation checks if any of the converters in the chain handles
    * exceptions. If not, then this method adds a

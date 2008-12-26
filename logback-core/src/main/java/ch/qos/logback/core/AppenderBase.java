@@ -11,22 +11,20 @@ package ch.qos.logback.core;
 
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
-import ch.qos.logback.core.spi.FilterReply; 
+import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
 /**
  * Sets a skeleton implementation for appenders.
  * 
- * <p>
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#AppenderBase
- *
+ * <p> For more information about this appender, please refer to the online
+ * manual at http://logback.qos.ch/manual/appenders.html#AppenderBase
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class AppenderBase<E> extends ContextAwareBase implements
-    Appender<E>, FilterAttachable {
+    Appender<E> {
 
   protected boolean started = false;
 
@@ -41,7 +39,7 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
    */
   protected String name;
 
-  private FilterAttachableImpl fai = new FilterAttachableImpl();
+  private FilterAttachableImpl<E> fai = new FilterAttachableImpl<E>();
 
   public String getName() {
     return name;
@@ -49,10 +47,9 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
 
   private int statusRepeatCount = 0;
   private int exceptionCount = 0;
-  
+
   static final int ALLOWED_REPEATS = 5;
 
-  
   public synchronized void doAppend(E eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
@@ -77,15 +74,15 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
       if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
         return;
       }
-      
+
       // ok, we now invoke derived class' implementation of append
       this.append(eventObject);
 
-    } catch(Exception e) {
+    } catch (Exception e) {
       if (exceptionCount++ < ALLOWED_REPEATS) {
-        addError("Appender ["+name+"] failed to append.", e);
+        addError("Appender [" + name + "] failed to append.", e);
       }
-    }  finally {
+    } finally {
       guard = false;
     }
   }
@@ -115,7 +112,7 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
     return this.getClass().getName() + "[" + name + "]";
   }
 
-  public void addFilter(Filter newFilter) {
+  public void addFilter(Filter<E> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -127,10 +124,10 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
     fai.clearAllFilters();
   }
 
-  public FilterReply getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
   }
-  
+
   public Layout<E> getLayout() {
     return null;
   }

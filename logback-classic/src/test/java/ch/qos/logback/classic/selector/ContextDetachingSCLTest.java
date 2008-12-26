@@ -1,7 +1,10 @@
 package ch.qos.logback.classic.selector;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -10,14 +13,14 @@ import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 
-public class ContextDetachingSCLTest extends TestCase {
+public class ContextDetachingSCLTest  {
   
   static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
 
   ContextDetachingSCL listener;
   
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     System.setProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, "JNDI");
     //LoggerFactory.setup();
     
@@ -33,21 +36,22 @@ public class ContextDetachingSCLTest extends TestCase {
     //this call will create the context "toto"
     LoggerFactory.getLogger(ContextDetachingSCLTest.class);
 
-    super.setUp();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     System.clearProperty(INITIAL_CONTEXT_KEY);
-    super.tearDown();
   }
-  
+
+  @Test
   public void testDetach() {
     ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
     listener.contextDestroyed(null);
     assertEquals(0, selector.getCount());
   }
   
+
+  @Test
   public void testDetachWithMissingContext() {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "tata");

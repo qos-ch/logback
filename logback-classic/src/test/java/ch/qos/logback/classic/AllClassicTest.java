@@ -9,33 +9,27 @@
  */
 package ch.qos.logback.classic;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class AllClassicTest extends TestCase {
+@RunWith(Suite.class)
+@SuiteClasses({org.slf4j.impl.PackageTest.class,
+    ch.qos.logback.classic.PackageTest.class,
+    ch.qos.logback.classic.util.PackageTest.class,
+    ch.qos.logback.classic.control.PackageTest.class,
+    ch.qos.logback.classic.joran.PackageTest.class,
+    ch.qos.logback.classic.jmx.PackageTest.class,
+    ch.qos.logback.classic.boolex.PackageTest.class,
+    ch.qos.logback.classic.selector.PackageTest.class,
+    ch.qos.logback.classic.html.PackageTest.class,
+    ch.qos.logback.classic.net.PackageTest.class,
+    ch.qos.logback.classic.pattern.PackageTest.class,
+    ch.qos.logback.classic.db.PackageTest.class,
+    ch.qos.logback.classic.spi.PackageTest.class,
+    ch.qos.logback.classic.turbo.PackageTest.class,
+    ch.qos.logback.classic.sift.PackageTest.class})
+public class AllClassicTest {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
 
-    suite.addTest(org.slf4j.impl.PackageTest.suite());
-    suite.addTest(new JUnit4TestAdapter(
-        ch.qos.logback.classic.PackageTest.class));
-    suite.addTest(ch.qos.logback.classic.util.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.control.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.joran.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.jmx.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.boolex.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.selector.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.html.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.net.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.pattern.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.db.PackageTest.suite());
-    suite.addTest(ch.qos.logback.classic.spi.PackageTest.suite());
-    suite.addTest(new JUnit4TestAdapter(ch.qos.logback.classic.turbo.PackageTest.class));
-    suite.addTest(new JUnit4TestAdapter(
-        ch.qos.logback.classic.sift.PackageTest.class));
-    return suite;
-  }
 }

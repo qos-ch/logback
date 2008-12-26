@@ -30,11 +30,12 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
   int lengthOption;
-  List<EventEvaluator> evaluatorList = null;
+  List<EventEvaluator<LoggingEvent>> evaluatorList = null;
 
   final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
 
+  @SuppressWarnings("unchecked")
   public void start() {
 
     String lengthStr = getFirstOption();
@@ -66,16 +67,16 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
-        EventEvaluator ee = (EventEvaluator) evaluatorMap.get(evaluatorStr);
+        EventEvaluator<LoggingEvent> ee = (EventEvaluator<LoggingEvent>) evaluatorMap.get(evaluatorStr);
         addEvaluator(ee);
       }
     }
     super.start();
   }
 
-  private void addEvaluator(EventEvaluator ee) {
+  private void addEvaluator(EventEvaluator<LoggingEvent> ee) {
     if (evaluatorList == null) {
-      evaluatorList = new ArrayList<EventEvaluator>();
+      evaluatorList = new ArrayList<EventEvaluator<LoggingEvent>>();
     }
     evaluatorList.add(ee);
   }
@@ -111,7 +112,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     if (evaluatorList != null) {
       boolean printStack = true;
       for (int i = 0; i < evaluatorList.size(); i++) {
-        EventEvaluator ee = (EventEvaluator) evaluatorList.get(i);
+        EventEvaluator<LoggingEvent> ee = evaluatorList.get(i);
         try {
           if (ee.evaluate(event)) {
             printStack = false;

@@ -1,11 +1,19 @@
 package ch.qos.logback.classic.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Properties;
 
 import javax.jms.ObjectMessage;
 import javax.naming.Context;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.net.mock.MockTopic;
 import ch.qos.logback.classic.net.mock.MockTopicConnectionFactory;
@@ -15,13 +23,14 @@ import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.ContextBase;
 
-public class JMSTopicAppenderTest extends TestCase {
+public class JMSTopicAppenderTest  {
 
   ch.qos.logback.core.Context context;
   JMSTopicAppender appender;
 
-  @Override
-  protected void setUp() throws Exception {
+
+  @Before
+  public void setUp() throws Exception {
     context = new ContextBase();
     appender = new JMSTopicAppender();
     appender.setContext(context);
@@ -34,17 +43,17 @@ public class JMSTopicAppenderTest extends TestCase {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(appender.tcfBindingName, new MockTopicConnectionFactory());
     mic.map.put(appender.topicBindingName, new MockTopic(appender.topicBindingName));
-    
-    super.setUp();
+
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+
+  @After
+  public void tearDown() throws Exception {
     appender = null;
     context = null;
-    super.tearDown();
   }
 
+  @Test
   public void testAppendOk() { 
     appender.start();
 
@@ -61,6 +70,7 @@ public class JMSTopicAppenderTest extends TestCase {
     }
   }
 
+  @Test
   public void testAppendFailure() {
     appender.start();
     
@@ -78,6 +88,7 @@ public class JMSTopicAppenderTest extends TestCase {
     assertFalse(appender.isStarted());
   }
 
+  @Test
   public void testBuildEnvProperties() {
     appender.setInitialContextFactoryName("icfn");
     appender.setProviderURL("url");
@@ -98,6 +109,7 @@ public class JMSTopicAppenderTest extends TestCase {
         .getProperty(Context.SECURITY_CREDENTIALS));
   }
 
+  @Test
   public void testBuildEnvPropertiesWithNullProviderURL() {
     appender.setInitialContextFactoryName("icfn");
     appender.setProviderURL(null);
@@ -120,6 +132,7 @@ public class JMSTopicAppenderTest extends TestCase {
     assertEquals(1, context.getStatusManager().getCount());
   }
 
+  @Test
   public void testBuildEnvPropertiesWithNullCredentials() {
     appender.setInitialContextFactoryName("icfn");
     appender.setProviderURL("url");
@@ -142,6 +155,7 @@ public class JMSTopicAppenderTest extends TestCase {
     assertEquals(1, context.getStatusManager().getCount());
   }
   
+  @Test
   public void testBuildEnvPropertiesWithPkgNull() {
     appender.setInitialContextFactoryName("icfn");
     appender.setProviderURL("url");
@@ -164,6 +178,7 @@ public class JMSTopicAppenderTest extends TestCase {
     assertEquals(0, context.getStatusManager().getCount());
   }
 
+  @Test
   public void testStartMinimalInfo() {
     //let's leave only what's in the setup()
     //method, minus the providerURL
@@ -179,6 +194,7 @@ public class JMSTopicAppenderTest extends TestCase {
     }
   }
   
+  @Test
   public void testStartUserPass() {
     appender.setUserName("test");
     appender.setPassword("test");
@@ -194,6 +210,7 @@ public class JMSTopicAppenderTest extends TestCase {
     }
   }
   
+  @Test
   public void testStartFails() {
     appender.topicBindingName = null;
     

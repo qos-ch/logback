@@ -2,7 +2,7 @@ package ch.qos.logback.core.filter;
 
 import ch.qos.logback.core.spi.FilterReply;
 
-public abstract class AbstractMatcherFilter extends Filter {
+public abstract class AbstractMatcherFilter<E> extends Filter<E> {
 
   protected FilterReply onMatch = FilterReply.NEUTRAL;
   protected FilterReply onMismatch = FilterReply.NEUTRAL;

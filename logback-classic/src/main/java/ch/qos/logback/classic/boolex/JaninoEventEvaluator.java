@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.boolex;
 
 import java.util.ArrayList;
@@ -15,7 +24,7 @@ import ch.qos.logback.core.boolex.Matcher;
 
 
 
-public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
+public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<LoggingEvent> {
 
   
   public final static String IMPORT_LEVEL = "import ch.qos.logback.classic.Level;\r\n";
@@ -83,8 +92,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase {
     return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
-  protected Object[] getParameterValues(Object event) {
-    LoggingEvent loggingEvent = (LoggingEvent) event;
+  protected Object[] getParameterValues(LoggingEvent loggingEvent) {
     final int matcherListSize = matcherList.size();
     
     int i = 0;

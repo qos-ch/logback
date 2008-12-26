@@ -12,7 +12,7 @@ public class IADataForComplexProperty {
   final PropertySetter parentBean;
   final AggregationType aggregationType;
   final String complexPropertyName;
-  Object nestedComplexProperty;
+  private Object nestedComplexProperty;
   boolean inError;
 
   public IADataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType, String complexPropertyName) {
@@ -31,6 +31,10 @@ public class IADataForComplexProperty {
 
   public String getComplexPropertyName() {
     return complexPropertyName;
+  }
+
+  public void setNestedComplexProperty(Object nestedComplexProperty) {
+    this.nestedComplexProperty = nestedComplexProperty;
   }
   
   

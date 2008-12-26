@@ -110,13 +110,13 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-    AppenderAttachable<AccessEvent>, FilterAttachable {
+    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
       + "logback-access.xml";
 
   AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
-  FilterAttachableImpl fai = new FilterAttachableImpl();
+  FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
   String filename;
   boolean started = false;
 
@@ -235,7 +235,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return aai.detachAppender(name);
   }
 
-  public void addFilter(Filter newFilter) {
+  public void addFilter(Filter<AccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -243,7 +243,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     fai.clearAllFilters();
   }
 
-  public FilterReply getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 

@@ -67,7 +67,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   protected Message msg;
 
-  protected EventEvaluator eventEvaluator;
+  protected EventEvaluator<E> eventEvaluator;
 
   /**
    * return a layout for the subjet string as appropriate for the module. If the
@@ -381,7 +381,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * corresponding object will be instantiated and assigned as the event
    * evaluator for the SMTPAppender.
    */
-  public void setEvaluator(EventEvaluator eventEvaluator) {
+  public void setEvaluator(EventEvaluator<E> eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
   }
 

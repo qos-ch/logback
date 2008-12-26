@@ -9,23 +9,14 @@
  */
 package ch.qos.logback.classic.spi;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class PackageTest extends TestCase {
-  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(ContextListenerTest.class);
-    suite.addTestSuite(CallerDataTest.class); 
-    suite.addTest(new JUnit4TestAdapter (LoggerComparatorTest.class));
-    suite.addTest(new JUnit4TestAdapter (LoggingEventSerializationTest.class));
-    suite.addTest(new JUnit4TestAdapter(LoggingEventSerializationPerfTest.class));
-    suite.addTest(new JUnit4TestAdapter(ThrowableToDataPointTest.class));
-    suite.addTest(new JUnit4TestAdapter(BasicCPDCTest.class));
-    return suite;
-  }
+@RunWith(Suite.class)
+@SuiteClasses( { ContextListenerTest.class, CallerDataTest.class,
+    LoggerComparatorTest.class, LoggingEventSerializationTest.class,
+    LoggingEventSerializationPerfTest.class, ThrowableToDataPointTest.class,
+    BasicCPDCTest.class })
+public class PackageTest  {
 }

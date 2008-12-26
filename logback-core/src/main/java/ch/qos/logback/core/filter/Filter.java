@@ -5,25 +5,20 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * Users should extend this class to implement customized event filtering in
- * addition to the build-in filtering rules. It is suggested that you first use
- * and understand the built-in rules before rushing to write your own custom
- * filters.
- * <p>
- * For more information about filters, please refer to the online manual at
+ * Users should extend this class to implement customized event filtering.
+ * 
+ * <p>We suggest that you first try to use the built-in rules before rushing to
+ * write your own custom filters.
+ * 
+ * <p>For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public abstract class Filter extends ContextAwareBase implements LifeCycle {
+public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
 
-  /**
-   * Points to the next filter in the filter chain.
-   */
-  private Filter next;
-  
   private String name;
-  
+
   boolean start = false;
 
   public void start() {
@@ -46,23 +41,9 @@ public abstract class Filter extends ContextAwareBase implements LifeCycle {
    * consulting with other filters in the chain.
    * 
    * @param event
-   *          The event to decide upon.
+   *                The event to decide upon.
    */
-  public abstract FilterReply decide(Object event);
-
-  /**
-   * Set the next filter pointer.
-   */
-  public void setNext(Filter next) {
-    this.next = next;
-  }
-
-  /**
-   * Return the pointer to the next filter;
-   */
-  public Filter getNext() {
-    return next;
-  }
+  public abstract FilterReply decide(E event);
 
   public String getName() {
     return name;

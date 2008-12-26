@@ -14,7 +14,7 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.LifeCycle;
   
 
-public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable {
+public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E> {
 
   /**
    * Get the name of this appender. The name uniquely identifies the appender.

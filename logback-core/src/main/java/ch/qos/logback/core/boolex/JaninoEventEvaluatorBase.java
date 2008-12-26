@@ -5,11 +5,7 @@ import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;
 
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.LifeCycle;
-
-abstract public class JaninoEventEvaluatorBase extends ContextAwareBase
-    implements EventEvaluator, LifeCycle {
+abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E>{
 
   static Class EXPRESSION_TYPE = boolean.class;
   static Class[] THROWN_EXCEPTIONS = new Class[1];
@@ -19,10 +15,7 @@ abstract public class JaninoEventEvaluatorBase extends ContextAwareBase
     THROWN_EXCEPTIONS[0] = EvaluationException.class;
   }
   
-  
-  protected boolean start = false;
 
-  private String name;
   private String expression;
 
   ExpressionEvaluator ee;
@@ -34,33 +27,26 @@ abstract public class JaninoEventEvaluatorBase extends ContextAwareBase
 
   abstract protected Class[] getParameterTypes();
 
-  abstract protected Object[] getParameterValues(Object event);
+  abstract protected Object[] getParameterValues(E event);
 
   protected List<Matcher> matcherList = new ArrayList<Matcher>();
 
-  public boolean isStarted() {
-    return start;
-  }
-
-  public void stop() {
-    start = false;
-  }
-
+  @Override
   public void start() {
     try {
       assert context != null;
       ClassLoader cl = context.getClass().getClassLoader();
       ee = new ExpressionEvaluator(getDecoratedExpression(), EXPRESSION_TYPE,
           getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS, cl);
-      start = true;
+      super.start();
     } catch (Exception e) {
       addError(
           "Could not start evaluator with expression [" + expression + "]", e);
     }
   }
 
-  public boolean evaluate(Object event) throws EvaluationException {
-    if (!start) {
+  public boolean evaluate(E event) throws EvaluationException {
+    if (!isStarted()) {
       throw new IllegalStateException("Evaluator [" + name + "] was called in stopped state");
     }
     try {
@@ -69,22 +55,11 @@ abstract public class JaninoEventEvaluatorBase extends ContextAwareBase
     } catch (Exception ex) {
       errorCount++;
       if (errorCount >= ERROR_THRESHOLD) {
-        start = false;
+        stop();
       }
       throw new EvaluationException("Evaluator [" + name
           + "] caused an exception", ex);
     }
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    if (this.name != null) {
-      throw new IllegalStateException("name has been already set");
-    }
-    this.name = name;
   }
 
   public String getExpression() {

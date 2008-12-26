@@ -63,7 +63,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
    * Use the parameter as the {@link
    * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(EventEvaluator eventEvaluator) {
+  public SMTPAppender(EventEvaluator<LoggingEvent> eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
   }
 

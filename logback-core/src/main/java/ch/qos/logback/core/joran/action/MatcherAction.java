@@ -27,6 +27,8 @@ public class MatcherAction extends Action {
   public void begin(InterpretationContext ec, String localName, Attributes attributes)
       throws ActionException {
     
+    // TODO can we replace MarcherAction by an implicit action?
+
     matcher = null;
     inError = false;
     

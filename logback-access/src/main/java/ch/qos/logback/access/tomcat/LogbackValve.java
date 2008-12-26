@@ -54,7 +54,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author S&eacute;bastien Pennec
  */
 public class LogbackValve extends ValveBase implements Lifecycle, Context,
-    AppenderAttachable<AccessEvent>, FilterAttachable {
+    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
@@ -67,7 +67,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
-  private FilterAttachableImpl fai = new FilterAttachableImpl();
+  private FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
 
   AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   String filename;
@@ -204,7 +204,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     objectMap.put(key, value);
   }
 
-  public void addFilter(Filter newFilter) {
+  public void addFilter(Filter<AccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -216,7 +216,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     fai.clearAllFilters();
   }
 
-  public FilterReply getFilterChainDecision(Object event) {
+  public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 
