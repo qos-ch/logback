@@ -1,22 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration>
-
 <configuration>
-
   <evaluator name="msgEval">
-
-   <Expression>m.matches(message)</Expression>
-
-   <matcher>
-     <Name>m</Name>
-     <regex>^hello.*</regex>
-     <CaseSensitive>false</CaseSensitive>
-   </matcher>
-
-  
+    <Expression>m.matches(message)</Expression>
+    <matcher>
+      <Name>m</Name>
+      <regex>^hello.*</regex>
+      <CaseSensitive>false</CaseSensitive>
+    </matcher>
   </evaluator>
-
-  
-  
 </configuration>
-  

@@ -11,10 +11,9 @@
    <layout class="ch.qos.logback.classic.PatternLayout">
      <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
    </layout>
- </appender> 
+  </appender> 
 
- <root>
-   <level value="debug" />
-   <appender-ref ref="FILE" />
- </root>
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
 </configuration>

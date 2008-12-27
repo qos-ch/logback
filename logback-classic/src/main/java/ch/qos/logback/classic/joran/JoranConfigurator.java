@@ -48,7 +48,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
     rs.addRule(new Pattern("configuration/contextName"), new ContextNameAction());
     rs.addRule(new Pattern("configuration/insertFromJNDI"), new InsertFromJNDIAction());
-    rs.addRule(new Pattern("*/evaluator"), new EvaluatorAction());
+    rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
 
     rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
     rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());

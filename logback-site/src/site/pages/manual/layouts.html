@@ -1181,13 +1181,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
-      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL}</b>" /> 
+      &lt;Pattern>%-4relative [%thread] %-5level - %msg%n<b>%caller{2, DISP_CALLER_EVAL}</b>
+      &lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root> 
-    &lt;level value="debug" /> 
+  &lt;root level="debug"> 
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -1340,14 +1339,12 @@ public class ExceptionEvaluatorExample {
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;param name="Pattern"
-        value="%-4relative [%thread] %-5level - %msg \
-          <b>%ex{full, DISPLAY_EX_EVAL}</b>%n" />
+      &lt;Pattern>%-4relative [%thread] %-5level - %msg%n<b>%ex{full, DISPLAY_EX_EVAL}</b>
+      &lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -1453,8 +1450,7 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -1633,8 +1629,7 @@ public class TrivialMain {
     &lt;To>destination.email@domain.net&lt;/To> 
   &lt;/appender&gt;
 
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
+  &lt;root level="debug">
     &lt;appender-ref ref="SMTP" /&gt;
   &lt;/root&gt;
 &lt;/configuration&gt;</pre></div>
@@ -1660,8 +1655,7 @@ public class TrivialMain {
     &lt;/layout>
  &lt;/appender> 
 
- &lt;root>
-   &lt;level value="debug" />
+ &lt;root level="debug">
    &lt;appender-ref ref="FILE" />
  &lt;/root>
 &lt;/configuration></pre></div>

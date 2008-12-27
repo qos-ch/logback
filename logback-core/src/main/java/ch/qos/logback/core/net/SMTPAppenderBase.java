@@ -36,20 +36,14 @@ import ch.qos.logback.core.util.OptionHelper;
  * An abstract class that provides support for sending events to an email
  * address.
  * 
- * <p>
- * Authentication through plain user password is supported. Both STARTTLS and SSL are 
- * also supported. Note that STARTTLS differs from SSL in that, in STARTTLS, the connection 
- * is non-encrypted and only after the STARTTLS command is issued by the client 
- * (if the server supports it) does the connection switch to SSL. In SSL mode, the connection 
- * is SSL from the start.
+ * <p>See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further
+ * documentation.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
-
-  // private final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
   protected Layout<E> layout;
   protected Layout<E> subjectLayout;
@@ -113,7 +107,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     // props.put("mail.debug", "true");
-    
+
     Session session = Session.getInstance(props, loginAuthenticator);
     msg = new MimeMessage(session);
 
@@ -161,9 +155,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   /**
    * This method determines if there is a sense in attempting to append.
    * 
-   * <p>
-   * It checks whether there is a set output target and also if there is a set
-   * layout. If these checks fail, then the boolean value <code>false</code>
+   * <p> It checks whether there is a set output target and also if there is a
+   * set layout. If these checks fail, then the boolean value <code>false</code>
    * is returned.
    */
   public boolean checkEntryConditions() {

@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
@@ -17,9 +20,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.html.HTMLLayout;
 import ch.qos.logback.classic.html.XHTMLEntityResolver;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -32,7 +38,8 @@ public class SMTPAppender_GreenTest {
   GreenMail greenMail;
   SMTPAppender smtpAppender;
   LoggerContext lc = new LoggerContext();
-
+  Logger logger = lc.getLogger(this.getClass());
+  
   static final String TEST_SUBJECT = "test subject";
   static final String HEADER = "HEADER\n";
   static final String FOOTER = "FOOTER\n";
@@ -43,8 +50,13 @@ public class SMTPAppender_GreenTest {
         ServerSetup.PROTOCOL_SMTP);
     greenMail = new GreenMail(serverSetup);
     greenMail.start();
-    buildSMTPAppender();
   }
+  
+  @After
+  public void tearDown() throws Exception {
+    greenMail.stop();
+  }
+  
 
   void buildSMTPAppender() throws Exception {
     smtpAppender = new SMTPAppender();
@@ -78,26 +90,28 @@ public class SMTPAppender_GreenTest {
     return layout;
   }
 
-  @After
-  public void tearDown() throws Exception {
-  }
 
-  @Test
-  public void smoke() throws Exception {
-    smtpAppender.setLayout(buildPatternLayout(lc));
-    smtpAppender.start();
-    Logger logger = lc.getLogger("test");
-    logger.addAppender(smtpAppender);
-    logger.debug("hello");
-    logger.error("en error", new Exception("an exception"));
+
+  private MimeMultipart verify(String subject) throws MessagingException, IOException {
     MimeMessage[] mma = greenMail.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(1, mma.length);
     MimeMessage mm = mma[0];
     // http://jira.qos.ch/browse/LBCLASSIC-67
-    assertEquals(TEST_SUBJECT, mm.getSubject());
+    assertEquals(subject, mm.getSubject());
+    return (MimeMultipart) mm.getContent();
+  }
 
-    MimeMultipart mp = (MimeMultipart) mm.getContent();
+  @Test
+  public void smoke() throws Exception {
+    buildSMTPAppender();
+    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    logger.debug("hello");
+    logger.error("en error", new Exception("an exception"));
+    
+    MimeMultipart mp =  verify(TEST_SUBJECT);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertTrue(body.startsWith(HEADER.trim()));
     assertTrue(body.endsWith(FOOTER.trim()));
@@ -105,26 +119,20 @@ public class SMTPAppender_GreenTest {
 
   @Test
   public void html() throws Exception {
+    buildSMTPAppender();
     smtpAppender.setLayout(buildHTMLLayout(lc));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-    MimeMessage[] mma = greenMail.getReceivedMessages();
-    assertNotNull(mma);
-    assertEquals(1, mma.length);
-    MimeMessage mm = mma[0];
-    assertEquals(TEST_SUBJECT, mm.getSubject());
-
-    MimeMultipart mp = (MimeMultipart) mm.getContent();
-
+    MimeMultipart mp =  verify(TEST_SUBJECT);
+    
     // verify strict adherence to xhtml1-strict.dtd
     SAXReader reader = new SAXReader();
     reader.setValidation(true);
     reader.setEntityResolver(new XHTMLEntityResolver());
     reader.read(mp.getBodyPart(0).getInputStream());
-    // System.out.println(GreenMailUtil.getBody(mp.getBodyPart(0)));
+
   }
 
   @Test
@@ -132,26 +140,21 @@ public class SMTPAppender_GreenTest {
    * Checks that even when many events are processed, the output is still
    * conforms to xhtml-strict.dtd.
    * 
-   * Note that SMTPAppender only keeps only 500 or so (=buffer size)
-   * events. So the generated output will be rather short.
+   * Note that SMTPAppender only keeps only 500 or so (=buffer size) events. So
+   * the generated output will be rather short.
    */
   public void htmlLong() throws Exception {
+    buildSMTPAppender();
     smtpAppender.setLayout(buildHTMLLayout(lc));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
     logger.addAppender(smtpAppender);
     for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
       logger.debug("hello " + i);
     }
     logger.error("en error", new Exception("an exception"));
-    MimeMessage[] mma = greenMail.getReceivedMessages();
-    assertNotNull(mma);
-    assertEquals(1, mma.length);
-    MimeMessage mm = mma[0];
-    assertEquals(TEST_SUBJECT, mm.getSubject());
-
-    MimeMultipart mp = (MimeMultipart) mm.getContent();
-
+    
+    MimeMultipart mp =  verify(TEST_SUBJECT);
+    
     // verify strict adherence to xhtml1-strict.dtd
     SAXReader reader = new SAXReader();
     reader.setValidation(true);
@@ -159,4 +162,25 @@ public class SMTPAppender_GreenTest {
     reader.read(mp.getBodyPart(0).getInputStream());
   }
 
+  private void configure(String file) throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.setContext(lc);
+    System.out.println("port="+port);
+    lc.putProperty("port", "" + port);
+    jc.doConfigure(file);
+  }
+
+  @Test
+  public void testCustomEvaluator() throws  Exception {
+    configure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/smtp/customEvaluator.xml");
+    
+    logger.debug("hello");
+    String msg2 = "world";
+    logger.debug(msg2);
+    logger.debug("invisible");
+    MimeMultipart mp =  verify(this.getClass().getName()+ " - "+msg2);
+    String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+    assertEquals("helloworld", body);
+  }
 }

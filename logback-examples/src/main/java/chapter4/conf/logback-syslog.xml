@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
   <appender name="SYSLOG"
@@ -8,8 +7,7 @@
     <SuffixPattern>%-4relative [%thread] %-5level - %msg</SuffixPattern>
   </appender>
 	
-	<root>
-		<level value="DEBUG" />
+	<root level="DEBUG">
 		<appender-ref ref="SYSLOG" />
 	</root>
 </configuration>

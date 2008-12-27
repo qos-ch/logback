@@ -16,7 +16,6 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EventEvaluator;
-import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
@@ -62,11 +61,6 @@ abstract public class AbstractEventEvaluatorAction extends Action {
 
       evaluator.setContext(this.context);
       evaluator.setName(evaluatorName);
-
-      if (ec.getObjectStack().size() > 0
-          && ec.peekObject() instanceof EvaluatorFilter) {
-        ((EvaluatorFilter) ec.peekObject()).setEvaluator(evaluator);
-      }
 
       ec.pushObject(evaluator);
       addInfo("Adding evaluator named [" + evaluatorName

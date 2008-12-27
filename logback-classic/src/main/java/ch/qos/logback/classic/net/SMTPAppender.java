@@ -11,7 +11,7 @@
 package ch.qos.logback.classic.net;
 
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
+import ch.qos.logback.classic.boolex.OnErrorEvaluator;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -33,7 +33,6 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
 
   // value "%logger{20} - %m" is referenced in the docs!
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
-  static final String DEFAULT_EVALUATOR_EXPRESSION = "level >= ERROR";
   
   private int bufferSize = 512;
   protected CyclicBuffer<LoggingEvent> cb = new CyclicBuffer<LoggingEvent>(bufferSize);
@@ -49,12 +48,11 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
   
   public void start() {    
     if (eventEvaluator == null) {
-      JaninoEventEvaluator jee = new JaninoEventEvaluator();
-      jee.setContext(getContext());
-      jee.setExpression(DEFAULT_EVALUATOR_EXPRESSION);
-      jee.setName("SMTPAppender's default event evaluator");
-      jee.start();
-      this.eventEvaluator = jee;      
+      OnErrorEvaluator onError = new OnErrorEvaluator();
+      onError.setContext(getContext());
+      onError.setName("onError");
+      onError.start();
+      this.eventEvaluator = onError;      
     }
     super.start();
   }

@@ -5,13 +5,11 @@
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <param name="Pattern"
-        value="%-4relative [%thread] %sample - %msg%n" />
+      <Pattern>%-4relative [%thread] %sample - %msg%n</Pattern>
     </layout>
   </appender>
 
-  <root>
-    <level value="debug" />
+  <root level="debug">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

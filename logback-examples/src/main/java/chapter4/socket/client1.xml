@@ -13,8 +13,7 @@
     <IncludeCallerData>${includeCallerData}</IncludeCallerData>
   </appender>
 
-  <root>
-    <level value ="debug"/>
+  <root level="debug">
     <appender-ref ref="SOCKET" />
   </root>  
 

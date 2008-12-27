@@ -38,7 +38,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
     rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());
     
-    rs.addRule(new Pattern("*/evaluator"), new EvaluatorAction());
+    rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
   }
 
 

@@ -411,8 +411,7 @@ public class ExitWoes1 {
     &lt;/layout>
   &lt;/appender></b>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></p>
@@ -586,8 +585,7 @@ public class ExitWoes1 {
     &lt;/layout>
   &lt;/appender></b>
 	
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></p>
@@ -909,12 +907,11 @@ public interface RollingPolicy extends LifeCycle {
       &lt;MaxFileSize>5MB&lt;/MaxFileSize>
     &lt;/triggeringPolicy>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5levelu %logger{35} - %msg%n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 	
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></p>
@@ -1133,8 +1130,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;/layout>
   &lt;/appender> 
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></p>
@@ -1161,8 +1157,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;/layout>
   &lt;/appender> 
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></p>
@@ -1245,8 +1240,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;/layout>
   &lt;/appender>
 	
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></p>
@@ -1450,8 +1444,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;IncludeCallerData>${includeCallerData}&lt;/IncludeCallerData>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value ="debug"/>
+  &lt;root level="debug">
     &lt;appender-ref ref="SOCKET" />
   &lt;/root>  
 
@@ -1908,8 +1901,7 @@ Context ctx = new InitialContext(env);</pre></div>
     &lt;TopicBindingName>MyTopic&lt;/TopicBindingName>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="Topic" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -1977,26 +1969,24 @@ Context ctx = new InitialContext(env);</pre></div>
     &lt;QueueBindingName>MyQueue&lt;/QueueBindingName>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="Queue" />
   &lt;/root>
 &lt;/configuration></pre></div>		
 		
    <h3><a name="SMTPAppender" href="#SMTPAppender">SMTPAppender</a></h3>
 
-
-		<p>The <a
-		href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
-		accumulates logging events in a fixed-size buffer and sends them
-		in an email when a user-specified event occurs.  By default, the
-		sending of such email is triggered by an event of level ERROR or
-		higher.
-		</p>
+   <p>The <a
+   href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
+   accumulates logging events in a fixed-size buffer and sends them in
+   an email after a user-specified event occurs.  By default, the
+   email transmission is -triggered by a logging event of level ERROR
+   or higher.
+   </p>
 		
-		<p>The various properties for <code>SMTPAppender</code> are
-		summarized in the following table.
-		</p>
+   <p>The various properties for <code>SMTPAppender</code> are
+   summarized in the following table.
+	 </p>
 		
 		<table class="bodyTable">
       <tr class="a">
@@ -2059,38 +2049,46 @@ Context ctx = new InitialContext(env);</pre></div>
         <td><b><span class="option">BufferSize</span></b></td>
         <td><code>int</code></td>
         <td>
-          The <span class="option">BufferSize</span> option takes a positive 
-          integer representing the maximum number of logging events to collect in a 
-          cyclic buffer. When the <span class="option">BufferSize</span> is reached, 
-          oldest events are deleted as new events are added to the buffer. 
-          The default size of the cyclic buffer is 512.
+          The <span class="option">BufferSize</span> option takes a
+          positive integer representing the maximum number of logging
+          events to collect in a cyclic buffer. When the <span
+          class="option">BufferSize</span> is reached, oldest events
+          are deleted as new events are added to the buffer.  The
+          default size of the cyclic buffer is 512.
         </td>
       </tr>
       <tr >
         <td><b><span class="option">Evaluator</span></b></td>
         <td><code>String</code></td>
         <td>
-          <p>This option is declared by creating a new <code>&lt;EventEvaluator/></code>
-          element. The name of the class that the user wishes to use as the
-          <code>SMTPAppender</code>'s <code>Evaluator</code> can be given
-          by adding an attribute to the newly created element.
+          <p>This option is declared by creating a new
+          <code>&lt;EventEvaluator/></code> element. The name of the
+          class that the user wishes to use as the
+          <code>SMTPAppender</code>'s <code>Evaluator</code> can needs
+          to be specified via the <span class="attr">class</span>
+          attribute.
           </p>
           
-          <p>More details about the use of event evaluators with
-          <code>SMTPAppender</code> follow further down this document.
-          </p>
           
-          <p>In the absence of this option, <code>SMTPAppender</code> is
-          assigned a default event evaluator which triggers email
-          transmission as a response to any event of level
-          <em>ERROR</em> or higher.
+          <p>In the absence of this option, <code>SMTPAppender</code>
+          is assigned an <a
+          href="../xref/ch/qos/logback/classic/boolex/OnErrorEvaluator.html">OnErrorEveluator</a>
+          instance which triggers email transmission when it
+          encounters an event of level <em>ERROR</em> or higher.
           </p>
-          
+
+          <!--
           <p><code>EventEvaluator</code> objects are subclasses of the
           <code>JaninoEventEvaluatorBase</code> which depends on
           Janino. See the <a href="../dependencies.html">dependencies
           page</a> for more information.
           </p>
+          -->
+
+          <p>You can find more information on event evaluators further
+          down this document.
+          </p>
+
         </td>
       </tr>
       <tr class="alt">
@@ -2166,13 +2164,12 @@ Context ctx = new InitialContext(env);</pre></div>
 		<code>Email</code> application:
 		</p>	
 		
-<em>Example 4.<span class="autoEx"/>: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
-<div class="source"><pre>&lt;configuration>
-	  
+    <em>Example 4.<span class="autoEx"/>: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
+    <p class="source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
     &lt;To>EMAIL-DESTINATION&lt;/To>
-    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- a second destination is optional --&gt;
+    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible --&gt;
     &lt;From>SENDER-EMAIL&lt;/From>
     &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -2180,11 +2177,10 @@ Context ctx = new InitialContext(env);</pre></div>
     &lt;/layout>	    
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value ="debug"/>
+  &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
 		<p>Before trying out <code>chapter4.mail.Email</code> application
 		with the above configuration file, you must set the <span
@@ -2346,47 +2342,87 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value ="debug"/>
+  &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre></div>
 
     
-    <h3>Authentication/STARTTLS/SSL</h3>
 
-    <p>SMTPAppender supports plain user/password authentication as
-    well as both STARTTLS and SSL.
+    <h3><a name="smtpAuthentication"
+    href="#smtpAuthentication">Authentication/STARTTLS/SSL</a></h3>
+
+    <p><code>SMTPAppender</code> supports authentication via plain
+    user passwords as well as both the STARTTLS and SSL
+    protocols. Note that STARTTLS differs from SSL in that, in
+    STARTTLS, the connection is initially non-encrypted and only after
+    the STARTTLS command is issued by the client (if the server
+    supports it) does the connection switch to SSL. In SSL mode, the
+    connection is encrypted right from the start.
     </p>
 
-    <p>The next example shows you how to configure SMTPAppender for
-    gmail with SSL. </p>
+    <h3><a name="gmailSSL" href="#gmailSSL">SMTPAppender configuration
+    for Gmail (SSL)</a></h3>
+
+    <p>The next example shows you how to configure
+    <code>SMTPAppender</code> for Gmail with the SSL protocol. </p>
     
-<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to GMAIL using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
+    <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to Gmail using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
 
-<div class="source"><pre>&lt;configuration>
+    <p class="source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
-    &lt;SMTPPort>465&lt;/SMTPPort>
-    &lt;SSL>true&lt;/SSL>
-    &lt;Username>USERNAME@gmail.com&lt;/Username>
-    &lt;Password>PASSWORD&lt;/Password></b>
+    <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost></b>
+    <b>&lt;SMTPPort>465&lt;/SMTPPort></b>
+    <b>&lt;SSL>true&lt;/SSL></b>
+    <b>&lt;Username>YOUR_USERNAME@gmail.com&lt;/Username></b>
+    <b>&lt;Password>YOUR_GMAIL_PASSWORD&lt;/Password></b>
 
-    &lt;To>${to}&lt;/To>
-    &lt;From>${from}&lt;/From>
-    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+    &lt;To>EMAIL-DESTINATION&lt;/To>
+    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible -->
+    &lt;From>YOUR_USERNAME@gmail.com&lt;/From>
+    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%date %-5level %logger{35} - %message%n&lt;/Pattern>
+    &lt;/layout>	    
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value ="debug"/>
+  &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
-    <p>For a STARTTLS with gmail refer to the configuration file
-    <em>logback-examples/src/main/java/chapter4/mail/gmailSTARTTLS.xml)</em>
 
-    </p>
+    <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS">SMTPAppender for Gmail
+    (STARTTLS)</a></h3>
+
+    <p>The next example shows you how to configure
+    <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
+
+    <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapter4/mail/gmailSTARTTLS.xml)</em>
+
+    <p class="source">&lt;configuration>	  
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    &lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
+    &lt;SMTPPort>587&lt;/SMTPPort>
+    &lt;STARTTLS>true&lt;/STARTTLS>
+    &lt;Username>YOUR_USERNAME@gmail.com&lt;/Username>
+    &lt;Password>YOUR_GMAIL_xPASSWORD&lt;/Password>
+    
+    &lt;To>EMAIL-DESTINATION&lt;/To>
+    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible -->
+    &lt;From>YOUR_USERNAME@gmail.com&lt;/From>
+    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+      &lt;Pattern>%date %-5level %logger - %message%n&lt;/Pattern>
+    &lt;/layout>	    
+  &lt;/appender>
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="EMAIL" />
+  &lt;/root>  
+&lt;/configuration></p>
+
+
 
     <h3>
       <a name="DBAppender" href="#DBAppender">DBAppender</a>
@@ -2691,8 +2727,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;/connectionSource>
   &lt;/appender></b>
   
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug" >
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -2779,8 +2814,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
      &lt;/connectionSource>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value ="debug"/>
+  &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>  
 &lt;/configuration></pre></div>
@@ -2870,8 +2904,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			configuration file, logging events are sent to a MySQL database,
 			without any pooling.
 		</p>
-<em>Example 4.<span class="autoEx"/> <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
-<div class="source"><pre>&lt;configuration>
+    
+    <em>Example 4.<span class="autoEx"/> <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
+    <p class="source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -2885,25 +2920,22 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;/connectionSource>
   &lt;/appender>
     
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration</pre></div>
+&lt;/configuration</p>
 
-		<p>
-			With this configuration file, sending 500 logging events to
-			a MySQL database takes a whopping 5 seconds, that is 
-			10 miliseconds per requests. This figure is
-			unacceptable when dealing with large applications.
+		<p>With this configuration file, sending 500 logging events to a
+		MySQL database takes a whopping 5 seconds, that is 10 miliseconds
+		per requests. This figure is unacceptable when dealing with large
+		applications.
 		</p>
 
-		<p>
-			A dedicated external library is necessary to use connection pooling
-			with <code>DBAppender</code>. The next example uses 
-			<a href="http://sourceforge.net/projects/c3p0">c3p0</a>. To be able
-			to use c3p0, one must download it and place <em>c3p0-VERSION.jar</em>
-			in the classpath.
+		<p>A dedicated external library is necessary to use connection
+		pooling with <code>DBAppender</code>. The next example uses <a
+		href="http://sourceforge.net/projects/c3p0">c3p0</a>. To be able
+		to use c3p0, one must download it and place
+		<em>c3p0-VERSION.jar</em> in the classpath.
 		</p>
 
     <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
@@ -2922,31 +2954,27 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;/connectionSource>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></p>
 
-		<p>
-			With this new configuration, sending 500 logging requests to
-			the same MySQL database as previously used takes around 0.5 seconds,
-			for an average time of 1 milisecond per request.
-			The gain is a <em>10</em> factor. 
+		<p>With this new configuration, sending 500 logging requests to
+		the same MySQL database as previously used takes around 0.5
+		seconds, for an average time of 1 milisecond per request.  The
+		gain is a <em>10</em> factor.
 		</p>
 
-		<h3>
-      <a name="SyslogAppender" href="#SyslogAppender">
-      SyslogAppender
-      </a>
+		<h3><a name="SyslogAppender"
+		href="#SyslogAppender">SyslogAppender</a>
     </h3>
 
-		<p>
-			The syslog protocol is a very simple protocol: a syslog sender sends a small 
-			message to a syslog receiver. 
-			The receiver is commonly called <em>syslog daemon</em> or <em>syslog server</em>.
-			Logback can send messages to a remote syslog daemon. This is achieved by using 
-			<a href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
+		<p>The syslog protocol is a very simple protocol: a syslog sender
+		sends a small message to a syslog receiver.  The receiver is
+		commonly called <em>syslog daemon</em> or <em>syslog server</em>.
+		Logback can send messages to a remote syslog daemon. This is
+		achieved by using <a
+		href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
 		</p>
 		
 		<p>Here are the properties upi can pass to a SyslogAppender.</p>
@@ -3055,8 +3083,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;SuffixPattern>[%thread] %logger %msg&lt;/SuffixPattern>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre></div>
