@@ -51,24 +51,23 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
    * The unique instance of this class.
    */
   private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
-  
+
   static {
     SINGLETON.init();
   }
-  
+
   private boolean initialized = false;
   private LoggerContext defaultLoggerContext = new LoggerContext();
   private ContextSelector contextSelector;
 
-  
   private StaticLoggerBinder() {
     defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
   }
 
   public static StaticLoggerBinder getSingleton() {
-    return SINGLETON; 
+    return SINGLETON;
   }
-  
+
   /**
    * Package access for testing purposes.
    */
@@ -76,7 +75,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     SINGLETON = new StaticLoggerBinder();
     SINGLETON.init();
   }
-  
+
   /**
    * Package access for testing purposes.
    */
@@ -110,6 +109,21 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     }
   }
 
+  /**
+   * Intantiate the context selector class designated by the user. The selector
+   * must have a constructor taking a LoggerContext instance as an argument.
+   * 
+   * @param defaultLoggerContext
+   * @param contextSelectorStr
+   * @return an instance of the designated context selector class
+   * @throws ClassNotFoundException
+   * @throws SecurityException
+   * @throws NoSuchMethodException
+   * @throws IllegalArgumentException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws InvocationTargetException
+   */
   static ContextSelector dynamicalContextSelector(
       LoggerContext defaultLoggerContext, String contextSelectorStr)
       throws ClassNotFoundException, SecurityException, NoSuchMethodException,
@@ -122,10 +136,10 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   public ILoggerFactory getLoggerFactory() {
-    if(!initialized) {
+    if (!initialized) {
       return defaultLoggerContext;
     }
-    
+
     if (contextSelector == null) {
       throw new IllegalStateException(
           "contextSelector cannot be null. See also " + NULL_CS_URL);

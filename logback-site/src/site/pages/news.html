@@ -73,10 +73,20 @@
     <code>JaninoEvaluator</code>.    
     </p>
 
+    <p><code>ContextInitializer</code> will now print the url of the
+    configration it is using. This should help reduce confusion when
+    multiple config files are found on the class path.  This change
+    resolves <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-55">LBCLASSIC-55</a>
+    reported by Anton Tagunov and Henric Larsson.
+    </p>
+
     <p><code>HTMLLayout</code> now honors custom conversion words,
     thus fixing <a
     href="http://jira.qos.ch/browse/LBCORE-74">LBCORE-74</a> as
     reported by Natan Cox.</p>
+
+
 
     <p>SMTPAppender im logback-classic now defaults to
     <code>OnErrorEvaluator</code> instead of a janino-based

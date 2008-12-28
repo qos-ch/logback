@@ -155,6 +155,12 @@
 
     <p class="source">-Dlogback.ContextSelector=myPackage.myContextSelector</p>
 
+    <p>The context selector needs to implement the
+    <code>ContextSelector</code> interface and have a constructor
+    method admitting a <code>LoggerContext</code> instance as its only
+    parameter.
+    </p>
+
 
     <h3>ContextJNDISelector</h3>
 
