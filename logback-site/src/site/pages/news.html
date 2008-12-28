@@ -60,6 +60,29 @@
     reported by Francois Terrier.
     </p>
 
+
+    <p>Evaluators are now wired into an appender automatically
+    (implicit rules) without the help of
+    <code>EvaluatorAction</code>. EvaluatorAction is now only needed
+    for global evaluator elements.  It follows that name attribute is
+    necessary only for global evaluators. Embedded evaluators no
+    longer need a name. This change fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-100">LBCLASSIC-100</a>. In
+    addition, <code>EvaluatorAction</code> has been modified to accept
+    evaluators of any type and not just instances of
+    <code>JaninoEvaluator</code>.    
+    </p>
+
+    <p><code>HTMLLayout</code> now honors custom conversion words,
+    thus fixing <a
+    href="http://jira.qos.ch/browse/LBCORE-74">LBCORE-74</a> as
+    reported by Natan Cox.</p>
+
+    <p>SMTPAppender im logback-classic now defaults to
+    <code>OnErrorEvaluator</code> instead of a janino-based
+    evaluator. Thus, by default <code>SMTPAppender</code> no longer
+    depends on Janino.</p>
+
     <h3>5th of December 2008 - Release of version 0.9.13</h3>
 
     <p>A <code>NullPointerException</code> was being thrown when a the
