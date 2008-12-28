@@ -1,4 +1,4 @@
-package ch.qos.logback.classic;
+package ch.qos.logback.classic.testUtil;
 
 import java.util.ArrayList;
 import java.util.List;

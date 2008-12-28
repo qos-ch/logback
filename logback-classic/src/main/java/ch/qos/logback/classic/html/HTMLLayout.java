@@ -16,29 +16,30 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
+import ch.qos.logback.core.html.IThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
  * 
- * HTMLLayout outputs events in an HTML table. 
- * <p>
- * The content of the table columns are specified using a conversion pattern. 
- * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
- * available patterns.
- * <p>
- * For more information about this layout, please refer to the online manual at
+ * HTMLLayout outputs events in an HTML table. <p> The content of the table
+ * columns are specified using a conversion pattern. See
+ * {@link ch.qos.logback.classic.PatternLayout} for documentation on the
+ * available patterns. <p> For more information about this layout, please refer
+ * to the online manual at
  * http://logback.qos.ch/manual/layouts.html#ClassicHTMLLayout
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
-  
+
   /**
    * Default pattern string for log output.
    */
   static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
+
+  IThrowableRenderer throwableRenderer;
 
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -50,7 +51,19 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     throwableRenderer = new DefaultThrowableRenderer();
     cssBuilder = new DefaultCssBuilder();
   }
-  
+
+  @Override
+  public void start() {
+    int errorCount = 0;
+    if (throwableRenderer == null) {
+      addError("ThrowableRender cannot be null.");
+      errorCount++;
+    }
+    if (errorCount == 0) {
+      super.start();
+    }
+  }
+
   protected Map<String, String> getDefaultConverterMap() {
     return PatternLayout.defaultConverterMap;
   }
@@ -90,13 +103,21 @@ public class HTMLLayout extends HTMLLayoutBase<LoggingEvent> {
     return buf.toString();
   }
 
-  private void appendEventToBuffer(StringBuilder buf, Converter<LoggingEvent> c,
-      LoggingEvent event) {
+  private void appendEventToBuffer(StringBuilder buf,
+      Converter<LoggingEvent> c, LoggingEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));
     buf.append("\">");
     buf.append(c.convert(event));
     buf.append("</td>");
     buf.append(LINE_SEPARATOR);
+  }
+
+  public IThrowableRenderer getThrowableRenderer() {
+    return throwableRenderer;
+  }
+
+  public void setThrowableRenderer(IThrowableRenderer throwableRenderer) {
+    this.throwableRenderer = throwableRenderer;
   }
 }

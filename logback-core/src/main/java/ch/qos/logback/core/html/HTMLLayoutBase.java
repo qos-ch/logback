@@ -1,7 +1,18 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.core.html;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.core.LayoutBase;
@@ -12,7 +23,9 @@ import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
 
 /**
- * This class is a base class for logback component-specific HTMLLayout classes
+ * This class is a base class for HTMLLayout classes part of
+ * other logback modules such as logback-classic and logback-access.
+ * 
  *
  * @author S&eacute;bastien Pennec
  */
@@ -28,9 +41,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   //this variable in their constructor to a default value.
   protected CssBuilder cssBuilder;
 
-  protected IThrowableRenderer throwableRenderer; //no more initialization ??????
-
-  // counter keeping track of the rows output
+   // counter keeping track of the rows output
   protected long counter = 0;
   
   /**
@@ -64,16 +75,11 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   public void start() {
     int errorCount = 0;
     
-    if (throwableRenderer == null) {
-      addError("ThrowableRender cannot be null.");
-      errorCount++;
-    }
-    
     try {
       Parser<E> p = new Parser<E>(pattern);
       p.setContext(getContext());
       Node t = p.parse();
-      this.head = p.compile(t, getDefaultConverterMap());
+      this.head = p.compile(t, getEffectiveConverterMap());
       ConverterUtil.startConverters(this.head);
     } catch (ScanException ex) {
       addError("Incorrect pattern found", ex);
@@ -87,6 +93,33 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
   
   protected abstract Map<String, String> getDefaultConverterMap();
 
+  
+  /**
+   * Returns a map where the default converter map is merged with the map
+   * contained in the context.
+   */
+  public Map<String, String> getEffectiveConverterMap() {
+    Map<String, String> effectiveMap = new HashMap<String, String>();
+
+    // add the least specific map fist
+    Map<String, String> defaultMap = getDefaultConverterMap();
+    if (defaultMap != null) {
+      effectiveMap.putAll(defaultMap);
+    }
+
+    // contextMap is more specific than the default map
+    Context context = getContext();
+    if (context != null) {
+      @SuppressWarnings("unchecked")
+      Map<String, String> contextMap = (Map<String, String>) context
+          .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+      if (contextMap != null) {
+        effectiveMap.putAll(contextMap);
+      }
+    }
+    return effectiveMap;
+  }
+  
   /**
    * The <b>Title </b> option takes a String value. This option sets the
    * document title of the generated HTML document.
@@ -226,14 +259,4 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     }
   }
 
-  public IThrowableRenderer getThrowableRenderer() {
-    return throwableRenderer;
-  }
-
-  public void setThrowableRenderer(IThrowableRenderer throwableRenderer) {
-    this.throwableRenderer = throwableRenderer;
-  }
-  
-  
-  
 }

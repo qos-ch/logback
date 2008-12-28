@@ -10,14 +10,14 @@
 
 package ch.qos.logback.access.html;
 
+import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
+
 import java.util.Map;
 
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.html.HTMLLayoutBase;
-import ch.qos.logback.core.html.NOPThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
-import static  ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
  * 
@@ -47,7 +47,6 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
    */
   public HTMLLayout() {
     pattern = DEFAULT_CONVERSION_PATTERN;
-    throwableRenderer = new NOPThrowableRenderer();
     cssBuilder = new DefaultCssBuilder();  
   }
   

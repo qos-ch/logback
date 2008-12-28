@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.pattern;
 
@@ -22,15 +22,14 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
 
-
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
   Converter<E> head;
   String pattern;
   protected PostCompileProcessor<E> postCompileProcessor;
-  
+
   Map<String, String> instanceConverterMap = new HashMap<String, String>();
-  
+
   /**
    * Concrete implementations of this class are responsible for elaborating the
    * mapping between pattern words and converters.
@@ -43,30 +42,27 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
    * Returns a map where the default converter map is merged with the map
    * contained in the context.
    */
-  @SuppressWarnings("unchecked")
   public Map<String, String> getEffectiveConverterMap() {
-    
     Map<String, String> effectiveMap = new HashMap<String, String>();
-    
 
     // add the least specific map fist
     Map<String, String> defaultMap = getDefaultConverterMap();
     if (defaultMap != null) {
       effectiveMap.putAll(defaultMap);
     }
-    
+
     // contextMap is more specific than the default map
     Context context = getContext();
     if (context != null) {
-      Map<String, String> contextMap = (Map) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+      @SuppressWarnings("unchecked")
+      Map<String, String> contextMap = (Map<String, String>) context
+          .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
       if (contextMap != null) {
         effectiveMap.putAll(contextMap);
       }
     }
-    
     // set the most specific map last
     effectiveMap.putAll(instanceConverterMap);
-    
     return effectiveMap;
   }
 
@@ -78,7 +74,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       }
       Node t = p.parse();
       this.head = p.compile(t, getEffectiveConverterMap());
-      if(postCompileProcessor != null) {
+      if (postCompileProcessor != null) {
         postCompileProcessor.process(head);
       }
       setContextForConverters(head);
@@ -95,7 +91,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       PostCompileProcessor<E> postCompileProcessor) {
     this.postCompileProcessor = postCompileProcessor;
   }
-  
+
   protected void setContextForConverters(Converter<E> head) {
     Context context = getContext();
     Converter c = head;

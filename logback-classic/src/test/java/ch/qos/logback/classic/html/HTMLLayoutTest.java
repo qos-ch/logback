@@ -1,6 +1,7 @@
 package ch.qos.logback.classic.html;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -20,16 +21,20 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.TestConstants;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.testUtil.StringListAppender;
+import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 
 public class HTMLLayoutTest {
 
   LoggerContext lc;
-  Logger logger;
+  Logger root;
   HTMLLayout layout;
 
   @Before
@@ -45,8 +50,8 @@ public class HTMLLayoutTest {
     layout.setPattern("%level%thread%msg");
     layout.start();
     appender.setLayout(layout);
-    logger = lc.getLogger(LoggerContext.ROOT_NAME);
-    logger.addAppender(appender);
+    root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.addAppender(appender);
     appender.start();
   }
 
@@ -89,7 +94,8 @@ public class HTMLLayoutTest {
   @Test
   public void testAppendThrowable() throws Exception {
     StringBuilder buf = new StringBuilder();
-    ThrowableDataPoint[] strArray = { new ThrowableDataPoint("test1"), new ThrowableDataPoint("test2") };
+    ThrowableDataPoint[] strArray = { new ThrowableDataPoint("test1"),
+        new ThrowableDataPoint("test2") };
     DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout
         .getThrowableRenderer();
     renderer.render(buf, strArray);
@@ -145,8 +151,7 @@ public class HTMLLayoutTest {
   public void layoutWithException() throws Exception {
     layout.setPattern("%level %thread %msg %ex");
     LoggingEvent le = createLoggingEvent();
-    le.setThrowableProxy(new ThrowableProxy(new Exception(
-        "test Exception")));
+    le.setThrowableProxy(new ThrowableProxy(new Exception("test Exception")));
     String result = layout.doLayout(le);
 
     String stringToParse = layout.getFileHeader();
@@ -168,18 +173,19 @@ public class HTMLLayoutTest {
     assertTrue(exceptionElement.getText().contains(
         "java.lang.Exception: test Exception"));
   }
-  
+
   @Test
   @Ignore
   public void rawLimit() throws Exception {
     StringBuilder sb = new StringBuilder();
     String header = layout.getFileHeader();
-    assertTrue(header.startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
+    assertTrue(header
+        .startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
     sb.append(header);
     sb.append(layout.getPresentationHeader());
-    for(int i = 0; i < CoreConstants.TABLE_ROW_LIMIT*3; i++) {
-      sb.append(layout.doLayout( new LoggingEvent(this.getClass().getName(), logger,
-          Level.DEBUG, "test message"+i, null, null)));
+    for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
+      sb.append(layout.doLayout(new LoggingEvent(this.getClass().getName(),
+          root, Level.DEBUG, "test message" + i, null, null)));
     }
     sb.append(layout.getPresentationFooter());
     sb.append(layout.getFileFooter());
@@ -188,7 +194,7 @@ public class HTMLLayoutTest {
   }
 
   private LoggingEvent createLoggingEvent() {
-    LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
+    LoggingEvent le = new LoggingEvent(this.getClass().getName(), root,
         Level.DEBUG, "test message", null, null);
     return le;
   }
@@ -199,5 +205,24 @@ public class HTMLLayoutTest {
     reader.setValidation(true);
     reader.setEntityResolver(resolver);
     return reader.read(new ByteArrayInputStream(output.getBytes()));
+  }
+
+  void configure(String file) throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.setContext(lc);
+    jc.doConfigure(file);
+  }
+
+  @Test
+  public void testConversionRuleSupportInHtmlLayout() throws JoranException {
+    configure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/conversionRule/htmlLayout0.xml");
+    root.getAppender("LIST");
+    String msg = "Simon says";
+    root.debug(msg);
+    StringListAppender sla = (StringListAppender) root.getAppender("LIST");
+    assertNotNull(sla);
+    assertEquals(1, sla.strList.size());
+    assertFalse(sla.strList.get(0).contains("PARSER_ERROR"));
   }
 }

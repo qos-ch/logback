@@ -50,8 +50,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
 
-  // FIXME fix exception handling
-
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
   static {

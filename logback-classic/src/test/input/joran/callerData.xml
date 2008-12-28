@@ -12,7 +12,7 @@
     </matcher>  
   </evaluator>
 
-  <appender name="STR_LIST" class="ch.qos.logback.classic.StringListAppender">
+  <appender name="STR_LIST" class="ch.qos.logback.classic.testUtil.StringListAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%caller{4, helloEval}%d %level - %m%n</Pattern>
     </layout>
