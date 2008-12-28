@@ -111,7 +111,7 @@ public class ContextInitializer {
       sm.add(new InfoStatus("Could NOT find resource [" + resourceName + "]",
           loggerContext));
     } else {
-      sm.add(new InfoStatus("Found resource [" + resourceName + "]",
+      sm.add(new InfoStatus("Found resource [" + resourceName + "] at ["+url.toString()+"]",
           loggerContext));
     }
   }
