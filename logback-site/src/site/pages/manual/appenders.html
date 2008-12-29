@@ -1994,6 +1994,7 @@ Context ctx = new InitialContext(env);</pre></div>
         <th>Type</th>
         <th>Description</th>
       </tr>
+
       <tr>
         <td><b><span class="option">SMTPHost</span></b></td>
         <td><code>String</code></td>
@@ -2123,6 +2124,18 @@ Context ctx = new InitialContext(env);</pre></div>
         parameter is set to false.
         </td>
       </tr>
+
+      <tr  class="alt">
+        <td><b><span class="option">CharsetEncoding</span></b></td>
+        <td><code>String</code></td>
+        <td>The outgoing email message will be encoded in the
+        designated <a
+        href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">charset</a>. The
+        default charset encoding is "UTF-8" which works well for most
+        purposes.
+        </td>
+      </tr>
+
 
 		</table>		
 		

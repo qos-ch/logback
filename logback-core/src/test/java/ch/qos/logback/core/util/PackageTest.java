@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
   FileUtilTest.class,
   OptionHelperTest.class,
   StatusPrinterTest.class,
-  TimeUtilTest.class})
+  TimeUtilTest.class,
+  ContentTypeUtilTest.class})
 public class PackageTest {
 }

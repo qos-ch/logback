@@ -30,7 +30,11 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
+
+// Contributors:
+// Andrey Rybin charset encoding support http://jira.qos.ch/browse/LBCORE-69
 
 /**
  * An abstract class that provides support for sending events to an email
@@ -41,7 +45,6 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
@@ -59,7 +62,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   String username;
   String password;
 
-  protected Message msg;
+  private String charsetEncoding = "UTF-8";
+
+  protected MimeMessage mimeMsg;
 
   protected EventEvaluator<E> eventEvaluator;
 
@@ -109,16 +114,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     // props.put("mail.debug", "true");
 
     Session session = Session.getInstance(props, loginAuthenticator);
-    msg = new MimeMessage(session);
+    mimeMsg = new MimeMessage(session);
 
     try {
       if (from != null) {
-        msg.setFrom(getAddress(from));
+        mimeMsg.setFrom(getAddress(from));
       } else {
-        msg.setFrom();
+        mimeMsg.setFrom();
       }
 
-      msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
+      mimeMsg.setRecipients(Message.RecipientType.TO, parseAddress(to));
 
       subjectLayout = makeSubjectLayout(subjectStr);
 
@@ -166,7 +171,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       return false;
     }
 
-    if (this.msg == null) {
+    if (this.mimeMsg == null) {
       addError("Message object not configured.");
       return false;
     }
@@ -254,17 +259,25 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       }
 
       if (subjectLayout != null) {
-        msg.setSubject(subjectLayout.doLayout(lastEventObject));
+        mimeMsg.setSubject(subjectLayout.doLayout(lastEventObject),
+            charsetEncoding);
       }
 
-      part.setContent(sbuf.toString(), layout.getContentType());
+      String contentType = layout.getContentType();
+
+      if (ContentTypeUtil.isTextual(contentType)) {
+        part.setText(sbuf.toString(), charsetEncoding, ContentTypeUtil
+            .getSubType(contentType));
+      } else {
+        part.setContent(sbuf.toString(), layout.getContentType());
+      }
 
       Multipart mp = new MimeMultipart();
       mp.addBodyPart(part);
-      msg.setContent(mp);
+      mimeMsg.setContent(mp);
 
-      msg.setSentDate(new Date());
-      Transport.send(msg);
+      mimeMsg.setSentDate(new Date());
+      Transport.send(mimeMsg);
     } catch (Exception e) {
       addError("Error occured while sending e-mail notification.", e);
     }
@@ -344,12 +357,12 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   // for testing purpose only
   public Message getMessage() {
-    return msg;
+    return mimeMsg;
   }
 
   // for testing purpose only
-  public void setMessage(Message msg) {
-    this.msg = msg;
+  public void setMessage(MimeMessage msg) {
+    this.mimeMsg = msg;
   }
 
   public boolean isSTARTTLS() {
@@ -400,6 +413,24 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  /**
+   * @see #setCharsetEncoding(String)
+   * @return the charset encoding value
+   */
+  String getCharsetEncoding() {
+    return charsetEncoding;
+  }
+
+  /**
+   * Set the character set encoding of the outgoing email messages. The default
+   * encoding is "UTF-8" which usually works well for most purposes.
+   * 
+   * @param charsetEncoding
+   */
+  void setCharsetEncoding(String charsetEncoding) {
+    this.charsetEncoding = charsetEncoding;
   }
 
 }
