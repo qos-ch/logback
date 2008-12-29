@@ -105,7 +105,7 @@ public class ContextJNDISelector implements ContextSelector {
           } catch (JoranException je) {
           }
         }
-        StatusPrinter.printIfErrorsOccured(loggerContext);
+        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
       }
       return loggerContext;
     }
@@ -157,7 +157,7 @@ public class ContextJNDISelector implements ContextSelector {
       configurator.doConfigure(url);
     } catch (JoranException e) {
     }
-    StatusPrinter.printIfErrorsOccured(context);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
   }
 
   public List<String> getContextNames() {

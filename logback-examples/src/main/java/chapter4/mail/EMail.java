@@ -38,7 +38,7 @@ public class EMail {
     lc.reset();
     configurator.setContext(lc);
     configurator.doConfigure(configFile);
-    StatusPrinter.printIfErrorsOccured(lc);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
     Logger logger = LoggerFactory.getLogger(EMail.class);
 
@@ -52,7 +52,7 @@ public class EMail {
 
     logger.error("At last an error.", new Exception("Just testing"));
     
-    StatusPrinter.printIfErrorsOccured(lc);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
   }
 
   static void usage(String msg) {

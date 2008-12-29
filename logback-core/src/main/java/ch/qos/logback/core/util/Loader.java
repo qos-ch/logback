@@ -9,7 +9,11 @@
  */
 package ch.qos.logback.core.util;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import ch.qos.logback.core.Context;
 
@@ -32,6 +36,27 @@ public class Loader {
     if (ignoreTCLProp != null) {
       ignoreTCL = OptionHelper.toBoolean(ignoreTCLProp, true);
     }
+  }
+
+  /**
+   * Compute the number of occurrences a resource can be found by a class
+   * loader.
+   * 
+   * @param resource
+   * @param classLoader
+   * @return
+   * @throws IOException
+   */
+  public static List<URL> getResourceOccurenceCount(String resource,
+      ClassLoader classLoader) throws IOException {
+    List<URL> urlList = new ArrayList<URL>();
+    Enumeration<URL> urlEnum = classLoader.getResources(resource);
+    while (urlEnum.hasMoreElements()) {
+      URL url = urlEnum.nextElement();
+      urlList.add(url);
+    }
+
+    return urlList;
   }
 
   /**
@@ -61,9 +86,9 @@ public class Loader {
     return getResource(resource, Loader.class.getClassLoader());
   }
 
-//  private static URL getResourceByTCL(String resource) {
-//    return getResource(resource, getTCL());
-//  }
+  // private static URL getResourceByTCL(String resource) {
+  // return getResource(resource, getTCL());
+  // }
 
   /**
    * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running

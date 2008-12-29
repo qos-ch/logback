@@ -38,7 +38,7 @@ public class MyApp3 {
     } catch (JoranException je) {
       je.printStackTrace();
     }
-    StatusPrinter.printIfErrorsOccured(lc);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
     logger.info("Entering application.");
 

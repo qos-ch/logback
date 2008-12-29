@@ -33,6 +33,28 @@ public class StatusPrinter {
   public static void setPrintStream(PrintStream printStream) {
     ps = printStream;
   }
+  
+  /**
+   * Print the contents of the context statuses, but only if they contain
+   * warnings or errors.
+   * 
+   * @param context
+   */
+  public static void printInCaseOfErrorsOrWarnings(Context context) {
+    if (context == null) {
+      throw new IllegalArgumentException("Context argument cannot be null");
+    }
+
+    StatusManager sm = context.getStatusManager();
+    if (sm == null) {
+      ps.println("WARN: Context named \"" + context.getName()
+          + "\" has no status manager");
+    } else {
+      if (sm.getLevel() == ErrorStatus.WARN) {
+        print(sm);
+      }
+    }
+  }
 
   /**
    * Print the contents of the context statuses, but only if they contain

@@ -43,7 +43,7 @@ public class RecursiveInitializationTest {
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
-    StatusPrinter.printIfErrorsOccured(loggerContext);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
     StatusManager sm = loggerContext.getStatusManager();
     assertEquals("Was expecting no errors", Status.WARN, sm.getLevel());
   }

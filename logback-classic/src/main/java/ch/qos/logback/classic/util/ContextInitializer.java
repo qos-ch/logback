@@ -1,15 +1,19 @@
 package ch.qos.logback.classic.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -43,8 +47,9 @@ public class ContextInitializer {
     configurator.doConfigure(url);
   }
 
-  private URL findConfigFileURLFromSystemProperties(boolean updateStatus) {
+  private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader, boolean updateStatus) {
     String logbackConfigFile = OptionHelper.getSystemProperty(CONFIG_FILE_PROPERTY);
+    
     if (logbackConfigFile != null) {
       URL result = null;
       try {
@@ -53,7 +58,7 @@ public class ContextInitializer {
       } catch (MalformedURLException e) {
         // so, resource is not a URL:
         // attempt to get the resource from the class path
-        result = Loader.getResourceBySelfClassLoader(logbackConfigFile);
+        result = Loader.getResource(logbackConfigFile, classLoader);
         if (result != null) {
           return result;
         }
@@ -67,7 +72,7 @@ public class ContextInitializer {
         }
       } finally {
         if (updateStatus) {
-          statusOnResourceSearch(logbackConfigFile, result);
+          statusOnResourceSearch(logbackConfigFile, classLoader, result);
         }
       }
     }
@@ -75,22 +80,23 @@ public class ContextInitializer {
   }
 
   public URL findURLOfDefaultConfigurationFile(boolean updateStatus) {
-    URL url = findConfigFileURLFromSystemProperties(updateStatus);
+    ClassLoader myClassLoader = this.getClass().getClassLoader();
+    URL url = findConfigFileURLFromSystemProperties(myClassLoader, updateStatus);
     if (url != null) {
       return url;
     }
 
-    url = Loader.getResource(TEST_AUTOCONFIG_FILE, this.getClass().getClassLoader());
+    url = Loader.getResource(TEST_AUTOCONFIG_FILE, myClassLoader);
     if (updateStatus) {
-      statusOnResourceSearch(TEST_AUTOCONFIG_FILE, url);
+      statusOnResourceSearch(TEST_AUTOCONFIG_FILE, myClassLoader, url);
     }
     if (url != null) {
       return url;
     }
 
-    url = Loader.getResource(AUTOCONFIG_FILE, this.getClass().getClassLoader());
+    url = Loader.getResource(AUTOCONFIG_FILE, myClassLoader);
     if (updateStatus) {
-      statusOnResourceSearch(AUTOCONFIG_FILE, url);
+      statusOnResourceSearch(AUTOCONFIG_FILE, myClassLoader, url);
     }
     return url;
   }
@@ -105,7 +111,26 @@ public class ContextInitializer {
     }
   }
 
-  private void statusOnResourceSearch(String resourceName, URL url) {
+  private void multiplicityWarning(String resourceName, ClassLoader classLoader ) {
+    List<URL> urlList = null;
+    StatusManager sm = loggerContext.getStatusManager();
+    try {
+      urlList = Loader.getResourceOccurenceCount(resourceName, classLoader);
+    } catch (IOException e) {
+      sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]",
+          loggerContext, e));
+    }
+    if(urlList != null && urlList.size() > 1) {
+      sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.",
+          loggerContext));
+      for(URL url: urlList) {
+      sm.add(new WarnStatus("Resource ["+resourceName+"] occurs at ["+url.toString()+"]",
+          loggerContext));
+      }
+    }
+  }
+  
+  private void statusOnResourceSearch(String resourceName, ClassLoader classLoader, URL url) {
     StatusManager sm = loggerContext.getStatusManager();
     if (url == null) {
       sm.add(new InfoStatus("Could NOT find resource [" + resourceName + "]",
@@ -113,6 +138,7 @@ public class ContextInitializer {
     } else {
       sm.add(new InfoStatus("Found resource [" + resourceName + "] at ["+url.toString()+"]",
           loggerContext));
+      multiplicityWarning(resourceName, classLoader);
     }
   }
 

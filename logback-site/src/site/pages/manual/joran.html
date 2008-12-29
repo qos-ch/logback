@@ -233,14 +233,15 @@ public class Foo {
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
 
-   <p>If and only if there are errors during the parsing of the
-   configuration file, logback will automatically print status data on
-   the console. In the absence of errors, if you still wish to inspect
-   logback's internal status, then you can instruct logback to print
-   status data by invoking the <code>print()</code> of the
-   <code>StatusPrinter</code> class. The <em>MyApp2</em> application
-   shown below is identical to <em>MyApp1</em> except the addition of
-   two lines of code for printing internal status data.</p>
+   <p>If and only if there are warnings or errors during the parsing
+   of the configuration file, logback will automatically print status
+   data on the console. In the absence of warnings or errors, if you
+   still wish to inspect logback's internal status, then you can
+   instruct logback to print status data by invoking the
+   <code>print()</code> of the <code>StatusPrinter</code> class. The
+   <em>MyApp2</em> application shown below is identical to
+   <em>MyApp1</em> except the addition of two lines of code for
+   printing internal status data.</p>
 
     <em>Example 3.<span class="autoEx"/>: Print logback's internal status information
     <a
@@ -347,12 +348,12 @@ public class Foo {
 
    <p>Logback relies on a configuration library called Joran which is
    part of logback-core. Logback's default configuration mechanism
-   invokes JoranConfigurator on the default configuration files it
-   finds on the class path. For whatever reason if you wish to
+   invokes <code>JoranConfigurator</code> on the default configuration
+   file it finds on the class path. For whatever reason if you wish to
    override logback's default configuration mechanism, you can do so
-   by invoking JoranConfigurator directly. The next application,
-   <em>MyApp3</em>, invokes JoranConfigurator on a configuration file
-   passed as parameter.</p>
+   by invoking <code>JoranConfigurator</code> directly. The next
+   application, <em>MyApp3</em>, invokes JoranConfigurator on a
+   configuration file passed as parameter.</p>
    
    <p><em>Example 3.<span class="autoEx"/>: Invoking
    <code>JoranConfigurator</code> directly <a
@@ -385,7 +386,7 @@ public class MyApp3 {
     } catch (JoranException je) {
        je.printStackTrace();
     }
-    StatusPrinter.printIfErrorsOccured(lc);</b>
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);</b>
 
     logger.info("Entering application.");
 
@@ -395,13 +396,14 @@ public class MyApp3 {
   }
 }</pre></div>
 
-  <p>This application fetches the <code>LoggerContext</code> currently
-  in effect, creates a new <code>JoranConfigurator</code>, sets the
-  context on which it will operate, resets the logger context, and
-  then finally asks the configurator to configure the context using
-  configuration file passed as parameter to the application. Internal
-  status data is printed in case errors occur.
-  </p>   
+   <p>This application fetches the <code>LoggerContext</code>
+   currently in effect, creates a new <code>JoranConfigurator</code>,
+   sets the context on which it will operate, resets the logger
+   context, and then finally asks the configurator to configure the
+   context using configuration file passed as parameter to the
+   application. Internal status data is printed in case of warnings or
+   errors.
+   </p>   
 
   <h3>
     <a name="statusListener" href="#statusListener">Listening to
