@@ -168,6 +168,7 @@ table.bodyTable tr.alt {
   font-size: 130%;
 }
 
+
 .green {
 	color: green;
 }
@@ -176,10 +177,15 @@ table.bodyTable tr.alt {
 	background-color: #FFFFFF;
 }
 
+.lgray_bg {
+	background-color: #EEE;
+}
+
 
 .blue {
 	color: blue;	
 }
+
 .red {
 	color: red;
 }

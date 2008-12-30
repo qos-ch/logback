@@ -344,58 +344,81 @@ public interface Logger {
 		<div class="definition">
 			<div class="deftitle">Basic Selection Rule</div>
 
-			<p>A log request of level <em>p</em> issued with a logger having
-			an effective level <em>q</em>, is enabled if <em>p&nbsp;&gt;=&nbsp;q</em>.
+			<p>A log request of level <em>p</em> issued to a logger having
+			an effective level <em>q</em>, is enabled if
+			<em>p&nbsp;&gt;=&nbsp;q</em>.
 			</p>
 		</div>
 
 		<p>This rule is at the heart of logback. It assumes that levels
-		are ordered as follows: <code>DEBUG &lt; INFO &lt; WARN &lt;
-		ERROR</code>.
+		are ordered as follows:
+		<code>TRACE&nbsp;&lt;&nbsp;DEBUG&nbsp;&lt;&nbsp;INFO&nbsp;&lt;
+		&nbsp;WARN&nbsp;&lt;&nbsp;ERROR</code>.
 		</p>
 				
 		<p>In a more graphic way, here is how the selection rule works. In
 		the following table, the vertical header shows the the level of
 		the logging request, designated by <em>p</em>, while the
 		horizontal header shows effective level of the logger, designated
-		by <em>q</em>.
+		by <em>q</em>. The intersection of the rows (level request) and
+		columns (effective level) is the boolean resulting from the basic
+		selection rule.
 		</p>
 		
-		<table>
-			<tr>
-				<th><span style="align:center"><em>p</em>/<em>q</em></span></th>
-				<th>DEBUG</th>
-				<th>INFO</th>
-				<th>WARN</th>
-				<th>ERROR</th>	
-        <th>OFF</th>    			
+		<table width="80%">
+      <tr> 
+        <td class="lgray_bg" rowspan="2">level of <br/>request <em>p</em></td>
+				<td style="border-top: 1px solid #DDDDDD;"
+        align="center" colspan="6">effective level <em>q</em></td>
 			</tr>
-			<tr>
-				<th>DEBUG</th>
+			<tr align="left">
+				<th  style="border-bottom: 1px solid #DDDDDD;">TRACE</th>
+				<th  style="border-bottom: 1px solid #DDDDDD;">DEBUG</th>
+				<th  style="border-bottom: 1px solid #DDDDDD;">INFO</th>
+				<th  style="border-bottom: 1px solid #DDDDDD;">WARN</th>
+				<th  style="border-bottom: 1px solid #DDDDDD;">ERROR</th>	
+        <th  style="border-bottom: 1px solid #DDDDDD;">OFF</th>    			
+			</tr>
+			<tr align="left" >
+				<th class="lgray_bg">TRACE</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+
+			<tr align="left">
+				<th class="lgray_bg">DEBUG</th>
+				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="redBold">NO</span></td>
 				<td><span class="redBold">NO</span></td>
 				<td><span class="redBold">NO</span></td>
         <td><span class="redBold">NO</span></td>
 			</tr>
-			<tr>
-				<th>INFO</th>
+			<tr align="left" >
+				<th class="lgray_bg">INFO</th>
+				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="redBold">NO</span></td>
-				<td><span class="redBold">NO</span></td>
-        <td><span class="redBold">NO</span></td>
-			</tr>
-			<tr>
-				<th>WARN</th>
-				<td><span class="greenBold">YES</span></td>
-				<td><span class="greenBold">YES</span></td>
-				<td><span class="greenBold">YES</span></td>
 				<td><span class="redBold">NO</span></td>
         <td><span class="redBold">NO</span></td>
 			</tr>
-			<tr>
-				<th>ERROR</th>
+			<tr align="left" >
+				<th class="lgray_bg">WARN</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+			<tr align="left" >
+				<th class="lgray_bg">ERROR</th>
+				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>
 				<td><span class="greenBold">YES</span></td>

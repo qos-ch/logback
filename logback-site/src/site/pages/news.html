@@ -28,6 +28,24 @@
 
     <hr width="80%" align="center" />
 
+    <h3>TARGET DATE: 26th of January 2009 - Release of version 0.9.15</h3>
+
+    <p>When the reset() method in <code>LoggerContext</code> is
+    called, registered turbo filters are first stopped before being
+    unregistered. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-89">LBCLASSIC-89</a>
+    reported by Alexis Morillo.
+    </p>
+    
+    <p>Added the <code>clear()</code> mthod to the
+    <code>StatusManager</code> interface. After reconfiguration, it
+    may be desirable to clear the status list maintained by a
+    <code>StatusManager</code>. This change was requested by Alexis
+    Morillo in <a
+    href="http://jira.qos.ch/browse/LBCORE-77">LBCORE-77</a>.
+    </p>
+
+
 
     <h3>29th of December 2008 - Release of version 0.9.14</h3>
 

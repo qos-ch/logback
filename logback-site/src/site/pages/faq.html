@@ -47,6 +47,12 @@
       </li>  
 
       <li>
+        <a href="#configFileLocation">Where should the configuration files,
+        <em>logback-test.xml</em> or <em>logback.xml</em>, be located
+        on the classpath?</a>
+      </li>  
+
+      <li>
         <a href="#sharedConfiguration">Is it possible for multiple JEE
         applications to share the same configuration file but without
         stepping on each other's toes?
@@ -86,7 +92,7 @@
           in order to emphasize the fact that it is a related but
           <em>different</em> project than log4j.
           </p>
-          
+
           <p>Given that Java v7 will be distributed under GPL, we expect
           GPL and LGPL to become even more prevalent in the Java world.
           </p>
@@ -118,6 +124,30 @@
         </dd>
         
 
+        <!-- ========================================================= -->
+
+        <dt>
+        <a name="configFileLocation" href="#configFileLocation">Where
+        should the configuration files, <em>logback-test.xml</em> or
+        <em>logback.xml</em>, be located on the classpath?</a>
+        </dt>  
+
+        <dd>
+          <p>Configuration files such as <em>logback-test.xml</em> or
+          <em>logback.xml</em> can be located <b>directly</b> under
+          any folder declared in the class path. For example, if the
+          class path reads "c:/java/jdk15/lib/rt.jar;c:/mylibs/" then
+          the <em>logback.xml</em> file should be located directly
+          under "c:/mylibs/", that is as
+          "c:/mylibs/logback.xml". Placing it under a sub-folder of
+          c:/mylibs/, say, c:/mylibs/other/, will not work.</p>
+        
+          <p>For web-applications, configuration files can be placed
+          <b>directly</b> under <em>WEB-INF/classes/</em>.</p>
+
+          <hr/>
+        
+        </dd>
         
         <!-- ========================================================= -->
         
