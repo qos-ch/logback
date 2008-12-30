@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.catalina.Lifecycle;
@@ -14,6 +15,7 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 
+import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
@@ -64,6 +66,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   String filename;
   boolean quiet;
   boolean started;
+  boolean alreadySetLogbackStatusManager = false;
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -120,17 +123,35 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public void invoke(Request request, Response response) throws IOException,
       ServletException {
 
-    getNext().invoke(request, response);
+    try {
 
-    TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-    AccessEvent accessEvent = new AccessEvent(request, response, adapter);
+      if (!alreadySetLogbackStatusManager) {
+        alreadySetLogbackStatusManager = true;
+        org.apache.catalina.Context tomcatContext = request.getContext();
+        if (tomcatContext != null) {
+          ServletContext sc = tomcatContext.getServletContext();
+          if (sc != null) {
+            sc.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY,
+                getStatusManager());
+          }
+        }
+      }
 
-    if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
-      return;
+      getNext().invoke(request, response);
+
+      TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
+      AccessEvent accessEvent = new AccessEvent(request, response, adapter);
+
+      if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
+        return;
+      }
+
+      // TODO better exception handling
+      aai.appendLoopOnAppenders(accessEvent);
+    } finally {
+      request
+          .removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
     }
-
-    // TODO better exception handling
-    aai.appendLoopOnAppenders(accessEvent);
   }
 
   public void stop() {

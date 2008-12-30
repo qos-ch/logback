@@ -8,7 +8,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import ch.qos.logback.access.Constants;
+import ch.qos.logback.access.AccessConstants;
 
 /**
  * As the "tee" program on Unix, duplicate the request's input stream.
@@ -29,7 +29,7 @@ class TeeHttpServletRequest extends HttpServletRequestWrapper {
       inStream = new TeeServletInputStream(request);
       // add the contents of the input buffer as an attribute of the request
       request
-          .setAttribute(Constants.LB_INPUT_BUFFER, inStream.getInputBuffer());
+          .setAttribute(AccessConstants.LB_INPUT_BUFFER, inStream.getInputBuffer());
       reader = new BufferedReader(new InputStreamReader(inStream));
     }
 

@@ -15,7 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import ch.qos.logback.access.Constants;
+import ch.qos.logback.access.AccessConstants;
 
 public class DummyRequest implements HttpServletRequest {
 
@@ -139,9 +139,9 @@ public class DummyRequest implements HttpServletRequest {
   public Object getAttribute(String key) {
     if (key.equals("testKey")) {
       return "testKey";
-    } else if (Constants.LB_INPUT_BUFFER.equals(key)) {
+    } else if (AccessConstants.LB_INPUT_BUFFER.equals(key)) {
       return DUMMY_CONTENT_BYTES;
-    } else if (Constants.LB_OUTPUT_BUFFER.equals(key)) {
+    } else if (AccessConstants.LB_OUTPUT_BUFFER.equals(key)) {
       return DUMMY_RESPONSE_CONTENT_BYTES;
     } else {
       return null;

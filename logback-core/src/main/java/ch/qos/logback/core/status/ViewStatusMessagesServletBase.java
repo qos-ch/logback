@@ -31,17 +31,18 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
   private static SimpleDateFormat SDF = new SimpleDateFormat(
       "yyyy-MM-dd HH:mm:ss");
 
-  protected abstract StatusManager getStatusManager();
+  protected abstract StatusManager getStatusManager(HttpServletRequest req, HttpServletResponse resp);
 
-  protected abstract String getPageTitle();
+  protected abstract String getPageTitle(HttpServletRequest req, HttpServletResponse resp);
 
   int count;
 
   protected void service(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
 
+    System.out.println("service called");
     count = 0;
-    StatusManager sm = getStatusManager();
+    StatusManager sm = getStatusManager(req, resp);
 
     resp.setContentType("text/html");
     PrintWriter output = resp.getWriter();
@@ -51,11 +52,15 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
     printCSS(req.getContextPath(), output);
     output.append("</head>\r\n");
     output.append("<body>\r\n");
-    output.append(getPageTitle());
+    output.append(getPageTitle(req, resp));
 
     output.append("<table>");
     StringBuilder buf = new StringBuilder();
-    printList(buf, sm);
+    if(sm != null) {
+      printList(buf, sm);
+    } else {
+      output.append("Could not find status manager");
+    }
     output.append(buf);
     output.append("</table>");
     output.append("</body>\r\n");
@@ -161,12 +166,12 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
 
   private void printThrowable(StringBuilder buf, Throwable t) {
     buf.append("  <tr>\r\n");
-    buf.append("    <td colspan=\"4\" class=\"exception\">");
+    buf.append("    <td colspan=\"4\" class=\"exception\"><pre>");
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     t.printStackTrace(pw);
     buf.append(Transform.escapeTags(sw.getBuffer()));
-    buf.append("    </td>\r\n");
+    buf.append("    </pre></td>\r\n");
     buf.append("  </tr>\r\n");
 
   }

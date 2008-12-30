@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.servlet.ServletContext;
+
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.RequestLog;
 import org.mortbay.jetty.Response;
 
+import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
@@ -26,14 +29,12 @@ import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * This class is logback's implementation of jetty's RequestLog interface.
- * <p>
+ * This class is logback's implementation of jetty's RequestLog interface. <p>
  * It can be seen as logback classic's LoggerContext. Appenders can be attached
  * directly to RequestLogImpl and RequestLogImpl uses the same StatusManager as
- * LoggerContext does. It also provides containers for properties.
- * <p>
- * To configure jetty in order to use RequestLogImpl, the following lines must
- * be added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
+ * LoggerContext does. It also provides containers for properties. <p> To
+ * configure jetty in order to use RequestLogImpl, the following lines must be
+ * added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
  * 
  * <pre>
  *    &lt;Ref id=&quot;requestLog&quot;&gt; 
@@ -48,11 +49,9 @@ import ch.qos.logback.core.util.OptionHelper;
  * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly
  * different than the usual logback classic configuration file. Most of it is
  * the same: Appenders and Layouts are declared the exact same way. However,
- * loggers elements are not allowed.
- * <p>
- * It is possible to put the logback configuration file anywhere, as long as
- * it's path is specified. Here is another example, with a path to the
- * logback-access.xml file.
+ * loggers elements are not allowed. <p> It is possible to put the logback
+ * configuration file anywhere, as long as it's path is specified. Here is
+ * another example, with a path to the logback-access.xml file.
  * 
  * <pre>
  *    &lt;Ref id=&quot;requestLog&quot;&gt; 
@@ -63,8 +62,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *    &lt;/Ref&gt;
  * </pre>
  * 
- * <p>
- * Here is a sample logback-access.xml file that can be used right away:
+ * <p> Here is a sample logback-access.xml file that can be used right away:
  * 
  * <pre>
  *    &lt;configuration&gt; 
@@ -78,8 +76,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *    &lt;/configuration&gt;
  * </pre>
  * 
- * <p>
- * Another configuration file, using SMTPAppender, could be:
+ * <p> Another configuration file, using SMTPAppender, could be:
  * 
  * <pre>
  *    &lt;configuration&gt; 
@@ -95,17 +92,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *      &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
  *    &lt;/configuration&gt;
  * </pre>
- * 
- * <p>
- * A special, module-specific implementation of PatternLayout was implemented to
- * allow http-specific patterns to be used. The
- * {@link ch.qos.logback.access.PatternLayout} provides a way to format the
- * logging output that is just as easy and flexible as the usual PatternLayout.
- * For more information about the general use of a PatternLayout, please refer
- * to logback classic's {@link ch.qos.logback.classic.PatternLayout}. For
- * information about logback access' specific PatternLayout, please refer to
- * it's javadoc.
- * 
+
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -119,7 +106,8 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
   String filename;
   boolean started = false;
-
+  boolean alreadySetLogbackStatusManager = false;
+  
   public RequestLogImpl() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
@@ -130,6 +118,18 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
 
+    if (!alreadySetLogbackStatusManager) {
+      alreadySetLogbackStatusManager = true;
+      ServletContext sc = jettyRequest.getContext();
+      // servlet context is always null
+      if (sc != null) {
+        sc.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY,
+            getStatusManager());
+      }
+    }
+
+    jettyRequest.setAttribute(
+        AccessConstants.LOGBACK_STATUS_MANAGER_KEY, getStatusManager());
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }

@@ -12,7 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ch.qos.logback.access.Constants;
+import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
 
@@ -385,7 +385,7 @@ public class AccessEvent implements Serializable {
 
       // retreive the byte array placed by TeeFilter
       byte[] inputBuffer = (byte[]) httpRequest
-          .getAttribute(Constants.LB_INPUT_BUFFER);
+          .getAttribute(AccessConstants.LB_INPUT_BUFFER);
 
       if (inputBuffer != null) {
         requestContent = new String(inputBuffer);
@@ -410,7 +410,7 @@ public class AccessEvent implements Serializable {
 
       // retreive the byte array previously placed by TeeFilter
       byte[] outputBuffer = (byte[]) httpRequest
-          .getAttribute(Constants.LB_OUTPUT_BUFFER);
+          .getAttribute(AccessConstants.LB_OUTPUT_BUFFER);
 
       if (outputBuffer != null) {
         responseContent = new String(outputBuffer);

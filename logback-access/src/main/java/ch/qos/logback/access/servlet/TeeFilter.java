@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ch.qos.logback.access.Constants;
+import ch.qos.logback.access.AccessConstants;
 
 public class TeeFilter implements Filter {
 
@@ -36,7 +36,7 @@ public class TeeFilter implements Filter {
         teeResponse.finish();
         // let the output contents be available for later use by
         // logback-access-logging
-        teeRequest.setAttribute(Constants.LB_OUTPUT_BUFFER, teeResponse
+        teeRequest.setAttribute(AccessConstants.LB_OUTPUT_BUFFER, teeResponse
             .getOutputBuffer());
       } catch (IOException e) {
         e.printStackTrace();
