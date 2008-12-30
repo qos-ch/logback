@@ -41,15 +41,6 @@ import ch.qos.logback.core.util.StatusPrinter;
  * documentation on <a
  * href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
  * 
- * <p>A special, module-specific implementation of PatternLayout was
- * implemented to allow http-specific patterns to be used. The
- * {@link ch.qos.logback.access.PatternLayout} provides a way to format the
- * logging output that is just as easy and flexible as the usual PatternLayout.
- * For more information about the general use of a PatternLayout, please refer
- * to logback classic's {@link ch.qos.logback.classic.PatternLayout}. For
- * information about logback access' specific PatternLayout, please refer to
- * it's javadoc. <p>
- * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -232,7 +223,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     this.name = name;
   }
 
-  // Methods from catalina Lifecycle
+  // ====== Methods from catalina Lifecycle =====
 
   public void addLifecycleListener(LifecycleListener arg0) {
     // dummy NOP implementation
