@@ -1,10 +1,19 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2008, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.html;
 
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
-import ch.qos.logback.classic.helpers.Transform;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.core.helpers.Transform;
 import ch.qos.logback.core.html.IThrowableRenderer;
 
 public class DefaultThrowableRenderer implements IThrowableRenderer {

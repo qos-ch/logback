@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
@@ -71,7 +71,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     int dotCount = 0;
     int k = 0;
     while (true) {
-      k = className.indexOf(ClassicGlobal.DOT, k);
+      k = className.indexOf(CoreConstants.DOT, k);
       if (k != -1 && dotCount < MAX_DOTS) {
         dotArray[dotCount] = k;
         dotCount++;

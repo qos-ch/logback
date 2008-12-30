@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * This abbreviator returns the class name from a fully qualified class name,
@@ -20,7 +20,7 @@ import ch.qos.logback.classic.ClassicGlobal;
 public class ClassNameOnlyAbbreviator implements Abbreviator {
 
   public String abbreviate(String fqClassName) {
-    int lastIndex = fqClassName.lastIndexOf(ClassicGlobal.DOT);
+    int lastIndex = fqClassName.lastIndexOf(CoreConstants.DOT);
     if (lastIndex != -1) {
       return fqClassName.substring(lastIndex + 1, fqClassName.length());
     } else {

@@ -78,5 +78,6 @@ public class CoreConstants {
    * Ceki's machine (Orion)
    */
   public static long REFERENCE_BIPS = 9000;
+  static public final char DOT = '.';
 
 }

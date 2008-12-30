@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package ch.qos.logback.classic.helpers;
+package ch.qos.logback.core.helpers;
 
 /**
  * Utility class for transforming strings.
@@ -40,6 +40,18 @@ public class Transform {
     }
 
     StringBuffer buf = new StringBuffer(input);
+    return escapeTags(buf);
+  }
+  
+
+  /**
+   * This method takes a StringBuilder which may contain HTML tags (ie, &lt;b&gt;,
+   * &lt;table&gt;, etc) and replaces any '<' and '>' characters with
+   * respective predefined entity references.
+   * @param buf
+   * @return
+   */
+  public static String escapeTags(final StringBuffer buf) {
     for (int i = 0; i < buf.length(); i++) {
       char ch = buf.charAt(i);
       if (ch == '<') {
@@ -50,10 +62,7 @@ public class Transform {
     }
     return buf.toString();
   }
-
-  // public static void appendEscapingCDATA(StringBuffer buf, String str) {
-  //            
-  // }
+  
 
   /**
    * Ensures that embeded CDEnd strings (]]>) are handled properly within
