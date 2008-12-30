@@ -20,7 +20,7 @@ import ch.qos.logback.core.status.StatusManager;
 public class BasicStatusManager implements StatusManager {
 
   public static final int MAX_HEADER_COUNT = 150;
-  public static final int TAIL_SIZE = 150; 
+  public static final int TAIL_SIZE = 150;
 
   int count = 0;
 
@@ -67,6 +67,7 @@ public class BasicStatusManager implements StatusManager {
     }
 
   }
+
   public List<Status> getCopyOfStatusList() {
     synchronized (statusListLock) {
       List<Status> tList = new ArrayList<Status>(statusList);
@@ -74,12 +75,20 @@ public class BasicStatusManager implements StatusManager {
       return tList;
     }
   }
-  
+
   private void fireStatusAddEvent(Status status) {
     synchronized (statusListenerListLock) {
       for (StatusListener sl : statusListenerList) {
         sl.addStatusEvent(status);
       }
+    }
+  }
+
+  public void clear() {
+    synchronized (statusListLock) {
+      count = 0;
+      statusList.clear();
+      tailBuffer.clear();
     }
   }
 

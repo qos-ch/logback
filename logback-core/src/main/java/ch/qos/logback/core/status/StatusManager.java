@@ -46,10 +46,26 @@ public interface StatusManager {
    */
   public int getCount();
 
+  /**
+   * Add a status listener.
+   * @param listener
+   */
   public void add(StatusListener listener);
-
+  
+  /**
+   * Remove a status listener.
+   * 
+   * @param listener
+   */
   public void remove(StatusListener listener);
 
+
+  /**
+   * Clear the list of status messages.
+   */
+  public void clear();
+
+  
   /**
    * Obtain a copy of the status listener list maintained by this StatusManager
    * 
