@@ -54,7 +54,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   // We want loggerCache to be synchronized so Hashtable is a good choice. In
   // practice, it performs a little faster than the map returned by
-  // Collections.synchronizedMap at the cost of a very slightly higher memory footprint.
+  // Collections.synchronizedMap at the cost of a very slightly higher memory
+  // footprint.
   private Hashtable<String, Logger> loggerCache;
 
   private LoggerContextRemoteView loggerContextRemoteView;
@@ -193,13 +194,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    */
   public void reset() {
     root.recursiveReset();
-    clearAllTurboFilters();
+    resetTurboFilterList();
     fireOnReset();
     resetListenersExceptResetResistant();
     resetStatusListeners();
   }
 
-  
   private void resetStatusListeners() {
     StatusManager sm = getStatusManager();
     for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
@@ -215,7 +215,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     turboFilterList.add(newFilter);
   }
 
-  public void clearAllTurboFilters() {
+  /**
+   * First stop all registered turbo filters and then clear the registration
+   * list.
+   */
+  public void resetTurboFilterList() {
+    for (TurboFilter tf : turboFilterList) {
+      tf.stop();
+    }
     turboFilterList.clear();
   }
 

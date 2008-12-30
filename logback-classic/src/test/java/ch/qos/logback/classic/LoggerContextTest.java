@@ -9,11 +9,17 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.status.StatusManager;
 
 public class LoggerContextTest {
@@ -170,6 +176,16 @@ public class LoggerContextTest {
     assertEquals(Level.DEBUG, root.getLevel());    
     assertNull(a.getLevel());
     assertNull(ab.getLevel());
-
+  }
+  
+  // http://jira.qos.ch/browse/LBCLASSIC-89
+  @Test
+  public void turboFilterStopOnReset() {
+    NOPTurboFilter nopTF = new NOPTurboFilter();
+    nopTF.start();
+    lc.addTurboFilter(nopTF);
+    assertTrue(nopTF.isStarted());
+    lc.reset();
+    assertFalse(nopTF.isStarted());
   }
 }
