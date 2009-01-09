@@ -13,21 +13,21 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * This class is a context that can be used
- * by access to provide the basic functionnalities of a context
- * to its components, mainly SocketServer.
- *
+ * A minimal context implementation used by certain logback-access components,
+ * mainly SocketServer.
+ * 
  * @author S&eacute;bastien Pennec
  */
-public class AccessContext extends ContextBase implements AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
+public class AccessContext extends ContextBase implements
+    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
 
   AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
   FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
-  
+
   public void callAppenders(AccessEvent event) {
     aai.appendLoopOnAppenders(event);
   }
-  
+
   public void addAppender(Appender<AccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
@@ -57,7 +57,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
   }
 
   public void addFilter(Filter<AccessEvent> newFilter) {
-   fai.addFilter(newFilter); 
+    fai.addFilter(newFilter);
   }
 
   public void clearAllFilters() {
@@ -67,7 +67,7 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
   public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
-  
+
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
