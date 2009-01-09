@@ -4,13 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpSession;
-
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.RequestLog;
 import org.mortbay.jetty.Response;
 
-import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
@@ -116,13 +113,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
         jettyResponse);
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
-
-    HttpSession s = jettyRequest.getSession();
-    if (s != null) {
-      System.out.println("Setting as session attribute");
-      s.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY,
-          getStatusManager());
-    }
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
