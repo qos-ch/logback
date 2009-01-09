@@ -64,7 +64,7 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
     return FilterReply.NEUTRAL;
   }
 
-  public List<Filter<E>> getCopyOfFilterList() {
+  public List<Filter<E>> getCopyOfAttachedFiltersList() {
     return new ArrayList<Filter<E>>(filterList);
   }
 }

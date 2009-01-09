@@ -37,7 +37,7 @@ public interface FilterAttachable<E> {
    * 
    * @return all attached filters as a list
    */
-  public List<Filter<E>> getCopyOfFilterList();
+  public List<Filter<E>> getCopyOfAttachedFiltersList();
 
   /**
    * Loop through the filters in the chain. As soon as a filter decides on

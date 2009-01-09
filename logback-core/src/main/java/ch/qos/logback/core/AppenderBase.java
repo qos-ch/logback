@@ -126,8 +126,8 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
     fai.clearAllFilters();
   }
 
-  public List<Filter<E>> getCopyOfFilterList() {
-    return fai.getCopyOfFilterList();
+  public List<Filter<E>> getCopyOfAttachedFiltersList() {
+    return fai.getCopyOfAttachedFiltersList();
   }
   
   public FilterReply getFilterChainDecision(E event) {

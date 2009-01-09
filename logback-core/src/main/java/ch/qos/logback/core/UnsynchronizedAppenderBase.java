@@ -132,8 +132,8 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     fai.clearAllFilters();
   }
 
-  public List<Filter<E>> getCopyOfFilterList() {
-    return fai.getCopyOfFilterList();
+  public List<Filter<E>> getCopyOfAttachedFiltersList() {
+    return fai.getCopyOfAttachedFiltersList();
   }
 
   

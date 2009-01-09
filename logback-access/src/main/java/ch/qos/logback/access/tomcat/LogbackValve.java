@@ -229,8 +229,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     fai.clearAllFilters();
   }
 
-  public List<Filter<AccessEvent>> getCopyOfFilterList() {
-    return fai.getCopyOfFilterList();
+  public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
+    return fai.getCopyOfAttachedFiltersList();
   }
   
   public FilterReply getFilterChainDecision(AccessEvent event) {
