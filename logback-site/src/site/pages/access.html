@@ -111,9 +111,39 @@
     the logback-access configuration file. Here is an example.
     </p>
 
+   <p class="source">&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"
+       quiet="true" filename="c:/my-logback-access.xml"/></p>
 
-    <div class="source"><pre>&lt;Valve className="ch.qos.logback.access.tomcat.LogbackValve"
-       quiet="true" filename="c:/my-logback-access.xml"/></pre></div>
+    <h3><a name="viewingStatusMessages"
+    href="#viewingStatusMessages">Viewing status messages</a></h3>
+
+    <p>Logback-access ships with a servlet called
+    <code>ViewStatusMessagesServlet</code>. This servlet prints the
+    internal status messages of the <code>LogbackValve</code> as an
+    HTML table. Here is sample output.
+    </p>
+
+
+    <a href="images/lbAccessStatus.jpg">
+     <img src="images/lbAccessStatus.jpg" alt="click to enlarge" width="90%"/>
+    </a>
+
+    <p>To add this servlet to your web-application, add the following
+    lines to its <em>WEB-INF/web.xml</em> file.</p>
+
+    <p class="source">  &lt;servlet>
+    &lt;servlet-name>AccessViewStatusMessages&lt;/servlet-name>
+    &lt;servlet-class>ch.qos.logback.access.ViewStatusMessagesServlet&lt;/servlet-class>
+  &lt;/servlet>
+
+  &lt;servlet-mapping>
+    &lt;servlet-name>AccessViewStatusMessages&lt;/servlet-name>
+    &lt;url-pattern>/lbAccessStatus&lt;/url-pattern>
+  &lt;/servlet-mapping></p>
+   
+    <p>The <code>ViewStatusMessages</code> servlet will available
+    under the URL <code>http://host/yourWebapp/lbAccessStatus</code>
+    </p>
     
     <a name="jetty"></a>
 		<h1>Logback-access under Jetty</h1>

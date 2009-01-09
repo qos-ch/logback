@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.RequestLog;
@@ -92,7 +92,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *      &lt;appender-ref ref=&quot;SMTP&quot; /&gt; 
  *    &lt;/configuration&gt;
  * </pre>
-
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -106,8 +106,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
   String filename;
   boolean started = false;
-  boolean alreadySetLogbackStatusManager = false;
-  
+
   public RequestLogImpl() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
@@ -118,18 +117,12 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
 
-    if (!alreadySetLogbackStatusManager) {
-      alreadySetLogbackStatusManager = true;
-      ServletContext sc = jettyRequest.getContext();
-      // servlet context is always null
-      if (sc != null) {
-        sc.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY,
-            getStatusManager());
-      }
+    HttpSession s = jettyRequest.getSession();
+    if (s != null) {
+      System.out.println("Setting as session attribute");
+      s.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY,
+          getStatusManager());
     }
-
-    jettyRequest.setAttribute(
-        AccessConstants.LOGBACK_STATUS_MANAGER_KEY, getStatusManager());
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }

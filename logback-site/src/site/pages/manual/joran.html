@@ -409,15 +409,16 @@ public class MyApp3 {
    errors.
    </p>   
 
-  <h3>
-    <a name="statusListener" href="#statusListener">Listening to
-    status messages</a>
-  </h3>
+   <h3><a name="viewingStatusMessages"
+   href="#viewingStatusMessages">Viewing status messages</a>
+   </h3>
 
-   <p>Logback collects its internal status data in its <code><a
-   href="../xref/ch/qos/logback/core/status/StatusManager.html">StatusManager</a></code>,
-   accessible via the LoggerContext.
-  </p>
+
+
+   <p>Logback collects its internal status data in a <code><a
+   href="../xref/ch/qos/logback/core/status/StatusManager.html">StatusManager</a></code>
+   object, accessible via the <code>LoggerContext</code>.
+   </p>
 
    <p>Given a <code>StatusManager</code> you an access all the status
    data associated with a logback context. To keep memory usage at
@@ -427,6 +428,39 @@ public class MyApp3 {
    <em>H</em> status messages whereas the tail part stores the last
    <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
    although these values may change in future releases.</p>
+
+   <p>Logback-classic ships with a servlet called
+   ViewStatusMessagesServlet. This servlet prints the contents of the
+   <code>StatusManager</code> associated with the current
+   <code>LoggerContext</code> as an HTML table. Here is sample output.
+   </p>
+   
+   <a href="images/chapter3/lbClassicStatus.jpg">
+     <img src="images/chapter3/lbClassicStatus.jpg" alt="click to enlarge" width="90%"/>
+   </a>
+
+   <p>To add this servlet to your web-application, add the following
+   lines to its <em>WEB-INF/web.xml</em> file.</p>
+
+   <p class="source">  &lt;servlet>
+    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
+    &lt;servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet&lt;/servlet-class>
+  &lt;/servlet>
+
+  &lt;servlet-mapping>
+    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
+    &lt;url-pattern>/lbClassicStatus&lt;/url-pattern>
+  &lt;/servlet-mapping></p>
+   
+   <p>The <code>ViewStatusMessages</code> servlet will viewable under
+   the URL <code>http://host/yourWebapp/lbClassicStatus</code>
+   </p>
+
+   <h3>
+     <a name="statusListener" href="#statusListener">Listening to
+     status messages</a>
+   </h3>
+
 
 
    <p>You may also attach a <code>StatusListener</code> to a
@@ -477,9 +511,12 @@ public class MyApp3 {
 
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
    
-  <h2>
-    <a name="syntax" href="#syntax">Configuration file Syntax</a>
-  </h2>
+
+
+
+   <h2>
+     <a name="syntax" href="#syntax">Configuration file Syntax</a>
+   </h2>
 
 	<p>To obtain these different logging behaviors we do not need to
 	recompile code.  You can easily configure logback so as to disable

@@ -9,6 +9,7 @@
  */
 package ch.qos.logback.access;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,8 +21,24 @@ public class ViewStatusMessagesServlet extends ViewStatusMessagesServletBase {
   private static final long serialVersionUID = 443878494348593337L;
 
   @Override
-  protected StatusManager getStatusManager(HttpServletRequest req, HttpServletResponse resp) {
-    return (StatusManager) req.getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+  protected StatusManager getStatusManager(HttpServletRequest req,
+      HttpServletResponse resp) {
+
+    ServletContext sc = getServletContext();
+    StatusManager result = (StatusManager) sc
+        .getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+    return result;
+    
+//    if (result != null) {
+//      System.out.println("from ServletContext");
+//      return result;
+//    } else {
+//      HttpSession httpSession = req.getSession(true);
+//      
+//      System.out.println("from httpSession");
+//      return (StatusManager) httpSession
+//          .getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+//    }
   }
 
   @Override

@@ -21,7 +21,6 @@ public class ViewStatusMessagesServlet extends ViewStatusMessagesServletBase {
 
   private static final long serialVersionUID = 443878494348593337L;
 
-  //
 
   @Override
   protected StatusManager getStatusManager(HttpServletRequest req, HttpServletResponse resp) {
