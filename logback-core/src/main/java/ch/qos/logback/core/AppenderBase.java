@@ -9,6 +9,8 @@
  */
 package ch.qos.logback.core;
 
+import java.util.List;
+
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
@@ -124,6 +126,10 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
     fai.clearAllFilters();
   }
 
+  public List<Filter<E>> getCopyOfFilterList() {
+    return fai.getCopyOfFilterList();
+  }
+  
   public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
   }

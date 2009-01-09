@@ -1,6 +1,7 @@
 package ch.qos.logback.access.spi;
 
 import java.util.Iterator;
+import java.util.List;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
@@ -63,6 +64,10 @@ public class AccessContext extends ContextBase implements AppenderAttachable<Acc
     fai.clearAllFilters();
   }
 
+  public List<Filter<AccessEvent>> getCopyOfFilterList() {
+    return fai.getCopyOfFilterList();
+  }
+  
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }

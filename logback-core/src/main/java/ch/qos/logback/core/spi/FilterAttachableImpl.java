@@ -9,6 +9,8 @@
  */
 package ch.qos.logback.core.spi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.qos.logback.core.filter.Filter;
@@ -60,5 +62,9 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
       }
     }
     return FilterReply.NEUTRAL;
+  }
+
+  public List<Filter<E>> getCopyOfFilterList() {
+    return new ArrayList<Filter<E>>(filterList);
   }
 }

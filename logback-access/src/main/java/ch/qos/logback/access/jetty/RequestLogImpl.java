@@ -3,6 +3,7 @@ package ch.qos.logback.access.jetty;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.RequestLog;
@@ -226,6 +227,10 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     fai.clearAllFilters();
   }
 
+  public List<Filter<AccessEvent>> getCopyOfFilterList() {
+    return fai.getCopyOfFilterList();
+  }
+  
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }

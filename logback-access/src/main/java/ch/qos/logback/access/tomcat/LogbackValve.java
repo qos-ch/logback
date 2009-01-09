@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -228,6 +229,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     fai.clearAllFilters();
   }
 
+  public List<Filter<AccessEvent>> getCopyOfFilterList() {
+    return fai.getCopyOfFilterList();
+  }
+  
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
