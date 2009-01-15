@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.MDC;
@@ -177,14 +178,18 @@ public class LoggingEvent implements Serializable {
 
   /**
    * This method should be called prior to serializing an event. It should also
-   * be called when using asynchronous logging.
+   * be called when using asynchronous or deferred logging.
    * 
    * <p> Note that due to performance concerns, this method does NOT extract
-   * caller data. It is the responsability of the calller to extract caller
+   * caller data. It is the responsibility of the caller to extract caller
    * information.
    */
   public void prepareForDeferredProcessing() {
     this.getThreadName();
+    // fixes http://jira.qos.ch/browse/LBCLASSIC-104
+    if (mdcPropertyMap != null) {
+      mdcPropertyMap = new HashMap<String, String>(mdcPropertyMap);
+    }
   }
 
   public LoggerRemoteView getLoggerRemoteView() {

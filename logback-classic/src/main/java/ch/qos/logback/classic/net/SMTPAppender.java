@@ -70,7 +70,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
    * a cyclic buffer.
    */
   protected void subAppend(LoggingEvent event) {
-    event.getThreadName();
+    event.prepareForDeferredProcessing();
     cb.add(event);
     // addInfo("Added event to the cyclic buffer: " + event.getMessage());
   }

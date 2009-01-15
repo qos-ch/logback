@@ -14,6 +14,7 @@ import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.MDC;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -27,6 +28,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -46,6 +48,7 @@ public class SMTPAppender_GreenTest {
 
   @Before
   public void setUp() throws Exception {
+    MDC.clear();
     ServerSetup serverSetup = new ServerSetup(port, "localhost",
         ServerSetup.PROTOCOL_SMTP);
     greenMail = new GreenMail(serverSetup);
@@ -74,7 +77,7 @@ public class SMTPAppender_GreenTest {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader(HEADER);
-    layout.setPattern("%-4relative [%thread] %-5level %class - %msg%n");
+    layout.setPattern("%-4relative %mdc [%thread] %-5level %class - %msg%n");
     layout.setFileFooter(FOOTER);
     layout.start();
     return layout;
@@ -111,12 +114,32 @@ public class SMTPAppender_GreenTest {
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
     
+    StatusPrinter.print(lc);
     MimeMultipart mp =  verify(TEST_SUBJECT);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertTrue(body.startsWith(HEADER.trim()));
     assertTrue(body.endsWith(FOOTER.trim()));
   }
 
+  @Test
+  public void LBCLASSIC_104() throws Exception {
+    buildSMTPAppender();
+    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    MDC.put("key", "val");
+    logger.debug("hello");
+    MDC.clear();
+    logger.error("en error", new Exception("an exception"));
+    
+    MimeMultipart mp =  verify(TEST_SUBJECT);
+    String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+    assertTrue(body.startsWith(HEADER.trim()));
+    assertTrue(body.contains("key=val"));
+    assertTrue(body.endsWith(FOOTER.trim()));
+  }
+
+  
   @Test
   public void html() throws Exception {
     buildSMTPAppender();
