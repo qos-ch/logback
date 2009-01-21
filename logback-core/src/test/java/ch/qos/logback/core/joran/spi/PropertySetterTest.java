@@ -20,6 +20,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertySetterTest {
 
+  DefaultNestedComponentRegistry defaultComponentRegistry = new DefaultNestedComponentRegistry();
+
   @Test
   public void testCanAggregateComponent() {
     House house = new House();
@@ -112,23 +114,21 @@ public class PropertySetterTest {
   public void testgetClassNameViaImplicitRules() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    String className = setter.getClassNameViaImplicitRules("door",
-        AggregationType.AS_COMPLEX_PROPERTY);
-    assertEquals(Door.class.getName(), className);
+    Class compClass = setter.getClassNameViaImplicitRules("door",
+        AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
+    assertEquals(Door.class, compClass);
   }
 
-  
-  
   @Test
   public void testgetComplexPropertyColleClassNameViaImplicitRules() {
     House house = new House();
     PropertySetter setter = new PropertySetter(house);
-    String className = setter.getClassNameViaImplicitRules("window",
-        AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
-    assertEquals(Window.class.getName(), className);
+    Class compClass = setter.getClassNameViaImplicitRules("window",
+        AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
+        defaultComponentRegistry);
+    assertEquals(Window.class, compClass);
   }
 
-  
   @Test
   public void testPropertyCollection() {
     House house = new House();
@@ -208,13 +208,14 @@ public class PropertySetterTest {
     Method relevantMethod = setter.getRelevantMethod("SwimmingPool",
         AggregationType.AS_COMPLEX_PROPERTY);
     assertNotNull(relevantMethod);
-    String spClassName = setter.getDefaultClassNameByAnnonation("SwimmingPool",
+    Class spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool",
         relevantMethod);
-    assertEquals(SwimmingPoolImpl.class.getName(), spClassName);
+    assertEquals(SwimmingPoolImpl.class, spClass);
 
-    String classNameViaImplicitRules = setter.getClassNameViaImplicitRules(
-        "SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY);
-    assertEquals(SwimmingPoolImpl.class.getName(), classNameViaImplicitRules);
+    Class classViaImplicitRules = setter.getClassNameViaImplicitRules(
+        "SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY,
+        defaultComponentRegistry);
+    assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
   }
 }
 

@@ -20,6 +20,7 @@ import org.xml.sax.InputSource;
 
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
@@ -79,6 +80,10 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   abstract protected void addImplicitRules(Interpreter interpreter);
 
+  protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+    
+  }
+  
   protected Pattern initialPattern() {
     return new Pattern();
   }
@@ -90,6 +95,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     InterpretationContext ec = interpreter.getInterpretationContext();
     ec.setContext(context);
     addImplicitRules(interpreter);
+    addDefaultNestedComponentRegistryRules(ec.getDefaultNestedComponentRegistry());
   }
 
   final public void doConfigure(final InputSource inputSource)

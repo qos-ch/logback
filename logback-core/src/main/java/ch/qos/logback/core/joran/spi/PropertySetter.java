@@ -559,19 +559,17 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  String getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
+  Class getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
     DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class,
         relevantMethod);
     if (defaultClassAnnon != null) {
       Class defaultClass = defaultClassAnnon.value();
-      if (defaultClass != null) {
-        return defaultClass.getName();
-      }
+      return defaultClass;
     }
     return null;
   }
 
-  String getByConcreteType(String name, Method relevantMethod) {
+  Class getByConcreteType(String name, Method relevantMethod) {
     
     Class<?> paramType = getParameterClassForMethod(relevantMethod);
     if (paramType == null) {
@@ -580,22 +578,26 @@ public class PropertySetter extends ContextAwareBase {
     
     boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
     if(isUnequivocallyInstantiable) {
-      return paramType.getName();
+      return paramType;
     } else {
       return null;
     }
 
   }
 
-  public String getClassNameViaImplicitRules(String name,
-      AggregationType aggregationType) {
+  public Class getClassNameViaImplicitRules(String name,
+      AggregationType aggregationType, DefaultNestedComponentRegistry registry) {
 
+    Class registryResult = registry.findDefaultComponentType(obj.getClass(), name);
+    if(registryResult!= null) {
+      return registryResult;
+    }
     // find the relevant method for the given property name and aggregationType
     Method relevantMethod = getRelevantMethod(name, aggregationType);
     if (relevantMethod == null) {
-
+      return null;
     }
-    String byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
+    Class byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
     if (byAnnotation != null) {
       return byAnnotation;
     }

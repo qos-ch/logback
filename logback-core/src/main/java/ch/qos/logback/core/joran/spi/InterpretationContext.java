@@ -43,7 +43,8 @@ public class InterpretationContext extends ContextAwareBase implements
 
   Interpreter joranInterpreter;
   final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
-
+  DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+  
   public InterpretationContext(Context context, Interpreter joranInterpreter) {
     this.context = context;
     this.joranInterpreter = joranInterpreter;
@@ -52,6 +53,11 @@ public class InterpretationContext extends ContextAwareBase implements
     propertiesMap = new HashMap<String, String>(5);
   }
 
+  
+  public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
+    return defaultNestedComponentRegistry;
+  }
+  
   void setPropertiesMap(Map<String, String> propertiesMap) {
     this.propertiesMap = propertiesMap;
   }

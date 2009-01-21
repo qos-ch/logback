@@ -91,23 +91,32 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     // perform variable name substitution
     className = ec.subst(className);
 
-    // guess class name via implicit rules
-    if (OptionHelper.isEmpty(className)) {
-      PropertySetter parentBean = actionData.parentBean;
-      className = parentBean.getClassNameViaImplicitRules(actionData
-          .getComplexPropertyName(), actionData.getAggregationType());
-    }
-
-    if (OptionHelper.isEmpty(className)) {
-      actionData.inError = true;
-      String errMsg = "No class name attribute in [" + localName + "]";
-      addError(errMsg);
-      return;
-    }
-
+    Class componentClass = null;
     try {
-      actionData.setNestedComplexProperty(Loader.loadClass(className, context)
-          .newInstance());
+
+      if (!OptionHelper.isEmpty(className)) {
+        componentClass = Loader.loadClass(className, context);
+      } else {
+        // guess class name via implicit rules
+        PropertySetter parentBean = actionData.parentBean;
+        componentClass = parentBean.getClassNameViaImplicitRules(actionData
+            .getComplexPropertyName(), actionData.getAggregationType(), ec
+            .getDefaultNestedComponentRegistry());
+      }
+
+      if (componentClass == null) {
+        actionData.inError = true;
+        String errMsg = "Could not find an appropriate class for property ["
+            + localName + "]";
+        addError(errMsg);
+        return;
+      }
+
+      if(OptionHelper.isEmpty(className)) {
+        addInfo("Assuming default type ["+componentClass.getName()+"] for ["+localName+"] property");
+      }
+      
+      actionData.setNestedComplexProperty(componentClass.newInstance());
 
       // pass along the repository
       if (actionData.getNestedComplexProperty() instanceof ContextAware) {
@@ -118,12 +127,14 @@ public class NestedComplexPropertyIA extends ImplicitAction {
       addInfo("Pushing component [" + localName
           + "] on top of the object stack.");
       ec.pushObject(actionData.getNestedComplexProperty());
+
     } catch (Exception oops) {
       actionData.inError = true;
       String msg = "Could not create component [" + localName + "] of type ["
           + className + "]";
       addError(msg, oops);
     }
+
   }
 
   public void end(InterpretationContext ec, String tagName) {
