@@ -14,8 +14,7 @@
 		</connectionSource>
 	</appender>
     
-	<root>
-		<level value="debug" />
+	<root level="debug">
 		<appender-ref ref="DB" />
 	</root>
 

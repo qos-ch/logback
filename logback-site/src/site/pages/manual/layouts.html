@@ -166,8 +166,7 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
     <b>&lt;layout class="chapter5.MySampleLayout" /></b>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -271,8 +270,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="debug" />
+  &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></p>
@@ -1531,11 +1529,10 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
    &lt;File&gt;/test.html&lt;/File&gt;
   &lt;/appender&gt;
 
-  &lt;root&gt;
-    &lt;level value="debug" /&gt;
-    &lt;appender-ref ref="FILE" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;
+  &lt;root level="debug">
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration>
 </div>
 
   <p>Launching the <code>TrivialMain</code> application listed below

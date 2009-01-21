@@ -10,8 +10,7 @@
     <limit>5</limit>
   </appender>
 
-  <root>
-    <level value="debug"/>
+  <root level="debug">
     <appender-ref ref="CUSTOM" />
   </root>  
 </configuration>

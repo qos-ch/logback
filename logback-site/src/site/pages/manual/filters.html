@@ -188,7 +188,7 @@ public class SampleFilter extends Filter {
 		configuration that uses <code>LevelFilter</code>.
 		</p>
 		
-<em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/LevelFilterConfig.xml)</em>				
+<em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -203,8 +203,7 @@ public class SampleFilter extends Filter {
       &lt;/pattern>
     &lt;/layout>
   &lt;/appender>
-  &lt;root>
-    &lt;level value="DEBUG" />
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -218,7 +217,7 @@ public class SampleFilter extends Filter {
 			use of the <code>ThresholdFilter</code> is shown below.
 		</p>
 
-<em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/ThresholdFilterConfig.xml)</em>				
+<em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
 <div class="source"><pre>&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -231,8 +230,7 @@ public class SampleFilter extends Filter {
       &lt;/pattern>
     &lt;/layout>
   &lt;/appender>
-  &lt;root>
-    &lt;level value="DEBUG" />
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -361,15 +359,14 @@ public class SampleFilter extends Filter {
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
     &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+    &lt;layout>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger - %msg%n
       &lt;/pattern>
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="INFO" />
+  &lt;root level="INFO">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre></div>
@@ -594,8 +591,7 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
   &lt;/layout>
   &lt;/appender>
 
-  &lt;root>
-    &lt;level value="info"/>
+  &lt;root level="info">
     &lt;appender-ref ref="console" />
   &lt;/root>  
 &lt;/configuration></pre></div>

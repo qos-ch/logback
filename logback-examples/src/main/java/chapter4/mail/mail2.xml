@@ -9,8 +9,7 @@
     <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   </appender>
 
-  <root>
-    <level value="debug"/>
+  <root level="debug">
     <appender-ref ref="EMAIL" />
   </root>  
 </configuration>

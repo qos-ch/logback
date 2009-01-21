@@ -8,7 +8,7 @@
       <OnMismatch>NEUTRAL</OnMismatch>
       <OnMatch>DENY</OnMatch>
     </filter>
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <layout>
       <pattern>%-4relative [%thread] %-5level %logger - %msg%n</pattern>
     </layout>
   </appender>

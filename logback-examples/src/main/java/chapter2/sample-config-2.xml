@@ -17,8 +17,7 @@
 		<File>sample-log.txt</File>
 	</appender>
 
-	<root>
-		<level value="debug" />
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>

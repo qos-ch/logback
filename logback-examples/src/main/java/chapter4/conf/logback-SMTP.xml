@@ -13,8 +13,7 @@
     <To>recipient_email@host.ch</To>
   </appender>
 
-  <root>
-    <level value="debug" />
+  <root level="debug">
     <appender-ref ref="SMTP" />
   </root>
 </configuration>

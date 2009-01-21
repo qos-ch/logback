@@ -17,12 +17,9 @@
 		<File>sample-log.txt</File>
 	</appender>
 	
-	<logger name="chapter2">
-		<level value="info" />
-	</logger>
+	<logger name="chapter2" level="info" />
 
-	<root>
-		<level value="debug" />
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>
