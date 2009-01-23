@@ -10,8 +10,6 @@
 
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
@@ -23,8 +21,7 @@ import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.sift.SiftAction;
 import ch.qos.logback.classic.spi.PlatformInfo;
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.filter.EvaluatorFilter;
+import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -89,10 +86,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
   @Override
   protected void addDefaultNestedComponentRegistryRules(
       DefaultNestedComponentRegistry registry) {
-    registry.add(AppenderBase.class, "layout", PatternLayout.class);
-    registry
-        .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
-
+    DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
   }
 
 }

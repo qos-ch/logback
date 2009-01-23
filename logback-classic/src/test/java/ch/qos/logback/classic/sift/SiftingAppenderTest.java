@@ -27,12 +27,13 @@ import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.sift.AppenderTracker;
+import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
 
   static String PREFIX = TeztConstants.TEST_DIR_PREFIX + "input/joran/sift/";
-  		
+
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
@@ -57,13 +58,30 @@ public class SiftingAppenderTest {
     logger.debug("smoke");
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha.getAppenderTracker().get("smoke", timestamp);
-    
+    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha
+        .getAppenderTracker().get("smoke", timestamp);
+
     StatusPrinter.print(loggerContext);
     assertNotNull(listAppender);
     List<LoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
+  }
+
+  @Test
+  public void defaultLayoutRule() throws JoranException {
+    configure(PREFIX + "defaultLayoutRule.xml");
+    logger.debug("hello");
+    long timestamp = 0;
+    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
+    StringListAppender<LoggingEvent> listAppender = (StringListAppender<LoggingEvent>) ha
+        .getAppenderTracker().get("default", timestamp);
+
+    StatusPrinter.print(loggerContext);
+    assertNotNull(listAppender);
+    List<String> strList = listAppender.strList;
+    assertEquals(1, strList.size());
+    assertEquals("DEBUG hello", strList.get(0));
   }
 
   @Test
@@ -74,21 +92,22 @@ public class SiftingAppenderTest {
     logger.debug("smoke");
     long timestamp = System.currentTimeMillis();
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha.getAppenderTracker().get("a", timestamp);
+    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha
+        .getAppenderTracker().get("a", timestamp);
     StatusPrinter.print(loggerContext);
-    
+
     assertNotNull(listAppender);
     List<LoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
 
     MDC.remove(mdcKey);
-    LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null, null);
-    le.setTimeStamp(timestamp+AppenderTracker.THRESHOLD*2);
+    LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null,
+        null);
+    le.setTimeStamp(timestamp + AppenderTracker.THRESHOLD * 2);
     ha.doAppend(le);
     assertFalse(listAppender.isStarted());
     assertEquals(1, ha.getAppenderTracker().keyList().size());
     assertEquals("cycleDefault", ha.getAppenderTracker().keyList().get(0));
-    
   }
 }

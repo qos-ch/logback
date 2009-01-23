@@ -9,21 +9,23 @@
       <name>m</name>
       <regex>^hello.*</regex>
       <CaseSensitive>false</CaseSensitive>
-    </matcher>  
+    </matcher>
   </evaluator>
 
-  <appender name="STR_LIST" class="ch.qos.logback.classic.testUtil.StringListAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+  <appender name="STR_LIST"
+    class="ch.qos.logback.core.testUtil.StringListAppender">
+    <!-- the fact that the layout class is not declared tests default component class
+      mapping rules -->
+    <layout>
       <Pattern>%caller{4, helloEval}%d %level - %m%n</Pattern>
     </layout>
   </appender>
-  
+
   <root>
     <level value="DEBUG" />
     <appender-ref ref="STR_LIST" />
   </root>
-  
-  
-  
+
+
+
 </configuration>
-  

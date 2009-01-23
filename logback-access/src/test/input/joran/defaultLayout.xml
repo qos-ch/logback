@@ -1,0 +1,13 @@
+<configuration>
+
+  <appender name="STR_LIST"
+    class="ch.qos.logback.core.testUtil.StringListAppender">
+    <!-- the fact that the layout class is not declared tests default component class
+      mapping rules -->
+    <layout>
+      <Pattern>%requestMethod</Pattern>
+    </layout>
+  </appender>
+  
+  <appender-ref ref="STR_LIST" />
+</configuration>

@@ -25,12 +25,12 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.testUtil.SampleConverter;
-import ch.qos.logback.classic.testUtil.StringListAppender;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
+import ch.qos.logback.core.testUtil.StringListAppender;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 

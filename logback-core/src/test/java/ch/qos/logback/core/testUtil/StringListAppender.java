@@ -1,20 +1,23 @@
-package ch.qos.logback.classic.testUtil;
+package ch.qos.logback.core.testUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
-public class StringListAppender extends AppenderBase<LoggingEvent> {
+public class StringListAppender<E> extends AppenderBase<E> {
 
-  Layout<LoggingEvent> layout;
+  Layout<E> layout;
   public List<String> strList = new ArrayList<String>();
+
+  public StringListAppender() {
+
+  }
 
   public void start() {
     strList.clear();
-    
+
     if (layout == null || !layout.isStarted()) {
       return;
     }
@@ -26,18 +29,18 @@ public class StringListAppender extends AppenderBase<LoggingEvent> {
   }
 
   @Override
-  protected void append(LoggingEvent eventObject) {
-    LoggingEvent le = (LoggingEvent) eventObject;
-    String res = layout.doLayout(le);
+  protected void append(E eventObject) {
+    String res = layout.doLayout(eventObject);
     strList.add(res);
   }
 
-  public Layout<LoggingEvent> getLayout() {
+  @Override
+  public Layout<E> getLayout() {
     return layout;
   }
 
-  public void setLayout(Layout<LoggingEvent> layout) {
+  @Override
+  public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }
-
 }

@@ -11,12 +11,15 @@
 package ch.qos.logback.access.joran;
 
 
+import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.joran.action.EvaluatorAction;
 import ch.qos.logback.access.sift.SiftAction;
+import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
@@ -41,5 +44,10 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
   }
 
+  @Override
+  protected void addDefaultNestedComponentRegistryRules(
+      DefaultNestedComponentRegistry registry) {
+    registry.add(AppenderBase.class, "layout", PatternLayout.class);
+  }
 
 }

@@ -29,7 +29,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.Constants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -140,9 +139,6 @@ public class TimeBasedRollingTest {
       incCurrentTime(500);
       tbrp1.setCurrentTime(currentTime);
     }
-
-    StatusPrinter.print(context);
-    //System.out.println(expectedFilenameList);
 
     int i = 0;
     for (String fn : expectedFilenameList) {

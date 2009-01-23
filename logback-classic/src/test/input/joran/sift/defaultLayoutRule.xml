@@ -1,0 +1,23 @@
+<configuration debug="true">
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+
+    <discriminator>
+      <Key>userid</Key>
+      <defaultValue>default</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="LIST-${userid}"
+        class="ch.qos.logback.core.testUtil.StringListAppender">
+        <layout>
+          <Pattern>%level %msg</Pattern>
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="SIFT" />
+  </root>
+
+</configuration>

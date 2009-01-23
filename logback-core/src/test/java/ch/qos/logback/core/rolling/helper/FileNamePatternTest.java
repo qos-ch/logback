@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * @author Ceki
@@ -44,7 +43,7 @@ public class FileNamePatternTest {
     // assertEquals("foo%", pp.convertInt(3));
 
     pp = new FileNamePattern("%i foo", context);
-    StatusPrinter.print(context.getStatusManager());
+    
     assertEquals("3 foo", pp.convertInt(3));
 
     pp = new FileNamePattern("foo%i.xixo", context);
@@ -84,7 +83,7 @@ public class FileNamePatternTest {
     cal.set(2003, 4, 20, 17, 55);
 
     FileNamePattern pp = new FileNamePattern("foo%d{yyyy.MM.dd}", context);
-    StatusPrinter.print(context.getStatusManager());
+    
     assertEquals("foo2003.05.20", pp.convertDate(cal.getTime()));
 
     pp = new FileNamePattern("foo%d{yyyy.MM.dd HH:mm}", context);

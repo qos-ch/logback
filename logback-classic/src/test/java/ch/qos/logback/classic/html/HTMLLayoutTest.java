@@ -25,11 +25,12 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.classic.testUtil.StringListAppender;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class HTMLLayoutTest {
 
@@ -217,11 +218,14 @@ public class HTMLLayoutTest {
   public void testConversionRuleSupportInHtmlLayout() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX
         + "input/joran/conversionRule/htmlLayout0.xml");
+   
     root.getAppender("LIST");
     String msg = "Simon says";
     root.debug(msg);
-    StringListAppender sla = (StringListAppender) root.getAppender("LIST");
+    StringListAppender<LoggingEvent> sla = (StringListAppender<LoggingEvent>) root
+        .getAppender("LIST");
     assertNotNull(sla);
+    StatusPrinter.print(lc);
     assertEquals(1, sla.strList.size());
     assertFalse(sla.strList.get(0).contains("PARSER_ERROR"));
   }

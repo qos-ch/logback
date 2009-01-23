@@ -29,7 +29,6 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Constants;
 import ch.qos.logback.core.util.FileUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -121,8 +120,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
     assertTrue("Got message [" + msg1 + "]", msg1
         .startsWith("Setting \"Append\" property"));
-    StatusPrinter.print(context);
-
+    
     appender.doAppend(new Object());
     appender.stop();
     assertTrue(file.exists());

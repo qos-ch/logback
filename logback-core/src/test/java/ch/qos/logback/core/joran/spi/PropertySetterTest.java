@@ -16,7 +16,6 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertySetterTest {
 
@@ -137,7 +136,7 @@ public class PropertySetterTest {
     setter.setContext(context);
     setter.addBasicProperty("adjective", "nice");
     setter.addBasicProperty("adjective", "big");
-    StatusPrinter.print(context);
+   
     assertEquals(2, house.adjectiveList.size());
     assertEquals("nice", house.adjectiveList.get(0));
     assertEquals("big", house.adjectiveList.get(1));

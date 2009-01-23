@@ -12,9 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import ch.qos.logback.access.dummy.DummyRequest;
-import ch.qos.logback.access.dummy.DummyResponse;
-import ch.qos.logback.access.dummy.DummyServerAdapter;
+import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
@@ -59,7 +57,7 @@ public class DBAppenderIntegrationTest {
     Appender<AccessEvent> appender = context.getAppender("DB");
     
     for (int i = 0; i < 10; i++) {
-      AccessEvent event = createAccessEvent();
+      AccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
       appender.doAppend(event);
     }
     
@@ -126,15 +124,6 @@ public class DBAppenderIntegrationTest {
       return;
     }
     doTest("src/test/input/integration/db/postgresql-with-driver.xml");
-  }
-  
-  private AccessEvent createAccessEvent() {
-    DummyRequest request = new DummyRequest();
-    DummyResponse response = new DummyResponse();
-    DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-
-    AccessEvent ae = new AccessEvent(request, response, adapter);
-    return ae;
   }
   
 }
