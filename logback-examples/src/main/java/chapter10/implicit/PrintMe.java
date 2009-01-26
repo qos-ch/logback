@@ -7,7 +7,7 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package chapter3.implicit;
+package chapter10.implicit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

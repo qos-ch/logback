@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package chapter3.calculator;
+package chapter10.calculator;
 
 
 

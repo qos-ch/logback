@@ -7,44 +7,44 @@
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-
-package chapter3.helloWorld;
+package chapter10.calculator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import chapter3.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
+import chapter3.SimpleConfigurator;
 
 
 /**
- *
- * A hello world example using Joran.
- *
- * The first and only argument of this application must be the path to
- * the XML file to interpret.
- *
- * For example,
- *
-<pre>
-    java joran.helloWorld.HelloWorld examples/src/joran/helloWorld/hello.xml
-</pre>
- *
- * @author Ceki Gulcu
+ * This examples illustrates collaboration between multiple actions through the
+ * common execution context stack.
+ * 
+ * It differs from Calculator1 in that it supports arbitrary nesting of 
+ * computation elements.
+ * 
+ * You can test this application with the sample XML file <em>calculator3.xml</em>.
+ * 
+ * @author Ceki G&uuml;ulc&uuml;
  */
-public class HelloWorld {
+public class Calculator2 {
   public static void main(String[] args) throws Exception {
     Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+   
+    
+    // Note the wild card character '*', in the paterns, signifying any level 
+    // of nesting.
+    ruleMap.put(new Pattern("*/computation"), new ComputationAction2());
 
-    // Associate "hello-world" pattern with  HelloWorldAction
-    ruleMap.put(new Pattern("hello-world"), new HelloWorldAction());
-
-    // Joran needs to work within a context.
+    ruleMap.put(new Pattern("*/computation/literal"), new LiteralAction());
+    ruleMap.put(new Pattern("*/computation/add"), new AddAction());
+    ruleMap.put(new Pattern("*/computation/multiply"), new MultiplyAction());
+    
     Context context = new ContextBase();
     SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
     // link the configurator with its context
@@ -56,5 +56,5 @@ public class HelloWorld {
       // Print any errors that might have occured.
       StatusPrinter.print(context);
     }
-      }
+  }
 }

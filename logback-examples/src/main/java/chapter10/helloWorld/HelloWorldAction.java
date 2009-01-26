@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package chapter3.helloWorld;
+package chapter10.helloWorld;
 
 
 

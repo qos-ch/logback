@@ -8,49 +8,44 @@
  * Software Foundation.
  */
 
-package chapter3.newRule;
+package chapter10.helloWorld;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import chapter3.SimpleConfigurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
-import chapter3.SimpleConfigurator;
-import chapter3.calculator.ComputationAction2;
 
 
 /**
- * This example illustrates the usage of NewRuleAction which allows the Joran
- * interpreter to learn new rules on the fly from the XML file being
- * interpreted.
  *
- * This example relies heavily on the code from the joran.calculator package.
+ * A hello world example using Joran.
  *
- * @author Ceki G&uuml;ulc&uuml;
+ * The first and only argument of this application must be the path to
+ * the XML file to interpret.
+ *
+ * For example,
+ *
+<pre>
+    java joran.helloWorld.HelloWorld examples/src/joran/helloWorld/hello.xml
+</pre>
+ *
+ * @author Ceki Gulcu
  */
-public class NewRuleCalculator {
+public class HelloWorld {
   public static void main(String[] args) throws Exception {
-  
-    Context context = new ContextBase();
-  
-    
     Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
 
-    // we start with the rule for the top-most (root) element
-    ruleMap.put(new Pattern("*/computation"), new ComputationAction2());
+    // Associate "hello-world" pattern with  HelloWorldAction
+    ruleMap.put(new Pattern("hello-world"), new HelloWorldAction());
 
-    // Associate "/new-rule" pattern with NewRuleAction from the 
-    // org.apache.joran.action package.
-    // 
-    // We will let the XML file to teach the Joran interpreter about new rules 
-    ruleMap.put(
-      new Pattern("/computation/new-rule"), new NewRuleAction());
-
+    // Joran needs to work within a context.
+    Context context = new ContextBase();
     SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
     // link the configurator with its context
     simpleConfigurator.setContext(context);

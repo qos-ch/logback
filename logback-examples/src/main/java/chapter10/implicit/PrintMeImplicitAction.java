@@ -8,7 +8,7 @@
  * Software Foundation.
  */
 
-package chapter3.implicit;
+package chapter10.implicit;
 
 import org.xml.sax.Attributes;
 
