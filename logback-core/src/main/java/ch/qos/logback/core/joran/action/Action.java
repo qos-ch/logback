@@ -1,7 +1,7 @@
 /**
  * Logback: the generic, reliable, fast and flexible logging framework for Java.
  * 
- * Copyright (C) 2000-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,9 +20,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * 
- * Most of the work for configuring log4j is done by Actions.
+ * Most of the work for configuring logback is done by Actions.
  * 
- * <p>Methods of an Action are invoked while an XML file is parsed through.
+ * <p>Action methods are invoked as the XML file is parsed.
  * 
  * <p>This class is largely inspired from the relevant class in the
  * commons-digester project of the Apache Software Foundation.
