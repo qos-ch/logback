@@ -43,10 +43,8 @@ public abstract class Action extends ContextAwareBase {
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
   /**
-   * Called when the parser first encounters an element.
-   * 
-   * The return value indicates whether child elements should be processed. If
-   * the returned value is 'false', then child elements are ignored.
+   * Called when the parser encounters an element matching a
+   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
    */
   public abstract void begin(InterpretationContext ec, String name,
       Attributes attributes) throws ActionException;
@@ -56,6 +54,10 @@ public abstract class Action extends ContextAwareBase {
     // NOP
   }
 
+  /*
+   * Called when the parser encounters an endElement event matching a
+   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
+   */
   public abstract void end(InterpretationContext ec, String name)
       throws ActionException;
 

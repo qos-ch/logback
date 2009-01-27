@@ -20,7 +20,7 @@ import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
-import chapter3.SimpleConfigurator;
+import chapter10.SimpleConfigurator;
 import chapter10.calculator.ComputationAction2;
 
 

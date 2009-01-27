@@ -1,7 +1,7 @@
 /**
  * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 2000-2008, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -12,6 +12,14 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 
+/**
+ * A pattern is used to designate XML elements in a document.
+ * 
+ * <p>For more information see 
+ *   http://logback.qos.ch/manual/onJoran.html#pattern
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
 public class Pattern {
 
   // contains String instances

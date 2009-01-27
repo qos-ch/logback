@@ -10,18 +10,15 @@
 
 package chapter10.helloWorld;
 
-
-
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-
 /**
  * A trivial action that writes "Hello world" on the console.
  * 
- * See the HelloWorld class for integrating with Joran.
+ * See the {@link HelloWorld} class for integration with Joran.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

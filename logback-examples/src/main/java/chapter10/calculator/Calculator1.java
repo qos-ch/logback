@@ -19,7 +19,7 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
-import chapter3.SimpleConfigurator;
+import chapter10.SimpleConfigurator;
 
 /**
  * This examples illustrates collaboration between multiple actions through the

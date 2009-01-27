@@ -1,13 +1,13 @@
 /**
  * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation.
  */
-package chapter3;
+package chapter10;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +19,12 @@ import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
+/**
+ * A minimal configurator extending GenericConfigurator.
+ * 
+ * @author Ceki G&uuml;c&uuml;
+ *
+ */
 public class SimpleConfigurator extends GenericConfigurator {
 
   final Map<Pattern, Action> ruleMap;
@@ -35,7 +41,6 @@ public class SimpleConfigurator extends GenericConfigurator {
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
-
     for (Pattern pattern : ruleMap.keySet()) {
       Action action = ruleMap.get(pattern);
       rs.addRule(pattern, action);

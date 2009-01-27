@@ -11,9 +11,7 @@
 
   </head>
   <body>
-   <script type="text/javascript">
-      prefix='../';	
-    </script>
+    <script type="text/javascript">prefix='../'</script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -25,21 +23,23 @@
       
     <h2>Joran in your own applications</h2>
 
-    <p>As we've seen, logback relies on Joran, a mature, flexible and
-    powerful configuration framework. Many of the capabilities offered
-    by logback modules are only possible on account of Joran.
+    <p>As apparent in previous chapters, logback relies on Joran, a
+    mature, flexible and powerful configuration framework. Many of the
+    capabilities offered by logback modules are only possible on
+    account of Joran. This chapter focuses on Joran, its basic design
+    and its salient features.
     </p>
 
     <p>Joran is actually a generic configuration system which can be
     used independently of logging. To emphaises this point, we should
     mention that the logback-core module does not have a notion of
-    loggers. In that spirit, many of the examples related to this
-    tutorial, have nothing to do with loggers, appenders or layouts.
+    loggers. In that spirit, most of the examples in this chapter have
+    nothing to do with loggers, appenders or layouts.
     </p>
 
-    <p class="red" style="text-decoration: line-through;">The examples
-    for this chapter can be found under
-    <em>LOGBACK_HOME/logback-examples/src/main/java/chapter3</em>.
+    <p>The examples presented in this chapter can be found under
+    <em>LOGBACK_HOME/logback-examples/src/main/java/chapter10</em>
+    folder.
     </p>
 
     <p>To install joran, simply <a href="../download.html">download</a>
@@ -48,36 +48,45 @@
     
     <h2>Historical perspective</h2>
 
-    <p>One of the most powerful features of the Java language is
-    reflection. Reflection makes it possible to configure software
-    systems declaratively. For example, many important properties of an
-    EJB are configured with the <em>ejb.xml</em> file. While EJBs are
-    written in Java, many of their properties are specified within the
-    <em>ejb.xml</em> file. Similarly, logback settings can be specified
-    in a configuration file, expressed in XML format.
+    <p>Reflection is a powerful feature of the Java language, making
+    it possible to configure software systems declaratively. For
+    example, many important properties of an EJB are configured with
+    the <em>ejb.xml</em> file. While EJBs are written in Java, many of
+    their properties are specified within the <em>ejb.xml</em>
+    file. Similarly, logback settings can be specified in a
+    configuration file, expressed in XML format. Annotations available
+    in JDK 1.5 and heavily used in EJB 3.0 replace many of directives
+    previously found in XML files. Joran also makes use of annonations
+    but at a much smaller extent. Due to the dynamic nature of logback
+    configuration data (compared to EJBs) Joran's use of annonations
+    is rather limited.
     </p>
 
-    <p>In log4j, logback's predecessor, <code>DOMConfigurator</code>
-    which shipped with log4j version 1.2.x could also parse
-    configuration files written in XML. The
-    <code>DOMConfigurator</code> was written in a way that forced to
-    tweak it each time the structure of the configuration file
-    changed. The modified code had to be recompiled and
-    redeployed. Just as importantly, the code of the DOMConfigurator
-    consists of loops dealing with children elements containing many
-    interspersed if/else statements. One could not help but notice
-    that that particular code reeked of redundancy.  The <a
-    href="http://jakarta.apache.org/commons/digester/">digester
-    project</a> has shown that it is possible to parse XML files using
-    pattern matching rules. At parse time, digester will apply the
-    rules that match previously stated patterns. Rule classes are
-    usually quite small and specialized. Consequently, they are
-    relatively easy to understand and to maintain.
+    <p>In log4j, logback's predecessor, the
+    <code>DOMConfigurator</code> class, which is part of log4j version
+    1.2.x and later, could also parse configuration files written in
+    XML. <code>DOMConfigurator</code> was written in a way that forced
+    us, the developers, to tweak the code each time the structure of
+    the configuration file changed. The modified code had to be
+    recompiled and redeployed. Just as importantly, the code of the
+    <code>DOMConfigurator</code> consisted of loops dealing with
+    children elements containing many interspersed if/else
+    statements. One could not help but notice that that particular
+    code reeked of redundancy and duplication.  The <a
+    href="http://jakarta.apache.org/commons/digester/">commons-digester
+    project</a> had shown us that it was possible to parse XML files
+    using pattern matching rules. At parse time, digester would apply
+    rules that matched designated patterns. Rule classes were usually
+    quite small and specialized. Consequently, they were relatively
+    easy to understand and maintain.
     </p>
 
-    <p>Joran is heavily inspired by the commons-digester project but
-    uses a slightly different terminology. In commons-digester, a rule
-    can be seen as consisting of a pattern and a rule, as shown by the
+    <p>Armed with the <code>DOMConfigurator</code> experience, we
+    began developing <code>Joran</code>, a powerful configuration
+    framework to be used in logback. Joran was largely inspired by the
+    commons-digester project. Nevertheless, it uses a slightly
+    different terminology. In commons-digester, a rule can be seen as
+    consisting of a pattern and a rule, as shown by the
     <code>Digester.addRule(String pattern, Rule rule)</code>
     method. We find it unnecessarily confusing to have a rule to
     consist of itself, not recursively but with a different
@@ -86,19 +95,10 @@
     pattern. This relation between patterns and actions lies at the
     core of Joran.  Quite remarkably, one can deal with quite complex
     requirements by using simple patterns, or more precisely with
-    exact matches and wildcard matches. For example, the pattern
-    <em>a/b</em> will match a <code>&lt;b></code> element nested
-    within an <code>&lt;a></code> element but not a
-    <code>&lt;c></code> element, even if nested within a
-    <code>&lt;b></code> element. It is also possible to match a
-    particular XML element, regardless of its nesting level, by using
-    the <em>*</em> wildcard character. For example, the pattern
-    <em>*/a</em> will match an <code>&lt;a></code> element at any
-    nesting position within the document. Other types of patterns, for
-    example <em>a/*</em>, are not currently supported by Joran.
+    exact matches and wildcard matches.
     </p>
 
-    <h2>SAX or DOM?</h2>
+    <h3>SAX or DOM?</h3>
 
     <p>Due to the event-based architecture of the SAX API, a tool based
     on SAX cannot easily deal with forward references, that is,
@@ -118,19 +118,47 @@
     order.</em>
     </p>
 
-    <p>Joran was first implemented in DOM. However, the author migrated
-    to SAX in order to benefit location information, available only with
-    the SAX API. Location information allows Joran to display the exact
-    line and column number where an error occured, which comes in quite
-    handy when hunting down problems.
+    <p>Joran was first implemented in DOM. However, the author
+    migrated to SAX in order to benefit from element location
+    information, available only with the SAX API. Location information
+    allows Joran to display the exact line and column number where an
+    error occured, which comes in very handy in indentifying parsing
+    problems.
     </p>
     
     
-    <h2>Actions</h2>
+    <h3><a name="pattern" href="#pattern">Pattern</a></h3>
+
+    <p>A Joran pattern is essentially a string. There are two kind of
+    patterns, <em>exact</em> and <em>wildcard</em>. The pattern
+    "a/b" can be used to match <code>&lt;b></code> element nested
+    within a top-level <code>&lt;a></code> element but not a
+    <code>&lt;c></code> element, even if nested within a
+    <code>&lt;b></code> element.</p>
+
+    <p>Wildcards can be used to match suffixes or prefixes. For
+    example, the "*/a" pattern can be used to match any suffix ending
+    with "a", that is any <code>&lt;a></code> element within an XML
+    document but not any elements nested within <code>&lt;a></code>.
+    The "a/*" pattern will match any element prefixed by
+    <code>&lt;a></code>, that is any element nested within an
+    <code>&lt;a></code> element.
+    </p>
+
+    <p>When several rules match the current pattern, then exact
+    matches override suffix matches, and suffix matches overide prefix
+    matches. For exact details of implementation, please see the <a
+    href="../xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.java">SimpleRuleStore</a>
+    class.
+    </p>
+
+    <h3><a name="action" href="#action">Actions</a></h3>
     
-    <p>Actions extend the
-    <code>ch.qos.logback.core.joran.action.Action</code> class which
-    consists of the following abstract methods.
+    <p>As mentioned above, Joran parsing rules consists of the
+    association of patterns. Actions extend the <a
+    href="../xref/ch/qos/logback/core/joran/action/Action.html"><code>Action</code></a>
+    class, consisting of the following abstract methods. Other methods
+    have been omitted for berevity.
     </p>
 
 
@@ -142,135 +170,143 @@ import ch.qos.logback.core.joran.spi.ExecutionContext;
 public abstract class Action {
   
 
- /**
-  * Called when the parser first encounters an element.
-  */
-  public abstract void begin(ExecutionContext ec, 
-                             String name, 
-                             Attributes attributes);
+  /**
+   * Called when the parser encounters an element matching a
+   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
+   */
+  public abstract void begin(InterpretationContext ec, String name,
+      Attributes attributes) throws ActionException;
 
- /**
-  * Called when the parser encounters the element end. At 
-  * this stage, we can assume that child elements, if any,
-  * have been processed. 
-  */
-  public abstract void end(ExecutionContext ec, String name);
+  /*
+   * Called when the parser encounters an endElement event matching a
+   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
+   */
+  public abstract void end(InterpretationContext ec, String name)
+      throws ActionException;
 }</p>
 
    <p>Thus, every action must implement the begin and end methods.</p>
 
 
-   <h2>Execution context</h2>
+   <h3><a name="ruleStore" href="#ruleStore">RuleStore</a> </h3>
+
+   
+
+   <h2>Interpretation context</h2>
 
    <p>To allow various actions to collaborate, the invocation of begin
-   and end methods include an execution context as the first
-   parameter. The execution context includes an object stack, an object
-   map, an error list and a reference to the Joran interpreter invoking
-   the action. Please see the
-   <code>ch.qos.logback.core.joran.spi.ExecutionContext</code> class
-   for the exact list of fields contained in the execution context.
+   and end methods include an interpretation context as the first
+   parameter. The interpretation context includes an object stack, an
+   object map, an error list and a reference to the Joran interpreter
+   invoking the action. Please see the <a
+   href="../xref/ch/qos/logback/core/joran/spi/InterpretationContext.html"><code>InterpretationContext</code></a>
+   class for the exact list of fields contained in the interpretation
+   context.
    </p>
    
    <p>Actions can collaborate together by fetching, pushing or popping
    objects from the common object stack, or by putting and fetching
    keyed objects on the common object map. Actions can report any error
-   conditions by adding error items on the execution context's
+   conditions by adding error items on the interpretation context's
    <code>StatusManager</code>.
    </p>
    
-   <a name="helloWorld"></a>
-   <h3>A hello world example</h3>
+   <h3><a name="helloWorld" href="#helloWorld">Hello world</a></h3>
    
-   <p>The <em>logback-examples/src/main/java/chapter3/helloWorld/</em>
-   directory includes a trivial action and Joran interpreter setup
-   which just displays <em>Hello World</em> when a &lt;hello-world&gt;
-   element is encountered in an XML file.  It also includes the basic
-   steps which are necessary to set up and invoke a Joran interpreter.
+   <p>The first example in this chapter illustrates the minimal
+   plumbing required for using Joran. The example consists of a
+   trivial action called <a
+   href="../xref/chapter10/helloWorld/HelloWorldAction.html">
+   <code>HelloWorldAction</code></a> which prints "Hello World" on the
+   console when it's <code>begin()</code> method is invoked. The
+   parsing of XML files is done by a configurator. For the purposes of
+   this chapter, we have developped a very simple configurator called
+   <a
+   href="../xref/chapter10/SimpleConfigurator.html"><code>SimpleConfigurator</code></a>.
+   The <a
+   href="../xref/chapter10/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
+   application brings all pieces together.
    </p>
 
-   <p>The <em>hello.xml</em> file contains only one element, without
-   any other nested elements. The <a
-   href="../xref/chapter3/helloWorld/HelloWorldAction.html">
-   <code>HelloWorldAction</code></a> class is a trivial implementation:
-   it only prints "Hello World" in the console when it's
-   <code>begin()</code> method is called.
-   </p>
+   <ul>
+     <li>It creates a map of rules and a <code>Context</code></li>
+     <li>It creates a parsing rule by associating the
+     <em>hello-world</em> pattern with a corresponding
+     <code>HelloWorldAction</code> instance</li>
+     <li>It creates a <code>SimpleConfigutator</code>, passing it the
+     aforementioned rules map</li>
+     <li>it then invokes the <code>doConfigure</code> method of the
+     configurator, passing the designated XML file as parameter
+     </li>
+     <li>as a last step, the accumulated Status message in the context,
+     if any, are printed</li>
+   </ul>
 
-  <p> <a
-  href="../xref/chapter3/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
-  is a class that sets up the Joran interpreter, with the minimal
-  steps necessary:
-  </p>
 
-  <ul>
-    <li>It creates a <code>RuleStore</code> and a <code>Context</code></li>
-    <li>It adds the <em>hello-world</em> pattern, with it's corresponding action</li>
-    <li>It creates a Joran interpreter, and passes the <code>RuleStore</code></li>
-    <li>It creates a SAX parser and parses the given file, specifying the newly created
-    Joran interpreter as the <code>ContentHandler</code></li>
-  </ul>
+   
+    <p>The <em>hello.xml</em> file contains one &lt;hello-world&gt;
+    element, without any other nested elements. See the
+    <em>logback-examples/src/main/java/chapter10/helloWorld/</em>
+    folder for exact contents.
+    </p>
+ 
+    <p>Running the HelloWorld application with <em>hello.xml</em> file
+    will print "Hello World" on the console.</p>
+   
+    <p class="source">java chapter10.helloWorld.HelloWorld src/main/java/chapter10/helloWorld/hello.xml</p>
 
-  <p>It's last step is to print the content of the
-  <code>Context</code>.  Since Joran uses logback's powerfull
-  <code>Status</code> objects for error reporting, one can have a good
-  feedback on what happened during the parsing.
-  </p>
+    <h3><a name="calculator" href="#calculator">Collaborating
+    actions</a></h3>
+   
+    <p>The <em>logback-examples/src/main/java/joran/calculator/</em>
+    directory includes several actions which collaborate together
+    through the common object stack in order to accomplish simple
+    computations.
+    </p>
 
-  <p>In this example, the parsing is rather simple. The
-  <em>hello-world</em> element will activate
-  <code>HelloWorldAction</code>'s <code>begin()</code> and
-  <code>end()</code> methods.  In the first method, a simple call to
-  <code>System.out.println()</code> will be issued, displaying
-  <em>Hello World</em> in the console.
-  </p>
+    <p>The <em>calculator1.xml</em> file contains a
+    <code>computation</code> element, with a nested
+    <code>literal</code> element.
+    </p>
 
-  <a name="calculator"></a>
-  <h3>Collaborating actions</h3>
+    <p>In the <a href="../xref/chapter3/calculator/Calculator1.html">
+    <code>Calculator1</code></a> class, we declare various patterns
+    and actions, that will collaborate and calculate a result based on
+    the xml file. The simple <em>calculator1.xml</em> file only
+    creates a computation and declares a literal value. The resulting
+    parsing is pretty simple:
+    </p>
 
-  <p>The <em>logback-examples/src/main/java/joran/calculator/</em>
-  directory includes several actions which collaborate together
-  through the common object stack in order to accomplish simple
-  computations.
-  </p>
+    <ul>
+      <li>The <a
+      href="../xref/chapter3/calculator/ComputationAction1.html">
+      <code>ComputationAction1</code></a> class' <code>begin()</code>
+      method is called</li>
+      <li>The <a href="../xref/chapter3/calculator/LiteralAction.html">
+      <code>LiteralAction</code></a> class' <code>begin()</code> and <code>end()</code> 
+      methods are called</li>
+      <li>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
+      <code>ComputationAction1</code></a> class' <code>end()</code> method
+      is called</li>
+    </ul>
 
-  <p>The <em>calculator1.xml</em> file contains a <code>computation</code>
-  element, with a nested <code>literal</code> element.
-  </p>
+    <p>What is interesting here is the way that the Actions
+    collaborate.  The <code>LiteralAction</code> reads a literal value
+    and pushes it in the object stack maintained by the
+    <code>InterpretationContext</code>. Once done, any other action
+    can pop the value to read or modify it. Here, the
+    <code>end()</code> method of the <code>ComputationAction1</code>
+    class pops the value from the stack and prints it.
+    </p>
 
-  <p>In the <a href="../xref/chapter3/calculator/Calculator1.html">
-  <code>Calculator1</code></a> class, we declare various patterns and
-  actions, that will collaborate and calculate a result based on the
-  xml file. The simple <em>calculator1.xml</em> file only creates a
-  computation and declares a literal value. The resulting parsing is
-  pretty simple:
-  </p>
+    <p>The <em>calculator2.xml</em> file is a bit more complex, but
+    much more interesting.</p>
 
-  <ul>
-    <li>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
-    <code>ComputationAction1</code></a> class' <code>begin()</code> method
-    is called</li>
-    <li>The <a href="../xref/chapter3/calculator/LiteralAction.html">
-    <code>LiteralAction</code></a> class' <code>begin()</code> and <code>end()</code> 
-    methods are called</li>
-    <li>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
-    <code>ComputationAction1</code></a> class' <code>end()</code> method
-    is called</li>
-  </ul>
-  <p>What is interesting here is the way that the Actions collaborate.
-  The <code>LiteralAction</code> reads a literal value and pushes it
-  in the object stack maintained by the
-  <code>ExecutionContext</code>. Once done, any other action can pop
-  the value to read or modify it. Here, the <code>end()</code> method
-  of the <code>ComputationAction1</code> class pops the value from the
-  stack and prints it.
-  </p>
+    <p>It contains the following elements:</p>
 
-  <p>The <em>calculator2.xml</em> file is a bit more complex, but much
-  more interesting.</p>
-
-  <p>It contains the following elements:</p>
-
-  <em>Example 3.<span class="autoEx"/>: Calculator configuration file (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
+    <em>Example 3.<span class="autoEx"/>: Calculator configuration
+    file
+    (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
   <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
@@ -326,67 +362,7 @@ public abstract class Action {
   by one <code>begin()</code> will be consumed only by the matching
   <code>end()</code> method.</p>
 
-  <a name="newRule"></a>
-
-  <h3>New-rule action</h3>
-
-  <p>Joran includes an action which allows the Joran interpreter to
-  lean new rules on the fly while interpreting the XML file containing
-  the new rules.  See the
-  <em>logback-examples/src/main/java/joran/newRule/</em> directory for
-  sample code.
-  </p>
-
-  <p>In this package, the <a
-  href="../xref/chapter3/newRule/NewRuleCalculator.html">
-  <code>NewRuleCalculator</code></a> class contains the same setup as
-  we have seen so far, but for one line:</p>
-
-  <p class="source">ruleStore.addRule(new
-  Pattern("/computation/new-rule"), new NewRuleAction());</p>
-
-  <p>By adding this line, we ask Joran to allow new rules to be learnt
-  at parsing time. It works pretty much like the other rules: it has a
-  <code>begin()</code> and <code>end()</code> method, and is called each time
-  the parser finds a <em>new-rule</em> element.</p>
-
-  <p>When called, the <code>begin()</code> method looks for a
-  <em>pattern</em> and a <em>actionClass</em> attribute. The action
-  class is then instanciated and added to the <code>RuleStore</code>,
-  along with its corresponding pattern.</p>
-
-  <p>Here is how new rules can be declared in an xml file:</p>
-
-<div class="source"><pre>&lt;new-rule pattern="*/computation/literal"
-actionClass="chapter3.calculator.LiteralAction"/&gt;</pre></div>
-
-  <p>Using new rule declarations, the preceding example, involving the
-  calculation, could be expressed this way:</p>
-
-  <em>Example 3.<span class="autoEx"/>: Configuration file using new
-  rules on the fly
-  (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
-
-<div class="source"><pre>&lt;computation name="toto"&gt;
-  &lt;new-rule pattern="*/computation/literal" 
-            actionClass="chapter3.calculator.LiteralAction"/&gt;
-  &lt;new-rule pattern="*/computation/add" 
-            actionClass="chapter3.calculator.AddAction"/&gt;
-  &lt;new-rule pattern="*/computation/multiply" 
-            actionClass="chapter3.calculator.MultiplyAction"/&gt;
-
-  &lt;computation&gt;
-    &lt;literal value="7"/&gt;
-    &lt;literal value="3"/&gt;
-    &lt;add/&gt;
-  &lt;/computation&gt;   
- 
-  &lt;literal value="3"/&gt;
-  &lt;multiply/&gt;
-&lt;/computation&gt;</pre></div>
-
-  <a name="implicit"></a>
-  <h3>Implicit actions </h3>
+  <h3><a name="implicit" href="#implicit">Implicit actions</a></h3>
 
   <p>The rules defined thus far are called explicit rules because they
   require an explicit pattern, hence fixing the tag name of the
@@ -503,11 +479,71 @@ actionClass="chapter3.calculator.LiteralAction"/&gt;</pre></div>
 
 <div class="source"><pre>Element &lt;xyz> asked to be printed.
 Element &lt;abc> asked to be printed.
-ERROR in ch.qos.logback.core.joran.spi.ExecutionContext@1c5c1 - no applicable action \
+ERROR in ch.qos.logback.core.joran.spi.InterpretationContext@1c5c1 - no applicable action \
 for &lt;xyz>, current pattern is [/foo/xyz]</pre></div>
 
   <p>The last line was printed because of a call to
   <code>StatusPrinter</code> at the end of the main class.</p>
+
+  <a name="newRule"></a>
+
+  <h3>New-rule action</h3>
+
+  <p>Joran includes an action which allows the Joran interpreter to
+  lean new rules on the fly while interpreting the XML file containing
+  the new rules.  See the
+  <em>logback-examples/src/main/java/joran/newRule/</em> directory for
+  sample code.
+  </p>
+
+  <p>In this package, the <a
+  href="../xref/chapter3/newRule/NewRuleCalculator.html">
+  <code>NewRuleCalculator</code></a> class contains the same setup as
+  we have seen so far, but for one line:</p>
+
+  <p class="source">ruleStore.addRule(new
+  Pattern("/computation/new-rule"), new NewRuleAction());</p>
+
+  <p>By adding this line, we ask Joran to allow new rules to be learnt
+  at parsing time. It works pretty much like the other rules: it has a
+  <code>begin()</code> and <code>end()</code> method, and is called each time
+  the parser finds a <em>new-rule</em> element.</p>
+
+  <p>When called, the <code>begin()</code> method looks for a
+  <em>pattern</em> and a <em>actionClass</em> attribute. The action
+  class is then instanciated and added to the <code>RuleStore</code>,
+  along with its corresponding pattern.</p>
+
+  <p>Here is how new rules can be declared in an xml file:</p>
+
+  <p class="source">&lt;new-rule pattern="*/computation/literal"
+actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
+
+  <p>Using new rule declarations, the preceding example, involving the
+  calculation, could be expressed this way:</p>
+
+  <em>Example 3.<span class="autoEx"/>: Configuration file using new
+  rules on the fly
+  (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
+
+<div class="source"><pre>&lt;computation name="toto"&gt;
+  &lt;new-rule pattern="*/computation/literal" 
+            actionClass="chapter3.calculator.LiteralAction"/&gt;
+  &lt;new-rule pattern="*/computation/add" 
+            actionClass="chapter3.calculator.AddAction"/&gt;
+  &lt;new-rule pattern="*/computation/multiply" 
+            actionClass="chapter3.calculator.MultiplyAction"/&gt;
+
+  &lt;computation&gt;
+    &lt;literal value="7"/&gt;
+    &lt;literal value="3"/&gt;
+    &lt;add/&gt;
+  &lt;/computation&gt;   
+ 
+  &lt;literal value="3"/&gt;
+  &lt;multiply/&gt;
+&lt;/computation&gt;</pre></div>
+
 
   <h3>Non goals</h3>
 
