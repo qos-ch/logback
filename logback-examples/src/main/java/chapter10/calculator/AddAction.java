@@ -1,7 +1,7 @@
 /**
- * Logback: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -9,8 +9,6 @@
  */
 
 package chapter10.calculator;
-
-
 
 import java.util.EmptyStackException;
 
@@ -28,23 +26,23 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  */
 public class AddAction extends Action {
   
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    int first = fetchInteger(ec);
-    int second = fetchInteger(ec);
+  public void begin(InterpretationContext ic, String name, Attributes attributes) {
+    int first = fetchInteger(ic);
+    int second = fetchInteger(ic);
     // Push the result of the addition for the following actions.
-    ec.pushObject(new Integer(first + second));
+    ic.pushObject(new Integer(first + second));
   }
 
   /**
    * Pop the Integer object at the top of the stack.
-   * This code illustrates usage of Joran's error handling paradigm. 
+   * This code also  illustrates usage of Joran's error handling paradigm. 
    */
-  int fetchInteger(InterpretationContext ec) {
+  int fetchInteger(InterpretationContext ic) {
     int result = 0;
 
     try {
-      // Pop the object at the top of the exection context stack.
-      Object o1 = ec.popObject();
+      // Pop the object at the top of the interpretation context's stack.
+      Object o1 = ic.popObject();
 
       if (o1 instanceof Integer) {
         result = ((Integer) o1).intValue();
@@ -52,20 +50,17 @@ public class AddAction extends Action {
         String errMsg =
           "Object [" + o1
           + "] currently at the top of the stack is not an integer.";
-        ec.addError(errMsg);
+        ic.addError(errMsg);
         throw new IllegalArgumentException(errMsg);
       }
     } catch (EmptyStackException ese) {
-      ec.addError(("Expecting an integer on the execution stack."));
+      ic.addError(("Expecting an integer on the execution stack."));
       throw ese;
     }
     return result;
   }
 
-  public void end(InterpretationContext ec, String name) {
+  public void end(InterpretationContext ic, String name) {
     // Nothing to do here.
-    // In general, the end() method of actions associated with elements
-    // having no children do not need to perform any processing in their
-    // end() method.
   }
 }

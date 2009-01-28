@@ -126,15 +126,21 @@
     problems.
     </p>
     
-    
+    <h3>Non goals</h3>
+
+    <p>Given its highly dynamic nature, the Joran API is not intended
+    to be used to parse very large XML documents with many thousands
+    of elements.
+    </p>
+
+
     <h3><a name="pattern" href="#pattern">Pattern</a></h3>
 
     <p>A Joran pattern is essentially a string. There are two kind of
-    patterns, <em>exact</em> and <em>wildcard</em>. The pattern
-    "a/b" can be used to match <code>&lt;b></code> element nested
-    within a top-level <code>&lt;a></code> element but not a
-    <code>&lt;c></code> element, even if nested within a
-    <code>&lt;b></code> element.</p>
+    patterns, <em>exact</em> and <em>wildcard</em>. The pattern "a/b"
+    can be used to match <code>&lt;b></code> element nested within a
+    top-level <code>&lt;a></code> element. The "a/b" will not match
+    any other element, hence the <em>exact</em> match designation.</p>
 
     <p>Wildcards can be used to match suffixes or prefixes. For
     example, the "*/a" pattern can be used to match any suffix ending
@@ -143,13 +149,6 @@
     The "a/*" pattern will match any element prefixed by
     <code>&lt;a></code>, that is any element nested within an
     <code>&lt;a></code> element.
-    </p>
-
-    <p>When several rules match the current pattern, then exact
-    matches override suffix matches, and suffix matches overide prefix
-    matches. For exact details of implementation, please see the <a
-    href="../xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.java">SimpleRuleStore</a>
-    class.
     </p>
 
     <h3><a name="action" href="#action">Actions</a></h3>
@@ -190,9 +189,33 @@ public abstract class Action {
 
    <h3><a name="ruleStore" href="#ruleStore">RuleStore</a> </h3>
 
+   <p>As mentioned previously, the invocation of actions according to
+   matching patterns is a central concept in Joran. A rule is an
+   association of a pattern and an action. Rules are stored in a <a
+   href="../xref/ch/qos/logback/core/joran/spi/RuleStore.java">RuleStore</a>.   
+   </p>
+
+   <p>As mentioned above, Joran is built on top of the SAX API. As an
+   XML document is parsed, each element generates events corresponding
+   to the start, body and end of each element. When a joran
+   configurator receives these events, it will attempt to find in its
+   rule store an action corresponding to the <em>current
+   pattern</em>.. For example, the current pattern for the start, body
+   or end event of element <em>B</em> nested within a top-level
+   <em>A</em> element is "A/B".  The current pattern is a data
+   structure maintained automatically by Joran as it receives and
+   processes SAX events. </p>
+
+   <p>When several rules match the current pattern, then exact
+   matches override suffix matches, and suffix matches overide prefix
+   matches. For exact details of implementation, please see the <a
+   href="../xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.java">SimpleRuleStore</a>
+   class.
+   </p>
    
 
-   <h2>Interpretation context</h2>
+   <h3><a name="interpretationContext"
+   href="#interpretationContext">Interpretation context</a></h3>
 
    <p>To allow various actions to collaborate, the invocation of begin
    and end methods include an interpretation context as the first
@@ -242,8 +265,6 @@ public abstract class Action {
      if any, are printed</li>
    </ul>
 
-
-   
     <p>The <em>hello.xml</em> file contains one &lt;hello-world&gt;
     element, without any other nested elements. See the
     <em>logback-examples/src/main/java/chapter10/helloWorld/</em>
@@ -253,7 +274,14 @@ public abstract class Action {
     <p>Running the HelloWorld application with <em>hello.xml</em> file
     will print "Hello World" on the console.</p>
    
-    <p class="source">java chapter10.helloWorld.HelloWorld src/main/java/chapter10/helloWorld/hello.xml</p>
+    <p class="command">java chapter10.helloWorld.HelloWorld src/main/java/chapter10/helloWorld/hello.xml</p>
+
+    <p>You are highly encourared to poke about this example, by adding
+    new rules on the rule store, modifying the XML document
+    (hello.xml) and adding new actions.
+    </p>
+
+    <!-- ====================================================== -->
 
     <h3><a name="calculator" href="#calculator">Collaborating
     actions</a></h3>
@@ -266,15 +294,35 @@ public abstract class Action {
 
     <p>The <em>calculator1.xml</em> file contains a
     <code>computation</code> element, with a nested
-    <code>literal</code> element.
+    <code>literal</code> element. Here are its contents.
     </p>
 
+    <em>Example 10.<span class="autoEx"/>: First calculator example
+    (logback-examples/src/main/java/chapter10/calculator/calculator1.xml)</em>
+
+    <em> </em>
+    <p class="source">&lt;computation name="total">
+  &lt;literal value="3"/>
+&lt;/computation></p>
+
     <p>In the <a href="../xref/chapter3/calculator/Calculator1.html">
-    <code>Calculator1</code></a> class, we declare various patterns
-    and actions, that will collaborate and calculate a result based on
-    the xml file. The simple <em>calculator1.xml</em> file only
-    creates a computation and declares a literal value. The resulting
-    parsing is pretty simple:
+    <code>Calculator1</code></a> application, we declare various
+    parsing rules (patterns and actions) collaborating together to
+    compute a result based on the contents of an XML document. 
+    </p>
+
+    <p> Running <code>Calculator1</code> application with
+    <em>calculator1.xml</em></p>
+
+    <p class="command">java chapter10.calculator.Calculator1 src/main/java/chapter10/calculator/calculator1.xml</p>
+
+    <p>will print:</p>
+
+    <p class="console">The computation named [total] resulted in the value 3</p>
+
+
+    <p>Parsing the <em>calculator1.xml</em> document (listed above)
+    involves the following steps:
     </p>
 
     <ul>
@@ -290,14 +338,16 @@ public abstract class Action {
       is called</li>
     </ul>
 
-    <p>What is interesting here is the way that the Actions
-    collaborate.  The <code>LiteralAction</code> reads a literal value
-    and pushes it in the object stack maintained by the
+    <p>What is interesting here is the way actions collaborate.  The
+    <code>LiteralAction</code> reads a literal value and pushes it in
+    the object stack maintained by the
     <code>InterpretationContext</code>. Once done, any other action
     can pop the value to read or modify it. Here, the
     <code>end()</code> method of the <code>ComputationAction1</code>
     class pops the value from the stack and prints it.
     </p>
+
+    <!-- TO BE CONTINUED -->
 
     <p>The <em>calculator2.xml</em> file is a bit more complex, but
     much more interesting.</p>
@@ -543,14 +593,6 @@ actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre></div>
-
-
-  <h3>Non goals</h3>
-
-  <p>The Joran API is not intended to be used to parse documents with
-  thousands of elements.
-  </p>
-
 
   <script src="templates/footer.js" type="text/javascript"></script>
 </div>

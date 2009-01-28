@@ -18,26 +18,26 @@ div.source {
  margin-top: 1em;
 }
 
-.source { 
+.source, .command, .console { 
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
   background:#eee;
   font-family: Courier, "MS Courier New", Prestige, monospace;
-  padding-bottom: 0.5ex;
-  padding-top: 0.5ex;
   padding-left: 1ex;
   white-space: pre;
 }
 
-.command { 
-  border-top: 1px solid #DDDDDD;
-  border-bottom: 1px solid #DDDDDD;
-  background:#eee;
-  font-family: Courier, "MS Courier New", Prestige, monospace;
+.source {
+  padding-bottom: 0.5ex;
+  padding-top: 0.5ex;
+}
+
+.command {
   padding-bottom: 0ex;
   padding-top: 0ex;
-  padding-left: 1ex;
-  white-space: pre;
+}
+
+.console {
 }
 
 pre { 
