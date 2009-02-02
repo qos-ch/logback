@@ -50,7 +50,7 @@ public class StatusPrinter {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     } else {
-      if (sm.getLevel() == ErrorStatus.WARN) {
+      if (sm.getLevel() == ErrorStatus.WARN || (sm.getLevel() == ErrorStatus.ERROR) ) {
         print(sm);
       }
     }
@@ -112,9 +112,9 @@ public class StatusPrinter {
   
 
   private static void buildStrFromStatusList(StringBuilder sb, List<Status> statusList) {
-    Iterator it = statusList.iterator();
-    while (it.hasNext()) {
-      Status s = (Status) it.next();
+    if(statusList == null)
+      return;
+    for(Status s : statusList) {
       buildStr(sb, "", s);
     }
   }
