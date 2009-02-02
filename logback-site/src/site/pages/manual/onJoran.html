@@ -305,7 +305,7 @@ public abstract class Action {
   &lt;literal value="3"/>
 &lt;/computation></p>
 
-    <p>In the <a href="../xref/chapter3/calculator/Calculator1.html">
+    <p>In the <a href="../xref/chapter10/calculator/Calculator1.html">
     <code>Calculator1</code></a> application, we declare various
     parsing rules (patterns and actions) collaborating together to
     compute a result based on the contents of an XML document. 
@@ -326,16 +326,43 @@ public abstract class Action {
     </p>
 
     <ul>
-      <li>The <a
-      href="../xref/chapter3/calculator/ComputationAction1.html">
-      <code>ComputationAction1</code></a> class' <code>begin()</code>
-      method is called</li>
-      <li>The <a href="../xref/chapter3/calculator/LiteralAction.html">
-      <code>LiteralAction</code></a> class' <code>begin()</code> and <code>end()</code> 
-      methods are called</li>
-      <li>The <a href="../xref/chapter3/calculator/ComputationAction1.html">
-      <code>ComputationAction1</code></a> class' <code>end()</code> method
-      is called</li>
+      <li>The start event corresponding to the &lt;computation&gt;
+      element translates into the current pattern
+      "/computation". Since in the <a
+      href="../xref/chapter10/calculator/Calculator1.html">
+      <code>Calculator1</code></a> application we associated the
+      pattern "/computation" with a
+      <a
+      href="../xref/chapter10/calculator/ComputationAction1.html">
+      <code>ComputationAction1</code></a> instance, the
+      <code>begin()</code> method of that
+      <code>ComputationAction1</code> instance is invoked.
+      </li>
+
+      <li><p>The start event corresponding to the &lt;literal&gt;
+      element translates into the current pattern
+      "/computation/literal". Given the association of the
+      "/computation/literal" pattern with a
+      <a
+      href="../xref/chapter10/calculator/LiteralAction.html">
+      <code>LiteralAction</code></a> instance, the
+      <code>begin()</code> method of that <code>LiteralAction</code>
+      instance is called.</p>
+      </li>
+
+      <li><p>By the same token, the end event corresponding to the
+      &lt;literal&gt; element triggers the invocation of the
+      <code>end</code>() method of the same <code>LiteralAction</code>
+      instance.</p>
+      </li>
+
+
+      <li><p>Similarly, the event corresponding to the end of
+      &lt;computation&gt; element triggers the invocation the
+      <code>end()</code> method of the <code>ComputationAction1</code>
+      same instance.
+      </p>
+      </li>
     </ul>
 
     <p>What is interesting here is the way actions collaborate.  The
@@ -349,14 +376,12 @@ public abstract class Action {
 
     <!-- TO BE CONTINUED -->
 
-    <p>The <em>calculator2.xml</em> file is a bit more complex, but
-    much more interesting.</p>
-
-    <p>It contains the following elements:</p>
+    <p>The next example, <em>calculator2.xml</em> file is a bit more
+    complex, but also more interesting.</p>
 
     <em>Example 3.<span class="autoEx"/>: Calculator configuration
     file
-    (logback-examples/src/main/java/chapter3/calculator/calculator2.xml)</em>
+    (logback-examples/src/main/java/chapter10/calculator/calculator2.xml)</em>
   <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
@@ -365,25 +390,38 @@ public abstract class Action {
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre></div>
 
-  <p>Here, there are obviously more actions that will be part of the
-  computation.
+
+  <p>As in the previous example, in response to the &lt;literal&gt;
+  element,the appropriate <a
+  href="../xref/chapter10/calculator/LiteralAction.html">
+  <code>LiteralAction</code></a> instance will push an integer,
+  corresponding to the value attribute, at the top of the
+  interpretation context's object stack. In this example, that is
+  <em>calculator2.xml</em>, the values are 7 and 3. In response to the
+  &lt;add&gt; element, the appropriate <a
+  href="../xref/chapter10/calculator/AddAction.html"><code>AddAction</code></a>
+  will pop two previously pushed integers, compute their sum and push
+  the result, i.e. 10 (=7+3), at the top of the interpretation
+  context's stack. The next literal element will cause LiteralAction
+  to push an integer with value 3 at the top of the stack. In response
+  to the &lt;multiply&gt; element, the appropriate <a
+  href="../xref/chapter10/calculator/MultiplyAction.html"><code>MultiplyAction</code></a>
+  will pop two previously pushed integers, i.e. 10 and 3, and compute
+  their product.  It will push the result, i.e. 30, at the top of the
+  stack. At the very end, in reponse to the end event corresponding to
+  the &lt;;/computation&gt; tag, the ComputationAction1 will print the
+  object at the top of the stack. Thus, running:
   </p>
 
-  <p>When called, the <a
-  href="../xref/chapter3/calculator/AddAction.html">
-  <code>AddAction</code></a> class will remove the two integers at the
-  bottom of the stack, add them and push the resulting integer at the
-  top of the stack, for further use.</p>
+  <p class="command">java chapter10.calculator.Calculator1 src/main/java/chapter10/calculator/calculator2.xml </p>
+  
+  <p>will yield</p>
 
-  <p>Later in the computation, the <a
-  href="../xref/chapter3/calculator/MultiplyAction.html">
-  <code>MultiplyAction</code></a> class will be called.  It will take
-  the last two integers from the stack, multiply them and push the
-  result in the stack.</p>
+  <p class="console">The computation named [toto] resulted in the value 30 </p>
+  
 
-  <p>We have here two examples of action whose <code>begin()</code>
-  method behaves in a certain, predictable way, but whose
-  <code>end()</code> methods are empty.</p>
+  <!--
+
 
   <p>Finally, a <em>calculator3.xml</em> is also provided, to
   demonstrate the possibility elements that contain instances of the
@@ -411,49 +449,134 @@ public abstract class Action {
   stack. The well-formedness of XML will guarantee that a value saved
   by one <code>begin()</code> will be consumed only by the matching
   <code>end()</code> method.</p>
+  -->
 
   <h3><a name="implicit" href="#implicit">Implicit actions</a></h3>
 
-  <p>The rules defined thus far are called explicit rules because they
-  require an explicit pattern, hence fixing the tag name of the
-  elements for which they apply.
-  </p>
-
-  <p>In highly extensible systems, the number and type of components
-  to handle are innumerable so that it would become very tedious or
-  even impossible to list all the applicable patterns by name.
+  <p>The rules defined thus far are called explicit actions because an
+  pattern/action association could be found in the rule store for the
+  current element. However, in highly extensible systems, the number
+  and type of components can be so large so as to make it very tedious
+  to associate an explicit action for all patterns.
   </p>
 
   <p>At the same time, even in highly extensible systems one can
-  observe well-defined patterns linking the various parts
-  together. Implicit rules come in very handy when processing
-  components composed of sub-components unknown ahead of time. For
+  observe recurrent rules linking various parts together. Assuming we
+  could identify such rules, we could process components composed of
+  sub-components unknown at compilation time (of logback). For
   example, Apache Ant is capable of handling tasks which contain tags
-  unknown at compile time by looking at methods whose names start with
-  <em>add</em>, as in <code>addFile</code>, or
-  <code>addClassPath</code>.  When Ant encounters an embedded tag
-  within a task, it simply instantiates an object that matches the
-  signature of the task class' add method and attaches the resulting
-  object to the parent.
+  unknown at compile time, simply by inspecting the component for
+  methods whose names start with <em>add</em>, as in
+  <code>addFile</code>, or <code>addClassPath</code>.  When Ant
+  encounters an embedded tag within a task, it simply instantiates an
+  object that matches the signature of the task class' add method and
+  attaches the resulting object to the parent.
   </p>
 
-  <p>Joran includes similar capability in the form of implicit
-  actions. Joran keeps a list of implicit actions which can be applied
-  if no explicit pattern matches the current XML element.  However,
+  <p>Joran supports similar capability in the form of implicit
+  actions. Joran keeps a list of implicit actions which are applied if
+  no explicit pattern could match the current pattern.  However,
   applying an implicit action may not be always appropriate. Before
-  executing the implicit action, Joran asks an implicit action whether
-  it is appropriate in the current context. Only if the action replies
-  affirmatively does Joran interpreter invoke the (implicit)
-  action. This extra step makes it possible to support multiple
-  implicit actions or obviously none, if no implicit action is
-  appropriate for a given situation.
+  executing the implicit action, Joran asks a given implicit action
+  whether it is appropriate in the current situation. Only if the
+  action replies in the affirmative does the Joran configurator invoke
+  the (implicit) action. Note that this extra step makes it possible
+  to support multiple implicit actions for or possibly none, if no
+  implicit action is appropriate for a given situation.
+  </p>
+
+  <p>You can create and register a custom implicit action as
+  illustrated in the next example contained within the
+  <em>logback-examples/src/main/java/chapter10/implicit</em> folder.
+  </p>
+
+  <p>The <a
+  href="../xref/chapter10/implicit/PrintMe.html"><code>PrintMe</code></a>
+  application associates an <a
+  href="../xref/chapter3/implicit/NOPAction.html">
+  <code>NOPAction</code></a> instance with the pattern "*/foo", that
+  is any element named as "foo". As its name indicates, the
+  <code>begin</code>() and <code>end</code>() methods of
+  <code>NOPAction</code> are empty. The <code>PrintMe</code>
+  application also registers an instance of <a
+  href="../xref/chapter10/implicit/PrintMeImplicitAction.html">PrintMeImplicitAction</a>
+  in its list of implicit actions. The
+  <code>PrintMeImplicitAction</code> is applicable for any element
+  which has a <span class="attr">printme</span> attribute set to
+  true. See the isApplicable method in
+  <code>PrintMeImplicitAction</code>.  The <code>begin</code>() method
+  of <code>PrintMeImplicitAction</code> prints the name of the current
+  element on the console.
+  </p>
+
+  <p>The XML document <em>implicit1.xml</em> is designed to illustrate
+  how implicit actions come into play.</p>
+
+  <em>Example 3.<span class="autoEx"/>: Usage of implicit rules
+  (logback-examples/src/main/java/chapter10/implicit/implicit1.xml)</em>
+  <p class="source">&lt;foo&gt;
+  &lt;xyz printme="true"&gt;
+    &lt;abc printme="true"/&gt;
+  &lt;/xyz&gt;
+
+  &lt;xyz/&gt;
+
+  &lt;foo printme="true"/&gt;
+
+&lt;/foo&gt;</p>
+
+  <p>Running</p>
+
+  <p class="command">java chapter10.implicit.PrintMe src/main/java/chapter10/implicit/implicit1.xml</p>
+  <p>yields:</p>
+
+  <p class="console">Element [xyz] asked to be printed.
+Element [abc] asked to be printed.</p>
+
+  <p>Given that <code>NOPAction</code> instance is explicitly
+  associated with the "*/foo" pattern, the
+  <code>PrintMeImplicitAction</code> is never triggered for any of the
+  &lt;foo&gt; elements. For other elements, the
+  <code>isApplicable</code> method of
+  <code>PrintMeImplicitAction</code> is invoked. It will return true
+  only for elements having a <span class="attr">printme</span>
+  attribute set to true, namely the first &lt;xyz> element (but not
+  the second) and the &lt;abc> element. This explains the output shown
+  above (previous paragraph).
+  </p>
+
+  <h3><a name="iaPractice" href="#iaPractice">Implicit actions in
+  practice</a></h3>
+  
+  <p>The respective Joran configurators of logback-classic and
+  logback-access include just two implicit actions, namely <a
+  href="../xref/ch/qos/logback/core/joran/action/NestedBasicPropertyIA.html">
+  <code>NestedComplexPropertyIA</code></a> and <a
+  href="../xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html">
+  <code>NestedComplexPropertyIA</code></a>.
+  </p>
+
+  <p>
+  <code>NestedBasicPropertyIA</code> is applicable for any property
+  whose type, is a primitive type, or equivalent object type in the
+  <code>java.lang</code> package, an enumeration type, or any type
+  adhering to the "valueOf" convention. A class is said to adhere to
+  the "valueOf" convention if it contains a static method named
+  <code>valueOf</code>() taking a <code>java.lang.String</code> as
+  parameter and returning an instance of the type in question.
+  </p>
+  
+  <p> <code>NestedComplexPropertyIA</code> action is applicable in the
+  remaining cases where <code>NestedBasicPropertyIA</code> is not
+  applicable. In other words, <code>NestedComplexPropertyIA</code> is
+  a last resort, catch-all, implicit action. It will 
   </p>
 
   <p>For example, the <a
-  href="../xref/ch/qos/logback/core/joran/action/NestedComponentIA.html">
-  <code>NestedComponentIA</code></a> extending <a
+  href="../xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html">
+  <code>NestedComplexPropertyIA</code></a> extending <a
   href="../xref/ch/qos/logback/core/joran/action/ImplicitAction.html">
-  <code>ImplicitAction</code></a> , will instantiate the class
+  <code>ImplicitAction</code></a>, will instantiate the class
   specified in a nested component and attach it to the parent
   component by using setter method of the parent component and the
   nested element's name. Under certain circumstances, a nested action
@@ -463,77 +586,7 @@ public abstract class Action {
   nested elements requiring intervention by the same implicit action.
   </p>
 
-  <p>Both <code>ImplicitAction</code> and
-  <code>NestedComponentIA</code> are located in the
-  <code>ch.qos.logback.core.joran.action</code> package.
-  </p>
 
-  <p>Refer to the
-  <em>logback-examples/src/main/java/joran/implicit</em> directory for
-  an example of an implicit action.
-  </p>
-
-  <p>In that directory, you will find two actions classes, one xml
-  file and one class containing the setup of Joran.</p>
-
-  <p>The <a href="../xref/chapter3/implicit/NOPAction.html">
-  <code>NOPAction</code></a> class does nothing. It is used to set the
-  context of the <em>foo</em> element, using this line:</p>
-
-  <p class="source">ruleStore.addRule(new Pattern("*/foo"), new NOPAction());</p>
-
-  <p>After that, the implicit action, namely <a
-  href="../xref/chapter3/implicit/PrintMeImplicitAction.html">
-  <code>PrintMeImplicitAction</code></a>, is added to the
-  <code>RuleStore</code>. This is done by simply adding a new instance
-  of the action to the <code>Joran interpreter</code></p>
-
-  <p class="source">ji.addImplicitAction(new
-  PrintMeImplicitAction());</p>
-
-  <p>When called, the <code>isApplicable()</code> method of
-  <code>PrintMeImplicitAction</code> checks the value of the
-  <em>printme</em> attribute. If the value is <code>true</code>, the
-  implicit action is applicable: its <code>begin()</code> method will
-  be called.</p>
-
-  <p>The <em>implicit1.xml</em> file contains the following lines:</p>
-
-  <em>Example 3.<span class="autoEx"/>: Usage of implicit rules
-  (logback-examples/src/main/java/chapter3/implicit/implicit1.xml)</em>
-<div class="source"><pre>&lt;foo&gt;
-
-  &lt;xyz printme="true"&gt;
-    &lt;abc printme="true"/&gt;
-  &lt;/xyz&gt;
-
-  &lt;xyz/&gt;
-
-  &lt;foo printme="true"/&gt;
-
-&lt;/foo&gt;</pre></div>
-
-  <p>As you can see, the first element will be printed, since it has a
-  <em>printme</em> attribute, which bears the value
-  <code>true</code>.</p>
-
-  <p>The second element will not be printed, because no <em>printme</em> attibute is present.</p>
-
-  <p>The last element will not be printed, although the required
-  attribute is present.  This is because implicit rules are called
-  only if no explicit rules are defined. Since we added a
-  <code>NOPAction</code> with the <em>*/foo</em> pattern, it will be
-  used instead of the <code>PrintMeImplicitAction</code>.</p>
-
-  <p>Running the example yields the following output:</p>
-
-<div class="source"><pre>Element &lt;xyz> asked to be printed.
-Element &lt;abc> asked to be printed.
-ERROR in ch.qos.logback.core.joran.spi.InterpretationContext@1c5c1 - no applicable action \
-for &lt;xyz>, current pattern is [/foo/xyz]</pre></div>
-
-  <p>The last line was printed because of a call to
-  <code>StatusPrinter</code> at the end of the main class.</p>
 
   <a name="newRule"></a>
 

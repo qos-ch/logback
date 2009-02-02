@@ -1,17 +1,7 @@
-+------------------------------+
-|                              |
-| Joran Examples               |
-|                              |
-| Implicit                     |
-|                              |
-+------------------------------+
 
-This directory contains the implicit action example.
+This directory contains an example illustrating implicit actions.
 
-It shows how to use implicit actions, which do not require an explicit
-pattern.
+For further information, please refer to 
 
-For more in-depth informations about this example, please visit:
-
-http://logback.qos.ch/manual/joran.html#implicit
-
+  http://logback.qos.ch/manual/onJoran.html#implicit
+  

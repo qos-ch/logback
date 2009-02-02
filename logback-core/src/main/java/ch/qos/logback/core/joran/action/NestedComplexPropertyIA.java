@@ -67,7 +67,6 @@ public class NestedComplexPropertyIA extends ImplicitAction {
       // we only push action data if NestComponentIA is applicable
     case AS_COMPLEX_PROPERTY_COLLECTION:
     case AS_COMPLEX_PROPERTY:
-      // addInfo("was deemed applicable for " + pattern);
       IADataForComplexProperty ad = new IADataForComplexProperty(parentBean,
           aggregationType, nestedElementTagName);
       actionDataStack.push(ad);

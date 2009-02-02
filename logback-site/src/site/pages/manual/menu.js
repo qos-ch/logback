@@ -9,4 +9,4 @@ document.write('<p class="menu"><a href="filters.html"><b>Ch6: Filter chains</b>
 document.write('<p class="menu"><a href="mdc.html"><b>Ch7: Mapped Diagnostic Contexts</b></a>');
 document.write('<p class="menu"><a href="loggingSeparation.html"><b>Ch8: Logging Separation</b></a>');
 document.write('<p class="menu"><a href="jmxConfig.html"><b>Ch9: JMX Configurator</b></a>');
-document.write('<p class="menu"><a href="onJoran.html"><b>Ch9: Joran</b></a>');
+document.write('<p class="menu"><a href="onJoran.html"><b>Ch10: Joran</b></a>');

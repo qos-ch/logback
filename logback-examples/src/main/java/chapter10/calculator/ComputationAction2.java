@@ -21,7 +21,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * ComputationAction2 will print the result of the compuration made by 
- * children elements but only if the compuration itself is named, that is if the
+ * children elements but only if the computation itself is named, that is if the
  * name attribute of the associated computation element is not null. In other
  * words, anonymous computations will not print their result.
  * 
@@ -41,7 +41,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * saved by one begin() will be consumed only by the matching end() method.
  * 
  * Note that in the vast majority of cases there is no need to resort to a 
- * separate stack for each variable. The situation of successibe begin() 
+ * separate stack for each variable. The situation of successive begin() 
  * invocations can only occur if: 
  * 
  * 1) the associated pattern contains a wildcard, i.e. the &#42; character

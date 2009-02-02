@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE foo>
-
 <foo>
 
-  <!-- These elements will print due to the implcit rule -->
+  <!-- These elements will print due to the implicit rule -->
   <xyz printme="true">
     <abc printme="true"/>
   </xyz>
@@ -17,7 +14,7 @@
   <!-- This element will not be printed even if its printme 
        attribute  is set because implicit rules are invoked only 
        if no explicit rule matches the element. The */foo rule
-       mathches the following element.
+       matches the following element.
        --> 
   <foo printme="true"/>
 
