@@ -39,8 +39,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (newAppender == null) {
       throw new IllegalArgumentException("Null argument disallowed");
     }
+    w.lock();
     try {
-      w.lock();
       if (!appenderList.contains(newAppender)) {
         appenderList.add(newAppender);
       }
@@ -54,8 +54,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public int appendLoopOnAppenders(E e) {
     int size = 0;
+    r.lock();
     try {
-      r.lock();
       for (Appender<E> appender : appenderList) {
         appender.doAppend(e);
         size++;
@@ -74,8 +74,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public Iterator<Appender<E>> iteratorForAppenders() {
     List<Appender<E>> copy;
+    r.lock();
     try {
-      r.lock();
       copy = new ArrayList<Appender<E>>(appenderList);
     } finally {
       r.unlock();
@@ -96,8 +96,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     }
     Appender<E> found = null;
 
+    r.lock();
     try {
-      r.lock();
       for (Appender<E> appender : appenderList) {
         if (name.equals(appender.getName())) {
           found = appender;
@@ -121,8 +121,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
       return false;
     }
     boolean attached = false;
+    r.lock();
     try {
-      r.lock();
       for (Appender<E> a : appenderList) {
         if (a == appender) {
           attached = true;
@@ -139,8 +139,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove and stop all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
+    w.lock();
     try {
-      w.lock();
       for (Appender<E> a : appenderList) {
         a.stop();
       }
@@ -159,8 +159,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
       return false;
     }
     boolean result;
+    w.lock();
     try {
-      w.lock();
       result = appenderList.remove(appender);
     } finally {
       w.unlock();
@@ -177,8 +177,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
       return false;
     }
     boolean removed = false;
+    w.lock();
     try {
-      w.lock();
       for (Appender<E> a : appenderList) {
         if (name.equals((a).getName())) {
           removed = appenderList.remove(a);
