@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -41,17 +41,16 @@ public class NestedComplexPropertyIA extends ImplicitAction {
   Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
 
   public boolean isApplicable(Pattern pattern, Attributes attributes,
-      InterpretationContext ec) {
-    // System.out.println("in NestedComplexPropertyIA.isApplicable [" + pattern
-    // + "]");
+      InterpretationContext ic) {
+
     String nestedElementTagName = pattern.peekLast();
 
-    // calling ec.peekObject with an empty stack will throw an exception
-    if (ec.isEmpty()) {
+    // calling ic.peekObject with an empty stack will throw an exception
+    if (ic.isEmpty()) {
       return false;
     }
 
-    Object o = ec.peekObject();
+    Object o = ic.peekObject();
     PropertySetter parentBean = new PropertySetter(o);
     parentBean.setContext(context);
 

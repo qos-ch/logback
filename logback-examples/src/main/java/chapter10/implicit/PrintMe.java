@@ -50,10 +50,8 @@ public class PrintMe {
     // link the configurator with its context
     simpleConfigurator.setContext(context);
 
-    try {
     simpleConfigurator.doConfigure(args[0]);
-    } catch (Exception e) {
-    StatusPrinter.print(context);
-    }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+    
   }
 }

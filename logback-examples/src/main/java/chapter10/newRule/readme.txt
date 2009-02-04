@@ -1,17 +1,8 @@
-+------------------------------+
-|                              |
-| Joran Examples               |
-|                              |
-| New rule                     |
-|                              |
-+------------------------------+
 
-This directory contains an example using the new rule action.
+This directory contains an example showing how Joran can 
+learn new parsing rules on the fly.
 
-It shows how Joran can learn new rules on the fly, while interpreting
-the xml file.
+For further documentation please see
 
-For more in-depth informations about this example, please visit:
-
-http://logback.qos.ch/manual/joran.html#newRule
+  http://logback.qos.ch/manual/onJoran.html#newRule
 

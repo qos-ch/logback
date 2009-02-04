@@ -379,7 +379,7 @@ public abstract class Action {
     <p>The next example, <em>calculator2.xml</em> file is a bit more
     complex, but also more interesting.</p>
 
-    <em>Example 3.<span class="autoEx"/>: Calculator configuration
+    <em>Example 10.<span class="autoEx"/>: Calculator configuration
     file
     (logback-examples/src/main/java/chapter10/calculator/calculator2.xml)</em>
   <div class="source"><pre>&lt;computation name="toto"&gt;
@@ -427,8 +427,8 @@ public abstract class Action {
   demonstrate the possibility elements that contain instances of the
   same element. Here's the content of <em>calculator3.xml</em>:</p>
 
-  <em>Example 3.<span class="autoEx"/>: Calculator configuration file
-  (logback-examples/src/main/java/chapter3/calculator/calculator3.xml)</em>
+  <em>Example 10.<span class="autoEx"/>: Calculator configuration file
+  (logback-examples/src/main/java/chapter10/calculator/calculator3.xml)</em>
 
 <div class="source"><pre>&lt;computation name="toto"&gt;
   &lt;computation&gt;
@@ -444,7 +444,7 @@ public abstract class Action {
   <p>Much like the use of parentheses in an algebrical equation, the
   presence of a <code>computation</code> element nested in another is
   managed by the <a
-  href="../xref/chapter3/calculator/ComputationAction2.html">
+  href="../xref/chapter10/calculator/ComputationAction2.html">
   <code>ComputationAction2</code></a> class using an internal
   stack. The well-formedness of XML will guarantee that a value saved
   by one <code>begin()</code> will be consumed only by the matching
@@ -493,7 +493,7 @@ public abstract class Action {
   <p>The <a
   href="../xref/chapter10/implicit/PrintMe.html"><code>PrintMe</code></a>
   application associates an <a
-  href="../xref/chapter3/implicit/NOPAction.html">
+  href="../xref/chapter10/implicit/NOPAction.html">
   <code>NOPAction</code></a> instance with the pattern "*/foo", that
   is any element named as "foo". As its name indicates, the
   <code>begin</code>() and <code>end</code>() methods of
@@ -503,8 +503,8 @@ public abstract class Action {
   in its list of implicit actions. The
   <code>PrintMeImplicitAction</code> is applicable for any element
   which has a <span class="attr">printme</span> attribute set to
-  true. See the isApplicable method in
-  <code>PrintMeImplicitAction</code>.  The <code>begin</code>() method
+  true. See the <code>isApplicable()</code> method in
+  <code>PrintMeImplicitAction</code>.  The <code>begin()</code>() method
   of <code>PrintMeImplicitAction</code> prints the name of the current
   element on the console.
   </p>
@@ -512,7 +512,7 @@ public abstract class Action {
   <p>The XML document <em>implicit1.xml</em> is designed to illustrate
   how implicit actions come into play.</p>
 
-  <em>Example 3.<span class="autoEx"/>: Usage of implicit rules
+  <em>Example 10.<span class="autoEx"/>: Usage of implicit rules
   (logback-examples/src/main/java/chapter10/implicit/implicit1.xml)</em>
   <p class="source">&lt;foo&gt;
   &lt;xyz printme="true"&gt;
@@ -531,18 +531,25 @@ public abstract class Action {
   <p>yields:</p>
 
   <p class="console">Element [xyz] asked to be printed.
-Element [abc] asked to be printed.</p>
+Element [abc] asked to be printed.
+20:33:43,750 |-ERROR in c.q.l.c.joran.spi.Interpreter@<b>10:9</b> - no applicable action for [xyz], current pattern is [[foo][xyz]]</p>
 
   <p>Given that <code>NOPAction</code> instance is explicitly
-  associated with the "*/foo" pattern, the
-  <code>PrintMeImplicitAction</code> is never triggered for any of the
-  &lt;foo&gt; elements. For other elements, the
-  <code>isApplicable</code> method of
+  associated with the "*/foo" pattern, <code>NOPActgion</code>'s
+  <code>begin()</code> and <code>end()</code> methods are invoked on
+  &lt;foo> elements. <code>PrintMeImplicitAction</code> is never
+  triggered for any of the &lt;foo&gt; elements. For other elements,
+  since there are no matching explicit actions, the
+  <code>isApplicable()</code> method of
   <code>PrintMeImplicitAction</code> is invoked. It will return true
   only for elements having a <span class="attr">printme</span>
   attribute set to true, namely the first &lt;xyz> element (but not
-  the second) and the &lt;abc> element. This explains the output shown
-  above (previous paragraph).
+  the second) and the &lt;abc> element. The second &lt;xyz> element on
+  line 10, there are no applicable actions, an internal error message
+  is generated. This message is printed by the
+  <code>StatusPrinter.print</code> invocation, the last statement in
+  the <code>PrintMe</code> application. This explains the output shown
+  above (see previous paragraph).
   </p>
 
   <h3><a name="iaPractice" href="#iaPractice">Implicit actions in
@@ -556,86 +563,128 @@ Element [abc] asked to be printed.</p>
   <code>NestedComplexPropertyIA</code></a>.
   </p>
 
-  <p>
-  <code>NestedBasicPropertyIA</code> is applicable for any property
+  <p><code>NestedBasicPropertyIA</code> is applicable for any property
   whose type, is a primitive type, or equivalent object type in the
   <code>java.lang</code> package, an enumeration type, or any type
   adhering to the "valueOf" convention. A class is said to adhere to
   the "valueOf" convention if it contains a static method named
   <code>valueOf</code>() taking a <code>java.lang.String</code> as
-  parameter and returning an instance of the type in question.
+  parameter and returning an instance of the type in question. 
   </p>
   
-  <p> <code>NestedComplexPropertyIA</code> action is applicable in the
+  <p><code>NestedComplexPropertyIA</code> action is applicable, in the
   remaining cases where <code>NestedBasicPropertyIA</code> is not
-  applicable. In other words, <code>NestedComplexPropertyIA</code> is
-  a last resort, catch-all, implicit action. It will 
-  </p>
-
-  <p>For example, the <a
+  applicable <em>and</em> if the object at the top of the object stack
+  has a setter or adder method for a property name equal to the
+  current element name. This strategy allows <a
   href="../xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html">
-  <code>NestedComplexPropertyIA</code></a> extending <a
-  href="../xref/ch/qos/logback/core/joran/action/ImplicitAction.html">
-  <code>ImplicitAction</code></a>, will instantiate the class
-  specified in a nested component and attach it to the parent
-  component by using setter method of the parent component and the
-  nested element's name. Under certain circumstances, a nested action
-  needs to be applied to an element say &lt;a> and also to another
-  element &lt;b> nested within &lt;a>. The current implementation of
-  <code>NestedComponentIA</code> is capable of handling multiply
-  nested elements requiring intervention by the same implicit action.
+  <code>NestedComplexPropertyIA</code></a> to instantiate the
+  appropriate class for the nested component and attach it to the
+  parent component (at the top of the object stack) by using the
+  setter/adder method of the parent component and the nested element's
+  name. The class to instantiate is specified by the <span
+  class="attr">class</span> attribute of the nested element. However,
+  the class name can be deduced implicitly, if any of the following is
+  true:
   </p>
 
+  <ol>
+    <li>there is an internal rule associating the parent object's
+    property with a designated class,
+    </li>
+    <li>the setter method contains a @DefaultClass attribute
+    designating a given class,</li>
 
+    <li>the parameter type of the setter method is a contcrete class
+    possessing a public constructor,
+    </li>
+  </ol>
 
-  <a name="newRule"></a>
+  <p>In logback-classic, there are just two rules mapping (parent
+  class/property name) couples to a default class.</p>
 
-  <h3>New-rule action</h3>
+  <table class="bodyTable">
+    <tr>
+      <th>Parent class </th>
+      <th>property name </th>
+      <th>default nested class</th>
+    </tr>
+    <tr >
+      <td>ch.qos.logback.core.AppenderBase</td>
+      <td>layout</td>
+      <td>ch.qos.logback.classic.PatternLayout</td>
+    </tr>
+    <tr class="alt">
+      <td>ch.qos.logback.core.filter.EvaluatorFilter</td>
+      <td>evaluator</td>
+      <td>ch.qos.logback.classic.boolex.JaninoEventEvaluator</td>
+    </tr>
+  </table>
+
+  <p>This list may change in future releases. Please see
+  logback-classic <a
+  href="../xref/ch/qos/logback/classic/joran/JoranConfigurator.html">JoranConfigurator</a>'s
+  <code>addDefaultNestedComponentRegistryRules</code> method for the
+  latest rules.
+  </p>
+
+  <p>In logback-access, the rules are very similar. In the default
+  class for the nested component, the ch.qos.logback.classic package
+  is replaced by ch.qos.logback.access. See logback-access <a
+  href="../xref/ch/qos/logback/access/joran/JoranConfigurator.html">JoranConfigurator</a>'s
+  <code>addDefaultNestedComponentRegistryRules</code> method for the
+  latest rules.
+  </p>
+
+  <h3><a name="newRule" href="#newRule">New rules on the fly</a></h3>
 
   <p>Joran includes an action which allows the Joran interpreter to
-  lean new rules on the fly while interpreting the XML file containing
-  the new rules.  See the
-  <em>logback-examples/src/main/java/joran/newRule/</em> directory for
-  sample code.
+  learn new rules on the fly, that is while interpreting an XML
+  document.  See the
+  <em>logback-examples/src/main/java/chapter10/newRule/</em> directory
+  for sample code. In this package, the <a
+  href="../xref/chapter10/newRule/NewRuleCalculator.html">
+  <code>NewRuleCalculator</code></a> application sets up just two
+  rules, one rule to process the top-most element, and a second rule
+  to learn new rules. Here is the relevant code from
+  <code>NewRuleCalculator</code>.
   </p>
 
-  <p>In this package, the <a
-  href="../xref/chapter3/newRule/NewRuleCalculator.html">
-  <code>NewRuleCalculator</code></a> class contains the same setup as
-  we have seen so far, but for one line:</p>
+  <p class="source">ruleMap.put(new Pattern("*/computation"), new ComputationAction1());
+<b>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</b></p>
 
-  <p class="source">ruleStore.addRule(new
-  Pattern("/computation/new-rule"), new NewRuleAction());</p>
+  <p><a
+  href="../xref/ch/qos/logback/core/joran/action/NewRuleAction.html"><code>NewRuleAction</code></a>,
+  part of logback-core, works pretty much like the other actions.  It
+  has a <code>begin()</code> and <code>end()</code> method, and is
+  called each time the parser finds a <em>new-rule</em> element. When
+  invoked, the <code>begin()</code> method looks for <em>pattern</em>
+  and <em>actionClass</em> attributes. It then instantiates the
+  corresponding action class and adds the pattern/action association
+  as a new rule in Joran's rule store.</p>
 
-  <p>By adding this line, we ask Joran to allow new rules to be learnt
-  at parsing time. It works pretty much like the other rules: it has a
-  <code>begin()</code> and <code>end()</code> method, and is called each time
-  the parser finds a <em>new-rule</em> element.</p>
-
-  <p>When called, the <code>begin()</code> method looks for a
-  <em>pattern</em> and a <em>actionClass</em> attribute. The action
-  class is then instanciated and added to the <code>RuleStore</code>,
-  along with its corresponding pattern.</p>
 
   <p>Here is how new rules can be declared in an xml file:</p>
 
   <p class="source">&lt;new-rule pattern="*/computation/literal"
-actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
+          actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
 
-  <p>Using new rule declarations, the preceding example, involving the
+  <p>Using such new-rule declarations, we can transform
+  <code>NewRuleCalculator</code> to behave like the
+  <code>Calculator1</code> application we saw earlier.  involving the
   calculation, could be expressed this way:</p>
 
-  <em>Example 3.<span class="autoEx"/>: Configuration file using new
+  <em>Example 10..<span class="autoEx"/>: Configuration file using new
   rules on the fly
-  (logback-examples/src/main/java/chapter3/newrule/new-rule.xml)</em>
+  (logback-examples/src/main/java/chapter10/newrule/new-rule.xml)</em>
 
-<div class="source"><pre>&lt;computation name="toto"&gt;
+  <p class="source">&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
-            actionClass="chapter3.calculator.LiteralAction"/&gt;
+            actionClass="chapter10.calculator.LiteralAction"/&gt;
   &lt;new-rule pattern="*/computation/add" 
-            actionClass="chapter3.calculator.AddAction"/&gt;
+            actionClass="chapter10.calculator.AddAction"/&gt;
   &lt;new-rule pattern="*/computation/multiply" 
-            actionClass="chapter3.calculator.MultiplyAction"/&gt;
+            actionClass="chapter10.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
@@ -645,7 +694,18 @@ actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
  
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</pre></div>
+&lt;/computation&gt;</p>
+
+
+  <p class="command">java java chapter10.newRule.NewRuleCalculator src/main/java/chapter10/newRule/new-rule.xml</p>
+
+  <p>yields</p>
+
+  <p class="console">The computation named [toto] resulted in the value 30</p>
+
+  <p>which is identical to the output of the <a
+  href="#calculator">original calculator example</a>.</p>
+
 
   <script src="templates/footer.js" type="text/javascript"></script>
 </div>

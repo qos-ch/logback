@@ -1,20 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE computation>
-
-<!-- This file is intended to be executed by NewRuleCalculator. 
-	Note that the rules for adding and multiplying are learned on the fly, while parsing
-	this file.
-     -->
-    
-    
+<!-- 
+  This file is intended to be executed by NewRuleCalculator. 
+	Note that the rules for adding and multiplying are learned on 
+  the fly, while parsingthis file.
+-->
 
 <computation name="toto">
   <new-rule pattern="*/computation/literal" 
-            actionClass="chapter3.calculator.LiteralAction"/>
+            actionClass="chapter10.calculator.LiteralAction"/>
   <new-rule pattern="*/computation/add" 
-            actionClass="chapter3.calculator.AddAction"/>
+            actionClass="chapter10.calculator.AddAction"/>
   <new-rule pattern="*/computation/multiply" 
-            actionClass="chapter3.calculator.MultiplyAction"/>
+            actionClass="chapter10.calculator.MultiplyAction"/>
 
   <computation>
     <literal value="7"/>
