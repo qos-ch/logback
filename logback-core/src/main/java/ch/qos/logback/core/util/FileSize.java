@@ -12,6 +12,19 @@ package ch.qos.logback.core.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Instances of this class represent the size of a file. Internally, the size is
+ * stored as long.>
+ * 
+ * <p>The {@link #valueOf} method can convert strings such as "3 kb", "5 mb", into
+ * FileSize instances. The recognized unit specifications for file size are the
+ * "kb", "mb", and "gb". The unit name may be followed by an "s". Thus, "2 kbs"
+ * and "2 kb" are equivalent. In the absence of a time unit specification, byte
+ * is assumed.
+ *  
+ * @author Ceki G&uuml;lc&uuml;
+ * 
+ */
 public class FileSize {
 
   private final static String LENGTH_PART = "([0-9]+)";
@@ -26,7 +39,6 @@ public class FileSize {
   static final long KB_COEFFICIENT = 1024;
   static final long MB_COEFFICIENT = 1024 * KB_COEFFICIENT;
   static final long GB_COEFFICIENT = 1024 * MB_COEFFICIENT;
-
 
   final long size;
 
@@ -55,7 +67,7 @@ public class FileSize {
         coefficient = MB_COEFFICIENT;
       } else if (unitStr.equalsIgnoreCase("gb")) {
         coefficient = GB_COEFFICIENT;
-      }  else {
+      } else {
         throw new IllegalStateException("Unexpected " + unitStr);
       }
       return new FileSize(lenValue * coefficient);

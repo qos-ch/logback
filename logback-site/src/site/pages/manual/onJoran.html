@@ -566,26 +566,37 @@ Element [abc] asked to be printed.
   <p><code>NestedBasicPropertyIA</code> is applicable for any property
   whose type, is a primitive type, or equivalent object type in the
   <code>java.lang</code> package, an enumeration type, or any type
-  adhering to the "valueOf" convention. A class is said to adhere to
+  adhering to the "valueOf" convention.  Such properties are said to
+  be <em>basic</em> or <em>simple</em>. A class is said to adhere to
   the "valueOf" convention if it contains a static method named
   <code>valueOf</code>() taking a <code>java.lang.String</code> as
-  parameter and returning an instance of the type in question. 
+  parameter and returning an instance of the type in question.  At
+  present time, <a
+  href="../xref/ch/qos/logback/classic/Level.html"><code>Level</code></a>,
+  <a
+  href="../xref/ch/qos/logback/core/util/Duration.html"><code>Duration</code></a>
+  and <a
+  href="../xref/ch/qos/logback/core/util/FileSize.html"><code>FileSize</code></a>
+  classes follow this convention..
   </p>
   
   <p><code>NestedComplexPropertyIA</code> action is applicable, in the
   remaining cases where <code>NestedBasicPropertyIA</code> is not
   applicable <em>and</em> if the object at the top of the object stack
   has a setter or adder method for a property name equal to the
-  current element name. This strategy allows <a
+  current element name. Note that such properties can in turn contain
+  other components. Thus, such properties are said to be
+  <em>complex</em>.  In presence of a complex property, <a
   href="../xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html">
-  <code>NestedComplexPropertyIA</code></a> to instantiate the
+  <code>NestedComplexPropertyIA</code></a> will instantiate the
   appropriate class for the nested component and attach it to the
   parent component (at the top of the object stack) by using the
   setter/adder method of the parent component and the nested element's
-  name. The class to instantiate is specified by the <span
-  class="attr">class</span> attribute of the nested element. However,
-  the class name can be deduced implicitly, if any of the following is
-  true:
+  name. The corresponding class is specified by the <span
+  class="attr">class</span> attribute of the (nested) current
+  element. However, if the <span class="attr">class</span> attribute
+  is missing, the class name can be deduced implicitly, if any of the
+  following is true:
   </p>
 
   <ol>
@@ -601,7 +612,8 @@ Element [abc] asked to be printed.
   </ol>
 
   <p>In logback-classic, there are just two rules mapping (parent
-  class/property name) couples to a default class.</p>
+  class/property name) couples to a default class. These are listed in
+  the table below.</p>
 
   <table class="bodyTable">
     <tr>
@@ -635,6 +647,14 @@ Element [abc] asked to be printed.
   <code>addDefaultNestedComponentRegistryRules</code> method for the
   latest rules.
   </p>
+  
+  <h4>Collection of properties</h4>
+
+  
+  <p>Note that in addition to single simple properties or single
+  complex properties, logback's implicit actions support collectons of
+  properties, be they simple or complex. Instead of a setter method,
+  the property is specified by an "adder" method.</p>
 
   <h3><a name="newRule" href="#newRule">New rules on the fly</a></h3>
 
@@ -707,7 +727,7 @@ Element [abc] asked to be printed.
   href="#calculator">original calculator example</a>.</p>
 
 
-  <script src="templates/footer.js" type="text/javascript"></script>
+  <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
 </body>
 </html>

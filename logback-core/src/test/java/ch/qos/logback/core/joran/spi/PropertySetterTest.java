@@ -136,7 +136,7 @@ public class PropertySetterTest {
     setter.setContext(context);
     setter.addBasicProperty("adjective", "nice");
     setter.addBasicProperty("adjective", "big");
-   
+
     assertEquals(2, house.adjectiveList.size());
     assertEquals("nice", house.adjectiveList.get(0));
     assertEquals("big", house.adjectiveList.get(1));
@@ -216,6 +216,24 @@ public class PropertySetterTest {
         defaultComponentRegistry);
     assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
   }
+  
+  @Test
+  public void testDefaultClassAnnotationForLists() {
+    House house = new House();
+    PropertySetter setter = new PropertySetter(house);
+    Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool",
+        AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
+    assertNotNull(relevantMethod);
+    Class spClass = setter.getDefaultClassNameByAnnonation("LargeSwimmingPool",
+        relevantMethod);
+    assertEquals(LargeSwimmingPoolImpl.class, spClass);
+
+    Class classViaImplicitRules = setter.getClassNameViaImplicitRules(
+        "LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
+        defaultComponentRegistry);
+    assertEquals(LargeSwimmingPoolImpl.class, classViaImplicitRules);
+    
+  }
 }
 
 class House {
@@ -232,6 +250,7 @@ class House {
 
   List<String> adjectiveList = new ArrayList<String>();
   List<Window> windowList = new ArrayList<Window>();
+  List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
 
   public String getCamelCase() {
     return camelCase;
@@ -271,6 +290,11 @@ class House {
 
   public void setOpen(boolean open) {
     this.open = open;
+  }
+
+  @DefaultClass(LargeSwimmingPoolImpl.class)
+  public void addLargeSwimmingPool(SwimmingPool pool) {
+    this.pool = pool;
   }
 
   @DefaultClass(SwimmingPoolImpl.class)
@@ -336,6 +360,12 @@ interface SwimmingPool {
 }
 
 class SwimmingPoolImpl implements SwimmingPool {
+  int length;
+  int width;
+  int depth;
+}
+
+class LargeSwimmingPoolImpl implements SwimmingPool {
   int length;
   int width;
   int depth;
