@@ -75,7 +75,7 @@ public class Transform {
    * @param str
    *          The String that is inserted into an existing CDATA Section.
    */
-  public static void appendEscapingCDATA(StringBuffer output, String str) {
+  public static void appendEscapingCDATA(StringBuilder output, String str) {
     if (str == null) {
       return;
     }

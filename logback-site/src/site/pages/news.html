@@ -28,7 +28,8 @@
 
     <hr width="80%" align="center" />
 
-    <h3>TARGET DATE: 26th of January 2009 - Release of version 0.9.15</h3>
+    <h3>TARGET DATE: 6th of February 2009 - Release of version
+    0.9.15</h3>
 
     <p>When the reset() method in <code>LoggerContext</code> is
     called, registered turbo filters are first stopped before being
@@ -39,7 +40,7 @@
 
     <p>Added a servlet for viewing internal status messages as an HTML
     table. Two separate implementations are available; one for <a
-    href="manual/joran.html#viewingStatusMessages">logback-classic</a>
+    href="manual/configuration.html#viewingStatusMessages">logback-classic</a>
     and the other for <a
     href="access.html#viewingStatusMessages">logback-access</a>.</p>
 
@@ -55,6 +56,14 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-104">LBCLASSIC-104</a>
     related to loss of MDC information in deferred logging events.
     </p>
+
+    <p>Added <em>log4j.dtd</em> compatible <a
+    href="manual/layouts.html#log4jXMLLayout"><code>XMLLayout</code></a>
+    as requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-22">LBCLASSIC-22</a>.
+    </p>
+
+    <p>New chapter <a href="manual/onJoran.html">on Joran</a>.</p>
 
     <h3>29th of December 2008 - Release of version 0.9.14</h3>
 
@@ -252,9 +261,9 @@
     </p>
 
     <p>Logback now supports <a
-    href="manual/joran.html#contextName">setting the logger context
+    href="manual/configuration.html#contextName">setting the logger context
     name</a> as well as inserting variables <a
-    href="manual/joran.html#insertFromJNDI">stored in JNDI</a> as
+    href="manual/configuration.html#insertFromJNDI">stored in JNDI</a> as
     properties.
     </p>
 
@@ -633,8 +642,9 @@
   logback's configuration framework. A file can contain an
   <em>include</em> element that has a <em>file</em> or <em>url</em>
   attribute pointing to a configuration file.  See the <a
-  href="manual/joran.html#Include">chapter about configuration</a>
-  in the logback's online manual for more information.
+  href="manual/configuration.html#Include">chapter about
+  configuration</a> in the logback's online manual for more
+  information.
   </p>
     
   <p>Corrected bug 53 reported by Wilkins Poe. There is now a <a

@@ -254,9 +254,9 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     needed to enable the configuration of an option.  Note that the
     <code>PrintThreadName</code> option is boolean and not
     <code>String</code>. Configuration of logback components was
-    covered in detail in <a href="joran.html">"Chapter 3: Logback
-    configuration with Joran"</a>. Here is the configuration file
-    tailor-made for use with <code>MySampleLayout2</code>. 
+    covered in detail in <a href="configuration.html">"Chapter 3:
+    Logback configuration"</a>. Here is the configuration
+    file tailor-made for use with <code>MySampleLayout2</code>.
     </p> 
 
 
@@ -1171,7 +1171,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
 		</em>
-		<div class="source"><pre>&lt;configuration>
+		<p class="source">&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
     &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
       message.contains("who calls thee")&lt;/Expression>
@@ -1187,7 +1187,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
   &lt;root level="debug"> 
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
 		<p>Due to XML encoding rules, the &amp; character cannot be
 		written as is, and needs to be escaped as &amp;amp;.</p>
@@ -1201,7 +1201,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)</a>
 		</em>
     </p>
-		<div class="source"><pre>package chapter5;
+		<p class="source">package chapter5;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1233,7 +1233,7 @@ public class CallerEvaluatorExample {
       }
     }
   }
-}</pre></div>
+}</p>
 		<p>
 			The <em>CallerEvaluatorExample</em> application does nothing particularly
 			fancy. Five logging requests are issued, the third one being
@@ -1466,8 +1466,8 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 
     <p>should yield:</p>
     
-<div class="source">0    [main] DEBUG - Everything's going well
-3    [main] <span class="red">ERROR</span> - maybe not quite... </div>
+    <p class="source">0    [main] DEBUG - Everything's going well
+3    [main] <span class="red">ERROR</span> - maybe not quite... </p>
 
 
     <p>Please note that the string "ERROR" is highlighted in red,
@@ -1482,15 +1482,13 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 
    	
 
-    <h2>
-      <a name="ClassicHTMLLayout" href="#ClassicHTMLLayout">Generating logs in HTML format</a>
-    </h2>
+    <h3>
+      <a name="ClassicHTMLLayout" href="#ClassicHTMLLayout">HTMLLayout</a>
+    </h3>
 	
-	  <p>Logback provides a special <a
-	  href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a>,
-	  namely <a
-	  href="../xref/ch/qos/logback/classic/html/HTMLLayout.html">
-	  <code>HTMLLayout</code></a>, to generate logs directly in HTML
+	  <p><a
+	  href="../xref/ch/qos/logback/classic/html/HTMLLayout.html"><code>HTMLLayout</code></a>
+	  (as included in logback-classic) generates logs in HTML
 	  format. <code>HTMLLayout</code> outputs logging events in an HTML
 	  table where each row of the table corresponds to a logging
 	  event.</p>
@@ -1538,7 +1536,7 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
   <p>Launching the <code>TrivialMain</code> application listed below
   will create the file <em>test.html</em> on your local drive.</p>
 
-<div class="source">import org.slf4j.Logger;
+  <p class="source">import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TrivialMain {
@@ -1553,7 +1551,7 @@ public class TrivialMain {
     }
     logger.error("Finish off with fireworks", new Exception("Just testing"));
   }
-}</div>
+}</p>
 
 		<p>The contents of <em>test.html</em> should be similar to:
 		</p>
@@ -1636,7 +1634,7 @@ public class TrivialMain {
 		shown in the sample configuration below.
     </p>
 		
-<div class="source"><pre>&lt;configuration>
+    <p class="source">&lt;configuration>
    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
      &lt;ActiveFileName>lastLogEntries.html&lt;/ActiveFileName>
@@ -1655,20 +1653,62 @@ public class TrivialMain {
  &lt;root level="debug">
    &lt;appender-ref ref="FILE" />
  &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></p>
 
+    <h3><a name="log4jXMLLayout" href="#log4jXMLLayout">Log4j XMLLayout</a></h3>
+
+
+    <p><a
+    href="../xref/ch/qos/logback/classic/log4j/XMLLayout.html">XMLLayout</a>
+    (part of logback-classic) generates output in a log4j.dtd
+    compliant format. It can be used to inter-operate with tools such
+    as <a
+    href="http://logging.apache.org/chainsaw/index.html">Chainsaw</a>
+    and <a href="http://vigilog.sourceforge.net/">Vigilog</a> capable
+    of processing files generated by <a
+    href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/XMLLayout.html">log4j's
+    XMLLayout</a>.
+    </p>
+
+
+    <p>As the original XMLLayout in log4j version 1.2.15, XMLLayout in
+    logback-classic admits two boolean properties, <span
+    class="option">LocationInfo</span> and <span
+    class="option">Properties</span>. Setting <span
+    class="option">LocationInfo</span> to true enables the inclusion
+    of location info (caller data) in the each event. Setting <span
+    class="option">Properties</span> to true enables the inclusion of
+    MDC information. Both options are set to false by default.
+    </p>
+
+    <p>Here is a sample configuration</p>
+
+    <p class="source">&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    &lt;File>test.xml&lt;/File>
+    &lt;layout class="ch.qos.logback.classic.log4j.XMLLayout">
+      &lt;LocationInfo>true&lt;/LocationInfo>
+    &lt;/layout>
+  &lt;/appender> 
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration> </p>
+    
 		<h2>Logback access</h2>
 
 		<p>Most logback-access layouts are mere adaptations of
 		logback-classic layouts. Logback-classic and logback-access
 		modules address different needs, but in general offer comparable
-		power and flexibility.</p>
+		functionality.</p>
 		
 		<h3>Writing your own Layout</h3>
 		<p>Writing a custom <code>Layout</code> for logback access is
 		nearly identical as its sibling<code>Layout</code> in
 		logback-classic.</p>
 		
+
 		<a name="AccessPatternLayout"></a>
 
 		<h3>PatternLayout</h3>
