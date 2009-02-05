@@ -9,6 +9,10 @@
  */
 package ch.qos.logback.classic.log4j;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
@@ -33,8 +37,14 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
   private final int DEFAULT_SIZE = 256;
   private final int UPPER_LIMIT = 2048;
 
-  private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
+  private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
   private boolean locationInfo = false;
+  private boolean properties = false;
+
+  @Override
+  public void start() {
+    super.start();
+  }
 
   /**
    * The <b>LocationInfo</b> option takes a boolean value. By default, it is
@@ -57,19 +67,36 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
     return locationInfo;
   }
 
-  /** No options to activate. */
-  public void activateOptions() {
+  /**
+   * Sets whether MDC key-value pairs should be output, default false.
+   * 
+   * @param flag
+   *                new value.
+   * @since 1.2.15
+   */
+  public void setProperties(final boolean flag) {
+    properties = flag;
+  }
+
+  /**
+   * Gets whether MDC key-value pairs should be output.
+   * 
+   * @return true if MDC key-value pairs are output.
+   * @since 1.2.15
+   */
+  public boolean getProperties() {
+    return properties;
   }
 
   /**
    * Formats a {@link LoggingEvent} in conformity with the log4j.dtd.
    */
   public String doLayout(LoggingEvent event) {
-  
+
     // Reset working buffer. If the buffer is too large, then we need a new
     // one in order to avoid the penalty of creating a large array.
     if (buf.capacity() > UPPER_LIMIT) {
-      buf = new StringBuffer(DEFAULT_SIZE);
+      buf = new StringBuilder(DEFAULT_SIZE);
     } else {
       buf.setLength(0);
     }
@@ -78,7 +105,8 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
 
     buf.append("<log4j:event logger=\"");
     buf.append(event.getLoggerRemoteView().getName());
-    buf.append("\" timestamp=\"");
+    buf.append("\"\r\n");
+    buf.append("             timestamp=\"");
     buf.append(event.getTimeStamp());
     buf.append("\" level=\"");
     buf.append(event.getLevel());
@@ -86,7 +114,7 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
     buf.append(event.getThreadName());
     buf.append("\">\r\n");
 
-    buf.append("<log4j:message><![CDATA[");
+    buf.append("  <log4j:message><![CDATA[");
     // Append the rendered message. Also make sure to escape any
     // existing CDATA sections.
     Transform.appendEscapingCDATA(buf, event.getFormattedMessage());
@@ -94,13 +122,13 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
 
     // logback does not support NDC
     // String ndc = event.getNDC();
-    
+
     ThrowableProxy tp = event.getThrowableProxy();
-    
+
     if (tp != null) {
-      buf.append("<log4j:throwable><![CDATA[");
+      buf.append("  <log4j:throwable><![CDATA[");
       ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-      for (ThrowableDataPoint tdp: tdpArray) {
+      for (ThrowableDataPoint tdp : tdpArray) {
         buf.append(tdp.toString());
         buf.append("\r\n");
       }
@@ -110,10 +138,11 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
     if (locationInfo) {
       CallerData[] callerDataArray = event.getCallerData();
       if (callerDataArray != null && callerDataArray.length > 0) {
-        CallerData  immediateCallerData = callerDataArray[0];
-        buf.append("<log4j:locationInfo class=\"");
+        CallerData immediateCallerData = callerDataArray[0];
+        buf.append("  <log4j:locationInfo class=\"");
         buf.append(immediateCallerData.getClassName());
-        buf.append("\" method=\"");
+        buf.append("\"\r\n");
+        buf.append("                      method=\"");
         buf.append(Transform.escapeTags(immediateCallerData.getMethodName()));
         buf.append("\" file=\"");
         buf.append(immediateCallerData.getFileName());
@@ -123,9 +152,34 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
       }
     }
 
-    buf.append("</log4j:event>\r\n\r\n");
+    /*
+     * <log4j:properties> <log4j:data name="name" value="value"/>
+     * </log4j:properties>
+     */
+    if (this.getProperties()) {
+      Map<String, String> propertyMap = event.getMDCPropertyMap();
+
+      if ((propertyMap != null) && (propertyMap.size() != 0)) {
+        Set<Entry<String, String>> entrySet = propertyMap.entrySet();
+        buf.append("  <log4j:properties>");
+        for (Entry<String, String> entry : entrySet) {
+          buf.append("\r\n    <log4j:data");
+          buf.append(" name='" + Transform.escapeTags(entry.getKey()) + "'");
+          buf.append(" value='" + Transform.escapeTags(entry.getValue()) + "'");
+          buf.append(" />");
+        }
+        buf.append("\r\n  </log4j:properties>");
+      }
+    }
+
+    buf.append("\r\n</log4j:event>\r\n\r\n");
 
     return buf.toString();
+  }
+
+  @Override
+  public String getContentType() {
+    return "text/xml";
   }
 
 }
