@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Migration from log4j</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+
+  </head>
+  <body>
+    <script type="text/javascript">prefix='../'</script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+      
+    <h2>Migration from log4j</h2>
+
+
+    <p>This chapter deals with the topic of migrating custom log4j
+    components such as appenders or layouts to logback-classic.
+    </p>
+
+    <p>Software which merely invokes log4j client API, that is the
+    <code>Logger</code> or <code>Category</code> classes in
+    <code>org.apache.log4j</code> package, can be automatically
+    migrated to use SLF4J via the <a
+    href="http://www.slf4j.org/migrator.html">SLF4J migrator
+    tool</a>. 
+    </p>
+
+    <p>From a broader perspective, log4j and logback-classic are
+    closely related. The core components, such as loggers, appenders
+    and layouts exist in both frameworks and serve identical
+    purposes. Similarly, the most important internal data-structure,
+    namely <code>LoggingEvent</code> exists in both frameworks with
+    rather similar but non-identical implementations. Most of the
+    changes requried in migrating log4j components to logback-classic
+    are related to differences in implementation of the
+    <code>LoggingEvent</code> class. Rest assured, these differences
+    are rather limited. If in spite of your best efforts you are
+    unable to migrate any given log4j component to logback-classic, do
+    post a question on the <a href="../mailinglist.html">logback-dev
+    mailing list</a>. A logback developper should be able to provide
+    guidance.
+    </p>
+
+    
+    <h3>Migrating a log4j layout</h3>
+
+    <p>Let us begin by migrating a hypothetcical and trivially simple
+    log4j layout named <a
+    href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+    which returns the message contained in a logging events as the
+    formatted message. Here is the code.
+    </p>
+    
+
+    <p class="source">package chapter11;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LoggingEvent;
+
+public class TrivialLog4jLayout extends Layout {
+
+  public void activateOptions() {
+    // there are no options to activate
+  }
+
+  public String format(LoggingEvent loggingEvent) {
+    return loggingEvent.getRenderedMessage();
+  }
+
+  public boolean ignoresThrowable() {
+    return true;
+  }
+}</p>
+
+    <p>The logback-classic equivalent named <a
+    href="../xref/chapter11/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
+    would be </p>
+    
+    <p class="source">package chapter11;
+
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.LayoutBase;
+
+public class TrivialLogbackLayout extends <b>LayoutBase&lt;LoggingEvent></b> {
+
+  public String <b>doLayout</b>(LoggingEvent loggingEvent) {
+    return loggingEvent.getMessage();
+  }
+}    </p>
+ 
+   <p>As you can see, in a logback-classic layout, the formatting
+   method is named <code>doLayout</code> instead of
+   <code>format</code>() in log4j. The <code>ignoresThrowable</code>()
+   method is not needed and has no equivalent in logback-classic. Note
+   that a logback-classic layout must extend the
+   <code>LayoutBase&lt;LoggingEvent></code> class.
+   </p>
+
+   <p>The <code>activateOptions</code>() method merits further
+   discussion. In log4j, a layout will have its
+   <code>activateOptions</code>() method invoked by log4j
+   configurators, that is <code>PropertyConfigurator</code> or
+   <code>DOMConfigurator</code> just after all the options of the
+   layout have been set. Thus, the layout will have an oppurtunity to
+   check that its options are coherent and if so, proceed to fully
+   intialize itself.</p>
+
+
+   <p>In logback-classic, layouts must implement the <a
+   href="../xref/ch/qos/logback/core/spi/LifeCycle.html">LifeCycle</a>
+   interface which includes a method called <code>start</code>(). The
+   <code>start</code>() method is the equivalent of log4j's
+   <code>activateOptions</code>() method.
+   </p>
+
+   <h3>Migrating a log4j appender</h3>
+   
+   <p>Migrating an appender is quite similar to migrating layout. Here
+   is a trivially simple appender called <a
+   href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+   which writes on the console the string returned by its layout.</p>
+   
+    <p class="source">package chapter11;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+
+
+public class TrivialLog4jAppender extends AppenderSkeleton {
+
+  protected void append(LoggingEvent loggingevent) {
+    String s = this.layout.format(loggingevent);
+    System.out.println(s);
+  }
+
+  public void close() {
+    // nothing to do
+  }
+
+  public boolean requiresLayout() {
+    return true;
+  }
+}</p>
+
+   <p>The logback-classic equivalent named <a
+   href="../xref/chapter11/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
+   would be written as</p>
+
+
+   <p class="source">package chapter11;
+
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.AppenderBase;
+
+public class TrivialLogbackAppender extends AppenderBase&lt;LoggingEvent> {
+
+  @Override
+  public void start() {
+    if (this.layout == null) {
+      addError("No layout set for the appender named [" + name + "].");
+      return;
+    }
+    super.start();
+  }
+
+  @Override
+  protected void append(LoggingEvent loggingevent) {
+    // note that AppenderBase.doAppend will invoke this method only if
+    // this appender was successfully started.
+    
+    String s = this.layout.doLayout(loggingevent);
+    System.out.println(s);
+  }
+}</p>
+
+
+   <p>Comparing the two classes, you should notice that the contents
+   of the <code>append</code>() method remains unchanged. The
+   <code>requiresLayout</code> method is not used in logback and can
+   be removed. In logback, the <code>stop</code>() method is the
+   equivalent of log4j's <code>close</code>() method. However,
+   <code>AppenderBase</code> in logback-classic, contains an nop
+   implementation for <code>stop</code> which is sufficient for the
+   purposes of this trivial appender.
+   </p>
+
+
+
+  <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

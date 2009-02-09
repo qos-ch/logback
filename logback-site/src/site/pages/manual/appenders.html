@@ -3238,8 +3238,6 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
   static int DEFAULT_LIMIT = 16;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
-  
-  private Layout&lt;LoggingEvent> layout;
 
   public CountingConsoleAppender() {
   }
@@ -3275,38 +3273,37 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
     counter++;
   }
 
-  public Layout&lt;LoggingEvent> getLayout() {
-    return layout;
-  }
-
-  public void setLayout(Layout&lt;LoggingEvent> layout) {
-    this.layout = layout;
-  }
 }</p>
 
 		<p>The <code>start()</code> method checks for the presence of a
-		<code>Layout</code>.  In case none is found, the appender is not
-		started.
+		<code>Layout</code>.  In case the layout is not set, the appender
+		fails to start with an error message.
 		</p>
 		
 		<p>This custom appender illustrates a two points:
 		</p>
 		
 		<ul>
-			<li>All properties that follow the setter/getter JavaBeans
-			conventions are handled transparently. The <code>start()</code>
-			method, that is called automatically, has the responsability to
-			check that the given properties are coherent.
+
+      <li>All properties that follow the setter/getter JavaBeans
+      conventions are handled transparently. The <code>start()</code>
+      method, which is called automatically during logback
+      configuration, has the responsibility to verify that the various
+      properties of the appender are coherent.
 			</li>
+
 			<li>The <code>AppenderBase.doAppend()</code> method invokes the
-			append() method of its derived classes where actual output
-			operations occur.  It is in this method that appenders format
-			events by invoking their layouts.
+			append() method of its derived classes.  Actual output
+			operations occur in the <code>append</code>() method.  In
+			particular, it is in this method that appenders format events by
+			invoking their layouts.
 			</li>
 		</ul>
 		
-		<p>The <code>CountingConsoleAppender</code> can be configured like
-		any appender.  See sample file
+		<p>The <a
+		href="../xref/chapter4/CountingConsoleAppender.html"><code>CountingConsoleAppender</code></a>
+		can be configured like any appender.  See sample configuration
+		file
 		<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
 		for an example.
 		</p>

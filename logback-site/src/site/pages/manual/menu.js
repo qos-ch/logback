@@ -10,3 +10,4 @@ document.write('<p class="menu"><a href="mdc.html"><b>Ch7: Mapped Diagnostic Con
 document.write('<p class="menu"><a href="loggingSeparation.html"><b>Ch8: Logging Separation</b></a>');
 document.write('<p class="menu"><a href="jmxConfig.html"><b>Ch9: JMX Configurator</b></a>');
 document.write('<p class="menu"><a href="onJoran.html"><b>Ch10: Joran</b></a>');
+document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch11: Migration from log4j</b></a>');
