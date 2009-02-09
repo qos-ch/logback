@@ -28,6 +28,12 @@ import ch.qos.logback.core.status.WarnStatus;
 abstract public class AppenderBase<E> extends ContextAwareBase implements
     Appender<E> {
 
+  /**
+   * The layout variable does not need to be set depending on the appender. Some
+   * appenders do not need a layout.
+   */
+  protected Layout<E> layout;
+
   protected boolean started = false;
 
   /**
@@ -129,15 +135,24 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
   public List<Filter<E>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
-  
+
   public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
   }
 
+  /**
+   * Returns the layout of this appender. The returned value may be null if this
+   * appender does not have a layout.
+   */
   public Layout<E> getLayout() {
-    return null;
+    return layout;
   }
 
+  /**
+   * Set the layout for this appender. Note that some appenders have their own
+   * (fixed) layouts or do not use any.
+   */
   public void setLayout(Layout<E> layout) {
+    this.layout = layout;
   }
 }

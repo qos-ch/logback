@@ -48,7 +48,6 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
-  protected Layout<E> layout;
   protected Layout<E> subjectLayout;
 
   private List<String> to = new ArrayList<String>();
@@ -389,14 +388,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    */
   public void setEvaluator(EventEvaluator<E> eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
-  }
-
-  public Layout<E> getLayout() {
-    return layout;
-  }
-
-  public void setLayout(Layout<E> layout) {
-    this.layout = layout;
   }
 
   public String getUsername() {

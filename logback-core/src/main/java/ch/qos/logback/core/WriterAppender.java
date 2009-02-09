@@ -53,11 +53,6 @@ public class WriterAppender<E> extends AppenderBase<E> {
    */
   private Writer writer;
 
-  /**
-   * The layout variable does not need to be set if the appender implementation
-   * has its own layout.
-   */
-  private Layout<E> layout;
 
   /**
    * The default constructor does nothing.
@@ -182,20 +177,6 @@ public class WriterAppender<E> extends AppenderBase<E> {
     encoding = value;
   }
 
-  /**
-   * Set the layout for this appender. Note that some appenders have their own
-   * (fixed) layouts or do not use any.
-   */
-  public void setLayout(Layout<E> layout) {
-    this.layout = layout;
-  }
-
-  /**
-   * Returns the layout of this appender. The value may be null.
-   */
-  public Layout<E> getLayout() {
-    return layout;
-  }
 
   void writeHeader() {
     if (layout != null && (this.writer != null)) {

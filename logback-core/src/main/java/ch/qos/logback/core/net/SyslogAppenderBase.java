@@ -30,7 +30,6 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL + "#syslog_layout";
   final static int MSG_SIZE_LIMIT = 256*1024;
   
-  Layout<E> layout;
   int facility;
   String facilityStr;
   String syslogHost;
@@ -207,10 +206,12 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
 
+  @Override
   public Layout<E> getLayout() {
     return layout;
   }
 
+  @Override
   public void setLayout(Layout<E> layout) {
     addWarn("The layout of a SyslogAppender cannot be set directly. See also "+SYSLOG_LAYOUT_URL);
   }
