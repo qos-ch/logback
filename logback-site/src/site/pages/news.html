@@ -61,7 +61,10 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-101">LBCLASSIC-101</a>. Logback
     jar files now include full OSGi bundle information in their
     manifests. This information is automatically added by Apache
-    Felix' Maven bundle plug-in.
+    Felix' Maven bundle plug-in. The generated manifest files contain
+    an appropriate Bundle-RequiredExecutionEnvironment directive,
+    fixing <a
+    href="http://jira.qos.ch/browse/LBGENERAL-8">LBGENERAL-8</a>.
     </p>
 
     <p>The setter and getter methods for the layout property in
