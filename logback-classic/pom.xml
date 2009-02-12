@@ -153,7 +153,8 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>          
           <archive>  
-          <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>          </archive> 
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive> 
         </configuration>
         <executions>
           <execution>
@@ -199,6 +200,7 @@
           <instructions>
             <Export-Package>ch.qos.logback.classic.*</Export-Package>
             <Export-Package>org.slf4j.impl</Export-Package>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>
