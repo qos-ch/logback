@@ -15,6 +15,7 @@
 
     <script src="templates/header.js" type="text/javascript"></script>
     <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="templates/left.js" type="text/javascript"></script>
     </div>
     <div id="content">
@@ -28,8 +29,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>TARGET DATE: 6th of February 2009 - Release of version
-    0.9.15</h3>
+    <h3>12th of February 2009 - Release of version 0.9.15</h3>
 
     <p>When the reset() method in <code>LoggerContext</code> is
     called, registered turbo filters are first stopped before being
@@ -57,6 +57,21 @@
     related to loss of MDC information in deferred logging events.
     </p>
 
+    <p>Fixed issue <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-101">LBCLASSIC-101</a>. Logback
+    jar files now include full OSGi bundle information in their
+    manifests. This information is automatically added by Apache
+    Felix' Maven bundle plug-in.
+    </p>
+
+    <p>The setter and getter methods for the layout property in
+    <code>AppenderBase</code> class now have reasonable default
+    implementations, instead of nop previously. This change was
+    requested by Thilo Tanner in <a
+    href="http://jira.qos.ch/browse/LBCORE-56">LBCORE-56</a>.
+    </p>
+    
+
     <p>Added <em>log4j.dtd</em> compatible <a
     href="manual/layouts.html#log4jXMLLayout"><code>XMLLayout</code></a>
     as requested in <a
@@ -64,6 +79,8 @@
     </p>
 
     <p>New chapter <a href="manual/onJoran.html">on Joran</a>.</p>
+
+    <hr width="80%" align="center" />
 
     <h3>29th of December 2008 - Release of version 0.9.14</h3>
 
