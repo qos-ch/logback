@@ -30,7 +30,6 @@ import ch.qos.logback.core.helpers.Transform;
  * 
  * 
  * @author Ceki G&uuml;lc&uuml;
- * @author Thorbjørn Ravn Andersen
  */
 public class XMLLayout extends LayoutBase<LoggingEvent> {
 
