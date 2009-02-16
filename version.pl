@@ -30,7 +30,7 @@ sub replace () {
     }
     close(IN);
     close(OUT);
-    remove($origFile);
+    unlink($origFile);
   } else {
     print "File [" . $filename . "] does not exist\r\n" 
   }
