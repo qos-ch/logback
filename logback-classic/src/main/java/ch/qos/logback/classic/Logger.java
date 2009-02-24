@@ -153,13 +153,13 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       // nothing to do;
       return;
     }
+    if(newLevel == null && isRootLogger()) {
+      throw new IllegalArgumentException("The level of the root logger cannot be set to null");
+    }
+        
     level = newLevel;
     if (newLevel == null) {
-      if (isRootLogger()) {
-        throw new IllegalArgumentException("The level of the root logger cannot be set to null");
-      } else {
-        effectiveLevelInt = parent.effectiveLevelInt;
-      }
+      effectiveLevelInt = parent.effectiveLevelInt;
     } else {
       effectiveLevelInt = newLevel.levelInt;
     }
@@ -322,7 +322,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   private void localLevelReset() {
-    effectiveLevelInt = DEBUG_INT;
+    effectiveLevelInt = Level.DEBUG_INT;
     if(isRootLogger()) {
       level = Level.DEBUG;
     } else {

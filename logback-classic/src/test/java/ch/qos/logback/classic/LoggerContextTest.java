@@ -170,6 +170,7 @@ public class LoggerContextTest {
     root.setLevel(Level.INFO);
     lc.reset();
     assertEquals(Level.DEBUG, root.getEffectiveLevel());
+    assertTrue(root.isDebugEnabled());
     assertEquals(Level.DEBUG, a.getEffectiveLevel());
     assertEquals(Level.DEBUG, ab.getEffectiveLevel());
     
@@ -188,4 +189,15 @@ public class LoggerContextTest {
     lc.reset();
     assertFalse(nopTF.isStarted());
   }
+  
+  @Test
+  public void levelResetTest() {
+    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root.setLevel(Level.TRACE);
+    assertTrue(root.isTraceEnabled());
+    lc.reset();
+    assertFalse(root.isTraceEnabled());
+    assertTrue(root.isDebugEnabled());
+  }
+  
 }
