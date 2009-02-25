@@ -10,7 +10,7 @@
 package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.ClassPackagingData;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
@@ -30,7 +30,7 @@ public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
     }
   }
 
-  protected void prepareLoggingEvent(LoggingEvent event) {
+  protected void prepareLoggingEvent(ILoggingEvent event) {
     ThrowableProxy tp = event.getThrowableProxy();
     tp.calculatePackagingData();
   }

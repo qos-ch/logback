@@ -22,6 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -58,12 +59,12 @@ public class SiftingAppenderTest {
     logger.debug("smoke");
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha
+    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("smoke", timestamp);
 
     StatusPrinter.print(loggerContext);
     assertNotNull(listAppender);
-    List<LoggingEvent> eventList = listAppender.list;
+    List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
   }
@@ -74,7 +75,7 @@ public class SiftingAppenderTest {
     logger.debug("hello");
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    StringListAppender<LoggingEvent> listAppender = (StringListAppender<LoggingEvent>) ha
+    StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("default", timestamp);
 
     StatusPrinter.print(loggerContext);
@@ -92,12 +93,12 @@ public class SiftingAppenderTest {
     logger.debug("smoke");
     long timestamp = System.currentTimeMillis();
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<LoggingEvent> listAppender = (ListAppender<LoggingEvent>) ha
+    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("a", timestamp);
     StatusPrinter.print(loggerContext);
 
     assertNotNull(listAppender);
-    List<LoggingEvent> eventList = listAppender.list;
+    List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
 

@@ -25,6 +25,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.TestConstants;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
@@ -35,7 +36,7 @@ public class ConverterTest {
 
   LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
-  LoggingEvent le;
+  ILoggingEvent le;
   List<String> optionList = new ArrayList<String>();
 
   // The LoggingEvent is massaged with an FCQN of FormattingConverter. This
@@ -64,24 +65,24 @@ public class ConverterTest {
   @Test
   public void testLineOfCaller() {
     {
-      DynamicConverter<LoggingEvent> converter = new LineOfCallerConverter();
+      DynamicConverter<ILoggingEvent> converter = new LineOfCallerConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("69", buf.toString());
+      assertEquals("70", buf.toString());
     }
   }
 
   @Test
   public void testLevel() {
     {
-      DynamicConverter<LoggingEvent> converter = new LevelConverter();
+      DynamicConverter<ILoggingEvent> converter = new LevelConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       assertEquals("INFO", buf.toString());
     }
     {
-      DynamicConverter<LoggingEvent> converter = new LevelConverter();
+      DynamicConverter<ILoggingEvent> converter = new LevelConverter();
       converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
@@ -91,7 +92,7 @@ public class ConverterTest {
 
   @Test
   public void testThread() {
-    DynamicConverter<LoggingEvent> converter = new ThreadConverter();
+    DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     String regex = TestConstants.NAKED_MAIN_REGEX;
@@ -100,7 +101,7 @@ public class ConverterTest {
 
   @Test
   public void testMessage() {
-    DynamicConverter<LoggingEvent> converter = new MessageConverter();
+    DynamicConverter<ILoggingEvent> converter = new MessageConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals("Some message", buf.toString());
@@ -108,7 +109,7 @@ public class ConverterTest {
 
   @Test
   public void testLineSeparator() {
-    DynamicConverter<LoggingEvent> converter = new LineSeparatorConverter();
+    DynamicConverter<ILoggingEvent> converter = new LineSeparatorConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
@@ -117,13 +118,13 @@ public class ConverterTest {
   @Test
   public void testException() {
     {
-      DynamicConverter<LoggingEvent> converter = new ThrowableProxyConverter();
+      DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new ThrowableProxyConverter();
+      DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
       this.optionList.add("3");
       converter.setOptionList(this.optionList);
       StringBuffer buf = new StringBuffer();
@@ -151,7 +152,7 @@ public class ConverterTest {
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new LoggerConverter();
+      DynamicConverter<ILoggingEvent> converter = new LoggerConverter();
       this.optionList.clear();
       this.optionList.add("0");
       converter.setOptionList(this.optionList);
@@ -164,7 +165,7 @@ public class ConverterTest {
 
   @Test
   public void testClass() {
-    DynamicConverter<LoggingEvent> converter = new ClassOfCallerConverter();
+    DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals(this.getClass().getName(), buf.toString());
@@ -172,7 +173,7 @@ public class ConverterTest {
 
   @Test
   public void testMethodOfCaller() {
-    DynamicConverter<LoggingEvent> converter = new MethodOfCallerConverter();
+    DynamicConverter<ILoggingEvent> converter = new MethodOfCallerConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals("testMethodOfCaller", buf.toString());
@@ -180,7 +181,7 @@ public class ConverterTest {
 
   @Test
   public void testFileOfCaller() {
-    DynamicConverter<LoggingEvent> converter = new FileOfCallerConverter();
+    DynamicConverter<ILoggingEvent> converter = new FileOfCallerConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
     assertEquals("ConverterTest.java", buf.toString());
@@ -189,7 +190,7 @@ public class ConverterTest {
   @Test
   public void testCallerData() {
     {
-      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       converter.start();
 
       StringBuffer buf = new StringBuffer();
@@ -200,7 +201,7 @@ public class ConverterTest {
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       this.optionList.add("2");
       this.optionList.add("XXX");
       converter.setOptionList(this.optionList);
@@ -216,7 +217,7 @@ public class ConverterTest {
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -233,7 +234,7 @@ public class ConverterTest {
       }
     }
     {
-      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -251,7 +252,7 @@ public class ConverterTest {
     }
 
     {
-      DynamicConverter<LoggingEvent> converter = new CallerDataConverter();
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       this.optionList.clear();
       this.optionList.add("2");
       this.optionList.add("XXX");
@@ -271,29 +272,25 @@ public class ConverterTest {
 
   @Test
   public void testRelativeTime() throws Exception {
-    DynamicConverter<LoggingEvent> converter = new RelativeTimeConverter();
+    DynamicConverter<ILoggingEvent> converter = new RelativeTimeConverter();
     StringBuffer buf0 = new StringBuffer();
     StringBuffer buf1 = new StringBuffer();
-    LoggingEvent e0 = makeLoggingEvent(null);
-    LoggingEvent e1 = makeLoggingEvent(null);
+    ILoggingEvent e0 = makeLoggingEvent(null);
+    ILoggingEvent e1 = makeLoggingEvent(null);
     converter.write(buf0, e0);
     converter.write(buf1, e1);
     assertEquals(buf0.toString(), buf1.toString());
-    int rt0 = Integer.parseInt(buf0.toString());
-    if (rt0 < 50) {
-      fail("relative time should be > 50, but it is " + rt0);
-    }
   }
 
   @Test
   public void testSyslogStart() throws Exception {
-    DynamicConverter<LoggingEvent> converter = new SyslogStartConverter();
+    DynamicConverter<ILoggingEvent> converter = new SyslogStartConverter();
     this.optionList.clear();
     this.optionList.add("MAIL");
     converter.setOptionList(this.optionList);
     converter.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
 
     StringBuffer buf = new StringBuffer();
     converter.write(buf, event);
@@ -313,7 +310,7 @@ public class ConverterTest {
     converter.setOptionList(optionList);
     converter.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
 
     String result = converter.convert(event);
     assertEquals("someValue", result);
@@ -324,7 +321,7 @@ public class ConverterTest {
     ClassicConverter converter = new ContextNameConverter();
     converter.setContext(lc);
     lc.setName("aValue");
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
 
     String result = converter.convert(event);
     assertEquals("aValue", result);

@@ -29,6 +29,19 @@
 
     <hr width="80%" align="center" />
 
+    <h3>Nth of April 2009 - Release of version 0.9.16</h3>
+
+    <p>Fixed a bug in the localLevelReset() method in the
+    <code>Logger</code> class whcih inadvertently used the DEBUG_INT
+    value in the org.slf4j.spi.LocationAwareLogger interface instead
+    of the DEBUG_INT value in ch.qos.logback.classic.Level class. The
+    issue was first identified by Andy Ruch <a
+    href="http://qos.ch/pipermail/logback-user/2009-February/000955.html">in
+    a message</a> to the logback-user list
+    </p>
+
+    <hr width="80%" align="center" />
+
     <h3>12th of February 2009 - Release of version 0.9.15</h3>
 
     <p>When the reset() method in <code>LoggerContext</code> is

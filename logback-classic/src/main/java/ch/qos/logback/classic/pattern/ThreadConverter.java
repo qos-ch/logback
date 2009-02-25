@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the events thread (usually the current thread).
@@ -9,7 +9,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class ThreadConverter extends ClassicConverter {
 
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     return event.getThreadName();
   }
 

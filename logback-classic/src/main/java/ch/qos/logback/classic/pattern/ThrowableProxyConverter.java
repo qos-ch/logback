@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.Context;
@@ -30,7 +30,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
   int lengthOption;
-  List<EventEvaluator<LoggingEvent>> evaluatorList = null;
+  List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
   final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
@@ -67,16 +67,16 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
-        EventEvaluator<LoggingEvent> ee = (EventEvaluator<LoggingEvent>) evaluatorMap.get(evaluatorStr);
+        EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap.get(evaluatorStr);
         addEvaluator(ee);
       }
     }
     super.start();
   }
 
-  private void addEvaluator(EventEvaluator<LoggingEvent> ee) {
+  private void addEvaluator(EventEvaluator<ILoggingEvent> ee) {
     if (evaluatorList == null) {
-      evaluatorList = new ArrayList<EventEvaluator<LoggingEvent>>();
+      evaluatorList = new ArrayList<EventEvaluator<ILoggingEvent>>();
     }
     evaluatorList.add(ee);
   }
@@ -90,11 +90,11 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     // nop
   }
   
-  protected void prepareLoggingEvent(LoggingEvent event) {
+  protected void prepareLoggingEvent(ILoggingEvent event) {
     // nop  
   }
   
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     StringBuilder buf = new StringBuilder(32);
 
     ThrowableProxy information = event.getThrowableProxy();
@@ -112,7 +112,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     if (evaluatorList != null) {
       boolean printStack = true;
       for (int i = 0; i < evaluatorList.size(); i++) {
-        EventEvaluator<LoggingEvent> ee = evaluatorList.get(i);
+        EventEvaluator<ILoggingEvent> ee = evaluatorList.get(i);
         try {
           if (ee.evaluate(event)) {
             printStack = false;

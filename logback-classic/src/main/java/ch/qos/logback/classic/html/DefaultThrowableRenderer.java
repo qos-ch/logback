@@ -10,7 +10,7 @@
 package ch.qos.logback.classic.html;
 
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.helpers.Transform;
@@ -49,7 +49,7 @@ public class DefaultThrowableRenderer implements IThrowableRenderer {
   }
   
   public void render(StringBuilder sbuf, Object eventObject) {
-    LoggingEvent event = (LoggingEvent)eventObject;
+    ILoggingEvent event = (ILoggingEvent)eventObject;
     ThrowableProxy tp = event.getThrowableProxy();
     if (tp != null) {
       render(sbuf, tp.getThrowableDataPointArray());

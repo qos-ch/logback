@@ -10,14 +10,14 @@
 package ch.qos.logback.classic.testUtil;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class SampleConverter extends ClassicConverter {
 
   static public final String SAMPLE_STR = "sample";
   
   @Override
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     return SAMPLE_STR;
   }
 

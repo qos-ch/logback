@@ -9,14 +9,14 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class RelativeTimeConverter extends ClassicConverter {
 
   long lastTimestamp = -1;
   String timesmapStr = null;
   
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     long timestamp = event.getTimeStamp();
     
     // if called multiple times within the same millisecond
@@ -25,7 +25,7 @@ public class RelativeTimeConverter extends ClassicConverter {
       return timesmapStr;
     } else {
       lastTimestamp = timestamp;
-      timesmapStr = Long.toString(timestamp - LoggingEvent.getStartTime());
+      timesmapStr = Long.toString(timestamp - event.getContextBirthTime());
       return timesmapStr;
     }
   }

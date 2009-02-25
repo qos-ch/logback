@@ -43,5 +43,6 @@ public class LoggerRemoteView implements Serializable {
   public String getName() {
     return name;
   }
+  
 
 }

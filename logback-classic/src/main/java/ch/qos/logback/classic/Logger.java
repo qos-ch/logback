@@ -22,6 +22,7 @@ import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
 import ch.qos.logback.classic.spi.LoggerRemoteView;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -29,7 +30,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
 public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
-    AppenderAttachable<LoggingEvent>, Serializable {
+    AppenderAttachable<ILoggingEvent>, Serializable {
 
   /**
    * 
@@ -82,7 +83,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * only within addAppender which is synchronized <p> 3) all the other methods
    * check whether 'aai' is null <p> 4) AppenderAttachableImpl is thread safe
    */
-  private transient AppenderAttachableImpl<LoggingEvent> aai;
+  private transient AppenderAttachableImpl<ILoggingEvent> aai;
   /**
    * Additivity is set to true by default, that is children inherit the
    * appenders of their ancestors by default. If this variable is set to
@@ -216,9 +217,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
   // this method MUST be synchronized. See comments on 'aai' field for further
   // details.
-  public synchronized void addAppender(Appender<LoggingEvent> newAppender) {
+  public synchronized void addAppender(Appender<ILoggingEvent> newAppender) {
     if (aai == null) {
-      aai = new AppenderAttachableImpl<LoggingEvent>();
+      aai = new AppenderAttachableImpl<ILoggingEvent>();
     }
     aai.addAppender(newAppender);
   }
@@ -231,14 +232,14 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   @SuppressWarnings("unchecked")
-  public Iterator<Appender<LoggingEvent>> iteratorForAppenders() {
+  public Iterator<Appender<ILoggingEvent>> iteratorForAppenders() {
     if (aai == null) {
       return Collections.EMPTY_LIST.iterator();
     }
     return aai.iteratorForAppenders();
   }
 
-  public Appender<LoggingEvent> getAppender(String name) {
+  public Appender<ILoggingEvent> getAppender(String name) {
     if (aai == null) {
       return null;
     }
@@ -251,7 +252,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @param event
    *                The event to log
    */
-  public void callAppenders(LoggingEvent event) {
+  public void callAppenders(ILoggingEvent event) {
     int writes = 0;
     for (Logger l = this; l != null; l = l.parent) {
       writes += l.appendLoopOnAppenders(event);
@@ -265,7 +266,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     }
   }
 
-  private int appendLoopOnAppenders(LoggingEvent event) {
+  private int appendLoopOnAppenders(ILoggingEvent event) {
     if (aai != null) {
       return aai.appendLoopOnAppenders(event);
     } else {

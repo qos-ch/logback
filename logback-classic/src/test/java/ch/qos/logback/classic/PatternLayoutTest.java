@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.pattern.ConverterTest;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.testUtil.SampleConverter;
 import ch.qos.logback.classic.util.TeztConstants;
@@ -39,7 +40,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   Logger logger = lc.getLogger(ConverterTest.class);
   Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
   
-  LoggingEvent le;
+  ILoggingEvent le;
   List optionList = new ArrayList();
 
   public PatternLayoutTest() {
@@ -53,14 +54,14 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     pl.setContext(lc);
   }
 
-  LoggingEvent makeLoggingEvent(Exception ex) {
+  ILoggingEvent makeLoggingEvent(Exception ex) {
     return new LoggingEvent(
         ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
         logger, Level.INFO, "Some message", ex, null);
   }
 
   @Override
-  public LoggingEvent getEventObject() {
+  public ILoggingEvent getEventObject() {
     return makeLoggingEvent(null);
   }
 

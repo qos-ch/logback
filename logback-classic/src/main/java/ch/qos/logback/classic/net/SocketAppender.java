@@ -13,11 +13,11 @@ package ch.qos.logback.classic.net;
 
 import java.net.InetAddress;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
 
 /**
- * Sends {@link LoggingEvent} objects to a remote a log server, usually a
+ * Sends {@link ILoggingEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
  * 
  * For more information on this appender, please refer to the online manual
@@ -27,7 +27,7 @@ import ch.qos.logback.core.net.SocketAppenderBase;
  * @author S&eacute;bastien Pennec
  */
 
-public class SocketAppender extends SocketAppenderBase<LoggingEvent> {
+public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
 
   boolean includeCallerData = false;
 
@@ -53,7 +53,7 @@ public class SocketAppender extends SocketAppenderBase<LoggingEvent> {
   }
 
   @Override
-  protected void postProcessEvent(LoggingEvent event) {
+  protected void postProcessEvent(ILoggingEvent event) {
     if (includeCallerData) {
       event.getCallerData();
     }

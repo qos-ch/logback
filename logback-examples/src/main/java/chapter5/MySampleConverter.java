@@ -2,7 +2,7 @@ package chapter5;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ClassicConverter;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class MySampleConverter extends ClassicConverter {
 
@@ -12,7 +12,7 @@ public class MySampleConverter extends ClassicConverter {
   private static final String WARN_COLOR = "\u001b[0;33m";
 
   @Override
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append(getColor(event.getLevel()));
     sbuf.append(event.getLevel());

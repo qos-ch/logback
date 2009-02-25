@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
-public class DummyLBAppender extends AppenderBase<LoggingEvent> {
+public class DummyLBAppender extends AppenderBase<ILoggingEvent> {
 
-  public List<LoggingEvent> list = new ArrayList<LoggingEvent>();
+  public List<ILoggingEvent> list = new ArrayList<ILoggingEvent>();
   public List<String> stringList = new ArrayList<String>();
   
   PatternLayout layout;
@@ -31,7 +31,7 @@ public class DummyLBAppender extends AppenderBase<LoggingEvent> {
     this.layout = layout;
   }
   
-  protected void append(LoggingEvent e) {
+  protected void append(ILoggingEvent e) {
     list.add(e);
     if(layout != null) {
       String s = layout.doLayout(e);

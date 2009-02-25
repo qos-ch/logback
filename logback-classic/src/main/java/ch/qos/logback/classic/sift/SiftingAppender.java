@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.sift;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.sift.Discriminator;
@@ -25,21 +25,21 @@ import ch.qos.logback.core.sift.SiftingAppenderBase;
  * 
  * @author Ceki Gulcu
  */
-public class SiftingAppender extends SiftingAppenderBase<LoggingEvent> {
+public class SiftingAppender extends SiftingAppenderBase<ILoggingEvent> {
 
-  AppenderTracker<LoggingEvent> getAppenderTracker() {
+  AppenderTracker<ILoggingEvent> getAppenderTracker() {
     return appenderTracker;
   }
 
   @Override
-  protected long getTimestamp(LoggingEvent event) {
+  protected long getTimestamp(ILoggingEvent event) {
     return event.getTimeStamp();
   }
   
 
   @Override
   @DefaultClass(MDCBasedDiscriminator.class)
-  public void setDiscriminator(Discriminator<LoggingEvent> discriminator) {
+  public void setDiscriminator(Discriminator<ILoggingEvent> discriminator) {
     super.setDiscriminator(discriminator);
   }
 

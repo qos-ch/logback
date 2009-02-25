@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the event's level.
@@ -9,7 +9,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class LevelConverter extends ClassicConverter {
 
-  public String convert(LoggingEvent le) {
+  public String convert(ILoggingEvent le) {
     return le.getLevel().toString();
   }
 

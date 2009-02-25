@@ -39,17 +39,12 @@ import ch.qos.logback.classic.Logger;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LoggingEvent implements Serializable {
+public class LoggingEvent implements ILoggingEvent {
 
   private static final long serialVersionUID = 3075964498087694229L;
 
   private static final int NULL_ARGUMENT_ARRAY = -1;
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
-
-  /**
-   * 
-   */
-  private static long startTime = System.currentTimeMillis();
 
   /**
    * Fully qualified name of the calling Logger class. This field does not
@@ -97,6 +92,8 @@ public class LoggingEvent implements Serializable {
    */
   private long timeStamp;
 
+  private LoggingEventSDO loggingEventSDO;
+  
   public LoggingEvent() {
   }
 
@@ -229,16 +226,6 @@ public class LoggingEvent implements Serializable {
   }
 
   /**
-   * The time at which this class was loaded into memory, expressed in
-   * millisecond elapsed since the epoch (1.1.1970).
-   * 
-   * @return The time as measured when this class was loaded into memory.
-   */
-  public static final long getStartTime() {
-    return startTime;
-  }
-
-  /**
    * Get the caller information for this logging event. If caller information is
    * null at the time of its invocation, this method extracts location
    * information. The collected information is cached for future use.
@@ -271,6 +258,11 @@ public class LoggingEvent implements Serializable {
     this.marker = marker;
   }
 
+  public long getContextBirthTime() {
+    return loggerRemoteView.loggerContextView.getBirthTime();
+  }
+
+  
   // computer formatted lazy as suggested in
   // http://jira.qos.ch/browse/LBCLASSIC-47
   public String getFormattedMessage() {
@@ -309,7 +301,7 @@ public class LoggingEvent implements Serializable {
     }
 
   }
-
+  
   private void readObject(ObjectInputStream in) throws IOException,
       ClassNotFoundException {
     in.defaultReadObject();
@@ -335,5 +327,12 @@ public class LoggingEvent implements Serializable {
     sb.append(level).append("] ");
     sb.append(getFormattedMessage());
     return sb.toString();
+  }
+
+  public Serializable getSDO() {
+    if(loggingEventSDO == null) {
+      loggingEventSDO = LoggingEventSDO.build(this);
+    }
+    return loggingEventSDO;
   }
 }

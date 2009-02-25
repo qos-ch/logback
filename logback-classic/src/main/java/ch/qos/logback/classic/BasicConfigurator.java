@@ -12,7 +12,7 @@ package ch.qos.logback.classic;
 
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
@@ -37,7 +37,7 @@ public class BasicConfigurator {
     if(sm != null)  {
      sm.add(new InfoStatus("Setting up default configuration.", lc));
     }
-    ConsoleAppender<LoggingEvent> ca = new ConsoleAppender<LoggingEvent>();
+    ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
     ca.setContext(lc);
     ca.setName("console");
     PatternLayout pl = new PatternLayout();

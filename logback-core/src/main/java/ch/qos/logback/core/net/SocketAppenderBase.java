@@ -18,6 +18,7 @@ import java.net.Socket;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.spi.SDOAware;
 
 /**
  * 
@@ -151,7 +152,12 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     if (oos != null) {
       try {
         postProcessEvent(event);
-        oos.writeObject(event);
+        // if an object is SDOAware, then its SDO has preference
+        if(event instanceof SDOAware) {
+          oos.writeObject(((SDOAware)event).getSDO());
+        } else {
+          oos.writeObject(event);
+        }
         // addInfo("=========Flushing.");
         oos.flush();
         if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {

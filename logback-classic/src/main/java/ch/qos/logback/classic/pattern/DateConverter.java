@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 
 
@@ -53,7 +53,7 @@ public class DateConverter extends ClassicConverter {
     }
   }
   
-  public String convert(LoggingEvent le) {
+  public String convert(ILoggingEvent le) {
     long timestamp = le.getTimeStamp();
     
     // if called multiple times within the same millisecond

@@ -11,7 +11,7 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.SyslogConstants;
 
 public class LevelToSyslogSeverity {
@@ -21,7 +21,7 @@ public class LevelToSyslogSeverity {
    * methods i.e TRACE, DEBUG, WARN, INFO and ERROR are converted.
    * 
    */
-  static public int convert(LoggingEvent event) {
+  static public int convert(ILoggingEvent event) {
 
     Level level = event.getLevel();
 

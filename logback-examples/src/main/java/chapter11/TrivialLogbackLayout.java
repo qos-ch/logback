@@ -9,7 +9,7 @@
  */
 package chapter11;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
 
@@ -21,9 +21,9 @@ import ch.qos.logback.core.LayoutBase;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class TrivialLogbackLayout extends LayoutBase<LoggingEvent> {
+public class TrivialLogbackLayout extends LayoutBase<ILoggingEvent> {
 
-  public String doLayout(LoggingEvent loggingEvent) {
+  public String doLayout(ILoggingEvent loggingEvent) {
     return loggingEvent.getMessage();
   }
 }

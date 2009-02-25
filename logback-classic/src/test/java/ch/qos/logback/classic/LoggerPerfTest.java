@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.helpers.BogoPerf;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
@@ -150,7 +150,7 @@ public class LoggerPerfTest {
   double computeDurationOfEnabledLog(long len) {
     lbLogger.setLevel(Level.ALL);
 
-    NOPAppender<LoggingEvent> nopAppender = new NOPAppender<LoggingEvent>();
+    NOPAppender<ILoggingEvent> nopAppender = new NOPAppender<ILoggingEvent>();
     nopAppender.start();
     ((ch.qos.logback.classic.Logger) logger).addAppender(nopAppender);
     for (long i = 0; i < len; i++) {
@@ -168,7 +168,7 @@ public class LoggerPerfTest {
 
   @Test
   public void testThreadedLogging() throws InterruptedException {
-    SleepAppender<LoggingEvent> appender = new SleepAppender<LoggingEvent>();
+    SleepAppender<ILoggingEvent> appender = new SleepAppender<ILoggingEvent>();
 
     int MILLIS_PER_CALL = 250;
     int NANOS_PER_CALL = 250 * 1000 * 1000;

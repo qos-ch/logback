@@ -20,7 +20,7 @@ import java.util.List;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.Status;
 
@@ -30,11 +30,11 @@ public class LoggerTest {
   Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
   Logger loggerTest = lc.getLogger(LoggerTest.class);
 
-  ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
+  ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
 
   @Test
   public void smoke() {
-    ListAppender<LoggingEvent> listAppender = new ListAppender<LoggingEvent>();
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
     listAppender.start();
     root.addAppender(listAppender);
     Logger logger = lc.getLogger(LoggerTest.class);

@@ -2,7 +2,7 @@ package ch.qos.logback.classic.pattern;
 
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the event's marker value(s).
@@ -13,7 +13,7 @@ public class MarkerConverter extends ClassicConverter {
 
   private static String EMPTY = "";
 
-  public String convert(LoggingEvent le) {
+  public String convert(ILoggingEvent le) {
     Marker marker = le.getMarker();
     if (marker == null) {
       return EMPTY;

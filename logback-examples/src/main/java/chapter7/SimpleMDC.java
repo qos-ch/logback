@@ -19,7 +19,7 @@ import org.slf4j.MDC;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.Loader;
@@ -64,7 +64,7 @@ public class SimpleMDC {
     layout.setContext(loggerContext);
     layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();
-    ConsoleAppender<LoggingEvent> appender = new ConsoleAppender<LoggingEvent>();
+    ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
     appender.setContext(loggerContext);
     appender.setLayout(layout);
     appender.start();

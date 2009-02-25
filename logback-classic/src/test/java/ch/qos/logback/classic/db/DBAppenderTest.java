@@ -1,6 +1,7 @@
 package ch.qos.logback.classic.db;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.CallerData;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 
@@ -69,7 +71,7 @@ public class DBAppenderTest  {
 
   @Test
   public void testAppendLoggingEvent() throws SQLException {
-    LoggingEvent event = createLoggingEvent();
+    ILoggingEvent event = createLoggingEvent();
 
     appender.append(event);
     //StatusPrinter.print(lc.getStatusManager());
@@ -97,7 +99,7 @@ public class DBAppenderTest  {
   }
   
   public void testAppendThrowable() throws SQLException {
-    LoggingEvent event = createLoggingEvent();
+    ILoggingEvent event = createLoggingEvent();
 
     appender.append(event);
     
@@ -115,7 +117,7 @@ public class DBAppenderTest  {
   }
   
   public void testContextInfo() throws SQLException {
-    LoggingEvent event = createLoggingEvent();
+    ILoggingEvent event = createLoggingEvent();
     lc.putProperty("testKey1", "testValue1");
     
     appender.append(event);
@@ -136,7 +138,7 @@ public class DBAppenderTest  {
   
   public void testAppendMultipleEvents() throws SQLException {
     for (int i = 0; i < 10; i++) {
-      LoggingEvent event = createLoggingEvent();
+      ILoggingEvent event = createLoggingEvent();
       appender.append(event);
     }
     
@@ -154,8 +156,8 @@ public class DBAppenderTest  {
   }
   
 
-  private LoggingEvent createLoggingEvent() {
-    LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
+  private ILoggingEvent createLoggingEvent() {
+    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
         Level.DEBUG, "test message", new Exception("test Ex"), null);
     return le;
   }

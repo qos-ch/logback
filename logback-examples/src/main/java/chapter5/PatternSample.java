@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 
 public class PatternSample {
@@ -16,7 +16,7 @@ public class PatternSample {
     layout.setPattern("%-5level [%thread]: %message%n");
     layout.start();
     
-    ConsoleAppender<LoggingEvent> appender = new ConsoleAppender<LoggingEvent>();
+    ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
     appender.setContext(rootLogger.getLoggerContext());
     appender.setLayout(layout);
     appender.start();

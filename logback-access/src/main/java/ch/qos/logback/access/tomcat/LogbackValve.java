@@ -52,7 +52,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
+  
+  private long birthTime = System.currentTimeMillis();
 
+  
   // Attributes from ContextBase:
   private String name;
   StatusManager sm = new BasicStatusManager();
@@ -249,6 +252,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     this.name = name;
   }
 
+  public long getBithTime() {
+    return birthTime;
+  }
+  
   // ====== Methods from catalina Lifecycle =====
 
   public void addLifecycleListener(LifecycleListener arg0) {
@@ -262,5 +269,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public void removeLifecycleListener(LifecycleListener arg0) {
     // dummy NOP implementation
   }
+
+
 
 }

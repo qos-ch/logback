@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public abstract class NamedConverter extends ClassicConverter {
 
@@ -22,7 +22,7 @@ public abstract class NamedConverter extends ClassicConverter {
    *          The LoggingEvent to process, cannot not be null.
    * @return name, must not be null.
    */
-  protected abstract String getFullyQualifiedName(final LoggingEvent event);
+  protected abstract String getFullyQualifiedName(final ILoggingEvent event);
 
   public void start() {
     String optStr = getFirstOption();
@@ -40,7 +40,7 @@ public abstract class NamedConverter extends ClassicConverter {
     }
   }
 
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     String fqn = getFullyQualifiedName(event);
 
     if (abbreviator == null) {

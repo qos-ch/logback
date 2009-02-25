@@ -32,14 +32,14 @@ import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
 import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 /**
  * <p>
  * A flexible layout configurable with pattern string. The goal of this class is
- * to {@link #format format} a {@link LoggingEvent} and return the results in a
+ * to {@link #format format} a {@link ILoggingEvent} and return the results in a
  * {#link String}. The format of the result depends on the
  * <em>conversion pattern</em>.
  * <p>
@@ -48,7 +48,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
  * 
  */
 
-public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
+public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
@@ -125,7 +125,7 @@ public class PatternLayout extends PatternLayoutBase<LoggingEvent> {
     return defaultConverterMap;
   }
 
-  public String doLayout(LoggingEvent event) {
+  public String doLayout(ILoggingEvent event) {
     if (!isStarted()) {
       return CoreConstants.EMPTY_STRING;
     }

@@ -9,7 +9,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Converts an event to the logger context's name.
@@ -21,7 +21,7 @@ public class ContextNameConverter extends ClassicConverter {
   /**
    * Return the name of the logger context's name.
    */
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     return getContext().getName();
   }
 

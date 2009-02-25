@@ -1,10 +1,11 @@
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.net.SyslogConstants;
 
@@ -30,7 +31,7 @@ public class LevelToSyslogSeverityTest {
 
   }
 
-  LoggingEvent createEventOfLevel(Level level) {
+  ILoggingEvent createEventOfLevel(Level level) {
     LoggingEvent event = new LoggingEvent();
     event.setLevel(level);
     return event;

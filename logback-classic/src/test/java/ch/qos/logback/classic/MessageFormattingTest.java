@@ -14,19 +14,19 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 
 public class MessageFormattingTest  {
 
   LoggerContext lc;
-  ListAppender<LoggingEvent> listAppender;
+  ListAppender<ILoggingEvent> listAppender;
 
   @Before
   public void setUp() {
     lc = new LoggerContext();
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
-    listAppender = new ListAppender<LoggingEvent>();
+    listAppender = new ListAppender<ILoggingEvent>();
     listAppender.setContext(lc);
     listAppender.start();
     logger.addAppender(listAppender);
@@ -36,7 +36,7 @@ public class MessageFormattingTest  {
   public void testFormattingOneArg() {
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("{}", new Integer(12));
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("12", event.getFormattedMessage());
   }
 
@@ -44,7 +44,7 @@ public class MessageFormattingTest  {
   public void testFormattingTwoArg() {
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("{}-{}", new Integer(12), new Integer(13));
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("12-13", event.getFormattedMessage());
   }
 
@@ -52,7 +52,7 @@ public class MessageFormattingTest  {
   public void testNoFormatting() {
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("test", new Integer(12), new Integer(13));
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("test", event.getFormattedMessage());
   }
 
@@ -60,7 +60,7 @@ public class MessageFormattingTest  {
   public void testNoFormatting2() {
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("test");
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("test", event.getFormattedMessage());
   }
 
@@ -68,7 +68,7 @@ public class MessageFormattingTest  {
   public void testMessageConverter() {
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
     logger.debug("{}", 12);
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setPattern("%m");

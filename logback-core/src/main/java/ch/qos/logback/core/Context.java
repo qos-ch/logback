@@ -74,4 +74,12 @@ public interface Context extends PropertyContainer {
    * @param name
    */
   public void setName(String name);
+  
+  /**
+   * The time at which this context was created, expressed in
+   * millisecond elapsed since the epoch (1.1.1970).
+   * 
+   * @return The time as measured when this class was created.
+   */
+  public long getBithTime();
 }

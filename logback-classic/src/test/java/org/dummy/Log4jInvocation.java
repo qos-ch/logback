@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Used to test log4j-over-slf4j
@@ -55,7 +55,7 @@ public class Log4jInvocation {
     logger.debug(HELLO);
 
     assertEquals(1, listAppender.list.size());
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals(HELLO, event.getMessage());
   }
 
@@ -77,7 +77,7 @@ public class Log4jInvocation {
     logger.trace(HELLO);
     assertEquals(1, listAppender.list.size());
 
-    LoggingEvent event = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
     assertEquals(HELLO, event.getMessage());
 
     assertEquals(1, listAppender.stringList.size());

@@ -12,7 +12,7 @@ package ch.qos.logback.classic.net;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.boolex.OnErrorEvaluator;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.helpers.CyclicBuffer;
@@ -29,13 +29,13 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * @author S&eacute;bastien Pennec
  * 
  */
-public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
+public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
 
   // value "%logger{20} - %m" is referenced in the docs!
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
   
   private int bufferSize = 512;
-  protected CyclicBuffer<LoggingEvent> cb = new CyclicBuffer<LoggingEvent>(bufferSize);
+  protected CyclicBuffer<ILoggingEvent> cb = new CyclicBuffer<ILoggingEvent>(bufferSize);
 
   /**
    * The default constructor will instantiate the appender with a
@@ -61,7 +61,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
    * Use the parameter as the {@link
    * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(EventEvaluator<LoggingEvent> eventEvaluator) {
+  public SMTPAppender(EventEvaluator<ILoggingEvent> eventEvaluator) {
     this.eventEvaluator = eventEvaluator;
   }
 
@@ -69,7 +69,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
    * Perform SMTPAppender specific appending actions, mainly adding the event to
    * a cyclic buffer.
    */
-  protected void subAppend(LoggingEvent event) {
+  protected void subAppend(ILoggingEvent event) {
     event.prepareForDeferredProcessing();
     cb.add(event);
     // addInfo("Added event to the cyclic buffer: " + event.getMessage());
@@ -80,7 +80,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
       // sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
-      LoggingEvent event = cb.get();
+      ILoggingEvent event = cb.get();
       sbuf.append(layout.doLayout(event));
     }
   }
@@ -105,7 +105,7 @@ public class SMTPAppender extends SMTPAppenderBase<LoggingEvent> {
   }
 
   @Override
-  protected Layout<LoggingEvent> makeSubjectLayout(String subjectStr) {
+  protected Layout<ILoggingEvent> makeSubjectLayout(String subjectStr) {
     if(subjectStr == null) {
       subjectStr = DEFAULT_SUBJECT_PATTERN;
     }

@@ -11,7 +11,7 @@ package ch.qos.logback.classic.sift;
 
 import org.slf4j.MDC;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
@@ -26,7 +26,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * 
  */
 public class MDCBasedDiscriminator extends ContextAwareBase implements
-    Discriminator<LoggingEvent> {
+    Discriminator<ILoggingEvent> {
 
   private String key;
   private String defaultValue;
@@ -40,7 +40,7 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
    * property. If that value is null, then return the value assigned to the
    * DefaultValue property.
    */
-  public String getDiscriminatingValue(LoggingEvent event) {
+  public String getDiscriminatingValue(ILoggingEvent event) {
     String mdcValue = MDC.get(key);
     if (mdcValue == null) {
       return defaultValue;

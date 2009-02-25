@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
@@ -29,13 +29,13 @@ import ch.qos.logback.core.net.SyslogWriter;
  * 
  * @author Ceki G&uumllc&uuml;
  */
-public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
+public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
 
   PatternLayout prefixLayout = new PatternLayout();
 
-  public Layout<LoggingEvent> buildLayout(String facilityStr) {
+  public Layout<ILoggingEvent> buildLayout(String facilityStr) {
     String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
   
     prefixLayout.getInstanceConverterMap().put("syslogStart",
@@ -66,13 +66,13 @@ public class SyslogAppender extends SyslogAppenderBase<LoggingEvent> {
    */
   @Override
   public int getSeverityForEvent(Object eventObject) {
-    LoggingEvent event = (LoggingEvent) eventObject;
+    ILoggingEvent event = (ILoggingEvent) eventObject;
     return LevelToSyslogSeverity.convert(event);
   }
 
   @Override
   protected void postProcess(Object eventObject, SyslogWriter sw) {
-    LoggingEvent event = (LoggingEvent) eventObject;
+    ILoggingEvent event = (ILoggingEvent) eventObject;
     
     String prefix = prefixLayout.doLayout(event);
     

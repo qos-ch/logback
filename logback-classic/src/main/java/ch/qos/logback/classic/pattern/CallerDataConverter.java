@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.spi.CallerData;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
@@ -29,7 +29,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class CallerDataConverter extends ClassicConverter {
 
   int depth = 5;
-  List<EventEvaluator<LoggingEvent>> evaluatorList = null;
+  List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
   final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
@@ -57,7 +57,7 @@ public class CallerDataConverter extends ClassicConverter {
         if (context != null) {
           Map evaluatorMap = (Map) context
               .getObject(CoreConstants.EVALUATOR_MAP);
-          EventEvaluator<LoggingEvent> ee = (EventEvaluator<LoggingEvent>) evaluatorMap
+          EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
               .get(evaluatorStr);
           if (ee != null) {
             addEvaluator(ee);
@@ -68,20 +68,20 @@ public class CallerDataConverter extends ClassicConverter {
 
   }
 
-  private void addEvaluator(EventEvaluator<LoggingEvent> ee) {
+  private void addEvaluator(EventEvaluator<ILoggingEvent> ee) {
     if (evaluatorList == null) {
-      evaluatorList = new ArrayList<EventEvaluator<LoggingEvent>>();
+      evaluatorList = new ArrayList<EventEvaluator<ILoggingEvent>>();
     }
     evaluatorList.add(ee);
   }
 
-  public String convert(LoggingEvent le) {
+  public String convert(ILoggingEvent le) {
     StringBuffer buf = new StringBuffer();
 
     if (evaluatorList != null) {
       boolean printCallerData = false;
       for (int i = 0; i < evaluatorList.size(); i++) {
-        EventEvaluator<LoggingEvent> ee = evaluatorList.get(i);
+        EventEvaluator<ILoggingEvent> ee = evaluatorList.get(i);
         try {
           if (ee.evaluate(le)) {
             printCallerData = true;

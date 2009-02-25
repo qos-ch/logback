@@ -17,14 +17,14 @@ import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 
 
 
-public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<LoggingEvent> {
+public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent> {
 
   
   public final static String IMPORT_LEVEL = "import ch.qos.logback.classic.Level;\r\n";
@@ -53,7 +53,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<LoggingEvent>
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
     
-    DEFAULT_PARAM_TYPE_LIST.add(LoggingEvent.class);
+    DEFAULT_PARAM_TYPE_LIST.add(ILoggingEvent.class);
     DEFAULT_PARAM_TYPE_LIST.add(String.class);
     DEFAULT_PARAM_TYPE_LIST.add(LoggerRemoteView.class);
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
@@ -92,7 +92,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<LoggingEvent>
     return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
-  protected Object[] getParameterValues(LoggingEvent loggingEvent) {
+  protected Object[] getParameterValues(ILoggingEvent loggingEvent) {
     final int matcherListSize = matcherList.size();
     
     int i = 0;

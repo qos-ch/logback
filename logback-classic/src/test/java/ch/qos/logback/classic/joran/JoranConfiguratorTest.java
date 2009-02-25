@@ -19,7 +19,7 @@ import org.slf4j.MDC;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
@@ -52,7 +52,7 @@ public class JoranConfiguratorTest {
     String msg = "hello world";
     logger.debug(msg);
     assertEquals(1, listAppender.list.size());
-    LoggingEvent le = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
     assertEquals(msg, le.getMessage());
   }
 
@@ -117,7 +117,7 @@ public class JoranConfiguratorTest {
     logger.debug("toto");
     logger.debug(msg);
 
-    StringListAppender<LoggingEvent> slAppender = (StringListAppender<LoggingEvent>) loggerContext
+    StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
         .getLogger("root").getAppender("STR_LIST");
     assertNotNull(slAppender);
     assertEquals(2, slAppender.strList.size());
@@ -165,12 +165,12 @@ public class JoranConfiguratorTest {
     logger.error("to be ignored");
 
     @SuppressWarnings("unchecked")
-    ListAppender<LoggingEvent> listAppender = (ListAppender) root
+    ListAppender<ILoggingEvent> listAppender = (ListAppender) root
         .getAppender("LIST");
 
     assertNotNull(listAppender);
     assertEquals(1, listAppender.list.size());
-    LoggingEvent back = listAppender.list.get(0);
+    ILoggingEvent back = listAppender.list.get(0);
     assertEquals(Level.WARN, back.getLevel());
     assertEquals("hello", back.getMessage());
   }
@@ -185,12 +185,12 @@ public class JoranConfiguratorTest {
     logger.error("to be ignored");
 
     @SuppressWarnings("unchecked")
-    ListAppender<LoggingEvent> listAppender = (ListAppender) root
+    ListAppender<ILoggingEvent> listAppender = (ListAppender) root
         .getAppender("LIST");
 
     assertNotNull(listAppender);
     assertEquals(1, listAppender.list.size());
-    LoggingEvent back = listAppender.list.get(0);
+    ILoggingEvent back = listAppender.list.get(0);
     assertEquals(Level.WARN, back.getLevel());
     assertEquals("hello", back.getMessage());
   }
@@ -211,7 +211,7 @@ public class JoranConfiguratorTest {
     logger.debug("hello user2");
 
     assertEquals(1, listAppender.list.size());
-    LoggingEvent le = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("hello user2", le.getMessage());
   }
 
@@ -234,9 +234,9 @@ public class JoranConfiguratorTest {
     logger.debug("hello user3");
 
     assertEquals(2, listAppender.list.size());
-    LoggingEvent le = (LoggingEvent) listAppender.list.get(0);
+    ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
     assertEquals("hello user1", le.getMessage());
-    le = (LoggingEvent) listAppender.list.get(1);
+    le = (ILoggingEvent) listAppender.list.get(1);
     assertEquals("hello user2", le.getMessage());
   }
 }

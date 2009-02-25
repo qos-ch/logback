@@ -10,11 +10,11 @@
 
 package chapter4;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 
-public class CountingConsoleAppender extends AppenderBase<LoggingEvent> {
+public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   static int DEFAULT_LIMIT = 10;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
@@ -40,7 +40,7 @@ public class CountingConsoleAppender extends AppenderBase<LoggingEvent> {
     super.start();
   }
 
-  public void append(LoggingEvent event) {
+  public void append(ILoggingEvent event) {
     if (counter >= limit) {
       return;
     }

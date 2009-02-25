@@ -1,7 +1,7 @@
 package ch.qos.logback.classic.filter;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
@@ -29,7 +29,7 @@ public class ThresholdFilter extends Filter {
       return FilterReply.NEUTRAL;
     }
     
-    LoggingEvent event = (LoggingEvent)eventObject;
+    ILoggingEvent event = (ILoggingEvent)eventObject;
     
     if (event.getLevel().isGreaterOrEqual(level)) {
       return FilterReply.NEUTRAL;

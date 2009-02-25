@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +11,7 @@ import org.slf4j.helpers.BasicMarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class MarkerConverterTest {
@@ -70,7 +71,7 @@ public class MarkerConverterTest {
     assertEquals("testParent [ child1, child2, child3 ]", result);
   }
   
-  private LoggingEvent createLoggingEvent(Marker marker) {
+  private ILoggingEvent createLoggingEvent(Marker marker) {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(LoggerContext.ROOT_NAME),
         Level.DEBUG, "test message", null, null);
     le.setMarker(marker);

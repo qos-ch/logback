@@ -23,7 +23,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextRemoteView;
 import ch.qos.logback.classic.spi.LoggerRemoteView;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -36,7 +36,7 @@ public class SocketAppenderTest {
   int port = 4561;
   LoggerContext lc = new LoggerContext();
   LoggerContext serverLC = new LoggerContext();
-  ListAppender<LoggingEvent> la = new ListAppender<LoggingEvent>();
+  ListAppender<ILoggingEvent> la = new ListAppender<ILoggingEvent>();
   SocketAppender socketAppender = new SocketAppender();
 
   private SimpleSocketServer simpleSocketServer;
@@ -66,7 +66,7 @@ public class SocketAppenderTest {
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
-    LoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = la.list.get(0);
     assertEquals("test msg", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
@@ -86,7 +86,7 @@ public class SocketAppenderTest {
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
-    LoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = la.list.get(0);
 
     LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
     assertNotNull(loggerRemoteView);
@@ -115,10 +115,10 @@ public class SocketAppenderTest {
     simpleSocketServer.close();
     simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
-    ListAppender<LoggingEvent> la = getListAppender();
+    ListAppender<ILoggingEvent> la = getListAppender();
     assertEquals(1, la.list.size());
 
-    LoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = la.list.get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
   }
@@ -142,7 +142,7 @@ public class SocketAppenderTest {
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
-    LoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = la.list.get(0);
     assertEquals("testMarker", remoteEvent.getMarker().getName());
   }
 
@@ -165,13 +165,13 @@ public class SocketAppenderTest {
     simpleSocketServer.close();
     simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
     assertTrue(simpleSocketServer.isClosed());
-    ListAppender<LoggingEvent> la = getListAppender();
+    ListAppender<ILoggingEvent> la = getListAppender();
 
     assertEquals(2, la.list.size());
 
     // We observe the second logging event. It should provide us with
     // the updated MDC property.
-    LoggingEvent remoteEvent = la.list.get(1);
+    ILoggingEvent remoteEvent = la.list.get(1);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
   }
@@ -196,7 +196,7 @@ public class SocketAppenderTest {
     assertTrue(simpleSocketServer.isClosed());
     assertEquals(1, la.list.size());
 
-    LoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = la.list.get(0);
     assertEquals("test msg 2", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
@@ -218,9 +218,9 @@ public class SocketAppenderTest {
     Thread.yield();
   }
 
-  ListAppender<LoggingEvent> getListAppender() {
+  ListAppender<ILoggingEvent> getListAppender() {
     Logger root = serverLC.getLogger("root");
-    return (ListAppender<LoggingEvent>) root.getAppender(LIST_APPENDER_NAME);
+    return (ListAppender<ILoggingEvent>) root.getAppender(LIST_APPENDER_NAME);
   }
 
   private void configureClient() {

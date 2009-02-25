@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.ContextInitializer;
 
 /**
@@ -112,11 +112,11 @@ public class JMSQueueSink implements javax.jms.MessageListener {
   }
 
   public void onMessage(javax.jms.Message message) {
-    LoggingEvent event;
+    ILoggingEvent event;
     try {
       if (message instanceof ObjectMessage) {
         ObjectMessage objectMessage = (ObjectMessage) message;
-        event = (LoggingEvent) objectMessage.getObject();
+        event = (ILoggingEvent) objectMessage.getObject();
         Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerRemoteView().getName());
         log.callAppenders(event);
       } else {

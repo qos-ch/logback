@@ -20,12 +20,12 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 // Contributors: Moses Hohman <mmhohman@rainbow.uchicago.edu>
 
 /**
- * Read {@link LoggingEvent} objects sent from a remote client using Sockets
+ * Read {@link ILoggingEvent} objects sent from a remote client using Sockets
  * (TCP). These logging events are logged according to local policy, as if they
  * were generated locally.
  * 
@@ -69,13 +69,13 @@ public class SocketNode implements Runnable {
   // }
 
   public void run() {
-    LoggingEvent event;
+    ILoggingEvent event;
     Logger remoteLogger;
 
     try {
       while (!closed) {
         // read an event from the wire
-        event = (LoggingEvent) ois.readObject();
+        event = (ILoggingEvent) ois.readObject();
         // get a logger from the hierarchy. The name of the logger is taken to
         // be the name contained in the event.
         remoteLogger = context.getLogger(event.getLoggerRemoteView().getName());

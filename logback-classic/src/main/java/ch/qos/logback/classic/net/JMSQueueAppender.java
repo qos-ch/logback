@@ -19,7 +19,7 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.Context;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.net.JMSAppenderBase;
 
@@ -33,7 +33,7 @@ import ch.qos.logback.core.net.JMSAppenderBase;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class JMSQueueAppender extends JMSAppenderBase<LoggingEvent> {
+public class JMSQueueAppender extends JMSAppenderBase<ILoggingEvent> {
 
   static int SUCCESSIVE_FAILURE_LIMIT = 3;
 
@@ -159,14 +159,14 @@ public class JMSQueueAppender extends JMSAppenderBase<LoggingEvent> {
    * This method called by {@link AppenderBase#doAppend} method to do most
    * of the real appending work.
    */
-  public void append(LoggingEvent event) {
+  public void append(ILoggingEvent event) {
     if (!isStarted()) {
       return;
     }
 
     try {
       ObjectMessage msg = queueSession.createObjectMessage();
-      msg.setObject(event);
+      msg.setObject(event.getSDO());
       queueSender.send(msg);
       successiveFailureCount = 0;
     } catch (Exception e) {

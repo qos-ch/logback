@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ch.qos.logback.classic.spi.CallerData;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.core.db.DBAppenderBase;
 
@@ -35,7 +35,7 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public class DBAppender extends DBAppenderBase<LoggingEvent> {
+public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   protected final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
   protected final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
   protected static final String insertSQL;
@@ -75,7 +75,7 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
   @Override
   protected void subAppend(Object eventObject, Connection connection,
       PreparedStatement insertStatement) throws Throwable {
-    LoggingEvent event = (LoggingEvent) eventObject;
+    ILoggingEvent event = (ILoggingEvent) eventObject;
 
     bindLoggingEventWithInsertStatement(insertStatement, event);
     // This is expensive... should we do it every time?
@@ -96,7 +96,7 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     }
   }
 
-  void bindLoggingEventWithInsertStatement(PreparedStatement stmt, LoggingEvent event)
+  void bindLoggingEventWithInsertStatement(PreparedStatement stmt, ILoggingEvent event)
       throws SQLException {
     stmt.setLong(1, event.getTimeStamp());
     stmt.setString(2, event.getFormattedMessage());
@@ -117,7 +117,7 @@ public class DBAppender extends DBAppenderBase<LoggingEvent> {
     }
   }
 
-  Map<String, String> mergePropertyMaps(LoggingEvent event) {
+  Map<String, String> mergePropertyMaps(ILoggingEvent event) {
     Map<String, String> mergedMap = new HashMap<String, String>();
     // we add the context properties first, then the event properties, since
     // we consider that event-specific properties should have priority over

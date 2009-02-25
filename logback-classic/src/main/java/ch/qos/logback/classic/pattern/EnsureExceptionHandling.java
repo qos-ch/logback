@@ -1,12 +1,12 @@
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
 
 public class EnsureExceptionHandling implements
-    PostCompileProcessor<LoggingEvent> {
+    PostCompileProcessor<ILoggingEvent> {
 
   /**
    * This implementation checks if any of the converters in the chain handles
@@ -23,10 +23,10 @@ public class EnsureExceptionHandling implements
    * 
    * 
    */
-  public void process(Converter<LoggingEvent> head) {
+  public void process(Converter<ILoggingEvent> head) {
     if (!chainHandlesThrowable(head)) {
-      Converter<LoggingEvent> tail = ConverterUtil.findTail(head);
-      Converter<LoggingEvent> exConverter = new ExtendedThrowableProxyConverter();
+      Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
+      Converter<ILoggingEvent> exConverter = new ExtendedThrowableProxyConverter();
       if (tail == null) {
         head = exConverter;
       } else {

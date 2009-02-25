@@ -18,6 +18,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.net.mock.MockTopic;
 import ch.qos.logback.classic.net.mock.MockTopicConnectionFactory;
 import ch.qos.logback.classic.net.mock.MockTopicPublisher;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
@@ -57,14 +58,14 @@ public class JMSTopicAppenderTest  {
   public void testAppendOk() { 
     appender.start();
 
-    LoggingEvent le = createLoggingEvent();
+    ILoggingEvent le = createLoggingEvent();
     appender.append(le);
     
     MockTopicPublisher tp = (MockTopicPublisher)appender.topicPublisher;
     assertEquals(1, tp.getMessageList().size());
     ObjectMessage message = (ObjectMessage) tp.getMessageList().get(0);
     try {
-      assertEquals(le, message.getObject());
+      assertEquals(le.getSDO(), message.getObject());
     } catch (Exception e) {
       fail();
     }
@@ -77,7 +78,7 @@ public class JMSTopicAppenderTest  {
     //make sure the append method does not work
     appender.topicPublisher = null;
     
-    LoggingEvent le = createLoggingEvent();
+    ILoggingEvent le = createLoggingEvent();
     for (int i = 1; i <= 3; i++) {
       appender.append(le);
       assertEquals(i, context.getStatusManager().getCount());
@@ -219,7 +220,7 @@ public class JMSTopicAppenderTest  {
     assertFalse(appender.isStarted());
   }
 
-  private LoggingEvent createLoggingEvent() {
+  private ILoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent();
     le.setLevel(Level.DEBUG);
     le.setMessage("test message");

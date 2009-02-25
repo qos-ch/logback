@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 
@@ -53,7 +53,7 @@ public class SyslogStartConverter extends ClassicConverter {
     }
   }
 
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     StringBuilder sb = new StringBuilder();
 
     int pri = facility + LevelToSyslogSeverity.convert(event);

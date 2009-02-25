@@ -18,6 +18,16 @@ import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.testUtil.Env;
 
+// As of logback 0.9.15, 
+//   average time  per logging event: 3979 nanoseconds
+//   size 545'648 bytes
+// 
+// Using LoggingEventDO
+// 
+//   average time  per logging event: 4052 nanoseconds
+//   size 544'086 bytes
+ 
+
 public class LoggingEventSerializationPerfTest {
 
   static int LOOP_LEN = 10 * 1000;
@@ -28,7 +38,6 @@ public class LoggingEventSerializationPerfTest {
   @Before
   public void setUp() throws Exception {
     oos = new ObjectOutputStream(noos);
-   
   }
 
   @After
@@ -40,7 +49,10 @@ public class LoggingEventSerializationPerfTest {
     int resetCounter = 0;
     for (int i = 0; i < loopLen; i++) {
       try {
-        oos.writeObject(builder.build(i));
+        ILoggingEvent le = (ILoggingEvent) builder.build(i);
+        //oos.writeObject(le);
+        oos.writeObject(LoggingEventSDO.build(le));
+
         oos.flush();
         if (++resetCounter >= CoreConstants.OOS_RESET_FREQUENCY) {
           oos.reset();
@@ -64,13 +76,19 @@ public class LoggingEventSerializationPerfTest {
 
     doLoop(builder, LOOP_LEN);
     noos.reset();
-    double avg = doLoop(builder, LOOP_LEN);
+    double avg = doLoop(builder, LOOP_LEN);     noos.reset();
+    avg += doLoop(builder, LOOP_LEN);     noos.reset();
+    avg += doLoop(builder, LOOP_LEN);    noos.reset();
 
+    avg = avg/3;
+
+    System.out.println("avetage time per logging event "+avg+" nanoseconds");
+    System.out.println("noos size "+noos.size());
                          
     long actualSize = (long) (noos.size()/(1024*1.1d));
     double baosSizeLimit = 500;
 
-    assertTrue("baos size" + actualSize + " should be less than "
+    assertTrue("baos size " + actualSize + " should be less than "
         + baosSizeLimit, baosSizeLimit > actualSize);
 
     // the reference was computed on Orion (Ceki's computer)

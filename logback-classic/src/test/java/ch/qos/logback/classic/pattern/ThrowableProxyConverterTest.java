@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztHelper;
 
@@ -31,8 +32,8 @@ public class ThrowableProxyConverterTest {
   public void tearDown() throws Exception {
   }
 
-  private LoggingEvent createLoggingEvent(Throwable t) {
-    LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
+  private ILoggingEvent createLoggingEvent(Throwable t) {
+    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
         .getLogger(LoggerContext.ROOT_NAME), Level.DEBUG, "test message", t,
         null);
     return le;
@@ -53,7 +54,7 @@ public class ThrowableProxyConverterTest {
   void verify(Throwable t) {
     t.printStackTrace(pw);
 
-    LoggingEvent le = createLoggingEvent(t);
+    ILoggingEvent le = createLoggingEvent(t);
     String result = tpc.convert(le);
     System.out.println(result);
     result = result.replace("common frames omitted", "more");

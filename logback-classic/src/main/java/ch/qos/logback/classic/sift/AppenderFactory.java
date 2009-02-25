@@ -11,13 +11,13 @@ package ch.qos.logback.classic.sift;
 
 import java.util.List;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.sift.AppenderFactoryBase;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class AppenderFactory extends AppenderFactoryBase<LoggingEvent>{
+public class AppenderFactory extends AppenderFactoryBase<ILoggingEvent>{
 
   String mdcKey;
   
@@ -26,7 +26,7 @@ public class AppenderFactory extends AppenderFactoryBase<LoggingEvent>{
       this.mdcKey = mdcKey;
   }
 
-  public SiftingJoranConfiguratorBase<LoggingEvent> getSiftingJoranConfigurator(String k) {
+  public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String k) {
     return new SiftingJoranConfigurator(mdcKey, k);
   }
 

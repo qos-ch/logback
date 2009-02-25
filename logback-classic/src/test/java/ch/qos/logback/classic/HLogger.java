@@ -19,7 +19,7 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 
 import ch.qos.logback.classic.ClassicGlobal;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 
 
@@ -55,7 +55,7 @@ public class HLogger extends MarkerIgnoringBase {
   /**
    * Array of appenders.
    */
-  private ArrayList<Appender<LoggingEvent>> appenderList;
+  private ArrayList<Appender<ILoggingEvent>> appenderList;
 
   /**
    * Additivity is set to true by default, that is children inherit the
@@ -171,7 +171,7 @@ public class HLogger extends MarkerIgnoringBase {
    * @param event
    *          The event to log
    */
-  public void callAppenders(LoggingEvent event) {
+  public void callAppenders(ILoggingEvent event) {
     int writes = 0;
 
     for (HLogger l = this; l != null; l = l.parent) {
@@ -195,9 +195,9 @@ public class HLogger extends MarkerIgnoringBase {
     // }
   }
 
-  private int appendLoopOnAppenders(LoggingEvent event) {
+  private int appendLoopOnAppenders(ILoggingEvent event) {
     int size = 0;
-    Appender<LoggingEvent> appender;
+    Appender<ILoggingEvent> appender;
 
     if (appenderList != null) {
       size = appenderList.size();

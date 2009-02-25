@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class MDCConverter extends ClassicConverter {
 
@@ -27,7 +27,7 @@ public class MDCConverter extends ClassicConverter {
   }
 
   @Override
-  public String convert(LoggingEvent event) {
+  public String convert(ILoggingEvent event) {
     Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
     if (mdcPropertyMap == null) {

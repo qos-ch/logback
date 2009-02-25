@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.net.mock.MockQueue;
 import ch.qos.logback.classic.net.mock.MockQueueConnectionFactory;
 import ch.qos.logback.classic.net.mock.MockQueueSender;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
@@ -45,14 +46,14 @@ public class JMSQueueAppenderTest extends TestCase {
   public void testAppendOk() { 
     appender.start();
 
-    LoggingEvent le = createLoggingEvent();
+    ILoggingEvent le = createLoggingEvent();
     appender.append(le);
     
     MockQueueSender qs = (MockQueueSender)appender.queueSender;
     assertEquals(1, qs.getMessageList().size());
     ObjectMessage message = (ObjectMessage) qs.getMessageList().get(0);
     try {
-      assertEquals(le, message.getObject());
+      assertEquals(le.getSDO(), message.getObject());
     } catch (Exception e) {
       fail();
     }
@@ -64,7 +65,7 @@ public class JMSQueueAppenderTest extends TestCase {
     //make sure the append method does not work
     appender.queueSender = null;
     
-    LoggingEvent le = createLoggingEvent();
+    ILoggingEvent le = createLoggingEvent();
     for (int i = 1; i <= 3; i++) {
       appender.append(le);
       assertEquals(i, context.getStatusManager().getCount());
@@ -113,7 +114,7 @@ public class JMSQueueAppenderTest extends TestCase {
     assertFalse(appender.isStarted());
   }
 
-  private LoggingEvent createLoggingEvent() {
+  private ILoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent();
     le.setLevel(Level.DEBUG);
     le.setMessage("test message");

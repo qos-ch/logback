@@ -10,11 +10,11 @@
 package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.CallerData;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class ClassOfCallerConverter extends NamedConverter {
 
-  protected String getFullyQualifiedName(LoggingEvent event) {
+  protected String getFullyQualifiedName(ILoggingEvent event) {
     
     CallerData[] cda = event.getCallerData();
     if (cda != null && cda.length > 0) {

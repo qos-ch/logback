@@ -33,7 +33,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.html.HTMLLayout;
 import ch.qos.logback.classic.html.XHTMLEntityResolver;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -71,7 +71,7 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.addTo("noreply@qos.ch");
   }
 
-  private Layout<LoggingEvent> buildPatternLayout(LoggerContext lc) {
+  private Layout<ILoggingEvent> buildPatternLayout(LoggerContext lc) {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader(HEADER);
@@ -81,7 +81,7 @@ public class SMTPAppender_SubethaSMTPTest {
     return layout;
   }
 
-  private Layout<LoggingEvent> buildHTMLLayout(LoggerContext lc) {
+  private Layout<ILoggingEvent> buildHTMLLayout(LoggerContext lc) {
     HTMLLayout layout = new HTMLLayout();
     layout.setContext(lc);
     // layout.setFileHeader(HEADER);

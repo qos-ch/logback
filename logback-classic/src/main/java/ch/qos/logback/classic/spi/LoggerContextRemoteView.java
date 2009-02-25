@@ -34,11 +34,13 @@ public class LoggerContextRemoteView implements Serializable {
 
   final String name;
   final Map<String, String> propertyMap;
-
+  final long birthTime;
+  
   public LoggerContextRemoteView(LoggerContext lc) {
     // this(lc.getName(), lc.getPropertyMap());
     this.name = lc.getName();
     this.propertyMap = lc.getCopyOfPropertyMap();
+    this.birthTime = lc.getBithTime();
   }
 
   // public LoggerContextRemoteView(String name, Map<String, String>
@@ -55,4 +57,7 @@ public class LoggerContextRemoteView implements Serializable {
     return propertyMap;
   }
 
+  public long getBirthTime() {
+    return birthTime;
+  }
 }

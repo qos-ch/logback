@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
@@ -23,7 +23,7 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<LoggingEvent> {
+public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILoggingEvent> {
 
   String key;
   String value;
@@ -62,10 +62,10 @@ public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<Logg
   }
 
   @SuppressWarnings("unchecked")
-  public Appender<LoggingEvent> getAppender() {
+  public Appender<ILoggingEvent> getAppender() {
     Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
     HashMap map = (HashMap) omap.get(ActionConst.APPENDER_BAG);
     Collection values = map.values();
-    return (Appender<LoggingEvent>) values.iterator().next();
+    return (Appender<ILoggingEvent>) values.iterator().next();
   }
 }

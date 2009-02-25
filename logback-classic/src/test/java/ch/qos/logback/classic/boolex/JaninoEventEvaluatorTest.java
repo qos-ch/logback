@@ -11,6 +11,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.pattern.ConverterTest;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
@@ -44,7 +45,7 @@ public class JaninoEventEvaluatorTest  {
     jee.setContext(loggerContext);
     jee.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     //System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
@@ -56,7 +57,7 @@ public class JaninoEventEvaluatorTest  {
     jee.setContext(loggerContext);
     jee.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     //System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
@@ -68,7 +69,7 @@ public class JaninoEventEvaluatorTest  {
     jee.setContext(loggerContext);
     jee.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     assertTrue(jee.evaluate(event));
   }
 
@@ -81,7 +82,7 @@ public class JaninoEventEvaluatorTest  {
     jee.addMatcher(matcherX);
     jee.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     assertTrue(jee.evaluate(event));
   }
 
@@ -106,7 +107,7 @@ public class JaninoEventEvaluatorTest  {
     jee.addMatcher(matcherX);
     jee.start();
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     try {
       jee.evaluate(event);
       fail("We should not reach this point");
@@ -165,7 +166,7 @@ public class JaninoEventEvaluatorTest  {
 
     assertTrue(jee.isStarted());
 
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
 
     for (int i = 0; i < JaninoEventEvaluatorBase.ERROR_THRESHOLD; i++) {
       try {
@@ -186,7 +187,7 @@ public class JaninoEventEvaluatorTest  {
   // LoggingEvent)
   // with 10 parameters 510 nanos (all levels + fields)
   void loop(JaninoEventEvaluator jee, String msg) throws Exception {
-    LoggingEvent event = makeLoggingEvent(null);
+    ILoggingEvent event = makeLoggingEvent(null);
     //final long start = System.nanoTime();
     for (int i = 0; i < LEN; i++) {
       jee.evaluate(event);

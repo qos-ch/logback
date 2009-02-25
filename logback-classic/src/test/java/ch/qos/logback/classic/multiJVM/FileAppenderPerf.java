@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
@@ -28,7 +28,7 @@ public class FileAppenderPerf {
   static LoggerContext buildLoggerContext(String filename, boolean safetyMode) {
     LoggerContext loggerContext = new LoggerContext();
 
-    FileAppender<LoggingEvent> fa = new FileAppender<LoggingEvent>();
+    FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
 
     PatternLayout patternLayout = new PatternLayout();
     patternLayout.setPattern("%5p %c - %m%n");

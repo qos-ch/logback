@@ -23,6 +23,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
@@ -46,10 +47,10 @@ public class EvaluatorJoranTest  {
     assertNotNull(evaluator);
     
     Logger logger = loggerContext.getLogger("xx");
-    LoggingEvent event0 = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
+    ILoggingEvent event0 = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
     assertTrue(evaluator.evaluate(event0));
     
-    LoggingEvent event1 = new LoggingEvent("foo", logger, Level.DEBUG, "random blurb", null, null);
+    ILoggingEvent event1 = new LoggingEvent("foo", logger, Level.DEBUG, "random blurb", null, null);
     assertFalse(evaluator.evaluate(event1));
   }
   
@@ -94,7 +95,7 @@ public class EvaluatorJoranTest  {
     //StatusPrinter.print(loggerContext);
     
     String message = "stacktrace bla bla logging";
-    LoggingEvent event = new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, message, null, null);
+    ILoggingEvent event = new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, message, null, null);
     
     assertTrue(ee.evaluate(event));
   }

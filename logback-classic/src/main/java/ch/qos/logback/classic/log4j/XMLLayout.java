@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import ch.qos.logback.classic.spi.CallerData;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.LayoutBase;
@@ -31,7 +31,7 @@ import ch.qos.logback.core.helpers.Transform;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class XMLLayout extends LayoutBase<LoggingEvent> {
+public class XMLLayout extends LayoutBase<ILoggingEvent> {
 
   private final int DEFAULT_SIZE = 256;
   private final int UPPER_LIMIT = 2048;
@@ -88,9 +88,9 @@ public class XMLLayout extends LayoutBase<LoggingEvent> {
   }
 
   /**
-   * Formats a {@link LoggingEvent} in conformity with the log4j.dtd.
+   * Formats a {@link ILoggingEvent} in conformity with the log4j.dtd.
    */
-  public String doLayout(LoggingEvent event) {
+  public String doLayout(ILoggingEvent event) {
 
     // Reset working buffer. If the buffer is too large, then we need a new
     // one in order to avoid the penalty of creating a large array.

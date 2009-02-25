@@ -1,10 +1,10 @@
 package chapter5;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase<LoggingEvent> {
+public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -17,12 +17,12 @@ public class MySampleLayout2 extends LayoutBase<LoggingEvent> {
     this.printThreadName = printThreadName;
   }
 
-  public String doLayout(LoggingEvent event) {
+  public String doLayout(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
     if (prefix != null) {
       sbuf.append(prefix + ": ");
     }
-    sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
+    sbuf.append(event.getTimeStamp() - event.getContextBirthTime());
     sbuf.append(" ");
     sbuf.append(event.getLevel());
     if (printThreadName) {

@@ -22,6 +22,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.TestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.spi.ThrowableProxy;
@@ -43,7 +44,7 @@ public class HTMLLayoutTest {
     lc = new LoggerContext();
     lc.setName("default");
 
-    ListAppender<LoggingEvent> appender = new ListAppender<LoggingEvent>();
+    ListAppender<ILoggingEvent> appender = new ListAppender<ILoggingEvent>();
     appender.setContext(lc);
     layout = new HTMLLayout();
     layout.setThrowableRenderer(new DefaultThrowableRenderer());
@@ -108,7 +109,7 @@ public class HTMLLayoutTest {
 
   @Test
   public void testDoLayout() throws Exception {
-    LoggingEvent le = createLoggingEvent();
+    ILoggingEvent le = createLoggingEvent();
 
     String result = layout.getFileHeader();
     result += layout.getPresentationHeader();
@@ -222,7 +223,7 @@ public class HTMLLayoutTest {
     root.getAppender("LIST");
     String msg = "Simon says";
     root.debug(msg);
-    StringListAppender<LoggingEvent> sla = (StringListAppender<LoggingEvent>) root
+    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root
         .getAppender("LIST");
     assertNotNull(sla);
     StatusPrinter.print(lc);

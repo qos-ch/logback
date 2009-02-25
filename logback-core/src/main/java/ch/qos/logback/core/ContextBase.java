@@ -16,6 +16,8 @@ import ch.qos.logback.core.status.StatusManager;
 
 public class ContextBase implements Context {
 
+  private long birthTime = System.currentTimeMillis();
+  
   private String name;
   private StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
@@ -89,5 +91,9 @@ public class ContextBase implements Context {
     } else {
       throw new IllegalStateException("Context has been already given a name");
     }
+  }
+
+  public long getBithTime() {
+    return birthTime;
   }
 }

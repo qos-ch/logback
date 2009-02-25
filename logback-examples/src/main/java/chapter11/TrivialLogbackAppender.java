@@ -9,10 +9,10 @@
  */
 package chapter11;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
-public class TrivialLogbackAppender extends AppenderBase<LoggingEvent> {
+public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
 
   @Override
   public void start() {
@@ -24,7 +24,7 @@ public class TrivialLogbackAppender extends AppenderBase<LoggingEvent> {
   }
 
   @Override
-  protected void append(LoggingEvent loggingevent) {
+  protected void append(ILoggingEvent loggingevent) {
     // note that AppenderBase.doAppend will invoke this method only if
     // this appender was successfully started.
     
