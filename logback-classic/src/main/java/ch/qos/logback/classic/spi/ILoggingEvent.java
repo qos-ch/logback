@@ -5,21 +5,21 @@ import java.util.Map;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.core.spi.SDOAware;
 
-public interface ILoggingEvent extends SDOAware {
+/**
+ * The core interface in logback-classic.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public interface ILoggingEvent {
 
   public String getThreadName();
-
   public Level getLevel();
-
   public String getMessage();
-  
-  public LoggerRemoteView getLoggerRemoteView();
-  
+  public Object[] getArgumentArray();
   public String getFormattedMessage();
 
-  public Object[] getArgumentArray();
+  public LoggerRemoteView getLoggerRemoteView();
 
   public ThrowableProxy getThrowableProxy();
 

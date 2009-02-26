@@ -10,6 +10,8 @@
 
 package ch.qos.logback.classic.net;
 
+import java.io.Serializable;
+
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -22,6 +24,7 @@ import javax.naming.Context;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.net.JMSAppenderBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * A simple appender that publishes events to a JMS Topic. The events are
@@ -44,7 +47,9 @@ public class JMSTopicAppender extends JMSAppenderBase<ILoggingEvent> {
   TopicPublisher topicPublisher;
 
   int successiveFailureCount = 0;
-
+  
+  private PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  
   public JMSTopicAppender() {
   }
 
@@ -167,8 +172,8 @@ public class JMSTopicAppender extends JMSAppenderBase<ILoggingEvent> {
 
     try {
       ObjectMessage msg = topicSession.createObjectMessage();
-
-      msg.setObject(event.getSDO());
+      Serializable so = pst.transform(event);
+      msg.setObject(so);
       topicPublisher.publish(msg);
       successiveFailureCount = 0;
     } catch (Exception e) {

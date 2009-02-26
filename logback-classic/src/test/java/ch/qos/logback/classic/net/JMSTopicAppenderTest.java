@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.ObjectMessage;
@@ -23,12 +24,14 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class JMSTopicAppenderTest  {
 
   ch.qos.logback.core.Context context;
   JMSTopicAppender appender;
-
+  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  
 
   @Before
   public void setUp() throws Exception {
@@ -65,7 +68,8 @@ public class JMSTopicAppenderTest  {
     assertEquals(1, tp.getMessageList().size());
     ObjectMessage message = (ObjectMessage) tp.getMessageList().get(0);
     try {
-      assertEquals(le.getSDO(), message.getObject());
+      Serializable witness = pst.transform(le);
+      assertEquals(witness, message.getObject());
     } catch (Exception e) {
       fail();
     }

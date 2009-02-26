@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 
 import org.junit.After;
@@ -19,6 +20,8 @@ import org.slf4j.MDC;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.net.LoggingEventPreSerializationTransformer;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class LoggingEventSerializationTest {
 
@@ -28,6 +31,7 @@ public class LoggingEventSerializationTest {
   ByteArrayOutputStream bos;
   ObjectOutputStream oos;
   ObjectInputStream inputStream;
+  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
   @Before
   public void setUp() throws Exception {
@@ -87,11 +91,13 @@ public class LoggingEventSerializationTest {
   public void updatedMDC() throws Exception {
     MDC.put("key", "testValue");
     ILoggingEvent event1 = createLoggingEvent();
-    oos.writeObject(event1.getSDO());
+    Serializable s1 = pst.transform(event1);
+    oos.writeObject(s1);
 
     MDC.put("key", "updatedTestValue");
     ILoggingEvent event2 = createLoggingEvent();
-    oos.writeObject(event2.getSDO());
+    Serializable s2 = pst.transform(event2);
+    oos.writeObject(s2);
 
     // create the input stream based on the ouput stream
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
@@ -190,7 +196,8 @@ public class LoggingEventSerializationTest {
 
   private ILoggingEvent writeAndRead(ILoggingEvent event) throws IOException,
       ClassNotFoundException {
-    oos.writeObject(event.getSDO());
+    Serializable ser = pst.transform(event);
+    oos.writeObject(ser);
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     inputStream = new ObjectInputStream(bis);
 

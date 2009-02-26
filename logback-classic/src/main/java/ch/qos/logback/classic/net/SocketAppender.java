@@ -15,6 +15,7 @@ import java.net.InetAddress;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * Sends {@link ILoggingEvent} objects to a remote a log server, usually a
@@ -31,6 +32,8 @@ public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
 
   boolean includeCallerData = false;
 
+  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  
   public SocketAppender() {
   }
 
@@ -62,5 +65,9 @@ public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
   public void setIncludeCallerData(boolean includeCallerData) {
     this.includeCallerData = includeCallerData;
   }
-
+  
+  public PreSerializationTransformer<ILoggingEvent> getPST() {
+    return pst;
+  }
+  
 }

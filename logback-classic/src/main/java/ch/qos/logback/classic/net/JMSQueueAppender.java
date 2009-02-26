@@ -10,6 +10,8 @@
 
 package ch.qos.logback.classic.net;
 
+import java.io.Serializable;
+
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -22,6 +24,7 @@ import javax.naming.Context;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.net.JMSAppenderBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * A simple appender that publishes events to a JMS Queue. The events are
@@ -45,6 +48,8 @@ public class JMSQueueAppender extends JMSAppenderBase<ILoggingEvent> {
 
   int successiveFailureCount = 0;
 
+  private PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  
   public JMSQueueAppender() {
   }
 
@@ -166,7 +171,8 @@ public class JMSQueueAppender extends JMSAppenderBase<ILoggingEvent> {
 
     try {
       ObjectMessage msg = queueSession.createObjectMessage();
-      msg.setObject(event.getSDO());
+      Serializable so = pst.transform(event);
+      msg.setObject(so);
       queueSender.send(msg);
       successiveFailureCount = 0;
     } catch (Exception e) {

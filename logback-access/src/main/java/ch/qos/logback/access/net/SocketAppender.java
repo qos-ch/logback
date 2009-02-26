@@ -15,6 +15,7 @@ import java.net.InetAddress;
 
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * Sends {@link AccessEvent} objects to a remote a log server, usually a
@@ -29,6 +30,8 @@ import ch.qos.logback.core.net.SocketAppenderBase;
  */
 
 public class SocketAppender extends SocketAppenderBase<AccessEvent> {
+  
+  PreSerializationTransformer<AccessEvent> pst = new AccessEventPreSerializationTransformer();
   
   public SocketAppender() {
   }
@@ -57,4 +60,7 @@ public class SocketAppender extends SocketAppenderBase<AccessEvent> {
     ae.prepareForDeferredProcessing();
   }
 
+  public PreSerializationTransformer<AccessEvent> getPST() {
+    return pst;
+  }
 }

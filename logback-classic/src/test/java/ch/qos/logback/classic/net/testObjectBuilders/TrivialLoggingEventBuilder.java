@@ -27,5 +27,5 @@ public class TrivialLoggingEventBuilder implements Builder {
     le.setMessage(MSG_PREFIX);
     le.setThreadName("threadName");
     return le;
-  }
+  } 
 }

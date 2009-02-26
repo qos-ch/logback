@@ -14,7 +14,7 @@ import org.slf4j.helpers.BogoPerf;
 import ch.qos.logback.classic.net.NOPOutputStream;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventWithParametersBuilder;
-import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
+import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder; 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.testUtil.Env;
 

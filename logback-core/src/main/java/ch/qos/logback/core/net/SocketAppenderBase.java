@@ -13,12 +13,13 @@ package ch.qos.logback.core.net;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.spi.SDOAware;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * 
@@ -152,12 +153,8 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     if (oos != null) {
       try {
         postProcessEvent(event);
-        // if an object is SDOAware, then its SDO has preference
-        if(event instanceof SDOAware) {
-          oos.writeObject(((SDOAware)event).getSDO());
-        } else {
-          oos.writeObject(event);
-        }
+        Serializable serEvent = getPST().transform(event);
+        oos.writeObject(serEvent);
         // addInfo("=========Flushing.");
         oos.flush();
         if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
@@ -185,6 +182,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   }
 
   protected abstract void postProcessEvent(E event);
+  protected abstract PreSerializationTransformer<E> getPST();
 
   void fireConnector() {
     if (connector == null) {
@@ -256,6 +254,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     return reconnectionDelay;
   }
 
+  
   /**
    * The Connector will reconnect when the server becomes available again. It
    * does this by attempting to open a new connection every

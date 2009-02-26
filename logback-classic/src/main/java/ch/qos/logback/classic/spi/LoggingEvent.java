@@ -10,10 +10,6 @@
 
 package ch.qos.logback.classic.spi;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +36,6 @@ import ch.qos.logback.classic.Logger;
  * @author S&eacute;bastien Pennec
  */
 public class LoggingEvent implements ILoggingEvent {
-
-  private static final long serialVersionUID = 3075964498087694229L;
-
-  private static final int NULL_ARGUMENT_ARRAY = -1;
-  private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
   /**
    * Fully qualified name of the calling Logger class. This field does not
@@ -91,8 +82,6 @@ public class LoggingEvent implements ILoggingEvent {
    * created.
    */
   private long timeStamp;
-
-  private LoggingEventSDO loggingEventSDO;
   
   public LoggingEvent() {
   }
@@ -283,43 +272,6 @@ public class LoggingEvent implements ILoggingEvent {
     return mdcPropertyMap;
   }
 
-  private void writeObject(ObjectOutputStream out) throws IOException {
-    out.defaultWriteObject();
-    out.writeInt(level.levelInt);
-    if (argumentArray != null) {
-      int len = argumentArray.length;
-      out.writeInt(len);
-      for (int i = 0; i < argumentArray.length; i++) {
-        if (argumentArray[i] != null) {
-          out.writeObject(argumentArray[i].toString());
-        } else {
-          out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
-        }
-      }
-    } else {
-      out.writeInt(NULL_ARGUMENT_ARRAY);
-    }
-
-  }
-  
-  private void readObject(ObjectInputStream in) throws IOException,
-      ClassNotFoundException {
-    in.defaultReadObject();
-    int levelInt = in.readInt();
-    level = Level.toLevel(levelInt);
-
-    int argArrayLen = in.readInt();
-    if (argArrayLen != NULL_ARGUMENT_ARRAY) {
-      argumentArray = new String[argArrayLen];
-      for (int i = 0; i < argArrayLen; i++) {
-        Object val = in.readObject();
-        if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
-          argumentArray[i] = val;
-        }
-      }
-    }
-  }
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -329,10 +281,4 @@ public class LoggingEvent implements ILoggingEvent {
     return sb.toString();
   }
 
-  public Serializable getSDO() {
-    if(loggingEventSDO == null) {
-      loggingEventSDO = LoggingEventSDO.build(this);
-    }
-    return loggingEventSDO;
-  }
 }

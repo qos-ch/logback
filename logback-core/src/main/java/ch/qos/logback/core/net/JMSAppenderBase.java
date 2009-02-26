@@ -160,7 +160,5 @@ public abstract class JMSAppenderBase<E> extends AppenderBase<E> {
     this.password = password;
   }
 
-
-
   
 }

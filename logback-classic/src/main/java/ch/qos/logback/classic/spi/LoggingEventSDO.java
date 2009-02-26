@@ -36,8 +36,7 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
   private LoggerRemoteView lrv;
   private long timeStamp;
 
-  static LoggingEventSDO build(ILoggingEvent le) {
-
+  public static LoggingEventSDO build(ILoggingEvent le) {
     LoggingEventSDO ledo = new LoggingEventSDO();
     ledo.lrv = le.getLoggerRemoteView();
     ledo.threadName = le.getThreadName();
@@ -153,11 +152,53 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
   public void prepareForDeferredProcessing() {
   }
 
-  /**
-   * LoggerEventSDO is its own SDO
-   */
-  public Serializable getSDO() {
-    return this;
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((message == null) ? 0 : message.hashCode());
+    result = prime * result
+        + ((threadName == null) ? 0 : threadName.hashCode());
+    result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
+    return result;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final LoggingEventSDO other = (LoggingEventSDO) obj;
+    if (message == null) {
+      if (other.message != null)
+        return false;
+    } else if (!message.equals(other.message))
+      return false;
+
+    if (threadName == null) {
+      if (other.threadName != null)
+        return false;
+    } else if (!threadName.equals(other.threadName))
+      return false;
+    if (timeStamp != other.timeStamp)
+      return false;
+    
+    if (marker == null) {
+      if (other.marker != null)
+        return false;
+    } else if (!marker.equals(other.marker))
+      return false;
+    
+    if (mdcPropertyMap == null) {
+      if (other.mdcPropertyMap != null)
+        return false;
+    } else if (!mdcPropertyMap.equals(other.mdcPropertyMap))
+      return false;
+    return true;
+  }
+
+  
 }

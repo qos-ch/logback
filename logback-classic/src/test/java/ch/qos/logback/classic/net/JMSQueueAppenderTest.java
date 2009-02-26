@@ -1,5 +1,7 @@
 package ch.qos.logback.classic.net;
 
+import java.io.Serializable;
+
 import javax.jms.ObjectMessage;
 
 import junit.framework.TestCase;
@@ -12,12 +14,14 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class JMSQueueAppenderTest extends TestCase {
 
   ch.qos.logback.core.Context context;
   JMSQueueAppender appender;
-
+  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  
   @Override
   protected void setUp() throws Exception {
     context = new ContextBase();
@@ -53,7 +57,8 @@ public class JMSQueueAppenderTest extends TestCase {
     assertEquals(1, qs.getMessageList().size());
     ObjectMessage message = (ObjectMessage) qs.getMessageList().get(0);
     try {
-      assertEquals(le.getSDO(), message.getObject());
+      Serializable witness = pst.transform(le);
+      assertEquals(witness, message.getObject());
     } catch (Exception e) {
       fail();
     }
