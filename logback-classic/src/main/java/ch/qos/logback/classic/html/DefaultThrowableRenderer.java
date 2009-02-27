@@ -12,22 +12,30 @@ package ch.qos.logback.classic.html;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.Transform;
 import ch.qos.logback.core.html.IThrowableRenderer;
 
-public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEvent> {
-  
+public class DefaultThrowableRenderer implements
+    IThrowableRenderer<ILoggingEvent> {
+
   static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
-  
+
   public DefaultThrowableRenderer() {
   }
-  
+
+  public void render(StringBuilder sbuf, ILoggingEvent event) {
+    IThrowableProxy tp = event.getThrowableProxy();
+    sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
+    while (tp != null) {
+      render(sbuf, tp);
+      tp = tp.getCause();
+    }
+    sbuf.append("</td></tr>");
+  }
+
   void render(StringBuilder sbuf, IThrowableProxy tp) {
-    StringBuilder firstLine = new StringBuilder();
-    ThrowableProxyUtil.printFirstLine(firstLine, tp);
-    sbuf.append(Transform.escapeTags(firstLine.toString()));
+    printFirstLine(sbuf, tp);
     
     int commonFrames = tp.getCommonFrames();
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
@@ -45,14 +53,15 @@ public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEven
           .append(CoreConstants.LINE_SEPARATOR);
     }
   }
-  
-  public void render(StringBuilder sbuf, ILoggingEvent event) {
-    IThrowableProxy tp = event.getThrowableProxy();
-    sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
-    while(tp != null) {
-      render(sbuf, tp);
-      tp = tp.getCause();
+
+  public void printFirstLine(StringBuilder sb, IThrowableProxy tp) {
+    int commonFrames = tp.getCommonFrames();
+    if (commonFrames > 0) {
+      sb.append("<br />").append(CoreConstants.CAUSED_BY);
     }
-    sbuf.append("</td></tr>");
+    sb.append(tp.getClassName()).append(": ").append(
+        Transform.escapeTags(tp.getMessage()));
+    sb.append(CoreConstants.LINE_SEPARATOR);
   }
+
 }
