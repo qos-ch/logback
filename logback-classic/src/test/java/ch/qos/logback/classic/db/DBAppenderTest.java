@@ -9,9 +9,7 @@ import java.sql.Statement;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
@@ -29,21 +27,13 @@ public class DBAppenderTest  {
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  static DBAppenderTestFixture DB_APPENDER_TEST_FIXTURE;
-  
-  @BeforeClass
-  public  static  void fixtureSetUp() throws SQLException {
-    DB_APPENDER_TEST_FIXTURE = new DBAppenderTestFixture();
-    DB_APPENDER_TEST_FIXTURE.setUp();
-  }
-  
-  @AfterClass
-  public static void fixtureTearDown() throws SQLException {
-    DB_APPENDER_TEST_FIXTURE.tearDown();
-  }
+  DBAppenderTestFixture dbAppenderTestFixture;
   
   @Before
   public void setUp() throws SQLException {
+    dbAppenderTestFixture = new DBAppenderTestFixture();
+    dbAppenderTestFixture.setUp();
+
     lc = new LoggerContext();
     lc.setName("default");
     logger = lc.getLogger("root");
@@ -53,9 +43,9 @@ public class DBAppenderTest  {
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
     connectionSource.setDriverClass(DBAppenderTestFixture.HSQLDB_DRIVER_CLASS);
-    connectionSource.setUrl(DB_APPENDER_TEST_FIXTURE.url);
-    connectionSource.setUser(DB_APPENDER_TEST_FIXTURE.user);
-    connectionSource.setPassword(DB_APPENDER_TEST_FIXTURE.password);
+    connectionSource.setUrl(dbAppenderTestFixture.url);
+    connectionSource.setUser(dbAppenderTestFixture.user);
+    connectionSource.setPassword(dbAppenderTestFixture.password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
     appender.start();
@@ -67,6 +57,7 @@ public class DBAppenderTest  {
     lc = null;
     appender = null;
     connectionSource = null;
+    dbAppenderTestFixture.tearDown();
   }
 
   @Test
@@ -98,6 +89,7 @@ public class DBAppenderTest  {
     stmt.close();
   }
   
+  @Test
   public void testAppendThrowable() throws SQLException {
     ILoggingEvent event = createLoggingEvent();
 
@@ -116,6 +108,7 @@ public class DBAppenderTest  {
     stmt.close();
   }
   
+  @Test
   public void testContextInfo() throws SQLException {
     ILoggingEvent event = createLoggingEvent();
     lc.putProperty("testKey1", "testValue1");
@@ -136,6 +129,7 @@ public class DBAppenderTest  {
     stmt.close();
   }
   
+  @Test
   public void testAppendMultipleEvents() throws SQLException {
     for (int i = 0; i < 10; i++) {
       ILoggingEvent event = createLoggingEvent();
