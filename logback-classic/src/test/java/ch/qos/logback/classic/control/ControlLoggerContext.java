@@ -12,7 +12,7 @@ package ch.qos.logback.classic.control;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 
 /**
@@ -76,7 +76,7 @@ public class ControlLoggerContext {
 
       int i = 0;
       while (true) {
-        i = name.indexOf(ClassicGlobal.LOGGER_SEPARATOR, i);
+        i = name.indexOf(ClassicConstants.LOGGER_SEPARATOR, i);
         if (i == -1) {
           // System.out.println("FINAL-Creating logger named [" + name + "] with
           // parent " + parent.getName());

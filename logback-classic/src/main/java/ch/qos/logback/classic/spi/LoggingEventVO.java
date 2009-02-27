@@ -11,7 +11,9 @@ import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 
-public class LoggingEventSDO implements ILoggingEvent, Serializable {
+// http://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.html
+
+public class LoggingEventVO implements ILoggingEvent, Serializable {
 
   private static final long serialVersionUID = 6553722650255690312L;
 
@@ -19,6 +21,9 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
   private String threadName;
+  private String loggerName;
+  private LoggerContextVO loggerContextVO;
+  
   private transient Level level;
   private String message;
 
@@ -29,16 +34,17 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
 
   private transient Object[] argumentArray;
 
-  private ThrowableProxy throwableProxy;
+  private ThrowableProxyVO throwableProxy;
   private CallerData[] callerDataArray;
   private Marker marker;
   private Map<String, String> mdcPropertyMap;
-  private LoggerRemoteView lrv;
   private long timeStamp;
+  
 
-  public static LoggingEventSDO build(ILoggingEvent le) {
-    LoggingEventSDO ledo = new LoggingEventSDO();
-    ledo.lrv = le.getLoggerRemoteView();
+  public static LoggingEventVO build(ILoggingEvent le) {
+    LoggingEventVO ledo = new LoggingEventVO();
+    ledo.loggerName = le.getLoggerName();
+    ledo.loggerContextVO = le.getLoggerContextVO();
     ledo.threadName = le.getThreadName();
     ledo.level = (le.getLevel());
     ledo.message = (le.getMessage());
@@ -46,7 +52,7 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
     ledo.marker = le.getMarker();
     ledo.mdcPropertyMap = le.getMDCPropertyMap();
     ledo.setTimeStamp(le.getTimeStamp());
-    ledo.throwableProxy = le.getThrowableProxy();
+    ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
     return ledo;
   }
 
@@ -54,10 +60,18 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
     return threadName;
   }
 
+  public LoggerContextVO getLoggerContextVO() {
+    return loggerContextVO;
+  }
+  
+  public String getLoggerName() {
+    return loggerName;
+  }
+  
   public Level getLevel() {
     return level;
   }
-  
+
   public String getMessage() {
     return message;
   }
@@ -80,7 +94,7 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
     return argumentArray;
   }
 
-  public ThrowableProxy getThrowableProxy() {
+  public IThrowableProxy getThrowableProxy() {
     return throwableProxy;
   }
 
@@ -98,6 +112,23 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
 
   public void setTimeStamp(long timeStamp) {
     this.timeStamp = timeStamp;
+  }
+
+
+
+  public long getContextBirthTime() {
+    return loggerContextVO.getBirthTime();
+  }
+
+  public LoggerContextVO getContextLoggerRemoteView() {
+    return loggerContextVO;
+  }
+
+  public Map<String, String> getMDCPropertyMap() {
+    return mdcPropertyMap;
+  }
+
+  public void prepareForDeferredProcessing() {
   }
 
   private void writeObject(ObjectOutputStream out) throws IOException {
@@ -137,21 +168,6 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
     }
   }
 
-  public long getContextBirthTime() {
-    return lrv.loggerContextView.getBirthTime();
-  }
-
-  public LoggerRemoteView getLoggerRemoteView() {
-    return lrv;
-  }
-
-  public Map<String, String> getMDCPropertyMap() {
-    return mdcPropertyMap;
-  }
-
-  public void prepareForDeferredProcessing() {
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -171,13 +187,20 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    final LoggingEventSDO other = (LoggingEventSDO) obj;
+    final LoggingEventVO other = (LoggingEventVO) obj;
     if (message == null) {
       if (other.message != null)
         return false;
     } else if (!message.equals(other.message))
       return false;
 
+    if (loggerName == null) {
+      if (other.loggerName != null)
+        return false;
+    } else if (!loggerName.equals(other.loggerName))
+      return false;
+
+    
     if (threadName == null) {
       if (other.threadName != null)
         return false;
@@ -185,13 +208,13 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
       return false;
     if (timeStamp != other.timeStamp)
       return false;
-    
+
     if (marker == null) {
       if (other.marker != null)
         return false;
     } else if (!marker.equals(other.marker))
       return false;
-    
+
     if (mdcPropertyMap == null) {
       if (other.mdcPropertyMap != null)
         return false;
@@ -199,6 +222,4 @@ public class LoggingEventSDO implements ILoggingEvent, Serializable {
       return false;
     return true;
   }
-
-  
 }

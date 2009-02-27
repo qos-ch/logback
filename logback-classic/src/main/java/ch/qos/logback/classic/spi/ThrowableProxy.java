@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2005, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -13,22 +13,75 @@ import java.util.Arrays;
 
 import ch.qos.logback.core.CoreConstants;
 
-public class ThrowableProxy implements java.io.Serializable {
+public class ThrowableProxy implements IThrowableProxy {
 
-  private static final long serialVersionUID = 6307784764626694851L;
-  private ThrowableDataPoint[] tdpArray;
-  private transient final Throwable throwable;
+  Throwable throwable;
+  String className;
+  String message;
+  ThrowableDataPoint[] throwableDataPointArray;
+  int commonFrames;
+  ThrowableProxy cause;
+
   private transient PackagingDataCalculator packagingDataCalculator;
   private boolean calculatedPackageData = false;
-  
+
   public ThrowableProxy(Throwable throwable) {
+   
     this.throwable = throwable;
-    this.tdpArray = ThrowableToDataPointArray.convert(throwable);
+    this.className = throwable.getClass().getName();
+    this.message = throwable.getMessage();
+    this.throwableDataPointArray = ThrowableProxyUtil.stea2tdpa(throwable
+        .getStackTrace());
+    
+    Throwable nested = throwable.getCause();
+    
+    if (nested != null) {
+      this.cause = new ThrowableProxy(nested);
+      this.cause.commonFrames = ThrowableProxyUtil
+          .findNumberOfCommonFrames(nested.getStackTrace(),
+              throwableDataPointArray);
+    }
   }
+
 
   public Throwable getThrowable() {
     return throwable;
-  } 
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see ch.qos.logback.classic.spi.IThrowableProxy#getClassName()
+   */
+  public String getClassName() {
+    return className;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see ch.qos.logback.classic.spi.IThrowableProxy#getThrowableDataPointArray()
+   */
+  public ThrowableDataPoint[] getThrowableDataPointArray() {
+    return throwableDataPointArray;
+  }
+
+  public int getCommonFrames() {
+    return commonFrames;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see ch.qos.logback.classic.spi.IThrowableProxy#getCause()
+   */
+  public IThrowableProxy getCause() {
+    return cause;
+  }
 
   public PackagingDataCalculator getPackagingDataCalculator() {
     // if original instance (non-deserialized), and packagingDataCalculator
@@ -41,28 +94,21 @@ public class ThrowableProxy implements java.io.Serializable {
   }
 
   public void calculatePackagingData() {
-    if(calculatedPackageData) {
+    if (calculatedPackageData) {
       return;
     }
     PackagingDataCalculator pdc = this.getPackagingDataCalculator();
-    if(pdc != null) {
+    if (pdc != null) {
       calculatedPackageData = true;
-      pdc.calculate(tdpArray);
+      pdc.calculate(throwableDataPointArray);
     }
-  }
-	
-  /**
-   * The data point representation of the throwable proxy.
-   */
-  public ThrowableDataPoint[] getThrowableDataPointArray() {
-    return tdpArray;
   }
 
   @Override
   public int hashCode() {
     final int PRIME = 31;
     int result = 1;
-    result = PRIME * result + Arrays.hashCode(tdpArray);
+    result = PRIME * result + Arrays.hashCode(throwableDataPointArray);
     return result;
   }
 
@@ -75,7 +121,7 @@ public class ThrowableProxy implements java.io.Serializable {
     if (getClass() != obj.getClass())
       return false;
     final ThrowableProxy other = (ThrowableProxy) obj;
-    if (!Arrays.equals(tdpArray, other.tdpArray))
+    if (!Arrays.equals(throwableDataPointArray, other.throwableDataPointArray))
       return false;
     return true;
   }
@@ -96,10 +142,10 @@ public class ThrowableProxy implements java.io.Serializable {
     if (step != null) {
       ClassPackagingData cpd = step.getClassPackagingData();
       if (cpd != null) {
-        if(!cpd.isExact()){
-          builder.append(" ~[")  ;
+        if (!cpd.isExact()) {
+          builder.append(" ~[");
         } else {
-          builder.append(" [")  ;
+          builder.append(" [");
         }
         builder.append(cpd.getCodeLocation()).append(':').append(
             cpd.getVersion()).append(']');

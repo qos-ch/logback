@@ -18,7 +18,7 @@ import ch.qos.logback.classic.LoggerContext;
  * An interface that allows Logger objects and LoggerSer objects to be used the
  * same way be client of the LoggingEvent object.
  * <p>
- * See {@link LoggerContextRemoteView} for the rationale of this class.
+ * See {@link LoggerContextVO} for the rationale of this class.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -27,7 +27,7 @@ public class LoggerRemoteView implements Serializable {
 
   private static final long serialVersionUID = 5028223666108713696L;
 
-  final LoggerContextRemoteView loggerContextView;
+  final LoggerContextVO loggerContextView;
   final String name;
 
   public LoggerRemoteView(String name, LoggerContext lc) {
@@ -36,7 +36,7 @@ public class LoggerRemoteView implements Serializable {
     loggerContextView = lc.getLoggerContextRemoteView();
   }
 
-  public LoggerContextRemoteView getLoggerContextView() {
+  public LoggerContextVO getLoggerContextView() {
     return loggerContextView;
   }
 

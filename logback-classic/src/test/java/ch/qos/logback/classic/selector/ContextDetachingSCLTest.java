@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
@@ -21,14 +21,14 @@ public class ContextDetachingSCLTest  {
   
   @Before
   public void setUp() throws Exception {
-    System.setProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR, "JNDI");
+    System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
     //LoggerFactory.setup();
     
     listener = new ContextDetachingSCL();
     
     MockInitialContextFactory.initialize();
     MockInitialContext mic = MockInitialContextFactory.getContext();
-    mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "toto");
+    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
     
     //The property must be set after we setup the Mock
     System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
@@ -54,11 +54,11 @@ public class ContextDetachingSCLTest  {
   @Test
   public void testDetachWithMissingContext() {
     MockInitialContext mic = MockInitialContextFactory.getContext();
-    mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "tata");
+    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
     ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
     assertEquals("tata", selector.getLoggerContext().getName());
 
-    mic.map.put(ClassicGlobal.JNDI_CONTEXT_NAME, "titi");
+    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
     assertEquals("titi", selector.getLoggerContext().getName());
     listener.contextDestroyed(null);
 

@@ -31,10 +31,10 @@ public class ThrowableDataPoint implements Serializable {
   StackTraceElementProxy step;
   final ThrowableDataPointType type;
 
-  public ThrowableDataPoint(String rawString) {
-    this.rawString = rawString;
-    this.type = ThrowableDataPointType.RAW;
-  }
+//  public ThrowableDataPoint(String rawString) {
+//    this.rawString = rawString;
+//    this.type = ThrowableDataPointType.RAW;
+//  }
 
   public ThrowableDataPoint(StackTraceElement ste) {
     this.step = new StackTraceElementProxy(ste);

@@ -64,12 +64,10 @@ public class LoggingEventSerializationTest {
     ILoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
 
-    LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
-    assertNotNull(loggerRemoteView);
-    assertEquals("root", loggerRemoteView.getName());
+    assertNotNull(remoteEvent.getLoggerName());
+    assertEquals("root", remoteEvent.getLoggerName());
 
-    LoggerContextRemoteView loggerContextRemoteView = loggerRemoteView
-        .getLoggerContextView();
+    LoggerContextVO loggerContextRemoteView = remoteEvent.getLoggerContextVO();
     assertNotNull(loggerContextRemoteView);
     assertEquals("testContext", loggerContextRemoteView.getName());
     Map<String, String> props = loggerContextRemoteView.getPropertyMap();
@@ -120,7 +118,7 @@ public class LoggingEventSerializationTest {
     event.setArgumentArray(new Object[] { lucky0, null });
     ILoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
-    
+
     Object[] aa = remoteEvent.getArgumentArray();
     assertNotNull(aa);
     assertEquals(2, aa.length);
@@ -149,22 +147,20 @@ public class LoggingEventSerializationTest {
     ILoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
   }
-  
-  
+
   @Test
   public void serializeLargeArgs() throws Exception {
-    
+
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < 100000; i++) {
       buffer.append("X");
     }
     String largeString = buffer.toString();
-    Object[] argArray = new Object[] {new LuckyCharms(2),
-        largeString };
-    
+    Object[] argArray = new Object[] { new LuckyCharms(2), largeString };
+
     LoggingEvent event = createLoggingEvent();
     event.setArgumentArray(argArray);
-    
+
     ILoggingEvent remoteEvent = writeAndRead(event);
     checkForEquality(event, remoteEvent);
     Object[] aa = remoteEvent.getArgumentArray();
@@ -186,11 +182,12 @@ public class LoggingEventSerializationTest {
     assertEquals(original.getFormattedMessage(), afterSerialization
         .getFormattedMessage());
     assertEquals(original.getMessage(), afterSerialization.getMessage());
-    
+
     System.out.println();
-    
-    assertEquals(original.getThrowableProxy(), afterSerialization
+
+    ThrowableProxyVO witness = ThrowableProxyVO.build(original
         .getThrowableProxy());
+    assertEquals(witness, afterSerialization.getThrowableProxy());
 
   }
 

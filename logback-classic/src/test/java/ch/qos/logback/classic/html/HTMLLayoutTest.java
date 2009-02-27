@@ -22,6 +22,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.TestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.DummyThrowableProxy;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
@@ -96,15 +97,25 @@ public class HTMLLayoutTest {
   @Test
   public void testAppendThrowable() throws Exception {
     StringBuilder buf = new StringBuilder();
-    ThrowableDataPoint[] strArray = { new ThrowableDataPoint("test1"),
-        new ThrowableDataPoint("test2") };
+    DummyThrowableProxy tp = new DummyThrowableProxy();
+    tp.setClassName("test1");
+    tp.setMessage("msg1");
+    
+    StackTraceElement ste1 = new StackTraceElement("c1", "m1", "f1", 1);
+    StackTraceElement ste2 = new StackTraceElement("c2", "m2", "f2", 2);
+    
+    ThrowableDataPoint[] strArray = { new ThrowableDataPoint(ste1),
+        new ThrowableDataPoint(ste2) };
+    tp.setThrowableDataPointArray(strArray);
     DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout
         .getThrowableRenderer();
-    renderer.render(buf, strArray);
-    // System.out.println(buf.toString());
+
+    renderer.render(buf, tp);
+    System.out.println(buf.toString());
     String[] result = buf.toString().split(CoreConstants.LINE_SEPARATOR);
-    assertEquals("<tr><td class=\"Exception\" colspan=\"6\">test1", result[0]);
-    assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "test2", result[1]);
+    System.out.println(result[0]);
+    assertEquals("test1: msg1", result[0]);
+    assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "\tat c1.m1(f1:1)", result[1]);
   }
 
   @Test

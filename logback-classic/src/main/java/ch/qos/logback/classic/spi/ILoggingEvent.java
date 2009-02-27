@@ -19,20 +19,14 @@ public interface ILoggingEvent {
   public Object[] getArgumentArray();
   public String getFormattedMessage();
 
-  public LoggerRemoteView getLoggerRemoteView();
+  public String getLoggerName();
+  public LoggerContextVO getLoggerContextVO();
 
-  public ThrowableProxy getThrowableProxy();
-
+  public IThrowableProxy getThrowableProxy();
   public CallerData[] getCallerData();
-
   public Marker getMarker();
-
   public Map<String, String> getMDCPropertyMap();
-
   public long getTimeStamp();
-  
-  public long getContextBirthTime();
-  
   public void prepareForDeferredProcessing();
 
 }

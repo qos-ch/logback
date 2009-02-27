@@ -23,7 +23,8 @@ public class TrivialLoggingEventBuilder implements Builder {
     LoggingEvent le = new LoggingEvent();
     le.setTimeStamp(System.currentTimeMillis());
     le.setLevel(Level.DEBUG);
-    le.setLoggerRemoteView(logger.getLoggerRemoteView());
+    le.setLoggerName(logger.getName());
+    le.setLoggerContextRemoteView(logger.getLoggerRemoteView().getLoggerContextView());
     le.setMessage(MSG_PREFIX);
     le.setThreadName("threadName");
     return le;

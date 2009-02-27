@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
@@ -31,7 +31,7 @@ public class DebugUsersTurboFilter extends TurboFilter {
     if (!level.equals(Level.DEBUG)) {
       return FilterReply.NEUTRAL;
     } 
-    String user = MDC.get(ClassicGlobal.USER_MDC_KEY);
+    String user = MDC.get(ClassicConstants.USER_MDC_KEY);
     if (user != null && userList.contains(user)) {
       return FilterReply.ACCEPT;
     }

@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEventSDO;
+import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class LoggingEventPreSerializationTransformer implements
@@ -24,9 +24,9 @@ public class LoggingEventPreSerializationTransformer implements
       return null;
     }
     if (event instanceof LoggingEvent) {
-      return LoggingEventSDO.build(event);
-    } else if (event instanceof LoggingEventSDO) {
-      return (LoggingEventSDO)  event;
+      return LoggingEventVO.build(event);
+    } else if (event instanceof LoggingEventVO) {
+      return (LoggingEventVO)  event;
     } else {
       throw new IllegalArgumentException("Unsupported type "+event.getClass().getName());
     }

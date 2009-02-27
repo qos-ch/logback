@@ -40,6 +40,14 @@
     a message</a> to the logback-user list
     </p>
 
+    <p>If the logger name had 12 or more segments, a the logger
+    conversion specified would throw an
+    <code>ArrayIndexOfBounds</code> exception. Lukas Zapletal has
+    kindly reported this problem in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-110">LBCLASSIC-110</a>
+    and provided a test case.
+    </p>
+
     <hr width="80%" align="center" />
 
     <h3>12th of February 2009 - Release of version 0.9.15</h3>

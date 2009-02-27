@@ -117,7 +117,7 @@ public class JMSTopicSink implements javax.jms.MessageListener {
       if (message instanceof ObjectMessage) {
         ObjectMessage objectMessage = (ObjectMessage) message;
         event = (ILoggingEvent) objectMessage.getObject();
-        Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerRemoteView().getName());
+        Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerName());
         log.callAppenders(event);
       } else {
         logger.warn("Received message is of type " + message.getJMSType()

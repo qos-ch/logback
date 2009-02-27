@@ -299,11 +299,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @return
    */
   Logger createChildByLastNamePart(final String lastPart) {
-    int i_index = lastPart.indexOf(ClassicGlobal.LOGGER_SEPARATOR);
+    int i_index = lastPart.indexOf(ClassicConstants.LOGGER_SEPARATOR);
     if (i_index != -1) {
       throw new IllegalArgumentException("Child name [" + lastPart
           + " passed as parameter, may not include ["
-          + ClassicGlobal.LOGGER_SEPARATOR + "]");
+          + ClassicConstants.LOGGER_SEPARATOR + "]");
     }
 
     if (childrenList == null) {
@@ -314,7 +314,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       childLogger = new Logger(lastPart, this, this.loggerContext);
     } else {
       childLogger = new Logger(
-          name + ClassicGlobal.LOGGER_SEPARATOR + lastPart, this,
+          name + ClassicConstants.LOGGER_SEPARATOR + lastPart, this,
           this.loggerContext);
     }
     childrenList.add(childLogger);
@@ -350,7 +350,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   static private final int DEFAULT_CHILD_ARRAY_SIZE = 5;
 
   Logger createChildByName(final String childName) {
-    int i_index = childName.indexOf(ClassicGlobal.LOGGER_SEPARATOR, this.name
+    int i_index = childName.indexOf(ClassicConstants.LOGGER_SEPARATOR, this.name
         .length() + 1);
     if (i_index != -1) {
       throw new IllegalArgumentException("For logger [" + this.name

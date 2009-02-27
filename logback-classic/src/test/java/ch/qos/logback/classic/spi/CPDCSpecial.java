@@ -6,6 +6,6 @@ public interface CPDCSpecial {
 
   public abstract Throwable getThrowable();
 
-  public abstract ThrowableProxy getThrowableProxy();
+  public abstract IThrowableProxy getThrowableProxy();
 
 }

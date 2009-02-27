@@ -8,13 +8,13 @@ public class MySampleLayout extends LayoutBase<ILoggingEvent>  {
 
   public String doLayout(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
-    sbuf.append(event.getTimeStamp() - event.getContextBirthTime());
+    sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
     sbuf.append(" ");
     sbuf.append(event.getLevel());
     sbuf.append(" [");
     sbuf.append(event.getThreadName());
     sbuf.append("] ");
-    sbuf.append(event.getLoggerRemoteView().getName());
+    sbuf.append(event.getLoggerName());
     sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
     sbuf.append(CoreConstants.LINE_SEPARATOR);

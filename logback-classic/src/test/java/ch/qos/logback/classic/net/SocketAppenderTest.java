@@ -9,7 +9,9 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
@@ -21,9 +23,8 @@ import org.slf4j.MarkerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggerContextRemoteView;
-import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -32,7 +33,7 @@ public class SocketAppenderTest {
   static final String LIST_APPENDER_NAME = "la";
   static final int JOIN_OR_WAIT_TIMEOUT = 200;
   static final int SLEEP_AFTER_LOG = 100;
-  
+
   int port = 4561;
   LoggerContext lc = new LoggerContext();
   LoggerContext serverLC = new LoggerContext();
@@ -88,12 +89,12 @@ public class SocketAppenderTest {
 
     ILoggingEvent remoteEvent = la.list.get(0);
 
-    LoggerRemoteView loggerRemoteView = remoteEvent.getLoggerRemoteView();
-    assertNotNull(loggerRemoteView);
-    assertEquals("root", loggerRemoteView.getName());
+    String loggerName = remoteEvent.getLoggerName();
+    assertNotNull(loggerName);
+    assertEquals("root", loggerName);
 
-    LoggerContextRemoteView loggerContextRemoteView = loggerRemoteView
-        .getLoggerContextView();
+    LoggerContextVO loggerContextRemoteView = remoteEvent
+        .getLoggerContextVO();
     assertNotNull(loggerContextRemoteView);
     assertEquals("test", loggerContextRemoteView.getName());
     Map<String, String> props = loggerContextRemoteView.getPropertyMap();
@@ -127,8 +128,8 @@ public class SocketAppenderTest {
   public void messageWithMarker() throws InterruptedException {
     fireServer();
     waitForServerToStart();
-    
-    //Thread.sleep(SLEEP_AFTER_SERVER_START);
+
+    // Thread.sleep(SLEEP_AFTER_SERVER_START);
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -150,7 +151,7 @@ public class SocketAppenderTest {
   public void messageWithUpdatedMDC() throws InterruptedException {
     fireServer();
     waitForServerToStart();
-    
+
     configureClient();
 
     Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
@@ -185,10 +186,11 @@ public class SocketAppenderTest {
 
     fireServer();
     waitForServerToStart();
-    Thread.sleep(SLEEP_AFTER_LOG); // allow time for client and server to connect
+    Thread.sleep(SLEEP_AFTER_LOG); // allow time for client and server to
+                                    // connect
     logger.debug("test msg 2");
     Thread.sleep(SLEEP_AFTER_LOG);
-    
+
     simpleSocketServer.close();
     Thread.sleep(SLEEP_AFTER_LOG);
     simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);

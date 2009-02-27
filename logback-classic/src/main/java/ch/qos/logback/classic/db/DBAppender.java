@@ -100,7 +100,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       throws SQLException {
     stmt.setLong(1, event.getTimeStamp());
     stmt.setString(2, event.getFormattedMessage());
-    stmt.setString(3, event.getLoggerRemoteView().getName());
+    stmt.setString(3, event.getLoggerName());
     stmt.setString(4, event.getLevel().toString());
     stmt.setString(5, event.getThreadName());
     stmt.setShort(6, DBHelper.computeReferenceMask(event));
@@ -123,8 +123,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     // we consider that event-specific properties should have priority over
     // context-wide
     // properties.
-    Map<String, String> loggerContextMap = event.getLoggerRemoteView()
-        .getLoggerContextView().getPropertyMap();
+    Map<String, String> loggerContextMap = event.getLoggerContextVO().getPropertyMap();
     Map<String, String> mdcMap = event.getMDCPropertyMap();
     if (loggerContextMap != null) {
       mergedMap.putAll(loggerContextMap);

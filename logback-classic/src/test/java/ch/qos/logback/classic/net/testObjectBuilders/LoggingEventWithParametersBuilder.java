@@ -37,7 +37,8 @@ public class LoggingEventWithParametersBuilder implements Builder {
     // exercise)
     le.getFormattedMessage();
     le.setLevel(Level.DEBUG);
-    le.setLoggerRemoteView(logger.getLoggerRemoteView());
+    le.setLoggerName(logger.getName());
+    le.setLoggerContextRemoteView(logger.getLoggerRemoteView().getLoggerContextView());
     le.setThreadName("threadName");
 
     return le;

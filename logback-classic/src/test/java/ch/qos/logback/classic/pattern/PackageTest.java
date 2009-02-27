@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( { ConverterTest.class,
     TargetLengthBasedClassNameAbbreviatorTest.class, MDCConverterTest.class,
-    MarkerConverterTest.class })
+    MarkerConverterTest.class, ExtendedThrowableProxyConverterTest.class,
+    ThrowableProxyConverterTest.class })
 public class PackageTest {
 
 }

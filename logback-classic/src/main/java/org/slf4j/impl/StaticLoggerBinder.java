@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.Util;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-import ch.qos.logback.classic.ClassicGlobal;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
@@ -91,7 +91,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
       // See if a special context selector is needed
       String contextSelectorStr = OptionHelper
-          .getSystemProperty(ClassicGlobal.LOGBACK_CONTEXT_SELECTOR);
+          .getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
       if (contextSelectorStr == null) {
         contextSelector = new DefaultContextSelector(defaultLoggerContext);
       } else if (contextSelectorStr.equals("JNDI")) {

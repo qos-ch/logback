@@ -39,7 +39,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
    */
   static final String DEFAULT_CONVERSION_PATTERN = "%date%thread%level%logger%mdc%msg";
 
-  IThrowableRenderer throwableRenderer;
+  IThrowableRenderer<ILoggingEvent> throwableRenderer;
 
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -117,7 +117,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
     return throwableRenderer;
   }
 
-  public void setThrowableRenderer(IThrowableRenderer throwableRenderer) {
+  public void setThrowableRenderer(IThrowableRenderer<ILoggingEvent> throwableRenderer) {
     this.throwableRenderer = throwableRenderer;
   }
 }

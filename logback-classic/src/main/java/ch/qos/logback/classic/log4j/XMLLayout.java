@@ -15,8 +15,8 @@ import java.util.Map.Entry;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
-import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.helpers.Transform;
 
@@ -103,7 +103,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     // We yield to the \r\n heresy.
 
     buf.append("<log4j:event logger=\"");
-    buf.append(event.getLoggerRemoteView().getName());
+    buf.append(event.getLoggerName());
     buf.append("\"\r\n");
     buf.append("             timestamp=\"");
     buf.append(event.getTimeStamp());
@@ -122,11 +122,11 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     // logback does not support NDC
     // String ndc = event.getNDC();
 
-    ThrowableProxy tp = event.getThrowableProxy();
 
+    IThrowableProxy tp = event.getThrowableProxy();
     if (tp != null) {
-      buf.append("  <log4j:throwable><![CDATA[");
       ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
+      buf.append("  <log4j:throwable><![CDATA[");
       for (ThrowableDataPoint tdp : tdpArray) {
         buf.append(tdp.toString());
         buf.append("\r\n");

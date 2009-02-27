@@ -9,50 +9,50 @@
  */
 package ch.qos.logback.classic.html;
 
-import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
-import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.Transform;
 import ch.qos.logback.core.html.IThrowableRenderer;
 
-public class DefaultThrowableRenderer implements IThrowableRenderer {
+public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEvent> {
   
   static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
   
-  Throwable throwable;
-  
   public DefaultThrowableRenderer() {
+  }
+  
+  void render(StringBuilder sbuf, IThrowableProxy tp) {
+    StringBuilder firstLine = new StringBuilder();
+    ThrowableProxyUtil.printFirstLine(firstLine, tp);
+    sbuf.append(Transform.escapeTags(firstLine.toString()));
     
-  }
-  
-  public void setThrowable(Throwable t) {
-    this.throwable = t;
-  }
-  
-  public void render(StringBuilder sbuf, ThrowableDataPoint[] tdpArray) {
-    if (tdpArray != null) {
-      int len = tdpArray.length;
-      if (len == 0) {
-        return;
-      }
-      sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
-      sbuf.append(Transform.escapeTags(tdpArray[0].toString()));
-      sbuf.append(LINE_SEPARATOR);
-      for (int i = 1; i < len; i++) {
-        sbuf.append(TRACE_PREFIX);
-        sbuf.append(Transform.escapeTags(tdpArray[i].toString()));
-        sbuf.append(LINE_SEPARATOR);
-      }
-      sbuf.append("</td></tr>");
+    int commonFrames = tp.getCommonFrames();
+    ThrowableDataPoint[] tdpa = tp.getThrowableDataPointArray();
+    
+    for (int i = 0; i < tdpa.length - commonFrames; i++) {
+      ThrowableDataPoint tdp = tdpa[i];
+      sbuf.append(TRACE_PREFIX);
+      sbuf.append(Transform.escapeTags(tdp.toString()));
+      sbuf.append(CoreConstants.LINE_SEPARATOR);
+    }
+    
+    if (commonFrames > 0) {
+      sbuf.append(TRACE_PREFIX);
+      sbuf.append("\t... " + commonFrames).append(" common frames omitted")
+          .append(CoreConstants.LINE_SEPARATOR);
     }
   }
   
-  public void render(StringBuilder sbuf, Object eventObject) {
-    ILoggingEvent event = (ILoggingEvent)eventObject;
-    ThrowableProxy tp = event.getThrowableProxy();
-    if (tp != null) {
-      render(sbuf, tp.getThrowableDataPointArray());
+  public void render(StringBuilder sbuf, ILoggingEvent event) {
+    IThrowableProxy tp = event.getThrowableProxy();
+    sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
+    while(tp != null) {
+      render(sbuf, tp);
+      tp = tp.getCause();
     }
+    sbuf.append("</td></tr>");
   }
 }

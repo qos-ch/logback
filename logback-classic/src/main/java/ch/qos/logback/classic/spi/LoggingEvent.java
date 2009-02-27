@@ -20,6 +20,7 @@ import org.slf4j.impl.LogbackMDCAdapter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -50,6 +51,11 @@ public class LoggingEvent implements ILoggingEvent {
    */
   private String threadName;
 
+  
+  private String loggerName;
+  private LoggerContextVO loggerContextRemoteView;
+
+  
   /**
    * Level of logging event.
    * 
@@ -71,7 +77,6 @@ public class LoggingEvent implements ILoggingEvent {
   private ThrowableProxy throwableProxy;
 
   private CallerData[] callerDataArray;
-  private LoggerRemoteView loggerRemoteView;
 
   private Marker marker;
 
@@ -89,12 +94,18 @@ public class LoggingEvent implements ILoggingEvent {
   public LoggingEvent(String fqcn, Logger logger, Level level, String message,
       Throwable throwable, Object[] argArray) {
     this.fqnOfLoggerClass = fqcn;
-    this.loggerRemoteView = logger.getLoggerRemoteView();
+    this.loggerName = logger.getName();
+    this.loggerContextRemoteView = logger.getLoggerRemoteView().getLoggerContextView();
     this.level = level;
+    
     this.message = message;
 
     if (throwable != null) {
       this.throwableProxy = new ThrowableProxy(throwable);
+      LoggerContext lc = logger.getLoggerContext();
+      if(lc.isPackagingDataEnabled()) {
+        this.throwableProxy.calculatePackagingData();
+      }
     }
 
     // bug 85 (we previously failed to set this.argumentArray)
@@ -107,7 +118,7 @@ public class LoggingEvent implements ILoggingEvent {
         .getMDCAdapter();
     mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
-
+  
   public void setArgumentArray(Object[] argArray) {
     if (this.argumentArray != null) {
       throw new IllegalStateException("argArray has been already set");
@@ -123,6 +134,14 @@ public class LoggingEvent implements ILoggingEvent {
     return level;
   }
 
+  public String getLoggerName() {
+    return loggerName;
+  }
+  
+  public void setLoggerName(String loggerName) {
+    this.loggerName = loggerName;
+  }
+  
   public String getThreadName() {
     if (threadName == null) {
       threadName = (Thread.currentThread()).getName();
@@ -147,7 +166,7 @@ public class LoggingEvent implements ILoggingEvent {
    * Returns the throwable information contained within this event. May be
    * <code>null</code> if there is no such information.
    */
-  public ThrowableProxy getThrowableProxy() {
+  public IThrowableProxy getThrowableProxy() {
     return throwableProxy;
   }
 
@@ -178,12 +197,12 @@ public class LoggingEvent implements ILoggingEvent {
     }
   }
 
-  public LoggerRemoteView getLoggerRemoteView() {
-    return loggerRemoteView;
+  public LoggerContextVO getLoggerContextVO() {
+    return loggerContextRemoteView;
   }
 
-  public void setLoggerRemoteView(LoggerRemoteView loggerRemoteView) {
-    this.loggerRemoteView = loggerRemoteView;
+  public void setLoggerContextRemoteView(LoggerContextVO loggerContextRemoteView) {
+    this.loggerContextRemoteView = loggerContextRemoteView;
   }
 
   public String getMessage() {
@@ -248,7 +267,7 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public long getContextBirthTime() {
-    return loggerRemoteView.loggerContextView.getBirthTime();
+    return loggerContextRemoteView.getBirthTime();
   }
 
   

@@ -22,7 +22,7 @@ import org.slf4j.Marker;
 
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextListener;
-import ch.qos.logback.classic.spi.LoggerContextRemoteView;
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
@@ -58,15 +58,16 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   // footprint.
   private Hashtable<String, Logger> loggerCache;
 
-  private LoggerContextRemoteView loggerContextRemoteView;
+  private LoggerContextVO loggerContextRemoteView;
   private final TurboFilterList turboFilterList = new TurboFilterList();
-
+  private boolean packagingDataEnabled = true; 
+  
   boolean started = false;
 
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
-    this.loggerContextRemoteView = new LoggerContextRemoteView(this);
+    this.loggerContextRemoteView = new LoggerContextVO(this);
     this.root = new Logger(ROOT_NAME, null, this);
     this.root.setLevel(Level.DEBUG);
     loggerCache.put(ROOT_NAME, root);
@@ -79,7 +80,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * name or propertyMap (including keys or values) changes.
    */
   private void syncRemoteView() {
-    loggerContextRemoteView = new LoggerContextRemoteView(this);
+    loggerContextRemoteView = new LoggerContextVO(this);
     for (Logger logger : loggerCache.values()) {
       logger.buildRemoteView();
     }
@@ -128,7 +129,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     // in between as well (if they don't already exist)
     String childName;
     while (true) {
-      int h = name.indexOf(ClassicGlobal.LOGGER_SEPARATOR, i);
+      int h = name.indexOf(ClassicConstants.LOGGER_SEPARATOR, i);
       if (h == -1) {
         childName = name;
       } else {
@@ -185,10 +186,19 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return loggerList;
   }
 
-  public LoggerContextRemoteView getLoggerContextRemoteView() {
+  public LoggerContextVO getLoggerContextRemoteView() {
     return loggerContextRemoteView;
   }
 
+  public void setPackagingDataEnabled(boolean packagingDataEnabled) {
+    this.packagingDataEnabled = packagingDataEnabled;
+  }
+
+  public boolean isPackagingDataEnabled() {
+    return packagingDataEnabled;
+  }
+
+  
   /**
    * This method closes all appenders,
    */
@@ -324,4 +334,5 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public String toString() {
     return this.getClass().getName() + "[" + getName() + "]";
   }
+  
 }

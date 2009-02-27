@@ -10,7 +10,7 @@
 
 package ch.qos.logback.classic.selector.servlet;
 
-import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONTEXT_NAME;
+import static ch.qos.logback.classic.ClassicConstants.JNDI_CONTEXT_NAME;
 
 import javax.naming.Context;
 import javax.naming.NamingException;

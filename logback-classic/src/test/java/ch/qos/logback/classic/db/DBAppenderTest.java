@@ -82,7 +82,7 @@ public class DBAppenderTest  {
     if (rs.next()) {
       assertEquals(event.getTimeStamp(), rs.getLong(1));
       assertEquals(event.getFormattedMessage(), rs.getString(2));
-      assertEquals(event.getLoggerRemoteView().getName(), rs.getString(3));
+      assertEquals(event.getLoggerName(), rs.getString(3));
       assertEquals(event.getLevel().toString(), rs.getString(4));
       assertEquals(event.getThreadName(), rs.getString(5));
       assertEquals(DBHelper.computeReferenceMask(event), rs.getShort(6));

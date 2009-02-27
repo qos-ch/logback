@@ -9,8 +9,8 @@
  */
 package ch.qos.logback.classic.selector;
 
-import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONFIGURATION_RESOURCE;
-import static ch.qos.logback.classic.ClassicGlobal.JNDI_CONTEXT_NAME;
+import static ch.qos.logback.classic.ClassicConstants.JNDI_CONFIGURATION_RESOURCE;
+import static ch.qos.logback.classic.ClassicConstants.JNDI_CONTEXT_NAME;
 
 import java.net.URL;
 import java.util.ArrayList;

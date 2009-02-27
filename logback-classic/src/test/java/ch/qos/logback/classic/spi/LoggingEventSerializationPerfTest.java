@@ -25,8 +25,11 @@ import ch.qos.logback.core.testUtil.Env;
 // Using LoggingEventDO
 // 
 //   average time  per logging event: 4052 nanoseconds
-//   size 544'086 bytes
- 
+//   average size=45,  with params, average size=136
+//
+// Using LoggerEventVO, with loggerName, and loggerContextRemoteView
+//   average time per logging event: 4034
+//   average size 57, with params, average size=148
 
 public class LoggingEventSerializationPerfTest {
 
@@ -50,8 +53,7 @@ public class LoggingEventSerializationPerfTest {
     for (int i = 0; i < loopLen; i++) {
       try {
         ILoggingEvent le = (ILoggingEvent) builder.build(i);
-        //oos.writeObject(le);
-        oos.writeObject(LoggingEventSDO.build(le));
+        oos.writeObject(LoggingEventVO.build(le));
 
         oos.flush();
         if (++resetCounter >= CoreConstants.OOS_RESET_FREQUENCY) {
@@ -78,18 +80,18 @@ public class LoggingEventSerializationPerfTest {
     noos.reset();
     double avg = doLoop(builder, LOOP_LEN);     noos.reset();
     avg += doLoop(builder, LOOP_LEN);     noos.reset();
-    avg += doLoop(builder, LOOP_LEN);    noos.reset();
+    avg += doLoop(builder, LOOP_LEN);   
 
     avg = avg/3;
 
     System.out.println("avetage time per logging event "+avg+" nanoseconds");
-    System.out.println("noos size "+noos.size());
                          
-    long actualSize = (long) (noos.size()/(1024*1.1d));
-    double baosSizeLimit = 500;
+    long averageSize = (long) (noos.size()/(LOOP_LEN));
+    System.out.println("noos size "+noos.size()+ " average size="+averageSize);
+    double averageSizeLimit = 60;
 
-    assertTrue("baos size " + actualSize + " should be less than "
-        + baosSizeLimit, baosSizeLimit > actualSize);
+    assertTrue("average size " + averageSize + " should be less than "
+        + averageSizeLimit, averageSizeLimit > averageSize);
 
     // the reference was computed on Orion (Ceki's computer)
     long referencePerf = 5000;
@@ -107,12 +109,13 @@ public class LoggingEventSerializationPerfTest {
     doLoop(builder, LOOP_LEN);
     noos.reset();
     double avg = doLoop(builder, LOOP_LEN);
+    long averageSize = (long) (noos.size()/(LOOP_LEN));
 
-    long actualSize = (long) (noos.size()/(1024*1.1d));
+    System.out.println("noos size "+noos.size()+ " average size="+averageSize);
     
-    double baosSizeLimit = 1300;
-    assertTrue("actualSize " + actualSize + " should be less than "
-        + baosSizeLimit, baosSizeLimit > actualSize);
+    double averageSizeLimit = 160;
+    assertTrue("averageSize " + averageSize + " should be less than "
+        + averageSizeLimit, averageSizeLimit > averageSize);
 
     // the reference was computed on Orion (Ceki's computer)
     long referencePerf = 7000;

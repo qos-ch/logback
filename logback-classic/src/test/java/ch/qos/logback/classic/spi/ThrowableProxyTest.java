@@ -9,9 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.CoreConstants;
-
-public class ThrowableToDataPointTest {
+public class ThrowableProxyTest {
 
   StringWriter sw = new StringWriter();
   PrintWriter pw = new PrintWriter(sw);
@@ -26,19 +24,23 @@ public class ThrowableToDataPointTest {
 
   public void verify(Throwable t) {
     t.printStackTrace(pw);
+
+    IThrowableProxy tp = new ThrowableProxy(t);
     
-    ThrowableDataPoint[] tdpArray = ThrowableToDataPointArray.convert(t);
-    StringBuilder sb = new StringBuilder();
-    for (ThrowableDataPoint tdp : tdpArray) {
-      sb.append(tdp.toString());
-      sb.append(CoreConstants.LINE_SEPARATOR);
-    }
+    String result = ThrowableProxyUtil.asString(tp);
+    result = result.replace("common frames omitted", "more");
+        
     String expected = sw.toString();
-    String result = sb.toString().replace("common frames omitted", "more");
     
+    System.out.println("========expected");
+    System.out.println(expected);
+
+    System.out.println("========result");
+    System.out.println(result);
+
     assertEquals(expected, result);
   }
-  
+
   @Test
   public void smoke() {
     Exception e = new Exception("smoke");
@@ -66,7 +68,7 @@ public class ThrowableToDataPointTest {
     }
     verify(w);
   }
-  
+
   void someMethod() throws Exception {
     throw new Exception("someMethod");
   }

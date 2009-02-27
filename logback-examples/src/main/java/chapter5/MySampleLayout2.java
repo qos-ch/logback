@@ -22,7 +22,7 @@ public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
     if (prefix != null) {
       sbuf.append(prefix + ": ");
     }
-    sbuf.append(event.getTimeStamp() - event.getContextBirthTime());
+    sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
     sbuf.append(" ");
     sbuf.append(event.getLevel());
     if (printThreadName) {
@@ -32,7 +32,7 @@ public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
     } else {
       sbuf.append(" ");
     }
-    sbuf.append(event.getLoggerRemoteView().getName());
+    sbuf.append(event.getLoggerName());
     sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
     sbuf.append(CoreConstants.LINE_SEPARATOR);

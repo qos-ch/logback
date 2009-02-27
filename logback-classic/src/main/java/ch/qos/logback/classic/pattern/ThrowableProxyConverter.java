@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
-import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
@@ -67,7 +68,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
-        EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap.get(evaluatorStr);
+        EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
+            .get(evaluatorStr);
         addEvaluator(ee);
       }
     }
@@ -89,26 +91,16 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
   protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
     // nop
   }
-  
-  protected void prepareLoggingEvent(ILoggingEvent event) {
-    // nop  
-  }
-  
+
   public String convert(ILoggingEvent event) {
     StringBuilder buf = new StringBuilder(32);
 
-    ThrowableProxy information = event.getThrowableProxy();
-
-    if (information == null) {
+    IThrowableProxy tp = event.getThrowableProxy();
+    if (tp == null) {
       return CoreConstants.EMPTY_STRING;
     }
 
-    ThrowableDataPoint[] tdpArray = information.getThrowableDataPointArray();
-
-    int length = (lengthOption > tdpArray.length) ? tdpArray.length
-        : lengthOption;
-
-    // an evaluator match will cause stack printing to be skipped 
+    // an evaluator match will cause stack printing to be skipped
     if (evaluatorList != null) {
       boolean printStack = true;
       for (int i = 0; i < evaluatorList.size(); i++) {
@@ -127,8 +119,9 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
             ErrorStatus errorStatus = new ErrorStatus(
                 "Exception thrown for evaluator named [" + ee.getName() + "].",
                 this, eex);
-            errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors." +
-                                "We don't want the StatusManager to get flooded.", this));
+            errorStatus.add(new ErrorStatus(
+                "This was the last warning about this evaluator's errors."
+                    + "We don't want the StatusManager to get flooded.", this));
             addStatus(errorStatus);
           }
         }
@@ -139,17 +132,38 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
     }
 
-    prepareLoggingEvent(event);
-    
-    buf.append(tdpArray[0]).append(CoreConstants.LINE_SEPARATOR);
-    for (int i = 1; i < length; i++) {
-      String string = tdpArray[i].toString();
-      buf.append(string);
-      extraData(buf, tdpArray[i]); // allow other data to be appended
-      buf.append(CoreConstants.LINE_SEPARATOR);
+    while (tp != null) {
+      printThrowableProxy(buf, tp);
+      tp = tp.getCause();
     }
-
     return buf.toString();
   }
 
+  void printThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
+    ThrowableProxyUtil.printFirstLine(buf, tp);
+
+    ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
+    int commonFrames = tp.getCommonFrames();
+
+    boolean unrestrictedPrinting = lengthOption > tdpArray.length;
+    int length = (unrestrictedPrinting) ? tdpArray.length : lengthOption;
+
+
+    int maxIndex = length;
+    if (commonFrames > 0 && unrestrictedPrinting) {
+      maxIndex -= commonFrames;
+    }
+
+    for (int i = 0; i < maxIndex; i++) {
+      String string = tdpArray[i].toString();
+      buf.append(string);
+      extraData(buf, tdpArray[i]); // allow other data to be added
+      buf.append(CoreConstants.LINE_SEPARATOR);
+    }
+
+    if (commonFrames > 0 && unrestrictedPrinting) {
+      buf.append("\t... " + tp.getCommonFrames()).append(
+          " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+    }
+  }
 }

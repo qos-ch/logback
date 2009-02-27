@@ -11,7 +11,6 @@
 package ch.qos.logback.classic.db;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -30,19 +29,15 @@ public class DBHelper {
       mdcPropSize = event.getMDCPropertyMap().keySet().size();
     }
     int contextPropSize = 0;
-    if (event.getLoggerRemoteView().getLoggerContextView().getPropertyMap() != null) {
-      contextPropSize = event.getLoggerRemoteView().getLoggerContextView()
-          .getPropertyMap().size();
+    if (event.getLoggerContextVO().getPropertyMap() != null) {
+      contextPropSize = event.getLoggerContextVO().getPropertyMap().size();
     }
 
     if (mdcPropSize > 0 || contextPropSize > 0) {
       mask = PROPERTIES_EXIST;
     }
     if (event.getThrowableProxy() != null) {
-      ThrowableDataPoint[] tdpArray = event.getThrowableProxy().getThrowableDataPointArray();
-      if (tdpArray != null) {
-        mask |= EXCEPTION_EXISTS;
-      }
+      mask |= EXCEPTION_EXISTS;
     }
     return mask;
   }

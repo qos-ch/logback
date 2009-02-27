@@ -25,7 +25,7 @@ public class RelativeTimeConverter extends ClassicConverter {
       return timesmapStr;
     } else {
       lastTimestamp = timestamp;
-      timesmapStr = Long.toString(timestamp - event.getContextBirthTime());
+      timesmapStr = Long.toString(timestamp - event.getLoggerContextVO().getBirthTime());
       return timesmapStr;
     }
   }

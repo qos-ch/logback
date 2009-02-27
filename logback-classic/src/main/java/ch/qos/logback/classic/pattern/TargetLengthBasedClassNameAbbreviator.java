@@ -39,10 +39,12 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     }
     buf.setLength(0);
 
-    int[] dotArray = new int[ClassicConstants.MAX_DOTS];
+    int[] dotIndexesArray = new int[ClassicConstants.MAX_DOTS];
+    // a.b.c contains 2 dots but 2+1 parts. 
+    // see also http://jira.qos.ch/browse/LBCLASSIC-110
     int[] lengthArray = new int[ClassicConstants.MAX_DOTS+1];
 
-    int dotCount = computeIndexes(fqClassName, dotArray);
+    int dotCount = computeDotIndexes(fqClassName, dotIndexesArray);
 
     // System.out.println();
     // System.out.println("Dot count for [" + className + "] is " + dotCount);
@@ -51,13 +53,13 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
       return fqClassName;
     }
     // printArray("dotArray: ", dotArray);
-    computeLengthArray(fqClassName, dotArray, lengthArray, dotCount);
+    computeLengthArray(fqClassName, dotIndexesArray, lengthArray, dotCount);
     // printArray("lengthArray: ", lengthArray);
     for (int i = 0; i <= dotCount; i++) {
       if (i == 0) {
         buf.append(fqClassName.substring(0, lengthArray[i] - 1));
       } else {
-        buf.append(fqClassName.substring(dotArray[i - 1], dotArray[i - 1]
+        buf.append(fqClassName.substring(dotIndexesArray[i - 1], dotIndexesArray[i - 1]
             + lengthArray[i]));
       }
       // System.out.println("i=" + i + ", buf=" + buf);
@@ -67,7 +69,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
   }
 
 
-  static int computeIndexes(final String className, int[] dotArray) {
+  static int computeDotIndexes(final String className, int[] dotArray) {
     int dotCount = 0;
     int k = 0;
     while (true) {

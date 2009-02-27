@@ -3,7 +3,7 @@ package ch.qos.logback.classic.spi;
 public class STEUtil {
 
   
-  static int findNumberOfCommonFrames(StackTraceElement[] steArray,
+  static int UNUSED_findNumberOfCommonFrames(StackTraceElement[] steArray,
       StackTraceElement[] otherSTEArray) {
     if (otherSTEArray == null) {
       return 0;

@@ -14,6 +14,7 @@ import java.io.IOException;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableDataPoint;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
@@ -21,10 +22,8 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 import ch.qos.logback.core.net.SyslogWriter;
 
 /**
- * This appender can be used to send messages to a remote
- * syslog daemon.
- * <p>
- * For more information about this appender, please refer to the online manual at
+ * This appender can be used to send messages to a remote syslog daemon. <p> For
+ * more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SyslogAppender
  * 
  * @author Ceki G&uumllc&uuml;
@@ -37,17 +36,17 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   public Layout<ILoggingEvent> buildLayout(String facilityStr) {
     String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
-  
+
     prefixLayout.getInstanceConverterMap().put("syslogStart",
         SyslogStartConverter.class.getName());
     prefixLayout.setPattern(prefixPattern);
     prefixLayout.setContext(getContext());
     prefixLayout.start();
-    
+
     PatternLayout fullLayout = new PatternLayout();
     fullLayout.getInstanceConverterMap().put("syslogStart",
         SyslogStartConverter.class.getName());
-    
+
     if (suffixPattern == null) {
       suffixPattern = DEFAULT_SUFFIX_PATTERN;
     }
@@ -73,20 +72,21 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   @Override
   protected void postProcess(Object eventObject, SyslogWriter sw) {
     ILoggingEvent event = (ILoggingEvent) eventObject;
-    
+
     String prefix = prefixLayout.doLayout(event);
-    
-    if (event.getThrowableProxy() != null) {
-      ThrowableDataPoint[] strRep = event.getThrowableProxy().getThrowableDataPointArray();
+
+    IThrowableProxy tp = event.getThrowableProxy();
+    while (tp != null) {
+      ThrowableDataPoint[] strRep = tp.getThrowableDataPointArray();
       try {
         for (ThrowableDataPoint line : strRep) {
           sw.write(prefix + line.toString());
           sw.flush();
         }
       } catch (IOException e) {
+        break;
       }
+      tp = tp.getCause();
     }
-
   }
-
 }
