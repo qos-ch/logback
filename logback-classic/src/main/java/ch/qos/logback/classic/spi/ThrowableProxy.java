@@ -9,8 +9,6 @@
  */
 package ch.qos.logback.classic.spi;
 
-import java.util.Arrays;
-
 import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableProxy implements IThrowableProxy {
@@ -18,7 +16,7 @@ public class ThrowableProxy implements IThrowableProxy {
   Throwable throwable;
   String className;
   String message;
-  ThrowableDataPoint[] throwableDataPointArray;
+  StackTraceElementProxy[] stackTraceElementProxyArray;
   int commonFrames;
   ThrowableProxy cause;
 
@@ -30,7 +28,7 @@ public class ThrowableProxy implements IThrowableProxy {
     this.throwable = throwable;
     this.className = throwable.getClass().getName();
     this.message = throwable.getMessage();
-    this.throwableDataPointArray = ThrowableProxyUtil.stea2tdpa(throwable
+    this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable
         .getStackTrace());
     
     Throwable nested = throwable.getCause();
@@ -39,7 +37,7 @@ public class ThrowableProxy implements IThrowableProxy {
       this.cause = new ThrowableProxy(nested);
       this.cause.commonFrames = ThrowableProxyUtil
           .findNumberOfCommonFrames(nested.getStackTrace(),
-              throwableDataPointArray);
+              stackTraceElementProxyArray);
     }
   }
 
@@ -61,13 +59,8 @@ public class ThrowableProxy implements IThrowableProxy {
     return className;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see ch.qos.logback.classic.spi.IThrowableProxy#getThrowableDataPointArray()
-   */
-  public ThrowableDataPoint[] getThrowableDataPointArray() {
-    return throwableDataPointArray;
+  public StackTraceElementProxy[] getStackTraceElementProxyArray() {
+    return stackTraceElementProxyArray;
   }
 
   public int getCommonFrames() {
@@ -100,45 +93,24 @@ public class ThrowableProxy implements IThrowableProxy {
     PackagingDataCalculator pdc = this.getPackagingDataCalculator();
     if (pdc != null) {
       calculatedPackageData = true;
-      pdc.calculate(throwableDataPointArray);
+      pdc.calculate(this);
     }
   }
 
-  @Override
-  public int hashCode() {
-    final int PRIME = 31;
-    int result = 1;
-    result = PRIME * result + Arrays.hashCode(throwableDataPointArray);
-    return result;
-  }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    final ThrowableProxy other = (ThrowableProxy) obj;
-    if (!Arrays.equals(throwableDataPointArray, other.throwableDataPointArray))
-      return false;
-    return true;
-  }
 
   public void fullDump() {
     StringBuilder builder = new StringBuilder();
-    for (ThrowableDataPoint tdp : getThrowableDataPointArray()) {
-      String string = tdp.toString();
+    for (StackTraceElementProxy step : stackTraceElementProxyArray) {
+      String string = step.toString();
       builder.append(string);
-      extraData(builder, tdp);
+      extraData(builder, step);
       builder.append(CoreConstants.LINE_SEPARATOR);
     }
     System.out.println(builder.toString());
   }
 
-  protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
-    StackTraceElementProxy step = tdp.getStackTraceElementProxy();
+  protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
     if (step != null) {
       ClassPackagingData cpd = step.getClassPackagingData();
       if (cpd != null) {

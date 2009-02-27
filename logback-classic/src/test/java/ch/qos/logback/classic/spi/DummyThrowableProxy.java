@@ -5,7 +5,7 @@ public class DummyThrowableProxy implements IThrowableProxy {
   private String className;
   private String message;
   private int commonFramesCount;
-  private ThrowableDataPoint[] throwableDataPointArray;
+  private StackTraceElementProxy[] stackTraceElementProxyArray;
   private IThrowableProxy cause;
   
 
@@ -28,14 +28,13 @@ public class DummyThrowableProxy implements IThrowableProxy {
     this.commonFramesCount = commonFramesCount;
   }
 
-  public ThrowableDataPoint[] getThrowableDataPointArray() {
-    return throwableDataPointArray;
+  public StackTraceElementProxy[] getStackTraceElementProxyArray() {
+    return stackTraceElementProxyArray;
   }
-  public void setThrowableDataPointArray(
-      ThrowableDataPoint[] throwableDataPointArray) {
-    this.throwableDataPointArray = throwableDataPointArray;
+  public void setStackTraceElementProxyArray(
+      StackTraceElementProxy[] stackTraceElementProxyArray) {
+    this.stackTraceElementProxyArray = stackTraceElementProxyArray;
   }
-  
   public IThrowableProxy getCause() {
     return cause;
   }

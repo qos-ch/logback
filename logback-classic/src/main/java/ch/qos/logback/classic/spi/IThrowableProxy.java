@@ -10,14 +10,9 @@
 package ch.qos.logback.classic.spi;
 
 public interface IThrowableProxy {
-
   public String getMessage();
   public String getClassName();
-  /**
-   * The data point representation of the throwable proxy.
-   */
-  public ThrowableDataPoint[] getThrowableDataPointArray();
+  public StackTraceElementProxy[] getStackTraceElementProxyArray();
   public int getCommonFrames();
   public IThrowableProxy getCause();
-
 }

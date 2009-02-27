@@ -20,9 +20,8 @@ public class BasicCPDCTest {
   public void tearDown() throws Exception {
   }
 
-  public void verify(ThrowableDataPoint[] tdpArray) {
-    for (ThrowableDataPoint tdp : tdpArray) {
-      StackTraceElementProxy step = tdp.getStackTraceElementProxy();
+  public void verify(ThrowableProxy tp) {
+    for (StackTraceElementProxy step : tp.getStackTraceElementProxyArray()) {
       if (step != null) {
         assertNotNull(step.getClassPackagingData());
       }
@@ -34,37 +33,18 @@ public class BasicCPDCTest {
     System.out.println(SystemInfo.getJavaVendor());
   }
 
-//  @Test
-//  public void withGreenMail() {
-//    try {
-//      ServerSetup serverSetup = new ServerSetup(-1, "localhost",
-//          ServerSetup.PROTOCOL_SMTP);
-//      GreenMail greenMail = new GreenMail((ServerSetup) null);
-//      // greenMail.start();
-//    } catch (Throwable e) {
-//      ThrowableProxy tp = new ThrowableProxy(e);
-//      ClassPackagingDataCalculator cpdc = tp.getClassPackagingDataCalculator();
-//      ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-//      cpdc.calculate(tdpArray);
-//      verify(tdpArray);
-//      tp.fullDump();
-//    }
-//  }
-  
- 
   @Test
   public void integration() throws Exception {
-  
+
   }
-  
+
   @Test
   public void smoke() throws Exception {
     Throwable t = new Throwable("x");
     ThrowableProxy tp = new ThrowableProxy(t);
     PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
-    ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-    pdc.calculate(tdpArray);
-    verify(tdpArray);
+    pdc.calculate(tp);
+    verify(tp);
     tp.fullDump();
   }
 
@@ -73,9 +53,8 @@ public class BasicCPDCTest {
     Throwable t = TeztHelper.makeNestedException(3);
     ThrowableProxy tp = new ThrowableProxy(t);
     PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
-    ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-    pdc.calculate(tdpArray);
-    verify(tdpArray);
+    pdc.calculate(tp);
+    verify(tp);
   }
 
   public void doCalculateClassPackagingData(
@@ -85,10 +64,8 @@ public class BasicCPDCTest {
     } catch (Throwable e) {
       ThrowableProxy tp = new ThrowableProxy(e);
       if (withClassPackagingCalculation) {
-        PackagingDataCalculator pdc = tp
-            .getPackagingDataCalculator();
-        ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
-        pdc.calculate(tdpArray);
+        PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
+        pdc.calculate(tp);
       }
     }
   }
@@ -113,16 +90,15 @@ public class BasicCPDCTest {
     double d1 = loop(len, true);
     System.out.println("with    packaging info " + d1 + " microseconds");
 
-    int slackFactor = 8;  
+    int slackFactor = 8;
     if (!SystemInfo.getJavaVendor().contains("Sun")) {
       // be more lenient with other JDKs
       slackFactor = 10;
-    } 
-    assertTrue(
-        "computing class packaging data ("
-            + d1
-            + ") should have been less than "+slackFactor+" times the time it takes to process an exception "
-            + (d0 * slackFactor), d0 * slackFactor > d1);
+    }
+    assertTrue("computing class packaging data (" + d1
+        + ") should have been less than " + slackFactor
+        + " times the time it takes to process an exception "
+        + (d0 * slackFactor), d0 * slackFactor > d1);
 
   }
 }

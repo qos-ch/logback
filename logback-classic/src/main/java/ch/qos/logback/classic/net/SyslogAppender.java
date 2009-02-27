@@ -15,7 +15,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
@@ -77,10 +77,10 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
     IThrowableProxy tp = event.getThrowableProxy();
     while (tp != null) {
-      ThrowableDataPoint[] strRep = tp.getThrowableDataPointArray();
+      StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
-        for (ThrowableDataPoint line : strRep) {
-          sw.write(prefix + line.toString());
+        for (StackTraceElementProxy step : stepArray) {
+          sw.write(prefix + step.toString());
           sw.flush();
         }
       } catch (IOException e) {

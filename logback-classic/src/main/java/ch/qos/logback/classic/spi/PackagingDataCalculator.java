@@ -11,11 +11,8 @@ package ch.qos.logback.classic.spi;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import sun.reflect.Reflection;
-import ch.qos.logback.classic.spi.ThrowableDataPoint.ThrowableDataPointType;
 
 /**
  * 
@@ -52,14 +49,11 @@ public class PackagingDataCalculator {
   public PackagingDataCalculator() {
   }
 
-  public void calculate(ThrowableDataPoint[] tdpArray) {
-    int steStart = 0;
-    StackTraceElementProxy[] stepArray = new StackTraceElementProxy[0];
-    do {
-      steStart = findSTEStartIndex(tdpArray, steStart + stepArray.length);
-      stepArray = getSTEPArray(tdpArray, steStart);
-      populateFrames(stepArray);
-    } while (steStart != -1);
+  public void calculate(IThrowableProxy tp) {
+    while(tp != null) {
+      populateFrames(tp.getStackTraceElementProxyArray());
+      tp = tp.getCause();
+    } 
   }
 
   void populateFrames(StackTraceElementProxy[] stepArray) {
@@ -99,38 +93,6 @@ public class PackagingDataCalculator {
       }
     }
     populateUncommonFrames(commonFrames, stepArray, firsExactClassLoader);
-  }
-
-  int findSTEStartIndex(final ThrowableDataPoint[] tdpArray, final int from) {
-    final int len = tdpArray.length;
-    if (from < 0 || from >= len) {
-      return -1;
-    }
-    for (int i = from; i < len; i++) {
-      if (tdpArray[i].type == ThrowableDataPointType.STEP) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  private StackTraceElementProxy[] getSTEPArray(
-      final ThrowableDataPoint[] tdpArray, final int from) {
-    List<StackTraceElementProxy> stepList = new LinkedList<StackTraceElementProxy>();
-    int len = tdpArray.length;
-    if (from < 0 || from >= len) {
-      return stepList.toArray(STEP_ARRAY_TEMPLATE);
-    }
-    for (int i = from; i < len; i++) {
-      final ThrowableDataPoint tdp = tdpArray[i];
-
-      if (tdp.type == ThrowableDataPointType.STEP) {
-        stepList.add(tdp.getStackTraceElementProxy());
-      } else {
-        break;
-      }
-    }
-    return stepList.toArray(STEP_ARRAY_TEMPLATE);
   }
 
   void populateUncommonFrames(int commonFrames,

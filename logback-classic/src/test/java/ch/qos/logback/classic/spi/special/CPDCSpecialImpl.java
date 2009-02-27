@@ -20,7 +20,7 @@ public class CPDCSpecialImpl implements CPDCSpecial {
     throwable = new Throwable("x");
     throwableProxy = new ThrowableProxy(throwable);
     PackagingDataCalculator pdc = new PackagingDataCalculator();
-    pdc.calculate(throwableProxy.getThrowableDataPointArray());
+    pdc.calculate(throwableProxy);
   }
   
   public Throwable getThrowable() {

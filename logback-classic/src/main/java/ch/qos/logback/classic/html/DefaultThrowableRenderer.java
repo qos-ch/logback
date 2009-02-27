@@ -11,7 +11,7 @@ package ch.qos.logback.classic.html;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.Transform;
@@ -30,12 +30,12 @@ public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEven
     sbuf.append(Transform.escapeTags(firstLine.toString()));
     
     int commonFrames = tp.getCommonFrames();
-    ThrowableDataPoint[] tdpa = tp.getThrowableDataPointArray();
+    StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     
-    for (int i = 0; i < tdpa.length - commonFrames; i++) {
-      ThrowableDataPoint tdp = tdpa[i];
+    for (int i = 0; i < stepArray.length - commonFrames; i++) {
+      StackTraceElementProxy step = stepArray[i];
       sbuf.append(TRACE_PREFIX);
-      sbuf.append(Transform.escapeTags(tdp.toString()));
+      sbuf.append(Transform.escapeTags(step.toString()));
       sbuf.append(CoreConstants.LINE_SEPARATOR);
     }
     

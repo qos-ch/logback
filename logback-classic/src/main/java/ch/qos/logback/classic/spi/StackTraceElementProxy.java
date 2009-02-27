@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 public class StackTraceElementProxy implements Serializable {
 
-  private static final long serialVersionUID = -4832130320500439038L;
-
+  private static final long serialVersionUID = -2374374378980555982L;
+  
   final StackTraceElement ste;
   // save a byte or two during serialization, as we can
   // reconstruct this field from 'ste'
   transient private String steAsString;
   private ClassPackagingData cpd;
 
-  StackTraceElementProxy(StackTraceElement ste) {
+  public StackTraceElementProxy(StackTraceElement ste) {
     if (ste == null) {
       throw new IllegalArgumentException("ste cannot be null");
     }

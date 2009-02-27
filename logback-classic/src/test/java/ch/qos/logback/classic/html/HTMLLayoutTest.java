@@ -25,7 +25,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.DummyThrowableProxy;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
@@ -104,9 +104,9 @@ public class HTMLLayoutTest {
     StackTraceElement ste1 = new StackTraceElement("c1", "m1", "f1", 1);
     StackTraceElement ste2 = new StackTraceElement("c2", "m2", "f2", 2);
     
-    ThrowableDataPoint[] strArray = { new ThrowableDataPoint(ste1),
-        new ThrowableDataPoint(ste2) };
-    tp.setThrowableDataPointArray(strArray);
+    StackTraceElementProxy[] stepArray = { new StackTraceElementProxy(ste1),
+        new StackTraceElementProxy(ste2) };
+    tp.setStackTraceElementProxyArray(stepArray);
     DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout
         .getThrowableRenderer();
 

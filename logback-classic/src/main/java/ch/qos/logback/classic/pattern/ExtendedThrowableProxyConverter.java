@@ -12,14 +12,12 @@ package ch.qos.logback.classic.pattern;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
 
 public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
 
   @Override
-  protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
+  protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
 
-    StackTraceElementProxy step = tdp.getStackTraceElementProxy();
     if (step != null) {
       ClassPackagingData pi = step.getClassPackagingData();
       if (pi != null) {

@@ -13,8 +13,7 @@ import java.io.Serializable;
 
 public class ClassPackagingData implements Serializable {
 
-  private static final long serialVersionUID = 637783570208674312L;
-
+  private static final long serialVersionUID = -804643281218337001L;
   final String codeLocation;
   final String version;
   private final boolean exact;

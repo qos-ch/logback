@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.helpers.Transform;
 
@@ -125,10 +125,10 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
 
     IThrowableProxy tp = event.getThrowableProxy();
     if (tp != null) {
-      ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
+      StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       buf.append("  <log4j:throwable><![CDATA[");
-      for (ThrowableDataPoint tdp : tdpArray) {
-        buf.append(tdp.toString());
+      for (StackTraceElementProxy step : stepArray) {
+        buf.append(step.toString());
         buf.append("\r\n");
       }
       buf.append("]]></log4j:throwable>\r\n");

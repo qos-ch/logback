@@ -20,7 +20,7 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ThrowableProxyUtil {
 
-  static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
+  //static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
 
   static public void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
       ThrowableProxy parentTP) {
@@ -30,33 +30,33 @@ public class ThrowableProxyUtil {
     int commonFramesCount = -1;
     if (parentTP != null) {
       commonFramesCount = findNumberOfCommonFrames(nestedSTE, parentTP
-          .getThrowableDataPointArray());
+          .getStackTraceElementProxyArray());
     }
 
     nestedTP.commonFrames = commonFramesCount;
-    nestedTP.throwableDataPointArray = stea2tdpa(nestedSTE);
+    nestedTP.stackTraceElementProxyArray = steArrayToStepArray(nestedSTE);
   }
 
-  static ThrowableDataPoint[] stea2tdpa(StackTraceElement[] stea) {
-    ThrowableDataPoint[] tdpa = new ThrowableDataPoint[stea.length];
-    for (int i = 0; i < tdpa.length; i++) {
-      tdpa[i] = new ThrowableDataPoint(stea[i]);
+  static StackTraceElementProxy[] steArrayToStepArray(StackTraceElement[] stea) {
+    StackTraceElementProxy[] stepa = new StackTraceElementProxy[stea.length];
+    for (int i = 0; i < stepa.length; i++) {
+      stepa[i] = new StackTraceElementProxy(stea[i]);
     }
-    return tdpa;
+    return stepa;
   }
 
   static int findNumberOfCommonFrames(StackTraceElement[] steArray,
-      ThrowableDataPoint[] parentTDPA) {
-    if (parentTDPA == null) {
+      StackTraceElementProxy[] parentSTEPArray) {
+    if (parentSTEPArray == null) {
       return 0;
     }
 
     int steIndex = steArray.length - 1;
-    int parentIndex = parentTDPA.length - 1;
+    int parentIndex = parentSTEPArray.length - 1;
     int count = 0;
     while (steIndex >= 0 && parentIndex >= 0) {
       StackTraceElement ste = steArray[steIndex];
-      StackTraceElement otherSte = parentTDPA[parentIndex].step.ste;
+      StackTraceElement otherSte = parentSTEPArray[parentIndex].ste;
       if (ste.equals(otherSte)) {
         count++;
       } else {
@@ -74,26 +74,25 @@ public class ThrowableProxyUtil {
     while (tp != null) {
      
       printFirstLine(sb, tp);
-      printTDP(sb, tp);
+      printSTEPArray(sb, tp);
       tp = tp.getCause();
     }
     return sb.toString();
 
   }
 
-  static public void printTDP(StringBuilder sb, IThrowableProxy tp) {
-    ThrowableDataPoint[] tdpa = tp.getThrowableDataPointArray();
+  static public void printSTEPArray(StringBuilder sb, IThrowableProxy tp) {
+    StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
-    for (int i = 0; i < tdpa.length - commonFrames; i++) {
-      ThrowableDataPoint tdp = tdpa[i];
-      sb.append(tdp.toString()).append(CoreConstants.LINE_SEPARATOR);
+    for (int i = 0; i < stepArray.length - commonFrames; i++) {
+      StackTraceElementProxy step = stepArray[i];
+      sb.append(step.toString()).append(CoreConstants.LINE_SEPARATOR);
     }
     
     if (commonFrames > 0) {
       sb.append("\t... " + commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
-    
     
   }
 

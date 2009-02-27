@@ -15,7 +15,7 @@ import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -88,7 +88,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     super.stop();
   }
 
-  protected void extraData(StringBuilder builder, ThrowableDataPoint tdp) {
+  protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
     // nop
   }
 
@@ -142,11 +142,11 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
   void printThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
     ThrowableProxyUtil.printFirstLine(buf, tp);
 
-    ThrowableDataPoint[] tdpArray = tp.getThrowableDataPointArray();
+    StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
-    boolean unrestrictedPrinting = lengthOption > tdpArray.length;
-    int length = (unrestrictedPrinting) ? tdpArray.length : lengthOption;
+    boolean unrestrictedPrinting = lengthOption > stepArray.length;
+    int length = (unrestrictedPrinting) ? stepArray.length : lengthOption;
 
 
     int maxIndex = length;
@@ -155,9 +155,9 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     for (int i = 0; i < maxIndex; i++) {
-      String string = tdpArray[i].toString();
+      String string = stepArray[i].toString();
       buf.append(string);
-      extraData(buf, tdpArray[i]); // allow other data to be added
+      extraData(buf, stepArray[i]); // allow other data to be added
       buf.append(CoreConstants.LINE_SEPARATOR);
     }
 

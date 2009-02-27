@@ -19,7 +19,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
   private String className;
   private String message;
   private int commonFramesCount;
-  private ThrowableDataPoint[] throwableDataPointArray;
+  private StackTraceElementProxy[] stackTraceElementProxyArray;
   private IThrowableProxy cause;
 
 
@@ -39,8 +39,8 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     return cause;
   }
   
-  public ThrowableDataPoint[] getThrowableDataPointArray() {
-    return throwableDataPointArray;
+  public StackTraceElementProxy[] getStackTraceElementProxyArray() {
+    return stackTraceElementProxyArray;
   }
 
   @Override
@@ -68,7 +68,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     } else if (!className.equals(other.className))
       return false;
 
-    if (!Arrays.equals(throwableDataPointArray, other.throwableDataPointArray))
+    if (!Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray))
       return false;
     
     if (cause == null) {
@@ -88,7 +88,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     tpvo.className = throwableProxy.getClassName();
     tpvo.message = throwableProxy.getMessage();
     tpvo.commonFramesCount = throwableProxy.getCommonFrames();
-    tpvo.throwableDataPointArray = throwableProxy.getThrowableDataPointArray();
+    tpvo.stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
     if(throwableProxy.getCause() != null) {
       tpvo.cause = ThrowableProxyVO.build(throwableProxy.getCause());
     }

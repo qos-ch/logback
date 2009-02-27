@@ -21,7 +21,7 @@ import java.util.Set;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableDataPoint;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.db.DBAppenderBase;
 
 /**
@@ -92,7 +92,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     insertProperties(mergedMap, connection, eventId);
 
     if (event.getThrowableProxy() != null) {
-      insertThrowable(event.getThrowableProxy().getThrowableDataPointArray(), connection, eventId);
+      insertThrowable(event.getThrowableProxy().getStackTraceElementProxyArray(), connection, eventId);
     }
   }
 
@@ -176,16 +176,16 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
   }
   
-  protected void insertThrowable(ThrowableDataPoint[] tdpArray, Connection connection,
+  protected void insertThrowable(StackTraceElementProxy[] stepArray, Connection connection,
       int eventId) throws SQLException {
 
     PreparedStatement insertExceptionStatement = connection
         .prepareStatement(insertExceptionSQL);
 
-    for (short i = 0; i < tdpArray.length; i++) {
+    for (short i = 0; i < stepArray.length; i++) {
       insertExceptionStatement.setInt(1, eventId);
       insertExceptionStatement.setShort(2, i);
-      insertExceptionStatement.setString(3, tdpArray[i].toString());
+      insertExceptionStatement.setString(3, stepArray[i].toString());
       if (cnxSupportsBatchUpdates) {
         insertExceptionStatement.addBatch();
       } else {
