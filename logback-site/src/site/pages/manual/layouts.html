@@ -400,10 +400,11 @@ WARN  [main]: Message 2</p>
 					<p>This conversion word can take an integer as its first and
 					only option. The converter's abbreviation algorithm will
 					shorten the logger name, usually without significant loss of
-					meaning. Setting the value of this option to zero will cause
-					the conversoin specifier to return the string right to the
-					rightmost dot character. The next table provides examples of
-					the abbreviation algorithm in action.
+					meaning. Setting the value of this option to zero has
+					special meaning. It will cause the conversoin specifier to
+					return the string right to the rightmost dot character. The
+					next table provides examples of the abbreviation algorithm
+					in action.
           </p>
 
 					<table class="bodyTable dark" border="0" cellpadding="8">
@@ -422,6 +423,12 @@ WARN  [main]: Message 2</p>
 							<td>%logger{0}</td>
 							<td>mainPackage.sub.sample.Bar</td>
 							<td>Bar</td>
+						</tr>
+
+						<tr>
+							<td>%logger{5}</td>
+							<td>mainPackage.sub.sample.Bar</td>
+							<td>m.s.s.Bar</td>
 						</tr>
 
 						<tr>
@@ -448,6 +455,12 @@ WARN  [main]: Message 2</p>
 							<td>mainPackage.sub.sample.Bar</td>
 						</tr>
 					</table>
+
+          <p>Please note that the right most segment in a logger name
+          is never abbreviated, even if its length is longer than the
+          <em>length</em> option. Other segments may be shortened to
+          at most a single character but are never removed.</p>
+
 				</td>
 			</tr>
 
