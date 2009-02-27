@@ -1,21 +1,21 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.classic.pattern;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.core.CoreConstants;
 
 public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
   static private final int BUF_LIMIT = 256;
-  static private final int MAX_DOTS = 12;
-
+  
   final int targetLength;
   StringBuffer buf;
 
@@ -39,8 +39,8 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     }
     buf.setLength(0);
 
-    int[] dotArray = new int[MAX_DOTS];
-    int[] lengthArray = new int[MAX_DOTS];
+    int[] dotArray = new int[ClassicConstants.MAX_DOTS];
+    int[] lengthArray = new int[ClassicConstants.MAX_DOTS+1];
 
     int dotCount = computeIndexes(fqClassName, dotArray);
 
@@ -72,7 +72,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     int k = 0;
     while (true) {
       k = className.indexOf(CoreConstants.DOT, k);
-      if (k != -1 && dotCount < MAX_DOTS) {
+      if (k != -1 && dotCount < ClassicConstants.MAX_DOTS) {
         dotArray[dotCount] = k;
         dotCount++;
         k++;

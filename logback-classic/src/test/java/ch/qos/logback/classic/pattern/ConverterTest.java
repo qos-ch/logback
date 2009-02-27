@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2005, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -36,7 +37,7 @@ public class ConverterTest {
 
   LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
-  ILoggingEvent le;
+  LoggingEvent le;
   List<String> optionList = new ArrayList<String>();
 
   // The LoggingEvent is massaged with an FCQN of FormattingConverter. This
@@ -69,7 +70,7 @@ public class ConverterTest {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("70", buf.toString());
+      assertEquals("71", buf.toString());
     }
   }
 
@@ -163,6 +164,38 @@ public class ConverterTest {
     }
   }
 
+  @Test
+  public void testVeryLongLoggerName() {
+    ClassicConverter converter = new LoggerConverter();
+    this.optionList.add("5");
+    converter.setOptionList(this.optionList);
+    converter.start();
+    StringBuffer buf = new StringBuffer();
+    
+    char c = 'a';
+    int extraParts = 3;
+    int totalParts = ClassicConstants.MAX_DOTS + extraParts;
+    StringBuilder loggerNameBuf = new StringBuilder();
+    StringBuilder witness = new StringBuilder();
+    
+    for(int i = 0; i < totalParts ; i++) {
+      loggerNameBuf.append(c).append(c).append(c); 
+      if(i < ClassicConstants.MAX_DOTS) {
+        witness.append(c);
+      } else {
+        witness.append(c).append(c).append(c);
+      }
+      loggerNameBuf.append('.');
+      witness.append('.');
+    }
+    loggerNameBuf.append("zzzzzz");
+    witness.append("zzzzzz");
+    
+    le.setLoggerName(loggerNameBuf.toString());
+    converter.write(buf, le);
+    assertEquals(witness.toString(), buf.toString());
+  }
+  
   @Test
   public void testClass() {
     DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();

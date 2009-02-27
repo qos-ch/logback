@@ -69,7 +69,7 @@ public class CoreConstants {
   public static final int TABLE_ROW_LIMIT = 10000;
   
   
-  // reset the ObjectOutputStream every 70 calls
+  // reset the ObjectOutputStream every OOS_RESET_FREQUENCY calls
   // this avoid serious memory leaks
   public static final int OOS_RESET_FREQUENCY = 70;
   
