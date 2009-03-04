@@ -4,13 +4,19 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.corpus.RandomUtil;
 
 
 public class RandomUtilTest {
-
+  long now = System.currentTimeMillis();
+  
+  @Before
+  public void setup() {
+    System.out.println(RandomUtilTest.class.getName()+" now="+now);
+  }
   
   @Test
   public void smoke() {
@@ -18,7 +24,8 @@ public class RandomUtilTest {
     int EXPECTED_AVERAGE = 6;
     int EXPECTED_STD_DEVIATION = 3;
     
-    long now = System.currentTimeMillis();
+
+    System.out.println();
     Random r = new Random(now);
     int len = 3000;
     int[] valArray = new int[len];
@@ -26,10 +33,8 @@ public class RandomUtilTest {
       valArray[i] = RandomUtil.gaussianAsPositiveInt(r, EXPECTED_AVERAGE, EXPECTED_STD_DEVIATION);
     }
     double avg = average(valArray);
-    for(int x: valArray) {
-     System.out.println(""+x);
-    }
-    assertEquals(EXPECTED_AVERAGE, avg, 0.1);
+
+    assertEquals(EXPECTED_AVERAGE, avg, 0.3);
   }
   
   public double average(int[] va) {
