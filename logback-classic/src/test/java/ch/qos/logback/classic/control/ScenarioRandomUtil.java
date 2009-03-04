@@ -1,17 +1,18 @@
-/** 
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2005, QOS.ch, LOGBack.com
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.classic.control;
 
 import java.util.Random;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.corpus.RandomUtil;
 
 public class ScenarioRandomUtil {
   private final static long SEED = 74130;
@@ -49,7 +50,7 @@ public class ScenarioRandomUtil {
   }
 
   public static String randomLoggerName(int average, int stdDeviation) {
-    int depth = gaussianAsPositiveInt(average, stdDeviation);
+    int depth = RandomUtil.gaussianAsPositiveInt(random, average, stdDeviation);
     StringBuffer buf = new StringBuffer();
     for (int i = 0; i < depth; i++) {
       if (i != 0) {
@@ -62,7 +63,7 @@ public class ScenarioRandomUtil {
 
   public static String randomId() {
 
-    int len = gaussianAsPositiveInt(AVERAGE_ID_LEN, AVERAGE_ID_DEV);
+    int len = RandomUtil.gaussianAsPositiveInt(random, AVERAGE_ID_LEN, AVERAGE_ID_DEV);
     StringBuffer buf = new StringBuffer();
     for (int i = 0; i < len; i++) {
       int offset = random.nextInt(26);
@@ -72,31 +73,6 @@ public class ScenarioRandomUtil {
     return buf.toString();
   }
 
-  /**
-   * Approximate a gaussian distrib with only only positive integer values
-   * 
-   * @param average
-   * @param stdDeviation
-   * @return
-   */
-  public static int gaussianAsPositiveInt(int average, int stdDeviation) {
-    if (average < 1) {
-      throw new IllegalArgumentException(
-          "The average must not be smaller than 1.");
-    }
-
-    if (stdDeviation < 1) {
-      throw new IllegalArgumentException(
-          "The stdDeviation must not be smaller than 1.");
-    }
-
-    double d = random.nextGaussian() * stdDeviation + average;
-    int result = 1;
-    if (d > 1.0) {
-      result = (int) Math.round(d);
-    }
-    return result;
-  }
 
   /**
    * Returns 3 for root, 3 for children of root, 9 for offspring of generation 2
@@ -114,7 +90,7 @@ public class ScenarioRandomUtil {
       return 9;
     } else {
       if (shouldHaveChildrenWithProbabilitz(0.5)) {
-        return gaussianAsPositiveInt(AVERAGE_CHILDREN_COUNT, CHILDREN_COUNT_VAR);
+        return RandomUtil.gaussianAsPositiveInt(random, AVERAGE_CHILDREN_COUNT, CHILDREN_COUNT_VAR);
       } else {
         return 0;
       }

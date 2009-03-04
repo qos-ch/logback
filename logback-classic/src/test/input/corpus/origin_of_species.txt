@@ -1,0 +1,1276 @@
+Darwin, Charles, 1809-1882
+
+ON THE ORIGIN OF SPECIES.
+
+INTRODUCTION.
+
+When on board H.M.S. 'Beagle,' as naturalist, I was much struck with
+certain facts in the distribution of the inhabitants of South America,
+and in the geological relations of the present to the past inhabitants
+of that continent. These facts seemed to me to throw some light on the
+origin of species--that mystery of mysteries, as it has been called by
+one of our greatest philosophers. On my return home, it occurred to
+me, in 1837, that something might perhaps be made out on this question
+by patiently accumulating and reflecting on all sorts of facts which
+could possibly have any bearing on it. After five years' work I
+allowed myself to speculate on the subject, and drew up some short
+notes; these I enlarged in 1844 into a sketch of the conclusions,
+which then seemed to me probable: from that period to the present day
+I have steadily pursued the same object. I hope that I may be excused
+for entering on these personal details, as I give them to show that I
+have not been hasty in coming to a decision.
+
+My work is now nearly finished; but as it will take me two or three
+more years to complete it, and as my health is far from strong, I have
+been urged to publish this Abstract. I have more especially been
+induced to do this, as Mr. Wallace, who is now studying the natural
+history of the Malay archipelago, has arrived at almost exactly the
+same general conclusions that I have on the origin of species. Last
+year he sent to me a memoir on this subject, with a request that I
+would forward it to Sir Charles Lyell, who sent it to the Linnean
+Society, and it is published in the third volume of the Journal of
+that Society. Sir C. Lyell and Dr. Hooker, who both knew of my
+work--the latter having read my sketch of 1844--honoured me by
+thinking it advisable to publish, with Mr. Wallace's excellent memoir,
+some brief extracts from my manuscripts.
+
+This Abstract, which I now publish, must necessarily be imperfect. I
+cannot here give references and authorities for my several statements;
+and I must trust to the reader reposing some confidence in my
+accuracy. No doubt errors will have crept in, though I hope I have
+always been cautious in trusting to good authorities alone. I can here
+give only the general conclusions at which I have arrived, with a few
+facts in illustration, but which, I hope, in most cases will suffice.
+No one can feel more sensible than I do of the necessity of hereafter
+publishing in detail all the facts, with references, on which my
+conclusions have been grounded; and I hope in a future work to do
+this. For I am well aware that scarcely a single point is discussed in
+this volume on which facts cannot be adduced, often apparently leading
+to conclusions directly opposite to those at which I have arrived. A
+fair result can be obtained only by fully stating and balancing the
+facts and arguments on both sides of each question; and this cannot
+possibly be here done.
+
+I much regret that want of space prevents my having the satisfaction
+of acknowledging the generous assistance which I have received from
+very many naturalists, some of them personally unknown to me. I
+cannot, however, let this opportunity pass without expressing my deep
+obligations to Dr. Hooker, who for the last fifteen years has aided me
+in every possible way by his large stores of knowledge and his
+excellent judgment.
+
+In considering the Origin of Species, it is quite conceivable that a
+naturalist, reflecting on the mutual affinities of organic beings, on
+their embryological relations, their geographical distribution,
+geological succession, and other such facts, might come to the
+conclusion that each species had not been independently created, but
+had descended, like varieties, from other species. Nevertheless, such
+a conclusion, even if well founded, would be unsatisfactory, until it
+could be shown how the innumerable species inhabiting this world have
+been modified, so as to acquire that perfection of structure and
+coadaptation which most justly excites our admiration. Naturalists
+continually refer to external conditions, such as climate, food, etc.,
+as the only possible cause of variation. In one very limited sense, as
+we shall hereafter see, this may be true; but it is preposterous to
+attribute to mere external conditions, the structure, for instance, of
+the woodpecker, with its feet, tail, beak, and tongue, so admirably
+adapted to catch insects under the bark of trees. In the case of the
+misseltoe, which draws its nourishment from certain trees, which has
+seeds that must be transported by certain birds, and which has flowers
+with separate sexes absolutely requiring the agency of certain insects
+to bring pollen from one flower to the other, it is equally
+preposterous to account for the structure of this parasite, with its
+relations to several distinct organic beings, by the effects of
+external conditions, or of habit, or of the volition of the plant
+itself.
+
+The author of the 'Vestiges of Creation' would, I presume, say that,
+after a certain unknown number of generations, some bird had given
+birth to a woodpecker, and some plant to the misseltoe, and that these
+had been produced perfect as we now see them; but this assumption
+seems to me to be no explanation, for it leaves the case of the
+coadaptations of organic beings to each other and to their physical
+conditions of life, untouched and unexplained.
+
+It is, therefore, of the highest importance to gain a clear insight
+into the means of modification and coadaptation. At the commencement
+of my observations it seemed to me probable that a careful study of
+domesticated animals and of cultivated plants would offer the best
+chance of making out this obscure problem. Nor have I been
+disappointed; in this and in all other perplexing cases I have
+invariably found that our knowledge, imperfect though it be, of
+variation under domestication, afforded the best and safest clue. I
+may venture to express my conviction of the high value of such
+studies, although they have been very commonly neglected by
+naturalists.
+
+From these considerations, I shall devote the first chapter of this
+Abstract to Variation under Domestication. We shall thus see that a
+large amount of hereditary modification is at least possible, and,
+what is equally or more important, we shall see how great is the power
+of man in accumulating by his Selection successive slight variations.
+I will then pass on to the variability of species in a state of
+nature; but I shall, unfortunately, be compelled to treat this subject
+far too briefly, as it can be treated properly only by giving long
+catalogues of facts. We shall, however, be enabled to discuss what
+circumstances are most favourable to variation. In the next chapter
+the Struggle for Existence amongst all organic beings throughout the
+world, which inevitably follows from their high geometrical powers of
+increase, will be treated of. This is the doctrine of Malthus, applied
+to the whole animal and vegetable kingdoms. As many more individuals
+of each species are born than can possibly survive; and as,
+consequently, there is a frequently recurring struggle for existence,
+it follows that any being, if it vary however slightly in any manner
+profitable to itself, under the complex and sometimes varying
+conditions of life, will have a better chance of surviving, and thus
+be NATURALLY SELECTED. From the strong principle of inheritance, any
+selected variety will tend to propagate its new and modified form.
+
+This fundamental subject of Natural Selection will be treated at some
+length in the fourth chapter; and we shall then see how Natural
+Selection almost inevitably causes much Extinction of the less
+improved forms of life and induces what I have called Divergence of
+Character. In the next chapter I shall discuss the complex and little
+known laws of variation and of correlation of growth. In the four
+succeeding chapters, the most apparent and gravest difficulties on the
+theory will be given: namely, first, the difficulties of transitions,
+or in understanding how a simple being or a simple organ can be
+changed and perfected into a highly developed being or elaborately
+constructed organ; secondly the subject of Instinct, or the mental
+powers of animals, thirdly, Hybridism, or the infertility of species
+and the fertility of varieties when intercrossed; and fourthly, the
+imperfection of the Geological Record. In the next chapter I shall
+consider the geological succession of organic beings throughout time;
+in the eleventh and twelfth, their geographical distribution
+throughout space; in the thirteenth, their classification or mutual
+affinities, both when mature and in an embryonic condition. In the
+last chapter I shall give a brief recapitulation of the whole work,
+and a few concluding remarks.
+
+No one ought to feel surprise at much remaining as yet unexplained in
+regard to the origin of species and varieties, if he makes due
+allowance for our profound ignorance in regard to the mutual relations
+of all the beings which live around us. Who can explain why one
+species ranges widely and is very numerous, and why another allied
+species has a narrow range and is rare? Yet these relations are of the
+highest importance, for they determine the present welfare, and, as I
+believe, the future success and modification of every inhabitant of
+this world. Still less do we know of the mutual relations of the
+innumerable inhabitants of the world during the many past geological
+epochs in its history. Although much remains obscure, and will long
+remain obscure, I can entertain no doubt, after the most deliberate
+study and dispassionate judgment of which I am capable, that the view
+which most naturalists entertain, and which I formerly
+entertained--namely, that each species has been independently
+created--is erroneous. I am fully convinced that species are not
+immutable; but that those belonging to what are called the same genera
+are lineal descendants of some other and generally extinct species, in
+the same manner as the acknowledged varieties of any one species are
+the descendants of that species. Furthermore, I am convinced that
+Natural Selection has been the main but not exclusive means of
+modification.
+
+CHAPTER 1. VARIATION UNDER DOMESTICATION.
+
+Causes of Variability.
+Effects of Habit.
+Correlation of Growth.
+Inheritance.
+Character of Domestic Varieties.
+Difficulty of distinguishing between Varieties and Species.
+Origin of Domestic Varieties from one or more Species.
+Domestic Pigeons, their Differences and Origin.
+Principle of Selection anciently followed, its Effects.
+Methodical and Unconscious Selection.
+Unknown Origin of our Domestic Productions.
+Circumstances favourable to Man's power of Selection.
+
+When we look to the individuals of the same variety or sub-variety of
+our older cultivated plants and animals, one of the first points which
+strikes us, is, that they generally differ much more from each other,
+than do the individuals of any one species or variety in a state of
+nature. When we reflect on the vast diversity of the plants and
+animals which have been cultivated, and which have varied during all
+ages under the most different climates and treatment, I think we are
+driven to conclude that this greater variability is simply due to our
+domestic productions having been raised under conditions of life not
+so uniform as, and somewhat different from, those to which the
+parent-species have been exposed under nature. There is, also, I
+think, some probability in the view propounded by Andrew Knight, that
+this variability may be partly connected with excess of food. It seems
+pretty clear that organic beings must be exposed during several
+generations to the new conditions of life to cause any appreciable
+amount of variation; and that when the organisation has once begun to
+vary, it generally continues to vary for many generations. No case is
+on record of a variable being ceasing to be variable under
+cultivation. Our oldest cultivated plants, such as wheat, still often
+yield new varieties: our oldest domesticated animals are still capable
+of rapid improvement or modification.
+
+It has been disputed at what period of life the causes of variability,
+whatever they may be, generally act; whether during the early or late
+period of development of the embryo, or at the instant of conception.
+Geoffroy St. Hilaire's experiments show that unnatural treatment of
+the embryo causes monstrosities; and monstrosities cannot be separated
+by any clear line of distinction from mere variations. But I am
+strongly inclined to suspect that the most frequent cause of
+variability may be attributed to the male and female reproductive
+elements having been affected prior to the act of conception. Several
+reasons make me believe in this; but the chief one is the remarkable
+effect which confinement or cultivation has on the functions of the
+reproductive system; this system appearing to be far more susceptible
+than any other part of the organisation, to the action of any change
+in the conditions of life. Nothing is more easy than to tame an
+animal, and few things more difficult than to get it to breed freely
+under confinement, even in the many cases when the male and female
+unite. How many animals there are which will not breed, though living
+long under not very close confinement in their native country! This is
+generally attributed to vitiated instincts; but how many cultivated
+plants display the utmost vigour, and yet rarely or never seed! In
+some few such cases it has been found out that very trifling changes,
+such as a little more or less water at some particular period of
+growth, will determine whether or not the plant sets a seed. I cannot
+here enter on the copious details which I have collected on this
+curious subject; but to show how singular the laws are which determine
+the reproduction of animals under confinement, I may just mention that
+carnivorous animals, even from the tropics, breed in this country
+pretty freely under confinement, with the exception of the
+plantigrades or bear family; whereas, carnivorous birds, with the
+rarest exceptions, hardly ever lay fertile eggs. Many exotic plants
+have pollen utterly worthless, in the same exact condition as in the
+most sterile hybrids. When, on the one hand, we see domesticated
+animals and plants, though often weak and sickly, yet breeding quite
+freely under confinement; and when, on the other hand, we see
+individuals, though taken young from a state of nature, perfectly
+tamed, long-lived, and healthy (of which I could give numerous
+instances), yet having their reproductive system so seriously affected
+by unperceived causes as to fail in acting, we need not be surprised
+at this system, when it does act under confinement, acting not quite
+regularly, and producing offspring not perfectly like their parents or
+variable.
+
+Sterility has been said to be the bane of horticulture; but on this
+view we owe variability to the same cause which produces sterility;
+and variability is the source of all the choicest productions of the
+garden. I may add, that as some organisms will breed most freely under
+the most unnatural conditions (for instance, the rabbit and ferret
+kept in hutches), showing that their reproductive system has not been
+thus affected; so will some animals and plants withstand domestication
+or cultivation, and vary very slightly--perhaps hardly more than in a
+state of nature.
+
+A long list could easily be given of "sporting plants;" by this term
+gardeners mean a single bud or offset, which suddenly assumes a new
+and sometimes very different character from that of the rest of the
+plant. Such buds can be propagated by grafting, etc., and sometimes by
+seed. These "sports" are extremely rare under nature, but far from
+rare under cultivation; and in this case we see that the treatment of
+the parent has affected a bud or offset, and not the ovules or pollen.
+But it is the opinion of most physiologists that there is no essential
+difference between a bud and an ovule in their earliest stages of
+formation; so that, in fact, "sports" support my view, that
+variability may be largely attributed to the ovules or pollen, or to
+both, having been affected by the treatment of the parent prior to the
+act of conception. These cases anyhow show that variation is not
+necessarily connected, as some authors have supposed, with the act of
+generation.
+
+Seedlings from the same fruit, and the young of the same litter,
+sometimes differ considerably from each other, though both the young
+and the parents, as Muller has remarked, have apparently been exposed
+to exactly the same conditions of life; and this shows how unimportant
+the direct effects of the conditions of life are in comparison with
+the laws of reproduction, and of growth, and of inheritance; for had
+the action of the conditions been direct, if any of the young had
+varied, all would probably have varied in the same manner. To judge
+how much, in the case of any variation, we should attribute to the
+direct action of heat, moisture, light, food, etc., is most difficult:
+my impression is, that with animals such agencies have produced very
+little direct effect, though apparently more in the case of plants.
+Under this point of view, Mr. Buckman's recent experiments on plants
+seem extremely valuable. When all or nearly all the individuals
+exposed to certain conditions are affected in the same way, the change
+at first appears to be directly due to such conditions; but in some
+cases it can be shown that quite opposite conditions produce similar
+changes of structure. Nevertheless some slight amount of change may, I
+think, be attributed to the direct action of the conditions of
+life--as, in some cases, increased size from amount of food, colour
+from particular kinds of food and from light, and perhaps the
+thickness of fur from climate.
+
+Habit also has a decided influence, as in the period of flowering with
+plants when transported from one climate to another. In animals it has
+a more marked effect; for instance, I find in the domestic duck that
+the bones of the wing weigh less and the bones of the leg more, in
+proportion to the whole skeleton, than do the same bones in the
+wild-duck; and I presume that this change may be safely attributed to
+the domestic duck flying much less, and walking more, than its wild
+parent. The great and inherited development of the udders in cows and
+goats in countries where they are habitually milked, in comparison
+with the state of these organs in other countries, is another instance
+of the effect of use. Not a single domestic animal can be named which
+has not in some country drooping ears; and the view suggested by some
+authors, that the drooping is due to the disuse of the muscles of the
+ear, from the animals not being much alarmed by danger, seems
+probable.
+
+There are many laws regulating variation, some few of which can be
+dimly seen, and will be hereafter briefly mentioned. I will here only
+allude to what may be called correlation of growth. Any change in the
+embryo or larva will almost certainly entail changes in the mature
+animal. In monstrosities, the correlations between quite distinct
+parts are very curious; and many instances are given in Isidore
+Geoffroy St. Hilaire's great work on this subject. Breeders believe
+that long limbs are almost always accompanied by an elongated head.
+Some instances of correlation are quite whimsical; thus cats with blue
+eyes are invariably deaf; colour and constitutional peculiarities go
+together, of which many remarkable cases could be given amongst
+animals and plants. From the facts collected by Heusinger, it appears
+that white sheep and pigs are differently affected from coloured
+individuals by certain vegetable poisons. Hairless dogs have imperfect
+teeth; long-haired and coarse-haired animals are apt to have, as is
+asserted, long or many horns; pigeons with feathered feet have skin
+between their outer toes; pigeons with short beaks have small feet,
+and those with long beaks large feet. Hence, if man goes on selecting,
+and thus augmenting, any peculiarity, he will almost certainly
+unconsciously modify other parts of the structure, owing to the
+mysterious laws of the correlation of growth.
+
+The result of the various, quite unknown, or dimly seen laws of
+variation is infinitely complex and diversified. It is well worth
+while carefully to study the several treatises published on some of
+our old cultivated plants, as on the hyacinth, potato, even the
+dahlia, etc.; and it is really surprising to note the endless points
+in structure and constitution in which the varieties and sub-varieties
+differ slightly from each other. The whole organisation seems to have
+become plastic, and tends to depart in some small degree from that of
+the parental type.
+
+Any variation which is not inherited is unimportant for us. But the
+number and diversity of inheritable deviations of structure, both
+those of slight and those of considerable physiological importance, is
+endless. Dr. Prosper Lucas's treatise, in two large volumes, is the
+fullest and the best on this subject. No breeder doubts how strong is
+the tendency to inheritance: like produces like is his fundamental
+belief: doubts have been thrown on this principle by theoretical
+writers alone. When a deviation appears not unfrequently, and we see
+it in the father and child, we cannot tell whether it may not be due
+to the same original cause acting on both; but when amongst
+individuals, apparently exposed to the same conditions, any very rare
+deviation, due to some extraordinary combination of circumstances,
+appears in the parent--say, once amongst several million
+individuals--and it reappears in the child, the mere doctrine of
+chances almost compels us to attribute its reappearance to
+inheritance. Every one must have heard of cases of albinism, prickly
+skin, hairy bodies, etc., appearing in several members of the same
+family. If strange and rare deviations of structure are truly
+inherited, less strange and commoner deviations may be freely admitted
+to be inheritable. Perhaps the correct way of viewing the whole
+subject, would be, to look at the inheritance of every character
+whatever as the rule, and non-inheritance as the anomaly.
+
+The laws governing inheritance are quite unknown; no one can say why
+the same peculiarity in different individuals of the same species, and
+in individuals of different species, is sometimes inherited and
+sometimes not so; why the child often reverts in certain characters to
+its grandfather or grandmother or other much more remote ancestor; why
+a peculiarity is often transmitted from one sex to both sexes or to
+one sex alone, more commonly but not exclusively to the like sex. It
+is a fact of some little importance to us, that peculiarities
+appearing in the males of our domestic breeds are often transmitted
+either exclusively, or in a much greater degree, to males alone. A
+much more important rule, which I think may be trusted, is that, at
+whatever period of life a peculiarity first appears, it tends to
+appear in the offspring at a corresponding age, though sometimes
+earlier. In many cases this could not be otherwise: thus the inherited
+peculiarities in the horns of cattle could appear only in the
+offspring when nearly mature; peculiarities in the silkworm are known
+to appear at the corresponding caterpillar or cocoon stage. But
+hereditary diseases and some other facts make me believe that the rule
+has a wider extension, and that when there is no apparent reason why a
+peculiarity should appear at any particular age, yet that it does tend
+to appear in the offspring at the same period at which it first
+appeared in the parent. I believe this rule to be of the highest
+importance in explaining the laws of embryology. These remarks are of
+course confined to the first APPEARANCE of the peculiarity, and not to
+its primary cause, which may have acted on the ovules or male element;
+in nearly the same manner as in the crossed offspring from a
+short-horned cow by a long-horned bull, the greater length of horn,
+though appearing late in life, is clearly due to the male element.
+
+Having alluded to the subject of reversion, I may here refer to a
+statement often made by naturalists--namely, that our domestic
+varieties, when run wild, gradually but certainly revert in character
+to their aboriginal stocks. Hence it has been argued that no
+deductions can be drawn from domestic races to species in a state of
+nature. I have in vain endeavoured to discover on what decisive facts
+the above statement has so often and so boldly been made. There would
+be great difficulty in proving its truth: we may safely conclude that
+very many of the most strongly-marked domestic varieties could not
+possibly live in a wild state. In many cases we do not know what the
+aboriginal stock was, and so could not tell whether or not nearly
+perfect reversion had ensued. It would be quite necessary, in order to
+prevent the effects of intercrossing, that only a single variety
+should be turned loose in its new home. Nevertheless, as our varieties
+certainly do occasionally revert in some of their characters to
+ancestral forms, it seems to me not improbable, that if we could
+succeed in naturalising, or were to cultivate, during many
+generations, the several races, for instance, of the cabbage, in very
+poor soil (in which case, however, some effect would have to be
+attributed to the direct action of the poor soil), that they would to
+a large extent, or even wholly, revert to the wild aboriginal stock.
+Whether or not the experiment would succeed, is not of great
+importance for our line of argument; for by the experiment itself the
+conditions of life are changed. If it could be shown that our domestic
+varieties manifested a strong tendency to reversion,--that is, to lose
+their acquired characters, whilst kept under unchanged conditions, and
+whilst kept in a considerable body, so that free intercrossing might
+check, by blending together, any slight deviations of structure, in
+such case, I grant that we could deduce nothing from domestic
+varieties in regard to species. But there is not a shadow of evidence
+in favour of this view: to assert that we could not breed our cart and
+race-horses, long and short-horned cattle, and poultry of various
+breeds, and esculent vegetables, for an almost infinite number of
+generations, would be opposed to all experience. I may add, that when
+under nature the conditions of life do change, variations and
+reversions of character probably do occur; but natural selection, as
+will hereafter be explained, will determine how far the new characters
+thus arising shall be preserved.
+
+When we look to the hereditary varieties or races of our domestic
+animals and plants, and compare them with species closely allied
+together, we generally perceive in each domestic race, as already
+remarked, less uniformity of character than in true species. Domestic
+races of the same species, also, often have a somewhat monstrous
+character; by which I mean, that, although differing from each other,
+and from the other species of the same genus, in several trifling
+respects, they often differ in an extreme degree in some one part,
+both when compared one with another, and more especially when compared
+with all the species in nature to which they are nearest allied. With
+these exceptions (and with that of the perfect fertility of varieties
+when crossed,--a subject hereafter to be discussed), domestic races of
+the same species differ from each other in the same manner as, only in
+most cases in a lesser degree than, do closely-allied species of the
+same genus in a state of nature. I think this must be admitted, when
+we find that there are hardly any domestic races, either amongst
+animals or plants, which have not been ranked by some competent judges
+as mere varieties, and by other competent judges as the descendants of
+aboriginally distinct species. If any marked distinction existed
+between domestic races and species, this source of doubt could not so
+perpetually recur. It has often been stated that domestic races do not
+differ from each other in characters of generic value. I think it
+could be shown that this statement is hardly correct; but naturalists
+differ most widely in determining what characters are of generic
+value; all such valuations being at present empirical. Moreover, on
+the view of the origin of genera which I shall presently give, we have
+no right to expect often to meet with generic differences in our
+domesticated productions.
+
+When we attempt to estimate the amount of structural difference
+between the domestic races of the same species, we are soon involved
+in doubt, from not knowing whether they have descended from one or
+several parent-species. This point, if it could be cleared up, would
+be interesting; if, for instance, it could be shown that the
+greyhound, bloodhound, terrier, spaniel, and bull-dog, which we all
+know propagate their kind so truly, were the offspring of any single
+species, then such facts would have great weight in making us doubt
+about the immutability of the many very closely allied and natural
+species--for instance, of the many foxes--inhabiting different
+quarters of the world. I do not believe, as we shall presently see,
+that all our dogs have descended from any one wild species; but, in
+the case of some other domestic races, there is presumptive, or even
+strong, evidence in favour of this view.
+
+It has often been assumed that man has chosen for domestication
+animals and plants having an extraordinary inherent tendency to vary,
+and likewise to withstand diverse climates. I do not dispute that
+these capacities have added largely to the value of most of our
+domesticated productions; but how could a savage possibly know, when
+he first tamed an animal, whether it would vary in succeeding
+generations, and whether it would endure other climates? Has the
+little variability of the ass or guinea-fowl, or the small power of
+endurance of warmth by the rein-deer, or of cold by the common camel,
+prevented their domestication? I cannot doubt that if other animals
+and plants, equal in number to our domesticated productions, and
+belonging to equally diverse classes and countries, were taken from a
+state of nature, and could be made to breed for an equal number of
+generations under domestication, they would vary on an average as
+largely as the parent species of our existing domesticated productions
+have varied.
+
+In the case of most of our anciently domesticated animals and plants,
+I do not think it is possible to come to any definite conclusion,
+whether they have descended from one or several species. The argument
+mainly relied on by those who believe in the multiple origin of our
+domestic animals is, that we find in the most ancient records, more
+especially on the monuments of Egypt, much diversity in the breeds;
+and that some of the breeds closely resemble, perhaps are identical
+with, those still existing. Even if this latter fact were found more
+strictly and generally true than seems to me to be the case, what does
+it show, but that some of our breeds originated there, four or five
+thousand years ago? But Mr. Horner's researches have rendered it in
+some degree probable that man sufficiently civilized to have
+manufactured pottery existed in the valley of the Nile thirteen or
+fourteen thousand years ago; and who will pretend to say how long
+before these ancient periods, savages, like those of Tierra del Fuego
+or Australia, who possess a semi-domestic dog, may not have existed in
+Egypt?
+
+The whole subject must, I think, remain vague; nevertheless, I may,
+without here entering on any details, state that, from geographical
+and other considerations, I think it highly probable that our domestic
+dogs have descended from several wild species. In regard to sheep and
+goats I can form no opinion. I should think, from facts communicated
+to me by Mr. Blyth, on the habits, voice, and constitution, etc., of
+the humped Indian cattle, that these had descended from a different
+aboriginal stock from our European cattle; and several competent
+judges believe that these latter have had more than one wild parent.
+With respect to horses, from reasons which I cannot give here, I am
+doubtfully inclined to believe, in opposition to several authors, that
+all the races have descended from one wild stock. Mr. Blyth, whose
+opinion, from his large and varied stores of knowledge, I should value
+more than that of almost any one, thinks that all the breeds of
+poultry have proceeded from the common wild Indian fowl (Gallus
+bankiva). In regard to ducks and rabbits, the breeds of which differ
+considerably from each other in structure, I do not doubt that they
+all have descended from the common wild duck and rabbit.
+
+The doctrine of the origin of our several domestic races from several
+aboriginal stocks, has been carried to an absurd extreme by some
+authors. They believe that every race which breeds true, let the
+distinctive characters be ever so slight, has had its wild prototype.
+At this rate there must have existed at least a score of species of
+wild cattle, as many sheep, and several goats in Europe alone, and
+several even within Great Britain. One author believes that there
+formerly existed in Great Britain eleven wild species of sheep
+peculiar to it! When we bear in mind that Britain has now hardly one
+peculiar mammal, and France but few distinct from those of Germany and
+conversely, and so with Hungary, Spain, etc., but that each of these
+kingdoms possesses several peculiar breeds of cattle, sheep, etc., we
+must admit that many domestic breeds have originated in Europe; for
+whence could they have been derived, as these several countries do not
+possess a number of peculiar species as distinct parent-stocks? So it
+is in India. Even in the case of the domestic dogs of the whole world,
+which I fully admit have probably descended from several wild species,
+I cannot doubt that there has been an immense amount of inherited
+variation. Who can believe that animals closely resembling the Italian
+greyhound, the bloodhound, the bull-dog, or Blenheim spaniel, etc.--so
+unlike all wild Canidae--ever existed freely in a state of nature? It
+has often been loosely said that all our races of dogs have been
+produced by the crossing of a few aboriginal species; but by crossing
+we can get only forms in some degree intermediate between their
+parents; and if we account for our several domestic races by this
+process, we must admit the former existence of the most extreme forms,
+as the Italian greyhound, bloodhound, bull-dog, etc., in the wild
+state. Moreover, the possibility of making distinct races by crossing
+has been greatly exaggerated. There can be no doubt that a race may be
+modified by occasional crosses, if aided by the careful selection of
+those individual mongrels, which present any desired character; but
+that a race could be obtained nearly intermediate between two
+extremely different races or species, I can hardly believe. Sir J.
+Sebright expressly experimentised for this object, and failed. The
+offspring from the first cross between two pure breeds is tolerably
+and sometimes (as I have found with pigeons) extremely uniform, and
+everything seems simple enough; but when these mongrels are crossed
+one with another for several generations, hardly two of them will be
+alike, and then the extreme difficulty, or rather utter hopelessness,
+of the task becomes apparent. Certainly, a breed intermediate between
+TWO VERY DISTINCT breeds could not be got without extreme care and
+long-continued selection; nor can I find a single case on record of a
+permanent race having been thus formed.
+
+ON THE BREEDS OF THE DOMESTIC PIGEON.
+
+Believing that it is always best to study some special group, I have,
+after deliberation, taken up domestic pigeons. I have kept every breed
+which I could purchase or obtain, and have been most kindly favoured
+with skins from several quarters of the world, more especially by the
+Honourable W. Elliot from India, and by the Honourable C. Murray from
+Persia. Many treatises in different languages have been published on
+pigeons, and some of them are very important, as being of considerable
+antiquity. I have associated with several eminent fanciers, and have
+been permitted to join two of the London Pigeon Clubs. The diversity
+of the breeds is something astonishing. Compare the English carrier
+and the short-faced tumbler, and see the wonderful difference in their
+beaks, entailing corresponding differences in their skulls. The
+carrier, more especially the male bird, is also remarkable from the
+wonderful development of the carunculated skin about the head, and
+this is accompanied by greatly elongated eyelids, very large external
+orifices to the nostrils, and a wide gape of mouth. The short-faced
+tumbler has a beak in outline almost like that of a finch; and the
+common tumbler has the singular and strictly inherited habit of flying
+at a great height in a compact flock, and tumbling in the air head
+over heels. The runt is a bird of great size, with long, massive beak
+and large feet; some of the sub-breeds of runts have very long necks,
+others very long wings and tails, others singularly short tails. The
+barb is allied to the carrier, but, instead of a very long beak, has a
+very short and very broad one. The pouter has a much elongated body,
+wings, and legs; and its enormously developed crop, which it glories
+in inflating, may well excite astonishment and even laughter. The
+turbit has a very short and conical beak, with a line of reversed
+feathers down the breast; and it has the habit of continually
+expanding slightly the upper part of the oesophagus. The Jacobin has
+the feathers so much reversed along the back of the neck that they
+form a hood, and it has, proportionally to its size, much elongated
+wing and tail feathers. The trumpeter and laugher, as their names
+express, utter a very different coo from the other breeds. The fantail
+has thirty or even forty tail-feathers, instead of twelve or fourteen,
+the normal number in all members of the great pigeon family; and these
+feathers are kept expanded, and are carried so erect that in good
+birds the head and tail touch; the oil-gland is quite aborted. Several
+other less distinct breeds might have been specified.
+
+In the skeletons of the several breeds, the development of the bones
+of the face in length and breadth and curvature differs enormously.
+The shape, as well as the breadth and length of the ramus of the lower
+jaw, varies in a highly remarkable manner. The number of the caudal
+and sacral vertebrae vary; as does the number of the ribs, together
+with their relative breadth and the presence of processes. The size
+and shape of the apertures in the sternum are highly variable; so is
+the degree of divergence and relative size of the two arms of the
+furcula. The proportional width of the gape of mouth, the proportional
+length of the eyelids, of the orifice of the nostrils, of the tongue
+(not always in strict correlation with the length of beak), the size
+of the crop and of the upper part of the oesophagus; the development
+and abortion of the oil-gland; the number of the primary wing and
+caudal feathers; the relative length of wing and tail to each other
+and to the body; the relative length of leg and of the feet; the
+number of scutellae on the toes, the development of skin between the
+toes, are all points of structure which are variable. The period at
+which the perfect plumage is acquired varies, as does the state of the
+down with which the nestling birds are clothed when hatched. The shape
+and size of the eggs vary. The manner of flight differs remarkably; as
+does in some breeds the voice and disposition. Lastly, in certain
+breeds, the males and females have come to differ to a slight degree
+from each other.
+
+Altogether at least a score of pigeons might be chosen, which if shown
+to an ornithologist, and he were told that they were wild birds, would
+certainly, I think, be ranked by him as well-defined species.
+Moreover, I do not believe that any ornithologist would place the
+English carrier, the short-faced tumbler, the runt, the barb, pouter,
+and fantail in the same genus; more especially as in each of these
+breeds several truly-inherited sub-breeds, or species as he might have
+called them, could be shown him.
+
+Great as the differences are between the breeds of pigeons, I am fully
+convinced that the common opinion of naturalists is correct, namely,
+that all have descended from the rock-pigeon (Columba livia),
+including under this term several geographical races or sub-species,
+which differ from each other in the most trifling respects. As several
+of the reasons which have led me to this belief are in some degree
+applicable in other cases, I will here briefly give them. If the
+several breeds are not varieties, and have not proceeded from the
+rock-pigeon, they must have descended from at least seven or eight
+aboriginal stocks; for it is impossible to make the present domestic
+breeds by the crossing of any lesser number: how, for instance, could
+a pouter be produced by crossing two breeds unless one of the
+parent-stocks possessed the characteristic enormous crop? The supposed
+aboriginal stocks must all have been rock-pigeons, that is, not
+breeding or willingly perching on trees. But besides C. livia, with
+its geographical sub-species, only two or three other species of
+rock-pigeons are known; and these have not any of the characters of
+the domestic breeds. Hence the supposed aboriginal stocks must either
+still exist in the countries where they were originally domesticated,
+and yet be unknown to ornithologists; and this, considering their
+size, habits, and remarkable characters, seems very improbable; or
+they must have become extinct in the wild state. But birds breeding on
+precipices, and good fliers, are unlikely to be exterminated; and the
+common rock-pigeon, which has the same habits with the domestic
+breeds, has not been exterminated even on several of the smaller
+British islets, or on the shores of the Mediterranean. Hence the
+supposed extermination of so many species having similar habits with
+the rock-pigeon seems to me a very rash assumption. Moreover, the
+several above-named domesticated breeds have been transported to all
+parts of the world, and, therefore, some of them must have been
+carried back again into their native country; but not one has ever
+become wild or feral, though the dovecot-pigeon, which is the
+rock-pigeon in a very slightly altered state, has become feral in
+several places. Again, all recent experience shows that it is most
+difficult to get any wild animal to breed freely under domestication;
+yet on the hypothesis of the multiple origin of our pigeons, it must
+be assumed that at least seven or eight species were so thoroughly
+domesticated in ancient times by half-civilized man, as to be quite
+prolific under confinement.
+
+An argument, as it seems to me, of great weight, and applicable in
+several other cases, is, that the above-specified breeds, though
+agreeing generally in constitution, habits, voice, colouring, and in
+most parts of their structure, with the wild rock-pigeon, yet are
+certainly highly abnormal in other parts of their structure: we may
+look in vain throughout the whole great family of Columbidae for a
+beak like that of the English carrier, or that of the short-faced
+tumbler, or barb; for reversed feathers like those of the jacobin; for
+a crop like that of the pouter; for tail-feathers like those of the
+fantail. Hence it must be assumed not only that half-civilized man
+succeeded in thoroughly domesticating several species, but that he
+intentionally or by chance picked out extraordinarily abnormal
+species; and further, that these very species have since all become
+extinct or unknown. So many strange contingencies seem to me
+improbable in the highest degree.
+
+Some facts in regard to the colouring of pigeons well deserve
+consideration. The rock-pigeon is of a slaty-blue, and has a white
+rump (the Indian sub-species, C. intermedia of Strickland, having it
+bluish); the tail has a terminal dark bar, with the bases of the outer
+feathers externally edged with white; the wings have two black bars;
+some semi-domestic breeds and some apparently truly wild breeds have,
+besides the two black bars, the wings chequered with black. These
+several marks do not occur together in any other species of the whole
+family. Now, in every one of the domestic breeds, taking thoroughly
+well-bred birds, all the above marks, even to the white edging of the
+outer tail-feathers, sometimes concur perfectly developed. Moreover,
+when two birds belonging to two distinct breeds are crossed, neither
+of which is blue or has any of the above-specified marks, the mongrel
+offspring are very apt suddenly to acquire these characters; for
+instance, I crossed some uniformly white fantails with some uniformly
+black barbs, and they produced mottled brown and black birds; these I
+again crossed together, and one grandchild of the pure white fantail
+and pure black barb was of as beautiful a blue colour, with the white
+rump, double black wing-bar, and barred and white-edged tail-feathers,
+as any wild rock-pigeon! We can understand these facts, on the
+well-known principle of reversion to ancestral characters, if all the
+domestic breeds have descended from the rock-pigeon. But if we deny
+this, we must make one of the two following highly improbable
+suppositions. Either, firstly, that all the several imagined
+aboriginal stocks were coloured and marked like the rock-pigeon,
+although no other existing species is thus coloured and marked, so
+that in each separate breed there might be a tendency to revert to the
+very same colours and markings. Or, secondly, that each breed, even
+the purest, has within a dozen or, at most, within a score of
+generations, been crossed by the rock-pigeon: I say within a dozen or
+twenty generations, for we know of no fact countenancing the belief
+that the child ever reverts to some one ancestor, removed by a greater
+number of generations. In a breed which has been crossed only once
+with some distinct breed, the tendency to reversion to any character
+derived from such cross will naturally become less and less, as in
+each succeeding generation there will be less of the foreign blood;
+but when there has been no cross with a distinct breed, and there is a
+tendency in both parents to revert to a character, which has been lost
+during some former generation, this tendency, for all that we can see
+to the contrary, may be transmitted undiminished for an indefinite
+number of generations. These two distinct cases are often confounded
+in treatises on inheritance.
+
+Lastly, the hybrids or mongrels from between all the domestic breeds
+of pigeons are perfectly fertile. I can state this from my own
+observations, purposely made on the most distinct breeds. Now, it is
+difficult, perhaps impossible, to bring forward one case of the hybrid
+offspring of two animals CLEARLY DISTINCT being themselves perfectly
+fertile. Some authors believe that long-continued domestication
+eliminates this strong tendency to sterility: from the history of the
+dog I think there is some probability in this hypothesis, if applied
+to species closely related together, though it is unsupported by a
+single experiment. But to extend the hypothesis so far as to suppose
+that species, aboriginally as distinct as carriers, tumblers, pouters,
+and fantails now are, should yield offspring perfectly fertile, inter
+se, seems to me rash in the extreme.
+
+From these several reasons, namely, the improbability of man having
+formerly got seven or eight supposed species of pigeons to breed
+freely under domestication; these supposed species being quite unknown
+in a wild state, and their becoming nowhere feral; these species
+having very abnormal characters in certain respects, as compared with
+all other Columbidae, though so like in most other respects to the
+rock-pigeon; the blue colour and various marks occasionally appearing
+in all the breeds, both when kept pure and when crossed; the mongrel
+offspring being perfectly fertile;--from these several reasons, taken
+together, I can feel no doubt that all our domestic breeds have
+descended from the Columba livia with its geographical sub-species.
+
+In favour of this view, I may add, firstly, that C. livia, or the
+rock-pigeon, has been found capable of domestication in Europe and in
+India; and that it agrees in habits and in a great number of points of
+structure with all the domestic breeds. Secondly, although an English
+carrier or short-faced tumbler differs immensely in certain characters
+from the rock-pigeon, yet by comparing the several sub-breeds of these
+breeds, more especially those brought from distant countries, we can
+make an almost perfect series between the extremes of structure.
+Thirdly, those characters which are mainly distinctive of each breed,
+for instance the wattle and length of beak of the carrier, the
+shortness of that of the tumbler, and the number of tail-feathers in
+the fantail, are in each breed eminently variable; and the explanation
+of this fact will be obvious when we come to treat of selection.
+Fourthly, pigeons have been watched, and tended with the utmost care,
+and loved by many people. They have been domesticated for thousands of
+years in several quarters of the world; the earliest known record of
+pigeons is in the fifth Aegyptian dynasty, about 3000 B.C., as was
+pointed out to me by Professor Lepsius; but Mr. Birch informs me that
+pigeons are given in a bill of fare in the previous dynasty. In the
+time of the Romans, as we hear from Pliny, immense prices were given
+for pigeons; "nay, they are come to this pass, that they can reckon up
+their pedigree and race." Pigeons were much valued by Akber Khan in
+India, about the year 1600; never less than 20,000 pigeons were taken
+with the court. "The monarchs of Iran and Turan sent him some very
+rare birds;" and, continues the courtly historian, "His Majesty by
+crossing the breeds, which method was never practised before, has
+improved them astonishingly." About this same period the Dutch were as
+eager about pigeons as were the old Romans. The paramount importance
+of these considerations in explaining the immense amount of variation
+which pigeons have undergone, will be obvious when we treat of
+Selection. We shall then, also, see how it is that the breeds so often
+have a somewhat monstrous character. It is also a most favourable
+circumstance for the production of distinct breeds, that male and
+female pigeons can be easily mated for life; and thus different breeds
+can be kept together in the same aviary.
+
+I have discussed the probable origin of domestic pigeons at some, yet
+quite insufficient, length; because when I first kept pigeons and
+watched the several kinds, knowing well how true they bred, I felt
+fully as much difficulty in believing that they could ever have
+descended from a common parent, as any naturalist could in coming to a
+similar conclusion in regard to the many species of finches, or other
+large groups of birds, in nature. One circumstance has struck me much;
+namely, that all the breeders of the various domestic animals and the
+cultivators of plants, with whom I have ever conversed, or whose
+treatises I have read, are firmly convinced that the several breeds to
+which each has attended, are descended from so many aboriginally
+distinct species. Ask, as I have asked, a celebrated raiser of
+Hereford cattle, whether his cattle might not have descended from long
+horns, and he will laugh you to scorn. I have never met a pigeon, or
+poultry, or duck, or rabbit fancier, who was not fully convinced that
+each main breed was descended from a distinct species. Van Mons, in
+his treatise on pears and apples, shows how utterly he disbelieves
+that the several sorts, for instance a Ribston-pippin or Codlin-apple,
+could ever have proceeded from the seeds of the same tree. Innumerable
+other examples could be given. The explanation, I think, is simple:
+from long-continued study they are strongly impressed with the
+differences between the several races; and though they well know that
+each race varies slightly, for they win their prizes by selecting such
+slight differences, yet they ignore all general arguments, and refuse
+to sum up in their minds slight differences accumulated during many
+successive generations. May not those naturalists who, knowing far
+less of the laws of inheritance than does the breeder, and knowing no
+more than he does of the intermediate links in the long lines of
+descent, yet admit that many of our domestic races have descended from
+the same parents--may they not learn a lesson of caution, when they
+deride the idea of species in a state of nature being lineal
+descendants of other species?
+
+SELECTION.
+
+Let us now briefly consider the steps by which domestic races have
+been produced, either from one or from several allied species. Some
+little effect may, perhaps, be attributed to the direct action of the
+external conditions of life, and some little to habit; but he would be
+a bold man who would account by such agencies for the differences of a
+dray and race horse, a greyhound and bloodhound, a carrier and tumbler
+pigeon. One of the most remarkable features in our domesticated races
+is that we see in them adaptation, not indeed to the animal's or
+plant's own good, but to man's use or fancy. Some variations useful to
+him have probably arisen suddenly, or by one step; many botanists, for
+instance, believe that the fuller's teazle, with its hooks, which
+cannot be rivalled by any mechanical contrivance, is only a variety of
+the wild Dipsacus; and this amount of change may have suddenly arisen
+in a seedling. So it has probably been with the turnspit dog; and this
+is known to have been the case with the ancon sheep. But when we
+compare the dray-horse and race-horse, the dromedary and camel, the
+various breeds of sheep fitted either for cultivated land or mountain
+pasture, with the wool of one breed good for one purpose, and that of
+another breed for another purpose; when we compare the many breeds of
+dogs, each good for man in very different ways; when we compare the
+game-cock, so pertinacious in battle, with other breeds so little
+quarrelsome, with "everlasting layers" which never desire to sit, and
+with the bantam so small and elegant; when we compare the host of
+agricultural, culinary, orchard, and flower-garden races of plants,
+most useful to man at different seasons and for different purposes, or
+so beautiful in his eyes, we must, I think, look further than to mere
+variability. We cannot suppose that all the breeds were suddenly
+produced as perfect and as useful as we now see them; indeed, in
+several cases, we know that this has not been their history. The key
+is man's power of accumulative selection: nature gives successive
+variations; man adds them up in certain directions useful to him. In
+this sense he may be said to make for himself useful breeds.
+
+The great power of this principle of selection is not hypothetical. It
+is certain that several of our eminent breeders have, even within a
+single lifetime, modified to a large extent some breeds of cattle and
+sheep. In order fully to realise what they have done, it is almost
+necessary to read several of the many treatises devoted to this
+subject, and to inspect the animals. Breeders habitually speak of an
+animal's organisation as something quite plastic, which they can model
+almost as they please. If I had space I could quote numerous passages
+to this effect from highly competent authorities. Youatt, who was
+probably better acquainted with the works of agriculturalists than
+almost any other individual, and who was himself a very good judge of
+an animal, speaks of the principle of selection as "that which enables
+the agriculturist, not only to modify the character of his flock, but
+to change it altogether. It is the magician's wand, by means of which
+he may summon into life whatever form and mould he pleases." Lord
+Somerville, speaking of what breeders have done for sheep, says:--"It
+would seem as if they had chalked out upon a wall a form perfect in
+itself, and then had given it existence." That most skilful breeder,
+Sir John Sebright, used to say, with respect to pigeons, that "he
+would produce any given feather in three years, but it would take him
+six years to obtain head and beak." In Saxony the importance of the
+principle of selection in regard to merino sheep is so fully
+recognised, that men follow it as a trade: the sheep are placed on a
+table and are studied, like a picture by a connoisseur; this is done
+three times at intervals of months, and the sheep are each time marked
+and classed, so that the very best may ultimately be selected for
+breeding.
+
+What English breeders have actually effected is proved by the enormous
+prices given for animals with a good pedigree; and these have now been
+exported to almost every quarter of the world. The improvement is by
+no means generally due to crossing different breeds; all the best
+breeders are strongly opposed to this practice, except sometimes
+amongst closely allied sub-breeds. And when a cross has been made, the
+closest selection is far more indispensable even than in ordinary
+cases. If selection consisted merely in separating some very distinct
+variety, and breeding from it, the principle would be so obvious as
+hardly to be worth notice; but its importance consists in the great
+effect produced by the accumulation in one direction, during
+successive generations, of differences absolutely inappreciable by an
+uneducated eye--differences which I for one have vainly attempted to
+appreciate. Not one man in a thousand has accuracy of eye and judgment
+sufficient to become an eminent breeder. If gifted with these
+qualities, and he studies his subject for years, and devotes his
+lifetime to it with indomitable perseverance, he will succeed, and may
+make great improvements; if he wants any of these qualities, he will
+assuredly fail. Few would readily believe in the natural capacity and
+years of practice requisite to become even a skilful pigeon-fancier.
+
+The same principles are followed by horticulturists; but the
+variations are here often more abrupt. No one supposes that our
+choicest productions have been produced by a single variation from the
+aboriginal stock. We have proofs that this is not so in some cases, in
+which exact records have been kept; thus, to give a very trifling
+instance, the steadily-increasing size of the common gooseberry may be
+quoted. We see an astonishing improvement in many florists' flowers,
+when the flowers of the present day are compared with drawings made
+only twenty or thirty years ago. When a race of plants is once pretty
+well established, the seed-raisers do not pick out the best plants,
+but merely go over their seed-beds, and pull up the "rogues," as they
+call the plants that deviate from the proper standard. With animals
+this kind of selection is, in fact, also followed; for hardly any one
+is so careless as to allow his worst animals to breed.
+
+In regard to plants, there is another means of observing the
+accumulated effects of selection--namely, by comparing the diversity
+of flowers in the different varieties of the same species in the
+flower-garden; the diversity of leaves, pods, or tubers, or whatever
+part is valued, in the kitchen-garden, in comparison with the flowers
+of the same varieties; and the diversity of fruit of the same species
+in the orchard, in comparison with the leaves and flowers of the same
+set of varieties. See how different the leaves of the cabbage are, and
+how extremely alike the flowers; how unlike the flowers of the
+heartsease are, and how alike the leaves; how much the fruit of the
+different kinds of gooseberries differ in size, colour, shape, and
+hairiness, and yet the flowers present very slight differences. It is
+not that the varieties which differ largely in some one point do not
+differ at all in other points; this is hardly ever, perhaps never, the
+case. The laws of correlation of growth, the importance of which
+should never be overlooked, will ensure some differences; but, as a
+general rule, I cannot doubt that the continued selection of slight
+variations, either in the leaves, the flowers, or the fruit, will
+produce races differing from each other chiefly in these characters.
+
+It may be objected that the principle of selection has been reduced to
+methodical practice for scarcely more than three-quarters of a
+century; it has certainly been more attended to of late years, and
+many treatises have been published on the subject; and the result, I
+may add, has been, in a corresponding degree, rapid and important. But
+it is very far from true that the principle is a modern discovery. I
+could give several references to the full acknowledgment of the
+importance of the principle in works of high antiquity. In rude and
+barbarous periods of English history choice animals were often
+imported, and laws were passed to prevent their exportation: the
+destruction of horses under a certain size was ordered, and this may
+be compared to the "roguing" of plants by nurserymen. The principle of
+selection I find distinctly given in an ancient Chinese encyclopaedia.
+Explicit rules are laid down by some of the Roman classical writers.
+From passages in Genesis, it is clear that the colour of domestic
+animals was at that early period attended to. Savages now sometimes
+cross their dogs with wild canine animals, to improve the breed, and
+they formerly did so, as is attested by passages in Pliny. The savages
+in South Africa match their draught cattle by colour, as do some of
+the Esquimaux their teams of dogs. Livingstone shows how much good
+domestic breeds are valued by the negroes of the interior of Africa
+who have not associated with Europeans. Some of these facts do not
+show actual selection, but they show that the breeding of domestic
+animals was carefully attended to in ancient times, and is now
+attended to by the lowest savages. It would, indeed, have been a
+strange fact, had attention not been paid to breeding, for the
+inheritance of good and bad qualities is so obvious.
+
+At the present time, eminent breeders try by methodical selection,
+with a distinct object in view, to make a new strain or sub-breed,
+superior to anything existing in the country. But, for our purpose, a
+kind of Selection, which may be called Unconscious, and which results
+from every one trying to possess and breed from the best individual
+animals, is more important. Thus, a man who intends keeping pointers
+naturally tries to get as good dogs as he can, and afterwards breeds
+from his own best dogs, but he has no wish or expectation of
+permanently altering the breed. Nevertheless I cannot doubt that this
+process, continued during centuries, would improve and modify any
+breed, in the same way as Bakewell, Collins, etc., by this very same
+process, only carried on more methodically, did greatly modify, even
+during their own lifetimes, the forms and qualities of their cattle.
+Slow and insensible changes of this kind could never be recognised
+unless actual measurements or careful drawings of the breeds in
+question had been made long ago, which might serve for comparison. In
+some cases, however, unchanged or but little changed individuals of
+the same breed may be found in less civilised districts, where the
+breed has been less improved. There is reason to believe that King
+Charles's spaniel has been unconsciously modified to a large extent
+since the time of that monarch. Some highly competent authorities are
+convinced that the setter is directly derived from the spaniel, and
+has probably been slowly altered from it. It is known that the English
+pointer has been greatly changed within the last century, and in this
+case the change has, it is believed, been chiefly effected by crosses
+with the fox-hound; but what concerns us is, that the change has been
+effected unconsciously and gradually, and yet so effectually, that,
+though the old Spanish pointer certainly came from Spain, Mr. Borrow
+has not seen, as I am informed by him, any native dog in Spain like
+our pointer.
+
+By a similar process of selection, and by careful training, the whole
+body of English racehorses have come to surpass in fleetness and size
+the parent Arab stock, so that the latter, by the regulations for the
+Goodwood Races, are favoured in the weights they carry. Lord Spencer
+and others have shown how the cattle of England have increased in
+weight and in early maturity, compared with the stock formerly kept in
+this country. By comparing the accounts given in old pigeon treatises
+of carriers and tumblers with these breeds as now existing in Britain,
+India, and Persia, we can, I think, clearly trace the stages through
+which they have insensibly passed, and come to differ so greatly from
+the rock-pigeon.
+
+Youatt gives an excellent illustration of the effects of a course of
+selection, which may be considered as unconsciously followed, in so
+far that the breeders could never have expected or even have wished to
+have produced the result which ensued--namely, the production of two
+distinct strains. The two flocks of Leicester sheep kept by Mr.
+Buckley and Mr. Burgess, as Mr. Youatt remarks, "have been purely bred
+from the original stock of Mr. Bakewell for upwards of fifty years.
+There is not a suspicion existing in the mind of any one at all
+acquainted with the subject that the owner of either of them has
+deviated in any one instance from the pure blood of Mr. Bakewell's
+flock, and yet the difference between the sheep possessed by these two
+gentlemen is so great that they have the appearance of being quite
+different varieties."
+
+If there exist savages so barbarous as never to think of the inherited
+character of the offspring of their domestic animals, yet any one
+animal particularly useful to them, for any special purpose, would be
+carefully preserved during famines and other accidents, to which
+savages are so liable, and such choice animals would thus generally
+leave more offspring than the inferior ones; so that in this case
+there would be a kind of unconscious selection going on. We see the
+value set on animals even by the barbarians of Tierra del Fuego, by
+their killing and devouring their old women, in times of dearth, as of
+less value than their dogs.
+
+In plants the same gradual process of improvement, through the
+occasional preservation of the best individuals, whether or not
+sufficiently distinct to be ranked at their first appearance as
+distinct varieties, and whether or not two or more species or races
+have become blended together by crossing, may plainly be recognised in
+the increased size and beauty which we now see in the varieties of the
+heartsease, rose, pelargonium, dahlia, and other plants, when compared
+with the older varieties or with their parent-stocks. No one would
+ever expect to get a first-rate heartsease or dahlia from the seed of
+a wild plant. No one would expect to raise a first-rate melting pear
+from the seed of a wild pear, though he might succeed from a poor
+seedling growing wild, if it had come from a garden-stock. The pear,
+though cultivated in classical times, appears, from Pliny's
+description, to have been a fruit of very inferior quality. I have
+seen great surprise expressed in horticultural works at the wonderful
+skill of gardeners, in having produced such splendid results from such
+poor materials; but the art, I cannot doubt, has been simple, and, as
+far as the final result is concerned, has been followed almost
+unconsciously. It has consisted in always cultivating the best known
+variety, sowing its seeds, and, when a slightly better variety has
+chanced to appear, selecting it, and so onwards. But the gardeners of
+the classical period, who cultivated the best pear they could procure,
+never thought what splendid fruit we should eat; though we owe our
+excellent fruit, in some small degree, to their having naturally
+chosen and preserved the best varieties they could anywhere find.
+
+A large amount of change in our cultivated plants, thus slowly and
+unconsciously accumulated, explains, as I believe, the well-known
+fact, that in a vast number of cases we cannot recognise, and
+therefore do not know, the wild parent-stocks of the plants which have
+been longest cultivated in our flower and kitchen gardens. If it has
+taken centuries or thousands of years to improve or modify most of our
+plants up to their present standard of usefulness to man, we can
+understand how it is that neither Australia, the Cape of Good Hope,
+nor any other region inhabited by quite uncivilised man, has afforded
+us a single plant worth culture. It is not that these countries, so
+rich in species, do not by a strange chance possess the aboriginal
+stocks of any useful plants, but that the native plants have not been
+improved by continued selection up to a standard of perfection
+comparable with that given to the plants in countries anciently
+civilised.
+
+In regard to the domestic animals kept by uncivilised man, it should
+not be overlooked that they almost always have to struggle for their
+own food, at least during certain seasons. And in two countries very
+differently circumstanced, individuals of the same species, having
+slightly different constitutions or structure, would often succeed
+better in the one country than in the other, and thus by a process of
+"natural selection," as will hereafter be more fully explained, two
+sub-breeds might be formed. This, perhaps, partly explains what has
+been remarked by some authors, namely, that the varieties kept by
+savages have more of the character of species than the varieties kept
+in civilised countries.
+
+On the view here given of the all-important part which selection by
+man has played, it becomes at once obvious, how it is that our
+domestic races show adaptation in their structure or in their habits
+to man's wants or fancies. We can, I think, further understand the
+frequently abnormal character of our domestic races, and likewise
+their differences being so great in external characters and relatively
+so slight in internal parts or organs. Man can hardly select, or only
+with much difficulty, any deviation of structure excepting such as is
+externally visible; and indeed he rarely cares for what is internal.
+He can never act by selection, excepting on variations which are first
+given to him in some slight degree by nature. No man would ever try to
+make a fantail, till he saw a pigeon with a tail developed in some
+slight degree in an unusual manner, or a pouter till he saw a pigeon
+with a crop of somewhat unusual size; and the more abnormal or unusual
+any character was when it first appeared, the more likely it would be
+to catch his attention. But to use such an expression as trying to
+make a fantail, is, I have no doubt, in most cases, utterly incorrect.
+The man who first selected a pigeon with a slightly larger tail, never
+dreamed what the descendants of that pigeon would become through
+long-continued, partly unconscious and partly methodical selection.
+Perhaps the parent bird of all fantails had only fourteen
+tail-feathers somewhat expanded, like the present Java fantail, or
+like individuals of other and distinct breeds, in which as many as
+seventeen tail-feathers have been counted. Perhaps the first
+pouter-pigeon did not inflate its crop much more than the turbit now
+does the upper part of its oesophagus,--a habit which is disregarded
+by all fanciers, as it is not one of the points of the breed.
+
+Nor let it be thought that some great deviation of structure would be
+necessary to catch the fancier's eye: he perceives extremely small
+differences, and it is in human nature to value any novelty, however
+slight, in one's own possession. Nor must the value which would
+formerly be set on any slight differences in the individuals of the
+same species, be judged of by the value which would now be set on
+them, after several breeds have once fairly been established. Many
+slight differences might, and indeed do now, arise amongst pigeons,
+which are rejected as faults or deviations from the standard of
+perfection of each breed. The common goose has not given rise to any
+marked varieties; hence the Thoulouse and the common breed, which
+differ only in colour, that most fleeting of characters, have lately
+been exhibited as distinct at our poultry-shows.
+
+I think these views further explain what has sometimes been
+noticed--namely that we know nothing about the origin or history of
+any of our domestic breeds. But, in fact, a breed, like a dialect of a
+language, can hardly be said to have had a definite origin. A man
+preserves and breeds from an individual with some slight deviation of
+structure, or takes more care than usual in matching his best animals
+and thus improves them, and the improved individuals slowly spread in
+the immediate neighbourhood. But as yet they will hardly have a
+distinct name, and from being only slightly valued, their history will
+be disregarded. When further improved by the same slow and gradual
+process, they will spread more widely, and will get recognised as
+something distinct and valuable, and will then probably first receive
+a provincial name. In semi-civilised countries, with little free
+communication, the spreading and knowledge of any new sub-breed will
+be a slow process. As soon as the points of value of the new sub-breed
+are once fully acknowledged, the principle, as I have called it, of
+unconscious selection will always tend,--perhaps more at one period
+than at another, as the breed rises or falls in fashion,--perhaps more
+in one district than in another, according to the state of
+civilisation of the inhabitants--slowly to add to the characteristic
+features of the breed, whatever they may be. But the chance will be
+infinitely small of any record having been preserved of such slow,
+varying, and insensible changes.
+
+I must now say a few words on the circumstances, favourable, or the
+reverse, to man's power of selection. A high degree of variability is
+obviously favourable, as freely giving the materials for selection to
+work on; not that mere individual differences are not amply
+sufficient, with extreme care, to allow of the accumulation of a large
+amount of modification in almost any desired direction. But as
+variations manifestly useful or pleasing to man appear only
+occasionally, the chance of their appearance will be much increased by
+a large number of individuals being kept; and hence this comes to be
+of the highest importance to success. On this principle Marshall has
+remarked, with respect to the sheep of parts of Yorkshire, that "as
+they generally belong to poor people, and are mostly IN SMALL LOTS,
+they never can be improved." On the other hand, nurserymen, from
+raising large stocks of the same plants, are generally far more
+successful than amateurs in getting new and valuable varieties. The
+keeping of a large number of individuals of a species in any country
+requires that the species should be placed under favourable conditions
+of life, so as to breed freely in that country. When the individuals
+of any species are scanty, all the individuals, whatever their quality
+may be, will generally be allowed to breed, and this will effectually
+prevent selection. But probably the most important point of all, is,
+that the animal or plant should be so highly useful to man, or so much
+valued by him, that the closest attention should be paid to even the
+slightest deviation in the qualities or structure of each individual.
+Unless such attention be paid nothing can be effected. I have seen it
+gravely remarked, that it was most fortunate that the strawberry began
+to vary just when gardeners began to attend closely to this plant. No
+doubt the strawberry had always varied since it was cultivated, but
+the slight varieties had been neglected. As soon, however, as
+gardeners picked out individual plants with slightly larger, earlier,
+or better fruit, and raised seedlings from them, and again picked out
+the best seedlings and bred from them, then, there appeared (aided by
+some crossing with distinct species) those many admirable varieties of
+the strawberry which have been raised during the last thirty or forty
+years.
+
+In the case of animals with separate sexes, facility in preventing
+crosses is an important element of success in the formation of new
+races,--at least, in a country which is already stocked with other
+races. In this respect enclosure of the land plays a part. Wandering
+savages or the inhabitants of open plains rarely possess more than one
+breed of the same species. Pigeons can be mated for life, and this is
+a great convenience to the fancier, for thus many races may be kept
+true, though mingled in the same aviary; and this circumstance must
+have largely favoured the improvement and formation of new breeds.
+Pigeons, I may add, can be propagated in great numbers and at a very
+quick rate, and inferior birds may be freely rejected, as when killed
+they serve for food. On the other hand, cats, from their nocturnal
+rambling habits, cannot be matched, and, although so much valued by
+women and children, we hardly ever see a distinct breed kept up; such
+breeds as we do sometimes see are almost always imported from some
+other country, often from islands. Although I do not doubt that some
+domestic animals vary less than others, yet the rarity or absence of
+distinct breeds of the cat, the donkey, peacock, goose, etc., may be
+attributed in main part to selection not having been brought into
+play: in cats, from the difficulty in pairing them; in donkeys, from
+only a few being kept by poor people, and little attention paid to
+their breeding; in peacocks, from not being very easily reared and a
+large stock not kept; in geese, from being valuable only for two
+purposes, food and feathers, and more especially from no pleasure
+having been felt in the display of distinct breeds.
+
+To sum up on the origin of our Domestic Races of animals and plants. I
+believe that the conditions of life, from their action on the
+reproductive system, are so far of the highest importance as causing
+variability. I do not believe that variability is an inherent and
+necessary contingency, under all circumstances, with all organic
+beings, as some authors have thought. The effects of variability are
+modified by various degrees of inheritance and of reversion.
+Variability is governed by many unknown laws, more especially by that
+of correlation of growth. Something may be attributed to the direct
+action of the conditions of life. Something must be attributed to use
+and disuse. The final result is thus rendered infinitely complex. In
+some cases, I do not doubt that the intercrossing of species,
+aboriginally distinct, has played an important part in the origin of
+our domestic productions. When in any country several domestic breeds
+have once been established, their occasional intercrossing, with the
+aid of selection, has, no doubt, largely aided in the formation of new
+sub-breeds; but the importance of the crossing of varieties has, I
+believe, been greatly exaggerated, both in regard to animals and to
+those plants which are propagated by seed. In plants which are
+temporarily propagated by cuttings, buds, etc., the importance of the
+crossing both of distinct species and of varieties is immense; for the
+cultivator here quite disregards the extreme variability both of
+hybrids and mongrels, and the frequent sterility of hybrids; but the
+cases of plants not propagated by seed are of little importance to us,
+for their endurance is only temporary. Over all these causes of Change
+I am convinced that the accumulative action of Selection, whether
+applied methodically and more quickly, or unconsciously and more
+slowly, but more efficiently, is by far the predominant Power.
+
+
