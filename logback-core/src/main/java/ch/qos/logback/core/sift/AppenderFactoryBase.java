@@ -36,8 +36,8 @@ public abstract class AppenderFactoryBase<E> {
 
   public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(String k);
   
-  Appender<E> buildAppender(Context context, String k) throws JoranException {
-    SiftingJoranConfiguratorBase<E> sjc = getSiftingJoranConfigurator(k);
+  Appender<E> buildAppender(Context context, String discriminatingValue) throws JoranException {
+    SiftingJoranConfiguratorBase<E> sjc = getSiftingJoranConfigurator(discriminatingValue);
     sjc.setContext(context);
     sjc.doConfigure(eventList);
     return sjc.getAppender();

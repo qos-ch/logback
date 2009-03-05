@@ -65,19 +65,19 @@ public abstract class SiftingAppenderBase<E> extends
       return;
     }
 
-    String value = discriminator.getDiscriminatingValue(event);
+    String discriminatingValue = discriminator.getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
 
-    Appender<E> appender = appenderTracker.get(value, timestamp);
+    Appender<E> appender = appenderTracker.get(discriminatingValue, timestamp);
 
     if (appender == null) {
       try {
-        appender = appenderFactory.buildAppender(context, value);
+        appender = appenderFactory.buildAppender(context, discriminatingValue);
         if (appender != null) {
-          appenderTracker.put(value, appender, timestamp);
+          appenderTracker.put(discriminatingValue, appender, timestamp);
         }
       } catch (JoranException e) {
-        addError("Failed to build appender for [" + value + "]", e);
+        addError("Failed to build appender for [" + discriminatingValue + "]", e);
         return;
       }
     }

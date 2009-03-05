@@ -19,15 +19,15 @@ import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
 public class AppenderFactory extends AppenderFactoryBase<ILoggingEvent>{
 
-  String mdcKey;
+  String key;
   
-  AppenderFactory(Context context, List<SaxEvent> eventList, String mdcKey) {
+  AppenderFactory(Context context, List<SaxEvent> eventList, String key) {
       super(context, eventList);
-      this.mdcKey = mdcKey;
+      this.key = key;
   }
 
-  public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String k) {
-    return new SiftingJoranConfigurator(mdcKey, k);
+  public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String discriminatingValue) {
+    return new SiftingJoranConfigurator(key, discriminatingValue);
   }
 
 }
