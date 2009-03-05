@@ -31,7 +31,10 @@ public class StackTraceElementProxy implements Serializable {
     return ste;
   }
   
-  void setClassPackagingData(ClassPackagingData cpd) {
+  public void setClassPackagingData(ClassPackagingData cpd) {
+    if(this.cpd != null) {
+      throw new IllegalStateException("Packaging data has been already set");
+    }
     this.cpd = cpd;
   }
 

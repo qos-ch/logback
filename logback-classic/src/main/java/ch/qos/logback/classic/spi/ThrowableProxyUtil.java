@@ -20,8 +20,6 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ThrowableProxyUtil {
 
-  //static final ThrowableDataPoint[] TEMPLATE_ARRAY = new ThrowableDataPoint[0];
-
   static public void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
       ThrowableProxy parentTP) {
 
@@ -68,25 +66,42 @@ public class ThrowableProxyUtil {
     return count;
   }
 
-  static String asString(IThrowableProxy tp) {
+  static public String asString(IThrowableProxy tp) {
     StringBuilder sb = new StringBuilder();
 
     while (tp != null) {
-     
       printFirstLine(sb, tp);
       printSTEPArray(sb, tp);
       tp = tp.getCause();
     }
     return sb.toString();
-
   }
 
+  static void appendPackagingData(StringBuilder builder, StackTraceElementProxy step) {
+    if (step != null) {
+      ClassPackagingData cpd = step.getClassPackagingData();
+      if (cpd != null) {
+        if (!cpd.isExact()) {
+          builder.append(" ~[");
+        } else {
+          builder.append(" [");
+        }
+   
+        builder.append(cpd.getCodeLocation()).append(':').append(
+            cpd.getVersion()).append(']');
+      }
+    }
+  }
+  
   static public void printSTEPArray(StringBuilder sb, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
+
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
-      sb.append(step.toString()).append(CoreConstants.LINE_SEPARATOR);
+      sb.append(step.toString());
+      appendPackagingData(sb, step);
+      sb.append(CoreConstants.LINE_SEPARATOR);
     }
     
     if (commonFrames > 0) {
@@ -96,12 +111,12 @@ public class ThrowableProxyUtil {
     
   }
 
-  static public void printFirstLine(StringBuilder sb, IThrowableProxy tp) {
+  static public void printFirstLine(StringBuilder buf, IThrowableProxy tp) {
     int commonFrames = tp.getCommonFrames();
     if (commonFrames > 0) {
-      sb.append(CoreConstants.CAUSED_BY);
+      buf.append(CoreConstants.CAUSED_BY);
     }
-    sb.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    sb.append(CoreConstants.LINE_SEPARATOR);
+    buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    buf.append(CoreConstants.LINE_SEPARATOR);
   }
 }

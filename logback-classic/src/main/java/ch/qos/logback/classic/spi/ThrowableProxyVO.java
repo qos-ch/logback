@@ -94,7 +94,4 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     }
     return tpvo;
   }
-
-
-
 }

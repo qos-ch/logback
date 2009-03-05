@@ -28,21 +28,20 @@ public class CallerData implements java.io.Serializable {
 
   // All logger call's in log4j-over-slf4j use the Category class
   private static final String LOG4J_CATEGORY = "org.apache.log4j.Category";
-  
+
   /**
    * When caller information is not available this constant is used for the line
    * number.
    */
   public static final int LINE_NA = -1;
 
-  
-  public static String CALLER_DATA_NA = "?#?:?"+CoreConstants.LINE_SEPARATOR;
+  public static String CALLER_DATA_NA = "?#?:?" + CoreConstants.LINE_SEPARATOR;
 
   /**
    * This value is returned in case no caller data could be extracted.
    */
   public static CallerData[] EMPTY_CALLER_DATA_ARRAY = new CallerData[0];
-  
+
   /**
    * Caller's line number.
    */
@@ -64,7 +63,7 @@ public class CallerData implements java.io.Serializable {
   String methodName;
 
   boolean nativeMethod = false;
-  
+
   public CallerData(String fileName, String className, String methodName,
       int lineNumber) {
     this.fileName = fileName;
@@ -82,50 +81,59 @@ public class CallerData implements java.io.Serializable {
   }
 
   /**
-   * Extract caller data information as an array based on a Throwable passed as parameter
+   * Extract caller data information as an array based on a Throwable passed as
+   * parameter
    */
-  public static CallerData[] extract(Throwable t, String fqnOfInvokingClass) {
+  public static CallerData[] extract(Throwable t, String fqnOfInvokingClass,
+      final int maxDepth) {
     if (t == null) {
       return null;
     }
 
     StackTraceElement[] steArray = t.getStackTrace();
     CallerData[] callerDataArray;
-    
+
     int found = LINE_NA;
     for (int i = 0; i < steArray.length; i++) {
-      if(isDirectlyInvokingClass(steArray[i].getClassName(), fqnOfInvokingClass)) {
+      if (isDirectlyInvokingClass(steArray[i].getClassName(),
+          fqnOfInvokingClass)) {
         // the caller is assumed to be the next stack frame, hence the +1.
         found = i + 1;
       } else {
-        if(found != LINE_NA) {
+        if (found != LINE_NA) {
           break;
         }
       }
     }
 
     // we failed to extract caller data
-    if(found == LINE_NA) {
+    if (found == LINE_NA) {
       return EMPTY_CALLER_DATA_ARRAY;
     }
-    
-    callerDataArray = new CallerData[steArray.length - found];
-    for (int i = found; i < steArray.length; i++) {
-      callerDataArray[i-found] = new CallerData(steArray[i]);
+
+    int availableDepth = steArray.length - found;
+    int desiredDepth = maxDepth < (availableDepth) ? maxDepth : availableDepth;
+
+    callerDataArray = new CallerData[desiredDepth];
+    for (int i = 0; i < desiredDepth; i++) {
+      callerDataArray[i] = new CallerData(steArray[found+i]);
     }
     return callerDataArray;
   }
-  
-  public static boolean isDirectlyInvokingClass(String currentClass, String fqnOfInvokingClass) {
-    // the check for org.apachje.log4j.Category class is intended to support log4j-over-slf4j
+
+  public static boolean isDirectlyInvokingClass(String currentClass,
+      String fqnOfInvokingClass) {
+    // the check for org.apachje.log4j.Category class is intended to support
+    // log4j-over-slf4j
     // it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
-    if(currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY)) {
+    if (currentClass.equals(fqnOfInvokingClass)
+        || currentClass.equals(LOG4J_CATEGORY)) {
       return true;
     } else {
       return false;
     }
   }
-  
+
   public boolean equals(Object o) {
     // LogLog.info("equals called");
     if (this == o) {
@@ -173,8 +181,7 @@ public class CallerData implements java.io.Serializable {
   /**
    * Return the file name of the caller.
    * 
-   * <p>
-   * This information is not always available.
+   * <p> This information is not always available.
    */
   public String getFileName() {
     return fileName;
@@ -183,8 +190,7 @@ public class CallerData implements java.io.Serializable {
   /**
    * Returns the line number of the caller.
    * 
-   * <p>
-   * This information is not always available.
+   * <p> This information is not always available.
    */
   public int getLineNumber() {
     return lineNumber;

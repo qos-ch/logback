@@ -51,10 +51,9 @@ public class LoggingEvent implements ILoggingEvent {
    */
   private String threadName;
 
-  
   private String loggerName;
-  private LoggerContextVO loggerContextRemoteView;
-
+  private LoggerContext loggerContext;
+  private LoggerContextVO loggerContextVO;
   
   /**
    * Level of logging event.
@@ -87,7 +86,7 @@ public class LoggingEvent implements ILoggingEvent {
    * created.
    */
   private long timeStamp;
-  
+
   public LoggingEvent() {
   }
 
@@ -95,15 +94,16 @@ public class LoggingEvent implements ILoggingEvent {
       Throwable throwable, Object[] argArray) {
     this.fqnOfLoggerClass = fqcn;
     this.loggerName = logger.getName();
-    this.loggerContextRemoteView = logger.getLoggerRemoteView().getLoggerContextView();
+    this.loggerContext = logger.getLoggerContext();
+    this.loggerContextVO = loggerContext.getLoggerContextRemoteView();
     this.level = level;
-    
+
     this.message = message;
 
     if (throwable != null) {
       this.throwableProxy = new ThrowableProxy(throwable);
       LoggerContext lc = logger.getLoggerContext();
-      if(lc.isPackagingDataEnabled()) {
+      if (lc.isPackagingDataEnabled()) {
         this.throwableProxy.calculatePackagingData();
       }
     }
@@ -118,7 +118,7 @@ public class LoggingEvent implements ILoggingEvent {
         .getMDCAdapter();
     mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
-  
+
   public void setArgumentArray(Object[] argArray) {
     if (this.argumentArray != null) {
       throw new IllegalStateException("argArray has been already set");
@@ -137,11 +137,11 @@ public class LoggingEvent implements ILoggingEvent {
   public String getLoggerName() {
     return loggerName;
   }
-  
+
   public void setLoggerName(String loggerName) {
     this.loggerName = loggerName;
   }
-  
+
   public String getThreadName() {
     if (threadName == null) {
       threadName = (Thread.currentThread()).getName();
@@ -198,11 +198,11 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public LoggerContextVO getLoggerContextVO() {
-    return loggerContextRemoteView;
+    return loggerContextVO;
   }
 
-  public void setLoggerContextRemoteView(LoggerContextVO loggerContextRemoteView) {
-    this.loggerContextRemoteView = loggerContextRemoteView;
+  public void setLoggerContextRemoteView(LoggerContextVO loggerContextVO) {
+    this.loggerContextVO = loggerContextVO;
   }
 
   public String getMessage() {
@@ -242,15 +242,17 @@ public class LoggingEvent implements ILoggingEvent {
    * caller information. </p>
    */
   public CallerData[] getCallerData() {
-    // we rely on the fact that fqnOfLoggerClass does not survive
-    // serialization
-    if (callerDataArray == null && fqnOfLoggerClass != null) {
-      callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass);
+    if (callerDataArray == null) {
+      callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass, loggerContext.getMaxCallerDataDepth());
     }
     return callerDataArray;
   }
 
-  public void setCallerInformation(CallerData[] callerDataArray) {
+  public boolean hasCallerData() {
+    return (callerDataArray != null);
+  }
+
+  public void setCallerData(CallerData[] callerDataArray) {
     this.callerDataArray = callerDataArray;
   }
 
@@ -267,10 +269,9 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public long getContextBirthTime() {
-    return loggerContextRemoteView.getBirthTime();
+    return loggerContextVO.getBirthTime();
   }
 
-  
   // computer formatted lazy as suggested in
   // http://jira.qos.ch/browse/LBCLASSIC-47
   public String getFormattedMessage() {

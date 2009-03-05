@@ -104,24 +104,11 @@ public class ThrowableProxy implements IThrowableProxy {
     for (StackTraceElementProxy step : stackTraceElementProxyArray) {
       String string = step.toString();
       builder.append(string);
-      extraData(builder, step);
+      ThrowableProxyUtil.appendPackagingData(builder, step);
       builder.append(CoreConstants.LINE_SEPARATOR);
     }
     System.out.println(builder.toString());
   }
 
-  protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
-    if (step != null) {
-      ClassPackagingData cpd = step.getClassPackagingData();
-      if (cpd != null) {
-        if (!cpd.isExact()) {
-          builder.append(" ~[");
-        } else {
-          builder.append(" [");
-        }
-        builder.append(cpd.getCodeLocation()).append(':').append(
-            cpd.getVersion()).append(']');
-      }
-    }
-  }
+
 }

@@ -9,13 +9,24 @@
  */
 package ch.qos.logback.classic.corpus;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ClassPackagingData;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubLoggingEventVO;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyVO;
 
-public class CorpusMakerUtil {
+public class CorpusMaker {
 
+ static final int STANDARD_CORPUS_SIZE = 100*1000;
+  
   // level distribution is determined by the following table
   // it corresponds to TRACE 20%, DEBUG 30%, INFO 30%, WARN 10%,
   // ERROR 10%. See also getRandomLevel() method.
@@ -35,13 +46,86 @@ public class CorpusMakerUtil {
   static final int AVERAGE_MESSAGE_WORDS = 8;
   static final int STD_DEV_FOR_MESSAGE_WORDS = 4;
 
+  static final int THREAD_POOL_SIZE = 10;
+
   final Random random;
   List<String> worldList;
+  String[] threadNamePool;
 
-  CorpusMakerUtil(long seed, List<String> worldList) {
+  public CorpusMaker(long seed, List<String> worldList) {
     random = new Random(seed);
     this.worldList = worldList;
+    buildThreadNamePool();
+  }
 
+  void buildThreadNamePool() {
+    threadNamePool = new String[THREAD_POOL_SIZE];
+    for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+      threadNamePool[i] = "CorpusMakerThread-" + i;
+    }
+  }
+
+  static public ILoggingEvent[] makeStandardCorpus() throws IOException {
+    List<String> worldList = TextFileUtil
+        .toWords("src/test/input/corpus/origin_of_species.txt");
+    CorpusMaker corpusMaker = new CorpusMaker(10, worldList);
+    return corpusMaker.make(STANDARD_CORPUS_SIZE);
+  }
+
+  public ILoggingEvent[] make(int n) {
+
+    LoggerContextVO lcVO = getRandomlyNamedLoggerContextVO();
+
+    PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
+    for (int i = 0; i < n; i++) {
+      PubLoggingEventVO e = new PubLoggingEventVO();
+      plevoArray[i] = e;
+      e.timeStamp = getRandomLong();
+      e.loggerName = getRandomLoggerName();
+      e.level = getRandomLevel();
+      MessageEntry me = getRandomMessageEntry();
+      e.message = me.message;
+      e.argumentArray = me.argumentArray;
+      e.loggerContextVO = lcVO;
+      Throwable t = getRandomThrowable(e.level);
+      if (t != null) {
+        e.throwableProxy = ThrowableProxyVO.build(new ThrowableProxy(t));
+        pupulateWithPackagingData(e.throwableProxy
+            .getStackTraceElementProxyArray());
+      }
+      e.threadName = getRandomThreadName();
+    }
+    return plevoArray;
+  }
+
+  void pupulateWithPackagingData(StackTraceElementProxy[] stepArray) {
+    int i = 0;
+    for (StackTraceElementProxy step : stepArray) {
+      String identifier = "na";
+      String version = "na";
+      if (i++ % 2 == 0) {
+        identifier = getRandomJavaIdentifier();
+        version = getRandomJavaIdentifier();
+      }
+      ClassPackagingData cpd = new ClassPackagingData(identifier, version);
+      step.setClassPackagingData(cpd);
+    }
+
+  }
+
+  LoggerContextVO getRandomlyNamedLoggerContextVO() {
+    LoggerContext lc = new LoggerContext();
+    lc.setName(getRandomJavaIdentifier());
+    return new LoggerContextVO(lc);
+  }
+
+  long getRandomLong() {
+    return random.nextLong();
+  }
+
+  String getRandomThreadName() {
+    int index = random.nextInt(THREAD_POOL_SIZE);
+    return threadNamePool[index];
   }
 
   String getRandomWord() {
@@ -123,14 +207,20 @@ public class CorpusMakerUtil {
     return 3;
   }
 
+  String getRandomJavaIdentifier() {
+    String w = getRandomWord();
+    w = w.replaceAll("\\p{Punct}", "");
+    return w;
+  }
+
   String getRandomLoggerName() {
     int parts = RandomUtil.gaussianAsPositiveInt(random,
         AVERAGE_LOGGER_NAME_PARTS, STD_DEV_FOR_LOGGER_NAME_PARTS);
     StringBuilder sb = new StringBuilder();
     for (int i = 1; i < parts; i++) {
-      sb.append(getRandomWord()).append('.');
+      sb.append(getRandomJavaIdentifier()).append('.');
     }
-    sb.append(getRandomWord());
+    sb.append(getRandomJavaIdentifier());
     return sb.toString();
   }
 

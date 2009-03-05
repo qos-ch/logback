@@ -62,6 +62,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   private final TurboFilterList turboFilterList = new TurboFilterList();
   private boolean packagingDataEnabled = true; 
   
+  private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
+  
   boolean started = false;
 
   public LoggerContext() {
@@ -333,6 +335,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   @Override
   public String toString() {
     return this.getClass().getName() + "[" + getName() + "]";
+  }
+
+  public int getMaxCallerDataDepth() {
+    return maxCallerDataDepth;
+  }
+
+  public void setMaxCallerDataDepth(int maxCallerDataDepth) {
+    this.maxCallerDataDepth = maxCallerDataDepth;
   }
   
 }

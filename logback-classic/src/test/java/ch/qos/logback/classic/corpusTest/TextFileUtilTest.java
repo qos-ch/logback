@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import ch.qos.logback.classic.corpus.TextFileUtil;
 
-public class FileToWord {
+public class TextFileUtilTest {
 
   @Test
   public void smoke() throws IOException {

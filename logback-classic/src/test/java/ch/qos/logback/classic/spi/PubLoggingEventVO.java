@@ -11,55 +11,38 @@ import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 
-// http://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.html
-
 /**
- * A read-only and serializable implementation of {@link ILoggingEvent}.
+ * A read/write  and serializable implementation of {@link ILoggingEvent}.
  * 
  * @author Ceki G&uuml;lc&uuml;
- * @since 0.9.16
- */
-public class LoggingEventVO implements ILoggingEvent, Serializable {
 
-  private static final long serialVersionUID = 6553722650255690312L;
+ */
+public class PubLoggingEventVO implements ILoggingEvent, Serializable {
+
+
+  private static final long serialVersionUID = -3385765861078946218L;
 
   private static final int NULL_ARGUMENT_ARRAY = -1;
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
-  private String threadName;
-  private String loggerName;
-  private LoggerContextVO loggerContextVO;
+  public String threadName;
+  public String loggerName;
+  public LoggerContextVO loggerContextVO;
 
-  private transient Level level;
-  private String message;
+  public transient Level level;
+  public String message;
 
-  // we gain significant space at serialization time by marking
-  // formattedMessage as transient and constructing it lazily in
-  // getFormmatedMessage()
   private transient String formattedMessage;
 
-  private transient Object[] argumentArray;
+  public Object[] argumentArray;
 
-  private ThrowableProxyVO throwableProxy;
-  private CallerData[] callerDataArray;
-  private Marker marker;
-  private Map<String, String> mdcPropertyMap;
-  private long timeStamp;
+  public ThrowableProxyVO throwableProxy;
+  public CallerData[] callerDataArray;
+  public Marker marker;
+  public Map<String, String> mdcPropertyMap;
+  public long timeStamp;
 
-  public static LoggingEventVO build(ILoggingEvent le) {
-    LoggingEventVO ledo = new LoggingEventVO();
-    ledo.loggerName = le.getLoggerName();
-    ledo.loggerContextVO = le.getLoggerContextVO();
-    ledo.threadName = le.getThreadName();
-    ledo.level = (le.getLevel());
-    ledo.message = (le.getMessage());
-    ledo.argumentArray = (le.getArgumentArray());
-    ledo.marker = le.getMarker();
-    ledo.mdcPropertyMap = le.getMDCPropertyMap();
-    ledo.timeStamp = le.getTimeStamp();
-    ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
-    return ledo;
-  }
+
 
   public String getThreadName() {
     return threadName;
@@ -192,7 +175,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    final LoggingEventVO other = (LoggingEventVO) obj;
+    final PubLoggingEventVO other = (PubLoggingEventVO) obj;
     if (message == null) {
       if (other.message != null)
         return false;
@@ -226,4 +209,19 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
       return false;
     return true;
   }
+  
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(timeStamp);
+    sb.append(" ");
+    sb.append(level);
+    sb.append(" [");
+    sb.append(threadName);
+    sb.append("] ");
+    sb.append(loggerName);
+    sb.append(" - ");
+    sb.append(getFormattedMessage());
+    return sb.toString();
+  }
+
 }
