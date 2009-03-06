@@ -29,18 +29,24 @@ import ch.qos.logback.core.CoreConstants;
  * 
  * <p>if you wish to dump the events into a file, say "/corpus.log" :
  * 
- * <p>
- * <code>Corpus.dump(eventArray, "/corpus.log");
+ * <p> <code>Corpus.dump(eventArray, "/corpus.log");
  * 
  * <p>For the model behind the corpus, refer to {@link CorpusModel}.
  * 
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class Corpus {
 
   static public final int STANDARD_CORPUS_SIZE = 50 * 1000;
   private static final int STANDARD_SEED = 34780;
+
+  static List<String> getStandatdCorpusWordList() throws IOException {
+    ClassLoader classLoader = Corpus.class.getClassLoader();
+    URL originOfSpeciesURL = classLoader
+        .getResource("corpus/origin_of_species.txt");
+    return TextFileUtil.toWords(originOfSpeciesURL);
+  }
 
   /**
    * Make a standard corpus. The standard corpus has
@@ -50,31 +56,28 @@ public class Corpus {
    * @throws IOException
    */
   static public ILoggingEvent[] makeStandardCorpus() throws IOException {
-    ClassLoader classLoader = Corpus.class.getClassLoader();
-    URL originOfSpeciesURL = classLoader
-        .getResource("corpus/origin_of_species.txt");
-    List<String> worldList = TextFileUtil.toWords(originOfSpeciesURL);
+    List<String> worldList = getStandatdCorpusWordList();
     CorpusModel corpusMaker = new CorpusModel(STANDARD_SEED, worldList);
     return make(corpusMaker, STANDARD_CORPUS_SIZE);
   }
 
-  static public ILoggingEvent[] make(CorpusModel corpusMaker, int n) {
-    LoggerContextVO lcVO = corpusMaker.getRandomlyNamedLoggerContextVO();
+  static public ILoggingEvent[] make(CorpusModel corpusModel, int n) {
+    LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
     PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
     for (int i = 0; i < n; i++) {
       PubLoggingEventVO e = new PubLoggingEventVO();
       plevoArray[i] = e;
       e.loggerContextVO = lcVO;
-      e.timeStamp = corpusMaker.getRandomTimeStamp();
+      e.timeStamp = corpusModel.getRandomTimeStamp();
 
-      LogStatement logStatement = corpusMaker.getRandomLogStatementFromPool();
+      LogStatement logStatement = corpusModel.getRandomLogStatementFromPool();
       e.loggerName = logStatement.loggerName;
       e.level = logStatement.level;
       e.message = logStatement.mat.message;
-      e.argumentArray = corpusMaker
+      e.argumentArray = corpusModel
           .getRandomArgumentArray(logStatement.mat.numberOfArguments);
       e.throwableProxy = logStatement.throwableProxy;
-      e.threadName = corpusMaker.getRandomThreadNameFromPool();
+      e.threadName = corpusModel.getRandomThreadNameFromPool();
     }
     return plevoArray;
   }

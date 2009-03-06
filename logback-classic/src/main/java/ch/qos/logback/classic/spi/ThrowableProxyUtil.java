@@ -93,14 +93,18 @@ public class ThrowableProxyUtil {
     }
   }
   
+  static public void printSTEP(StringBuilder sb, StackTraceElementProxy step) {
+    sb.append(step.toString());
+    appendPackagingData(sb, step);
+  }
+  
   static public void printSTEPArray(StringBuilder sb, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
-      sb.append(step.toString());
-      appendPackagingData(sb, step);
+      printSTEP(sb, step);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
     
