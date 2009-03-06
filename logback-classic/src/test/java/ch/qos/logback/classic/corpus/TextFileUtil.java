@@ -3,11 +3,17 @@ package ch.qos.logback.classic.corpus;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextFileUtil {
 
+  
+  public static List<String> toWords(URL url) throws IOException {
+    String filename = url.getFile();
+    return toWords(filename);
+  }
 
   public static List<String> toWords(String filename) throws IOException {
     FileReader fr = new FileReader(filename);

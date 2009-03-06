@@ -20,12 +20,46 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
 
-public class CorpusMaker {
+/**
+ * Models the corpus.
+ * 
+ * <p>This contains the probability distributions of levels, logger names,
+ * messages, message arguments.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * 
+ */
+public class CorpusModel {
+
+  // N(u,s) denotes a random variable normally distributed with mean u and
+  // variance sqrt(s), where sqrt() is the square root function. For an
+  // explanation of normal distribution please see
+  // http://en.wikipedia.org/wiki/Normal_distribution
+
+  // It is assumed that the number of parts in a logger name is a random
+  // variable normally distributed with mean AVERAGE_LOGGER_NAME_PARTS and
+  // standard deviation STD_DEV_FOR_LOGGER_NAME_PARTS
+  static final int AVERAGE_LOGGER_NAME_PARTS = 6;
+  static final int STD_DEV_FOR_LOGGER_NAME_PARTS = 3;
+
+  // It is assumed that there are LOGGER_POOL_SIZE logger names
+  // in our model corpus.
+  static final int LOGGER_POOL_SIZE = 1000;
+
+  // It is assumed that there are LOG_STATEMENT_POOL_SIZE log statements
+  // in our model corpus.
+  static final int LOG_STATEMENT_POOL_SIZE = LOGGER_POOL_SIZE * 8;
 
   // level distribution is determined by the following table
-  // it corresponds to TRACE 20%, DEBUG 30%, INFO 30%, WARN 10%,
+  // It corresponds to TRACE 20%, DEBUG 30%, INFO 30%, WARN 10%,
   // ERROR 10%. See also getRandomLevel() method.
   static final double[] LEVEL_DISTRIBUTION = new double[] { .2, .5, .8, .9 };
+
+  // It is assumed that the number of words in the message (contained in a log
+  // statement) is a random variable normally distributed with mean
+  // AVERAGE_MESSAGE_WORDS and standard deviation STD_DEV_FOR_MESSAGE_WORDS
+  static final int AVERAGE_MESSAGE_WORDS = 8;
+  static final int STD_DEV_FOR_MESSAGE_WORDS = 4;
 
   // messages will have no arguments 80% of the time, one argument in 8%, two
   // arguments in 7% and three arguments in 5% of cases
@@ -33,31 +67,28 @@ public class CorpusMaker {
 
   static final double THROWABLE_PROPABILITY_FOR_WARNING = .1;
   static final double THROWABLE_PROPABILITY_FOR_ERRORS = .3;
+  // .5 of throwables are nested once
   static final double NESTING_PROBABILITY = .5;
 
-  static final int AVERAGE_LOGGER_NAME_PARTS = 6;
-  static final int STD_DEV_FOR_LOGGER_NAME_PARTS = 3;
-
-  static final int AVERAGE_MESSAGE_WORDS = 8;
-  static final int STD_DEV_FOR_MESSAGE_WORDS = 4;
-
+  // For each logging event the timer is incremented by a certain value. it is
+  // assumed that this value is a random variable normally distributed with mean
+  // AVERAGE_MILLIS_INCREMENT and standard deviation
+  // STD_DEV_FOR_MILLIS_INCREMENT
   static final int AVERAGE_MILLIS_INCREMENT = 10;
   static final int STD_DEV_FOR_MILLIS_INCREMENT = 5;
 
+  // assume that there are THREAD_POOL_SIZE threads in the corpus
   static final int THREAD_POOL_SIZE = 10;
-  static final int LOGGER_POOL_SIZE = 1000;
-  static final int LOG_STATEMENT_POOL_SIZE = LOGGER_POOL_SIZE * 8;
 
   final Random random;
-  List<String> worldList;
+  final List<String> worldList;
   String[] threadNamePool;
-
   LogStatement[] logStatementPool;
 
   // 2009-03-06 13:08 GMT
   long lastTimeStamp = 1236344888578L;
 
-  public CorpusMaker(long seed, List<String> worldList) {
+  public CorpusModel(long seed, List<String> worldList) {
     random = new Random(seed);
     this.worldList = worldList;
     buildThreadNamePool();
@@ -149,7 +180,7 @@ public class CorpusMaker {
     return argumentArray;
   }
 
-  private MessageItem makeRandomMessageEntry() {
+  private MessageArgumentTuple makeRandomMessageArgumentTuple() {
     int numOfArguments = getNumberOfMessageArguments();
 
     int wordCount = RandomUtil.gaussianAsPositiveInt(random,
@@ -167,11 +198,11 @@ public class CorpusMaker {
       sb.append(wordArray[i]).append(' ');
     }
     sb.append(getRandomWord());
-    return new MessageItem(sb.toString(), numOfArguments);
+    return new MessageArgumentTuple(sb.toString(), numOfArguments);
   }
 
   private LogStatement makeRandomLogStatement(String[] loggerNamePool) {
-    MessageItem mi = makeRandomMessageEntry();
+    MessageArgumentTuple mat = makeRandomMessageArgumentTuple();
     String loggerName = getRandomLoggerNameFromPool(loggerNamePool);
     Level randomLevel = getRandomLevel();
     Throwable t = getRandomThrowable(randomLevel);
@@ -180,7 +211,7 @@ public class CorpusMaker {
       throwableProxy = ThrowableProxyVO.build(new ThrowableProxy(t));
       pupulateWithPackagingData(throwableProxy.getStackTraceElementProxyArray());
     }
-    LogStatement logStatement = new LogStatement(loggerName, randomLevel, mi,
+    LogStatement logStatement = new LogStatement(loggerName, randomLevel, mat,
         throwableProxy);
     return logStatement;
   }
@@ -208,7 +239,7 @@ public class CorpusMaker {
       step.setClassPackagingData(cpd);
     }
   }
-  
+
   private int getNumberOfMessageArguments() {
     double rn = random.nextDouble();
     if (rn < ARGUMENT_DISTRIBUTION[0]) {

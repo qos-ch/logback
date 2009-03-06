@@ -1,16 +1,15 @@
 package ch.qos.logback.classic.corpus;
 
-public class MessageItem {
-
+public class MessageArgumentTuple {
   
   final String message;
   final int numberOfArguments;
 
-  MessageItem(String message) {
+  MessageArgumentTuple(String message) {
     this(message, 0);
   }
 
-  public MessageItem(String message, int numberOfArguments) {
+  public MessageArgumentTuple(String message, int numberOfArguments) {
     this.message = message;
     this.numberOfArguments = numberOfArguments;
   }
