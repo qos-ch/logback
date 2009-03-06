@@ -77,7 +77,7 @@ public class Corpus {
    * @param targetFile
    * @throws IOException
    */
-  public void dump(ILoggingEvent[] eventArray, String targetFile)
+  public static void dump(ILoggingEvent[] eventArray, String targetFile)
       throws IOException {
     FileWriter fw = new FileWriter(targetFile);
     for (ILoggingEvent e : eventArray) {
@@ -88,6 +88,8 @@ public class Corpus {
         fw.write(ThrowableProxyUtil.asString(tp));
       }
     }
+    fw.flush();
+    fw.close();
   }
 
 }
