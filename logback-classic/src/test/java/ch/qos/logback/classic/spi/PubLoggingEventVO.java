@@ -36,7 +36,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
   public Object[] argumentArray;
 
-  public ThrowableProxyVO throwableProxy;
+  public IThrowableProxy throwableProxy;
   public CallerData[] callerDataArray;
   public Marker marker;
   public Map<String, String> mdcPropertyMap;

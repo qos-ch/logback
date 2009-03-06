@@ -9,32 +9,27 @@
  */
 package ch.qos.logback.classic.corpus;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ClassPackagingData;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggerContextVO;
-import ch.qos.logback.classic.spi.PubLoggingEventVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
 
 public class CorpusMaker {
 
- static final int STANDARD_CORPUS_SIZE = 100*1000;
-  
   // level distribution is determined by the following table
   // it corresponds to TRACE 20%, DEBUG 30%, INFO 30%, WARN 10%,
   // ERROR 10%. See also getRandomLevel() method.
   static final double[] LEVEL_DISTRIBUTION = new double[] { .2, .5, .8, .9 };
 
-  // messages will have no arguments 90% of the time, one argument in 3%, two
-  // arguments in 3% and three arguments in 3% of cases
-  static final double[] ARGUMENT_DISTRIBUTION = new double[] { .90, .933, 0.966 };
+  // messages will have no arguments 80% of the time, one argument in 8%, two
+  // arguments in 7% and three arguments in 5% of cases
+  static final double[] ARGUMENT_DISTRIBUTION = new double[] { .80, .88, 0.95 };
 
   static final double THROWABLE_PROPABILITY_FOR_WARNING = .1;
   static final double THROWABLE_PROPABILITY_FOR_ERRORS = .3;
@@ -46,95 +41,48 @@ public class CorpusMaker {
   static final int AVERAGE_MESSAGE_WORDS = 8;
   static final int STD_DEV_FOR_MESSAGE_WORDS = 4;
 
+  static final int AVERAGE_MILLIS_INCREMENT = 10;
+  static final int STD_DEV_FOR_MILLIS_INCREMENT = 5;
+
   static final int THREAD_POOL_SIZE = 10;
+  static final int LOGGER_POOL_SIZE = 1000;
+  static final int LOG_STATEMENT_POOL_SIZE = LOGGER_POOL_SIZE * 8;
 
   final Random random;
   List<String> worldList;
   String[] threadNamePool;
 
+  LogStatement[] logStatementPool;
+
+  // 2009-03-06 13:08 GMT
+  long lastTimeStamp = 1236344888578L;
+
   public CorpusMaker(long seed, List<String> worldList) {
     random = new Random(seed);
     this.worldList = worldList;
     buildThreadNamePool();
+    buildLogStatementPool();
   }
 
-  void buildThreadNamePool() {
+  private void buildThreadNamePool() {
     threadNamePool = new String[THREAD_POOL_SIZE];
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
       threadNamePool[i] = "CorpusMakerThread-" + i;
     }
   }
 
-  static public ILoggingEvent[] makeStandardCorpus() throws IOException {
-    List<String> worldList = TextFileUtil
-        .toWords("src/test/input/corpus/origin_of_species.txt");
-    CorpusMaker corpusMaker = new CorpusMaker(10, worldList);
-    return corpusMaker.make(STANDARD_CORPUS_SIZE);
-  }
-
-  public ILoggingEvent[] make(int n) {
-
-    LoggerContextVO lcVO = getRandomlyNamedLoggerContextVO();
-
-    PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
-    for (int i = 0; i < n; i++) {
-      PubLoggingEventVO e = new PubLoggingEventVO();
-      plevoArray[i] = e;
-      e.timeStamp = getRandomLong();
-      e.loggerName = getRandomLoggerName();
-      e.level = getRandomLevel();
-      MessageEntry me = getRandomMessageEntry();
-      e.message = me.message;
-      e.argumentArray = me.argumentArray;
-      e.loggerContextVO = lcVO;
-      Throwable t = getRandomThrowable(e.level);
-      if (t != null) {
-        e.throwableProxy = ThrowableProxyVO.build(new ThrowableProxy(t));
-        pupulateWithPackagingData(e.throwableProxy
-            .getStackTraceElementProxyArray());
-      }
-      e.threadName = getRandomThreadName();
+  private void buildLogStatementPool() {
+    String[] loggerNamePool = new String[LOGGER_POOL_SIZE];
+    for (int i = 0; i < LOGGER_POOL_SIZE; i++) {
+      loggerNamePool[i] = makeRandomLoggerName();
     }
-    return plevoArray;
-  }
-
-  void pupulateWithPackagingData(StackTraceElementProxy[] stepArray) {
-    int i = 0;
-    for (StackTraceElementProxy step : stepArray) {
-      String identifier = "na";
-      String version = "na";
-      if (i++ % 2 == 0) {
-        identifier = getRandomJavaIdentifier();
-        version = getRandomJavaIdentifier();
-      }
-      ClassPackagingData cpd = new ClassPackagingData(identifier, version);
-      step.setClassPackagingData(cpd);
+    logStatementPool = new LogStatement[LOG_STATEMENT_POOL_SIZE];
+    for (int i = 0; i < LOG_STATEMENT_POOL_SIZE; i++) {
+      logStatementPool[i] = makeRandomLogStatement(loggerNamePool);
     }
-
   }
 
-  LoggerContextVO getRandomlyNamedLoggerContextVO() {
-    LoggerContext lc = new LoggerContext();
-    lc.setName(getRandomJavaIdentifier());
-    return new LoggerContextVO(lc);
-  }
-
-  long getRandomLong() {
-    return random.nextLong();
-  }
-
-  String getRandomThreadName() {
-    int index = random.nextInt(THREAD_POOL_SIZE);
-    return threadNamePool[index];
-  }
-
-  String getRandomWord() {
-    int size = worldList.size();
-    int randomIndex = random.nextInt(size);
-    return worldList.get(randomIndex);
-  }
-
-  int[] getRandomAnchorPositions(int wordCount, int numAnchors) {
+  private int[] getRandomAnchorPositions(int wordCount, int numAnchors) {
     // note that the same position may appear multiple times in
     // positionsIndex, but without serious consequences
     int[] positionsIndex = new int[numAnchors];
@@ -152,38 +100,92 @@ public class CorpusMaker {
     return wordArray;
   }
 
-  MessageEntry getRandomMessageEntry() {
-    int numOfArguments = getNumberOfMessageArguments();
-    Object[] argumentArray = null;
-    if (numOfArguments > 0) {
-      argumentArray = new Object[numOfArguments];
-      for (int i = 0; i < numOfArguments; i++) {
-        argumentArray[i] = new Long(random.nextLong());
-      }
+  public long getRandomLong() {
+    return random.nextLong();
+  }
+
+  public String getRandomThreadNameFromPool() {
+    int index = random.nextInt(THREAD_POOL_SIZE);
+    return threadNamePool[index];
+  }
+
+  public LogStatement getRandomLogStatementFromPool() {
+    int index = random.nextInt(logStatementPool.length);
+    return logStatementPool[index];
+  }
+
+  private String getRandomLoggerNameFromPool(String[] loggerNamePool) {
+    int index = random.nextInt(loggerNamePool.length);
+    return loggerNamePool[index];
+  }
+
+  public long getRandomTimeStamp() {
+    // subtract 1 so that 0 is allowed
+    lastTimeStamp += RandomUtil.gaussianAsPositiveInt(random,
+        AVERAGE_MILLIS_INCREMENT, STD_DEV_FOR_MILLIS_INCREMENT) - 1;
+    return lastTimeStamp;
+  }
+
+  LoggerContextVO getRandomlyNamedLoggerContextVO() {
+    LoggerContext lc = new LoggerContext();
+    lc.setName(getRandomJavaIdentifier());
+    return new LoggerContextVO(lc);
+  }
+
+  String getRandomWord() {
+    int size = worldList.size();
+    int randomIndex = random.nextInt(size);
+    return worldList.get(randomIndex);
+  }
+
+  public Object[] getRandomArgumentArray(int numOfArguments) {
+    if (numOfArguments == 0) {
+      return null;
     }
+    Object[] argumentArray = new Object[numOfArguments];
+    for (int i = 0; i < numOfArguments; i++) {
+      argumentArray[i] = new Long(random.nextLong());
+    }
+    return argumentArray;
+  }
+
+  private MessageItem makeRandomMessageEntry() {
+    int numOfArguments = getNumberOfMessageArguments();
+
     int wordCount = RandomUtil.gaussianAsPositiveInt(random,
         AVERAGE_MESSAGE_WORDS, STD_DEV_FOR_MESSAGE_WORDS);
     String[] wordArray = getRandomWords(wordCount);
 
     int[] anchorPositions = getRandomAnchorPositions(wordCount, numOfArguments);
+
     for (int anchorIndex : anchorPositions) {
       wordArray[anchorIndex] = "{}";
     }
 
     StringBuilder sb = new StringBuilder();
     for (int i = 1; i < wordCount; i++) {
-      sb.append(getRandomWord()).append(' ');
+      sb.append(wordArray[i]).append(' ');
     }
     sb.append(getRandomWord());
-
-    return new MessageEntry(sb.toString(), argumentArray);
+    return new MessageItem(sb.toString(), numOfArguments);
   }
 
-  Throwable buildThrowable(double i) {
-    return null;
+  private LogStatement makeRandomLogStatement(String[] loggerNamePool) {
+    MessageItem mi = makeRandomMessageEntry();
+    String loggerName = getRandomLoggerNameFromPool(loggerNamePool);
+    Level randomLevel = getRandomLevel();
+    Throwable t = getRandomThrowable(randomLevel);
+    ThrowableProxyVO throwableProxy = null;
+    if (t != null) {
+      throwableProxy = ThrowableProxyVO.build(new ThrowableProxy(t));
+      pupulateWithPackagingData(throwableProxy.getStackTraceElementProxyArray());
+    }
+    LogStatement logStatement = new LogStatement(loggerName, randomLevel, mi,
+        throwableProxy);
+    return logStatement;
   }
 
-  Throwable getRandomThrowable(Level level) {
+  private Throwable getRandomThrowable(Level level) {
     double rn = random.nextDouble();
     if ((level == Level.WARN && rn < THROWABLE_PROPABILITY_FOR_WARNING)
         || (level == Level.ERROR && rn < THROWABLE_PROPABILITY_FOR_ERRORS)) {
@@ -193,7 +195,21 @@ public class CorpusMaker {
     }
   }
 
-  int getNumberOfMessageArguments() {
+  private void pupulateWithPackagingData(StackTraceElementProxy[] stepArray) {
+    int i = 0;
+    for (StackTraceElementProxy step : stepArray) {
+      String identifier = "na";
+      String version = "na";
+      if (i++ % 2 == 0) {
+        identifier = getRandomJavaIdentifier();
+        version = getRandomJavaIdentifier();
+      }
+      ClassPackagingData cpd = new ClassPackagingData(identifier, version);
+      step.setClassPackagingData(cpd);
+    }
+  }
+  
+  private int getNumberOfMessageArguments() {
     double rn = random.nextDouble();
     if (rn < ARGUMENT_DISTRIBUTION[0]) {
       return 0;
@@ -213,7 +229,7 @@ public class CorpusMaker {
     return w;
   }
 
-  String getRandomLoggerName() {
+  private String makeRandomLoggerName() {
     int parts = RandomUtil.gaussianAsPositiveInt(random,
         AVERAGE_LOGGER_NAME_PARTS, STD_DEV_FOR_LOGGER_NAME_PARTS);
     StringBuilder sb = new StringBuilder();
@@ -224,7 +240,7 @@ public class CorpusMaker {
     return sb.toString();
   }
 
-  Level getRandomLevel() {
+  private Level getRandomLevel() {
     double rn = random.nextDouble();
     if (rn < LEVEL_DISTRIBUTION[0]) {
       return Level.TRACE;
