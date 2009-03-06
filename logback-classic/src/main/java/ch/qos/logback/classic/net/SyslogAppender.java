@@ -17,6 +17,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 import ch.qos.logback.core.net.SyslogWriter;
@@ -80,7 +81,9 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
         for (StackTraceElementProxy step : stepArray) {
-          sw.write(prefix + step.toString());
+          sw.write(prefix);
+          sw.write(CoreConstants.TAB);
+          sw.write(step.toString());
           sw.flush();
         }
       } catch (IOException e) {

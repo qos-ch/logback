@@ -80,4 +80,5 @@ public class CoreConstants {
   public static long REFERENCE_BIPS = 9000;
   static public final char DOT = '.';
 
+  static public final char TAB = '\t';
 }

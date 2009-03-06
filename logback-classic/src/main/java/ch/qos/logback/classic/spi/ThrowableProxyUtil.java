@@ -71,6 +71,7 @@ public class ThrowableProxyUtil {
 
     while (tp != null) {
       printFirstLine(sb, tp);
+      sb.append(CoreConstants.LINE_SEPARATOR);
       printSTEPArray(sb, tp);
       tp = tp.getCause();
     }
@@ -104,6 +105,7 @@ public class ThrowableProxyUtil {
 
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
+      sb.append(CoreConstants.TAB);
       printSTEP(sb, step);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
@@ -121,6 +123,5 @@ public class ThrowableProxyUtil {
       buf.append(CoreConstants.CAUSED_BY);
     }
     buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    buf.append(CoreConstants.LINE_SEPARATOR);
   }
 }

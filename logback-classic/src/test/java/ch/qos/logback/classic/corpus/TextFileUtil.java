@@ -12,6 +12,8 @@ package ch.qos.logback.classic.corpus;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +22,10 @@ public class TextFileUtil {
 
   
   public static List<String> toWords(URL url) throws IOException {
-    String filename = url.getFile();
-    return toWords(filename);
+    InputStream is = url.openStream();
+    InputStreamReader reader = new InputStreamReader(is);
+    BufferedReader br = new BufferedReader(reader);
+    return toWords(br);
   }
 
   public static List<String> toWords(String filename) throws IOException {

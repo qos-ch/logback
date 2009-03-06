@@ -141,7 +141,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
   void printThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
     ThrowableProxyUtil.printFirstLine(buf, tp);
-
+    buf.append(CoreConstants.LINE_SEPARATOR);
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
@@ -156,6 +156,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
     for (int i = 0; i < maxIndex; i++) {
       String string = stepArray[i].toString();
+      buf.append(CoreConstants.TAB);
       buf.append(string);
       extraData(buf, stepArray[i]); // allow other data to be added
       buf.append(CoreConstants.LINE_SEPARATOR);

@@ -17,6 +17,7 @@ import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.helpers.Transform;
 
@@ -128,6 +129,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       buf.append("  <log4j:throwable><![CDATA[");
       for (StackTraceElementProxy step : stepArray) {
+        buf.append(CoreConstants.TAB);
         buf.append(step.toString());
         buf.append("\r\n");
       }

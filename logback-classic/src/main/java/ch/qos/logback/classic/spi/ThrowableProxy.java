@@ -103,7 +103,7 @@ public class ThrowableProxy implements IThrowableProxy {
     StringBuilder builder = new StringBuilder();
     for (StackTraceElementProxy step : stackTraceElementProxyArray) {
       String string = step.toString();
-      builder.append(string);
+      builder.append(CoreConstants.TAB).append(string);
       ThrowableProxyUtil.appendPackagingData(builder, step);
       builder.append(CoreConstants.LINE_SEPARATOR);
     }

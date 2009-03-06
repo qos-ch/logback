@@ -41,7 +41,7 @@ public class Corpus {
   static public final int STANDARD_CORPUS_SIZE = 50 * 1000;
   private static final int STANDARD_SEED = 34780;
 
-  static List<String> getStandatdCorpusWordList() throws IOException {
+  static public List<String> getStandatdCorpusWordList() throws IOException {
     ClassLoader classLoader = Corpus.class.getClassLoader();
     URL originOfSpeciesURL = classLoader
         .getResource("corpus/origin_of_species.txt");

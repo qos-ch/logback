@@ -22,7 +22,7 @@ public class StackTraceElementProxy implements Serializable {
   
   public String getSTEAsString() {
     if (steAsString == null) {
-      steAsString = "\tat " + ste.toString();
+      steAsString = "at " + ste.toString();
     }
     return steAsString;
   }
