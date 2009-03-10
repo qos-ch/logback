@@ -14,6 +14,7 @@ import java.util.Random;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
@@ -84,6 +85,7 @@ public class CorpusModel {
   final List<String> worldList;
   String[] threadNamePool;
   LogStatement[] logStatementPool;
+  String[] loggerNamePool;
 
   // 2009-03-06 13:08 GMT
   long lastTimeStamp = 1236344888578L;
@@ -92,6 +94,7 @@ public class CorpusModel {
     random = new Random(seed);
     this.worldList = worldList;
     buildThreadNamePool();
+    buildLoggerNamePool();
     buildLogStatementPool();
   }
 
@@ -102,11 +105,14 @@ public class CorpusModel {
     }
   }
 
-  private void buildLogStatementPool() {
-    String[] loggerNamePool = new String[LOGGER_POOL_SIZE];
+  private void buildLoggerNamePool() {
+    loggerNamePool = new String[LOGGER_POOL_SIZE];
     for (int i = 0; i < LOGGER_POOL_SIZE; i++) {
       loggerNamePool[i] = makeRandomLoggerName();
     }
+  }
+
+  private void buildLogStatementPool() {
     logStatementPool = new LogStatement[LOG_STATEMENT_POOL_SIZE];
     for (int i = 0; i < LOG_STATEMENT_POOL_SIZE; i++) {
       logStatementPool[i] = makeRandomLogStatement(loggerNamePool);
@@ -167,6 +173,28 @@ public class CorpusModel {
     int size = worldList.size();
     int randomIndex = random.nextInt(size);
     return worldList.get(randomIndex);
+  }
+
+  String extractLastPart(String loggerName) {
+    int i = loggerName.lastIndexOf('.');
+    if (i == -1) {
+      return loggerName;
+    } else {
+      return loggerName.substring(i + 1);
+    }
+  }
+
+  public CallerData[] getRandomCallerData(int depth, String loggerName) {
+    CallerData[] cda = new CallerData[depth];
+    CallerData cd = new CallerData(extractLastPart(loggerName), loggerName,
+        getRandomJavaIdentifier(), 10);
+    cda[0] = cd;
+    for (int i = 1; i < depth; i++) {
+      String ln = getRandomLoggerNameFromPool(loggerNamePool);
+      cda[i] = new CallerData(extractLastPart(ln), ln,
+          getRandomJavaIdentifier(), i * 10);
+    }
+    return cda;
   }
 
   public Object[] getRandomArgumentArray(int numOfArguments) {

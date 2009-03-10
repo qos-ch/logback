@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
@@ -58,10 +59,11 @@ public class Corpus {
   static public ILoggingEvent[] makeStandardCorpus() throws IOException {
     List<String> worldList = getStandatdCorpusWordList();
     CorpusModel corpusMaker = new CorpusModel(STANDARD_SEED, worldList);
-    return make(corpusMaker, STANDARD_CORPUS_SIZE);
+    return make(corpusMaker, STANDARD_CORPUS_SIZE, true);
   }
 
-  static public ILoggingEvent[] make(CorpusModel corpusModel, int n) {
+  static public ILoggingEvent[] make(CorpusModel corpusModel, int n,
+      boolean withCallerData) {
     LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
     PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
     for (int i = 0; i < n; i++) {
@@ -76,7 +78,11 @@ public class Corpus {
       e.message = logStatement.mat.message;
       e.argumentArray = corpusModel
           .getRandomArgumentArray(logStatement.mat.numberOfArguments);
-      e.throwableProxy = logStatement.throwableProxy;
+
+      if (withCallerData) {
+        e.callerDataArray = corpusModel.getRandomCallerData(
+            ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH, e.loggerName);
+      }
       e.threadName = corpusModel.getRandomThreadNameFromPool();
     }
     return plevoArray;
