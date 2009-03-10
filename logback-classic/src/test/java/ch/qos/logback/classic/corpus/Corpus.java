@@ -83,6 +83,7 @@ public class Corpus {
         e.callerDataArray = corpusModel.getRandomCallerData(
             ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH, e.loggerName);
       }
+      e.throwableProxy = logStatement.throwableProxy;
       e.threadName = corpusModel.getRandomThreadNameFromPool();
     }
     return plevoArray;
