@@ -52,9 +52,9 @@ public class CorpusModel {
   static final int LOG_STATEMENT_POOL_SIZE = LOGGER_POOL_SIZE * 8;
 
   // level distribution is determined by the following table
-  // It corresponds to TRACE 20%, DEBUG 30%, INFO 30%, WARN 10%,
-  // ERROR 10%. See also getRandomLevel() method.
-  static final double[] LEVEL_DISTRIBUTION = new double[] { .2, .5, .8, .9 };
+  // It corresponds to TRACE 3%, DEBUG 30%, INFO 30%, WARN 5%,
+  // ERROR 5%. See also getRandomLevel() method.
+  static final double[] LEVEL_DISTRIBUTION = new double[] { .3, .3, .9, .95 };
 
   // It is assumed that the number of words in the message (contained in a log
   // statement) is a random variable normally distributed with mean
@@ -187,7 +187,7 @@ public class CorpusModel {
   public CallerData[] getRandomCallerData(int depth, String loggerName) {
     CallerData[] cda = new CallerData[depth];
     CallerData cd = new CallerData(extractLastPart(loggerName), loggerName,
-        getRandomJavaIdentifier(), 10);
+        getRandomJavaIdentifier(), 0);
     cda[0] = cd;
     for (int i = 1; i < depth; i++) {
       String ln = getRandomLoggerNameFromPool(loggerNamePool);
