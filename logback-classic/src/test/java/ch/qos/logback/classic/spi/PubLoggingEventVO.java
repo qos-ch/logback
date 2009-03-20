@@ -46,7 +46,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
   public Object[] argumentArray;
 
   public IThrowableProxy throwableProxy;
-  public CallerData[] callerDataArray;
+  public StackTraceElement[] callerDataArray;
   public Marker marker;
   public Map<String, String> mdcPropertyMap;
   public long timeStamp;
@@ -95,7 +95,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     return throwableProxy;
   }
 
-  public CallerData[] getCallerData() {
+  public StackTraceElement[] getCallerData() {
     return callerDataArray;
   }
 

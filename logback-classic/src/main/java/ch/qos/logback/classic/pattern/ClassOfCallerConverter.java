@@ -16,7 +16,7 @@ public class ClassOfCallerConverter extends NamedConverter {
 
   protected String getFullyQualifiedName(ILoggingEvent event) {
     
-    CallerData[] cda = event.getCallerData();
+    StackTraceElement[] cda = event.getCallerData();
     if (cda != null && cda.length > 0) {
       return cda[0].getClassName();
     } else {

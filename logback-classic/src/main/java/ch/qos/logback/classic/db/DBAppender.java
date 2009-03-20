@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.db.DBAppenderBase;
@@ -106,9 +105,9 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     stmt.setShort(6, DBHelper.computeReferenceMask(event));
   }
 
-  void bindCallerDataWithPreparedStatement(PreparedStatement stmt, CallerData[] callerDataArray)
+  void bindCallerDataWithPreparedStatement(PreparedStatement stmt, StackTraceElement[] callerDataArray)
       throws SQLException {
-    CallerData callerData = callerDataArray[0];
+    StackTraceElement callerData = callerDataArray[0];
     if (callerData != null) {
       stmt.setString(7, callerData.getFileName());
       stmt.setString(8, callerData.getClassName());

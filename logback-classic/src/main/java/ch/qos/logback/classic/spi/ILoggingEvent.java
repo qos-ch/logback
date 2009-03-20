@@ -31,14 +31,14 @@ public interface ILoggingEvent {
   public IThrowableProxy getThrowableProxy();
 
   /**
-   * Return {@link CallerData} associated with this event. Note that calling
+   * Return caller data associated with this event. Note that calling
    * this event may trigger the computation of caller data.
    * 
-   * @return the CallerData associated with this event.
+   * @return the caller data associated with this event.
    * 
    * @see #hasCallerData()
    */
-  public CallerData[] getCallerData();
+  public StackTraceElement[] getCallerData();
 
   /**
    * If this event has caller data, then true is returned. Otherwise the

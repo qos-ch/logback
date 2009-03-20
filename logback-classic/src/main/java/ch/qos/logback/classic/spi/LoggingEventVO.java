@@ -41,7 +41,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
   private transient Object[] argumentArray;
 
   private ThrowableProxyVO throwableProxy;
-  private CallerData[] callerDataArray;
+  private StackTraceElement[] callerDataArray;
   private Marker marker;
   private Map<String, String> mdcPropertyMap;
   private long timeStamp;
@@ -103,7 +103,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     return throwableProxy;
   }
 
-  public CallerData[] getCallerData() {
+  public StackTraceElement[] getCallerData() {
     return callerDataArray;
   }
 

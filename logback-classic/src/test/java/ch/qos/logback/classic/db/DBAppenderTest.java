@@ -15,7 +15,6 @@ import org.junit.Test;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
@@ -77,7 +76,7 @@ public class DBAppenderTest  {
       assertEquals(event.getLevel().toString(), rs.getString(4));
       assertEquals(event.getThreadName(), rs.getString(5));
       assertEquals(DBHelper.computeReferenceMask(event), rs.getShort(6));
-      CallerData callerData = event.getCallerData()[0];
+      StackTraceElement callerData = event.getCallerData()[0];
       assertEquals(callerData.getFileName(), rs.getString(7));
       assertEquals(callerData.getClassName(), rs.getString(8));
       assertEquals(callerData.getMethodName(), rs.getString(9));

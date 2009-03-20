@@ -75,7 +75,7 @@ public class LoggingEvent implements ILoggingEvent {
 
   private ThrowableProxy throwableProxy;
 
-  private CallerData[] callerDataArray;
+  private StackTraceElement[] callerDataArray;
 
   private Marker marker;
 
@@ -241,7 +241,7 @@ public class LoggingEvent implements ILoggingEvent {
    * <p> Note that after serialization it is impossible to correctly extract
    * caller information. </p>
    */
-  public CallerData[] getCallerData() {
+  public StackTraceElement[] getCallerData() {
     if (callerDataArray == null) {
       callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass, loggerContext.getMaxCallerDataDepth());
     }
@@ -252,7 +252,7 @@ public class LoggingEvent implements ILoggingEvent {
     return (callerDataArray != null);
   }
 
-  public void setCallerData(CallerData[] callerDataArray) {
+  public void setCallerData(StackTraceElement[] callerDataArray) {
     this.callerDataArray = callerDataArray;
   }
 

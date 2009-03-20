@@ -14,7 +14,6 @@ import java.util.Random;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
@@ -184,15 +183,15 @@ public class CorpusModel {
     }
   }
 
-  public CallerData[] getRandomCallerData(int depth, String loggerName) {
-    CallerData[] cda = new CallerData[depth];
-    CallerData cd = new CallerData(extractLastPart(loggerName), loggerName,
-        getRandomJavaIdentifier(), 0);
+  public StackTraceElement[] getRandomCallerData(int depth, String loggerName) {
+    StackTraceElement[] cda = new StackTraceElement[depth];
+    StackTraceElement cd = new StackTraceElement(loggerName,
+        getRandomJavaIdentifier(), extractLastPart(loggerName), 0);
     cda[0] = cd;
     for (int i = 1; i < depth; i++) {
       String ln = getRandomLoggerNameFromPool(loggerNamePool);
-      cda[i] = new CallerData(extractLastPart(ln), ln,
-          getRandomJavaIdentifier(), i * 10);
+      cda[i] = new StackTraceElement(ln, getRandomJavaIdentifier(),
+          extractLastPart(ln), i * 10);
     }
     return cda;
   }

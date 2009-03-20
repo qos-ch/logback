@@ -110,7 +110,7 @@ public class CallerDataConverter extends ClassicConverter {
       }
     }
 
-    CallerData[] cda = le.getCallerData();
+    StackTraceElement[] cda = le.getCallerData();
     if (cda != null && cda.length > 0) {
       int limit = depth < cda.length ? depth : cda.length;
 

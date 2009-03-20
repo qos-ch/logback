@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
@@ -137,9 +136,9 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     }
 
     if (locationInfo) {
-      CallerData[] callerDataArray = event.getCallerData();
+      StackTraceElement[] callerDataArray = event.getCallerData();
       if (callerDataArray != null && callerDataArray.length > 0) {
-        CallerData immediateCallerData = callerDataArray[0];
+        StackTraceElement immediateCallerData = callerDataArray[0];
         buf.append("  <log4j:locationInfo class=\"");
         buf.append(immediateCallerData.getClassName());
         buf.append("\"\r\n");
