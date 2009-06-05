@@ -2,6 +2,12 @@ package ch.qos.logback.core.issue;
 
 import java.util.concurrent.locks.*;
 
+/**
+ * Example code illustrating locking policies in the JDK.
+ * See http://jira.qos.ch/browse/LBCORE-97 for a discussion.
+ * 
+ * @author Joern Huxhorn
+ */
 public class LBCORE97 {
 
   static int THREAD_COUNT = 10;

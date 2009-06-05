@@ -1,5 +1,12 @@
 package ch.qos.logback.core.issue;
 
+/**
+ * Short sample code illustrating locking policies in the JDK.
+ * See http://jira.qos.ch/browse/LBCORE-97 for a discussion.
+ * 
+ * @author Joern Huxhorn
+ * @author Ceki Gulcu
+ */
 public class LockingInJava implements Runnable {
 
   static int THREAD_COUNT = 5;
