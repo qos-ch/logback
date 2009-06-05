@@ -1,8 +1,8 @@
 package ch.qos.logback.core.issue;
 
 /**
- * Short sample code illustrating locking policies in the JDK.
- * See http://jira.qos.ch/browse/LBCORE-97 for a discussion.
+ * Short sample code illustrating locking policies in the JDK. See
+ * http://jira.qos.ch/browse/LBCORE-97 for a discussion.
  * 
  * @author Joern Huxhorn
  * @author Ceki Gulcu
@@ -22,7 +22,7 @@ public class LockingInJava implements Runnable {
     printResults();
   }
 
-  public static void printEnvironmentInfo()  {
+  public static void printEnvironmentInfo() {
     System.out.println("java.runtime.version = "
         + System.getProperty("java.runtime.version"));
     System.out.println("java.vendor          = "
@@ -40,12 +40,16 @@ public class LockingInJava implements Runnable {
       RUNNABLE_ARRAY[i] = new LockingInJava();
       THREAD_ARRAY[i] = new Thread(RUNNABLE_ARRAY[i]);
     }
-    for(Thread t: THREAD_ARRAY) {
+    for (Thread t : THREAD_ARRAY) {
       t.start();
     }
     // let the threads run for a while
     Thread.sleep(10000);
-    for(Thread t: THREAD_ARRAY) {
+    for (int i = THREAD_COUNT - 1; i <= 0; i--) {
+      THREAD_ARRAY[i].interrupt();
+    }
+
+    for (Thread t : THREAD_ARRAY) {
       t.interrupt();
     }
     Thread.sleep(100); // wait a moment for termination, to lazy for join ;)
