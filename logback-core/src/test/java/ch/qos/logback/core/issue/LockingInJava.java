@@ -45,12 +45,9 @@ public class LockingInJava implements Runnable {
     }
     // let the threads run for a while
     Thread.sleep(10000);
+    
     for (int i = THREAD_COUNT - 1; i <= 0; i--) {
       THREAD_ARRAY[i].interrupt();
-    }
-
-    for (Thread t : THREAD_ARRAY) {
-      t.interrupt();
     }
     Thread.sleep(100); // wait a moment for termination, to lazy for join ;)
   }
