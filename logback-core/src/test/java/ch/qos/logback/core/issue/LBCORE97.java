@@ -1,6 +1,7 @@
 package ch.qos.logback.core.issue;
 
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Example code illustrating locking policies in the JDK.
@@ -13,6 +14,7 @@ public class LBCORE97 {
   static int THREAD_COUNT = 10;
   
   public static void main(String args[]) throws InterruptedException {
+    
     System.out.println("Environment:");
     System.out.println("java.runtime.name    = "
         + System.getProperty("java.runtime.name"));
