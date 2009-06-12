@@ -1,0 +1,79 @@
+
+
+logback-core/src/main/java/ch/qos/logback/core/AppenderBase.java:  
+  public synchronized void doAppend(E eventObject)
+
+logback-core/src/main/java/ch/qos/logback/core/BasicStatusManager.java:  
+  locks: 
+     Object statusListLock
+     Object statusListenerListLock     
+  exposition: to derived classes
+
+logback-core/src/main/java/ch/qos/logback/core/status/StatusBase.java:
+  locks: this
+  lock exposition: this
+
+logback-classic/src/main/java/ch/qos/logback/classic/selector/ContextJNDISelector.java:        
+  locks: synchronizedContextMap
+  lock exposition: none
+
+
+logback-classic/src/main/java/ch/qos/logback/classic/Logger.java  
+  locks: synchronizedContextMap
+  lock exposition: none
+
+logback-classic/src/main/java/ch/qos/logback/classic/LoggerContext.java
+  locks: logger, 
+         loggerCache should be syncronzied but is not
+  lock exposition:
+
+logback-classic/src/main/java/ch/qos/logback/classic/Logger.java:   
+   * synchronized on 'this' (Logger) protecting against simultaneous  
+   * only within addAppender which is synchronized <p> 3) all the other methods
+  public synchronized void setLevel(Level newLevel) {
+  private synchronized void handleParentLevelChange(int newParentLevelInt) {
+  // this method MUST be synchronized. See comments on 'aai' field for further
+  public synchronized void addAppender(Appender<LoggingEvent> newAppender) {
+
+
+logback-core/src/main/java/ch/qos/logback/core/joran/GenericConfigurator.java:    
+  locks: context
+  lock exposition: none
+
+
+
+
+   * only within addAppender which is synchronized <p> 3) all the other methods
+  public synchronized void setLevel(Level newLevel) {
+  private synchronized void handleParentLevelChange(int newParentLevelInt) {
+  // this method MUST be synchronized. See comments on 'aai' field for further
+  public synchronized void addAppender(Appender<LoggingEvent> newAppender) {
+
+
+
+
+logback-core/src/main/java/ch/qos/logback/core/FileAppender.java:  public synchronized void openFile(String file_name) throws IOException {
+
+logback-core/src/main/java/ch/qos/logback/core/net/SMTPAppenderBase.java:  synchronized public void stop() {
+logback-core/src/main/java/ch/qos/logback/core/net/SocketAppenderBase.java:          synchronized (this) {
+
+logback-core/src/main/java/ch/qos/logback/core/WriterAppender.java:  public synchronized void stop() {
+logback-core/src/main/java/ch/qos/logback/core/WriterAppender.java:  public synchronized void setWriter(Writer writer) {
+
+logback-classic/src/main/java/ch/qos/logback/classic/net/JMSQueueAppender.java:  public synchronized void stop() {
+logback-classic/src/main/java/ch/qos/logback/classic/net/JMSQueueAppender.java:    // The synchronized modifier avoids concurrent append and close operations
+logback-classic/src/main/java/ch/qos/logback/classic/net/JMSTopicAppender.java:  public synchronized void stop() {
+logback-classic/src/main/java/ch/qos/logback/classic/net/JMSTopicAppender.java:    // The synchronized modifier avoids concurrent append and close operations
+
+
+logback-core/src/main/java/ch/qos/logback/core/status/StatusBase.java:  public synchronized void add(Status child) {
+logback-core/src/main/java/ch/qos/logback/core/status/StatusBase.java:  public synchronized boolean hasChildren() {
+logback-core/src/main/java/ch/qos/logback/core/status/StatusBase.java:  public synchronized Iterator<Status> iterator() {
+logback-core/src/main/java/ch/qos/logback/core/status/StatusBase.java:  public synchronized boolean remove(Status statusToRemove) {
+
+
+logback-classic/src/main/java/ch/qos/logback/classic/net/SimpleSocketServer.java:        synchronized (socketNodeList) {
+logback-classic/src/main/java/ch/qos/logback/classic/net/SimpleSocketServer.java:    synchronized(this) {
+logback-classic/src/main/java/ch/qos/logback/classic/net/SimpleSocketServer.java:    synchronized (socketNodeList) {
+logback-classic/src/main/java/ch/qos/logback/classic/net/SimpleSocketServer.java:    synchronized (socketNodeList) {
+logback-classic/src/main/java/ch/qos/logback/classic/pattern/DateConverter.java:      // the AppenderBase.doAppend is synchronized, we are should be

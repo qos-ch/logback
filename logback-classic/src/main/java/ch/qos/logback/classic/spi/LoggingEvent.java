@@ -25,10 +25,10 @@ import ch.qos.logback.classic.LoggerContext;
 /**
  * The internal representation of logging events. When an affirmative decision
  * is made to log then a <code>LoggingEvent</code> instance is created. This
- * instance is passed around to the different Logback components.
+ * instance is passed around to the different logback-classic components.
  * 
- * <p> Writers of Logback components such as appenders should be aware of that
- * some of the LoggingEvent fields are initialized lazily. Therefore, an
+ * <p> Writers of logback-classic components such as appenders should be aware
+ * of that some of the LoggingEvent fields are initialized lazily. Therefore, an
  * appender wishing to output data to be later correctly read by a receiver,
  * must initialize "lazy" fields prior to writing them out. See the
  * {@link #prepareForDeferredProcessing()} method for the exact list. </p>
@@ -54,7 +54,7 @@ public class LoggingEvent implements ILoggingEvent {
   private String loggerName;
   private LoggerContext loggerContext;
   private LoggerContextVO loggerContextVO;
-  
+
   /**
    * Level of logging event.
    * 
@@ -243,7 +243,8 @@ public class LoggingEvent implements ILoggingEvent {
    */
   public StackTraceElement[] getCallerData() {
     if (callerDataArray == null) {
-      callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass, loggerContext.getMaxCallerDataDepth());
+      callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass,
+          loggerContext.getMaxCallerDataDepth());
     }
     return callerDataArray;
   }

@@ -66,8 +66,8 @@
 		<h2>Logback-classic</h2>
 
 		<p>Logback-classic is wired to processes only events of type
-			<a href="../xref/ch/qos/logback/classic/spi/LoggingEvent.html">
-			<code>ch.qos.logback.classic.spi.LoggingEvent</code></a>. This
+			<a href="../xref/ch/qos/logback/classic/spi/ILoggingEvent.html">
+			<code>ch.qos.logback.classic.spi.ILoggingEvent</code></a>. This
 			fact will apparent for the remaining of this section.
 			</p>
 
@@ -92,59 +92,51 @@
 
 		<div class="source"><pre>package chapter5;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
+public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 
-  public String doLayout(LoggingEvent event) {
+  public String doLayout(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
-    sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
+    sbuf.append(event.getTimeStamp() - event.getLoggingContextVO.getBirthTime());
     sbuf.append(" ");
     sbuf.append(event.getLevel());
     sbuf.append(" [");
     sbuf.append(event.getThreadName());
     sbuf.append("] ");
-    sbuf.append(event.getLoggerRemoteView().getName());
+    sbuf.append(event.getLoggerName();
     sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
-    sbuf.append(LINE_SEP);
+    sbuf.append(CoreConstants.LINE_SEP);
     return sbuf.toString();
   }
 }</pre></div>
 
-		<p>
-			Note that <code>MySampleLayout</code> extends <a
-			href="../xref/ch/qos/logback/core/LayoutBase.html">
-			<code>LayoutBase</code></a>.  This class manages state shared by
-			all <code>Layout</code> classes, such as whether the layout is
-			started or stopped, header, footer and content type data. It
-			allows the developer to concentrate on the formatting she
-			expects from her <code>Layout</code>. Note that the
-			<code>LayoutBase</code> class is generic. In its class
-			declaration, <code>MySampleLayout</code> extends a typed
-			<code>LayoutBase</code>,
-			<code>LayoutBase&lt;LoggingEvent&gt;</code>, instead of generic
-			one.
+		<p>Note that <code>MySampleLayout</code> extends <a
+		href="../xref/ch/qos/logback/core/LayoutBase.html">
+		<code>LayoutBase</code></a>.  This class manages state shared by
+		all <code>Layout</code> classes, such as whether the layout is
+		started or stopped, header, footer and content type data. It
+		allows the developer to concentrate on the formatting expected
+		from his/her <code>Layout</code>. Note that the
+		<code>LayoutBase</code> class is generic. In its class
+		declaration, <code>MySampleLayout</code> extends
+		<code>LayoutBase&lt;ILoggingEvent&gt;</code>.
 		</p>
 		
-		<p>The <code>doLayout(LoggingEvent event)</code> method, i.e. the
+		<p>The <code>doLayout(ILoggingEvent event)</code> method, i.e. the
 		only method in <code>MySampleLayout</code>, begins by
 		instantiating a <code>StringBuffer</code>. It proceeds by adding
 		various fields of the event parameter. The Texan from Texas was
 		careful to print the formatted form of the message. This is
-		important when there are one or more parameters passed along with
+		significant in case one or more parameters were passed along with
 		the logging request.
 		</p>
 		
-    <p>In the above listing of the <code>Layout</code> class, the
-    <code>LINE_SEP</code> field is inherited from the
-    <code>Layout</code> interface. It refers to the value returned by
-    <code>System.getProperty("line.separator")</code> method, that is
-    system dependent line separator character(s). After adding these
-    system dependent character(s), the <code>doLayout()</code> method
-    converts <code>sbuf</code> to <code>String</code> and returns the
-    resulting value.
+    <p>After adding these various characters to the string buffer, the
+    <code>doLayout()</code> method converts the buffer into
+    <code>String</code> and returns the resulting value.
 		</p>
 
 		<p>In the above example, the <code>doLayout</code> method ignores
@@ -211,10 +203,10 @@ public class MySampleLayout extends LayoutBase&lt;LoggingEvent> {
 
     <p class="source">package chapter5;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
+public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
   String prefix = null;
   boolean printThreadName = true;
@@ -227,12 +219,12 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     this.printThreadName = printThreadName;
   }</b>
 
-  public String doLayout(LoggingEvent event) {
+  public String doLayout(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer(128);
     <b>if (prefix != null) {
       sbuf.append(prefix + ": ");
     }</b>
-    sbuf.append(event.getTimeStamp() - LoggingEvent.getStartTime());
+    sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
     sbuf.append(" ");
     sbuf.append(event.getLevel());
     <b>if (printThreadName) {
@@ -242,7 +234,7 @@ public class MySampleLayout2 extends LayoutBase&lt;LoggingEvent> {
     } else {
       sbuf.append(" ");
     }</b>
-    sbuf.append(event.getLoggerRemoteView().getName());
+    sbuf.append(event.getLoggerName());
     sbuf.append(" - ");
     sbuf.append(event.getFormattedMessage());
     sbuf.append(LINE_SEP);
@@ -327,7 +319,7 @@ public class PatternSample {
     <b>layout.setPattern("%-5level [%thread]: %message%n");</b>
     <b>layout.start();</b>
 
-    ConsoleAppender&lt;LoggingEvent> appender = new ConsoleAppender&lt;LoggingEvent>();
+    ConsoleAppender&lt;ILoggingEvent> appender = new ConsoleAppender&lt;ILoggingEvent>();
     appender.setContext(rootLogger.getLoggerContext());
     appender.setLayout(layout); appender.start();
 
@@ -1379,19 +1371,20 @@ public class ExceptionEvaluatorExample {
 		<p>Building a custom conversion specifier consists of two steps.
     </p>
 		
-		<p>First, you must sub-class the <code>Converter</code> class. <a
-		href="../xref/ch/qos/logback/core/pattern/Converter.html">
-		<code>Converter</code></a> objects are responsible for extracting
-		information out of <code>LoggingEvent</code> objects and returning
-		it as String. For example, the 
+		<p>First, you must extend the <code>ClassicConverter</code>
+		class. <a
+		href="../xref/ch/qos/logback/classic/pattern/ClassicConverter.html">
+		<code>ClassicConverter</code></a> objects are responsible for
+		extracting information out of <code>ILoggingEvent</code> instances
+		and producing a String. For example, the
 		<a href="../xref/ch/qos/logback/classic/pattern/LoggerConverter.html">
 		<code>LoggerConverter</code></a>, the converter underlying the
-		%logger conversion word, extracts the name of the logger from the
-		<code>LoggingEvent</code> and returns it as a String. It might
+		%logger conversion word, extracts the name of the logger from 
+		<code>ILoggingEvent</code> and returns it as a String. It might
 		abbreviate the logger name in the process.</p>
 		
-		<p>Let us say that our customized <code>Converter</code> colors
-		the level of the logging event, according to ANSI terminal
+		<p>Let us say that our customized <code>ClassicConverter</code>
+		colors the level of the logging event, according to ANSI terminal
 		conventions. Here is a possible implementation:</p>
 		
 <em> Example 5.4: Sample Converter Example 
@@ -1401,7 +1394,7 @@ public class ExceptionEvaluatorExample {
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ClassicConverter;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class MySampleConverter extends ClassicConverter {
 
@@ -1411,7 +1404,7 @@ public class MySampleConverter extends ClassicConverter {
   private static final String WARN_COLOR = "\u001b[0;33m";
 
   @Override
-  <b>public String convert(LoggingEvent event) {
+  <b>public String convert(ILoggingEvent event) {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append(getColor(event.getLevel()));
     sbuf.append(event.getLevel());

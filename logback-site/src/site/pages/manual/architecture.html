@@ -762,14 +762,14 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
 
   <h4>3. Create a <code>LoggingEvent</code> object</h4>
 
-  <p>If the request passed the previous filters, logback will create a
-  <code>ch.qos.logback.classic.LoggingEvent</code> object containing
-  all the relevant parameters of the request, such as the logger of
-  the request, the request level, the message itself, the exception
-  that might have been passed along with the request, the current
-  time, the current thread, various data about the class that issued
-  the logging request and the <code>MDC</code>. Note that some of
-  these fields are initialized lazily, that is only when they are
+  <p>If the request survivedy the previous filters, logback will
+  create a <code>ch.qos.logback.classic.LoggingEvent</code> object
+  containing all the relevant parameters of the request, such as the
+  logger of the request, the request level, the message itself, the
+  exception that might have been passed along with the request, the
+  current time, the current thread, various data about the class that
+  issued the logging request and the <code>MDC</code>. Note that some
+  of these fields are initialized lazily, that is only when they are
   actually needed. The <code>MDC</code> is used to decorate the
   logging request with additional contextual information. MDC is
   discussed in a <a href="mdc.html">subsequent chapter</a>.</p>
@@ -777,10 +777,10 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
   <h4>4. Invoking appenders</h4>
 
   <p>After the creation of a <code>LoggingEvent</code> object, logback
-  invokes the <code>doAppend()</code> methods of all the applicable
-  appenders, that is, the appenders inherited from the logger context.
+  will invoke the <code>doAppend()</code> methods of all the
+  applicable appenders, that is, the appenders inherited from the
+  logger context.
   </p>
-
 
   <p>All appenders shipped with the logback distribution extend the
   <code>AppenderBase</code> abstract class that implements the

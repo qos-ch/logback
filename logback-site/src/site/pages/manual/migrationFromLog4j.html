@@ -42,15 +42,16 @@
     and layouts exist in both frameworks and serve identical
     purposes. Similarly, the most important internal data-structure,
     namely <code>LoggingEvent</code> exists in both frameworks with
-    rather similar but non-identical implementations. Most of the
-    changes requried in migrating log4j components to logback-classic
-    are related to differences in implementation of the
-    <code>LoggingEvent</code> class. Rest assured, these differences
-    are rather limited. If in spite of your best efforts you are
-    unable to migrate any given log4j component to logback-classic, do
-    post a question on the <a href="../mailinglist.html">logback-dev
-    mailing list</a>. A logback developper should be able to provide
-    guidance.
+    rather similar but non-identical implementations. Most notably, In
+    logback-classic <code>LoggingEvent</code> implements the
+    <code>ILoggingEvent</code> interface. Most of the changes requried
+    in migrating log4j components to logback-classic are related to
+    differences in implementation of the <code>LoggingEvent</code>
+    class. Rest assured, these differences are rather limited. If in
+    spite of your best efforts you are unable to migrate any given
+    log4j component to logback-classic, do post a question on the <a
+    href="../mailinglist.html">logback-dev mailing list</a>. A logback
+    developper should be able to provide guidance.
     </p>
 
     
@@ -90,12 +91,12 @@ public class TrivialLog4jLayout extends Layout {
     
     <p class="source">package chapter11;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-public class TrivialLogbackLayout extends <b>LayoutBase&lt;LoggingEvent></b> {
+public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
 
-  public String <b>doLayout</b>(LoggingEvent loggingEvent) {
+  public String <b>doLayout</b>(ILoggingEvent loggingEvent) {
     return loggingEvent.getMessage();
   }
 }    </p>
@@ -105,7 +106,7 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;LoggingEvent></b> {
    <code>format</code>() in log4j. The <code>ignoresThrowable</code>()
    method is not needed and has no equivalent in logback-classic. Note
    that a logback-classic layout must extend the
-   <code>LayoutBase&lt;LoggingEvent></code> class.
+   <code>LayoutBase&lt;ILoggingEvent></code> class.
    </p>
 
    <p>The <code>activateOptions</code>() method merits further
@@ -161,10 +162,10 @@ public class TrivialLog4jAppender extends AppenderSkeleton {
 
    <p class="source">package chapter11;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
-public class TrivialLogbackAppender extends AppenderBase&lt;LoggingEvent> {
+public class TrivialLogbackAppender extends AppenderBase&lt;ILoggingEvent> {
 
   @Override
   public void start() {
@@ -176,7 +177,7 @@ public class TrivialLogbackAppender extends AppenderBase&lt;LoggingEvent> {
   }
 
   @Override
-  protected void append(LoggingEvent loggingevent) {
+  protected void append(ILoggingEvent loggingevent) {
     // note that AppenderBase.doAppend will invoke this method only if
     // this appender was successfully started.
     

@@ -69,7 +69,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<em>E</em> as its only parameter. The actual type of <em>E</em>
 	would vary depending on the logback module. Within the
 	logback-classic module <em>E</em> would be of type <a
-	href="../apidocs/ch/qos/logback/classic/spi/LoggingEvent.html">LoggingEvent</a>
+	href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>
 	and within the logback-access module it would be of type <a
 	href="../apidocs/ch/qos/logback/access/spi/AccessEvent.html">AccessEvent</a>.
 	The <code>doAppend()</code> method is perhaps the most important in
@@ -303,6 +303,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.WriterAppender;
 import ch.qos.logback.core.layout.EchoLayout;
 
@@ -311,9 +312,9 @@ public class ExitWoes1 {
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     lc.reset(); // we want to override the default-config.
-    WriterAppender&lt;LoggingEvent> writerAppender = new WriterAppender&lt;LoggingEvent>();
+    WriterAppender&lt;ILoggingEvent> writerAppender = new WriterAppender&lt;ILoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout&lt;&lt;LoggingEvent>());
+    writerAppender.setLayout(new EchoLayout&lt;&lt;ILoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
@@ -1254,7 +1255,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     
 		<p>While logging events are generic in logback-core, within
 		logback-classic they are always instances of
-		<code>LoggingEvent</code>. 
+		<code>ILoggingEvent</code>. Logback-classic is nothing more than a
+		specialized processing pipleline handling instances of
+		<code>ILoggingEvent</code>.
 
     </p>
 
@@ -1266,8 +1269,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		resources.  In contrast, the <a
 		href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
 		<code>SocketAppender</code></a> is designed to log to a remote
-		entity by transmitting serialized <code>LoggingEvent</code>
-		objects over the wire.  Remote logging is non-intrusive as far as
+		entity by transmitting serialized <code>ILoggingEvent</code>
+		instances over the wire.  The actual type of the serialized event
+		is <a
+		href="../xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>
+		which implements the <code>ILoggingEvent</code>
+		interface. Nevertheless, remote logging is non-intrusive as far as
 		the logging event is concerned.  On the receiving end after
 		de-serialization, the event can be logged as if it were generated
 		locally. Multiple <code>SocketAppender</code> instances running of
@@ -1732,37 +1739,41 @@ Context ctx = new InitialContext(env);</pre></div>
 		
 		<h4>Comments on JMS appenders</h4>
 		
-		<p>
-			Transmitting a packet of information using JMS is certain to be substantially 
-			slower then sending the same packet using raw TCP sockets. JMS vendors bragging 
-			about the performance of their messaging platform tend to omit this simple fact. 
-			Guaranteed store and forward messaging comes at a hefty price. 
-			In return for increased cost, JMS messaging provides decoupling of 
-			sender and receiver. As long as the JMS provider is reachable, messages 
-			will eventually arrive at destination. 
-			However, what if the JMS server is down or simply unreachable?
+		<p>Transmitting a packet of information using JMS is certain to be
+		substantially slower then sending the same packet using raw TCP
+		sockets. JMS vendors bragging about the performance of their
+		messaging platform tend to omit this simple fact.  Guaranteed
+		store and forward messaging comes at a hefty price.  In return for
+		increased cost, JMS messaging provides decoupling of sender and
+		receiver. As long as the JMS provider is reachable, messages will
+		eventually arrive at destination.  However, what if the JMS server
+		is down or simply unreachable?
 		</p>
 		
-		<p>
-			According to the JMS specification, producers can mark a message as either 
-			persistent or non-persistent. The persistent delivery mode instructs the JMS provider 
-			to log the message to stable storage as part of the client's send operation, allowing 
-			the message to survive provider crashes. JMS appenders do not set the delivery 
-			mode of messages it produces because according to the JMS specification, 
-			the delivery mode is considered as an administered property.
+		<p>According to the JMS specification, producers can mark a
+		message as either persistent or non-persistent. The persistent
+		delivery mode instructs the JMS provider to log the message to
+		stable storage as part of the client's send operation, allowing
+		the message to survive provider crashes. JMS appenders do not set
+		the delivery mode of messages it produces because according to the
+		JMS specification, the delivery mode is considered as an
+		administered property.
 		</p>
 		
-		<p>
-			Once a message reaches the JMS provider, the provider assumes the responsibility 
-			of delivering it to its destination, relieving the client from this chore. 
-			What if the JMS server is unreachable? The JMS API provides an 
-			<code>ExceptionListener</code> interface to deal with this situation. 
-			When the client runtime of the JMS provider detects a lost connection to the JMS server, 
-			it calls the <code>onException()</code> method of the registered 
-			<code>ExceptionListener</code>. Once notified of the problem, client code can attempt 
-			to reestablish the connection. According to the section 4.3.8 of the JMS specification, 
-			the provider should attempt to resolve connection problems prior to notifying the client. 
-			The JMS appenders do not implement the <code>ExceptionListener</code> interface.
+		<p>Once a message reaches the JMS provider, the provider assumes
+		the responsibility of delivering it to its destination, relieving
+		the client from this chore.  What if the JMS server is
+		unreachable? The JMS API provides an
+		<code>ExceptionListener</code> interface to deal with this
+		situation.  When the client runtime of the JMS provider detects a
+		lost connection to the JMS server, it calls the
+		<code>onException()</code> method of the registered
+		<code>ExceptionListener</code>. Once notified of the problem,
+		client code can attempt to reestablish the connection. According
+		to the section 4.3.8 of the JMS specification, the provider should
+		attempt to resolve connection problems prior to notifying the
+		client.  The JMS appenders do not implement the
+		<code>ExceptionListener</code> interface.
 		</p>
 		
 		<a name="JMSTopicAppender"></a>
@@ -1778,14 +1789,14 @@ Context ctx = new InitialContext(env);</pre></div>
 			Its most important method, <code>doAppend()</code> is listed below:
 		</p>
 		
-<div class="source"><pre>public void append(LoggingEvent event) {
+<div class="source"><pre>public void append(ILoggingEvent event) {
   if (!isStarted()) {
     return;
   }
 
   try {
     ObjectMessage msg = topicSession.createObjectMessage();
-
+    Serializable so = pst.transform(event);
     msg.setObject(event);
     topicPublisher.publish(msg);
     successiveFailureCount = 0;
@@ -1799,19 +1810,23 @@ Context ctx = new InitialContext(env);</pre></div>
 }</pre></div>	
 
 		<p>
-			The <code>isStarted()</code> method allows the appender to check whether 
-			prerequisite conditions for its proper functioning, in particular the 
-			availability of a valid and open <code>TopicConnection</code> and a 
-			<code>TopicSession</code>, are fulfilled. If that is not the case, 
-			the append method returns without performing any work. 
-			If the prerequisite conditions are fulfilled, then the method 
-			proceeds to publish the logging event. This is done by obtaining a 
-			<code>javax.jms.ObjectMessage</code> from the <code>TopicSession</code> 
-			and then setting its payload to the logging event received as 
-			the input parameter. Once the payload of the message is set, it is 
-			published. The fact that <code>LoggingEvent</code> is serializable 
-			has its importance, as only Serializable objects can be 
-			transported within an <code>ObjectMessage</code>. 
+			The <code>isStarted()</code> method allows the appender to check
+			whether prerequisite conditions for its proper functioning, in
+			particular the availability of a valid and open
+			<code>TopicConnection</code> and a <code>TopicSession</code>,
+			are fulfilled. If that is not the case, the append method
+			returns without performing any work.  If the prerequisite
+			conditions are fulfilled, then the method proceeds to publish
+			the logging event. This is done by obtaining a
+			<code>javax.jms.ObjectMessage</code> from the
+			<code>TopicSession</code> and then setting its payload to the
+			logging event received as the input parameter. Once the payload
+			of the message is set, it is published. Note that the
+			<code>ILoggingEvent</code> is transfomed to a serializable
+			object by a <a
+			href="../xref/ch/qos/logback/core/spi/PreSerializationTransformer.html">PreSerializationTransformer</a>. Only
+			Serializable objects can be transported within an
+			<code>ObjectMessage</code>.
 		</p>
 		
 		<p>
@@ -1828,12 +1843,12 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 
 <div class="source"><pre>public void onMessage(javax.jms.Message message) {
-  LoggingEvent event;
+  ILoggingEvent event;
   try {
     if (message instanceof ObjectMessage) {
       ObjectMessage objectMessage = (ObjectMessage) message;
-      event = (LoggingEvent) objectMessage.getObject();
-      Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerRemoteView().getName());
+      event = (ILoggingEvent) objectMessage.getObject();
+      Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerName());
       log.callAppenders(event);
     } else {
       logger.warn("Received message is of type " + message.getJMSType()
@@ -3216,26 +3231,30 @@ logger.debug("Alice says hello"); </p>
 		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>
 
 
-    <p>You can easily write your appender by sub-classing <code>AppenderBase</code>. 
-    It handles support for filters, status among other functionality shared by most appenders. 
-    The derived class only needs to implement one method, namely 
+    <p>You can easily write your appender by sub-classing
+    <code>AppenderBase</code>.  It handles support for filters, status
+    among other functionality shared by most appenders.  The derived
+    class only needs to implement one method, namely
     <code>append(Object eventObject)</code>.
     </p>
 
-    <p>The <code>CountingConsoleAppender</code>, which we list next, appends a limited 
-    number of incoming events on the console. It shuts down after the limit is reached.
-    It uses a <code>Layout</code> to format the events and accepts a parameter, 
+    <p>The <code>CountingConsoleAppender</code>, which we list next,
+    appends a limited number of incoming events on the console. It
+    shuts down after the limit is reached.  It uses a
+    <code>Layout</code> to format the events and accepts a parameter,
     thus a few more methods are needed.
     </p>
     
-    <em>Example 4.<span class="autoExec"/>: <code>CountingConsoleAppender</code> (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>					    
+    <em>Example 4.<span class="autoExec"/>:
+    <code>CountingConsoleAppender</code>
+    (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>
     <p class="source">package chapter4;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 
 
-public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
+public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   static int DEFAULT_LIMIT = 16;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
@@ -3261,7 +3280,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;LoggingEvent> {
     super.start();
   }
 
-  public void append(LoggingEvent event) {
+  public void append(ILoggingEvent event) {
 
     if (counter >= limit) {
       return;
