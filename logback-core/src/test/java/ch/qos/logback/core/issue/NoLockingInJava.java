@@ -1,22 +1,21 @@
 package ch.qos.logback.core.issue;
 
 /**
- * Short sample code illustrating locking policies in the JDK. See
- * http://jira.qos.ch/browse/LBCORE-97 for a discussion.
+ * Measure throughput without any locking policy
  * 
  * @author Joern Huxhorn
  * @author Ceki Gulcu
  */
-public class LockingInJava implements Runnable {
+public class NoLockingInJava implements Runnable {
 
   static int THREAD_COUNT = 5;
   static Object LOCK = new Object();
-  static LockingInJava[] RUNNABLE_ARRAY = new LockingInJava[THREAD_COUNT];
+  static NoLockingInJava[] RUNNABLE_ARRAY = new NoLockingInJava[THREAD_COUNT];
   static Thread[] THREAD_ARRAY = new Thread[THREAD_COUNT];
 
   private int counter = 0;
   private boolean done = false;
-  
+
   public static void main(String args[]) throws InterruptedException {
     printEnvironmentInfo();
     execute();
@@ -38,7 +37,7 @@ public class LockingInJava implements Runnable {
 
   public static void execute() throws InterruptedException {
     for (int i = 0; i < THREAD_COUNT; i++) {
-      RUNNABLE_ARRAY[i] = new LockingInJava();
+      RUNNABLE_ARRAY[i] = new NoLockingInJava();
       THREAD_ARRAY[i] = new Thread(RUNNABLE_ARRAY[i]);
     }
     for (Thread t : THREAD_ARRAY) {
@@ -46,11 +45,11 @@ public class LockingInJava implements Runnable {
     }
     // let the threads run for a while
     Thread.sleep(10000);
-    
+
     for (int i = THREAD_COUNT - 1; i <= 0; i--) {
       RUNNABLE_ARRAY[i].done = true;
     }
- 
+
   }
 
   public static void printResults() {
@@ -61,15 +60,9 @@ public class LockingInJava implements Runnable {
 
   public void run() {
     for (;;) {
-      synchronized (LOCK) {
-        counter++;
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException ex) {
-        }
-        if(done) {
-          return;
-        }
+      counter++;
+      if (done) {
+        return;
       }
     }
   }
