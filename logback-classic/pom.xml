@@ -51,7 +51,7 @@
       <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -134,6 +134,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -151,10 +158,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>          
-          <archive>  
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive> 
+        <configuration>
+          <archive>
+            <manifestFile>
+              ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+            </manifestFile>
+          </archive>
         </configuration>
         <executions>
           <execution>
@@ -191,21 +200,23 @@
           <execution>
             <id>bundle-manifest</id>
             <phase>process-classes</phase>
-            <goals>    
+            <goals>
               <goal>manifest</goal>
-            </goals>   
+            </goals>
           </execution>
         </executions>
         <configuration>
           <instructions>
             <Export-Package>ch.qos.logback.classic.*</Export-Package>
             <Export-Package>org.slf4j.impl;version=1.5.6</Export-Package>
-            <Import-Package>sun.reflect;resolution:=optional,
-                            javax.jms;resolution:=optional, 
-                            *
+            <Import-Package>
+              sun.reflect;resolution:=optional, javax.jms;resolution:=optional,
+              *
             </Import-Package>
 
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>
+              J2SE-1.5
+            </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>
