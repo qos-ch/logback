@@ -20,7 +20,7 @@ public class ThreadedThroughputCalculator {
   }
 
   public void printEnvironmentInfo(String msg) {
-    System.out.println("=== "+ msg +" ===");
+    System.out.println("=== " + msg + " ===");
     System.out.println("java.runtime.version = "
         + System.getProperty("java.runtime.version"));
     System.out.println("java.vendor          = "
@@ -54,14 +54,20 @@ public class ThreadedThroughputCalculator {
       t.join();
     }
   }
-
   public void printThroughput(String msg) throws InterruptedException {
-    int sum = 0;
+    printThroughput(msg, false);
+  }
+  
+  public void printThroughput(String msg, boolean detailed) throws InterruptedException {
+    long sum = 0;
     for (RunnableForThrougputComputation r : runnableArray) {
+      if(detailed) {
+        System.out.println(r +" count="+r.getCounter());
+      }
       sum += r.getCounter();
     }
+    
     System.out.println(msg + "total of " + sum + " operations, or "
-        + (sum / overallDurationInMillis) + " operations per millisecond");
+        + ((sum) / overallDurationInMillis) + " operations per millisecond");
   }
-
 }

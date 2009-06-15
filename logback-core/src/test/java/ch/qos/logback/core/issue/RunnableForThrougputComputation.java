@@ -9,9 +9,9 @@ package ch.qos.logback.core.issue;
 abstract public class RunnableForThrougputComputation implements Runnable {
 
   protected boolean done = false;
-  protected int counter = 0;
+  protected long counter = 0;
   
-  public int getCounter() {
+  public long getCounter() {
     return counter;
   }
 

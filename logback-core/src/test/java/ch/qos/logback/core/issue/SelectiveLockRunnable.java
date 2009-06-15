@@ -12,22 +12,24 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SelectiveLockRunnable extends RunnableForThrougputComputation {
 
   enum LockingModel {
-    SYNC, FAIR, UNFAIR;
+    NOLOCK, SYNC, FAIR, UNFAIR;
   }
 
   static Object LOCK = new Object();
   static Lock FAIR_LOCK = new ReentrantLock(true);
   static Lock UNFAIR_LOCK = new ReentrantLock(false);
 
-
   LockingModel model;
-  
+
   SelectiveLockRunnable(LockingModel model) {
     this.model = model;
   }
 
   public void run() {
     switch (model) {
+    case NOLOCK:
+      nolockRun();
+      break;
     case SYNC:
       synchronizedRUn();
       break;
@@ -39,6 +41,7 @@ public class SelectiveLockRunnable extends RunnableForThrougputComputation {
       break;
     }
   }
+
   void fairLockRun() {
     for (;;) {
       FAIR_LOCK.lock();
@@ -61,6 +64,15 @@ public class SelectiveLockRunnable extends RunnableForThrougputComputation {
     }
   }
 
+  void nolockRun() {
+    for (;;) {
+      counter++;
+      if (done) {
+        return;
+      }
+    }
+  }
+
   void synchronizedRUn() {
     for (;;) {
       synchronized (LOCK) {
@@ -70,5 +82,10 @@ public class SelectiveLockRunnable extends RunnableForThrougputComputation {
         return;
       }
     }
+  }
+  
+  @Override
+  public String toString() {
+    return "SelectiveLockRunnable "+model;
   }
 }
