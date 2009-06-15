@@ -10,8 +10,8 @@ import ch.qos.logback.core.issue.SelectiveLockRunnable.LockingModel;
  */
 public class NoLockThroughput {
 
-  static int THREAD_COUNT = 10;
-  static long OVERALL_DURATION_IN_MILLIS = 5000;
+  static int THREAD_COUNT = 3;
+  static long OVERALL_DURATION_IN_MILLIS = 2000;
 
   public static void main(String args[]) throws InterruptedException {
 
