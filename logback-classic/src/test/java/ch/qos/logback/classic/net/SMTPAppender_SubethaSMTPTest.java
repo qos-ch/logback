@@ -93,6 +93,7 @@ public class SMTPAppender_SubethaSMTPTest {
 
   @After
   public void tearDown() throws Exception {
+    wiser.stop();
   }
 
   private static String getWholeMessage(Part msg) {
