@@ -9,7 +9,6 @@
  */
 package ch.qos.logback.core.util;
 
-
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
@@ -22,11 +21,12 @@ import ch.qos.logback.core.spi.PropertyContainer;
 public class OptionHelper {
 
   public static Object instantiateByClassName(String className,
-      Class superClass, Context context) throws IncompatibleClassException, DynamicClassLoadingException {
-    ClassLoader classLoader = context.getClass().getClassLoader();
+      Class superClass, Context context) throws IncompatibleClassException,
+      DynamicClassLoadingException {
+    ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
     return instantiateByClassName(className, superClass, classLoader);
   }
-  
+
   @SuppressWarnings("unchecked")
   public static Object instantiateByClassName(String className,
       Class superClass, ClassLoader classLoader)
@@ -74,57 +74,54 @@ public class OptionHelper {
   final static int DELIM_START_LEN = 2;
   final static int DELIM_STOP_LEN = 1;
   final static String _IS_UNDEFINED = "_IS_UNDEFINED";
-  
+
   /**
    * Perform variable substitution in string <code>val</code> from the values
    * of keys found in context property map, and if that fails, then in the
    * system properties.
    * 
-   * <p>
-   * The variable substitution delimeters are <b>${</b> and <b>}</b>.
+   * <p> The variable substitution delimeters are <b>${</b> and <b>}</b>.
    * 
-   * <p>
-   * For example, if the context property map contains a property "key1" set as
-   * "value1", then the call
+   * <p> For example, if the context property map contains a property "key1" set
+   * as "value1", then the call
    * 
    * <pre>
    * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, context);</pre>
+   * 
    * will set the variable <code>s</code> to "Value of key is value1.".
    * 
-   * <p>
-   * If no value could be found for the specified key in the context map, then 
-   * the system properties are searched, if that fails, then substitution defaults 
-   * to appending "_IS_UNDEFINED" to the key name.
+   * <p> If no value could be found for the specified key in the context map,
+   * then the system properties are searched, if that fails, then substitution
+   * defaults to appending "_IS_UNDEFINED" to the key name.
    * 
-   * <p>
-   * For example, if not the context not the system properties contains no value for the key
-   * "inexistentKey", then the call
+   * <p> For example, if not the context not the system properties contains no
+   * value for the key "inexistentKey", then the call
    * 
    * <pre>
    * String s = OptionConverter.subsVars(
    *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, context);</pre>
-   * will set <code>s</code> to "Value of inexistentKey is [inexistentKey_IS_UNDEFINED]".
    * 
-   * <p>
-   * Nevertheless, it is possible to specify a default substitution value using
-   * the ":-" operator. For example, the call
+   * will set <code>s</code> to "Value of inexistentKey is
+   * [inexistentKey_IS_UNDEFINED]".
+   * 
+   * <p> Nevertheless, it is possible to specify a default substitution value
+   * using the ":-" operator. For example, the call
    * 
    * <pre>
    * String s = OptionConverter.subsVars(&quot;Value of key is [${key2:-val2}]&quot;, context);</pre>
+   * 
    * will set <code>s</code> to "Value of key is [val2]" even if the "key2"
    * property is not set.
    * 
-   * <p>
-   * An {@link java.lang.IllegalArgumentException} is thrown if <code>val</code>
-   * contains a start delimeter "${" which is not balanced by a stop delimeter
-   * "}".
-   * </p>
-
+   * <p> An {@link java.lang.IllegalArgumentException} is thrown if
+   * <code>val</code> contains a start delimeter "${" which is not balanced by
+   * a stop delimeter "}". </p>
+   * 
    * 
    * @param val
-   *          The string on which variable substitution is performed.
+   *                The string on which variable substitution is performed.
    * @throws IllegalArgumentException
-   *           if <code>val</code> is malformed.
+   *                 if <code>val</code> is malformed.
    */
   public static String substVars(String val, PropertyContainer pc) {
 
@@ -191,7 +188,7 @@ public class OptionHelper {
             sbuf.append(recursiveReplacement);
           } else {
             // if we could not find a replacement, then signal the error
-            sbuf.append(key+"_IS_UNDEFINED");
+            sbuf.append(key + "_IS_UNDEFINED");
           }
 
           i = k + DELIM_STOP_LEN;
@@ -205,9 +202,9 @@ public class OptionHelper {
    * {@link SecurityException} is absorbed.
    * 
    * @param key
-   *          The key to search for.
+   *                The key to search for.
    * @param def
-   *          The default value to return.
+   *                The default value to return.
    * @return the string value of the system property, or the default value if
    *         there is no property with that key.
    */
@@ -224,8 +221,8 @@ public class OptionHelper {
    * {@link SecurityException} is absorbed.
    * 
    * @param key
-   *          The key to search for.
-
+   *                The key to search for.
+   * 
    * @return the string value of the system property.
    */
   public static String getSystemProperty(String key) {
@@ -235,6 +232,7 @@ public class OptionHelper {
       return null;
     }
   }
+
   /**
    * Very similar to {@link System#getProperties()} except that the
    * {@link SecurityException} is absorbed.
@@ -248,7 +246,7 @@ public class OptionHelper {
       return new Properties();
     }
   }
-  
+
   static public String[] extractDefaultReplacement(String key) {
     String[] result = new String[2];
     result[0] = key;
@@ -265,8 +263,7 @@ public class OptionHelper {
    * <code>value</code> is "false", then <code>true</code> is returned.
    * Otherwise, <code>default</code> is returned.
    * 
-   * <p>
-   * Case of value is unimportant.
+   * <p> Case of value is unimportant.
    */
   public static boolean toBoolean(String value, boolean dEfault) {
     if (value == null) {

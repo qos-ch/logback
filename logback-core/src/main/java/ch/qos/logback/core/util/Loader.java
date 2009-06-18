@@ -83,7 +83,7 @@ public class Loader {
    * @return
    */
   public static URL getResourceBySelfClassLoader(String resource) {
-    return getResource(resource, Loader.class.getClassLoader());
+    return getResource(resource, getClassLoaderOfClass(Loader.class));
   }
 
   // private static URL getResourceByTCL(String resource) {
@@ -103,8 +103,38 @@ public class Loader {
   @SuppressWarnings("unchecked")
   public static Class loadClass(String clazz, Context context)
       throws ClassNotFoundException {
-    ClassLoader cl = context.getClass().getClassLoader();
+    ClassLoader cl = getClassLoaderOfObject(context);
     return cl.loadClass(clazz);
+  }
+
+  /**
+   * Get the class loader of the object passed as argument. Return the system
+   * class loader if appropriate.
+   * 
+   * @param o
+   * @return
+   */
+  public static ClassLoader getClassLoaderOfObject(Object o) {
+    if (o == null) {
+      throw new NullPointerException("Argument cannot be null");
+    }
+    return getClassLoaderOfClass(o.getClass());
+  }
+
+  /**
+   * Return the class loader which loaded the class passed as argument. Return
+   * the system class loader if appropriate.
+   * 
+   * @param clazz
+   * @return
+   */
+  public static ClassLoader getClassLoaderOfClass(Class clazz) {
+    ClassLoader cl = clazz.getClassLoader();
+    if (cl == null) {
+      return ClassLoader.getSystemClassLoader();
+    } else {
+      return cl;
+    }
   }
 
   /**

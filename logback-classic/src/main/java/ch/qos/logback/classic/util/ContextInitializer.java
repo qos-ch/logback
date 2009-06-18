@@ -80,7 +80,7 @@ public class ContextInitializer {
   }
 
   public URL findURLOfDefaultConfigurationFile(boolean updateStatus) {
-    ClassLoader myClassLoader = this.getClass().getClassLoader();
+    ClassLoader myClassLoader = Loader.getClassLoaderOfObject(this);
     URL url = findConfigFileURLFromSystemProperties(myClassLoader, updateStatus);
     if (url != null) {
       return url;
