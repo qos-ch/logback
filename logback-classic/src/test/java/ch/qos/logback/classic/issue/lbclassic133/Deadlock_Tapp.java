@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeadlockTest {
-  private static Logger s_logger = LoggerFactory.getLogger(DeadlockTest.class);
+public class Deadlock_Tapp {
+  private static Logger s_logger = LoggerFactory.getLogger(Deadlock_Tapp.class);
 
   public static void main(String[] args) throws Exception {
     s_logger.debug("Starting test.");

@@ -6,7 +6,7 @@ import java.util.Date;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class DateFormatPerfTest {
+public class DateFormatPerf_Tapp {
   public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
   static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
 

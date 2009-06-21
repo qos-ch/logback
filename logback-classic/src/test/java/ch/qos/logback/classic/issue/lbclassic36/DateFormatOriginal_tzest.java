@@ -11,7 +11,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.DateTime;
 
-public class TestDateFormatOriginal extends TestCase {
+public class DateFormatOriginal_tzest extends TestCase {
   public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
   static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
 
@@ -21,7 +21,7 @@ public class TestDateFormatOriginal extends TestCase {
    * @param testName
    *                name of the test case
    */
-  public TestDateFormatOriginal(String testName) {
+  public DateFormatOriginal_tzest(String testName) {
     super(testName);
   }
 
@@ -29,7 +29,7 @@ public class TestDateFormatOriginal extends TestCase {
    * @return the suite of tests being tested
    */
   public static Test suite() {
-    return new TestSuite(TestDateFormatOriginal.class);
+    return new TestSuite(DateFormatOriginal_tzest.class);
   }
 
   public static void main(String[] args) {
