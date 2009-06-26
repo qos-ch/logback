@@ -62,10 +62,25 @@ public class LoggingToFileThrouhput {
   }
 }
 
-//=== lbclassic135  LoggingToFileThrouhput === 10 Threads
-//java.runtime.version = 1.6.0_05-b13
-//java.vendor          = Sun Microsystems Inc.
-//java.version         = 1.6.0_05
-//os.name              = Windows XP
+//=== lbclassic135  LoggingToFileThrouhput === 
+// ******** 10 Threads *****
+// synchronized doAppend() method
+//
+// java.runtime.version = 1.6.0_05-b13
+// java.vendor          = Sun Microsystems Inc.
+// os.name              = Windows XP
 //
 // File:   total of 309402 operations, or 61 operations per millisecond
+//
+//  java.runtime.version = 1.6.0_11-b03
+//  java.vendor          = Sun Microsystems Inc.
+//  os.name              = Linux
+//  os.version           = 2.6.25-gentoo-r6
+//  File:   total of 287943 operations, or 57 operations per millisecond
+// 
+// java.runtime.version = jvmxa6460-20081105_25433
+// java.vendor          = IBM Corporation
+// java.version         = 1.6.0
+// os.name              = Linux
+// os.version           = 2.6.25-gentoo-r6
+// File:   total of 142989 operations, or 28 operations per millisecond
