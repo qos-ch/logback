@@ -86,4 +86,6 @@ public class LoggingToFileThrouhput {
 // java.version         = 1.6.0
 // os.name              = Linux
 // os.version           = 2.6.25-gentoo-r6
-// File:   total of 142989 operations, or 28 operations per millisecond
+// Threads 10  total of 142989 operations, or 28 operations per millisecond
+// Threads 1:  total of 280381 operations, or 56 operations per millisecond
+
