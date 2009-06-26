@@ -73,12 +73,14 @@ public class LoggingToFileThrouhput {
 // Threads 10:  total of 309402 operations, or 61 operations per millisecond
 // Threads 1:   total of 485077 operations, or 97 operations per millisecond
 
-//  java.runtime.version = 1.6.0_11-b03
-//  java.vendor          = Sun Microsystems Inc.
-//  os.name              = Linux
-//  os.version           = 2.6.25-gentoo-r6
-//  File:   total of 287943 operations, or 57 operations per millisecond
-// 
+// java.runtime.version = 1.6.0_11-b03
+// java.vendor          = Sun Microsystems Inc.
+// os.name              = Linux
+// os.version           = 2.6.25-gentoo-r6
+// Threads 10: total of 287943 operations, or 57 operations per millisecond
+// Threads 1:  total of 356355 operations, or 71 operations per millisecond
+
+
 // java.runtime.version = jvmxa6460-20081105_25433
 // java.vendor          = IBM Corporation
 // java.version         = 1.6.0
