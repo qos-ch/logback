@@ -1,7 +1,7 @@
 package ch.qos.logback.classic.issue.lbclassic36;
 
 import ch.qos.logback.classic.issue.lbclassic36.SelectiveDateFormattingRunnable.FormattingModel;
-import ch.qos.logback.core.issue.ThreadedThroughputCalculator;
+import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 /**
  * Measure the threaded throughtput of date formatting operations

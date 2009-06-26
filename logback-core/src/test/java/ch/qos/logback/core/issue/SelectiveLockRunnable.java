@@ -3,13 +3,15 @@ package ch.qos.logback.core.issue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+
 /**
  * A runnable which behaves differently depending on the desired locking model.
  * 
  * @author Joern Huxhorn
  * @author Ceki Gulcu
  */
-public class SelectiveLockRunnable extends RunnableForThrougputComputation {
+public class SelectiveLockRunnable extends RunnableWithCounterAndDone {
 
   enum LockingModel {
     NOLOCK, SYNC, FAIR, UNFAIR;

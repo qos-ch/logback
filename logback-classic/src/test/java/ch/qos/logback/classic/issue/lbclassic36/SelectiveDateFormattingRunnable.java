@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import ch.qos.logback.core.issue.RunnableForThrougputComputation;
+import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 
 /**
  * A runnable which behaves differently depending on the desired locking model.
@@ -13,7 +13,7 @@ import ch.qos.logback.core.issue.RunnableForThrougputComputation;
  * @author Ceki Gulcu
  */
 public class SelectiveDateFormattingRunnable extends
-    RunnableForThrougputComputation {
+    RunnableWithCounterAndDone {
 
   public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 

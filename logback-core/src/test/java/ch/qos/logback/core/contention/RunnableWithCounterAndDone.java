@@ -1,4 +1,4 @@
-package ch.qos.logback.core.issue;
+package ch.qos.logback.core.contention;
 
 /**
  * A runnable with 'done' and 'counter' fields.
@@ -6,7 +6,7 @@ package ch.qos.logback.core.issue;
  * @author ceki
  *
  */
-abstract public class RunnableForThrougputComputation implements Runnable {
+abstract public class RunnableWithCounterAndDone implements Runnable {
 
   protected boolean done = false;
   protected long counter = 0;

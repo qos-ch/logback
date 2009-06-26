@@ -1,4 +1,5 @@
-package ch.qos.logback.core.issue;
+package ch.qos.logback.core.contention;
+
 
 /**
  * 
@@ -11,7 +12,7 @@ package ch.qos.logback.core.issue;
  */
 public class ThreadedThroughputCalculator {
 
-  RunnableForThrougputComputation[] runnableArray;
+  RunnableWithCounterAndDone[] runnableArray;
   Thread[] threadArray;
   final long overallDurationInMillis;
 
@@ -33,7 +34,7 @@ public class ThreadedThroughputCalculator {
         + System.getProperty("os.version"));
   }
 
-  public void execute(RunnableForThrougputComputation[] runnableArray)
+  public void execute(RunnableWithCounterAndDone[] runnableArray)
       throws InterruptedException {
     this.runnableArray = runnableArray;
     Thread[] threadArray = new Thread[runnableArray.length];
@@ -47,7 +48,7 @@ public class ThreadedThroughputCalculator {
     // let the threads run for a while
     Thread.sleep(overallDurationInMillis);
 
-    for (RunnableForThrougputComputation r : runnableArray) {
+    for (RunnableWithCounterAndDone r : runnableArray) {
       r.setDone(true);
     }
     for (Thread t : threadArray) {
@@ -60,7 +61,7 @@ public class ThreadedThroughputCalculator {
   
   public void printThroughput(String msg, boolean detailed) throws InterruptedException {
     long sum = 0;
-    for (RunnableForThrougputComputation r : runnableArray) {
+    for (RunnableWithCounterAndDone r : runnableArray) {
       if(detailed) {
         System.out.println(r +" count="+r.getCounter());
       }
