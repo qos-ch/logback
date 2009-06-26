@@ -2,7 +2,7 @@ package ch.qos.logback.classic.issue.lbclassic135.lbclassic139;
 
 import org.junit.Test;
 
-public class DeadlockTest {
+public class LB139_DeadlockTest {
 
   @Test(timeout=2000)
   public void test() throws Exception {

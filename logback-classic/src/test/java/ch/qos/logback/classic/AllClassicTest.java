@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
     ch.qos.logback.classic.db.PackageTest.class,
     ch.qos.logback.classic.spi.PackageTest.class,
     ch.qos.logback.classic.turbo.PackageTest.class,
-    ch.qos.logback.classic.sift.PackageTest.class})
+    ch.qos.logback.classic.sift.PackageTest.class,
+    ch.qos.logback.classic.issue.PackageTest.class})
 public class AllClassicTest {
 
 
