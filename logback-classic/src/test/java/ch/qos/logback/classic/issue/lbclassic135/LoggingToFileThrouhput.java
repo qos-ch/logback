@@ -14,7 +14,7 @@ import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
  */
 public class LoggingToFileThrouhput {
 
-  static int THREAD_COUNT = 1;
+  static int THREAD_COUNT = 10;
   static long OVERALL_DURATION_IN_MILLIS = 5000;
 
   public static void main(String args[]) throws InterruptedException {
@@ -72,6 +72,11 @@ public class LoggingToFileThrouhput {
 //
 // Threads 10:  total of 309402 operations, or 61 operations per millisecond
 // Threads 1:   total of 485077 operations, or 97 operations per millisecond
+
+// After revision 2310
+
+// Threads 1:  total of 462465 operations, or 92 operations per millisecond
+//Threads 10:  total of 243362 operations, or 48 operations per millisecond
 
 // java.runtime.version = 1.6.0_11-b03
 // java.vendor          = Sun Microsystems Inc.
