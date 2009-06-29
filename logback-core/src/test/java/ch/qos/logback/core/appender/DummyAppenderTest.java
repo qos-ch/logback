@@ -9,13 +9,13 @@
  */
 package ch.qos.logback.core.appender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.layout.NopLayout;
 
@@ -23,11 +23,11 @@ import ch.qos.logback.core.layout.NopLayout;
 public class DummyAppenderTest {
 
   
-  protected AppenderBase getAppender() {
+  protected Appender getAppender() {
     return new DummyAppender(new StringWriter());
   }
   
-  protected AppenderBase getConfiguredAppender() {
+  protected Appender getConfiguredAppender() {
     DummyAppender<Object> da = new DummyAppender<Object>(new StringWriter());
     da.setLayout(new NopLayout<Object>());
     da.start();

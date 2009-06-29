@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.appender;
 
@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.layout.DummyLayout;
@@ -53,11 +53,11 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   }
 
   @Override
-  public AppenderBase<Object> getAppender() {
+  public Appender<Object> getAppender() {
     return new ConsoleAppender<Object>();
   } 
 
-  protected AppenderBase<Object> getConfiguredAppender() {
+  protected Appender<Object> getConfiguredAppender() {
     ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
     ca.setLayout(new NopLayout<Object>());
     ca.start();

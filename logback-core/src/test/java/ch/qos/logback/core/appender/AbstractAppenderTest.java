@@ -1,11 +1,11 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
- *
- * Copyright (C) 1999-2006, QOS.ch
- *
- * This library is free software, you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation.
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.appender;
 
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.StatusChecker;
@@ -25,19 +25,19 @@ import ch.qos.logback.core.status.StatusChecker;
 abstract public class AbstractAppenderTest<E>  {
   
   
-  abstract protected AppenderBase<E> getAppender();
-  abstract protected AppenderBase<E> getConfiguredAppender();
+  abstract protected Appender<E> getAppender();
+  abstract protected Appender<E> getConfiguredAppender();
 
   @Test
   public void testNewAppender() {
     // new appenders should be inactive
-    AppenderBase appender = getAppender();
+    Appender appender = getAppender();
     assertFalse( appender.isStarted()); 
   }
   
   @Test
   public void testConfiguredAppender() {
-    AppenderBase appender = getConfiguredAppender();
+    Appender appender = getConfiguredAppender();
     appender.start();
     assertTrue(appender.isStarted());
    
@@ -48,7 +48,7 @@ abstract public class AbstractAppenderTest<E>  {
   
   @Test
   public void testNoStart() {
-    AppenderBase<E> appender = getAppender();
+    Appender<E> appender = getAppender();
     Context context = new ContextBase();
     appender.setContext(context);
     appender.setName("doh");

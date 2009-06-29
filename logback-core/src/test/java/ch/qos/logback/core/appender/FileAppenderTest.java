@@ -19,7 +19,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.FileAppender;
@@ -35,11 +35,11 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
   int diff = new Random().nextInt(100);
   Context context = new ContextBase();
 
-  protected AppenderBase<Object> getAppender() {
+  protected Appender<Object> getAppender() {
     return new FileAppender<Object>();
   }
 
-  protected AppenderBase<Object> getConfiguredAppender() {
+  protected Appender<Object> getConfiguredAppender() {
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setLayout(new NopLayout<Object>());
     appender.setFile("temp.log");

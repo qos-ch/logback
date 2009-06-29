@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.core.rolling;
 
 
@@ -10,7 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
@@ -41,12 +50,12 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
   
   @Override
-  protected AppenderBase<Object> getAppender() {
+  protected Appender<Object> getAppender() {
     return rfa;
   }
 
   @Override
-  protected AppenderBase<Object> getConfiguredAppender() {
+  protected Appender<Object> getConfiguredAppender() {
     rfa.setContext(context);
 
     tbrp.setFileNamePattern("toto-%d.log");
