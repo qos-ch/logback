@@ -82,10 +82,10 @@ public class LoggingToFileThrouhput {
 // Threads 10:  total of 309402 operations, or 61 operations per millisecond
 // Threads 1:   total of 485077 operations, or 97 operations per millisecond
 
-// After revision 2310
+//* After revision 2310
+//* Threads 10: total of 243362 operations, or 58 operations per millisecond
+//* Threads 1:  total of 462465 operations, or 92 operations per millisecond
 
-// Threads 1:  total of 462465 operations, or 92 operations per millisecond
-//Threads 10:  total of 243362 operations, or 48 operations per millisecond
 
 // java.runtime.version = 1.6.0_11-b03
 // java.vendor          = Sun Microsystems Inc.
@@ -93,6 +93,10 @@ public class LoggingToFileThrouhput {
 // os.version           = 2.6.25-gentoo-r6
 // Threads 10: total of 287943 operations, or 57 operations per millisecond
 // Threads 1:  total of 356355 operations, or 71 operations per millisecond
+
+//* After revision 2310
+//* Threads 10: total of 311104 operations, or 62 operations per millisecond
+//* Threads 1:  total of 331494 operations, or 66 operations per millisecond
 
 
 // java.runtime.version = jvmxa6460-20081105_25433
@@ -103,3 +107,6 @@ public class LoggingToFileThrouhput {
 // Threads 10  total of 142989 operations, or 28 operations per millisecond
 // Threads 1:  total of 280381 operations, or 56 operations per millisecond
 
+//* After revision 2310
+//* Threads 10:  total of 147660 operations, or 29 operations per millisecond
+//* Threads 1:   total of 305638 operations, or 61 operations per millisecond
