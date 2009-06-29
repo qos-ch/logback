@@ -14,19 +14,18 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 public class RelativeTimeConverter extends ClassicConverter {
 
   long lastTimestamp = -1;
-  String timesmapStr = null;
-  
+  String timesmapCache = null;
+
   public String convert(ILoggingEvent event) {
-    long timestamp = event.getTimeStamp();
-    
-    // if called multiple times within the same millisecond
-    // return old value
-    if(timestamp == lastTimestamp) {
-      return timesmapStr;
-    } else {
-      lastTimestamp = timestamp;
-      timesmapStr = Long.toString(timestamp - event.getLoggerContextVO().getBirthTime());
-      return timesmapStr;
+    long now = event.getTimeStamp();
+
+    synchronized (this) {
+      // update timesmapStrCache only if now !=  lastTimestamp
+      if (now != lastTimestamp) {
+        lastTimestamp = now;
+        timesmapCache = Long.toString(now - event.getLoggerContextVO().getBirthTime());      
+      }
+      return timesmapCache;
     }
   }
 }

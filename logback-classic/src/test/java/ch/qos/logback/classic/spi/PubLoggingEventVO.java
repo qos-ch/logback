@@ -21,7 +21,7 @@ import org.slf4j.helpers.MessageFormatter;
 import ch.qos.logback.classic.Level;
 
 /**
- * A read/write  and serializable implementation of {@link ILoggingEvent}.
+ * A read/write and serializable implementation of {@link ILoggingEvent}.
  * 
  * @author Ceki G&uuml;lc&uuml;
 

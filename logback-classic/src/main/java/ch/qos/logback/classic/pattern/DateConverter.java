@@ -17,56 +17,58 @@ import java.util.TimeZone;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 
-
 public class DateConverter extends ClassicConverter {
-  
+
   long lastTimestamp = -1;
-  String timesmapStr = null;
+  String timestampStrCache = null;
   SimpleDateFormat simpleFormat = null;
-  
+
   public void start() {
-    
+
     String datePattern = getFirstOption();
-    if(datePattern == null) {
+    if (datePattern == null) {
       datePattern = CoreConstants.ISO8601_PATTERN;
     }
-    
+
     if (datePattern.equals(CoreConstants.ISO8601_STR)) {
       datePattern = CoreConstants.ISO8601_PATTERN;
-    } 
-    
+    }
+
     try {
       simpleFormat = new SimpleDateFormat(datePattern);
-      //maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
+      // maximumCacheValidity =
+      // CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
-      addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
+      addWarn("Could not instantiate SimpleDateFormat with pattern "
+          + datePattern, e);
       // default to the ISO8601 format
       simpleFormat = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
     }
-    
+
     List optionList = getOptionList();
-    
+
     // if the option list contains a TZ option, then set it.
     if (optionList != null && optionList.size() > 1) {
       TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
       simpleFormat.setTimeZone(tz);
     }
   }
-  
+
   public String convert(ILoggingEvent le) {
     long timestamp = le.getTimeStamp();
-    
-    // if called multiple times within the same millisecond
-    // return old value
-    if(timestamp == lastTimestamp) {
-      return timesmapStr;
-    } else {
-      lastTimestamp = timestamp;
-      // SimpleDateFormat is not thread safe. However, since
-      // the AppenderBase.doAppend is synchronized, we are should be
-      // OK. See also http://jira.qos.ch/browse/LBCLASSIC-36
-      timesmapStr = simpleFormat.format(new Date(timestamp));
-      return timesmapStr;
+
+    synchronized (this) {
+      // if called multiple times within the same millisecond
+      // return cache value
+      if (timestamp == lastTimestamp) {
+        return timestampStrCache;
+      } else {
+        lastTimestamp = timestamp;
+        // SimpleDateFormat is not thread safe. 
+        // See also http://jira.qos.ch/browse/LBCLASSIC-36
+        timestampStrCache = simpleFormat.format(new Date(timestamp));
+        return timestampStrCache;
+      }
     }
   }
 }

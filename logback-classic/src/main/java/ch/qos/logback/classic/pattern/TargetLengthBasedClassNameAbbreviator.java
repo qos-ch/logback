@@ -14,17 +14,14 @@ import ch.qos.logback.core.CoreConstants;
 
 public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
-  static private final int BUF_LIMIT = 256;
-  
   final int targetLength;
-  StringBuffer buf;
 
   public TargetLengthBasedClassNameAbbreviator(int targetLength) {
-    this.targetLength = targetLength;
-    buf = new StringBuffer(targetLength);
+    this.targetLength = targetLength;   
   }
 
   public String abbreviate(String fqClassName) {
+    StringBuilder buf = new StringBuilder(targetLength);
     if (fqClassName == null) {
       throw new IllegalArgumentException("Class name may not be null");
     }
@@ -33,11 +30,6 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     if (inLen < targetLength) {
       return fqClassName;
     }
-
-    if (buf.capacity() > BUF_LIMIT) {
-      buf = new StringBuffer(targetLength);
-    }
-    buf.setLength(0);
 
     int[] dotIndexesArray = new int[ClassicConstants.MAX_DOTS];
     // a.b.c contains 2 dots but 2+1 parts. 

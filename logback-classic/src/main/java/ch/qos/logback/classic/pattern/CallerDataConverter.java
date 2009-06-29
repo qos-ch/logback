@@ -65,7 +65,6 @@ public class CallerDataConverter extends ClassicConverter {
         }
       }
     }
-
   }
 
   private void addEvaluator(EventEvaluator<ILoggingEvent> ee) {
@@ -76,7 +75,7 @@ public class CallerDataConverter extends ClassicConverter {
   }
 
   public String convert(ILoggingEvent le) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     if (evaluatorList != null) {
       boolean printCallerData = false;

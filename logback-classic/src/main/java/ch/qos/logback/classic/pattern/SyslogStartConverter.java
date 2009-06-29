@@ -61,7 +61,7 @@ public class SyslogStartConverter extends ClassicConverter {
     sb.append("<");
     sb.append(pri);
     sb.append(">");
-    fillInTimestamp(sb, event.getTimeStamp());
+    sb.append(computeTimeStampString(event.getTimeStamp()));
     sb.append(' ');
     sb.append(localHostName);
     sb.append(' ');
@@ -85,13 +85,13 @@ public class SyslogStartConverter extends ClassicConverter {
     }
   }
 
-  void fillInTimestamp(StringBuilder sb, long timestamp) {
-    // if called multiple times within the same millisecond
-    // use last value
-    if (timestamp != lastTimestamp) {
-      lastTimestamp = timestamp;
-      timesmapStr = simpleFormat.format(new Date(timestamp));
+  String computeTimeStampString(long now) {
+    synchronized (this) {
+      if (now != lastTimestamp) {
+        lastTimestamp = now;
+        timesmapStr = simpleFormat.format(new Date(now));
+      }
+      return timesmapStr;
     }
-    sb.append(timesmapStr);
-  }
+  }  
 }

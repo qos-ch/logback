@@ -26,7 +26,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class WriterAppender<E> extends AppenderBase<E> {
+public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   /**
    * Immediate flush means that the underlying writer or output stream will be
@@ -36,14 +36,16 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * is a good chance that the last few logs events are not actually written to
    * persistent media if and when the application crashes.
    * 
-   * <p> The <code>immediateFlush</code> variable is set to <code>true</code>
-   * by default.
+   * <p>
+   * The <code>immediateFlush</code> variable is set to <code>true</code> by
+   * default.
    */
   private boolean immediateFlush = true;
 
   /**
-   * The encoding to use when opening an InputStream. <p> The
-   * <code>encoding</code> variable is set to <code>null</null> by default 
+   * The encoding to use when opening an InputStream.
+   * <p>
+   * The <code>encoding</code> variable is set to <code>null</null> by default 
    * which results in the use of the system's default encoding.
    */
   private String encoding;
@@ -52,7 +54,6 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * This is the {@link Writer Writer} where we will write to.
    */
   private Writer writer;
-
 
   /**
    * The default constructor does nothing.
@@ -64,12 +65,14 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * If the <b>ImmediateFlush</b> option is set to <code>true</code>, the
    * appender will flush at the end of each write. This is the default behavior.
    * If the option is set to <code>false</code>, then the underlying stream
-   * can defer writing to physical medium to a later time. <p> Avoiding the
-   * flush operation at the end of each append results in a performance gain of
-   * 10 to 20 percent. However, there is safety tradeoff involved in skipping
-   * flushing. Indeed, when flushing is skipped, then it is likely that the last
-   * few log events will not be recorded on disk when the application exits.
-   * This is a high price to pay even for a 20% performance gain.
+   * can defer writing to physical medium to a later time.
+   * <p>
+   * Avoiding the flush operation at the end of each append results in a
+   * performance gain of 10 to 20 percent. However, there is safety tradeoff
+   * involved in skipping flushing. Indeed, when flushing is skipped, then it is
+   * likely that the last few log events will not be recorded on disk when the
+   * application exits. This is a high price to pay even for a 20% performance
+   * gain.
    */
   public void setImmediateFlush(boolean value) {
     immediateFlush = value;
@@ -118,7 +121,8 @@ public class WriterAppender<E> extends AppenderBase<E> {
    * Stop this appender instance. The underlying stream or writer is also
    * closed.
    * 
-   * <p> Stopped appenders cannot be reused.
+   * <p>
+   * Stopped appenders cannot be reused.
    */
   public synchronized void stop() {
     closeWriter();
@@ -177,7 +181,6 @@ public class WriterAppender<E> extends AppenderBase<E> {
     encoding = value;
   }
 
-
   void writeHeader() {
     if (layout != null && (this.writer != null)) {
       try {
@@ -224,12 +227,13 @@ public class WriterAppender<E> extends AppenderBase<E> {
   }
 
   /**
-   * <p> Sets the Writer where the log output will go. The specified Writer must
-   * be opened by the user and be writable. The <code>java.io.Writer</code>
-   * will be closed when the appender instance is closed.
+   * <p>
+   * Sets the Writer where the log output will go. The specified Writer must be
+   * opened by the user and be writable. The <code>java.io.Writer</code> will
+   * be closed when the appender instance is closed.
    * 
    * @param writer
-   *                An already opened Writer.
+   *          An already opened Writer.
    */
   public synchronized void setWriter(Writer writer) {
     // close any previously opened writer
@@ -247,8 +251,10 @@ public class WriterAppender<E> extends AppenderBase<E> {
   }
 
   /**
-   * Actual writing occurs here. <p> Most subclasses of
-   * <code>WriterAppender</code> will need to override this method.
+   * Actual writing occurs here.
+   * <p>
+   * Most subclasses of <code>WriterAppender</code> will need to override this
+   * method.
    * 
    * @since 0.9.0
    */
@@ -258,7 +264,10 @@ public class WriterAppender<E> extends AppenderBase<E> {
     }
 
     try {
-      writerWrite(this.layout.doLayout(event), this.immediateFlush);
+      String output = this.layout.doLayout(event);
+      synchronized (this) {
+        writerWrite(output, this.immediateFlush);
+      }
     } catch (IOException ioe) {
       // as soon as an exception occurs, move to non-started state
       // and add a single ErrorStatus to the SM.
@@ -266,5 +275,4 @@ public class WriterAppender<E> extends AppenderBase<E> {
       addStatus(new ErrorStatus("IO failure in appender", this, ioe));
     }
   }
-
 }

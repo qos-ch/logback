@@ -37,7 +37,7 @@ public class MDCConverter extends ClassicConverter {
     if (key == null) {
       // if no key is specified, return all the
       // values present in the MDC, separated with a single space.
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       Set<String> keys = mdcPropertyMap.keySet();
       Iterator it = keys.iterator();
       String tmpKey;
