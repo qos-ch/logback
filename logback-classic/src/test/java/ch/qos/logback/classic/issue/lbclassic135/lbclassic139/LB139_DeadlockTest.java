@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class LB139_DeadlockTest {
 
-  @Test(timeout=2000)
+  @Test(timeout=3000)
   public void test() throws Exception {
     Worker worker = new Worker();
     Accessor accessor = new Accessor(worker);
