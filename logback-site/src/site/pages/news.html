@@ -29,7 +29,17 @@
 
     <hr width="80%" align="center" />
 
-    <h3>Nth of April 2009 - Release of version 0.9.16</h3>
+    <h3>Nth of July 2009 - Release of version 0.9.16</h3>
+
+    <p>In logback-classic, <a
+    href="xref/ch/qos/logback/classic/spi/LoggingEvent.html"><code>LoggingEvent</code></a>
+    now implements the <a
+    href="xref/ch/qos/logback/classic/spi/ILoggingEvent.html"><code>ILoggingEvent</code></a>
+    interface. All logback-classic components expect to process
+    <code>ILoggingEvent</code> intances. Moreover, events which sent
+    to a remote host are now of type <a
+    href="xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>.
+    </p>
 
     <p>Fixed a bug in the localLevelReset() method in the
     <code>Logger</code> class whcih inadvertently used the DEBUG_INT
@@ -53,6 +63,12 @@
     name. This fits nicely with the requirements expressed in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-117">LBCLASSIC-117</a>
     by Rick Janda.
+    </p>
+    
+    <p>When a context is reset, then its object and property maps are
+    now cleared. This fixes <a
+    href="http://jira.qos.ch/browse/LBCORE-104">LBCORE-104</a>
+    reported by Johan Bos.
     </p>
 
     <hr width="80%" align="center" />

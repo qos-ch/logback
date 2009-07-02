@@ -191,6 +191,17 @@ public class LoggerContextTest {
   }
   
   @Test
+  public void resetTest_LBCORE_104() {
+    lc.putProperty("keyA", "valA");
+    lc.putObject("keyA", "valA");
+    assertEquals("valA", lc.getProperty("keyA"));
+    assertEquals("valA", lc.getObject("keyA"));
+    lc.reset();
+    assertNull(lc.getProperty("keyA"));
+    assertNull(lc.getObject("keyA"));
+  }
+  
+  @Test
   public void levelResetTest() {
     Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
     root.setLevel(Level.TRACE);

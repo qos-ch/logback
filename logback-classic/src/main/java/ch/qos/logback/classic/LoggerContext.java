@@ -60,10 +60,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   private LoggerContextVO loggerContextRemoteView;
   private final TurboFilterList turboFilterList = new TurboFilterList();
-  private boolean packagingDataEnabled = true; 
-  
+  private boolean packagingDataEnabled = true;
+
   private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
-  
+
   boolean started = false;
 
   public LoggerContext() {
@@ -200,11 +200,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return packagingDataEnabled;
   }
 
-  
   /**
-   * This method closes all appenders,
+   * This method clears all internal properties, closes all appenders, removes
+   * any turboFilters, fires an OnReset event, removes all status listeners,
+   * removes all context listeners (except those which are reset resistant).
    */
+  @Override
   public void reset() {
+    super.reset();
     root.recursiveReset();
     resetTurboFilterList();
     fireOnReset();
@@ -344,5 +347,5 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
     this.maxCallerDataDepth = maxCallerDataDepth;
   }
-  
+
 }

@@ -74,6 +74,14 @@ public class ContextBase implements Context {
   }
 
   /**
+   * Clear the internal objectMap and all properties.
+   */
+  public void reset() {
+    propertyMap.clear();
+    objectMap.clear();
+  }
+
+  /**
    * The context name can be set only if it is not already set, or if the
    * current name is the default context name, namely "default", or if the
    * current name and the old name are the same.

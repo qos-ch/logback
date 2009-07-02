@@ -9,6 +9,8 @@
  */
 package ch.qos.logback.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -40,4 +42,15 @@ public class ContextBaseTest {
     }
   }
 
+  @Test
+  public void resetTest() {
+    context.setName("hello");
+    context.putProperty("keyA", "valA");
+    context.putObject("keyA", "valA");
+    assertEquals("valA", context.getProperty("keyA"));
+    assertEquals("valA", context.getObject("keyA"));
+    context.reset();
+    assertNull(context.getProperty("keyA"));
+    assertNull(context.getObject("keyA"));
+  }
 }
