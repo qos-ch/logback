@@ -81,7 +81,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   referenced by name, a quality confirmed to be instrumental in
   configuration scripts. The <code>Appender</code> interface extends
   the <code>FilterAttachable</code> interface. It follows that one or
-  more filters can be attaqched to an appender instance. Filters are
+  more filters can be attached to an appender instance. Filters are
   discussed in detail in a subsequent chapter.
 	</p>
 	
@@ -214,9 +214,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
 	<p>Logback-core lays the foundation upon which the other logback
 	modules are built. In general, the components in logback-core
-	require some, albeit minimal, amount of customisation. However, in
-	the next few sections, we describe several appenders which are ready
-	for use out of the box.
+	require some, albeit minimal, customization. However, in the next
+	few sections, we describe several appenders which are ready for use
+	out of the box.
   </p>
 
 
@@ -434,7 +434,7 @@ public class ExitWoes1 {
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
    a subclass of <code>WriterAppender</code>, appends log events into
-   a file. The target fileis specified by the <span
+   a file. The target file is specified by the <span
    class="option">File</span> option.  If the file already exists, it
    is either appended to, or truncated depending on the value of the
    <span class="option">Append</span> option.
@@ -532,7 +532,7 @@ public class ExitWoes1 {
          <p>Prudent mode implies that <span
          class="option">Append</span> and <span
          class="option">ImmediateFlush</span> properties are
-         autmatically set to true and the <span
+         automatically set to true and the <span
          class="option">BufferedIO</span> set to false.
          </p>
 
@@ -571,7 +571,7 @@ public class ExitWoes1 {
  	 actual source code.
  	 </p>
 	
-   <p>Below is an example of a cconfiguration file for
+   <p>Below is an example of a configuration file for
    <code>FileAppender</code>:
 	 </p>
 
@@ -593,7 +593,7 @@ public class ExitWoes1 {
 &lt;/configuration></p>
 
    <p>After changing the current directory to
-   <em>logback-examples</em>, run this example by lauching the
+   <em>logback-examples</em>, run this example by launching the
    following command:
    </p>
 	
@@ -613,11 +613,11 @@ public class ExitWoes1 {
 	 met, change its logging target to another file.
    </p>
      
-   <p>There are two important logback componenents that interact with
+   <p>There are two important logback components that interact with
    <code>RollingFileAppender</code>. First, a
    <code>RollingPolicy</code> instance attached to the
    <code>RollingFileAppender</code> is responsible for undertaking the
-   action for perfoming a rollover. Second, a
+   action for performing a rollover. Second, a
    <code>TriggeringPolicy</code> instance attached to a
    <code>RollingFileAppender</code> will determine if and exactly when
    rollover happens Thus, <code>RollingPolicy</code> is responsible
@@ -675,7 +675,7 @@ public class ExitWoes1 {
        <td><b><span class="option">RollingPolicy</span></b></td>
        <td><code>RollingPolicy</code></td>
        <td>This option is the component that will dictate
-       <code>RollingFileAppender</code>'s behaviour when rollover
+       <code>RollingFileAppender</code>'s behavior when rollover
        occurs. See more information below.
        </td>
      </tr>	
@@ -876,7 +876,7 @@ public interface RollingPolicy extends LifeCycle {
        <td>foo.log</td>
        <td>foo1.log, foo2.log, foo3.log</td>
        <td>In this and subsequent rounds, the rollover begins by
-       deleting <em>foo3.log</em>. Otherfiles are renamed by
+       deleting <em>foo3.log</em>. Other files are renamed by
        incrementing their index as shown in previous steps. In this and
        subsequent rollovers, there will be three archive logs and one
        active log file.
@@ -909,7 +909,7 @@ public interface RollingPolicy extends LifeCycle {
       &lt;MaxFileSize>5MB&lt;/MaxFileSize>
     &lt;/triggeringPolicy>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5levelu %logger{35} - %msg%n&lt;/Pattern>
+      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
 	
@@ -925,7 +925,7 @@ public interface RollingPolicy extends LifeCycle {
    <p><a
    href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
    <code>TimeBasedRollingPolicy</code></a> is possibly the most
-   popular rolling polciy. It defines a rollover policy based on time,
+   popular rolling policy. It defines a rollover policy based on time,
    say by day or by month.
    </p>
 
@@ -1010,7 +1010,7 @@ public interface RollingPolicy extends LifeCycle {
        <td class="small">
          <em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
        </td>
-       <td>Rollover at the beggining of every minute.</td>
+       <td>Rollover at the beginning of every minute.</td>
        <td>Between 11.32,001 and 11.32,999, on November 3rd, 2006, the
        logging will be output to
        <em>/wombat/foo.2006-11-03_11-32.log</em>.  After that, and
@@ -1051,7 +1051,7 @@ public interface RollingPolicy extends LifeCycle {
 	  <tr class="b">
 	    <td><em>/wombat/foo.%d.gz</em></td>
 	    <td>Daily rollover (at midnight) with automatic GZIP compression of the 
-	     arcived files.</td>
+	     archived files.</td>
 	    <td>During November 23rd, 2004, logging output will go to 
 	      the file <em>/wombat/foo.2004-11-23</em>. However, at midnight that
 	      file will be compressed to become <em>/wombat/foo.2004-11-23.gz</em>.
@@ -1072,7 +1072,7 @@ public interface RollingPolicy extends LifeCycle {
 	</p>
 
 	<p>Thus, <code>TimeBasedRollingPolicy</code> assumes the
-	responsiblity for rollover as well as for the triggering of said
+	responsibility for rollover as well as for the triggering of said
 	rollover. Indeed, <code>TimeBasedTriggeringPolicy</code> implements
 	both <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
 	interfaces.
@@ -1112,7 +1112,7 @@ public interface RollingPolicy extends LifeCycle {
 	</p>
 	
   <p>Here is a sample configuration for
-  <code>RollingFileAppender</code> in conjuction with a
+  <code>RollingFileAppender</code> in conjunction with a
   <code>TimeBasedRollingPolicy</code>.
 	</p>
 	
@@ -1219,7 +1219,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 
 		<p>Here is a sample configuration with a
-		<code>RollingFileAppender</code> in conjuction with
+		<code>RollingFileAppender</code> in conjunction with
 		<code>SizeBasedTriggeringPolicy</code>.
 		</p>
 
@@ -1256,7 +1256,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		<p>While logging events are generic in logback-core, within
 		logback-classic they are always instances of
 		<code>ILoggingEvent</code>. Logback-classic is nothing more than a
-		specialized processing pipleline handling instances of
+		specialized processing pipeline handling instances of
 		<code>ILoggingEvent</code>.
 
     </p>
@@ -1822,7 +1822,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			<code>TopicSession</code> and then setting its payload to the
 			logging event received as the input parameter. Once the payload
 			of the message is set, it is published. Note that the
-			<code>ILoggingEvent</code> is transfomed to a serializable
+			<code>ILoggingEvent</code> is transformed to a serializable
 			object by a <a
 			href="../xref/ch/qos/logback/core/spi/PreSerializationTransformer.html">PreSerializationTransformer</a>. Only
 			Serializable objects can be transported within an
@@ -2053,7 +2053,7 @@ Context ctx = new InitialContext(env);</pre></div>
           </p>
 
           <p>Assuming the <span class="option">Subject</span> option
-          is set to "Log: %logger - %msg" and the triggerring event's
+          is set to "Log: %logger - %msg" and the triggering event's
           logger is named "com.foo.Bar", and contains the message
           "Hello world", then the outgoing email will have the subject
           line "Log: com.foo.Bar - Hello World".
@@ -2110,36 +2110,24 @@ Context ctx = new InitialContext(env);</pre></div>
       </tr>
       <tr class="alt">
         <td><b><span class="option">Username</span></b></td>
-        <td><code>String</code></td>
-        <td>The username value to use during plain user/password
-        authentication. By default, this parameter is null.
-        </td>
-      </tr>
-      <tr >
-        <td><b><span class="option">Password</span></b></td>
-        <td><code>String</code></td>
-        <td>The password value to use for plain user/password
-        authentication. By default, this parameter is null.
-        </td>
-      </tr>
-      <tr class="alt">
-        <td><b><span class="option">STARTTLS</span></b></td>
-        <td><code>boolean</code></td>
-        <td>If this parameter is set to true, then this appender will
-        issue the STARTTLS command (if the server supports it) causing
-        the connection to switch to SSL. Note that the connection is
-        initally non-encrypted. By default, this parameter is set to
-        false.
-        </td>
-      </tr>
-      <tr >
+        <td><code>String</code></td> <td>The username value to use
+        during plain user/password authentication. By default, this
+        parameter is null.  </td> </tr> <tr > <td><b><span
+        class="option">Password</span></b></td>
+        <td><code>String</code></td> <td>The password value to use for
+        plain user/password authentication. By default, this parameter
+        is null.  </td> </tr> <tr class="alt"> <td><b><span
+        class="option">STARTTLS</span></b></td>
+        <td><code>boolean</code></td> <td>If this parameter is set to
+        true, then this appender will issue the STARTTLS command (if
+        the server supports it) causing the connection to switch to
+        SSL. Note that the connection is initially non-encrypted. By
+        default, this parameter is set to false.  </td> </tr> <tr >
         <td><b><span class="option">SSL</span></b></td>
-        <td><code>boolean</code></td>
-        <td>If this parameter is set to true, then this appender will
-        open an SSL conneciton to the server. By default, this
-        parameter is set to false.
-        </td>
-      </tr>
+        <td><code>boolean</code></td> <td>If this parameter is set to
+        true, then this appender will open an SSL connection to the
+        server. By default, this parameter is set to false.  </td>
+        </tr>
 
       <tr  class="alt">
         <td><b><span class="option">CharsetEncoding</span></b></td>
@@ -2224,12 +2212,12 @@ Context ctx = new InitialContext(env);</pre></div>
 		<p>The recipient you specified should receive an email message
 		containing 300 logging events formatted by
 		<code>PatternLayout</code> The figure below is the resulting email
-		message as shown by Mozialla Thunderbird.
+		message as shown by Mozilla Thunderbird.
 		</p>
     
     <p><img src="images/chapter4/smtpAppender1.jpg" alt="resulting email"/></p>
 		
-		<p>In the next exampleconfiguration file <em>mail2.xml</em>, the
+		<p>In the next example configuration file <em>mail2.xml</em>, the
 		values for the <span class="option">SMTPHost</span>, <span
 		class="option">To</span> and <span class="option">From</span>
 		properties are determined by variable substitution. Here is the
@@ -2273,7 +2261,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		
     <p><img src="images/chapter4/smtpAppender2.jpg" alt="2nd email"/></p>
 
-    <p>Email clients such as Mozilla Thunderbird, Eurdora or MS
+    <p>Email clients such as Mozilla Thunderbird, Eudora or MS
     Outlook, offer reasonably good CSS support for HTML email.
     However, they sometimes automatically downgrade HTML to
     plaintext. For example, to view HTML email in Thunderbird, the
@@ -2347,7 +2335,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			Note that this implementation extends <code>ContextAwareBase</code> and
 			implements <code>EventEvaluator</code>. This allows the user to concentrate
 			on the core functions of her <code>EventEvaluator</code> and let the base class
-			provide the common functionnality.
+			provide the common functionality.
 		</p>
 
 		<p>
@@ -2459,7 +2447,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a>
-		inserts loggin events into three database tables in a format
+		inserts logging events into three database tables in a format
 		independent of the Java programming language.
 		</p>
 
@@ -2850,7 +2838,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>
 			Not that in this configuration sample, we make heavy use of substitution variables.
-			They are sometimes handy when connection details have to be centralised in a
+			They are sometimes handy when connection details have to be centralized in a
 			single configuration file and shared by logback and other frameworks.
 		</p>	
 		
@@ -2877,9 +2865,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			source will be bound to a JNDI context.
 		</p>
 
-		<p>
-			This is a very powerfull possibility of Joran. If you'd like to read more about Joran, please
-			see the <a href="onJoran.html">chapter to Joran</a>.
+		<p>This is a very powerful possibility of Joran. If you'd like to
+			read more about Joran, please see the <a
+			href="onJoran.html">chapter to Joran</a>.
 		</p>
 		
 		-->
@@ -2924,7 +2912,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>
 			Logging events can be created at a rather fast pace. To keep up
 			with the flow of events that must be inserted into a database, 
-			it is recommanded to use connection pooling with
+			it is recommended to use connection pooling with
 			<code>DBAppender</code>.
 		</p>
 		
@@ -2956,7 +2944,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration</p>
 
 		<p>With this configuration file, sending 500 logging events to a
-		MySQL database takes a whopping 5 seconds, that is 10 miliseconds
+		MySQL database takes a whopping 5 seconds, that is 10 milliseconds
 		per requests. This figure is unacceptable when dealing with large
 		applications.
 		</p>
@@ -2991,7 +2979,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>With this new configuration, sending 500 logging requests to
 		the same MySQL database as previously used takes around 0.5
-		seconds, for an average time of 1 milisecond per request.  The
+		seconds, for an average time of 1 millisecond per request.  The
 		gain is a <em>10</em> factor.
 		</p>
 
@@ -3007,7 +2995,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
 		</p>
 		
-		<p>Here are the properties upi can pass to a SyslogAppender.</p>
+		<p>Here are the properties you can pass to a SyslogAppender.</p>
 
 		<table class="bodyTable">
 			<tr class="a">
@@ -3143,7 +3131,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     values. The built appender is specified in a configuration file
     within the <code>SiftingAppender</code> definition itself.  By
     default, <code>SiftingAppender</code> uses MDC key/value pairs as
-    a discriminator.
+    a discriminatorg.
     </p>
  
     <p>After configuring logback, the <a
@@ -3195,7 +3183,7 @@ logger.debug("Alice says hello"); </p>
     discriminator type is <a
     href="xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>. It
     will use the MDC value associated with the <span
-    class="option">Key</span> property as a districimator. If that
+    class="option">Key</span> property as a discriminator. If that
     value is null, then the value associated with the <span
     class="option">DefaultValue</span> property will be used.
     </p>
@@ -3333,8 +3321,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		Access</a></h2>
 		
 		<p>Most of the appenders found in logback-classic have their
-		equivalent in logback-access. These work essentialy in the same
-		way as their locback-classic counterparts. In the next section, we
+		equivalent in logback-access. These work essentially in the same
+		way as their logback-classic counterparts. In the next section, we
 		will cover their use.
 		</p>
 		
@@ -3364,12 +3352,12 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			However, the <span class="option">evaluator</span> option is rather different. 
 			By default, a <code>URLEvaluator</code> object
 			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
-			checked agains the current request's URL. When one of the pages given to the
+			checked against the current request's URL. When one of the pages given to the
 			<code>URLEvaluator</code> is requested, <code>SMTPAppender</code> sends an email.
 		</p>
 		
 		<p>
-			Here is a sample configuration of a <code>SMTPAppender</code> in the access environnement.
+			Here is a sample configuration of a <code>SMTPAppender</code> in the access environment.
 		</p>
 <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
 <div class="source"><pre>&lt;appender name="SMTP"
