@@ -33,7 +33,7 @@ public class SelectiveLockRunnable extends RunnableWithCounterAndDone {
       nolockRun();
       break;
     case SYNC:
-      synchronizedRUn();
+      synchronizedRun();
       break;
     case FAIR:
       fairLockRun();
@@ -75,7 +75,7 @@ public class SelectiveLockRunnable extends RunnableWithCounterAndDone {
     }
   }
 
-  void synchronizedRUn() {
+  void synchronizedRun() {
     for (;;) {
       synchronized (LOCK) {
         counter++;
