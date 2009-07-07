@@ -42,7 +42,7 @@ public class TrivialcConfiguratorTest {
   }
 
   @Test
-  public void smokeTezt() throws Exception {
+  public void smoke() throws Exception {
     int oldBeginCount = IncAction.beginCount;
     int oldEndCount = IncAction.endCount;
     int oldErrorCount = IncAction.errorCount;
@@ -53,7 +53,7 @@ public class TrivialcConfiguratorTest {
   }
 
   @Test
-  public void teztInexistentFile() {
+  public void inexistentFile() {
     TrivialStatusListener tsl = new TrivialStatusListener();
     String filename = "nothereBLAH.xml";
     context.getStatusManager().add(tsl);
@@ -68,7 +68,7 @@ public class TrivialcConfiguratorTest {
   }
 
   @Test
-  public void teztIllFormedXML() {
+  public void illFormedXML() {
     TrivialStatusListener tsl = new TrivialStatusListener();
     String filename = "illformed.xml";
     context.getStatusManager().add(tsl);
