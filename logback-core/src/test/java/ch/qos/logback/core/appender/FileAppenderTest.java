@@ -27,7 +27,7 @@ import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.layout.NopLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileUtil;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
@@ -51,7 +51,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void smoke() {
-    String filename = Constants.OUTPUT_DIR_PREFIX + "temp.log";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "temp.log";
 
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setLayout(new DummyLayout<Object>());
@@ -70,7 +70,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testCreateParentFolders() {
-    String filename = Constants.OUTPUT_DIR_PREFIX + "/fat" + diff
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat" + diff
         + "/testing.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
@@ -93,7 +93,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testPrudentModeLogicalImplications() {
-    String filename = Constants.OUTPUT_DIR_PREFIX + diff + "testing.txt";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "testing.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setLayout(new DummyLayout<Object>());

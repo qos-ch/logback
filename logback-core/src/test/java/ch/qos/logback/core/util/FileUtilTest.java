@@ -42,7 +42,7 @@ public class FileUtilTest {
   @Test
   public void smoke() {
     int diff =  new Random().nextInt(100);
-    File file = new File(Constants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/testing.txt");
+    File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/testing.txt");
     // these will be deleted later
     cleanupList.add(file);
     cleanupList.add(file.getParentFile());
@@ -55,7 +55,7 @@ public class FileUtilTest {
   @Test
   public void smokeII() {
     int diff =  new Random().nextInt(100);
-    File file = new File(Constants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/bla/testing.txt");
+    File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/bla/testing.txt");
     // these will be deleted later
     cleanupList.add(file);
     cleanupList.add(file.getParentFile());

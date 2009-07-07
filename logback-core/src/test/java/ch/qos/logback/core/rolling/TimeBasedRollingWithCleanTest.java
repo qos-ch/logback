@@ -13,7 +13,7 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 public class TimeBasedRollingWithCleanTest {
 
@@ -33,7 +33,7 @@ public class TimeBasedRollingWithCleanTest {
     context.setName("test");
 
     // remove all files containing the string 'clean'
-    File dir = new File(Constants.OUTPUT_DIR_PREFIX);
+    File dir = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
     if (dir.isDirectory()) {
       File[] toDelete = dir.listFiles(new FilenameFilter() {
         public boolean accept(File dir, String name) {
@@ -53,14 +53,14 @@ public class TimeBasedRollingWithCleanTest {
 
   @Test
   public void montlyRollover() throws Exception {
-    doRollover(Constants.OUTPUT_DIR_PREFIX + "clean-%d{" + MONTHLY_DATE_PATTERN
+    doRollover(CoreTestConstants.OUTPUT_DIR_PREFIX + "clean-%d{" + MONTHLY_DATE_PATTERN
         + "}.txt", MILLIS_IN_MONTH, 20);
 
   }
 
   @Test
   public void dailyRollover() throws Exception {
-    doRollover(Constants.OUTPUT_DIR_PREFIX + "clean-%d{" + DAILY_DATE_PATTERN
+    doRollover(CoreTestConstants.OUTPUT_DIR_PREFIX + "clean-%d{" + DAILY_DATE_PATTERN
         + "}.txt.zip", MILLIS_IN_DAY, 5);
   }
 
@@ -96,7 +96,7 @@ public class TimeBasedRollingWithCleanTest {
 
   void check(int expectedCount) {
     // remove all files containing the string 'clean'
-    File dir = new File(Constants.OUTPUT_DIR_PREFIX);
+    File dir = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
     if (dir.isDirectory()) {
       File[] match = dir.listFiles(new FilenameFilter() {
         public boolean accept(File dir, String name) {

@@ -22,7 +22,7 @@ import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /** 
@@ -44,7 +44,7 @@ public class FruitConfigurationTest  {
 
       simpleConfigurator.setContext(fruitContext);
 
-      simpleConfigurator.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/replay/"
+      simpleConfigurator.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/replay/"
           + filename);
 
       return fruitContext.getFruitShellList();

@@ -12,12 +12,12 @@ import org.junit.Test;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class ImplicitActionTest {
 
-  static final String IMPLCIT_DIR = Constants.TEST_DIR_PREFIX
+  static final String IMPLCIT_DIR = CoreTestConstants.TEST_DIR_PREFIX
       + "input/joran/implicitAction/";
 
   FruitContext fruitContext = new FruitContext();

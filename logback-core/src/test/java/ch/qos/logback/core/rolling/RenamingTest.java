@@ -24,7 +24,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class RenamingTest {
   public void setUp() throws Exception {
     layout = new EchoLayout<Object>();
 
-    File target = new File(Constants.OUTPUT_DIR_PREFIX + "test.log");
+    File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log");
     target.mkdirs();
     target.delete();
   }
@@ -54,7 +54,7 @@ public class RenamingTest {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile(Constants.OUTPUT_DIR_PREFIX + "test.log");
+    rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log");
 
     // rollover by the second
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
@@ -62,7 +62,7 @@ public class RenamingTest {
     String[] filenames = new String[2];
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern(Constants.OUTPUT_DIR_PREFIX + "test-%d{"
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "test-%d{"
         + datePattern + "}");
     // tbrp.setActiveFileName("src/test/output/test.log");
     tbrp.setContext(context);
@@ -79,13 +79,13 @@ public class RenamingTest {
     DelayerUtil.delayUntilNextSecond(50);
     rfa.doAppend("Hello 1");
 
-    filenames[0] = Constants.OUTPUT_DIR_PREFIX + "test-"
+    filenames[0] = CoreTestConstants.OUTPUT_DIR_PREFIX + "test-"
         + sdf.format(cal.getTime());
-    filenames[1] = Constants.OUTPUT_DIR_PREFIX + "test.log";
+    filenames[1] = CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log";
 
     for (int i = 0; i < filenames.length; i++) {
       // System.out.println("before i=" + i);
-      assertTrue(Compare.compare(filenames[i], Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(filenames[i], CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/renaming." + i));
       // System.out.println("post i=" + i);
     }

@@ -24,7 +24,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * Test whether SaxEventRecorder does a good job.
@@ -44,7 +44,7 @@ public class EventRecorderTest {
   public List<SaxEvent> doTest(String filename) throws Exception {
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
-    FileInputStream fis = new FileInputStream(Constants.TEST_DIR_PREFIX
+    FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_DIR_PREFIX
         + "input/joran/"+ filename);
     recorder.recordEvents(fis);
     return  recorder.getSaxEventList();

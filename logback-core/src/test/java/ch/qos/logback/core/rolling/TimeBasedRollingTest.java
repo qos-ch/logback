@@ -28,7 +28,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.Compare;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -86,7 +86,7 @@ public class TimeBasedRollingTest {
   }
 
   void deleteStaleLogFile(String filename) {
-    File target = new File(Constants.OUTPUT_DIR_PREFIX + filename);
+    File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + filename);
     target.mkdirs();
     target.delete();
   }
@@ -124,7 +124,7 @@ public class TimeBasedRollingTest {
   public void noCompression_FileBlank_NoRestart_1() throws Exception {
     String testId = "test1";
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     // compute the current filename
@@ -142,7 +142,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -155,7 +155,7 @@ public class TimeBasedRollingTest {
     String testId = "test2";
 
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     // a new file is created by virtue of rfa.start();
@@ -174,7 +174,7 @@ public class TimeBasedRollingTest {
     rfa1.stop();
 
     initRFA(rfa2, null);
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", tbrp1.getCurrentTime(), 0);
 
     for (int i = 0; i <= 2; i++) {
@@ -186,7 +186,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -198,7 +198,7 @@ public class TimeBasedRollingTest {
   public void withCompression_FileBlank_NoRestart_3() throws Exception {
     String testId = "test3";
     initRFA(rfa1, null);
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}.gz", currentTime, 0);
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
@@ -217,7 +217,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
       i++;
     }
@@ -230,7 +230,7 @@ public class TimeBasedRollingTest {
   public void noCompression_FileSet_StopRestart_4() throws Exception {
     String testId = "test4";
     initRFA(rfa1, testId2FileName(testId));
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
@@ -248,7 +248,7 @@ public class TimeBasedRollingTest {
     rfa1.stop();
 
     initRFA(rfa2, testId2FileName(testId));
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, currentTime);
 
     for (int i = 0; i <= 2; i++) {
@@ -262,7 +262,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -272,7 +272,7 @@ public class TimeBasedRollingTest {
       throws Exception {
     String testId = "test4B";
     initRFA(rfa1, testId2FileName(testId));
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
@@ -292,8 +292,8 @@ public class TimeBasedRollingTest {
     long fileTimestamp = currentTime;
     incCurrentTime(2000);
 
-    initRFA(rfa2, Constants.OUTPUT_DIR_PREFIX + "test4B.log");
-    initTRBP(rfa2, tbrp2, Constants.OUTPUT_DIR_PREFIX + testId +"-%d{"
+    initRFA(rfa2, CoreTestConstants.OUTPUT_DIR_PREFIX + "test4B.log");
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId +"-%d{"
         + DATE_PATTERN + "}", currentTime, fileTimestamp);
 
     for (int i = 0; i <= 2; i++) {
@@ -307,7 +307,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test4B." + i++));
     }
 
@@ -321,7 +321,7 @@ public class TimeBasedRollingTest {
     String testId = "test5";
 
     initRFA(rfa1, testId2FileName(testId));
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, 0);
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
@@ -340,7 +340,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-test5." + i++));
     }
   }
@@ -354,7 +354,7 @@ public class TimeBasedRollingTest {
     String testId = "test6";
 
     initRFA(rfa1, testId2FileName(testId));
-    initTRBP(rfa1, tbrp1, Constants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}.gz", currentTime, 0);
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
@@ -376,7 +376,7 @@ public class TimeBasedRollingTest {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, Constants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
       i++;
     }
@@ -387,7 +387,7 @@ public class TimeBasedRollingTest {
   // =========================================================================
 
   String testId2FileName(String testId) {
-    return Constants.OUTPUT_DIR_PREFIX + testId + ".log";
+    return CoreTestConstants.OUTPUT_DIR_PREFIX + testId + ".log";
   }
 
   void massageExpectedFilesToCorresponToCurrentTarget(String file) {
@@ -407,7 +407,7 @@ public class TimeBasedRollingTest {
   }
 
   void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
-    String fn = Constants.OUTPUT_DIR_PREFIX + testId + "-" + sdf.format(date);
+    String fn = CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-" + sdf.format(date);
     if (gzExtension) {
       fn += ".gz";
     }
@@ -423,7 +423,7 @@ public class TimeBasedRollingTest {
   }
 
   void addExpectedFileName_ByFile(String filenameSuffix) {
-    String fn = Constants.OUTPUT_DIR_PREFIX + filenameSuffix;
+    String fn = CoreTestConstants.OUTPUT_DIR_PREFIX + filenameSuffix;
     expectedFilenameList.add(fn);
   }
 

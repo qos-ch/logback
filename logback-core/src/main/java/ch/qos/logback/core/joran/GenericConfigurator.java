@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.xml.sax.InputSource;
@@ -36,7 +37,10 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   final public void doConfigure(URL url) throws JoranException {
     try {
-      InputStream in = url.openStream();
+      URLConnection urlConnection = url.openConnection();
+      // per http://jira.qos.ch/browse/LBCORE-105
+      urlConnection.setDefaultUseCaches(false);
+      InputStream in = urlConnection.getInputStream();
       doConfigure(in);
       in.close();
     } catch (IOException ioe) {

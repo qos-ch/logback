@@ -22,7 +22,7 @@ import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 public class InPlayFireTest  {
 
@@ -37,7 +37,7 @@ public class InPlayFireTest  {
     TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
     gc.setContext(context);
-    gc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
+    gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
     
     //for(SaxEvent se: listenAction.getSeList()) {
     //  System.out.println(se);
@@ -57,7 +57,7 @@ public class InPlayFireTest  {
     TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
     gc.setContext(context);
-    gc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
+    gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
     
 //    for(SaxEvent se: listenAction.getSeList()) {
 //      System.out.println(se);

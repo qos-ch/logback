@@ -33,7 +33,7 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * Test the way Interpreter skips child elements in case of exceptions thrown by
@@ -70,7 +70,7 @@ public class SkippingInInterpreterTest {
 
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
-    tc.doConfigure(Constants.TEST_DIR_PREFIX + "input/joran/skip/" + filename);
+    tc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/skip/" + filename);
 
     String str = context.getProperty(HelloAction.PROPERTY_KEY);
     assertEquals("Hello John Doe.", str);

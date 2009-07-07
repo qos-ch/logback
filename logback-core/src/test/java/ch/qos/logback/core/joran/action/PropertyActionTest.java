@@ -13,7 +13,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.util.Constants;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertyActionTest  {
@@ -90,7 +90,7 @@ public class PropertyActionTest  {
   
   @Test
   public void testLoadFileWithPrerequisiteSubsitution() {
-    context.putProperty("STEM", Constants.TEST_DIR_PREFIX + "input/joran");
+    context.putProperty("STEM", CoreTestConstants.TEST_DIR_PREFIX + "input/joran");
     atts.setValue("file", "${STEM}/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
@@ -99,7 +99,7 @@ public class PropertyActionTest  {
 
   @Test
   public void testLoadFile() {
-    atts.setValue("file", Constants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
+    atts.setValue("file", CoreTestConstants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
     spAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
     assertEquals("toto", ec.getProperty("v2"));
