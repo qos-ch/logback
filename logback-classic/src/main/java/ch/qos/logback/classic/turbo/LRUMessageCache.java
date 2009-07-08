@@ -14,6 +14,8 @@ import java.util.Map;
 
 class LRUMessageCache extends LinkedHashMap<String, Integer> {
 
+  // LinkedHashMap permits null elements to be inserted
+  
   private static final long serialVersionUID = 1L;
   
   final int cacheSize;
@@ -26,7 +28,12 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
     this.cacheSize = cacheSize;
   }
   
-  int getMessageCount(String msg) {
+  int getMessageCountAndThenIncrement(String msg) {
+    // don't insert null elements
+    if(msg == null) {
+      return 0;
+    }
+    
     Integer i = super.get(msg);
     if(i == null) {
       i = 0;

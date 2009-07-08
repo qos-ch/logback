@@ -55,7 +55,7 @@ public class DuplicateMessageFilter extends TurboFilter {
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level,
       String format, Object[] params, Throwable t) {
-    int count = msgCache.getMessageCount(format);
+    int count = msgCache.getMessageCountAndThenIncrement(format);
     if (count <= allowedRepetitions) {
       return FilterReply.NEUTRAL;
     } else {
