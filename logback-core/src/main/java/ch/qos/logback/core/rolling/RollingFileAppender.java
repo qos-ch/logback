@@ -27,7 +27,7 @@ import ch.qos.logback.core.rolling.helper.CompressionMode;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class RollingFileAppender<E> extends FileAppender<E> {
-  File activeFileCache;
+  File activeFile;
   TriggeringPolicy<E> triggeringPolicy;
   RollingPolicy rollingPolicy;
 
@@ -64,7 +64,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       }
     }
 
-    activeFileCache = new File(getFile());
+    activeFile = new File(getFile());
     addInfo("Active log file name: " + getFile());
     super.start();
   }
@@ -108,11 +108,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     // does not work for open files.
     this.closeWriter();
 
-    // By default, the newly created file will be created in truncate mode.
-    // (See the setFile() call a few lines below.)
-    // FIXME don't change the append mode
-    // this.append = false;
-    
     try {
       rollingPolicy.rollover();
     } catch (RolloverFailure rf) {
@@ -136,7 +131,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   protected void subAppend(E event) {
     // The roll-over check must precede actual writing. This is the
     // only correct behavior for time driven triggers.
-    if (triggeringPolicy.isTriggeringEvent(activeFileCache, event)) {
+    if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
       rollover();
     }
 
