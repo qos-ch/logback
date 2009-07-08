@@ -21,8 +21,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class MultiThreadedRollingTest {
 
-  final static int NUM_THREADS = 5;
-  final static int TOTAL_DURATION = 2000;
+  final static int NUM_THREADS = 10;
+  final static int TOTAL_DURATION = 4000;
   
   Layout<Object> layout;
   Context context = new ContextBase();

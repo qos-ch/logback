@@ -98,7 +98,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * <code>File</code> is truncated with no backup files created.
    * 
    */
-  public void rollover() {
+  public synchronized void rollover() {
     // Note: synchronization at this point is unnecessary as the doAppend
     // is already synched
 
