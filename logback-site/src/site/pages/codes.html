@@ -40,62 +40,6 @@
   </p>
   <hr/>
 
-
-  <p>
-    <a name="tbr_fnp_not_set" href="#tbr_fnp_not_set">
-      The <b>FileNamePattern</b> option must be set before using
-      <code>TimeBasedRollingPolicy</code> or
-      <code>FixedWindowRollingPolicy</code>
-    </a>
-  </p>
-
-  
-  <p>The <b>FileNamePattern</b> option for both
-  <code>TimeBasedRollingPolicy</code> and
-  <code>FixedWindowRollingPolicy</code> is mandatory.
-  </p>
-  
-  <p>See the <a
-  href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-  FixedWindowRollingPolicy javadoc </a> for more information.
-  </p>
-					
-  <hr />
-
-  <p>
-    <a name="fwrp_parentFileName_not_set" href="#fwrp_parentFileName_not_set">
-      The <span class="option">File</span> option must be set before
-      <code>FixedWindowRollingPolicy</code>
-    </a>
-  </p>
-
-  <p>The <span class="option">File</span> option is mandatory with
-  <code>FixedWindowRollingPolicy</code>. Moreover, the <span
-  class="option">File</span> option must be set before the
-  <code>FixedWindowRollingPolicy</code> element.
-  </p>
-      
-  <p>Refer to the logback manual on
-  <a href="manual/appenders.html#FixedWindowRollingPolicy">
-    FixedWindowRollingPolicy </a> for more information.
-  </p>
-			
-  <hr />
-  <p>
-    <a name="tbr_fnp_prudent_unsupported"
-    href="#tbr_fnp_prudent_unsupported">Prudent mode is not supported
-    with <code>FixedWindowRollingPolicy</code>.</a>
-  </p>
-
-  <p>Given that <code>FixedWindowRollingPolicy</code> performs
-  multiple file rename operations suring roll over, and that these
-  operations cannot be guaranteed to be safe in a multi-JVM context,
-  prudent mode is not allowed in conjuction with a
-  <code>FixedWindowRollingPolicy</code>.
-  </p>
-
-  <hr/>
-
   <p>
     <a name="socket_no_host" href="#socket_no_host">No remote host or
     address is set for <code>SocketAppender</code>
@@ -191,9 +135,11 @@
   
   <hr />
       
-  <p><a name="rfa_no_tp" href="#rfa_no_tp">No <code>TriggeringPolicy</code> was set for
-  the <code>RollingFileAppender</code>.
-  </a>
+  <p>
+    <a name="rfa_no_tp" href="#rfa_no_tp">No
+    <code>TriggeringPolicy</code> was set for the
+    <code>RollingFileAppender</code>.
+    </a>
   </p>
     
   <p>The <code>RollingFileAppender</code> must be set up with a
@@ -208,12 +154,12 @@
   <ul>
     <li>
       <a
-       href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html"><code>SizeBasedTriggeringPolicy</code>
+       href="manual/appenders.html#SizeBasedTriggeringPolicy"><code>SizeBasedTriggeringPolicy</code>
       </a>
     </li>
     <li>
       <a
-       href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html"><code>TimeBasedRollingPolicy</code>
+      href="manual/appenders.html#TimeBasedRollingPolicy"><code>TimeBasedRollingPolicy</code>
       </a>
     </li>
   </ul>
@@ -243,12 +189,12 @@
     
   <ul>
     <li>
-      <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+      <a href="apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
         <code>FixedWindowRollingPolicy</code>
       </a>
     </li>
     <li>
-      <a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
+      <a href="apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
         <code>TimeBasedRollingPolicy</code>
       </a>
     </li>
@@ -262,9 +208,82 @@
   
   <hr/>
   
+  <p>
+    <a name="tbr_fnp_not_set" href="#tbr_fnp_not_set">
+      The <span class="option">FileNamePattern</span> property is mandatory for both
+      <code>TimeBasedRollingPolicy</code> and
+      <code>FixedWindowRollingPolicy</code>.
+    </a>
+  </p>
+
+  
+  <p>The <span class="option">FileNamePattern</span> property for both
+  <code>TimeBasedRollingPolicy</code> and
+  <code>FixedWindowRollingPolicy</code> is mandatory.
+  </p>
+  
+  <p>Please refer to the documentation of <a
+  href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
+  and <a
+  href="manual/appenders.html#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a> for
+  examples.
+  </p>
+
+
+  <hr/>
+
+  <p>
+    <a name="rfa_file_after" href="#rfa_file_after">
+      The <span class="option">File</span> property must be set before
+      any rolling policy or triggering policy.
+    </a>
+  </p>
+
+  <p>The <span class="option">File</span> property, if present, must
+  be placed before any rolling policy or triggering policy. Thus, in a
+  configuration file, the <span class="option">File</span> property,
+  if present, must be declared declared before any rolling policy or
+  triggering policy declarations.
+  </p>
+
+  <hr/>
+
+  <p>
+    <a name="fwrp_parentFileName_not_set" href="#fwrp_parentFileName_not_set">
+      The <span class="option">File</span> property must be set before
+      <code>FixedWindowRollingPolicy</code>
+    </a>
+  </p>
+
+  <p>The <span class="option">File</span> property is mandatory with
+  <code>FixedWindowRollingPolicy</code>. Moreover, the <span
+  class="option">File</span> option must be set before the
+  <code>FixedWindowRollingPolicy</code> element.
+  </p>
+      
+  <p>Refer to the logback manual on
+  <a href="manual/appenders.html#FixedWindowRollingPolicy">
+    FixedWindowRollingPolicy </a> for more information.
+  </p>
+			
+  <hr />
+  <p>
+    <a name="tbr_fnp_prudent_unsupported"
+    href="#tbr_fnp_prudent_unsupported">Prudent mode is not supported
+    with <code>FixedWindowRollingPolicy</code>.</a>
+  </p>
+
+  <p>Given that <code>FixedWindowRollingPolicy</code> performs
+  multiple file rename operations suring roll over, and that these
+  operations cannot be guaranteed to be safe in a multi-JVM context,
+  prudent mode is not allowed in conjuction with a
+  <code>FixedWindowRollingPolicy</code>.
+  </p>
+
+  <hr />
   
   <p><a name="syslog_layout" href="#syslog_layout"> SyslogAppender
-  does not admit a layout parameter.</a>
+  does not admit a layout.</a>
   </p>
 
 

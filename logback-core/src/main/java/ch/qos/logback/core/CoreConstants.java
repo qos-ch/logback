@@ -81,4 +81,6 @@ public class CoreConstants {
   static public final char DOT = '.';
 
   static public final char TAB = '\t';
+  
+  static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
 }

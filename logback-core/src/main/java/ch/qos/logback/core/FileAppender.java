@@ -73,9 +73,7 @@ public class FileAppender<E> extends WriterAppender<E> {
       // trailing spaces in file names.
       String val = file.trim();
       fileName = val;      
-
     }
-
   }
 
   /**

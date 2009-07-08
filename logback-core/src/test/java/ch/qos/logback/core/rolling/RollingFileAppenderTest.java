@@ -9,11 +9,11 @@
  */
 package ch.qos.logback.core.rolling;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +25,9 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -36,10 +38,11 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Before
   public void setUp() throws Exception {
+    // noStartTest fails if the context is set in setUp
+    // rfa.setContext(context);
+
     rfa.setLayout(new DummyLayout<Object>());
     rfa.setName("test");
-    rfa.setRollingPolicy(tbrp);
-    
     tbrp.setContext(context);
     tbrp.setParent(rfa);
   }
@@ -48,7 +51,6 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   public void tearDown() throws Exception {
   }
 
-  
   @Override
   protected Appender<Object> getAppender() {
     return rfa;
@@ -57,20 +59,16 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   @Override
   protected Appender<Object> getConfiguredAppender() {
     rfa.setContext(context);
-
     tbrp.setFileNamePattern("toto-%d.log");
     tbrp.start();
-    
+    rfa.setRollingPolicy(tbrp);
+
     rfa.start();
     return rfa;
   }
 
-
   @Test
   public void testPrudentModeLogicalImplications() {
-    tbrp.setFileNamePattern("toto-%d.log");
-    tbrp.start();
-    
     rfa.setContext(context);
     // prudent mode will force "file" property to be null
     rfa.setFile("some non null value");
@@ -78,6 +76,11 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setImmediateFlush(false);
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
+
+    tbrp.setFileNamePattern("toto-%d.log");
+    tbrp.start();
+    rfa.setRollingPolicy(tbrp);
+
     rfa.start();
 
     assertTrue(rfa.getImmediateFlush());
@@ -87,23 +90,43 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     assertTrue(rfa.isStarted());
   }
 
-  
   @Test
   public void testPrudentModeLogicalImplicationsOnCompression() {
-    tbrp.setFileNamePattern("toto-%d.log.zip");
-    tbrp.start();
-
     rfa.setContext(context);
     rfa.setAppend(false);
     rfa.setImmediateFlush(false);
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
+
+    tbrp.setFileNamePattern("toto-%d.log.zip");
+    tbrp.start();
+    rfa.setRollingPolicy(tbrp);
+
     rfa.start();
 
     StatusManager sm = context.getStatusManager();
     assertFalse(rfa.isStarted());
     assertEquals(Status.ERROR, sm.getLevel());
   }
-  
-  
+
+  @Test
+  public void testFilePropertyAfterRollingPolicy() {
+    rfa.setContext(context);
+    rfa.setRollingPolicy(tbrp);
+    rfa.setFile("x");
+    StatusPrinter.print(context);
+    StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
+    statusChecker.containsMatch(Status.ERROR,
+        "File property must be set before any triggeringPolicy ");
+  }
+
+  @Test
+  public void testFilePropertyAfterTriggeringPolicy() {
+    rfa.setContext(context);
+    rfa.setTriggeringPolicy(new SizeBasedTriggeringPolicy<Object>());
+    rfa.setFile("x");
+    StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
+    statusChecker.containsMatch(Status.ERROR,
+        "File property must be set before any triggeringPolicy ");
+  }
 }

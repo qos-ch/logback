@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.concurrent.Future;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
@@ -35,7 +36,6 @@ import ch.qos.logback.core.rolling.helper.TimeBasedCleaner;
 public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     TriggeringPolicy<E> {
   static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
-  static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   static final int NO_DELETE_HISTORY = 0;
 
   RollingCalendar rc;
@@ -77,8 +77,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       determineCompressionMode();
     } else {
       addWarn(FNP_NOT_SET);
-      addWarn(SEE_FNP_NOT_SET);
-      throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
+      addWarn(CoreConstants.SEE_FNP_NOT_SET);
+      throw new IllegalStateException(FNP_NOT_SET + CoreConstants.SEE_FNP_NOT_SET);
     }
 
     DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();

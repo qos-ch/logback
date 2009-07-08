@@ -70,6 +70,18 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   }
 
   @Override
+  public void setFile(String file) {
+    // http://jira.qos.ch/browse/LBCORE-94
+    // allow setting the file name to null if mandated by prudent mode
+    if(file != null && ((triggeringPolicy != null) || (rollingPolicy != null))) {
+      addError("File property must be set before any triggeringPolicy or rollingPolicy properties");
+      addError("Visit http://logback.qos.ch/codes.html#rfa_file_after for more information");
+    }
+    super.setFile(file);
+  }
+
+  
+  @Override
   public String getFile() {
     return rollingPolicy.getActiveFileName();
   }

@@ -24,21 +24,31 @@ public class StatusChecker {
     this.sm = sm;
   }
 
-  public boolean containsMatch(String regex) {
-
+  public boolean containsMatch(int level, String regex) {
     Pattern p = Pattern.compile(regex);
 
-    Iterator stati = sm.getCopyOfStatusList().iterator();
-    while (stati.hasNext()) {
-      Status status = (Status) stati.next();
+    for(Status status: sm.getCopyOfStatusList()) {
+      if(level != status.getLevel()) {
+        continue;
+      }
       String msg = status.getMessage();
       Matcher matcher = p.matcher(msg);
       if (matcher.lookingAt()) {
         return true;
-      } else {
-        System.out.println("no match:" + msg);
-        System.out.println("regex   :" + regex);
-      }
+      } 
+    }
+    return false;
+    
+  }
+  
+  public boolean containsMatch(String regex) {
+    Pattern p = Pattern.compile(regex);
+    for(Status status: sm.getCopyOfStatusList()) {
+      String msg = status.getMessage();
+      Matcher matcher = p.matcher(msg);
+      if (matcher.lookingAt()) {
+        return true;
+      } 
     }
     return false;
   }

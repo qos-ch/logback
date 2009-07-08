@@ -11,6 +11,7 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
@@ -28,7 +29,6 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
   static final String FNP_NOT_SET = "The \"FileNamePattern\" property must be set before using FixedWindowRollingPolicy. ";
-  static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   static final String PRUDENT_MODE_UNSUPPORTED = "See also http://logback.qos.ch/codes.html#tbr_fnp_prudent_unsupported";
   static final String SEE_PARENT_FN_NOT_SET = "Please refer to http://logback.qos.ch/codes.html#fwrp_parentFileName_not_set";
   int maxIndex;
@@ -54,8 +54,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       determineCompressionMode();
     } else {
       addError(FNP_NOT_SET);
-      addError(SEE_FNP_NOT_SET);
-      throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
+      addError(CoreConstants.SEE_FNP_NOT_SET);
+      throw new IllegalStateException(FNP_NOT_SET + CoreConstants.SEE_FNP_NOT_SET);
     }
 
     if(isParentPrudent()) {
