@@ -22,8 +22,8 @@ import ch.qos.logback.core.util.FileUtil;
 /**
  * FileAppender appends log events to a file.
  * 
- * For more informatio about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#FileAppender
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#FileAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -66,13 +66,13 @@ public class FileAppender<E> extends WriterAppender<E> {
    * the file to append to.
    */
   public void setFile(String file) {
-    if(file == null) {
+    if (file == null) {
       fileName = file;
     } else {
       // Trim spaces from both ends. The users probably does not want
       // trailing spaces in file names.
       String val = file.trim();
-      fileName = val;      
+      fileName = val;
     }
   }
 
@@ -90,7 +90,6 @@ public class FileAppender<E> extends WriterAppender<E> {
     return append;
   }
 
-  
   /**
    * This method is used by derived classes to obtain the raw file property.
    * Regular users should not be calling this method.

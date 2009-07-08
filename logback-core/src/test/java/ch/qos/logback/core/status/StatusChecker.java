@@ -24,6 +24,11 @@ public class StatusChecker {
     this.sm = sm;
   }
 
+  public boolean isErrorFree() {
+    int level = sm.getLevel();
+    return level < Status.ERROR;
+  }
+  
   public boolean containsMatch(int level, String regex) {
     Pattern p = Pattern.compile(regex);
 

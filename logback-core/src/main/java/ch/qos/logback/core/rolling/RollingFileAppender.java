@@ -52,13 +52,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       addError("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_rp");
       return;
     }
-    
-    if(isPrudent()) {
-      if(rawFileProperty() !=  null) {
+
+    if (isPrudent()) {
+      if (rawFileProperty() != null) {
         addWarn("Setting \"File\" property to null on account of prudent mode");
-        setFile(null);    
+        setFile(null);
       }
-      if(rollingPolicy.getCompressionMode() != CompressionMode.NONE) {
+      if (rollingPolicy.getCompressionMode() != CompressionMode.NONE) {
         addError("Compression is not supported in prudent mode. Aborting");
         return;
       }
@@ -73,14 +73,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   public void setFile(String file) {
     // http://jira.qos.ch/browse/LBCORE-94
     // allow setting the file name to null if mandated by prudent mode
-    if(file != null && ((triggeringPolicy != null) || (rollingPolicy != null))) {
+    if (file != null && ((triggeringPolicy != null) || (rollingPolicy != null))) {
       addError("File property must be set before any triggeringPolicy or rollingPolicy properties");
       addError("Visit http://logback.qos.ch/codes.html#rfa_file_after for more information");
     }
     super.setFile(file);
   }
 
-  
   @Override
   public String getFile() {
     return rollingPolicy.getActiveFileName();
@@ -131,8 +130,10 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   protected void subAppend(E event) {
     // The roll-over check must precede actual writing. This is the
     // only correct behavior for time driven triggers.
-    if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
-      rollover();
+    synchronized (triggeringPolicy) {
+      if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
+        rollover();
+      }
     }
 
     super.subAppend(event);

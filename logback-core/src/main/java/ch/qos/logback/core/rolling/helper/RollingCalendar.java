@@ -75,7 +75,8 @@ public class RollingCalendar extends GregorianCalendar {
     if (datePattern != null) {
       for (PeriodicityType i : PeriodicityType.VALID_ORDERED_LIST) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
-        simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
+        simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done
+        // in GMT
 
         String r0 = simpleDateFormat.format(epoch);
         rollingCalendar.setType(i);
@@ -90,44 +91,41 @@ public class RollingCalendar extends GregorianCalendar {
       }
     }
     // we failed
-    return PeriodicityType.ERRONEOUS; 
+    return PeriodicityType.ERRONEOUS;
   }
 
   public void printPeriodicity(ContextAwareBase cab) {
     switch (type) {
+    case TOP_OF_MILLISECOND:
+      cab.addInfo("Roll-over every millisecond.");
+      break;
+
     case TOP_OF_SECOND:
       cab.addInfo("Roll-over every second.");
-
       break;
 
     case TOP_OF_MINUTE:
       cab.addInfo("Roll-over every minute.");
-
       break;
 
     case TOP_OF_HOUR:
       cab.addInfo("Roll-over at the top of every hour.");
-
       break;
 
     case HALF_DAY:
       cab.addInfo("Roll-over at midday and midnight.");
-
       break;
 
     case TOP_OF_DAY:
       cab.addInfo("Roll-over at midnight.");
-
       break;
 
     case TOP_OF_WEEK:
       cab.addInfo("Rollover at the start of week.");
-
       break;
 
     case TOP_OF_MONTH:
       cab.addInfo("Rollover at start of every month.");
-
       break;
 
     default:
@@ -139,17 +137,19 @@ public class RollingCalendar extends GregorianCalendar {
     this.setTime(now);
 
     switch (type) {
+    case TOP_OF_MILLISECOND:
+      this.add(Calendar.MILLISECOND, periods);
+      break;
+
     case TOP_OF_SECOND:
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.SECOND, periods);
-
       break;
 
     case TOP_OF_MINUTE:
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.MINUTE, periods);
-
       break;
 
     case TOP_OF_HOUR:
@@ -157,7 +157,6 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.HOUR_OF_DAY, periods);
-
       break;
 
     case TOP_OF_DAY:
@@ -166,7 +165,6 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.DATE, periods);
-
       break;
 
     case TOP_OF_WEEK:
@@ -176,7 +174,6 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.WEEK_OF_YEAR, periods);
-
       break;
 
     case TOP_OF_MONTH:
@@ -186,7 +183,6 @@ public class RollingCalendar extends GregorianCalendar {
       this.set(Calendar.SECOND, 0);
       this.set(Calendar.MILLISECOND, 0);
       this.add(Calendar.MONTH, periods);
-
       break;
 
     default:
@@ -195,7 +191,7 @@ public class RollingCalendar extends GregorianCalendar {
 
     return getTime();
   }
-  
+
   public Date getNextTriggeringDate(Date now) {
     return getRelativeDate(now, 1);
   }
