@@ -93,7 +93,7 @@ public class FileAppender<E> extends WriterAppender<E> {
   
   /**
    * This method is used by derived classes to obtain the raw file property.
-   * Regular users should not be using calling method.
+   * Regular users should not be calling this method.
    * 
    * @return the value of the file property
    */
