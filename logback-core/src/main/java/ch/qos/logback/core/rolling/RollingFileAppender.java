@@ -99,8 +99,9 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * 
    */
   public synchronized void rollover() {
-    // Note: synchronization at this point is unnecessary as the doAppend
-    // is already synched
+    // Note: This method needs to be synchronized because it needs exclusive
+    // acces while
+    // it closes and then re-opens the target file.
 
     //
     // make sure to close the hereto active log file! Renaming under windows
@@ -130,6 +131,9 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   protected void subAppend(E event) {
     // The roll-over check must precede actual writing. This is the
     // only correct behavior for time driven triggers.
+
+    // We need to synchronize on triggeringPolicy so that only one rollover
+    // occurs at a time
     synchronized (triggeringPolicy) {
       if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
         rollover();

@@ -46,7 +46,6 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   }
 
   public void start() {
-    // set the LR for our utility object
     util.setContext(this.context);
    
     if (fileNamePatternStr != null) {
