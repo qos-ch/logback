@@ -35,7 +35,7 @@ import ch.qos.logback.core.status.TrivialStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 
-public class TrivialcConfiguratorTest {
+public class TrivialConfiguratorTest {
 
   Context context = new ContextBase();
   HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
