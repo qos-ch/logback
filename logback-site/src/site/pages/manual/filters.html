@@ -23,7 +23,7 @@
     </div>
     <div id="content">
 	
-    <h1>Chapter 6: Filter chains</h1>
+    <h1>Chapter 6: Filters</h1>
 
     <div class="quote">
       <p><em>Have lots of ideas and throw away the bad ones. You aren't
@@ -172,9 +172,10 @@ public class SampleFilter extends Filter {
 		would accept or deny an event depending on the content of its
 		message), you can extend the
 			<a href="../xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">
-			<code>AbstractMatcherFilter</code></a> class. It will provide your filter with 
-			two attribute: <em>OnMatch</em> and <em>OnMismatch</em>, that can be configured
-			like any other option.
+			<code>AbstractMatcherFilter</code></a> class. It will provide
+			your filter with two properties: <em>OnMatch</em> and
+			<em>OnMismatch</em>, both of which can be configured like any
+			other property.
 		</p>
 		
 		<h3>Logback Filters</h3>
