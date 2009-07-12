@@ -32,5 +32,4 @@ import org.junit.runners.Suite.SuiteClasses;
     ch.qos.logback.classic.issue.PackageTest.class})
 public class AllClassicTest {
 
-
 }
