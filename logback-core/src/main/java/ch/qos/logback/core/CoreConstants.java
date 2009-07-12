@@ -83,4 +83,9 @@ public class CoreConstants {
   static public final char TAB = '\t';
   
   static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
+  
+  // The url used for the last configuration via Joran. If a file is used for the
+  // configuration, then file.getURL() is registered
+  public static String URL_OF_LAST_CONFIGURATION_VIA_JORAN = "URL_OF_LAST_CONFIGURATION_VIA_JORAN";
+  
 }

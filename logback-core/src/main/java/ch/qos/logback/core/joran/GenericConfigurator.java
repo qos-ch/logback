@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.xml.sax.InputSource;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
@@ -37,6 +38,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   final public void doConfigure(URL url) throws JoranException {
     try {
+      informContextOfURLUsedForConfiguration(url);
       URLConnection urlConnection = url.openConnection();
       // per http://jira.qos.ch/browse/LBCORE-105
       urlConnection.setDefaultUseCaches(false);
@@ -57,6 +59,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   final public void doConfigure(File file) throws JoranException {
     FileInputStream fis = null;
     try {
+      informContextOfURLUsedForConfiguration(file.toURL());
       fis = new FileInputStream(file);
       doConfigure(fis);
     } catch (IOException ioe) {
@@ -76,6 +79,10 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
   }
 
+  protected void informContextOfURLUsedForConfiguration(URL url) {
+    getContext().putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN, url);
+  }
+  
   final public void doConfigure(InputStream inputStream) throws JoranException {
     doConfigure(new InputSource(inputStream));
   }
