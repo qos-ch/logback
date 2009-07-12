@@ -43,7 +43,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
    * against. The value of this field is usually modified with each release.
    */
   // to avoid constant folding by the compiler, this field must *not* be final
-  public static String REQUESTED_API_VERSION = "1.5.6"; // !final
+  public static String REQUESTED_API_VERSION = "1.5.8"; // !final
 
   final static String NULL_CS_URL = CoreConstants.CODES_URL + "#null_CS";
 
