@@ -61,6 +61,19 @@ public class StatusChecker {
     return false;
   }
 
+  public int matchCount(String regex) {
+    int count = 0;
+    Pattern p = Pattern.compile(regex);
+    for(Status status: sm.getCopyOfStatusList()) {
+      String msg = status.getMessage();
+      Matcher matcher = p.matcher(msg);
+      if (matcher.lookingAt()) {
+        count++;
+      } 
+    }
+    return count;
+  }
+  
   public boolean containsException(Class exceptionType) {
     Iterator stati = sm.getCopyOfStatusList().iterator();
     while (stati.hasNext()) {

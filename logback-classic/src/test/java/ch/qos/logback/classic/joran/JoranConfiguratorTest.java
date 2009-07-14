@@ -248,6 +248,7 @@ public class JoranConfiguratorTest {
     assertEquals("hello user2", le.getMessage());
   }
 
+  // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
   public void scan1() throws JoranException, IOException, InterruptedException {
 
@@ -267,6 +268,5 @@ public class JoranConfiguratorTest {
     assertTrue(checker.isErrorFree());
     assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
     StatusPrinter.print(loggerContext);
-
   }
 }

@@ -25,66 +25,71 @@ import ch.qos.logback.core.spi.FilterReply;
 /**
  * Reconfigure a LoggerContext when the configuration file changes.
  * 
- * @author Ceki Gulcu 
- *  
- *  */
+ * @author Ceki Gulcu
+ * 
+ */
 public class ReconfigureOnChangeFilter extends TurboFilter {
 
-  final static long DEFAULT_REFRESH_PERIOD = 60*1000; // 1 minute
+  final static long DEFAULT_REFRESH_PERIOD = 60 * 1000; // 1 minute
   long refreshPeriod = DEFAULT_REFRESH_PERIOD;
   File fileToScan;
   protected long nextCheck;
   long lastModified;
 
-
   @Override
   public void start() {
-    URL url = (URL) context.getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
-    if(url != null) {
+    URL url = (URL) context
+        .getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
+    if (url != null) {
       fileToScan = convertToFile(url);
-      if(fileToScan != null) {
-        long inSeconds = refreshPeriod/1000;
-        addInfo("Will scan for changes in file ["+fileToScan+"] every "+inSeconds+" seconds");
+      if (fileToScan != null) {
+        long inSeconds = refreshPeriod / 1000;
+        addInfo("Will scan for changes in file [" + fileToScan + "] every "
+            + inSeconds + " seconds"+ " Thread "+currentThreadName());
         lastModified = fileToScan.lastModified();
         updateNextCheck(System.currentTimeMillis());
         super.start();
       }
     } else {
-     addError("Could not find URL of file to scan.");
+      addError("Could not find URL of file to scan. Thread "+currentThreadName());
     }
   }
-  
+
   File convertToFile(URL url) {
     String protocol = url.getProtocol();
-    if("file".equals(protocol)) {
+    if ("file".equals(protocol)) {
       File file = new File(url.getFile());
       return file;
     } else {
-      addError("URL ["+url+"] is not of type file");
+      addError("URL [" + url + "] is not of type file");
       return null;
     }
   }
-  
+
   // a counter of the number of time the decide method is called
-  private volatile int invocationCounter =  0;
-  
+  // IMPORTANT: This field can be updated by multiple threads. It follows that
+  // its values may not be incremented sequentially. However, we don't care
+  // about the actual value of the field except that from time to time the
+  // expression (invocationCounter++ & 0xF) == 0xF) should be true.
+
+  private int invocationCounter = 0;
+
   @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-    if(!isStarted()) {
-      return FilterReply.NEUTRAL;
-    }
-    
-    System.out.println("counter="+invocationCounter+", format="+format);
-    // for performance reasons, check for changes every 16 invocations
-    if(((invocationCounter++) & 0xF) != 0xF) {
+  public FilterReply decide(Marker marker, Logger logger, Level level,
+      String format, Object[] params, Throwable t) {
+    if (!isStarted()) {
       return FilterReply.NEUTRAL;
     }
 
-    
+    // for performance reasons, check for changes every 16 invocations
+    if (((invocationCounter++) & 0xF) != 0xF) {
+      return FilterReply.NEUTRAL;
+    }
+
     boolean changed = changeDetected();
-    if(changed) {
-      addInfo("["+fileToScan + "] change detected. Reconfiguring");
-      addInfo("Resetting and reconfiguring context ["+context.getName()+"]");
+    if (changed) {
+      addInfo("[" + fileToScan + "] change detected. Reconfiguring "+currentThreadName());
+      addInfo("Resetting and reconfiguring context [" + context.getName() + "]");
       reconfigure();
     }
     return FilterReply.NEUTRAL;
@@ -93,17 +98,20 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   void updateNextCheck(long now) {
     nextCheck = now + refreshPeriod;
   }
- 
-  protected boolean changeDetected() {
+
+  // This method is synchronized to prevent near-simultaneous re-configurations
+  protected synchronized boolean changeDetected() {
     long now = System.currentTimeMillis();
-    if(now >= nextCheck) {
+    if (now >= nextCheck) {
       updateNextCheck(now);
       return (lastModified != fileToScan.lastModified());
     }
     return false;
   }
-  
-  
+
+  String currentThreadName() {
+    return Thread.currentThread().getName();
+  }
   protected void reconfigure() {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(context);
@@ -113,7 +121,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       jc.doConfigure(fileToScan);
     } catch (JoranException e) {
       addError("Failure during reconfiguration", e);
-    }  
+    }
   }
 
   public long getRefreshPeriod() {

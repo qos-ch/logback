@@ -16,7 +16,7 @@ public class LoggingRunnable extends RunnableWithCounterAndDone {
 
   Logger logger;
   
-  LoggingRunnable(Logger logger) {
+  public LoggingRunnable(Logger logger) {
     this.logger = logger;
   }
   

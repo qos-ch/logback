@@ -47,7 +47,7 @@ public class MultiThreadedHarness {
     Thread[] threadArray = new Thread[runnableArray.length];
 
     for (int i = 0; i < runnableArray.length; i++) {
-      threadArray[i] = new Thread(runnableArray[i]);
+      threadArray[i] = new Thread(runnableArray[i], "Harness["+i+"]");
     }
     for (Thread t : threadArray) {
       t.start();
