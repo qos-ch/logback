@@ -59,7 +59,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   final public void doConfigure(File file) throws JoranException {
     FileInputStream fis = null;
     try {
-      informContextOfURLUsedForConfiguration(file.toURL());
+      informContextOfURLUsedForConfiguration(file.toURI().toURL());
       fis = new FileInputStream(file);
       doConfigure(fis);
     } catch (IOException ioe) {
