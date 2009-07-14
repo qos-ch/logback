@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration scan="true" scanPeriod="1 millisecond">
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>yx %d - %m%n"</Pattern>  
+    </layout>
+  </appender>
+    
+  <root level="TRACE">  
+    <appender-ref ref="CONSOLE" />
+  </root>
+  
+</configuration> 
+       

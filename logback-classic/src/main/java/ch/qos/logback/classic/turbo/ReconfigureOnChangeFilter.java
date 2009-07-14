@@ -36,10 +36,11 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   protected long nextCheck;
   long lastModified;
 
+
   @Override
   public void start() {
     URL url = (URL) context.getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
-    if(url == null) {
+    if(url != null) {
       fileToScan = convertToFile(url);
       if(fileToScan != null) {
         long inSeconds = refreshPeriod/1000;
@@ -64,14 +65,26 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     }
   }
   
+  // a counter of the number of time the decide method is called
+  private volatile int invocationCounter =  0;
+  
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
     if(!isStarted()) {
       return FilterReply.NEUTRAL;
     }
     
+    System.out.println("counter="+invocationCounter+", format="+format);
+    // for performance reasons, check for changes every 16 invocations
+    if(((invocationCounter++) & 0xF) != 0xF) {
+      return FilterReply.NEUTRAL;
+    }
+
+    
     boolean changed = changeDetected();
     if(changed) {
+      addInfo("["+fileToScan + "] change detected. Reconfiguring");
+      addInfo("Resetting and reconfiguring context ["+context.getName()+"]");
       reconfigure();
     }
     return FilterReply.NEUTRAL;
@@ -101,5 +114,13 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     } catch (JoranException e) {
       addError("Failure during reconfiguration", e);
     }  
+  }
+
+  public long getRefreshPeriod() {
+    return refreshPeriod;
+  }
+
+  public void setRefreshPeriod(long refreshPeriod) {
+    this.refreshPeriod = refreshPeriod;
   }
 }

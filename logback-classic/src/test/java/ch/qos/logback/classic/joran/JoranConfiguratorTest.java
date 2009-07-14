@@ -13,6 +13,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.slf4j.MDC;
 
@@ -27,7 +30,9 @@ import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -67,12 +72,14 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testRootLoggerLevelSettingBySystemProperty() throws JoranException {
+  public void testRootLoggerLevelSettingBySystemProperty()
+      throws JoranException {
     String propertyName = "logback.level";
-   
+
     System.setProperty(propertyName, "INFO");
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/rootLevelByProperty.xml");
-    //StatusPrinter.print(loggerContext);
+    configure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/rootLevelByProperty.xml");
+    // StatusPrinter.print(loggerContext);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
     String msg = "hello world";
@@ -80,14 +87,15 @@ public class JoranConfiguratorTest {
     assertEquals(0, listAppender.list.size());
     System.clearProperty(propertyName);
   }
-  
+
   @Test
   public void testLoggerLevelSettingBySystemProperty() throws JoranException {
     String propertyName = "logback.level";
-   
+
     System.setProperty(propertyName, "DEBUG");
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/loggerLevelByProperty.xml");
-    //StatusPrinter.print(loggerContext);
+    configure(TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/loggerLevelByProperty.xml");
+    // StatusPrinter.print(loggerContext);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
     String msg = "hello world";
@@ -95,11 +103,11 @@ public class JoranConfiguratorTest {
     assertEquals(1, listAppender.list.size());
     System.clearProperty(propertyName);
   }
-  
+
   @Test
   public void testStatusListener() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
-    //StatusPrinter.print(loggerContext);
+    // StatusPrinter.print(loggerContext);
   }
 
   @Test
@@ -108,7 +116,7 @@ public class JoranConfiguratorTest {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/contextRename.xml");
     assertEquals("wombat", loggerContext.getName());
   }
-  
+
   @Test
   public void testEval() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
@@ -122,7 +130,7 @@ public class JoranConfiguratorTest {
     assertNotNull(slAppender);
     assertEquals(2, slAppender.strList.size());
     assertTrue(slAppender.strList.get(0).contains(" DEBUG - toto"));
-    
+
     String str1 = slAppender.strList.get(1);
     assertTrue(str1.contains("Caller+0"));
     assertTrue(str1.contains(" DEBUG - hello world"));
@@ -159,7 +167,7 @@ public class JoranConfiguratorTest {
   public void testLevelFilter() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/levelFilter.xml");
 
-    //StatusPrinter.print(loggerContext);
+    // StatusPrinter.print(loggerContext);
 
     logger.warn("hello");
     logger.error("to be ignored");
@@ -179,7 +187,7 @@ public class JoranConfiguratorTest {
   public void testEvaluatorFilter() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/evaluatorFilter.xml");
 
-    //StatusPrinter.print(loggerContext);
+    // StatusPrinter.print(loggerContext);
 
     logger.warn("hello");
     logger.error("to be ignored");
@@ -238,5 +246,27 @@ public class JoranConfiguratorTest {
     assertEquals("hello user1", le.getMessage());
     le = (ILoggingEvent) listAppender.list.get(1);
     assertEquals("hello user2", le.getMessage());
+  }
+
+  @Test
+  public void scan1() throws JoranException, IOException, InterruptedException {
+
+    String configFileAsStr = TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/scan1.xml";
+    configure(configFileAsStr);
+
+    File file = new File(configFileAsStr);
+    file.setLastModified(System.currentTimeMillis());
+
+    // scanning requires 16 logs
+    for (int i = 0; i < 16; i++) {
+      logger.debug("after " + i);
+    }
+
+    StatusChecker checker = new StatusChecker(loggerContext);
+    assertTrue(checker.isErrorFree());
+    assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
+    StatusPrinter.print(loggerContext);
+
   }
 }
