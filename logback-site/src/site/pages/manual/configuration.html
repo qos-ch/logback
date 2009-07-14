@@ -9,9 +9,13 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
+
   </head>
-  <body>
+  <body onload="prettyPrint()">
+
     <script type="text/javascript">prefix='../'</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -128,7 +132,7 @@
     <code>BasicConfigurator</code> usage <a
     href="../xref/chapter3/MyApp1.html">(logback-examples/src/main/java/chapter3/MyApp1.java)</a></em>
 
-    <p class="source">package chapter3;
+    <pre class="prettyprint source">package chapter3;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +147,7 @@ public class MyApp1 {
     foo.doIt();
     logger.info("Exiting application.");
   }
-}</p>
+}</pre>
 
   <p>This class defines a static logger variable. It then
   instantiates a Foo object. The Foo class is listed below:
@@ -153,7 +157,7 @@ public class MyApp1 {
   <a href="../xref/chapter3/Foo.html">(logback-examples/src/main/java/chapter3/Foo.java)</a>
   </em>
 
-  <p class="source">package chapter3;
+  <pre class="prettyprint source">package chapter3;
   
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +168,7 @@ public class Foo {
   public void doIt() {
     logger.debug("Did it again!");
   }
-}</p>
+}</pre>
 
 
     <p>In order to run the examples in this chapter, you need to make
@@ -220,7 +224,7 @@ public class Foo {
   (logback-examples/src/main/java/chapter3/sample0.xml)</em></p>
 
 
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -231,7 +235,7 @@ public class Foo {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
    <p>After you have renamed <em>sample0.xml</em> as
    <em>logback.xml</em> (or <em>logback-test.xml</em>) place it into a
@@ -253,14 +257,14 @@ public class Foo {
     href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em>
 
   
-<div class="source"><pre>
+<pre class="prettyprint lang-java source">
   public static void main(String[] args) {
     // assume SLF4J is bound to logback in the current environment
     <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
     // print logback's internal status
     <b>StatusPrinter.print(lc);</b>
     ...
-  }</pre></div>
+  }</pre>
 
   <p>If everything goes well, you should see the following output on the console</p>
 
@@ -301,7 +305,7 @@ public class Foo {
    using debug mode
    (logback-examples/src/main/java/chapter3/sample1.xml)</em>
 
-<div class="source"><pre>
+<pre class="prettyprint source">
 &lt;configuration <b>debug="true"</b>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
@@ -313,7 +317,7 @@ public class Foo {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
   
    <p>Setting the <code>debug</code> attribute within the
    &lt;configuration&gt; element will output status information, under
@@ -364,7 +368,7 @@ public class Foo {
    <code>JoranConfigurator</code> directly <a
    href="../xref/chapter3/MyApp3.html">(logback-examples/src/main/java/chapter3/MyApp3.java)</a></em></p>
 
-<div class="source"><pre>package chapter3;
+<pre class="prettyprint source">package chapter3;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -399,7 +403,7 @@ public class MyApp3 {
     foo.doIt();
     logger.info("Exiting application.");
   }
-}</pre></div>
+}</pre>
 
    <p>This application fetches the <code>LoggerContext</code>
    currently in effect, creates a new <code>JoranConfigurator</code>,
@@ -443,7 +447,7 @@ public class MyApp3 {
    <p>To add this servlet to your web-application, add the following
    lines to its <em>WEB-INF/web.xml</em> file.</p>
 
-   <p class="source">  &lt;servlet>
+   <pre class="prettyprint source">  &lt;servlet>
     &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
     &lt;servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet&lt;/servlet-class>
   &lt;/servlet>
@@ -451,7 +455,7 @@ public class MyApp3 {
   &lt;servlet-mapping>
     &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
     &lt;url-pattern>/lbClassicStatus&lt;/url-pattern>
-  &lt;/servlet-mapping></p>
+  &lt;/servlet-mapping></pre>
    
    <p>The <code>ViewStatusMessages</code> servlet will viewable under
    the URL <code>http://host/yourWebapp/lbClassicStatus</code>
@@ -485,10 +489,10 @@ public class MyApp3 {
    StatusManager.
    </p>
 
-   <p class="source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
+   <pre class="prettyprint source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
    StatusManager statusManager = lc.getStatusManager();
    OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
-   statusManager.add(onConsoleListener);</p>
+   statusManager.add(onConsoleListener);</pre>
 
    <p>Note that the registered status listener will receive status
    events subsequent to its registration. It will not receive prior
@@ -499,11 +503,11 @@ public class MyApp3 {
 
   <p><em>Example 3.<span class="autoEx"/>: Registering a status listener (logback-examples/src/main/java/chapter3/onConsoleStatusListener.xml)</em></p>
 
-   <p class="source">&lt;configuration>
+   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
 
   ... the rest of the configuration file  
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
    <p>One may also register a status listener by setting the
    "logback.statusListenerClass" Java system property to the name of
@@ -611,7 +615,7 @@ public class MyApp3 {
   </p>
 
 <em>Example 3.<span class="autoEx"/>: Setting the level of a logger (logback-examples/src/main/java/chapter3/sample2.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -627,14 +631,14 @@ public class MyApp3 {
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>  
   
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>This new configuration will yield the following output, when
   invoked with the <em>MyApp3</em> application.
   </p>
 
-<div class="source"><pre>17:34:07.578 [main] INFO  chapter3.MyApp3 - Entering application.
-17:34:07.578 [main] INFO  chapter3.MyApp3 - Exiting application.</pre></div>
+<pre class="source">17:34:07.578 [main] INFO  chapter3.MyApp3 - Entering application.
+17:34:07.578 [main] INFO  chapter3.MyApp3 - Exiting application.</pre>
 
   <p>You can configure the levels of as many loggers as you wish.  In
   the next configuration file, we set the level of the
@@ -643,7 +647,7 @@ public class MyApp3 {
   </p>
 
 <em>Example 3.<span class="autoEx"/>: Setting the level of multiple loggers (logback-examples/src/main/java/chapter3/sample3.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -661,15 +665,15 @@ public class MyApp3 {
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>Running <code>MyApp3</code> with this configuration file will
   result in the following output on the console:
   </p>
 
-<div class="source"><pre>17:39:27.593 [main] INFO  chapter3.MyApp3 - Entering application.
+<p class="prettyprint source">17:39:27.593 [main] INFO  chapter3.MyApp3 - Entering application.
 17:39:27.593 [main] DEBUG chapter3.Foo - Did it again!
-17:39:27.593 [main] INFO  chapter3.MyApp3 - Exiting application.</pre></div>
+17:39:27.593 [main] INFO  chapter3.MyApp3 - Exiting application.</p>
 
    <p>The table below list the loggers and their levels, after
    <code>JoranConfigurator</code> has configured logback with the
@@ -723,7 +727,7 @@ public class MyApp3 {
 
   <em>Example 3.<span class="autoEx"/>: Logger level sample
   (logback-examples/src/main/java/chapter3/sample4.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
    class="ch.qos.logback.core.ConsoleAppender">
@@ -741,7 +745,7 @@ public class MyApp3 {
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>The following table lists the loggers and their levels after
   applying the <em>sample4.xml</em> configuration file.
@@ -830,7 +834,7 @@ public class MyApp3 {
   </p>
 
 <em>Example 3.<span class="autoEx"/>: Multiple loggers (logback-examples/src/main/java/chapter3/multiple.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
@@ -851,7 +855,7 @@ public class MyApp3 {
     <b>&lt;appender-ref ref="FILE" />
     &lt;appender-ref ref="STDOUT" /></b>
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>This configuration scripts defines two appenders called
   <em>FILE</em> and <em>STDOUT</em>.  The <em>FILE</em> appender logs
@@ -880,7 +884,7 @@ public class MyApp3 {
 
   <em>Example 3.<span class="autoEx"/>: Duplicate appender
   (logback-examples/src/main/java/chapter3/duplicate.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -895,18 +899,18 @@ public class MyApp3 {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>Running <code>MyApp3</code> with <em>duplicate.xml</em> will
   yield the following output:
   </p>
 
-<div class="source"><pre>14:25:36.343 [main] INFO  chapter3.MyApp3 - Entering application.
+<p class="source">14:25:36.343 [main] INFO  chapter3.MyApp3 - Entering application.
 14:25:36.343 [main] INFO  chapter3.MyApp3 - Entering application.
 14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
 14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
 14:25:36.359 [main] INFO  chapter3.MyApp3 - Exiting application.
-14:25:36.359 [main] INFO  chapter3.MyApp3 - Exiting application.</pre></div>
+14:25:36.359 [main] INFO  chapter3.MyApp3 - Exiting application.</p>
 
   <p>Notice the duplicated output. The appender named <em>STDOUT</em>
   is attached to two loggers, to root and to <em>chapter3</em>. Since
@@ -926,7 +930,7 @@ public class MyApp3 {
 
   <em>Example 3.<span class="autoEx"/>: Multiple appender
   (logback-examples/src/main/java/chapter3/restricted.xml)</em>
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
@@ -948,7 +952,7 @@ public class MyApp3 {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>In this example, the console appender will log all the messages
   (for all loggers in the system) whereas only logging request
@@ -966,7 +970,7 @@ public class MyApp3 {
   </p>
 
 <em>Example 3.<span class="autoEx"/>: Additivity flag (logback-examples/src/main/java/chapter3/additivityFlag.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>foo.log&lt;/file>
@@ -988,7 +992,7 @@ public class MyApp3 {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>This example, the appender named <em>FILE</em> is attached to the
   <em>chapter3.Foo</em> logger. Moreover, the <em>chapter3.Foo</em>
@@ -1028,7 +1032,7 @@ public class MyApp3 {
   (logback-examples/src/main/java/chapter3/variableSubstitution1.xml)
   </em>
 
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
 
@@ -1043,7 +1047,7 @@ public class MyApp3 {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 
   <p>The next example shows the use of a System property to achieve
@@ -1058,7 +1062,7 @@ public class MyApp3 {
   (logback-examples/src/main/java/chapter3/variableSubstitution2.xml)
   </em>
   
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
@@ -1071,7 +1075,7 @@ public class MyApp3 {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   
   <p>When multiple variables are needed, it may be more convenient to
@@ -1084,7 +1088,7 @@ public class MyApp3 {
   (logback-examples/src/main/java/chapter3/variableSubstitution3.xml)
   </em>
 
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;property file="src/main/java/chapter3/variables1.properties" /></b>
 
@@ -1099,7 +1103,7 @@ public class MyApp3 {
    &lt;root level="debug">
      &lt;appender-ref ref="FILE" />
    &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
    <p>This configuration file contains a reference to a file named
    <em>variables1.properties</em>.  The variables contained in that
@@ -1111,12 +1115,12 @@ public class MyApp3 {
    <em>Example 3.<span class="autoEx"/>: Variable file
    (logback-examples/src/main/java/chapter3/variables1.properties)</em>
 
-   <div class="source"><pre>USER_HOME=/home/sebastien</pre></div>
+   <pre class="source">USER_HOME=/home/sebastien</pre>
 
    <p>You may also reference a resource on the class path instead of a
    file.</p>
 
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;property resource="resource1.properties" /></b>
 
@@ -1131,10 +1135,7 @@ public class MyApp3 {
    &lt;root level="debug">
      &lt;appender-ref ref="FILE" />
    &lt;/root>
-&lt;/configuration></pre></div>
-
-
-   
+&lt;/configuration></pre>
 
    <h4>Nested variable substitution</h4>
 
@@ -1150,9 +1151,9 @@ public class MyApp3 {
    <em>Example 3.<span class="autoEx"/>: Nested variable references
    (logback-examples/src/main/java/chapter3/variables2.properties)</em>
 
-   <div class="source"><pre>USER_HOME=/home/sebastien
+   <pre class="source">USER_HOME=/home/sebastien
 fileName=myApp.log
-<b>destination=${USER_HOME}/${fileName}</b></pre></div>
+<b>destination=${USER_HOME}/${fileName}</b></pre>
 
     <p>Note that in the properties file above, "destination" is
     composed out of two other variables, namely "USER_HOME" and
@@ -1163,7 +1164,7 @@ fileName=myApp.log
     a separate file
     (logback-examples/src/main/java/chapter3/variableSubstitution4.xml)</em>
 
-    <div class="source"><pre>&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;property file="variables2.properties" />
 
@@ -1178,7 +1179,7 @@ fileName=myApp.log
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <h4><a name="defaultValuesForVariables"
   href="#defaultValuesForVariables">Default substitution values for
@@ -1206,14 +1207,14 @@ fileName=myApp.log
   <em>Example 3.<span class="autoEx"/>: File include
   (logback-examples/src/main/java/chapter3/containingConfig.xml)</em>
 
-  <div class="source"><pre>&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
   <b>&lt;include file="src/main/java/chapter3/includedConfig.xml"/></b>
 
   &lt;root level="DEBUG">
     &lt;appender-ref ref="includedConsole" />
   &lt;/root>
 
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>The target file MUST have its elements nested inside an
   <code>&lt;included></code> element. For example, a
@@ -1223,13 +1224,13 @@ fileName=myApp.log
   <em>Example 3.<span class="autoEx"/>: File include
   (logback-examples/src/main/java/chapter3/includedConfig.xml)</em>
 
-  <p class="source"><b class="green">&lt;included></b>
+  <pre class="source"><b class="green big">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;Pattern>"%d - %m%n"&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
-<b class="green">&lt;/included></b></p>
+<b class="green big">&lt;/included></b></pre>
 
   <p>The file to be included can be referenced as a file, as a URL or
   as a resource. To reference a file use the <span
@@ -1255,7 +1256,7 @@ fileName=myApp.log
   
   <em>Example 3.<span class="autoEx"/>: Set the context name and display it
   (logback-examples/src/main/java/chapter3/contextName.xml)</em>
-  <p class="source">&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -1266,7 +1267,7 @@ fileName=myApp.log
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
   <p>This last examples illustrates naming of the logger
   context. Adding the the <a
@@ -1285,7 +1286,7 @@ fileName=myApp.log
 
    <em>Example 3.<span class="autoEx"/>: Insert as properties env-entries obtained via JNDI
   (logback-examples/src/main/java/chapter3/insertFromJNDI.xml)</em>
-   <p class="source">&lt;configuration>
+   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
   <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
 
@@ -1298,7 +1299,7 @@ fileName=myApp.log
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
   <p>In this last example, the "java:comp/env/appName" env-entry is
   inserted as the <span class="variable">appName</span> property. Note

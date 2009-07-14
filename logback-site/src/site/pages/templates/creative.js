@@ -1,11 +1,11 @@
-document.write('		<table style="margin-left: 0em; padding-top=0ex" cellpadding="0" ');
+document.write('		<table style="margin-left: 0em; padding-top:0ex" cellpadding="0" ');
 document.write('           cellspacing="0" width="70%">');
 document.write('      <tr>');
 document.write('        <td>        ');
 document.write('          <p class="author">');
 document.write('            Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec');
 document.write('          <br/>');
-document.write('          Copyright &#169; 2000-2008, QOS.ch</p>');
+document.write('          Copyright &#169; 2000-2009, QOS.ch</p>');
 document.write('        </td>');
 document.write('        <td>');
 document.write('            <a rel="license"');
