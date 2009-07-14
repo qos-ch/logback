@@ -27,6 +27,16 @@ public class DurationTest  {
       Duration d = Duration.valueOf("12");
       assertEquals(12, d.getMilliseconds());
     }
+
+    {
+      Duration d = Duration.valueOf("159 milli");
+      assertEquals(159, d.getMilliseconds());
+    }
+    
+    {
+      Duration d = Duration.valueOf("15 millis");
+      assertEquals(15, d.getMilliseconds());
+    }
     
     {
       Duration d = Duration.valueOf("8 milliseconds");

@@ -13,8 +13,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.Context;
 
 public class StatusChecker {
 
@@ -24,6 +23,10 @@ public class StatusChecker {
     this.sm = sm;
   }
 
+  public StatusChecker(Context context) {
+    this.sm = context.getStatusManager();
+  }
+  
   public boolean isErrorFree() {
     int level = sm.getLevel();
     return level < Status.ERROR;
