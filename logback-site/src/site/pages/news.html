@@ -29,20 +29,39 @@
 
     <hr width="80%" align="center" />
 
-    <h3>Nth of July 2009 - Release of version 0.9.16</h3>
+    <h3>15th of July 2009 - Release of version 0.9.16</h3>
+
+    <p>In addition to nifty new features, this release contains
+    several important internal changes. Given the importance of some
+    of those internal changes, <em>this release may be less stable
+    than previous logback releases</em>.</p>
 
     <p>In logback-classic, <a
     href="xref/ch/qos/logback/classic/spi/LoggingEvent.html"><code>LoggingEvent</code></a>
     now implements the <a
     href="xref/ch/qos/logback/classic/spi/ILoggingEvent.html"><code>ILoggingEvent</code></a>
     interface. All logback-classic components expect to process
-    <code>ILoggingEvent</code> intances. Moreover, events which sent
+    <code>ILoggingEvent</code> instances. Moreover, events which sent
     to a remote host are now of type <a
     href="xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>.
     </p>
 
+    <p>Logback-classic will now <a
+    href="manual/configuration.html#autoScan">automatically
+    re-configure itself</a> when its configuration file is
+    modified. This enhancement was requested in <a
+    href="http://jira.qos.ch/browse/LBCORE-59">LBCORE-59</a> by
+    Michael Osipov.</p>
+
+    <p>FileAppender and its derived class RolllingFileAppender are now
+    based on a finer-grain synchronization model. This change is aimed
+    at reducing various synchronization related bugs, namely <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-135">LBCLASSIC-135</a>
+    and its various sub-tasks.
+    </p>
+
     <p>Fixed a bug in the localLevelReset() method in the
-    <code>Logger</code> class whcih inadvertently used the DEBUG_INT
+    <code>Logger</code> class which inadvertently used the DEBUG_INT
     value in the org.slf4j.spi.LocationAwareLogger interface instead
     of the DEBUG_INT value in ch.qos.logback.classic.Level class. The
     issue was first identified by Andy Ruch <a

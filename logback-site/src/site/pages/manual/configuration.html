@@ -359,12 +359,10 @@ public class Foo {
 
    <p>If instructed to do so, logback-classic will scan for changes in
    its configuration file and automatically reconfigure itself when
-   the said configuration file changes.
-   </p>
-   
-   <p>Logback-classic can be instructed to scan for changes in its
-   configuration file and to automatically re-configure itself by
-   setting the <span class="attr">scan</span> atrribute of the
+   the said configuration file changes. In order to instruct
+   logback-classic to scan for changes in its configuration file and
+   to automatically re-configure itself set the <span
+   class="attr">scan</span> atrribute of the
    <code>&lt;configuration></code> element to true, as shown next.
 
    </p>
@@ -375,8 +373,56 @@ public class Foo {
 <pre class="prettyprint source">
 &lt;configuration <b>scan="true"</b>> 
   ...
-&lt;/configuration> 
-</pre>
+&lt;/configuration> </pre>
+
+
+   <p>By default, the configuration file will be scanned for changes
+   once every minute. You can specify a different scanning period by
+   setting the <span class="attr">scanPeriod</span> attribute of the
+   <code>&lt;configuration></code> element. Values can be specified in
+   units of milliseconds, seconds, minutes or hours. Here is an
+   example:</p>
+
+  <em>Example 3.<span class="autoEx"/>: Specifying a different
+  scanning period
+  (logback-examples/src/main/java/chapter3/scan2.xml)</em>
+
+<pre class="prettyprint source">
+&lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
+  ...
+&lt;/configuration> </pre>
+
+   <p>If no unit of time is specified, then the unit of time is
+   assumed to be milliseconds, which is usually inappropriate. If you
+   change the default scanning period, do not forget to specify a time
+   unit.
+   </p>
+
+   <p>Behind the scenes, when you set the scan attribute to true, a
+   <code>TurboFilter</code> called <a
+   href="../xref/ch/qos/logback/classic/turbo/ReconfigureOnChangeFilter.html">ReconfigureOnChangeFilter</a>
+   will be installed. TurboFilters are described in a <a
+   href="filters.html#TurboFilter">later chapter</a>. As a
+   consequence, scanning is done "in-thread", that is anytime a
+   printing method of logger is invoked. For example, for a logger
+   named <code>myLogger</code>, when you write
+   "myLogger.debug("hello");", and if the scan attribute is set to
+   true, then <code>ReconfigureOnChangeFilter</code> will be
+   invoked. Moreover, the said filter will be invoked even if
+   <code>myLogger</code> is disabled for the debug level.
+   </p>
+
+   <p>Given that <code>ReconfigureOnChangeFilter</code> is invoked
+   every time <em>any</em> logger is invoked, the filter is
+   performance critical. In order to improve performance, instead of
+   checking whether to scan or not on every logger invocation,
+   <code>ReconfigureOnChangeFilter</code> is in reality "alive" only
+   once every 16 logging operations. In short, when a configuration
+   file changes, it will be automatically reloaded after a delay
+   determined by the scanning period and several logger invocations.
+   </p>
+
+   
 
    <h3>Invoking <code>JoranConfigurator</code> directly</h3>
 

@@ -33,7 +33,12 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   final static long INIT = System.currentTimeMillis();
   final static long SENTINEL = Long.MAX_VALUE;
 
-  final static long DEFAULT_REFRESH_PERIOD = 60 * 1000; // 1 minute
+  /**
+   * Scan for changes in configuration file once every minute.
+   */
+  // 1 minute - value mentioned in documentation
+  public final static long DEFAULT_REFRESH_PERIOD = 60 * 1000;
+
   long refreshPeriod = DEFAULT_REFRESH_PERIOD;
   File fileToScan;
   protected long nextCheck;
@@ -107,10 +112,10 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     nextCheck = now + refreshPeriod;
   }
 
-//  String stem() {
-//    return currentThreadName() + ", context " + context.getName()
-//        + ", nextCheck=" + (nextCheck - INIT);
-//  }
+  // String stem() {
+  // return currentThreadName() + ", context " + context.getName()
+  // + ", nextCheck=" + (nextCheck - INIT);
+  // }
 
   // This method is synchronized to prevent near-simultaneous re-configurations
   protected boolean changeDetected() {
