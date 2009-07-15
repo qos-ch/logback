@@ -350,10 +350,4 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
     this.maxCallerDataDepth = maxCallerDataDepth;
   }
-  
-  @Override
-  public String getName() {
-    return "resetCount="+resetCount;
-  }
-
 }
