@@ -259,14 +259,15 @@ public class JoranConfiguratorTest {
     File file = new File(configFileAsStr);
     file.setLastModified(System.currentTimeMillis());
 
+    Thread.sleep(100);
     // scanning requires 16 logs
     for (int i = 0; i < 16; i++) {
       logger.debug("after " + i);
     }
 
+    // StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree());
     assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
-    StatusPrinter.print(loggerContext);
   }
 }
