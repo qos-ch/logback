@@ -353,6 +353,31 @@ public class Foo {
 
    <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapter3.MyApp1</p>
 
+
+   <h3><a name="autoScan" href="#autoScan">Automatically reloading
+   configuration file upon modification</a></h3>
+
+   <p>If instructed to do so, logback-classic will scan for changes in
+   its configuration file and automatically reconfigure itself when
+   the said configuration file changes.
+   </p>
+   
+   <p>Logback-classic can be instructed to scan for changes in its
+   configuration file and to automatically re-configure itself by
+   setting the <span class="attr">scan</span> atrribute of the
+   <code>&lt;configuration></code> element to true, as shown next.
+
+   </p>
+  <em>Example 3.<span class="autoEx"/>: Scanning for changes in
+  configuration file and automatic re-configuraion
+  (logback-examples/src/main/java/chapter3/scan1.xml)</em>
+
+<pre class="prettyprint source">
+&lt;configuration <b>scan="true"</b>> 
+  ...
+&lt;/configuration> 
+</pre>
+
    <h3>Invoking <code>JoranConfigurator</code> directly</h3>
 
    <p>Logback relies on a configuration library called Joran which is
