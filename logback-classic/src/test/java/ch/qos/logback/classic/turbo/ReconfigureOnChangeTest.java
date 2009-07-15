@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.junit.Test;
+import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -21,18 +22,21 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusChecker;
 
 public class ReconfigureOnChangeTest {
-  LoggerContext loggerContext = new LoggerContext();
-  Logger logger = loggerContext.getLogger(this.getClass());
   final static int THREAD_COUNT = 5;
+  final static int LOOP_LEN = 1000*1000;
 
-  String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
+  
+  final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
       + "input/turbo/scan1.xml";
 
   static int TOTAL_TEST_DURATION = 2000;
+
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic
   static int SLEEP_BETWEEN_UPDATES = 300;
 
+  LoggerContext loggerContext = new LoggerContext();
+  Logger logger = loggerContext.getLogger(this.getClass());
   MultiThreadedHarness harness = new MultiThreadedHarness(TOTAL_TEST_DURATION);
 
   void configure(String file) throws JoranException {
@@ -71,37 +75,64 @@ public class ReconfigureOnChangeTest {
     assertTrue((effectiveResets * 1.1) >= (expectedRreconfigurations * 1.0));
   }
 
-  @Test
-  public void perfTest() throws MalformedURLException {
+  ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(loggerContext);
     File file = new File(SCAN1_FILE_AS_STR);
     loggerContext.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN,
         file.toURI().toURL());
     rocf.start();
+    return rocf;
+  }
+  
+  @Test
+  public void directPerfTest() throws MalformedURLException {
+    ReconfigureOnChangeFilter rocf = initROCF();
     assertTrue(rocf.isStarted());
-    loggerContext.addTurboFilter(rocf);
     
-    final int loopLen = 1000*1000;
-    
-    loop(loopLen, rocf);
-    loop(loopLen, rocf);
-    double avg = loop(loopLen, rocf);
+    directLoop(rocf);
+    double avg = directLoop(rocf);
     System.out.println(avg);
-    // the reference was computed on Orion (Ceki's computer)
-    //long referencePerf = 5000;
-    //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS); 
+    //the reference was computed on Orion (Ceki's computer)
+    long referencePerf = 18;
+    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS); 
   }
 
-  public double loop(int loopLen, ReconfigureOnChangeFilter rocf) {
+  public double directLoop(ReconfigureOnChangeFilter rocf) {
     long start = System.nanoTime();
-    for (int i = 0; i < loopLen; i++) {
-        //logger.debug("hello");
+    for (int i = 0; i < LOOP_LEN; i++) {
       rocf.decide(null, logger, Level.DEBUG, " ", null, null);
     }
     long end = System.nanoTime();
-    return (end - start) / (1.0d * loopLen);
+    return (end - start) / (1.0d * LOOP_LEN);
   }
+  
+
+  @Test
+  public void indirectPerfTest() throws MalformedURLException {
+    ReconfigureOnChangeFilter rocf = initROCF();
+    assertTrue(rocf.isStarted());
+    loggerContext.addTurboFilter(rocf);
+    logger.setLevel(Level.ERROR);
+    
+    indirectLoop();
+    double avg = indirectLoop();
+    System.out.println(avg);
+    //the reference was computed on Orion (Ceki's computer)
+    long referencePerf = 68;
+    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS); 
+  }
+
+  
+  public double indirectLoop() {
+    long start = System.nanoTime();
+    for (int i = 0; i < LOOP_LEN; i++) {
+      logger.debug("hello");
+    }
+    long end = System.nanoTime();
+    return (end - start) / (1.0d * LOOP_LEN);
+  }
+  
   
   class Updater extends RunnableWithCounterAndDone {
     File configFile;
