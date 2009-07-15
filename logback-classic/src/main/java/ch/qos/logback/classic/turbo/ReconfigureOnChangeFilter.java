@@ -30,6 +30,9 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class ReconfigureOnChangeFilter extends TurboFilter {
 
+  final static long INIT = System.currentTimeMillis();
+  final static long SENTINEL = Long.MAX_VALUE;
+
   final static long DEFAULT_REFRESH_PERIOD = 60 * 1000; // 1 minute
   long refreshPeriod = DEFAULT_REFRESH_PERIOD;
   File fileToScan;
@@ -43,15 +46,17 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     if (url != null) {
       fileToScan = convertToFile(url);
       if (fileToScan != null) {
-        long inSeconds = refreshPeriod / 1000;
-        addInfo("Will scan for changes in file [" + fileToScan + "] every "
-            + inSeconds + " seconds"+ " Thread "+currentThreadName());
-        lastModified = fileToScan.lastModified();
-        updateNextCheck(System.currentTimeMillis());
+        synchronized (context) {
+          long inSeconds = refreshPeriod / 1000;
+          addInfo("Will scan for changes in file [" + fileToScan + "] every "
+              + inSeconds + " seconds. "+stem());
+          lastModified = fileToScan.lastModified();
+          updateNextCheck(System.currentTimeMillis());
+        }
         super.start();
       }
     } else {
-      addError("Could not find URL of file to scan. Thread "+currentThreadName());
+      addError("Could not find URL of file to scan.");
     }
   }
 
@@ -86,11 +91,15 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    boolean changed = changeDetected();
-    if (changed) {
-      addInfo("[" + fileToScan + "] change detected. Reconfiguring "+currentThreadName());
-      addInfo("Resetting and reconfiguring context [" + context.getName() + "]");
-      reconfigure();
+    synchronized (context) {
+      boolean changed = changeDetected();
+      if (changed) {
+        addInfo("[" + fileToScan + "] change detected. Reconfiguring. "+stem());
+
+        addInfo("Resetting and reconfiguring context [" + context.getName()
+            + "]");
+        reconfigure();
+      }
     }
     return FilterReply.NEUTRAL;
   }
@@ -99,12 +108,17 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     nextCheck = now + refreshPeriod;
   }
 
+  String stem() {
+    return currentThreadName() + ", context " + context.getName()
+        + ", nextCheck=" + (nextCheck - INIT);
+  }
+
   // This method is synchronized to prevent near-simultaneous re-configurations
-  protected synchronized boolean changeDetected() {
+  protected boolean changeDetected() {
     long now = System.currentTimeMillis();
     if (now >= nextCheck) {
       updateNextCheck(now);
-      return (lastModified != fileToScan.lastModified());
+      return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
     }
     return false;
   }
@@ -112,7 +126,19 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   String currentThreadName() {
     return Thread.currentThread().getName();
   }
+
+  void disableSubsequentRecofiguration() {
+    lastModified = SENTINEL;
+  }
+
   protected void reconfigure() {
+    // Even though this method resets the loggerContext, which clears the list
+    // of turbo filters including this instance, it is still possible for this
+    // instance to be subsequently invoked by another thread if it was already
+    // executing when the context was reset.
+    // We prevent multiple reconfigurations (for the same file change event) by
+    // setting an appropriate sentinel value for lastMofidied field.
+    disableSubsequentRecofiguration();
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(context);
     LoggerContext lc = (LoggerContext) context;

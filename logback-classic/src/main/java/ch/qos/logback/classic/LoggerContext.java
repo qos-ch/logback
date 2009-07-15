@@ -66,6 +66,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   boolean started = false;
 
+  int resetCount = 0;
+  
   public LoggerContext() {
     super();
     this.loggerCache = new Hashtable<String, Logger>();
@@ -207,6 +209,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    */
   @Override
   public void reset() {
+    resetCount++;
     super.reset();
     root.recursiveReset();
     resetTurboFilterList();
@@ -346,6 +349,11 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
     this.maxCallerDataDepth = maxCallerDataDepth;
+  }
+  
+  @Override
+  public String getName() {
+    return "resetCount="+resetCount;
   }
 
 }
