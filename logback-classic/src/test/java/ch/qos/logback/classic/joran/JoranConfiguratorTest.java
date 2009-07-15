@@ -32,7 +32,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
