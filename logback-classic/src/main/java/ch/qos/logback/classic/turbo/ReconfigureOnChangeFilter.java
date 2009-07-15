@@ -49,7 +49,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
         synchronized (context) {
           long inSeconds = refreshPeriod / 1000;
           addInfo("Will scan for changes in file [" + fileToScan + "] every "
-              + inSeconds + " seconds. "+stem());
+              + inSeconds + " seconds. ");
           lastModified = fileToScan.lastModified();
           updateNextCheck(System.currentTimeMillis());
         }
@@ -71,12 +71,12 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     }
   }
 
-  // a counter of the number of time the decide method is called
+  // The next fields counts the number of time the decide method is called
+  //
   // IMPORTANT: This field can be updated by multiple threads. It follows that
-  // its values may not be incremented sequentially. However, we don't care
+  // its values may *not* be incremented sequentially. However, we don't care
   // about the actual value of the field except that from time to time the
   // expression (invocationCounter++ & 0xF) == 0xF) should be true.
-
   private int invocationCounter = 0;
 
   @Override
@@ -94,8 +94,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     synchronized (context) {
       boolean changed = changeDetected();
       if (changed) {
-        addInfo("[" + fileToScan + "] change detected. Reconfiguring. "+stem());
-
+        addInfo("[" + fileToScan + "] change detected. Reconfiguring. ");
         addInfo("Resetting and reconfiguring context [" + context.getName()
             + "]");
         reconfigure();
@@ -108,10 +107,10 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     nextCheck = now + refreshPeriod;
   }
 
-  String stem() {
-    return currentThreadName() + ", context " + context.getName()
-        + ", nextCheck=" + (nextCheck - INIT);
-  }
+//  String stem() {
+//    return currentThreadName() + ", context " + context.getName()
+//        + ", nextCheck=" + (nextCheck - INIT);
+//  }
 
   // This method is synchronized to prevent near-simultaneous re-configurations
   protected boolean changeDetected() {
