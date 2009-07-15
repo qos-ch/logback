@@ -72,7 +72,8 @@ public class ReconfigureOnChangeTest {
     // the number of effective resets must be equal or less than expectedRreconfigurations
     assertTrue(effectiveResets <=  expectedRreconfigurations);
     // however, there should be some effective resets
-    assertTrue((effectiveResets * 1.1) >= (expectedRreconfigurations * 1.0));
+    String failMsg = "effective="+effectiveResets+", expected="+expectedRreconfigurations;
+    assertTrue(failMsg, (effectiveResets * 1.1) >= (expectedRreconfigurations * 1.0));
   }
 
   ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
