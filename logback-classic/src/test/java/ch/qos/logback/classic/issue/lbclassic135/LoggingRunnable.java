@@ -15,15 +15,19 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 public class LoggingRunnable extends RunnableWithCounterAndDone {
 
   Logger logger;
-  
+
   public LoggingRunnable(Logger logger) {
     this.logger = logger;
   }
-  
+
   public void run() {
-    while(!isDone()) {
+    while (!isDone()) {
       logger.info("hello world ABCDEFGHI");
       counter++;
+      // don't hog the CPU forever
+      if (counter % 100 == 0) {
+        Thread.yield();
+      }
     }
   }
 

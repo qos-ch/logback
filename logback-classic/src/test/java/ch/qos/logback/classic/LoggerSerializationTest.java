@@ -33,7 +33,6 @@ public class LoggerSerializationTest {
   public void tearDown() throws Exception {
     lc = null;
     logger = null;
-    oos.close();
   }
   
   @Test
@@ -47,9 +46,13 @@ public class LoggerSerializationTest {
   private Foo writeAndRead(Foo foo) throws IOException,
       ClassNotFoundException {
     oos.writeObject(foo);
+    oos.flush();
+    oos.close();
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     inputStream = new ObjectInputStream(bis);
 
-    return (Foo) inputStream.readObject();
+    Foo fooBack =  (Foo) inputStream.readObject();
+    inputStream.close();
+    return fooBack;
   }
 }
