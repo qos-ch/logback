@@ -99,7 +99,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     synchronized (context) {
       boolean changed = changeDetected();
       if (changed) {
-        addInfo("[" + fileToScan + "] change detected. Reconfiguring. ");
+        addInfo("Detected change in [" + fileToScan + "]");
         addInfo("Resetting and reconfiguring context [" + context.getName()
             + "]");
         reconfigure();
@@ -112,10 +112,10 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     nextCheck = now + refreshPeriod;
   }
 
-  // String stem() {
-  // return currentThreadName() + ", context " + context.getName()
-  // + ", nextCheck=" + (nextCheck - INIT);
-  // }
+//  String stem() {
+//    return currentThreadName() + ", context " + context.getName()
+//        + ", nextCheck=" + (nextCheck - INIT);
+//  }
 
   // This method is synchronized to prevent near-simultaneous re-configurations
   protected boolean changeDetected() {
