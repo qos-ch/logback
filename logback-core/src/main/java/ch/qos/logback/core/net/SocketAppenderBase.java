@@ -133,7 +133,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
         msg += " We will try again later.";
         fireConnector(); // fire the connector thread
       }
-      addError(msg, e);
+      addWarn(msg, e);
     }
   }
 
