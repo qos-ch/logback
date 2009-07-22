@@ -50,10 +50,10 @@ public class PackagingDataCalculator {
   }
 
   public void calculate(IThrowableProxy tp) {
-    while(tp != null) {
+    while (tp != null) {
       populateFrames(tp.getStackTraceElementProxyArray());
       tp = tp.getCause();
-    } 
+    }
   }
 
   void populateFrames(StackTraceElementProxy[] stepArray) {
@@ -134,7 +134,7 @@ public class PackagingDataCalculator {
   }
 
   String getImplementationVersion(Class type) {
-    if(type == null) {
+    if (type == null) {
       return "na";
     }
     Package aPackage = type.getPackage();
@@ -194,6 +194,8 @@ public class PackagingDataCalculator {
       return cl.loadClass(className);
     } catch (ClassNotFoundException e1) {
       return null;
+    } catch (NoClassDefFoundError e1) {
+      return null;
     } catch (Exception e) {
       e.printStackTrace(); // this is unexpected
       return null;
@@ -203,8 +205,9 @@ public class PackagingDataCalculator {
 
   /**
    * 
-   * @param lastGuaranteedClassLoader may be null
-   *                
+   * @param lastGuaranteedClassLoader
+   *                may be null
+   * 
    * @param className
    * @return
    */
@@ -225,6 +228,8 @@ public class PackagingDataCalculator {
     try {
       return Class.forName(className);
     } catch (ClassNotFoundException e1) {
+      return null;
+    } catch (NoClassDefFoundError e1) {
       return null;
     } catch (Exception e) {
       e.printStackTrace(); // this is unexpected

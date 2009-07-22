@@ -13,6 +13,10 @@ package ch.qos.logback.classic.spi;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.junit.Test;
 
 import ch.qos.logback.classic.util.TeztHelper;
@@ -92,26 +96,29 @@ public class PackagingDataCalculatorTest {
 
   }
 
+  private ClassLoader makeBogusClassLoader() throws MalformedURLException {
+    ClassLoader currentClassLoader = this.getClass().getClassLoader();
+    BogusClassLoader bcl = new BogusClassLoader(new URL[] {},
+        currentClassLoader);
+    return bcl;
+  }
+
   @Test
   // Test http://jira.qos.ch/browse/LBCLASSIC-125
-  public void noClassDefFoundError() {
+  public void noClassDefFoundError_LBCLASSIC_125Test()
+      throws MalformedURLException {
+    ClassLoader cl = (URLClassLoader) makeBogusClassLoader();
+    Thread.currentThread().setContextClassLoader(cl);
     Throwable t = new Throwable("x");
     ThrowableProxy tp = new ThrowableProxy(t);
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
-    StackTraceElement bogusSTE = new StackTraceElement(MyBogus.class.getName(),
-        "myMethod", "myFile", 12);
-    StackTraceElementProxy bogusSTEP;// = new StackTraceElementProxy(bogusSTE);
-    System.out.println(stepArray.length);
-    for (int i = 0; i < stepArray.length; i++) {
-      System.out.println(i);
-      
-      stepArray[i] = new StackTraceElementProxy(bogusSTE);
-    }
+    StackTraceElement bogusSTE = new StackTraceElement("com.Bogus", "myMethod",
+        "myFile", 12);
+    stepArray[0] = new StackTraceElementProxy(bogusSTE);
     PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
+    // NoClassDefFoundError should be caught
     pdc.calculate(tp);
-    System.out.println(ThrowableProxyUtil.asString(tp));
-    
-    System.out.println(new MyBogus());
-    
+
   }
+
 }
