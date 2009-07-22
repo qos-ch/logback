@@ -47,7 +47,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
   RenameUtil util = new RenameUtil();
-  String latestActiveFileName;
   Future<?> future;
 
   int maxHistory = NO_DELETE_HISTORY;
@@ -221,15 +220,20 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    * 
    */
   public String getActiveFileName() {
-    if (getParentsRawFileProperty() == null) {
-      String newName = activeFileNamePattern.convertDate(lastCheck);
-      latestActiveFileName = newName;
-      return newName;
+    String parentsRawFileProperty = getParentsRawFileProperty();
+    
+    if (parentsRawFileProperty != null) {
+      return parentsRawFileProperty;
     } else {
-      return getParentsRawFileProperty();
-    }
+      return getLatestPeriodsFileName();
+    } 
   }
 
+  // get the active file name for the current (latest) period
+  private String getLatestPeriodsFileName() {
+    return activeFileNamePattern.convertDate(lastCheck);
+  }
+  
   public boolean isTriggeringEvent(File activeFile, final E event) {
     long time = getCurrentTime();
 
