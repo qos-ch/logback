@@ -17,6 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses( { ContextListenerTest.class, CallerDataTest.class,
     LoggerComparatorTest.class, LoggingEventSerializationTest.class,
     LoggingEventSerializationPerfTest.class, ThrowableProxyTest.class,
-    BasicCPDCTest.class })
+    PackagingDataCalculatorTest.class })
 public class PackageTest  {
 }
