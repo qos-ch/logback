@@ -57,7 +57,7 @@ public class PackagingDataCalculator {
   }
 
   void populateFrames(StackTraceElementProxy[] stepArray) {
-    // in the initial part of this method we populate package informnation for
+    // in the initial part of this method we populate package information for
     // common stack frames
     final Throwable t = new Throwable("local stack reference");
     final StackTraceElement[] localteSTEArray = t.getStackTrace();
