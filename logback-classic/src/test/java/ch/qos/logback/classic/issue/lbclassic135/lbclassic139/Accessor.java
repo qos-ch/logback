@@ -21,6 +21,7 @@ public class Accessor extends RunnableWithCounterAndDone {
 
   public void run() {
     System.out.println("enter Accessor.run");
+    Thread.yield();
     while (!isDone()) {
       logger.info("Current worker status is: {}.", worker);
     }
