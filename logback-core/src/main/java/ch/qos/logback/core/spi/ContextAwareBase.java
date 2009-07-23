@@ -16,8 +16,6 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 
-
-
 /**
  * A helper class that implements ContextAware methods. A class can implement
  * the ContextAware interface by deriving from this class.
@@ -47,6 +45,16 @@ public class ContextAwareBase implements ContextAware {
     return context.getStatusManager();
   }
 
+  /**
+   * The declared origin of status messages. By default 'this'. Derived classes may override this
+   * method to declare other origin.
+   * 
+   * @return the declared origin, by default 'this'
+   */ 
+  protected Object getDeclaredOrigin() {
+    return this;
+  }
+
   public void addStatus(Status status) {
     if (context == null) {
       if (noContextWarning++ == 0) {
@@ -61,26 +69,26 @@ public class ContextAwareBase implements ContextAware {
   }
 
   public void addInfo(String msg) {
-    addStatus(new InfoStatus(msg, this));
+    addStatus(new InfoStatus(msg, getDeclaredOrigin()));
   }
 
   public void addInfo(String msg, Throwable ex) {
-    addStatus(new InfoStatus(msg, this, ex));
+    addStatus(new InfoStatus(msg, getDeclaredOrigin(), ex));
   }
 
   public void addWarn(String msg) {
-    addStatus(new WarnStatus(msg, this));
+    addStatus(new WarnStatus(msg, getDeclaredOrigin()));
   }
 
   public void addWarn(String msg, Throwable ex) {
-    addStatus(new WarnStatus(msg, this, ex));
+    addStatus(new WarnStatus(msg, getDeclaredOrigin(), ex));
   }
 
   public void addError(String msg) {
-    addStatus(new ErrorStatus(msg, this));
+    addStatus(new ErrorStatus(msg, getDeclaredOrigin()));
   }
 
   public void addError(String msg, Throwable ex) {
-    addStatus(new ErrorStatus(msg, this, ex));
+    addStatus(new ErrorStatus(msg, getDeclaredOrigin(), ex));
   }
 }

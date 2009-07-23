@@ -12,7 +12,6 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
@@ -34,7 +33,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   int maxIndex;
   int minIndex;
   RenameUtil util = new RenameUtil();
-
+  Compressor compressor;
+  
   /**
    * It's almost always a bad idea to have a large window size, say over 12.
    */
@@ -89,6 +89,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
           + fileNamePattern.getPattern()
           + "] does not contain a valid IntegerToken");
     }
+
+    compressor = new Compressor(compressionMode);
+    compressor.setContext(this.context);
   }
 
   public void rollover() throws RolloverFailure {
@@ -116,23 +119,14 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       }
 
       // move active file name to min
-      Compressor compressor;
       switch (compressionMode) {
       case NONE:
         util.rename(getActiveFileName(), fileNamePattern
             .convertInt(minIndex));
         break;
       case GZ:
-        compressor = new Compressor(CompressionMode.GZ,
-            getActiveFileName(), fileNamePattern.convertInt(minIndex));
-        compressor.setContext(this.context);
-        compressor.compress();
-        break;
       case ZIP:
-        compressor = new Compressor(CompressionMode.ZIP,
-            getActiveFileName(), fileNamePattern.convertInt(minIndex));
-        compressor.setContext(this.context);
-        compressor.compress();
+        compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex));
         break;
       }
     }

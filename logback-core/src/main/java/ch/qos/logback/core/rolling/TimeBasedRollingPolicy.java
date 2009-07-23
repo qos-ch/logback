@@ -46,6 +46,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   Date lastCheck = null;
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
+  Compressor compressor;
   RenameUtil util = new RenameUtil();
   Future<?> future;
 
@@ -88,12 +89,14 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
           + "] does not contain a valid DateToken");
     }
 
+    compressor = new Compressor(compressionMode);
+    compressor.setContext(context);
+
     int len = fileNamePatternStr.length();
     switch (compressionMode) {
     case GZ:
       activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
-          0, len - 3), this.context);
-
+          0, len - 3), this.context);;
       break;
     case ZIP:
       activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
@@ -102,6 +105,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     case NONE:
       activeFileNamePattern = fileNamePattern;
     }
+    
     addInfo("Will use the pattern " + activeFileNamePattern
         + " for the active file");
 
@@ -154,7 +158,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       if(getParentsRawFileProperty() == null) {
         doCompression(false, elapsedPeriodsFileName, elapsedPeriodsFileName);
       } else {
-        doCompression(true, elapsedPeriodsFileName, elapsedPeriodsFileName);
+        doCompression(true, null, elapsedPeriodsFileName);
       }
     }
     
@@ -165,7 +169,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
   void doCompression(boolean renameToTempFile, String nameOfFile2Compress,
       String nameOfCompressedFile) throws RolloverFailure {
-    Compressor compressor = null;
 
     if (renameToTempFile) {
       String tmpTarget = nameOfFile2Compress + System.nanoTime() + ".tmp";
@@ -173,24 +176,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       nameOfFile2Compress = tmpTarget;
     }
 
-    switch (compressionMode) {
-    case GZ:
-      addInfo("GZIP compressing [" + nameOfFile2Compress + "].");
-      compressor = new Compressor(CompressionMode.GZ, nameOfFile2Compress,
-          nameOfCompressedFile);
-      compressor.setContext(this.context);
-      break;
-    case ZIP:
-      addInfo("ZIP compressing [" + nameOfFile2Compress + "]");
-      compressor = new Compressor(CompressionMode.ZIP, nameOfFile2Compress,
-          nameOfCompressedFile);
-      compressor.setContext(this.context);
-      break;
-    }
-
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-    future = ac.compressAsynchronously();
-
+    future = ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile);
   }
 
   /**

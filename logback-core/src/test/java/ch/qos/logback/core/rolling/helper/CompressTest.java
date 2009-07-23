@@ -1,7 +1,7 @@
 /**
- * LOGBack: the generic, reliable, fast and flexible logging framework.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -9,7 +9,6 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -24,9 +23,9 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.CoreTestConstants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * @author Ceki Gulcu
@@ -72,14 +71,13 @@ public class CompressTest  {
 
   @Test
   public void test1() throws Exception {
-    Compressor compressor = new Compressor(CompressionMode.GZ,
-        CoreTestConstants.TEST_DIR_PREFIX + "input/compress1.txt",
-        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
+    Compressor compressor = new Compressor(CompressionMode.GZ);
     compressor.setContext(context);
-    compressor.compress();
+    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX + "input/compress1.txt",
+        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
 
-    StatusPrinter.print(context.getStatusManager());
-    assertEquals(0, context.getStatusManager().getCount());
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
     assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX
         + "compress1.txt.gz", CoreTestConstants.TEST_DIR_PREFIX
         + "witness/compress1.txt.gz"));
@@ -87,14 +85,14 @@ public class CompressTest  {
 
   @Test
   public void test2() throws Exception {
-    Compressor compressor = new Compressor(CompressionMode.GZ,
-        CoreTestConstants.TEST_DIR_PREFIX + "input/compress2.txt",
-        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt");
+    Compressor compressor = new Compressor(CompressionMode.GZ);
     compressor.setContext(context);
-    compressor.compress();
+    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX + "input/compress2.txt",
+        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt");
 
-    StatusPrinter.print(context.getStatusManager());
-    assertEquals(0, context.getStatusManager().getCount());
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
+
     assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX
         + "compress2.txt.gz", CoreTestConstants.TEST_DIR_PREFIX
         + "witness/compress2.txt.gz"));
@@ -102,13 +100,14 @@ public class CompressTest  {
 
   @Test
   public void test3() throws Exception {
-    Compressor compressor = new Compressor(CompressionMode.ZIP, 
+    Compressor compressor = new Compressor(CompressionMode.ZIP);
+    compressor.setContext(context);
+    compressor.compress( 
         CoreTestConstants.TEST_DIR_PREFIX + "input/compress3.txt",
         CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt");
-    compressor.setContext(context);
-    compressor.compress();
-    StatusPrinter.print(context.getStatusManager());
-    assertEquals(0, context.getStatusManager().getCount());
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
+
     // assertTrue(Compare.compare("output/compress3.txt.zip",
     // "witness/compress3.txt.zip"));
   }

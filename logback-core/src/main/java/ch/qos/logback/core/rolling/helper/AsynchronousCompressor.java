@@ -6,16 +6,18 @@ import java.util.concurrent.Future;
 
 public class AsynchronousCompressor {
   Compressor compressor;
-  
+
   public AsynchronousCompressor(Compressor compressor) {
     this.compressor = compressor;
   }
-  
-  public Future<?> compressAsynchronously() {
+
+  public Future<?> compressAsynchronously(String nameOfFile2Compress,
+      String nameOfCompressedFile) {
     ExecutorService executor = Executors.newScheduledThreadPool(1);
-    Future<?> future = executor.submit(new CompressionRunnable(compressor));
+    Future<?> future = executor.submit(new CompressionRunnable(compressor,
+        nameOfFile2Compress, nameOfCompressedFile));
     executor.shutdown();
     return future;
   }
-  
+
 }

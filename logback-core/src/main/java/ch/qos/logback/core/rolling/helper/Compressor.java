@@ -30,30 +30,33 @@ import ch.qos.logback.core.status.WarnStatus;
 public class Compressor extends ContextAwareBase {
 
   final CompressionMode compressionMode;
-  final String nameOfFile2Compress;
-  final String nameOfCompressedFile;
+  //final String nameOfFile2Compress;
+  //final String nameOfCompressedFile;
 
-  
-  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress, String nameOfCompressedFile) {
+
+  public Compressor(CompressionMode compressionMode) {
     this.compressionMode = compressionMode;
-    this.nameOfFile2Compress = nameOfFile2Compress;
-    this.nameOfCompressedFile = nameOfCompressedFile;
   }
   
-  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress) {
-    // Here we rely on the fact that the two argument version of ZIPCompress/GZCompress
-    // automatically adds a .zip/.gz extension to the second argument
-    this(compressionMode, nameOfFile2Compress, nameOfFile2Compress);
-  }
+  
+//  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress, String nameOfCompressedFile) {
+//    this.compressionMode = compressionMode;
+//    //this.nameOfFile2Compress = nameOfFile2Compress;
+//    //this.nameOfCompressedFile = nameOfCompressedFile;
+//  }
 
-  public void compress() {
+  public void compress( String nameOfFile2Compress, String nameOfCompressedFile) {
     switch(compressionMode) {
     case GZ: 
+      addInfo("GZ compressing [" + nameOfFile2Compress + "].");
       gzCompress(nameOfFile2Compress, nameOfCompressedFile);
       break;
     case ZIP:
+      addInfo("ZIP compressing [" + nameOfFile2Compress + "].");
       zipCompress(nameOfFile2Compress, nameOfCompressedFile);
       break;
+    case NONE:
+      throw new UnsupportedOperationException("compress method called in NONE compression mode");
     }
   }
 
@@ -161,4 +164,5 @@ public class Compressor extends ContextAwareBase {
   public String toString() {
     return "c.q.l.core.rolling.helper.Compress";
   }
+
 }
