@@ -38,6 +38,11 @@
     reported by Roland Klein and independently by Didier Besset.
     </p>
 
+    <p>Append mode is now mandatory in
+    <code>RollingFileAppender</code>. This was already the default and
+    truncation mode is unreasonable in most cases. For example, in
+    truncate mode when an application stops and is quickly re-started,
+    any pre-existing log file for the current period will be lost.</p>
 
     <hr width="80%" align="center" />
 
