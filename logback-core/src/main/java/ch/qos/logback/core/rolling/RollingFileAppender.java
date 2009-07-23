@@ -45,7 +45,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       addWarn("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_tp");
       return;
     }
-
+    
+    // we don't want to void existing log files
+    if(!append) {
+      addWarn("Append mode is mandatory for RollingFileAppender");  
+      append = true;
+    }
+    
     if (rollingPolicy == null) {
       addError("No RollingPolicy was set for the RollingFileAppender named "
           + getName());
