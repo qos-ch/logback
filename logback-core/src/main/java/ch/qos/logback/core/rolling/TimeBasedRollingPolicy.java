@@ -78,7 +78,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     } else {
       addWarn(FNP_NOT_SET);
       addWarn(CoreConstants.SEE_FNP_NOT_SET);
-      throw new IllegalStateException(FNP_NOT_SET + CoreConstants.SEE_FNP_NOT_SET);
+      throw new IllegalStateException(FNP_NOT_SET
+          + CoreConstants.SEE_FNP_NOT_SET);
     }
 
     DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
@@ -96,7 +97,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     switch (compressionMode) {
     case GZ:
       activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
-          0, len - 3), this.context);;
+          0, len - 3), this.context);
+      ;
       break;
     case ZIP:
       activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
@@ -105,7 +107,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     case NONE:
       activeFileNamePattern = fileNamePattern;
     }
-    
+
     addInfo("Will use the pattern " + activeFileNamePattern
         + " for the active file");
 
@@ -149,35 +151,36 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
     // when rollover is called the elapsed period's file has
     // been already closed. This is a working assumption of this method.
-    
-    if(compressionMode == CompressionMode.NONE) {
+
+    if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
         util.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
       }
     } else {
-      if(getParentsRawFileProperty() == null) {
-        doCompression(false, elapsedPeriodsFileName, elapsedPeriodsFileName);
+      if (getParentsRawFileProperty() == null) {
+        future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName);
       } else {
-        doCompression(true, null, elapsedPeriodsFileName);
+        future = renamedRawAndAsyncCompress(elapsedPeriodsFileName);
       }
     }
-    
+
     if (tbCleaner != null) {
       tbCleaner.clean(new Date(getCurrentTime()));
     }
   }
 
-  void doCompression(boolean renameToTempFile, String nameOfFile2Compress,
+  Future asyncCompress(String nameOfFile2Compress,
       String nameOfCompressedFile) throws RolloverFailure {
-
-    if (renameToTempFile) {
-      String tmpTarget = nameOfFile2Compress + System.nanoTime() + ".tmp";
-      util.rename(getParentsRawFileProperty(), tmpTarget);
-      nameOfFile2Compress = tmpTarget;
-    }
-
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-    future = ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile);
+    return ac.compressAsynchronously(nameOfFile2Compress,
+        nameOfCompressedFile);
+  }
+
+  Future renamedRawAndAsyncCompress(String nameOfCompressedFile) throws RolloverFailure {
+    String parentsRawFile = getParentsRawFileProperty();
+    String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
+    util.rename(parentsRawFile, tmpTarget);
+    return asyncCompress(tmpTarget, nameOfCompressedFile);
   }
 
   /**
@@ -202,19 +205,19 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    */
   public String getActiveFileName() {
     String parentsRawFileProperty = getParentsRawFileProperty();
-    
+
     if (parentsRawFileProperty != null) {
       return parentsRawFileProperty;
     } else {
       return getLatestPeriodsFileName();
-    } 
+    }
   }
 
   // get the active file name for the current (latest) period
   private String getLatestPeriodsFileName() {
     return activeFileNamePattern.convertDate(lastCheck);
   }
-  
+
   public boolean isTriggeringEvent(File activeFile, final E event) {
     long time = getCurrentTime();
 
