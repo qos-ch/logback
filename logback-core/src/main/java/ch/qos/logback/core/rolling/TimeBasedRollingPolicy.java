@@ -130,12 +130,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  
-  public CompressionMode getCompressionMode() {
-    return compressionMode;
-  }
-
-  
   // allow Test classes to act on the lastCheck field to simulate old
   // log files needing rollover
   void setLastCheck(Date _lastCheck) {

@@ -162,8 +162,4 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public void setMinIndex(int minIndex) {
     this.minIndex = minIndex;
   }
-
-  public CompressionMode getCompressionMode() {
-    return compressionMode;
-  }
 }

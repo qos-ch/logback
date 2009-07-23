@@ -60,6 +60,10 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     return fileNamePatternStr;
   }
   
+  public CompressionMode getCompressionMode() {
+    return compressionMode;
+  }
+
   public boolean isStarted() {
     return started;
   }
