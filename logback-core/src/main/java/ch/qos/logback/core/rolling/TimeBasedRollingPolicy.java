@@ -47,7 +47,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
   Compressor compressor;
-  RenameUtil util = new RenameUtil();
+  RenameUtil renameUtil = new RenameUtil();
   Future<?> future;
 
   int maxHistory = NO_DELETE_HISTORY;
@@ -69,7 +69,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
   public void start() {
     // set the LR for our utility object
-    util.setContext(this.context);
+    renameUtil.setContext(this.context);
 
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
@@ -154,7 +154,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
     if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
-        util.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
+        renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
       }
     } else {
       if (getParentsRawFileProperty() == null) {
@@ -179,7 +179,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   Future renamedRawAndAsyncCompress(String nameOfCompressedFile) throws RolloverFailure {
     String parentsRawFile = getParentsRawFileProperty();
     String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
-    util.rename(parentsRawFile, tmpTarget);
+    renameUtil.rename(parentsRawFile, tmpTarget);
     return asyncCompress(tmpTarget, nameOfCompressedFile);
   }
 
