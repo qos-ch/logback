@@ -54,7 +54,6 @@ public class RenamingTest {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log");
 
     // rollover by the second
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
@@ -64,7 +63,6 @@ public class RenamingTest {
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "test-%d{"
         + datePattern + "}");
-    // tbrp.setActiveFileName("src/test/output/test.log");
     tbrp.setContext(context);
     tbrp.setParent(rfa);
     tbrp.start();
@@ -72,22 +70,24 @@ public class RenamingTest {
     rfa.setRollingPolicy(tbrp);
     rfa.start();
 
-    // StatusPrinter.print(context.getStatusManager());
-    Calendar cal = Calendar.getInstance();
 
+    Calendar cal0 = Calendar.getInstance();
     rfa.doAppend("Hello 0");
+    
     DelayerUtil.delayUntilNextSecond(50);
+    
+    Calendar cal1 = Calendar.getInstance();
     rfa.doAppend("Hello 1");
 
     filenames[0] = CoreTestConstants.OUTPUT_DIR_PREFIX + "test-"
-        + sdf.format(cal.getTime());
-    filenames[1] = CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log";
-
+        + sdf.format(cal0.getTime());
+    filenames[1] = CoreTestConstants.OUTPUT_DIR_PREFIX + "test-"
+        + sdf.format(cal1.getTime());
+    
+  
     for (int i = 0; i < filenames.length; i++) {
-      // System.out.println("before i=" + i);
       assertTrue(Compare.compare(filenames[i], CoreTestConstants.TEST_DIR_PREFIX
           + "witness/rolling/renaming." + i));
-      // System.out.println("post i=" + i);
     }
   }
 }
