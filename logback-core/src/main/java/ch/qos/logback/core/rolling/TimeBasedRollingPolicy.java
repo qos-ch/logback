@@ -52,9 +52,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     // set the LR for our utility object
     renameUtil.setContext(this.context);
 
-    timeBasedTriggering.setContext(context);
-    timeBasedTriggering.setTimeBasedRollingPolicy(this);
-    
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
@@ -75,6 +72,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
 
+    timeBasedTriggering.setContext(context);
+    timeBasedTriggering.setTimeBasedRollingPolicy(this);
     timeBasedTriggering.start();
 
     if (maxHistory != NO_DELETE_HISTORY) {
