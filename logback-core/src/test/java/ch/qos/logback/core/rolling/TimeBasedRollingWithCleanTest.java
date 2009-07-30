@@ -78,14 +78,14 @@ public class TimeBasedRollingWithCleanTest {
 
     tbrp.setMaxHistory(maxHistory);
     tbrp.setParent(rfa);
-    tbrp.setCurrentTime(currentTime);
+    tbrp.timeBasedTriggering.setCurrentTime(currentTime);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
 
     for (int i = 0; i < maxHistory * 3; i++) {
       rfa.doAppend("Hello---" + i);
-      tbrp.setCurrentTime(addTime(tbrp.getCurrentTime(), delay / 2));
+      tbrp.timeBasedTriggering.setCurrentTime(addTime(tbrp.timeBasedTriggering.getCurrentTime(), delay / 2));
       if (tbrp.future != null) {
         tbrp.future.get(200, TimeUnit.MILLISECONDS);
       }

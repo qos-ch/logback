@@ -1,7 +1,7 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 1999-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,40 +36,28 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
   static final int NO_DELETE_HISTORY = 0;
 
-  FileNamePattern activeFileNamePattern;
-  Compressor compressor;
-  RenameUtil renameUtil = new RenameUtil();
+  // WCS: without compression suffix
+  FileNamePattern fileNamePatternWCS;
+  
+  private Compressor compressor;
+  private RenameUtil renameUtil = new RenameUtil();
   Future<?> future;
 
-  int maxHistory = NO_DELETE_HISTORY;
-  TimeBasedCleaner tbCleaner;
+  private int maxHistory = NO_DELETE_HISTORY;
+  private TimeBasedCleaner tbCleaner;
 
-  DefaultTimeBasedTriggeringPolicy<E> timeBasedTriggering = new DefaultTimeBasedTriggeringPolicy<E>();
-  
-//  public void setCurrentTime(long timeInMillis) {
-//    currentTime = timeInMillis;
-//    isTimeForced = true;
-//  }
-//
-//  public long getCurrentTime() {
-//    // if time is forced return the time set by user
-//    if (isTimeForced) {
-//      return currentTime;
-//    } else {
-//      return System.currentTimeMillis();
-//    }
-//  }
+  TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
 
   public void start() {
     // set the LR for our utility object
     renameUtil.setContext(this.context);
 
     timeBasedTriggering.setContext(context);
+    timeBasedTriggering.setTimeBasedRollingPolicy(this);
     
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
-      timeBasedTriggering.fileNamePattern = fileNamePattern;
       determineCompressionMode();
     } else {
       addWarn(FNP_NOT_SET);
@@ -78,54 +66,45 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
           + CoreConstants.SEE_FNP_NOT_SET);
     }
 
-    
     compressor = new Compressor(compressionMode);
     compressor.setContext(context);
 
+    fileNamePatternWCS = new FileNamePattern(computeFileNameStr_WCS(fileNamePatternStr,
+        compressionMode), this.context);
+
+    addInfo("Will use the pattern " + fileNamePatternWCS
+        + " for the active file");
+
+    timeBasedTriggering.start();
+
+    if (maxHistory != NO_DELETE_HISTORY) {
+      tbCleaner = new TimeBasedCleaner(fileNamePattern, timeBasedTriggering.getRollingCalendar(),
+          maxHistory);
+    }
+  }
+
+  static String computeFileNameStr_WCS(String fileNamePatternStr,
+      CompressionMode compressionMode) {
     int len = fileNamePatternStr.length();
     switch (compressionMode) {
     case GZ:
-      activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
-          0, len - 3), this.context);
-      ;
-      break;
+      return fileNamePatternStr.substring(0, len - 3);
     case ZIP:
-      activeFileNamePattern = new FileNamePattern(fileNamePatternStr.substring(
-          0, len - 4), this.context);
-      break;
+      return fileNamePatternStr.substring(0, len - 4);
     case NONE:
-      activeFileNamePattern = fileNamePattern;
+      return fileNamePatternStr;
     }
-    
-    addInfo("Will use the pattern " + activeFileNamePattern
-        + " for the active file");
-
-    timeBasedTriggering.activeFileNamePattern = activeFileNamePattern;
-    timeBasedTriggering.start();
-    
-    if (maxHistory != NO_DELETE_HISTORY) {
-      tbCleaner = new TimeBasedCleaner(fileNamePattern, timeBasedTriggering.rc, maxHistory);
-    }
+    throw new IllegalStateException("Execution should not reach this point");
   }
 
-
-  public long getCurrentTime() {
-    return timeBasedTriggering.getCurrentTime();
-  }
-  public void setCurrentTime(long timeInMillis) {
-    timeBasedTriggering.setCurrentTime(timeInMillis);
-  }
-  void setLastCheck(Date _lastCheck) {
-    timeBasedTriggering.setLastCheck(_lastCheck);
-  }
-  
   public void rollover() throws RolloverFailure {
 
     // when rollover is called the elapsed period's file has
     // been already closed. This is a working assumption of this method.
 
-    String elapsedPeriodsFileName = timeBasedTriggering.getElapsedPeriodsFileName();
-    
+    String elapsedPeriodsFileName = timeBasedTriggering
+        .getElapsedPeriodsFileName();
+
     if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
         renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
@@ -143,14 +122,14 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  Future asyncCompress(String nameOfFile2Compress,
-      String nameOfCompressedFile) throws RolloverFailure {
+  Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile)
+      throws RolloverFailure {
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-    return ac.compressAsynchronously(nameOfFile2Compress,
-        nameOfCompressedFile);
+    return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile);
   }
 
-  Future renamedRawAndAsyncCompress(String nameOfCompressedFile) throws RolloverFailure {
+  Future renamedRawAndAsyncCompress(String nameOfCompressedFile)
+      throws RolloverFailure {
     String parentsRawFile = getParentsRawFileProperty();
     String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
     renameUtil.rename(parentsRawFile, tmpTarget);
@@ -178,35 +157,16 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    * 
    */
   public String getActiveFileName() {
-    
-      return activeFileNamePattern.convertDate(timeBasedTriggering.lastCheck);
-    
+    String parentsRawFileProperty = getParentsRawFileProperty();
+    if (parentsRawFileProperty != null) {
+      return parentsRawFileProperty;
+    } else {
+      return timeBasedTriggering.getCurrentPeriodsFileNameWithoutCompressionSuffix();
+    }
   }
 
-//  // get the active file name for the current (latest) period
-//  private String getLatestPeriodsFileName() {
-//    return activeFileNamePattern.convertDate(lastCheck);
-//  }
-
   public boolean isTriggeringEvent(File activeFile, final E event) {
-    
     return timeBasedTriggering.isTriggeringEvent(activeFile, event);
-    
-//    long time = getCurrentTime();
-//
-//    if (time >= nextCheck) {
-//      // We set the elapsedPeriodsFileName before we set the 'lastCheck'
-//      // variable
-//      // The elapsedPeriodsFileName corresponds to the file name of the period
-//      // that just elapsed.
-//      elapsedPeriodsFileName = activeFileNamePattern.convertDate(lastCheck);
-//
-//      lastCheck.setTime(time);
-//      nextCheck = rc.getNextTriggeringMillis(lastCheck);
-//      return true;
-//    } else {
-//      return false;
-//    }
   }
 
   /**
@@ -232,5 +192,4 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   public String toString() {
     return "c.q.l.core.rolling.TimeBasedRollingPolicy";
   }
-
 }

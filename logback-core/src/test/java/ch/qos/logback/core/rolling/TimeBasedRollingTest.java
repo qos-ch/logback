@@ -108,9 +108,9 @@ public class TimeBasedRollingTest {
     tbrp.setContext(context);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
-    tbrp.setCurrentTime(givenTime);
+    tbrp.timeBasedTriggering.setCurrentTime(givenTime);
     if (lastCheck != 0) {
-      tbrp.setLastCheck(new Date(lastCheck));
+      tbrp.timeBasedTriggering.setDateInCurrentPeriod(new Date(lastCheck));
     }
     rfa.setRollingPolicy(tbrp);
     tbrp.start();
@@ -131,13 +131,13 @@ public class TimeBasedRollingTest {
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.setCurrentTime(currentTime);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(testId, false);
       incCurrentTime(500);
-      tbrp1.setCurrentTime(currentTime);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
     }
 
     int i = 0;
@@ -159,14 +159,14 @@ public class TimeBasedRollingTest {
 
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
     incCurrentTime(1100);
-    tbrp1.setCurrentTime(currentTime);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       // when i == 2, file name should not have .gz extension
       addExpectedFileNamedIfItsTime_ByDate(testId, i != 2);
       rfa1.doAppend("Hello---" + i);
       incCurrentTime(500);
-      tbrp1.setCurrentTime(currentTime);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
     }
 
     tbrp1.future.get(2000, TimeUnit.MILLISECONDS);
@@ -194,26 +194,26 @@ public class TimeBasedRollingTest {
     addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.setCurrentTime(currentTime);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(testId, false);
       incCurrentTime(500);
-      tbrp1.setCurrentTime(currentTime);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
 
     initRFA(rfa2, null);
     initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-        + DATE_PATTERN + "}", tbrp1.getCurrentTime(), 0);
+        + DATE_PATTERN + "}", tbrp1.timeBasedTriggering.getCurrentTime(), 0);
 
     for (int i = 0; i <= 2; i++) {
       addExpectedFileNamedIfItsTime_ByDate(testId, false);
       rfa2.doAppend("World---" + i);
       incCurrentTime(100);
-      tbrp2.setCurrentTime(currentTime);
+      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
     }
 
     int i = 0;
@@ -222,165 +222,165 @@ public class TimeBasedRollingTest {
           + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
-//  
-//  /**
-//   * Without compression, file option set, with stop/restart
-//   */
-//  @Test
-//  public void noCompression_FileSet_StopRestart_4() throws Exception {
-//    String testId = "test4";
-//    initRFA(rfa1, testId2FileName(testId));
-//    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-//        + DATE_PATTERN + "}", currentTime, 0);
-//
-//    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
-//
-//    incCurrentTime(1100);
-//    tbrp1.setCurrentTime(currentTime);
-//
-//    for (int i = 0; i <= 2; i++) {
-//      rfa1.doAppend("Hello---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, false);
-//      incCurrentTime(500);
-//      tbrp1.setCurrentTime(currentTime);
-//    }
-//
-//    rfa1.stop();
-//
-//    initRFA(rfa2, testId2FileName(testId));
-//    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-//        + DATE_PATTERN + "}", currentTime, currentTime);
-//
-//    for (int i = 0; i <= 2; i++) {
-//      rfa2.doAppend("World---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, false);
-//      incCurrentTime(100);
-//      tbrp2.setCurrentTime(currentTime);
-//    }
-//
-//    massageExpectedFilesToCorresponToCurrentTarget("test4.log");
-//
-//    int i = 0;
-//    for (String fn : expectedFilenameList) {
-//      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
-//          + "witness/rolling/tbr-" + testId + "." + i++));
-//    }
-//  }
-//
-//  @Test
-//  public void noCompression_FileSet_StopRestart_WithLongWait_4B()
-//      throws Exception {
-//    String testId = "test4B";
-//    initRFA(rfa1, testId2FileName(testId));
-//    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-//        + DATE_PATTERN + "}", currentTime, 0);
-//
-//    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
-//
-//    incCurrentTime(1100);
-//    tbrp1.setCurrentTime(currentTime);
-//
-//    for (int i = 0; i <= 2; i++) {
-//      rfa1.doAppend("Hello---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, false);
-//      incCurrentTime(500);
-//      tbrp1.setCurrentTime(currentTime);
-//    }
-//
-//    rfa1.stop();
-//
-//    long fileTimestamp = currentTime;
-//    incCurrentTime(2000);
-//
-//    initRFA(rfa2, CoreTestConstants.OUTPUT_DIR_PREFIX + "test4B.log");
-//    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId +"-%d{"
-//        + DATE_PATTERN + "}", currentTime, fileTimestamp);
-//
-//    for (int i = 0; i <= 2; i++) {
-//      rfa2.doAppend("World---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, false);
-//      incCurrentTime(100);
-//      tbrp2.setCurrentTime(currentTime);
-//    }
-//
-//    massageExpectedFilesToCorresponToCurrentTarget("test4B.log");
-//
-//    int i = 0;
-//    for (String fn : expectedFilenameList) {
-//      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
-//          + "witness/rolling/tbr-test4B." + i++));
-//    }
-//
-//  }
-//
-//  /**
-//   * No compression, file option set, without stop/restart
-//   */
-//  @Test
-//  public void noCompression_FileSet_NoRestart_5() throws Exception {
-//    String testId = "test5";
-//
-//    initRFA(rfa1, testId2FileName(testId));
-//    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-//        + DATE_PATTERN + "}", currentTime, 0);
-//
-//    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
-//
-//    incCurrentTime(1100);
-//    tbrp1.setCurrentTime(currentTime);
-//
-//    for (int i = 0; i < 3; i++) {
-//      rfa1.doAppend("Hello---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, false);
-//      incCurrentTime(500);
-//      tbrp1.setCurrentTime(currentTime);
-//    }
-//
-//    massageExpectedFilesToCorresponToCurrentTarget("test5.log");
-//
-//    int i = 0;
-//    for (String fn : expectedFilenameList) {
-//      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
-//          + "witness/rolling/tbr-test5." + i++));
-//    }
-//  }
-//
-//  /**
-//   * With compression, file option set, no stop/restart,
-//   */
-//  @Test
-//  public void withCompression_FileSet_NoRestart_6() throws Exception {
-//
-//    String testId = "test6";
-//
-//    initRFA(rfa1, testId2FileName(testId));
-//    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
-//        + DATE_PATTERN + "}.gz", currentTime, 0);
-//
-//    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
-//
-//    incCurrentTime(1100);
-//    tbrp1.setCurrentTime(currentTime);
-//
-//    for (int i = 0; i < 3; i++) {
-//      rfa1.doAppend("Hello---" + i);
-//      addExpectedFileNamedIfItsTime_ByDate(testId, true);
-//      incCurrentTime(500);
-//      tbrp1.setCurrentTime(currentTime);
-//    }
-//
-//    // wait for the compression task to finish
-//    tbrp1.future.get(1000, TimeUnit.MILLISECONDS);
-//
-//    massageExpectedFilesToCorresponToCurrentTarget("test6.log");
-//
-//    int i = 0;
-//    for (String fn : expectedFilenameList) {
-//      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
-//          + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
-//      i++;
-//    }
-//  }
+  
+  /**
+   * Without compression, file option set, with stop/restart
+   */
+  @Test
+  public void noCompression_FileSet_StopRestart_4() throws Exception {
+    String testId = "test4";
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}", currentTime, 0);
+
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
+
+    incCurrentTime(1100);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+
+    for (int i = 0; i <= 2; i++) {
+      rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    rfa1.stop();
+
+    initRFA(rfa2, testId2FileName(testId));
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}", currentTime, currentTime);
+
+    for (int i = 0; i <= 2; i++) {
+      rfa2.doAppend("World---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(100);
+      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    massageExpectedFilesToCorresponToCurrentTarget("test4.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-" + testId + "." + i++));
+    }
+  }
+
+  @Test
+  public void noCompression_FileSet_StopRestart_WithLongWait_4B()
+      throws Exception {
+    String testId = "test4B";
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}", currentTime, 0);
+
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
+
+    incCurrentTime(1100);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+
+    for (int i = 0; i <= 2; i++) {
+      rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    rfa1.stop();
+
+    long fileTimestamp = currentTime;
+    incCurrentTime(2000);
+
+    initRFA(rfa2, CoreTestConstants.OUTPUT_DIR_PREFIX + "test4B.log");
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId +"-%d{"
+        + DATE_PATTERN + "}", currentTime, fileTimestamp);
+
+    for (int i = 0; i <= 2; i++) {
+      rfa2.doAppend("World---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(100);
+      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    massageExpectedFilesToCorresponToCurrentTarget("test4B.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-test4B." + i++));
+    }
+
+  }
+
+  /**
+   * No compression, file option set, without stop/restart
+   */
+  @Test
+  public void noCompression_FileSet_NoRestart_5() throws Exception {
+    String testId = "test5";
+
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}", currentTime, 0);
+
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), false);
+
+    incCurrentTime(1100);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+
+    for (int i = 0; i < 3; i++) {
+      rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      incCurrentTime(500);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    massageExpectedFilesToCorresponToCurrentTarget("test5.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-test5." + i++));
+    }
+  }
+
+  /**
+   * With compression, file option set, no stop/restart,
+   */
+  @Test
+  public void withCompression_FileSet_NoRestart_6() throws Exception {
+
+    String testId = "test6";
+
+    initRFA(rfa1, testId2FileName(testId));
+    initTRBP(rfa1, tbrp1, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
+        + DATE_PATTERN + "}.gz", currentTime, 0);
+
+    addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(), true);
+
+    incCurrentTime(1100);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+
+    for (int i = 0; i < 3; i++) {
+      rfa1.doAppend("Hello---" + i);
+      addExpectedFileNamedIfItsTime_ByDate(testId, true);
+      incCurrentTime(500);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    // wait for the compression task to finish
+    tbrp1.future.get(1000, TimeUnit.MILLISECONDS);
+
+    massageExpectedFilesToCorresponToCurrentTarget("test6.log");
+
+    int i = 0;
+    for (String fn : expectedFilenameList) {
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+          + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
+      i++;
+    }
+  }
 
   // =========================================================================
   // utility methods
