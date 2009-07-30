@@ -40,13 +40,13 @@ import ch.qos.logback.core.util.CoreTestConstants;
  * with witness files.
  * 
  * <pre>
- *               Compression     file option    Stop/Restart 
- *    Test1      NO              BLANK           NO
- *    Test2      YES             BLANK           NO
- *    Test3      NO              BLANK           YES
- *    Test4      NO              SET             YES 
- *    Test5      NO              SET             NO
- *    Test6      YES             SET             NO
+ *                Compression     file option    Stop/Restart 
+ *     Test1      NO              BLANK           NO
+ *     Test2      YES             BLANK           NO
+ *     Test3      NO              BLANK           YES
+ *     Test4      NO              SET             YES 
+ *     Test5      NO              SET             NO
+ *     Test6      YES             SET             NO
  * </pre>
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -60,10 +60,10 @@ public class TimeBasedRollingTest {
   Context context = new ContextBase();
 
   RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
-  TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
+  TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<Object>();
 
   RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
-  TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
+  TimeBasedRollingPolicy<Object> tbrp2 = new TimeBasedRollingPolicy<Object>();
 
   Calendar cal = Calendar.getInstance();
   long currentTime; // initialized in setUp()
@@ -76,7 +76,8 @@ public class TimeBasedRollingTest {
     cal.set(Calendar.MILLISECOND, 333);
     currentTime = cal.getTimeInMillis();
     recomputeRolloverThreshold(currentTime);
-    System.out.println("at setUp() currentTime=" + sdf.format(new Date(currentTime)));
+    System.out.println("at setUp() currentTime="
+        + sdf.format(new Date(currentTime)));
 
     // Delete .log files
     deleteStaleLogFile("test4.log");
@@ -103,11 +104,12 @@ public class TimeBasedRollingTest {
     }
   }
 
-  void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy tbrp,
+  void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
       String filenamePattern, long givenTime, long lastCheck) {
     tbrp.setContext(context);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
+    tbrp.timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
     tbrp.timeBasedTriggering.setCurrentTime(givenTime);
     if (lastCheck != 0) {
       tbrp.timeBasedTriggering.setDateInCurrentPeriod(new Date(lastCheck));
@@ -222,7 +224,7 @@ public class TimeBasedRollingTest {
           + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
-  
+
   /**
    * Without compression, file option set, with stop/restart
    */
@@ -293,7 +295,7 @@ public class TimeBasedRollingTest {
     incCurrentTime(2000);
 
     initRFA(rfa2, CoreTestConstants.OUTPUT_DIR_PREFIX + "test4B.log");
-    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId +"-%d{"
+    initTRBP(rfa2, tbrp2, CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-%d{"
         + DATE_PATTERN + "}", currentTime, fileTimestamp);
 
     for (int i = 0; i <= 2; i++) {
@@ -407,7 +409,8 @@ public class TimeBasedRollingTest {
   }
 
   void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
-    String fn = CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-" + sdf.format(date);
+    String fn = CoreTestConstants.OUTPUT_DIR_PREFIX + testId + "-"
+        + sdf.format(date);
     if (gzExtension) {
       fn += ".gz";
     }

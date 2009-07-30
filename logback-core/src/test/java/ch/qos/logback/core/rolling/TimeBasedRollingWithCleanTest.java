@@ -72,12 +72,13 @@ public class TimeBasedRollingWithCleanTest {
     rfa.setContext(context);
     rfa.setLayout(layout);
     // rfa.setFile(Constants.OUTPUT_DIR_PREFIX + "clean.txt");
-    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
+    TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
     tbrp.setContext(context);
     tbrp.setFileNamePattern(fileNamePattern);
 
     tbrp.setMaxHistory(maxHistory);
     tbrp.setParent(rfa);
+    tbrp.timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
     tbrp.timeBasedTriggering.setCurrentTime(currentTime);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
