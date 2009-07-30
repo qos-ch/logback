@@ -92,6 +92,7 @@ public class DBAppenderIntegrationTest {
   }
 
   @Test
+  @Ignore
   public void oracle10g() throws Exception {
     // perform test only on conforming hosts
     if (!isConformingHostAndJDK16OrHigher()) {
