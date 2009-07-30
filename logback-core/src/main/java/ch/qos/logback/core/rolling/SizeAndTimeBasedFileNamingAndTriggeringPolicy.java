@@ -27,7 +27,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends  TimeBased
     if (time >= nextCheck) {
       Date dateInElapsedPeriod = dateInCurrentPeriod;
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
-          .convertDate(dateInElapsedPeriod);
+          .convert(dateInElapsedPeriod);
       updateDateInCurrentPeriod(time);
       computeNextCheck();
       return true;

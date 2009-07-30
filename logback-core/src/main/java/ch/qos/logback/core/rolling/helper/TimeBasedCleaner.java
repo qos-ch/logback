@@ -30,7 +30,7 @@ public class TimeBasedCleaner {
   public void clean(Date now) {
     Date date2delete = rc.getRelativeDate(now, numberOfPeriods);
 
-    String filename = fileNamePattern.convertDate(date2delete);
+    String filename = fileNamePattern.convert(date2delete);
 
     File file2Delete = new File(filename);
 

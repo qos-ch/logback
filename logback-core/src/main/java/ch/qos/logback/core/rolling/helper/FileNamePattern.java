@@ -128,10 +128,6 @@ public class FileNamePattern extends ContextAwareBase {
     return convert(integerArg);
   }
 
-  public String convertDate(Date date) {
-    return convert(date);
-  }
-
   public void setPattern(String pattern) {
     if (pattern != null) {
       // Trailing spaces in the pattern are assumed to be undesired.
