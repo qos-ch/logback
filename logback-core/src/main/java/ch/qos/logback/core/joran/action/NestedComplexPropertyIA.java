@@ -15,6 +15,7 @@ import java.util.Stack;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.PropertySetter;
 import ch.qos.logback.core.spi.ContextAware;
@@ -110,10 +111,11 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         return;
       }
 
-      if(OptionHelper.isEmpty(className)) {
-        addInfo("Assuming default type ["+componentClass.getName()+"] for ["+localName+"] property");
+      if (OptionHelper.isEmpty(className)) {
+        addInfo("Assuming default type [" + componentClass.getName()
+            + "] for [" + localName + "] property");
       }
-      
+
       actionData.setNestedComplexProperty(componentClass.newInstance());
 
       // pass along the repository
@@ -154,9 +156,13 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     if (nestedBean.computeAggregationType("parent") == AggregationType.AS_COMPLEX_PROPERTY) {
       nestedBean.setComplexProperty("parent", actionData.parentBean.getObj());
     }
-    // start the nested complex attribute if it implements LifeCycle
-    if (actionData.getNestedComplexProperty() instanceof LifeCycle) {
-      ((LifeCycle) actionData.getNestedComplexProperty()).start();
+
+    // start the nested complex property if it implements LifeCycle and is not
+    // marked with a @NoAutoStart annotation
+    Object nestedComplexProperty = actionData.getNestedComplexProperty();
+    if (nestedComplexProperty instanceof LifeCycle
+        && NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
+      ((LifeCycle) nestedComplexProperty).start();
     }
 
     Object o = ec.peekObject();
