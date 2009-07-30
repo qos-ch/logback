@@ -46,8 +46,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   private int maxHistory = NO_DELETE_HISTORY;
   private TimeBasedCleaner tbCleaner;
 
-  TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
-
+  TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering;
   public void start() {
     // set the LR for our utility object
     renameUtil.setContext(this.context);
@@ -72,6 +71,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
 
+    if(timeBasedTriggering == null) {
+      timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
+    }
     timeBasedTriggering.setContext(context);
     timeBasedTriggering.setTimeBasedRollingPolicy(this);
     timeBasedTriggering.start();
@@ -82,6 +84,10 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
+  public void setTimeBasedTriggering(TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
+    this.timeBasedTriggering = timeBasedTriggering;
+  }
+  
   static String computeFileNameStr_WCS(String fileNamePatternStr,
       CompressionMode compressionMode) {
     int len = fileNamePatternStr.length();

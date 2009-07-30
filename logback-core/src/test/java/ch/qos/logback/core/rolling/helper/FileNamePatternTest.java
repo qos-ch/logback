@@ -11,9 +11,7 @@ package ch.qos.logback.core.rolling.helper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -102,18 +100,10 @@ public class FileNamePatternTest {
 
   @Test
   public void objectListConverter() {
-    List<Object> oList = new ArrayList<Object>();
-    
     Calendar cal = Calendar.getInstance();
     cal.set(2003, 4, 20, 17, 55);
-
-    oList.add(cal.getTime());
-    oList.add(79);
-    
-    
     FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt", context);
-    
-    assertEquals("foo-2003.05.20-79.txt", fnp.convertList(oList));
+    assertEquals("foo-2003.05.20-79.txt", fnp.convertMultipleArguments(cal.getTime(), 79));
   }
 
 }

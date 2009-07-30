@@ -19,9 +19,9 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     long time = getCurrentTime();
 
     if (time >= nextCheck) {
-      Date dateInElapsedPeriod = dateInCurrentPeriod;
+      Date dateOfElapsedPeriod = dateInCurrentPeriod;
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
-          .convert(dateInElapsedPeriod);
+          .convert(dateOfElapsedPeriod);
       updateDateInCurrentPeriod(time);
       computeNextCheck();
       return true;

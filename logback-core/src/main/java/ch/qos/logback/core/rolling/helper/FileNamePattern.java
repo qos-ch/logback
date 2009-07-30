@@ -10,9 +10,7 @@
 
 package ch.qos.logback.core.rolling.helper;
 
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.Context;
@@ -94,7 +92,7 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   
-  public String convertList(List<Object> objectList) {
+  public String convertMultipleArguments(Object... objectList) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> c = headTokenConverter;
     while (c != null) {

@@ -68,7 +68,7 @@ public class SizeBasedRollingTest  {
    * ActiveFileName is not set.
    */
   @Test
-  public void test1() throws Exception {
+  public void activeFileNameNotSet() throws Exception {
     // We purposefully use the \n as the line separator.
     // This makes the regression test system independent.
     Context context = new ContextBase();
@@ -101,7 +101,7 @@ public class SizeBasedRollingTest  {
    * Test basic rolling functionality.
    */
   @Test
-  public void test2() throws Exception {
+  public void smoke() throws Exception {
     Context context = new ContextBase();
 
     DummyLayout<Object> layout = new DummyLayout<Object>("0123456789");
