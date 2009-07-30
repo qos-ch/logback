@@ -128,9 +128,38 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest {
     massageExpectedFilesToCorresponToCurrentTarget(file);
     existenceCheck(expectedFilenameList);
     contentCheck(runLength, prefix);
-   
   }
 
+  @Test
+  public void noCompression_FileNotSet_NoRestart_2() throws Exception {
+    String testId = "test1";
+    initRFA(rfa1, null);
+    sizeThreshold = 300;
+    initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN
+        + "}-%i.txt", sizeThreshold, currentTime, 0);
+
+    addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
+        fileIndexCounter, false);
+
+    incCurrentTime(100);
+    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+
+    int runLength = 100;
+    String prefix = "Hello -----------------";
+    
+    for (int i = 0; i < runLength; i++) {
+      String msg = prefix + i;
+      rfa1.doAppend(msg);
+      addExpectedFileNamedIfItsTime(testId, msg, false);
+      incCurrentTime(20);
+      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    }
+
+    existenceCheck(expectedFilenameList);
+    contentCheck(runLength, prefix);
+  }
+
+  
   void existenceCheck(String filename) {
     assertTrue("File " + filename + " does not exist", new File(filename)
         .exists());
