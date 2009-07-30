@@ -9,12 +9,13 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.junit.Test;
-
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -64,9 +65,7 @@ public class FileNamePatternTest {
 
   @Test
   // test ways for dealing with flowing i converter, as in "foo%ix"
-  public void testFlowingI() {
-    // System.out.println("Testing [foo%ibar%i]");
-
+  public void flowingI() {
     {
       FileNamePattern pp = new FileNamePattern("foo%i{}bar%i", context);
       assertEquals("foo3bar3", pp.convertInt(3));
@@ -78,7 +77,7 @@ public class FileNamePatternTest {
   }
 
   @Test
-  public void testDate() {
+  public void date() {
     Calendar cal = Calendar.getInstance();
     cal.set(2003, 4, 20, 17, 55);
 
@@ -95,10 +94,26 @@ public class FileNamePatternTest {
   }
 
   @Test
-  public void testWithBackslash() {
+  public void withBackslash() {
     FileNamePattern pp = new FileNamePattern("c:\\foo\\bar.%i", context);
     assertEquals("c:\\foo\\bar.3", pp.convertInt(3));
   }
 
+
+  @Test
+  public void objectListConverter() {
+    List<Object> oList = new ArrayList<Object>();
+    
+    Calendar cal = Calendar.getInstance();
+    cal.set(2003, 4, 20, 17, 55);
+
+    oList.add(cal.getTime());
+    oList.add(79);
+    
+    
+    FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt", context);
+    
+    assertEquals("foo-2003.05.20-79.txt", fnp.convertList(oList));
+  }
 
 }

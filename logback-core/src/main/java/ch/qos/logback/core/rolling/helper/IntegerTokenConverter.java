@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,10 @@ import ch.qos.logback.core.pattern.DynamicConverter;
  * 
  * @author Ceki Gulcu
  */
-public class IntegerTokenConverter extends DynamicConverter {
+public class IntegerTokenConverter extends DynamicConverter implements MonoTypedConverter {
 
+  public final static String CONVERTER_KEY = "i";
+  
   public IntegerTokenConverter() {
   }
 
@@ -33,7 +35,11 @@ public class IntegerTokenConverter extends DynamicConverter {
     if(o instanceof Integer) {
       Integer i = (Integer) o;
       return convert(i.intValue());
-    }
+    } 
     throw new IllegalArgumentException("Cannot convert "+o+" of type"+o.getClass().getName());
+  }
+
+  public boolean isApplicable(Object o) {
+    return (o instanceof Integer);
   }
 }

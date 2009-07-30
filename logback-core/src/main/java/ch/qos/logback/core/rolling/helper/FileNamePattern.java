@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -12,6 +12,7 @@ package ch.qos.logback.core.rolling.helper;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.Context;
@@ -23,12 +24,10 @@ import ch.qos.logback.core.pattern.parser.ScanException;
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-
 /**
- * 
- * After parsing file name patterns, given a number or a date, instances of this class 
- * can be used to compute a file name according to the file name pattern and the given 
- * integer or date.
+ * After parsing file name patterns, given a number or a date, instances of this
+ * class can be used to compute a file name according to the file name pattern
+ * and the given integer or date.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -37,8 +36,8 @@ public class FileNamePattern extends ContextAwareBase {
 
   static final Map<String, String> CONVERTER_MAP = new HashMap<String, String>();
   static {
-    CONVERTER_MAP.put("i", IntegerTokenConverter.class.getName());
-    CONVERTER_MAP.put("d", DateTokenConverter.class.getName());
+    CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter.class.getName());
+    CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter.class.getName());
   }
 
   String pattern;
@@ -94,9 +93,29 @@ public class FileNamePattern extends ContextAwareBase {
     return null;
   }
 
+  
+  public String convertList(List<Object> objectList) {
+    StringBuilder buf = new StringBuilder();
+    Converter<Object> c = headTokenConverter;
+    while (c != null) {
+      if(c instanceof MonoTypedConverter) {
+        MonoTypedConverter monoTyped = (MonoTypedConverter) c;
+        for(Object o: objectList) {
+          if(monoTyped.isApplicable(o)) {
+            buf.append(c.convert(o));
+          }
+        }
+      } else {
+        buf.append(c.convert(objectList));
+      }
+      c = c.getNext();
+    }
+   return buf.toString();
+  }
+  
   public String convert(Object o) {
+    StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
-    StringBuffer buf = new StringBuffer();
     while (p != null) {
       buf.append(p.convert(o));
       p = p.getNext();

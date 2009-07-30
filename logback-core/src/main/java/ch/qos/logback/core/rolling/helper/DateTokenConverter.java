@@ -15,13 +15,17 @@ import java.util.Date;
 
 import ch.qos.logback.core.pattern.DynamicConverter;
 
-
 /**
- *
+ * 
  * @author Ceki G&uuml;c&uuml;
  */
-public class DateTokenConverter extends DynamicConverter {
- 
+public class DateTokenConverter extends DynamicConverter implements MonoTypedConverter {
+
+  /**
+   * The conversion word/character with which this converter is registered.
+   */
+  public final static String CONVERTER_KEY = "d";
+
   String datePattern;
   SimpleDateFormat sdf;
 
@@ -30,25 +34,27 @@ public class DateTokenConverter extends DynamicConverter {
 
   public void start() {
     this.datePattern = getFirstOption();
-    if(this.datePattern == null) {
-      this.datePattern = "yyyy-MM-dd";;
+    if (this.datePattern == null) {
+      this.datePattern = "yyyy-MM-dd";
+      ;
     }
     sdf = new SimpleDateFormat(datePattern);
   }
-  
+
   public String convert(Date date) {
     return sdf.format(date);
   }
-  
+
   public String convert(Object o) {
-    if(o == null) {
+    if (o == null) {
       throw new IllegalArgumentException("Null argument forbidden");
     }
-    if(o instanceof Date) {
+    if (o instanceof Date) {
       return convert((Date) o);
-    }
+    } 
     throw new IllegalArgumentException("Cannot convert "+o+" of type"+o.getClass().getName());
   }
+
   /**
    * Return the date pattern.
    */
@@ -56,11 +62,14 @@ public class DateTokenConverter extends DynamicConverter {
     return datePattern;
   }
 
+  public boolean isApplicable(Object o) {
+    return (o instanceof Date);
+  }
+
   /**
    * Set the date pattern.
    */
-  //public void setDatePattern(String string) {
-  //  datePattern = string;
-  //}
-
+  // public void setDatePattern(String string) {
+  // datePattern = string;
+  // }
 }
