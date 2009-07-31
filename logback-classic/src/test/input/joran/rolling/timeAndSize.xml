@@ -10,7 +10,7 @@
       </FileNamePattern>
       <TimeBasedFileNamingAndTriggeringPolicy
         class="ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy">
-        <MaxFileSize>20</MaxFileSize>
+        <MaxFileSize>${sizeThreshold}</MaxFileSize>
       </TimeBasedFileNamingAndTriggeringPolicy>
     </rollingPolicy>
     <layout>

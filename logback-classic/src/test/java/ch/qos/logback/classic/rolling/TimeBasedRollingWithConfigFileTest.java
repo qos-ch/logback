@@ -19,7 +19,6 @@ import ch.qos.logback.core.rolling.ScaffoldingForRollingTests;
 import ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithConfigFileTest extends
     ScaffoldingForRollingTests {
@@ -27,7 +26,7 @@ public class TimeBasedRollingWithConfigFileTest extends
   LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(this.getClass());
   int fileSize = 0;
-  int fileIndexCounter = 0;
+  int fileIndexCounter = -1;
   int sizeThreshold;
   
   @Before
@@ -88,15 +87,19 @@ public class TimeBasedRollingWithConfigFileTest extends
   public void timeAndSize() throws Exception {
     String testId = "timeAndSize";
     lc.putProperty("testId", testId);
+    String prefix = "Hello-----";
+    int hits = 64;
+    sizeThreshold = prefix.length()*hits;
+    lc.putProperty("sizeThreshold", ""+sizeThreshold);
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/rolling/"+testId+".xml");
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     
+
     expectedFilenameList.add(randomOutputDir+"z"+testId);
     
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
         .getAppender("ROLLING");
 
-    StatusPrinter.print(lc);
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());
 
@@ -107,19 +110,19 @@ public class TimeBasedRollingWithConfigFileTest extends
     
 
     
-    String prefix = "Hello---";
-    int runLength = 4;
+    int timeIncrement = 1000/hits;
+    int runLength = (1000/timeIncrement)*3;
     for (int i = 0; i < runLength; i++) {
       String msg = prefix + i;
       logger.debug(msg);
       addExpectedFileNamedIfItsTime(testId, msg, false);
-      incCurrentTime(500);
+      incCurrentTime(timeIncrement);
       tbnatp.setCurrentTime(currentTime);
     }
 
-    System.out.println(expectedFilenameList);
-    existenceCheck(expectedFilenameList);
     sortedContentCheck(randomOutputDir, runLength, prefix); 
+    int eCount = existenceCount(expectedFilenameList);
+    assertTrue("eCount="+eCount+"expectedFilenameList.size="+expectedFilenameList.size(), eCount >= 5 && eCount > expectedFilenameList.size()/2);
   }
  
  
@@ -130,7 +133,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     if (passThresholdTime(nextRolloverThreshold)) {
       fileIndexCounter = 0;
       fileSize = 0;
-      addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
+      addExpectedFileName(testId, getDateOfPreviousPeriodsStart(),
           fileIndexCounter, gzExtension);
       recomputeRolloverThreshold(currentTime);
       return;
@@ -139,9 +142,9 @@ public class TimeBasedRollingWithConfigFileTest extends
     // windows can delay file size changes, so we only allow for
     // fileIndexCounter 0 and 1
     if ((fileIndexCounter < 1) && fileSize > sizeThreshold) {
-      addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
+      addExpectedFileName(testId, getDateOfPreviousPeriodsStart(),
           ++fileIndexCounter, gzExtension);
-      fileSize = 0;
+      fileSize = -1;
       return;
     }
   }
@@ -149,8 +152,9 @@ public class TimeBasedRollingWithConfigFileTest extends
   void addExpectedFileName(String testId, Date date, int fileIndexCounter,
       boolean gzExtension) {
 
-    String fn = randomOutputDir + testId + "-" + SDF.format(date) + "-"
+    String fn = randomOutputDir + testId + "-" + SDF.format(date) + "."
         + fileIndexCounter;
+    System.out.println("Adding "+fn);
     if (gzExtension) {
       fn += ".gz";
     }
