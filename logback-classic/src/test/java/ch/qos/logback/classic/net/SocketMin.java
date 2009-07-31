@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 
 public class SocketMin {
 
@@ -49,7 +48,7 @@ public class SocketMin {
   }
 
   static void init(String host, String portStr) {
-    Logger root = (Logger) LoggerFactory.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     BasicConfigurator.configure(root.getLoggerContext());
     try {
       int port = Integer.parseInt(portStr);
@@ -68,7 +67,7 @@ public class SocketMin {
   }
 
   static void loop() {
-    Logger root = (Logger) LoggerFactory.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     InputStreamReader in = new InputStreamReader(System.in);
     System.out.println("Type 'q' to quit");
     int i;

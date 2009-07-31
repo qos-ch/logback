@@ -45,7 +45,7 @@ public class FileAppenderPerf {
     fa.start();
 
     ch.qos.logback.classic.Logger root = loggerContext
-        .getLogger(LoggerContext.ROOT_NAME);
+        .getLogger(Logger.ROOT_LOGGER_NAME);
     root.addAppender(fa);
 
     return loggerContext;

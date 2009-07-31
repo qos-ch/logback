@@ -45,7 +45,7 @@ public class LoggingToFileThrouhput {
   }
 
   static Logger buildLoggerContext(LoggerContext lc) {
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     PatternLayout patternLayout = new PatternLayout();
     patternLayout.setContext(lc);

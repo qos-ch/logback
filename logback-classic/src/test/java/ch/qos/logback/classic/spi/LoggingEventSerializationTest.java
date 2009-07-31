@@ -37,7 +37,7 @@ public class LoggingEventSerializationTest {
   public void setUp() throws Exception {
     lc = new LoggerContext();
     lc.setName("testContext");
-    logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     // create the byte output stream
     bos = new ByteArrayOutputStream();
     oos = new ObjectOutputStream(bos);
@@ -65,7 +65,7 @@ public class LoggingEventSerializationTest {
     checkForEquality(event, remoteEvent);
 
     assertNotNull(remoteEvent.getLoggerName());
-    assertEquals("root", remoteEvent.getLoggerName());
+    assertEquals(Logger.ROOT_LOGGER_NAME, remoteEvent.getLoggerName());
 
     LoggerContextVO loggerContextRemoteView = remoteEvent.getLoggerContextVO();
     assertNotNull(loggerContextRemoteView);

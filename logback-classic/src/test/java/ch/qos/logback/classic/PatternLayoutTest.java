@@ -9,8 +9,8 @@
  */
 package ch.qos.logback.classic;
 
-import static ch.qos.logback.classic.TestConstants.ISO_REGEX;
-import static ch.qos.logback.classic.TestConstants.MAIN_REGEX;
+import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
+import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +38,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   private PatternLayout pl = new PatternLayout();
   private LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
-  Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+  Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
   
   ILoggingEvent le;
   List optionList = new ArrayList();
@@ -128,7 +128,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
     // message
-    String regex = TestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
+    String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
         + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
   }

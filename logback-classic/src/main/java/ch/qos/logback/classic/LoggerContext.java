@@ -45,8 +45,6 @@ import ch.qos.logback.core.status.WarnStatus;
 public class LoggerContext extends ContextBase implements ILoggerFactory,
     LifeCycle {
 
-  public static final String ROOT_NAME = "root";
-
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
@@ -72,9 +70,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     super();
     this.loggerCache = new Hashtable<String, Logger>();
     this.loggerContextRemoteView = new LoggerContextVO(this);
-    this.root = new Logger(ROOT_NAME, null, this);
+    this.root = new Logger(Logger.ROOT_LOGGER_NAME, null, this);
     this.root.setLevel(Level.DEBUG);
-    loggerCache.put(ROOT_NAME, root);
+    loggerCache.put(Logger.ROOT_LOGGER_NAME, root);
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
     size = 1;
   }
@@ -114,7 +112,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
     // if we are asking for the root logger, then let us return it without
     // wasting time
-    if (ROOT_NAME.equalsIgnoreCase(name)) {
+    if (Logger.ROOT_LOGGER_NAME.equalsIgnoreCase(name)) {
       return root;
     }
 

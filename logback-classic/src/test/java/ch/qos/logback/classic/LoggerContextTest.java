@@ -34,7 +34,7 @@ public class LoggerContextTest {
 
   @Test
   public void testRootGetLogger() {
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     assertEquals(Level.DEBUG, root.getLevel());
     assertEquals(Level.DEBUG, root.getEffectiveLevel());
   }
@@ -162,7 +162,7 @@ public class LoggerContextTest {
   @Test
   public void resetTest() {
 
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     Logger a = lc.getLogger("a");
     Logger ab = lc.getLogger("a.b");
 
@@ -203,7 +203,7 @@ public class LoggerContextTest {
   
   @Test
   public void levelResetTest() {
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.setLevel(Level.TRACE);
     assertTrue(root.isTraceEnabled());
     lc.reset();

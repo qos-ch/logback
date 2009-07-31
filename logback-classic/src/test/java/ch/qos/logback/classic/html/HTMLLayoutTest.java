@@ -20,7 +20,7 @@ import org.xml.sax.EntityResolver;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.TestConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.DummyThrowableProxy;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -53,7 +53,7 @@ public class HTMLLayoutTest {
     layout.setPattern("%level%thread%msg");
     layout.start();
     appender.setLayout(layout);
-    root = lc.getLogger(LoggerContext.ROOT_NAME);
+    root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.addAppender(appender);
     appender.start();
   }
@@ -150,7 +150,7 @@ public class HTMLLayoutTest {
     }
     {
       Element tdElement = (Element) trElement.elements().get(1);
-      String regex = TestConstants.NAKED_MAIN_REGEX;
+      String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
       assertTrue(tdElement.getText().toString().matches(regex));
     }
     {

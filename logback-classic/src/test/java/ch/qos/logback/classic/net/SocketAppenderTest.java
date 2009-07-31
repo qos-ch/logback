@@ -57,7 +57,7 @@ public class SocketAppenderTest {
     waitForServerToStart();
     configureClient();
 
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
 
     Thread.sleep(SLEEP_AFTER_LOG);
@@ -78,7 +78,7 @@ public class SocketAppenderTest {
     waitForServerToStart();
     configureClient();
 
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
     Thread.sleep(SLEEP_AFTER_LOG);
 
@@ -91,7 +91,7 @@ public class SocketAppenderTest {
 
     String loggerName = remoteEvent.getLoggerName();
     assertNotNull(loggerName);
-    assertEquals("root", loggerName);
+    assertEquals(Logger.ROOT_LOGGER_NAME, loggerName);
 
     LoggerContextVO loggerContextRemoteView = remoteEvent
         .getLoggerContextVO();
@@ -107,7 +107,7 @@ public class SocketAppenderTest {
     waitForServerToStart();
     configureClient();
 
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     MDC.put("key", "testValue");
     logger.debug("test msg");
@@ -132,7 +132,7 @@ public class SocketAppenderTest {
     // Thread.sleep(SLEEP_AFTER_SERVER_START);
     configureClient();
 
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     Marker marker = MarkerFactory.getMarker("testMarker");
     logger.debug(marker, "test msg");
@@ -154,7 +154,7 @@ public class SocketAppenderTest {
 
     configureClient();
 
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     MDC.put("key", "testValue");
     logger.debug("test msg");
@@ -181,7 +181,7 @@ public class SocketAppenderTest {
   public void lateServerLaunch() throws InterruptedException {
     socketAppender.setReconnectionDelay(20);
     configureClient();
-    Logger logger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
 
     fireServer();
@@ -229,7 +229,7 @@ public class SocketAppenderTest {
     lc = new LoggerContext();
     lc.setName("test");
     lc.putProperty("testKey", "testValue");
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     socketAppender.setContext(lc);
     socketAppender.setName("socket");
     socketAppender.setPort(port);

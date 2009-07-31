@@ -38,7 +38,7 @@ public class ConsolePluginAction extends Action {
     appender.setRemoteHost("localhost");
     appender.setPort(port.intValue());
     appender.start();
-    Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.addAppender(appender);
     
     addInfo("Sending LoggingEvents to the plugin using port " + port);

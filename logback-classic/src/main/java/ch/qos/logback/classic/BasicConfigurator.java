@@ -47,7 +47,7 @@ public class BasicConfigurator {
 
     ca.setLayout(pl);
     ca.start();
-    Logger rootLogger = lc.getLogger(LoggerContext.ROOT_NAME);
+    Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     rootLogger.addAppender(ca);
   }
 

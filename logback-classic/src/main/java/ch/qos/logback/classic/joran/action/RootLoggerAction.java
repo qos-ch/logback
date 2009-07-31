@@ -28,7 +28,7 @@ public class RootLoggerAction extends Action {
     inError = false;
 
     LoggerContext loggerContext = (LoggerContext) this.context;
-    root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
+    root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
     String levelStr =  ec.subst(attributes.getValue(ActionConst.LEVEL_ATTRIBUTE));
     if (!OptionHelper.isEmpty(levelStr)) {

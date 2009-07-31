@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -46,7 +47,7 @@ public class ExtendedThrowableProxyConverterTest {
 
   private ILoggingEvent createLoggingEvent(Throwable t) {
     ILoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
-        .getLogger(LoggerContext.ROOT_NAME), Level.DEBUG, "test message", t,
+        .getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t,
         null);
     return le;
   }

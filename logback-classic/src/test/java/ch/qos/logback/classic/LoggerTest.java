@@ -27,7 +27,7 @@ import ch.qos.logback.core.status.Status;
 public class LoggerTest {
 
   LoggerContext lc = new LoggerContext();
-  Logger root = lc.getLogger(LoggerContext.ROOT_NAME);
+  Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
   Logger loggerTest = lc.getLogger(LoggerTest.class);
 
   ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
@@ -70,12 +70,12 @@ public class LoggerTest {
 
   @Test
   public void testRootLogger() {
-    Logger logger = (Logger) LoggerFactory.getLogger(LoggerContext.ROOT_NAME);
+    Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     LoggerContext lc = logger.getLoggerContext();
 
     assertNotNull("Returned logger is null", logger);
     assertEquals("Return logger isn't named root", logger.getName(),
-        LoggerContext.ROOT_NAME);
+        Logger.ROOT_LOGGER_NAME);
     assertTrue("logger instances should be indentical", logger == lc.root);
   }
 

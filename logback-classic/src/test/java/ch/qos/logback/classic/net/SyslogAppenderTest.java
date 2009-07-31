@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.TestConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.net.mock.MockSyslogServer;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -142,7 +142,7 @@ public class SyslogAppenderTest {
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
     lc.reset();
-    configurator.doConfigure(TestConstants.JORAN_ONPUT_PREFIX
+    configurator.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX
         + "/syslog_LBCLASSIC_50.xml");
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());

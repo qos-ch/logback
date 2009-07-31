@@ -19,7 +19,7 @@ public class LoggingEventWithParametersBuilder implements Builder {
   final String MSG = "aaaaabbbbbcccc {} cdddddaaaaabbbbbcccccdddddaaaa {}";
 
   private Logger logger = new LoggerContext()
-      .getLogger(LoggerContext.ROOT_NAME);
+      .getLogger(Logger.ROOT_LOGGER_NAME);
 
   public Object build(int i) {
 

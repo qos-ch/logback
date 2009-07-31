@@ -37,7 +37,7 @@ public class JoranConfiguratorTest {
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
-  Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
+  Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
@@ -50,7 +50,7 @@ public class JoranConfiguratorTest {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
 
     Logger logger = loggerContext.getLogger(this.getClass().getName());
-    Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
     String msg = "hello world";

@@ -37,7 +37,7 @@ public class SiftingAppenderTest {
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
-  Logger root = loggerContext.getLogger(LoggerContext.ROOT_NAME);
+  Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();

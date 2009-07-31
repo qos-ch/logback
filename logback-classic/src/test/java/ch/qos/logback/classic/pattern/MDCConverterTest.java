@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -57,7 +58,7 @@ public class MDCConverterTest {
 
   private ILoggingEvent createLoggingEvent() {
     ILoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
-        .getLogger(LoggerContext.ROOT_NAME), Level.DEBUG, "test message", null,
+        .getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null,
         null);
     return le;
   }

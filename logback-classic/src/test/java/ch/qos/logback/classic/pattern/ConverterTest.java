@@ -25,7 +25,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.TestConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -96,7 +96,7 @@ public class ConverterTest {
     DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
     StringBuffer buf = new StringBuffer();
     converter.write(buf, le);
-    String regex = TestConstants.NAKED_MAIN_REGEX;
+    String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
     assertTrue(buf.toString().matches(regex));
   }
 

@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 public class TrivialLoggingEventBuilder implements Builder {
 
   private Logger logger = new LoggerContext()
-      .getLogger(LoggerContext.ROOT_NAME);
+      .getLogger(Logger.ROOT_LOGGER_NAME);
 
   public Object build(int i) {
     LoggingEvent le = new LoggingEvent();
