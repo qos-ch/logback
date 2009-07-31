@@ -146,7 +146,6 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
       fileSize = 0;
       return;
     }
-
   }
 
   void addExpectedFileName(String testId, Date date, int fileIndexCounter,

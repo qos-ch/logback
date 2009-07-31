@@ -130,7 +130,7 @@ public class ScaffoldingForRollingTests {
     currentTime += increment;
   }
 
-  Date getDateOfCurrentPeriodsStart() {
+  protected Date getDateOfCurrentPeriodsStart() {
     long delta = currentTime % 1000;
     return new Date(currentTime - delta);
   }

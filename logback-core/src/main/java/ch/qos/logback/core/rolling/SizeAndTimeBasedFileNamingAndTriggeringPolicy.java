@@ -12,8 +12,10 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 import java.util.Date;
 
+import ch.qos.logback.core.joran.spi.NoAutoStart;
 import ch.qos.logback.core.util.FileSize;
 
+@NoAutoStart
 public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends
     TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
