@@ -75,9 +75,17 @@ public class ScaffoldingForRollingTests {
     assertEquals(witnessList, stringList);
   }
 
-  public static void contentCheck(String outputDirStr, int runLength,
+  public static void sortedContentCheck(String outputDirStr, int runLength,
       String prefix) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
+    Arrays.sort(fileArray, new Comparator<File>() {
+      public int compare(File o1, File o2) {
+        String o1Name = o1.getName();
+        String o2Name = o2.getName();
+        return (o1Name.compareTo(o2Name));
+      }
+    }
+    );
     fileContentCheck(fileArray, runLength, prefix);
   }
 
