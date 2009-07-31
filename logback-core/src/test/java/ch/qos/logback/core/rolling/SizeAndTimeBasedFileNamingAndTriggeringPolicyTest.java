@@ -47,7 +47,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
 
     tbrp.setContext(context);
     satbfnatPolicy.setMaxFileSize("" + sizeThreshold);
-    tbrp.setTimeBasedTriggering(satbfnatPolicy);
+    tbrp.setTimeBasedFileNamingAndTriggeringPolicy(satbfnatPolicy);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
     tbrp.timeBasedTriggering.setCurrentTime(givenTime);
@@ -60,7 +60,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
   }
 
   @Test
-  public void noCompression_FileBSet_NoRestart_1() throws Exception {
+  public void noCompression_FileSet_NoRestart_1() throws Exception {
     String testId = "test1";
     String file = randomOutputDir + "toto.log";
     initRFA(rfa1, file);
@@ -152,7 +152,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
   void addExpectedFileName(String testId, Date date, int fileIndexCounter,
       boolean gzExtension) {
 
-    String fn = randomOutputDir + testId + "-" + sdf.format(date) + "-"
+    String fn = randomOutputDir + testId + "-" + SDF.format(date) + "-"
         + fileIndexCounter + ".txt";
     if (gzExtension) {
       fn += ".gz";

@@ -363,23 +363,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByFile(file);
   }
 
-  void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
-    String fn = randomOutputDir + testId + "-"
-        + sdf.format(date);
-    if (gzExtension) {
-      fn += ".gz";
-    } 
-    expectedFilenameList.add(fn);
-  }
- 
-  void addExpectedFileNamedIfItsTime_ByDate(String testId, boolean gzExtension) {
-    if (passThresholdTime(nextRolloverThreshold)) {
-      addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(),
-          gzExtension);
-      recomputeRolloverThreshold(currentTime);
-    }
-  }
-
   void addExpectedFileName_ByFile(String filenameSuffix) {
     String fn = randomOutputDir + filenameSuffix;
     expectedFilenameList.add(fn);

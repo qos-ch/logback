@@ -153,7 +153,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     return rollingPolicy;
   }
 
-  public TriggeringPolicy getTriggeringPolicy() {
+  public TriggeringPolicy<E> getTriggeringPolicy() {
     return triggeringPolicy;
   }
 

@@ -31,9 +31,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
   }
 
   public void start() {
-
     DateTokenConverter dtc = tbrp.fileNamePattern.getDateTokenConverter();
-
     if (dtc == null) {
       throw new IllegalStateException("FileNamePattern ["
           + tbrp.fileNamePattern.getPattern()

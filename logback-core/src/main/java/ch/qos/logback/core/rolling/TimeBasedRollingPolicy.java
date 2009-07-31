@@ -84,9 +84,14 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  public void setTimeBasedTriggering(TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
+  public void setTimeBasedFileNamingAndTriggeringPolicy(TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
     this.timeBasedTriggering = timeBasedTriggering;
   }
+
+  public TimeBasedFileNamingAndTriggeringPolicy<E> getTimeBasedFileNamingAndTriggeringPolicy() {
+    return timeBasedTriggering;
+  }
+
   
   static String computeFileNameStr_WCS(String fileNamePatternStr,
       CompressionMode compressionMode) {

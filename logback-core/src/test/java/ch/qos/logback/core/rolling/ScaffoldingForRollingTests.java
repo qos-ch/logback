@@ -29,17 +29,17 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class ScaffoldingForRollingTests {
 
-  static final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
-  SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS);
+  static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
+  static public final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS);
 
   int diff = RandomUtil.getPositiveInt();
-  String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+  protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
   EchoLayout<Object> layout = new EchoLayout<Object>();
   Context context = new ContextBase();
-  List<String> expectedFilenameList = new ArrayList<String>();
+  protected List<String> expectedFilenameList = new ArrayList<String>();
 
-  long nextRolloverThreshold; // initialized in setUp()
-  long currentTime; // initialized in setUp()
+  protected long nextRolloverThreshold; // initialized in setUp()
+  protected long currentTime; // initialized in setUp()
   Calendar cal = Calendar.getInstance();
 
   public void setUp() {
@@ -117,16 +117,16 @@ public class ScaffoldingForRollingTests {
   }
 
   // assuming rollover every second
-  void recomputeRolloverThreshold(long ct) {
+  protected void recomputeRolloverThreshold(long ct) {
     long delta = ct % 1000;
     nextRolloverThreshold = (ct - delta) + 1000;
   }
 
-  boolean passThresholdTime(long nextRolloverThreshold) {
+  protected boolean passThresholdTime(long nextRolloverThreshold) {
     return currentTime >= nextRolloverThreshold;
   }
 
-  void incCurrentTime(long increment) {
+  protected void incCurrentTime(long increment) {
     currentTime += increment;
   }
 
@@ -135,6 +135,30 @@ public class ScaffoldingForRollingTests {
     return new Date(currentTime - delta);
   }
 
+  protected Date getDateOfPreviousPeriodsStart() {
+    long delta = currentTime % 1000;
+    return new Date(currentTime - delta - 1000);
+  }
+  
+  protected void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
+   
+    String fn = randomOutputDir + testId + "-"
+        + SDF.format(date);
+    System.out.println("adding "+fn);
+    if (gzExtension) {
+      fn += ".gz";
+    } 
+    expectedFilenameList.add(fn);
+  }
+  
+  protected void addExpectedFileNamedIfItsTime_ByDate(String testId, boolean gzExtension) {
+    if (passThresholdTime(nextRolloverThreshold)) {
+      addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(),
+          gzExtension);
+      recomputeRolloverThreshold(currentTime);
+    }
+  }
+  
   String addGZIfNotLast(int i) {
     int lastIndex = expectedFilenameList.size() - 1;
     if (i != lastIndex) {
