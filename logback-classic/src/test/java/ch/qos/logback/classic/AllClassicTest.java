@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ch.qos.logback.classic.util.PackageTest.class,
     ch.qos.logback.classic.control.PackageTest.class,
     ch.qos.logback.classic.joran.PackageTest.class,
+    ch.qos.logback.classic.rolling.PackageTest.class,
     ch.qos.logback.classic.jmx.PackageTest.class,
     ch.qos.logback.classic.boolex.PackageTest.class,
     ch.qos.logback.classic.selector.PackageTest.class,
