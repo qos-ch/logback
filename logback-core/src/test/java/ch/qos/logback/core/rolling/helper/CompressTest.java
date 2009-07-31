@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.CoreTestConstants;
 /**
  * @author Ceki Gulcu
  */
-public class CompressTest  {
+public class CompressTest {
 
   Context context = new ContextBase();
 
@@ -39,9 +39,11 @@ public class CompressTest  {
     // Copy source files
     // Delete output files
     {
-      File source = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress1.copy");
-      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress1.txt");
-                                                        
+      File source = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress1.copy");
+      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress1.txt");
+
       copy(source, dest);
       File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX
           + "compress1.txt.gz");
@@ -49,8 +51,10 @@ public class CompressTest  {
       target.delete();
     }
     {
-      File source = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress2.copy");
-      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress2.txt");
+      File source = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress2.copy");
+      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress2.txt");
       copy(source, dest);
       File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX
           + "compress2.txt.gz");
@@ -58,8 +62,10 @@ public class CompressTest  {
       target.delete();
     }
     {
-      File source = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress3.copy");
-      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX + "input/compress3.txt");
+      File source = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress3.copy");
+      File dest = new File(CoreTestConstants.TEST_DIR_PREFIX
+          + "input/compress3.txt");
       copy(source, dest);
       File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX
           + "compress3.txt.zip");
@@ -68,13 +74,13 @@ public class CompressTest  {
     }
   }
 
-
   @Test
   public void test1() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ);
     compressor.setContext(context);
-    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX + "input/compress1.txt",
-        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
+    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
+        + "input/compress1.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
+        + "compress1.txt.gz");
 
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
@@ -87,8 +93,9 @@ public class CompressTest  {
   public void test2() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.GZ);
     compressor.setContext(context);
-    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX + "input/compress2.txt",
-        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt");
+    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
+        + "input/compress2.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
+        + "compress2.txt");
 
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
@@ -102,14 +109,16 @@ public class CompressTest  {
   public void test3() throws Exception {
     Compressor compressor = new Compressor(CompressionMode.ZIP);
     compressor.setContext(context);
-    compressor.compress( 
-        CoreTestConstants.TEST_DIR_PREFIX + "input/compress3.txt",
-        CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt");
+    compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
+        + "input/compress3.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
+        + "compress3.txt");
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
 
-    // assertTrue(Compare.compare("output/compress3.txt.zip",
-    // "witness/compress3.txt.zip"));
+    // we don't know how to compare .zip files
+    // assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
+    // + "compress3.txt.zip", CoreTestConstants.TEST_DIR_PREFIX
+    // + "witness/compress3.txt.zip"));
   }
 
   private void copy(File src, File dst) throws IOException {
