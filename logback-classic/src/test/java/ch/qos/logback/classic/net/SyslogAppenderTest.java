@@ -75,9 +75,9 @@ public class SyslogAppenderTest {
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.]* ";
-    assertTrue(msg.matches(first + "\\[" + threadName + "\\] " + loggerName
-        + " " + logMsg));
+    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
+    checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName
+        + " " + logMsg);
 
   }
 
@@ -127,11 +127,15 @@ public class SyslogAppenderTest {
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.]* ";
+    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
     String threadName = Thread.currentThread().getName();
-    String expectedResult = expectedPrefix + "\\[" + threadName + "\\] "
+    String regex = expectedPrefix + "\\[" + threadName + "\\] "
         + loggerName + " " + logMsg;
-    assertTrue(msg.matches(expectedResult));
+    checkRegexMatch(msg, regex);
+  }
+  
+  private void checkRegexMatch(String s, String regex) {
+    assertTrue("The string ["+s+"] did not match regex ["+regex+"]", s.matches(regex));
   }
 
   @Test
