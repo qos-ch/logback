@@ -30,10 +30,12 @@ import ch.qos.logback.core.util.CoreTestConstants;
 public class ScaffoldingForRollingTests {
 
   static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
-  static public final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS);
+  static public final SimpleDateFormat SDF = new SimpleDateFormat(
+      DATE_PATTERN_WITH_SECONDS);
 
   int diff = RandomUtil.getPositiveInt();
-  protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+  protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff
+      + "/";
   EchoLayout<Object> layout = new EchoLayout<Object>();
   Context context = new ContextBase();
   protected List<String> expectedFilenameList = new ArrayList<String>();
@@ -84,23 +86,21 @@ public class ScaffoldingForRollingTests {
         String o2Name = o2.getName();
         return (o1Name.compareTo(o2Name));
       }
-    }
-    );
+    });
     fileContentCheck(fileArray, runLength, prefix);
   }
 
   public static void reverseSortedContentCheck(String outputDirStr,
       int runLength, String prefix) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
-    
+
     Arrays.sort(fileArray, new Comparator<File>() {
       public int compare(File o1, File o2) {
         String o1Name = o1.getName();
         String o2Name = o2.getName();
         return (o2Name.compareTo(o1Name));
       }
-    }
-    );
+    });
     System.out.println(Arrays.toString(fileArray));
     fileContentCheck(fileArray, runLength, prefix);
   }
@@ -110,6 +110,16 @@ public class ScaffoldingForRollingTests {
       assertTrue("File " + filename + " does not exist", new File(filename)
           .exists());
     }
+  }
+
+  public static int existenceCount(List<String> filenameList) {
+    int existenceCounter = 0;
+    for (String filename : filenameList) {
+      if (new File(filename).exists()) {
+        existenceCounter++;
+      }
+    }
+    return existenceCounter;
   }
 
   String testId2FileName(String testId) {
@@ -139,26 +149,27 @@ public class ScaffoldingForRollingTests {
     long delta = currentTime % 1000;
     return new Date(currentTime - delta - 1000);
   }
-  
-  protected void addExpectedFileName_ByDate(String testId, Date date, boolean gzExtension) {
-   
-    String fn = randomOutputDir + testId + "-"
-        + SDF.format(date);
-    System.out.println("adding "+fn);
+
+  protected void addExpectedFileName_ByDate(String testId, Date date,
+      boolean gzExtension) {
+
+    String fn = randomOutputDir + testId + "-" + SDF.format(date);
+    System.out.println("adding " + fn);
     if (gzExtension) {
       fn += ".gz";
-    } 
+    }
     expectedFilenameList.add(fn);
   }
-  
-  protected void addExpectedFileNamedIfItsTime_ByDate(String testId, boolean gzExtension) {
+
+  protected void addExpectedFileNamedIfItsTime_ByDate(String testId,
+      boolean gzExtension) {
     if (passThresholdTime(nextRolloverThreshold)) {
       addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(),
           gzExtension);
       recomputeRolloverThreshold(currentTime);
     }
   }
-  
+
   String addGZIfNotLast(int i) {
     int lastIndex = expectedFilenameList.size() - 1;
     if (i != lastIndex) {
