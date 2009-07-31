@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 
 import ch.qos.logback.core.Context;
@@ -80,15 +81,20 @@ public class ScaffoldingForRollingTests {
     fileContentCheck(fileArray, runLength, prefix);
   }
 
-  public static void reverseOrderedContentCheck(String outputDirStr,
+  public static void reverseSortedContentCheck(String outputDirStr,
       int runLength, String prefix) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
-    File[] reversedArray = new File[fileArray.length];
-    for (int i = 0; i < fileArray.length; i++) {
-      reversedArray[fileArray.length - 1 - i] = fileArray[i];
+    
+    Arrays.sort(fileArray, new Comparator<File>() {
+      public int compare(File o1, File o2) {
+        String o1Name = o1.getName();
+        String o2Name = o2.getName();
+        return (o2Name.compareTo(o1Name));
+      }
     }
-    System.out.println(Arrays.toString(reversedArray));
-    fileContentCheck(reversedArray, runLength, prefix);
+    );
+    System.out.println(Arrays.toString(fileArray));
+    fileContentCheck(fileArray, runLength, prefix);
   }
 
   public static void existenceCheck(List<String> filenameList) {

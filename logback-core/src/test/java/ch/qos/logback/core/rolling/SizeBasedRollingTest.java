@@ -130,7 +130,7 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     expectedFilenameList.add(randomOutputDir + "sizeBased-smoke.1");
     existenceCheck(expectedFilenameList);
 
-    reverseOrderedContentCheck(randomOutputDir, runLength, prefix);
+    reverseSortedContentCheck(randomOutputDir, runLength, prefix);
   }
 
   /**
@@ -143,7 +143,7 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setLayout(layout);
     rfa.setContext(context);
-    rfa.setFile(randomOutputDir + "sbr-test3.log");
+    rfa.setFile(randomOutputDir + "a-sbr-test3.log");
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
@@ -168,12 +168,12 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
       rfa.doAppend("hello"+i);
     }
 
-    expectedFilenameList.add(randomOutputDir        + "sbr-test3.log");
+    expectedFilenameList.add(randomOutputDir        + "a-sbr-test3.log");
     expectedFilenameList.add(randomOutputDir        + "sbr-test3.0.gz");
     expectedFilenameList.add(randomOutputDir        + "sbr-test3.1.gz");
 
     existenceCheck(expectedFilenameList);
-    reverseOrderedContentCheck(randomOutputDir, runLength, prefix);
+    reverseSortedContentCheck(randomOutputDir, runLength, prefix);
   
   }
 
