@@ -87,7 +87,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
 
     massageExpectedFilesToCorresponToCurrentTarget(file);
     existenceCheck(expectedFilenameList);
-    contentCheck(runLength, prefix);
+    contentCheck(randomOutputDir, runLength, prefix);
   }
 
   @Test
@@ -116,7 +116,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
     }
 
     existenceCheck(expectedFilenameList);
-    contentCheck(runLength, prefix);
+    contentCheck(randomOutputDir, runLength, prefix);
   }
 
   void massageExpectedFilesToCorresponToCurrentTarget(String file) {
