@@ -437,7 +437,7 @@ public class PropertySetter extends ContextAwareBase {
     }
     String v = val.trim();
     if (String.class.isAssignableFrom(type)) {
-      return val;
+      return v;
     } else if (Integer.TYPE.isAssignableFrom(type)) {
       return new Integer(v);
     } else if (Long.TYPE.isAssignableFrom(type)) {
@@ -453,9 +453,9 @@ public class PropertySetter extends ContextAwareBase {
         return Boolean.FALSE;
       }
     } else if (type.isEnum()) {
-      return convertEnum(val, type);
+      return convertEnum(v, type);
     } else if (isBuildableFromString(type)) {
-      return buildFromString(type, val);
+      return buildFromString(type, v);
     }
 
     return null;
