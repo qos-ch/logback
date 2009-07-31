@@ -66,10 +66,6 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/root/appender-ref"),
         new AppenderRefAction());
 
-    //rs
-    //   .addRule(new Pattern("configuration/appender/layout"),
-    //        new LayoutAction());
-
     // add jmxConfigurator only if we have JMX available.
     // If running under JDK 1.4 (retrotranslateed logback) then we
     // might not have JMX.
