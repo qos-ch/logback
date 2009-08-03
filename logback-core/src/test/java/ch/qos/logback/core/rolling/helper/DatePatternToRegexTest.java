@@ -17,34 +17,67 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.qos.logback.core.CoreConstants;
 
 public class DatePatternToRegexTest {
-
-  @Before
-  public void setUp() throws Exception {
-    // set(int year, int month, int date, int hourOfDay, int minute, int
-    // second);
-    // calendar.set(2009, 8, 3, 21, 57, 16);
+  static Calendar CAL_2009_08_3_NIGHT = Calendar.getInstance();
+  static Calendar CAL_2009_08_3_MORNING = Calendar.getInstance();
+  
+  @BeforeClass
+  public static void setUpCalendars() {
+    CAL_2009_08_3_NIGHT.set(2009, 8, 3, 21, 57, 16);
+    CAL_2009_08_3_NIGHT.set(Calendar.MILLISECOND, 333);
+      
+    CAL_2009_08_3_MORNING.set(2009, 8, 3, 10, 24, 37);
+    CAL_2009_08_3_MORNING.set(Calendar.MILLISECOND, 333);
+  }
+  
+  @Test
+  public void ISO8601() {
+    doTest(CoreConstants.ISO8601_PATTERN, CAL_2009_08_3_NIGHT);;
   }
 
   @Test
-  public void ISO8601() {
-    SimpleDateFormat sdf = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(2009, 8, 3, 21, 57, 16);
-    calendar.set(Calendar.MILLISECOND, 333);
-    // 2009-09-03 21:57:16,333
-    DateTokenConverter dtc = makeDTC(CoreConstants.ISO8601_PATTERN);
-    verify(sdf, calendar, dtc);
+  public void month() {
+    doTest("yyyy-MMM-dd", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT);
   }
 
+  @Test
+  public void timeZone() {
+    doTest("yyyy-MMM-dd HH:mm:ss z", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMM-dd HH:mm:ss Z", CAL_2009_08_3_NIGHT);
+  }
+
+  
+  @Test
+  public void dayInWeek() {
+    doTest("yyyy-MMM-E", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMM-EE", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMM-EEE", CAL_2009_08_3_NIGHT);
+  }
+
+  @Test
+  public void amPm() {
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING);    
+  }
+
+  
+  void doTest(String datePattern, Calendar calendar) {
+    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+    DateTokenConverter dtc = makeDTC(datePattern);
+    verify(sdf, calendar, dtc);
+  }
+  
   void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc) {
     String expected = sdf.format(calendar.getTime());
     String regex = dtc.toRegex();
+    //System.out.println("expected="+expected);
+    //System.out.println(regex);
     assertTrue("[" + expected + "] does not match regex [" + regex + "]",
         expected.matches(regex));
   }

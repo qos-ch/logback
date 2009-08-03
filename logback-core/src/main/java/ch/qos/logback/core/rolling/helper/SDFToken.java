@@ -47,16 +47,13 @@ class SDFToken {
     case 'S':
       return number(occurrences);
     case 'E':
-      if (occurrences >= 4) {
-        return ".{3,10}";
-      } else {
-        return number(occurrences);
-      }
+        return ".{3,12}";
     case 'a':
       return ".{2}";
     case 'z':
-    case 'Z':
       return ".*";
+    case 'Z':
+      return "(\\+|-)\\d{4}";
     default:
       if (occurrences == 1) {
         return "" + c;
