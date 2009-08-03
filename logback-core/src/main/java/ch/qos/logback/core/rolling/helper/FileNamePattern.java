@@ -156,4 +156,22 @@ public class FileNamePattern extends ContextAwareBase {
     }
     return buf.toString();
   }
+  
+  // Given date, convert this instance to  a regular expression 
+  String asRegex() {
+    StringBuilder buf = new StringBuilder();
+    Converter<Object> p = headTokenConverter;
+    while (p != null) {
+      if(p instanceof LiteralConverter) {
+        buf.append(p.convert(null));
+      } else if (p instanceof IntegerTokenConverter) {
+        buf.append("\\d{1,2}");
+      } else if(p instanceof DateTokenConverter) {
+        DateTokenConverter dtc = (DateTokenConverter) p;
+        xbuf.append(dtc.asRegex());
+      }
+      p = p.getNext();
+    }
+    return buf.toString();
+  }
 }

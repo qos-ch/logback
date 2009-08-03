@@ -75,7 +75,7 @@ public class DatePatternToRegexTest {
   
   void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc) {
     String expected = sdf.format(calendar.getTime());
-    String regex = dtc.toRegex();
+    String regex = dtc.asRegex();
     //System.out.println("expected="+expected);
     //System.out.println(regex);
     assertTrue("[" + expected + "] does not match regex [" + regex + "]",

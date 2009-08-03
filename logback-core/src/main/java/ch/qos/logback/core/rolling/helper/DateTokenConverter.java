@@ -67,15 +67,8 @@ public class DateTokenConverter extends DynamicConverter implements MonoTypedCon
     return (o instanceof Date);
   }
 
-  public String toRegex() {
-    DatePatternToRegex toRegex = new DatePatternToRegex(datePattern);
-    return toRegex.toRegex();
+  public String asRegex() {
+    DatePatternAsRegexUtil toRegex = new DatePatternAsRegexUtil(datePattern);
+    return toRegex.asRegex();
   }
-  
-  /**
-   * Set the date pattern.
-   */
-  // public void setDatePattern(String string) {
-  // datePattern = string;
-  // }
 }

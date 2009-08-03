@@ -13,17 +13,17 @@ package ch.qos.logback.core.rolling.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatePatternToRegex {
+public class DatePatternAsRegexUtil {
 
   final String datePattern;
   final int length;
 
-  DatePatternToRegex(String datePattern) {
+  DatePatternAsRegexUtil(String datePattern) {
     this.datePattern = datePattern;
     length = datePattern.length();
   }
 
-  String toRegex() {
+  String asRegex() {
     List<SDFToken> tokenList = tokenize();
     StringBuilder sb = new StringBuilder();
     for(SDFToken token: tokenList) {
