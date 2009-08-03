@@ -10,12 +10,14 @@
 
 package ch.qos.logback.core.rolling.helper;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
+import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
@@ -135,5 +137,23 @@ public class FileNamePattern extends ContextAwareBase {
 
   public String getPattern() {
     return pattern;
+  }
+  
+
+  // Given date, convert this instance to  a regular expression 
+  String asRegex(Date date) {
+    StringBuilder buf = new StringBuilder();
+    Converter<Object> p = headTokenConverter;
+    while (p != null) {
+      if(p instanceof LiteralConverter) {
+        buf.append(p.convert(null));
+      } else if (p instanceof IntegerTokenConverter) {
+        buf.append("\\d{1,2}");
+      } else if(p instanceof DateTokenConverter) {
+        buf.append(p.convert(date));
+      }
+      p = p.getNext();
+    }
+    return buf.toString();
   }
 }

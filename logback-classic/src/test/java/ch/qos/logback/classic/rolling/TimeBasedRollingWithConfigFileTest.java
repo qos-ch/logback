@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.classic.rolling;
 
 import static org.junit.Assert.assertTrue;
@@ -28,7 +37,7 @@ public class TimeBasedRollingWithConfigFileTest extends
   int fileSize = 0;
   int fileIndexCounter = -1;
   int sizeThreshold;
-  
+
   @Before
   @Override
   public void setUp() {
@@ -53,23 +62,23 @@ public class TimeBasedRollingWithConfigFileTest extends
   public void basic() throws Exception {
     String testId = "basic";
     lc.putProperty("testId", testId);
-    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/rolling/"+testId+".xml");
+    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/rolling/" + testId
+        + ".xml");
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());
-    
+
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    
-    expectedFilenameList.add(randomOutputDir+"z"+testId);
-    
+
+    expectedFilenameList.add(randomOutputDir + "z" + testId);
+
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
         .getAppender("ROLLING");
 
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
         .getTriggeringPolicy();
-    TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp.getTimeBasedFileNamingAndTriggeringPolicy();
-    
+    TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp
+        .getTimeBasedFileNamingAndTriggeringPolicy();
 
-    
     String prefix = "Hello---";
     int runLength = 4;
     for (int i = 0; i < runLength; i++) {
@@ -80,38 +89,39 @@ public class TimeBasedRollingWithConfigFileTest extends
     }
 
     existenceCheck(expectedFilenameList);
-    sortedContentCheck(randomOutputDir, runLength, prefix); 
+    sortedContentCheck(randomOutputDir, runLength, prefix);
   }
-  
+
   @Test
   public void timeAndSize() throws Exception {
     String testId = "timeAndSize";
     lc.putProperty("testId", testId);
     String prefix = "Hello-----";
-    int hits = 64;
-    sizeThreshold = prefix.length()*hits;
-    lc.putProperty("sizeThreshold", ""+sizeThreshold);
-    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/rolling/"+testId+".xml");
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    
 
-    expectedFilenameList.add(randomOutputDir+"z"+testId);
-    
+    // the number of times the log file will be written to before time based
+    // roll-over occurs
+    int approxWritesPerPeriod = 64;
+    sizeThreshold = prefix.length() * approxWritesPerPeriod;
+    lc.putProperty("sizeThreshold", "" + sizeThreshold);
+    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/rolling/" + testId
+        + ".xml");
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+
+    expectedFilenameList.add(randomOutputDir + "z" + testId);
+
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
         .getAppender("ROLLING");
 
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());
 
-    
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
         .getTriggeringPolicy();
-    TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp.getTimeBasedFileNamingAndTriggeringPolicy();
-    
+    TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp
+        .getTimeBasedFileNamingAndTriggeringPolicy();
 
-    
-    int timeIncrement = 1000/hits;
-    int runLength = (1000/timeIncrement)*3;
+    int timeIncrement = 1000 / approxWritesPerPeriod;
+    int runLength = approxWritesPerPeriod * 3;
     for (int i = 0; i < runLength; i++) {
       String msg = prefix + i;
       logger.debug(msg);
@@ -120,12 +130,16 @@ public class TimeBasedRollingWithConfigFileTest extends
       tbnatp.setCurrentTime(currentTime);
     }
 
-    sortedContentCheck(randomOutputDir, runLength, prefix); 
+    sortedContentCheck(randomOutputDir, runLength, prefix);
     int eCount = existenceCount(expectedFilenameList);
-    assertTrue("eCount="+eCount+"expectedFilenameList.size="+expectedFilenameList.size(), eCount >= 5 && eCount > expectedFilenameList.size()/2);
+    // for various reasons, it is extremely difficult to have the files
+    // match exactly the expected archive files. Thus, we aim for
+    // an approximate match
+    assertTrue("eCount=" + eCount + "expectedFilenameList.size="
+        + expectedFilenameList.size(), eCount >= 5
+        && eCount > expectedFilenameList.size() / 2);
   }
- 
- 
+
   void addExpectedFileNamedIfItsTime(String testId, String msg,
       boolean gzExtension) {
     fileSize += msg.getBytes().length;
@@ -154,15 +168,16 @@ public class TimeBasedRollingWithConfigFileTest extends
 
     String fn = randomOutputDir + testId + "-" + SDF.format(date) + "."
         + fileIndexCounter;
-    System.out.println("Adding "+fn);
+    System.out.println("Adding " + fn);
     if (gzExtension) {
       fn += ".gz";
     }
     expectedFilenameList.add(fn);
   }
-  
+
   @Override
-  protected void addExpectedFileNamedIfItsTime_ByDate(String testId, boolean gzExtension) {
+  protected void addExpectedFileNamedIfItsTime_ByDate(String testId,
+      boolean gzExtension) {
     if (passThresholdTime(nextRolloverThreshold)) {
       addExpectedFileName_ByDate(testId, getDateOfPreviousPeriodsStart(),
           gzExtension);

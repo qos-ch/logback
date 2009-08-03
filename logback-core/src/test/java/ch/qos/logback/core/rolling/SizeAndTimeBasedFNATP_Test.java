@@ -16,10 +16,10 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
+public class SizeAndTimeBasedFNATP_Test extends
     ScaffoldingForRollingTests {
 
-  SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> satbfnatPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
+  SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
   RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
   TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<Object>();
 
@@ -46,8 +46,8 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicyTest extends
       int sizeThreshold, long givenTime, long lastCheck) {
 
     tbrp.setContext(context);
-    satbfnatPolicy.setMaxFileSize("" + sizeThreshold);
-    tbrp.setTimeBasedFileNamingAndTriggeringPolicy(satbfnatPolicy);
+    sizeAndTimeBasedFNATP.setMaxFileSize("" + sizeThreshold);
+    tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
     tbrp.timeBasedTriggering.setCurrentTime(givenTime);

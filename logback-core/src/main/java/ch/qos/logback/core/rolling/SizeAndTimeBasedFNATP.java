@@ -16,7 +16,7 @@ import ch.qos.logback.core.joran.spi.NoAutoStart;
 import ch.qos.logback.core.util.FileSize;
 
 @NoAutoStart
-public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends
+public class SizeAndTimeBasedFNATP<E> extends
     TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
   int currentPeriodsCounter = 0;
