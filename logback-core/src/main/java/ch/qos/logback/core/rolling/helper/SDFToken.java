@@ -21,11 +21,57 @@ class SDFToken {
   void inc() {
     occurrences++;
   }
-  
+
   String toRegex() {
-    switch(c) {
+    switch (c) {
     case 'G':
-      return null;
+      return ".*";
+    case 'M':
+      if (occurrences >= 3) {
+        return ".*";
+      } else {
+        return number(occurrences);
+      }
+    case 'y':
+    case 'w':
+    case 'W':
+    case 'D':
+    case 'd':
+    case 'F':
+    case 'H':
+    case 'k':
+    case 'K':
+    case 'h':
+    case 'm':
+    case 's':
+    case 'S':
+      return number(occurrences);
+    case 'E':
+      if (occurrences >= 4) {
+        return ".{3,10}";
+      } else {
+        return number(occurrences);
+      }
+    case 'a':
+      return ".{2}";
+    case 'z':
+    case 'Z':
+      return ".*";
+    default:
+      if (occurrences == 1) {
+        return "" + c;
+      } else {
+        return c + "{" + occurrences + "}";
+      }
     }
+  }
+
+  @Override
+  public String toString() {
+    return c+"("+occurrences+")";
+  }
+  
+  private String number(int occurences) {
+    return "\\d{" + occurrences + "}";
   }
 }

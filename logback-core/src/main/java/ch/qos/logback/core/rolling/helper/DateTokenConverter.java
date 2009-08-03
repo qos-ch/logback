@@ -1,7 +1,7 @@
 /**
- * LOGBack: the reliable, fast and flexible logging library for Java.
+ * Logback: the generic, reliable, fast and flexible logging framework.
  * 
- * Copyright (C) 1999-2006, QOS.ch
+ * Copyright (C) 2000-2009, QOS.ch
  * 
  * This library is free software, you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ import java.util.Date;
 import ch.qos.logback.core.pattern.DynamicConverter;
 
 /**
+ * Returns a date formatted by SimpleDateFormatter.
  * 
  * @author Ceki G&uuml;c&uuml;
  */
@@ -26,8 +27,8 @@ public class DateTokenConverter extends DynamicConverter implements MonoTypedCon
    */
   public final static String CONVERTER_KEY = "d";
 
-  String datePattern;
-  SimpleDateFormat sdf;
+  private String datePattern;
+  private SimpleDateFormat sdf;
 
   public DateTokenConverter() {
   }
@@ -66,9 +67,11 @@ public class DateTokenConverter extends DynamicConverter implements MonoTypedCon
     return (o instanceof Date);
   }
 
-  String toRegex() {
-    return null;
+  public String toRegex() {
+    DatePatternToRegex toRegex = new DatePatternToRegex(datePattern);
+    return toRegex.toRegex();
   }
+  
   /**
    * Set the date pattern.
    */

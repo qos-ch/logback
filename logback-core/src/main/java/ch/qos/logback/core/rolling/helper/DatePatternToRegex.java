@@ -1,3 +1,13 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+
 package ch.qos.logback.core.rolling.helper;
 
 import java.util.ArrayList;
@@ -13,19 +23,16 @@ public class DatePatternToRegex {
     length = datePattern.length();
   }
 
-  public String toRegex(String datePattern) {
+  String toRegex() {
     List<SDFToken> tokenList = tokenize();
+    StringBuilder sb = new StringBuilder();
     for(SDFToken token: tokenList) {
-      
+      sb.append(token.toRegex());
     }
-    char c = 0;
-    for (int i = 0; i < length; i++) {
-      char t = 1;
-    }
-    return null;
+    return sb.toString();
   }
 
-  List<SDFToken> tokenize() {
+  private List<SDFToken> tokenize() {
     List<SDFToken> tokenList = new ArrayList<SDFToken>();
     SDFToken token = null;
     for (int i = 0; i < length; i++) {

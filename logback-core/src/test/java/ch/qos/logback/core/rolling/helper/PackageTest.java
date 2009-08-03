@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { CompressTest.class, FileNamePatternTest.class,
-    RollingCalendarTest.class })
+    RollingCalendarTest.class, DatePatternToRegexTest.class })
 public class PackageTest extends TestCase {
 
 }
