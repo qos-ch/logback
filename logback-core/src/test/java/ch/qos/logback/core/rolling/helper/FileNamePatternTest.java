@@ -121,7 +121,7 @@ public class FileNamePatternTest {
     cal.set(2003, 4, 20, 17, 55);
     FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt", context);
     String regex = fnp.asRegex();
-    assertEquals("foo-2003.05.20-\\d{1,2}.txt", regex);
+    assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d{1,2}.txt", regex);
   }
 
 

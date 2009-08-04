@@ -119,6 +119,10 @@ public class SizeAndTimeBasedFNATP_Test extends
     sortedContentCheck(randomOutputDir, runLength, prefix);
   }
 
+  @Test
+  public void noCompression_FileNotSet_WithRestart_3() throws Exception {
+    fail("d");
+  }
   void massageExpectedFilesToCorresponToCurrentTarget(String file) {
     // we added one too many files by date
     expectedFilenameList.remove(expectedFilenameList.size() - 1);

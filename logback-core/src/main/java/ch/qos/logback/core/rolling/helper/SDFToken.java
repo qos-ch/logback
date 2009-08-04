@@ -54,6 +54,8 @@ class SDFToken {
       return ".*";
     case 'Z':
       return "(\\+|-)\\d{4}";
+    case '.':
+      return "\\.";
     default:
       if (occurrences == 1) {
         return "" + c;

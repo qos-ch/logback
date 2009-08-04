@@ -46,6 +46,12 @@ public class DatePatternToRegexTest {
     doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT);
   }
 
+
+  @Test
+  public void dot() {
+    doTest("yyyy.MMM.dd", CAL_2009_08_3_NIGHT);;
+  }
+  
   @Test
   public void timeZone() {
     doTest("yyyy-MMM-dd HH:mm:ss z", CAL_2009_08_3_NIGHT);

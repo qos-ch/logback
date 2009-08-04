@@ -20,7 +20,7 @@ import ch.qos.logback.core.pattern.DynamicConverter;
  * 
  * @author Ceki G&uuml;c&uuml;
  */
-public class DateTokenConverter extends DynamicConverter implements MonoTypedConverter {
+public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTypedConverter {
 
   /**
    * The conversion word/character with which this converter is registered.

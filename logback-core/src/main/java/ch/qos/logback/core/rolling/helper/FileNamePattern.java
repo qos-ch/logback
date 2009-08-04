@@ -36,8 +36,10 @@ public class FileNamePattern extends ContextAwareBase {
 
   static final Map<String, String> CONVERTER_MAP = new HashMap<String, String>();
   static {
-    CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter.class.getName());
-    CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter.class.getName());
+    CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY,
+        IntegerTokenConverter.class.getName());
+    CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY,
+        DateTokenConverter.class.getName());
   }
 
   String pattern;
@@ -93,15 +95,14 @@ public class FileNamePattern extends ContextAwareBase {
     return null;
   }
 
-  
   public String convertMultipleArguments(Object... objectList) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> c = headTokenConverter;
     while (c != null) {
-      if(c instanceof MonoTypedConverter) {
+      if (c instanceof MonoTypedConverter) {
         MonoTypedConverter monoTyped = (MonoTypedConverter) c;
-        for(Object o: objectList) {
-          if(monoTyped.isApplicable(o)) {
+        for (Object o : objectList) {
+          if (monoTyped.isApplicable(o)) {
             buf.append(c.convert(o));
           }
         }
@@ -110,9 +111,9 @@ public class FileNamePattern extends ContextAwareBase {
       }
       c = c.getNext();
     }
-   return buf.toString();
+    return buf.toString();
   }
-  
+
   public String convert(Object o) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
@@ -138,37 +139,36 @@ public class FileNamePattern extends ContextAwareBase {
   public String getPattern() {
     return pattern;
   }
-  
 
-  // Given date, convert this instance to  a regular expression 
+  // Given date, convert this instance to a regular expression
   String asRegex(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
-      if(p instanceof LiteralConverter) {
+      if (p instanceof LiteralConverter) {
         buf.append(p.convert(null));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("\\d{1,2}");
-      } else if(p instanceof DateTokenConverter) {
+      } else if (p instanceof DateTokenConverter) {
         buf.append(p.convert(date));
       }
       p = p.getNext();
     }
     return buf.toString();
   }
-  
-  // Given date, convert this instance to  a regular expression 
+
+  // Given date, convert this instance to a regular expression
   String asRegex() {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
-      if(p instanceof LiteralConverter) {
+      if (p instanceof LiteralConverter) {
         buf.append(p.convert(null));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("\\d{1,2}");
-      } else if(p instanceof DateTokenConverter) {
-        DateTokenConverter dtc = (DateTokenConverter) p;
-        xbuf.append(dtc.asRegex());
+      } else if (p instanceof DateTokenConverter) {
+        DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
+        buf.append(dtc.asRegex());
       }
       p = p.getNext();
     }
