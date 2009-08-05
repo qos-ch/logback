@@ -9,11 +9,18 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-class SDFToken {
+/**
+ * This class supports mapping tokens (set of same character sequences) to
+ * regular expressions as appropriate for SimpleDateFormatter.
+ * 
+ * @author ceki
+ * 
+ */
+class SequenceToRegex4SDF {
   final char c;
   int occurrences;
 
-  public SDFToken(char c) {
+  public SequenceToRegex4SDF(char c) {
     this.c = c;
     this.occurrences = 1;
   }
@@ -47,7 +54,7 @@ class SDFToken {
     case 'S':
       return number(occurrences);
     case 'E':
-        return ".{3,12}";
+      return ".{3,12}";
     case 'a':
       return ".{2}";
     case 'z':
@@ -67,9 +74,9 @@ class SDFToken {
 
   @Override
   public String toString() {
-    return c+"("+occurrences+")";
+    return c + "(" + occurrences + ")";
   }
-  
+
   private String number(int occurences) {
     return "\\d{" + occurrences + "}";
   }
