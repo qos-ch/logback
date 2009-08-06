@@ -140,17 +140,19 @@ public class FileNamePattern extends ContextAwareBase {
     return pattern;
   }
 
-  /** 
-   * Given date, convert this instance to a regular expression
-   */
-   public String asRegex(Date date) {
+  /**
+   * Given date, convert this instance to a slashified regular expression. A
+   * slashified regex, is a regex with naturally occurring forward slash
+   * characters replaced by back slashes.
+    */
+  public String toSRegex(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(p.convert(null));
+        buf.append(slashify(p.convert(null)));
       } else if (p instanceof IntegerTokenConverter) {
-        buf.append("\\d{1,2}");
+        buf.append("(\\d{1,2})");
       } else if (p instanceof DateTokenConverter) {
         buf.append(p.convert(date));
       }
@@ -159,20 +161,24 @@ public class FileNamePattern extends ContextAwareBase {
     return buf.toString();
   }
 
+  private String slashify(String in) {
+    return in.replace('\\', '/');
+  }
+
   /**
-   * Given date, convert this instance to a regular expression
+   * Given date, convert this instance to a slashified regular expression
    */
-   public String asRegex() {
+  public String toSRegex() {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(p.convert(null));
+        buf.append(slashify(p.convert(null)));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("\\d{1,2}");
       } else if (p instanceof DateTokenConverter) {
         DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
-        buf.append(dtc.asRegex());
+        buf.append(dtc.toSRegex());
       }
       p = p.getNext();
     }

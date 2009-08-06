@@ -46,6 +46,10 @@ public class DatePatternToRegexTest {
     doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT);
   }
 
+  @Test
+  public void slash() {
+    doTest("yyyy\\MMM\\dd", CAL_2009_08_3_NIGHT, true);
+  }
 
   @Test
   public void dot() {
@@ -72,18 +76,26 @@ public class DatePatternToRegexTest {
     doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING);    
   }
 
-  
-  void doTest(String datePattern, Calendar calendar) {
+
+  void doTest(String datePattern, Calendar calendar, boolean slashified) {
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
     DateTokenConverter dtc = makeDTC(datePattern);
-    verify(sdf, calendar, dtc);
+    verify(sdf, calendar, dtc, slashified);
   }
   
-  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc) {
+  void doTest(String datePattern, Calendar calendar) {
+    doTest(datePattern, calendar, false);
+  }
+ 
+  
+  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc,  boolean slashified) {
     String expected = sdf.format(calendar.getTime());
-    String regex = dtc.asRegex();
+    if(slashified) {
+      expected = expected.replace('\\', '/');
+    }
+    String regex = dtc.toSRegex();
     //System.out.println("expected="+expected);
-    //System.out.println(regex);
+    System.out.println(regex);
     assertTrue("[" + expected + "] does not match regex [" + regex + "]",
         expected.matches(regex));
   }

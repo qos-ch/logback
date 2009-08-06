@@ -21,21 +21,21 @@ import java.util.List;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class DatePatternToRegexUtil {
+public class DatePatternToSRegexUtil {
 
   final String datePattern;
   final int length;
 
-  DatePatternToRegexUtil(String datePattern) {
+  DatePatternToSRegexUtil(String datePattern) {
     this.datePattern = datePattern;
     length = datePattern.length();
   }
 
-  String asRegex() {
+  String toSRegex() {
     List<SequenceToRegex4SDF> sequenceList = tokenize();
     StringBuilder sb = new StringBuilder();
     for (SequenceToRegex4SDF seq : sequenceList) {
-      sb.append(seq.toRegex());
+      sb.append(seq.toSRegex());
     }
     return sb.toString();
   }

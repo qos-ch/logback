@@ -16,6 +16,9 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
+
 public class SizeAndTimeBasedFNATP_Test extends
     ScaffoldingForRollingTests {
 
@@ -161,6 +164,7 @@ public class SizeAndTimeBasedFNATP_Test extends
       incCurrentTime(100);
       tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
     }
+    StatusPrinter.print(context);
     existenceCheck(expectedFilenameList);
     sortedContentCheck(randomOutputDir, runLength, prefix);
   }
