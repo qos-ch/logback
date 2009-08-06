@@ -117,13 +117,13 @@ public class FileNamePatternTest {
       FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
           context);
       String regex = fnp.toSRegex(cal.getTime());
-      assertEquals("foo-2003.05.20-\\d{1,2}.txt", regex);
+      assertEquals("foo-2003.05.20-(\\d{1,2}).txt", regex);
     }
     {
       FileNamePattern fnp = new FileNamePattern("\\toto\\foo-%d{yyyy\\MM\\dd}-%i.txt",
           context);
       String regex = fnp.toSRegex(cal.getTime());
-      assertEquals("/toto/foo-2003/05/20-\\d{1,2}.txt", regex);
+      assertEquals("/toto/foo-2003/05/20-(\\d{1,2}).txt", regex);
     }
   }
 

@@ -52,17 +52,20 @@ public class FileFilterUtil {
    * Return the set of files matching the stemRegex as found in 'directory'. A
    * stemRegex does not contain any slash characters or any folder seperators.
    * 
-   * @param directory
+   * @param file
    * @param stemRegex
    * @return
    */
-  public static File[] filesInFolderMatchingStemRegex(File directory,
+  public static File[] filesInFolderMatchingStemRegex(File file,
       final String stemRegex) {
-    if (directory == null || directory.isDirectory()) {
-      throw new IllegalArgumentException("[" + directory
-          + " cannot be null or a non-directory");
+
+    if (file == null) {
+      return new File[0];
     }
-    File[] matchingFileArray = directory.listFiles(new FilenameFilter() {
+    if (!file.exists() || !file.isDirectory()) {
+      return new File[0];
+    }
+    File[] matchingFileArray = file.listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.matches(stemRegex);
       }
@@ -71,9 +74,9 @@ public class FileFilterUtil {
   }
 
   static public int extractCounter(File file, final String stemRegex) {
-     Pattern p = Pattern.compile(stemRegex);
+    Pattern p = Pattern.compile(stemRegex);
     String lastFileName = file.getName();
-  
+
     Matcher m = p.matcher(lastFileName);
     if (!m.matches()) {
       throw new IllegalStateException("The regex [" + stemRegex
