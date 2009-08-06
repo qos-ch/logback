@@ -140,8 +140,10 @@ public class FileNamePattern extends ContextAwareBase {
     return pattern;
   }
 
-  // Given date, convert this instance to a regular expression
-  String asRegex(Date date) {
+  /** 
+   * Given date, convert this instance to a regular expression
+   */
+   public String asRegex(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
@@ -157,8 +159,10 @@ public class FileNamePattern extends ContextAwareBase {
     return buf.toString();
   }
 
-  // Given date, convert this instance to a regular expression
-  String asRegex() {
+  /**
+   * Given date, convert this instance to a regular expression
+   */
+   public String asRegex() {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {

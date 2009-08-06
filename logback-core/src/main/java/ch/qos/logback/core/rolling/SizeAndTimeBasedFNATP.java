@@ -25,7 +25,17 @@ public class SizeAndTimeBasedFNATP<E> extends
 
   @Override
   public void start() {
+    // we actualy depend on fields being initialized
+    // in super.start()
     super.start();
+    
+    // we need to get the correct value of currentPeriodsCounter.
+    // usually the value is 0, unless the appender or the application
+    // is stopped and restarted within the same period
+    
+    String regex = tbrp.fileNamePattern.asRegex(dateInCurrentPeriod);
+    continueHere
+    
     started = true;
   }
 
