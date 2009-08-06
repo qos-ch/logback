@@ -150,7 +150,7 @@ public class FileNamePattern extends ContextAwareBase {
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(slashify(p.convert(null)));
+        buf.append(FileFilterUtil.slashify(p.convert(null)));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("(\\d{1,2})");
       } else if (p instanceof DateTokenConverter) {
@@ -161,10 +161,6 @@ public class FileNamePattern extends ContextAwareBase {
     return buf.toString();
   }
 
-  private String slashify(String in) {
-    return in.replace('\\', '/');
-  }
-
   /**
    * Given date, convert this instance to a slashified regular expression
    */
@@ -173,7 +169,7 @@ public class FileNamePattern extends ContextAwareBase {
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(slashify(p.convert(null)));
+        buf.append(FileFilterUtil.slashify(p.convert(null)));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("\\d{1,2}");
       } else if (p instanceof DateTokenConverter) {

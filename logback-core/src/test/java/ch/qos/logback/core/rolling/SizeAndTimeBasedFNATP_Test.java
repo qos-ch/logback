@@ -16,7 +16,6 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SizeAndTimeBasedFNATP_Test extends
