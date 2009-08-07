@@ -11,7 +11,6 @@ package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
 

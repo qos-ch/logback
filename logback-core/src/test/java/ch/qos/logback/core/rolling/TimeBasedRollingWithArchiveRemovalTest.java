@@ -174,7 +174,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     rfa.stop();
   }
 
-  void findAllInFolderRecursively(File dir, List<File> fileList,
+  void findAllInFolderRecursivelyByStringContains(File dir, List<File> fileList,
       final String pattern) {
     if (dir.isDirectory()) {
       File[] match = dir.listFiles(new FileFilter() {
@@ -185,13 +185,13 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       for (File f : match) {
         fileList.add(f);
         if (f.isDirectory()) {
-          findAllInFolderRecursively(f, fileList, pattern);
+          findAllInFolderRecursivelyByStringContains(f, fileList, pattern);
         }
       }
     }
   }
 
-  void findFilesInFolderRecursively(File dir, List<File> fileList,
+  void findFilesInFolderRecursivelyByPatterMatch(File dir, List<File> fileList,
       final String pattern) {
     if (dir.isDirectory()) {
       File[] match = dir.listFiles(new FileFilter() {
@@ -201,7 +201,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       });
       for (File f : match) {
         if (f.isDirectory()) {
-          findFilesInFolderRecursively(f, fileList, pattern);
+          findFilesInFolderRecursivelyByPatterMatch(f, fileList, pattern);
         } else {
           fileList.add(f);
         }
@@ -234,22 +234,17 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     return (maxHistory + 1) * 2 + slashCount;
   }
 
-  int expectedCountWithDirs_NoSlash(int maxHistory) {
-    // one file and one directory per archived log file
-    return (maxHistory + 1) * 2;
-  }
-
   void check(int expectedCount) {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
-    findAllInFolderRecursively(dir, fileList, "clean");
+    findAllInFolderRecursivelyByStringContains(dir, fileList, "clean");
     assertEquals(expectedCount, fileList.size());
   }
 
   void checkPatternCompliance(int expectedClassCount, String regex) {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
-    findFilesInFolderRecursively(dir, fileList, regex);
+    findFilesInFolderRecursivelyByPatterMatch(dir, fileList, regex);
     System.out.println("regex="+regex);
     System.out.println("fileList="+fileList);
     Set<String> set = groupByClass(fileList, regex);

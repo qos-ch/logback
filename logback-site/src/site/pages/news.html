@@ -44,6 +44,11 @@
     truncate mode when an application stops and is quickly re-started,
     any pre-existing log file for the current period will be lost.</p>
 
+    <p>The <code>activeFile</code> field in
+    <code>RollingFileAppender</code> is now properly updated, fixing
+    <a href="http://jira.qos.ch/browse/LBCORE-90">LBCORE-90</a> as
+    reported by Valery Shorin.</p>
+
     <hr width="80%" align="center" />
 
     <h3>15th of July 2009 - Release of version 0.9.16</h3>
