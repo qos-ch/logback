@@ -11,6 +11,7 @@ package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -24,6 +25,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
     RollingPolicy {
   protected CompressionMode compressionMode = CompressionMode.NONE;
   protected FileNamePattern fileNamePattern;
+  // fileNamePatternStr is always slashified, see setter
   protected String fileNamePatternStr;
 
   private FileAppender parent;
@@ -76,7 +78,6 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
   }
 
   public void setParent(FileAppender appender) {
-    addInfo("Adding parent to RollingPolicy: " + appender.getName());
     this.parent = appender;
   }
 

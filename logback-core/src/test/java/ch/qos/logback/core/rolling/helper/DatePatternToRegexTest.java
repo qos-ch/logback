@@ -46,10 +46,6 @@ public class DatePatternToRegexTest {
     doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT);
   }
 
-  @Test
-  public void slash() {
-    doTest("yyyy\\MMM\\dd", CAL_2009_08_3_NIGHT, true);
-  }
 
   @Test
   public void dot() {
@@ -93,7 +89,7 @@ public class DatePatternToRegexTest {
     if(slashified) {
       expected = expected.replace('\\', '/');
     }
-    String regex = dtc.toSRegex();
+    String regex = dtc.toRegex();
     //System.out.println("expected="+expected);
     //System.out.println(regex);
     assertTrue("[" + expected + "] does not match regex [" + regex + "]",

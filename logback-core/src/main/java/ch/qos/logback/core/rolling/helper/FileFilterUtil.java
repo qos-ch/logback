@@ -48,6 +48,18 @@ public class FileFilterUtil {
     }
   }
 
+  static public boolean isEmptyDirectory(File dir) {
+    if (!dir.isDirectory()) {
+      throw new IllegalArgumentException("[" + dir + "] must be a directory");
+    }
+    String[] filesInDir = dir.list();
+    if (filesInDir == null || filesInDir.length == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * Return the set of files matching the stemRegex as found in 'directory'. A
    * stemRegex does not contain any slash characters or any folder seperators.
@@ -87,7 +99,20 @@ public class FileFilterUtil {
     return counter;
   }
 
-  static String slashify(String in) {
+  public static String slashify(String in) {
     return in.replace('\\', '/');
+  }
+
+  public static void removeEmptyParentDirectories(File file,
+      int recursivityCount) {
+    // we should never go more than 3 levels higher
+    if (recursivityCount >= 3) {
+      return;
+    }
+    File parent = file.getParentFile();
+    if (parent.isDirectory() && FileFilterUtil.isEmptyDirectory(parent)) {
+      parent.delete();
+      removeEmptyParentDirectories(parent, recursivityCount + 1);
+    }
   }
 }

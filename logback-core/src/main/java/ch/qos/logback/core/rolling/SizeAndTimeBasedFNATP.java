@@ -14,6 +14,7 @@ import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
+import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.FileSize;
 
 @NoAutoStart
@@ -30,12 +31,14 @@ public class SizeAndTimeBasedFNATP<E> extends
     // in super.start()
     super.start();
 
+    archiveRemover = new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+    
     // we need to get the correct value of currentPeriodsCounter.
     // usually the value is 0, unless the appender or the application
     // is stopped and restarted within the same period
     if (tbrp.getParentsRawFileProperty() == null) {
-      String slashifiedRegex = tbrp.fileNamePattern.toSRegex(dateInCurrentPeriod);
-      String stemRegex = FileFilterUtil.afterLastSlash(slashifiedRegex);
+      String regex = tbrp.fileNamePattern.toRegex(dateInCurrentPeriod);
+      String stemRegex = FileFilterUtil.afterLastSlash(regex);
       computeCurrentPeriodsHighestCounterValue(stemRegex);
     }
     started = true;
@@ -79,9 +82,11 @@ public class SizeAndTimeBasedFNATP<E> extends
     }
 
     if (activeFile.length() >= maxFileSize.getSize()) {
+      System.out.println("Size based trigger, currentPeriodsCounter="+currentPeriodsCounter);
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
       currentPeriodsCounter++;
+      System.out.println("Size based trigger, currentPeriodsCounter="+currentPeriodsCounter);
       return true;
     }
 

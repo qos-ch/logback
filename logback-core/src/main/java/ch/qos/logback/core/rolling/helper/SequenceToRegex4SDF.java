@@ -29,8 +29,7 @@ class SequenceToRegex4SDF {
     occurrences++;
   }
 
-  // slashified regex
-  String toSRegex() {
+  String toRegex() {
     switch (c) {
     case 'G':
       return ".*";
@@ -64,12 +63,8 @@ class SequenceToRegex4SDF {
       return "(\\+|-)\\d{4}";
     case '.':
       return "\\.";
-    case '\\':  // slashify
-      String s = "";
-      for(int i = 0; i < occurrences;i++) {
-        s += "/";
-      }
-      return s;
+    case '\\': 
+      throw new IllegalStateException("Forward slashes are not allowed");
     default:
       if (occurrences == 1) {
         return "" + c;

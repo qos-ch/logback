@@ -46,7 +46,8 @@ public class FileNamePattern extends ContextAwareBase {
   Converter<Object> headTokenConverter;
 
   public FileNamePattern(String patternArg, Context contextArg) {
-    setPattern(patternArg);
+    // the pattern is slashified
+    setPattern(FileFilterUtil.slashify(patternArg));
     setContext(contextArg);
     parse();
     ConverterUtil.startConverters(this.headTokenConverter);
@@ -141,20 +142,20 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   /**
-   * Given date, convert this instance to a slashified regular expression. A
+   * Given date, convert this instance to a  regular expression. A
    * slashified regex, is a regex with naturally occurring forward slash
    * characters replaced by back slashes.
     */
-  public String toSRegex(Date date) {
+  public String toRegex(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(FileFilterUtil.slashify(p.convert(null)));
+        buf.append(p.convert(null));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("(\\d{1,2})");
       } else if (p instanceof DateTokenConverter) {
-        buf.append(FileFilterUtil.slashify(p.convert(date)));
+        buf.append(p.convert(date));
       }
       p = p.getNext();
     }
@@ -162,19 +163,19 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   /**
-   * Given date, convert this instance to a slashified regular expression
+   * Given date, convert this instance to a regular expression
    */
-  public String toSRegex() {
+  public String toRegex() {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {
       if (p instanceof LiteralConverter) {
-        buf.append(FileFilterUtil.slashify(p.convert(null)));
+        buf.append(p.convert(null));
       } else if (p instanceof IntegerTokenConverter) {
         buf.append("\\d{1,2}");
       } else if (p instanceof DateTokenConverter) {
         DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
-        buf.append(dtc.toSRegex());
+        buf.append(dtc.toRegex());
       }
       p = p.getNext();
     }

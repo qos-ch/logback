@@ -28,18 +28,11 @@ public class FileNamePatternTest {
 
   @Test
   public void testSmoke() {
-    // System.out.println("Testing [t]");
     FileNamePattern pp = new FileNamePattern("t", context);
     assertEquals("t", pp.convertInt(3));
 
-    // System.out.println("Testing [foo]");
     pp = new FileNamePattern("foo", context);
     assertEquals("foo", pp.convertInt(3));
-
-    // System.out.println("Testing [foo%]");
-    // pp = new FileNamePattern("foo%", context);
-    // StatusPrinter.print(context.getStatusManager());
-    // assertEquals("foo%", pp.convertInt(3));
 
     pp = new FileNamePattern("%i foo", context);
 
@@ -54,11 +47,11 @@ public class FileNamePatternTest {
     pp = new FileNamePattern("foo.%i.log", context);
     assertEquals("foo.3.log", pp.convertInt(3));
 
-    pp = new FileNamePattern("%i.foo\\%", context);
-    assertEquals("3.foo%", pp.convertInt(3));
+    //pp = new FileNamePattern("%i.foo\\%", context);
+    //assertEquals("3.foo%", pp.convertInt(3));
 
-    pp = new FileNamePattern("\\%foo", context);
-    assertEquals("%foo", pp.convertInt(3));
+    //pp = new FileNamePattern("\\%foo", context);
+    //assertEquals("%foo", pp.convertInt(3));
   }
 
   @Test
@@ -94,7 +87,7 @@ public class FileNamePatternTest {
   @Test
   public void withBackslash() {
     FileNamePattern pp = new FileNamePattern("c:\\foo\\bar.%i", context);
-    assertEquals("c:\\foo\\bar.3", pp.convertInt(3));
+    assertEquals("c:/foo/bar.3", pp.convertInt(3));
   }
 
   @Test
@@ -116,13 +109,13 @@ public class FileNamePatternTest {
     {
       FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
           context);
-      String regex = fnp.toSRegex(cal.getTime());
+      String regex = fnp.toRegex(cal.getTime());
       assertEquals("foo-2003.05.20-(\\d{1,2}).txt", regex);
     }
     {
       FileNamePattern fnp = new FileNamePattern("\\toto\\foo-%d{yyyy\\MM\\dd}-%i.txt",
           context);
-      String regex = fnp.toSRegex(cal.getTime());
+      String regex = fnp.toRegex(cal.getTime());
       assertEquals("/toto/foo-2003/05/20-(\\d{1,2}).txt", regex);
     }
   }
@@ -133,7 +126,7 @@ public class FileNamePatternTest {
     cal.set(2003, 4, 20, 17, 55);
     FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
         context);
-    String regex = fnp.toSRegex();
+    String regex = fnp.toRegex();
     assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d{1,2}.txt", regex);
   }
 
