@@ -95,7 +95,7 @@ public class DatePatternToRegexTest {
     }
     String regex = dtc.toSRegex();
     //System.out.println("expected="+expected);
-    System.out.println(regex);
+    //System.out.println(regex);
     assertTrue("[" + expected + "] does not match regex [" + regex + "]",
         expected.matches(regex));
   }

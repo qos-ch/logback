@@ -89,7 +89,7 @@ public class FileNamePatternTest {
     pp = new FileNamePattern("%d{yyyy.MM.dd HH:mm} foo", context);
     assertEquals("2003.05.20 17:55 foo", pp.convert(cal.getTime()));
 
-  }
+  } 
 
   @Test
   public void withBackslash() {

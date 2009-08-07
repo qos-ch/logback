@@ -14,12 +14,12 @@ import java.util.Date;
 import java.util.concurrent.Future;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
-import ch.qos.logback.core.rolling.helper.TimeBasedCleaner;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -38,15 +38,16 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
   // WCS: without compression suffix
   FileNamePattern fileNamePatternWCS;
-  
+
   private Compressor compressor;
   private RenameUtil renameUtil = new RenameUtil();
   Future<?> future;
 
   private int maxHistory = NO_DELETE_HISTORY;
-  private TimeBasedCleaner tbCleaner;
+  private ArchiveRemover archiveRemover;
 
   TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering;
+
   public void start() {
     // set the LR for our utility object
     renameUtil.setContext(this.context);
@@ -65,26 +66,30 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     compressor = new Compressor(compressionMode);
     compressor.setContext(context);
 
-    fileNamePatternWCS = new FileNamePattern(computeFileNameStr_WCS(fileNamePatternStr,
-        compressionMode), this.context);
+    fileNamePatternWCS = new FileNamePattern(computeFileNameStr_WCS(
+        fileNamePatternStr, compressionMode), this.context);
 
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
 
-    if(timeBasedTriggering == null) {
+    if (timeBasedTriggering == null) {
       timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
     }
     timeBasedTriggering.setContext(context);
     timeBasedTriggering.setTimeBasedRollingPolicy(this);
     timeBasedTriggering.start();
 
+    // the maxHistory property is given to TimeBasedRollingPolicy instead of to
+    // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
+    // for the user at the cost of inconsistency at the level of this code.
     if (maxHistory != NO_DELETE_HISTORY) {
-      tbCleaner = new TimeBasedCleaner(fileNamePattern, timeBasedTriggering.getRollingCalendar(),
-          maxHistory);
+      archiveRemover = timeBasedTriggering.getArchiveRemover();
+      archiveRemover.setMaxHistory(maxHistory);
     }
   }
 
-  public void setTimeBasedFileNamingAndTriggeringPolicy(TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
+  public void setTimeBasedFileNamingAndTriggeringPolicy(
+      TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
     this.timeBasedTriggering = timeBasedTriggering;
   }
 
@@ -92,7 +97,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     return timeBasedTriggering;
   }
 
-  
   static String computeFileNameStr_WCS(String fileNamePatternStr,
       CompressionMode compressionMode) {
     int len = fileNamePatternStr.length();
@@ -127,8 +131,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       }
     }
 
-    if (tbCleaner != null) {
-      tbCleaner.clean(new Date(timeBasedTriggering.getCurrentTime()));
+    if (archiveRemover != null) {
+      archiveRemover.clean(new Date(timeBasedTriggering.getCurrentTime()));
     }
   }
 
@@ -171,7 +175,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     if (parentsRawFileProperty != null) {
       return parentsRawFileProperty;
     } else {
-      return timeBasedTriggering.getCurrentPeriodsFileNameWithoutCompressionSuffix();
+      return timeBasedTriggering
+          .getCurrentPeriodsFileNameWithoutCompressionSuffix();
     }
   }
 

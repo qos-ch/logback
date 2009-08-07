@@ -2,6 +2,7 @@ package ch.qos.logback.core.rolling;
 
 import java.util.Date;
 
+import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -11,7 +12,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
   protected TimeBasedRollingPolicy<E> tbrp;
   
-  
+  protected ArchiveRemover archiveRemover = null;
   protected String elapsedPeriodsFileName;
   protected RollingCalendar rc;
   
@@ -20,7 +21,6 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
   //indicate whether the time has been forced or not
   protected boolean isTimeForced = false;
   protected Date dateInCurrentPeriod = null;
-  
   
   protected long nextCheck;
   protected boolean started = false;
@@ -104,8 +104,8 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
   }
 
-  public RollingCalendar getRollingCalendar() {
-    return rc;
+  public ArchiveRemover getArchiveRemover() {
+    return archiveRemover;
   }
 
 }

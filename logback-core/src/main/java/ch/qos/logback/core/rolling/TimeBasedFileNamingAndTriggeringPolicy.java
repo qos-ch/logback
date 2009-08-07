@@ -12,7 +12,7 @@ package ch.qos.logback.core.rolling;
 
 import java.util.Date;
 
-import ch.qos.logback.core.rolling.helper.RollingCalendar;
+import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.spi.ContextAware;
 
 /**
@@ -50,12 +50,10 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends
   String getCurrentPeriodsFileNameWithoutCompressionSuffix();
 
   /**
-   * Return the rolling calendar used by this instance.
-   * 
-   * @return
+   * Return the archive remover appropriate for this instance.
    */
-  RollingCalendar getRollingCalendar();
-
+  public ArchiveRemover getArchiveRemover();
+  
   /**
    * Return the current time which is usually the value returned by
    * System.currentMillis(). However, for <b>testing</b> purposed this value

@@ -13,22 +13,20 @@ package ch.qos.logback.core.rolling.helper;
 import java.io.File;
 import java.util.Date;
 
-public class TimeBasedCleaner {
+public class DefaultArchiveRemover implements ArchiveRemover {
 
   FileNamePattern fileNamePattern;
   RollingCalendar rc;
-  int numberOfPeriods;
-
-  public TimeBasedCleaner(FileNamePattern fileNamePattern, RollingCalendar rc,
-      int numberOfPeriods) {
+  int maxHistory;
+  int periodOffset;
+  
+  public DefaultArchiveRemover(FileNamePattern fileNamePattern, RollingCalendar rc) {
     this.fileNamePattern = fileNamePattern;
     this.rc = rc;
-    //
-    this.numberOfPeriods = -numberOfPeriods -1;
   }
 
   public void clean(Date now) {
-    Date date2delete = rc.getRelativeDate(now, numberOfPeriods);
+    Date date2delete = rc.getRelativeDate(now, periodOffset);
 
     String filename = fileNamePattern.convert(date2delete);
 
@@ -37,6 +35,11 @@ public class TimeBasedCleaner {
     if (file2Delete.exists() && file2Delete.isFile()) {
       file2Delete.delete();
     }
+  }
+
+  public void setMaxHistory(int maxHistory) {
+    this.maxHistory = maxHistory;
+    this.periodOffset = -maxHistory -1;
   }
 
 }

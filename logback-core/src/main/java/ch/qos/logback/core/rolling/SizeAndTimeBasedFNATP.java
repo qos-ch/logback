@@ -102,5 +102,4 @@ public class SizeAndTimeBasedFNATP<E> extends
     this.maxFileSizeAsString = maxFileSize;
     this.maxFileSize = FileSize.valueOf(maxFileSize);
   }
-
 }

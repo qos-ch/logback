@@ -15,7 +15,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.util.CoreTestConstants;
 
-public class TimeBasedRollingWithCleanTest {
+public class TimeBasedRollingWithHistoryCleanTest {
 
   Context context = new ContextBase();
   EchoLayout<Object> layout = new EchoLayout<Object>();
