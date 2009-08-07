@@ -27,7 +27,7 @@ import ch.qos.logback.core.rolling.helper.CompressionMode;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class RollingFileAppender<E> extends FileAppender<E> {
-  File activeFile;
+  File currentlyActiveFile;
   TriggeringPolicy<E> triggeringPolicy;
   RollingPolicy rollingPolicy;
 
@@ -70,7 +70,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       }
     }
 
-    activeFile = new File(getFile());
+    currentlyActiveFile = new File(getFile());
     addInfo("Active log file name: " + getFile());
     super.start();
   }
@@ -123,6 +123,10 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     }
 
     try {
+      // update the currentlyActiveFile
+      // http://jira.qos.ch/browse/LBCORE-90
+      currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
+      
       // This will also close the file. This is OK since multiple
       // close operations are safe.
       this.openFile(rollingPolicy.getActiveFileName());
@@ -141,7 +145,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     // We need to synchronize on triggeringPolicy so that only one rollover
     // occurs at a time
     synchronized (triggeringPolicy) {
-      if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
+      if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
         rollover();
       }
     }

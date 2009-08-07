@@ -1,12 +1,16 @@
 package ch.qos.logback.core.rolling;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
@@ -75,15 +79,18 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     slashCount = computeSlashCount(MONTHLY_DATE_PATTERN);
     // large maxPeriod, a 3 times as many number of periods to simulate
     doRollover(randomOutputDir + "clean-%d{" + MONTHLY_DATE_PATTERN + "}.txt",
-        MILLIS_IN_MONTH, 20, 20 * 3, expectedCountWithoutDirs(20));
+        MILLIS_IN_MONTH, 20, 20 * 3);
+    check(expectedCountWithoutDirs(20));
   }
 
   @Test
   public void montlyRolloverOverManyPeriods() throws Exception {
+    System.out.println(randomOutputDir);
     // small maxHistory, many periods
     slashCount = computeSlashCount(MONTHLY_CROLOLOG_DATE_PATTERN);
     doRollover(randomOutputDir + "/%d{" + MONTHLY_CROLOLOG_DATE_PATTERN
-        + "}/clean.txt.zip", MILLIS_IN_MONTH, 5, 40, expectedCountWithDirs(5));
+        + "}/clean.txt.zip", MILLIS_IN_MONTH, 2, 40);
+    check(expectedCountWithDirs(2));
   }
 
   @Test
@@ -91,41 +98,47 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN);
     doRollover(
         randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt.zip",
-        MILLIS_IN_DAY, 5, 5 * 3, expectedCountWithoutDirs(5));
+        MILLIS_IN_DAY, 5, 5 * 3);
+    check(expectedCountWithoutDirs(5));
   }
 
   @Test
   public void dailyCronologRollover() throws Exception {
     slashCount = computeSlashCount(DAILY_CROLOLOG_DATE_PATTERN);
     doRollover(randomOutputDir + "/%d{" + DAILY_CROLOLOG_DATE_PATTERN
-        + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3, expectedCountWithDirs(8));
+        + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3);
+    check(expectedCountWithDirs(8));
   }
 
   @Test
   public void dailySizeBasedRollover() throws Exception {
     SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
-    sizeAndTimeBasedFNATP.setMaxFileSize("1");
+    sizeAndTimeBasedFNATP.setMaxFileSize("10");
     tbfnatp = sizeAndTimeBasedFNATP;
 
     slashCount = computeSlashCount(DAILY_DATE_PATTERN);
-    doRollover(randomOutputDir + "/%d{" + DAILY_DATE_PATTERN
-        + "}-clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4, expectedCountWithoutDirs(5));
+    doRollover(
+        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip",
+        MILLIS_IN_DAY, 5, 5 * 4);
+    checkPatternCompliance(5 + 1 + slashCount,
+        "\\d{4}-\\d{2}-\\d{2}-clean.(\\d).zip");
   }
 
-  
   @Test
   public void dailyChronologSizeBasedRollover() throws Exception {
     SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
-    sizeAndTimeBasedFNATP.setMaxFileSize("1");
+    sizeAndTimeBasedFNATP.setMaxFileSize("10");
     tbfnatp = sizeAndTimeBasedFNATP;
 
-    slashCount = computeSlashCount(DAILY_CROLOLOG_DATE_PATTERN);
-    doRollover(randomOutputDir + "/%d{" + DAILY_DATE_PATTERN
-        + "}/clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4, xexpectedCountWithDirs_NoSlash(5));
+    slashCount = 1;
+    doRollover(
+        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip",
+        MILLIS_IN_DAY, 5, 5 * 4);
+    checkDirPatternCompliance(6);
   }
 
   void doRollover(String fileNamePattern, long periodDurationInMillis,
-      int maxHistory, int simulatedNumberOfPeriods, int expectedCount) throws Exception {
+      int maxHistory, int simulatedNumberOfPeriods) throws Exception {
     long currentTime = System.currentTimeMillis();
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
@@ -148,7 +161,9 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     long runLength = simulatedNumberOfPeriods * ticksPerPeriod;
 
     for (long i = 0; i < runLength; i++) {
-      rfa.doAppend("Hello---" + i);
+      rfa
+          .doAppend("Hello ----------------------------------------------------------"
+              + i);
       tbrp.timeBasedTriggering.setCurrentTime(addTime(tbrp.timeBasedTriggering
           .getCurrentTime(), periodDurationInMillis / ticksPerPeriod));
 
@@ -157,52 +172,113 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       }
     }
     rfa.stop();
-    check(expectedCount);
   }
 
-  void recursiveDirectoryDescent(File dir, List<File> fileList,
+  void findAllInFolderRecursively(File dir, List<File> fileList,
       final String pattern) {
     if (dir.isDirectory()) {
       File[] match = dir.listFiles(new FileFilter() {
         public boolean accept(File f) {
-          if (f.isDirectory()) {
-            return true;
-          } else {
-            return f.getName().contains(pattern);
-          }
+          return (f.isDirectory() || f.getName().contains(pattern));
         }
       });
       for (File f : match) {
         fileList.add(f);
         if (f.isDirectory()) {
-          recursiveDirectoryDescent(f, fileList, pattern);
+          findAllInFolderRecursively(f, fileList, pattern);
         }
+      }
+    }
+  }
+
+  void findFilesInFolderRecursively(File dir, List<File> fileList,
+      final String pattern) {
+    if (dir.isDirectory()) {
+      File[] match = dir.listFiles(new FileFilter() {
+        public boolean accept(File f) {
+          return (f.isDirectory() || f.getName().matches(pattern));
+        }
+      });
+      for (File f : match) {
+        if (f.isDirectory()) {
+          findFilesInFolderRecursively(f, fileList, pattern);
+        } else {
+          fileList.add(f);
+        }
+      }
+    }
+  }
+
+  void findFoldersInFolderRecursively(File dir, List<File> fileList) {
+    if (dir.isDirectory()) {
+      File[] match = dir.listFiles(new FileFilter() {
+        public boolean accept(File f) {
+          return f.isDirectory();
+        }
+      });
+      for (File f : match) {
+        fileList.add(f);
+        findFoldersInFolderRecursively(f, fileList);
       }
     }
   }
 
   int expectedCountWithoutDirs(int maxHistory) {
     // maxHistory plus the currently active file
-    return maxHistory+1;
+    return maxHistory + 1;
   }
-  
+
   int expectedCountWithDirs(int maxHistory) {
     // each slash adds a new directory
     // + one file and one directory per archived log file
     return (maxHistory + 1) * 2 + slashCount;
   }
 
-  int xexpectedCountWithDirs_NoSlash(int maxHistory) {
-    // each slash adds a new directory
-    // + one file and one directory per archived log file
+  int expectedCountWithDirs_NoSlash(int maxHistory) {
+    // one file and one directory per archived log file
     return (maxHistory + 1) * 2;
   }
-  
+
   void check(int expectedCount) {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
-    recursiveDirectoryDescent(dir, fileList, "clean");
+    findAllInFolderRecursively(dir, fileList, "clean");
     assertEquals(expectedCount, fileList.size());
+  }
+
+  void checkPatternCompliance(int expectedClassCount, String regex) {
+    File dir = new File(randomOutputDir);
+    List<File> fileList = new ArrayList<File>();
+    findFilesInFolderRecursively(dir, fileList, regex);
+    System.out.println("regex="+regex);
+    System.out.println("fileList="+fileList);
+    Set<String> set = groupByClass(fileList, regex);
+    assertEquals(expectedClassCount, set.size());
+  }
+
+  void checkDirPatternCompliance(int expectedClassCount) {
+    File dir = new File(randomOutputDir);
+    List<File> fileList = new ArrayList<File>();
+    findFoldersInFolderRecursively(dir, fileList);
+    for(File f: fileList) {
+      assertTrue(f.list().length >= 1);
+    }
+    assertEquals(expectedClassCount, fileList.size());
+  }
+
+  
+  Set<String> groupByClass(List<File> fileList, String regex) {
+    Pattern p = Pattern.compile(regex);
+    Set<String> set = new HashSet<String>();
+    for (File f : fileList) {
+      String n = f.getName();
+      Matcher m = p.matcher(n);
+      m.matches();
+      int begin = m.start(1);
+      int end = m.end(1);
+      set.add(n.substring(0, begin) + n.substring(end));
+    }
+    return set;
   }
 
   static long addTime(long currentTime, long timeToWait) {

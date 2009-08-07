@@ -66,11 +66,8 @@ public class DefaultArchiveRemover implements ArchiveRemover {
 
   public void clean(Date now) {
     Date date2delete = rc.getRelativeDate(now, periodOffset);
-
     String filename = fileNamePattern.convert(date2delete);
-
     File file2Delete = new File(filename);
-
     if (file2Delete.exists() && file2Delete.isFile()) {
       file2Delete.delete();
       if (parentClean) {

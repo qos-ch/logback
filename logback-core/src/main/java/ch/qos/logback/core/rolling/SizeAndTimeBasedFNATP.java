@@ -65,6 +65,7 @@ public class SizeAndTimeBasedFNATP<E> extends
   private int invocationCounter;
 
   public boolean isTriggeringEvent(File activeFile, final E event) {
+   
     long time = getCurrentTime();
     if (time >= nextCheck) {
       Date dateInElapsedPeriod = dateInCurrentPeriod;
