@@ -927,12 +927,7 @@ public interface RollingPolicy extends LifeCycle {
    href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
    <code>TimeBasedRollingPolicy</code></a> is possibly the most
    popular rolling policy. It defines a rollover policy based on time,
-   say by day or by month. <code>TimeBasedRollingPolicy</code> is
-   particular in the sense that it simultaneously implements both the
-   <code>RollingPolicy</code> as well as the
-   <code>TriggeringPolicy</code> interfaces. The
-   <code>TriggeringPolicy</code> interface will be presented in the
-   next sub-section.
+   say by day or by month.
    </p>
 
    <p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
@@ -961,28 +956,42 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
      <tr class="b">
        <td class="small">
-         <em>/wombat/folder/foo.%d</em>
+         <em>/wombat/foo.%d</em>
        </td>
        <td>Daily rollover (at midnight). Due to the omission of the
        optional time and date pattern for the <em>%d</em> token
        specifier, the default pattern of <em>yyyy-MM-dd</em> is
        assumed, which corresponds to daily rollover.
        </td>
-       <td>During November 23rd, 2006, logging output will go to the
-       file <em>/wombat/foo.2006-11-23</em>.  At midnight and for the
-       rest of the 24th, logging output will be directed to
-       <em>/wombat/foo.2006-11-24</em>.
+       <td>
+         <p>Assuming the <span class="option">File</span> property is
+         not set, during November 23rd, 2006, logging output will go
+         to the file <em>/wombat/foo.2006-11-23</em>.  At midnight and
+         for the rest of the 24th, logging output will be directed to
+         <em>/wombat/foo.2006-11-24</em>.
+       </p>
        </td>
      </tr>
+     
+
      <tr class="a">
        <td class="small">
-         <em>/wombat/foo.%d{yyyy-MM}.log</em>
+         <em>/wombat/%d{yyyy/MM}/log.txt</em>
        </td>
        <td>Rollover at the beginning of each month.</td>
-       <td>During the month of October 2006, logging output will go to
-       <em>/wombat/foo.2006-10.log</em>.  After midnight of October
-       31st and for the rest of November, logging output will be
-       directed to <em>/wombat/foo.2006-11.log</em>.
+       <td>
+         <p>During the month of October 2006, logging output will go
+         to <em>/wombat/2006/10/log.txt</em>.  After midnight of
+         October 31st and for the rest of November, logging output
+         will be directed to <em>/wombat/2006/11/log.txt</em>.
+         </p>
+
+         <p>However, if the <span class="option">File</span> property is
+         set, for example to <em>log.txt</em>, then logging will always
+         written to <em>log.txt</em>.  At midnight and
+         for the rest of the 24th, logging output will be directed to
+         <em>/wombat/foo.2006-11-24</em>
+         </p>
        </td>
      </tr>
      <tr class="b">
@@ -1178,23 +1187,30 @@ public interface RollingPolicy extends LifeCycle {
 
     <p>You may sometimes wish to archive files essentialy by date but
     at the same time limit the size of each log file, in particular if
-    post-processing tools impose size limits.</p>
+    post-processing tools impose size limits on the log files. In
+    order to address this requirement, logback ships with a
+    sub-component for <code>TimeBasedRollingPolicy</code> called
+    <code>SizeAndTimeBasedFNATP</code>, where FNATP stands for File
+    Naming And Triggering Policy.</p>
+
     
-  <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
-  <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-PrudentTimeBasedRolling.xml)</em>
+    
+  <em>Example 4.<span class="autoEx"/>: Sample configuration for
+  <code>SizeAndTimeBasedFNATP</code> 
+  (logback-examples/src/main/java/chapter4/conf/logback-sizeAndTime.xml)</em>
   <pre class="prettyprint source">&lt;configuration>
  &lt;appender name="ROLLING"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;File>${randomOutputDir}z${testId}&lt;/File>
+    &lt;File>mylog.txt&lt;/File>
     &lt;rollingPolicy
       class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;FileNamePattern>
-        ${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}.%i
+        <b>mylog-%d{yyyy-MM-dd_HH_mm_ss}.<span class="big red">%i</span>.txt</b>
       &lt;/FileNamePattern>
-      &lt;TimeBasedFileNamingAndTriggeringPolicy
-        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        &lt;MaxFileSize>${sizeThreshold}&lt;/MaxFileSize>
-      &lt;/TimeBasedFileNamingAndTriggeringPolicy>
+      <b>&lt;TimeBasedFileNamingAndTriggeringPolicy</b>
+            <b>class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"></b>
+        <b>&lt;MaxFileSize>${sizeThreshold}&lt;/MaxFileSize></b>
+      <b>&lt;/TimeBasedFileNamingAndTriggeringPolicy></b>
     &lt;/rollingPolicy>
     &lt;layout>
       &lt;Pattern>%msg%n&lt;/Pattern>
@@ -1208,7 +1224,18 @@ public interface RollingPolicy extends LifeCycle {
 
 &lt;/configuration></pre>
     
-    
+    <p>Note the "%i" conversion token in addition to "%d{}". Each time
+    the current log file reaches <code>MaxFileSize</code> before the
+    current time period end, it will be archived with an increasing
+    index, starting at 0.</p>
+
+    <p>Size and time based archiving supports cleaning of old archive
+    files. You just need to specify the number of periods to preserve
+    with the <code>&lt;MaxHistory></code> element. When your
+    application is stopped and restarted, logging will continue at
+    correct location, i.e. at the largest index number for the current
+    period.
+    </p>
 
 		<h3>
       <a name="TriggeringPolicy" href="#TriggeringPolicy">Triggering policy interface</a>

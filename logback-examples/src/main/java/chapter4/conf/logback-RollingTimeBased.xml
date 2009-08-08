@@ -7,7 +7,7 @@
      <MaxHistory>30</MaxHistory> 
    </rollingPolicy>
 
-   <layout class="ch.qos.logback.classic.PatternLayout">
+   <layout>
      <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
    </layout>
  </appender> 
