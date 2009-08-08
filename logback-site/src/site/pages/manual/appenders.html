@@ -7,10 +7,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" /    
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">      
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -46,7 +47,7 @@
 		interface.  The salient methods of this interface are summarized
 		below:
 		</p>
-		<div class="source"><pre>package ch.qos.logback.core;
+		<pre class="prettyprint source">package ch.qos.logback.core;
   
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.FilterAttachable;
@@ -61,7 +62,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   public Layout&lt;E> getLayout();
   public void setName(String name);
   
-}</pre></div>
+}</pre>
 
 	<p>Most of the methods in the <code>Appender</code> interface are
 	made of setter and getter methods. A notable exception is the
@@ -111,7 +112,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	is by presenting an excerpt of actual source code.
 	</p>
 	
-<div class="source"><pre>public synchronized void doAppend(E eventObject) {
+<pre class="prettyprint source">public synchronized void doAppend(E eventObject) {
 
   // prevent re-entry.
   if (guard) {
@@ -139,7 +140,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   } finally {
     guard = false;
   }
-}</pre></div>
+}</pre>
 	
 	<p>This implementation of the <code>doAppend()</code> method is
 	synchronized.  It follows that logging to the same appender from
@@ -292,7 +293,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
 	<em>Example 4.<span class="autoEx"/>: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
 
-  <p class="source">package chapter4;
+  <pre class="prettyprint source">package chapter4;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -327,7 +328,7 @@ public class ExitWoes1 {
 
     logger.debug("Hello world.");
   }
-}</p>
+}</pre>
     
 	<p>This example creates a <code>WriterAppender</code> that uses an
 	<code>OutputStreamWriter</code> wrapping a
@@ -404,7 +405,7 @@ public class ExitWoes1 {
 	</p>
 
   <em>Example 4.<span class="autoEx"/>: ConsoleAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-Console.xml)</em>
-  <p class="source">&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -416,7 +417,7 @@ public class ExitWoes1 {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
    <p>After you have set your current path to the
    <em>logback-examples</em> directory, you can give the above
@@ -576,7 +577,7 @@ public class ExitWoes1 {
 	 </p>
 
    <em>Example 4.<span class="autoEx"/>: FileAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-fileAppender.xml)</em>
-   <p class="source">&lt;configuration>
+   <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;File>testFile.log&lt;/File>
@@ -590,7 +591,7 @@ public class ExitWoes1 {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
    <p>After changing the current directory to
    <em>logback-examples</em>, run this example by launching the
@@ -717,7 +718,7 @@ public class ExitWoes1 {
 	
    <p>The <code>RollingPolicy</code> interface is presented below:</p>
    
-   <p class="source">package ch.qos.logback.core.rolling;  
+   <pre class="prettyprint source">package ch.qos.logback.core.rolling;  
 
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -727,7 +728,7 @@ public interface RollingPolicy extends LifeCycle {
   <b>public void rollover() throws RolloverFailure;</b>
   public String getNewActiveFileName();
   public void setParent(FileAppender appender);
-}</p>
+}</pre>
 
    <p>The <code>rollover</code> method proceeds to the file change,
    renaming or deletion.  The <code>getNewActiveFileName()</code>
@@ -895,7 +896,7 @@ public interface RollingPolicy extends LifeCycle {
    <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
    <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingFixedWindow.xml)</em>
 
-   <p class="source">&lt;configuration>
+   <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;File>test.log&lt;/File></b>
 
@@ -916,7 +917,7 @@ public interface RollingPolicy extends LifeCycle {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 	
    <h4>
      <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
@@ -926,7 +927,12 @@ public interface RollingPolicy extends LifeCycle {
    href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
    <code>TimeBasedRollingPolicy</code></a> is possibly the most
    popular rolling policy. It defines a rollover policy based on time,
-   say by day or by month.
+   say by day or by month. <code>TimeBasedRollingPolicy</code> is
+   particular in the sense that it simultaneously implements both the
+   <code>RollingPolicy</code> as well as the
+   <code>TriggeringPolicy</code> interfaces. The
+   <code>TriggeringPolicy</code> interface will be presented in the
+   next sub-section.
    </p>
 
    <p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
@@ -1118,7 +1124,7 @@ public interface RollingPolicy extends LifeCycle {
 	
   <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
   <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingTimeBased.xml)</em>
-  <p class="source">&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>logFile.log&lt;/File>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -1135,7 +1141,7 @@ public interface RollingPolicy extends LifeCycle {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
     <p>The next configuration sample illustrates the use
     <code>RollingFileAppender</code> associated with
@@ -1145,7 +1151,7 @@ public interface RollingPolicy extends LifeCycle {
 
   <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
   <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-PrudentTimeBasedRolling.xml)</em>
-  <p class="source">&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;!-- Support multiple-JVM writing to the same log file --></b>
     <b>&lt;Prudent>true&lt;/Prudent></b>
@@ -1162,24 +1168,61 @@ public interface RollingPolicy extends LifeCycle {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
+
+    <h3>
+      <a name="SizeAndTimeBasedFNATP"
+      href="#SizeAndTimeBasedFNATP">Size <b>and</b> time based archiving</a>
+    </h3>
+
+    <p>You may sometimes wish to archive files essentialy by date but
+    at the same time limit the size of each log file, in particular if
+    post-processing tools impose size limits.</p>
+    
+  <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+  <code>TimeBasedRollingPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-PrudentTimeBasedRolling.xml)</em>
+  <pre class="prettyprint source">&lt;configuration>
+ &lt;appender name="ROLLING"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;File>${randomOutputDir}z${testId}&lt;/File>
+    &lt;rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;FileNamePattern>
+        ${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}.%i
+      &lt;/FileNamePattern>
+      &lt;TimeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        &lt;MaxFileSize>${sizeThreshold}&lt;/MaxFileSize>
+      &lt;/TimeBasedFileNamingAndTriggeringPolicy>
+    &lt;/rollingPolicy>
+    &lt;layout>
+      &lt;Pattern>%msg%n&lt;/Pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="ROLLING" />
+  &lt;/root>
+
+&lt;/configuration></pre>
+    
     
 
-
 		<h3>
-      <a name="TriggeringPolicy" href="#TriggeringPolicy">Triggering policies</a>
+      <a name="TriggeringPolicy" href="#TriggeringPolicy">Triggering policy interface</a>
     </h3>
 		
 		<p><a
 		href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
 		implementations are responsible for instructing the
-		<code>RollingFileAppender</code> to rollover.</p>
+		<code>RollingFileAppender</code> when to rollover.</p>
 		
 		<p>The <code>TriggeringPolicy</code> interface contains only one
 		method.</p>
 	
-    <p class="source">package ch.qos.logback.core.rolling;
+    <pre class="prettyprint source">package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -1187,7 +1230,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
   <b>public boolean isTriggeringEvent(final File activeFile, final &lt;E&gt; event);</b>
-}</p>
+}</pre>
 
 		<p>The <code>isTriggeringEvent()</code> method takes as parameters
 		the active file, and the logging event currently being
@@ -1228,7 +1271,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
     <code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapter4/conf/logback-RollingSizeBased.xml)</em>
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;File>testFile.log&lt;/File>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -1248,7 +1291,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 	
     <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -->
@@ -1446,7 +1489,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 
 		<em>Example 4.<span class="autoEx"/>: SocketAppender configuration (logback-examples/src/main/java/chapter4/socket/client1.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
     &lt;RemoteHost>${host}&lt;/RemoteHost>
@@ -1459,7 +1502,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="SOCKET" />
   &lt;/root>  
 
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 	
 	
 		<p>
@@ -1721,10 +1764,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			naming server one would write:
 		</p>
 
-<div class="source"><pre>Properties env = new Properties();
+<pre class="prettyprint source">Properties env = new Properties();
 env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 env.put(Context.PROVIDER_URL, "tcp://<em>hostname</em>:61616");
-Context ctx = new InitialContext(env);</pre></div>
+Context ctx = new InitialContext(env);</pre>
 
 		<p>
 			where <em>hostname</em> is the host where the ActiveMQ server is running.  
@@ -1792,7 +1835,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			Its most important method, <code>doAppend()</code> is listed below:
 		</p>
 		
-<div class="source"><pre>public void append(ILoggingEvent event) {
+<pre class="prettyprint source">public void append(ILoggingEvent event) {
   if (!isStarted()) {
     return;
   }
@@ -1810,7 +1853,7 @@ Context ctx = new InitialContext(env);</pre></div>
     }
       addError("Could not publish message in JMSTopicAppender [" + name + "].", e);
   }
-}</pre></div>	
+}</pre>
 
 		<p>
 			The <code>isStarted()</code> method allows the appender to check
@@ -1845,7 +1888,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			is implemented as follows:
 		</p>
 
-<div class="source"><pre>public void onMessage(javax.jms.Message message) {
+<pre class="prettyprint source">public void onMessage(javax.jms.Message message) {
   ILoggingEvent event;
   try {
     if (message instanceof ObjectMessage) {
@@ -1860,7 +1903,7 @@ Context ctx = new InitialContext(env);</pre></div>
   } catch (JMSException jmse) {
     logger.error("Exception thrown while processing incoming message.", jmse);
   }
-}</pre></div>
+}</pre>
 
 		<p>
 			The <code>onMessage()</code> method begins by retrieving the logging event's payload. 
@@ -1906,7 +1949,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>
 
 		<em>Example 4.<span class="autoEx"/>: JMSTopicAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSTopic.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="Topic"
     class="ch.qos.logback.classic.net.JMSTopicAppender">
@@ -1923,7 +1966,7 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;root level="debug">
     &lt;appender-ref ref="Topic" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 		
 		<a name="JMSQueueAppender"></a>
 		<h3>JMSQueueAppender</h3>
@@ -1974,7 +2017,7 @@ Context ctx = new InitialContext(env);</pre></div>
 			similar to that of a <code>JMSTopicAppender</code>.
 		</p>
 		<em>Example 4.<span class="autoEx"/>: JMSQueueAppender configuration (logback-examples/src/main/java/chapter4/conf/logback-JMSQueue.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="Queue"
     class="ch.qos.logback.classic.net.JMSQueueAppender">
@@ -1991,7 +2034,7 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;root level="debug">
     &lt;appender-ref ref="Queue" />
   &lt;/root>
-&lt;/configuration></pre></div>		
+&lt;/configuration></pre>	
 		
    <h3><a name="SMTPAppender" href="#SMTPAppender">SMTPAppender</a></h3>
 
@@ -2185,7 +2228,7 @@ Context ctx = new InitialContext(env);</pre></div>
 		</p>	
 		
     <em>Example 4.<span class="autoEx"/>: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/mail/mail1.xml)</em>		
-    <p class="source">&lt;configuration>	  
+    <pre class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
     &lt;To>EMAIL-DESTINATION&lt;/To>
@@ -2200,7 +2243,7 @@ Context ctx = new InitialContext(env);</pre></div>
   &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 		<p>Before trying out <code>chapter4.mail.Email</code> application
 		with the above configuration file, you must set the <span
@@ -2227,14 +2270,12 @@ Context ctx = new InitialContext(env);</pre></div>
 		relevant part of <em>mail2.xml</em>.
 		</p>		
 
-<div class="source"><pre>
-  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
-    &lt;To>${to}&lt;/To>
-    &lt;From>${from}&lt;/From>
-    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
-  &lt;/appender>
-</pre></div>
+    <pre class="prettyprint source">&lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+  &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
+  &lt;To>${to}&lt;/To>
+  &lt;From>${from}&lt;/From>
+  &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+&lt;/appender></pre>
 		
 		<p>You can pass the required parameters on the command line:</p>
 		
@@ -2300,7 +2341,7 @@ Context ctx = new InitialContext(env);</pre></div>
 
 <em>Example 4.<span class="autoEx"/>: A <code>EventEvaluator</code> implementation
 that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapter4/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapter4/mail/CounterBasedEvaluator.java</a>)</em>
-<div class="source"><pre>package chapter4.mail;
+<pre class="prettyprint source">package chapter4.mail;
 
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -2332,7 +2373,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   public void setName(String name) {
     this.name = name;
   }
-}</pre></div>
+}</pre>
 
 		<p>
 			Note that this implementation extends <code>ContextAwareBase</code> and
@@ -2352,7 +2393,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with custom 
 <code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapter4/mail/mail3.xml)</em>
 
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;Evaluator class="chapter4.mail.CounterBasedEvaluator" /></b>
     &lt;BufferSize>1050&lt;/BufferSize>
@@ -2365,8 +2406,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></pre></div>
-
+&lt;/configuration></pre>
     
 
     <h3><a name="smtpAuthentication"
@@ -2389,7 +2429,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     
     <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to Gmail using SSL (logback-examples/src/main/java/chapter4/mail/gmailSSL.xml)</em>
 
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost></b>
     <b>&lt;SMTPPort>465&lt;/SMTPPort></b>
@@ -2409,7 +2449,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 
     <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS">SMTPAppender for Gmail
@@ -2420,7 +2460,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
     <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapter4/mail/gmailSTARTTLS.xml)</em>
 
-    <p class="source">&lt;configuration>	  
+    <pre class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
     &lt;SMTPPort>587&lt;/SMTPPort>
@@ -2440,7 +2480,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 
 
@@ -2736,7 +2776,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 		
 <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-driverManager.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
@@ -2750,7 +2790,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug" >
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>
 			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
@@ -2786,13 +2826,13 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		  commons-dbcp </a> package from Apache:
 		</p>
 
-<div class="source"><pre>
+<pre class="prettyprint source">
   &lt;connectionSource
     class=&quot;ch.qos.logback.core.db.DriverManagerConnectionSource&quot;&gt;
     &lt;param name=&quot;driver&quot; value=&quot;org.apache.commons.dbcp.PoolingDriver&quot;/&gt; 
     &lt;param name=&quot;url&quot; value=&quot;jdbc:apache:commons:dbcp:/myPoolingDriver&quot;/&gt; 
   &lt;/connectionSource&gt;
-</pre></div>
+</pre>
 		
 		<p>
 			Then the configuration information for the commons-dbcp
@@ -2814,7 +2854,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 	
 <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapter4/db/append-with-datasource.xml)</em>	
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
      <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -2837,7 +2877,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>
 			Not that in this configuration sample, we make heavy use of substitution variables.
@@ -2894,11 +2934,11 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 			application server provides.
 		</p>
 		
-<div class="source"><pre>&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
+<pre class="prettyprint source">&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
   &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
   &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
   &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
-&lt;/connectionSource&gt;</pre></div>
+&lt;/connectionSource&gt;</pre>
 
 		<p>
 			Note that this class will obtain an
@@ -2927,7 +2967,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
     
     <em>Example 4.<span class="autoEx"/> <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource.xml)</em>	
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -2944,7 +2984,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration</p>
+&lt;/configuration</pre>
 
 		<p>With this configuration file, sending 500 logging events to a
 		MySQL database takes a whopping 5 seconds, that is 10 milliseconds
@@ -2960,7 +3000,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 
     <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapter4/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource
@@ -2978,7 +3018,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 		<p>With this new configuration, sending 500 logging requests to
 		the same MySQL database as previously used takes around 0.5
@@ -3095,7 +3135,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 		
 <em>Example 4.<span class="autoEx"/>: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/logback-syslog.xml)</em>				
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="SYSLOG"
     class="ch.qos.logback.classic.net.SyslogAppender">
@@ -3107,7 +3147,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>When testing this configuration, you should verify that the
 		remote syslog daemon accepts requests from an external
@@ -3155,7 +3195,7 @@ logger.debug("Alice says hello"); </p>
     configuration
     (logback-examples/src/main/java/chapter4/sift/byUserid.xml)</em>
 
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender"></b>
     &lt;!-- in the absence of the class attribute, it is assumed that the
@@ -3179,7 +3219,7 @@ logger.debug("Alice says hello"); </p>
   &lt;root level="DEBUG">
     &lt;appender-ref ref="SIFT" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
     
     
     <p>In the absence of a class attribute, it is assumed that the
@@ -3239,7 +3279,7 @@ logger.debug("Alice says hello"); </p>
     <em>Example 4.<span class="autoExec"/>:
     <code>CountingConsoleAppender</code>
     (logback-examples/src/main/java/chapter4/CountingConsoleAppender.java)</em>
-    <p class="source">package chapter4;
+    <pre class="prettyprint source">package chapter4;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
@@ -3284,7 +3324,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     counter++;
   }
 
-}</p>
+}</pre>
 
 		<p>The <code>start()</code> method checks for the presence of a
 		<code>Layout</code>.  In case the layout is not set, the appender
@@ -3363,7 +3403,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			Here is a sample configuration of a <code>SMTPAppender</code> in the access environment.
 		</p>
 <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapter4/conf/access/logback-smtp.xml)</em>					
-<div class="source"><pre>&lt;appender name="SMTP"
+<pre class="prettyprint source">&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
   &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
     &lt;Pattern>%h%l%u%t%r%s%b&lt;/Pattern>
@@ -3376,7 +3416,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   &lt;From>sender_email@host.com&lt;/From>
   &lt;SMTPHost>mail.domain.com&lt;/SMTPHost>
   &lt;To>recipient_email@host.com&lt;/To>
-&lt;/appender></pre></div>
+&lt;/appender></pre>
 
 		<p>
 			This way of triggering the email lets user select pages that are important steps
@@ -3532,7 +3572,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		</p>
 
     <em>Example 4.<span class="autoEx"/>: DBAppender configuration (logback-examples/src/main/java/chapter4/conf/access/logback-DB.xml)</em>		
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
@@ -3545,7 +3585,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   &lt;/appender>
 
   &lt;appender-ref ref="DB" />
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 
     <h3><a name="AccessSiftingAppender"
@@ -3572,7 +3612,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 
     <em>Example 4.<span class="autoEx"/>: SiftingAppender configuration (logback-examples/src/main/java/chapter4/conf/sift/access-siftingFile.xml)</em>		
     
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">
     &lt;Discriminator class="ch.qos.logback.access.sift.AccessEventDiscriminator">
       &lt;Key>id&lt;/Key>
@@ -3590,7 +3630,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     &lt;/sift>
   &lt;/appender>
   &lt;appender-ref ref="SIFTING" />
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 
     <p>In the above configuration file, a <code>SiftingAppender</code>

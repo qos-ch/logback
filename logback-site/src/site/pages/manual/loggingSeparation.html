@@ -8,10 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -91,10 +92,10 @@
     referencing a logger is via a static reference. For example,
     </p>
 
-    <p class="source">public class Foo {
+    <pre class="prettyprint source">public class Foo {
   <b>static</b> Logger logger = LoggerFactory.getLogger(Foo.class);
   ...
-}</p>
+}</pre>
 
     <p>Static references are both memory and CPU efficient. Only one
     logger reference is used for all instances of the class. Moreover,
@@ -127,7 +128,7 @@
     contexts. When you write:
     </p>
 
-    <p class="source">Logger logger = LoggerFactory.getLogger("foo");</p>
+    <pre class="prettyprint source">Logger logger = LoggerFactory.getLogger("foo");</pre>
 
     <p>the <code>getLogger</code>() method in
     <code>LoggerFactory</code> class asks the SLF4J binding for a
@@ -190,11 +191,11 @@
     file. If "kenobi" was the name of your application, you would add
     the following XML element to kenobi's web.xml file:</p>
 
-    <p class="source">&lt;env-entry>
+    <pre class="prettyprint source">&lt;env-entry>
   &lt;env-entry-name>logback/context-name&lt;/env-entry-name>
   &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
   &lt;env-entry-value>kenobi&lt;/env-entry-value>
-&lt;/env-entry></p>
+&lt;/env-entry></pre>
 
     <p>Assuming you have enabled <code>ContextJNDISelector</code>,
     logging for Kenobi will be done using a logger context named
@@ -213,11 +214,11 @@
     </p>
 
 
-   <p class="source">&lt;env-entry>
+   <pre class="prettyprint source">&lt;env-entry>
   &lt;env-entry-name>logback/configuration-resource&lt;/env-entry-name>
   &lt;env-entry-type>java.lang.String&lt;/env-entry-type>
   &lt;env-entry-value>my_config.xml&lt;/env-entry-value>
-&lt;/env-entry></p> 
+&lt;/env-entry></pre> 
 
 
     <h3>Configuring Tomcat for ContextJNDISelector</h3>
@@ -235,7 +236,7 @@
     catalina.bat in Windows, found under <em>$TOMCAT_HOME/bin</em>
     folder.</p>
 
-    <p class="source">JAVA_OPTS="$JAVA_OPTS -Dlogback.ContextSelector=JNDI</p>
+    <p class="source">JAVA_OPTS="$JAVA_OPTS -Dlogback.ContextSelector=JNDI"</p>
 
 
     <h3>Hot deploying applications</h3>
@@ -251,9 +252,9 @@
     add the following lines to your web-applications <em>web.xml</em>
     file.</p>
 
-    <p class="source">&lt;listener>
+    <pre class="prettyprint source">&lt;listener>
   &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
-&lt;/listener></p>
+&lt;/listener></pre>
 
     <h3>Better performance</h3>
 
@@ -267,14 +268,14 @@
     be installed by adding the following lines to your applications
     web.xml file.</p>
 
- <p class="source">&lt;filter>
+ <pre class="prettyprint source">&lt;filter>
   &lt;filter-name>LoggerContextFilter&lt;/filter-name>
   &lt;filter-class>ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class>
 &lt;/filter>
 &lt;filter-mapping>
   &lt;filter-name>LoggerContextFilter&lt;/filter-name>
   &lt;url-pattern>/*&lt;/url-pattern>
-&lt;/filter-mapping></p>
+&lt;/filter-mapping></pre>
 
    <p>At the beginning of each http-request,
    <code>LoggerContextFilter</code> will obtain the logger context

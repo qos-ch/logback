@@ -8,10 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body>
+  <body  onload="prettyPrint()">
     <script type="text/javascript">prefix='../'</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -162,7 +163,7 @@
     </p>
 
 
-    <p class="source">package ch.qos.logback.core.joran.action;
+    <pre class="prettyprint source">package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
@@ -183,7 +184,7 @@ public abstract class Action {
    */
   public abstract void end(InterpretationContext ec, String name)
       throws ActionException;
-}</p>
+}</pre>
 
    <p>Thus, every action must implement the begin and end methods.</p>
 
@@ -302,9 +303,9 @@ public abstract class Action {
     (logback-examples/src/main/java/chapter10/calculator/calculator1.xml)</em>
 
     <em> </em>
-    <p class="source">&lt;computation name="total">
+    <pre class="prettyprint source">&lt;computation name="total">
   &lt;literal value="3"/>
-&lt;/computation></p>
+&lt;/computation></pre>
 
     <p>In the <a href="../xref/chapter10/calculator/Calculator1.html">
     <code>Calculator1</code></a> application, we declare various
@@ -383,13 +384,13 @@ public abstract class Action {
     <em>Example 10.<span class="autoEx"/>: Calculator configuration
     file
     (logback-examples/src/main/java/chapter10/calculator/calculator2.xml)</em>
-  <div class="source"><pre>&lt;computation name="toto"&gt;
+  <pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
   &lt;add/&gt;
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</pre></div>
+&lt;/computation&gt;</pre>
 
 
   <p>As in the previous example, in response to the &lt;literal&gt;
@@ -431,7 +432,7 @@ public abstract class Action {
   <em>Example 10.<span class="autoEx"/>: Calculator configuration file
   (logback-examples/src/main/java/chapter10/calculator/calculator3.xml)</em>
 
-<div class="source"><pre>&lt;computation name="toto"&gt;
+<pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
@@ -440,7 +441,7 @@ public abstract class Action {
  
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</pre></div>
+&lt;/computation&gt;</pre>
 
   <p>Much like the use of parentheses in an algebrical equation, the
   presence of a <code>computation</code> element nested in another is
@@ -515,7 +516,7 @@ public abstract class Action {
 
   <em>Example 10.<span class="autoEx"/>: Usage of implicit rules
   (logback-examples/src/main/java/chapter10/implicit/implicit1.xml)</em>
-  <p class="source">&lt;foo&gt;
+  <pre class="prettyprint source">&lt;foo&gt;
   &lt;xyz printme="true"&gt;
     &lt;abc printme="true"/&gt;
   &lt;/xyz&gt;
@@ -524,7 +525,7 @@ public abstract class Action {
 
   &lt;foo printme="true"/&gt;
 
-&lt;/foo&gt;</p>
+&lt;/foo&gt;</pre>
 
   <p>Running</p>
 
@@ -671,8 +672,8 @@ Element [abc] asked to be printed.
   <code>NewRuleCalculator</code>.
   </p>
 
-  <p class="source">ruleMap.put(new Pattern("*/computation"), new ComputationAction1());
-<b>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</b></p>
+  <pre class="prettyprint source">ruleMap.put(new Pattern("*/computation"), new ComputationAction1());
+<b>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</b></pre>
 
   <p><a
   href="../xref/ch/qos/logback/core/joran/action/NewRuleAction.html"><code>NewRuleAction</code></a>,
@@ -687,8 +688,8 @@ Element [abc] asked to be printed.
 
   <p>Here is how new rules can be declared in an xml file:</p>
 
-  <p class="source">&lt;new-rule pattern="*/computation/literal"
-          actionClass="chapter10.calculator.LiteralAction"/&gt;</p>
+  <pre class="prettyprint source">&lt;new-rule pattern="*/computation/literal"
+          actionClass="chapter10.calculator.LiteralAction"/&gt;</pre>
 
   <p>Using such new-rule declarations, we can transform
   <code>NewRuleCalculator</code> to behave like the
@@ -699,7 +700,7 @@ Element [abc] asked to be printed.
   rules on the fly
   (logback-examples/src/main/java/chapter10/newrule/new-rule.xml)</em>
 
-  <p class="source">&lt;computation name="toto"&gt;
+  <pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
             actionClass="chapter10.calculator.LiteralAction"/&gt;
   &lt;new-rule pattern="*/computation/add" 
@@ -715,7 +716,7 @@ Element [abc] asked to be printed.
  
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
-&lt;/computation&gt;</p>
+&lt;/computation&gt;</pre>
 
 
   <p class="command">java java chapter10.newRule.NewRuleCalculator src/main/java/chapter10/newRule/new-rule.xml</p>

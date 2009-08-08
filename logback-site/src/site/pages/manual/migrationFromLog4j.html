@@ -8,10 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../'</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -65,7 +66,7 @@
     </p>
     
 
-    <p class="source">package chapter11;
+    <pre class="prettyprint source">package chapter11;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
@@ -83,13 +84,13 @@ public class TrivialLog4jLayout extends Layout {
   public boolean ignoresThrowable() {
     return true;
   }
-}</p>
+}</pre>
 
     <p>The logback-classic equivalent named <a
     href="../xref/chapter11/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
     would be </p>
     
-    <p class="source">package chapter11;
+    <pre class="prettyprint source">package chapter11;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -99,7 +100,7 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
   public String <b>doLayout</b>(ILoggingEvent loggingEvent) {
     return loggingEvent.getMessage();
   }
-}    </p>
+}    </pre>
  
    <p>As you can see, in a logback-classic layout, the formatting
    method is named <code>doLayout</code> instead of
@@ -133,7 +134,7 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
    href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
    which writes on the console the string returned by its layout.</p>
    
-    <p class="source">package chapter11;
+    <pre class="prettyprint source">package chapter11;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
@@ -153,14 +154,14 @@ public class TrivialLog4jAppender extends AppenderSkeleton {
   public boolean requiresLayout() {
     return true;
   }
-}</p>
+}</pre>
 
    <p>The logback-classic equivalent named <a
    href="../xref/chapter11/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
    would be written as</p>
 
 
-   <p class="source">package chapter11;
+   <pre class="prettyprint source">package chapter11;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -184,7 +185,7 @@ public class TrivialLogbackAppender extends AppenderBase&lt;ILoggingEvent> {
     String s = this.layout.doLayout(loggingevent);
     System.out.println(s);
   }
-}</p>
+}</pre>
 
 
    <p>Comparing the two classes, you should notice that the contents

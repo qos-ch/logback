@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
     
   </head>
-<body>
+<body onload="prettyPrint()">
   <script type="text/javascript">prefix='../';</script>
+  <script type="text/javascript" src="../js/prettify.js"></script>
   <script src="../templates/header.js" type="text/javascript"></script>
   <div id="left">
     <noscript>Please turn on Javascript to view this menu</noscript>
@@ -49,13 +50,13 @@
 		interface is shown below.
 		</p>
 
-		<div class="source">public interface Layout&lt;E> extends ContextAware, LifeCycle {
+		<pre class="prettyprint source">public interface Layout&lt;E> extends ContextAware, LifeCycle {
 
   String doLayout(E event);
   String getHeader();
   String getFooter();
   String getContentType();
-}</div>
+}</pre>
 
 		<p>This interface is rather simple and yet is sufficent for many
 		formatting needs. The Texan developer from Texas, who you might
@@ -90,7 +91,7 @@
 			<a href="../xref/chapter5/MySampleLayout.html">
 			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</a></em>
 
-		<div class="source"><pre>package chapter5;
+		<pre class="prettyprint source">package chapter5;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -111,7 +112,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
     sbuf.append(CoreConstants.LINE_SEP);
     return sbuf.toString();
   }
-}</pre></div>
+}</pre>
 
 		<p>Note that <code>MySampleLayout</code> extends <a
 		href="../xref/ch/qos/logback/core/LayoutBase.html">
@@ -152,7 +153,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		
 		<em>Example 5.0: Configuration of MySampleLayout
 			(logback-examples/src/main/java/chapter5/sampleLayoutConfig.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -162,7 +163,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>The sample application <a href="../xref/chapter5/SampleLogging.html">
 		<code>chapter5.SampleLogging</code></a> configures logback with the 
@@ -201,7 +202,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		</p>
 		<p>Here is the implementation of this class:</p>
 
-    <p class="source">package chapter5;
+    <pre class="prettyprint source">package chapter5;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -240,7 +241,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     sbuf.append(LINE_SEP);
     return sbuf.toString();
   }
-}</p>
+}</pre>
 
 
     <p>The addition of the corresponding setter method is all that is
@@ -253,7 +254,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     </p> 
 
 
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -266,7 +267,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
    <p></p>
 
@@ -302,7 +303,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 			<a href="../xref/chapter5/PatternSample.html">
 			(logback-examples/src/main/java/chapter5/PatternSample.java)</a>
 		</em>
-		<div class="source"><pre>package chapter5;
+		<pre class="prettyprint source">package chapter5;
 
 import org.slf4j.LoggerFactory;
 
@@ -328,7 +329,7 @@ public class PatternSample {
     rootLogger.debug("Message 1"); 
     rootLogger.warn("Message 2");
   } 
-}</pre></div>
+}</pre>
 
 		<p>The conversion pattern is set to be <b>"%-5level [%thread]:
 		%message%n"</b>. Running PatternSample will yield the following
@@ -1140,13 +1141,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
     which will be covered soon, may add evaluator names to the option
     list, as shown below:</p>
 
-		<div class="source"><pre>
+		<pre class="prettyprint source">
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
       &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
         <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
     &lt;/layout>
-  &lt;/appender></pre></div>
+  &lt;/appender></pre>
 
 		
 		<h3>Evaluators</h3>
@@ -1177,7 +1178,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
 		</em>
-		<p class="source">&lt;configuration>
+		<pre class="prettyprint source">&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
     &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
       message.contains("who calls thee")&lt;/Expression>
@@ -1193,7 +1194,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
   &lt;root level="debug"> 
     &lt;appender-ref ref="STDOUT" /> 
   &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
 		<p>Due to XML encoding rules, the &amp; character cannot be
 		written as is, and needs to be escaped as &amp;amp;.</p>
@@ -1207,7 +1208,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)</a>
 		</em>
     </p>
-		<p class="source">package chapter5;
+		<pre class="prettyprint source">package chapter5;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1239,7 +1240,7 @@ public class CallerEvaluatorExample {
       }
     }
   }
-}</p>
+}</pre>
 		<p>
 			The <em>CallerEvaluatorExample</em> application does nothing particularly
 			fancy. Five logging requests are issued, the third one being
@@ -1293,7 +1294,7 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 			(logback-examples/src/main/java/chapter5/ExceptionEvaluatorExample.java)</a>
 		</em>
     </p>
-<div class="source"><pre>package chapter5;
+<pre class="prettyprint source">package chapter5;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1325,7 +1326,7 @@ public class ExceptionEvaluatorExample {
       }
     }
   }
-}</pre></div>
+}</pre>
 		
 		<p>The following configuration will supress the stack trace of the
 		third logging request.</p>
@@ -1333,7 +1334,7 @@ public class ExceptionEvaluatorExample {
 			Example 5.3: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapter5/exceptionEvaluatorConfig.xml)
 		</em>
-		<div class="source"><pre>&lt;configuration>
+		<pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;evaluator name="DISPLAY_EX_EVAL">
     &lt;Expression>throwable != null &amp;amp;&amp;amp; throwable instanceof  \
@@ -1351,7 +1352,7 @@ public class ExceptionEvaluatorExample {
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>With this configuration, each time an instance of the
 		<em>chapter5.TestException</em> is included within a logging
@@ -1390,7 +1391,7 @@ public class ExceptionEvaluatorExample {
 <em> Example 5.4: Sample Converter Example 
 <a href="../xref/chapter5/MySampleConverter.html">
 (src/main/java/chapter5/MySampleConverter.java)</a></em>
-<div class="source"><pre>package chapter5;
+<pre class="prettyprint source">package chapter5;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ClassicConverter;
@@ -1427,7 +1428,7 @@ public class MySampleConverter extends ClassicConverter {
     }
   }
 }
-</pre></div>
+</pre>
 
 
 java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml 
@@ -1444,7 +1445,7 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
 		new conversion word in the configuration file, as shown below:</p>
 		
 <em> Example 5.4: Sample Converter Example (src/main/java/chapter5/mySampleConverterConfig.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
 	
@@ -1458,7 +1459,7 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
   &lt;root level="debug">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>In this configuration file, once the new conversion word has
 		been declared, we can refert to it within a
@@ -1526,7 +1527,7 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
     the use of <code>HTMLLayout</code>.
     </p>
 
-<div class="source">&lt;configuration debug="true"&gt;
+<pre class="prettyprint source">&lt;configuration debug="true"&gt;
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
       <b>&lt;pattern&gt;%relative%thread%mdc%level%logger%msg&lt;/pattern&gt;</b>
@@ -1538,12 +1539,12 @@ java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration>
-</div>
+</pre>
 
   <p>Launching the <code>TrivialMain</code> application listed below
   will create the file <em>test.html</em> on your local drive.</p>
 
-  <p class="source">import org.slf4j.Logger;
+  <pre class="prettyprint source">import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TrivialMain {
@@ -1558,7 +1559,7 @@ public class TrivialMain {
     }
     logger.error("Finish off with fireworks", new Exception("Just testing"));
   }
-}</p>
+}</pre>
 
 		<p>The contents of <em>test.html</em> should be similar to:
 		</p>
@@ -1606,13 +1607,13 @@ public class TrivialMain {
     <code>&lt;layout&gt;</code> element, as shown below.
 		</p>
 
-<div class="source"><pre>&lt;layout>
+<pre class="prettyprint source">&lt;layout>
   ...
   &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
     &lt;url>path_to_StyleFile.css&lt;/url>
   &lt;/cssBuilder>	
   ...
-&lt;/layout></pre></div>
+&lt;/layout></pre>
 
 	
 		<p>The <code>HTMLLayout</code> is often used in conjunction with
@@ -1620,7 +1621,7 @@ public class TrivialMain {
 		formatted in HTML. Here is a typical configuration:
 		</p>
 
-		<div class="source"><pre>&lt;configuration&gt;
+		<pre class="prettyprint source">&lt;configuration&gt;
   &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
       &lt;pattern>%relative%thread%mdc%level%class%msg&lt;/pattern&gt;
@@ -1634,14 +1635,14 @@ public class TrivialMain {
   &lt;root level="debug">
     &lt;appender-ref ref="SMTP" /&gt;
   &lt;/root&gt;
-&lt;/configuration&gt;</pre></div>
+&lt;/configuration&gt;</pre>
 
 		<p><code>HTMLLayout</code> can also be used with any
 		<code>FileAppender</code>, including a a rolling file appender, as
 		shown in the sample configuration below.
     </p>
 		
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
    &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
      &lt;ActiveFileName>lastLogEntries.html&lt;/ActiveFileName>
@@ -1660,7 +1661,7 @@ public class TrivialMain {
  &lt;root level="debug">
    &lt;appender-ref ref="FILE" />
  &lt;/root>
-&lt;/configuration></p>
+&lt;/configuration></pre>
 
     <h3><a name="log4jXMLLayout" href="#log4jXMLLayout">Log4j XMLLayout</a></h3>
 
@@ -1690,7 +1691,7 @@ public class TrivialMain {
 
     <p>Here is a sample configuration</p>
 
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;File>test.xml&lt;/File>
     &lt;layout class="ch.qos.logback.classic.log4j.XMLLayout">
@@ -1701,7 +1702,7 @@ public class TrivialMain {
   &lt;root level="debug">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration> </p>
+&lt;/configuration> </pre>
     
 		<h2>Logback access</h2>
 

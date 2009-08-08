@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" /> 
 
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -116,7 +117,7 @@
 		</p>
 		
 <em>Example 6.1: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
-<div class="source"><pre>package chapter6;
+<pre class="prettyprint source">package chapter6;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.filter.Filter;
@@ -134,7 +135,7 @@ public class SampleFilter extends Filter {
       return FilterReply.NEUTRAL;
     }
   }
-}</pre></div>
+}</pre>
 
 		<p>
 			What is shown above might be the simplest filter. Like any filter, it
@@ -143,7 +144,7 @@ public class SampleFilter extends Filter {
 		</p>
 
 <em>Example 6.2: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;Filter class="chapter6.SampleFilter" /></b>
@@ -158,7 +159,7 @@ public class SampleFilter extends Filter {
   &lt;root>
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>Thanks to Joran, logback's powerful configuration framework,
 		adding an option to such a filter is very easy. Just add the
@@ -191,7 +192,7 @@ public class SampleFilter extends Filter {
 		</p>
 		
 <em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -208,7 +209,7 @@ public class SampleFilter extends Filter {
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>
 			The second filter that ships with logback is 
@@ -220,7 +221,7 @@ public class SampleFilter extends Filter {
 		</p>
 
 <em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -235,7 +236,7 @@ public class SampleFilter extends Filter {
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 
     <h3>Evaluator Filters taking Java Expressions</h3>
@@ -350,7 +351,7 @@ public class SampleFilter extends Filter {
 
 <em>Example 6.5: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
 
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -371,7 +372,7 @@ public class SampleFilter extends Filter {
   &lt;root level="INFO">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>The bold part in the previous configuration adds an
 		<code>EvaluatorFilter</code> to a <code>ConsoleAppender</code>. An
@@ -472,7 +473,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     </p>
     
 <em>Example 6.6: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
-<div class="source"><pre>package chapter6;
+<pre class="prettyprint source">package chapter6;
 
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -518,7 +519,7 @@ public class SampleTurboFilter extends TurboFilter {
     }
   }
 }
-</pre></div>
+</pre>
 
 		<p>The <code>TurboFilter</code> above accepts events that contain
 		a specific marker.  If said marker is not found, then the filter
@@ -537,7 +538,7 @@ public class SampleTurboFilter extends TurboFilter {
 		</p>
 		
 <em>Example 6.7: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
   <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
   &lt;/turboFilter></b>
@@ -554,7 +555,7 @@ public class SampleTurboFilter extends TurboFilter {
   &lt;root>
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre></div>   
+&lt;/configuration></pre>  
 
    	<p>Logback classic ships with several <code>TurboFilter</code>
    	classes ready for use.  The <a
@@ -574,7 +575,7 @@ public class SampleTurboFilter extends TurboFilter {
    	
 <em>Example 6.8: <code>MDCFilter</code> and <code>MarkerFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
     &lt;MDCKey>username&lt;/MDCKey>
@@ -596,7 +597,7 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
   &lt;root level="info">
     &lt;appender-ref ref="console" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>You can see this configuration in action by issuing the
 		following command:
@@ -664,8 +665,8 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
     write:
     </p>
 
-    <p class="source">logger.debug("Hello "+name0);
-logger.debug("Hello "+name1);</p>
+    <pre class="prettyprint source">logger.debug("Hello "+name0);
+logger.debug("Hello "+name1);</pre>
   
     <p>Assuming <code>name0</code> and <code>name1</code> have
     different values, the two "Hello" messages will be considered as
@@ -680,8 +681,8 @@ logger.debug("Hello "+name1);</p>
     thus considered as repetitions.
     </p>
 
-    <p class="source">logger.debug("Hello {}.", name0);
-logger.debug("Hello {}.", name1);</p>
+    <pre class="prettyprint source">logger.debug("Hello {}.", name0);
+logger.debug("Hello {}.", name1);</pre>
   
     <p>The number of allowed repetitions can be specified by the <span
     class="option">AllowedRepetitions</span> property. For example, if
@@ -701,7 +702,7 @@ logger.debug("Hello {}.", name1);</p>
     
 <em>Example: <code>DuplicateMessageFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
 
@@ -714,7 +715,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
   &lt;root level="info">
     &lt;appender-ref ref="console" />
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
   <p>Thus, the output for <code>FilterEvents</code> application
   configured with <em>duplicateMessage.xml</em> is:
@@ -775,7 +776,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
     </p>
    	
 <em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
-<div class="source"><pre>&lt;configuration>
+<pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -794,7 +795,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>We might imagine a slightly more complex use of filters to
 		ensure logging of 404 errors, except those returned on access to
@@ -802,7 +803,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
 		</p>	
 
     <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
-    <p class="source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -829,7 +830,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
 
   &lt;appender-ref ref="STDOUT" />
 &lt;/configuration>
-    </p>
+    </pre>
 	
     <script src="../templates/footer.js" type="text/javascript"></script>
 

@@ -8,10 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -62,7 +63,7 @@
 		javadocs</a> for a complete list of methods.
 		</p>
 
-<div class="source"><pre>package org.slf4j;
+<pre class="prettyprint source">package org.slf4j;
 
 public class MDC {
   //Put a context value as identified by <em>key</em>
@@ -77,7 +78,7 @@ public class MDC {
 
   //Clear all entries in the MDC.
   <b>public static void clear();</b>
-}</pre></div>
+}</pre>
 
 		<p>The <code>MDC</code> class contains only static methods.  It
 		lets the developer place information in a <em>diagnostic
@@ -100,7 +101,7 @@ public class MDC {
 		</p>
 <em>Example 7.1: Basic MDC usage (<a href="../xref/chapter7/SimpleMDC.html">
 logback-examples/src/main/java/chapter7/SimpleMDC.java)</a></em>
-<div class="source"><pre>package chapter7;
+<pre class="prettyprint source">package chapter7;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +136,7 @@ public class SimpleMDC {
 
   [ SNIP ]
 
-}</pre></div>
+}</pre>
 
 		<p>The main method starts by associating the value
 		<em>Dorothy</em> with the key <em>first</em> in the
@@ -150,11 +151,11 @@ public class SimpleMDC {
     relevant section from that file.
     </p>
 
- <p class="source">&lt;appender name="CONSOLE"
-    class="ch.qos.logback.core.ConsoleAppender"> &lt;layout
-    class="ch.qos.logback.classic.PatternLayout">
+ <pre class="prettyprint source">&lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"> 
+  &lt;layout>
     &lt;Pattern><b>%X{first} %X{last}</b> - %m%n&lt;/Pattern>
-    &lt;/layout> &lt;/appender></p>
+  &lt;/layout> 
+&lt;/appender></pre>
     
 
 
@@ -215,7 +216,7 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 
 <em>Example 7.2: The service interface (<a href="../xref/chapter7/NumberCruncher.html">
 logback-examples/src/main/java/chapter7/NumberCruncher.java)</a></em>
-<div class="source"><pre>package chapter7;
+<pre class="prettyprint source">package chapter7;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -229,7 +230,7 @@ public interface NumberCruncher extends Remote {
    * <em>distinct</em> factor's as an integer array.
    * */
   int[] factor(int number) throws RemoteException;
-}</pre></div>
+}</pre>
 
 		<p>
 			The <code>NumberCruncherServer</code> application, listed in Example 7.3 below, 
@@ -239,7 +240,7 @@ public interface NumberCruncher extends Remote {
 
 <em>Example 7.3: The server side (<a href="../xref/chapter7/NumberCruncherServer.html">
 logback-examples/src/main/java/chapter7/NumberCruncherServer.java)</a></em>
-<div class="source"><pre>package chapter7;
+<pre class="prettyprint source">package chapter7;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -387,7 +388,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
       return;
     }
   }
-}</pre></div>
+}</pre>
 
 		<p>
 				The implementation of the <code>factor(int number)</code> method is 
@@ -416,11 +417,9 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
 <em>Example 7.4: Configuration file (logback-examples/src/main/java/chapter7/mdc1.xml)</em>
-<div class="source"><pre>&lt;configuration>
-
-  &lt;appender name="CONSOLE"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+<pre class="prettyprint source">&lt;configuration>
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;layout>
       &lt;Pattern>%-4r [%thread] %-5level <b>C:%X{client} N:%X{number}</b> - %msg%n&lt;/Pattern>
     &lt;/layout>	    
   &lt;/appender>
@@ -428,7 +427,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
   &lt;root level="debug">
     &lt;appender-ref ref="CONSOLE"/>
   &lt;/root>  
-&lt;/configuration></pre></div>
+&lt;/configuration></pre>
 
 		<p>
 			Note the use of the <em>%X</em> conversion specifier within the 
@@ -532,7 +531,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
 <em>Example 7.5: User servlet filter (<a href="../xref/chapter7/UserServletFilter.html">
 logback-examples/src/main/java/chapter7/UserServletFilter.java)</a></em>
-<div class="source"><pre>package chapter7;
+<pre class="prettyprint source">package chapter7;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -593,8 +592,7 @@ public class UserServletFilter implements Filter {
       userRegistered = true;
     }
   }
-}</pre></div>
-
+}</pre>
 
 	<p>
 		When the filter's <code>doFilter()</code> method is called, is first looks for a

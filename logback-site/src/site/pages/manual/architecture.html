@@ -8,12 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body>
-    <script type="text/javascript">
-      prefix='../';	
-    </script>
+  <body onload="prettyPrint()">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -125,8 +124,8 @@
 		follows:
 		</p>
 		
-    <p class="source">Logger rootLogger = LoggerFactory.getLogger(<a
-    href="http://www.slf4j.org/apidocs/constant-values.html#org.slf4j.Logger.ROOT_LOGGER_NAME">org.slf4j.Logger.ROOT_LOGGER_NAME</a>);</p>
+    <pre class="prettyprint source">Logger rootLogger = LoggerFactory.getLogger(<a
+    href="http://www.slf4j.org/apidocs/constant-values.html#org.slf4j.Logger.ROOT_LOGGER_NAME">org.slf4j.Logger.ROOT_LOGGER_NAME</a>);</pre>
 
 		<p>All other loggers are also retrieved with the class static
 		<code>getLogger</code> method found in the <a
@@ -136,7 +135,7 @@
 		interface are listed below.
 		</p>
 
-		<p class="source">package org.slf4j; 
+		<pre class="prettyprint source">package org.slf4j; 
 public interface Logger {
 
   // Printing methods: 
@@ -145,7 +144,7 @@ public interface Logger {
   public void info(String message); 
   public void warn(String message); 
   public void error(String message); 
-}</p>
+}</pre>
 
 		<p>Loggers may be assigned levels. The set of possible levels,
 		that is TRACE, DEBUG, INFO, WARN and ERROR are defined in the
@@ -431,7 +430,7 @@ public interface Logger {
 		
 		<p>Here is an example of the basic selection rule.</p>
 
-		<div class="source"><pre>// get a logger instance named "com.foo"
+		<pre class="prettyprint source">// get a logger instance named "com.foo"
 Logger logger = LoggerFactory.getLogger("com.foo");
 //set its Level to <span class="blue">INFO</span>
 logger.setLevel(Level. <span class="blue">INFO</span>);
@@ -450,7 +449,7 @@ logger.<span class="green bold">debug</span>("Starting search for nearest gas st
 barlogger.<span class="green bold">info</span>("Located nearest gas station.");
 
 // This request is disabled, because <span class="green bold">DEBUG</span> &lt; <span class="blue">INFO</span>. 
-barlogger.<span class="green bold">debug</span>("Exiting gas station search");</pre></div>
+barlogger.<span class="green bold">debug</span>("Exiting gas station search");</pre>
 
     <a name="RetrievingLoggers"></a>
 		<h3>Retrieving Loggers</h3>
@@ -461,8 +460,8 @@ barlogger.<span class="green bold">debug</span>("Exiting gas station search");</
 		</p>
 
 		<p>For example, in</p>
-		<div class="source"><pre>Logger x = LoggerFactory.getLogger("wombat"); 
-Logger y = LoggerFactory.getLogger("wombat");</pre></div>
+		<pre class="prettyprint source">Logger x = LoggerFactory.getLogger("wombat"); 
+Logger y = LoggerFactory.getLogger("wombat");</pre>
 
 		<p>
 			<code>x</code> and <code>y</code> refer to
@@ -634,7 +633,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		something akin to:
 		</p>
 
-		<div class="source"><pre>176  [main] DEBUG chapter2.HelloWorld2 - Hello world.</pre></div>
+		<div class="prettyprint source"><pre>176  [main] DEBUG chapter2.HelloWorld2 - Hello world.</pre></div>
 
 		<p>The first field is the number of milliseconds elapsed since the
 		start of the program. The second field is the thread making the
@@ -656,7 +655,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 
 		<p>For some Logger <code>logger</code>, writing,</p>
 
-		<div class="source"><pre>logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));</pre></div>
+		<pre class="prettyprint source">logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));</pre>
 
 		<p>incurs the cost of constructing the message parameter, that is
 		converting both integer <code>i</code> and <code>entry[i]</code>
@@ -668,9 +667,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		by surrounding the log statement with a test. Here is an example.
 		</p>
 
-		<div class="source"><pre>if(logger.isDebugEnabled()) { 
+		<pre class="prettyprint source">if(logger.isDebugEnabled()) { 
   logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
-}</pre></div>
+}</pre>
 
 
 		<p>This way you will not incur the cost of parameter construction
@@ -690,8 +689,8 @@ Logger y = LoggerFactory.getLogger("wombat");</pre></div>
 		</p>
 
 
-		<div class="source"><pre>Object entry = new SomeObject(); 
-logger.debug("The entry is {}.", entry);</pre></div>
+		<pre class="prettyprint source">Object entry = new SomeObject(); 
+logger.debug("The entry is {}.", entry);</pre>
 
 		<p>After evaluting whether to log or not, and only if the decision
 		is positive, will the logger implementation format the message and
@@ -707,15 +706,15 @@ logger.debug("The entry is {}.", entry);</pre></div>
 		least 30.
 		</p>
 
-		<div class="source"><pre>logger.debug("The new entry is "+entry+".");
-logger.debug("The new entry is {}.", entry);</pre></div>
+		<pre class="prettyprint source">logger.debug("The new entry is "+entry+".");
+logger.debug("The new entry is {}.", entry);</pre>
 
 
 		<p>A two argument variant is also availalble. For example, you can
 		write:
 		</p>
 
-		<div class="source"><pre>logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</pre></div>
+		<pre class="prettyprint source">logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</pre>
 
 		<p>If three or more arguments need to be passed, an
 		<code>Object[]</code> variant is also availalble. For example, you
@@ -723,8 +722,8 @@ logger.debug("The new entry is {}.", entry);</pre></div>
 		</p>
 
 
-		<div class="source"><pre>Object[] paramArray = {newVal, below, above};
-logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div>
+		<pre class="prettyprint source">Object[] paramArray = {newVal, below, above};
+logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
 
   
   <a name="UnderTheHood"></a>
@@ -845,7 +844,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
     For example, for some logger <em>x</em> writing, 
   </p>
   
-  <div class="source"><pre>x.debug("Entry number: " + i + "is " + entry[i]);</pre></div>
+  <pre class="prettyprint source">x.debug("Entry number: " + i + "is " + entry[i]);</pre>
 
   <p>
     incurs the cost of constructing the message parameter, i.e. converting both 
@@ -859,7 +858,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre></div
   logging:
   </p>
 
-  <div class="source"><pre>x.debug("Entry number: {} is {}", i, entry[i]);</pre></div>
+  <pre class="prettyprint source">x.debug("Entry number: {} is {}", i, entry[i]);</pre>
 
   <p>
     This variant will not incur the cost of parameter

@@ -7,11 +7,12 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />    
 
   </head>
-  <body>
+  <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"> </script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -78,7 +79,7 @@
     <p>Let us now begin experimenting with logback.</p>
 
 <em>Example 1.1: Basic template for logging (<a href="../xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
-<div class="source"><pre>package chapter1;
+<pre class="prettyprint source">package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class HelloWorld1 {
     logger.debug("Hello world.");
 
   }
-}</pre></div>
+}</pre>
 
     <p><code>HelloWorld</code> class is defined in the
     <code>chapter1</code> package. It starts by importing the <a
@@ -133,7 +134,7 @@ public class HelloWorld1 {
     logger.
     </p>
 
-<div class="source"><pre>20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</pre></div>
+    <p class="source">20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</p>
 
     <p>Logback can report information about its internal state using a
     built-in status system. Important events occuring during logback's
@@ -144,7 +145,7 @@ public class HelloWorld1 {
     </p>
 
 <em>Example 1.2: Printing Logger Status (<a href="../xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
-<div class="source"><pre>package chapter1;
+<pre class="prettyprint source">package chapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class HelloWorld2 {
     <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     StatusPrinter.print(lc);</b>
   }
-}</pre></div>
+}</pre>
 
 
    <p>Running the <code>HelloWorld2</code> application will produce
@@ -237,8 +238,9 @@ public class HelloWorld2 {
    -->
   
   
-  <p>Logback relies on <a href="http://maven.apache.org">Maven2</a> as
-  its build tool. Maven2 is a widely-used open-source build tool. 
+  <p>As its build tool, logback relies on <a
+  href="http://maven.apache.org">Maven2</a>, a widely-used open-source
+  build tool.
   </p>
 
   <p>Once you have installed Maven2, building the logback project,
