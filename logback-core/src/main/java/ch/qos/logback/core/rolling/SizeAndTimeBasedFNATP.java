@@ -83,11 +83,9 @@ public class SizeAndTimeBasedFNATP<E> extends
     }
 
     if (activeFile.length() >= maxFileSize.getSize()) {
-      System.out.println("Size based trigger, currentPeriodsCounter="+currentPeriodsCounter);
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
       currentPeriodsCounter++;
-      System.out.println("Size based trigger, currentPeriodsCounter="+currentPeriodsCounter);
       return true;
     }
 
