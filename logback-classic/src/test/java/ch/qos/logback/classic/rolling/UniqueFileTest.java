@@ -1,0 +1,61 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
+package ch.qos.logback.classic.rolling;
+
+import static org.junit.Assert.assertTrue;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.junit.Test;
+
+import ch.qos.logback.classic.ClassicTestConstants;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.rolling.ScaffoldingForRollingTests;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.CoreTestConstants;
+
+/**
+ * Test that we can create time-stamped log files with the help of
+ * the &lt;timestamp> element in configuration files.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ */
+public class UniqueFileTest {
+
+  LoggerContext lc = new LoggerContext();
+  Logger logger = lc.getLogger(this.getClass());
+
+
+  void loadConfig(String confifFile) throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.setContext(lc);
+    jc.doConfigure(confifFile);
+  }
+
+  @Test
+  public void basic() throws Exception {
+    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/unique.xml");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+    String timestamp = sdf.format(new Date()); 
+    
+    StatusChecker sc = new StatusChecker(lc);
+    assertTrue(sc.isErrorFree());
+
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    root.info("hello");
+    
+    ScaffoldingForRollingTests.existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX+"TS_"+timestamp+"log.txt");
+  }
+}

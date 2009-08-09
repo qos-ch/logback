@@ -43,12 +43,12 @@ public class TrivialConfiguratorTest {
   public void doTest(String filename) throws Exception {
 
     // rule store is case insensitve
-    rulesMap.put(new Pattern("x/INC"), new IncAction());
+    rulesMap.put(new Pattern("x/inc"), new IncAction());
 
-    TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+    TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
 
-    gc.setContext(context);
-    gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
+    trivialConfigurator.setContext(context);
+    trivialConfigurator.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
         + filename);
   }
  

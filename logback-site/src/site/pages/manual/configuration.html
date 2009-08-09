@@ -111,7 +111,8 @@
     </p>
 
 
-    <p>Assuming the <em>logback-test.xml</em> file is placed under
+    <p>If you are using Maven and assuming the
+    <em>logback-test.xml</em> file is placed under
     <em>src/test/resources</em> folder, Maven will ensure that it
     won't be included in the artifact produced. Thus, you can use a
     different configuration file, namely <em>logback-test.xml</em>
@@ -176,13 +177,16 @@ public class Foo {
     refer to the <a href="../setup.html">setup page</a> for further
     details.
     </p>
-   
+
+  
 
     <p>Assuming the configuration files <em>logback-test.xml</em> or
-    <em>logback.xml</em> could not be found, logback will default to a
-    minimal configuration mentioned earlier. This configuration is
-    hardwired to attaching a <code>ConsoleAppender</code> to the root
-    logger.  The output is formatted using a
+    <em>logback.xml</em> are not present, logback will default to
+    invoking <a
+    href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>
+    which will set up a minimal configuration. This minimal
+    configuration consists of a <code>ConsoleAppender</code> attached
+    to the root logger.  The output is formatted using a
     <code>PatternLayout</code> set to the pattern <em>%d{HH:mm:ss.SSS}
     [%thread] %-5level %logger{36} - %msg%n</em>. Moreover, by default
     the root logger is assigned to the <code>DEBUG</code> level.
@@ -192,22 +196,31 @@ public class Foo {
     should be similar to:
     </p>
 
-<div class="source"><pre>16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
+    <p class="source">16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
 16:06:09.046 [main] DEBUG chapter3.Foo - Did it again!
-16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</pre></div>
+16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</p>
 
 
-   <p>The <code>MyApp1</code> application links to logback via
-   calls <code>org.slf4j.LoggerFactory</code> and
+   <div class="highlight">
+      <p>
+        Except code that configures logback (if such code exists)
+        client code does not need to depend on logback. Applications
+        that use logback as their logging framework will have a
+        compile-time dependency on SLF4J but not logback.
+      </p>
+    </div>   
+
+   <p>The <code>MyApp1</code> application links to logback via calls
+   <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> classes, retrieve the loggers it
    wishes to use, and chugs on.  Note that the only dependence of the
    <code>Foo</code> class on logback are through
    <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> imports.  Except code that configures
    logback (if such code exists) client code does not need to depend
-   on logback. Given that SLF4J permits the use of any implementation
-   under its abstraction layer, it is rather easy to migrate large
-   bodies of code from one logging system to another.
+   on logback. Given that SLF4J permits the use of any logging
+   framework under its abstraction layer, it is rather easy to migrate
+   large bodies of code from one logging framework to another.
    </p>
 
    <h3>Automatic configuration with <em>logback-test.xml</em> or
@@ -242,15 +255,24 @@ public class Foo {
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
 
-   <p>If and only if there are warnings or errors during the parsing
-   of the configuration file, logback will automatically print status
-   data on the console. In the absence of warnings or errors, if you
-   still wish to inspect logback's internal status, then you can
-   instruct logback to print status data by invoking the
-   <code>print()</code> of the <code>StatusPrinter</code> class. The
-   <em>MyApp2</em> application shown below is identical to
-   <em>MyApp1</em> except the addition of two lines of code for
-   printing internal status data.</p>
+   <h4>Automatic printing of status messages in case of warning or errors</h4>
+
+   <div class="highlight">
+     <p>If warning or errors occur during the parsing of the
+     configuration file, logback will automatically print its internal
+     status messages on the console.
+     </p>
+   </div>
+
+   <p>If warnings or errors occur during the parsing of the
+   configuration file, logback will automatically print status data on
+   the console. In the absence of warnings or errors, if you still
+   wish to inspect logback's internal status, then you can instruct
+   logback to print status data by invoking the <code>print()</code>
+   of the <code>StatusPrinter</code> class. The <em>MyApp2</em>
+   application shown below is identical to <em>MyApp1</em> except the
+   addition of two lines of code for printing internal status
+   data.</p>
 
     <em>Example 3.<span class="autoEx"/>: Print logback's internal status information
     <a
@@ -295,8 +317,8 @@ public class Foo {
    configuration file, as shown below. Please note that this <span
    class="attr">debug</span> attribute relates only to the status
    data. It does <em>not</em> affect logback's configuration
-   otherwise, in particular with respect to logger levels. (Put
-   differently, no, the root logger will <em>not</em> be set to
+   otherwise, in particular with respect to logger levels. (If you are
+   asking, no, the root logger will <em>not</em> be set to
    <code>DEBUG</code>.)
    </p>
 
@@ -356,6 +378,13 @@ public class Foo {
 
    <h3><a name="autoScan" href="#autoScan">Automatically reloading
    configuration file upon modification</a></h3>
+
+   <div class="highlight">
+     <p>Logback-classic can scan for changes in its configuration file
+     and automatically reconfigure itself when the said configuration
+     file changes.
+     </p>
+   </div>
 
    <p>If instructed to do so, logback-classic will scan for changes in
    its configuration file and automatically reconfigure itself when
@@ -620,6 +649,34 @@ public class MyApp3 {
   <p align="left">
     <img src="images/chapter3/basicSyntax.png" 
          alt="basic Syntax" title="Basic configuration file structure"/>
+  </p>
+
+
+  <div class="highlight">
+    <p>If you are unsure which case to use for a given tag name, just
+    follow the camelCase convention which should usually be
+    corrrect.</p>
+  </div>
+
+  <p>As of logback version 0.9.17, tag names pertaining to explicit
+  rules are case insensitive.  For example, both
+  <code>&lt;logger></code>, <code>&lt;Logger></code> and
+  <code>&lt;LOGGER></code> are valid configuration elements and will
+  be interpreted in the same way. Note that XML well-formedness rules
+  still apply, if you open a tag as <code>&lt;xyz></code> you must
+  close it as <code>&lt;/xyz></code>, <code>&lt;/XyZ></code> will not
+  work. As for <a href="onJoran.html#implicit">implicit rules</a>, tag
+  names are case sensitive except for the first letter.  Thus,
+  <code>&lt;xyz></code> and <code>&lt;Xyz></code> are equivalent but
+  not <code>&lt;xYz></code>.  Implicit rules usually follow the <a
+  href="http://en.wikipedia.org/wiki/CamelCase">camel case</a>
+  convention, common in the Java world. Since it is not trivially easy
+  tell when a tag is associated with an explicit action and when it is
+  associated with an implicit action, it is not trivial to say whether
+  an XML tag is totally case-insensitive or case-insensitive with
+  respect to the first letter. If you are unsure which case to use for
+  a given tag name, just follow the camelCase convention which should
+  usually be correct.
   </p>
 
   <h4>Configuring Loggers, or the <code>&lt;logger></code> element</h4>

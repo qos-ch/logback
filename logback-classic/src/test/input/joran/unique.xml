@@ -1,0 +1,15 @@
+<configuration>
+  <timestamp key="dayTimestamp" datePattern="yyyyMMdd'T'HHmmss" />
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <File>target/test-output/TS_${dayTimestamp}log.txt</File>
+    <Append>false</Append>
+    <layout>
+      <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

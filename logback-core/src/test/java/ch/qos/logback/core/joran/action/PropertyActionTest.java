@@ -1,3 +1,12 @@
+/**
+ * Logback: the generic, reliable, fast and flexible logging framework.
+ * 
+ * Copyright (C) 2000-2009, QOS.ch
+ * 
+ * This library is free software, you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation.
+ */
 package ch.qos.logback.core.joran.action;
 
 import static org.junit.Assert.assertEquals;
@@ -16,25 +25,29 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
+/**
+ * Test {@link PropertyAction}.
+ * @author Ceki G&uuml;lc&uuml;
+ */
 public class PropertyActionTest  {
 
   Context context;
   InterpretationContext ec;
-  PropertyAction spAction;
+  PropertyAction propertyAction;
   DummyAttributes atts = new DummyAttributes();
   
   @Before
   public void setUp() throws Exception {
     context = new ContextBase();
     ec = new InterpretationContext(context, null);
-    spAction = new PropertyAction();
-    spAction.setContext(context);
+    propertyAction = new PropertyAction();
+    propertyAction.setContext(context);
   }
 
   @After
   public void tearDown() throws Exception {
     context = null; 
-    spAction = null;
+    propertyAction = null;
     atts = null;
   }
   
@@ -42,7 +55,7 @@ public class PropertyActionTest  {
   public void nameValuePair() {
     atts.setValue("name", "v1");
     atts.setValue("value", "work");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("work", ec.getProperty("v1"));
   }
   
@@ -51,14 +64,14 @@ public class PropertyActionTest  {
     context.putProperty("w", "wor");
     atts.setValue("name", "v1");
     atts.setValue("value", "${w}k");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("work", ec.getProperty("v1"));
   }
   
   @Test
   public void noValue() {
     atts.setValue("name", "v1");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
   }
@@ -66,14 +79,14 @@ public class PropertyActionTest  {
   @Test
   public void noName() {
     atts.setValue("value", "v1");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
   }
   
   @Test
   public void noAttributes() {
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
     StatusPrinter.print(context);
@@ -83,7 +96,7 @@ public class PropertyActionTest  {
   public void testFileNotLoaded() {
     atts.setValue("file", "toto");
     atts.setValue("value", "work");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkError());
   }
@@ -92,7 +105,7 @@ public class PropertyActionTest  {
   public void testLoadFileWithPrerequisiteSubsitution() {
     context.putProperty("STEM", CoreTestConstants.TEST_DIR_PREFIX + "input/joran");
     atts.setValue("file", "${STEM}/propertyActionTest.properties");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
     assertEquals("toto", ec.getProperty("v2"));
   }
@@ -100,7 +113,7 @@ public class PropertyActionTest  {
   @Test
   public void testLoadFile() {
     atts.setValue("file", CoreTestConstants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
     assertEquals("toto", ec.getProperty("v2"));
   }
@@ -108,7 +121,7 @@ public class PropertyActionTest  {
   @Test
   public void testLoadResource() {
     atts.setValue("resource", "asResource/joran/propertyActionTest.properties");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("r1"));
     assertEquals("toto", ec.getProperty("r2"));
   }
@@ -117,7 +130,7 @@ public class PropertyActionTest  {
   public void testLoadResourceWithPrerequisiteSubsitution() {
     context.putProperty("STEM", "asResource/joran");
     atts.setValue("resource", "${STEM}/propertyActionTest.properties");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("r1"));
     assertEquals("toto", ec.getProperty("r2"));
   }
@@ -125,7 +138,7 @@ public class PropertyActionTest  {
   @Test
   public void testLoadNotPossible() {
     atts.setValue("file", "toto");
-    spAction.begin(ec, null, atts);
+    propertyAction.begin(ec, null, atts);
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkFileErrors());
   }

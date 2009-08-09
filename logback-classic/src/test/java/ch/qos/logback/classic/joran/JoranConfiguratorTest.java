@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -46,7 +48,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testSimpleList() throws JoranException {
+  public void simpleList() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
 
     Logger logger = loggerContext.getLogger(this.getClass().getName());
@@ -61,7 +63,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testLevel() throws JoranException {
+  public void level() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
@@ -71,7 +73,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testRootLoggerLevelSettingBySystemProperty()
+  public void rootLoggerLevelSettingBySystemProperty()
       throws JoranException {
     String propertyName = "logback.level";
 
@@ -88,7 +90,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testLoggerLevelSettingBySystemProperty() throws JoranException {
+  public void loggerLevelSettingBySystemProperty() throws JoranException {
     String propertyName = "logback.level";
 
     System.setProperty(propertyName, "DEBUG");
@@ -104,7 +106,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testStatusListener() throws JoranException {
+  public void statusListener() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
     // StatusPrinter.print(loggerContext);
   }
@@ -117,7 +119,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testEval() throws JoranException {
+  public void eval() throws JoranException {
     configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
 
     String msg = "hello world";
@@ -136,7 +138,7 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void testTurboFilter() throws JoranException {
+  public void turboFilter() throws JoranException {
     // Although this test uses turbo filters, it only checks
     // that Joran can see the xml element and create
     // and place the relevant object correctly.
@@ -269,4 +271,19 @@ public class JoranConfiguratorTest {
     assertTrue(checker.isErrorFree());
     assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
   }
+  
+  @Test
+  public void timestamp() throws JoranException, IOException, InterruptedException {
+
+    String configFileAsStr = TeztConstants.TEST_DIR_PREFIX
+        + "input/joran/timestamp.xml";
+    configure(configFileAsStr);
+    
+    String r = loggerContext.getProperty("testTimestamp");
+    assertNotNull(r);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+    String expected = sdf.format(new Date()); 
+    assertEquals("expected \""+expected+"\" but got "+r, expected, r);
+  }
+
 }

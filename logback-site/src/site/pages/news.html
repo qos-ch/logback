@@ -38,6 +38,24 @@
     reported by Roland Klein and independently by Didier Besset.
     </p>
 
+    <p>In configuration files, all tags names associated with explicit
+    actions are now case-insensitive. This should diminish
+    case-related errors users may make when writing configuration
+    files. Tag names associated with implicit actions which are
+    closely linked to the actual Java class being configured, still
+    need to follow the camelCase convention. If you are unsure which
+    case to use for a given tag name, just follow the camelCase
+    convention for tag names which should be correct in most
+    cases. </p>
+
+    <p>It is now possible to create <a
+    href="manual/appenders.html#uniquelyNamed">uniquely named files by
+    timestamp</a>. Such files are appropriate for log files associated
+    with batch applications. This enhancement fulfills <a
+    href="http://jira.qos.ch/browse/LBCORE-91">LBCORE-91</a> as
+    requested by Rick Beton and Szel Zoltan.
+    </p>
+
     <p>Append mode is now mandatory in
     <code>RollingFileAppender</code>. This was already the default and
     truncation mode is unreasonable in most cases. For example, in
@@ -50,10 +68,10 @@
     reported by Valery Shorin.</p>
 
 
-    <p>The TimeBasedTriggeringPolicy has been heavily refactored. It
-    is now possible to trigger rolling by <a
-    href="">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXtime as well as by
-    size</a>, fixing <a
+    <p>The <code>TimeBasedTriggeringPolicy</code> has been heavily
+    refactored. It is now possible to trigger rolling simultaenously
+    by <a href="manual/appenders.html#SizeAndTimeBasedFNATP">time and
+    by size</a>, fixing <a
     href="http://jira.qos.ch/browse/LBCORE-61">LBCORE-61</a>.
     </p>
 
