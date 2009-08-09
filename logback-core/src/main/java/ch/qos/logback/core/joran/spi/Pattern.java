@@ -15,8 +15,8 @@ import java.util.ArrayList;
 /**
  * A pattern is used to designate XML elements in a document.
  * 
- * <p>For more information see 
- *   http://logback.qos.ch/manual/onJoran.html#pattern
+ * <p>For more information see
+ * http://logback.qos.ch/manual/onJoran.html#pattern
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -127,7 +127,7 @@ public class Pattern {
       String l = (String) this.partList.get(lSize - i);
       String r = (String) p.partList.get(rSize - i);
 
-      if (l.equals(r)) {
+      if (equalityCheck(l, r)) {
         match++;
       } else {
         break;
@@ -162,8 +162,7 @@ public class Pattern {
       String l = (String) this.partList.get(i);
       String r = (String) p.partList.get(i);
 
-      // if (l.equals(r) || "*".equals(l) || "*".equals(r)) {
-      if (l.equals(r)) {
+      if (equalityCheck(l, r)) {
         match++;
       } else {
         break;
@@ -173,30 +172,31 @@ public class Pattern {
     return match;
   }
 
+  private boolean equalityCheck(String x, String y) {
+    return x.equalsIgnoreCase(y);
+  }
+
   @Override
   public boolean equals(Object o) {
-    // System.out.println("in equals:" +this+ " vs. " + o);
     if ((o == null) || !(o instanceof Pattern)) {
       return false;
     }
 
-    // System.out.println("both are Patterns");
     Pattern r = (Pattern) o;
 
     if (r.size() != size()) {
       return false;
     }
 
-    // System.out.println("both are size compatible");
     int len = size();
 
     for (int i = 0; i < len; i++) {
-      if (!(get(i).equals(r.get(i)))) {
+      if (!equalityCheck(get(i), r.get(i))) {
         return false;
       }
     }
 
-    // if everything matches, then the twp patterns are equal
+    // if everything matches, then the two patterns are equal
     return true;
   }
 
@@ -206,9 +206,9 @@ public class Pattern {
     int len = size();
 
     for (int i = 0; i < len; i++) {
-      hc ^= get(i).hashCode();
-
-      // System.out.println("i = "+i+", hc="+hc);
+      // make Pattern comparisons case insensitive
+      // http://jira.qos.ch/browse/LBCORE-76
+      hc ^= get(i).toLowerCase().hashCode();
     }
 
     return hc;

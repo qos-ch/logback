@@ -42,7 +42,8 @@ public class TrivialConfiguratorTest {
 
   public void doTest(String filename) throws Exception {
 
-    rulesMap.put(new Pattern("x/inc"), new IncAction());
+    // rule store is case insensitve
+    rulesMap.put(new Pattern("x/INC"), new IncAction());
 
     TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
@@ -50,7 +51,7 @@ public class TrivialConfiguratorTest {
     gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
         + filename);
   }
-
+ 
   @Test
   public void smoke() throws Exception {
     int oldBeginCount = IncAction.beginCount;

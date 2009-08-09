@@ -94,6 +94,19 @@ public class PatternTest {
       Pattern rulePattern = new Pattern("*/a");
       assertEquals(1, p.getTailMatchLength(rulePattern));
     }
+
+    {
+      Pattern p = new Pattern("/A");
+      Pattern rulePattern = new Pattern("*/a");
+      assertEquals(1, p.getTailMatchLength(rulePattern));
+    }
+    
+    {
+      Pattern p = new Pattern("/a");
+      Pattern rulePattern = new Pattern("*/A");
+      assertEquals(1, p.getTailMatchLength(rulePattern));
+    }
+    
     
     {
       Pattern p = new Pattern("/a/b");
@@ -101,6 +114,11 @@ public class PatternTest {
       assertEquals(1, p.getTailMatchLength(rulePattern));
     }
     
+    {
+      Pattern p = new Pattern("/a/B");
+      Pattern rulePattern = new Pattern("*/b");
+      assertEquals(1, p.getTailMatchLength(rulePattern));
+    }
     
     {
       Pattern p = new Pattern("/a/b/c");
@@ -126,6 +144,18 @@ public class PatternTest {
 
     {
       Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/a/*");
+      assertEquals(1, p.getPrefixMatchLength(rulePattern));
+    }
+
+    {
+      Pattern p = new Pattern("/a/b");
+      Pattern rulePattern = new Pattern("/A/*");
+      assertEquals(1, p.getPrefixMatchLength(rulePattern));
+    }
+    
+    {
+      Pattern p = new Pattern("/A/b");
       Pattern rulePattern = new Pattern("/a/*");
       assertEquals(1, p.getPrefixMatchLength(rulePattern));
     }

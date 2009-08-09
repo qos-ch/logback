@@ -35,6 +35,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public abstract class Action extends ContextAwareBase {
 
   public static final String NAME_ATTRIBUTE = "name";
+  public static final String KEY_ATTRIBUTE = "key";
   public static final String VALUE_ATTRIBUTE = "value";
   public static final String FILE_ATTRIBUTE = "file";
   public static final String CLASS_ATTRIBUTE = "class";

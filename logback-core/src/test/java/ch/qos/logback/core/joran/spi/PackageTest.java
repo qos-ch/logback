@@ -14,8 +14,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { PatternTest.class, SimpleStoreTest.class,
+@SuiteClasses( { PatternTest.class, SimpleRuleStoreTest.class,
     PropertySetterTest.class, NoAutoStartUtilTest.class,
-    DefaultNestedComponentRegistryTest.class })
+    DefaultNestedComponentRegistryTest.class, CaseCombinatorTest.class })
 public class PackageTest {
 }
