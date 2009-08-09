@@ -5,7 +5,7 @@
   
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>0.9.17-SNAPHOT</version>
+  <version>0.9.17</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
   
