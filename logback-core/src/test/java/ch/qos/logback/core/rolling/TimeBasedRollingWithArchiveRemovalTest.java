@@ -109,7 +109,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     doRollover(randomOutputDir + "/%d{" + DAILY_CROLOLOG_DATE_PATTERN
         + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3);
     int expectedDirMin = 9 + slashCount;
-    int expectDirMax = expectedDirMin + 1 + 1; // plus 1 of overllaping into a
+    int expectDirMax = expectedDirMin + 1 + 1; // plus 1 of stepping into a
                                                 // new month, and another 1 into
                                                 // a new year
     expectedFileAndDirCount(9, expectedDirMin, expectDirMax);
