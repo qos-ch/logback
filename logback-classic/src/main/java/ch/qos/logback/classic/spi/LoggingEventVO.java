@@ -58,6 +58,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     ledo.mdcPropertyMap = le.getMDCPropertyMap();
     ledo.timeStamp = le.getTimeStamp();
     ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
+    // add caller data only if it is there already
+    // fixes http://jira.qos.ch/browse/LBCLASSIC-145
+    if(le.hasCallerData()) {
+      ledo.callerDataArray = le.getCallerData();
+    }
     return ledo;
   }
 

@@ -11,6 +11,7 @@ package ch.qos.logback.classic.net;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ public class SocketAppenderTest {
   LoggerContext serverLC = new LoggerContext();
   ListAppender<ILoggingEvent> la = new ListAppender<ILoggingEvent>();
   SocketAppender socketAppender = new SocketAppender();
-
+  private boolean includeCallerData = false;
   private SimpleSocketServer simpleSocketServer;
 
   @Test
@@ -68,6 +69,7 @@ public class SocketAppenderTest {
     assertEquals(1, la.list.size());
 
     ILoggingEvent remoteEvent = la.list.get(0);
+    assertNull(remoteEvent.getCallerData());
     assertEquals("test msg", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
@@ -95,6 +97,7 @@ public class SocketAppenderTest {
 
     LoggerContextVO loggerContextRemoteView = remoteEvent
         .getLoggerContextVO();
+    assertNull(remoteEvent.getCallerData());
     assertNotNull(loggerContextRemoteView);
     assertEquals("test", loggerContextRemoteView.getName());
     Map<String, String> props = loggerContextRemoteView.getPropertyMap();
@@ -122,8 +125,31 @@ public class SocketAppenderTest {
     ILoggingEvent remoteEvent = la.list.get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get("key"));
+    assertNull(remoteEvent.getCallerData());
   }
 
+  // test http://jira.qos.ch/browse/LBCLASSIC-145
+  @Test
+  public void withCallerData() throws InterruptedException {
+    includeCallerData = true;
+    fireServer();
+    waitForServerToStart();
+    configureClient();
+
+    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.debug("test msg");
+
+    Thread.sleep(SLEEP_AFTER_LOG);
+    simpleSocketServer.close();
+    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
+    assertTrue(simpleSocketServer.isClosed());
+    ListAppender<ILoggingEvent> la = getListAppender();
+    assertEquals(1, la.list.size());
+
+    ILoggingEvent remoteEvent = la.list.get(0);
+    assertNotNull(remoteEvent.getCallerData());
+  }
+  
   @Test
   public void messageWithMarker() throws InterruptedException {
     fireServer();
@@ -234,6 +260,7 @@ public class SocketAppenderTest {
     socketAppender.setName("socket");
     socketAppender.setPort(port);
     socketAppender.setRemoteHost("localhost");
+    socketAppender.setIncludeCallerData(includeCallerData);
     root.addAppender(socketAppender);
     socketAppender.start();
   }
