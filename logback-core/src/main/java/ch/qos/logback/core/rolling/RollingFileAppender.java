@@ -138,6 +138,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   /**
    * This method differentiates RollingFileAppender from its super class.
    */
+  @Override
   protected void subAppend(E event) {
     // The roll-over check must precede actual writing. This is the
     // only correct behavior for time driven triggers.
