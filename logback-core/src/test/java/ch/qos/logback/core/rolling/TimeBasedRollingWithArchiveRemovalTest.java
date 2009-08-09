@@ -85,7 +85,6 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
   @Test
   public void montlyRolloverOverManyPeriods() throws Exception {
-    System.out.println(randomOutputDir);
     // small maxHistory, many periods
     slashCount = computeSlashCount(MONTHLY_CROLOLOG_DATE_PATTERN);
     doRollover(randomOutputDir + "/%d{" + MONTHLY_CROLOLOG_DATE_PATTERN
@@ -104,7 +103,6 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
   @Test
   public void dailyCronologRollover() throws Exception {
-    System.out.println(randomOutputDir);
     slashCount = computeSlashCount(DAILY_CROLOLOG_DATE_PATTERN);
     doRollover(randomOutputDir + "/%d{" + DAILY_CROLOLOG_DATE_PATTERN
         + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3);
@@ -278,8 +276,6 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
     findFilesInFolderRecursivelyByPatterMatch(dir, fileList, regex);
-    System.out.println("regex=" + regex);
-    System.out.println("fileList=" + fileList);
     Set<String> set = groupByClass(fileList, regex);
     assertEquals(expectedClassCount, set.size());
   }

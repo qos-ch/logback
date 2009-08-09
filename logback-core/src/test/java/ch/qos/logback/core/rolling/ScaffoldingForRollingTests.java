@@ -57,7 +57,6 @@ public class ScaffoldingForRollingTests {
     cal.set(Calendar.MILLISECOND, 333);
     currentTime = cal.getTimeInMillis();
     recomputeRolloverThreshold(currentTime);
-    System.out.println(randomOutputDir);
   }
 
   public static void existenceCheck(String filename) {
@@ -148,7 +147,6 @@ public class ScaffoldingForRollingTests {
       boolean gzExtension) {
 
     String fn = randomOutputDir + testId + "-" + SDF.format(date);
-    System.out.println("adding " + fn);
     if (gzExtension) {
       fn += ".gz";
     }
