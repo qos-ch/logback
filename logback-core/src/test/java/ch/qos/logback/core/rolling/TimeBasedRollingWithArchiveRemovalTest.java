@@ -104,10 +104,15 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
   @Test
   public void dailyCronologRollover() throws Exception {
+    System.out.println(randomOutputDir);
     slashCount = computeSlashCount(DAILY_CROLOLOG_DATE_PATTERN);
     doRollover(randomOutputDir + "/%d{" + DAILY_CROLOLOG_DATE_PATTERN
         + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3);
-    check(expectedCountWithDirs(8));
+    int expectedDirMin = 9 + slashCount;
+    int expectDirMax = expectedDirMin + 1 + 1; // plus 1 of overllaping into a
+                                                // new month, and another 1 into
+                                                // a new year
+    expectedFileAndDirCount(9, expectedDirMin, expectDirMax);
   }
 
   @Test
@@ -174,8 +179,22 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     rfa.stop();
   }
 
-  void findAllInFolderRecursivelyByStringContains(File dir, List<File> fileList,
-      final String pattern) {
+  void findAllFoldersRecursively(File dir, List<File> fileList) {
+    if (dir.isDirectory()) {
+      File[] match = dir.listFiles(new FileFilter() {
+        public boolean accept(File f) {
+          return (f.isDirectory());
+        }
+      });
+      for (File f : match) {
+        fileList.add(f);
+        findAllFoldersRecursively(f, fileList);
+      }
+    }
+  }
+
+  void findAllInFolderRecursivelyByStringContains(File dir,
+      List<File> fileList, final String pattern) {
     if (dir.isDirectory()) {
       File[] match = dir.listFiles(new FileFilter() {
         public boolean accept(File f) {
@@ -241,12 +260,26 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     assertEquals(expectedCount, fileList.size());
   }
 
+  void expectedFileAndDirCount(int expectedFileAndDirCount,
+      int expectedDirCountMin, int expectedDirCountMax) {
+    File dir = new File(randomOutputDir);
+    List<File> fileList = new ArrayList<File>();
+    findFilesInFolderRecursivelyByPatterMatch(dir, fileList, "clean");
+
+    List<File> dirList = new ArrayList<File>();
+    findAllFoldersRecursively(dir, dirList);
+    assertTrue("expectedDirCountMin=" + expectedDirCountMin
+        + ", expectedDirCountMax=" + expectedDirCountMax + " actual value="
+        + dirList.size(), expectedDirCountMin <= dirList.size()
+        && dirList.size() <= expectedDirCountMax);
+  }
+
   void checkPatternCompliance(int expectedClassCount, String regex) {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
     findFilesInFolderRecursivelyByPatterMatch(dir, fileList, regex);
-    System.out.println("regex="+regex);
-    System.out.println("fileList="+fileList);
+    System.out.println("regex=" + regex);
+    System.out.println("fileList=" + fileList);
     Set<String> set = groupByClass(fileList, regex);
     assertEquals(expectedClassCount, set.size());
   }
@@ -255,13 +288,12 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     File dir = new File(randomOutputDir);
     List<File> fileList = new ArrayList<File>();
     findFoldersInFolderRecursively(dir, fileList);
-    for(File f: fileList) {
+    for (File f : fileList) {
       assertTrue(f.list().length >= 1);
     }
     assertEquals(expectedClassCount, fileList.size());
   }
 
-  
   Set<String> groupByClass(List<File> fileList, String regex) {
     Pattern p = Pattern.compile(regex);
     Set<String> set = new HashSet<String>();
