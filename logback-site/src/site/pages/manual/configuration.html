@@ -685,7 +685,7 @@ public class MyApp3 {
   <em>logger</em> element takes exactly one mandatory <span
   class="attr">name</span> attribute, an optional <span
   class="attr">level</span> attribute, and an optional <span
-  class="attr">aditivity</span> attribute, which admits the values
+  class="attr">additivity</span> attribute, which admits the values
   <em>true</em> or <em>false</em>. The value of the <span
   class="attr">level</span> attribute can be one of the
   case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or
@@ -716,10 +716,10 @@ public class MyApp3 {
   single attribute, namely the <span class="attr">level</span>
   attribute. It does not admit any other attributes because the
   additivity flag does not apply to the root logger.  Moreover, since
-  the root logger is already named, it does not admit a name attribute
-  either. The value of the level attribute can be set to one of the
-  case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or
-  OFF. Note that the level of the root logger cannot be set to
+  the root logger is already named as "ROOT", it does not admit a name
+  attribute either. The value of the level attribute can be set to one
+  of the case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL
+  or OFF. Note that the level of the root logger cannot be set to
   INHERITED or NULL.
   </p>
 
