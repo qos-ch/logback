@@ -14,7 +14,6 @@ public class Parser<E> extends ContextAwareBase {
 
   final List tokenList;
   int pointer = 0;
-  IEscapeUtil escapeUtil; 
   
   Parser(TokenStream ts) throws ScanException {
     this.tokenList = ts.tokenize();
@@ -26,7 +25,6 @@ public class Parser<E> extends ContextAwareBase {
   }
   
   public Parser(String pattern, IEscapeUtil escapeUtil) throws ScanException {
-    this.escapeUtil = escapeUtil;
     try {
       TokenStream ts = new TokenStream(pattern, escapeUtil);
       this.tokenList = ts.tokenize();
