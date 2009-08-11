@@ -20,7 +20,6 @@ public class DefaultArchiveRemover implements ArchiveRemover {
 
   final FileNamePattern fileNamePattern;
   final RollingCalendar rc;
-  int maxHistory;
   int periodOffset;
   final boolean parentClean;
 
@@ -96,7 +95,6 @@ public class DefaultArchiveRemover implements ArchiveRemover {
   }
 
   public void setMaxHistory(int maxHistory) {
-    this.maxHistory = maxHistory;
     this.periodOffset = -maxHistory - 1;
   }
 

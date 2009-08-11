@@ -12,7 +12,6 @@ package ch.qos.logback.classic.sift;
 import java.util.List;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.sift.AppenderFactoryBase;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
@@ -21,8 +20,8 @@ public class AppenderFactory extends AppenderFactoryBase<ILoggingEvent>{
 
   String key;
   
-  AppenderFactory(Context context, List<SaxEvent> eventList, String key) {
-      super(context, eventList);
+  AppenderFactory(List<SaxEvent> eventList, String key) {
+      super(eventList);
       this.key = key;
   }
 

@@ -20,10 +20,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
 public abstract class AppenderFactoryBase<E> {
 
   final List<SaxEvent> eventList;
-  Context context;
   
-  protected AppenderFactoryBase(Context context, List<SaxEvent> eventList) {
-    this.context = context;
+  protected AppenderFactoryBase(List<SaxEvent> eventList) {
     this.eventList = new ArrayList<SaxEvent>(eventList);
     removeHoardElement();
 

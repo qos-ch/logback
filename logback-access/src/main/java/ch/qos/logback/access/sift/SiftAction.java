@@ -36,7 +36,7 @@ public class SiftAction  extends Action implements InPlayListener {
     Object o = ec.peekObject();
     if (o instanceof SiftingAppender) {
       SiftingAppender siftingAppender = (SiftingAppender) o; 
-      AppenderFactory appenderFactory = new AppenderFactory(context, seList, siftingAppender.getDiscriminatorKey());
+      AppenderFactory appenderFactory = new AppenderFactory(seList, siftingAppender.getDiscriminatorKey());
       siftingAppender.setAppenderFactory(appenderFactory);
     }
   }
