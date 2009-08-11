@@ -30,7 +30,6 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL + "#syslog_layout";
   final static int MSG_SIZE_LIMIT = 256*1024;
   
-  int facility;
   String facilityStr;
   String syslogHost;
   protected String suffixPattern;
@@ -43,8 +42,6 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       addError("The Facility option is mandatory");
       errorCount++;
     }
-
-    facility = facilityStringToint(facilityStr);
 
     try {
       sw = new SyslogWriter(syslogHost, port);
