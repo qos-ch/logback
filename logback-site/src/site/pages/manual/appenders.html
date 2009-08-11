@@ -547,6 +547,11 @@ public class ExitWoes1 {
          when prudent mode is off and approximately 33'000 events per
          second in prudent mode.
          </p>
+
+         <p>Prudent mode can be used in conjunction with
+         <code>RollingFileAppender</code> although some <a
+         href="#prudentWithRolling">restrictions apply</a>.
+         </p>
        </td>
        
      </tr>
@@ -737,19 +742,41 @@ public class ExitWoes1 {
        </td>
      </tr>	
      <tr class="b">
-       <td><span class="option"><b>Prudent</b></span></td>
-       <td><code>boolean</code></td>
-       <td>Prudent mode is supported by
-       <code>RollingFileAppender</code> in conjunction with <a
-       href="#TimeBasedRollingPolicy"><code>TimeBasedRollingPolicy</code></a>
-       with two restrictions. In prudent mode, file compression is not
-       supported nor allowed. Moreover, the <span
-       class="option">File</span> property of
-       <code>FileAppender</code> cannot be set.
+       <td valign="top"><span class="option"><a name="prudentWithRolling"
+       href="#prudentWithRolling"><b>Prudent</b></A></span></td>
 
-       <p><a
-       href="#FixedWindowRollingPolicy"><code>FixedWindowRollingPolicy</code></a>
-       is not supported in prudent mode.</p>
+       <td valign="top"><code>boolean</code></td>
+
+    
+
+       <td  valign="top">
+
+         <p><a
+         href="#FixedWindowRollingPolicy"><code>FixedWindowRollingPolicy</code></a>
+         is not supported in prudent mode.</p>
+
+         <p> <code>RollingFileAppender</code> supports the prudent
+         mode in conjunction with <a
+         href="#TimeBasedRollingPolicy"><code>TimeBasedRollingPolicy</code></a>
+         albeit with two restrictions.
+
+         <ol>
+           <li>In prudent mode, file compression is not supported nor
+           allowed. (We can't have one JVM writing to a file while
+           another JVM is compressing it.)
+           </li>
+           
+           <li>The <span class="option">File</span> property of
+           <code>FileAppender</code> cannot be set and must be left
+           blank. Indeed, most operating systems do not allow renaming
+           of a file while another process has it opened.
+           </li>
+           
+         </ol>
+         
+       </td>
+
+     
 
        <p>See also <code>FileAppender</code> properties.</p>
        </td>
