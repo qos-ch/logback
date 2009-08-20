@@ -99,9 +99,17 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     String regex = ISO_REGEX
         + " c.q.l.c.p.ConverterTest          - Some message\\s*";
     assertTrue(val.matches(regex));
-
   }
 
+  @Test
+  public void contextProperty() {
+    pl.setPattern("%property{a}");
+    pl.start();
+    lc.putProperty("a", "b");
+    
+    String val = pl.doLayout(getEventObject());
+    assertEquals("b", val);
+  }
   @Test
   public void testNopExeptionHandler() {
     pl.setPattern("%nopex %m%n");

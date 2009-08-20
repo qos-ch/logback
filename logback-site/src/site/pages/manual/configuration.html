@@ -1150,6 +1150,14 @@ public class MyApp3 {
   <em>${java.home.dir}</em> will be interpreted as <em>/home/xyz</em>.
   </p>
 
+  <h4>properties are inserted into the logger context</h4>
+
+  <p>Note that the values defined via <code>&lt;property></code>
+  element are actually inserted into the logger context. In other
+  words, they become properties of the logger context.  Consequently,
+  they will be available in all logging events as well as remotely
+  after serialization.</p>
+
   <p>The next example shows a variable, a.k.a. a substitution
   property, declared the beginning of the configuration file. It is
   then used further down the file to specify the location of the

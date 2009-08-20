@@ -16,23 +16,28 @@ import ch.qos.logback.classic.spi.LoggerContextVO;
 
 public final class ContextPropertyConverter extends ClassicConverter {
 
-  String propertyName;
+  String key;
 
   public void start() {
     String optStr = getFirstOption();
     if (optStr != null) {
-      propertyName = optStr;
+      key = optStr;
       super.start();
     }
   }
 
   public String convert(ILoggingEvent event) {
-    if(propertyName == null) {
-      return "ContextProperty_HAS_NO_NAME";
+    if (key == null) {
+      return "Property_HAS_NO_KEY";
     } else {
       LoggerContextVO lcvo = event.getLoggerContextVO();
       Map<String, String> map = lcvo.getPropertyMap();
-      return map.get(propertyName);
+      String val = map.get(key);
+      if (val != null) {
+        return val;
+      } else {
+        return System.getProperty(key);
+      }
     }
   }
 }

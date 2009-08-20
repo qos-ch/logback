@@ -359,4 +359,20 @@ public class ConverterTest {
     String result = converter.convert(event);
     assertEquals("aValue", result);
   }
+  
+  @Test 
+  public void contextProperty() {
+    ContextPropertyConverter converter = new ContextPropertyConverter();
+    converter.setContext(lc);
+    List<String> ol = new ArrayList<String>();
+    ol.add("k");
+    converter.setOptionList(ol);
+    converter.start();
+    lc.setName("aValue");
+    lc.putProperty("k", "v");
+    ILoggingEvent event = makeLoggingEvent(null);
+
+    String result = converter.convert(event);
+    assertEquals("v", result);
+  }
 }
