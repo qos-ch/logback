@@ -105,6 +105,7 @@ p.menu {
   font-weight: bold;
 }
 
+/* ========== body table ============ */
 table.bodyTable {
 	padding: 0px;
 	margin-left: -2px;
@@ -145,6 +146,8 @@ table.bodyTable tr.b {
 table.bodyTable tr.alt {
 	background-color: #eee;
 }
+
+/* EOF =============== bodyTable =============== */
 
 .author {
 	text-align: left;
