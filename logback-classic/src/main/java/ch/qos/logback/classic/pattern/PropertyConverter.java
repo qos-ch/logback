@@ -14,7 +14,7 @@ import java.util.Map;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 
-public final class ContextPropertyConverter extends ClassicConverter {
+public final class PropertyConverter extends ClassicConverter {
 
   String key;
 

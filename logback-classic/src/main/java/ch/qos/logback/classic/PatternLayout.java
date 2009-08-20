@@ -16,7 +16,7 @@ import ch.qos.logback.classic.joran.action.ContextNameAction;
 import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.ContextNameConverter;
-import ch.qos.logback.classic.pattern.ContextPropertyConverter;
+import ch.qos.logback.classic.pattern.PropertyConverter;
 import ch.qos.logback.classic.pattern.DateConverter;
 import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
 import ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter;
@@ -115,7 +115,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
     defaultConverterMap.put("marker", MarkerConverter.class.getName());
 
-    defaultConverterMap.put("property", ContextPropertyConverter.class.getName());
+    defaultConverterMap.put("property", PropertyConverter.class.getName());
 
     
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());

@@ -362,7 +362,7 @@ public class ConverterTest {
   
   @Test 
   public void contextProperty() {
-    ContextPropertyConverter converter = new ContextPropertyConverter();
+    PropertyConverter converter = new PropertyConverter();
     converter.setContext(lc);
     List<String> ol = new ArrayList<String>();
     ol.add("k");
