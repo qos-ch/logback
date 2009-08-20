@@ -92,7 +92,7 @@ public class AppenderAttachableImplTest {
     testOther.start();
     aai.addAppender(testOther);
     
-    Appender a = aai.getAppender("testOther");
+    Appender<TestEvent> a = aai.getAppender("testOther");
     assertNotNull("Could not find appender", a);
     assertTrue("Wrong appender", a == testOther);
     

@@ -24,7 +24,7 @@
 		</div>
 
 		<p>We store the project's source code in a revision control system
-		called Subversion. Developers have write access to the repository,
+		called Git. Developers have write access to the repository,
 		enabling them to make changes to the source code. Everyone else
 		has read-access to the repository. Thus, anyone can check out
 		latest development version of the software. Note that the latest
@@ -33,34 +33,55 @@
 		download an official distribution.
     </p>
 
-    <p>There are several ways to access the Subversion repository:</p>
+    <p>There are several ways to access the git repository:</p>
 
     <h2>Web Access</h2>
     
     <p>If you just wish to browse around or download a few individual
-    files, you can do so with web-based ViewVC interface:
+    files, you can do so with your web-browser:
     </p>
+    
+    <table cellspacing="6">
 
-		<p><a
-		href="http://svn.qos.ch/viewvc/logback/trunk/">http://svn.qos.ch/viewvc/logback/trunk/</a>
-		</p>
+      <tr>
+        <td>on github</td>
+        <td>
+          <a href="http://github.com/ceki/logback/tree/master">
+            http://github.com/ceki/logback/tree/master</a> (slow but rich)
+        </td>
+      </tr>
 
-    <h2>Checking out a read-only copy</h2>
 
-    <p>To access the Subversion repositories anonymously, you will
-    need a Subversion client. You can check out the logback project
-    source code with the following command:</p>
-		
-    <!-- keep together as a single line -->
-		<p class="source">svn co http://svn.qos.ch/repos/logback/trunk/	target_directory</p>
-				
-    <p>Note that anonymous access allows read-only access.  For
-    read-write access, please contact the logback <a
-    href="mailinglist.html">developer list</a> .
-    </p>
-	
-	
-	
+      <tr>
+        <td>on git.qos.ch</td>
+        <td><a href="http://git.qos.ch/?p=logback.git;a=summary">
+        http://git.qos.ch/?p=logback.git;a=summary</a> (fast but minimal)
+        </td>
+      </tr>      
+    </table>
+
+    <h2>Cloning</h2>
+
+
+    <p>Anyone can clone logback's source repository. All you need is a
+    git client. To clone logback's git repository, issue one of the
+    two following commands: </p>
+    
+    <pre class="cmd">git clone git://git.qos.ch/logback</pre>
+    
+    or alternatively
+    
+    <pre class="cmd">git clone git://github.com/ceki/logback.git</pre>
+    
+    <p>In principle, the two repositories listed above are
+    identical.</p>
+    
+    
+    <h2>Subversion</h2>
+    
+    <p>Previously, we relied on Subversion as our version control
+    system. Git is considerably better.</p>
+    
     <script src="templates/footer.js" type="text/javascript"></script>
     </div>
 </body>

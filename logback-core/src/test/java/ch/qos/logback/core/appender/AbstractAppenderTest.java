@@ -31,13 +31,13 @@ abstract public class AbstractAppenderTest<E>  {
   @Test
   public void testNewAppender() {
     // new appenders should be inactive
-    Appender appender = getAppender();
+    Appender<E> appender = getAppender();
     assertFalse( appender.isStarted()); 
   }
   
   @Test
   public void testConfiguredAppender() {
-    Appender appender = getConfiguredAppender();
+    Appender<E> appender = getConfiguredAppender();
     appender.start();
     assertTrue(appender.isStarted());
    

@@ -337,7 +337,6 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void addBasicProperty(String name, String strValue) {
 
     if (strValue == null) {

@@ -23,11 +23,11 @@ import ch.qos.logback.core.layout.NopLayout;
 public class DummyAppenderTest {
 
   
-  protected Appender getAppender() {
-    return new DummyAppender(new StringWriter());
+  protected Appender<Object> getAppender() {
+    return new DummyAppender<Object>(new StringWriter());
   }
   
-  protected Appender getConfiguredAppender() {
+  protected Appender<Object> getConfiguredAppender() {
     DummyAppender<Object> da = new DummyAppender<Object>(new StringWriter());
     da.setLayout(new NopLayout<Object>());
     da.start();

@@ -28,7 +28,6 @@ abstract public class AbstractEventEvaluatorAction extends Action {
   /**
    * Instantiates an evaluator of the given class and sets its name.
    */
-  @SuppressWarnings("unchecked")
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this instance)
     inError = false;

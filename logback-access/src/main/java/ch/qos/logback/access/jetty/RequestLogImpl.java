@@ -202,7 +202,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender<AccessEvent> appender) {
     return aai.isAttached(appender);
   }
 

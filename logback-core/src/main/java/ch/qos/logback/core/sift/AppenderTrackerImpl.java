@@ -63,7 +63,7 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     }
     lastCheck = now;
     while (head.value != null && isEntryStale(head,now)) {
-      Appender appender = head.value;
+      Appender<E> appender = head.value;
       //System.out.println("  stopping "+appender);
       appender.stop();
       removeHead();

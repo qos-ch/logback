@@ -116,7 +116,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * 
    * @since 1.2
    */
-  public boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender<E> appender) {
     if (appender == null) {
       return false;
     }
@@ -154,7 +154,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove the appender passed as parameter form the list of attached
    * appenders.
    */
-  public boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender<E> appender) {
     if (appender == null) {
       return false;
     }

@@ -50,9 +50,7 @@ public class Simulator {
         lruCache.put(e.k, e.k);
         tlruCache.put(e.k);
       } else {
-        @SuppressWarnings("unused")
         String r0 = lruCache.get(e.k);
-        @SuppressWarnings("unused")
         String r1 = tlruCache.get(e.k);
         if (!multiThreaded) {
           // if the simulation is used in a multi-threaded

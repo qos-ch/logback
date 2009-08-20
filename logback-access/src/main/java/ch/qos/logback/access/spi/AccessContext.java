@@ -36,7 +36,7 @@ public class AccessContext extends ContextBase implements
     aai.detachAndStopAllAppenders();
   }
 
-  public boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender<AccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
@@ -48,7 +48,7 @@ public class AccessContext extends ContextBase implements
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender<AccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
@@ -72,7 +72,7 @@ public class AccessContext extends ContextBase implements
     return fai.getFilterChainDecision(event);
   }
 
-  public Filter getFirstFilter() {
+  public Filter<AccessEvent> getFirstFilter() {
     return fai.getFirstFilter();
   }
 }

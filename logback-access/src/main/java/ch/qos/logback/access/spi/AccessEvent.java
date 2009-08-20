@@ -346,7 +346,6 @@ public class AccessEvent implements Serializable {
     return statusCode;
   }
 
-  @SuppressWarnings("unchecked")
   public String getRequestContent() {
     if (requestContent != null) {
       return requestContent;

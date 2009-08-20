@@ -174,7 +174,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender<AccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
@@ -183,7 +183,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   }
 
-  public boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender<AccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 

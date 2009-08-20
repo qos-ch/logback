@@ -11,18 +11,18 @@
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
     
   </head>
-<body onload="prettyPrint()">
-  <script type="text/javascript">prefix='../';</script>
-  <script type="text/javascript" src="../js/prettify.js"></script>
-  <script src="../templates/header.js" type="text/javascript"></script>
-  <div id="left">
-    <noscript>Please turn on Javascript to view this menu</noscript>
-    <script src="../templates/left.js" type="text/javascript"></script>
-  </div>
-  <div id="right">
-    <script src="menu.js" type="text/javascript"></script>
-  </div>
-  <div id="content">
+  <body onload="prettyPrint()">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
     
     <h1>Chapter 5: Layouts</h1>
 	
@@ -1362,8 +1362,11 @@ public class ExceptionEvaluatorExample {
 		<p><b>Important:</b> With the <b><em>%ex</em></b> conversion
 		specifier, the stack trace is displayed when <em>the expression
 		evaluates to <b>false</b>.</em></p>
-		
-		<h2>Creating a custom conversion specifier</h2>
+
+    
+		<h3><a name="customConversionSpecifier"
+		href="#customConversionSpecifier">Creating a custom conversion
+		specifier</a></h3>
 
 		<p>Up to this point we have presented the built-inconversion
 		specifiers of <code>PatternLayout</code>. But it is also possible
@@ -1429,9 +1432,6 @@ public class MySampleConverter extends ClassicConverter {
   }
 }
 </pre>
-
-
-java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml 
 
 		<p>This implementation is relatively straightforward. The
 		<code>MySampleConverter</code> class extends

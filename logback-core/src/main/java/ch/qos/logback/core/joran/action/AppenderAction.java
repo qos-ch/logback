@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class AppenderAction<E> extends Action {
-  Appender appender;
+  Appender<E> appender;
   private boolean inError = false;
 
   /**

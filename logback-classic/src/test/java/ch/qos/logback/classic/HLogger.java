@@ -117,7 +117,7 @@ public class HLogger extends MarkerIgnoringBase {
     level = newLevel;
     effectiveLevel = newLevel;
     if (childrenMap != null) {
-      for (Iterator i = childrenMap.values().iterator(); i.hasNext();) {
+      for (Iterator<HLogger> i = childrenMap.values().iterator(); i.hasNext();) {
         HLogger child = (HLogger) i.next();
 
         // tell child to handle parent levelInt change
@@ -140,7 +140,7 @@ public class HLogger extends MarkerIgnoringBase {
 
       // propagate the parent levelInt change to this logger's children
       if (childrenMap != null) {
-        for (Iterator i = childrenMap.values().iterator(); i.hasNext();) {
+        for (Iterator<HLogger> i = childrenMap.values().iterator(); i.hasNext();) {
           HLogger child = (HLogger) i.next();
           // tell child to handle parent levelInt change
           child.handleParentLevelChange(effectiveLevel);
@@ -157,7 +157,7 @@ public class HLogger extends MarkerIgnoringBase {
     if (appenderList != null) {
       int len = appenderList.size();
       for (int i = 0; i < len; i++) {
-        Appender a = appenderList.get(i);
+        Appender<ILoggingEvent> a = appenderList.get(i);
         a.stop();
       }
       appenderList.clear();
@@ -212,7 +212,7 @@ public class HLogger extends MarkerIgnoringBase {
   /**
    * Remove the appender passed as parameter form the list of appenders.
    */
-  public synchronized void removeAppender(Appender appender) {
+  public synchronized void removeAppender(Appender<ILoggingEvent> appender) {
     if ((appender == null) || (appenderList == null)) {
     }
     appenderList.remove(appender);

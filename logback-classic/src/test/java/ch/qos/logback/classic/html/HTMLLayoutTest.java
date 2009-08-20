@@ -64,7 +64,6 @@ public class HTMLLayoutTest {
     layout = null;
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testHeader() throws Exception {
     String header = layout.getFileHeader();

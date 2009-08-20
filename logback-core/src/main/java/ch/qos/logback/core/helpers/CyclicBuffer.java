@@ -37,7 +37,6 @@ public class CyclicBuffer<E> {
    * @param maxSize
    *                The maximum number of elements in the buffer.
    */
-  @SuppressWarnings("unchecked")
   public CyclicBuffer(int maxSize) throws IllegalArgumentException {
     if (maxSize < 1) {
       throw new IllegalArgumentException("The maxSize argument (" + maxSize

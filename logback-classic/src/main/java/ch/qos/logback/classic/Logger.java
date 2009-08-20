@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
-import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -224,7 +224,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     aai.addAppender(newAppender);
   }
 
-  public boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender<ILoggingEvent> appender) {
     if (aai == null) {
       return false;
     }
@@ -277,7 +277,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   /**
    * Remove the appender passed as parameter form the list of appenders.
    */
-  public boolean detachAppender(Appender appender) {
+  public boolean detachAppender(Appender<ILoggingEvent> appender) {
     if (aai == null) {
       return false;
     }
