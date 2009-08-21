@@ -26,6 +26,7 @@ import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
@@ -58,7 +59,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   @Override
   protected Appender<Object> getConfiguredAppender() {
     rfa.setContext(context);
-    tbrp.setFileNamePattern("toto-%d.log");
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"toto-%d.log");
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
 
@@ -76,7 +77,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
 
-    tbrp.setFileNamePattern("toto-%d.log");
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"toto-%d.log");
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
 
