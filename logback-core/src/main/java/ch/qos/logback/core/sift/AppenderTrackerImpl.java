@@ -165,9 +165,9 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
       this.timestamp = timestamp;
     }
 
-    public long getTimestamp() {
-      return timestamp;
-    }
+//    public long getTimestamp() {
+//      return timestamp;
+//    }
 
     public void setTimestamp(long timestamp) {
       this.timestamp = timestamp;

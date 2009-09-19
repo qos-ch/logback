@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,16 +94,22 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     // large maxPeriod, a 3 times as many number of periods to simulate
     doRollover(randomOutputDir + "clean-%d{" + MONTHLY_DATE_PATTERN + "}.txt",
         MILLIS_IN_MONTH, 20, 20 * 3);
-    check(expectedCountWithoutDirs(20));
+    check(expectedCountWithoutFolders(20));
   }
 
   @Test
   public void montlyRolloverOverManyPeriods() throws Exception {
+    System.out.println("randomOutputDir=" + randomOutputDir);
     // small maxHistory, many periods
     slashCount = computeSlashCount(MONTHLY_CROLOLOG_DATE_PATTERN);
+    int numPeriods = 40;
+    int maxHistory = 2;
+    
     doRollover(randomOutputDir + "/%d{" + MONTHLY_CROLOLOG_DATE_PATTERN
-        + "}/clean.txt.zip", MILLIS_IN_MONTH, 2, 40);
-    check(expectedCountWithDirs(2));
+        + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods);
+    int beginPeriod = Calendar.getInstance().get(Calendar.MONTH);
+    boolean extraFolder = extraFolder(numPeriods, 12, beginPeriod, maxHistory);
+    check(expectedCountWithFolders(2, extraFolder));
   }
 
   @Test
@@ -111,7 +118,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     doRollover(
         randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt.zip",
         MILLIS_IN_DAY, 5, 5 * 3);
-    check(expectedCountWithoutDirs(5));
+    check(expectedCountWithoutFolders(5));
   }
 
   @Test
@@ -121,8 +128,8 @@ public class TimeBasedRollingWithArchiveRemovalTest {
         + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3);
     int expectedDirMin = 9 + slashCount;
     int expectDirMax = expectedDirMin + 1 + 1; // plus 1 of stepping into a
-                                                // new month, and another 1 into
-                                                // a new year
+    // new month, and another 1 into
+    // a new year
     expectedFileAndDirCount(9, expectedDirMin, expectDirMax);
   }
 
@@ -253,15 +260,29 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     }
   }
 
-  int expectedCountWithoutDirs(int maxHistory) {
+  int expectedCountWithoutFolders(int maxHistory) {
     // maxHistory plus the currently active file
     return maxHistory + 1;
   }
 
-  int expectedCountWithDirs(int maxHistory) {
+  // sometimes, after a number of periods, there is an extra folder
+  // from the previous "era" because the latest period - maxHistory, enters the
+  // bound of the previous era. For example, with a maxHistory of 2, on 2009-09,
+  // after 40 periods, the current period is 2013-01. Going back two months, the
+  // year is 2012, and not 2013 (the current year).
+  boolean extraFolder(int numPeriods, int periodsPerEra, int beginPeriod,
+      int maxHistory) {
+    int remainder = (beginPeriod + numPeriods) % periodsPerEra;
+    return (remainder < maxHistory + 1);
+  }
+
+  int expectedCountWithFolders(int maxHistory, boolean extraFolder) {
     // each slash adds a new directory
     // + one file and one directory per archived log file
-    return (maxHistory + 1) * 2 + slashCount;
+    int result = (maxHistory + 1) * 2 + slashCount;
+    if (extraFolder)
+      result++;
+    return result;
   }
 
   void check(int expectedCount) {
