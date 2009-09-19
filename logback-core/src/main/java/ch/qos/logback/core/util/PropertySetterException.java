@@ -1,13 +1,17 @@
-/*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
-
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.util;
-
-import ch.qos.logback.core.joran.spi.PropertySetter;
 
 /**
  * Thrown when an error is encountered whilst attempting to set a property
@@ -17,16 +21,16 @@ import ch.qos.logback.core.joran.spi.PropertySetter;
  */
 public class PropertySetterException extends Exception {
 
-  private static final long serialVersionUID = -7524690541928503527L;
+  private static final long serialVersionUID = -2771077768281663949L;
 
   public PropertySetterException(String msg) {
     super(msg);
   }
-  
-  public PropertySetterException(Throwable rootCause)  {
+
+  public PropertySetterException(Throwable rootCause) {
     super(rootCause);
   }
-  
+
   public PropertySetterException(String message, Throwable cause) {
     super(message, cause);
   }

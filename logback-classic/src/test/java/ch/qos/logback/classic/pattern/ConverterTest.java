@@ -1,11 +1,15 @@
 /**
- * Logback: the generic, reliable, fast and flexible logging framework.
- * 
- * Copyright (C) 2000-2009, QOS.ch
- * 
- * This library is free software, you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation.
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.pattern;
 
@@ -70,7 +74,7 @@ public class ConverterTest {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("71", buf.toString());
+      assertEquals("76", buf.toString());
     }
   }
 
