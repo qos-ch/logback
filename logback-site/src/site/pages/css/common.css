@@ -222,10 +222,13 @@ code {
 }
 
 .option {
-  border: 1px solid black;
-  font-family: Arial, sans-serif;	
-  padding-left: 3px;
-  padding-right: 3px;
+  border-top: 1px dotted black;
+  border-bottom: 1px dotted black;
+  border-left: 1px dotted black;
+  border-right: 1px dotted black;
+  padding-left: 2px;
+  padding-right: 2px;
+  font-family: Arial, sans-serif;
 }
 
 .highlight {
