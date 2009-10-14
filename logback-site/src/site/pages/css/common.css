@@ -25,6 +25,7 @@ div.source {
   font-family: Courier, "MS Courier New", Prestige, monospace;
   padding-left: 1ex;
   white-space: pre;
+  overflow: scroll;
 }
 
 .source {
@@ -217,11 +218,17 @@ code {
 .attr {
 	font-family: Courier, monospace;
   font-style:italic; 
+
 }
 
 .option {
-  border: 1px solid black;
-  font-family: Arial, sans-serif;	
+  border-top: 1px dotted black;
+  border-bottom: 1px dotted black;
+  border-left: 1px dotted black;
+  border-right: 1px dotted black;
+  padding-left: 2px;
+  padding-right: 2px;
+  font-family: Arial, sans-serif;
 }
 
 .highlight {
