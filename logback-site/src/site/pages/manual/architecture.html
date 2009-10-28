@@ -44,7 +44,7 @@
     <h2>Logback's architecture</h2>
 
     <p>Logback's basic architecture is sufficiently generic so as to
-    	apply under different circumstances. At present time, logback is
+	apply under different circumstances. At the present time, logback is
     	divided into three modules, Core, Classic and Access.
     </p>
 
@@ -150,7 +150,7 @@ public interface Logger {
 		that is TRACE, DEBUG, INFO, WARN and ERROR are defined in the
 		<code>ch.qos.logback.classic.Level</code> class. Note that in
 		logback, the level class is final and cannot be derived, as a much
-		more flexible approach exist in the form of <code>Marker</code>
+		more flexible approach exists in the form of <code>Marker</code>
 		objects.
 		</p>
 
@@ -244,7 +244,7 @@ public interface Logger {
 		</table>
 
 		<p>In example 2 above, all loggers have an assigned level value.
-		Level inheritence does not come into play.
+		Level inheritance does not come into play.
 		</p>
 
 		<em>Example 3</em>
@@ -358,7 +358,7 @@ public interface Logger {
 		</p>
 				
 		<p>In a more graphic way, here is how the selection rule works. In
-		the following table, the vertical header shows the the level of
+		the following table, the vertical header shows the level of
 		the logging request, designated by <em>p</em>, while the
 		horizontal header shows effective level of the logger, designated
 		by <em>q</em>. The intersection of the rows (level request) and
@@ -541,8 +541,8 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 
 			<p>However, if an ancestor of logger <em>L</em>, say <em>P</em>,
 			has the additivity flag set to false, then <em>L</em>'s output
-			will be directed to all the appenders in <em>L</em> and it's
-			ancestors upto and including <em>P</em> but not the appenders in
+			will be directed to all the appenders in <em>L</em> and its
+			ancestors up to and including <em>P</em> but not the appenders in
 			any of the ancestors of <em>P</em>.
 			</p>
 
@@ -727,7 +727,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
 
   
   <a name="UnderTheHood"></a>
-  <h3>A peak under the hood</h3>
+  <h3>A peek under the hood</h3>
 
   <p>After we have introduced the essential logback components, we are
   now ready to describe the steps that the logback framework takes
@@ -762,7 +762,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
 
   <h4>3. Create a <code>LoggingEvent</code> object</h4>
 
-  <p>If the request survivedy the previous filters, logback will
+  <p>If the request survived the previous filters, logback will
   create a <code>ch.qos.logback.classic.LoggingEvent</code> object
   containing all the relevant parameters of the request, such as the
   logger of the request, the request level, the message itself, the
@@ -854,7 +854,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
 
   <p>The cost of parameter construction can be quite high and depends
   on the size of the parameters involved. To avoid the cost of
-  parameter construction you can take advantage of SLF4J's parametrized
+  parameter construction you can take advantage of SLF4J's parameterized
   logging:
   </p>
 
@@ -872,9 +872,9 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   </p>
 
   <p> Please notice that, despite the performance points that we just
-  discussed, inserting logging statements in tight-loops or very
+  discussed, inserting logging statements in tight loops or very
   frequently invoked code is a lose-lose proposal and is likely to
-  result in degraded performance. Logging in tight-loops slow down
+  result in degraded performance. Logging in tight loops slow down
   your application even if logging is turned off, and if logging is
   turned on, they will generate massive (and hence useless) output.
   </p>

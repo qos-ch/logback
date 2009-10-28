@@ -123,12 +123,12 @@ public class HelloWorld1 {
 
 
     <p>You can launch the first
-    sample application, <em>chapter1.HelloWord1</em> with the command:
+    sample application, <em>chapter1.HelloWorld1</em> with the command:
     </p>
     <div class="source"><pre>java chapter1.HelloWorld1</pre></div>
 
     <p>Launching the <code>HelloWorld1</code> application will output
-    a single line on the console. By virtue of to logback's default
+    a single line on the console. By virtue of logback's default
     configuration policy, when no default configuration file is found,
     logback will add a <code>ConsoleAppender</code> to the root
     logger.
@@ -191,9 +191,9 @@ public class HelloWorld2 {
 
   <p>The previous examples are rather simple. Actual logging in a
   larger application would not be that different. The general pattern
-  for logging statements would not change. nly the configuration
-  process would be different since However, you would probably want to
-  customize or configure logback for according to your needs. Logback
+  for logging statements would not change. Only the configuration
+  process would be different. However, you would probably want to
+  customize or configure logback according to your needs. Logback
   configuration will be covered in subsequent chapters.
   </p>
 
@@ -216,7 +216,7 @@ public class HelloWorld2 {
     <code>Logger</code> instance by invoking the
     <code>org.slf4j.LoggerFactory</code> class'
     <code>getLogger()</code> method, passing the current class name
-    or the class itself as parameter.</li>
+    or the class itself as a parameter.</li>
     
     <li>Use this logger instance by invoking its printing methods,
     namely the debug(), info(), warn() and error(). This will
