@@ -64,14 +64,14 @@
     <p>Inserting log requests into the application code requires a
     fair amount of planning and effort. Observation shows that
     approximately four percent of code is dedicated to
-    logging. Consequently, even moderately sized applications will
+    logging. Consequently, even a moderately sized application will
     contain thousands of logging statements embedded within its
     code. Given their number, we need tools to manage these log
     statements.
     </p>
 
-    <p>Logback can be configured either programmatically or with
-    configuration a script (expressed in XML format). By the way,
+    <p>Logback can be configured either programmatically or with a
+    configuration script (expressed in XML format). By the way,
     existing log4j users can convert their <em>log4j.properties</em>
     files to <em>logback.xml</em> using our <a
     href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
@@ -124,7 +124,7 @@
     <h3>Automatically configuring logback</h3>
 
     <p>The simplest way to configure logback is by letting logback
-    fallback to its default configuration. Let us give a taste of how
+    fall back to its default configuration. Let us give a taste of how
     this is done in an imaginary application called
     <code>MyApp1</code>.
     </p>
@@ -213,8 +213,8 @@ public class Foo {
    <p>The <code>MyApp1</code> application links to logback via calls
    <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> classes, retrieve the loggers it
-   wishes to use, and chugs on.  Note that the only dependence of the
-   <code>Foo</code> class on logback are through
+   wishes to use, and chugs on.  Note that the only dependencies of
+   the <code>Foo</code> class on logback are through
    <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> imports.  Except code that configures
    logback (if such code exists) client code does not need to depend
@@ -350,14 +350,14 @@ public class Foo {
      <li>the configuration file is well-formed XML.</li>
    </ol>
      
-   <p>If any of these two conditions is not fulfilled, the Joran
-   cannot interpret <code>debug</code> attribute since the
-   configuration file cannot be read. If the configuration file is
-   found but is ill-formed, then logback will detect the error
-   condition and automatically print its internal status on the
-   console. However, if the configuration file cannot be found, since
-   this is not necessarily an error condition, logback will not
-   automatically print its status data.  Programmatically invoking
+   <p>If any of these two conditions is not fulfilled, Joran cannot
+   interpret <code>debug</code> attribute since the configuration file
+   cannot be read. If the configuration file is found but is
+   ill-formed, then logback will detect the error condition and
+   automatically print its internal status on the console. However, if
+   the configuration file cannot be found, since this is not
+   necessarily an error condition, logback will not automatically
+   print its status data.  Programmatically invoking
    <code>StatusPrinter.print()</code>, as as in <em>MyApp2</em>
    application above, ensures that status information is always
    printed.
@@ -462,7 +462,7 @@ public class Foo {
    override logback's default configuration mechanism, you can do so
    by invoking <code>JoranConfigurator</code> directly. The next
    application, <em>MyApp3</em>, invokes JoranConfigurator on a
-   configuration file passed as parameter.</p>
+   configuration file passed as a parameter.</p>
    
    <p><em>Example 3.<span class="autoEx"/>: Invoking
    <code>JoranConfigurator</code> directly <a
@@ -528,7 +528,7 @@ public class MyApp3 {
    <p>Given a <code>StatusManager</code> you an access all the status
    data associated with a logback context. To keep memory usage at
    reasonable levels, the default <code>StatusManager</code>
-   implementation stores the status messages in two separate parts,
+   implementation stores the status messages in two separate parts:
    the header part and the tail part. The header part stores the fist
    <em>H</em> status messages whereas the tail part stores the last
    <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
@@ -585,7 +585,7 @@ public class MyApp3 {
 
    <p>Here is <a
    href="../xref/chapter3/AddStatusListenerApp.html">sample code</a>
-   to register a OnConsoleStatusListener instance with the
+   to register an OnConsoleStatusListener instance with the
    StatusManager.
    </p>
 
@@ -637,12 +637,12 @@ public class MyApp3 {
   </p>
 
   <p>As shall become clear, the syntax of logback configuration files
-  is extremely flexible. As such, it is not possible specify the
-  allowed syntax with a DTD file or an XML Schema. Nevertheless, the
-  very basic structure of configuration can be described as,
+  is extremely flexible. As such, it is not possible to specify the
+  allowed syntax with a DTD file or an XML schema. Nevertheless, the
+  very basic structure of the configuration file can be described as,
   &lt;configuration> element, followed by zero or more &lt;appender>
-  elements, followed by by zero or more &lt;logger> elements, followed
-  by at most one &lt;root> element. The following diagram illustrates
+  elements, followed by zero or more &lt;logger> elements, followed by
+  at most one &lt;root> element. The following diagram illustrates
   this basic structure.</p>
 
   
