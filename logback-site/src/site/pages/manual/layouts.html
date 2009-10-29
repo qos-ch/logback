@@ -67,15 +67,13 @@
 		<h2>Logback-classic</h2>
 
 		<p>Logback-classic is wired to processes only events of type
-			<a href="../xref/ch/qos/logback/classic/spi/ILoggingEvent.html">
-			<code>ch.qos.logback.classic.spi.ILoggingEvent</code></a>. This
-			fact will apparent for the remaining of this section.
-			</p>
+		<a href="../xref/ch/qos/logback/classic/spi/ILoggingEvent.html">
+      <code>ch.qos.logback.classic.spi.ILoggingEvent</code></a>.  This
+			fact will be apparent throughout this section.</p>
 
 		<h3>Writing your own Layout</h3>
 
-		<p>
-			Let us implement a simple yet functional layout for the
+		<p>Let us implement a simple yet functional layout for the
 			logback-classic module that prints the time elapsed since the
 			start of the application, the level of the logging event, the
 			caller thread between brackets, its logger name, a dash followed
@@ -136,7 +134,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		</p>
 		
     <p>After adding these various characters to the string buffer, the
-    <code>doLayout()</code> method converts the buffer into
+    <code>doLayout()</code> method converts the buffer into a
     <code>String</code> and returns the resulting value.
 		</p>
 
@@ -146,7 +144,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		contents of exceptions as well.
 		</p>
 
-    <h3>Configuringyour custom layout</h3>
+    <h3>Configuring your custom layout</h3>
 
 		<p>Custom layouts are configured as any other layout. Here is as
 		example:</p>
@@ -165,10 +163,11 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
   &lt;/root>
 &lt;/configuration></pre>
 
-		<p>The sample application <a href="../xref/chapter5/SampleLogging.html">
-		<code>chapter5.SampleLogging</code></a> configures logback with the 
-		configuration script supplied as parameter and then logs a debug message, 
-		followed by an error message. </p>
+		<p>The sample application <a
+		href="../xref/chapter5/SampleLogging.html">
+		<code>chapter5.SampleLogging</code></a> configures logback with
+		the configuration script supplied as a parameter and then logs a
+		debug message, followed by an error message. </p>
 		
 		<p>
 		To run this example issue the following command from within the
@@ -197,7 +196,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 			</a>
 			class contains two attributes. The first one is a prefix that
 			can be added to the output. The second attribute is used to
-			choose wether to display the name of the thread from which
+			choose whether to display the name of the thread from which
 			the logging request was sent.
 		</p>
 		<p>Here is the implementation of this class:</p>
@@ -347,20 +346,20 @@ WARN  [main]: Message 2</p>
     conversion specifiers. In the example above, the conversion
     specifier %-5level means the level of the logging event should be
     left justified to a width of five characters. Format specifiers
-    will be explained in a short moment.
+    will be explained below.
 		</p>
 
 		<p>In PatternLayout, parenthesis can be used to group conversion
 		patterns. <b>It follows that the '(' and ')' carry special meaning
 		and need to be escaped to be used as literals. </b> Parentheses
 		can be escaped by preceding the the opening and closing
-		parenthesis by backslash, but since backslash itself carries
+		parenthesis by a backslash, but since the backslash itself carries
 		special meaning in Java, we need two backslashes, as in "\\(" and
 		"\\)". Note that strictly speaking, only the closing parenthesis
 		needs to be escaped to be used as a literal.
 		</p>
 
-		<p>As mentionned previously, certain conversion specifiers can
+		<p>As mentioned previously, certain conversion specifiers can
 		include optional parameters which are passed between braces
 		following the conversion word. A sample conversion specifier with
 		options could be <code>%logger{10}</code>. Here "logger" is the
@@ -464,15 +463,15 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>Used to output the fully qualified class name of the
+					<p>Used to output the fully-qualified class name of the
 					caller issuing the logging request.
 					</p>
 					<p> Just like the <em>%logger</em> conversion word above,
-					this word can take an interger as it's first option and use
+					this word can take an integer as its first option and use
 					its abbreviation algorithm to shorten the class name. Zero
-					carries special meaning and w will cause the simple class
-					name to be output without its package name prefix. By
-					default the class name is output in full.
+					carries special meaning and will cause the simple class name
+					to be printed without its package name prefix. By default
+					the class name is printed in full.
 					</p>
 
           <p>Generating the caller class information is not
@@ -548,7 +547,7 @@ WARN  [main]: Message 2</p>
 					</p>
 
 					<p>Generating the file information is not particularly fast.
-					Thus, it's use should be avoided unless execution speed is
+					Thus, its use should be avoided unless execution speed is
 					not an issue.
 					</p>
 				</td>
@@ -561,36 +560,37 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>
-						Used to output location information of the
-						caller which generated the logging event.
+					<p>Used to output location information of the caller which
+					generated the logging event.
 					</p>
-					<p>
-						The location information depends on the JVM
-						implementation but usually consists of the fully
-						qualified name of the calling method followed by
-						the caller's source the file name and line
-						number between parentheses.
+
+					<p>The location information depends on the JVM
+					implementation but usually consists of the fully qualified
+					name of the calling method followed by the caller's source,
+					the file name and line number between parentheses.
 					</p>
-					<p>
-						A integer can be added to the
-						<em>caller</em>
-						conversion specifier's options to configure the depth of
-						the information to be displayed.
+
+					<p>A integer can be added to the <em>caller</em> conversion
+					specifier's options to configure the depth of the
+					information to be displayed.
 					</p>
-					<p>For example, <b>%caller{2}</b> would display the following excerpt:</p>
+
+          <p>For example, <b>%caller{2}</b> would display the
+          following excerpt:</p>
 					
-<div class="source white_bg"><pre>0    [main] DEBUG - logging statement 
+<pre class="source white_bg">0    [main] DEBUG - logging statement 
 Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
-Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre></div>
+Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
+
 					<p>And <b>%caller{3}</b> would display this other excerpt:</p>
-<div class="source white_bg">16   [main] DEBUG - logging statement 
+
+<pre class="source white_bg">16   [main] DEBUG - logging statement 
 Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
 Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
-Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
+Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					
 					<p>This conversion word can also use evaluators to test
-					logging events against a given criteria before creating the
+					logging events against a given criterion before creating the
 					output. For example, using <b>%caller{3,
 					CALLER_DISPLAY_EVAL}</b> will display three lines of
 					stacktrace, only if the evaluator called
@@ -598,9 +598,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 					answer.
 				</p>
 
-				 <p>Evaluators are described
-						further down this document.
-					</p>
+				 <p>Evaluators are described below.</p>
 				</td>
 			</tr>
 
@@ -610,14 +608,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				</td>
 
 				<td>
-					<p>
-						Used to output the line number from where the
-						logging request was issued.
+					<p>Used to output the line number from where the logging
+					request was issued.
 					</p>
-					<p>
-						Generating the line number information is not particularly fast.
-						Thus, it's use should be avoided unless
-						execution speed is not an issue.
+
+					<p>Generating the line number information is not particularly
+						fast.  Thus, its use should be avoided unless execution
+						speed is not an issue.
 					</p>
 				</td>
 			</tr>
@@ -628,8 +625,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 					<b>m / msg / message</b>
 				</td>
 				<td>
-					Used to output the application supplied message
-					associated with the logging event.
+					Used to output the application-supplied message associated
+					with the logging event.
 				</td>
 			</tr>
 
@@ -804,9 +801,9 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</div>
 				 </table>
 					
 					<p>This conversion word can also use evaluators to test
-					logging events against a given criteria before creating the
+					logging events against a given criterion before creating the
 					output. For example, using <b>%ex{full, EX_DISPLAY_EVAL}</b>
-					will display the full stacktrace of the exception, only if
+					will display the full stack trace of the exception, only if
 					the evaluator called <em>EX_DISPLAY_EVAL</em> returns a
 					<b>negative</b> answer. Evaluators are described further
 					down in this document.
@@ -1606,7 +1603,7 @@ public class TrivialMain {
 		<a href="../xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">
 			<code>DefaultThrowableRenderer</code></a> is assigned to each
 			<code>HTMLLayout</code> instance. It writes exceptions on a
-			<em>new table row</em>, along with its stacktrace, in an easily
+			<em>new table row</em>, along with its stack trace, in an easily
 			readable manner, as shown on the figure above.
 		</p>
 
@@ -1736,7 +1733,7 @@ public class TrivialMain {
 		
 		<h3>Writing your own Layout</h3>
 		<p>Writing a custom <code>Layout</code> for logback access is
-		nearly identical as its sibling<code>Layout</code> in
+		nearly identical to its sibling<code>Layout</code> in
 		logback-classic.</p>
 		
 
@@ -1946,7 +1943,7 @@ public class TrivialMain {
           <code>HttpServletRequest</code> by a <a
           href="../xref/ch/qos/logback/access/servlet/TeeHttpServletRequest.html">
           <code>TeeHttpServletRequest</code></a>. The latter object
-          allows access to the requet's <code>InputStream</code>
+          allows access to the request's <code>InputStream</code>
           multiple times without any loss of data.
           </p>
         </td>
@@ -1980,7 +1977,7 @@ public class TrivialMain {
         <td align="center"><b>fullResponse</b></td>
         <td>
           <p>This conversion word takes all the available data
-          associatede with the response, inclusing all headers of the
+          associated with the response, inclusing all headers of the
           response and response contents.
           </p>
         </td>
@@ -2041,12 +2038,6 @@ public class TrivialMain {
 		<img src="images/htmlLayoutAccess.gif" alt="Access HTML Layout Sample Image"/>
 
 		<p>What can be better than a real world example? Our own log4j
-		properties to logback <a
-		href="http://logback.qos.ch/translator/">translator</a> makes use
-		of logback-access to showcase a live ouput, using a
-		<code>RollingFileAppender</code> and <code>HTMLLayout</code>.</p>
-		
-		<p>What can be better than a real world example? Our own log4j
 		properties for logback <a
 		href="http://logback.qos.ch/translator/">translator</a> makes use
 		of logback-access to demonstrate live ouput from
@@ -2059,12 +2050,6 @@ public class TrivialMain {
     which you can view by <a
     href="http://logback.qos.ch/translator/logs/access.html">following
     this link</a>.</p>
-
-
-    
-
-
- 
 
 
     <script src="../templates/footer.js" type="text/javascript"></script>
