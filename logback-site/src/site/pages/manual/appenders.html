@@ -1147,11 +1147,11 @@ public interface RollingPolicy extends LifeCycle {
    '</em>, <em>'#'</em> and <em>'@'</em> will appear in the resulting
    time text even when they are not enclosed within single
    quotes. Nevertheless, we recommend against using the colon
-   <em>":"</em> character anywhere within the <span
+   <em>':'</em> character anywhere within the <span
    class="option">FileNamePattern</span> option.  The text before the
    colon is interpreted as the protocol specification of a URL, which
-   is most probably not what you intend. The forward-slash
-   <em>"/"</em> or backward slash <em>"\"</em> characters anywhere
+   is most probably not what you intend. The forward slash
+   <em>'/'</em> or backward slash <em>'\'</em> characters anywhere
    within the <span class="option">FileNamePattern</span> property or
    within the date-and-time pattern will be interpreted as directory
    separators and any missing directories will be created as
@@ -1182,7 +1182,7 @@ public interface RollingPolicy extends LifeCycle {
         file will be compressed to become
         <em>/wombat/foo.2009-11-23.gz</em>.  For the 24th of November,
         logging output will be directed to
-        <em>/wombat/folder/foo.2009-11-24</em> until its rolled over
+        <em>/wombat/folder/foo.2009-11-24</em> until it's rolled over
         at the beginning of the next day.
         </p>
 
@@ -1264,7 +1264,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;File>logFile.log&lt;/File>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;FileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/FileNamePattern>
-      &lt;!-- keep 30 days worth of history -->
+      &lt;!-- keep 30 days' worth of history -->
       &lt;MaxHistory>30&lt;/MaxHistory>
     &lt;/rollingPolicy></b>
 
@@ -1278,7 +1278,7 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre>
 
-    <p>The next configuration sample illustrates the use
+    <p>The next configuration sample illustrates the use of
     <code>RollingFileAppender</code> associated with
     <code>TimeBasedRollingPolicy</code> in <span class="option">Prudent</span>
     mode.
@@ -1311,7 +1311,7 @@ public interface RollingPolicy extends LifeCycle {
       href="#SizeAndTimeBasedFNATP">Size <b>and</b> time based archiving</a>
     </h3>
 
-    <p>You may sometimes wish to archive files essentialy by date but
+    <p>You may sometimes wish to archive files essentially by date but
     at the same time limit the size of each log file, in particular if
     post-processing tools impose size limits on the log files. In
     order to address this requirement, logback ships with a
@@ -1357,8 +1357,8 @@ public interface RollingPolicy extends LifeCycle {
 
     <p>Size and time based archiving supports cleaning of old archive
     files. You just need to specify the number of periods to preserve
-    with the <code>&lt;MaxHistory></code> element. When your
-    application is stopped and restarted, logging will continue at
+    within the <code>&lt;MaxHistory></code> element. When your
+    application is stopped and restarted, logging will continue at the
     correct location, i.e. at the largest index number for the current
     period.
     </p>
@@ -1475,8 +1475,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		which implements the <code>ILoggingEvent</code>
 		interface. Nevertheless, remote logging is non-intrusive as far as
 		the logging event is concerned.  On the receiving end after
-		de-serialization, the event can be logged as if it were generated
-		locally. Multiple <code>SocketAppender</code> instances running of
+		desrialization, the event can be logged as if it were generated
+		locally. Multiple <code>SocketAppender</code> instances running on
 		different machines can direct their logging output to a central
 		log server whose format is fixed.  <code>SocketAppender</code>
 		does not admit an associated layout because it sends serialized
@@ -1496,7 +1496,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		implementation.  This means that if the link to server is slow but
 		still faster than the rate of event production by the client, the
 		client will not be affected by the slow network
-		connection. However, if the network connection is slower then the
+		connection. However, if the network connection is slower than the
 		rate of event production, then the client can only progress at the
 		network rate. In particular, in the extreme case where the network
 		link to the server is down, the client will be eventually blocked.
@@ -1589,7 +1589,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     logged according to local server policy.  The
     <code>SimpleSocketServer</code> application takes two parameters:
     port and configFile; where port is the port to listen on and
-    configFile is configuration script in XML format.
+    configFile is a configuration script in XML format.
     </p>
 	
     <p>
@@ -1675,7 +1675,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		<p>Allow us to repeat for emphasis that serialization of logging
-		events is not intrusive. A de-serialized event carries the same
+		events is not intrusive. A desrialized event carries the same
 		information as any other logging event. It can be manipulated as
 		if it were generated locally; except that serialized logging
 		events by default do not include caller data. Here is an example
@@ -1687,7 +1687,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   src/main/java/chapter4/socket/server2.xml</p>
 
    <p>The configuration file <em>server2.xml</em> creates a
-   <code>ConsoleAppender</code> whose layout outputs the callers file
+   <code>ConsoleAppender</code> whose layout outputs the caller's file
    name and line number along with other information. If you run
    <code>SocketClient2</code> with the configuration file
    <em>client1.xml</em> as previously, you will notice that the output
@@ -1720,7 +1720,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
 		<p>
 		 The <a href="../xref/ch/qos/logback/core/net/JMSAppenderBase.html">
-		 <code>JMSAppenderBase</code></a> subclasses conceptually accomplishes 
+		 <code>JMSAppenderBase</code></a> subclasses conceptually accomplish
 		 the same task as the <code>SocketAppender</code> but as the name 
 		 suggests it is based on the JMS API instead of TCP sockets. 
 		 JMS or the Java Message Service API 
@@ -1735,25 +1735,24 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		 to each other.
 		</p>
 		
-		<p>
-			The JMS specification provides for two types of messaging models, 
-			publish-and-subscribe and point-to-point queuing. Logback supports the former
-			model with <code>JMSTopicAppender</code> and the latter with <code>JMSQueueAppender</code> 
-			Both appenders extend the <code>JMSAppenderBase</code> class and 
-			publish serialized events to a topic or queue specified by the user.
+		<p>The JMS specification provides for two types of messaging
+		models, publish-and-subscribe and point-to-point queueing. Logback
+		supports the former model with <code>JMSTopicAppender</code> and
+		the latter with <code>JMSQueueAppender</code> Both appenders
+		extend the <code>JMSAppenderBase</code> class and publish
+		serialized events to a topic or queue specified by the user.
 		</p>
 		
-		<p>
-			One or more <code>JMSTopicSink</code> or
-			<code>JMSQueueSink</code> applications can register to a JMS
-			server and consume the serialized events.  The consumer of JMS
-			appenders generated events need not be only
-			<code>JMSTopicSink</code> or <code>JMSQueueSink</code>
-			applications. Any application or MessageDrivenBean capable of
-			subscribing to the appropriate topic or queue and consuming
-			serialized logging event messages would be suitable.  Additional
-			consumers could be quickly built based on the
-			<code>JMSTopicSink</code> or <code>JMSQueueSink</code> model.
+    <p>One or more <code>JMSTopicSink</code> or
+    <code>JMSQueueSink</code> applications can register with a JMS
+    server and consume the serialized events.  The consumers of events
+    generated by JMS appenders need not only be
+    <code>JMSTopicSink</code> or <code>JMSQueueSink</code>
+    applications. Any application or MessageDrivenBean capable of
+    subscribing to the appropriate topic or queue and consuming
+    serialized logging event messages would be suitable.  Additional
+    consumers could be quickly built based on the
+    <code>JMSTopicSink</code> or <code>JMSQueueSink</code> model.
 		</p>
 		
 		<p>
@@ -1917,7 +1916,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			naming server one would write:
 		</p>
 
-<pre class="prettyprint source">Properties env = new Properties();
+<pre class="prettyprint source longline">Properties env = new Properties();
 env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 env.put(Context.PROVIDER_URL, "tcp://<em>hostname</em>:61616");
 Context ctx = new InitialContext(env);</pre>
@@ -1939,7 +1938,7 @@ Context ctx = new InitialContext(env);</pre>
 		<h4>Comments on JMS appenders</h4>
 		
 		<p>Transmitting a packet of information using JMS is certain to be
-		substantially slower then sending the same packet using raw TCP
+		substantially slower than sending the same packet using raw TCP
 		sockets. JMS vendors bragging about the performance of their
 		messaging platform tend to omit this simple fact.  Guaranteed
 		store and forward messaging comes at a hefty price.  In return for
@@ -1954,8 +1953,8 @@ Context ctx = new InitialContext(env);</pre>
 		delivery mode instructs the JMS provider to log the message to
 		stable storage as part of the client's send operation, allowing
 		the message to survive provider crashes. JMS appenders do not set
-		the delivery mode of messages it produces because according to the
-		JMS specification, the delivery mode is considered as an
+		the delivery mode of messages they produce because according to
+		the JMS specification, the delivery mode is considered as an
 		administered property.
 		</p>
 		
@@ -2195,7 +2194,7 @@ Context ctx = new InitialContext(env);</pre>
    href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
    accumulates logging events in a fixed-size buffer and sends them in
    an email after a user-specified event occurs.  By default, the
-   email transmission is -triggered by a logging event of level ERROR
+   email transmission is triggered by a logging event of level ERROR
    or higher.
    </p>
 		
@@ -2465,10 +2464,10 @@ Context ctx = new InitialContext(env);</pre>
     "View&rarr;Message&nbsp;Body&nbsp;As&rarr;Original HTML" option
     must be set. Yahoo!Mail's support for HTML email, in particular
     its CSS support is very good. GMail on the other hand, while it
-    honors the basic HTML table structure, it ignores the internal-CSS
-    formatting. Gmail supports inline-CSS formatitng but since
-    inline-CSS would make the resulting output too voluminous,
-    <code>HTMLLayout</code> does not use inline-CSS. 
+    honors the basic HTML table structure, ignores the internal-CSS
+    formatting. Gmail supports inline CSS formatitng but since inline
+    CSS would make the resulting output too voluminous,
+    <code>HTMLLayout</code> does not use inline CSS.
     </p>
 
     <h3>Triggering event</h3>
@@ -2649,7 +2648,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>These three tables are <em>logging_event</em>,
 		<em>logging_event_property</em> and
-		<em>logging_event_exception</em>. They all must exist before
+		<em>logging_event_exception</em>. They must exist before
 		<code>DBAppender</code> can be used. Logback ships with SQL
 		scripts that will create the tables.  They can be found in the
 		found in the
@@ -2664,7 +2663,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>If your JDBC driver supports the <code>getGeneratedKeys</code>
 		method introduced in JDBC 3.0 specification, assuming you have
 		created the appropriate database tables as mentioned above, then
-		no more steps are required, excluding usual logback configuration.
+		no more steps are required, excluding the usual logback
+		configuration.
 		</p>
 
     <p>Otherwise, there must be an <code>SQLDialect</code> appropriate
@@ -2741,23 +2741,21 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>Experiments show that writing a single event into the database
 		takes approximately 10 milliseconds, on a "standard" PC. If pooled
 		connections are used, this figure drops to around 1
-		milliseconds. Note that most JDBC drivers already ship with
+		millisecond. Note that most JDBC drivers already ship with
 		connection pooling support.
 		</p>
 		
-		<p>
-			Configuring logback to use <code>DBAppender</code> can be done
-			in several different ways, depending on the tools one has to
-			connect to the database, and the database itself. All manners of 
-			configuring <code>DBAppender</code> are about setting its
-			<code>ConnectionSource</code> object, which we will cover in
-			a short moment.
+		<p>Configuring logback to use <code>DBAppender</code> can be done
+		in several different ways, depending on the tools one has to
+		connect to the database, and the database itself. The key issue in
+		configuring <code>DBAppender</code> is about setting its
+		<code>ConnectionSource</code> object, as we shall discover
+		shortly.
 		</p>
 		
-		<p>
-			Once logback is configured properly, the logging events are sent to
-			the specified database. As stated previously, there are three tables
-			used by logback to store logging event data.
+		<p>Once logback is configured properly, the logging events are
+		sent to the specified database. As stated previously, there are
+		three tables used by logback to store logging event data.
 		</p>
 		
 		<p>
@@ -2770,16 +2768,18 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 				<th>Description</th>
 			</tr>
 			<tr class="b">
-				<td><b>timestmp</b></td>
+				<td><b>timestamp</b></td>
 				<td><code>big int</code></td>
 				<td>The timestamp that was valid at the logging event's creation.</td>
 			</tr>
 			<tr class="a">
 				<td><b>formatted_message</b></td>
 				<td><code>text</code></td>
-				<td>The message that has been added to the logging event, after formatting with
-				<code>org.slf4j.impl.MessageFormatter</code>, in case object were passed
-				along with the message.</td>
+
+				<td>The message that has been added to the logging event,
+				after formatting with
+				<code>org.slf4j.impl.MessageFormatter</code>, in case objects
+				were passed along with the message.</td>
 			</tr>
 			<tr class="b">
 				<td><b>logger_name</b></td>
@@ -2795,17 +2795,18 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 				<td><b>reference_flag</b></td>
 				<td><code>smallint</code></td>
 				<td>
-					<p>
-						This field is used by logback to identify logging events that
-						have an exception or <code>MDC</code>property values associated. 
+					<p>This field is used by logback to identify logging events
+					that have an exception or <code>MDC</code>property values
+					associated.
 					</p>
-					<p>
-						It's value is computed by
-						<code>ch.qos.logback.classic.db.DBHelper</code>. A logging event that 
-						contains <code>MDC</code> or <code>Context</code> 
-						properties has a flag number of <em>1</em>. One
-						that contains an exception has a flag number of <em>2</em>. A logging
-						event that contains both elements has a flag number of <em>3</em>.
+
+					<p>Its value is computed by
+					<code>ch.qos.logback.classic.db.DBHelper</code>. A logging
+					event that contains <code>MDC</code> or <code>Context</code>
+					properties has a flag number of <em>1</em>. One that
+					contains an exception has a flag number of <em>2</em>. A
+					logging event that contains both elements has a flag number
+					of <em>3</em>.
 					</p>
 				</td>
 			</tr>
@@ -2913,7 +2914,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<h4>ConnectionSource</h4>
 		
 		<p>The <code>ConnectionSource</code> interface provides a
-		pluggable means of transparently obtaining JDBC Connections for
+		pluggable means of transparently obtaining JDBC connections for
 		logback classes that require the use of a
 		<code>java.sql.Connection</code>. There are currently three
 		implementations of <code>ConnectionSource</code>, namely
@@ -3141,7 +3142,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
 		<p>With this configuration file, sending 500 logging events to a
 		MySQL database takes a whopping 5 seconds, that is 10 milliseconds
-		per requests. This figure is unacceptable when dealing with large
+		per request. This figure is unacceptable when dealing with large
 		applications.
 		</p>
 
@@ -3174,9 +3175,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre>
 
 		<p>With this new configuration, sending 500 logging requests to
-		the same MySQL database as previously used takes around 0.5
-		seconds, for an average time of 1 millisecond per request.  The
-		gain is a <em>10</em> factor.
+		the aforementioned MySQL database around 0.5 seconds, for an
+		average time of 1 millisecond per request, i.e. equivalent to a
+		tenfold improvement in performance.
 		</p>
 
 		<h3><a name="SyslogAppender"
@@ -3259,7 +3260,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 				</td>
 				<td>
 					<p>The <span class="option">SuffixPattern</span> option
-					specifies the format of the non-standardized part the
+					specifies the format of the non-standardized part of the
 					message sent to the syslog server. By default, its value is
 					<em>[%thread] %logger %msg</em>. Any value that a
 					<code>PatternLayout</code> could use is a correct <span
@@ -3327,7 +3328,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     values. The built appender is specified in a configuration file
     within the <code>SiftingAppender</code> definition itself.  By
     default, <code>SiftingAppender</code> uses MDC key/value pairs as
-    a discriminatorg.
+    a discriminator.
     </p>
  
     <p>After configuring logback, the <a
@@ -3395,7 +3396,7 @@ logger.debug("Alice says hello"); </p>
     will be automatically closed and discarded.
     </p>
 
-    <p>It is not enough to have different appender instances, each
+    <p>It is not enough to have different appender instances; each
     instance must output to a distinct target resource. To allow such
     differentiation, within the nested appender (FileAppender above),
     the key passed to the discriminator, "userid" in the above
@@ -3405,7 +3406,7 @@ logger.debug("Alice says hello"); </p>
     used by a given nested appender.
     </p>
 
-    <p>Running <code>SiftExample</code> application with the
+    <p>Running the <code>SiftExample</code> application with the
     "byUserid.xml" configuration file shown above, will result in two
     distinct log files, "unknown.log" and "Alice.log".
 		</p>
@@ -3417,16 +3418,16 @@ logger.debug("Alice says hello"); </p>
 
     <p>You can easily write your appender by sub-classing
     <code>AppenderBase</code>.  It handles support for filters, status
-    among other functionality shared by most appenders.  The derived
-    class only needs to implement one method, namely
+    messages and other functionality shared by most appenders.  The
+    derived class only needs to implement one method, namely
     <code>append(Object eventObject)</code>.
     </p>
 
     <p>The <code>CountingConsoleAppender</code>, which we list next,
     appends a limited number of incoming events on the console. It
     shuts down after the limit is reached.  It uses a
-    <code>Layout</code> to format the events and accepts a parameter,
-    thus a few more methods are needed.
+    <code>Layout</code> to format the events and accepts a parameter.
+    Thus, a few more methods are needed.
     </p>
     
     <em>Example 4.<span class="autoExec"/>:
@@ -3484,16 +3485,15 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		fails to start with an error message.
 		</p>
 		
-		<p>This custom appender illustrates a two points:
-		</p>
+		<p>This custom appender illustrates two points:</p>
 		
 		<ul>
 
       <li>All properties that follow the setter/getter JavaBeans
       conventions are handled transparently. The <code>start()</code>
       method, which is called automatically during logback
-      configuration, has the responsibility to verify that the various
-      properties of the appender are coherent.
+      configuration, has the responsibility of verifying that the
+      various properties of the appender are coherent.
 			</li>
 
 			<li>The <code>AppenderBase.doAppend()</code> method invokes the
@@ -3531,7 +3531,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		entity by transmitting serialized <code>AccessEvent</code> objects
 		over the wire.  Remote logging is non-intrusive as far as the
 		access event is concerned.  On the receiving end after
-		de-serialization, the event can be logged as if it were generated
+		desrialization, the event can be logged as if it were generated
 		locally.
 		</p>
 		<p>
@@ -3571,12 +3571,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   &lt;To>recipient_email@host.com&lt;/To>
 &lt;/appender></pre>
 
-		<p>
-			This way of triggering the email lets user select pages that are important steps
-			in a specific process, for example. 
-			When such a page is accessed, the email is sent with the pages
-			that were accessed previously, and any information the user wants to be included
-			in the email.
+		<p>This way of triggering the email lets users select pages that
+		are important steps in a specific process, for example.  When such
+		a page is accessed, the email is sent with the pages that were
+		accessed previously, and any information the user wants to be
+		included in the email.
 		</p>
 		
 		
@@ -3588,16 +3587,18 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			<a href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
 			is used to insert the access events into a database.
 		</p>
-		<p>
-			Two tables are used by <code>DBAppender</code>: <em>access_event</em> and
-			<em>access_event_header</em>. They all must exist before <code>DBAppender</code>
-			can be used. Logback ships with SQL scripts that will create the tables. 
-			They can be found in the found in the 
-			<em>logback-access/src/main/java/ch/qos/logback/access/db/dialect</em> directory. There
-			is a specific script for each of the most popular database systems. 
-			If the script for your particular type of database system is missing, it should be
-			quite easy to write one, taking example on the already existing scripts. If
-			you send them to us, we will gladly include missing scripts in future releases.
+
+		<p>Two tables are used by <code>DBAppender</code>:
+		<em>access_event</em> and <em>access_event_header</em>. They all
+		must exist before <code>DBAppender</code> can be used. Logback
+		ships with SQL scripts that will create the tables.  They can be
+		found in the
+		<em>logback-access/src/main/java/ch/qos/logback/access/db/dialect</em>
+		directory. There is a specific script for each of the most popular
+		database systems.  If the script for your particular type of
+		database system is missing, it should be quite easy to write one,
+		taking as example existing scripts. If you send them to us, we
+		will gladly include missing scripts in future releases.
 		</p>
 		
 		<p>The <em>access_event</em> table's fields are described below:</p>
@@ -3609,7 +3610,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 				<th>Description</th>
 			</tr>
 			<tr class="a">
-				<td><b>timestmp</b></td>
+				<td><b>timestamp</b></td>
 				<td><code>big int</code></td>
 				<td>The timestamp that was valid at the access event's creation.</td>
 			</tr>
@@ -3745,20 +3746,20 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     href="#AccessSiftingAppender">SiftingAppender</a></h3>
    
     <p>The SiftingAppender in logback-access is quite similar to its
-    logbacl-classic counterpart. The main difference is that in
+    logback-classic counterpart. The main difference is that in
     logback-access the default discriminator, namely <a
     href="../xref/ch/qos/logback/access/sift/AccessEventDiscriminator.html">AccessEventDiscriminator</a>,
     is not MDC based. As its name suggests, AccessEventDiscriminator,
     uses a designated field in AccessEvent as basis for selecting a
     nested appender. If the value of the designated field is null,
     then the value specified in the <span
-    class="option">DefaultValue</span> property is used. 
+    class="option">DefaultValue</span> property is used.
     </p>
 
     <p>The desginated AccessEvent field can be one of COOKIE,
     REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT,
     REQUEST_URI. Note that the first three fields require that the
-    <span class="option">AdditionalKey</span> property also to be
+    <span class="option">AdditionalKey</span> property also be
     specified.</p>
     
     <p>Below is an example configuration file.</p>
@@ -3790,7 +3791,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     nests <code>FileAppender</code> instances. The key "id" is
     designated as a variable which will be availabe to the nested
     <code>FileAppender</code> instances. The default discriminator,
-    namely <code>AccessEventDiscriminator</code>, will search for
+    namely <code>AccessEventDiscriminator</code>, will search for a
     "username" session attribute in each <code>AccessEvent</code>. If
     no such attribute is available, then the default value "NA" will
     be used.  Thus, assuming the session attribute named "username"

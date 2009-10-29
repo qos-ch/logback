@@ -18,6 +18,10 @@ div.source {
  margin-top: 1em;
 }
 
+.longline {
+  overflow: scroll;
+}
+
 .source, .command, .console { 
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
@@ -25,7 +29,6 @@ div.source {
   font-family: Courier, "MS Courier New", Prestige, monospace;
   padding-left: 1ex;
   white-space: pre;
-  overflow: scroll;
 }
 
 .source {
