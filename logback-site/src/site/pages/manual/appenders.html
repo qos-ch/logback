@@ -315,7 +315,7 @@ public class ExitWoes1 {
     lc.reset(); // we want to override the default-config.
     WriterAppender&lt;ILoggingEvent> writerAppender = new WriterAppender&lt;ILoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout&lt;&lt;ILoggingEvent>());
+    writerAppender.setLayout(new EchoLayout&lt;ILoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setWriter(new OutputStreamWriter(os));
@@ -348,7 +348,7 @@ public class ExitWoes1 {
 	uses this statement and outputs a logging request.
 	</p>
 	    
-	<p>The <code>WriterAppender</code> is the super class of three other
+	<p>The <code>WriterAppender</code> is the superclass of three other
 	appenders, namely <code>ConsoleAppender</code>,
 	<code>FileAppender</code> which in turn is the super class of
 	<code>RollingFileAppender</code>. The next figure illustrates the
@@ -480,7 +480,7 @@ public class ExitWoes1 {
        class="option">BufferedIO</span> to true automatically sets the
        <span class="option">ImmediateFlush</span> option to false.
        The name <span class="option">BufferedIO</span> is slightly
-       misleading because buffered IO is already supported by
+       misleading because buffered I/O is already supported by
        <code>OutputStreamWriter</code>.  Setting <span
        class="option">BufferedIO</span> to true has the effect of
        buffering I/O as well as character to raw byte conversions,
@@ -557,7 +557,7 @@ public class ExitWoes1 {
      </tr>
    </table>
 	
- 	 <p>By default, <code>FileAppender</code> performs a flushes each
+ 	 <p>By default, <code>FileAppender</code> performs a flush on each
  	 event, ensuring that events are immediately written to disk.
  	 Setting the <span class="option">ImmediateFlush</span> option to
  	 false can drastically reduce I/O activity by letting
@@ -612,7 +612,7 @@ public class ExitWoes1 {
    </h3>
    
    <p>During the application development phase or in the case of
-   short-lived applications, e.g. batch applications, it is desriable
+   short-lived applications, e.g. batch applications, it is desirable
    to create a new log file at each new application launch. This is
    fairly easy to do with the help of the <code>&lt;timestamp></code>
    element. Here's an example.</p>
@@ -763,8 +763,7 @@ public class ExitWoes1 {
          <ol>
            <li>In prudent mode, file compression is not supported nor
            allowed. (We can't have one JVM writing to a file while
-           another JVM is compressing it.)
-           </li>
+           another JVM is compressing it.)  </li>
            
            <li>The <span class="option">File</span> property of
            <code>FileAppender</code> cannot be set and must be left
@@ -1357,7 +1356,7 @@ public interface RollingPolicy extends LifeCycle {
 
     <p>Size and time based archiving supports cleaning of old archive
     files. You just need to specify the number of periods to preserve
-    within the <code>&lt;MaxHistory></code> element. When your
+    with the <code>&lt;MaxHistory></code> element. When your
     application is stopped and restarted, logging will continue at the
     correct location, i.e. at the largest index number for the current
     period.
@@ -1475,7 +1474,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		which implements the <code>ILoggingEvent</code>
 		interface. Nevertheless, remote logging is non-intrusive as far as
 		the logging event is concerned.  On the receiving end after
-		desrialization, the event can be logged as if it were generated
+		deserialization, the event can be logged as if it were generated
 		locally. Multiple <code>SocketAppender</code> instances running on
 		different machines can direct their logging output to a central
 		log server whose format is fixed.  <code>SocketAppender</code>
@@ -1675,7 +1674,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		<p>Allow us to repeat for emphasis that serialization of logging
-		events is not intrusive. A desrialized event carries the same
+		events is not intrusive. A deserialized event carries the same
 		information as any other logging event. It can be manipulated as
 		if it were generated locally; except that serialized logging
 		events by default do not include caller data. Here is an example
@@ -1944,8 +1943,8 @@ Context ctx = new InitialContext(env);</pre>
 		store and forward messaging comes at a hefty price.  In return for
 		increased cost, JMS messaging provides decoupling of sender and
 		receiver. As long as the JMS provider is reachable, messages will
-		eventually arrive at destination.  However, what if the JMS server
-		is down or simply unreachable?
+		eventually arrive at the destination.  However, what if the JMS
+		server is down or simply unreachable?
 		</p>
 		
 		<p>According to the JMS specification, producers can mark a
@@ -2431,8 +2430,8 @@ Context ctx = new InitialContext(env);</pre>
 		
 		<p>You can pass the required parameters on the command line:</p>
 		
-<div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com 
-  -DsmtpHost=some_smtp_host src/main/java/chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
+<div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com -DsmtpHost=some_smtp_host \
+  src/main/java/chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
 </pre></div>
 
 		<p>Be sure to replace with values as appropriate for your
@@ -2464,7 +2463,7 @@ Context ctx = new InitialContext(env);</pre>
     "View&rarr;Message&nbsp;Body&nbsp;As&rarr;Original HTML" option
     must be set. Yahoo!Mail's support for HTML email, in particular
     its CSS support is very good. GMail on the other hand, while it
-    honors the basic HTML table structure, ignores the internal-CSS
+    honors the basic HTML table structure, ignores the internal CSS
     formatting. Gmail supports inline CSS formatitng but since inline
     CSS would make the resulting output too voluminous,
     <code>HTMLLayout</code> does not use inline CSS.
@@ -3175,9 +3174,9 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre>
 
 		<p>With this new configuration, sending 500 logging requests to
-		the aforementioned MySQL database around 0.5 seconds, for an
-		average time of 1 millisecond per request, i.e. equivalent to a
-		tenfold improvement in performance.
+		the aforementioned MySQL database takes around 0.5 seconds, for an
+		average of 1 millisecond per request, that is a tenfold
+		improvement in performance.
 		</p>
 
 		<h3><a name="SyslogAppender"
@@ -3416,7 +3415,7 @@ logger.debug("Alice says hello"); </p>
 		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>
 
 
-    <p>You can easily write your appender by sub-classing
+    <p>You can easily write your appender by subclassing
     <code>AppenderBase</code>.  It handles support for filters, status
     messages and other functionality shared by most appenders.  The
     derived class only needs to implement one method, namely
@@ -3506,8 +3505,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		
 		<p>The <a
 		href="../xref/chapter4/CountingConsoleAppender.html"><code>CountingConsoleAppender</code></a>
-		can be configured like any appender.  See sample configuration
-		file
+		can be configured like any other appender.  See sample
+		configuration file
 		<em>logback-examples/src/main/java/chapter4/countingConsole.xml</em>
 		for an example.
 		</p>
@@ -3531,7 +3530,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		entity by transmitting serialized <code>AccessEvent</code> objects
 		over the wire.  Remote logging is non-intrusive as far as the
 		access event is concerned.  On the receiving end after
-		desrialization, the event can be logged as if it were generated
+		deserialization, the event can be logged as if it were generated
 		locally.
 		</p>
 		<p>
@@ -3597,8 +3596,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		directory. There is a specific script for each of the most popular
 		database systems.  If the script for your particular type of
 		database system is missing, it should be quite easy to write one,
-		taking as example existing scripts. If you send them to us, we
-		will gladly include missing scripts in future releases.
+		taking as example one of the existing scripts. You are encouraged
+		to contribute such missing scripts back to the project.
 		</p>
 		
 		<p>The <em>access_event</em> table's fields are described below:</p>
