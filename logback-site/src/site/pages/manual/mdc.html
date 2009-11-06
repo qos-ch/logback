@@ -145,7 +145,7 @@ public class SimpleMDC {
 		same key will overwrite older values.  The code then proceeds to
 		configure logback.</p>
 
-    <p>For the sake of consiceness, we have the omitted the code that
+    <p>For the sake of conciseness, we have the omitted the code that
     configures logback with the configuration file <a
     href="http://tinyurl.com/4gy542">simpleMDC.xml</a>. Here is the
     relevant section from that file.
@@ -186,32 +186,31 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		
 		<h3>Advanced Use</h3>
 		
-		<p>
-			Mapped Diagnostic Contexts shine brightest within client server
-			architectures.  Typically, multiple clients will be served by
-			multiple threads on the server.  Although the methods in the
-			<code>MDC</code> class are static, the diagnostic context is
-			managed on a per thread basis, allowing each server thread to
-			bear a distinct <code>MDC</code> stamp. <code>MDC</code>
-			operations such as <code>put()</code> and <code>get()</code>
-			affect only the <code>MDC</code> of the <em>current</em> thread,
-			and the children of the current thread. The <code>MDC</code> in
-			other threads remain unaffected. Given that <code>MDC</code>
-			information is managed on a per thread basis, each thread will
-			have its own copy of the <code>MDC</code>.  Thus, there is no
-			need for the developer to worry about thread-safety or
-			synchronization when programming with the <code>MDC</code>
-			because it safely and transparently handles these issues.
+		<p>Mapped Diagnostic Contexts shine brightest within client server
+		architectures.  Typically, multiple clients will be served by
+		multiple threads on the server.  Although the methods in the
+		<code>MDC</code> class are static, the diagnostic context is
+		managed on a per thread basis, allowing each server thread to bear
+		a distinct <code>MDC</code> stamp. <code>MDC</code> operations
+		such as <code>put()</code> and <code>get()</code> affect only the
+		<code>MDC</code> of the <em>current</em> thread, and the children
+		of the current thread. The <code>MDC</code> in other threads
+		remain unaffected. Given that <code>MDC</code> information is
+		managed on a per thread basis, each thread will have its own copy
+		of the <code>MDC</code>.  Thus, there is no need for the developer
+		to worry about thread-safety or synchronization when programming
+		with the <code>MDC</code> because it handles these issues safely
+		and transparently.
 		</p>
 
-		<p>
-			The next example is somewhat more advanced. 
-			It shows how the 	<code>MDC</code> can be used in a client-server setting. 
-			The server-side implements the <code>NumberCruncher</code> interface shown in 
-			Example 7.2 below. <code>The NumberCruncher</code> interface contains a single 
-			method named <code>factor()</code>. Using RMI technology, client invokes the 
-			<code>factor()</code> method of the server application to retrieve the distinct 
-			factors of an integer.
+		<p>The next example is somewhat more advanced.  It shows how the
+		<code>MDC</code> can be used in a client-server setting.  The
+		server-side implements the <code>NumberCruncher</code> interface
+		shown in Example 7.2 below. <code>The NumberCruncher</code>
+		interface contains a single method named
+		<code>factor()</code>. Using RMI technology, the client invokes
+		the <code>factor()</code> method of the server application to
+		retrieve the distinct factors of an integer.
 		</p>
 
 <em>Example 7.2: The service interface (<a href="../xref/chapter7/NumberCruncher.html">
@@ -315,7 +314,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
         } while ((n % i) == 0);
       }
 
-      // Placing artificial delays in tight-loops will also lead to
+      // Placing artificial delays in tight loops will also lead to
       // sub-optimal resuts. :-)
       delay(100);
     }
@@ -390,20 +389,22 @@ public class NumberCruncherServer extends UnicastRemoteObject
   }
 }</pre>
 
-		<p>
-				The implementation of the <code>factor(int number)</code> method is 
-				of particular relevance. It starts by putting the client's hostname into the 
-				<code>MDC</code> under the key <em>client</em>. The number to factor, 
-				as requested by the client, is put into the <code>MDC</code> under the key 
-				<em>number</em>. After computing the distinct factors of the integer 
-				parameter, the result is returned to the client. Before returning the 
-				result however, the values for the <em>client</em> and <em>number</em> are 
-				cleared by calling the <code>MDC.remove()</code> method. Normally, 
-				a <code>put()</code> operation should be balanced by the corresponding 
-				<code>remove()</code> operation. Otherwise, the <code>MDC</code> will 
-				contain stale values for certain keys. We would recommend that whenever 
-				possible <code>remove()</code> operations be performed within finally blocks, 
-				ensuring their invocation regardless of the execution path of the code.
+		<p>The implementation of the <code>factor(int number)</code>
+		method is of particular relevance. It starts by putting the
+		client's hostname into the <code>MDC</code> under the key
+		<em>client</em>. The number to factor, as requested by the client,
+		is put into the <code>MDC</code> under the key
+		<em>number</em>. After computing the distinct factors of the
+		integer parameter, the result is returned to the client. Before
+		returning the result however, the values for the <em>client</em>
+		and <em>number</em> are cleared by calling the
+		<code>MDC.remove()</code> method. Normally, a <code>put()</code>
+		operation should be balanced by the corresponding
+		<code>remove()</code> operation. Otherwise, the <code>MDC</code>
+		will contain stale values for certain keys. We would recommend
+		that whenever possible, <code>remove()</code> operations be
+		performed within finally blocks, ensuring their invocation
+		regardless of the execution path of the code.
 		</p>	
 		
 		<p>
@@ -519,12 +520,12 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		</p>
 		
 		<p>Within the servlet filter's <code>doFilter</code> method, we
-    	can retreive the relevant user data through the request (or a
-    	cookie threin), store it the <code>MDC</code>.  Subsequent
-    	processing by other filters and servlets will automatically
-    	benefit from the MDC data that was stored previously. Finally,
-    	when our servlet filter ragains control, we have an oppurtunity
-    	to clean MDC data.
+		can retrieve the relevant user data through the request (or a
+		cookie therein), store it the <code>MDC</code>.  Subsequent
+		processing by other filters and servlets will automatically
+		benefit from the MDC data that was stored previously. Finally,
+		when our servlet filter regains control, we have an opportunity to
+		clean MDC data.
 		</p>
 		
 		<p>Here is an implementation of such a filter:</p>
@@ -563,7 +564,7 @@ public class UserServletFilter implements Filter {
     
     Principal principal = req.getUserPrincipal();
     // Please note that we could have also used a cookie to 
-    // retreive the user name
+    // retrieve the user name
 
     if (principal != null) {
       String username = principal.getName();
@@ -594,12 +595,13 @@ public class UserServletFilter implements Filter {
   }
 }</pre>
 
-	<p>
-		When the filter's <code>doFilter()</code> method is called, is first looks for a
-		<code>java.security.Principal</code> object in the request. This object contains 
-		the name of the currently authenticated user. In case the user principal is not set, 
-		the filter looks for a session attribute matching a given key (here <em>username</em>).
-		If a user information is found, it is registered in the <code>MDC</code>.
+	<p>When the filter's <code>doFilter()</code> method is called, it
+	first looks for a <code>java.security.Principal</code> object in the
+	request. This object contains the name of the currently
+	authenticated user. In case the user principal is not set, the
+	filter looks for a session attribute matching a given key (here
+	<em>username</em>).  If a user information is found, it is
+	registered in the <code>MDC</code>.
 	</p>
 		
 	<p>Once the filter chain has completed, the filter removes the user
@@ -609,18 +611,18 @@ public class UserServletFilter implements Filter {
   <p>The approach we just outlined sets MDC data only for the duration
   of the request and only for the thread processing it. Other threads
   are unaffected. Furthermore, any given thread will contain correct
-  MDC data any point in time.</p>
+  MDC data at any point in time.</p>
 		
 
 
   <h3>MDC And Managed Threads</h3>
 
-  <p>A copy of mapped diagnostic context can not always be inherited
-  by worker thread from the initiating thread. This is the case when
-  <code>java.util.concurrent.Executors</code> is used for thread
-  management. For instance, <code>newCachedThreadPool</code> method
-  creates a <code>ThreadPoolExecutor</code> and like other thread
-  pooling code it has intricate thread creation logic.
+  <p>A copy of the mapped diagnostic context can not always be
+  inherited by worker threads from the initiating thread. This is the
+  case when <code>java.util.concurrent.Executors</code> is used for
+  thread management. For instance, <code>newCachedThreadPool</code>
+  method creates a <code>ThreadPoolExecutor</code> and like other
+  thread pooling code, it has intricate thread creation logic.
   </p>
 
   <p>In such cases, it is recommended that
@@ -628,8 +630,8 @@ public class UserServletFilter implements Filter {
   (master) thread before submitting a task to the executor.  When the
   task runs, as its first action, it should invoke
   <code>MDC.setContextMapValues()</code> to associate the stored copy
-  of the orinal MDC values with the new <code>Executor</code> managed
-  thread.
+  of the original MDC values with the new <code>Executor</code>
+  managed thread.
   </p>
 
 
