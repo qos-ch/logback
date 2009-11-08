@@ -86,7 +86,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
         } while ((n % i) == 0);
       }
 
-      // Placing artificial delays in tight-loops will also lead to
+      // Placing artificial delays in tight loops will also lead to
       // sub-optimal resuts. :-)
       delay(100);
     }

@@ -105,14 +105,14 @@
 		<p>Creating your own filter is not difficult. All you have to do
 		is extend the <code>Filter</code> abstract class. The only method
 		that you will have to implement is the <code>decide()</code>
-		method, allowing you to contentrate only on the behaviour of your
+		method, allowing you to concentrate only on the behaviour of your
 		filter.
 		</p>
 		
 		<p>The next class is all it takes to implement one's own
 		filter. All it does is accept logging events who's message
 		contains the String <em>sample</em>. The filter will give a
-		neutral response to any logging event who's message does not
+		neutral response to any logging event whose message does not
 		contain this String.
 		</p>
 		
@@ -246,7 +246,7 @@ public class SampleFilter extends Filter {
     href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
     <code>EvaluatorFilter</code></a> class. These filters use an <a
     href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-    <code>EventEvaluator</code></a> object to decide wether to accept
+    <code>EventEvaluator</code></a> object to decide whether to accept
     or deny a request. This allows unprecedented flexibility in the
     way that you can affect filtering of logging events.
     </p>
@@ -256,7 +256,7 @@ public class SampleFilter extends Filter {
     and to specify an <em>evaluation expression</em>, that is a
     boolean expression in regular Java syntax. These evaluation
     expressions are compiled on-the-fly during the interpretation of
-    the configration file. It is the users reponsibility to ensure
+    the configuration file. It is the users reponsibility to ensure
     that the expression is boolean, that it evaluates to true or
     false.  In evaluation expressions, logback implicitly exposes
     various fields of a logging event as variables. The list of these
@@ -327,9 +327,9 @@ public class SampleFilter extends Filter {
 				<td>mdc
 				</td>
 				<td><code>Map</code></td>
-				<td>A map containing all the MDC values at the time of the 
-				creation of the logging event. A value can be access by using the
-				following expression: <em>mdc.get("myKey")</em>.
+				<td>A map containing all the MDC values at the time of the
+				creation of the logging event. A value can be accessed by
+				using the following expression: <em>mdc.get("myKey")</em>.
 				</td>
 			</tr>
 			<tr  class="alt">
@@ -391,7 +391,7 @@ public class SampleFilter extends Filter {
     <p>The <a
     href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
     application issues ten logging requests, numbered 0 to 9. Let us
-    rist run <code>FilterEvents</code> class without any filters:
+    first run <code>FilterEvents</code> class without any filters:
 		</p>
 		
 <div class="source"><pre>
@@ -415,7 +415,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 
 		<p>Suppose that we want to get rid of the billing information.
 		The <em>basicEventEvaluator.xml</em> configuration file just
-		desribed, does exactly what we want.</p>
+		described, does exactly what we want.</p>
 
     <p>Running with filters:</p>
     <p class="source">java chapter6.FilterEvents src/main/java/chapter6/basicEventEvaluator.xml</p>
@@ -442,7 +442,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     	the logging event.
     </p>
     
-    <p>Overall, they work much like the previously mentionned
+    <p>Overall, they work much like the previously mentioned
     filters. However, there are two main differences between
     <code>Filter</code> and <code>TurboFilter</code> objects.
     </p>
@@ -458,18 +458,18 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
    	<code>TurboFilter</code> objects do not require the instantiation
    	of a logging event to filter a logging request. As such, turbo
    	filters are intended for high performance filtering of logging
-   	event, even before they are created.
+   	events, even before they are created.
     </p>
 
    	
    	<h3>Implementing your own TurboFilter</h3>
     
-    <p>
-      To create your own <code>TurboFilter</code> component, just extend the 
-      <code>TurboFilter</code> abstract class. As previously, when implementing
-      a custumized filter object, developing a custom <code>TurboFilter</code> only
-      ask that one implement the <code>decide()</code> method. In the next example, we
-      create a slightly more complex filter:
+    <p>To create your own <code>TurboFilter</code> component, just
+    extend the <code>TurboFilter</code> abstract class. As previously,
+    when implementing a customized filter object, developing a custom
+    <code>TurboFilter</code> only asks that one implement the
+    <code>decide()</code> method. In the next example, we create a
+    slightly more complex filter:
     </p>
     
 <em>Example 6.6: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
@@ -560,9 +560,9 @@ public class SampleTurboFilter extends TurboFilter {
    	<p>Logback classic ships with several <code>TurboFilter</code>
    	classes ready for use.  The <a
    	href="../xref/ch/qos/logback/classic/turbo/MDCFilter.html"><code>MDCFilter</code></a>
-   	check the presence of a given value in the MDC whereas <a
+   	checks the presence of a given value in the MDC whereas <a
    	href="../apidocs/ch/qos/logback/classic/turbo/DynamicThresholdFilter.html"><code>DynamicThresholdFilter</code></a>
-   	allows filtering based on MDC key/level thresold associations. On
+   	allows filtering based on MDC key/level threshold associations. On
    	the other hand, <a
    	href="../xref/ch/qos/logback/classic/turbo/MarkerFilter.html"><code>MarkerFilter</code></a>
    	checks for the presence of a specific marker associated with the
@@ -641,7 +641,7 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 		requirements and was accepted.
 		</p>    
 		
-		<p>On the other hand, the 6th request, that is a <em>ERROR</em>
+		<p>On the other hand, the 6th request, that is an <em>ERROR</em>
 		level request should have been displayed. But it satisfied the
 		second <code>TurboFilter</code> whose <span
 		class="option">OnMatch</span> option is set to <em>DENY</em>.
@@ -753,7 +753,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
     handle access' implementation of logging events:
     <code>AccessEvent</code>.  Thus, a customized filter for logback
     access follows strictly the same rules as those for
-    logback-classic, except for the event type recieved as parameter.
+    logback-classic, except for the event type received as parameter.
     On the other hand, <code>TurboFilter</code> objects are supported
     by logback-access.
     </p>
