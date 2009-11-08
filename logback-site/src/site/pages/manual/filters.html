@@ -37,67 +37,61 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
 
 		
-		<p>As we have seen, logback has several built-in ways for
-			filtering log requests, including the context-wide filter,
-			logger-level selection rule and appender filters.  These provide
-			high performance filtering for the most commonly encountered
-			cases. These filters are largely inspired from Linux ipchains or
-			iptables as they are called in more recent Linux kernels.
-			Logback filters are based on ternary logic allowing them to be
-			assembled or chained together to compose an arbitrarily complex
-			filtering policy.
+		<p>In the preceding chapters, the <a
+		href="architecture.html#basic_selection">basic selection rule</a>,
+		which lies at the heart of logback-classic, has been presented. In
+		this chapter, additional filtering methods will be introduced.
+    </p>
+	
+
+    <p>Logback filters are based on ternary logic allowing them to be
+    assembled or chained together to compose an arbitrarily complex
+    filtering policy.  They are largely inspired by Linux's iptables.
 		</p>
 
     <script src="../templates/setup.js" type="text/javascript"></script>
 
-		<p>
-			There are two main types of filters, namely <code>Filter</code> and 
-			<code>TurboFilter</code>.
+		<h2>In logback-classic</h2>
+
+
+		<p>Logback-classic offers two types of filters, regular filters
+		and turbo filters.
 		</p>
 		
-		<h2>Logback Classic</h2>
-		
-		<a name="Filter"></a>
+    <h3><a name="filter" href="#filter">Regular filters</a></h3>
 
-		<p><code>Filter</code> objects all extend the <a
+		<p>Any regular logback-classic filter extends the <a
 		href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a>
-		abstract class. The <code>decide(Object event)</code> method is
-		passed a newly created <code>ILoggingEvent</code> instance.
+		abstract class which consists of the <code>decide(Object
+		event)</code> method taking an <code>ILoggingEvent</code> instance
+		as parameter. Logback-classic will ask any given filter to decide
+		what to do with newly created events.
 		</p>
 		
-		<h3>Filter chains</h3>
 
-		<p>This abstract class assumes that filters are organized in a
-		linear chain.  Its member field next points to the next filter in
-		the chain, or <code>null</code> if there are no further filters in
-		the chain.  Figure 6.1 depicts a sample filter chain consisting of
-		three filters.
-		</p>
-		
-		<img src="images/chapter6/filterChain.gif" alt="A sample filter chain"/>
-
-    <p>Filters are based on ternary logic. The <code>decide(Object
-    event)</code> method of each filter is called in sequence.  This
-    method returns one of the <a
-    href="../xref/ch/qos/logback/core/spi/FilterReply.html"><code>FilterReply</code></a>
-    enumeration values, i.e. one of <code>FilterReply.DENY</code>,
-    <code>FilterReply.NEUTRAL</code> or
-    <code>FilterReply.ACCEPT</code>.  If the returned value is
-    <code>FilterReply.DENY</code>, then the log event is dropped
-    immediately without consulting the remaining filters. If the value
-    returned is <code>FilterReply.NEUTRAL</code>, then the next filter
-    in the chain is consulted. If there are no further filters to
-    consult, then the logging event is processed normally.  If the
-    returned value is <code>FilterReply.ACCEPT</code>, then the
-    logging event is processed immediately skipping the remaining
-    filters.
+		<p>Filters are organized as an ordered list and are based on
+		ternary logic. The <code>decide(Object event)</code> method of
+		each filter is called in sequence.  This method returns one of the
+		<a
+		href="../xref/ch/qos/logback/core/spi/FilterReply.html"><code>FilterReply</code></a>
+		enumeration values, i.e. one of <code>FilterReply.DENY</code>,
+		<code>FilterReply.NEUTRAL</code> or
+		<code>FilterReply.ACCEPT</code>.  If the value returned by
+		<code>decide</code>() is <code>FilterReply.DENY</code>, then the
+		log event is dropped immediately without consulting the remaining
+		filters. If the value returned is
+		<code>FilterReply.NEUTRAL</code>, then the next filter in the
+		chain is consulted. If there are no further filters to consult,
+		then the logging event is processed normally.  If the returned
+		value is <code>FilterReply.ACCEPT</code>, then the logging event
+		is processed immediately skipping the remaining filters.
     </p>
     
-    <p>In logback-classic <code>Filter</code> objects can only be
-    added to <code>Appender</code> instances. By adding filters to an
-    appender you can filter events by various criteria, such as the
-    contents of the log message, the contents of the MDC, the time of
-    day or any other part of the logging event.
+    <p>In logback-classic <code>Filter</code> objects can be added to
+    <code>Appender</code> instances. By adding filters to an appender
+    you can filter events by various criteria, such as the contents of
+    the log message, the contents of the MDC, the time of day or any
+    other part of the logging event.
     </p>
     
 		<h3>Implementing your own Filter</h3>
@@ -745,7 +739,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
     because only 5 repetitions are allowed by default.
     </p>
 
-    <h2>Logback-access</h2>
+    <h2>In logback-access</h2>
     
     <p>Logback-access offers most of the features available with
     logback-classic. <code>Filter</code> objects are available and
