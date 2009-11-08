@@ -27,7 +27,7 @@ import org.slf4j.helpers.BogoPerf;
 import ch.qos.logback.classic.net.NOPOutputStream;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventWithParametersBuilder;
-import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder; 
+import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.testUtil.Env;
 
@@ -89,18 +89,17 @@ public class LoggingEventSerializationPerfTest {
     }
     TrivialLoggingEventBuilder builder = new TrivialLoggingEventBuilder();
 
-    doLoop(builder, LOOP_LEN);
-    noos.reset();
-    double avg = doLoop(builder, LOOP_LEN);     noos.reset();
-    avg += doLoop(builder, LOOP_LEN);     noos.reset();
-    avg += doLoop(builder, LOOP_LEN);   
+    for (int i = 0; i < 3; i++) {
+      doLoop(builder, LOOP_LEN);
+      noos.reset();
+    }
+    double rt = doLoop(builder, LOOP_LEN);
+    System.out
+        .println("avetage time per logging event " + rt + " nanoseconds");
 
-    avg = avg/3;
-
-    System.out.println("avetage time per logging event "+avg+" nanoseconds");
-                         
-    long averageSize = (long) (noos.size()/(LOOP_LEN));
-    System.out.println("noos size "+noos.size()+ " average size="+averageSize);
+    long averageSize = (long) (noos.size() / (LOOP_LEN));
+    System.out.println("noos size " + noos.size() + " average size="
+        + averageSize);
     double averageSizeLimit = 60;
 
     assertTrue("average size " + averageSize + " should be less than "
@@ -108,10 +107,9 @@ public class LoggingEventSerializationPerfTest {
 
     // the reference was computed on Orion (Ceki's computer)
     long referencePerf = 5000;
-    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+    BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
-  
-  
+
   @Test
   public void testPerformanceWithParameters() {
     if (Env.isLinux()) {
@@ -119,19 +117,23 @@ public class LoggingEventSerializationPerfTest {
     }
     LoggingEventWithParametersBuilder builder = new LoggingEventWithParametersBuilder();
 
-    doLoop(builder, LOOP_LEN);
-    noos.reset();
-    double avg = doLoop(builder, LOOP_LEN);
-    long averageSize = (long) (noos.size()/(LOOP_LEN));
+    // warm up
+    for (int i = 0; i < 3; i++) {
+      doLoop(builder, LOOP_LEN);
+      noos.reset();
+    }
+    double rt = doLoop(builder, LOOP_LEN);
+    long averageSize = (long) (noos.size() / (LOOP_LEN));
 
-    System.out.println("noos size "+noos.size()+ " average size="+averageSize);
-    
+    System.out.println("noos size " + noos.size() + " average size="
+        + averageSize);
+
     double averageSizeLimit = 160;
     assertTrue("averageSize " + averageSize + " should be less than "
         + averageSizeLimit, averageSizeLimit > averageSize);
 
     // the reference was computed on Orion (Ceki's computer)
     long referencePerf = 7000;
-    BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+    BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 }
