@@ -113,6 +113,23 @@ public class JaninoEventEvaluatorTest  {
   }
 
   @Test
+  public void testWithNullMarker_LBCORE_118() throws Exception {
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setExpression("marker.contains(\"BLUE\")");
+    jee.setContext(loggerContext);
+    jee.addMatcher(matcherX);
+    jee.start();
+
+    ILoggingEvent event = makeLoggingEvent(null);
+    try {
+      jee.evaluate(event);
+      fail("We should not reach this point");
+    } catch (EvaluationException ee) {
+
+    }
+  }
+
+  @Test
   public void testWithNullMarker() throws Exception {
     JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("marker.contains(\"BLUE\")");
@@ -129,6 +146,8 @@ public class JaninoEventEvaluatorTest  {
     }
   }
 
+  
+  
   @Test
   public void testComplex() throws Exception {
 

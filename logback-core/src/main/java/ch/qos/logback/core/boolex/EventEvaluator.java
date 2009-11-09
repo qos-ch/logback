@@ -17,36 +17,35 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * An EventEvaluator has the responsibility to evaluate whether a given an event
- * matches a given criteria. 
+ * Evaluates whether a given an event matches user-specified criteria.
  * 
- * <p>Implementations are free to evaluate the event as they see fit. In 
+ * <p>
+ * Implementations are free to evaluate the event as they see fit. In
  * particular, the evaluation results <em>may</em> depend on previous events.
- *    
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 
 public interface EventEvaluator<E> extends ContextAware, LifeCycle {
-  
 
   /**
-   * Evaluates whether the event passed as parameter matches this evaluator's 
-   * matching criteria.
+   * Evaluates whether the event passed as parameter matches some user-specified
+   * criteria.
    * 
-   * <p>The <code>Evaluator</code> instance is free to evaluate the event as
-   * it pleases. In particular, the evaluation results <em>may</em> depend on 
-   * previous events. 
+   * <p>
+   * The <code>Evaluator</code> is free to evaluate the event as it pleases. In
+   * particular, the evaluation results <em>may</em> depend on previous events.
    * 
-   * @param event The event to evaluate
-   * @return true if there is a match, false otherwise. 
-   * @throws NullPointerException can be thrown in presence of null values
-   * @throws EvaluationException Thrown during evaluation
+   * @param event
+   *          The event to evaluate
+   * @return true if there is a match, false otherwise.
+   * @throws NullPointerException
+   *           can be thrown in presence of null values
+   * @throws EvaluationException
+   *           may be thrown during faulty evaluation
    */
   boolean evaluate(E event) throws NullPointerException, EvaluationException;
-  
-  
-  
-  
+
   /**
    * Evaluators are named entities.
    * 
@@ -54,7 +53,6 @@ public interface EventEvaluator<E> extends ContextAware, LifeCycle {
    */
   public String getName();
 
-  
   /**
    * Evaluators are named entities.
    */

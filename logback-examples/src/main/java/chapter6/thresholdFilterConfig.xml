@@ -2,14 +2,19 @@
 
 <configuration>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+
+    <!-- deny all events with a level below INFO, that is TRACE and DEBUG -->
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>INFO</level>
     </filter>
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <layout>
       <pattern>%-4relative [%thread] %-5level %logger{30} - %msg%n</pattern>
     </layout>
   </appender>
+
+  
   <root level="DEBUG">
     <appender-ref ref="CONSOLE" />
   </root>
+
 </configuration>

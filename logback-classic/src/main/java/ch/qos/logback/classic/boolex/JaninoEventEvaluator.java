@@ -52,7 +52,6 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
     DEFAULT_PARAM_NAME_LIST.add("marker");
     DEFAULT_PARAM_NAME_LIST.add("mdc");
     DEFAULT_PARAM_NAME_LIST.add("throwable");
-
     
     DEFAULT_PARAM_TYPE_LIST.add(int.class);
     DEFAULT_PARAM_TYPE_LIST.add(int.class);

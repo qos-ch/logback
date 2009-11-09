@@ -19,40 +19,36 @@ import ch.qos.logback.core.filter.AbstractMatcherFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * A class that filters events depending on their level.
- * 
- * One can specify a level and the behaviour of the filter when 
- * said level is encountered in a logging event.
- *
- * For more information about filters, please refer to the online manual at
- * http://logback.qos.ch/manual/filters.html
+ * A class that filters events by the level equality.
+
+ * <p>
+ * For more information about this filter, please refer to the online manual at
+ * http://logback.qos.ch/manual/filters.html#levelFilter
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LevelFilter extends AbstractMatcherFilter {
+public class LevelFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
   Level level;
-  
+
   @Override
-  public FilterReply decide(Object eventObject) {
+  public FilterReply decide(ILoggingEvent event) {
     if (!isStarted()) {
       return FilterReply.NEUTRAL;
     }
-    
-    ILoggingEvent event = (ILoggingEvent)eventObject;
-    
+
     if (event.getLevel().equals(level)) {
       return onMatch;
     } else {
       return onMismatch;
     }
   }
-  
+
   public void setLevel(String level) {
     this.level = Level.toLevel(level);
   }
-  
+
   public void start() {
     if (this.level != null) {
       super.start();

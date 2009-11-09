@@ -214,9 +214,7 @@
               *
             </Import-Package>
 
-            <Bundle-RequiredExecutionEnvironment>
-              J2SE-1.5
-            </Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

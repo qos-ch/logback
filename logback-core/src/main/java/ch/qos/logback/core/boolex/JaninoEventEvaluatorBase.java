@@ -18,7 +18,14 @@ import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;
 
-abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E>{
+/**
+ * Abstract class which sets the groundwork for janino based evaluations.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * 
+ * @param <E>
+ */
+abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> {
 
   static Class EXPRESSION_TYPE = boolean.class;
   static Class[] THROWN_EXCEPTIONS = new Class[1];
@@ -27,7 +34,6 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E>{
   static {
     THROWN_EXCEPTIONS[0] = EvaluationException.class;
   }
-  
 
   private String expression;
 
@@ -60,7 +66,8 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E>{
 
   public boolean evaluate(E event) throws EvaluationException {
     if (!isStarted()) {
-      throw new IllegalStateException("Evaluator [" + name + "] was called in stopped state");
+      throw new IllegalStateException("Evaluator [" + name
+          + "] was called in stopped state");
     }
     try {
       Boolean result = (Boolean) ee.evaluate(getParameterValues(event));

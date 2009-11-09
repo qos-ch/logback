@@ -19,30 +19,28 @@ import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * A class that filters events depending on their level.
+ * Filters events below the threshold level.
  * 
- * All events with a level under or above the specified
- * level will be denied, while all events with a level
+ * Events with a level below the specified
+ * level will be denied, while events with a level
  * equal or above the specified level will trigger a
  * FilterReply.NEUTRAL result, to allow the rest of the
  * filter chain process the event.
  * 
  * For more information about filters, please refer to the online manual at
- * http://logback.qos.ch/manual/filters.html
+ * http://logback.qos.ch/manual/filters.html#thresholdFilter
  *
  * @author S&eacute;bastien Pennec
  */
-public class ThresholdFilter extends Filter {
+public class ThresholdFilter extends Filter<ILoggingEvent> {
 
   Level level;
   
   @Override
-  public FilterReply decide(Object eventObject) {
+  public FilterReply decide(ILoggingEvent event) {
     if (!isStarted()) {
       return FilterReply.NEUTRAL;
     }
-    
-    ILoggingEvent event = (ILoggingEvent)eventObject;
     
     if (event.getLevel().isGreaterOrEqual(level)) {
       return FilterReply.NEUTRAL;

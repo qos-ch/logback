@@ -60,69 +60,62 @@
 		
     <h3><a name="filter" href="#filter">Regular filters</a></h3>
 
-		<p>Any regular logback-classic filter extends the <a
+		<p>Regular logback-classic filters extend the <a
 		href="../xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a>
-		abstract class which consists of the <code>decide(Object
-		event)</code> method taking an <code>ILoggingEvent</code> instance
-		as parameter. Logback-classic will ask any given filter to decide
-		what to do with newly created events.
+		abstract class which essentially consists of a single method,
+		<code>decide()</code> method taking an <code>ILoggingEvent</code>
+		instance as parameter.
 		</p>
 		
 
 		<p>Filters are organized as an ordered list and are based on
-		ternary logic. The <code>decide(Object event)</code> method of
-		each filter is called in sequence.  This method returns one of the
-		<a
+		ternary logic. The <code>decide(ILoggingEvent event)</code> method
+		of each filter is called in sequence.  This method returns one of
+		the <a
 		href="../xref/ch/qos/logback/core/spi/FilterReply.html"><code>FilterReply</code></a>
-		enumeration values, i.e. one of <code>FilterReply.DENY</code>,
-		<code>FilterReply.NEUTRAL</code> or
-		<code>FilterReply.ACCEPT</code>.  If the value returned by
-		<code>decide</code>() is <code>FilterReply.DENY</code>, then the
+		enumeration values, i.e. one of <code>DENY</code>,
+		<code>NEUTRAL</code> or <code>ACCEPT</code>.  If the value
+		returned by <code>decide</code>() is <code>DENY</code>, then the
 		log event is dropped immediately without consulting the remaining
-		filters. If the value returned is
-		<code>FilterReply.NEUTRAL</code>, then the next filter in the
-		chain is consulted. If there are no further filters to consult,
-		then the logging event is processed normally.  If the returned
-		value is <code>FilterReply.ACCEPT</code>, then the logging event
-		is processed immediately skipping the remaining filters.
+		filters. If the value returned is <code>NEUTRAL</code>, then the
+		next filter in the list is consulted. If there are no further
+		filters to consult, then the logging event is processed normally.
+		If the returned value is <code>ACCEPT</code>, then the logging
+		event is processed immediately skipping the invocation of the
+		remaining filters.
     </p>
     
-    <p>In logback-classic <code>Filter</code> objects can be added to
-    <code>Appender</code> instances. By adding filters to an appender
-    you can filter events by various criteria, such as the contents of
-    the log message, the contents of the MDC, the time of day or any
-    other part of the logging event.
+    <p>In logback-classic, filters can be added to
+    <code>Appender</code> instances. By adding one or more filters to
+    an appender, you can filter events by arbitrary criteria, such as
+    the contents of the log message, the contents of the MDC, the time
+    of day or any other part of the logging event.
     </p>
     
 		<h3>Implementing your own Filter</h3>
 		
-		<p>Creating your own filter is not difficult. All you have to do
-		is extend the <code>Filter</code> abstract class. The only method
-		that you will have to implement is the <code>decide()</code>
-		method, allowing you to concentrate only on the behaviour of your
-		filter.
+		<p>Creating your own filter is easy. All you have to do is extend
+		the <code>Filter</code> abstract class and implement the
+		<code>decide()</code> method.
 		</p>
 		
-		<p>The next class is all it takes to implement one's own
-		filter. All it does is accept logging events who's message
-		contains the String <em>sample</em>. The filter will give a
-		neutral response to any logging event whose message does not
-		contain this String.
+		<p>The SampleFilter class shown below provides an example. Its
+		<code>decide</code> method returns ACCEPT for logging events
+		containing the string "sample" in its message field. For other
+		events, the value NEUTRAL is returned.
 		</p>
 		
 <em>Example 6.1: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
 <pre class="prettyprint source">package chapter6;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
-public class SampleFilter extends Filter {
+public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
   @Override
-  public FilterReply decide(Object eventObject) {
-    LoggingEvent event = (LoggingEvent)eventObject;
-    
+  public FilterReply decide(ILoggingEvent event) {    
     if (event.getMessage().contains("sample")) {
       return FilterReply.ACCEPT;
     } else {
@@ -131,16 +124,14 @@ public class SampleFilter extends Filter {
   }
 }</pre>
 
-		<p>
-			What is shown above might be the simplest filter. Like any filter, it
-			can be attached to any appender using the &lt;Filter&gt; element, as
-			shown below:
+		<p>The configutation files shown next attaches a
+		<code>SampleFilter</code> to a <code>ConsoleAppener</code>.
 		</p>
 
 <em>Example 6.2: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
     <b>&lt;Filter class="chapter6.SampleFilter" /></b>
 
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
@@ -155,34 +146,41 @@ public class SampleFilter extends Filter {
   &lt;/root>
 &lt;/configuration></pre>
 
-		<p>Thanks to Joran, logback's powerful configuration framework,
-		adding an option to such a filter is very easy. Just add the
-		corresponding getter and setter methods in the class, and you can
-		specify the option's value in an xml element, nested within the
-		<em>filter</em> element.
+		<p>With the help of Joran, logback's configuration framework,
+		specifiying properties or sub-componenets to filters is also
+		easy. After adding the corresponding setter method in the filter
+		class, specify the value of the property in an xml element named
+		after the property, nesting it within <code>&lt;filter></code>
+		element. 
 		</p>
 		
-		<p>In case you want to implement a filter that provides different
-		behaviour depending on the result of its test (say, a filter that
-		would accept or deny an event depending on the content of its
-		message), you can extend the
-			<a href="../xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">
-			<code>AbstractMatcherFilter</code></a> class. It will provide
-			your filter with two properties: <em>OnMatch</em> and
-			<em>OnMismatch</em>, both of which can be configured like any
-			other property.
-		</p>
+		<p>Often times, the desired filter logic consists of two
+		orthogonal parts, a match/mismatch test and a response depending
+		on the match/mismatch. For example, for a given test, say message
+		equals "foobar", one filter might respond ACCEPT on match and
+		NEUTRAL on mismatch, and another filter might respond NEUTRAL on
+		match and DENY on mismatch. 
+    </p>
+
+    <p>Taking notice of this orthogonality, logback ships with the <a
+    href="../xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">
+    <code>AbstractMatcherFilter</code></a> class which provides a
+    useful skeleton for specifiying the appropriate response on match
+    and on mistmatch, with the help of two properties, named
+    <em>OnMatch</em> and <em>OnMismatch</em>. Most of the regular
+    filters included in logback are derived from
+    <code>AbstractMatcherFilter</code>.
+    </p>
 		
-		<h3>Logback Filters</h3>
+		<h3><a name="levelFilter" href="#levelFilter">LevelFilter</a></h3>
 		
-		<p>At the moment, there are two filters that ship with logback. <a
-		href="../xref/ch/qos/logback/classic/LevelFilter.html">
-		<code>LevelFilter</code></a> provides event filtering based on a
-		<code>Level</code> value.  If the event's level is equal to the
-		configured level, the filter accepts or denies the event,
-		depending on its configuration. It allows you to choose the
-		behaviour of logback for a precise given level. Here is a sample
-		configuration that uses <code>LevelFilter</code>.
+		<p><a href="../xref/ch/qos/logback/classic/LevelFilter.html">
+		<code>LevelFilter</code></a> filters events based on exact level
+		matching. If the event's level is equal to the configured level,
+		the filter accepts or denies the event, depending on the
+		configuration of the <span class="option">onMatch</span> and <span
+		class="option">onMismatch</span> properties. Here is a sample
+		configuration file.
 		</p>
 		
 <em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
@@ -194,7 +192,7 @@ public class SampleFilter extends Filter {
       &lt;onMatch>ACCEPT&lt;/onMatch>
       &lt;onMismatch>DENY&lt;/onMismatch>
     &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+    &lt;layout>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger{30} - %msg%n
       &lt;/pattern>
@@ -205,23 +203,27 @@ public class SampleFilter extends Filter {
   &lt;/root>
 &lt;/configuration></pre>
 
-		<p>
-			The second filter that ships with logback is 
-			<a href="../xref/ch/qos/logback/classic/ThresholdFilter.html">
-			<code>ThresholdFilter</code></a>.
-			It is also based on level value, but acts as a threshold to deny any request
-			whose level is not equal or greater to the configured level. A sample
-			use of the <code>ThresholdFilter</code> is shown below.
+   <h3><a name="thresholdFilter" href="#thresholdFilter">ThresholdFilter</a></h3>
+
+		<p>The <a
+		href="../xref/ch/qos/logback/classic/ThresholdFilter.html">
+		<code>ThresholdFilter</code></a> filters events below the
+		specified threshold. For events of level equal or above the
+		threshold, <code>ThresholdFilter</code> will respond NEUTRAL when
+		its <code>decide</code>() method is invoked. However, events with
+		a level below the threshold will be denied. Here is a sample
+		configuration file.
 		</p>
 
 <em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
+    &lt;!-- deny all events with a level below INFO, that is TRACE and DEBUG -->
     <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       &lt;level>INFO&lt;/level>
     &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+    &lt;layout>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger{30} - %msg%n
       &lt;/pattern>
@@ -233,8 +235,27 @@ public class SampleFilter extends Filter {
 &lt;/configuration></pre>
 
 
-    <h3>Evaluator Filters taking Java Expressions</h3>
+    <h3><a name="evalutatorFilter"
+    href="#evalutatorFilter">EvaluatorFilter</a></h3>
 
+    <p><a
+    href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>
+    is a generic filter encapsulating an <a
+    href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+    <code>EventEvaluator</code></a> which evaluates whether a given
+    criteria is met. On match and respectively on mismatch, the
+    <code>EvaluatorFilter</code> will return the value set for the
+    <span class="option">OnMatch</span> and respectively for the <span
+    class="option">OnMismatch</span> properties. 
+    </p>
+
+    <p>The <code>EventEvaluator</code> class is abstract and you can
+    implement your own even evaluation logic. Logback-classic ships
+    with a concrete evaluator implementation called <a
+    href="../xref/ch/qos/logback/classic/boolex/JaninoEvaluator.html">JaninoEvaluator</a>
+    which take artibtrary java expressions as the evaluation criteria,
+    enabling unprecedented flexibility for filtering logging events.
+    </p>
 		    
     <p>A special category of filters is implemented by the <a
     href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
