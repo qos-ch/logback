@@ -10,7 +10,7 @@
 
 	<groupId>ch.qos.logback</groupId>
 	<artifactId>logback-site</artifactId>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<version>${parent.version}</version>
 	<name>Logback Site</name>
 
