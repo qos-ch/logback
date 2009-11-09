@@ -252,34 +252,29 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <p>The <code>EventEvaluator</code> class is abstract and you can
     implement your own even evaluation logic. Logback-classic ships
     with a concrete evaluator implementation called <a
-    href="../xref/ch/qos/logback/classic/boolex/JaninoEvaluator.html">JaninoEvaluator</a>
-    which take artibtrary java expressions as the evaluation criteria,
-    enabling unprecedented flexibility for filtering logging events.
-    </p>
-		    
-    <p>A special category of filters is implemented by the <a
-    href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html">
-    <code>EvaluatorFilter</code></a> class. These filters use an <a
-    href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-    <code>EventEvaluator</code></a> object to decide whether to accept
-    or deny a request. This allows unprecedented flexibility in the
-    way that you can affect filtering of logging events.
+    href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>
+    which takes artibtrary boolean expressions (in the Java language)
+    as the evaluation criispteria. We refer to such artbitrary boolean
+    expressions in the Java language as "<em>evaulation
+    expressions</em>". Evaluation expressions enable hereto
+    unprecedented flexibility in event filtering.
     </p>
 
-    <p>As a user, you do not need to worry about the actual
-    plumbing. All you need to do is to give a name to the evaluator
-    and to specify an <em>evaluation expression</em>, that is a
-    boolean expression in regular Java syntax. These evaluation
-    expressions are compiled on-the-fly during the interpretation of
-    the configuration file. It is the users reponsibility to ensure
-    that the expression is boolean, that it evaluates to true or
-    false.  In evaluation expressions, logback implicitly exposes
-    various fields of a logging event as variables. The list of these
-    implicit variables is given below. The scope of evaluation
-    expressions is limited to the logging event.
-		</p>
-		
-		
+    <p>Evaluation expressions are compiled on-the-fly during the
+    interpretation of the configuration file. As a user, you do not
+    need to worry about the actual plumbing. However, it is your
+    reponsibility to ensure that the expression is boolean, that it
+    evaluates to true or false. </p> 
+
+
+    <p>Given that an evaluation expression is acts on the current
+    logging event, logback implicitly exposes various fields of a
+    logging event as variables accessible from the evaluation
+    expression. The list of these implicit variables is given
+    below. The scope of evaluation expressions is limited to the
+    logging event.
+    </p>
+
 		<table class="bodyTable">
       <tr>
         <th>Name</th>
