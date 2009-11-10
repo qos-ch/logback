@@ -9,7 +9,7 @@
           <regex>statement [13579]</regex>
         </matcher>
         
-        <expression>message.contains("billing") || odd.matches(formattedMessage)</expression>
+        <expression>odd.matches(formattedMessage)</expression>
       </evaluator>
       <OnMismatch>NEUTRAL</OnMismatch>
       <OnMatch>DENY</OnMatch>

@@ -348,7 +348,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				<td>marker</td>
 				<td><code>Marker</code></td>
         <td>The <code>Marker</code> object associated with the logging
-        request.
+        request. Note that marker can be null and it is your
+        responsibility to check for this condition in order to avoid
+        <code>NullPointerException</code>.
 				</td>
 			</tr>
 			<tr>
@@ -502,7 +504,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 
 <em>Example 6.<span class="autoEx"/>: Defining matchers in an event evaluator (logback-examples/src/main/java/chapter6/evaluatorWithMatcher.xml)</em>
 
-    <pre class="prettyprint source longline">&lt;configuration debug="true">
+    <pre class="prettyprint source">&lt;configuration debug="true">
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
@@ -513,7 +515,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
           &lt;regex>statement [13579]&lt;/regex>
         &lt;/matcher>
         
-        &lt;expression>message.contains("billing") || odd.matches(formattedMessage)&lt;/expression></b>
+        &lt;expression>odd.matches(formattedMessage)&lt;/expression></b>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
@@ -533,13 +535,14 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     <p>we obtain:
 		</p>
 		
-    <p class="source">220  [main] INFO  chapter6.FilterEvents - logging statement 0
-223  [main] INFO  chapter6.FilterEvents - logging statement 2
-223  [main] INFO  chapter6.FilterEvents - logging statement 4
-225  [main] INFO  chapter6.FilterEvents - logging statement 8</p>
+    <p class="source">260  [main] INFO  chapter6.FilterEvents - logging statement 0
+264  [main] INFO  chapter6.FilterEvents - logging statement 2
+264  [main] INFO  chapter6.FilterEvents - logging statement 4
+266  [main] ERROR chapter6.FilterEvents - billing statement 6
+266  [main] INFO  chapter6.FilterEvents - logging statement 8</p>
 
     <p>In case you need to define additional matchers, you can do so by
-    adding further <code>&lt;matcher></code> elements.
+    adding further <code>&lt;matcher></code> elements.</p>
 
     <!-- ================================================================ -->
     <!-- ===================== TURBO FILTER ============================= -->

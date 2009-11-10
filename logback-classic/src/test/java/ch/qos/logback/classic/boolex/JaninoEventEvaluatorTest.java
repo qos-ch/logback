@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.boolex;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -31,15 +32,22 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
+import ch.qos.logback.core.filter.EvaluatorFilter;
+import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class JaninoEventEvaluatorTest  {
+public class JaninoEventEvaluatorTest {
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(ConverterTest.class);
 
   Matcher matcherX = new Matcher();
 
+  JaninoEventEvaluator jee = new JaninoEventEvaluator();
+
   public JaninoEventEvaluatorTest() {
+    jee.setContext(loggerContext);
+
     matcherX.setName("x");
     matcherX.setRegex("^Some\\s.*");
     matcherX.start();
@@ -55,33 +63,27 @@ public class JaninoEventEvaluatorTest  {
 
   @Test
   public void testBasic() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("message.equals(\"Some message\")");
-    jee.setContext(loggerContext);
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
-    //System.out.println(event);
+    // System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
   @Test
   public void testLevel() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("level > DEBUG");
-    jee.setContext(loggerContext);
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
-    //System.out.println(event);
+    // System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
   @Test
   public void testtimeStamp() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("timeStamp > 10");
-    jee.setContext(loggerContext);
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
@@ -90,10 +92,7 @@ public class JaninoEventEvaluatorTest  {
 
   @Test
   public void testWithMatcher() throws Exception {
-
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("x.matches(message)");
-    jee.setContext(loggerContext);
     jee.addMatcher(matcherX);
     jee.start();
 
@@ -102,11 +101,8 @@ public class JaninoEventEvaluatorTest  {
   }
 
   @Test
-  public void testMarker() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+  public void marker() throws Exception {
     jee.setExpression("marker.contains(\"BLUE\")");
-    jee.setContext(loggerContext);
-    jee.addMatcher(matcherX);
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(null);
@@ -115,11 +111,8 @@ public class JaninoEventEvaluatorTest  {
   }
 
   @Test
-  public void testWithNullMarker_LBCORE_118() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+  public void withNullMarker_LBCORE_118() throws Exception {
     jee.setExpression("marker.contains(\"BLUE\")");
-    jee.setContext(loggerContext);
-    jee.addMatcher(matcherX);
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
@@ -127,36 +120,32 @@ public class JaninoEventEvaluatorTest  {
       jee.evaluate(event);
       fail("We should not reach this point");
     } catch (EvaluationException ee) {
-
+      // received an exception as expected
     }
   }
 
   @Test
-  public void testWithNullMarker() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+  public void evaluatorFilterWithNullMarker_LBCORE_118() throws Exception {
+    EvaluatorFilter<ILoggingEvent> ef = new EvaluatorFilter<ILoggingEvent>();
+    ef.setContext(loggerContext);
+
+    ef.setOnMatch(FilterReply.ACCEPT);
+    ef.setOnMismatch(FilterReply.DENY);
+
     jee.setExpression("marker.contains(\"BLUE\")");
-    jee.setContext(loggerContext);
-    jee.addMatcher(matcherX);
     jee.start();
 
+    ef.setEvaluator(jee);
+    ef.start();
     ILoggingEvent event = makeLoggingEvent(null);
-    try {
-      jee.evaluate(event);
-      fail("We should not reach this point");
-    } catch (EvaluationException ee) {
-
-    }
+    assertEquals(FilterReply.NEUTRAL, ef.decide(event));
+    
   }
 
-  
-  
   @Test
   public void testComplex() throws Exception {
-
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee
         .setExpression("level >= INFO && x.matches(message) && marker.contains(\"BLUE\")");
-    jee.setContext(loggerContext);
     jee.addMatcher(matcherX);
     jee.start();
 
@@ -166,35 +155,23 @@ public class JaninoEventEvaluatorTest  {
   }
 
   /**
-   * check that evaluator with bogis exp does not start
+   * check that evaluator with bogus exp does not start
    * 
    * @throws Exception
    */
   @Test
   public void testBogusExp1() {
-
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("mzzzz.get(\"key\").equals(null)");
-    jee.setContext(loggerContext);
     jee.setName("bogus");
     jee.start();
 
     assertFalse(jee.isStarted());
-
-    // StatusPrinter.print(loggerContext);
-    // LoggingEvent event = makeLoggingEvent(null);
-    // event.setMarker(MarkerFactory.getMarker("BLUE"));
-    //    
-    // jee.evaluate(event);
   }
 
   // check that eval stops after errors
   @Test
   public void testBogusExp2() {
-
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("mdc.get(\"keyXN89\").equals(null)");
-    jee.setContext(loggerContext);
     jee.setName("bogus");
     jee.start();
 
@@ -222,19 +199,17 @@ public class JaninoEventEvaluatorTest  {
   // with 10 parameters 510 nanos (all levels + fields)
   void loop(JaninoEventEvaluator jee, String msg) throws Exception {
     ILoggingEvent event = makeLoggingEvent(null);
-    //final long start = System.nanoTime();
+    // final long start = System.nanoTime();
     for (int i = 0; i < LEN; i++) {
       jee.evaluate(event);
     }
-    //final long end = System.nanoTime();
-    //System.out.println(msg + (end - start) / LEN + " nanos");
+    // final long end = System.nanoTime();
+    // System.out.println(msg + (end - start) / LEN + " nanos");
   }
 
   @Test
   public void testLoop1() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("timeStamp > 10");
-    jee.setContext(loggerContext);
     jee.start();
 
     loop(jee, "timestamp > 10]: ");
@@ -242,32 +217,25 @@ public class JaninoEventEvaluatorTest  {
 
   @Test
   public void testLoop2() throws Exception {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("x.matches(message)");
-    jee.setContext(loggerContext);
     jee.addMatcher(matcherX);
     jee.start();
 
     loop(jee, "x.matches(message): ");
   }
 
-  @Test 
+  @Test
   public void throwable_LBCLASSIC_155_I() throws EvaluationException {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("throwable instanceof java.io.IOException");
-    jee.setContext(loggerContext);
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(new IOException(""));
     assertTrue(jee.evaluate(event));
   }
 
-  
-  @Test 
+  @Test
   public void throwable_LBCLASSIC_155_II() throws EvaluationException {
-    JaninoEventEvaluator jee = new JaninoEventEvaluator();
     jee.setExpression("throwableProxy.getClassName().contains(\"IO\")");
-    jee.setContext(loggerContext);
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(new IOException(""));
