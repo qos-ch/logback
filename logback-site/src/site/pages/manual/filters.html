@@ -488,16 +488,15 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 		
  	  <h2><a name="matcher" href="#matcher">Matchers</a></h2>
 
-    <p>While it is possible to do pattern matching operations by
-    invoking the <a
+    <p>While it is possible to do pattern matching by invoking the <a
     href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches%28java.lang.String%29">matches()</a>
     method in the <code>String</code> class, this incurs the cost of
-    the creation by compilation of a new Pattern object each time the
+    compiling of a brand new <code>Pattern</code> object each time the
     filter is invoked. To eliminate this overhead, you can predefine
     one or more <a
     href="../xref/ch/qos/logback/core/boolex/Matcher.html">Matcher</a>
-    objects. Once a matcher is defined, it can be repeatedly referenced
-    by name in the evaluator expression.</p>
+    objects. Once a matcher is defined, it can be repeatedly
+    referenced by name in the evaluator expression.</p>
 
     <p>An example should clarify the point:</p>
 
@@ -538,6 +537,13 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 223  [main] INFO  chapter6.FilterEvents - logging statement 2
 223  [main] INFO  chapter6.FilterEvents - logging statement 4
 225  [main] INFO  chapter6.FilterEvents - logging statement 8</p>
+
+    <p>In case you need to define additional matchers, you can do so by
+    adding further <code>&lt;matcher></code> elements.
+
+    <!-- ================================================================ -->
+    <!-- ===================== TURBO FILTER ============================= -->
+    <!-- ================================================================ -->
 
     <h2><a name="TurboFilter" href="#TurboFilter">TurboFilters</a></h2>
     
