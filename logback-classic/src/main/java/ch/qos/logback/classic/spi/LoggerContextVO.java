@@ -20,13 +20,14 @@ import ch.qos.logback.classic.LoggerContext;
 
 /**
  * LoggerContextVO offers a restricted view of LoggerContext intended to be
- * exposed by LoggingEvent to remote system. This restricted view is optimized
+ * exposed by LoggingEvent to remote systems. This restricted view is optimized
  * for serialization.
  * 
- * Some of the LoggerContext or Logger attributes should not survive
+ * <p>
+ * Some of the LoggerContext or Logger attributes MUST not survive
  * serialization, e.g appenders, level values etc, as these attributes may have
- * other values on the remote platform. LoggerContextVO class exposes
- * the minimal (relevant) attributes to remote host, instead of having to deal
+ * other values on the remote platform. LoggerContextVO class exposes the
+ * minimal and relevant attributes to the remote host, instead of having to deal
  * with an incomplete LoggerContext with many null references.
  * 
  * @author Ceki G&uuml;lc&uuml;

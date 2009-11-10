@@ -39,7 +39,6 @@ abstract public class EventEvaluatorBase<E> extends ContextAwareBase implements
 
   public void start() {
     started = true;
-
   }
 
   public void stop() {

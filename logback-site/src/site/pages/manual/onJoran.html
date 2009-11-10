@@ -613,9 +613,12 @@ Element [abc] asked to be printed.
     </li>
   </ol>
 
-  <p>In logback-classic, there are just two rules mapping (parent
-  class/property name) couples to a default class. These are listed in
-  the table below.</p>
+  <h4><a name="defaultClassMapping"
+  href="#defaultClassMapping">Default class mapping</a></h4>
+
+  <p>In logback-classic, there are a handful of inernal rules mapping
+  parent class/property name couples to a default class. These are
+  listed in the table below.</p>
 
   <table class="bodyTable">
     <tr>
@@ -623,12 +626,20 @@ Element [abc] asked to be printed.
       <th>property name </th>
       <th>default nested class</th>
     </tr>
+
     <tr >
       <td>ch.qos.logback.core.AppenderBase</td>
       <td>layout</td>
       <td>ch.qos.logback.classic.PatternLayout</td>
     </tr>
+
     <tr class="alt">
+      <td>ch.qos.logback.core.UnsynchronizedAppenderBase</td>
+      <td>layout</td>
+      <td>ch.qos.logback.classic.PatternLayout</td>
+    </tr>
+
+    <tr>
       <td>ch.qos.logback.core.filter.EvaluatorFilter</td>
       <td>evaluator</td>
       <td>ch.qos.logback.classic.boolex.JaninoEventEvaluator</td>

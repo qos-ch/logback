@@ -17,6 +17,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.slf4j.MarkerFactory;
 
@@ -247,6 +249,29 @@ public class JaninoEventEvaluatorTest  {
     jee.start();
 
     loop(jee, "x.matches(message): ");
+  }
+
+  @Test 
+  public void throwable_LBCLASSIC_155_I() throws EvaluationException {
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setExpression("throwable instanceof java.io.IOException");
+    jee.setContext(loggerContext);
+    jee.start();
+
+    LoggingEvent event = makeLoggingEvent(new IOException(""));
+    assertTrue(jee.evaluate(event));
+  }
+
+  
+  @Test 
+  public void throwable_LBCLASSIC_155_II() throws EvaluationException {
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    jee.setExpression("throwableProxy.getClassName().contains(\"IO\")");
+    jee.setContext(loggerContext);
+    jee.start();
+
+    LoggingEvent event = makeLoggingEvent(new IOException(""));
+    assertTrue(jee.evaluate(event));
   }
 
 }

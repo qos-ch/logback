@@ -105,7 +105,7 @@
 		events, the value NEUTRAL is returned.
 		</p>
 		
-<em>Example 6.1: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
+<em>Example 6.<span class="autoEx"/>: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
 <pre class="prettyprint source">package chapter6;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -128,7 +128,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		<code>SampleFilter</code> to a <code>ConsoleAppener</code>.
 		</p>
 
-<em>Example 6.2: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
@@ -183,7 +183,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 		
-<em>Example 6.3: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -215,7 +215,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 
-<em>Example 6.4: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -249,28 +249,29 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     class="option">OnMismatch</span> properties. 
     </p>
 
-    <p>The <code>EventEvaluator</code> class is abstract and you can
-    implement your own even evaluation logic. Logback-classic ships
+    <p>The <code>EventEvaluator</code> is an abstract class and you
+    can implement your own event evaluation logic by sub-classing
+    <code>EventEvaluator</code>. However, logback-classic also ships
     with a concrete evaluator implementation called <a
     href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>
-    which takes artibtrary boolean expressions (in the Java language)
-    as the evaluation criispteria. We refer to such artbitrary boolean
-    expressions in the Java language as "<em>evaulation
-    expressions</em>". Evaluation expressions enable hereto
-    unprecedented flexibility in event filtering.
+    which takes artibtrary java language boolean expressions as the
+    evaluation criteria. We refer to such java language boolean
+    expressions as "<em>evaulation expressions</em>". Evaluation
+    expressions enable hereto unprecedented flexibility in event
+    filtering.
     </p>
 
     <p>Evaluation expressions are compiled on-the-fly during the
     interpretation of the configuration file. As a user, you do not
     need to worry about the actual plumbing. However, it is your
-    reponsibility to ensure that the expression is boolean, that it
-    evaluates to true or false. </p> 
+    reponsibility to ensure that the java-language expression is
+    boolean, that it evaluates to true or false. </p>
 
 
     <p>Given that an evaluation expression acts on the current logging
-    event, logback implicitly exposes various fields of the logging
+    event, logback automatically exports various fields of the logging
     event as variables accessible from the evaluation expression. The
-    list of these implicit variables is given below.
+    case-sensitive names these variables is listed below.
     </p>
 
 		<table class="bodyTable">
@@ -294,19 +295,37 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
       <tr class="alt">
 				<td>message</td>
         <td><code>String</code></td>
-        <td>The message of the logging request.</td>
+        <td>The raw message of the logging request. For some logger
+        <em>l</em>, when you write l.info("Hello {}", name); where
+        name is assigned the value "Alice", then "Hello {}" is the
+        message.</td> </tr>
+		
+      <tr>
+				<td>formatedMessage</td>
+        <td><code>String</code></td>
+        <td>The formatted message in the logging request. For some
+        logger <em>l</em>, when you write l.info("Hello {}", name);
+        where name is assigned the value "Alice", then "Hello Alice"
+        is the formatted message.</td>
 			</tr>
-			<tr>
+		
+      <tr class="alt">
 				<td>logger</td>
-				<td><code>LoggerRemoteView</code></td>
-				<td>This object is a proxy for the logger object where the
-				logging request was issued. It can be viewed as a regular
-				logger object. However, it has some nice performance
-				properties, especially with respect to serialization.
+				<td><code>String</code></td>
+				<td>The name of the logger.
         </td>
 			</tr>
 
-			<tr  class="alt">
+      <tr>
+        <td>loggerContext</td>
+				<td><a
+				href="../xref/ch/qos/logback/classic/spi/LoggerContextVO.html"><code>LoggerContextVO</code></a></td>
+				<td>A restricted (value object) view of the logger context to which the logging event belongs to.
+        </td>
+			</tr>
+
+
+			<tr class="alt">
 				<td>level</td>
 				<td><code>int</code></td>
 				<td>The int value corresponding to the level. To help create
@@ -316,6 +335,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				INFO</em> is a correct expression.
 				</td>
 			</tr>
+
 			<tr>
 				<td>timeStamp
 				</td>
@@ -324,7 +344,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				creation.
 				</td>
 			</tr>
-			<tr  class="alt">
+			<tr class="alt">
 				<td>marker</td>
 				<td><code>Marker</code></td>
         <td>The <code>Marker</code> object associated with the logging
@@ -332,39 +352,53 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				</td>
 			</tr>
 			<tr>
-				<td>mdc
-				</td>
+				<td>mdc</td>
 				<td><code>Map</code></td>
 				<td>A map containing all the MDC values at the time of the
 				creation of the logging event. A value can be accessed by
 				using the following expression: <em>mdc.get("myKey")</em>.
 				</td>
 			</tr>
-			<tr  class="alt">
+
+      <tr class="alt">
 				<td>throwable</td>
-				<td><code>Throwable</code></td>
-				<td>The exception associated with the logging event
+        <td>java.lang.Throwable</td>
+				<td>If no exception is associated with the event, then the
+				value of the "throwable" variable will be null. Unfortunately,
+				"throwable" does not survive serialization. Thus, on remote
+				systems, its value will always be null. For location
+				independent expresisons, use the <code>throwableProxy</code>
+				variable described next.
 				</td>
 			</tr>
+
+			<tr>
+				<td>throwableProxy</td>
+				<td><a
+				href="../xref/ch/qos/logback/classic/spi/IThrowableProxy.html"><code>IThrowableProxy</code></a></td>
+				<td>A proxy for the exception associated with the logging
+				event. If no exception is associated with the event, then the
+				value of the "throwableProxy" variable will be null. In
+				contrast to "throwable", when an exception is associated with
+				an event, the value of "throwableProxy" will be non-null even
+				on remote systems, that is even after serialization.
+				</td>
+			</tr>
+
+    
+
 		</table>
 
-		
-		<p>The behaviour of the <code>EvaluatorFilter</code> is also
-		affected by its <span class="option">OnMatch</span> and <span
-		class="option">OnMismatch</span> options taking values of type
-		<code>FilterReply</code>, i.e. DENY, ACCEPT, NEUTRAL.
-    </p>
-    
     <p>Here is a concrete example.</p>
 
-<em>Example 6.5: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+<em>Example 6.<span class="autoEx"/>: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
 
-<pre class="prettyprint source">&lt;configuration>
+<pre class="prettyprint source longline">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="myEval">
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+      &lt;evaluator> &lt;!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
         &lt;expression><span class="green">message.contains("billing")</span>&lt;/expression>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
@@ -382,18 +416,29 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
   &lt;/root>
 &lt;/configuration></pre>
 
-		<p>The bold part in the previous configuration adds an
+		<p>The bold part in the above configuration file adds an
 		<code>EvaluatorFilter</code> to a <code>ConsoleAppender</code>. An
-		<code>EventEvaluator</code> is then injected into the
-		<code>EvaluatorFilter</code>. The <em>expression</em> element
-		corresponds to the evaluation expression described previously. The
-		expression <code>message.contains("billing")</code> returns a
-    boolean value. Notice that the <em>message</em> variable is
-		defined implicitly.
+		evaluator of type <code>JaninoEventEvaluator</code> is then
+		injected into the <code>EvaluatorFilter</code>. In the absence of
+		<span class="attr">class</span> attribute in the
+		<code>&lt;evaluator></code> element specified by the user, joran
+		will infer a default type, i.e. <code>JaninoEventEvaluator</code>,
+		for the evaluator. This is one of the <a
+		href="onJoran.html#defaultClassMapping">few occurrences</a> where
+		Joran implicitly infers the type of a component.
     </p>
 
-		<p>This evalutor filter will drop all logging events whose message
-		contains the string "billing".
+    <p>The <em>expression</em> element corresponds to the evaluation
+    expression just discussed. The expression
+    <code>message.contains("billing")</code> returns a boolean
+    value. Notice that the <em>message</em> variable is exported
+    automatically by <code>JaninoEventEvaluator</code>.
+    </p>
+
+		<p>Given that the <span class="option">OnMatch</span> property is
+		set to NEUTRAL and the <span class="option">OnMismatch</span>
+		property set to DENY, this evalutor filter will drop all logging
+		events whose message contains the string "billing".
     </p>
 
     <p>The <a
@@ -421,11 +466,12 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 
 
 
-		<p>Suppose that we want to get rid of the billing information.
-		The <em>basicEventEvaluator.xml</em> configuration file just
-		described, does exactly what we want.</p>
+		<p>Suppose that we want to get rid of the "billing statement".
+		The <em>basicEventEvaluator.xml</em> configuration file listed
+		above filters messages containing the string "billing" which is
+		precisely the desired outcome.</p>
 
-    <p>Running with filters:</p>
+    <p>Running with <em>basicEventEvaluator.xml</em>:</p>
     <p class="source">java chapter6.FilterEvents src/main/java/chapter6/basicEventEvaluator.xml</p>
     <p>we obtain:
 		</p>
@@ -440,7 +486,59 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 0    [main] INFO  chapter6.FilterEvents - logging statement 8
 0    [main] INFO  chapter6.FilterEvents - logging statement 9</p>
 		
+ 	  <h2><a name="matcher" href="#matcher">Matchers</a></h2>
+
+    <p>While it is possible to do pattern matching operations by
+    invoking the <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches%28java.lang.String%29">matches()</a>
+    method in the <code>String</code> class, this incurs the cost of
+    the creation by compilation of a new Pattern object each time the
+    filter is invoked. To eliminate this overhead, you can predefine
+    one or more <a
+    href="../xref/ch/qos/logback/core/boolex/Matcher.html">Matcher</a>
+    objects. Once a matcher is defined, it can be repeatedly referenced
+    by name in the evaluator expression.</p>
+
+    <p>An example should clarify the point:</p>
+
+<em>Example 6.<span class="autoEx"/>: Defining matchers in an event evaluator (logback-examples/src/main/java/chapter6/evaluatorWithMatcher.xml)</em>
+
+    <pre class="prettyprint source longline">&lt;configuration debug="true">
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator>        
+        <b>&lt;matcher>
+          &lt;Name>odd&lt;/Name>
+          &lt;!-- filter out odd numbered statements -->
+          &lt;regex>statement [13579]&lt;/regex>
+        &lt;/matcher>
+        
+        &lt;expression>message.contains("billing") || odd.matches(formattedMessage)&lt;/expression></b>
+      &lt;/evaluator>
+      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
+      &lt;OnMatch>DENY&lt;/OnMatch>
+    &lt;/filter>
+    &lt;layout>
+      &lt;pattern>%-4relative [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+    <p>Running with <em>evaluatorWithMatcher.xml</em>:</p>
+    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/evaluatorWithMatcher.xml</p>
+    <p>we obtain:
+		</p>
 		
+    <p class="source">220  [main] INFO  chapter6.FilterEvents - logging statement 0
+223  [main] INFO  chapter6.FilterEvents - logging statement 2
+223  [main] INFO  chapter6.FilterEvents - logging statement 4
+225  [main] INFO  chapter6.FilterEvents - logging statement 8</p>
+
     <h2><a name="TurboFilter" href="#TurboFilter">TurboFilters</a></h2>
     
     <p><code>TurboFilter</code> objects all extend the
@@ -480,7 +578,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     slightly more complex filter:
     </p>
     
-<em>Example 6.6: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
+<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
 <pre class="prettyprint source">package chapter6;
 
 import org.slf4j.Marker;
@@ -545,7 +643,7 @@ public class SampleTurboFilter extends TurboFilter {
 		created <code>TurboFilter</code>.
 		</p>
 		
-<em>Example 6.7: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
 <pre class="prettyprint source">&lt;configuration>
   <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
@@ -581,7 +679,7 @@ public class SampleTurboFilter extends TurboFilter {
    	<code>MDCFilter</code> and <code>MarkerFilter</code>.
    	</p>
    	
-<em>Example 6.8: <code>MDCFilter</code> and <code>MarkerFilter</code> 
+<em>Example 6.<span class="autoEx"/>: <code>MDCFilter</code> and <code>MarkerFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
@@ -708,7 +806,7 @@ logger.debug("Hello {}.", name1);</pre>
     </p>
 
     
-<em>Example: <code>DuplicateMessageFilter</code> 
+<em>Example 6.<span class="autoEx"/>: <code>DuplicateMessageFilter</code> 
 configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
@@ -783,7 +881,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
     error will be logged:
     </p>
    	
-<em>Example 6.9: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
+<em>Example 6.<span class="autoEx"/>: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
