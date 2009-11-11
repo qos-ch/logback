@@ -208,7 +208,7 @@
         </executions>
         <configuration>
           <instructions>
-            <Export-Package>ch.qos.logback.classic*, org.slf4j.impl;version=1.5.6</Export-Package>
+            <Export-Package>ch.qos.logback.classic*, org.slf4j.impl;version=${slf4j.version}</Export-Package>
             <!-- LB-CLASSIC It is necessary to specify the rolling
                  file packages as classes are created via IOC (xml
                  config files). They won't be found by Bnd's analysis
