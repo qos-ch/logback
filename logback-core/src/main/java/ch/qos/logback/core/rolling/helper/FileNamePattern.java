@@ -145,9 +145,7 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   /**
-   * Given date, convert this instance to a  regular expression. A
-   * slashified regex, is a regex with naturally occurring forward slash
-   * characters replaced by back slashes.
+   * Given date, convert this instance to a  regular expression.
     */
   public String toRegex(Date date) {
     StringBuilder buf = new StringBuilder();

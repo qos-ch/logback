@@ -23,7 +23,7 @@ public class DefaultArchiveRemover implements ArchiveRemover {
 
   final FileNamePattern fileNamePattern;
   final RollingCalendar rc;
-  int periodOffset;
+  int periodOffsetForDeletionTarget;
   final boolean parentClean;
 
   public DefaultArchiveRemover(FileNamePattern fileNamePattern,
@@ -67,7 +67,7 @@ public class DefaultArchiveRemover implements ArchiveRemover {
   }
 
   public void clean(Date now) {
-    Date date2delete = rc.getRelativeDate(now, periodOffset);
+    Date date2delete = rc.getRelativeDate(now, periodOffsetForDeletionTarget);
     String filename = fileNamePattern.convert(date2delete);
     File file2Delete = new File(filename);
     if (file2Delete.exists() && file2Delete.isFile()) {
@@ -98,7 +98,7 @@ public class DefaultArchiveRemover implements ArchiveRemover {
   }
 
   public void setMaxHistory(int maxHistory) {
-    this.periodOffset = -maxHistory - 1;
+    this.periodOffsetForDeletionTarget = -maxHistory - 1;
   }
 
 }
