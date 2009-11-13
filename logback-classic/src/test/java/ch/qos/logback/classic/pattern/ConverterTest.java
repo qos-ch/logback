@@ -356,7 +356,11 @@ public class ConverterTest {
   @Test
   public void contextNameConverter() {
     ClassicConverter converter = new ContextNameConverter();
-    converter.setContext(lc);
+    // see http://jira.qos.ch/browse/LBCLASSIC-149
+    LoggerContext lcOther = new LoggerContext();
+    lcOther.setName("another");
+    converter.setContext(lcOther);
+    
     lc.setName("aValue");
     ILoggingEvent event = makeLoggingEvent(null);
 
