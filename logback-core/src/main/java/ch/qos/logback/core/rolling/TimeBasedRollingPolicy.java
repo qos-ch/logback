@@ -101,7 +101,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     return timeBasedTriggering;
   }
 
-  static String computeFileNameStr_WCS(String fileNamePatternStr,
+  static public String computeFileNameStr_WCS(String fileNamePatternStr,
       CompressionMode compressionMode) {
     int len = fileNamePatternStr.length();
     switch (compressionMode) {

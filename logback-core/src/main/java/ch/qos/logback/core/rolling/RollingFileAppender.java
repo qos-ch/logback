@@ -49,13 +49,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       addWarn("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_tp");
       return;
     }
-    
+
     // we don't want to void existing log files
-    if(!append) {
-      addWarn("Append mode is mandatory for RollingFileAppender");  
+    if (!append) {
+      addWarn("Append mode is mandatory for RollingFileAppender");
       append = true;
     }
-    
+
     if (rollingPolicy == null) {
       addError("No RollingPolicy was set for the RollingFileAppender named "
           + getName());
@@ -96,23 +96,11 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   }
 
   /**
-   * Implements the usual roll over behaviour.
-   * 
-   * <p>If <code>MaxBackupIndex</code> is positive, then files {<code>File.1</code>,
-   * ..., <code>File.MaxBackupIndex -1</code>} are renamed to {<code>File.2</code>,
-   * ..., <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-   * renamed <code>File.1</code> and closed. A new <code>File</code> is
-   * created to receive further log output.
-   * 
-   * <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-   * <code>File</code> is truncated with no backup files created.
-   * 
+   * Implemented by delegating most of the rollover work to a rolling policy.
    */
   public synchronized void rollover() {
     // Note: This method needs to be synchronized because it needs exclusive
-    // acces while
-    // it closes and then re-opens the target file.
-
+    // access while it closes and then re-opens the target file.
     //
     // make sure to close the hereto active log file! Renaming under windows
     // does not work for open files.
@@ -130,7 +118,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       // update the currentlyActiveFile
       // http://jira.qos.ch/browse/LBCORE-90
       currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
-      
+
       // This will also close the file. This is OK since multiple
       // close operations are safe.
       this.openFile(rollingPolicy.getActiveFileName());

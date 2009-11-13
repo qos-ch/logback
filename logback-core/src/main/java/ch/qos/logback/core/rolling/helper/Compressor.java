@@ -20,10 +20,10 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
-
 
 /**
  * The <code>Compression</code> class implements ZIP and GZ file
@@ -34,24 +34,24 @@ import ch.qos.logback.core.status.WarnStatus;
 public class Compressor extends ContextAwareBase {
 
   final CompressionMode compressionMode;
-  //final String nameOfFile2Compress;
-  //final String nameOfCompressedFile;
 
+  // final String nameOfFile2Compress;
+  // final String nameOfCompressedFile;
 
   public Compressor(CompressionMode compressionMode) {
     this.compressionMode = compressionMode;
   }
-  
-  
-//  public Compressor(CompressionMode compressionMode, String nameOfFile2Compress, String nameOfCompressedFile) {
-//    this.compressionMode = compressionMode;
-//    //this.nameOfFile2Compress = nameOfFile2Compress;
-//    //this.nameOfCompressedFile = nameOfCompressedFile;
-//  }
 
-  public void compress( String nameOfFile2Compress, String nameOfCompressedFile) {
-    switch(compressionMode) {
-    case GZ: 
+  // public Compressor(CompressionMode compressionMode, String
+  // nameOfFile2Compress, String nameOfCompressedFile) {
+  // this.compressionMode = compressionMode;
+  // //this.nameOfFile2Compress = nameOfFile2Compress;
+  // //this.nameOfCompressedFile = nameOfCompressedFile;
+  // }
+
+  public void compress(String nameOfFile2Compress, String nameOfCompressedFile) {
+    switch (compressionMode) {
+    case GZ:
       addInfo("GZ compressing [" + nameOfFile2Compress + "].");
       gzCompress(nameOfFile2Compress, nameOfCompressedFile);
       break;
@@ -60,7 +60,8 @@ public class Compressor extends ContextAwareBase {
       zipCompress(nameOfFile2Compress, nameOfCompressedFile);
       break;
     case NONE:
-      throw new UnsupportedOperationException("compress method called in NONE compression mode");
+      throw new UnsupportedOperationException(
+          "compress method called in NONE compression mode");
     }
   }
 
@@ -68,9 +69,8 @@ public class Compressor extends ContextAwareBase {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
-      addStatus(new WarnStatus(
-              "The file to compress named [" + nameOfFile2zip
-                  + "] does not exist.", this));
+      addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip
+          + "] does not exist.", this));
 
       return;
     }
@@ -82,9 +82,8 @@ public class Compressor extends ContextAwareBase {
     File zippedFile = new File(nameOfZippedFile);
 
     if (zippedFile.exists()) {
-      addStatus(new WarnStatus(
-          "The target compressed file named [" + nameOfZippedFile
-              + "] exist already.", this));
+      addStatus(new WarnStatus("The target compressed file named ["
+          + nameOfZippedFile + "] exist already.", this));
 
       return;
     }
@@ -94,7 +93,7 @@ public class Compressor extends ContextAwareBase {
       ZipOutputStream zos = new ZipOutputStream(fos);
       FileInputStream fis = new FileInputStream(nameOfFile2zip);
 
-      ZipEntry zipEntry = new ZipEntry(file2zip.getName());
+      ZipEntry zipEntry = computeZipEntry(zippedFile);
       zos.putNextEntry(zipEntry);
 
       byte[] inbuf = new byte[8102];
@@ -115,6 +114,27 @@ public class Compressor extends ContextAwareBase {
       addStatus(new ErrorStatus("Error occurred while compressing ["
           + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
     }
+  }
+
+  // http://jira.qos.ch/browse/LBCORE-98
+  // The name of the compressed file as nested within the zip archive
+  //
+  // Case 1: RawFile = null, Patern = foo-%d.zip
+  // nestedFilename = foo-${current-date}
+  //
+  // Case 2: RawFile = hello.txtm, Pattern = = foo-%d.zip
+  // nestedFilename = foo-${current-date}
+  //
+  // in both cases, the strategy consisting of removing the compression
+  // suffix of zip file works reasonably well. The alternative strategy
+  // whereby the nested file name was based on the value of the raw file name
+  // (applicable to case 2 only) has the disadvantage of the nested files
+  // all having the same name, which could make it harder for the user
+  // to unzip the file without collisions
+  ZipEntry computeZipEntry(File zippedFile) {
+    String nameOfFileNestedWithinArchive = TimeBasedRollingPolicy
+        .computeFileNameStr_WCS(zippedFile.getName(), compressionMode);
+    return new ZipEntry(nameOfFileNestedWithinArchive);
   }
 
   private void gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
@@ -163,7 +183,7 @@ public class Compressor extends ContextAwareBase {
           + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
     }
   }
-  
+
   @Override
   public String toString() {
     return "c.q.l.core.rolling.helper.Compress";

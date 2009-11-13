@@ -42,6 +42,10 @@
     by applying the relavant patch supplied by Hugues Malphettes.
     </p>
 
+    <p>Made the OSGi import declerations for Janino and javax optional
+    as proposed by David Varnes in <a
+    href="http://jira.qos.ch/browse/LBCORE-101">LBCORE-101</a>.</p>
+
     <p>JaninoEventEvaluator now passes the throwable associated with
     an event as a <code>java.lang.Throwable</code> instead of an
     <code>IThrowableProxy</code>. This fixes <a
@@ -49,6 +53,15 @@
     as reported by Hontv&aacute;ri J&oacute;zsef. See <a
     href="manual/filters.html#evalutatorFilter">EvaluatorFilter
     documentation</a> for more details.</p>
+
+    <p>The name of the log file nested within .zip archives was
+    incorrectly set to be that of the tmp file logback creates during
+    compression. Anders Wallgren reported and posted an appropriate
+    patch for this problem in <a
+    href="http://jira.qos.ch/browse/LBCORE-98">LBCORE-98</a>.  The
+    nested file is now named after the zip archive file. Analysis
+    showed that this was an appropriate strategy in all the cases we
+    considered.</p>
 
     <hr width="80%" align="center" />
 
