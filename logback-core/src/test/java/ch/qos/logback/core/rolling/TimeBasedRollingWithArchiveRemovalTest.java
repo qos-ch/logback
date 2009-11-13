@@ -148,7 +148,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     // rollover occurs on the last period, that the last period is still accounted
     // for
     checkPatternCompliance(5 + 1 + slashCount,
-        "\\d{4}-\\d{2}-\\d{2}-clean.(\\d)(.zip)?");
+        "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?");
   }
 
   @Test
@@ -332,8 +332,9 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   }
 
   // reduce file names differing by index number into the same group
-  // for example, 2009-11-01-clean-0.zip, 2009-11-01-clean-1.zip and
+  // for example, 2009-11-01-clean.0.zip, 2009-11-01-clean.1.zip and
   // 2009-11-01-clean-2 are reduced into the same string (group)
+  // 2009-11-01-clean
   Set<String> groupByClass(List<File> fileList, String regex) {
     Pattern p = Pattern.compile(regex);
     Set<String> set = new HashSet<String>();
@@ -342,10 +343,10 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       Matcher m = p.matcher(n);
       m.matches();
       int begin = m.start(1);
-      int end = m.end(1);
-      String reduced = n.substring(0, begin) + n.substring(end);
+      String reduced = n.substring(0, begin);
       set.add(reduced);
     }
+    System.out.println(set);
     return set;
   }
 
