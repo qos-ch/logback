@@ -215,7 +215,7 @@
                  of java code. -->
 
             <Import-Package>
-              sun.reflect;resolution:=optional, javax.jms;resolution:=optional,
+              sun.reflect;resolution:=optional, javax.*;resolution:=optional,
               ch.qos.logback.core.rolling, ch.qos.logback.core.rolling.helper,
               *
             </Import-Package>
