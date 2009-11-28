@@ -22,7 +22,9 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,7 +112,6 @@ public class TimeBasedRollingWithArchiveRemovalTest {
         + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods);
     int beginPeriod = Calendar.getInstance().get(Calendar.MONTH);
     boolean extraFolder = extraFolder(numPeriods, 12, beginPeriod, maxHistory);
-    StatusPrinter.print(context);
     check(expectedCountWithFolders(2, extraFolder));
   }
 
@@ -145,9 +146,10 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     doRollover(
         randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip",
         MILLIS_IN_DAY, 5, 5 * 4);
-    
+
     // make .zip optional so that if for one reason or another, no size-based
-    // rollover occurs on the last period, that the last period is still accounted
+    // rollover occurs on the last period, that the last period is still
+    // accounted
     // for
     checkPatternCompliance(5 + 1 + slashCount,
         "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?");
@@ -198,12 +200,22 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       tbrp.timeBasedTriggering.setCurrentTime(addTime(tbrp.timeBasedTriggering
           .getCurrentTime(), periodDurationInMillis / ticksPerPeriod));
 
+      // wait every now and then for the compression job
+      // otherwise, we might rollover a file for a given period before a previous
+      // period's compressor had a chance to run
+      if(i % (ticksPerPeriod/2) == 0) {
+        waitForCompression(tbrp);
+      }
     }
-    
+    waitForCompression(tbrp);
+    rfa.stop();
+  }
+
+  void waitForCompression(TimeBasedRollingPolicy<Object> tbrp)
+      throws InterruptedException, ExecutionException, TimeoutException {
     if (tbrp.future != null && !tbrp.future.isDone()) {
       tbrp.future.get(200, TimeUnit.MILLISECONDS);
     }
-    rfa.stop();
   }
 
   void findAllFoldersRecursively(File dir, List<File> fileList) {
@@ -281,7 +293,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   // year is 2012, and not 2013 (the current year).
   boolean extraFolder(int numPeriods, int periodsPerEra, int beginPeriod,
       int maxHistory) {
-	int adjustedBegin =   beginPeriod+1;
+    int adjustedBegin = beginPeriod + 1;
     int remainder = ((adjustedBegin) + numPeriods) % periodsPerEra;
     return (remainder < maxHistory + 1);
   }

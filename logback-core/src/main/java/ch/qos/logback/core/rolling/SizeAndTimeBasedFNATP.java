@@ -36,6 +36,7 @@ public class SizeAndTimeBasedFNATP<E> extends
     super.start();
 
     archiveRemover = new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+    archiveRemover.setContext(context);
     
     // we need to get the correct value of currentPeriodsCounter.
     // usually the value is 0, unless the appender or the application
