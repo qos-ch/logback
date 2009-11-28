@@ -35,6 +35,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithArchiveRemovalTest {
 
@@ -109,6 +110,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
         + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods);
     int beginPeriod = Calendar.getInstance().get(Calendar.MONTH);
     boolean extraFolder = extraFolder(numPeriods, 12, beginPeriod, maxHistory);
+    StatusPrinter.print(context);
     check(expectedCountWithFolders(2, extraFolder));
   }
 
@@ -279,7 +281,8 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   // year is 2012, and not 2013 (the current year).
   boolean extraFolder(int numPeriods, int periodsPerEra, int beginPeriod,
       int maxHistory) {
-    int remainder = (beginPeriod + numPeriods) % periodsPerEra;
+	int adjustedBegin =   beginPeriod+1;
+    int remainder = ((adjustedBegin) + numPeriods) % periodsPerEra;
     return (remainder < maxHistory + 1);
   }
 

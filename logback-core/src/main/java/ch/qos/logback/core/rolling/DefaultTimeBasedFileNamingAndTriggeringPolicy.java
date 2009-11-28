@@ -32,6 +32,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
   public void start() {
     super.start();
     archiveRemover = new DefaultArchiveRemover(tbrp.fileNamePattern, rc);
+    archiveRemover.setContext(context);
     started = true;
   }
   

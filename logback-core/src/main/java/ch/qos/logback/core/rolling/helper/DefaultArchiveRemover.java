@@ -18,8 +18,10 @@ import java.util.Date;
 
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.LiteralConverter;
+import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class DefaultArchiveRemover implements ArchiveRemover {
+public class DefaultArchiveRemover extends ContextAwareBase implements
+    ArchiveRemover {
 
   final FileNamePattern fileNamePattern;
   final RollingCalendar rc;
@@ -36,32 +38,33 @@ public class DefaultArchiveRemover implements ArchiveRemover {
   boolean computeParentCleaningFlag(FileNamePattern fileNamePattern) {
     DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
     // if the date pattern has a /, then we need parent cleaning
-    if(dtc.getDatePattern().indexOf('/') != -1) {
+    if (dtc.getDatePattern().indexOf('/') != -1) {
       return true;
     }
-    // if the literal string subsequent to the dtc contains a /, we also need
+    // if the literal string subsequent to the dtc contains a /, we also
+    // need
     // parent cleaning
-    
+
     Converter<Object> p = fileNamePattern.headTokenConverter;
-    
+
     // find the date converter
-    while(p != null) {
-      if(p instanceof DateTokenConverter) {
+    while (p != null) {
+      if (p instanceof DateTokenConverter) {
         break;
       }
       p = p.getNext();
     }
-    
-    while(p != null) {
-      if(p instanceof LiteralConverter) {
+
+    while (p != null) {
+      if (p instanceof LiteralConverter) {
         String s = p.convert(null);
-        if(s.indexOf('/') != -1) {
+        if (s.indexOf('/') != -1) {
           return true;
         }
       }
       p = p.getNext();
     }
-    
+
     // no /, so we don't need parent cleaning
     return false;
   }
@@ -72,6 +75,7 @@ public class DefaultArchiveRemover implements ArchiveRemover {
     File file2Delete = new File(filename);
     if (file2Delete.exists() && file2Delete.isFile()) {
       file2Delete.delete();
+      addInfo("deleting " + file2Delete);
       if (parentClean) {
         removeFolderIfEmpty(file2Delete.getParentFile(), 0);
       }
@@ -92,6 +96,7 @@ public class DefaultArchiveRemover implements ArchiveRemover {
       return;
     }
     if (dir.isDirectory() && FileFilterUtil.isEmptyDirectory(dir)) {
+      addInfo("deleting folder [" + dir +"]");
       dir.delete();
       removeFolderIfEmpty(dir.getParentFile(), recursivityCount + 1);
     }

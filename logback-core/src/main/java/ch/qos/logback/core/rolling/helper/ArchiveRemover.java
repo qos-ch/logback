@@ -15,12 +15,14 @@ package ch.qos.logback.core.rolling.helper;
 
 import java.util.Date;
 
+import ch.qos.logback.core.spi.ContextAware;
+
 /**
  * Given a date remove older archived log files.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface ArchiveRemover {
+public interface ArchiveRemover extends ContextAware {
   public void clean(Date now);
   public void setMaxHistory(int maxHistory);
 } 
