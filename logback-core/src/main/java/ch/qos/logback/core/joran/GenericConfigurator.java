@@ -46,6 +46,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
       URLConnection urlConnection = url.openConnection();
       // per http://jira.qos.ch/browse/LBCORE-105
       urlConnection.setDefaultUseCaches(false);
+      
       InputStream in = urlConnection.getInputStream();
       doConfigure(in);
       in.close();
