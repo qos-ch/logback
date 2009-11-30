@@ -24,6 +24,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.CoreConstants;
 
 
 public class HLogger extends MarkerIgnoringBase {
@@ -237,10 +238,10 @@ public class HLogger extends MarkerIgnoringBase {
    * @return
    */
   HLogger createChildByLastNamePart(final String lastPart) {
-    int i_index = lastPart.indexOf(ClassicConstants.LOGGER_SEPARATOR);
+    int i_index = lastPart.indexOf(CoreConstants.DOT);
     if (i_index != -1) {
       throw new IllegalArgumentException("Child name [" + lastPart
-          + " passed as parameter, may not include [" + ClassicConstants.LOGGER_SEPARATOR
+          + " passed as parameter, may not include [" + CoreConstants.DOT
           + "]");
     }
 
@@ -251,7 +252,7 @@ public class HLogger extends MarkerIgnoringBase {
     if (this.isRootLogger()) {
       childHLogger = new HLogger(lastPart, this);
     } else {
-      childHLogger = new HLogger(name + ClassicConstants.LOGGER_SEPARATOR + lastPart,
+      childHLogger = new HLogger(name + CoreConstants.DOT + lastPart,
           this);
     }
     childrenMap.put(lastPart, childHLogger);

@@ -14,7 +14,6 @@
 package ch.qos.logback.classic;
 
 public class ClassicConstants {
-  static public final char LOGGER_SEPARATOR = '.';
   static public final String USER_MDC_KEY = "user";
 
   public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";

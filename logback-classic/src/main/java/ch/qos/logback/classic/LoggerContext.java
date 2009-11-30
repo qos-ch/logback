@@ -134,7 +134,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     // in between as well (if they don't already exist)
     String childName;
     while (true) {
-      int h = name.indexOf(ClassicConstants.LOGGER_SEPARATOR, i);
+      int h = Logger.getSeparatorIndexOf(name, i);
       if (h == -1) {
         childName = name;
       } else {

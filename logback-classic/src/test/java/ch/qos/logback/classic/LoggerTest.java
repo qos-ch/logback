@@ -134,9 +134,30 @@ public class LoggerTest {
       assertFalse(logger.isTraceEnabled());
       assertFalse(logger.isEnabledFor(Level.TRACE));
     }
-
   }
 
+  @Test
+  public void  innerClass_I() {
+    root.setLevel(Level.DEBUG);
+    Logger a = lc.getLogger("a");
+    a.setLevel(Level.INFO);
+    Logger a_b = lc.getLogger("a$b");
+    assertEquals(Level.INFO, a_b.getEffectiveLevel());
+  }
+
+  @Test
+  public void  innerClass_II() {
+    root.setLevel(Level.DEBUG);
+    Logger a = lc.getLogger(this.getClass());
+    a.setLevel(Level.INFO);
+    Logger a_b = lc.getLogger(new Inner().getClass());
+    assertEquals(Level.INFO, a_b.getEffectiveLevel());
+  }
+
+  
+  class Inner {
+  }
+  
   @Test
   public void testEnabled_All() throws Exception {
     root.setLevel(Level.ALL);

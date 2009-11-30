@@ -18,6 +18,7 @@ import java.util.Map;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * This logger context quite optimized for logger retrieval.
@@ -80,7 +81,7 @@ public class ControlLoggerContext {
 
       int i = 0;
       while (true) {
-        i = name.indexOf(ClassicConstants.LOGGER_SEPARATOR, i);
+        i = name.indexOf(CoreConstants.DOT, i);
         if (i == -1) {
           // System.out.println("FINAL-Creating logger named [" + name + "] with
           // parent " + parent.getName());

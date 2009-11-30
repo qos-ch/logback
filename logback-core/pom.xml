@@ -137,6 +137,7 @@
             <Export-Package>ch.qos.logback.core.*</Export-Package>
             <Import-Package>
               javax.*;resolution:=optional, 
+              org.xml.*;resolution:=optional,
               org.codehaus.janino;resolution:=optional,
               *
             </Import-Package>

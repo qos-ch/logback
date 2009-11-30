@@ -91,9 +91,12 @@ public class CoreConstants {
    * Ceki's machine (Orion)
    */
   public static long REFERENCE_BIPS = 9000;
+  
+  
+  
   static public final char DOT = '.';
-
   static public final char TAB = '\t';
+  static public final char DOLLAR = '$';
   
   static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
   

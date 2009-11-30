@@ -21,7 +21,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
   final int targetLength;
 
   public TargetLengthBasedClassNameAbbreviator(int targetLength) {
-    this.targetLength = targetLength;   
+    this.targetLength = targetLength;
   }
 
   public String abbreviate(String fqClassName) {
@@ -36,9 +36,9 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     }
 
     int[] dotIndexesArray = new int[ClassicConstants.MAX_DOTS];
-    // a.b.c contains 2 dots but 2+1 parts. 
+    // a.b.c contains 2 dots but 2+1 parts.
     // see also http://jira.qos.ch/browse/LBCLASSIC-110
-    int[] lengthArray = new int[ClassicConstants.MAX_DOTS+1];
+    int[] lengthArray = new int[ClassicConstants.MAX_DOTS + 1];
 
     int dotCount = computeDotIndexes(fqClassName, dotIndexesArray);
 
@@ -55,8 +55,8 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
       if (i == 0) {
         buf.append(fqClassName.substring(0, lengthArray[i] - 1));
       } else {
-        buf.append(fqClassName.substring(dotIndexesArray[i - 1], dotIndexesArray[i - 1]
-            + lengthArray[i]));
+        buf.append(fqClassName.substring(dotIndexesArray[i - 1],
+            dotIndexesArray[i - 1] + lengthArray[i]));
       }
       // System.out.println("i=" + i + ", buf=" + buf);
     }
@@ -64,11 +64,12 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     return buf.toString();
   }
 
-
   static int computeDotIndexes(final String className, int[] dotArray) {
     int dotCount = 0;
     int k = 0;
     while (true) {
+      // ignore the $ separator in our computations. This is both convenient
+      // and sensible.
       k = className.indexOf(CoreConstants.DOT, k);
       if (k != -1 && dotCount < ClassicConstants.MAX_DOTS) {
         dotArray[dotCount] = k;
