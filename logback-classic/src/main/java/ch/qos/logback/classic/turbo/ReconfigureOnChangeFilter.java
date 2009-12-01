@@ -15,6 +15,7 @@ package ch.qos.logback.classic.turbo;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import org.slf4j.Marker;
 
@@ -69,10 +70,11 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     }
   }
 
+  @SuppressWarnings("deprecation")
   File convertToFile(URL url) {
     String protocol = url.getProtocol();
     if ("file".equals(protocol)) {
-      File file = new File(url.getFile());
+      File file = new File(URLDecoder.decode(url.getFile()));
       return file;
     } else {
       addError("URL [" + url + "] is not of type file");

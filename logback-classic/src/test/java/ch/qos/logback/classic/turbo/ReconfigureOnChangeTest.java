@@ -13,11 +13,13 @@
  */
 package ch.qos.logback.classic.turbo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,18 +38,15 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;
   final static int LOOP_LEN = 1000 * 1000;
 
+  // the space in the file name mandated by http://jira.qos.ch/browse/LBCORE-119
   final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
-      + "input/turbo/scan1.xml";
-  
-  final static String SCAN2_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
-  + "input/turbo/scan 2.xml";
-  
+      + "input/turbo/scan 1.xml";
+
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic
   // the same propagation latency occurs in Linux but is even larger (>600 ms)
@@ -84,24 +83,15 @@ public class ReconfigureOnChangeTest {
     return rArray;
   }
 
-
-  @Test
-  public void lbcore119() throws JoranException, InterruptedException {
-    File file = new File(SCAN2_FILE_AS_STR);
-    
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(loggerContext);
-    jc.doConfigure(file);
-    
-    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
-    harness.execute(runnableArray);
-
-    loggerContext.getStatusManager().add(
-        new InfoStatus("end of execution ", this));
-
-    long expectedRreconfigurations = runnableArray[0].getCounter();
-    verify(expectedRreconfigurations);
-    
+  
+  
+  @Test // See http://jira.qos.ch/browse/LBCORE-119
+  public void fileToURLAndBack() throws MalformedURLException {
+    File file = new File("a b.xml");
+    URL url = file.toURI().toURL();
+    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
+    File back = rocf.convertToFile(url);
+    assertEquals(file.getName(), back.getName());
   }
   
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
@@ -119,26 +109,21 @@ public class ReconfigureOnChangeTest {
     verify(expectedRreconfigurations);
   }
 
-  
   void verify(long expectedRreconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
-    try {
-      assertTrue(checker.isErrorFree());
-      int effectiveResets = checker
-          .matchCount("Resetting and reconfiguring context");
-      // the number of effective resets must be equal or less than
-      // expectedRreconfigurations
-      assertTrue(effectiveResets <= expectedRreconfigurations);
-      // however, there should be some effective resets
-      String failMsg = "effective=" + effectiveResets + ", expected="
-          + expectedRreconfigurations;
-      assertTrue(failMsg,
-          (effectiveResets * 1.3) >= (expectedRreconfigurations * 1.0));
-    } catch (AssertionError ae) {
-      StatusPrinter.print(loggerContext);
-    }
+    assertTrue(checker.isErrorFree());
+    int effectiveResets = checker
+        .matchCount("Resetting and reconfiguring context");
+    // the number of effective resets must be equal or less than
+    // expectedRreconfigurations
+    assertTrue(effectiveResets <= expectedRreconfigurations);
+    // however, there should be some effective resets
+    String failMsg = "effective=" + effectiveResets + ", expected="
+        + expectedRreconfigurations;
+    assertTrue(failMsg,
+        (effectiveResets * 1.3) >= (expectedRreconfigurations * 1.0));
   }
-  
+
   ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(loggerContext);
