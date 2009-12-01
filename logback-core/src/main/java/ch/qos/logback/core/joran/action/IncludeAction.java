@@ -36,7 +36,6 @@ public class IncludeAction extends Action {
   private static final String FILE_ATTR = "file";
   private static final String URL_ATTR = "url";
   private static final String RESOURCE_ATTR = "resource";
-  
 
   private String attributeInUse;
 
@@ -45,7 +44,7 @@ public class IncludeAction extends Action {
       throws ActionException {
 
     SaxEventRecorder recorder = new SaxEventRecorder();
-    
+
     this.attributeInUse = null;
 
     if (!checkAttributes(attributes)) {
@@ -57,18 +56,25 @@ public class IncludeAction extends Action {
     try {
       if (in != null) {
         parseAndRecord(in, recorder);
-        in.close();
       }
     } catch (JoranException e) {
       addError("Error while parsing  " + attributeInUse, e);
-    } catch (IOException e) {
-      // called if in.close did not work
+    } finally {
+      close(in);
     }
-
     // remove the <included> tag from the beginning and </included> from the end
     trimHeadAndTail(recorder);
-    
+
     ec.getJoranInterpreter().addEventsDynamically(recorder.saxEventList);
+  }
+
+  void close(InputStream in) {
+    if (in != null) {
+      try {
+        in.close();
+      } catch (IOException e) {
+      }
+    }
   }
 
   private boolean checkAttributes(Attributes attributes) {
@@ -170,13 +176,13 @@ public class IncludeAction extends Action {
   private void trimHeadAndTail(SaxEventRecorder recorder) {
     // Let's remove the two <included> events before
     // adding the events to the player.
-    
+
     List<SaxEvent> saxEventList = recorder.saxEventList;
-    
+
     if (saxEventList.size() == 0) {
       return;
     }
-    
+
     SaxEvent first = saxEventList.get(0);
     if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
       saxEventList.remove(0);
@@ -188,7 +194,8 @@ public class IncludeAction extends Action {
     }
   }
 
-  private void parseAndRecord(InputStream inputSource, SaxEventRecorder recorder) throws JoranException {
+  private void parseAndRecord(InputStream inputSource, SaxEventRecorder recorder)
+      throws JoranException {
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
   }

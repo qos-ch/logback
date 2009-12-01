@@ -16,7 +16,11 @@ package ch.qos.logback.core.joran.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -34,6 +38,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class IncludeActionTest {
@@ -68,6 +74,8 @@ public class IncludeActionTest {
 
   static final String INCLUDED_AS_RESOURCE = "asResource/joran/inclusion/includedAsResource.xml";
 
+  int diff = RandomUtil.getPositiveInt();
+  
   public IncludeActionTest() {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
@@ -106,7 +114,7 @@ public class IncludeActionTest {
     verifyConfig(2);
   }
 
-  @Test 
+  @Test
   public void basicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
@@ -124,14 +132,35 @@ public class IncludeActionTest {
   }
 
   @Test
-  public void withCorruptFile() throws JoranException {
-    System.setProperty(INCLUDE_KEY, INVALID);
+  public void withCorruptFile() throws JoranException, IOException {
+    String tmpOut = copyToTemp(INVALID);
+    System.setProperty(INCLUDE_KEY, tmpOut);
     tc.doConfigure(TOP_BY_FILE);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
     assertTrue(sc.containsException(SAXParseException.class));
+
+    // we like to erase the temp file in order to see
+    // if http://jira.qos.ch/browse/LBCORE-122 was fixed
+    File f = new File(tmpOut);
+    assertTrue(f.exists());
+    assertTrue(f.delete());
+    
   }
 
+  String copyToTemp(String in)  throws IOException {
+    FileInputStream fis = new FileInputStream(in);
+    String out = CoreTestConstants.OUTPUT_DIR_PREFIX+"out"+diff;
+    FileOutputStream fos = new FileOutputStream(out);
+    int b;
+    while((b=fis.read()) != -1) {
+      fos.write(b);
+    }
+    fis.close();
+    fos.close();
+    return out;
+  }
+  
   @Test
   public void malformedURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, "htp://logback.qos.ch");
@@ -169,11 +198,18 @@ public class IncludeActionTest {
   }
 
   @Test
-  public void errorInDoBegin() {
-    
+  public void saxParseException() throws JoranException {
+    System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
+    System.setProperty(SECOND_FILE_KEY, SECOND_FILE);
+    tc.doConfigure(MULTI_INCLUDE_BY_FILE);
+    verifyConfig(3);
   }
-  
-  
+
+  @Test
+  public void errorInDoBegin() {
+
+  }
+
   void verifyConfig(int expected) {
     assertEquals(expected, IncAction.beginCount);
     assertEquals(expected, IncAction.endCount);
