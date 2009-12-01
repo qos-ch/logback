@@ -44,7 +44,10 @@ public class ReconfigureOnChangeTest {
 
   final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
       + "input/turbo/scan1.xml";
-
+  
+  final static String SCAN2_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
+  + "input/turbo/scan 2.xml";
+  
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic
   // the same propagation latency occurs in Linux but is even larger (>600 ms)
@@ -66,14 +69,13 @@ public class ReconfigureOnChangeTest {
 
   }
 
-  void configure(String file) throws JoranException {
+  void configure(File file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(loggerContext);
     jc.doConfigure(file);
   }
 
   RunnableWithCounterAndDone[] buildRunnableArray(File configFile) {
-
     RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
     rArray[0] = new Updater(configFile);
     for (int i = 1; i < THREAD_COUNT; i++) {
@@ -82,11 +84,15 @@ public class ReconfigureOnChangeTest {
     return rArray;
   }
 
-  // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
+
   @Test
-  public void scan1() throws JoranException, IOException, InterruptedException {
-    configure(SCAN1_FILE_AS_STR);
-    File file = new File(SCAN1_FILE_AS_STR);
+  public void lbcore119() throws JoranException, InterruptedException {
+    File file = new File(SCAN2_FILE_AS_STR);
+    
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.setContext(loggerContext);
+    jc.doConfigure(file);
+    
     RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
     harness.execute(runnableArray);
 
@@ -94,7 +100,27 @@ public class ReconfigureOnChangeTest {
         new InfoStatus("end of execution ", this));
 
     long expectedRreconfigurations = runnableArray[0].getCounter();
+    verify(expectedRreconfigurations);
+    
+  }
+  
+  // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
+  @Test
+  public void scan1() throws JoranException, IOException, InterruptedException {
+    File file = new File(SCAN1_FILE_AS_STR);
+    configure(file);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+    harness.execute(runnableArray);
 
+    loggerContext.getStatusManager().add(
+        new InfoStatus("end of execution ", this));
+
+    long expectedRreconfigurations = runnableArray[0].getCounter();
+    verify(expectedRreconfigurations);
+  }
+
+  
+  void verify(long expectedRreconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
     try {
       assertTrue(checker.isErrorFree());
@@ -112,7 +138,7 @@ public class ReconfigureOnChangeTest {
       StatusPrinter.print(loggerContext);
     }
   }
-
+  
   ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(loggerContext);
