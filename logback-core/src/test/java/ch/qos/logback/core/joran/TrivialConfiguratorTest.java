@@ -17,13 +17,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
@@ -107,7 +106,7 @@ public class TrivialConfiguratorTest {
   @Test
   public void lbcore105() throws IOException, JoranException {
     String jarEntry = "buzz.xml";
-    File jarFile = makeJarFile();
+    File jarFile = makeRandomJarFile();
     fillInJarFile(jarFile, jarEntry);
     URL url = asURL(jarFile, jarEntry);
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
@@ -121,36 +120,35 @@ public class TrivialConfiguratorTest {
   @Test
   public void lbcore127() throws IOException, JoranException {
     String jarEntry = "buzz.xml";
-    String jarEntry2 = "Lightyear.xml";
-    
-    File jarFile = makeJarFile();
-    fillInJarFile(jarFile, jarEntry, jarEntry2);
-    
+    String jarEntry2 = "lightyear.xml";
 
-    URL url = asURL(jarFile, jarEntry);
+    File jarFile = makeRandomJarFile();
+    fillInJarFile(jarFile, jarEntry, jarEntry2);
+
+    URL url1 = asURL(jarFile, jarEntry);
     URL url2 = asURL(jarFile, jarEntry2);
 
-    InputStream resourceAsStream = url2.openStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(
-        resourceAsStream));
+    URLConnection urlConnection2 = url2.openConnection();
+    urlConnection2.setUseCaches(false);
+    InputStream is = urlConnection2.getInputStream();
     
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
-    tc.doConfigure(url);
-    reader.readLine();
-    
-    reader.close();
+    tc.doConfigure(url1);
+
+    is.read();
+    is.close();
 
     // deleting an open file fails
     assertTrue(jarFile.delete());
     assertFalse(jarFile.exists());
   }
 
-  File makeJarFile() {
+  File makeRandomJarFile() {
     File outputDir = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
     outputDir.mkdirs();
-    int randomInt = RandomUtil.getPositiveInt();
-    return new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "foo-" + randomInt
+    int randomPart = RandomUtil.getPositiveInt();
+    return new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "foo-" + randomPart
         + ".jar");
   }
 
@@ -159,14 +157,14 @@ public class TrivialConfiguratorTest {
     fillInJarFile(jarFile, jarEntryName, null);
   }
 
-  private void fillInJarFile(File jarFile, String jarEntryName,
-      String secondJarEntry) throws IOException {
+  private void fillInJarFile(File jarFile, String jarEntryName1,
+      String jarEntryName2) throws IOException {
     JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
-    jos.putNextEntry(new ZipEntry(jarEntryName));
+    jos.putNextEntry(new ZipEntry(jarEntryName1));
     jos.write("<x/>".getBytes());
     jos.closeEntry();
-    if (secondJarEntry != null) {
-      jos.putNextEntry(new ZipEntry(secondJarEntry));
+    if (jarEntryName2 != null) {
+      jos.putNextEntry(new ZipEntry(jarEntryName2));
       jos.write("<y/>".getBytes());
       jos.closeEntry();
     }
