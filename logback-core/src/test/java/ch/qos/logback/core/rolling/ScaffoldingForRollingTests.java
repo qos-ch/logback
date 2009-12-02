@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -145,6 +148,13 @@ public class ScaffoldingForRollingTests {
   protected Date getDateOfPreviousPeriodsStart() {
     long delta = currentTime % 1000;
     return new Date(currentTime - delta - 1000);
+  }
+
+  static void waitForCompression(TimeBasedRollingPolicy<Object> tbrp)
+      throws InterruptedException, ExecutionException, TimeoutException {
+    if (tbrp.future != null && !tbrp.future.isDone()) {
+      tbrp.future.get(200, TimeUnit.MILLISECONDS);
+    }
   }
 
   protected void addExpectedFileName_ByDate(String testId, Date date,

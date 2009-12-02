@@ -65,7 +65,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   TimeBasedFileNamingAndTriggeringPolicy<Object> tbfnatp = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp()  {
     context.setName("test");
   }
 
@@ -192,8 +192,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     int ticksPerPeriod = 512;
     long runLength = simulatedNumberOfPeriods * ticksPerPeriod;
 
-    long i = 0;
-    for (; i < runLength; i++) {
+    for (long i = 0; i < runLength; i++) {
       rfa
           .doAppend("Hello ----------------------------------------------------------"
               + i);

@@ -16,7 +16,6 @@ package ch.qos.logback.core.rolling;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,13 +53,11 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
   RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
   TimeBasedRollingPolicy<Object> tbrp2 = new TimeBasedRollingPolicy<Object>();
 
-
   @Before
   @Override
   public void setUp() {
     super.setUp();
   }
-
 
   @After
   public void tearDown() {
@@ -74,8 +71,9 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     }
   }
 
-  void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
-      String filenamePattern, long givenTime) {
+  void initTRBP(RollingFileAppender<Object> rfa,
+      TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
+      long givenTime) {
     tbrp.setContext(context);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
@@ -136,9 +134,8 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       rfa1.doAppend("Hello---" + i);
       incCurrentTime(500);
       tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      waitForCompression(tbrp1);
     }
-
-    tbrp1.future.get(2000, TimeUnit.MILLISECONDS);
 
     int i = 0;
     for (String fn : expectedFilenameList) {
@@ -176,7 +173,8 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     initRFA(rfa2, null);
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
-        + DATE_PATTERN_WITH_SECONDS + "}", tbrp1.timeBasedTriggering.getCurrentTime());
+        + DATE_PATTERN_WITH_SECONDS + "}", tbrp1.timeBasedTriggering
+        .getCurrentTime());
 
     for (int i = 0; i <= 2; i++) {
       addExpectedFileNamedIfItsTime_ByDate(testId, false);
@@ -219,8 +217,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     // change the timestamp of the currently actively file
     File activeFile = new File(rfa1.getFile());
     activeFile.setLastModified(currentTime);
-    
-    
+
     initRFA(rfa2, testId2FileName(testId));
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
         + DATE_PATTERN_WITH_SECONDS + "}", currentTime);
@@ -266,7 +263,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     // change the timestamp of the currently actively file
     File activeFile = new File(rfa1.getFile());
     activeFile.setLastModified(currentTime);
-    
+
     incCurrentTime(2000);
 
     initRFA(rfa2, randomOutputDir + "test4B.log");
@@ -344,10 +341,8 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       addExpectedFileNamedIfItsTime_ByDate(testId, true);
       incCurrentTime(500);
       tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      waitForCompression(tbrp1);
     }
-
-    // wait for the compression task to finish
-    tbrp1.future.get(1000, TimeUnit.MILLISECONDS);
 
     massageExpectedFilesToCorresponToCurrentTarget("test6.log");
 
@@ -362,7 +357,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
   // =========================================================================
   // utility methods
   // =========================================================================
-
 
   void massageExpectedFilesToCorresponToCurrentTarget(String file) {
     // we added one too many files by date
