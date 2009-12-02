@@ -142,8 +142,7 @@ public class ReconfigureOnChangeTest {
   public void directPerfTest() throws MalformedURLException {
     if (Env.isLinux()) {
       // for some reason this test does not pass on Linux (AMD 64 bit,
-      // Dual Core
-      // Opteron 170)
+      // Dual Core Opteron 170)
       return;
     }
 

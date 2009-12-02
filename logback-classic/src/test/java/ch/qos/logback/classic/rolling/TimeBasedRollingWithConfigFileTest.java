@@ -140,7 +140,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     // match exactly the expected archive files. Thus, we aim for
     // an approximate match
     assertTrue("exitenceCount=" + eCount + ", expectedFilenameList.size="
-        + expectedFilenameList.size(), eCount >= 5
+        + expectedFilenameList.size(), eCount >= 4
         && eCount > expectedFilenameList.size() / 2);
   }
 
