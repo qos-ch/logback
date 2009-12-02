@@ -40,7 +40,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
       Date dateOfElapsedPeriod = dateInCurrentPeriod;
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convert(dateOfElapsedPeriod);
-      updateDateInCurrentPeriod(time);
+      setDateInCurrentPeriod(time);
       computeNextCheck();
       return true;
     } else {

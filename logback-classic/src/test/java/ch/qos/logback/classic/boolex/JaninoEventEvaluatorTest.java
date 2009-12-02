@@ -34,7 +34,6 @@ import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class JaninoEventEvaluatorTest {
 

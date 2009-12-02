@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.rolling;
 
-import java.util.Date;
-
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.spi.ContextAware;
 
@@ -77,7 +75,10 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends
    * Set some date in the current period. Only unit tests should invoke this
    * method.
    * 
+   * WARNING: method removed. A unit test should not set the
+   * date in current period. It is the job of the FNATP to compute that.
+   * 
    * @param date
    */
-  void setDateInCurrentPeriod(Date date);
+  //void setDateInCurrentPeriod(Date date); 
 }

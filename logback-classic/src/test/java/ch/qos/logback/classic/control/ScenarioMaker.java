@@ -15,7 +15,6 @@ package ch.qos.logback.classic.control;
 
 import java.util.LinkedList;
 
-import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.core.CoreConstants;
 

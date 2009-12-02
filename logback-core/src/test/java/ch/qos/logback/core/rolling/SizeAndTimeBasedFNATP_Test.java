@@ -60,9 +60,9 @@ public class SizeAndTimeBasedFNATP_Test extends
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
     tbrp.timeBasedTriggering.setCurrentTime(givenTime);
-    if (lastCheck != 0) {
-      tbrp.timeBasedTriggering.setDateInCurrentPeriod(new Date(lastCheck));
-    }
+//    if (lastCheck != 0) {
+//      tbrp.timeBasedTriggering.setDateInCurrentPeriod(new Date(lastCheck));
+//    }
     rfa.setRollingPolicy(tbrp);
     tbrp.start();
     rfa.start();

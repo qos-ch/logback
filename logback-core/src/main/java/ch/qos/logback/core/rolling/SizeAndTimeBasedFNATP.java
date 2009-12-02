@@ -77,7 +77,7 @@ public class SizeAndTimeBasedFNATP<E> extends
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
       currentPeriodsCounter = 0;
-      updateDateInCurrentPeriod(time);
+      setDateInCurrentPeriod(time);
       computeNextCheck();
       return true;
     }

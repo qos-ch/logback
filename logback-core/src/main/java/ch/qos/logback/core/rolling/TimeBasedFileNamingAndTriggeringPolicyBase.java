@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
+import java.io.File;
 import java.util.Date;
 
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
@@ -20,25 +21,23 @@ import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase
-    implements TimeBasedFileNamingAndTriggeringPolicy<E> {
+abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
+    ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
   protected TimeBasedRollingPolicy<E> tbrp;
-  
+
   protected ArchiveRemover archiveRemover = null;
   protected String elapsedPeriodsFileName;
   protected RollingCalendar rc;
-  
-  
+
   protected long currentTime;
-  //indicate whether the time has been forced or not
+  // indicate whether the time has been forced or not
   protected boolean isTimeForced = false;
   protected Date dateInCurrentPeriod = null;
-  
+
   protected long nextCheck;
   protected boolean started = false;
 
-  
   public boolean isStarted() {
     return started;
   }
@@ -58,21 +57,30 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
         + "'.");
     rc.printPeriodicity(this);
 
-    // dateInCurrentPeriod can be set by test classes
-    // if it has not been set, we set it here
+    
     if (dateInCurrentPeriod == null) {
-      dateInCurrentPeriod = new Date();
-      updateDateInCurrentPeriod(getCurrentTime());
+      setDateInCurrentPeriod(new Date(getCurrentTime()));
+      
+      if (tbrp.getParentsRawFileProperty() != null) {
+        File currentFile = new File(tbrp.getParentsRawFileProperty());
+        if (currentFile.exists() && currentFile.canRead()) {
+          setDateInCurrentPeriod(new Date(currentFile.lastModified()));
+        }
+      }
     }
     computeNextCheck();
   }
-  
+
   public void stop() {
     started = false;
   }
-  
+
   protected void computeNextCheck() {
     nextCheck = rc.getNextTriggeringMillis(dateInCurrentPeriod);
+  }
+
+  protected void setDateInCurrentPeriod(long now) {
+    dateInCurrentPeriod.setTime(now);
   }
 
   // allow Test classes to act on the dateInCurrentPeriod field to simulate old
@@ -93,11 +101,6 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     return tbrp.fileNamePatternWCS.convert(dateInCurrentPeriod);
   }
 
-
-  protected void updateDateInCurrentPeriod(long now) {
-    dateInCurrentPeriod.setTime(now);
-  }
-
   public void setCurrentTime(long timeInMillis) {
     currentTime = timeInMillis;
     isTimeForced = true;
@@ -111,7 +114,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
       return System.currentTimeMillis();
     }
   }
-  
+
   public void setTimeBasedRollingPolicy(TimeBasedRollingPolicy<E> _tbrp) {
     this.tbrp = _tbrp;
 

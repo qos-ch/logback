@@ -15,6 +15,7 @@ package ch.qos.logback.core.rolling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithArchiveRemovalTest {
 
