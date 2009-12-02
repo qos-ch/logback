@@ -56,7 +56,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     if (url != null) {
       fileToScan = convertToFile(url);
       if (fileToScan != null) {
-        synchronized (context) {
+        synchronized (context.getConfigurationLock()) {
           long inSeconds = refreshPeriod / 1000;
           addInfo("Will scan for changes in file [" + fileToScan + "] every "
               + inSeconds + " seconds. ");
@@ -102,7 +102,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    synchronized (context) {
+    synchronized (context.getConfigurationLock()) {
       boolean changed = changeDetected();
       if (changed) {
         addInfo("Detected change in [" + fileToScan + "]");

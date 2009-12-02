@@ -122,7 +122,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     recorder.recordEvents(inputSource);
     buildInterpreter();
     // disallow simultaneous configurations of the same context
-    synchronized (context) {
+    synchronized (context.getConfigurationLock()) {
       interpreter.play(recorder.saxEventList);
     }
   }

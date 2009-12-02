@@ -67,6 +67,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       + "logback-access.xml";
   
   private long birthTime = System.currentTimeMillis();
+  Object configurationLock = new Object();
 
   
   // Attributes from ContextBase:
@@ -268,6 +269,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public long getBithTime() {
     return birthTime;
   }
+
+  public Object getConfigurationLock() {
+    return configurationLock;
+  }
   
   // ====== Methods from catalina Lifecycle =====
 
@@ -282,7 +287,5 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public void removeLifecycleListener(LifecycleListener arg0) {
     // dummy NOP implementation
   }
-
-
 
 }

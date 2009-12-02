@@ -30,6 +30,8 @@ public class ContextBase implements Context {
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
 
+  Object configurationLock = new Object();
+  
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -107,5 +109,9 @@ public class ContextBase implements Context {
 
   public long getBithTime() {
     return birthTime;
+  }
+
+  public Object getConfigurationLock() {
+    return configurationLock;
   }
 }

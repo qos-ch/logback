@@ -86,4 +86,11 @@ public interface Context extends PropertyContainer {
    * @return The time as measured when this class was created.
    */
   public long getBithTime();
+  
+  /**
+   * Object used for synchronization purposes. 
+   * INTENDED FOR INTERNAL USAGE.
+   */
+  public Object getConfigurationLock();
+
 }
