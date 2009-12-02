@@ -66,6 +66,7 @@ public class SMTPAppender_GreenTest {
         ServerSetup.PROTOCOL_SMTP);
     greenMail = new GreenMail(serverSetup);
     greenMail.start();
+    Thread.yield();
   }
   
   @After
