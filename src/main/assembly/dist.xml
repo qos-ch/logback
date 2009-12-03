@@ -30,13 +30,12 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
-				<fileSet>
-			<directory>logback-classic/</directory>
+    <fileSet>
+      <directory>logback-classic/</directory>
 			<outputDirectory>logback-classic/</outputDirectory>
 			<includes>
-				<include>
-					pom.xml
-				</include>
+				<include>pom.xml</include>
+				<include>osgi-build.xml</include>
 			</includes>
 			<excludes>
 				<exclude>*.bak</exclude>
@@ -218,9 +217,10 @@
 			<outputDirectory>docs/</outputDirectory>
       <excludes>
         <exclude>dist/*</exclude>
-        <exclude>/apidocs/*</exclude>
-        <exclude>/xref/*</exclude>
-        <exclude>/xref-test/*</exclude>
+        <exclude>**/apidocs/**</exclude>
+        <exclude>**/testapidocs/**</exclude>
+        <exclude>**/xref/**</exclude>
+        <exclude>**/xref-test/**</exclude>
       </excludes>
 		</fileSet>
 		

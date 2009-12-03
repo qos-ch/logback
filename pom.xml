@@ -277,13 +277,13 @@
  
   <distributionManagement>
     <site>
-      <id>pixie.qos.ch</id>
-      <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
+      <id>pixie</id>
+      <url>scp://pixie.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
     
     <repository>
-      <id>pixie.qos.ch</id>
-      <url>scp://pixie/var/mvnrepo/</url>
+      <id>pixie</id>
+      <url>scp://pixie.qos.ch/var/mvnrepo/</url>
     </repository>
         
   </distributionManagement>
