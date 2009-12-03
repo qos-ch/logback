@@ -34,7 +34,7 @@ import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.testUtil.Env;
 
 public class ReconfigurePerf {
-  final static int THREAD_COUNT = 5;
+  final static int THREAD_COUNT = 50;
   final static int LOOP_LEN = 1000 * 1000;
 
   // the space in the file name mandated by

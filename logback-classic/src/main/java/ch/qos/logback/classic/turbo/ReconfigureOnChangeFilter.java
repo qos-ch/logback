@@ -26,6 +26,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.status.InfoStatus;
 
 /**
  * Reconfigure a LoggerContext when the configuration file changes.
@@ -170,6 +171,8 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       } catch (JoranException e) {
         addError("Failure during reconfiguration", e);
       }
+      lc.getStatusManager().add(
+          new InfoStatus("done resetting the logging context", this));
     }
   }
 }
