@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false">
+
+  <appender name="LIST" class="ch.qos.logback.core.FileAppender">
+    <file>target/test-output/osgi-test.log</file>
+    <layout>
+      <pattern>%d %level - %m%n</pattern>
+    </layout>
+  </appender>
+  
+  <logger name="ch.qos.logback.classic.joran" level="INFO" />
+
+  <root level="DEBUG">
+    <appender-ref ref="LIST" />
+  </root>
+
+</configuration>

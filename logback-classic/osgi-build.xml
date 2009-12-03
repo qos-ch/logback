@@ -1,0 +1,84 @@
+<project name="osgi-test" default="testAll">
+
+	<!--
+		This build file is usually run indirectly via Maven.
+		
+		When running this build file through Ant directly, you must
+		define the currentVersion property on the command line, e.g.:
+		
+		ant  -DcurrentVersion=1.5.4-SNAPSHOT	
+	-->
+	
+	<echo message="compile classpath: ${currentVersion}" />
+	<echo message="test classpath:    ${test_classpath}" />
+	<echo message="basedir:           ${basedir}" />
+
+  <property name="iBundleJar" value="target/iBundle.jar"/>
+  <property name="bundlesDir" value="bundle"/>
+
+
+	<!-- this is really very ugly, but it's the only way to circumvent
+  	     http://jira.codehaus.org/browse/MANTRUN-95
+	-->
+	<taskdef name="junit" classpath="${test_classpath}" 
+           classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" />
+
+	<path id="minimal">
+		<pathelement location="target/test-classes/" />
+	</path >
+
+  <target name="copySLF4J_JAR">
+    <echo>Copying ${slf4jJAR} to lib/</echo>
+    <delete>
+      <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
+    </delete>
+    <copy file="${slf4jJAR}" todir="lib/" />
+  </target>
+
+	<target name="init" depends="copySLF4J_JAR">
+		<mkdir dir="target/unit-reports" />
+	</target>
+
+  <target name="createIBundle">
+    <mkdir dir="${bundlesDir}"/>
+    <jar destFile="${iBundleJar}" 
+         manifest="src/IBUNDLE-META-INF/MANIFEST.MF"
+         basedir="target/test-classes/"
+         includes="integrator/**.class"/>
+                   
+  </target>
+
+	<target name="testAll" depends="init, createIBundle, logback">
+	</target>
+
+
+  <macrodef name="prepareOSGiHarness">
+    <attribute name="binding"/>
+    <sequential>
+      <delete>
+        <fileset dir="${bundlesDir}" includes="*.jar"/>
+      </delete>
+      <copy file="${iBundleJar}" todir="${bundlesDir}"/>
+      <copy file="../logback-examples/lib/slf4j-api-${slf4j.version}.jar" todir="${bundlesDir}"/>
+      <copy file="../logback-core/target/logback-core-${currentVersion}.jar" todir="${bundlesDir}"/>
+      <copy file="target/logback-classic-${currentVersion}.jar" todir="${bundlesDir}"/>
+      <echo>value of t = @{t}</echo>
+    </sequential>
+  </macrodef>
+
+
+   <!-- for some reason if mvn is invoked from the parent directory, junit gets
+        invoked from the parent dir, which messes up theses tests. Hence, the
+        fork="yes" dir="${basedir}" -->
+
+
+	<target name="logback">
+    <prepareOSGiHarness binding="logback"/>
+    <junit printsummary="yes" fork="yes" dir="${basedir}" haltonfailure="yes">
+			<classpath path="${test_classpath}"/>
+      <formatter type="plain" />
+      <test fork="yes" todir="target/unit-reports" name="org.slf4j.test_osgi.BundleTest" />
+    </junit>
+	</target>
+  
+</project>
