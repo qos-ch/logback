@@ -261,6 +261,9 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     rfa1.stop();
 
+
+    System.out.println("time before  wait "+SDF.format(new Date(currentTime)));
+    
     long fileTimestamp = currentTime;
     incCurrentTime(2000);
 
@@ -268,6 +271,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
         + DATE_PATTERN_WITH_SECONDS + "}", currentTime, fileTimestamp);
 
+    System.out.println("time after   wait "+SDF.format(new Date(currentTime)));
     for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("World---" + i);
       addExpectedFileNamedIfItsTime_ByDate(testId, false);

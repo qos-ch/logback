@@ -18,5 +18,6 @@ public class ClassicTestConstants {
   final static public String ISO_REGEX =  "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";
   final static public String NAKED_MAIN_REGEX =  "[mM]ain(\\sThread)?";
   final static public String MAIN_REGEX =  "\\["+NAKED_MAIN_REGEX+"\\]";
-  final static public String JORAN_INPUT_PREFIX = "src/test/input/joran";
+  final static public String INPUT_PREFIX = "src/test/input/";
+  final static public String JORAN_INPUT_PREFIX = INPUT_PREFIX+"joran/";
 }

@@ -50,7 +50,7 @@ public class UniqueFileTest {
 
   @Test
   public void basic() throws Exception {
-    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "/unique.xml");
+    loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "unique.xml");
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
     String timestamp = sdf.format(new Date()); 
     

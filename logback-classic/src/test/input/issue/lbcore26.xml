@@ -1,0 +1,18 @@
+<configuration scan="true">
+  <appender name="LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>target/test-output/lbcore26.log </file>
+    
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>target/test-output/lbcore26.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+    
+    <layout>
+      <Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+    </layout>
+  </appender>
+  
+  <root level="info">
+    <appender-ref ref="LOG" />
+  </root>
+</configuration> 

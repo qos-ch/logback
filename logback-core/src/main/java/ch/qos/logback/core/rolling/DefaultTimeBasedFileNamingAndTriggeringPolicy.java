@@ -26,8 +26,6 @@ import ch.qos.logback.core.rolling.helper.DefaultArchiveRemover;
  */
 public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
-  
-  
   @Override
   public void start() {
     super.start();
