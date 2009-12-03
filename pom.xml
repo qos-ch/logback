@@ -275,25 +275,17 @@
   </ciManagement>
   -->
  
-  
- 
-
   <distributionManagement>
     <site>
-      <id>pixie</id>
+      <id>pixie.qos.ch</id>
       <url>scp://pixie/var/www/logback.qos.ch/htdocs/</url>
     </site>
     
     <repository>
-      <id>pixie</id>
+      <id>pixie.qos.ch</id>
       <url>scp://pixie/var/mvnrepo/</url>
     </repository>
-    
-    <snapshotRepository>
-      <id>pixie-snapshot</id>
-      <url>scp://pixie/var/mvnrepo-snapshots/</url>
-    </snapshotRepository>
-    
+        
   </distributionManagement>
 
  

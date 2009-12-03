@@ -218,6 +218,9 @@
 			<outputDirectory>docs/</outputDirectory>
       <excludes>
         <exclude>dist/*</exclude>
+        <exclude>/apidocs/*</exclude>
+        <exclude>/xref/*</exclude>
+        <exclude>/xref-test/*</exclude>
       </excludes>
 		</fileSet>
 		
