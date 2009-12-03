@@ -4,7 +4,7 @@
 <configuration scan="true" scanPeriod="50 millisecond">
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-   <File>testFile.log</File>
+   <File>target/test-output/testFile.log</File>
    <Append>true</Append>
                 
    <layout class="ch.qos.logback.classic.PatternLayout">
