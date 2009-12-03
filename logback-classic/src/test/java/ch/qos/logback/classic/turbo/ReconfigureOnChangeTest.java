@@ -38,6 +38,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;
@@ -48,10 +49,13 @@ public class ReconfigureOnChangeTest {
   final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
       + "input/turbo/scan 1.xml";
 
+  final static String SCAN_LBCLASSIC_154_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
+      + "input/turbo/scan_lbclassic154.xml";
+
   // it actually takes time for Windows to propagate file modification changes
-  // values below 100 milliseconds can be problematic
-  // the same propagation latency occurs in Linux but is even larger (>600 ms)
-  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 250;
+  // values below 100 milliseconds can be problematic the same propagation
+  // latency occurs in Linux but is even larger (>600 ms)
+  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 110;
 
   int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
 
@@ -113,8 +117,25 @@ public class ReconfigureOnChangeTest {
     verify(expectedRreconfigurations);
   }
 
+  // check for deadlocks
+  @Test(timeout = 20000)
+  public void scan_lbclassic154() throws JoranException, IOException,
+      InterruptedException {
+    File file = new File(SCAN_LBCLASSIC_154_FILE_AS_STR);
+    configure(file);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+    harness.execute(runnableArray);
+
+    loggerContext.getStatusManager().add(
+        new InfoStatus("end of execution ", this));
+
+    long expectedRreconfigurations = runnableArray[0].getCounter();
+    verify(expectedRreconfigurations);
+  }
+
   void verify(long expectedRreconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
+    StatusPrinter.print(loggerContext);
     assertTrue(checker.isErrorFree());
     int effectiveResets = checker
         .matchCount("Resetting and reconfiguring context");

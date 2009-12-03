@@ -2,6 +2,9 @@
 <!DOCTYPE configuration>
 
 <configuration scan="true" scanPeriod="50 millisecond">
-  <root level="ERROR"/>  
+
+  <root level="ERROR">    
+  </root> 
+
 </configuration> 
        

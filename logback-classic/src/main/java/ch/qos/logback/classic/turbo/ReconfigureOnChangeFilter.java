@@ -47,7 +47,9 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   long refreshPeriod = DEFAULT_REFRESH_PERIOD;
   File fileToScan;
   protected long nextCheck;
-  long lastModified;
+  volatile long lastModified;
+
+  Object lock = new Object();
 
   @Override
   public void start() {
@@ -56,7 +58,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     if (url != null) {
       fileToScan = convertToFile(url);
       if (fileToScan != null) {
-        synchronized (context.getConfigurationLock()) {
+        synchronized (lock) {
           long inSeconds = refreshPeriod / 1000;
           addInfo("Will scan for changes in file [" + fileToScan + "] every "
               + inSeconds + " seconds. ");
@@ -102,26 +104,34 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    synchronized (context.getConfigurationLock()) {
+    synchronized (lock) {
       boolean changed = changeDetected();
       if (changed) {
-        addInfo("Detected change in [" + fileToScan + "]");
-        addInfo("Resetting and reconfiguring context [" + context.getName()
-            + "]");
-        reconfigure();
+        detachReconfigurationToNewThread();
+
       }
     }
+
     return FilterReply.NEUTRAL;
+  }
+
+  // by detaching reconfiguration to a new thread, we release the various
+  // locks held by the current thread, in particular, the AppenderAttachable
+  // reader lock.
+  private void detachReconfigurationToNewThread() {
+    // Even though this method resets the loggerContext, which clears the
+    // list of turbo filters including this instance, it is still possible
+    // for this instance to be subsequently invoked by another thread if it
+    // was already executing when the context was reset.
+    disableSubsequentRecofiguration();
+    addInfo("Detected change in [" + fileToScan + "]");
+    addInfo("Resetting and reconfiguring context [" + context.getName() + "]");
+    new ReconfiguringThread().start();
   }
 
   void updateNextCheck(long now) {
     nextCheck = now + refreshPeriod;
   }
-
-//  String stem() {
-//    return currentThreadName() + ", context " + context.getName()
-//        + ", nextCheck=" + (nextCheck - INIT);
-//  }
 
   // This method is synchronized to prevent near-simultaneous re-configurations
   protected boolean changeDetected() {
@@ -141,30 +151,25 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     lastModified = SENTINEL;
   }
 
-  protected void reconfigure() {
-    // Even though this method resets the loggerContext, which clears the list
-    // of turbo filters including this instance, it is still possible for this
-    // instance to be subsequently invoked by another thread if it was already
-    // executing when the context was reset.
-    // We prevent multiple reconfigurations (for the same file change event) by
-    // setting an appropriate sentinel value for lastMofidied field.
-    disableSubsequentRecofiguration();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(context);
-    LoggerContext lc = (LoggerContext) context;
-    lc.reset();
-    try {
-      jc.doConfigure(fileToScan);
-    } catch (JoranException e) {
-      addError("Failure during reconfiguration", e);
-    }
-  }
-
   public long getRefreshPeriod() {
     return refreshPeriod;
   }
 
   public void setRefreshPeriod(long refreshPeriod) {
     this.refreshPeriod = refreshPeriod;
+  }
+
+  class ReconfiguringThread extends Thread {
+    public void run() {
+      JoranConfigurator jc = new JoranConfigurator();
+      jc.setContext(context);
+      LoggerContext lc = (LoggerContext) context;
+      lc.reset();
+      try {
+        jc.doConfigure(fileToScan);
+      } catch (JoranException e) {
+        addError("Failure during reconfiguration", e);
+      }
+    }
   }
 }
