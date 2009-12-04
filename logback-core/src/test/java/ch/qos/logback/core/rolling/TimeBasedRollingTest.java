@@ -16,7 +16,6 @@ package ch.qos.logback.core.rolling;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.sql.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -215,12 +214,12 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
     }
 
-    File activeFile = new File(rfa1.getFile());
-    
-    System.out.println("activeFile="+activeFile);
-    activeFile.setLastModified(currentTime);
     rfa1.stop();
 
+    // change the timestamp of the currently actively file
+    File activeFile = new File(rfa1.getFile());
+    activeFile.setLastModified(currentTime);
+    
     
     initRFA(rfa2, testId2FileName(testId));
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
@@ -264,12 +263,9 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     rfa1.stop();
 
-
-    System.out.println("time before  wait "+SDF.format(new Date(currentTime)));
-    
+    // change the timestamp of the currently actively file
     File activeFile = new File(rfa1.getFile());
     activeFile.setLastModified(currentTime);
-
     
     incCurrentTime(2000);
 
@@ -277,7 +273,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
         + DATE_PATTERN_WITH_SECONDS + "}", currentTime);
 
-    System.out.println("time after   wait "+SDF.format(new Date(currentTime)));
     for (int i = 0; i <= 2; i++) {
       rfa2.doAppend("World---" + i);
       addExpectedFileNamedIfItsTime_ByDate(testId, false);
