@@ -43,29 +43,34 @@ public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;
   final static int LOOP_LEN = 1000 * 1000;
 
-  // the space in the file name mandated by http://jira.qos.ch/browse/LBCORE-119
+  // the space in the file name mandated by
+  // http://jira.qos.ch/browse/LBCORE-119
   final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
       + "input/turbo/scan 1.xml";
 
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic
   // the same propagation latency occurs in Linux but is even larger (>600 ms)
-  static int SLEEP_BETWEEN_UPDATES = 250;
+  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 250;
 
-  // we won't at least 10 re-configurations
-  static int TOTAL_TEST_DURATION = SLEEP_BETWEEN_UPDATES * 10;
+  int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
+
+  static int totalTestDuration;
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass());
-  MultiThreadedHarness harness = new MultiThreadedHarness(TOTAL_TEST_DURATION);
+  MultiThreadedHarness harness;
 
   @Before
   public void setUp() {
     // take into account propagation latency occurs on Linux
     if (Env.isLinux()) {
-      SLEEP_BETWEEN_UPDATES = 850;
+      sleepBetweenUpdates = 850;
+      totalTestDuration = sleepBetweenUpdates * 5;
+    } else {
+      totalTestDuration = sleepBetweenUpdates * 10;
     }
-
+    harness = new MultiThreadedHarness(totalTestDuration);
   }
 
   void configure(File file) throws JoranException {
@@ -83,9 +88,8 @@ public class ReconfigureOnChangeTest {
     return rArray;
   }
 
-  
-  
-  @Test // See http://jira.qos.ch/browse/LBCORE-119
+  @Test
+  // See http://jira.qos.ch/browse/LBCORE-119
   public void fileToURLAndBack() throws MalformedURLException {
     File file = new File("a b.xml");
     URL url = file.toURI().toURL();
@@ -93,7 +97,7 @@ public class ReconfigureOnChangeTest {
     File back = rocf.convertToFile(url);
     assertEquals(file.getName(), back.getName());
   }
-  
+
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
   public void scan1() throws JoranException, IOException, InterruptedException {
@@ -137,7 +141,8 @@ public class ReconfigureOnChangeTest {
   @Test
   public void directPerfTest() throws MalformedURLException {
     if (Env.isLinux()) {
-      // for some reason this test does not pass on Linux (AMD 64 bit, Dual Core
+      // for some reason this test does not pass on Linux (AMD 64 bit,
+      // Dual Core
       // Opteron 170)
       return;
     }
@@ -167,7 +172,8 @@ public class ReconfigureOnChangeTest {
   @Test
   public void indirectPerfTest() throws MalformedURLException {
     if (Env.isLinux()) {
-      // for some reason this test does not pass on Linux (AMD 64 bit, Dual Core
+      // for some reason this test does not pass on Linux (AMD 64 bit,
+      // Dual Core
       // Opteron 170)
       return;
     }
@@ -208,7 +214,7 @@ public class ReconfigureOnChangeTest {
     public void run() {
       while (!isDone()) {
         try {
-          Thread.sleep(SLEEP_BETWEEN_UPDATES);
+          Thread.sleep(sleepBetweenUpdates);
         } catch (InterruptedException e) {
         }
         if (isDone()) {
