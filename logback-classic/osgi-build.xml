@@ -59,7 +59,7 @@
         <fileset dir="${bundlesDir}" includes="*.jar"/>
       </delete>
       <copy file="${iBundleJar}" todir="${bundlesDir}"/>
-      <copy file="../logback-examples/lib/slf4j-api-${slf4j.version}.jar" todir="${bundlesDir}"/>
+      <copy file="lib/slf4j-api-${slf4j.version}.jar" todir="${bundlesDir}"/>
       <copy file="../logback-core/target/logback-core-${currentVersion}.jar" todir="${bundlesDir}"/>
       <copy file="target/logback-classic-${currentVersion}.jar" todir="${bundlesDir}"/>
       <echo>value of t = @{t}</echo>
