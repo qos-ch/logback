@@ -133,7 +133,7 @@ public class ReconfigureOnChangeTest {
     verify(expectedRreconfigurations);
   }
 
-  void verify(long expectedRreconfigurations) {
+  void verify(long expectedReconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
     assertTrue(checker.isErrorFree());
@@ -141,12 +141,12 @@ public class ReconfigureOnChangeTest {
         .matchCount("Resetting and reconfiguring context");
     // the number of effective resets must be equal or less than
     // expectedRreconfigurations
-    assertTrue(effectiveResets <= expectedRreconfigurations);
+    assertTrue(effectiveResets <= expectedReconfigurations);
     // however, there should be some effective resets
     String failMsg = "effective=" + effectiveResets + ", expected="
-        + expectedRreconfigurations;
+        + expectedReconfigurations;
     assertTrue(failMsg,
-        (effectiveResets * 1.3) >= (expectedRreconfigurations * 1.0));
+        (effectiveResets * 1.3) >= (expectedReconfigurations * 1.0));
   }
 
   ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
