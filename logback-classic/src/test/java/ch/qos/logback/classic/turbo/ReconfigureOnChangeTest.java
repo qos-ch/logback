@@ -67,9 +67,9 @@ public class ReconfigureOnChangeTest {
 
   @Before
   public void setUp() {
-    // take into account propagation latency occurs on Linux
-    if (Env.isLinux()) {
-      sleepBetweenUpdates = 850;
+    // take into account propagation latency occurs on Linux or Mac
+    if (Env.isLinux() || Env.isMac()) {
+      sleepBetweenUpdates = 950;
       totalTestDuration = sleepBetweenUpdates * 5;
     } else {
       totalTestDuration = sleepBetweenUpdates * 10;
