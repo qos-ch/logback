@@ -11,6 +11,7 @@ public class CheckingBundleListener implements BundleListener {
 
   List eventList = new ArrayList();
 
+  @SuppressWarnings("unchecked")
   public void bundleChanged(BundleEvent be) {
     eventList.add(be);
   }

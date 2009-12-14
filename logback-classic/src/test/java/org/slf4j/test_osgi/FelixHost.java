@@ -56,6 +56,7 @@ public class FelixHost {
     this.myBundleListener = myBundleListener;
   }
 
+  @SuppressWarnings("unchecked")
   public void doLaunch() {
     // Create a case-insensitive configuration property map.
     Map configMap = new StringMap(false);
