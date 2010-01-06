@@ -2299,8 +2299,12 @@ Context ctx = new InitialContext(env);</pre>
           </p>
           -->
 
-          <p>You can find more information on event evaluators further
-          down this document.
+          <p>Logback ships with several other evaluators, namely <a
+          href="../xref/ch/qos/logback/classic/boolex/OnMarkerEvaluator.html"><code>OnMarkerEvaluator</code></a>
+          (discussed below) and a powerful evaluator called <a
+          href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html"><code>JaninoEventEvaluator</code></a>,
+          discussed in <a href="filters.html#evalutatorFilter">another
+          chapter</a>.
           </p>
 
         </td>
@@ -2529,19 +2533,19 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   }
 }</pre>
 
-		<p>
-			Note that this implementation extends <code>ContextAwareBase</code> and
-			implements <code>EventEvaluator</code>. This allows the user to concentrate
-			on the core functions of her <code>EventEvaluator</code> and let the base class
-			provide the common functionality.
+		<p>Note that this class extends <code>ContextAwareBase</code> and
+		implements <code>EventEvaluator</code>. This allows the user to
+		concentrate on the core functions of her
+		<code>EventEvaluator</code> and let the base class provide the
+		common functionality.
 		</p>
 
-		<p>
-			Setting the <span class="option">EventEvaluator</span> option of 
-			<code>SMTPAppender</code> instructs it to use a custom evaluator. 
-			The next configuration file attaches a <code>SMTPAppender</code> to the root logger. 
-			This appender has a buffer size of 2048 and uses a <code>CounterBasedEvaluator</code> instance 
-			as its event evaluator.
+		<p>Setting the <span class="option">Evaluator</span> option of
+		<code>SMTPAppender</code> instructs it to use a custom evaluator.
+		The next configuration file attaches a <code>SMTPAppender</code>
+		to the root logger.  This appender has a buffer size of 2048 and
+		uses a <code>CounterBasedEvaluator</code> instance as its event
+		evaluator.
 		</p>
 
 <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with custom 
@@ -2584,10 +2588,14 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     </p>
 
     <pre class="prettyprint source">Marker notifyAdminMarker = MarkerFactory.getMarker("NOTIFY_ADMIN");
-logger.error(notifyAdminMarker,
+logger.error(<b>notifyAdminMarker</b>,
   "This is a serious an error requiring the admin's attention",
    new Exception("Just testing"));</pre>
-    
+
+   <p>The next configuration file will cause outgoing emails to be
+   sent only in presensce of events bearing the NOTIFY_ADMIN or the
+   TRANSACTION_FAILURE marker.
+   </p>
 
    <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with 
    <code>OnMarkerEvaluator</code> (logback-examples/src/main/java/chapter4/mail/mailWithMarker.xml)</em>
@@ -2596,6 +2604,8 @@ logger.error(notifyAdminMarker,
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
       &lt;marker>NOTIFY_ADMIN&lt;/marker>
+      &lt;!-- you specify add as many markers as you want -->
+      &lt;marker>TRANSACTION_FAILURE&lt;/marker>
     &lt;/evaluator></b>
     &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
@@ -2610,6 +2620,11 @@ logger.error(notifyAdminMarker,
   &lt;/root>  
 &lt;/configuration></pre>
     
+    <p>Give it a whirl with the following command:</p>
+
+    <pre class="source">java -Dfrom=source@xyz.com -Dto=recipient@xyz.com -DsmtpHost=some_smtp_host \
+  chapter4.mail.Marked_EMail src/main/java/chapter4/mail/mailWithMarker.xml</pre>
+
 
     
     <h3><a name="smtpAuthentication"

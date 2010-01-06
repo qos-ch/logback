@@ -4,6 +4,8 @@
   <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
       <marker>NOTIFY_ADMIN</marker>
+      <!-- you specify add as many markers as you want -->
+      <marker>ANOTHER_MARKER</marker>
     </evaluator>
     <BufferSize>1050</BufferSize>
     <SMTPHost>${smtpHost}</SMTPHost>
