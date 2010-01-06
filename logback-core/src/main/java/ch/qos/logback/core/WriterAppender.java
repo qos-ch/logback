@@ -265,7 +265,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     if (!isStarted()) {
       return;
     }
-
     try {
       String output = this.layout.doLayout(event);
       synchronized (this) {

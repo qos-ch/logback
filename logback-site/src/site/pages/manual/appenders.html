@@ -2431,7 +2431,7 @@ Context ctx = new InitialContext(env);</pre>
 		<p>You can pass the required parameters on the command line:</p>
 		
 <div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com -DsmtpHost=some_smtp_host \
-  src/main/java/chapter4.mail.EMail 10000 chapter4/mail/mail2.xml
+  chapter4.mail.EMail 10000 src/main/java/chapter4/mail/mail2.xml
 </pre></div>
 
 		<p>Be sure to replace with values as appropriate for your
@@ -2471,23 +2471,26 @@ Context ctx = new InitialContext(env);</pre>
 
     <h3>Triggering event</h3>
 
-		<p>By default, the <code>SMTPAppender</code> will initiate the
-		transmission of an email message as a response to an event of
-		level <em>ERROR</em> or higher.  However, it is possible to
-		override this default behavior by providing a custom
-		implementation of the <code>EventEvaluator</code> interface.
-		</p>
+    <p>If the Evaluator property is not set, the
+    <code>SMTPAppender</code> defaults to an <a
+    href="../xref/ch/qos/logback/classic/boolex/OnErrorEvaluator.html">OnErrorEveluator</a>
+    instance which triggers email transmission when it encounters an
+    event of level ERROR. While triggering an outgoing email in
+    response to an error is relatively reasonably, it is possible to
+    override this default behavior by providing a different
+    implementation of the <code>EventEvaluator</code> interface.
+    </p>
 		
 		<p>The <code>SMTPAppender</code> submits each incoming event to
 		its evaluator by calling <code>evaluate()</code> method in order
 		to check whether the event should trigger an email or just be
 		placed in the cyclic buffer.  When the evaluator gives a positive
-		answer to its evaluation, an email is sent.  The
+		answer to its evaluation, an email is sent out.  The
 		<code>SMTPAppender</code> contains one and only one evaluator
-		object.  This object may possess its own state. For illustrative
-		purposes, the <code>CounterBasedEvaluator</code> class listed
-		next, implements an event evaluator whereby every 1024th event
-		triggers an email message.
+		object.  This object may manage its own internal state. For
+		illustrative purposes, the <code>CounterBasedEvaluator</code>
+		class listed next, implements an event evaluator whereby every
+		1024th event triggers an email message.
 		</p>
 
 <em>Example 4.<span class="autoEx"/>: A <code>EventEvaluator</code> implementation
@@ -2560,6 +2563,55 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre>
     
 
+    <h3><a name="OnMarkerEvaluator" href="#OnMarkerEvaluator">Marker
+    based triggering</a> 
+    </h3>
+
+    <p>Although reasonable, a policy whereby event's of level ERROR
+    trigger an outgoing email may result in too many emails,
+    cluttering the targeted user's mailbox. Logback ships with another
+    triggering policy, called <a
+    href="../xref/ch/qos/logback/classic/boolex/OnMarkerEvaluator.html">OnMarkerEvaluator</a>. It
+    is based on markers allowing for a very effective way for trigger
+    control. In essence, emails are triggered only if the event is
+    marked with a user-specified marker. An example should make the
+    point clearer.
+    </p>
+
+    <p>The <a href="../xref/chapter4/mail/Marked_EMail.html">Marked_EMail</a> application contains several logging
+    statements some of which are of level ERROR. One noteworthy
+    statement contains  a marker. Here is the relevant code.
+    </p>
+
+    <pre class="prettyprint source">Marker notifyAdminMarker = MarkerFactory.getMarker("NOTIFY_ADMIN");
+logger.error(notifyAdminMarker,
+  "This is a serious an error requiring the admin's attention",
+   new Exception("Just testing"));</pre>
+    
+
+   <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with 
+   <code>OnMarkerEvaluator</code> (logback-examples/src/main/java/chapter4/mail/mailWithMarker.xml)</em>
+
+    <pre class="prettyprint source">&lt;configuration>
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <b>&lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+      &lt;marker>NOTIFY_ADMIN&lt;/marker>
+    &lt;/evaluator></b>
+    &lt;BufferSize>1050&lt;/BufferSize>
+    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
+    &lt;To>${to}&lt;/To>
+    &lt;From>${from}&lt;/From>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value ="debug"/>
+    &lt;appender-ref ref="EMAIL" />
+  &lt;/root>  
+&lt;/configuration></pre>
+    
+
+    
     <h3><a name="smtpAuthentication"
     href="#smtpAuthentication">Authentication/STARTTLS/SSL</a></h3>
 

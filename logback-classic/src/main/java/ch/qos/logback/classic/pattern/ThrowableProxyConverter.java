@@ -37,7 +37,6 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
   int lengthOption;
   List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
-  final int MAX_ERROR_COUNT = 4;
   int errorCount = 0;
 
   @SuppressWarnings("unchecked")
@@ -116,10 +115,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
           }
         } catch (EvaluationException eex) {
           errorCount++;
-          if (errorCount < MAX_ERROR_COUNT) {
+          if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
             addError("Exception thrown for evaluator named [" + ee.getName()
                 + "]", eex);
-          } else if (errorCount == MAX_ERROR_COUNT) {
+          } else if (errorCount == CoreConstants.MAX_ERROR_COUNT) {
             ErrorStatus errorStatus = new ErrorStatus(
                 "Exception thrown for evaluator named [" + ee.getName() + "].",
                 this, eex);

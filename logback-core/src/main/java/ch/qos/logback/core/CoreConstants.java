@@ -50,9 +50,6 @@ public class CoreConstants {
    * By convention, we assume that the static method named "valueOf" taking 
    * a string argument can restore a given object from its string 
    * representation.
-   * 
-   * <p>Classes participating in this convention must be declared
-   * as stringStorable in a (logback) context.
    */
   static public final String VALUE_OF = "valueOf";
   
@@ -92,6 +89,9 @@ public class CoreConstants {
    */
   public static long REFERENCE_BIPS = 9000;
   
+  
+  // maximum error acoutn to report
+  static public final int MAX_ERROR_COUNT = 4;
   
   
   static public final char DOT = '.';
