@@ -104,4 +104,11 @@ public class CoreConstants {
   // configuration, then file.getURL() is registered
   public static String URL_OF_LAST_CONFIGURATION_VIA_JORAN = "URL_OF_LAST_CONFIGURATION_VIA_JORAN";
   
+
+  /**
+   * The key under which the local host name is registered in the logger
+   * context.
+   */
+  public static final String HOSTNAME_KEY = "HOSTNAME";
+  
 }

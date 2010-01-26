@@ -17,6 +17,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
@@ -35,6 +36,8 @@ public class ConfigurationAction extends Action {
     } else { 
       debugMode = true;
     }
+
+    new ContextUtil(context).addHostNameAsProperty();
 
     // the context is appender attachable, so it is pushed on top of the stack
     ec.pushObject(getContext());
