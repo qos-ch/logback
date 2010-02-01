@@ -49,7 +49,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tomcat</groupId>
+      <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
       <scope>compile</scope>
       <optional>true</optional>

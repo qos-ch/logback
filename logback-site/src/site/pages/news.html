@@ -28,7 +28,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>January 2010 - Release of version 0.9.19</h3>
+    <h3>February 2010 - Release of version 0.9.19</h3>
 
     <p>Added <a
     href="manual/appenders.html#OnMarkerEvaluator">OnMarkerEvaluator</a>
@@ -36,6 +36,12 @@
     markers. When used with <code>SMTPAppender</code>, it can trigger
     an outgoing email message when an event matches user-specified
     marker.</p>
+
+    <p>Request header names in AccessEvent (logback-access) are now
+    stored in a case insensitive way as specified in RFC 2616.  This
+    prevents compatibility issues, in particular with recent versions
+    of Tomcat whcih store request header names in lower-case.</p>
+
 
     <hr width="80%" align="center" />
 
