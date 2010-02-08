@@ -9,13 +9,8 @@ document.write('<p class="menu"><a href="' + prefix + 'repos.html">Source Reposi
 document.write('<p class="menu"><a href="' + prefix + 'bugreport.html">Bug Report</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'license.html">License</a></p>');
 document.write('<p class="menu"><a href="http://logback.qos.ch/translator/">log4j.properties Translator</a>');
-document.write('<p class="menu"><a href="' + prefix + 'team.html">Logback Team</a></p>');
-document.write('<p class="menu"><a href="' + prefix + 'support.html">Professional Support</a></p>');
-
-
-
-document.write('<p><a class="x" href="http://www.qos.ch/"><img src="' + prefix + 'images/logos/qosLogo.png" /></a></p>');
-
+document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/professionalSupport">Support offerings</a>');
+document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
 
 document.write('</p>');
 
