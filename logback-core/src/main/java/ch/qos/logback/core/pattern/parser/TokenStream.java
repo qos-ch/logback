@@ -38,8 +38,6 @@ class TokenStream {
 
   private static final char ESCAPE_CHAR = '\\';
   private static final char PERCENT_CHAR = CoreConstants.PERCENT_CHAR; 
-  private static final char LEFT_PARENTHESIS = '(';
-  private static final char RIGHT_PARENTHESIS = ')';
   private static final char CURLY_LEFT = '{';
   private static final char CURLY_RIGHT = '}';
 
@@ -90,10 +88,10 @@ class TokenStream {
           state = FORMAT_MODIFIER_STATE;
           break;
 
-        case RIGHT_PARENTHESIS:
+        case CoreConstants.RIGHT_PARENTHESIS_CHAR:
           if (buf.length() >= 1 && buf.charAt(buf.length() - 1) == '\\') {
             buf.deleteCharAt(buf.length() - 1);
-            buf.append(RIGHT_PARENTHESIS);
+            buf.append(CoreConstants.RIGHT_PARENTHESIS_CHAR);
           } else {
             addValuedToken(Token.LITERAL, buf, tokenList);
             tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
@@ -106,7 +104,7 @@ class TokenStream {
         break;
       //
       case FORMAT_MODIFIER_STATE:
-        if (c == LEFT_PARENTHESIS) {
+        if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
           addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
           tokenList.add(Token.LEFT_PARENTHESIS_TOKEN);
           state = LITERAL_STATE;
@@ -143,7 +141,7 @@ class TokenStream {
           state = FORMAT_MODIFIER_STATE;
         } else {
           addValuedToken(Token.KEYWORD, buf, tokenList);
-          if (c == RIGHT_PARENTHESIS) {
+          if (c == CoreConstants.RIGHT_PARENTHESIS_CHAR) {
             // if c is a right parenthesis, then add it as such
             tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
           } else if (c == ESCAPE_CHAR) {

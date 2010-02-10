@@ -30,6 +30,7 @@ import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -39,6 +40,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   Context context = new ContextBase();
 
   TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
+  int diff = RandomUtil.getPositiveInt();
+  String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
   @Before
   public void setUp() throws Exception {
@@ -63,7 +66,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   @Override
   protected Appender<Object> getConfiguredAppender() {
     rfa.setContext(context);
-    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"toto-%d.log");
+    tbrp
+        .setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%d.log");
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
 
@@ -81,7 +85,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
 
-    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"toto-%d.log");
+    tbrp
+        .setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%d.log");
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
 
@@ -132,5 +137,18 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
     statusChecker.containsMatch(Status.ERROR,
         "File property must be set before any triggeringPolicy ");
+  }
+
+  @Test
+  public void testFileNameWithParenthesis() {
+    // if ')' is not escaped, the test throws
+    // java.lang.IllegalStateException: FileNamePattern [.../program(x86)/toto-%d.log] does not contain a valid DateToken
+    rfa.setContext(context);
+    tbrp
+        .setFileNamePattern(randomOutputDir + "program(x86)/toto-%d.log");
+    tbrp.start();
+    rfa.setRollingPolicy(tbrp);
+    rfa.start();
+    rfa.doAppend("hello");
   }
 }

@@ -71,6 +71,8 @@ public class CoreConstants {
   
   
   public final static char PERCENT_CHAR = '%';
+  public static final char LEFT_PARENTHESIS_CHAR = '(';
+  public static final char RIGHT_PARENTHESIS_CHAR = ')';
   
   /** 
    * Number of rows before in an HTML table before, 
@@ -110,5 +112,4 @@ public class CoreConstants {
    * context.
    */
   public static final String HOSTNAME_KEY = "HOSTNAME";
-  
 }

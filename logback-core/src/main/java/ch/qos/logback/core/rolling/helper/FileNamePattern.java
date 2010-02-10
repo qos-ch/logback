@@ -58,7 +58,12 @@ public class FileNamePattern extends ContextAwareBase {
 
   void parse() {
     try {
-      Parser<Object> p = new Parser<Object>(pattern, new AlmostAsIsEscapeUtil());
+      // http://jira.qos.ch/browse/LBCORE-130
+      // we escape ')' for parsing purposes. Note that the original pattern is preserved
+      // because it is shown to the user in status messages. We don't want the escaped version
+      // to leak out.
+      String patternForParsing = escapeRightParantesis(pattern);
+      Parser<Object> p = new Parser<Object>(patternForParsing, new AlmostAsIsEscapeUtil());
       p.setContext(context);
       Node t = p.parse();
       this.headTokenConverter = p.compile(t, CONVERTER_MAP);
@@ -66,6 +71,10 @@ public class FileNamePattern extends ContextAwareBase {
     } catch (ScanException sce) {
       addError("Failed to parse pattern \"" + pattern + "\".", sce);
     }
+  }
+
+  String escapeRightParantesis(String in) {
+    return pattern.replace(")", "\\)");
   }
 
   public String toString() {
@@ -145,8 +154,8 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   /**
-   * Given date, convert this instance to a  regular expression.
-    */
+   * Given date, convert this instance to a regular expression.
+   */
   public String toRegex(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
