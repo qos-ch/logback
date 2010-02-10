@@ -49,8 +49,6 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
     assertEquals("x123", s);
   }
 
-
-  
   @Test
   public void testEscapeClosingParentheses() {
     PatternLayoutBase<Object> plb = getPatternLayoutBase();

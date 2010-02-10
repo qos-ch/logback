@@ -42,6 +42,18 @@
     prevents compatibility issues, in particular with recent versions
     of Tomcat whcih store request header names in lower-case.</p>
 
+
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCORE-134">LBCORE-134</a>
+    reported by Michael Franz. While reading configuration files (in
+    XML), the event handler will correctly process body text, in
+    particular spaces, even when delivered in multiple chunks. The
+    previous behavior of trimming leading and trailing white space has
+    been preserved. Moreover, body text consisting of white space
+    surrounding child elements is ignored.
+    </p>
+    
+
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCORE-130">LBCORE-130</a>. <code>FileNamePattern</code>
     no longer treats parenthesis as special.

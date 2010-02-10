@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- the following text should not be modidied in any way.
+     it summarizes the issue outlined in http://jira.qos.ch/browse/LBCORE-134
+-->
+<x>[x][x] &quot;xyz&quot;%n</x>
