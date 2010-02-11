@@ -279,7 +279,7 @@ public class MultiThreadedRollingTest {
       while (!isDone()) {
         counter++;
         rfa.doAppend(id + " " + counter);
-        if ((counter % 100 == 0) && withInducedDelay) {
+        if ((counter % 64 == 0) && withInducedDelay) {
           try {
             Thread.sleep(10);
           } catch (InterruptedException e) {
