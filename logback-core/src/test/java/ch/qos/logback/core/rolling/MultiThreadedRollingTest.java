@@ -13,12 +13,20 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static ch.qos.logback.core.util.CoreTestConstants.FAILURE_EXIT_CODE;
+import static ch.qos.logback.core.util.CoreTestConstants.SUCCESSFUL_EXIT_CODE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -41,17 +49,25 @@ public class MultiThreadedRollingTest {
   Layout<Object> layout;
   Context context = new ContextBase();
 
+  static String VERIFY_SH = "verify.sh";
+  
   int diff = RandomUtil.getPositiveInt();
   String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "multi-" + diff
       + "/";
 
   RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
 
+  OutputStream scriptOS;
+
   @Before
   public void setUp() throws Exception {
     layout = new EchoLayout<Object>();
     File outputDir = new File(outputDirStr);
     outputDir.mkdirs();
+
+    System.out.println("Output dir ["+outputDirStr+"]");
+    
+    scriptOS = openScript();
 
     rfa.setName("rolling");
     rfa.setLayout(layout);
@@ -60,12 +76,21 @@ public class MultiThreadedRollingTest {
 
   }
 
+  void close(OutputStream os) {
+    if (os != null) {
+      try {
+        os.close();
+      } catch (IOException e) {
+      }
+    }
+  }
+
   @After
   public void tearDown() throws Exception {
     rfa.stop();
   }
 
-  public void setUpTImeBasedTriggeringPolicy(RollingFileAppender<Object> rfa) {
+  public void setUpTimeBasedTriggeringPolicy(RollingFileAppender<Object> rfa) {
     String datePattern = "yyyy-MM-dd'T'HH_mm_ss_SSS";
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern(outputDirStr + "test-%d{" + datePattern + "}");
@@ -104,31 +129,62 @@ public class MultiThreadedRollingTest {
     return runnableArray;
   }
 
+  OutputStream openScript() throws IOException {
+    FileOutputStream fos = new FileOutputStream(outputDirStr +VERIFY_SH);
+    return fos;
+  }
+
   @Test
-  public void multiThreadedTimedBased() throws InterruptedException {
-    setUpTImeBasedTriggeringPolicy(rfa);
+  public void multiThreadedTimedBased() throws InterruptedException,
+      IOException {
+    setUpTimeBasedTriggeringPolicy(rfa);
     executeHarness();
     printScriptForTimeBased();
+    verify();
+  }
+
+  int testFileCount() {
+    File outputDir = new File(outputDirStr);
+    FilenameFilter filter = new FilenameFilter() {
+      public boolean accept(File dir, String name) {
+        if(name.matches("test-\\d{1,2}.log")) {
+          return true;
+        } 
+        return false;
+      }
+    };
+    File[] files = outputDir.listFiles(filter);
+    return files.length;
+  }
+  
+  void verify() throws IOException, InterruptedException {
+    close(scriptOS);
+    ProcessBuilder pb = new ProcessBuilder();
+    pb.command(CoreTestConstants.BASH_PATH, VERIFY_SH);
+    pb.directory(new File(outputDirStr));
+    Process process = pb.start();
+    process.waitFor();
+    assertEquals(SUCCESSFUL_EXIT_CODE, process.exitValue());
   }
 
   @Test
-  public void multiThreadedSizeBased() throws InterruptedException {
+  public void multiThreadedSizeBased() throws InterruptedException, IOException {
     setUpSizeBasedTriggeringPolicy(rfa);
     executeHarness();
-    printScriptForSizeBased();
+    int numFiles = testFileCount();
+    printScriptForSizeBased(numFiles);
+    verify();
   }
 
-  private void printScriptHeader(String type) {
+  private void printScriptHeader(String type) throws IOException {
     out("# ====================================================");
-    out("# Adapt this scipt to check the exactness of the output ");
-    out("# produced by "+type+" test");
+    out("# A script to check the exactness of the output ");
+    out("# produced by " + type + " test");
     out("# ====================================================");
     out("# ");
-    out("# cd to "+outputDirStr);
-    
   }
 
-  private void printCommonScriptCore() {
+  private void printCommonScriptCore() throws IOException {
     out("");
     out("for t in $(seq 0 1 " + (NUM_THREADS - 1) + ")");
     out("do");
@@ -139,14 +195,14 @@ public class MultiThreadedRollingTest {
     out("  res=$?");
     out("  if [ $res != \"0\" ]; then");
     out("    echo \"FAILED for $t\"");
-    out("    exit 1");
+    out("    exit "+FAILURE_EXIT_CODE);
     out("  fi");
     out("done");
     out("");
-    out("echo SUCCESS");
+    out("exit "+SUCCESSFUL_EXIT_CODE);
   }
 
-  private void printScriptForTimeBased() {
+  private void printScriptForTimeBased() throws IOException {
     printScriptHeader("TimeBased");
     for (int i = 0; i < NUM_THREADS; i++) {
       out("end[" + i + "]=" + this.runnableArray[i].getCounter());
@@ -158,23 +214,23 @@ public class MultiThreadedRollingTest {
 
   }
 
-  private void printScriptForSizeBased() {
+  private void printScriptForSizeBased(int numfiles) throws IOException {
     printScriptHeader("SizeBased");
-    
+
     for (int i = 0; i < NUM_THREADS; i++) {
       out("end[" + i + "]=" + this.runnableArray[i].getCounter());
     }
     out("");
     out("rm aggregated");
-    out("Modify the integer set to include all test-* files");
-    out("for i in 3 2 1 0; do cat test-$i.log >> aggregated; done");
+    out("for i in $(seq " + numfiles+" -1 0); do cat test-$i.log >> aggregated; done");
     out("cat output.log >> aggregated");
     out("");
     printCommonScriptCore();
   }
-  
-  private void out(String msg) {
-    System.out.println(msg);
+
+  private void out(String msg) throws IOException {
+    scriptOS.write(msg.getBytes());
+    scriptOS.write("\n".getBytes());
   }
 
   private void executeHarness() throws InterruptedException {

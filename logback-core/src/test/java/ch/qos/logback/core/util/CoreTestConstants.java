@@ -19,4 +19,9 @@ public class CoreTestConstants {
   public static final String TEST_DIR_PREFIX = "src/test/";
   public static final String OUTPUT_DIR_PREFIX = "target/test-output/";
   
+  
+  public static final int SUCCESSFUL_EXIT_CODE = 8;
+  public static final int FAILURE_EXIT_CODE = 1;
+ 
+  public static final String BASH_PATH = "c:/cygwin/bin/bash";
 }
