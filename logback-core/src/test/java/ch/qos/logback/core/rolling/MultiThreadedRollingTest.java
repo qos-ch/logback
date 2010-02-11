@@ -26,7 +26,6 @@ import java.io.OutputStream;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -36,6 +35,7 @@ import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.layout.EchoLayout;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -50,13 +50,14 @@ public class MultiThreadedRollingTest {
   Context context = new ContextBase();
 
   static String VERIFY_SH = "verify.sh";
-  
+
   int diff = RandomUtil.getPositiveInt();
   String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "multi-" + diff
       + "/";
 
   RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
 
+  String pathToBash = Env.getPathToBash();
   OutputStream scriptOS;
 
   @Before
@@ -65,8 +66,8 @@ public class MultiThreadedRollingTest {
     File outputDir = new File(outputDirStr);
     outputDir.mkdirs();
 
-    System.out.println("Output dir ["+outputDirStr+"]");
-    
+    System.out.println("Output dir [" + outputDirStr + "]");
+
     scriptOS = openScript();
 
     rfa.setName("rolling");
@@ -113,7 +114,7 @@ public class MultiThreadedRollingTest {
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     fwrp.setContext(context);
     fwrp.setFileNamePattern(outputDirStr + "test-%i.log");
-    fwrp.setMaxIndex(10);
+    fwrp.setMaxIndex(20);
     fwrp.setMinIndex(0);
     fwrp.setParent(rfa);
     fwrp.start();
@@ -121,24 +122,24 @@ public class MultiThreadedRollingTest {
     rfa.start();
   }
 
-  RunnableWithCounterAndDone[] buildRunnableArray() {
+  RunnableWithCounterAndDone[] buildRunnableArray(boolean withDelay) {
     RunnableWithCounterAndDone[] runnableArray = new RunnableWithCounterAndDone[NUM_THREADS];
     for (int i = 0; i < NUM_THREADS; i++) {
-      runnableArray[i] = new RFARunnable(i, rfa);
+      runnableArray[i] = new RFARunnable(i, rfa, withDelay);
     }
     return runnableArray;
   }
 
   OutputStream openScript() throws IOException {
-    FileOutputStream fos = new FileOutputStream(outputDirStr +VERIFY_SH);
+    FileOutputStream fos = new FileOutputStream(outputDirStr + VERIFY_SH);
     return fos;
   }
-
+  
   @Test
   public void multiThreadedTimedBased() throws InterruptedException,
       IOException {
     setUpTimeBasedTriggeringPolicy(rfa);
-    executeHarness();
+    executeHarness(TOTAL_DURATION, false);
     printScriptForTimeBased();
     verify();
   }
@@ -147,30 +148,40 @@ public class MultiThreadedRollingTest {
     File outputDir = new File(outputDirStr);
     FilenameFilter filter = new FilenameFilter() {
       public boolean accept(File dir, String name) {
-        if(name.matches("test-\\d{1,2}.log")) {
+        if (name.matches("test-\\d{1,2}.log")) {
           return true;
-        } 
+        }
         return false;
       }
     };
     File[] files = outputDir.listFiles(filter);
     return files.length;
   }
-  
+
   void verify() throws IOException, InterruptedException {
     close(scriptOS);
+    // no point in this test if we don't have bash
+    if(pathToBash == null) {
+      return;
+    }
     ProcessBuilder pb = new ProcessBuilder();
-    pb.command(CoreTestConstants.BASH_PATH, VERIFY_SH);
+    pb.command(pathToBash, VERIFY_SH);
     pb.directory(new File(outputDirStr));
     Process process = pb.start();
     process.waitFor();
-    assertEquals(SUCCESSFUL_EXIT_CODE, process.exitValue());
+    int exitCode = process.exitValue();
+    
+    assertEquals(SUCCESSFUL_EXIT_CODE, exitCode);
+    System.out.println("External script based verification returned with exit code "+exitCode);
   }
 
   @Test
   public void multiThreadedSizeBased() throws InterruptedException, IOException {
     setUpSizeBasedTriggeringPolicy(rfa);
-    executeHarness();
+    // on a fast machine with a fast hard disk, if the tests runs for too
+    // long the MAX_WINDOW_SIZE is reached, resulting in data loss which
+    // we cannot test for.
+    executeHarness(TOTAL_DURATION, true);
     int numFiles = testFileCount();
     printScriptForSizeBased(numFiles);
     verify();
@@ -195,11 +206,11 @@ public class MultiThreadedRollingTest {
     out("  res=$?");
     out("  if [ $res != \"0\" ]; then");
     out("    echo \"FAILED for $t\"");
-    out("    exit "+FAILURE_EXIT_CODE);
+    out("    exit " + FAILURE_EXIT_CODE);
     out("  fi");
     out("done");
     out("");
-    out("exit "+SUCCESSFUL_EXIT_CODE);
+    out("exit " + SUCCESSFUL_EXIT_CODE);
   }
 
   private void printScriptForTimeBased() throws IOException {
@@ -222,7 +233,8 @@ public class MultiThreadedRollingTest {
     }
     out("");
     out("rm aggregated");
-    out("for i in $(seq " + numfiles+" -1 0); do cat test-$i.log >> aggregated; done");
+    out("for i in $(seq " + (numfiles - 1)
+        + " -1 0); do cat test-$i.log >> aggregated; done");
     out("cat output.log >> aggregated");
     out("");
     printCommonScriptCore();
@@ -233,10 +245,11 @@ public class MultiThreadedRollingTest {
     scriptOS.write("\n".getBytes());
   }
 
-  private void executeHarness() throws InterruptedException {
+  private void executeHarness(int duration, boolean withDelay)
+      throws InterruptedException {
     MultiThreadedHarness multiThreadedHarness = new MultiThreadedHarness(
-        TOTAL_DURATION);
-    this.runnableArray = buildRunnableArray();
+        duration);
+    this.runnableArray = buildRunnableArray(withDelay);
     multiThreadedHarness.execute(runnableArray);
 
     StatusChecker checker = new StatusChecker(context.getStatusManager());
@@ -253,16 +266,25 @@ public class MultiThreadedRollingTest {
   static class RFARunnable extends RunnableWithCounterAndDone {
     RollingFileAppender<Object> rfa;
     int id;
+    boolean withInducedDelay;
 
-    RFARunnable(int id, RollingFileAppender<Object> rfa) {
+    RFARunnable(int id, RollingFileAppender<Object> rfa,
+        boolean withInducedDelay) {
       this.id = id;
       this.rfa = rfa;
+      this.withInducedDelay = withInducedDelay;
     }
 
     public void run() {
       while (!isDone()) {
         counter++;
         rfa.doAppend(id + " " + counter);
+        if ((counter % 100 == 0) && withInducedDelay) {
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+          }
+        }
       }
     }
 

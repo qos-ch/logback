@@ -23,5 +23,6 @@ public class CoreTestConstants {
   public static final int SUCCESSFUL_EXIT_CODE = 8;
   public static final int FAILURE_EXIT_CODE = 1;
  
-  public static final String BASH_PATH = "c:/cygwin/bin/bash";
+  public static final String BASH_PATH_ON_CYGWIN = "c:/cygwin/bin/bash";
+  public static final String BASH_PATH_ON_LINUX = "bash";
 }
