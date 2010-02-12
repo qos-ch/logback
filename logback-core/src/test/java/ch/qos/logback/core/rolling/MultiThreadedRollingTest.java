@@ -66,7 +66,7 @@ public class MultiThreadedRollingTest {
     File outputDir = new File(outputDirStr);
     outputDir.mkdirs();
 
-    System.out.println("Output dir [" + outputDirStr + "]");
+    System.out.println("MultiThreadedRollingTest output dir [" + outputDirStr + "]");
 
     scriptOS = openScript();
 
