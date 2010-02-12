@@ -66,7 +66,7 @@ public class MultiThreadedRollingTest {
     File outputDir = new File(outputDirStr);
     outputDir.mkdirs();
 
-    System.out.println("MultiThreadedRollingTest output dir [" + outputDirStr + "]");
+    System.out.println("Output dir [" + outputDirStr + "]");
 
     scriptOS = openScript();
 
@@ -134,7 +134,7 @@ public class MultiThreadedRollingTest {
     FileOutputStream fos = new FileOutputStream(outputDirStr + VERIFY_SH);
     return fos;
   }
-  
+
   @Test
   public void multiThreadedTimedBased() throws InterruptedException,
       IOException {
@@ -161,7 +161,7 @@ public class MultiThreadedRollingTest {
   void verify() throws IOException, InterruptedException {
     close(scriptOS);
     // no point in this test if we don't have bash
-    if(pathToBash == null) {
+    if (pathToBash == null) {
       return;
     }
     ProcessBuilder pb = new ProcessBuilder();
@@ -170,9 +170,11 @@ public class MultiThreadedRollingTest {
     Process process = pb.start();
     process.waitFor();
     int exitCode = process.exitValue();
-    
+
     assertEquals(SUCCESSFUL_EXIT_CODE, exitCode);
-    System.out.println("External script based verification returned with exit code "+exitCode);
+    System.out
+        .println("External script based verification returned with exit code "
+            + exitCode);
   }
 
   @Test
@@ -287,7 +289,5 @@ public class MultiThreadedRollingTest {
         }
       }
     }
-
   }
-
 }
