@@ -24,6 +24,9 @@ public class FileAppenderResilienceTest {
 
   static String LONG_STR = " xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
+  static String PATH_LOOPFS_SCRIPT = "/home/ceki/logback/logback-core/src/test/loopfs.sh";
+
+  
   enum LoopFSCommand {
     setup, shake, teardown;
   }
@@ -96,10 +99,12 @@ public class FileAppenderResilienceTest {
     System.out.println("Done go");
   }
 
+  // the loopfs script is tightly coupled with the host machine
+  // it needs to be Unix, with sudo privileges granted to the script
   Process runLoopFSScript(LoopFSCommand cmd) throws IOException,
       InterruptedException {
     ProcessBuilder pb = new ProcessBuilder();
-    pb.command("/usr/bin/sudo", "/home/ceki/loopfs.sh", cmd.toString());
+    pb.command("/usr/bin/sudo", PATH_LOOPFS_SCRIPT, cmd.toString());
     Process process = pb.start();
     return process;
   }
