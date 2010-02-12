@@ -1,6 +1,6 @@
 package ch.qos.logback.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -24,7 +25,7 @@ public class FileAppenderResilienceTest {
 
   static String LONG_STR = " xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
-  static String PATH_LOOPFS_SCRIPT = "/home/ceki/logback/logback-core/src/test/loopfs.sh";
+  static String PATH_LOOPFS_SCRIPT = "/home/ceki/java/logback/logback-core/src/test/loopfs.sh";
 
   
   enum LoopFSCommand {
@@ -38,8 +39,15 @@ public class FileAppenderResilienceTest {
   
   FileAppender<Object> fa = new FileAppender<Object>();
 
+  static boolean isConformingHost() {
+    return Env.isLocalHostNameInList(new String[] {"gimmel"});
+  }
+  
   @Before
   public void setUp() throws IOException, InterruptedException {
+    if(!isConformingHost()) {
+      return;
+    }
     Process p = runLoopFSScript(LoopFSCommand.setup);
     p.waitFor();
 
@@ -76,6 +84,9 @@ public class FileAppenderResilienceTest {
   
   @After
   public void tearDown() throws IOException, InterruptedException {
+    if(!isConformingHost()) {
+      return;
+    }
     StatusPrinter.print(context);
     fa.stop();
     Process p = runLoopFSScript(LoopFSCommand.teardown);
@@ -89,6 +100,9 @@ public class FileAppenderResilienceTest {
 
   @Test
   public void go() throws IOException, InterruptedException {
+    if(!isConformingHost()) {
+      return;
+    }
     Process p = runLoopFSScript(LoopFSCommand.shake);
     for (int i = 0; i < NUM_STEPS; i++) {
       fa.append(String.valueOf(i) + LONG_STR);
@@ -103,6 +117,11 @@ public class FileAppenderResilienceTest {
   // it needs to be Unix, with sudo privileges granted to the script
   Process runLoopFSScript(LoopFSCommand cmd) throws IOException,
       InterruptedException {
+    // causing a NullPointerException is better than locking the whole
+    // machine which the next operation can and will do.
+    if(!isConformingHost()) {
+      return null;
+    }
     ProcessBuilder pb = new ProcessBuilder();
     pb.command("/usr/bin/sudo", PATH_LOOPFS_SCRIPT, cmd.toString());
     Process process = pb.start();
