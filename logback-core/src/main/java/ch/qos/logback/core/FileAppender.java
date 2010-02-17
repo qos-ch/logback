@@ -81,13 +81,6 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   /**
-   * @deprecated Use isAppend instead
-   */
-  public boolean getAppend() {
-    return append;
-  }
-
-  /**
    * Returns the value of the <b>Append</b> property.
    */
   public boolean isAppend() {
