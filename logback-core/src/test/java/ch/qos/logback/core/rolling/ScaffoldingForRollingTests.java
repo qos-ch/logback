@@ -29,7 +29,7 @@ import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.testUtil.FileToBufferUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -51,7 +51,7 @@ public class ScaffoldingForRollingTests {
   int diff = RandomUtil.getPositiveInt();
   protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff
       + "/";
-  EchoLayout<Object> layout = new EchoLayout<Object>();
+  EchoEncoder<Object> encoder = new EchoEncoder<Object>();
   Context context = new ContextBase();
   protected List<String> expectedFilenameList = new ArrayList<String>();
 

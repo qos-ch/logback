@@ -14,15 +14,15 @@
 package ch.qos.logback.core;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.ByteArrayOutputStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.html.LayoutWrappingEncoder;
 import ch.qos.logback.core.pattern.parser.SamplePatternLayout;
 
 public class WriterAppenderTest {
@@ -85,7 +85,7 @@ public class WriterAppenderTest {
   public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter, String fileFooter) {
     WriterAppender<Object> wa = new WriterAppender<Object>();
     wa.setContext(context);
-    Writer sw = new StringWriter();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
  
     SamplePatternLayout<Object> spl = new SamplePatternLayout<Object>();
     spl.setContext(context);
@@ -96,13 +96,16 @@ public class WriterAppenderTest {
     spl.setFileFooter(fileFooter);
   
     spl.start();
+    LayoutWrappingEncoder<Object> encoder = new LayoutWrappingEncoder<Object>();
+    encoder.setLayout(spl);
+    encoder.setContext(context);
     
-    wa.setLayout(spl);
-    wa.setWriter(sw);
+    wa.setEncoder(encoder);
+    wa.setWriter(baos);
     wa.start();
     
     wa.stop();
-    String result = sw.toString();
+    String result = baos.toString();
 
     String expectedHeader = emtptyIfNull(fileHeader) + emtptyIfNull(presentationHeader);
     assertTrue(result, result.startsWith(expectedHeader));

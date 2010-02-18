@@ -13,15 +13,28 @@
  */
 package chapter11;
 
+import java.io.IOException;
+
+import ch.qos.logback.classic.encoder.PatternEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
 
+  PatternEncoder encoder;
+  
+  public PatternEncoder getEncoder() {
+    return encoder;
+  }
+
+  public void setEncoder(PatternEncoder encoder) {
+    this.encoder = encoder;
+  }
+
   @Override
   public void start() {
-    if (this.layout == null) {
-      addError("No layout set for the appender named [" + name + "].");
+    if (this.encoder == null) {
+      addError("No encoder set for the appender named [" + name + "].");
       return;
     }
     super.start();
@@ -31,9 +44,13 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
   protected void append(ILoggingEvent loggingevent) {
     // note that AppenderBase.doAppend will invoke this method only if
     // this appender was successfully started.
-    
-    String s = this.layout.doLayout(loggingevent);
-    System.out.println(s);
+    try {
+      this.encoder.doEncode(loggingevent, System.out);
+    } catch (IOException e) {
+      // we can't do much with the exception except halting
+      super.stop();
+      addError("Failed to write to the console");
+    }
   }
 
 }

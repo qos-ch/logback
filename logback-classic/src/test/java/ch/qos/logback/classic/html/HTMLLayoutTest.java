@@ -30,10 +30,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.EntityResolver;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.DummyThrowableProxy;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -43,7 +43,6 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -58,17 +57,14 @@ public class HTMLLayoutTest {
     lc = new LoggerContext();
     lc.setName("default");
 
-    ListAppender<ILoggingEvent> appender = new ListAppender<ILoggingEvent>();
-    appender.setContext(lc);
     layout = new HTMLLayout();
     layout.setThrowableRenderer(new DefaultThrowableRenderer());
     layout.setContext(lc);
     layout.setPattern("%level%thread%msg");
     layout.start();
-    appender.setLayout(layout);
+
     root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    root.addAppender(appender);
-    appender.start();
+
   }
 
   @After

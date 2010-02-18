@@ -14,16 +14,19 @@
 package ch.qos.logback.core.spi;
 
 
-import static org.junit.Assert.*;
-import ch.qos.logback.core.appender.NOPAppender;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.layout.NopLayout;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.appender.NOPAppender;
 
 /**
  * This test case verifies all the methods of AppenderAttableImpl work properly.
@@ -49,12 +52,10 @@ public class AppenderAttachableImplTest {
   public void testAddAppender() throws Exception {
     TestEvent event = new TestEvent();
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     ta = new NOPAppender<TestEvent>();
     ta.setName("test");
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     int size = aai.appendLoopOnAppenders(event);
@@ -64,12 +65,10 @@ public class AppenderAttachableImplTest {
   @Test
   public void testIteratorForAppenders() throws Exception {
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     NOPAppender<TestEvent> tab = new NOPAppender<TestEvent>();
     tab.setName("test");
-    tab.setLayout(new NopLayout<TestEvent>());
     tab.start();
     aai.addAppender(tab);
     Iterator<Appender<TestEvent>> iter = aai.iteratorForAppenders();
@@ -85,14 +84,12 @@ public class AppenderAttachableImplTest {
   @Test
   public void getGetAppender() throws Exception {
     NOPAppender<TestEvent> test = new NOPAppender<TestEvent>();
-    test.setLayout(new NopLayout<TestEvent>());
     test.setName("test");
     test.start();
     aai.addAppender(test);
     
     NOPAppender<TestEvent> testOther = new NOPAppender<TestEvent>();
     testOther.setName("testOther");
-    testOther.setLayout(new NopLayout<TestEvent>());
     testOther.start();
     aai.addAppender(testOther);
     
@@ -110,12 +107,10 @@ public class AppenderAttachableImplTest {
   @Test
   public void testIsAttached() throws Exception {
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     NOPAppender<TestEvent> tab = new NOPAppender<TestEvent>();
     tab.setName("test");
-    tab.setLayout(new NopLayout<TestEvent>());
     tab.start();
     aai.addAppender(tab);
     assertTrue("Appender is not attached", aai.isAttached(ta));
@@ -125,12 +120,10 @@ public class AppenderAttachableImplTest {
   @Test
   public void testDetachAndStopAllAppenders() throws Exception {
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     NOPAppender<TestEvent> tab = new NOPAppender<TestEvent>();
     tab.setName("test");
-    tab.setLayout(new NopLayout<TestEvent>());
     tab.start();
     aai.addAppender(tab);
     assertTrue("Appender was not started", tab.isStarted());
@@ -142,12 +135,10 @@ public class AppenderAttachableImplTest {
   @Test
   public void testDetachAppender() throws Exception {
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     NOPAppender<TestEvent> tab = new NOPAppender<TestEvent>();
     tab.setName("test");
-    tab.setLayout(new NopLayout<TestEvent>());
     tab.start();
     aai.addAppender(tab);
     assertTrue("Appender not detached", aai.detachAppender(tab));
@@ -159,12 +150,10 @@ public class AppenderAttachableImplTest {
   public void testDetachAppenderByName() throws Exception {
     NOPAppender<TestEvent> ta = new NOPAppender<TestEvent>();
     ta.setName("test1");
-    ta.setLayout(new NopLayout<TestEvent>());
     ta.start();
     aai.addAppender(ta);
     NOPAppender<TestEvent> tab = new NOPAppender<TestEvent>();
     tab.setName("test");
-    tab.setLayout(new NopLayout<TestEvent>());
     tab.start();
     aai.addAppender(tab);
    

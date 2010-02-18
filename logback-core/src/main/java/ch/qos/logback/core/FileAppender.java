@@ -13,11 +13,9 @@
  */
 package ch.qos.logback.core;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
@@ -192,11 +190,11 @@ public class FileAppender<E> extends WriterAppender<E> {
     if (prudent) {
       fileChannel = fileOutputStream.getChannel();
     }
-    Writer w = createWriter(fileOutputStream);
-    if (bufferedIO) {
-      w = new BufferedWriter(w, bufferSize);
-    }
-    setWriter(w);
+//    Writer w = createWriter(fileOutputStream);
+//    if (bufferedIO) {
+//      w = new BufferedWriter(w, bufferSize);
+//    }
+    setWriter(fileOutputStream);
   }
 
   public boolean isBufferedIO() {
@@ -238,7 +236,7 @@ public class FileAppender<E> extends WriterAppender<E> {
     this.append = append;
   }
 
-  final private void safeWrite(String s) throws IOException {
+  final private void safeWrite(E event) throws IOException {
     FileLock fileLock = null;
     try {
       fileLock = fileChannel.lock();
@@ -247,7 +245,7 @@ public class FileAppender<E> extends WriterAppender<E> {
       if (size != position) {
         fileChannel.position(size);
       }
-      super.writerWrite(s, true);
+      super.writeOut(event);
     } finally {
       if (fileLock != null) {
         fileLock.release();
@@ -256,11 +254,11 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   @Override
-  protected void writerWrite(String s, boolean flush) throws IOException {
+  protected void writeOut(E event) throws IOException {
     if (prudent && fileChannel != null) {
-      safeWrite(s);
+      safeWrite(event);
     } else {
-      super.writerWrite(s, flush);
+      super.writeOut(event);
     }
   }
 }

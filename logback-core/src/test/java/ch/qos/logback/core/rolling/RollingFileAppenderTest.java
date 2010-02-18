@@ -26,7 +26,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
-import ch.qos.logback.core.layout.DummyLayout;
+import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
@@ -48,7 +48,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     // noStartTest fails if the context is set in setUp
     // rfa.setContext(context);
 
-    rfa.setLayout(new DummyLayout<Object>());
+    rfa.setEncoder(new DummyEncoder<Object>());
     rfa.setName("test");
     tbrp.setContext(context);
     tbrp.setParent(rfa);

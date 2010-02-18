@@ -15,7 +15,6 @@ package chapter4;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.WriterAppender;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class ExitWoes2 {
@@ -33,10 +32,10 @@ public class ExitWoes2 {
     lc.reset();//this is to cancel default-config.
     WriterAppender<ILoggingEvent> writerAppender = new WriterAppender<ILoggingEvent>();
     writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout<ILoggingEvent>());
+    writerAppender.setEncoder(new EchoEncoder<ILoggingEvent>());
 
     OutputStream os = new FileOutputStream("exitWoes2.log");
-    writerAppender.setWriter(new OutputStreamWriter(os));
+    writerAppender.setWriter(os);
     writerAppender.setImmediateFlush(false);
     writerAppender.start();
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);

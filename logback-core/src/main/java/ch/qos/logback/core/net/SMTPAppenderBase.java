@@ -54,7 +54,9 @@ import ch.qos.logback.core.util.OptionHelper;
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   protected Layout<E> subjectLayout;
-
+  
+  protected Layout<E> layout;
+  
   private List<String> to = new ArrayList<String>();
   private String from;
   private String subjectStr = null;
@@ -433,6 +435,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    */
   void setCharsetEncoding(String charsetEncoding) {
     this.charsetEncoding = charsetEncoding;
+  }
+
+  public Layout<E> getLayout() {
+    return layout;
+  }
+
+  public void setLayout(Layout<E> layout) {
+    this.layout = layout;
   }
 
 }

@@ -35,14 +35,14 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 public class TimeBasedRollingWithArchiveRemovalTest {
 
   Context context = new ContextBase();
-  EchoLayout<Object> layout = new EchoLayout<Object>();
+  EchoEncoder<Object> encoder = new EchoEncoder<Object>();
 
   static final String MONTHLY_DATE_PATTERN = "yyyy-MM";
   static final String MONTHLY_CROLOLOG_DATE_PATTERN = "yyyy/MM";
@@ -174,7 +174,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setContext(context);
-    rfa.setLayout(layout);
+    rfa.setEncoder(encoder);
     // rfa.setFile(Constants.OUTPUT_DIR_PREFIX + "clean.txt");
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
     tbrp.setContext(context);

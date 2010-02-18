@@ -26,7 +26,7 @@ import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
 import org.mortbay.util.ByteArrayISO8859Writer;
 
-import ch.qos.logback.access.PatternLayout;
+import ch.qos.logback.access.PatternEncoder;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -59,10 +59,10 @@ public class JettyFixture extends JettyFixtureBase {
     ConsoleAppender<AccessEvent> console = new ConsoleAppender<AccessEvent>();
     console.setContext(requestLogImpl);
     console.setName("console");
-    PatternLayout layout = new PatternLayout();
+    PatternEncoder layout = new PatternEncoder();
     layout.setContext(requestLogImpl);
     layout.setPattern("%date %server %clientHost");
-    console.setLayout(layout);
+    console.setEncoder(layout);
     layout.start();
     console.start();
 

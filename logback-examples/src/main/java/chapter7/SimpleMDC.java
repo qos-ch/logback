@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.encoder.PatternEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
@@ -63,13 +63,13 @@ public class SimpleMDC {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     loggerContext.reset();
-    PatternLayout layout = new PatternLayout();
+    PatternEncoder layout = new PatternEncoder();
     layout.setContext(loggerContext);
     layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();
     ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
     appender.setContext(loggerContext);
-    appender.setLayout(layout);
+    appender.setEncoder(layout);
     appender.start();
     // cast root logger to c.q.logback.classic.Logger so that we can attach
     // an appender to it

@@ -30,10 +30,10 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.Encoder;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -46,7 +46,7 @@ public class MultiThreadedRollingTest {
   final static int TOTAL_DURATION = 2000;
   RunnableWithCounterAndDone[] runnableArray;
 
-  Layout<Object> layout;
+  Encoder<Object> encoder;
   Context context = new ContextBase();
 
   static String VERIFY_SH = "verify.sh";
@@ -62,7 +62,7 @@ public class MultiThreadedRollingTest {
 
   @Before
   public void setUp() throws Exception {
-    layout = new EchoLayout<Object>();
+    encoder = new EchoEncoder<Object>();
     File outputDir = new File(outputDirStr);
     outputDir.mkdirs();
 
@@ -71,7 +71,7 @@ public class MultiThreadedRollingTest {
     scriptOS = openScript();
 
     rfa.setName("rolling");
-    rfa.setLayout(layout);
+    rfa.setEncoder(encoder);
     rfa.setContext(context);
     rfa.setFile(outputDirStr + "output.log");
 
@@ -256,8 +256,8 @@ public class MultiThreadedRollingTest {
 
     StatusChecker checker = new StatusChecker(context.getStatusManager());
     if (!checker.isErrorFree()) {
-      fail("errors reported");
       StatusPrinter.print(context);
+      fail("errors reported");
     }
   }
 

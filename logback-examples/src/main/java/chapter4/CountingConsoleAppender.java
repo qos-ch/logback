@@ -13,6 +13,9 @@
  */
 package chapter4;
 
+import java.io.IOException;
+
+import ch.qos.logback.classic.encoder.PatternEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
@@ -21,6 +24,8 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   static int DEFAULT_LIMIT = 10;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
+  
+  PatternEncoder encoder;
   
   public CountingConsoleAppender() {
   }
@@ -35,7 +40,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   
   @Override
   public void start() {
-    if (this.layout == null) {
+    if (this.encoder == null) {
       addError("No layout set for the appender named ["+ name +"].");
       return;
     }
@@ -48,9 +53,22 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
       return;
     }
     // output the events as formatted by our layout
-    System.out.print(this.layout.doLayout(event));
+    try {
+      this.encoder.doEncode(event, System.out);
+    } catch (IOException e) {
+    }
 
     // prepare for next event
     counter++;
   }
+
+  public PatternEncoder getEncoder() {
+    return encoder;
+  }
+
+  public void setEncoder(PatternEncoder encoder) {
+    this.encoder = encoder;
+  }
+  
+  
 }

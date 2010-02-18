@@ -16,10 +16,10 @@ package chapter4;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.encoder.PatternEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 
 public class IO extends Thread {
   static String msgLong = "ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890";
@@ -47,11 +47,13 @@ public class IO extends Thread {
     FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
 
     if (longMessage) {
-      PatternLayout pa = new PatternLayout();
+      PatternEncoder pa = new PatternEncoder();
       pa.setPattern("%r %5p %c [%t] - %m%n");
-      fa.setLayout(pa);
+      pa.setContext(context);
+      pa.start();
+      fa.setEncoder(pa);
     } else {
-      fa.setLayout(new EchoLayout<ILoggingEvent>());
+      fa.setEncoder(new EchoEncoder<ILoggingEvent>());
     }
 
     fa.setFile(getName() + ".log");

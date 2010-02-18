@@ -65,7 +65,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
   void initRFA(RollingFileAppender<Object> rfa, String filename) {
     rfa.setContext(context);
-    rfa.setLayout(layout);
+    rfa.setEncoder(encoder);
     if (filename != null) {
       rfa.setFile(filename);
     }

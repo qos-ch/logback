@@ -11,16 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.appender;
+package ch.qos.logback.core;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
-import ch.qos.logback.core.WriterAppender;
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.LifeCycle;
 
-public class DummyAppender<E> extends WriterAppender<E> {
+public interface Encoder<E> extends ContextAware, LifeCycle {
+  
+  void doEncode(E event, OutputStream os) throws IOException;
 
-  DummyAppender(OutputStream os) {
-    this.setWriter(os);
-  }
-
+  void close(OutputStream os) throws IOException;
+  
 }

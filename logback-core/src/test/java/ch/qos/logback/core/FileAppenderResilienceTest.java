@@ -14,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -60,7 +60,7 @@ public class FileAppenderResilienceTest {
         + "]");
 
     fa.setName("FILE");
-    fa.setLayout(new EchoLayout<Object>());
+    fa.setEncoder(new EchoEncoder<Object>());
     fa.setFile(logfileStr);
     fa.start();
   }

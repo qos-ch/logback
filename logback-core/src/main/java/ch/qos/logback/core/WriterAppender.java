@@ -16,7 +16,6 @@ package ch.qos.logback.core;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 import ch.qos.logback.core.status.ErrorStatus;
 
@@ -31,6 +30,8 @@ import ch.qos.logback.core.status.ErrorStatus;
  */
 public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
+  protected Encoder<E> encoder;
+  
   /**
    * Immediate flush means that the underlying writer or output stream will be
    * flushed at the end of each append operation. Immediate flush is slower but
@@ -54,9 +55,9 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   private String encoding;
 
   /**
-   * This is the {@link Writer Writer} where we will write to.
+   * This is the {@link OutputStream outputStream} where we will write to.
    */
-  private Writer writer;
+  private OutputStream outputStream;
 
   /**
    * The default constructor does nothing.
@@ -94,14 +95,14 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    */
   public void start() {
     int errors = 0;
-    if (this.layout == null) {
+    if (this.encoder == null) {
       addStatus(new ErrorStatus("No layout set for the appender named \""
           + name + "\".", this));
       errors++;
     }
 
-    if (this.writer == null) {
-      addStatus(new ErrorStatus("No writer set for the appender named \""
+    if (this.outputStream == null) {
+      addStatus(new ErrorStatus("No output stream set for the appender named \""
           + name + "\".", this));
       errors++;
     }
@@ -136,12 +137,12 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    * Close the underlying {@link java.io.Writer}.
    */
   protected void closeWriter() {
-    if (this.writer != null) {
+    if (this.outputStream != null) {
       try {
         // before closing we have to output out layout's footer
         writeFooter();
-        this.writer.close();
-        this.writer = null;
+        this.outputStream.close();
+        this.outputStream = null;
       } catch (IOException e) {
         addStatus(new ErrorStatus("Could not close writer for WriterAppener.",
             this, e));
@@ -160,7 +161,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     OutputStreamWriter retval = null;
 
     String enc = getEncoding();
-
     try {
       if (enc != null) {
         retval = new OutputStreamWriter(os, enc);
@@ -185,25 +185,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   }
 
   void writeHeader() {
-    if (layout != null && (this.writer != null)) {
-      try {
-        StringBuilder sb = new StringBuilder();
-        appendIfNotNull(sb, layout.getFileHeader());
-        appendIfNotNull(sb, layout.getPresentationHeader());
-        if (sb.length() > 0) {
-          sb.append(CoreConstants.LINE_SEPARATOR);
-          // If at least one of file header or presentation header were not
-          // null, then append a line separator.
-          // This should be useful in most cases and should not hurt.
-          writerWrite(sb.toString(), true);
-        }
-
-      } catch (IOException ioe) {
-        this.started = false;
-        addStatus(new ErrorStatus("Failed to write header for appender named ["
-            + name + "].", this, ioe));
-      }
-    }
+    
   }
 
   private void appendIfNotNull(StringBuilder sb, String s) {
@@ -213,14 +195,10 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   }
 
   void writeFooter() {
-    if (layout != null && this.writer != null) {
+    if (encoder != null && this.outputStream != null) {
       try {
         StringBuilder sb = new StringBuilder();
-        appendIfNotNull(sb, layout.getPresentationFooter());
-        appendIfNotNull(sb, layout.getFileFooter());
-        if (sb.length() > 0) {
-          writerWrite(sb.toString(), true); // force flush
-        }
+        encoder.close(outputStream);
       } catch (IOException ioe) {
         this.started = false;
         addStatus(new ErrorStatus("Failed to write footer for appender named ["
@@ -238,21 +216,19 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    * @param writer
    *          An already opened Writer.
    */
-  public synchronized void setWriter(Writer writer) {
+  public synchronized void setWriter(OutputStream outputStream) {
     // close any previously opened writer
     closeWriter();
 
-    this.writer = writer;
+    this.outputStream = outputStream;
     writeHeader();
   }
 
-  protected void writerWrite(String s, boolean flush) throws IOException {
-    this.writer.write(s);
-    if (flush) {
-      this.writer.flush();
-    }
+  
+  void writeOut(E event) throws IOException {
+    this.encoder.doEncode(event, outputStream);
   }
-
+  
   /**
    * Actual writing occurs here.
    * <p>
@@ -266,10 +242,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
       return;
     }
     try {
-      String output = this.layout.doLayout(event);
-      synchronized (this) {
-        writerWrite(output, this.immediateFlush);
-      }
+      writeOut(event);
     } catch (IOException ioe) {
       // as soon as an exception occurs, move to non-started state
       // and add a single ErrorStatus to the SM.
@@ -277,4 +250,14 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
       addStatus(new ErrorStatus("IO failure in appender", this, ioe));
     }
   }
+
+  public Encoder<E> getEncoder() {
+    return encoder;
+  }
+
+  public void setEncoder(Encoder<E> encoder) {
+    this.encoder = encoder;
+  }
+  
+  
 }
