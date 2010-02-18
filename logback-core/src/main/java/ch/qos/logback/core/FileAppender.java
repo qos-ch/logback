@@ -33,8 +33,8 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   /**
    * Append to or truncate the file? The default value for this variable is
-   * <code>true</code>, meaning that by default a <code>FileAppender</code>
-   * will append to an existing file and not truncate it.
+   * <code>true</code>, meaning that by default a <code>FileAppender</code> will
+   * append to an existing file and not truncate it.
    */
   protected boolean append = true;
 
@@ -98,7 +98,8 @@ public class FileAppender<E> extends WriterAppender<E> {
   /**
    * Returns the value of the <b>File</b> property.
    * 
-   * <p>This method may be overridden by derived classes.
+   * <p>
+   * This method may be overridden by derived classes.
    * 
    */
   public String getFile() {
@@ -107,8 +108,8 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   /**
    * If the value of <b>File</b> is not <code>null</code>, then
-   * {@link #openFile} is called with the values of <b>File</b> and <b>Append</b>
-   * properties.
+   * {@link #openFile} is called with the values of <b>File</b> and
+   * <b>Append</b> properties.
    */
   public void start() {
     int errors = 0;
@@ -156,45 +157,50 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   /**
-   * <p> Sets and <i>opens</i> the file where the log output will go. The
-   * specified file must be writable.
+   * <p>
+   * Sets and <i>opens</i> the file where the log output will go. The specified
+   * file must be writable.
    * 
-   * <p> If there was already an opened file, then the previous file is closed
+   * <p>
+   * If there was already an opened file, then the previous file is closed
    * first.
    * 
-   * <p> <b>Do not use this method directly. To configure a FileAppender or one
-   * of its subclasses, set its properties one by one and then call start().</b>
+   * <p>
+   * <b>Do not use this method directly. To configure a FileAppender or one of
+   * its subclasses, set its properties one by one and then call start().</b>
    * 
    * @param filename
-   *                The path to the log file.
+   *          The path to the log file.
    * @param append
-   *                If true will append to fileName. Otherwise will truncate
-   *                fileName.
+   *          If true will append to fileName. Otherwise will truncate fileName.
    * @param bufferedIO
    * @param bufferSize
    * 
    * @throws IOException
    * 
    */
-  public synchronized void openFile(String file_name) throws IOException {
-    File file = new File(file_name);
-    if (FileUtil.mustCreateParentDirectories(file)) {
-      boolean result = FileUtil.createMissingParentDirectories(file);
-      if (!result) {
-        addError("Failed to create parent directories for ["
-            + file.getAbsolutePath() + "]");
+  public void openFile(String file_name) throws IOException {
+    synchronized (lock) {
+      File file = new File(file_name);
+      if (FileUtil.mustCreateParentDirectories(file)) {
+        boolean result = FileUtil.createMissingParentDirectories(file);
+        if (!result) {
+          addError("Failed to create parent directories for ["
+              + file.getAbsolutePath() + "]");
+        }
       }
-    }
 
-    FileOutputStream fileOutputStream = new FileOutputStream(file_name, append);
-    if (prudent) {
-      fileChannel = fileOutputStream.getChannel();
+      FileOutputStream fileOutputStream = new FileOutputStream(file_name,
+          append);
+      if (prudent) {
+        fileChannel = fileOutputStream.getChannel();
+      }
+      // Writer w = createWriter(fileOutputStream);
+      // if (bufferedIO) {
+      // w = new BufferedWriter(w, bufferSize);
+      // }
+      setWriter(fileOutputStream);
     }
-//    Writer w = createWriter(fileOutputStream);
-//    if (bufferedIO) {
-//      w = new BufferedWriter(w, bufferSize);
-//    }
-    setWriter(fileOutputStream);
   }
 
   public boolean isBufferedIO() {

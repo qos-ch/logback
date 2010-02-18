@@ -29,7 +29,7 @@ public class LB139_DeadlockTest {
     BasicConfigurator.configure(loggerContext);
   }
   
-  @Test(timeout=3000)
+  @Test //(timeout=3000)
   public void test() throws Exception {
     Worker worker = new Worker(loggerContext);
     Accessor accessor = new Accessor(worker, loggerContext);

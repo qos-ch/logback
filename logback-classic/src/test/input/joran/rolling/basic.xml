@@ -9,9 +9,9 @@
         ${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}
       </FileNamePattern>
     </rollingPolicy>
-    <layout>
+    <encoder>
       <Pattern>%msg%n</Pattern>
-    </layout>
+    </encoder>
   </appender>
 
 

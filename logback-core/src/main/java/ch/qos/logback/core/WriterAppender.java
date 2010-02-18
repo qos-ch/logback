@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
@@ -31,6 +32,8 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   protected Encoder<E> encoder;
+
+  protected Object lock = new Object();
 
   /**
    * Immediate flush means that the underlying writer or output stream will be
@@ -128,9 +131,11 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    * <p>
    * Stopped appenders cannot be reused.
    */
-  public synchronized void stop() {
-    closeWriter();
-    super.stop();
+  public void stop() {
+    synchronized (lock) {
+      closeWriter();
+      super.stop();
+    }
   }
 
   /**
@@ -216,20 +221,22 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    * @param writer
    *          An already opened Writer.
    */
-  public synchronized void setWriter(OutputStream outputStream) {
-    // close any previously opened writer
-    closeWriter();
+  public void setWriter(OutputStream outputStream) {
+    synchronized (lock) {
+      // close any previously opened writer
+      closeWriter();
 
-    this.outputStream = outputStream;
-    if(encoder == null) {
-      addWarn("Encoder not yet set. Cannot invoke init method ");
-      return;
-    }
+      this.outputStream = outputStream;
+      if (encoder == null) {
+        addWarn("Encoder not yet set. Cannot invoke init method ");
+        return;
+      }
 
-    try {
-      encoder.init(outputStream);
-    } catch (IOException e) {
-      addError("Failied to initialize encoder", e);
+      try {
+        encoder.init(outputStream);
+      } catch (IOException e) {
+        addError("Failied to initialize encoder", e);
+      }
     }
   }
 
@@ -250,8 +257,13 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
       return;
     }
     try {
-      // it is
-      synchronized (this) {
+      // this step avoids LBCLASSIC-139
+      if (event instanceof DeferredProcessingAware) {
+        ((DeferredProcessingAware) event).prepareForDeferredProcessing();
+      }
+      // the synchronized prevents the OutputStream from being closed while we
+      // are writing
+      synchronized (lock) {
         writeOut(event);
       }
     } catch (IOException ioe) {

@@ -4,9 +4,6 @@
 <configuration scan="true" scanPeriod="50 millisecond">
 
   <appender name="default" class="ch.qos.logback.classic.issue.lbclassic154.LoggingAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <pattern>%msg%n"</pattern>     
-    </layout>
   </appender>
 
   <logger name="Ignore" level="ERROR" additivity="false"/>

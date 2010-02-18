@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -41,7 +42,7 @@ import ch.qos.logback.access.servlet.Util;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class AccessEvent implements Serializable {
+public class AccessEvent implements Serializable, DeferredProcessingAware {
 
   
   private static final long serialVersionUID = 866718993618836343L;
