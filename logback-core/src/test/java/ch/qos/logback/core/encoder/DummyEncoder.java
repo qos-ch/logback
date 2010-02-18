@@ -42,15 +42,41 @@ public class DummyEncoder<E> extends EncoderBase<E> {
   }
 
   public void doEncode(E event, OutputStream os) throws IOException {
-    if (encodingName == null) {
-      os.write(val.getBytes());
-    } else {
-      os.write(val.getBytes(encodingName));
+    writeOut(os, val);
+  }
+
+  private void appendIfNotNull(StringBuilder sb, String s) {
+    if (s != null) {
+      sb.append(s);
     }
   }
 
+  void writeOut(OutputStream os, String s) throws IOException {
+    if (encodingName == null) {
+      os.write(s.getBytes());
+    } else {
+      os.write(s.getBytes(encodingName));
+    }
+  }
+
+  void writeHeader(OutputStream os) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    appendIfNotNull(sb, fileHeader);
+    if (sb.length() > 0) {
+      sb.append(CoreConstants.LINE_SEPARATOR);
+      // If at least one of file header or presentation header were not
+      // null, then append a line separator.
+      // This should be useful in most cases and should not hurt.
+      writeOut(os, sb.toString());
+    }
+  }
+
+  public void init(OutputStream os) throws IOException {
+    writeHeader(os);
+  }
+
   public void close(OutputStream os) throws IOException {
-    if(fileFooter == null) {
+    if (fileFooter == null) {
       return;
     }
     if (encodingName == null) {

@@ -15,7 +15,7 @@ package ch.qos.logback.classic.issue.lbclassic135;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternEncoder;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
@@ -51,7 +51,7 @@ public class LoggingToFileThrouhput {
   static Logger buildLoggerContext(LoggerContext lc) {
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    PatternEncoder patternLayout = new PatternEncoder();
+    PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
     patternLayout.setContext(lc);
     patternLayout.setPattern("%d %l [%t] - %msg%n");
     patternLayout.start();

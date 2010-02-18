@@ -22,6 +22,8 @@ public class NopEncoder<E> extends EncoderBase<E> {
   }
 
   public void doEncode(E event, OutputStream os) throws IOException {
-    
+  }
+
+  public void init(OutputStream os) throws IOException {
   }
 }

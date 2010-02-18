@@ -17,10 +17,9 @@ import java.io.OutputStream;
 
 import ch.qos.logback.core.WriterAppender;
 
-public class DummyAppender<E> extends WriterAppender<E> {
+public class DummyWriterAppender<E> extends WriterAppender<E> {
 
-  DummyAppender(OutputStream os) {
+  DummyWriterAppender(OutputStream os) {
     this.setWriter(os);
   }
-
 }

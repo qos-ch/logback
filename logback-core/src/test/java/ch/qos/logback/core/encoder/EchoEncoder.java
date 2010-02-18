@@ -38,5 +38,10 @@ public class EchoEncoder<E> extends EncoderBase<E> {
     os.write(fileFooter.getBytes());
   }
 
-
+  public void init(OutputStream os) throws IOException {
+    if (fileHeader == null) {
+      return;
+    }
+    os.write(fileHeader.getBytes());
+  }
 }

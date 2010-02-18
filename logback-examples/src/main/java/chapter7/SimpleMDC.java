@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternEncoder;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
@@ -63,7 +63,7 @@ public class SimpleMDC {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     loggerContext.reset();
-    PatternEncoder layout = new PatternEncoder();
+    PatternLayoutEncoder layout = new PatternLayoutEncoder();
     layout.setContext(loggerContext);
     layout.setPattern("%X{first} %X{last} - %m%n");
     layout.start();

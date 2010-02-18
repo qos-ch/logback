@@ -31,13 +31,13 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   protected Encoder<E> encoder;
-  
+
   /**
    * Immediate flush means that the underlying writer or output stream will be
    * flushed at the end of each append operation. Immediate flush is slower but
    * ensures that each append request is actually written. If
-   * <code>immediateFlush</code> is set to <code>false</code>, then there
-   * is a good chance that the last few logs events are not actually written to
+   * <code>immediateFlush</code> is set to <code>false</code>, then there is a
+   * good chance that the last few logs events are not actually written to
    * persistent media if and when the application crashes.
    * 
    * <p>
@@ -68,8 +68,8 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   /**
    * If the <b>ImmediateFlush</b> option is set to <code>true</code>, the
    * appender will flush at the end of each write. This is the default behavior.
-   * If the option is set to <code>false</code>, then the underlying stream
-   * can defer writing to physical medium to a later time.
+   * If the option is set to <code>false</code>, then the underlying stream can
+   * defer writing to physical medium to a later time.
    * <p>
    * Avoiding the flush operation at the end of each append results in a
    * performance gain of 10 to 20 percent. However, there is safety tradeoff
@@ -96,14 +96,14 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   public void start() {
     int errors = 0;
     if (this.encoder == null) {
-      addStatus(new ErrorStatus("No layout set for the appender named \""
+      addStatus(new ErrorStatus("No encoder set for the appender named \""
           + name + "\".", this));
       errors++;
     }
 
     if (this.outputStream == null) {
-      addStatus(new ErrorStatus("No output stream set for the appender named \""
-          + name + "\".", this));
+      addStatus(new ErrorStatus(
+          "No output stream set for the appender named \"" + name + "\".", this));
       errors++;
     }
     // only error free appenders should be activated
@@ -140,7 +140,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     if (this.outputStream != null) {
       try {
         // before closing we have to output out layout's footer
-        writeFooter();
+        encoderClose();
         this.outputStream.close();
         this.outputStream = null;
       } catch (IOException e) {
@@ -152,10 +152,9 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   /**
    * Returns an OutputStreamWriter when passed an OutputStream. The encoding
-   * used will depend on the value of the <code>encoding</code> property. If
-   * the encoding value is specified incorrectly the writer will be opened using
-   * the default system encoding (an error message will be printed to the
-   * loglog.
+   * used will depend on the value of the <code>encoding</code> property. If the
+   * encoding value is specified incorrectly the writer will be opened using the
+   * default system encoding (an error message will be printed to the loglog.
    */
   protected OutputStreamWriter createWriter(OutputStream os) {
     OutputStreamWriter retval = null;
@@ -184,20 +183,21 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     encoding = value;
   }
 
-  void writeHeader() {
-    
-  }
-
-  private void appendIfNotNull(StringBuilder sb, String s) {
-    if (s != null) {
-      sb.append(s);
+  void encoderInit() {
+    if (encoder != null && this.outputStream != null) {
+      try {
+        encoder.init(outputStream);
+      } catch (IOException ioe) {
+        this.started = false;
+        addStatus(new ErrorStatus("Failed to write footer for appender named ["
+            + name + "].", this, ioe));
+      }
     }
   }
 
-  void writeFooter() {
+  void encoderClose() {
     if (encoder != null && this.outputStream != null) {
       try {
-        StringBuilder sb = new StringBuilder();
         encoder.close(outputStream);
       } catch (IOException ioe) {
         this.started = false;
@@ -210,8 +210,8 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   /**
    * <p>
    * Sets the Writer where the log output will go. The specified Writer must be
-   * opened by the user and be writable. The <code>java.io.Writer</code> will
-   * be closed when the appender instance is closed.
+   * opened by the user and be writable. The <code>java.io.Writer</code> will be
+   * closed when the appender instance is closed.
    * 
    * @param writer
    *          An already opened Writer.
@@ -221,14 +221,22 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     closeWriter();
 
     this.outputStream = outputStream;
-    writeHeader();
+    if(encoder == null) {
+      addWarn("Encoder not yet set. Cannot invoke init method ");
+      return;
+    }
+
+    try {
+      encoder.init(outputStream);
+    } catch (IOException e) {
+      addError("Failied to initialize encoder", e);
+    }
   }
 
-  
-  void writeOut(E event) throws IOException {
+  protected void writeOut(E event) throws IOException {
     this.encoder.doEncode(event, outputStream);
   }
-  
+
   /**
    * Actual writing occurs here.
    * <p>
@@ -242,7 +250,10 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
       return;
     }
     try {
-      writeOut(event);
+      // it is
+      synchronized (this) {
+        writeOut(event);
+      }
     } catch (IOException ioe) {
       // as soon as an exception occurs, move to non-started state
       // and add a single ErrorStatus to the SM.
@@ -258,6 +269,5 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   public void setEncoder(Encoder<E> encoder) {
     this.encoder = encoder;
   }
-  
-  
+
 }

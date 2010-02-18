@@ -15,19 +15,19 @@ package chapter11;
 
 import java.io.IOException;
 
-import ch.qos.logback.classic.encoder.PatternEncoder;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
 
-  PatternEncoder encoder;
+  PatternLayoutEncoder encoder;
   
-  public PatternEncoder getEncoder() {
+  public PatternLayoutEncoder getEncoder() {
     return encoder;
   }
 
-  public void setEncoder(PatternEncoder encoder) {
+  public void setEncoder(PatternLayoutEncoder encoder) {
     this.encoder = encoder;
   }
 

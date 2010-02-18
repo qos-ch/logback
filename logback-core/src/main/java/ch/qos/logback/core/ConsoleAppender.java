@@ -86,7 +86,7 @@ public class ConsoleAppender<E> extends WriterAppender<E> {
      * implementation  because the console stream is not ours to close.
      */
     protected final void closeWriter() {
-      writeFooter();
+      encoderClose();
     }
   }
 

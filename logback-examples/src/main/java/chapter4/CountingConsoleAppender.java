@@ -15,7 +15,7 @@ package chapter4;
 
 import java.io.IOException;
 
-import ch.qos.logback.classic.encoder.PatternEncoder;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
@@ -25,7 +25,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   int counter = 0;
   int limit = DEFAULT_LIMIT;
   
-  PatternEncoder encoder;
+  PatternLayoutEncoder encoder;
   
   public CountingConsoleAppender() {
   }
@@ -62,11 +62,11 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
     counter++;
   }
 
-  public PatternEncoder getEncoder() {
+  public PatternLayoutEncoder getEncoder() {
     return encoder;
   }
 
-  public void setEncoder(PatternEncoder encoder) {
+  public void setEncoder(PatternLayoutEncoder encoder) {
     this.encoder = encoder;
   }
   

@@ -23,6 +23,7 @@ public interface Encoder<E> extends ContextAware, LifeCycle {
   
   void doEncode(E event, OutputStream os) throws IOException;
 
+  void init(OutputStream os) throws IOException;
   void close(OutputStream os) throws IOException;
   
 }

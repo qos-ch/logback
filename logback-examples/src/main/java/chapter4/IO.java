@@ -16,7 +16,7 @@ package chapter4;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternEncoder;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -47,7 +47,7 @@ public class IO extends Thread {
     FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
 
     if (longMessage) {
-      PatternEncoder pa = new PatternEncoder();
+      PatternLayoutEncoder pa = new PatternLayoutEncoder();
       pa.setPattern("%r %5p %c [%t] - %m%n");
       pa.setContext(context);
       pa.start();
