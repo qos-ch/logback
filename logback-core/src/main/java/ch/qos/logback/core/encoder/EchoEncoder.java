@@ -26,22 +26,23 @@ public class EchoEncoder<E> extends EncoderBase<E> {
   public EchoEncoder() {
   }
 
-  public void doEncode(E event, OutputStream os) throws IOException {
+  public void doEncode(E event) throws IOException {
     String val = event + CoreConstants.LINE_SEPARATOR;
-    os.write(val.getBytes());
+    outputStream.write(val.getBytes());
   }
 
-  public void close(OutputStream os) throws IOException {
+  public void close() throws IOException {
     if (fileFooter == null) {
       return;
     }
-    os.write(fileFooter.getBytes());
+    outputStream.write(fileFooter.getBytes());
   }
 
   public void init(OutputStream os) throws IOException {
+    super.init(os);
     if (fileHeader == null) {
       return;
     }
-    os.write(fileHeader.getBytes());
+    outputStream.write(fileHeader.getBytes());
   }
 }

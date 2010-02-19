@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.Encoder;
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.encoder.EncoderBase;
 
-public class LayoutWrappingEncoder<E> extends ContextAwareBase implements
-    Encoder<E> {
+public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
-  boolean started;
   protected Layout<E> layout;
 
   public Layout<E> getLayout() {
@@ -24,11 +21,12 @@ public class LayoutWrappingEncoder<E> extends ContextAwareBase implements
 
 
   public void init(OutputStream os) throws IOException {
-    writeHeader(os);
+    super.init(os);
+    writeHeader();
   }
 
-  public void close(OutputStream os) throws IOException {
-    writeFooter(os);
+  public void close() throws IOException {
+    writeFooter();
   }
 
   private void appendIfNotNull(StringBuilder sb, String s) {
@@ -37,8 +35,8 @@ public class LayoutWrappingEncoder<E> extends ContextAwareBase implements
     }
   }
   
-  void writeHeader(OutputStream os) throws IOException {
-    if (layout != null && (os != null)) {
+  void writeHeader() throws IOException {
+    if (layout != null && (outputStream != null)) {
       StringBuilder sb = new StringBuilder();
       appendIfNotNull(sb, layout.getFileHeader());
       appendIfNotNull(sb, layout.getPresentationHeader());
@@ -47,29 +45,29 @@ public class LayoutWrappingEncoder<E> extends ContextAwareBase implements
         // If at least one of file header or presentation header were not
         // null, then append a line separator.
         // This should be useful in most cases and should not hurt.
-        os.write(sb.toString().getBytes());
-        os.flush();
+        outputStream.write(sb.toString().getBytes());
+        outputStream.flush();
       }
     }
   }
 
-  void writeFooter(OutputStream os) throws IOException {
-    if (layout != null && os != null) {
+  void writeFooter() throws IOException {
+    if (layout != null && outputStream != null) {
       StringBuilder sb = new StringBuilder();
       appendIfNotNull(sb, layout.getPresentationFooter());
       appendIfNotNull(sb, layout.getFileFooter());
       if (sb.length() > 0) {
-        os.write(sb.toString().getBytes());
-        os.flush();
+        outputStream.write(sb.toString().getBytes());
+        outputStream.flush();
       }
 
     }
   }
 
-  public void doEncode(E event, OutputStream os) throws IOException {
+  public void doEncode(E event) throws IOException {
     String txt = layout.doLayout(event);
-    os.write(txt.getBytes());
-    os.flush();
+    outputStream.write(txt.getBytes());
+    outputStream.flush();
   }
 
   public boolean isStarted() {

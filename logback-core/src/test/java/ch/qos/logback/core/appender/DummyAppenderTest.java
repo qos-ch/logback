@@ -16,10 +16,12 @@ package ch.qos.logback.core.appender;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Encoder;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
 
@@ -40,8 +42,10 @@ public class DummyAppenderTest extends AbstractAppenderTest<Object> {
   }
 
   @Test
-  public void testBasic() {
-    da.setEncoder(new DummyEncoder<Object>());
+  public void testBasic() throws IOException {
+    Encoder<Object> encoder = new DummyEncoder<Object>();
+    encoder.init(baos);
+    da.setEncoder(encoder);
     da.start();
     da.doAppend(new Object());
     assertEquals(DummyLayout.DUMMY, baos.toString());

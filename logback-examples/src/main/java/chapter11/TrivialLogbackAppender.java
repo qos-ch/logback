@@ -37,6 +37,10 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
       addError("No encoder set for the appender named [" + name + "].");
       return;
     }
+    try {
+      encoder.init(System.out);
+    } catch (IOException e) {
+    }
     super.start();
   }
 
@@ -45,7 +49,7 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
     // note that AppenderBase.doAppend will invoke this method only if
     // this appender was successfully started.
     try {
-      this.encoder.doEncode(loggingevent, System.out);
+      this.encoder.doEncode(loggingevent);
     } catch (IOException e) {
       // we can't do much with the exception except halting
       super.stop();

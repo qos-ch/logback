@@ -45,6 +45,10 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
       return;
     }
     
+    try {
+      encoder.init(System.out);
+    } catch (IOException e) {
+    }
     super.start();
   }
 
@@ -54,7 +58,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
     }
     // output the events as formatted by our layout
     try {
-      this.encoder.doEncode(event, System.out);
+      this.encoder.doEncode(event);
     } catch (IOException e) {
     }
 

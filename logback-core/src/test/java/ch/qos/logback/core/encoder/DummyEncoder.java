@@ -41,8 +41,8 @@ public class DummyEncoder<E> extends EncoderBase<E> {
     this.val = val;
   }
 
-  public void doEncode(E event, OutputStream os) throws IOException {
-    writeOut(os, val);
+  public void doEncode(E event) throws IOException {
+    writeOut(val);
   }
 
   private void appendIfNotNull(StringBuilder sb, String s) {
@@ -51,15 +51,15 @@ public class DummyEncoder<E> extends EncoderBase<E> {
     }
   }
 
-  void writeOut(OutputStream os, String s) throws IOException {
+  void writeOut(String s) throws IOException {
     if (encodingName == null) {
-      os.write(s.getBytes());
+      outputStream.write(s.getBytes());
     } else {
-      os.write(s.getBytes(encodingName));
+      outputStream.write(s.getBytes(encodingName));
     }
   }
 
-  void writeHeader(OutputStream os) throws IOException {
+  void writeHeader() throws IOException {
     StringBuilder sb = new StringBuilder();
     appendIfNotNull(sb, fileHeader);
     if (sb.length() > 0) {
@@ -67,22 +67,23 @@ public class DummyEncoder<E> extends EncoderBase<E> {
       // If at least one of file header or presentation header were not
       // null, then append a line separator.
       // This should be useful in most cases and should not hurt.
-      writeOut(os, sb.toString());
+      writeOut(sb.toString());
     }
   }
 
   public void init(OutputStream os) throws IOException {
-    writeHeader(os);
+    super.init(os);
+    writeHeader();
   }
 
-  public void close(OutputStream os) throws IOException {
+  public void close() throws IOException {
     if (fileFooter == null) {
       return;
     }
     if (encodingName == null) {
-      os.write(fileFooter.getBytes());
+      outputStream.write(fileFooter.getBytes());
     } else {
-      os.write(fileFooter.getBytes(encodingName));
+      outputStream.write(fileFooter.getBytes(encodingName));
     }
   }
 

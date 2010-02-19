@@ -203,7 +203,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   void encoderClose() {
     if (encoder != null && this.outputStream != null) {
       try {
-        encoder.close(outputStream);
+        encoder.close();
       } catch (IOException ioe) {
         this.started = false;
         addStatus(new ErrorStatus("Failed to write footer for appender named ["
@@ -232,16 +232,12 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
         return;
       }
 
-      try {
-        encoder.init(outputStream);
-      } catch (IOException e) {
-        addError("Failied to initialize encoder", e);
-      }
+      encoderInit();
     }
   }
 
   protected void writeOut(E event) throws IOException {
-    this.encoder.doEncode(event, outputStream);
+    this.encoder.doEncode(event);
   }
 
   /**
