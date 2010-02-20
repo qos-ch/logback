@@ -3,7 +3,6 @@ package ch.qos.logback.core.encoder;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import ch.qos.logback.core.Encoder;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class EncoderBase<E> extends ContextAwareBase implements Encoder<E> {

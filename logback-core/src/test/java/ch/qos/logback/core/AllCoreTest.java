@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
   ch.qos.logback.core.appender.PackageTest.class,
   ch.qos.logback.core.spi.PackageTest.class,
   ch.qos.logback.core.rolling.PackageTest.class,
-  ch.qos.logback.core.sift.PackageTest.class})
+  ch.qos.logback.core.sift.PackageTest.class, 
+  ch.qos.logback.core.encoder.PackageTest.class})
 public class AllCoreTest {
 
 }

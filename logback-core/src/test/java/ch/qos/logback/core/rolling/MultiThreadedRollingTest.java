@@ -30,10 +30,10 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.Encoder;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;

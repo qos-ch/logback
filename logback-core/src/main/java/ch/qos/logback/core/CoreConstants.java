@@ -112,4 +112,7 @@ public class CoreConstants {
    * context.
    */
   public static final String HOSTNAME_KEY = "HOSTNAME";
+  
+  
+  public static int BYTES_PER_INT = 4;
 }
