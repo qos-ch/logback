@@ -86,6 +86,10 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     immediateFlush = value;
   }
 
+  protected OutputStream getOutputStream() {
+    return outputStream;
+  }
+  
   /**
    * Returns value of the <b>ImmediateFlush</b> option.
    */

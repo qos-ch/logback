@@ -14,11 +14,11 @@
 package ch.qos.logback.core;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
+import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.util.FileUtil;
 
 /**
@@ -55,8 +55,7 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   private boolean prudent = false;
 
-  private FileChannel fileChannel = null;
-
+  
   /**
    * As in most cases, the default constructor does nothing.
    */
@@ -190,16 +189,17 @@ public class FileAppender<E> extends WriterAppender<E> {
         }
       }
 
-      FileOutputStream fileOutputStream = new FileOutputStream(file_name,
-          append);
-      if (prudent) {
-        fileChannel = fileOutputStream.getChannel();
-      }
+      ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(file, append);
+      
+      
+      //FileOutputStream fileOutputStream = new FileOutputStream(file_name,
+       //   append);
+      
       // Writer w = createWriter(fileOutputStream);
       // if (bufferedIO) {
       // w = new BufferedWriter(w, bufferSize);
       // }
-      setWriter(fileOutputStream);
+      setWriter(resilientFos);
     }
   }
 
@@ -243,6 +243,11 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   final private void safeWrite(E event) throws IOException {
+    ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) getOutputStream();
+    FileChannel fileChannel = resilientFOS.getChannel();
+    if(fileChannel == null) {
+      return;
+    }
     FileLock fileLock = null;
     try {
       fileLock = fileChannel.lock();
@@ -261,7 +266,7 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   @Override
   protected void writeOut(E event) throws IOException {
-    if (prudent && fileChannel != null) {
+    if (prudent) {
       safeWrite(event);
     } else {
       super.writeOut(event);
