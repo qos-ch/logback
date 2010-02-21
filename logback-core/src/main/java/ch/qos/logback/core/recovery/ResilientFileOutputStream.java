@@ -23,14 +23,15 @@ import java.nio.channels.FileChannel;
 public class ResilientFileOutputStream extends OutputStream {
 
   RecoveryCoordinator recoveryCoordinator;
-  // private FileChannel fileChannel = null;
   boolean bufferedIO;
   int bufferSize;
 
   FileOutputStream fos;
   File file;
+  boolean presumedClean = true;
 
-  public ResilientFileOutputStream(File file, boolean append) throws FileNotFoundException {
+  public ResilientFileOutputStream(File file, boolean append)
+      throws FileNotFoundException {
     this.file = file;
     fos = new FileOutputStream(file, append);
   }
@@ -44,7 +45,7 @@ public class ResilientFileOutputStream extends OutputStream {
 
   public void write(byte b[], int off, int len) throws IOException {
     // existence of recoveryCoordinator indicates failed state
-    if (recoveryCoordinator != null) {
+    if (recoveryCoordinator != null && !presumedClean) {
       if (!recoveryCoordinator.isTooSoon()) {
         performRecoveryAttempt();
       }
@@ -56,6 +57,7 @@ public class ResilientFileOutputStream extends OutputStream {
       fos.write(b, off, len);
       postSuccessfulWrite();
     } catch (IOException e) {
+      presumedClean = false;
       recoveryCoordinator = new RecoveryCoordinator();
     }
   }
@@ -66,11 +68,11 @@ public class ResilientFileOutputStream extends OutputStream {
 
   @Override
   public void close() throws IOException {
-    if(fos != null) {
+    if (fos != null) {
       fos.close();
     }
   }
-  
+
   @Override
   public void write(int b) throws IOException {
     // existence of recoveryCoordinator indicates failed state
@@ -90,7 +92,14 @@ public class ResilientFileOutputStream extends OutputStream {
   }
 
   void performRecoveryAttempt() throws FileNotFoundException {
-    fos = new FileOutputStream(file);
+    try {
+      close();
+    } catch (IOException e) {
+    }
+
+    // subsequent writes must always be in append mode
+    fos = new FileOutputStream(file, true);
+    presumedClean = true;
   }
 
 }
