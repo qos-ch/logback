@@ -21,6 +21,6 @@ public class DummyWriterAppender<E> extends
     WriterAppender<E> {
 
   DummyWriterAppender(OutputStream os) {
-    this.setWriter(os);
+    this.setOutputStream(os);
   }
 }

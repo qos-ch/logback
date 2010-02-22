@@ -15,7 +15,6 @@ package ch.qos.logback.core;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
@@ -32,8 +31,15 @@ import ch.qos.logback.core.status.ErrorStatus;
  */
 public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
+  /**
+   * It is the encoder which is ultimately responsible for writing the event to
+   * an {@link OutputStream}.
+   */
   protected Encoder<E> encoder;
 
+  /**
+   * All synchronization in this class is done via the lock object.
+   */
   protected Object lock = new Object();
 
   /**
@@ -51,15 +57,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   private boolean immediateFlush = true;
 
   /**
-   * The encoding to use when opening an InputStream.
-   * <p>
-   * The <code>encoding</code> variable is set to <code>null</null> by default 
-   * which results in the use of the system's default encoding.
-   */
-  private String encoding;
-
-  /**
-   * This is the {@link OutputStream outputStream} where we will write to.
+   * This is the {@link OutputStream outputStream} where output will be written.
    */
   private OutputStream outputStream;
 
@@ -86,10 +84,15 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
     immediateFlush = value;
   }
 
-  protected OutputStream getOutputStream() {
+  /**
+   * The underlying output stream used by this appender.
+   * 
+   * @return
+   */
+  public OutputStream getOutputStream() {
     return outputStream;
   }
-  
+
   /**
    * Returns value of the <b>ImmediateFlush</b> option.
    */
@@ -138,15 +141,15 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    */
   public void stop() {
     synchronized (lock) {
-      closeWriter();
+      closeOutputStream();
       super.stop();
     }
   }
 
   /**
-   * Close the underlying {@link java.io.Writer}.
+   * Close the underlying {@link OutputStream}.
    */
-  protected void closeWriter() {
+  protected void closeOutputStream() {
     if (this.outputStream != null) {
       try {
         // before closing we have to output out layout's footer
@@ -154,43 +157,10 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
         this.outputStream.close();
         this.outputStream = null;
       } catch (IOException e) {
-        addStatus(new ErrorStatus("Could not close writer for WriterAppener.",
-            this, e));
+        addStatus(new ErrorStatus(
+            "Could not close output stream for WriterAppener.", this, e));
       }
     }
-  }
-
-  /**
-   * Returns an OutputStreamWriter when passed an OutputStream. The encoding
-   * used will depend on the value of the <code>encoding</code> property. If the
-   * encoding value is specified incorrectly the writer will be opened using the
-   * default system encoding (an error message will be printed to the loglog.
-   */
-  protected OutputStreamWriter createWriter(OutputStream os) {
-    OutputStreamWriter retval = null;
-
-    String enc = getEncoding();
-    try {
-      if (enc != null) {
-        retval = new OutputStreamWriter(os, enc);
-      } else {
-        retval = new OutputStreamWriter(os);
-      }
-    } catch (IOException e) {
-      addStatus(new ErrorStatus("Error initializing output writer.", this, e));
-      if (enc != null) {
-        addStatus(new ErrorStatus("Unsupported encoding?", this));
-      }
-    }
-    return retval;
-  }
-
-  public String getEncoding() {
-    return encoding;
-  }
-
-  public void setEncoding(String value) {
-    encoding = value;
   }
 
   void encoderInit() {
@@ -219,21 +189,22 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   /**
    * <p>
-   * Sets the Writer where the log output will go. The specified Writer must be
-   * opened by the user and be writable. The <code>java.io.Writer</code> will be
-   * closed when the appender instance is closed.
+   * Sets the @link OutputStream} where the log output will go. The specified
+   * <code>OutputStream</code> must be opened by the user and be writable. The
+   * <code>OutputStream</code> will be closed when the appender instance is
+   * closed.
    * 
-   * @param writer
-   *          An already opened Writer.
+   * @param outputStream
+   *          An already opened OutputStream.
    */
-  public void setWriter(OutputStream outputStream) {
+  public void setOutputStream(OutputStream outputStream) {
     synchronized (lock) {
-      // close any previously opened writer
-      closeWriter();
+      // close any previously opened output stream
+      closeOutputStream();
 
       this.outputStream = outputStream;
       if (encoder == null) {
-        addWarn("Encoder not yet set. Cannot invoke init method ");
+        addWarn("Encoder not yet set. Cannot invoke it's init method");
         return;
       }
 

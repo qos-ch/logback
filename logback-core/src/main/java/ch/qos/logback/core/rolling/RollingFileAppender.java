@@ -105,7 +105,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       //
       // make sure to close the hereto active log file! Renaming under windows
       // does not work for open files.
-      this.closeWriter();
+      this.closeOutputStream();
 
       try {
         rollingPolicy.rollover();

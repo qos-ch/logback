@@ -11,15 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran.spi;
+package ch.qos.logback.classic.encoder;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { PatternTest.class, SimpleRuleStoreTest.class,
-    NoAutoStartUtilTest.class,
-    DefaultNestedComponentRegistryTest.class, CaseCombinatorTest.class })
+@SuiteClasses(PatternLayoutEncoderTest.class)
 public class PackageTest {
 }

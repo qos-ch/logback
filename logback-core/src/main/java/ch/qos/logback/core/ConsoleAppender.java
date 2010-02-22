@@ -74,9 +74,9 @@ public class ConsoleAppender<E> extends WriterAppender<E> {
 
     public void start() {
       if (target.equals(SYSTEM_OUT)) {
-        setWriter(System.out);
+        setOutputStream(System.out);
       } else {
-        setWriter(System.err);
+        setOutputStream(System.err);
       }
       super.start();
     }

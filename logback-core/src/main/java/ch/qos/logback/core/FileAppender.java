@@ -199,7 +199,7 @@ public class FileAppender<E> extends WriterAppender<E> {
       // if (bufferedIO) {
       // w = new BufferedWriter(w, bufferSize);
       // }
-      setWriter(resilientFos);
+      setOutputStream(resilientFos);
     }
   }
 

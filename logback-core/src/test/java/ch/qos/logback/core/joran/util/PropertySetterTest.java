@@ -11,33 +11,43 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran.spi;
+package ch.qos.logback.core.joran.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
-import ch.qos.logback.core.util.Duration;
-import ch.qos.logback.core.util.FileSize;
 
 public class PropertySetterTest {
 
   DefaultNestedComponentRegistry defaultComponentRegistry = new DefaultNestedComponentRegistry();
 
+  Context context = new ContextBase();
+  House house = new House();
+  PropertySetter setter = new PropertySetter(house);
+ 
+  
+  @Before
+  public void setUp() {
+    setter.setContext(context);
+  }
+  
   @Test
   public void testCanAggregateComponent() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     assertEquals(AggregationType.AS_COMPLEX_PROPERTY, setter
         .computeAggregationType("door"));
 
@@ -103,9 +113,6 @@ public class PropertySetterTest {
 
   @Test
   public void testSetCamelProperty() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
-
     setter.setProperty("camelCase", "trot");
     assertEquals("trot", house.getCamelCase());
 
@@ -115,17 +122,13 @@ public class PropertySetterTest {
 
   @Test
   public void testSetComplexProperty() {
-    House house = new House();
     Door door = new Door();
-    PropertySetter setter = new PropertySetter(house);
     setter.setComplexProperty("door", door);
     assertEquals(door, house.getDoor());
   }
 
   @Test
   public void testgetClassNameViaImplicitRules() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     Class compClass = setter.getClassNameViaImplicitRules("door",
         AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
     assertEquals(Door.class, compClass);
@@ -133,8 +136,6 @@ public class PropertySetterTest {
 
   @Test
   public void testgetComplexPropertyColleClassNameViaImplicitRules() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     Class compClass = setter.getClassNameViaImplicitRules("window",
         AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
         defaultComponentRegistry);
@@ -143,10 +144,6 @@ public class PropertySetterTest {
 
   @Test
   public void testPropertyCollection() {
-    House house = new House();
-    Context context = new ContextBase();
-    PropertySetter setter = new PropertySetter(house);
-    setter.setContext(context);
     setter.addBasicProperty("adjective", "nice");
     setter.addBasicProperty("adjective", "big");
 
@@ -157,8 +154,6 @@ public class PropertySetterTest {
 
   @Test
   public void testComplexCollection() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     Window w1 = new Window();
     w1.handle = 10;
     Window w2 = new Window();
@@ -173,25 +168,19 @@ public class PropertySetterTest {
 
   @Test
   public void testSetComplexWithCamelCaseName() {
-    House house = new House();
     SwimmingPool pool = new SwimmingPoolImpl();
-    PropertySetter setter = new PropertySetter(house);
     setter.setComplexProperty("swimmingPool", pool);
     assertEquals(pool, house.getSwimmingPool());
   }
 
   @Test
   public void testDuration() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     setter.setProperty("duration", "1.4 seconds");
     assertEquals(1400, house.getDuration().getMilliseconds());
   }
 
   @Test
   public void testFileSize() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     setter.setProperty("fs", "2 kb");
     assertEquals(2 * 1024, house.getFs().getSize());
   }
@@ -199,24 +188,18 @@ public class PropertySetterTest {
   @Test
   public void testFilterReply() {
     // test case reproducing bug #52
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     setter.setProperty("filterReply", "ACCEPT");
     assertEquals(FilterReply.ACCEPT, house.getFilterReply());
   }
 
   @Test
   public void testEnum() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     setter.setProperty("houseColor", "BLUE");
     assertEquals(HouseColor.BLUE, house.getHouseColor());
   }
 
   @Test
   public void testDefaultClassAnnonation() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     Method relevantMethod = setter.getRelevantMethod("SwimmingPool",
         AggregationType.AS_COMPLEX_PROPERTY);
     assertNotNull(relevantMethod);
@@ -232,8 +215,6 @@ public class PropertySetterTest {
   
   @Test
   public void testDefaultClassAnnotationForLists() {
-    House house = new House();
-    PropertySetter setter = new PropertySetter(house);
     Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool",
         AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
     assertNotNull(relevantMethod);
@@ -245,145 +226,19 @@ public class PropertySetterTest {
         "LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
         defaultComponentRegistry);
     assertEquals(LargeSwimmingPoolImpl.class, classViaImplicitRules);
+  }
+  
+  @Test
+  public void charset() {
+    setter.setProperty("charset", "UTF-8");
+    assertEquals(Charset.forName("UTF-8"), house.getCharset());
     
+    house.setCharset(null);
+    setter.setProperty("charset", "UTF");
+    assertNull(house.getCharset());
+
+    StatusChecker checker = new StatusChecker(context);
+    checker.containsException(UnsupportedCharsetException.class);
   }
 }
 
-class House {
-  Door mainDoor;
-  int count;
-  boolean open;
-  String name;
-  String camelCase;
-  SwimmingPool pool;
-  Duration duration;
-  FileSize fs;
-  HouseColor houseColor;
-  FilterReply reply;
-
-  List<String> adjectiveList = new ArrayList<String>();
-  List<Window> windowList = new ArrayList<Window>();
-  List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
-
-  public String getCamelCase() {
-    return camelCase;
-  }
-
-  public void setCamelCase(String camelCase) {
-    this.camelCase = camelCase;
-  }
-
-  public int getCount() {
-    return count;
-  }
-
-  public void setCount(int c) {
-    this.count = c;
-  }
-
-  public Door getDoor() {
-    return mainDoor;
-  }
-
-  public void setDoor(Door door) {
-    this.mainDoor = door;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public boolean isOpen() {
-    return open;
-  }
-
-  public void setOpen(boolean open) {
-    this.open = open;
-  }
-
-  @DefaultClass(LargeSwimmingPoolImpl.class)
-  public void addLargeSwimmingPool(SwimmingPool pool) {
-    this.pool = pool;
-  }
-
-  @DefaultClass(SwimmingPoolImpl.class)
-  public void setSwimmingPool(SwimmingPool pool) {
-    this.pool = pool;
-  }
-
-  public SwimmingPool getSwimmingPool() {
-    return pool;
-  }
-
-  public void addWindow(Window w) {
-    windowList.add(w);
-  }
-
-  public void addAdjective(String s) {
-    adjectiveList.add(s);
-  }
-
-  public Duration getDuration() {
-    return duration;
-  }
-
-  public void setDuration(Duration duration) {
-    this.duration = duration;
-  }
-
-  public FileSize getFs() {
-    return fs;
-  }
-
-  public void setFs(FileSize fs) {
-    this.fs = fs;
-  }
-
-  public void setHouseColor(HouseColor color) {
-    this.houseColor = color;
-  }
-
-  public HouseColor getHouseColor() {
-    return houseColor;
-  }
-
-  public void setFilterReply(FilterReply reply) {
-    this.reply = reply;
-  }
-
-  public FilterReply getFilterReply() {
-    return reply;
-  }
-
-}
-
-class Door {
-  int handle;
-}
-
-class Window {
-  int handle;
-}
-
-interface SwimmingPool {
-}
-
-class SwimmingPoolImpl implements SwimmingPool {
-  int length;
-  int width;
-  int depth;
-}
-
-class LargeSwimmingPoolImpl implements SwimmingPool {
-  int length;
-  int width;
-  int depth;
-}
-
-enum HouseColor {
-  WHITE, BLUE
-}

@@ -22,7 +22,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.PropertySetter;
+import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**

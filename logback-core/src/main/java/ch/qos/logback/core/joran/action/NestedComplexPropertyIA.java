@@ -20,7 +20,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.joran.spi.PropertySetter;
+import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.AggregationType;

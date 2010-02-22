@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation.
  */
 // Contributors:  Georg Lundesgaard
-package ch.qos.logback.core.joran.spi;
+package ch.qos.logback.core.joran.util;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -21,10 +21,10 @@ import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
 
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.action.IADataForComplexProperty;
+import ch.qos.logback.core.joran.spi.DefaultClass;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.PropertySetterException;
@@ -35,7 +35,8 @@ import ch.qos.logback.core.util.PropertySetterException;
  * the Object specified in the constructor. This class relies on the JavaBeans
  * {@link Introspector} to analyze the given Object Class using reflection.
  * 
- * <p> Usage:
+ * <p>
+ * Usage:
  * 
  * <pre>
  * PropertySetter ps = new PropertySetter(anObject);
@@ -52,7 +53,6 @@ import ch.qos.logback.core.util.PropertySetterException;
  * @author Ceki Gulcu
  */
 public class PropertySetter extends ContextAwareBase {
-  private static final Class[] STING_CLASS_PARAMETER = new Class[] { String.class };
 
   protected Object obj;
   protected Class objClass;
@@ -64,7 +64,7 @@ public class PropertySetter extends ContextAwareBase {
    * preparation for invoking {@link #setProperty} one or more times.
    * 
    * @param obj
-   *                the object for which to set properties
+   *          the object for which to set properties
    */
   public PropertySetter(Object obj) {
     this.obj = obj;
@@ -94,15 +94,16 @@ public class PropertySetter extends ContextAwareBase {
    * setter argument type and partly from the value specified in the call to
    * this method.
    * 
-   * <p> If the setter expects a String no conversion is necessary. If it
-   * expects an int, then an attempt is made to convert 'value' to an int using
-   * new Integer(value). If the setter expects a boolean, the conversion is by
-   * new Boolean(value).
+   * <p>
+   * If the setter expects a String no conversion is necessary. If it expects an
+   * int, then an attempt is made to convert 'value' to an int using new
+   * Integer(value). If the setter expects a boolean, the conversion is by new
+   * Boolean(value).
    * 
    * @param name
-   *                name of the property
+   *          name of the property
    * @param value
-   *                String value of the property
+   *          String value of the property
    */
   public void setProperty(String name, String value) {
     if (value == null) {
@@ -129,12 +130,12 @@ public class PropertySetter extends ContextAwareBase {
    * Set the named property given a {@link PropertyDescriptor}.
    * 
    * @param prop
-   *                A PropertyDescriptor describing the characteristics of the
-   *                property to set.
+   *          A PropertyDescriptor describing the characteristics of the
+   *          property to set.
    * @param name
-   *                The named of the property to set.
+   *          The named of the property to set.
    * @param value
-   *                The value of the property.
+   *          The value of the property.
    */
   public void setProperty(PropertyDescriptor prop, String name, String value)
       throws PropertySetterException {
@@ -154,7 +155,7 @@ public class PropertySetter extends ContextAwareBase {
     Object arg;
 
     try {
-      arg = convertArg(value, paramTypes[0]);
+      arg = StringToObjectConverter.convertArg(this, value, paramTypes[0]);
     } catch (Throwable t) {
       throw new PropertySetterException("Conversion to type [" + paramTypes[0]
           + "] failed. ", t);
@@ -230,54 +231,19 @@ public class PropertySetter extends ContextAwareBase {
     Class<?> parameterClass = getParameterClassForMethod(method);
     if (parameterClass == null) {
       return AggregationType.NOT_FOUND;
-    } else {
-      Package p = parameterClass.getPackage();
-      if (parameterClass.isPrimitive()) {
-        return AggregationType.AS_BASIC_PROPERTY;
-      } else if (p != null && "java.lang".equals(p.getName())) {
-        return AggregationType.AS_BASIC_PROPERTY;
-      } else if (isBuildableFromString(parameterClass)) {
-        return AggregationType.AS_BASIC_PROPERTY;
-      } else if (parameterClass.isEnum()) {
-        return AggregationType.AS_BASIC_PROPERTY;
-      } else {
-        return AggregationType.AS_COMPLEX_PROPERTY;
-      }
     }
-  }
-
-  public Class findUnequivocallyInstantiableClass(
-      IADataForComplexProperty actionData) {
-    Class<?> clazz;
-    AggregationType at = actionData.getAggregationType();
-    switch (at) {
-    case AS_COMPLEX_PROPERTY:
-      Method setterMethod = findSetterMethod(actionData
-          .getComplexPropertyName());
-      clazz = getParameterClassForMethod(setterMethod);
-      if (clazz != null && isUnequivocallyInstantiable(clazz)) {
-        return clazz;
-      } else {
-        return null;
-      }
-    case AS_COMPLEX_PROPERTY_COLLECTION:
-      Method adderMethod = findAdderMethod(actionData.getComplexPropertyName());
-      clazz = getParameterClassForMethod(adderMethod);
-      if (clazz != null && isUnequivocallyInstantiable(clazz)) {
-        return clazz;
-      } else {
-        return null;
-      }
-    default:
-      throw new IllegalArgumentException(at
-          + " is not valid type in this method");
+    if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
+      return AggregationType.AS_BASIC_PROPERTY;
+    } else {
+      return AggregationType.AS_COMPLEX_PROPERTY;
     }
   }
 
   /**
    * Can the given clazz instantiable with certainty?
    * 
-   * @param clazz The class to test for instantiability
+   * @param clazz
+   *          The class to test for instantiability
    * @return true if clazz can be instantiated, and false otherwise.
    */
   private boolean isUnequivocallyInstantiable(Class<?> clazz) {
@@ -353,7 +319,7 @@ public class PropertySetter extends ContextAwareBase {
 
     Object arg;
     try {
-      arg = convertArg(strValue, paramTypes[0]);
+      arg = StringToObjectConverter.convertArg(this, strValue, paramTypes[0]);
     } catch (Throwable t) {
       addError("Conversion to type [" + paramTypes[0] + "] failed. ", t);
       return;
@@ -424,77 +390,8 @@ public class PropertySetter extends ContextAwareBase {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
-  /**
-   * Convert <code>val</code> a String parameter to an object of a given type.
-   */
-  protected Object convertArg(String val, Class<?> type) {
-    if (val == null) {
-      return null;
-    }
-    String v = val.trim();
-    if (String.class.isAssignableFrom(type)) {
-      return v;
-    } else if (Integer.TYPE.isAssignableFrom(type)) {
-      return new Integer(v);
-    } else if (Long.TYPE.isAssignableFrom(type)) {
-      return new Long(v);
-    } else if (Float.TYPE.isAssignableFrom(type)) {
-      return new Float(v);
-    } else if (Double.TYPE.isAssignableFrom(type)) {
-      return new Double(v);
-    } else if (Boolean.TYPE.isAssignableFrom(type)) {
-      if ("true".equalsIgnoreCase(v)) {
-        return Boolean.TRUE;
-      } else if ("false".equalsIgnoreCase(v)) {
-        return Boolean.FALSE;
-      }
-    } else if (type.isEnum()) {
-      return convertEnum(v, type);
-    } else if (isBuildableFromString(type)) {
-      return buildFromString(type, v);
-    }
-
-    return null;
-  }
-
-  boolean isBuildableFromString(Class<?> parameterClass) {
-    try {
-      Method valueOfMethod = parameterClass.getMethod(CoreConstants.VALUE_OF,
-          STING_CLASS_PARAMETER);
-      int mod = valueOfMethod.getModifiers();
-      if (Modifier.isStatic(mod)) {
-        return true;
-      }
-    } catch (SecurityException e) {
-      // nop
-    } catch (NoSuchMethodException e) {
-      // nop
-    }
-    return false;
-  }
-
-  Object buildFromString(Class<?> type, String val) {
-    try {
-      Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF,
-          STING_CLASS_PARAMETER);
-      return valueOfMethod.invoke(null, val);
-    } catch (Exception e) {
-      addError("Failed to invoke " + CoreConstants.VALUE_OF
-          + "{} method in class [" + type.getName() + "] with value [" + val
-          + "]");
-      return null;
-    }
-  }
-
-  protected Object convertEnum(String val, Class<?> type) {
-    try {
-      Method m = type.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
-      return m.invoke(null, val);
-    } catch (Exception e) {
-      addError("Failed to convert value [" + val + "] to enum ["
-          + type.getName() + "]", e);
-    }
-    return null;
+  boolean isOfTypeCharset(Class<?> parameterClas) {
+    return Charset.class.isAssignableFrom(parameterClas);
   }
 
   protected Method getMethod(String methodName) {
@@ -566,14 +463,14 @@ public class PropertySetter extends ContextAwareBase {
   }
 
   Class getByConcreteType(String name, Method relevantMethod) {
-    
+
     Class<?> paramType = getParameterClassForMethod(relevantMethod);
     if (paramType == null) {
       return null;
     }
-    
+
     boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
-    if(isUnequivocallyInstantiable) {
+    if (isUnequivocallyInstantiable) {
       return paramType;
     } else {
       return null;
@@ -584,8 +481,9 @@ public class PropertySetter extends ContextAwareBase {
   public Class getClassNameViaImplicitRules(String name,
       AggregationType aggregationType, DefaultNestedComponentRegistry registry) {
 
-    Class registryResult = registry.findDefaultComponentType(obj.getClass(), name);
-    if(registryResult!= null) {
+    Class registryResult = registry.findDefaultComponentType(obj.getClass(),
+        name);
+    if (registryResult != null) {
       return registryResult;
     }
     // find the relevant method for the given property name and aggregationType

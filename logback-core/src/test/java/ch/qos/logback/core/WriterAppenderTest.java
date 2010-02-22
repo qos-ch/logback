@@ -101,7 +101,7 @@ public class WriterAppenderTest {
     encoder.setContext(context);
     
     wa.setEncoder(encoder);
-    wa.setWriter(baos);
+    wa.setOutputStream(baos);
     wa.start();
     
     wa.stop();
