@@ -3,9 +3,9 @@
   <contextName>myAppName</contextName>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <Pattern>%d %contextName [%t] %level %logger{36} - %msg%n</Pattern>
-    </layout>
+    </encoder>
   </appender>
 
   <root level="debug">

@@ -240,9 +240,11 @@ public class Foo {
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -331,9 +333,11 @@ public class Foo {
 &lt;configuration <b>debug="true"</b>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;layout>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -746,9 +750,11 @@ public class MyApp3 {
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   <b>&lt;logger name="chapters.configuration" level="INFO"/></b>
@@ -779,15 +785,15 @@ public class MyApp3 {
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>
+    &lt;encoder>
+      &lt;pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-     &lt;/Pattern>
-    &lt;/layout>
+     &lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  <b>&lt;logger name="chapters.configuration" level="INFO" />
-  &lt;logger name="chapters.configuration.Foo" level="DEBUG" /></b>
+  <b>&lt;logger name="chapters.configuration" level="INFO" /></b>
+  <b>&lt;logger name="chapters.configuration.Foo" level="DEBUG" /></b>
 
   &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
@@ -859,11 +865,11 @@ public class MyApp3 {
 
   &lt;appender name="STDOUT"
    class="ch.qos.logback.core.ConsoleAppender">
-   &lt;layout class="ch.qos.logback.classic.PatternLayout">
-     &lt;Pattern>
+   &lt;encoder>
+     &lt;pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-      &lt;/Pattern>
-    &lt;/layout>
+      &lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   <b>&lt;logger name="chapters.configuration" level="INFO" /></b>
@@ -967,21 +973,20 @@ public class MyApp3 {
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;appender name="<b>STDOUT</b>"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+  &lt;appender name="<b>STDOUT</b>" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
-    <b>&lt;appender-ref ref="FILE" />
-    &lt;appender-ref ref="STDOUT" /></b>
+    <b>&lt;appender-ref ref="FILE" /></b>
+    <b>&lt;appender-ref ref="STDOUT" /></b>
   &lt;/root>
 &lt;/configuration></pre>
 
@@ -1015,9 +1020,9 @@ public class MyApp3 {
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;logger name="chapters.configuration">
@@ -1062,15 +1067,15 @@ public class MyApp3 {
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;logger name="chapters.configuration">
@@ -1102,15 +1107,15 @@ public class MyApp3 {
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>foo.log&lt;/file>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;logger name="chapters.configuration.Foo" <b>additivity="false"</b>>
@@ -1176,9 +1181,9 @@ public class MyApp3 {
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1204,9 +1209,9 @@ public class MyApp3 {
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1232,9 +1237,9 @@ public class MyApp3 {
   &lt;appender name="FILE"
      class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-       &lt;Pattern>%msg%n&lt;/Pattern>
-     &lt;/layout>
+     &lt;encoder>
+       &lt;pattern>%msg%n&lt;/pattern>
+     &lt;/encoder>
    &lt;/appender>
 
    &lt;root level="debug">
@@ -1264,9 +1269,9 @@ public class MyApp3 {
   &lt;appender name="FILE"
      class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-       &lt;Pattern>%msg%n&lt;/Pattern>
-     &lt;/layout>
+     &lt;encoder>
+       &lt;pattern>%msg%n&lt;/pattern>
+     &lt;/encoder>
    &lt;/appender>
 
    &lt;root level="debug">
@@ -1308,9 +1313,9 @@ fileName=myApp.log
   &lt;appender name="FILE"
     class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${destination}&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1363,9 +1368,9 @@ fileName=myApp.log
 
   <pre class="source"><b class="green big">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>"%d - %m%n"&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>"%d - %m%n"&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 <b class="green big">&lt;/included></b></pre>
 
@@ -1396,9 +1401,9 @@ fileName=myApp.log
   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1428,9 +1433,9 @@ fileName=myApp.log
   <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d %contextName %level %msg %logger{50}%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d %contextName %level %msg %logger{50}%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="DEBUG">

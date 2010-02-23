@@ -3,9 +3,11 @@
 <included>
 
   <appender name="includedConsole"  class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <!-- encoders are assigned by default the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    <encoder>
       <param name="Pattern" value="%d - %m%n" />
-    </layout>
+    </encoder>
   </appender>
 
 </included>

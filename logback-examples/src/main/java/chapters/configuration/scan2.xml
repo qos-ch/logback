@@ -3,9 +3,9 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    <layout>
-      <Pattern>%d [%thread] %-5level %logger{36} - %msg%n</Pattern>
-    </layout>
+    <encoder>
+      <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
   </appender>
   
   <root level="debug">
