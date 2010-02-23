@@ -78,8 +78,8 @@
 
     <p>Let us now begin experimenting with logback.</p>
 
-<em>Example 1.1: Basic template for logging (<a href="../xref/chapter1/HelloWorld1.html">logback-examples/src/main/java/chapter1/HelloWorld1.java</a>)</em>
-<pre class="prettyprint source">package chapter1;
+<em>Example 1.1: Basic template for logging (<a href="../xref/chapters/introduction/HelloWorld1.html">logback-examples/src/main/java/chapters/introduction/HelloWorld1.java</a>)</em>
+<pre class="prettyprint source">package chapters.introduction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,14 +88,14 @@ public class HelloWorld1 {
 
   public static void main(String[] args) {
 
-    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld1");
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld1");
     logger.debug("Hello world.");
 
   }
 }</pre>
 
     <p><code>HelloWorld</code> class is defined in the
-    <code>chapter1</code> package. It starts by importing the <a
+    <code>chapters.introduction</code> package. It starts by importing the <a
     href="http://slf4j.org/api/org/slf4j/Logger.html"><code>Logger</code></a>
     and <a
     href="http://slf4j.org/api/org/slf4j/LoggerFactory.html"><code>LoggerFactory</code></a>
@@ -108,7 +108,7 @@ public class HelloWorld1 {
     <code>logger</code> is assigned a <code>Logger</code> instance
     retrieved by invoking the static <code>getLogger</code> method
     from the <code>LoggerFactory</code> class.  This logger is named
-    "chapter1.HelloWorld1". The main method proceeds to call the
+    "chapters.introduction.HelloWorld1". The main method proceeds to call the
     <code>debug</code> method of this logger passing "Hello World" as
     an argument.  We say that the main method contains a logging
     statement of level DEBUG with the message "Hello world".
@@ -123,9 +123,9 @@ public class HelloWorld1 {
 
 
     <p>You can launch the first
-    sample application, <em>chapter1.HelloWorld1</em> with the command:
+    sample application, <em>chapters.introduction.HelloWorld1</em> with the command:
     </p>
-    <div class="source"><pre>java chapter1.HelloWorld1</pre></div>
+    <div class="source"><pre>java chapters.introduction.HelloWorld1</pre></div>
 
     <p>Launching the <code>HelloWorld1</code> application will output
     a single line on the console. By virtue of logback's default
@@ -134,7 +134,7 @@ public class HelloWorld1 {
     logger.
     </p>
 
-    <p class="source">20:49:07.962 [main] DEBUG chapter1.HelloWorld1 - Hello world.</p>
+    <p class="source">20:49:07.962 [main] DEBUG chapters.introduction.HelloWorld1 - Hello world.</p>
 
     <p>Logback can report information about its internal state using a
     built-in status system. Important events occuring during logback's
@@ -144,8 +144,8 @@ public class HelloWorld1 {
     <code>LoggerStatusPrinter</code> class.
     </p>
 
-<em>Example 1.2: Printing Logger Status (<a href="../xref/chapter1/HelloWorld2.html">logback-examples/src/main/java/chapter1/HelloWorld2.java</a>)</em>
-<pre class="prettyprint source">package chapter1;
+<em>Example 1.2: Printing Logger Status (<a href="../xref/chapters/introduction/HelloWorld2.html">logback-examples/src/main/java/chapters/introduction/HelloWorld2.java</a>)</em>
+<pre class="prettyprint source">package chapters.introduction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +155,7 @@ import ch.qos.logback.core.util.StatusPrinter;</b>
 public class HelloWorld2 {
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger("chapter1.HelloWorld2");
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld2");
     logger.debug("Hello world.");
 
     // print internal state
@@ -168,7 +168,7 @@ public class HelloWorld2 {
    <p>Running the <code>HelloWorld2</code> application will produce
    the following output:</p>
 
-<div class="source longline"><pre>12:49:22.203 [main] DEBUG chapter1.HelloWorld2 - Hello world.
+<div class="source longline"><pre>12:49:22.203 [main] DEBUG chapters.introduction.HelloWorld2 - Hello world.
 12:49:22,078 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
 12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.xml]
 12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Setting up default configuration.
@@ -253,7 +253,7 @@ public class HelloWorld2 {
   <p>Logback distributions contain complete source code such that you
   can modify parts of logback library and build your own version of
   it. You may even redistribute the modified version, as long as you
-  adhere to the conditions of the LGPL License. 
+  adhere to the conditions of the LGPL license or the EPL license.
   </p>
 
   <p>Logback has been built and tested with the follwing JDKs.</p>
@@ -283,6 +283,12 @@ public class HelloWorld2 {
       <td>IBM JDK 1.6.0.1</td>
       <td>Linux 64bit AMD</td>
     </tr>
+
+    <tr>
+      <td>Sun JDK 1.6.0.16 (64 bit)</td>
+      <td>Windows 7 (64 bit)</td>
+    </tr>
+
   </table>
 
 
