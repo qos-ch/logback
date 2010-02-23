@@ -81,7 +81,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     // prudent mode will force "file" property to be null
     rfa.setFile("some non null value");
     rfa.setAppend(false);
-    rfa.setImmediateFlush(false);
+    rfa.getEncoder().setImmediateFlush(false);
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
 
@@ -92,7 +92,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
     rfa.start();
 
-    assertTrue(rfa.getImmediateFlush());
+    assertTrue(rfa.getEncoder().getImmediateFlush());
     assertTrue(rfa.isAppend());
     assertFalse(rfa.isBufferedIO());
     assertNull(rfa.rawFileProperty());
@@ -103,7 +103,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   public void testPrudentModeLogicalImplicationsOnCompression() {
     rfa.setContext(context);
     rfa.setAppend(false);
-    rfa.setImmediateFlush(false);
+    rfa.getEncoder().setImmediateFlush(false);
     rfa.setBufferedIO(true);
     rfa.setPrudent(true);
 

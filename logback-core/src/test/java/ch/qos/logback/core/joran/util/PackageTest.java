@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { StringToObjectConverterTest.class, PropertySetterTest.class })
+@SuiteClasses( { PropertySetterTest.class })
 public class PackageTest {
 }

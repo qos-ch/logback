@@ -24,5 +24,7 @@ public interface Encoder<E> extends ContextAware, LifeCycle {
   void doEncode(E event) throws IOException;
   void init(OutputStream os) throws IOException;
   void close() throws IOException;
-  
+ 
+  public boolean getImmediateFlush();
+  public void setImmediateFlush(boolean value);
 }

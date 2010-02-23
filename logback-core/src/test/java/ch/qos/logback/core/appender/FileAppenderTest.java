@@ -106,12 +106,12 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     appender.setContext(context);
 
     appender.setAppend(false);
-    appender.setImmediateFlush(false);
+    appender.getEncoder().setImmediateFlush(false);
     appender.setBufferedIO(true);
     appender.setPrudent(true);
     appender.start();
 
-    assertTrue(appender.getImmediateFlush());
+    assertTrue(appender.getEncoder().getImmediateFlush());
     assertTrue(appender.isAppend());
     assertFalse(appender.isBufferedIO());
 

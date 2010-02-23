@@ -21,6 +21,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
    */
   private Charset charset;
 
+  
   public Layout<E> getLayout() {
     return layout;
   }

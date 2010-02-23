@@ -10,7 +10,8 @@ abstract public class EncoderBase<E> extends ContextAwareBase implements Encoder
   protected boolean started;
 
   protected OutputStream outputStream;
-
+  private boolean immediateFlush = true;
+  
   public void init(OutputStream os) throws IOException {
     this.outputStream = os;
   }
@@ -25,5 +26,17 @@ abstract public class EncoderBase<E> extends ContextAwareBase implements Encoder
 
   public void stop() {
     started = false;
+  }
+  
+  
+  /**
+   * Returns value of the <b>ImmediateFlush</b> option.
+   */
+  public boolean getImmediateFlush() {
+    return immediateFlush;
+  }
+
+  public void setImmediateFlush(boolean value) {
+    immediateFlush = value;
   }
 }

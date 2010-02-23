@@ -69,7 +69,7 @@ public class SafeModeRollingFileAppender {
     rfa.setEncoder(patternLayout);
     
     rfa.setAppend(true);
-    rfa.setImmediateFlush(true);
+    rfa.getEncoder().setImmediateFlush(true);
     rfa.setBufferedIO(false);
     rfa.setPrudent(safetyMode);
     rfa.setContext(loggerContext);

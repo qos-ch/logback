@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.util.FileUtil;
 
@@ -55,7 +56,6 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   private boolean prudent = false;
 
-  
   /**
    * As in most cases, the default constructor does nothing.
    */
@@ -120,8 +120,9 @@ public class FileAppender<E> extends WriterAppender<E> {
           setAppend(true);
           addWarn("Setting \"Append\" property to true on account of \"Prudent\" mode");
         }
-        if (getImmediateFlush() == false) {
-          setImmediateFlush(true);
+        Encoder encoder = getEncoder();
+        if (encoder.getImmediateFlush() == false) {
+          encoder.setImmediateFlush(true);
           addWarn("Setting \"ImmediateFlush\" to true on account of \"Prudent\" mode");
         }
 
@@ -129,15 +130,6 @@ public class FileAppender<E> extends WriterAppender<E> {
           setBufferedIO(false);
           addWarn("Setting \"BufferedIO\" property to false on account of \"Prudent\" mode");
         }
-      }
-
-      // In case both bufferedIO and immediateFlush are set, the former
-      // takes priority because 'immediateFlush' is set to true by default.
-      // If the user explicitly set bufferedIO, then we should follow her
-      // directives.
-      if (bufferedIO) {
-        setImmediateFlush(false);
-        addInfo("Setting \"ImmediateFlush\" property to false on account of \"bufferedIO\" property");
       }
 
       try {
@@ -189,12 +181,12 @@ public class FileAppender<E> extends WriterAppender<E> {
         }
       }
 
-      ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(file, append);
-      
-      
-      //FileOutputStream fileOutputStream = new FileOutputStream(file_name,
-       //   append);
-      
+      ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(
+          file, append);
+
+      // FileOutputStream fileOutputStream = new FileOutputStream(file_name,
+      // append);
+
       // Writer w = createWriter(fileOutputStream);
       // if (bufferedIO) {
       // w = new BufferedWriter(w, bufferSize);
@@ -245,7 +237,7 @@ public class FileAppender<E> extends WriterAppender<E> {
   final private void safeWrite(E event) throws IOException {
     ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) getOutputStream();
     FileChannel fileChannel = resilientFOS.getChannel();
-    if(fileChannel == null) {
+    if (fileChannel == null) {
       return;
     }
     FileLock fileLock = null;

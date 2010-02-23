@@ -35,7 +35,7 @@ public class ExitWoes1 {
 
     OutputStream os = new FileOutputStream("exitWoes1.log");
     writerAppender.setOutputStream(os);
-    writerAppender.setImmediateFlush(false);
+    writerAppender.getEncoder().setImmediateFlush(false);
     writerAppender.start();
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.addAppender(writerAppender);

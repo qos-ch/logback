@@ -12,6 +12,7 @@ import ch.qos.logback.core.util.FileSize;
 public class House {
   Door mainDoor;
   int count;
+  Double temperature;
   boolean open;
   String name;
   String camelCase;
@@ -20,7 +21,8 @@ public class House {
   FileSize fs;
   HouseColor houseColor;
   FilterReply reply;
-
+  
+  
   Charset charset;
 
   List<String> adjectiveList = new ArrayList<String>();
@@ -41,6 +43,15 @@ public class House {
 
   public void setCount(int c) {
     this.count = c;
+  }
+
+  
+  public Double getTemperature() {
+    return temperature;
+  }
+
+  public void setTemperature(Double temperature) {
+    this.temperature = temperature;
   }
 
   public Door getDoor() {

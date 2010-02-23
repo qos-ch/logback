@@ -58,7 +58,7 @@ public class IO extends Thread {
 
     fa.setFile(getName() + ".log");
     fa.setAppend(false);
-    fa.setImmediateFlush(immediateFlush);
+    fa.getEncoder().setImmediateFlush(immediateFlush);
     fa.setBufferedIO(buffered);
     fa.setContext(context);
     fa.start();
@@ -170,6 +170,9 @@ class Counter extends Thread {
     long before = System.nanoTime();
 
     while (!interrupted) {
+      if(counter % 1000 == 0) {
+          Thread.yield();
+      }
       counter += 1.0;
     }
 

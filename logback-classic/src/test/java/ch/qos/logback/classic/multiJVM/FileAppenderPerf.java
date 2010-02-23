@@ -41,7 +41,7 @@ public class FileAppenderPerf {
     fa.setEncoder(patternLayout);
     fa.setFile(filename);
     fa.setAppend(false);
-    fa.setImmediateFlush(true);
+    fa.getEncoder().setImmediateFlush(true);
     fa.setBufferedIO(false);
     fa.setPrudent(safetyMode);
     fa.setContext(loggerContext);

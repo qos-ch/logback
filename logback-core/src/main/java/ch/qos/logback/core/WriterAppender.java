@@ -42,19 +42,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    */
   protected Object lock = new Object();
 
-  /**
-   * Immediate flush means that the underlying writer or output stream will be
-   * flushed at the end of each append operation. Immediate flush is slower but
-   * ensures that each append request is actually written. If
-   * <code>immediateFlush</code> is set to <code>false</code>, then there is a
-   * good chance that the last few logs events are not actually written to
-   * persistent media if and when the application crashes.
-   * 
-   * <p>
-   * The <code>immediateFlush</code> variable is set to <code>true</code> by
-   * default.
-   */
-  private boolean immediateFlush = true;
 
   /**
    * This is the {@link OutputStream outputStream} where output will be written.
@@ -67,22 +54,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   public WriterAppender() {
   }
 
-  /**
-   * If the <b>ImmediateFlush</b> option is set to <code>true</code>, the
-   * appender will flush at the end of each write. This is the default behavior.
-   * If the option is set to <code>false</code>, then the underlying stream can
-   * defer writing to physical medium to a later time.
-   * <p>
-   * Avoiding the flush operation at the end of each append results in a
-   * performance gain of 10 to 20 percent. However, there is safety tradeoff
-   * involved in skipping flushing. Indeed, when flushing is skipped, then it is
-   * likely that the last few log events will not be recorded on disk when the
-   * application exits. This is a high price to pay even for a 20% performance
-   * gain.
-   */
-  public void setImmediateFlush(boolean value) {
-    immediateFlush = value;
-  }
 
   /**
    * The underlying output stream used by this appender.
@@ -91,13 +62,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    */
   public OutputStream getOutputStream() {
     return outputStream;
-  }
-
-  /**
-   * Returns value of the <b>ImmediateFlush</b> option.
-   */
-  public boolean getImmediateFlush() {
-    return immediateFlush;
   }
 
   /**
