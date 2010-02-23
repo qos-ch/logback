@@ -58,8 +58,6 @@ public class IO extends Thread {
 
     fa.setFile(getName() + ".log");
     fa.setAppend(false);
-    fa.getEncoder().setImmediateFlush(immediateFlush);
-    fa.setBufferedIO(buffered);
     fa.setContext(context);
     fa.start();
     

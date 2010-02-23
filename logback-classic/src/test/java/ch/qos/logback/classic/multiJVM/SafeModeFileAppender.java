@@ -66,8 +66,6 @@ public class SafeModeFileAppender {
     fa.setEncoder(patternLayout);
     fa.setFile(filename);
     fa.setAppend(true);
-    fa.getEncoder().setImmediateFlush(true);
-    fa.setBufferedIO(false);
     fa.setPrudent(safetyMode);
     fa.setContext(loggerContext);
     fa.start();

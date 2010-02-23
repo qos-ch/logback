@@ -11,17 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.encoder;
+package ch.qos.logback.core.recovery;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import ch.qos.logback.core.spi.ContextAware;
-import ch.qos.logback.core.spi.LifeCycle;
-
-public interface Encoder<E> extends ContextAware, LifeCycle {
-  
-  void doEncode(E event) throws IOException;
-  void init(OutputStream os) throws IOException;
-  void close() throws IOException;
+@RunWith(Suite.class)
+@SuiteClasses({RecoveryCoordinatorTest.class})
+public class PackageTest  {
 }

@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
-import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.util.FileUtil;
 
@@ -43,11 +42,6 @@ public class FileAppender<E> extends WriterAppender<E> {
    * The name of the active log file.
    */
   protected String fileName = null;
-
-  /**
-   * Do we do bufferedIO?
-   */
-  protected boolean bufferedIO = false;
 
   /**
    * The size of the IO buffer. Default is 8K.
@@ -120,16 +114,6 @@ public class FileAppender<E> extends WriterAppender<E> {
           setAppend(true);
           addWarn("Setting \"Append\" property to true on account of \"Prudent\" mode");
         }
-        Encoder encoder = getEncoder();
-        if (encoder.getImmediateFlush() == false) {
-          encoder.setImmediateFlush(true);
-          addWarn("Setting \"ImmediateFlush\" to true on account of \"Prudent\" mode");
-        }
-
-        if (bufferedIO == true) {
-          setBufferedIO(false);
-          addWarn("Setting \"BufferedIO\" property to false on account of \"Prudent\" mode");
-        }
       }
 
       try {
@@ -184,24 +168,11 @@ public class FileAppender<E> extends WriterAppender<E> {
       ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(
           file, append);
 
-      // FileOutputStream fileOutputStream = new FileOutputStream(file_name,
-      // append);
-
-      // Writer w = createWriter(fileOutputStream);
-      // if (bufferedIO) {
-      // w = new BufferedWriter(w, bufferSize);
-      // }
       setOutputStream(resilientFos);
     }
   }
 
-  public boolean isBufferedIO() {
-    return bufferedIO;
-  }
 
-  public void setBufferedIO(boolean bufferedIO) {
-    this.bufferedIO = bufferedIO;
-  }
 
   public int getBufferSize() {
     return bufferSize;

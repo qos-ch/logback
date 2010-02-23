@@ -33,6 +33,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -106,20 +107,17 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     appender.setContext(context);
 
     appender.setAppend(false);
-    appender.getEncoder().setImmediateFlush(false);
-    appender.setBufferedIO(true);
     appender.setPrudent(true);
     appender.start();
 
-    assertTrue(appender.getEncoder().getImmediateFlush());
     assertTrue(appender.isAppend());
-    assertFalse(appender.isBufferedIO());
 
     StatusManager sm = context.getStatusManager();
+    StatusPrinter.print(context);
     assertEquals(Status.WARN, sm.getLevel());
     List<Status> statusList = sm.getCopyOfStatusList();
-    assertTrue("Expecting status list size to be larger than 3, but was "
-        + statusList.size(), statusList.size() > 3);
+    assertTrue("Expecting status list size to be 2 or larger, but was "
+        + statusList.size(), statusList.size() >= 2);
     String msg1 = statusList.get(1).getMessage();
 
     assertTrue("Got message [" + msg1 + "]", msg1
