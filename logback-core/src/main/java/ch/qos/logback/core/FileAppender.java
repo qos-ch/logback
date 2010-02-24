@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.FileUtil;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class FileAppender<E> extends WriterAppender<E> {
+public class FileAppender<E> extends OutputStreamAppender<E> {
 
   /**
    * Append to or truncate the file? The default value for this variable is
@@ -42,11 +42,6 @@ public class FileAppender<E> extends WriterAppender<E> {
    * The name of the active log file.
    */
   protected String fileName = null;
-
-  /**
-   * The size of the IO buffer. Default is 8K.
-   */
-  protected int bufferSize = 8 * 1024;
 
   private boolean prudent = false;
 
@@ -170,16 +165,6 @@ public class FileAppender<E> extends WriterAppender<E> {
 
       setOutputStream(resilientFos);
     }
-  }
-
-
-
-  public int getBufferSize() {
-    return bufferSize;
-  }
-
-  public void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
   }
 
   /**

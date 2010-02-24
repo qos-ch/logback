@@ -57,10 +57,8 @@ import ch.qos.logback.core.spi.LifeCycle;
 public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachable {
 
   public String getName();
-  <b>void doAppend(E event);</b>
-  public void setLayout(Layout&lt;E> layout);
-  public Layout&lt;E> getLayout();
   public void setName(String name);
+  <b>void doAppend(E event);</b>
   
 }</pre>
 
@@ -88,16 +86,16 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
 	<p>Appenders are ultimately responsible for outputting logging
 	events.  However, they may delegate the actual formatting of the
-	event to a <code>Layout</code> object.  Each layout is associated
-	with one and only one appender, referred to as the owning
-	appender. Some appenders have a built-in or fixed event
-	format. Consequently, they do not require nor have a layout. For
-	example, the <code>SocketAppender</code> simply serializes logging
-	events before transmitting them over the wire.
+	event to a <code>Layout</code> or to an <code>Encoder</code> object.
+	Each layout/encoder is associated with one and only one appender,
+	referred to as the owning appender. Some appenders have a built-in
+	or fixed event format. Consequently, they do not require nor have a
+	layout/encoder. For example, the <code>SocketAppender</code> simply
+	serializes logging events before transmitting them over the wire.
 	</p>
 	
-	<a name="AppenderBase"></a>
-	<h2>AppenderBase</h2>
+	
+	<h2><a name="AppenderBase">AppenderBase</a></h2>
 	
 	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
 	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
@@ -150,7 +148,17 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<code>doAppend()</code> method, ensuring <em>T</em>'s exclusive
 	access to the appender.
 	</p>
-	
+
+  <p>Since such syncronization is not always appropriate, logback
+  ships with <a
+  href="../xref/ch/qos/logback/core/UnsynchronizedAppenderBase.html"><code>ch.qos.logback.core.UnsynchronizedAppenderBase</code></a>
+  which is very similar to the <a
+  href="../xref/ch/qos/logback/core/AppenderBase.html"><code>AppenderBase</code></a>
+  class. For the sake of conciseness, we want to be discussing
+  <code>UnsynchronizedAppenderBase</code> in the remainder of this document.
+  </p>
+
+
   <p>The first thing the <code>doAppend()</code> method does is to
   check whether the guard is set to true. If it is, it immediately
   exits. If the guard is not set, it is set to true at the next
@@ -158,7 +166,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   will not recursively call itself. Just imagine that a component,
   called somewhere beyond the <code>append()</code> method, wants to
   log something. Its call could be directed to the very same appender
-  that just called it.
+  that just called it resulting in an infinite loop and a stack
+  overflow.
 	</p>
 	
 	<p>In the following statement we check whether the
@@ -223,20 +232,21 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 	
 	<h3>
-    <a name="WriterAppender" href="#WriterAppender">WriterAppender</a>
+    <a name="OutputStreamAppender" href="#OutputStreamAppender">OutputStreamAppender</a>
   </h3>
 	
 	<p><a
-	href="../xref/ch/qos/logback/core/WriterAppender.html"><code>WriterAppender</code></a>
-	appends events to a <code>java.io.Writer</code>.  This class
+	href="../xref/ch/qos/logback/core/OutputStreamAppender.html"><code>OutputStreamAppender</code></a>
+	appends events to a <code>java.io.OutputStream</code>.  This class
 	provides basic services that other appenders build upon.  Users do
-	not usually instantiate <code>WriterAppender</code> objects
-	directly.  Since <code>java.io.Writer</code> type cannot be mapped
-	to a string, as there is no way to specify the target
-	<code>Writer</code> object in a configuration script.  Simply put,
-	you cannot configure a <code>WriterAppender</code> from a script.
-	However, this does not mean that <code>WriterAppender</code> lacks
-	configurable properties.  These properties are described next.
+	not usually instantiate <code>OutputStreamAppender</code> objects
+	directly.  Since in general the <code>java.io.OutputStream</code>
+	type cannot be conveninetly mapped to a string, as there is no way
+	to specify the target <code>OutputStream</code> object in a
+	configuration script.  Simply put, you cannot configure a
+	<code>OutputStreamAppender</code> from a configuration file.
+	However, this does not mean that <code>OutputStreamAppender</code>
+	lacks configurable properties.  These properties are described next.
 	</p>
 	
   <table class="bodyTable">
@@ -247,90 +257,18 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     </tr>
     
     <tr class="a">
-      <td><b><span class="option">Encoding</span></b></td>
+      <td><b><span class="option">Encoder</span></b></td>
       <td><code>String</code></td>
       
-      <td>The encoding specifies the method of conversion between
-      Java's internal 16-bit Unicode representation of characters into
-      raw 8-bit bytes. This appender will use the local platform's
-      default encoding unless you say otherwise by specifying an <span
-      class="option">Encoding</span> value.  According to the
-      <code>java.lang</code> package documentation, acceptable values
-      are dependent on the VM implementation although all
-      implementations are required to support at least the following
-      encodings: <em>US-ASCII</em>, <em>ISO-8859-1</em>,
-      <em>UTF-8</em>, <em>UTF-16BE</em>, <em>UTF-16LE</em> and
-      <em>UTF-16</em>.  As mentioned previously, by default, the <span
-      class="option">Encoding</span> option is <code>null</code> such
-      that the platform's default encoding is used.
+      <td>Determines the manner in which an event is written to the
+      underlying <code>OutputStreamAppender</code>. Encoders are
+      described in a <a href="encoders.html">dictated chapter</a>.
 			</td>
 		</tr>
-		<tr class="b">
-			<td><b><span class="option">ImmediateFlush</span></b></td>
-			<td><code>boolean</code></td>
-
-			<td>If the <span class="option">ImmediateFlush</span> option is
-			set to true, then each write of a logging event will be followed
-			by a flush operation on the underlying <code>Writer</code>
-			object. Conversely, if the option is set to false, each write
-			will not be followed by a flush.  In general, skipping the flush
-			operation improves logging throughput by roughly 15%.  The
-			downside is that if the application exits abruptly, the
-			unwritten characters buffered inside the <code>Writer</code>
-			might be lost.  This can be particularly troublesome as those
-			unwritten characters may contain crucial information needed in
-			identifying the reasons behind a crash.  By default, the <span
-			class="option">ImmediateFlush</span> option is set to true.
-				</td>
-
-		</tr>
+	
 	</table>
-	
-	<p>In general, if you disable immediate flushing, then make sure to
-	flush any output streams when your application exits. Otherwise, log
-	messages will be lost as illustrated by the next example.
-	</p>
-	
-	<em>Example 4.<span class="autoEx"/>: Exiting an application without flushing (<a href="../xref/chapter4/ExitWoes1.html">logback-examples/src/main/java/chapter4/ExitWoes1.java</a>)</em>
-
-  <pre class="prettyprint source">package chapter4;
-
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
-
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.WriterAppender;
-import ch.qos.logback.core.layout.EchoLayout;
-
-public class ExitWoes1 {
-
-  public static void main(String[] args) throws Exception {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    lc.reset(); // we want to override the default-config.
-    WriterAppender&lt;ILoggingEvent> writerAppender = new WriterAppender&lt;ILoggingEvent>();
-    writerAppender.setContext(lc);
-    writerAppender.setLayout(new EchoLayout&lt;ILoggingEvent>());
-
-    OutputStream os = new FileOutputStream("exitWoes1.log");
-    writerAppender.setWriter(new OutputStreamWriter(os));
-    writerAppender.setImmediateFlush(false);
-    writerAppender.start();
-    Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-    root.addAppender(writerAppender);
-
-    Logger logger = lc.getLogger(ExitWoes1.class);
-
-    logger.debug("Hello world.");
-  }
-}</pre>
     
-	<p>This example creates a <code>WriterAppender</code> that uses an
+	<p>This example creates a <code>OutputStreamAppender</code> that uses an
 	<code>OutputStreamWriter</code> wrapping a
 	<code>FileOutputStream</code> as its underlying <code>Writer</code>
 	object, with immediate flushing disabled. It then proceeds to log a
@@ -348,18 +286,19 @@ public class ExitWoes1 {
 	uses this statement and outputs a logging request.
 	</p>
 	    
-	<p>The <code>WriterAppender</code> is the superclass of three other
+	<p>The <code>OutputStreamAppender</code> is the superclass of three other
 	appenders, namely <code>ConsoleAppender</code>,
 	<code>FileAppender</code> which in turn is the super class of
 	<code>RollingFileAppender</code>. The next figure illustrates the
-	class diagram for <code>WriterAppender</code> and its subclasses.
+	class diagram for <code>OutputStreamAppender</code> and its subclasses.
 	</p>
 	
-	<img src="images/chapter4/fileAppenderUML.png" alt="A UML diagram showing FileAppender"/>
+	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing FileAppender"/>
 	
 
 	<h3>	
-    <a name="ConsoleAppender" href="#ConsoleAppender">ConsoleAppender</a>
+    <a name="ConsoleAppender"
+    href="#ConsoleAppender">ConsoleAppender</a>
   </h3>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
@@ -383,12 +322,12 @@ public class ExitWoes1 {
 		<tr class="b">
 			<td><b><span class="option">Encoding</span></b></td>
 			<td><code>String</code></td>
-			<td>See <code>WriterAppender</code> properties.</td>
+			<td>See <code>OutputStreamAppender</code> properties.</td>
 		</tr>
 		<tr class="a">
 			<td><b><span class="option">ImmediateFlush</span></b></td>
 			<td><code>boolean</code></td>
-			<td>See <code>WriterAppender</code> properties.</td>
+			<td>See <code>OutputStreamAppender</code> properties.</td>
 		</tr>
 		<tr class="b">
 			<td><b><span class="option">Target</span></b></td>
@@ -434,7 +373,7 @@ public class ExitWoes1 {
 	
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
-   a subclass of <code>WriterAppender</code>, appends log events into
+   a subclass of <code>OutputStreamAppender</code>, appends log events into
    a file. The target file is specified by the <span
    class="option">File</span> option.  If the file already exists, it
    is either appended to, or truncated depending on the value of the
@@ -468,7 +407,7 @@ public class ExitWoes1 {
      <tr >
        <td><b><span class="option">Encoding</span></b></td>
        <td><code>String</code></td>
-       <td>See <code>WriterAppender</code> properties.</td>
+       <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>
      <tr class="alt">
        <td><b><span class="option">BufferedIO</span></b></td>
@@ -514,7 +453,7 @@ public class ExitWoes1 {
      <tr >
        <td><b><span class="option">ImmediateFlush</span></b></td>
        <td><code>boolean</code></td>
-       <td>See <code>WriterAppender</code> properties.</td>
+       <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>
 
      <tr class="alt">
@@ -712,7 +651,7 @@ public class ExitWoes1 {
      <tr class="a">
        <td><b><span class="option">Encoding</span></b></td>
        <td><code>String</code></td>
-       <td>See <code>WriterAppender</code> properties.</td>
+       <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>	
      <tr class="b">
        <td><b><span class="option">File</span></b></td>
@@ -722,7 +661,7 @@ public class ExitWoes1 {
      <tr class="a">
        <td><b><span class="option">ImmediateFlush</span></b></td>
        <td><code>boolean</code></td>
-       <td>See <code>WriterAppender</code> properties.</td>
+       <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>	
      <tr class="b">
        <td><b><span class="option">RollingPolicy</span></b></td>

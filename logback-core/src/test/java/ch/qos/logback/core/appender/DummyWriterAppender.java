@@ -15,10 +15,10 @@ package ch.qos.logback.core.appender;
 
 import java.io.OutputStream;
 
-import ch.qos.logback.core.WriterAppender;
+import ch.qos.logback.core.OutputStreamAppender;
 
 public class DummyWriterAppender<E> extends
-    WriterAppender<E> {
+    OutputStreamAppender<E> {
 
   DummyWriterAppender(OutputStream os) {
     this.setOutputStream(os);

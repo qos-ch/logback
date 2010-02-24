@@ -83,7 +83,7 @@ public class WriterAppenderTest {
   }
   
   public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter, String fileFooter) {
-    WriterAppender<Object> wa = new WriterAppender<Object>();
+    OutputStreamAppender<Object> wa = new OutputStreamAppender<Object>();
     wa.setContext(context);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
  

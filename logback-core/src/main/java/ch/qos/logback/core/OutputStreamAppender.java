@@ -21,15 +21,15 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * WriterAppender appends events to a hava.io.Writer. This class provides basic
- * services that other appenders build upon.
+ * OutputStreamAppender appends events to a {@link OutputStream}. This class
+ * provides basic services that other appenders build upon.
  * 
  * For more information about this appender, please refer to the online manual
- * at http://logback.qos.ch/manual/appenders.html#WriterAppender
+ * at http://logback.qos.ch/manual/appenders.html#OutputStreamAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
+public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   /**
    * It is the encoder which is ultimately responsible for writing the event to
@@ -42,7 +42,6 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
    */
   protected Object lock = new Object();
 
-
   /**
    * This is the {@link OutputStream outputStream} where output will be written.
    */
@@ -51,9 +50,8 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
   /**
    * The default constructor does nothing.
    */
-  public WriterAppender() {
+  public OutputStreamAppender() {
   }
-
 
   /**
    * The underlying output stream used by this appender.
@@ -122,7 +120,7 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
         this.outputStream = null;
       } catch (IOException e) {
         addStatus(new ErrorStatus(
-            "Could not close output stream for WriterAppener.", this, e));
+            "Could not close output stream for OutputStreamAppender.", this, e));
       }
     }
   }
@@ -133,8 +131,9 @@ public class WriterAppender<E> extends UnsynchronizedAppenderBase<E> {
         encoder.init(outputStream);
       } catch (IOException ioe) {
         this.started = false;
-        addStatus(new ErrorStatus("Failed to write footer for appender named ["
-            + name + "].", this, ioe));
+        addStatus(new ErrorStatus(
+            "Failed to initialize encoder for appender named [" + name + "].",
+            this, ioe));
       }
     }
   }

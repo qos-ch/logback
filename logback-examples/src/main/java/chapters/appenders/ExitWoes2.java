@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.WriterAppender;
+import ch.qos.logback.core.OutputStreamAppender;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -30,7 +30,7 @@ public class ExitWoes2 {
   public static void main(String[] args) throws Exception {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     lc.reset();//this is to cancel default-config.
-    WriterAppender<ILoggingEvent> writerAppender = new WriterAppender<ILoggingEvent>();
+    OutputStreamAppender<ILoggingEvent> writerAppender = new OutputStreamAppender<ILoggingEvent>();
     writerAppender.setContext(lc);
     writerAppender.setEncoder(new EchoEncoder<ILoggingEvent>());
 

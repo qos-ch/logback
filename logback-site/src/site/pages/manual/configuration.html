@@ -121,7 +121,7 @@
     </p>
 
 
-    <h3>Automatically configuring logback</h3>
+    <h3><a name="automaticConf" href="#automaticConf">Automatically configuring logback</a></h3>
 
     <p>The simplest way to configure logback is by letting logback
     fall back to its default configuration. Let us give a taste of how
@@ -178,8 +178,6 @@ public class Foo {
     details.
     </p>
 
-  
-
     <p>Assuming the configuration files <em>logback-test.xml</em> or
     <em>logback.xml</em> are not present, logback will default to
     invoking <a
@@ -187,9 +185,9 @@ public class Foo {
     which will set up a minimal configuration. This minimal
     configuration consists of a <code>ConsoleAppender</code> attached
     to the root logger.  The output is formatted using a
-    <code>PatternLayout</code> set to the pattern <em>%d{HH:mm:ss.SSS}
-    [%thread] %-5level %logger{36} - %msg%n</em>. Moreover, by default
-    the root logger is assigned the <code>DEBUG</code> level.
+    <code>PatternLayoutEncoder</code> set to the pattern
+    <em>%d{HH:mm:ss.SSS}&nbsp;[%thread]&nbsp;%-5level&nbsp;%logger{36}&nbsp;-&nbsp;%msg%n</em>. Moreover, by default the root logger is assigned the
+    <code>DEBUG</code> level.
     </p>
 
     <p>Thus, the output of the command <em>java chapters.configuration.MyApp1</em>
@@ -240,8 +238,9 @@ public class Foo {
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;!-- encoders are  by default assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    &lt;encoder>
     &lt;encoder>
       &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
     &lt;/encoder>
@@ -257,7 +256,9 @@ public class Foo {
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
 
-   <h4>Automatic printing of status messages in case of warning or errors</h4>
+   <h4><a name="automaticStatusPrinting"
+   href="#automaticStatusPrinting">Automatic printing of status
+   messages in case of warning or errors</a></h4>
 
    <div class="highlight">
      <p>If warning or errors occur during the parsing of the
@@ -335,7 +336,7 @@ public class Foo {
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;!-- encoders are  by default assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
-    &lt;layout>
+    &lt;encoder>
       &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
@@ -621,33 +622,34 @@ public class MyApp3 {
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
    
 
-
-
    <h2>
      <a name="syntax" href="#syntax">Configuration file Syntax</a>
    </h2>
 
-	<p>To obtain these different logging behaviors we do not need to
-	recompile code.  You can easily configure logback so as to disable
-	logging for certain parts of your application, or direct output to a
-	UNIX Syslog daemon, to a database, to a log visualizer, or forward
-	logging events to a remote logback server, which would log according
-	to local server policy, for example by forwarding the log event to a
-	second logback server.
-  </p>
+   <p>As you have seen thus far in the manual with plenty of examples
+   still to follow, logback allows you to redefine logging behavior
+   without needing to recompile your code.  Indeed, you can easily
+   configure logback so as to disable logging for certain parts of
+   your application, or direct output to a UNIX Syslog daemon, to a
+   database, to a log visualizer, or forward logging events to a
+   remote logback server, which would log according to local server
+   policy, for example by forwarding the log event to a second logback
+   server.
+   </p>
 	
-  <p>The remainder of this section presents the syntax of
-  configuration files. 
-  </p>
+   <p>The remainder of this section presents the syntax of
+   configuration files. 
+   </p>
 
-  <p>As shall become clear, the syntax of logback configuration files
-  is extremely flexible. As such, it is not possible to specify the
-  allowed syntax with a DTD file or an XML schema. Nevertheless, the
-  very basic structure of the configuration file can be described as,
-  &lt;configuration> element, followed by zero or more &lt;appender>
-  elements, followed by zero or more &lt;logger> elements, followed by
-  at most one &lt;root> element. The following diagram illustrates
-  this basic structure.</p>
+   <p>As shall be demonstrated over and over, the syntax of logback
+   configuration files is extremely flexible. As such, it is not
+   possible to specify the allowed syntax with a DTD file or an XML
+   schema. Nevertheless, the very basic structure of the configuration
+   file can be described as, <code>&lt;configuration></code> element,
+   followed by zero or more <code>&lt;appender></code> elements,
+   followed by zero or more <code>&lt;logger></code> elements,
+   followed by at most one <code>&lt;root></code> element. The
+   following diagram illustrates this basic structure.</p>
 
   
   <p align="left">
@@ -658,83 +660,98 @@ public class MyApp3 {
 
   <div class="highlight">
     <p>If you are unsure which case to use for a given tag name, just
-    follow the camelCase convention which should usually be
-    corrrect.</p>
-  </div>
+    follow the <a
+    href="http://en.wikipedia.org/wiki/CamelCase">camelCase
+    convention</a> which is almost always the corrrect convention.</p>
+    </div>
 
-  <p>As of logback version 0.9.17, tag names pertaining to explicit
-  rules are case insensitive.  For example, both
-  <code>&lt;logger></code>, <code>&lt;Logger></code> and
-  <code>&lt;LOGGER></code> are valid configuration elements and will
-  be interpreted in the same way. Note that XML well-formedness rules
-  still apply, if you open a tag as <code>&lt;xyz></code> you must
-  close it as <code>&lt;/xyz></code>, <code>&lt;/XyZ></code> will not
-  work. As for <a href="onJoran.html#implicit">implicit rules</a>, tag
-  names are case sensitive except for the first letter.  Thus,
-  <code>&lt;xyz></code> and <code>&lt;Xyz></code> are equivalent but
-  not <code>&lt;xYz></code>.  Implicit rules usually follow the <a
-  href="http://en.wikipedia.org/wiki/CamelCase">camel case</a>
-  convention, common in the Java world. Since it is not trivially easy
-  tell when a tag is associated with an explicit action and when it is
-  associated with an implicit action, it is not trivial to say whether
-  an XML tag is totally case-insensitive or case-insensitive with
-  respect to the first letter. If you are unsure which case to use for
-  a given tag name, just follow the camelCase convention which should
-  usually be correct.
+    <h4><a name="caseSensitivity" href="#caseSensitivity">Case
+    sensitivity of tag names</a></h4>
+   
+
+    <p>As of logback version 0.9.17, tag names pertaining to explicit
+    rules are case insensitive.  For example, both
+    <code>&lt;logger></code>, <code>&lt;Logger></code> and
+    <code>&lt;LOGGER></code> are valid configuration elements and will
+    be interpreted in the same way. Note that XML well-formedness
+    rules still apply, if you open a tag as <code>&lt;xyz></code> you
+    must close it as <code>&lt;/xyz></code>, <code>&lt;/XyZ></code>
+    will not work. As for <a href="onJoran.html#implicit">implicit
+    rules</a>, tag names are case sensitive except for the first
+    letter.  Thus, <code>&lt;xyz></code> and <code>&lt;Xyz></code> are
+    equivalent but not <code>&lt;xYz></code>.  Implicit rules usually
+    follow the <a href="http://en.wikipedia.org/wiki/CamelCase">camel
+    case</a> convention, common in the Java world. Since it is not
+    easy tell when a tag is associated with an explicit action and
+    when it is associated with an implicit action, it is not trivial
+    to say whether an XML tag is case-sensitive or insensitive with
+    respect to the first letter. If you are unsure which case to use
+    for a given tag name, just follow the camelCase convention which
+    is almost always the correct convention.
+    </p>
+
+    <h4><a name="loggerElement"
+    href="#loggerElement">Configuring loggers, or the
+    <code>&lt;logger></code> element</a></h4>
+
+    <p>At this point should have at least some understanding of <a
+    href="architecture.html#effectiveLevel">level inherirance</a> and
+    the <a href="architecture.html#basic_selection">basic selection
+    rule</a>. Otherwise, and unless you are an egyptologist, logback
+    configuration will be no more meaningful to you than
+    are hieroglyphics.
+    </p>
+
+    <p>A logger is configured using the <code>&lt;logger></code>
+    element. A <code>&lt;logger></code> element takes exactly one
+    mandatory <span class="attr">name</span> attribute, an optional
+    <span class="attr">level</span> attribute, and an optional <span
+    class="attr">additivity</span> attribute, admitting the values
+    <em>true</em> or <em>false</em>. The value of the <span
+    class="attr">level</span> attribute admitting the one of the
+    case-insensitive string values TRACE, DEBUG, INFO, WARN, ERROR,
+    ALL or OFF. The special case-insensitive value <em>INHERITED</em>,
+    or its synonym <em>NULL</em>, will force the level of the logger
+    to be inherited from higher up in the hierarchy. This comes in
+    handy in case you set the level of a logger and later decide that
+    it should inherit its level.
+    </p>
+
+    <p>The <code>&lt;logger></code> element may contain zero or more
+    <code>&lt;appender-ref></code> elements; each appender thus
+    referenced is added to the named logger. It is important to keep
+    mind that each named logger that is declared with a
+    <code>&lt;logger></code> element first has all its appenders
+    removed and only then are the referenced appenders attached to it.
+    In particular, if there are no appender references, then the named
+    logger will lose all its appenders.
+    </p>
+
+
+
+  <h4><a name="rootElement" href="#rootElement">Configuring the root
+  logger, or the <code>&lt;root></code> element</a></h4>
+
+  <p>The <code>&lt;root></code> element configures the root logger. It
+  admits a single attribute, namely the <span
+  class="attr">level</span> attribute. It does not admit any other
+  attributes because the additivity flag does not apply to the root
+  logger.  Moreover, since the root logger is already named as "ROOT",
+  it does not admit a name attribute either. The value of the level
+  attribute can be one of the case-insensitive strings TRACE, DEBUG,
+  INFO, WARN, ERROR, ALL or OFF. Note that the level of the root
+  logger cannot be set to INHERITED or NULL.
   </p>
 
-  <h4>Configuring Loggers, or the <code>&lt;logger></code> element</h4>
 
-  <p>A logger is configured using the <code>logger</code> element. A
-  <em>logger</em> element takes exactly one mandatory <span
-  class="attr">name</span> attribute, an optional <span
-  class="attr">level</span> attribute, and an optional <span
-  class="attr">additivity</span> attribute, which admits the values
-  <em>true</em> or <em>false</em>. The value of the <span
-  class="attr">level</span> attribute can be one of the
-  case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or
-  OFF. The special case-insensitive value <em>INHERITED</em>, or its
-  synonym <em>NULL</em>, will force the level of the logger to be
-  inherited from higher up in the hierarchy. This comes in handy in
-  case you set the level of a logger and later decide that it should
-  inherit its level.
-  </p>
-
-  <p>The <em>logger</em> element may contain zero or more
-  <em>appender-ref</em> elements; each appender thus referenced is
-  added to the named logger. It is important to keep mind that each
-  named logger that is declared with a &lt;logger element first has
-  all its appenders removed and only then are the referenced appenders
-  attached to it.  In particular, if there are no appender references,
-  then the named logger will lose all its appenders.
-  </p>
-
-
-
-  <h4>Configuring the root logger, or the <code>&lt;root></code>
-  element</h4>
-
-
-
-  <p>The &lt;root> element configures the root logger. It admits a
-  single attribute, namely the <span class="attr">level</span>
-  attribute. It does not admit any other attributes because the
-  additivity flag does not apply to the root logger.  Moreover, since
-  the root logger is already named as "ROOT", it does not admit a name
-  attribute either. The value of the level attribute can be set to one
-  of the case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL
-  or OFF. Note that the level of the root logger cannot be set to
-  INHERITED or NULL.
-  </p>
-
-
-  <p>The &lt;root> element admits zero or more &lt;appender-ref>
-  elements.  Similar to the &lt;logger element, declaring a &lt;root
+  <p>The <code>&lt;root></code> element admits zero or more
+  <code>&lt;appender-ref></code> elements.  Similar to the
+  <code>&lt;logger></code> element, declaring a <code>&lt;root></code>
   element will have the effect of first closing and then detaching all
   its current appenders and only subsequently will referenced
-  appenders, if any, will be added.  In particular, if it has no
-  appender references, then the root logger will lose all its
-  appenders.
+  appenders, if any, will be added.  In particular, if the
+  <code>&lt;root></code> element contains no appender references, then
+  the root logger will lose all its appenders.
   </p>
 
   <h4>Example</h4>
@@ -750,8 +767,8 @@ public class MyApp3 {
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;!-- encoders are  by default assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     &lt;encoder>
       &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
     &lt;/encoder>
@@ -767,12 +784,16 @@ public class MyApp3 {
   
 &lt;/configuration></pre>
 
-  <p>This new configuration will yield the following output, when
-  invoked with the <em>MyApp3</em> application.
+  <p>When the above configuration file is given as argument to the
+  <em>MyApp3</em> application, it will yield the following output:
   </p>
 
 <pre class="source">17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Entering application.
 17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</pre>
+
+  <p>Note that the message of level DEBUG generated by the <a
+  href="../xref/chapters/configuration/Foo.html">"chapters.configuration.Foo"</a>
+  logger has been supressed. See also the Foo class.</p>
 
   <p>You can configure the levels of as many loggers as you wish.  In
   the next configuration file, we set the level of the
@@ -846,7 +867,7 @@ public class MyApp3 {
   <code>INFO</code> in the <code>MyApp3</code> class as well as the
   DEBUG messages in <code>Foo.doIt()</code> are all enabled. Note that
   the level of the root logger is always set to a non-null value,
-  which is DEBUG by default.  
+  DEBUG by default.
   </p>
 
   <p>Let us note that the <a
@@ -931,21 +952,24 @@ public class MyApp3 {
   - even if the Java source code does not directly refer to it.
   </p>
 
-  <h4>Configuring Appenders</h4>
+  <h4><a name="configuringAppenders"
+  href="#configuringAppenders">Configuring Appenders</a></h4>
 
-  <p>Appenders are configured using <code>&lt;appender></code>
-  elements, taking two attributes <span class="attr">name</span> and
-  <span class="attr">class</span>, both of which are mandatory.  The
+  <p>An appenders is configured with the <code>&lt;appender></code>
+  element, which takes two mandatroy attributes <span
+  class="attr">name</span> and <span class="attr">class</span>.  The
   <span class="attr">name</span> attribute specifies the name of the
   appender whereas the <span class="attr">class</span> attribute
-  specifies the fully qualified name of the class of which the named
-  appender will be an instance.  The <code>&lt;appender></code>
-  element may contain zero or one <code>&lt;layout></code> elements
-  and zero or more <code>&lt;filter></code> elements. Appart from
-  these two common elements, <code>&lt;appender></code> elements may
-  contain any number of element corresponding to javabean properties
-  of the appender class. Seamlessly supporting any property of a given
-  logback component is one of the major strengths of Joran. The
+  specifies the fully qualified name of the appender class to
+  instantiate. The <code>&lt;appender></code> element may contain zero
+  or one <code>&lt;layout></code> elements, zero or more
+  <code>&lt;encoder></code> elements and zero or more
+  <code>&lt;filter></code> elements. Appart from these three common
+  elements, <code>&lt;appender></code> elements may contain any number
+  of elements corresponding to javabean properties of the appender
+  class. Seamlessly supporting any property of a given logback
+  component is one of the major strengths of <a
+  href="onJoran.html">Joran</a> as discussed in a later chapter. The
   following diagram illustrates the common structure. Note that
   support for properties is not visible.
   </p>
@@ -956,10 +980,23 @@ public class MyApp3 {
   </p>
 
   <p>The <code>&lt;layout></code> element takes a mandatory class
-  attribute specifying the fully qualified name of the class of which
-  the associated layout should be an instance. Like the
-  <code>&lt;appender></code> element, it may contain other elements
-  corresponding to properties of the layout class.
+  attribute specifying the fully qualified name of the layout class to
+  instantiate.  As with the the <code>&lt;appender></code> element,
+  <code>&lt;layout></code> may contain other elements corresponding to
+  properties of the layout instance. Since it's such a common case, if
+  the layout class is <code>PatternLayout</code>, then the class
+  attribute can be omitted as specified by <a
+  href="onJoran.html#defaultClassMapping">default class mapping</a>
+  rules.
+  </p>
+
+  <p>The <code>&lt;encoder></code> element takes a mandatory class
+  attribute specifying the fully qualified name of the encoder class
+  to instantiate. Since it's such a common case, if the encoder class
+  is <code>PatternLayoutEncoder</code>, then the class attribute can
+  be omitted as specified by <a
+  href="onJoran.html#defaultClassMapping">default class mapping</a>
+  rules.
   </p>
 
   <p>Logging to multiple appenders is as easy as defining the various
@@ -992,21 +1029,25 @@ public class MyApp3 {
 
   <p>This configuration scripts defines two appenders called
   <em>FILE</em> and <em>STDOUT</em>.  The <em>FILE</em> appender logs
-  to a file called <em>myApp.log</em>. The layout for this appender is
-  a <code>PatternLayout</code> that outputs the date, level, thread
-  name, logger name, file name and line number where the log request
-  is located, the message and line separator character(s).  The second
-  appender called <code>STDOUT</code> outputs to the console.  The
-  layout for this appender outputs only the message string followed by
-  a line separator.
+  to a file called <em>myApp.log</em>. The encoder for this appender
+  is a <code>PatternLayoutEncoder</code> that outputs the date, level,
+  thread name, logger name, file name and line number where the log
+  request is located, the message and line separator character(s).
+  The second appender called <code>STDOUT</code> outputs to the
+  console.  The encoder for this appender outputs only the message
+  string followed by a line separator.
   </p>
 
   <p>The appenders are attached to the root logger by referencing them
   by name within an <em>appender-ref</em> element. Note that each
-  appender has its own layout. Layouts are usually not designed to be
-  shared by multiple appenders. As such, logback configuration files
-  do not provide any syntactical means for sharing layouts.
+  appender has its own encoder. Encoders are usually not designed to
+  be shared by multiple appenders. The same is true for layouts. As
+  such, logback configuration files do not provide any syntactical
+  means for sharing encoders or layouts.
   </p>
+
+  <h4><a name="cumulative" href="#cumulative">Appenders accumulate</a>
+  </h4>
 
   <p>By default, <b>appenders are cumulative</b>: a logger will log to
   the appenders attached to itself (if any) as well as all the
@@ -1093,7 +1134,11 @@ public class MyApp3 {
   <em>myApp.log</em> file.
   </p>
 	
-  <h4>Overriding the default cumulative behaviour</h4>
+  <h4>
+    <a name="overrridingCumulativity" href="#overrridingCumulativity">
+      Overriding the default cumulative behaviour
+    </a>
+  </h4>
 
   <p>In case the default cumulative behavior turns out to be
   unsuitable for your needs, you can override it by setting the
@@ -1178,8 +1223,7 @@ public class MyApp3 {
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
     &lt;encoder>
       &lt;pattern>%msg%n&lt;/pattern>
@@ -1206,8 +1250,7 @@ public class MyApp3 {
   
   <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
     &lt;encoder>
       &lt;pattern>%msg%n&lt;/pattern>
@@ -1234,8 +1277,7 @@ public class MyApp3 {
 
   <b>&lt;property file="src/main/java/chapters/configuration/variables1.properties" /></b>
 
-  &lt;appender name="FILE"
-     class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
      &lt;encoder>
        &lt;pattern>%msg%n&lt;/pattern>
@@ -1266,8 +1308,7 @@ public class MyApp3 {
 
   <b>&lt;property resource="resource1.properties" /></b>
 
-  &lt;appender name="FILE"
-     class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
      &lt;encoder>
        &lt;pattern>%msg%n&lt;/pattern>
@@ -1310,8 +1351,7 @@ fileName=myApp.log
 
   &lt;property file="variables2.properties" />
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${destination}&lt;/file></b>
     &lt;encoder>
       &lt;pattern>%msg%n&lt;/pattern>

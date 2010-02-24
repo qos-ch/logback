@@ -28,7 +28,7 @@ import ch.qos.logback.core.status.WarnStatus;
  * @author Ceki G&uuml;lc&uuml;
  */
 
-public class ConsoleAppender<E> extends WriterAppender<E> {
+public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
     public static final String SYSTEM_OUT = "System.out";
     public static final String SYSTEM_ERR = "System.err";
@@ -82,7 +82,7 @@ public class ConsoleAppender<E> extends WriterAppender<E> {
     }
 
     /**
-     * This method overrides the parent {@link WriterAppender#closeWriter}
+     * This method overrides the parent {@link OutputStreamAppender#closeWriter}
      * implementation  because the console stream is not ours to close.
      */
     protected final void closeWriter() {
