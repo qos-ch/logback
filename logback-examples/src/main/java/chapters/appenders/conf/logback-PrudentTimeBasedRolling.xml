@@ -2,15 +2,15 @@
    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
    
    <!-- Support multiple-JVMs writing to the same log file -->
-   <Prudent>true</Prudent>
+   <prudent>true</prudent>
    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-     <FileNamePattern>logFile.%d{yyyy-MM-dd}.log</FileNamePattern>
-     <MaxHistory>30</MaxHistory> 
+     <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+     <maxHistory>30</maxHistory> 
    </rollingPolicy>
 
-   <layout class="ch.qos.logback.classic.PatternLayout">
-     <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
-   </layout>
+   <encoder>
+     <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+   </encoder>
   </appender> 
 
   <root level="debug">

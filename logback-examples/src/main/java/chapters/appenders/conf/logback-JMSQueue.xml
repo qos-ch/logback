@@ -1,7 +1,6 @@
 <configuration>
 
-	<appender name="Queue"
-		class="ch.qos.logback.classic.net.JMSQueueAppender">
+	<appender name="Queue" class="ch.qos.logback.classic.net.JMSQueueAppender">
 		<InitialContextFactoryName>
 			org.apache.activemq.jndi.ActiveMQInitialContextFactory
 		</InitialContextFactoryName>

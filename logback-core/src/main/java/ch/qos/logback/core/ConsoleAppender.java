@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.core;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 
@@ -82,12 +86,16 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * This method overrides the parent {@link OutputStreamAppender#closeWriter}
+     * This method overrides the parent {@link OutputStreamAppender#closeOutputStream}
      * implementation  because the console stream is not ours to close.
      */
-    protected final void closeWriter() {
-      encoderClose();
-    }
+//    @Override
+//    protected final void closeOutputStream() {
+//      encoderClose();
+//    }
+    
+    xxxxxxxxxx
+    
   }
 
 

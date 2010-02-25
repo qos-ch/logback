@@ -1,7 +1,6 @@
 <configuration>
 
-	<appender name="Topic"
-		class="ch.qos.logback.classic.net.JMSTopicAppender">
+	<appender name="Topic" class="ch.qos.logback.classic.net.JMSTopicAppender">
 		<InitialContextFactoryName>
 			org.apache.activemq.jndi.ActiveMQInitialContextFactory
 		</InitialContextFactoryName>

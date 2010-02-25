@@ -3,8 +3,8 @@
 <configuration>
 
 
-  <appender name="CUSTOM" class="chapter4.CountingConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+  <appender name="CUSTOM" class="chapters.appenders.CountingConsoleAppender">
+    <layout>
       <Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
     </layout>
     <limit>5</limit>

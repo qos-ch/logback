@@ -1,15 +1,16 @@
 <configuration>
+
    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-   <File>logFile.log</File>
+   <file>logFile.log</file>
    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
      <FileNamePattern>logFile.%d{yyyy-MM-dd}.log</FileNamePattern>
      <!-- keep 30 days worth of history -->
-     <MaxHistory>30</MaxHistory> 
+     <maxHistory>30</maxHistory> 
    </rollingPolicy>
 
-   <layout>
-     <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>
-   </layout>
+   <encoder>
+     <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+   </encoder>
  </appender> 
 
  <root level="debug">

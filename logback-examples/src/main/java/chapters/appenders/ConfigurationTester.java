@@ -26,13 +26,6 @@ import chapters.appenders.sub.sample.Bar;
 /**
  * 
  * This class can be used to check the result of a configuration file.
- * <p>
- * When all the logback-core, logback-classic, logback-examples and their dependencies have been
- * added to the ClassPath, one can launch this class using the following
- * command:
- * <p>
- * java chapter4.ConfigurationTester
- * chapter4/conf/name_of_the_configuration_file.xml
  * 
  * @author S&eacute;bastien Pennec
  */
@@ -42,6 +35,7 @@ public class ConfigurationTester {
     Logger logger = (Logger) LoggerFactory.getLogger(ConfigurationTester.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
+    System.out.println("***********"+args[0]);
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
@@ -50,16 +44,16 @@ public class ConfigurationTester {
     } catch (JoranException je) {
       je.printStackTrace();
     }
-    // After we've called Joran, let's print information about the 
+    // After we've called Joran, let's print information about the
     // internal status of logback
-    StatusPrinter.print(lc.getStatusManager());
-    
+    StatusPrinter.print(lc);
+
     logger.debug("**Hello {}", new Bar());
     MDC.put("testKey", "testValueFromMDC");
     MDC.put("testKey2", "value2");
     for (int i = 0; i < 10; i++) {
       logger.debug("logging statement " + i);
-      Thread.sleep(1000);
+      Thread.sleep(100);
     }
     Bar bar = new Bar();
     bar.createLoggingRequest();

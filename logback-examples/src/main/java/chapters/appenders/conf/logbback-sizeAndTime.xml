@@ -1,21 +1,18 @@
 <configuration>
 
-  <appender name="ROLLING"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${randomOutputDir}z${testId}</File>
-    <rollingPolicy
-      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>
+  <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${randomOutputDir}z${testId}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>
         ${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}.%i
-      </FileNamePattern>
-      <TimeBasedFileNamingAndTriggeringPolicy
-        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <MaxFileSize>${sizeThreshold}</MaxFileSize>
-      </TimeBasedFileNamingAndTriggeringPolicy>
+      </fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>${sizeThreshold}</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
     </rollingPolicy>
-    <layout>
-      <Pattern>%msg%n</Pattern>
-    </layout>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
   </appender>
 
 

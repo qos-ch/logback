@@ -8,10 +8,10 @@
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <!-- use the previously created timestamp to create a uniquely
          named log file -->
-    <File>log-${bySecond}.txt</File>
-    <layout>
-      <Pattern>%logger{35} - %msg%n</Pattern>
-    </layout>
+    <file>log-${bySecond}.txt</file>
+    <encoder>
+      <pattern>%logger{35} - %msg%n</pattern>
+    </encoder>
   </appender>
 
   <root level="debug">
