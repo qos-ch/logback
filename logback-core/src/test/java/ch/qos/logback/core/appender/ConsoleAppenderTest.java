@@ -14,6 +14,7 @@
 package ch.qos.logback.core.appender;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -28,12 +29,11 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
-import ch.qos.logback.core.util.TeeOutputStream;
 
 
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
-  TeeOutputStream tee;
+  XTeeOutputStream tee;
   PrintStream original;
 
 
@@ -46,7 +46,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     // tee = new TeeOutputStream(original);
     
     // keep the console quiet
-    tee = new TeeOutputStream(null);
+    tee = new XTeeOutputStream(null);
     
     // redirect System.out to tee
     System.setOut(new PrintStream(tee));
@@ -99,6 +99,9 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
+    // ConsoleAppender must keep the underlying stream open.
+    // The console is not ours to close.
+    assertFalse(tee.isClosed());
     assertEquals(DummyLayout.DUMMY + "CLOSED", tee.toString());
   }
 
@@ -113,7 +116,6 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.setEncoder(dummyEncoder);
     ca.start();
     ca.doAppend(new Object());
-
     assertEquals(DummyLayout.DUMMY, new String(tee.toByteArray(), encodingName));
   }
 
