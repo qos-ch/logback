@@ -13,13 +13,17 @@
  */
 package ch.qos.logback.classic.sift;
 
+import org.slf4j.impl.StaticLoggerBinder;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * This discriminator returns the value context to which this event is attached
- * to. If the said value is null, then a default value is returned.
+ * This discriminator returns the value context as determined by JNDI. If the
+ * said value is null, then a default value is returned.
  * 
  * <p>
  * Both Key and the DefaultValue are user specified properties.
@@ -27,27 +31,33 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class ContextBasedDiscriminator extends ContextAwareBase implements
+public class JNDIBasedContextDiscriminator extends ContextAwareBase implements
     Discriminator<ILoggingEvent> {
 
   private static final String KEY = "contextName";
   private String defaultValue;
   private boolean started = false;
 
-  public ContextBasedDiscriminator() {
+  public JNDIBasedContextDiscriminator() {
   }
 
   /**
    * Return the name of the current context name as found in the logging event.
    */
   public String getDiscriminatingValue(ILoggingEvent event) {
-    String contextName = event.getLoggerContextVO().getName();
+    ContextSelector selector = StaticLoggerBinder.getSingleton()
+        .getContextSelector();
 
-    if (contextName == null) {
+    if (selector == null) {
       return defaultValue;
-    } else {
-      return contextName;
     }
+
+    LoggerContext lc = selector.getLoggerContext();
+    if (lc == null) {
+      return defaultValue;
+    }
+
+    return lc.getName();
   }
 
   public boolean isStarted() {

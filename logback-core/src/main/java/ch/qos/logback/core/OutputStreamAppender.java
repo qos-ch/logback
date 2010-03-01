@@ -85,6 +85,10 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
   }
 
+  public void setLayout(Layout layout) {
+    addError("This appender no longer admits a layout as a sub-component, set an encoder instead.");
+  }
+
   @Override
   protected void append(E eventObject) {
     if (!isStarted()) {
