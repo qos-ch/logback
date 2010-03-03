@@ -35,7 +35,6 @@ public class FileAppenderResilience_AS_ROOT_Test {
 
   static String PATH_LOOPFS_SCRIPT = "/home/ceki/java/logback/logback-core/src/test/loopfs.sh";
 
-  
   enum LoopFSCommand {
     setup, shake, teardown;
   }
@@ -44,16 +43,16 @@ public class FileAppenderResilience_AS_ROOT_Test {
   int diff = RandomUtil.getPositiveInt();
   String outputDirStr = MOUNT_POINT + "resilience-" + diff + "/";
   String logfileStr = outputDirStr + "output.log";
-  
+
   FileAppender<Object> fa = new FileAppender<Object>();
 
   static boolean isConformingHost() {
-    return Env.isLocalHostNameInList(new String[] {"gimmel"});
+    return Env.isLocalHostNameInList(new String[] { "gimmel" });
   }
-  
+
   @Before
   public void setUp() throws IOException, InterruptedException {
-    if(!isConformingHost()) {
+    if (!isConformingHost()) {
       return;
     }
     Process p = runLoopFSScript(LoopFSCommand.setup);
@@ -89,10 +88,9 @@ public class FileAppenderResilience_AS_ROOT_Test {
     }
   }
 
-  
   @After
   public void tearDown() throws IOException, InterruptedException {
-    if(!isConformingHost()) {
+    if (!isConformingHost()) {
       return;
     }
     StatusPrinter.print(context);
@@ -108,7 +106,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
 
   @Test
   public void go() throws IOException, InterruptedException {
-    if(!isConformingHost()) {
+    if (!isConformingHost()) {
       return;
     }
     Process p = runLoopFSScript(LoopFSCommand.shake);
@@ -117,7 +115,9 @@ public class FileAppenderResilience_AS_ROOT_Test {
       Thread.sleep(DELAY);
     }
     p.waitFor();
-    ResilienceUtil.verify(logfileStr, "^(\\d{1,3}) x*$", NUM_STEPS);
+    // the extrernal script has the file system ready for IO 50% of the time
+    double bestCase = 0.5;
+    ResilienceUtil.verify(logfileStr, "^(\\d{1,3}) x*$", NUM_STEPS, bestCase);
     System.out.println("Done go");
   }
 
@@ -127,7 +127,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
       InterruptedException {
     // causing a NullPointerException is better than locking the whole
     // machine which the next operation can and will do.
-    if(!isConformingHost()) {
+    if (!isConformingHost()) {
       return null;
     }
     ProcessBuilder pb = new ProcessBuilder();
