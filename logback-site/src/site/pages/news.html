@@ -28,7 +28,35 @@
 
     <hr width="80%" align="center" />
 
-    <h3>February 2010 - Release of version 0.9.19</h3>
+    <h3>March 2010 - Release of version 0.9.19</h3>
+
+
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+    <h4>Breaking change: FileAppender now expects an Encoder</h4>
+
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LBCORE-128">LBCORE-128</a>,
+    <code>WriterAppender</code> has been renamed as
+    <code>OutputStreamAppender</code>, <code>FileAppender</code> now
+    sub-classing the latter. <code>OutputStreamAppender</code> and
+    sub-classes now take an <code>Encoder</code> instead of a
+    <code>Layout</code>. 
+    </p>
+
+    <p>Contrary to layouts which simply transform a logging event into
+    a String, an encoder is responsible for writing the actual event
+    or more accurately the representation of the event onto the output
+    stream. The role of the enclosing appender is now limited to
+    managing the output stream (opening/closing) but not writing
+    actual contents onto the stream. This change will require <a
+    href="codes.html#layoutInsteadOfEncoder"> modifications to
+    existing configuration files</a>. We hope to make up for this
+    inconvenience with cool new features which are only possible using
+    encoders.
+    </p>
+
+    </div>
 
     <p>Added <a
     href="manual/appenders.html#OnMarkerEvaluator">OnMarkerEvaluator</a>
