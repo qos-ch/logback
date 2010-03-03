@@ -15,7 +15,7 @@ package ch.qos.logback.core.recovery;
 
 public class RecoveryCoordinator {
 
-  static long BACKOFF_COEFFICIENT_MIN = 100;
+  public final static long BACKOFF_COEFFICIENT_MIN = 100;
   static long BACKOFF_COEFFICIENT_MAX = 409600;  // BACKOFF_COEFFICIENT_MIN * 4^6
   
   private long backOffCoefficient = BACKOFF_COEFFICIENT_MIN;
