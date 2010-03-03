@@ -162,7 +162,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
       ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(
           file, append);
-
+      resilientFos.setContext(context);
       setOutputStream(resilientFos);
     }
   }

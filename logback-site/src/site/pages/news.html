@@ -58,6 +58,16 @@
 
     </div>
 
+    <p><code>FileAppender</code> and derived classes can now
+    gracefully deal with IO failreus and recover quickly after the
+    original cause of the IO failure is corrected. For example, if the
+    log file is located on a <a
+    href="http://en.wikipedia.org/wiki/Network-attached_storage">network-attached
+    storage (NAS)</a>, and the connection to the NAS server is lost,
+    <code>FileAppender</code> and derived classes will recover quickly
+    after the connection to the server is re-established. 
+    </p>
+
     <p>Added <a
     href="manual/appenders.html#OnMarkerEvaluator">OnMarkerEvaluator</a>
     which evaluates to true in the presence of user-specified

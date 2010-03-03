@@ -25,7 +25,7 @@ import org.junit.Test;
 import ch.qos.logback.core.html.LayoutWrappingEncoder;
 import ch.qos.logback.core.pattern.parser.SamplePatternLayout;
 
-public class WriterAppenderTest {
+public class OutputStreamAppenderTest {
 
   Context context = new ContextBase();
   

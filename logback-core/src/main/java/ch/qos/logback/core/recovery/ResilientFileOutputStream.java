@@ -20,12 +20,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusManager;
+
 public class ResilientFileOutputStream extends OutputStream {
 
-  RecoveryCoordinator recoveryCoordinator;
-  boolean bufferedIO;
-  int bufferSize;
+  final static int STATUS_COUNT_LIMIT = 2 * 4;
 
+  private int noContextWarning = 0;
+  private int statusCount = 0;
+
+  Context context;
+  RecoveryCoordinator recoveryCoordinator;
   FileOutputStream fos;
   File file;
   boolean presumedClean = true;
@@ -43,32 +52,63 @@ public class ResilientFileOutputStream extends OutputStream {
     return fos.getChannel();
   }
 
-  
   public File getFile() {
     return file;
   }
 
-  public void write(byte b[], int off, int len) throws IOException {
+  boolean isPresumedInError() {
     // existence of recoveryCoordinator indicates failed state
-    if (recoveryCoordinator != null && !presumedClean) {
+    return (recoveryCoordinator != null && !presumedClean);
+  }
+
+  public void write(byte b[], int off, int len) {
+    if (isPresumedInError()) {
       if (!recoveryCoordinator.isTooSoon()) {
-        performRecoveryAttempt();
+        attemptRecovery();
       }
-      // we return regardless of the success of the recovery attempt
-      return;
+      return; // return regardless of the success of the recovery attempt
     }
 
     try {
       fos.write(b, off, len);
       postSuccessfulWrite();
     } catch (IOException e) {
-      presumedClean = false;
-      recoveryCoordinator = new RecoveryCoordinator();
+      postIOFailure(e);
+    }
+  }
+
+  @Override
+  public void write(int b) {
+    if (isPresumedInError()) {
+      if (!recoveryCoordinator.isTooSoon()) {
+        attemptRecovery();
+      }
+      return; // return regardless of the success of the recovery attempt
+    }
+    try {
+      fos.write(b);
+      postSuccessfulWrite();
+    } catch (IOException e) {
+      postIOFailure(e);
     }
   }
 
   private void postSuccessfulWrite() {
-    recoveryCoordinator = null;
+    if (recoveryCoordinator != null) {
+      recoveryCoordinator = null;
+      statusCount = 0;
+      addStatus(new InfoStatus("Recovered from IO failure on file [" + file
+          + "]", this));
+    }
+  }
+
+  void postIOFailure(IOException e) {
+    addStatusIfCountNotOverLimit(new ErrorStatus(
+        "IO failure while writing to [" + file + "]", this, e));
+    presumedClean = false; 
+    if (recoveryCoordinator == null) {
+      recoveryCoordinator = new RecoveryCoordinator();
+    }
   }
 
   @Override
@@ -78,32 +118,62 @@ public class ResilientFileOutputStream extends OutputStream {
     }
   }
 
-  @Override
-  public void write(int b) throws IOException {
-    // existence of recoveryCoordinator indicates failed state
-    if (recoveryCoordinator != null) {
-      if (!recoveryCoordinator.isTooSoon()) {
-        performRecoveryAttempt();
-      }
-      // we return regardless of the success of the recovery attempt
-      return;
-    }
-    try {
-      fos.write(b);
-      postSuccessfulWrite();
-    } catch (IOException e) {
-      recoveryCoordinator = new RecoveryCoordinator();
-    }
-  }
-
-  void performRecoveryAttempt() throws FileNotFoundException {
+  void attemptRecovery() {
     try {
       close();
     } catch (IOException e) {
     }
 
+    addStatusIfCountNotOverLimit(new InfoStatus(
+        "Attempting to recover from IO failure on file [" + file + "]", this));
+
     // subsequent writes must always be in append mode
-    fos = new FileOutputStream(file, true);
-    presumedClean = true;
+    try {
+      fos = new FileOutputStream(file, true);
+      presumedClean = true;
+    } catch (IOException e) {
+      addStatusIfCountNotOverLimit(new ErrorStatus("Failed to open file ["
+          + file + "]", this, e));
+    }
+  }
+
+  void addStatusIfCountNotOverLimit(Status s) {
+    ++statusCount;
+    if (statusCount < STATUS_COUNT_LIMIT) {
+      addStatus(s);
+    }
+
+    if (statusCount == STATUS_COUNT_LIMIT) {
+      addStatus(s);
+      addStatus(new InfoStatus("Will supress future messages regarding ["
+          + file + "]", this));
+    }
+  }
+
+  public void addStatus(Status status) {
+    if (context == null) {
+      if (noContextWarning++ == 0) {
+        System.out.println("LOGBACK: No context given for " + this);
+      }
+      return;
+    }
+    StatusManager sm = context.getStatusManager();
+    if (sm != null) {
+      sm.add(status);
+    }
+  }
+
+  public Context getContext() {
+    return context;
+  }
+
+  public void setContext(Context context) {
+    this.context = context;
+  }
+
+  @Override
+  public String toString() {
+    return "c.q.l.c.recovery.ResilientFileOutputStream@"
+        + System.identityHashCode(this);
   }
 }
