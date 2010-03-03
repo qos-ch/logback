@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
 /**
  * OutputStreamAppender appends events to a {@link OutputStream}. This class
@@ -31,6 +32,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  */
 public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
+  
   /**
    * It is the encoder which is ultimately responsible for writing the event to
    * an {@link OutputStream}.
@@ -87,6 +89,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
   public void setLayout(Layout layout) {
     addError("This appender no longer admits a layout as a sub-component, set an encoder instead.");
+    addError("See also "+CODES_URL+"#layoutInsteadOfEncoder for details");
   }
 
   @Override
@@ -171,7 +174,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
       this.outputStream = outputStream;
       if (encoder == null) {
-        addWarn("Encoder not yet set. Cannot invoke it's init method");
+        addWarn("Encoder has not been set. Cannot invoke its init method.");
         return;
       }
 

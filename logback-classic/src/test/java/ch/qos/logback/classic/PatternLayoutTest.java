@@ -30,7 +30,6 @@ import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.testUtil.SampleConverter;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
@@ -167,7 +166,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
 
   @Test
   public void testConversionRuleSupportInPatternLayout() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/conversionRule/patternLayout0.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/patternLayout0.xml");
     root.getAppender("LIST");
     String msg  = "Simon says";
     logger.debug(msg);

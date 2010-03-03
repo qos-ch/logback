@@ -26,12 +26,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.helpers.BogoPerf;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
@@ -47,11 +47,11 @@ public class ReconfigureOnChangeTest {
 
   // the space in the file name mandated by
   // http://jira.qos.ch/browse/LBCORE-119
-  final static String SCAN1_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
-      + "input/turbo/scan 1.xml";
+  final static String SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+      + "turbo/scan 1.xml";
 
-  final static String SCAN_LBCLASSIC_154_FILE_AS_STR = TeztConstants.TEST_DIR_PREFIX
-      + "input/turbo/scan_lbclassic154.xml";
+  final static String SCAN_LBCLASSIC_154_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+      + "turbo/scan_lbclassic154.xml";
 
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
@@ -83,6 +83,7 @@ public class ReconfigureOnChangeTest {
   public void tearDown() {
     System.out.println("======= TEST STOP");
   }
+
   void configure(File file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(loggerContext);

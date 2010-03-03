@@ -22,13 +22,13 @@ import java.util.List;
 import org.junit.Test;
 import org.slf4j.MDC;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.sift.AppenderTracker;
@@ -37,7 +37,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
 
-  static String PREFIX = TeztConstants.TEST_DIR_PREFIX + "input/joran/sift/";
+  static String PREFIX = ClassicTestConstants.JORAN_INPUT_PREFIX + "sift/";
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());

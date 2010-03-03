@@ -25,6 +25,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.slf4j.MDC;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -32,7 +33,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
@@ -53,7 +53,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void simpleList() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleList.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleList.xml");
 
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -68,7 +68,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void level() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleLevel.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleLevel.xml");
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
     String msg = "hello world";
@@ -77,13 +77,12 @@ public class JoranConfiguratorTest {
   }
 
   @Test
-  public void rootLoggerLevelSettingBySystemProperty()
-      throws JoranException {
+  public void rootLoggerLevelSettingBySystemProperty() throws JoranException {
     String propertyName = "logback.level";
 
     System.setProperty(propertyName, "INFO");
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/rootLevelByProperty.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "rootLevelByProperty.xml");
     // StatusPrinter.print(loggerContext);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
@@ -98,8 +97,8 @@ public class JoranConfiguratorTest {
     String propertyName = "logback.level";
 
     System.setProperty(propertyName, "DEBUG");
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/loggerLevelByProperty.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "loggerLevelByProperty.xml");
     // StatusPrinter.print(loggerContext);
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
@@ -111,20 +110,20 @@ public class JoranConfiguratorTest {
 
   @Test
   public void statusListener() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/statusListener.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
     // StatusPrinter.print(loggerContext);
   }
 
   @Test
   public void contextRename() throws JoranException {
     loggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/contextRename.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "contextRename.xml");
     assertEquals("wombat", loggerContext.getName());
   }
 
   @Test
   public void eval() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/callerData.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
 
     String msg = "hello world";
     logger.debug("toto");
@@ -146,7 +145,7 @@ public class JoranConfiguratorTest {
     // Although this test uses turbo filters, it only checks
     // that Joran can see the xml element and create
     // and place the relevant object correctly.
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/turbo.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turbo.xml");
 
     TurboFilter filter = loggerContext.getTurboFilterList().get(0);
     assertTrue(filter instanceof NOPTurboFilter);
@@ -158,7 +157,7 @@ public class JoranConfiguratorTest {
     // that Joran can see <user> elements, and behave correctly
     // that is call the addUser method and pass the correct values
     // to that method.
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/turbo2.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turbo2.xml");
 
     // StatusPrinter.print(loggerContext.getStatusManager());
 
@@ -170,7 +169,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void testLevelFilter() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/levelFilter.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "levelFilter.xml");
 
     // StatusPrinter.print(loggerContext);
 
@@ -190,7 +189,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void testEvaluatorFilter() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/evaluatorFilter.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "evaluatorFilter.xml");
 
     // StatusPrinter.print(loggerContext);
 
@@ -210,8 +209,8 @@ public class JoranConfiguratorTest {
 
   @Test
   public void testTurboDynamicThreshold() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/turboDynamicThreshold.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "turboDynamicThreshold.xml");
 
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
@@ -230,8 +229,8 @@ public class JoranConfiguratorTest {
 
   @Test
   public void testTurboDynamicThreshold2() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/turboDynamicThreshold2.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "turboDynamicThreshold2.xml");
 
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertEquals(0, listAppender.list.size());
@@ -257,8 +256,8 @@ public class JoranConfiguratorTest {
   @Test
   public void scan1() throws JoranException, IOException, InterruptedException {
 
-    String configFileAsStr = TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/scan1.xml";
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "scan1.xml";
     configure(configFileAsStr);
 
     File file = new File(configFileAsStr);
@@ -275,19 +274,20 @@ public class JoranConfiguratorTest {
     assertTrue(checker.isErrorFree());
     assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
   }
-  
-  @Test
-  public void timestamp() throws JoranException, IOException, InterruptedException {
 
-    String configFileAsStr = TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/timestamp.xml";
+  @Test
+  public void timestamp() throws JoranException, IOException,
+      InterruptedException {
+
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "timestamp.xml";
     configure(configFileAsStr);
-    
+
     String r = loggerContext.getProperty("testTimestamp");
     assertNotNull(r);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-    String expected = sdf.format(new Date()); 
-    assertEquals("expected \""+expected+"\" but got "+r, expected, r);
+    String expected = sdf.format(new Date());
+    assertEquals("expected \"" + expected + "\" but got " + r, expected, r);
   }
 
 }

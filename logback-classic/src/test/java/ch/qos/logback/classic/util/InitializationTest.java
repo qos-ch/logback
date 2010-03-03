@@ -27,6 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Appender;
@@ -85,10 +86,10 @@ public class InitializationTest {
 
   @Test
   public void autoConfigFromSystemProperties() throws JoranException  {
-    doAutoConfigFromSystemProperties(TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml");
+    doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
     doAutoConfigFromSystemProperties("autoConfigAsResource.xml");
     // test passing a URL. note the relative path syntax with file:src/test/...
-    doAutoConfigFromSystemProperties("file:"+TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml"); 
+    doAutoConfigFromSystemProperties("file:"+ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml"); 
   }
   
   public void doAutoConfigFromSystemProperties(String val) throws JoranException {
@@ -104,7 +105,7 @@ public class InitializationTest {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS, TrivialStatusListener.class.getName());
     List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertEquals(0, sll.size());
-    doAutoConfigFromSystemProperties(TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml");
+    doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
     sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertTrue(sll.size() +" should be 1", sll.size() == 1);
   }
@@ -114,7 +115,7 @@ public class InitializationTest {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS,  ContextInitializer.SYSOUT);
     List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertEquals(0, sll.size());
-    doAutoConfigFromSystemProperties(TeztConstants.TEST_DIR_PREFIX + "input/autoConfig.xml");
+    doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
     sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertTrue(sll.size() +" should be 1", sll.size() == 1);
   }

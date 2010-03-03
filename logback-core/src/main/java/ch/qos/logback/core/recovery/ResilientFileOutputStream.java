@@ -43,6 +43,11 @@ public class ResilientFileOutputStream extends OutputStream {
     return fos.getChannel();
   }
 
+  
+  public File getFile() {
+    return file;
+  }
+
   public void write(byte b[], int off, int len) throws IOException {
     // existence of recoveryCoordinator indicates failed state
     if (recoveryCoordinator != null && !presumedClean) {
@@ -101,5 +106,4 @@ public class ResilientFileOutputStream extends OutputStream {
     fos = new FileOutputStream(file, true);
     presumedClean = true;
   }
-
 }

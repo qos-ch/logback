@@ -104,7 +104,7 @@ p.menu {
 	font-size: smaller;
 }
 
-.strong { 
+.strong, .bold { 
   /*font-size: 13px;*/
   font-weight: bold;
 }

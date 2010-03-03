@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
@@ -36,7 +37,6 @@ import ch.qos.logback.classic.html.HTMLLayout;
 import ch.qos.logback.classic.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -54,7 +54,7 @@ public class SMTPAppender_GreenTest {
   SMTPAppender smtpAppender;
   LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(this.getClass());
-  
+
   static final String TEST_SUBJECT = "test subject";
   static final String HEADER = "HEADER\n";
   static final String FOOTER = "FOOTER\n";
@@ -69,12 +69,11 @@ public class SMTPAppender_GreenTest {
     // let the grean mail server get a head start
     Thread.sleep(100);
   }
-  
+
   @After
   public void tearDown() throws Exception {
     greenMail.stop();
   }
-  
 
   void buildSMTPAppender() throws Exception {
     smtpAppender = new SMTPAppender();
@@ -108,9 +107,8 @@ public class SMTPAppender_GreenTest {
     return layout;
   }
 
-
-
-  private MimeMultipart verify(String subject) throws MessagingException, IOException {
+  private MimeMultipart verify(String subject) throws MessagingException,
+      IOException {
     MimeMessage[] mma = greenMail.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(1, mma.length);
@@ -128,9 +126,9 @@ public class SMTPAppender_GreenTest {
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-    
+
     StatusPrinter.print(lc);
-    MimeMultipart mp =  verify(TEST_SUBJECT);
+    MimeMultipart mp = verify(TEST_SUBJECT);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertTrue(body.startsWith(HEADER.trim()));
     assertTrue(body.endsWith(FOOTER.trim()));
@@ -146,15 +144,14 @@ public class SMTPAppender_GreenTest {
     logger.debug("hello");
     MDC.clear();
     logger.error("en error", new Exception("an exception"));
-    
-    MimeMultipart mp =  verify(TEST_SUBJECT);
+
+    MimeMultipart mp = verify(TEST_SUBJECT);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertTrue(body.startsWith(HEADER.trim()));
     assertTrue(body.contains("key=val"));
     assertTrue(body.endsWith(FOOTER.trim()));
   }
 
-  
   @Test
   public void html() throws Exception {
     buildSMTPAppender();
@@ -163,8 +160,8 @@ public class SMTPAppender_GreenTest {
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-    MimeMultipart mp =  verify(TEST_SUBJECT);
-    
+    MimeMultipart mp = verify(TEST_SUBJECT);
+
     // verify strict adherence to xhtml1-strict.dtd
     SAXReader reader = new SAXReader();
     reader.setValidation(true);
@@ -190,9 +187,9 @@ public class SMTPAppender_GreenTest {
       logger.debug("hello " + i);
     }
     logger.error("en error", new Exception("an exception"));
-    
-    MimeMultipart mp =  verify(TEST_SUBJECT);
-    
+
+    MimeMultipart mp = verify(TEST_SUBJECT);
+
     // verify strict adherence to xhtml1-strict.dtd
     SAXReader reader = new SAXReader();
     reader.setValidation(true);
@@ -203,21 +200,21 @@ public class SMTPAppender_GreenTest {
   private void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(lc);
-    System.out.println("port="+port);
+    System.out.println("port=" + port);
     lc.putProperty("port", "" + port);
     jc.doConfigure(file);
   }
 
   @Test
-  public void testCustomEvaluator() throws  Exception {
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/smtp/customEvaluator.xml");
-    
+  public void testCustomEvaluator() throws Exception {
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "smtp/customEvaluator.xml");
+
     logger.debug("hello");
     String msg2 = "world";
     logger.debug(msg2);
     logger.debug("invisible");
-    MimeMultipart mp =  verify(this.getClass().getName()+ " - "+msg2);
+    MimeMultipart mp = verify(this.getClass().getName() + " - " + msg2);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertEquals("helloworld", body);
   }

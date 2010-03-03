@@ -40,7 +40,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.StringListAppender;
@@ -236,8 +235,8 @@ public class HTMLLayoutTest {
 
   @Test
   public void testConversionRuleSupportInHtmlLayout() throws JoranException {
-    configure(TeztConstants.TEST_DIR_PREFIX
-        + "input/joran/conversionRule/htmlLayout0.xml");
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "conversionRule/htmlLayout0.xml");
    
     root.getAppender("LIST");
     String msg = "Simon says";
