@@ -20,8 +20,8 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
 public interface Encoder<E> extends ContextAware, LifeCycle {
-  
-  void doEncode(E event) throws IOException;
+
   void init(OutputStream os) throws IOException;
+  void doEncode(E event) throws IOException;
   void close() throws IOException;
 }

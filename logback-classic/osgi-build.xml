@@ -1,6 +1,10 @@
 <project name="osgi-test" default="testAll">
 
 	<!--
+    This build file is intended for testing purposes. It does not
+    actually package or create any files with a lifespan beyond that
+    of the current test cycle.
+    
 		This build file is usually run indirectly via Maven.
 		
 		When running this build file through Ant directly, you must
@@ -9,6 +13,9 @@
 		ant  -DcurrentVersion=1.5.4-SNAPSHOT	
 	-->
 	
+  <!-- We skip the test if the maven.test.skip system property is set
+       to true. See also http://jira.qos.ch/browse/LBCLASSIC-191 -->
+
 	<echo message="compile classpath: ${currentVersion}" />
 	<echo message="test classpath:    ${test_classpath}" />
 	<echo message="basedir:           ${basedir}" />
@@ -39,7 +46,7 @@
 		<mkdir dir="target/unit-reports" />
 	</target>
 
-  <target name="createIBundle">
+  <target name="createIBundle" unless="maven.test.skip">
     <mkdir dir="${bundlesDir}"/>
     <jar destFile="${iBundleJar}" 
          manifest="src/IBUNDLE-META-INF/MANIFEST.MF"
@@ -48,7 +55,7 @@
                    
   </target>
 
-	<target name="testAll" depends="init, createIBundle, logback">
+	<target name="testAll" depends="init, createIBundle, logback" unless="maven.test.skip">
 	</target>
 
 
@@ -71,8 +78,7 @@
         invoked from the parent dir, which messes up theses tests. Hence, the
         fork="yes" dir="${basedir}" -->
 
-
-	<target name="logback">
+	<target name="logback" unless="maven.test.skip">
     <prepareOSGiHarness binding="logback"/>
     <junit printsummary="yes" fork="yes" dir="${basedir}" haltonfailure="yes">
 			<classpath path="${test_classpath}"/>

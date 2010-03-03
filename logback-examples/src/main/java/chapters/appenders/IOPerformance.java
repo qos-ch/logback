@@ -57,9 +57,9 @@ public class IOPerformance extends Thread {
     fa.setAppend(true);
     fa.setContext(context);
     fa.start();
-    
-    ((ch.qos.logback.classic.Logger)logger).addAppender(fa);
-    
+
+    ((ch.qos.logback.classic.Logger) logger).addAppender(fa);
+
     StatusPrinter.print(context);
   }
 
@@ -80,7 +80,6 @@ public class IOPerformance extends Thread {
     // Second test with no immediate flushing
     perfCase(false, l);
 
-
     // There is no fourth test as buffered IO and immediate flushing
     // do not make sense.
   }
@@ -95,8 +94,7 @@ public class IOPerformance extends Thread {
     System.exit(1);
   }
 
-  static void perfCase(boolean immediateFlush, long len)
-      throws Exception {
+  static void perfCase(boolean immediateFlush, long len) throws Exception {
     IOPerformance[] threads = new IOPerformance[NUM_THREADS];
     OtherIO otherIOThread = new OtherIO();
     otherIOThread.start();
@@ -123,7 +121,7 @@ public class IOPerformance extends Thread {
     otherIOThread.interrupted = true;
     otherIOThread.join();
 
-    System.out.println("On total throughput of " + (sum) 
+    System.out.println("On total throughput of " + (sum)
         + " logs per microsecond.");
     System.out.println("------------------------------------------------");
   }
@@ -136,7 +134,7 @@ public class IOPerformance extends Thread {
       logger.debug(MSG);
     }
 
-    throughput = (len * 1.0) / ((System.nanoTime() - before)/1000);
+    throughput = (len * 1.0) / ((System.nanoTime() - before) / 1000);
     System.out.println(getName() + ", immediateFlush: " + immediateFlush
         + ", throughput: " + throughput + " logs per microsecond.");
   }
@@ -148,19 +146,14 @@ class OtherIO extends Thread {
 
   public void run() {
     long before = System.nanoTime();
-    
     try {
       FileWriter fw = new FileWriter(IOPerformance.PARALLEL_FILE, true);
 
       while (!interrupted) {
-//        if (counter++ % 1000 == 0) {
-//          Thread.yield();
-//        }
         counter++;
-        fw.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        fw.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         fw.flush();
       }
-
     } catch (IOException e) {
       e.printStackTrace();
     }
