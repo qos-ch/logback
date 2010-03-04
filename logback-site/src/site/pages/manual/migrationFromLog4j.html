@@ -69,13 +69,13 @@
 
     <p>Let us begin by migrating a hypothetcical and trivially simple
     log4j layout named <a
-    href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+    href="../xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
     which returns the message contained in a logging events as the
     formatted message. Here is the code.
     </p>
     
 
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
@@ -96,10 +96,10 @@ public class TrivialLog4jLayout extends Layout {
 }</pre>
 
     <p>The logback-classic equivalent named <a
-    href="../xref/chapter11/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
+    href="../xref/chapters/migrationFromLog4j/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
     would be </p>
     
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -140,10 +140,10 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
    
    <p>Migrating an appender is quite similar to migrating layout. Here
    is a trivially simple appender called <a
-   href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+   href="../xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
    which writes on the console the string returned by its layout.</p>
    
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
@@ -166,11 +166,11 @@ public class TrivialLog4jAppender extends AppenderSkeleton {
 }</pre>
 
    <p>The logback-classic equivalent named <a
-   href="../xref/chapter11/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
+   href="../xref/chapters/migrationFromLog4j/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
    would be written as</p>
 
 
-   <pre class="prettyprint source">package chapter11;
+   <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;

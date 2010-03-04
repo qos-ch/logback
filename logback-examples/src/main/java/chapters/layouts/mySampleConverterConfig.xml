@@ -1,6 +1,6 @@
 <configuration>
 
-	<conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" />
+	<conversionRule conversionWord="sample" converterClass="chapters.layouts.MySampleConverter" />
 	
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">

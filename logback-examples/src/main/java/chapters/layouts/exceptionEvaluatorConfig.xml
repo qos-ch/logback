@@ -1,7 +1,7 @@
 <configuration>
 
   <evaluator name="DISPLAY_EX_EVAL">
-    <Expression>throwable != null &amp;&amp; throwable instanceof chapter5.TestException</Expression>
+    <Expression>throwable != null &amp;&amp; throwable instanceof chapters.layouts.TestException</Expression>
   </evaluator>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

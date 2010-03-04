@@ -2,7 +2,7 @@
 
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="chapter5.MySampleLayout2"> 
+    <layout class="chapters.layouts.MySampleLayout2"> 
     	<prefix>MyPrefix</prefix>
     	<printThreadName>false</printThreadName>
     </layout>

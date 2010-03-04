@@ -1,6 +1,6 @@
 <configuration>
 
-  <turboFilter class="chapter6.SampleTurboFilter">
+  <turboFilter class="chapters.filters.SampleTurboFilter">
     <Marker>sample</Marker>
   </turboFilter>
 

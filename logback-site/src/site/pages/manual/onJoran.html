@@ -47,7 +47,7 @@
     </p>
 
     <p>The examples presented in this chapter can be found under
-    <em>LOGBACK_HOME/logback-examples/src/main/java/chapter10</em>
+    <em>LOGBACK_HOME/logback-examples/src/main/java/chapters/onJoran/</em>
     folder.
     </p>
 
@@ -248,15 +248,15 @@ public abstract class Action {
    <p>The first example in this chapter illustrates the minimal
    plumbing required for using Joran. The example consists of a
    trivial action called <a
-   href="../xref/chapter10/helloWorld/HelloWorldAction.html">
+   href="../xref/chapters/onJoran/helloWorld/HelloWorldAction.html">
    <code>HelloWorldAction</code></a> which prints "Hello World" on the
    console when it's <code>begin()</code> method is invoked. The
    parsing of XML files is done by a configurator. For the purposes of
    this chapter, we have developped a very simple configurator called
    <a
-   href="../xref/chapter10/SimpleConfigurator.html"><code>SimpleConfigurator</code></a>.
+   href="../xref/chapters/onJoran/SimpleConfigurator.html"><code>SimpleConfigurator</code></a>.
    The <a
-   href="../xref/chapter10/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
+   href="../xref/chapters/onJoran/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
    application brings all pieces together.
    </p>
 
@@ -276,14 +276,14 @@ public abstract class Action {
 
     <p>The <em>hello.xml</em> file contains one &lt;hello-world&gt;
     element, without any other nested elements. See the
-    <em>logback-examples/src/main/java/chapter10/helloWorld/</em>
+    <em>logback-examples/src/main/java/chapters/onJoran/helloWorld/</em>
     folder for exact contents.
     </p>
  
     <p>Running the HelloWorld application with <em>hello.xml</em> file
     will print "Hello World" on the console.</p>
    
-    <p class="command">java chapter10.helloWorld.HelloWorld src/main/java/chapter10/helloWorld/hello.xml</p>
+    <p class="command">java chapters.onJoran.helloWorld.HelloWorld src/main/java/chapters/onJoran/helloWorld/hello.xml</p>
 
     <p>You are highly encourared to poke about this example, by adding
     new rules on the rule store, modifying the XML document
@@ -307,14 +307,14 @@ public abstract class Action {
     </p>
 
     <em>Example 10.<span class="autoEx"/>: First calculator example
-    (logback-examples/src/main/java/chapter10/calculator/calculator1.xml)</em>
+    (logback-examples/src/main/java/chapters/onJoran/calculator/calculator1.xml)</em>
 
     <em> </em>
     <pre class="prettyprint source">&lt;computation name="total">
   &lt;literal value="3"/>
 &lt;/computation></pre>
 
-    <p>In the <a href="../xref/chapter10/calculator/Calculator1.html">
+    <p>In the <a href="../xref/chapters/onJoran/calculator/Calculator1.html">
     <code>Calculator1</code></a> application, we declare various
     parsing rules (patterns and actions) collaborating together to
     compute a result based on the contents of an XML document. 
@@ -323,7 +323,7 @@ public abstract class Action {
     <p> Running <code>Calculator1</code> application with
     <em>calculator1.xml</em></p>
 
-    <p class="command">java chapter10.calculator.Calculator1 src/main/java/chapter10/calculator/calculator1.xml</p>
+    <p class="command">java chapters.onJoran.calculator.Calculator1 src/main/java/chapters/onJoran/calculator/calculator1.xml</p>
 
     <p>will print:</p>
 
@@ -338,11 +338,11 @@ public abstract class Action {
       <li>The start event corresponding to the &lt;computation&gt;
       element translates into the current pattern
       "/computation". Since in the <a
-      href="../xref/chapter10/calculator/Calculator1.html">
+      href="../xref/chapters/onJoran/calculator/Calculator1.html">
       <code>Calculator1</code></a> application we associated the
       pattern "/computation" with a
       <a
-      href="../xref/chapter10/calculator/ComputationAction1.html">
+      href="../xref/chapters/onJoran/calculator/ComputationAction1.html">
       <code>ComputationAction1</code></a> instance, the
       <code>begin()</code> method of that
       <code>ComputationAction1</code> instance is invoked.
@@ -353,7 +353,7 @@ public abstract class Action {
       "/computation/literal". Given the association of the
       "/computation/literal" pattern with a
       <a
-      href="../xref/chapter10/calculator/LiteralAction.html">
+      href="../xref/chapters/onJoran/calculator/LiteralAction.html">
       <code>LiteralAction</code></a> instance, the
       <code>begin()</code> method of that <code>LiteralAction</code>
       instance is called.</p>
@@ -390,7 +390,7 @@ public abstract class Action {
 
     <em>Example 10.<span class="autoEx"/>: Calculator configuration
     file
-    (logback-examples/src/main/java/chapter10/calculator/calculator2.xml)</em>
+    (logback-examples/src/main/java/chapters/onJoran/calculator/calculator2.xml)</em>
   <pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;literal value="7"/&gt;
   &lt;literal value="3"/&gt;
@@ -402,19 +402,19 @@ public abstract class Action {
 
   <p>As in the previous example, in response to the &lt;literal&gt;
   element,the appropriate <a
-  href="../xref/chapter10/calculator/LiteralAction.html">
+  href="../xref/chapters/onJoran/calculator/LiteralAction.html">
   <code>LiteralAction</code></a> instance will push an integer,
   corresponding to the value attribute, at the top of the
   interpretation context's object stack. In this example, that is
   <em>calculator2.xml</em>, the values are 7 and 3. In response to the
   &lt;add&gt; element, the appropriate <a
-  href="../xref/chapter10/calculator/AddAction.html"><code>AddAction</code></a>
+  href="../xref/chapters/onJoran/calculator/AddAction.html"><code>AddAction</code></a>
   will pop two previously pushed integers, compute their sum and push
   the result, i.e. 10 (=7+3), at the top of the interpretation
   context's stack. The next literal element will cause LiteralAction
   to push an integer with value 3 at the top of the stack. In response
   to the &lt;multiply&gt; element, the appropriate <a
-  href="../xref/chapter10/calculator/MultiplyAction.html"><code>MultiplyAction</code></a>
+  href="../xref/chapters/onJoran/calculator/MultiplyAction.html"><code>MultiplyAction</code></a>
   will pop two previously pushed integers, i.e. 10 and 3, and compute
   their product.  It will push the result, i.e. 30, at the top of the
   stack. At the very end, in reponse to the end event corresponding to
@@ -422,7 +422,7 @@ public abstract class Action {
   object at the top of the stack. Thus, running:
   </p>
 
-  <p class="command">java chapter10.calculator.Calculator1 src/main/java/chapter10/calculator/calculator2.xml </p>
+  <p class="command">java chapters.onJoran.calculator.Calculator1 src/main/java/chapters/onJoran/calculator/calculator2.xml </p>
   
   <p>will yield</p>
 
@@ -437,7 +437,7 @@ public abstract class Action {
   same element. Here's the content of <em>calculator3.xml</em>:</p>
 
   <em>Example 10.<span class="autoEx"/>: Calculator configuration file
-  (logback-examples/src/main/java/chapter10/calculator/calculator3.xml)</em>
+  (logback-examples/src/main/java/chapters/onJoran/calculator/calculator3.xml)</em>
 
 <pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;computation&gt;
@@ -453,7 +453,7 @@ public abstract class Action {
   <p>Much like the use of parentheses in an algebrical equation, the
   presence of a <code>computation</code> element nested in another is
   managed by the <a
-  href="../xref/chapter10/calculator/ComputationAction2.html">
+  href="../xref/chapters/onJoran/calculator/ComputationAction2.html">
   <code>ComputationAction2</code></a> class using an internal
   stack. The well-formedness of XML will guarantee that a value saved
   by one <code>begin()</code> will be consumed only by the matching
@@ -496,19 +496,19 @@ public abstract class Action {
 
   <p>You can create and register a custom implicit action as
   illustrated in the next example contained within the
-  <em>logback-examples/src/main/java/chapter10/implicit</em> folder.
+  <em>logback-examples/src/main/java/chapters/onJoran/implicit</em> folder.
   </p>
 
   <p>The <a
-  href="../xref/chapter10/implicit/PrintMe.html"><code>PrintMe</code></a>
+  href="../xref/chapters/onJoran/implicit/PrintMe.html"><code>PrintMe</code></a>
   application associates an <a
-  href="../xref/chapter10/implicit/NOPAction.html">
+  href="../xref/chapters/onJoran/implicit/NOPAction.html">
   <code>NOPAction</code></a> instance with the pattern "*/foo", that
   is any element named as "foo". As its name indicates, the
   <code>begin</code>() and <code>end</code>() methods of
   <code>NOPAction</code> are empty. The <code>PrintMe</code>
   application also registers an instance of <a
-  href="../xref/chapter10/implicit/PrintMeImplicitAction.html">PrintMeImplicitAction</a>
+  href="../xref/chapters/onJoran/implicit/PrintMeImplicitAction.html">PrintMeImplicitAction</a>
   in its list of implicit actions. The
   <code>PrintMeImplicitAction</code> is applicable for any element
   which has a <span class="attr">printme</span> attribute set to
@@ -522,7 +522,7 @@ public abstract class Action {
   how implicit actions come into play.</p>
 
   <em>Example 10.<span class="autoEx"/>: Usage of implicit rules
-  (logback-examples/src/main/java/chapter10/implicit/implicit1.xml)</em>
+  (logback-examples/src/main/java/chapters/onJoran/implicit/implicit1.xml)</em>
   <pre class="prettyprint source">&lt;foo&gt;
   &lt;xyz printme="true"&gt;
     &lt;abc printme="true"/&gt;
@@ -536,7 +536,7 @@ public abstract class Action {
 
   <p>Running</p>
 
-  <p class="command">java chapter10.implicit.PrintMe src/main/java/chapter10/implicit/implicit1.xml</p>
+  <p class="command">java chapters.onJoran.implicit.PrintMe src/main/java/chapters/onJoran/implicit/implicit1.xml</p>
   <p>yields:</p>
 
   <p class="console">Element [xyz] asked to be printed.
@@ -693,9 +693,9 @@ Element [abc] asked to be printed.
   <p>Joran includes an action which allows the Joran interpreter to
   learn new rules on the fly, that is while interpreting an XML
   document.  See the
-  <em>logback-examples/src/main/java/chapter10/newRule/</em> directory
+  <em>logback-examples/src/main/java/chapters/onJoran/newRule/</em> directory
   for sample code. In this package, the <a
-  href="../xref/chapter10/newRule/NewRuleCalculator.html">
+  href="../xref/chapters/onJoran/newRule/NewRuleCalculator.html">
   <code>NewRuleCalculator</code></a> application sets up just two
   rules, one rule to process the top-most element, and a second rule
   to learn new rules. Here is the relevant code from
@@ -719,7 +719,7 @@ Element [abc] asked to be printed.
   <p>Here is how new rules can be declared in an xml file:</p>
 
   <pre class="prettyprint source">&lt;new-rule pattern="*/computation/literal"
-          actionClass="chapter10.calculator.LiteralAction"/&gt;</pre>
+          actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;</pre>
 
   <p>Using such new-rule declarations, we can transform
   <code>NewRuleCalculator</code> to behave like the
@@ -728,15 +728,15 @@ Element [abc] asked to be printed.
 
   <em>Example 10..<span class="autoEx"/>: Configuration file using new
   rules on the fly
-  (logback-examples/src/main/java/chapter10/newrule/new-rule.xml)</em>
+  (logback-examples/src/main/java/chapters/onJoran/newrule/new-rule.xml)</em>
 
   <pre class="prettyprint source">&lt;computation name="toto"&gt;
   &lt;new-rule pattern="*/computation/literal" 
-            actionClass="chapter10.calculator.LiteralAction"/&gt;
+            actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;
   &lt;new-rule pattern="*/computation/add" 
-            actionClass="chapter10.calculator.AddAction"/&gt;
+            actionClass="chapters.onJoran.calculator.AddAction"/&gt;
   &lt;new-rule pattern="*/computation/multiply" 
-            actionClass="chapter10.calculator.MultiplyAction"/&gt;
+            actionClass="chapters.onJoran.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
@@ -749,7 +749,7 @@ Element [abc] asked to be printed.
 &lt;/computation&gt;</pre>
 
 
-  <p class="command">java java chapter10.newRule.NewRuleCalculator src/main/java/chapter10/newRule/new-rule.xml</p>
+  <p class="command">java java chapters.onJoran.newRule.NewRuleCalculator src/main/java/chapters/onJoran/newRule/new-rule.xml</p>
 
   <p>yields</p>
 

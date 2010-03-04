@@ -1,6 +1,6 @@
 <configuration>
 
-  <property file="src/main/java/chapter3/variables2.properties" />
+  <property file="src/main/java/chapters/configuration/variables2.properties" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${destination}/myApp.log</file>

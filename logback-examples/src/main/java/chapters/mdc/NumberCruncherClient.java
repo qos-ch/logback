@@ -42,7 +42,7 @@ public class NumberCruncherClient {
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java chapter7.NumberCruncherClient HOST\n" +
+    System.err.println("Usage: java chapters.mdc.NumberCruncherClient HOST\n" +
       "   where HOST is the machine where the NumberCruncherServer is running.");
     System.exit(1);
   }

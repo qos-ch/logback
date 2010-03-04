@@ -2,7 +2,7 @@
 
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    <Filter class="chapter6.SampleFilter" />
+    <Filter class="chapters.filters.SampleFilter" />
 
     <layout class="ch.qos.logback.classic.PatternLayout">
       <pattern>

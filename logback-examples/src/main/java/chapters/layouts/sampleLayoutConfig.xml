@@ -2,7 +2,7 @@
 
   <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="chapter5.MySampleLayout" />
+    <layout class="chapters.layouts.MySampleLayout" />
   </appender>
 
   <root level="debug">

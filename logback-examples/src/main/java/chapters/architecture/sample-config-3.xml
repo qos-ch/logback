@@ -17,7 +17,7 @@
 		<File>sample-log.txt</File>
 	</appender>
 	
-	<logger name="chapter2" level="info" />
+	<logger name="chapters.architecture" level="info" />
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />

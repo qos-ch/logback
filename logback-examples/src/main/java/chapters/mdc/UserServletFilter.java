@@ -40,7 +40,7 @@ import org.slf4j.MDC;
  * <filter>
  *   <filter-name>User Servlet Filter</filter-name>
  *   <filter-class>
- *     chapter7.UserServletFilter
+ *     chapters.mdc.UserServletFilter
  *   </filter-class>
  * </filter>
  * <filter-mapping>

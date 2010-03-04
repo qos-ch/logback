@@ -56,7 +56,7 @@ public class ResilientFileOutputStream extends OutputStream {
     return file;
   }
 
-  boolean isPresumedInError() {
+  final private boolean isPresumedInError() {
     // existence of recoveryCoordinator indicates failed state
     return (recoveryCoordinator != null && !presumedClean);
   }
@@ -93,7 +93,7 @@ public class ResilientFileOutputStream extends OutputStream {
     }
   }
 
-  private void postSuccessfulWrite() {
+  final private void postSuccessfulWrite() {
     if (recoveryCoordinator != null) {
       recoveryCoordinator = null;
       statusCount = 0;

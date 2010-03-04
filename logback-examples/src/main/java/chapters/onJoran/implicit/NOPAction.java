@@ -11,24 +11,24 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package chapters.migrationFromLog4j;
+package chapters.onJoran.implicit;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.xml.sax.Attributes;
+
+import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+
 
 /**
- * A minimal application making use of log4j and TrivialLog4jAppender.
- * 
+ * No operation (NOP) action that does strictly nothing. 
+ *  
  * @author Ceki G&uuml;lc&uuml;
- *
  */
-public class Log4jMain {
-
-  static Logger logger = Logger.getLogger(Log4jMain.class);
-
-  public static void main(String[] args) {
-    PropertyConfigurator.configure("src/main/java/chapters/migrationFromLog4j/log4jTrivial.properties");
-    logger.debug("Hello world");
+public class NOPAction extends Action {
+  
+  public void begin(InterpretationContext ec, String name, Attributes attributes) {
   }
 
+  public void end(InterpretationContext ec, String name) {
+  }
 }

@@ -86,10 +86,10 @@
 
 		<p>Here is a possible implementation, authored by the Texan developer:</p>
 		<em>Example 5.0: Sample implementation of a Layout
-			<a href="../xref/chapter5/MySampleLayout.html">
-			(logback-examples/src/main/java/chapter5/MySampleLayout.java)</a></em>
+			<a href="../xref/chapters/layouts/MySampleLayout.html">
+			(logback-examples/src/main/java/chapters/layouts/MySampleLayout.java)</a></em>
 
-		<pre class="prettyprint source">package chapter5;
+		<pre class="prettyprint source">package chapters.layouts;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -150,12 +150,12 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		example:</p>
 		
 		<em>Example 5.0: Configuration of MySampleLayout
-			(logback-examples/src/main/java/chapter5/sampleLayoutConfig.xml)</em>
+			(logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;layout class="chapter5.MySampleLayout" /></b>
+    <b>&lt;layout class="chapters.layouts.MySampleLayout" /></b>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -164,8 +164,8 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 &lt;/configuration></pre>
 
 		<p>The sample application <a
-		href="../xref/chapter5/SampleLogging.html">
-		<code>chapter5.SampleLogging</code></a> configures logback with
+		href="../xref/chapters/layouts/SampleLogging.html">
+		<code>chapters.layouts.SampleLogging</code></a> configures logback with
 		the configuration script supplied as a parameter and then logs a
 		debug message, followed by an error message. </p>
 		
@@ -174,12 +174,12 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		<em>logback-examples</em> directory.
     </p>
     
-    <p class="command">java chapter5.SampleLogging src/main/java/chapter5/sampleLayoutConfig.xml</p>
+    <p class="command">java chapters.layouts.SampleLogging src/main/java/chapters/layouts/sampleLayoutConfig.xml</p>
     
     <p> This will produce:</p>
 		
-<div class="source"><pre>0 DEBUG [main] chapter5.SampleLogging - Everything's going well
-0 ERROR [main] chapter5.SampleLogging - maybe not quite...</pre></div>
+<div class="source"><pre>0 DEBUG [main] chapters.layouts.SampleLogging - Everything's going well
+0 ERROR [main] chapters.layouts.SampleLogging - maybe not quite...</pre></div>
 
 		<p>That was simple enough.  The skeptic Pyrrho of Elea, who
 		insists that nothing is certain except perhaps uncertainty itself,
@@ -192,7 +192,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 
 		<p>
 			The
-			<a href="../xref/chapter5/MySampleLayout2.html"><code>MySampleLayout2</code>
+			<a href="../xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code>
 			</a>
 			class contains two attributes. The first one is a prefix that
 			can be added to the output. The second attribute is used to
@@ -201,7 +201,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		</p>
 		<p>Here is the implementation of this class:</p>
 
-    <pre class="prettyprint source">package chapter5;
+    <pre class="prettyprint source">package chapters.layouts;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -257,7 +257,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="chapter5.MySampleLayout2"> 
+    &lt;layout class="chapters.layouts.MySampleLayout2"> 
       <b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;</b>
       <b>&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
     &lt;/layout>
@@ -299,10 +299,10 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 		</p>
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
-			<a href="../xref/chapter5/PatternSample.html">
-			(logback-examples/src/main/java/chapter5/PatternSample.java)</a>
+			<a href="../xref/chapters/layouts/PatternSample.html">
+			(logback-examples/src/main/java/chapters/layouts/PatternSample.java)</a>
 		</em>
-		<pre class="prettyprint source">package chapter5;
+		<pre class="prettyprint source">package chapters.layouts;
 
 import org.slf4j.LoggerFactory;
 
@@ -1196,11 +1196,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapter5/callerEvaluatorConfig.xml)
+			(logback-examples/src/main/java/chapters/layouts/callerEvaluatorConfig.xml)
 		</em>
 		<pre class="prettyprint source">&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
-    &lt;Expression>logger.getName().contains("chapter5") &amp;amp;&amp;amp; \
+    &lt;Expression>logger.getName().contains("chapters.layouts") &amp;amp;&amp;amp; \
       message.contains("who calls thee")&lt;/Expression>
   &lt;/evaluator></b>
 
@@ -1224,11 +1224,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 		
     <p><em>
 			Example 5.2: Sample usage of EventEvaluators
-			<a href="../xref/chapter5/CallerEvaluatorExample.html">
-			(logback-examples/src/main/java/chapter5/CallerEvaluatorExample.java)</a>
+			<a href="../xref/chapters/layouts/CallerEvaluatorExample.html">
+			(logback-examples/src/main/java/chapters/layouts/CallerEvaluatorExample.java)</a>
 		</em>
     </p>
-		<pre class="prettyprint source">package chapter5;
+		<pre class="prettyprint source">package chapters.layouts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1283,7 +1283,7 @@ public class CallerEvaluatorExample {
 0    [main] DEBUG - I know me 1 
 0    [main] DEBUG - I know me 2 
 0    [main] DEBUG - who calls thee? 
-Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
+Caller+0   at chapters.layouts.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
 0    [main] DEBUG - I know me 4</pre></div>
 
 		<p>One can change the expression to correspond a real world
@@ -1310,11 +1310,11 @@ Caller+0   at chapter5.CallerEvaluatorExample.main(CallerEvaluatorExample.java:2
 
    <p><em>
 			Example 5.2: Sample usage of EventEvaluators
-			<a href="../xref/chapter5/ExceptionEvaluatorExample.html">
-			(logback-examples/src/main/java/chapter5/ExceptionEvaluatorExample.java)</a>
+			<a href="../xref/chapters/layouts/ExceptionEvaluatorExample.html">
+			(logback-examples/src/main/java/chapters/layouts/ExceptionEvaluatorExample.java)</a>
 		</em>
     </p>
-<pre class="prettyprint source">package chapter5;
+<pre class="prettyprint source">package chapters.layouts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1352,13 +1352,13 @@ public class ExceptionEvaluatorExample {
 		third logging request.</p>
 		<em>
 			Example 5.3: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapter5/exceptionEvaluatorConfig.xml)
+			(logback-examples/src/main/java/chapters/layouts/exceptionEvaluatorConfig.xml)
 		</em>
 		<pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;evaluator name="DISPLAY_EX_EVAL">
     &lt;Expression>throwable != null &amp;amp;&amp;amp; throwable instanceof  \
-      chapter5.TestException&lt;/Expression>
+      chapters.layouts.TestException&lt;/Expression>
   &lt;/evaluator></b>
 	
   &lt;appender name="STDOUT"
@@ -1375,7 +1375,7 @@ public class ExceptionEvaluatorExample {
 &lt;/configuration></pre>
 
 		<p>With this configuration, each time an instance of the
-		<em>chapter5.TestException</em> is included within a logging
+		<em>chapters.layouts.TestException</em> is included within a logging
 		request, the stack trace will be suppressed.
 		</p>
 
@@ -1412,9 +1412,9 @@ public class ExceptionEvaluatorExample {
 		conventions. Here is a possible implementation:</p>
 		
 <em> Example 5.4: Sample Converter Example 
-<a href="../xref/chapter5/MySampleConverter.html">
-(src/main/java/chapter5/MySampleConverter.java)</a></em>
-<pre class="prettyprint source">package chapter5;
+<a href="../xref/chapters/layouts/MySampleConverter.html">
+(src/main/java/chapters/layouts/MySampleConverter.java)</a></em>
+<pre class="prettyprint source">package chapters.layouts;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ClassicConverter;
@@ -1464,10 +1464,10 @@ public class MySampleConverter extends ClassicConverter {
 		<code>Converter</code>. For this purpose, we need to declare the
 		new conversion word in the configuration file, as shown below:</p>
 		
-<em> Example 5.4: Sample Converter Example (src/main/java/chapter5/mySampleConverterConfig.xml)</em>
+<em> Example 5.4: Sample Converter Example (src/main/java/chapters/layouts/mySampleConverterConfig.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
-  <b>&lt;conversionRule conversionWord="sample" converterClass="chapter5.MySampleConverter" /></b>
+  <b>&lt;conversionRule conversionWord="sample" converterClass="chapters.layouts.MySampleConverter" /></b>
 	
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -1490,7 +1490,7 @@ public class MySampleConverter extends ClassicConverter {
     view the results on non-Windows platforms such as Linux or
     Mac. The following command:</p>
 
-    <div class="source">java chapter5.SampleLogging src/main/java/chapter5/mySampleConverterConfig.xml </div>
+    <div class="source">java chapters.layouts.SampleLogging src/main/java/chapters/layouts/mySampleConverterConfig.xml </div>
 
     <p>should yield:</p>
     

@@ -34,7 +34,7 @@ public class SimpleMDC {
     // we put the first name
     MDC.put("first", "Dorothy");
 
-    // configure via the configuration file "chapter7/simpleMDC.xml"
+    // configure via the configuration file "chapters/mdc/simpleMDC.xml"
     // which ships with the examples
     configureViaXML_File();
     
@@ -84,7 +84,7 @@ public class SimpleMDC {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.stop();
-      URL url = Loader.getResourceBySelfClassLoader("chapter7/simpleMDC.xml");
+      URL url = Loader.getResourceBySelfClassLoader("chapters/mdc/simpleMDC.xml");
       configurator.doConfigure(url);
     } catch (JoranException je) {
       StatusPrinter.print(lc);

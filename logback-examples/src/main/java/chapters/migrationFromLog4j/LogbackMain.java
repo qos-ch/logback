@@ -38,7 +38,7 @@ public class LogbackMain {
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
     lc.reset();
-    configurator.doConfigure("src/main/java/chapter11/logback-trivial.xml");
+    configurator.doConfigure("src/main/java/chapters/migrationFromLog4j/logback-trivial.xml");
     StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
     

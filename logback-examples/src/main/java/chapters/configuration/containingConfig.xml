@@ -2,7 +2,7 @@
 
 <configuration>
 
-  <include file="src/main/java/chapter3/includedConfig.xml" />
+  <include file="src/main/java/chapters/configuration/includedConfig.xml" />
 
   <root level="DEBUG">
     <appender-ref ref="includedConsole" />

@@ -105,8 +105,8 @@
 		events, the value NEUTRAL is returned.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Basic custom filter (<a href="../xref/chapter6/SampleFilter.html">logback-examples/src/main/java/chapter6/SampleFilter.java</a>)</em>		
-<pre class="prettyprint source">package chapter6;
+<em>Example 6.<span class="autoEx"/>: Basic custom filter (<a href="../xref/chapters/filters/SampleFilter.html">logback-examples/src/main/java/chapters/filters/SampleFilter.java</a>)</em>		
+<pre class="prettyprint source">package chapters.filters;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
@@ -128,11 +128,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		<code>SampleFilter</code> to a <code>ConsoleAppener</code>.
 		</p>
 
-<em>Example 6.<span class="autoEx"/>: SampleFilter configuration (logback-examples/src/main/java/chapter6/SampleFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: SampleFilter configuration (logback-examples/src/main/java/chapters/filters/SampleFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
-    <b>&lt;Filter class="chapter6.SampleFilter" /></b>
+    <b>&lt;Filter class="chapters.filters.SampleFilter" /></b>
 
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
       &lt;pattern>
@@ -183,7 +183,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Sample LevelFilter configuration (logback-examples/src/main/java/chapter6/levelFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: Sample LevelFilter configuration (logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -215,7 +215,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 
-<em>Example 6.<span class="autoEx"/>: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapter6/thresholdFilterConfig.xml)</em>				
+<em>Example 6.<span class="autoEx"/>: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapters/filters/thresholdFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -393,7 +393,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>Here is a concrete example.</p>
 
-<em>Example 6.<span class="autoEx"/>: Basic event evaluator usage (logback-examples/src/main/java/chapter6/basicEventEvaluator.xml)</em>
+<em>Example 6.<span class="autoEx"/>: Basic event evaluator usage (logback-examples/src/main/java/chapters/filters/basicEventEvaluator.xml)</em>
 
 <pre class="prettyprint source longline">&lt;configuration>
 
@@ -444,27 +444,27 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     </p>
 
     <p>The <a
-    href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
+    href="../xref/chapters/filters/FilterEvents.html"><code>FilterEvents</code></a>
     application issues ten logging requests, numbered 0 to 9. Let us
     first run <code>FilterEvents</code> class without any filters:
 		</p>
 		
 <div class="source"><pre>
-java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
+java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfiguration.xml
 </pre></div>
 		
 		<p>All requests will be displayed, as shown below:</p>
 
-<div class="source"><pre>0    [main] INFO  chapter6.FilterEvents - logging statement 0
-0    [main] INFO  chapter6.FilterEvents - logging statement 1
-0    [main] INFO  chapter6.FilterEvents - logging statement 2
-0    [main] DEBUG chapter6.FilterEvents - logging statement 3
-0    [main] INFO  chapter6.FilterEvents - logging statement 4
-0    [main] INFO  chapter6.FilterEvents - logging statement 5
-0    [main] ERROR chapter6.FilterEvents - <b>billing statement 6</b>
-0    [main] INFO  chapter6.FilterEvents - logging statement 7
-0    [main] INFO  chapter6.FilterEvents - logging statement 8
-0    [main] INFO  chapter6.FilterEvents - logging statement 9</pre></div>
+<div class="source"><pre>0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 1
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 2
+0    [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 4
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 5
+0    [main] ERROR chapters.filters.FilterEvents - <b>billing statement 6</b>
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 7
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</pre></div>
 
 
 
@@ -474,19 +474,19 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 		precisely the desired outcome.</p>
 
     <p>Running with <em>basicEventEvaluator.xml</em>:</p>
-    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/basicEventEvaluator.xml</p>
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/basicEventEvaluator.xml</p>
     <p>we obtain:
 		</p>
 		
-    <p class="source">0    [main] INFO  chapter6.FilterEvents - logging statement 0
-0    [main] INFO  chapter6.FilterEvents - logging statement 1
-0    [main] INFO  chapter6.FilterEvents - logging statement 2
-0    [main] DEBUG chapter6.FilterEvents - logging statement 3
-0    [main] INFO  chapter6.FilterEvents - logging statement 4
-0    [main] INFO  chapter6.FilterEvents - logging statement 5
-0    [main] INFO  chapter6.FilterEvents - logging statement 7
-0    [main] INFO  chapter6.FilterEvents - logging statement 8
-0    [main] INFO  chapter6.FilterEvents - logging statement 9</p>
+    <p class="source">0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 1
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 2
+0    [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 4
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 5
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 7
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
 		
  	  <h2><a name="matcher" href="#matcher">Matchers</a></h2>
 
@@ -502,7 +502,7 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 
     <p>An example should clarify the point:</p>
 
-<em>Example 6.<span class="autoEx"/>: Defining matchers in an event evaluator (logback-examples/src/main/java/chapter6/evaluatorWithMatcher.xml)</em>
+<em>Example 6.<span class="autoEx"/>: Defining matchers in an event evaluator (logback-examples/src/main/java/chapters/filters/evaluatorWithMatcher.xml)</em>
 
     <pre class="prettyprint source">&lt;configuration debug="true">
 
@@ -531,15 +531,15 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
 &lt;/configuration></pre>
 
     <p>Running with <em>evaluatorWithMatcher.xml</em>:</p>
-    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/evaluatorWithMatcher.xml</p>
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/evaluatorWithMatcher.xml</p>
     <p>we obtain:
 		</p>
 		
-    <p class="source">260  [main] INFO  chapter6.FilterEvents - logging statement 0
-264  [main] INFO  chapter6.FilterEvents - logging statement 2
-264  [main] INFO  chapter6.FilterEvents - logging statement 4
-266  [main] ERROR chapter6.FilterEvents - billing statement 6
-266  [main] INFO  chapter6.FilterEvents - logging statement 8</p>
+    <p class="source">260  [main] INFO  chapters.filters.FilterEvents - logging statement 0
+264  [main] INFO  chapters.filters.FilterEvents - logging statement 2
+264  [main] INFO  chapters.filters.FilterEvents - logging statement 4
+266  [main] ERROR chapters.filters.FilterEvents - billing statement 6
+266  [main] INFO  chapters.filters.FilterEvents - logging statement 8</p>
 
     <p>In case you need to define additional matchers, you can do so by
     adding further <code>&lt;matcher></code> elements.</p>
@@ -587,8 +587,8 @@ java chapter6.FilterEvents src/main/java/chapter6/basicConfiguration.xml
     slightly more complex filter:
     </p>
     
-<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> (<a href="../xref/chapter6/SampleTurboFilter.html">logback-examples/src/main/java/chapter6/SampleTurboFilter.java</a>)</em>		
-<pre class="prettyprint source">package chapter6;
+<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> (<a href="../xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>)</em>		
+<pre class="prettyprint source">package chapters.filters;
 
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -652,9 +652,9 @@ public class SampleTurboFilter extends TurboFilter {
 		created <code>TurboFilter</code>.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapter6/sampleTurboFilterConfig.xml)</em>		
+<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapters/filters/sampleTurboFilterConfig.xml)</em>		
 <pre class="prettyprint source">&lt;configuration>
-  <b>&lt;turboFilter class="chapter6.SampleTurboFilter">
+  <b>&lt;turboFilter class="chapters.filters.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
   &lt;/turboFilter></b>
 
@@ -689,7 +689,7 @@ public class SampleTurboFilter extends TurboFilter {
    	</p>
    	
 <em>Example 6.<span class="autoEx"/>: <code>MDCFilter</code> and <code>MarkerFilter</code> 
-configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
+configuration (logback-examples/src/main/java/chapters/filters/turboFilters.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
@@ -718,10 +718,10 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 		following command:
 		</p>
     
-    <p class="source">java chapter6.FilterEvents src/main/java/chapter6/turboFilters.xml</p>
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/turboFilters.xml</p>
 
 		<p>As we've seen previously, the <a
-		href="../xref/chapter6/FilterEvents.html"><code>FilterEvents</code></a>
+		href="../xref/chapters/filters/FilterEvents.html"><code>FilterEvents</code></a>
 		application issues 10 logging requests, numbered 0 to 9. Except
 		for requests 3 and 6, all of the requests are of level
 		<em>INFO</em>, the same level as the one assigned to the root
@@ -739,15 +739,15 @@ configuration (logback-examples/src/main/java/chapter6/turboFilters.xml)</em>
 		configured with <em>turboFilters.xml</em> file shown above is:
 		</p>
 
-    <p class="source">2006-12-04 15:17:22,859 [main] INFO  chapter6.FilterEvents - logging statement 0
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 1
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 2
-2006-12-04 15:17:22,875 [main] DEBUG chapter6.FilterEvents - logging statement 3
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 4
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 5
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 7
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 8
-2006-12-04 15:17:22,875 [main] INFO  chapter6.FilterEvents - logging statement 9</p>
+    <p class="source">2006-12-04 15:17:22,859 [main] INFO  chapters.filters.FilterEvents - logging statement 0
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 1
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 2
+2006-12-04 15:17:22,875 [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 4
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 5
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 7
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 8
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
 			
 			
 		<p>One can see that the 3rd request, which should not be displayed
@@ -816,7 +816,7 @@ logger.debug("Hello {}.", name1);</pre>
 
     
 <em>Example 6.<span class="autoEx"/>: <code>DuplicateMessageFilter</code> 
-configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em>
+configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
@@ -836,12 +836,12 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
   configured with <em>duplicateMessage.xml</em> is:
   </p>
 
-    <p class="source">2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 0
-2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 1
-2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 2
-2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 4
-2008-12-19 15:04:26,156 [main] INFO  chapter6.FilterEvents - logging statement 5
-2008-12-19 15:04:26,171 [main] ERROR chapter6.FilterEvents - billing statement 6</p>
+    <p class="source">2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 0
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 1
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 2
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 4
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 5
+2008-12-19 15:04:26,171 [main] ERROR chapters.filters.FilterEvents - billing statement 6</p>
 
     <p>"logging statement 0" is the first <em>occurrence</em> of the
     message "logging statement {}". "logging statement 1" is the first
@@ -890,7 +890,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
     error will be logged:
     </p>
    	
-<em>Example 6.<span class="autoEx"/>: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator.xml)</em>
+<em>Example 6.<span class="autoEx"/>: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -917,7 +917,7 @@ configuration (logback-examples/src/main/java/chapter6/duplicateMessage.xml)</em
 		CSS resources. Here is what such a configuration would look like:
 		</p>	
 
-    <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapter6/accessEventEvaluator2.xml)</em>
+    <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator2.xml)</em>
     <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"

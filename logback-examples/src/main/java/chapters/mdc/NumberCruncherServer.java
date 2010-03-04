@@ -113,7 +113,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java chapter7.NumberCruncherServer configFile\n" +
+    System.err.println("Usage: java chapters.mdc.NumberCruncherServer configFile\n" +
       "   where configFile is a logback configuration file.");
     System.exit(1);
   }
