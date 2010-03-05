@@ -50,10 +50,16 @@ public abstract class Action extends ContextAwareBase {
    * Called when the parser encounters an element matching a
    * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
    */
-  public abstract void begin(InterpretationContext ec, String name,
+  public abstract void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException;
 
-  public void body(InterpretationContext ec, String body)
+  /**
+   * Called to pass the body (as text) contained within an element.
+   * @param ic
+   * @param body
+   * @throws ActionException
+   */
+  public void body(InterpretationContext ic, String body)
       throws ActionException {
     // NOP
   }
@@ -62,34 +68,34 @@ public abstract class Action extends ContextAwareBase {
    * Called when the parser encounters an endElement event matching a
    * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
    */
-  public abstract void end(InterpretationContext ec, String name)
+  public abstract void end(InterpretationContext ic, String name)
       throws ActionException;
 
   public String toString() {
     return this.getClass().getName();
   }
 
-  protected int getColumnNumber(InterpretationContext ec) {
-    Interpreter jp = ec.getJoranInterpreter();
-    Locator locator = jp.getLocator();
+  protected int getColumnNumber(InterpretationContext ic) {
+    Interpreter ji = ic.getJoranInterpreter();
+    Locator locator = ji.getLocator();
     if (locator != null) {
       return locator.getColumnNumber();
     }
     return -1;
   }
 
-  protected int getLineNumber(InterpretationContext ec) {
-    Interpreter jp = ec.getJoranInterpreter();
-    Locator locator = jp.getLocator();
+  protected int getLineNumber(InterpretationContext ic) {
+    Interpreter ji = ic.getJoranInterpreter();
+    Locator locator = ji.getLocator();
     if (locator != null) {
       return locator.getLineNumber();
     }
     return -1;
   }
 
-  protected String getLineColStr(InterpretationContext ec) {
-    String line = "line: " + getLineNumber(ec) + ", column: "
-        + getColumnNumber(ec);
+  protected String getLineColStr(InterpretationContext ic) {
+    String line = "line: " + getLineNumber(ic) + ", column: "
+        + getColumnNumber(ic);
     return line;
   }
 }

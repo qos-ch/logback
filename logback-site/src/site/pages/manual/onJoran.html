@@ -23,7 +23,7 @@
     </div>
     <div id="content">
       
-    <h2>Joran in your own applications</h2>
+    <h2>Chapter 11: Joran</h2>
 
     <div class="quote">
       <p><em>The answer, my friend, is blowin' in the wind, The answer
@@ -176,24 +176,33 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.ExecutionContext;
 
 public abstract class Action {
-  
-
   /**
    * Called when the parser encounters an element matching a
    * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
    */
-  public abstract void begin(InterpretationContext ec, String name,
+  public abstract void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException;
+
+  /**
+   * Called to pass the body (as text) contained within an element.
+   */
+  public void body(InterpretationContext ic, String body)
+      throws ActionException {
+    // NOP
+  }
 
   /*
    * Called when the parser encounters an endElement event matching a
    * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
    */
-  public abstract void end(InterpretationContext ec, String name)
+  public abstract void end(InterpretationContext ic, String name)
       throws ActionException;
 }</pre>
 
-   <p>Thus, every action must implement the begin and end methods.</p>
+   <p>Thus, every action must implement the <code>begin()</code> and
+   <code>end()</code> methods. The implemetnation of the
+   <code>body()</code> method being optional on account of the
+   empty/nop implementation provided by <code>Action</code>.</p>
 
 
    <h3><a name="ruleStore" href="#ruleStore">RuleStore</a> </h3>
