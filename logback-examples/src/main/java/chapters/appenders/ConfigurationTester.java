@@ -35,7 +35,6 @@ public class ConfigurationTester {
     Logger logger = (Logger) LoggerFactory.getLogger(ConfigurationTester.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    System.out.println("***********"+args[0]);
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);

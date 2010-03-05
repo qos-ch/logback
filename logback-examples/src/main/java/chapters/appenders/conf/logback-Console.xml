@@ -1,4 +1,4 @@
-<configuration debug="true">
+<configuration>
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <!-- encoders are assigned the type
@@ -8,7 +8,7 @@
     </encoder>
   </appender>
 
-  <root level="debug">
+  <root level="DEBUG">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
