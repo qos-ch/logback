@@ -39,7 +39,8 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
     <script src="../templates/setup.js" type="text/javascript"></script>
     
-    <h2>What is an Appender?</h2>
+    <h2><a name="whatIsAnAppender" href="#whatIsAnAppender">What is an
+    Appender?</a></h2>
     
 		<p>Logback delegates the task of writing a logging event to
 		components called appenders.  Appenders must implement the <a
@@ -95,7 +96,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	
-	<h2><a name="AppenderBase">AppenderBase</a></h2>
+	<h2><a name="AppenderBase" href="#AppenderBase">AppenderBase</a></h2>
 	
 	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
 	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
@@ -220,7 +221,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	dynamically using JavaBeans introspection through setter and getter
 	methods. </p>
 	
-	<h2>Logback-core</h2>
+	<h1>Logback-core</h1>
 	
 	<p>Logback-core lays the foundation upon which the other logback
 	modules are built. In general, the components in logback-core
@@ -231,9 +232,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
 	
-	<h3>
+	<h2>
     <a name="OutputStreamAppender" href="#OutputStreamAppender">OutputStreamAppender</a>
-  </h3>
+  </h2>
 	
 	<p><a
 	href="../xref/ch/qos/logback/core/OutputStreamAppender.html"><code>OutputStreamAppender</code></a>
@@ -289,10 +290,10 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing OutputStreamAppender and sub-classes"/>
 	
 
-	<h3>	
+	<h2>	
     <a name="ConsoleAppender"
     href="#ConsoleAppender">ConsoleAppender</a>
-  </h3>
+  </h2>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
@@ -344,7 +345,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     &lt;/encoder>
   &lt;/appender></b>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -359,9 +360,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    href="../xref/chapters/appenders/ConfigurationTester.html">chapters.appenders.ConfigurationTester</a> src/main/java/chapters/appenders/conf/logback-Console.xml</p>
 	
 	
-   <h3>
+   <h2>
      <a name="FileAppender" href="#FileAppender">FileAppender</a>
-   </h3>
+   </h2>
 	
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
@@ -482,7 +483,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     &lt;/encoder>
   &lt;/appender></b>
 	
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -547,9 +548,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
    <p class="command">java chapters.appenders.ConfigurationTester src/main/java/chapters/appenders/conf/logback-timestamp.xml</p>
 
-   <h3>
+   <h2>
      <a name="RollingFileAppender" href="#RollingFileAppender">RollingFileAppender</a>
-   </h3>
+   </h2>
    
    <p><a
 	 href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
@@ -559,16 +560,18 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	 met, change its logging target to another file.
    </p>
      
-   <p>There are two important logback components that interact with
-   <code>RollingFileAppender</code>. First, a
-   <code>RollingPolicy</code> instance attached to the
-   <code>RollingFileAppender</code> is responsible for undertaking the
-   action for performing a rollover. Second, a
-   <code>TriggeringPolicy</code> instance attached to a
-   <code>RollingFileAppender</code> will determine if and exactly when
-   rollover occurs. Thus, <code>RollingPolicy</code> is responsible
-   for the <em>what</em> and <code>TriggeringPolicy</code> is
-   responsible for the <em>when</em>.
+   <p>There are two important sub-components that interact with
+   <code>RollingFileAppender</code>. The first
+   <code>RollingFileAppender</code> sub-component, namely
+   <code>RollingPolicy</code>, (<a href="#onRollingPolicies">see
+   below</a>) is responsible for undertaking the actions required for
+   a rollover. A second sub-component of
+   <code>RollingFileAppender</code>, namely
+   <code>TriggeringPolicy</code>, (<a href="#TriggeringPolicy">see
+   below</a>) will determine if and exactly when rollover
+   occurs. Thus, <code>RollingPolicy</code> is responsible for the
+   <em>what</em> and <code>TriggeringPolicy</code> is responsible for
+   the <em>when</em>. <code>RollingPolicy</code> is described
    </p>
 	
    <p>To be of any use, a <code>RollingFileAppender</code> must have
@@ -659,7 +662,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    </table>
 	
-   <h3>Rolling policies</h3>
+   <h3><a name="onRollingPolicies" href="#onRollingPolicies">Overview
+   of rolling policies</a></h3>
 	
    <p><a
    href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
@@ -841,7 +845,7 @@ public interface RollingPolicy extends LifeCycle {
    <code>FixedWindowRollingPolicy</code>. Note that the <span
    class="option">File</span> option is mandatory even if it contains
    some of the same information as conveyed with the <span
-   class="option">FileNamePattern</span> option.
+   class="option">fileNamePattern</span> option.
    </p>
 	
    <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
@@ -879,11 +883,16 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code></a> is possibly the most
    popular rolling policy. It defines a rollover policy based on time,
    for example by day or by month.
+   <code>TimeBasedRollingPolicy</code> assumes the responsibility for
+   rollover as well as for the triggering of said rollover. Indeed,
+   <code>TimeBasedTriggeringPolicy</code> implements both
+   <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
+   interfaces.
    </p>
 
    <p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
    mandatory <span class="option">fileNamePattern</span> property and
-   the optional <span class="option">MaxHistory</span> property.
+   the optional <span class="option">maxHistory</span> property.
    </p>
 
    <table class="bodyTable">
@@ -896,12 +905,13 @@ public interface RollingPolicy extends LifeCycle {
        <td><b><span class="option">fileNamePattern</span></b></td>
        <td><code>String</code></td>
        <td>
-         <span class="option">FileNamePattern</span> property defines
-         the name of the rolled (archived) log files. Its value should
-         consist of the name of the file, plus a suitably placed
-         <em>%d</em> conversion specifier.  The <em>%d</em> conversion
-         specifier may contain a date-and-time pattern as specified by
-         the <code>java.text.SimpleDateFormat</code> class.  If the
+         The mandatory <span class="option">fileNamePattern</span>
+         property defines the name of the rolled (archived) log
+         files. Its value should consist of the name of the file, plus
+         a suitably placed <em>%d</em> conversion specifier.  The
+         <em>%d</em> conversion specifier may contain a date-and-time
+         pattern as specified by the
+         <code>java.text.SimpleDateFormat</code> class.  If the
          date-and-time pattern is omitted, then the default pattern
          <em>yyyy-MM-dd</em> is assumed. The <span
          class="option">File</span> property in
@@ -925,19 +935,19 @@ public interface RollingPolicy extends LifeCycle {
          <p>The date-and-time pattern, as found within the accolades
          of %d{} follow java.text.SimpleDateFormat conventions. The
          forward slash '/' or backward slash '\' characters anywhere
-         within the FileNamePattern property or within the
+         within the fileNamePattern property or within the
          date-and-time pattern will be interpreted as directory
          separators.
          </p>
        </td>
      </tr>
-     <tr>
-       <td><span class="option">maxHistory</span></td>
+     <tr  class="a">
+       <td><span class="option"><b>maxHistory</b></span></td>
        <td>int</td>
-       <td>The <span class="option">maxHistory</span> property
-       controls the maximum number of archive files to keep,
+       <td>The optional <span class="option">maxHistory</span>
+       property controls the maximum number of archive files to keep,
        deleting older files. For example, if you specify monthly
-       rollover, and set MaxHistory to 6, then 6 months worth of
+       rollover, and set maxHistory to 6, then 6 months worth of
        archives files will be kept with files older than 6 months
        deleted. Note as old archived log files are removed, any
        folders which were created for the purpose of log file
@@ -1060,12 +1070,13 @@ public interface RollingPolicy extends LifeCycle {
  	 <p>Just like <code>FixedWindowRollingPolicy</code>,
  	 <code>TimeBasedRollingPolicy</code> supports automatic file
  	 compression.  This feature is enabled if the value of the <span
- 	 class="option">FileNamePattern</span> option ends with <em>.gz</em>
+ 	 class="option">fileNamePattern</span> option ends with <em>.gz</em>
  	 or <em>.zip</em>.
    </p>
+
    <table class="bodyTable">
      <tr class="a">
-       <th><span class="option">FileNamePattern</span></th>
+       <th><span class="option">fileNamePattern</span></th>
        <th>Rollover schedule</th>
        <th>Example</th>
      </tr>
@@ -1107,13 +1118,6 @@ public interface RollingPolicy extends LifeCycle {
    resulting archive files will carry different names.
    </p>
 
-	 <p><code>TimeBasedRollingPolicy</code> assumes the responsibility
-	 for rollover as well as for the triggering of said
-	 rollover. Indeed, <code>TimeBasedTriggeringPolicy</code> implements
-	 both <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
-	 interfaces.
-   </p>
-
 	 <p>By setting the <span class="option">file</span> property you can
 	 decouple the location of the active log file and the location of
 	 the archived log files. The logging output will be targeted into
@@ -1128,7 +1132,7 @@ public interface RollingPolicy extends LifeCycle {
    <p>The <span class="option">maxHistory</span> property controls the
    maximum number of archive files to keep, deleting older files. For
    example, if you specify monthly rollover, and set <span
-   class="option">MaxHistory</span> to 6, then 6 months worth of
+   class="option">maxHistory</span> to 6, then 6 months worth of
    archives files will be kept with files older than 6 months
    deleted. Note as old archived log files are removed, any folders
    which were created for the purpose of log file archiving will be
@@ -1155,7 +1159,8 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>.
    </p>
 	
-   <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+   <em>Example 4.<span class="autoEx"/>: Sample configuration of a
+   <code>RollingFileAppender</code> using a
 
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingTimeBased.xml)</em>
@@ -1168,7 +1173,7 @@ public interface RollingPolicy extends LifeCycle {
       &lt;fileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
 
       &lt;!-- keep 30 days' worth of history -->
-      &lt;MaxHistory>30&lt;/MaxHistory>
+      &lt;maxHistory>30&lt;/maxHistory>
     &lt;/rollingPolicy></b>
 
     &lt;encoder>
@@ -1206,7 +1211,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;/encocer>
   &lt;/appender> 
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -1217,7 +1222,7 @@ public interface RollingPolicy extends LifeCycle {
       href="#SizeAndTimeBasedFNATP">Size <b>and</b> time based archiving</a>
     </h3>
 
-    <p>You may sometimes wish to archive files essentially by date but
+    <p>Sometimes you may wish to archive files essentially by date but
     at the same time limit the size of each log file, in particular if
     post-processing tools impose size limits on the log files. In
     order to address this requirement, logback ships with a
@@ -1225,53 +1230,54 @@ public interface RollingPolicy extends LifeCycle {
     <code>SizeAndTimeBasedFNATP</code>, where FNATP stands for File
     Naming And Triggering Policy.</p>
 
-    
+    <p>Here is a sample configuration file demonstrating time and size
+    based log file archiving.</p>
     
   <em>Example 4.<span class="autoEx"/>: Sample configuration for
   <code>SizeAndTimeBasedFNATP</code> 
   (logback-examples/src/main/java/chapters/appenders/conf/logback-sizeAndTime.xml)</em>
   <pre class="prettyprint source">&lt;configuration>
- &lt;appender name="ROLLING"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;File>mylog.txt&lt;/File>
-    &lt;rollingPolicy
-      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      &lt;FileNamePattern>
-        <b>mylog-%d{yyyy-MM-dd_HH_mm_ss}.<span class="big red">%i</span>.txt</b>
-      &lt;/FileNamePattern>
-      <b>&lt;TimeBasedFileNamingAndTriggeringPolicy</b>
+  &lt;appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>mylog.txt&lt;/file>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;!-- rollover daily -->
+      &lt;fileNamePattern><b>mylog-%d{yyyy-MM-dd}.<span class="big red">%i</span>.txt</b>&lt;/fileNamePattern>
+      <b>&lt;timeBasedFileNamingAndTriggeringPolicy</b>
             <b>class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"></b>
-        <b>&lt;MaxFileSize>${sizeThreshold}&lt;/MaxFileSize></b>
-      <b>&lt;/TimeBasedFileNamingAndTriggeringPolicy></b>
+        &lt;!-- or whenever the file size reaches 100MB -->
+        <b>&lt;maxFileSize>100MB&lt;/maxFileSize></b>
+      <b>&lt;/timeBasedFileNamingAndTriggeringPolicy></b>
     &lt;/rollingPolicy>
-    &lt;layout>
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="ROLLING" />
   &lt;/root>
 
 &lt;/configuration></pre>
     
-    <p>Note the "%i" conversion token in addition to "%d{}". Each time
-    the current log file reaches <code>MaxFileSize</code> before the
-    current time period end, it will be archived with an increasing
-    index, starting at 0.</p>
+    <p>Note the "%i" conversion token in addition to "%d". Each time
+    the current log file reaches <span
+    class="option">maxFileSize</span> before the current time period
+    ends, it will be archived with an increasing index, starting at
+    0.</p>
 
-    <p>Size and time based archiving supports cleaning of old archive
-    files. You just need to specify the number of periods to preserve
-    with the <code>&lt;MaxHistory></code> element. When your
+    <p>Size and time based archiving supports deletion of old archive
+    files. You need to specify the number of periods to preserve with
+    the <span class="option">maxHistory</span> property. When your
     application is stopped and restarted, logging will continue at the
     correct location, i.e. at the largest index number for the current
     period.
     </p>
 
-		<h3>
-      <a name="TriggeringPolicy" href="#TriggeringPolicy">Triggering policy interface</a>
-    </h3>
+		<h2>
+      <a name="TriggeringPolicy" href="#TriggeringPolicy">Overview of
+      triggering policies</a>
+    </h2>
 		
 		<p><a
 		href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
@@ -1297,6 +1303,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		rollover should occur or not, based on the said parameters.
 		</p>
 
+    <p>The most widely-used triggering policy, namely
+    <code>TimeBasedRollingPolicy</code> which also doubles as a
+    rolliging policy, was already <a
+    href="#TimeBasedRollingPolicy">discussed earlier</a> along with
+    other rolling policies. </p>
 		
 		<h4><a name="SizeBasedTriggeringPolicy"
 		href="#SizeBasedTriggeringPolicy">SizeBasedTriggeringPolicy</a></h4>
@@ -1305,49 +1316,49 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
 		<code>SizeBasedTriggeringPolicy</code></a> looks at size of the
 		currently active file. If it grows larger than the specified size,
-		the <code>FileAppender</code> using the
-		<code>SizeBasedTriggeringPolicy</code> will proceed to the
-		rollover of the existing active file and create a new one.
+		it will signal the owning <code>RollingFileAppender</code> to
+		trigger the rollover of the existing active file.
 		</p>
 
-		<p>This <code>TriggeringPolicy</code> accepts only one parameter,
-		namely <span class="option">MaxFileSize</span>, with a default
-		value of 10 MB.
+		<p><code>SizeBasedTriggeringPolicy</code> accepts only one
+		parameter, namely <span class="option">maxFileSize</span>, with a
+		default value of 10 MB.
 		</p>
 
-		<p>The <span class="option">MaxFileSize</span> option can be
+		<p>The <span class="option">maxFileSize</span> option can be
 		specified in bytes, kilobytes, megabytes or gigabytes by suffixing
 		a numeric value with <em>KB</em>, <em>MB</em> and respectively
 		<em>GB</em>. For example, <em>5000000</em>, <em>5000KB</em>,
 		<em>5MB</em> and <em>2GB</em> are all valid values, with the first
-		three being also equivalent.
+		three being equivalent.
 		</p>
 
 		<p>Here is a sample configuration with a
 		<code>RollingFileAppender</code> in conjunction with
-		<code>SizeBasedTriggeringPolicy</code>.
+		<code>SizeBasedTriggeringPolicy</code> triggering roll over when
+		the log file reaches 5MB in size.
 		</p>
 
     <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
     <code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingSizeBased.xml)</em>
     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;File>testFile.log&lt;/File>
+    &lt;file>test.log&lt;/file>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      &lt;FileNamePattern>testFile.%i.log.zip&lt;/FileNamePattern>
-      &lt;MinIndex>1&lt;/MinIndex>
-      &lt;MaxIndex>3&lt;/MaxIndex>
+      &lt;fileNamePattern>test.%i.log.zip&lt;/fileNamePattern>
+      &lt;minIndex>1&lt;/minIndex>
+      &lt;maxIndex>3&lt;/maxIndex>
     &lt;/rollingPolicy>
 
     <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      &lt;MaxFileSize>5MB&lt;/MaxFileSize>
+      &lt;maxFileSize>5MB&lt;/maxFileSize>
     &lt;/triggeringPolicy></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 	
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -1557,7 +1568,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;IncludeCallerData>${includeCallerData}&lt;/IncludeCallerData>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="SOCKET" />
   &lt;/root>  
 
@@ -2021,7 +2032,7 @@ Context ctx = new InitialContext(env);</pre>
     &lt;TopicBindingName>MyTopic&lt;/TopicBindingName>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="Topic" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -2089,7 +2100,7 @@ Context ctx = new InitialContext(env);</pre>
     &lt;QueueBindingName>MyQueue&lt;/QueueBindingName>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="Queue" />
   &lt;/root>
 &lt;/configuration></pre>	
@@ -2302,7 +2313,7 @@ Context ctx = new InitialContext(env);</pre>
     &lt;/layout>	    
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -2468,7 +2479,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -2571,7 +2582,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;/layout>	    
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -2602,7 +2613,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;/layout>	    
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -2914,7 +2925,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;/connectionSource>
   &lt;/appender></b>
   
-  &lt;root level="debug" >
+  &lt;root level="DEBUG" >
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -3001,7 +3012,7 @@ logger.error(<b>notifyAdminMarker</b>,
      &lt;/connectionSource>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="DB" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -3108,7 +3119,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;/connectionSource>
   &lt;/appender>
     
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration</pre>
@@ -3142,7 +3153,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;/connectionSource>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -3271,7 +3282,7 @@ logger.error(<b>notifyAdminMarker</b>,
     &lt;SuffixPattern>[%thread] %logger %msg&lt;/SuffixPattern>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>

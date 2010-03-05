@@ -3,20 +3,20 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>test.log</file>                                        
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>tests.%i.log.zip</fileNamePattern>
+      <fileNamePattern>test.%i.log.zip</fileNamePattern>
       <minIndex>1</minIndex>
       <maxIndex>3</maxIndex>
     </rollingPolicy>
 
     <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>1KB</maxFileSize>
+      <maxFileSize>5MB</maxFileSize>
     </triggeringPolicy>
     <encoder>
       <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
     </encoder>
   </appender>
 	
-	<root level="debug">
+	<root level="DEBUG">
 		<appender-ref ref="FILE" />
 	</root>
 </configuration>
