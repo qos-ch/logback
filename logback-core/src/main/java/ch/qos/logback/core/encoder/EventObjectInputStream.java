@@ -85,14 +85,14 @@ public class EventObjectInputStream<E> extends InputStream {
 
   int readHeader() throws IOException {
     byte[] headerBA = new byte[4 * BYTES_PER_INT];
-    System.out.println("available="+ncis.available());
+    //System.out.println("available="+ncis.available());
     int bytesRead = ncis.read(headerBA);
     if(bytesRead == -1) {
       return -1;
     }
-    System.out.println("**bytesRead="+bytesRead);
+    //System.out.println("**bytesRead="+bytesRead);
     
-    System.out.println(ByteArrayUtil.toHexString(headerBA));
+    //System.out.println(ByteArrayUtil.toHexString(headerBA));
     
     int offset = 0;
     int startPebble = ByteArrayUtil.readInt(headerBA, offset);
@@ -118,7 +118,6 @@ public class EventObjectInputStream<E> extends InputStream {
     try {
       e = (E) ois.readObject();
       buffer.add(e);
-      System.out.println("Read in event: "+e);
     } catch (ClassNotFoundException e1) {
       // FIXME Auto-generated catch block
       e1.printStackTrace();

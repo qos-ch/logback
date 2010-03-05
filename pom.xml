@@ -198,7 +198,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <excludeModules>fml</excludeModules>
+          <excludeModules>apt</excludeModules>
+        </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -214,18 +219,16 @@
           maven-project-info-reports-plugin
         </artifactId>
         <reportSets>
-          <reportSet>
-            <reports>
-            </reports>
-          </reportSet>
+          <reportSet><reports></reports></reportSet>
         </reportSets>
 			</plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>       
         <configuration>
           <aggregate>true</aggregate>
+          <!--<linksource>true</linksource>-->
           <links>
             <link>
               http://java.sun.com/j2se/1.5.0/docs/api
@@ -253,7 +256,7 @@
               <packages>chapter*:joran*</packages>
             </group>
           </groups>
-        </configuration>
+        </configuration>      
       </plugin>
       
     </plugins>
@@ -265,21 +268,7 @@
     <developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk/</developerConnection>
     <url>http://svn.qos.ch/repos/logback/trunk/</url>
   </scm>
-  
-  <!-- disable sending message to logback-dev mailing list
-  <ciManagement>
-    <system>continuum</system>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <configuration>
-          <address>logback-dev@qos.ch</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
-  -->
- 
+   
   <distributionManagement>
     <site>
       <id>pixie</id>
@@ -344,6 +333,27 @@
         </pluginRepository>
       </pluginRepositories>
    </profile>
+
+   <profile>
+     <id>javadocjar</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
  </profiles>
 
 </project>
