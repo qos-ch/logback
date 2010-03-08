@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.html.LayoutWrappingEncoder;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.pattern.parser.SamplePatternLayout;
 
 public class OutputStreamAppenderTest {

@@ -1,7 +1,7 @@
 package ch.qos.logback.core.pattern;
 
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.html.LayoutWrappingEncoder;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 
 public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
 

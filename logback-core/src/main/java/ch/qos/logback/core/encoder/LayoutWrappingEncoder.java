@@ -1,4 +1,4 @@
-package ch.qos.logback.core.html;
+package ch.qos.logback.core.encoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,7 +6,6 @@ import java.nio.charset.Charset;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.encoder.EncoderBase;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 

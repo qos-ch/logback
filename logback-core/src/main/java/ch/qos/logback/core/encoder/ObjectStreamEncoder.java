@@ -83,7 +83,8 @@ public class ObjectStreamEncoder<E> extends EncoderBase<E> {
     int offset = 2*CoreConstants.BYTES_PER_INT;
     ByteArrayUtil.writeInt(byteArray,offset, byteArray.length-offset);
   }
-  
+
+  @Override
   public void init(OutputStream os) throws IOException {
     super.init(os);
     bufferList.clear();

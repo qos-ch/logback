@@ -24,7 +24,7 @@
     </div>
     <div id="content">
     
-    <h1>Chapter 5: Layouts</h1>
+    <h1>Chapter 6: Layouts</h1>
 	
     <div class="quote">
       <p>TCP implementations will follow a general principle of
@@ -39,10 +39,9 @@
      
 		<h2>What is a layout?</h2>
 
-		<p>While appenders are responsible for writing logging output to
-		an appender dependent device, layouts are responsible for the
-		format of the output. In case you were wondering, layouts have
-		nothing to do with large estates in Florida.  The
+		<p>In case you were wondering, layouts have nothing to do with
+		large estates in Florida.  Layouts are logback components
+		responsible for transforming an incoming event into a String.  The
 		<code>format()</code> method in the <a
 		href="../xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a>
 		interface takes an object that represents an event (of any type)
@@ -53,13 +52,15 @@
 		<pre class="prettyprint source">public interface Layout&lt;E> extends ContextAware, LifeCycle {
 
   String doLayout(E event);
-  String getHeader();
-  String getFooter();
+  String getFileHeader();
+  String getPresentationHeader();
+  String getFileFooter();
+  String getPresentationFooter();
   String getContentType();
 }</pre>
 
 		<p>This interface is rather simple and yet is sufficent for many
-		formatting needs. The Texan developer from Texas, who you might
+		formatting needs. The Texan developer from Texas, whom you might
 		know from Joseph Heller's <em>Catch-22</em>, might exclaim: it
 		just takes five methods to implement a layout!!?
 		</p>
@@ -71,7 +72,9 @@
       <code>ch.qos.logback.classic.spi.ILoggingEvent</code></a>.  This
 			fact will be apparent throughout this section.</p>
 
-		<h3>Writing your own Layout</h3>
+		<h2><a name="writingYourOwnLayout"
+		href="#writingYourOwnLayout">Writing your own custom
+		Layout</a></h2>
 
 		<p>Let us implement a simple yet functional layout for the
 			logback-classic module that prints the time elapsed since the
@@ -114,14 +117,13 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 
 		<p>Note that <code>MySampleLayout</code> extends <a
 		href="../xref/ch/qos/logback/core/LayoutBase.html">
-		<code>LayoutBase</code></a>.  This class manages state shared by
-		all <code>Layout</code> classes, such as whether the layout is
-		started or stopped, header, footer and content type data. It
-		allows the developer to concentrate on the formatting expected
-		from his/her <code>Layout</code>. Note that the
-		<code>LayoutBase</code> class is generic. In its class
-		declaration, <code>MySampleLayout</code> extends
-		<code>LayoutBase&lt;ILoggingEvent&gt;</code>.
+		<code>LayoutBase</code></a>.  This class manages state common to
+		all layout instances, such as whether the layout is started or
+		stopped, header, footer and content type data. It allows the
+		developer to concentrate on the formatting expected from his/her
+		<code>Layout</code>. Note that the <code>LayoutBase</code> class
+		is generic. In its class declaration, <code>MySampleLayout</code>
+		extends <code>LayoutBase&lt;ILoggingEvent&gt;</code>.
 		</p>
 		
 		<p>The <code>doLayout(ILoggingEvent event)</code> method, i.e. the
@@ -144,21 +146,27 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		contents of exceptions as well.
 		</p>
 
-    <h3>Configuring your custom layout</h3>
+    <h3><a name="configuringYourOwnLayout"
+    href="#configuringYourOwnLayout">Configuring your custom
+    layout</a></h3>
 
-		<p>Custom layouts are configured as any other layout. Here is as
-		example:</p>
+		<p>Custom layouts are configured as any other component. As
+		mentioned earlier, <code>FileAppender</code> and its sub-classes
+		expect an encoder which we provide in the form of
+		<code>LayoutWrappingEncoder</code> which wraps
+		<code>MySampleLayout</code>. Here is the configuration file:</p>
 		
-		<em>Example 5.0: Configuration of MySampleLayout
-			(logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml)</em>
+		<em>Example: Configuration of MySampleLayout
+		(logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;layout class="chapters.layouts.MySampleLayout" /></b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <b>&lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"></b>
+      <b>&lt;layout class="chapters.layouts.MySampleLayout" /></b>
+    <b>&lt;/encoder></b>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -255,15 +263,16 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
     <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="chapters.layouts.MySampleLayout2"> 
-      <b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;</b>
-      <b>&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
-    &lt;/layout>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      &lt;layout class="chapters.layouts.MySampleLayout2"> 
+        <b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;</b>
+        <b>&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
+      &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;root level="debug">
+  &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>
@@ -272,8 +281,8 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
 
 
-		<h3><a name="ClassicPatternLayout"
-		href="#ClassicPatternLayout">PatternLayout</a></h3>
+		<h2><a name="ClassicPatternLayout"
+		href="#ClassicPatternLayout">PatternLayout</a></h2>
 
 		<p>Logback classic ships with a flexible layout called <a
 		href="../xref/ch/qos/logback/classic/PatternLayout.html">
@@ -295,8 +304,17 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     braces. The conversion word controls the type of data to use, e.g.
     logger name, level, date, thread name. The format modifiers
     control such things as field width, padding, and left or right
-    justification. The following is a simple example.
+    justification. 
 		</p>
+
+    <p>Given that <code>FileAppender</code> and sub-classes expect an
+    encoder, the <code>PatternLayout</code> instance must be wrapped
+    within an encoder before being used as a sub-component of
+    <code>FileAppender</code>. <code>PatternLayoutEncoder</code> is
+    designed solely for the purpose of wrapping a
+    <code>PatternLayout</code> instance so that it can be seen as
+    encoder. Here is an example:</p>
+ 
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
 			<a href="../xref/chapters/layouts/PatternSample.html">
@@ -307,21 +325,28 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 
 public class PatternSample {
 
   static public void main(String[] args) throws Exception {
-    Logger rootLogger = (Logger)LoggerFactory.getLogger("root");
+    Logger rootLogger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = rootLogger.getLoggerContext();
+    // we are not interested in auto-configuration
+    loggerContext.reset();
 
-    <b>PatternLayout layout = new PatternLayout();</b>
-    <b>layout.setPattern("%-5level [%thread]: %message%n");</b>
-    <b>layout.start();</b>
+    <b>PatternLayoutEncoder encoder = new PatternLayoutEncoder();</b>
+    <b>encoder.setContext(loggerContext);</b>
+    <b>encoder.setPattern("%-5level [%thread]: %message%n");</b>
+    <b>encoder.start();</b>
 
     ConsoleAppender&lt;ILoggingEvent> appender = new ConsoleAppender&lt;ILoggingEvent>();
-    appender.setContext(rootLogger.getLoggerContext());
-    appender.setLayout(layout); appender.start();
+    appender.setContext(loggerContext);
+    appender.setEncoder(encoder); 
+    appender.start();
 
     rootLogger.addAppender(appender);
 
@@ -1731,7 +1756,8 @@ public class TrivialMain {
 		modules address different needs, but in general offer comparable
 		functionality.</p>
 		
-		<h3>Writing your own Layout</h3>
+		<h2>Writing your own Layout</h2>
+
 		<p>Writing a custom <code>Layout</code> for logback access is
 		nearly identical to its sibling<code>Layout</code> in
 		logback-classic.</p>
