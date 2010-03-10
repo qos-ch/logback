@@ -40,7 +40,6 @@ public class EMail {
     lc.reset();
     configurator.setContext(lc);
     configurator.doConfigure(configFile);
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
     Logger logger = LoggerFactory.getLogger(EMail.class);
 
