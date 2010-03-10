@@ -152,8 +152,9 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 
 		<p>Custom layouts are configured as any other component. As
 		mentioned earlier, <code>FileAppender</code> and its sub-classes
-		expect an encoder which we provide in the form of
-		<code>LayoutWrappingEncoder</code> which wraps
+		expect an encoder. In order to fulfill this requirement, we pass
+		to <code>FileAppender</code> an instance of
+		<code>LayoutWrappingEncoder</code> which wraps our
 		<code>MySampleLayout</code>. Here is the configuration file:</p>
 		
 		<em>Example: Configuration of MySampleLayout
@@ -173,12 +174,11 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 
 		<p>The sample application <a
 		href="../xref/chapters/layouts/SampleLogging.html">
-		<code>chapters.layouts.SampleLogging</code></a> configures logback with
-		the configuration script supplied as a parameter and then logs a
-		debug message, followed by an error message. </p>
+		<code>chapters.layouts.SampleLogging</code></a> configures logback
+		with the configuration script passed as its first argument and
+		then logs a debug message, followed by an error message. </p>
 		
-		<p>
-		To run this example issue the following command from within the
+		<p>To run this example issue the following command from within the
 		<em>logback-examples</em> directory.
     </p>
     
@@ -193,21 +193,24 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		insists that nothing is certain except perhaps uncertainty itself,
 		which is by no means certain either, might ask: how about a layout
 		with options?  The reader shall find a slightly modified version
-		of our custom layout in <code>MySampleLayout2.java</code>. She
-		will discover that adding an option to a layout is as simple as
-		declaring a setter method for the option.
+		of our custom layout in <a
+		href="../xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2.java</code></a>. As
+		mentioned throughout this manual, adding a property to a layout or
+		any other logback component is as simple as declaring a setter
+		method for the property.
 		</p>
 
-		<p>
-			The
-			<a href="../xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code>
-			</a>
-			class contains two attributes. The first one is a prefix that
-			can be added to the output. The second attribute is used to
-			choose whether to display the name of the thread from which
-			the logging request was sent.
-		</p>
-		<p>Here is the implementation of this class:</p>
+		<p>The <a
+		href="../xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code></a>
+		class contains two properties. The first one is a prefix that can
+		be added to the output. The second property is used to choose
+		whether to display the name of the thread from which the logging
+		request was sent.
+    </p>
+		
+    <p>Here is a copy of the <a
+    href="../xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code></a>
+    class :</p>
 
     <pre class="prettyprint source">package chapters.layouts;
 
@@ -252,12 +255,14 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
 
     <p>The addition of the corresponding setter method is all that is
-    needed to enable the configuration of an option.  Note that the
-    <code>PrintThreadName</code> option is boolean and not
+    needed to enable the configuration of a property.  Note that the
+    <code>PrintThreadName</code> property is a boolean and not a
     <code>String</code>. Configuration of logback components was
-    covered in detail in <a href="configuration.html">"Chapter 3:
-    Logback configuration"</a>. Here is the configuration
-    file tailor-made for use with <code>MySampleLayout2</code>.
+    covered in detail in the chapter on <a
+    href="configuration.html">configuration</a>. The chapter <a
+    href="onJoran.html">on joran</a> provides further detail. Here is
+    the configuration file tailor made for
+    <code>MySampleLayout2</code>.
     </p> 
 
 
@@ -289,31 +294,38 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 		<code>PatternLayout</code></a>.  As all layouts,
 		<code>PatternLayout</code> takes a logging event and returns a
 		<code>String</code>. However, this <code>String</code> can be
-		customized at will by tweaking the conversion pattern of
-		<code>PatternLayout</code>.
+		customized at will by tweaking <code>PatternLayout</code>'s
+		conversion pattern.
 		</p>   
 
     <p>The conversion pattern of <code>PatternLayout</code> is closely
     related to the conversion pattern of the <code>printf()</code>
     function in the C programming language. A conversion pattern is
     composed of literal text and format control expressions called
-    conversion specifiers. You are free to insert any literal text
-    within the conversion pattern. Each conversion specifier starts
-    with a percent sign '%' and is followed by optional format
-    modifiers, a conversion word and optional parameters between
-    braces. The conversion word controls the type of data to use, e.g.
-    logger name, level, date, thread name. The format modifiers
-    control such things as field width, padding, and left or right
-    justification. 
+    <em>conversion specifiers</em>. You are free to insert any literal
+    text within the conversion pattern. Each conversion specifier
+    starts with a percent sign '%' and is followed by optional
+    <em>format modifiers</em>, a <em>conversion word</em> and optional
+    parameters between braces. The conversion word controls the data
+    field to convert, e.g. logger name, level, date or thread
+    name. The format modifiers control field width, padding, and left
+    or right justification.
 		</p>
 
-    <p>Given that <code>FileAppender</code> and sub-classes expect an
-    encoder, the <code>PatternLayout</code> instance must be wrapped
-    within an encoder before being used as a sub-component of
-    <code>FileAppender</code>. <code>PatternLayoutEncoder</code> is
-    designed solely for the purpose of wrapping a
-    <code>PatternLayout</code> instance so that it can be seen as
-    encoder. Here is an example:</p>
+    <p>As already mentioned on several occasions,
+    <code>FileAppender</code> and sub-classes expect an
+    encoder. Consequently, when used in conjuction with
+    <code>FileAppender</code> or its subclasses a
+    <code>PatternLayout</code> must be wrapped within an
+    encoder. Given that the
+    <code>FileAppender</code>/<code>PatternLayout</code> combination
+    is so common, logback ships with an encoder named
+    <code>PatternLayoutEncoder</code>, designed solely for the purpose
+    of wrapping a <code>PatternLayout</code> instance so that it can
+    be seen as encoder. Below is an example which programmatically
+    configures a <code>ConsoleAppender</code> with a
+    <code>PatternLayoutEncoder</code>:</p>
+
  
 		<em>
 			Example 5.1: Sample usage of a PatternLayout
@@ -355,8 +367,10 @@ public class PatternSample {
   } 
 }</pre>
 
-		<p>The conversion pattern is set to be <b>"%-5level [%thread]:
-		%message%n"</b>. Running PatternSample will yield the following
+		<p>In the above example, the conversion pattern is set to be
+		<b>"%-5level [%thread]: %message%n"</b>. A synopssis of conversion
+		word included in logback will be given shortly. Running
+		<code>PatternSample</code> application will yield the following
 		output on the console.
 		</p>
 
