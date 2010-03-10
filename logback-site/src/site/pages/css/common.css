@@ -151,6 +151,12 @@ table.bodyTable tr.alt {
 	background-color: #eee;
 }
 
+/* we don't want the first p under td to appear indented */
+table.bodyTable tr td p:first-child {
+  padding-top: 0px;
+  margin-top: 0px;
+}
+
 /* EOF =============== bodyTable =============== */
 
 .author {

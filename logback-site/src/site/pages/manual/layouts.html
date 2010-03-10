@@ -370,9 +370,12 @@ public class PatternSample {
 		<p>In the above example, the conversion pattern is set to be
 		<b>"%-5level [%thread]: %message%n"</b>. A synopssis of conversion
 		word included in logback will be given shortly. Running
-		<code>PatternSample</code> application will yield the following
-		output on the console.
+		<code>PatternSample</code> application as:
 		</p>
+
+    <p class="source">java java chapters.layouts.PatternSample</p>
+
+    <p>will yield the following		output on the console.</p>
 
 		<p class="source">DEBUG [main]: Message 1 
 WARN  [main]: Message 2</p>
@@ -388,26 +391,24 @@ WARN  [main]: Message 2</p>
     will be explained below.
 		</p>
 
-		<p>In PatternLayout, parenthesis can be used to group conversion
-		patterns. <b>It follows that the '(' and ')' carry special meaning
-		and need to be escaped to be used as literals. </b> Parentheses
-		can be escaped by preceding the the opening and closing
-		parenthesis by a backslash, but since the backslash itself carries
-		special meaning in Java, we need two backslashes, as in "\\(" and
-		"\\)". Note that strictly speaking, only the closing parenthesis
-		needs to be escaped to be used as a literal.
+		<p>In <code>PatternLayout</code>, parenthesis can be used to group
+		conversion patterns. <b>It follows that the '(' and ')' carry
+		special meaning and need to be escaped if intended to be used as
+		literals. </b> The special nature of parenthesis is further <a
+		href="#Parentheses">explained below</a>.
 		</p>
 
-		<p>As mentioned previously, certain conversion specifiers can
-		include optional parameters which are passed between braces
-		following the conversion word. A sample conversion specifier with
-		options could be <code>%logger{10}</code>. Here "logger" is the
-		conversion word, and 10 is the option.
+		<p>As mentioned previously, certain conversion specifiers may
+		include optional parameters passed between braces. A sample
+		conversion specifier with options could be
+		<code>%logger{10}</code>. Here "logger" is the conversion word,
+		and 10 is the option. Options are <a href="#cwOptions">further
+		discussed below</a>.
 		</p>
 		
 		<p>The recognized conversions words along with their options are
 		described in the table below. When multiple conversion words are
-		listed on the left column, they should be considered as aliases.
+		listed in the same table cell, they are considered as aliases.
 		</p>
 
 		<table class="bodyTable properties" border="0">
@@ -424,18 +425,18 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>Used to output the name of the logger at the origin of
-					the logging event.
-					</p>
+          Outputs the name of the logger at the origin of the logging
+          event.
+					
 
 					<p>This conversion word can take an integer as its first and
 					only option. The converter's abbreviation algorithm will
 					shorten the logger name, usually without significant loss of
 					meaning. Setting the value of this option to zero has
-					special meaning. It will cause the conversoin specifier to
-					return the string right to the rightmost dot character. The
-					next table provides examples of the abbreviation algorithm
-					in action.
+					special meaning. It will cause the conversion word to return
+					the sub-string right to the rightmost dot character in the
+					logger name. The next table provides examples of the
+					abbreviation algorithm in action.
           </p>
 
 					<table class="bodyTable dark" border="0" cellpadding="8">
@@ -502,15 +503,15 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>Used to output the fully-qualified class name of the
-					caller issuing the logging request.
+					<p>Outputs the fully-qualified class name of the caller
+					issuing the logging request.
 					</p>
-					<p> Just like the <em>%logger</em> conversion word above,
-					this word can take an integer as its first option and use
-					its abbreviation algorithm to shorten the class name. Zero
-					carries special meaning and will cause the simple class name
-					to be printed without its package name prefix. By default
-					the class name is printed in full.
+
+					<p>Just like the <em>%logger</em> conversion word above,
+					this conversion admits an integer as an option to shorten
+					the class name. Zero carries special meaning and will cause
+					the simple class name to be printed without the package name
+					prefix. By default the class name is printed in full.
 					</p>
 
           <p>Generating the caller class information is not
@@ -525,51 +526,54 @@ WARN  [main]: Message 2</p>
           <b>contextName</b><br/>
           <b>cn</b><br/></td>
           <td>Outputs the name of the logger context to which the
-          logger at the origin of the logging event is attached
-          to. </td>
+          logger at the origin of the event was attached to. </td>
       </tr>
 			<tr class="alt">
         <td align="center">
           <b>d</b>{<em>pattern</em>} <br /> 
           <b>date</b>{<em>pattern</em>} <br />
         </td>
-        <td >
+        <td>
 					<p>Used to output the date of the logging event.  The date
-					conversion word may be followed by an option enclosed
-					between braces.</p>
+					conversion word admits a pattern string as an option. The
+					pattern syntax is compatible with the format accepted by <a
+					href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
 
-					<p>The option admits the same syntax as the time pattern
-					string of the <code>java.text.SimpleDateFormat</code>.</p>
-
-					<p>A shortcut to the ISO8601 format is available by
-					specifying the String <em>"ISO8601"</em> in the braces. If
-					no option is set, the converter uses <em>"ISO8601"</em> as
-					the default value.</p>
+					<p>You can specify the string <em>"ISO8601"</em> for the
+					ISO8601 date format. Note that the %date conversion word
+					defaults to the <a
+					href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
+					format</a> in the absence of a pattern option.</p>
 
 					<p>Here are some sample option values. They assume that the
 					actual date is Friday 20th of October, 2006 and that the
-					author finished his meal a short while ago.</p>
+					author has returned to working on this document just after
+					lunch.</p>
 					
 					<table class="bodyTable dark" cellpadding="8">
 						<tr>
 							<th>Conversion Pattern</th>
 							<th>Result</th>
 						</tr>
+            <tr>
+							<td>%d</td>
+							<td>2006-10-20 14:06:49,812</td>
+						</tr>
 						<tr>
 							<td>%date</td>
-							<td>2006-10-20 14:46:49,812</td>
+							<td>2006-10-20 14:06:49,812</td>
 						</tr>
 						<tr>
 							<td>%date{ISO8601}</td>
-							<td>2006-10-20 14:46:49,812</td>
+							<td>2006-10-20 14:06:49,812</td>
 						</tr>			
 						<tr>
 							<td>%date{HH:mm:ss.SSS}</td>
-							<td>14:46:49.812</td>
+							<td>14:06:49.812</td>
 						</tr>
 						<tr>
 							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
-							<td>20 oct. 2006;14:46:49.812	</td>
+							<td>20 oct. 2006;14:06:49.812	</td>
 						</tr>
 					</table>
 				</td>
@@ -581,8 +585,8 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>Used to output the file name of the Java source file
-					where the logging request was issued.
+					<p>Outputs the file name of the Java source file where the
+					logging request was issued.
 					</p>
 
 					<p>Generating the file information is not particularly fast.
@@ -599,7 +603,7 @@ WARN  [main]: Message 2</p>
 				</td>
 
 				<td>
-					<p>Used to output location information of the caller which
+					<p>Outputs location information of the caller which
 					generated the logging event.
 					</p>
 
@@ -647,7 +651,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 
 				<td>
-					<p>Used to output the line number from where the logging
+					<p>Outputs the line number from where the logging
 					request was issued.
 					</p>
 
@@ -664,8 +668,9 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					<b>m / msg / message</b>
 				</td>
 				<td>
-					Used to output the application-supplied message associated
-					with the logging event.
+          <p>Outputs the application-supplied message associated with
+          the logging event.
+          </p>
 				</td>
 			</tr>
 
@@ -676,7 +681,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 				<td>
 					<p>
-						Used to output the method name where the logging
+						Outputs the method name where the logging
 						request was issued.
 					</p>
 					<p>
@@ -712,7 +717,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				<td align="center">
 					<b>p / le / level</b>
 				</td>
-				<td>Used to output the level of the logging event.</td>
+				<td>Outputs the level of the logging event.</td>
 			</tr>
 
 			<tr class="alt">
@@ -722,7 +727,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 
 				<td>
-					Used to output the number of milliseconds elapsed
+					Outputs the number of milliseconds elapsed
 					since the start of the application until the
 					creation of the logging event.
 				</td>
@@ -735,7 +740,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 
 				<td>
-					Used to output the name of the thread that generated
+					Outputs the name of the thread that generated
 					the logging event.
 				</td>
 
@@ -750,7 +755,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				<td>
 
 					<p>
-						Used to output the MDC (mapped diagnostic
+						Outputs the MDC (mapped diagnostic
 						context) associated with the thread that
 						generated the logging event.
 					</p>
@@ -764,8 +769,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					will be output in the format "key1=val1, key2=val2".
 					</p>
 
-					<p>See <a href="mdc.html">Chapter 7</a> for more details on
-					the MDC.
+					<p>See the <a href="mdc.html">chapter on MDC</a> for more
+					details.
 					</p>
 
 				</td>
@@ -782,20 +787,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 
 				<td>
-					<p>Used to output the stack trace of the exception
+					<p>Outputs the stack trace of the exception
 					associated with the logging event, if any. By default the
 					full stack trace will be output.
 				 </p>
          
-         <p>If you do not specify the %ex conversion word (or one of
-         its aliases) in the conversion pattern,
-         <code>PatternLayout</code> will automatically add it as the
-         last conversion word, on account of the importance of stack
-         trace information. The $nopex conversion word can be
-         substituted for %ex, in case you do not wish stack trace
-         information to be displayed. See also %nopex conversion word.
-         </p>
-
 				 <p>The <em>throwable</em> conversion word can followed by one of
 						the following options:
 				 </p>
@@ -862,9 +858,19 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 
 				<td>
-					<p>Same as the %exception conversion keyword with the
+					<p>Same as the %throwable conversion word above with the
 					addition of class packaging information.</p>
-          
+
+          <p>If you do not specify %xThrowable or another
+          throwable-related conversion word in the conversion pattern,
+          <code>PatternLayout</code> will automatically add it as the
+          last conversion word, on account of the importance of stack
+          trace information. The $nopex conversion word can be
+          substituted for %xThrowable, in case you do not wish stack
+          trace information to be displayed. See also %nopex
+          conversion word.
+         </p>
+
           <p>At the end of each stack frame of the exception, a string
           consisting of the jar file containing the relevant class
           followed by the "Implementation-Version" as found in that
@@ -892,7 +898,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
           <p>Logback goes to great lengths to ensure that the class
           packaging information it displays is correct, even in
           arbirarily complex class loader hierarchies.  However, when
-          it is not able to guarantee the absolute correctness of the
+          it is unable to guarantee the absolute correctness of the
           information, then it will prefix the data with a tilde, i.e.
           the '~' character. Thus, it is theoretically possible for
           the printed class packaging information to differ from the
@@ -913,15 +919,15 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
 
         <td>
-          <p>Altough it pretends to handle stack trace data, this
-          conversion word does not output any data, thus, effectively
-          ignoring exceptions.
+          <p>Altough it <em>pretends</em> to handle stack trace data,
+          this conversion word does not output any data, thus,
+          effectively ignoring exceptions.
           </p>
 
           <p>The %nopex conversion word allows the user to override
-          PatternLayout's internal safety mechanism which silently
-          adds %ex conversion keyword, even it was not specified in
-          the conversion pattern.
+          <code>PatternLayout</code>'s internal safety mechanism which
+          silently adds the %xThrowable conversion keyword in the absence of
+          another conversion word handling exceptions.
           </p>
         </td>
       </tr>
@@ -932,7 +938,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
 
         <td>
-          <p>Used to output the marker associated with the logger 
+          <p>Outputs the marker associated with the logger 
          request.</p>
 
           <p>In case the marker contains children markers, the
@@ -952,7 +958,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
         
         <td>
-          <p >Used to output the value associated with a context
+          <p >Outputs the value associated with a context
           property named <em>key</em>. If <em>key</em> is not a
           property of the logger context, then <em>key</em> will be
           looked up in the System properties. </p>
@@ -977,12 +983,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     </p>
 
 
-    <h2>Format modifiers</h2>
+    <h2><a name="formatModifiers" href="#formatModifiers">Format
+    modifiers</a></h2>
 
 		<p>By default the relevant information is output as is.  However,
 		with the aid of format modifiers it is possible to change the
-		minimum field width, the maximum field width as well as
-		justification.
+		minimum and maximum width and the justifications of each data
+		field.
 		</p>
 
 		<p>The optional format modifier is placed between the percent sign
@@ -1131,7 +1138,22 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 			</tr>
 		</table>
 
-		<h3>Parentheses are special</h3>
+    <h3><a name="oneLetterLevel" href="#oneLetterLevel">Output just
+    one letter for the level</a></h3>
+
+    <p>Instead of printing TRACE, DEBUG, WARN, INFO or ERROR for the
+    level, you may want to print just T, D, W, I and E. You could
+    write a <a href="#customConversionSpecifier">custom converter</a>
+    for this purpose, or simply make use of format modifiers (just
+    discussed) to shorten the level value to a single character. The
+    appropriate conversion specifier would be
+    "<code>%.-1level</code>".
+    </p>
+    
+    
+
+		<h2><a name="Parentheses" href="#Parentheses">Parentheses are
+		special</a></h2>
 
     <p>In logback, parentheses within the pattern string are treated
     as grouping tokens. Thus, it is possible to group a sub-pattern
@@ -1175,17 +1197,18 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     <p>The latter form is more comfortable to read, especially for
     long log files.</p>
     
-    <p>If you need to treat the parenthesis character as a literal,
-    they needs to be escaped by preceding each parenthesis with a
+    <p>If you need to treat the parenthesis character as a literal, it
+    needs to be escaped by preceding each parenthesis with a
     backslash. As in, <b>\(</b>%d{HH:mm:ss.SSS}
-    [%thread]<b>\)</b>. Strictly speaking, only the closing parentesis
-    needs to be escaped. Thus, "%d&nbsp;[%thread]<b>\)</b>" is
-    equivalent to "<b>\(</b>%d&nbsp;[%thread]<b>\)</b>".
+    [%thread]<b>\)</b>. Strictly speaking, only the closing parenthesis
+    needs to be escaped. Thus, "<b>(</b>%d&nbsp;[%thread]<b>\)</b>" is
+    equivalent to "<b>\(</b>%d&nbsp;[%thread]<b>\)</b>". But since it
+    is not easy to recall which parenthesis needs escaping and which
+    doesn't necessarily, you can escape both so that they are
+    interpreted as literals.
     </p>
-    
 
-
-		<h3>Options</h3>
+		<h3><a name="cwOptions" href="#cwOptions">Options</a></h3>
 
 		<p>
 			A conversion specifier can be followed by options. The are
@@ -1209,7 +1232,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
   &lt;/appender></pre>
 
 		
-		<h3>Evaluators</h3>
+		<h2><a name="Evaluators" href="#Evaluators">Evaluators</a></h2>
 
 		<p>As mentioned above, option lists come in handy when a
 		conversion specifier is required to behave dynamically based on
@@ -1221,16 +1244,16 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 		evaluator.
 		</p>
 		
-    <p>Let us review an example with <code>EventEvaluator</code>
-    objects.  The following configuration file outputs the logging
-    events to the console, displaying date, thread, level, message and
-    caller data. Given that extracting the caller data of a logging
-    event is on expensive side, we will do so only when the logging
-    request originates from a specific logger, and whose message
-    contains a certain string. Thus, we make sure that only specific
-    logging requests will have their caller information generated and
-    displayed. In other cases, where the caller data is superfluous,
-    we will not penalize application performance.
+    <p>Let us review an example involving a
+    <code>EventEvaluator</code>.  The next configuration file outputs
+    the logging events to the console, displaying date, thread, level,
+    message and caller data. Given that extracting the caller data of
+    a logging event is on the expensive side, we will do so only when
+    the logging request originates from a specific logger, and whose
+    message contains a certain string. Thus, we make sure that only
+    specific logging requests will have their caller information
+    generated and displayed. In other cases, where the caller data is
+    superfluous, we will not penalize application performance.
 		</p>
 
 		<em>
@@ -1900,7 +1923,7 @@ public class TrivialMain {
       <tr class="b">
         <td align="center"><b>t / date</b></td>
         <td>
-          <p>Used to output the date of the logging event.  The date
+          <p>Outputs the date of the logging event.  The date
           conversion specifier may be followed by a set of braces
           containing a date and time pattern strings used by
           <code>java.text.SimpleDateFormat</code>.  <em>ABSOLUTE</em>,

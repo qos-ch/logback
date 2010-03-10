@@ -48,7 +48,7 @@ public class CallerDataConverter extends ClassicConverter {
     try {
       depth = Integer.parseInt(depthStr);
     } catch (NumberFormatException nfe) {
-      addError("");
+      addError("Failed to parse depth option [" + depthStr + "]", nfe);
     }
 
     final List optionList = getOptionList();
