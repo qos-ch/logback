@@ -53,7 +53,7 @@ public class PatternLayoutEncoderTest {
     ILoggingEvent event = makeLoggingEvent(msg);
     ple.doEncode(event);
     ple.close();
-    assertEquals(msg, new String(baos.toByteArray(), utf8Charset));
+    assertEquals(msg, new String(baos.toByteArray(), utf8Charset.name()));
   }
 
 }

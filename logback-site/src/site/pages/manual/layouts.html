@@ -1256,6 +1256,18 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     superfluous, we will not penalize application performance.
 		</p>
 
+    <p>Evaluators and in particular <em>evaluation expressions</em>
+    are presented in a <a
+    href="filters.html#evalutatorFilter">dedicated section of the
+    chapter on filters</a> which you MUST read if you want use
+    evaluators in any meaninful way. Also note that the examples below
+    are implicitly based on <code>JaninoEventEvaluator</code> which
+    requires the <a
+    href="http://docs.codehaus.org/display/JANINO/Home">Janino
+    library</a>. Please see the <a
+    href="../setup.html#janino">corresponding section</a> of the setup
+    document.</p>
+
 		<em>
 			Example 5.2: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapters/layouts/callerEvaluatorConfig.xml)
@@ -1311,8 +1323,9 @@ public class CallerEvaluatorExample {
       configurator.setContext(lc);
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      StatusPrinter.print(lc);
+      // StatusPrinter will handle this
     }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
     for (int i = 0; i &lt; 5; i++) {
       if (i == 3) {
@@ -1323,23 +1336,22 @@ public class CallerEvaluatorExample {
     }
   }
 }</pre>
-		<p>
-			The <em>CallerEvaluatorExample</em> application does nothing particularly
-			fancy. Five logging requests are issued, the third one being
-			different from the others.
-		</p>
-		<p>
-			When a logging request is issued, the corresponding logging
-			event goes through the evaluation process. The third request
-			matches the evaluation criteria, causing its caller data to be
-			displayed.
+
+		<p>The <em>CallerEvaluatorExample</em> application does nothing
+		particularly fancy. Five logging requests are issued, the third
+		one being different from the others.
 		</p>
 
-		<p>
-			Here is the output of the
-			<code>CallerEvaluatorExample</code>
-			class.
+		<p>When a logging request is issued, the corresponding logging
+		event is evaluated. The third request matches the evaluation
+		criteria, causing its caller data to be displayed.
 		</p>
+
+		<p>The command</p>
+
+    <p class="source">java chapters.layouts.CallerEvaluatorExample src/main/java/chapters/layouts/callerEvaluatorConfig.xml</p>
+
+    <p>will yield</p>
 
 		<div class="source"><pre>0    [main] DEBUG - I know me 0 
 0    [main] DEBUG - I know me 1 
@@ -1356,9 +1368,9 @@ Caller+0   at chapters.layouts.CallerEvaluatorExample.main(CallerEvaluatorExampl
 		displayed.
 		</p>
 
-		<p><b>Important:</b> With the <em>caller</em> conversion
-		specifier, the data is displayed when <em>the expression evaluates
-		to <b>true</b>.</em></p>
+		<p><b>Important:</b> With the <em>caller</em> conversion word, the
+		data is displayed when <em>the expression evaluates to
+		<b>true</b>.</em></p>
 
 		<p>Let us consider at a different situation. When exceptions are
 		included in a logging request, their stack trace is usually

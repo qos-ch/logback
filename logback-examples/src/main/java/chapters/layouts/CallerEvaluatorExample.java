@@ -23,9 +23,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class CallerEvaluatorExample {
 
-  public static void main(String[] args)  {
-    Logger logger = LoggerFactory
-        .getLogger(CallerEvaluatorExample.class);
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger(CallerEvaluatorExample.class);
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     try {
@@ -34,8 +33,9 @@ public class CallerEvaluatorExample {
       lc.reset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      StatusPrinter.print(lc);
+      // StatusPrinter will handle this
     }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
     for (int i = 0; i < 5; i++) {
       if (i == 3) {

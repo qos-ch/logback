@@ -38,7 +38,9 @@
     with <a href="http://www.slf4j.org">SLF4J</a>, a separate project.
     </p>
     
-    <h3>Running from the command line</h3>
+
+
+    <h3><a href="">Running from the command line</a></h3>
     
     <p>Assuming your current directory is
     <em>$LOGBACK_HOME/logback-examples</em>, where
@@ -71,7 +73,29 @@
    <em>$LOGBACK_HOME/logback-examples</em> directory.
    </p>
 
-   <h3>Using an IDE, e.g. Eclipse</h3>
+   <h3><a name="SMTP" href="#SMTP"><code>SMTPAppender</code> requires
+   JavaMail API</a></h3>
+
+   <p><code>SMTPAppender</code> related examples require the JavaMail
+   API version 1.4 or later. Once you <a
+   href="http://java.sun.com/products/javamail/downloads/index.html">download
+   JavaMail</a>, you need to place <em>mail.jar</em> on your class
+   path.</p>
+   
+   <h3><a name="janino" href="#janino">Evaluators and more
+   specifically <code>JaninoEvantEvaluator</code> require
+   Janino</a></h3>
+   
+   <p>The evaluator examples which are mostly based on
+   <code>JaninoEvantEvaluator</code> require <a
+   href="http://docs.codehaus.org/display/JANINO/Home"><b>Janino</b></a>
+   version 2.5.10 or later. Once you downloaded Janino, you need to
+   place <em>janino.jar</em> on your class path.</p>
+   
+    
+
+   <h3><a name="eclipse" href="#eclipse">Using an IDE,
+   e.g. Eclipse</a></h3>
    
    <p>You can import the logback project into Eclipse. Since logback
    uses maven as its build system, the "maven eclipse:eclipse" command
@@ -79,8 +103,6 @@
    Eclipse. You can then import the logback project into Eclipse in one
    or two clicks.</p>
 
-	
-	
 	
    <script src="templates/footer.js" type="text/javascript"></script>
 </div>

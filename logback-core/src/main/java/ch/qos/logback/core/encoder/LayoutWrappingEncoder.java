@@ -2,6 +2,7 @@ package ch.qos.logback.core.encoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import ch.qos.logback.core.CoreConstants;
@@ -20,7 +21,6 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
    */
   private Charset charset;
 
-  
   public Layout<E> getLayout() {
     return layout;
   }
@@ -89,7 +89,12 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     if (charset == null) {
       return s.getBytes();
     } else {
-      return s.getBytes(charset);
+      try {
+        return s.getBytes(charset.name());
+      } catch (UnsupportedEncodingException e) {
+        throw new IllegalStateException(
+            "An existing charser cannot possibly be unsupported.");
+      }
     }
   }
 

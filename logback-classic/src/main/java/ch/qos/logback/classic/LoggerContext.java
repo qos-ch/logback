@@ -76,10 +76,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     this.root = new Logger(Logger.ROOT_LOGGER_NAME, null, this);
     this.root.setLevel(Level.DEBUG);
     loggerCache.put(Logger.ROOT_LOGGER_NAME, root);
-    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
+    initEvaluatorMap();
     size = 1;
   }
 
+  void initEvaluatorMap() {
+    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
+  }
+  
   /**
    * A new instance of LoggerContextRemoteView needs to be created each time the
    * name or propertyMap (including keys or values) changes.
@@ -212,6 +216,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void reset() {
     resetCount++;
     super.reset();
+    initEvaluatorMap();
     root.recursiveReset();
     resetTurboFilterList();
     fireOnReset();

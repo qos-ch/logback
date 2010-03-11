@@ -244,9 +244,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
     <code>EventEvaluator</code></a> which evaluates whether a given
     criteria is met. On match and respectively on mismatch, the
-    <code>EvaluatorFilter</code> will return the value set for the
-    <span class="option">OnMatch</span> and respectively for the <span
-    class="option">OnMismatch</span> properties. 
+    <code>EvaluatorFilter</code> will return the value corresponding
+    to <span class="option">onMatch</span> and respectively to <span
+    class="option">onMismatch</span> properties.
     </p>
 
     <p>The <code>EventEvaluator</code> is an abstract class and you
@@ -258,7 +258,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     evaluation criteria. We refer to such java language boolean
     expressions as "<em>evaulation expressions</em>". Evaluation
     expressions enable hereto unprecedented flexibility in event
-    filtering.
+    filtering. <code>JaninoEventEvaluator</code> requires the <a
+    href="http://docs.codehaus.org/display/JANINO/Home">Janino
+    library</a>. Please see the <a
+    href="../setup.html#janino">corresponding section</a> of the setup
+    document.
     </p>
 
     <p>Evaluation expressions are compiled on-the-fly during the
