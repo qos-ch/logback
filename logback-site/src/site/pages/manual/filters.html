@@ -132,13 +132,13 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
-    <b>&lt;Filter class="chapters.filters.SampleFilter" /></b>
+    <b>&lt;filter class="chapters.filters.SampleFilter" /></b>
 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+    &lt;encoder>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger - %msg%n
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 	
   &lt;root>
@@ -185,18 +185,17 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		
 <em>Example 6.<span class="autoEx"/>: Sample LevelFilter configuration (logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml)</em>				
 <pre class="prettyprint source">&lt;configuration>
-  &lt;appender name="CONSOLE"
-    class="ch.qos.logback.core.ConsoleAppender">
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
       &lt;level>INFO&lt;/level>
       &lt;onMatch>ACCEPT&lt;/onMatch>
       &lt;onMismatch>DENY&lt;/onMismatch>
     &lt;/filter></b>
-    &lt;layout>
+    &lt;encoder>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger{30} - %msg%n
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
@@ -223,11 +222,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       &lt;level>INFO&lt;/level>
     &lt;/filter></b>
-    &lt;layout>
+    &lt;encoder>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger{30} - %msg%n
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
@@ -401,8 +400,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
 <pre class="prettyprint source longline">&lt;configuration>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
       &lt;evaluator> &lt;!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
         &lt;expression><span class="green">message.contains("billing")</span>&lt;/expression>
@@ -410,11 +408,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
     &lt;/filter></b>
-    &lt;layout>
+    &lt;encoder>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger - %msg%n
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="INFO">
@@ -524,9 +522,9 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
     &lt;/filter>
-    &lt;layout>
+    &lt;encoder>
       &lt;pattern>%-4relative [%thread] %-5level %logger - %msg%n&lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="DEBUG">
@@ -662,13 +660,12 @@ public class SampleTurboFilter extends TurboFilter {
     &lt;Marker>sample&lt;/Marker>
   &lt;/turboFilter></b>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
       &lt;pattern>
         %-4relative [%thread] %-5level %logger - %msg%n
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root>
@@ -708,12 +705,12 @@ configuration (logback-examples/src/main/java/chapters/filters/turboFilters.xml)
   &lt;/turboFilter>
 
   &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
-  &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;root level="info">
+  &lt;root level="INFO">
     &lt;appender-ref ref="console" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -826,12 +823,12 @@ configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.
   <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
 
   &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date [%thread] %-5level %logger - %msg%n&lt;/Pattern>
-  &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;root level="info">
+  &lt;root level="INFO">
     &lt;appender-ref ref="console" />
   &lt;/root>  
 &lt;/configuration></pre>
@@ -897,20 +894,19 @@ configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.
 <em>Example 6.<span class="autoEx"/>: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator name="myEval">
         &lt;expression>event.getStatusCode() == 404&lt;/expression>
       &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
+      &lt;onMatch>ACCEPT&lt;/onMatch>
     &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.access.PatternLayout">
+   &lt;encoder>
       &lt;pattern>
         %h %l %u %t %r %s %b
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />
@@ -924,27 +920,26 @@ configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.
     <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator2.xml)</em>
     <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator name="Eval404">
         &lt;expression>event.getStatusCode() == 404&lt;/expression>
       &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>ACCEPT&lt;/OnMatch>
+      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
+      &lt;onMatch>ACCEPT&lt;/onMatch>
     &lt;/filter>
     &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator name="EvalCSS">
         &lt;expression>event.getRequestURI().contains("css")&lt;/expression>
       &lt;/evaluator>
-      &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
-      &lt;OnMatch>DENY&lt;/OnMatch>
+      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
+      &lt;onMatch>DENY&lt;/onMatch>
     &lt;/filter></b>
-    &lt;layout class="ch.qos.logback.access.PatternLayout">
+   &lt;encoder>
       &lt;pattern>
         %h %l %u %t %r %s %b
       &lt;/pattern>
-    &lt;/layout>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />

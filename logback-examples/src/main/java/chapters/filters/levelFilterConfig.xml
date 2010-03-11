@@ -7,9 +7,9 @@
       <onMatch>ACCEPT</onMatch>
       <onMismatch>DENY</onMismatch>
     </filter>
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <pattern>%-4relative [%thread] %-5level %logger{30} - %msg%n</pattern>
-    </layout>
+    </encoder>
   </appender>
   <root level="DEBUG">
     <appender-ref ref="CONSOLE" />

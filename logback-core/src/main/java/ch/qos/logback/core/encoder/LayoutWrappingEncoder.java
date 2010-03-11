@@ -93,7 +93,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         return s.getBytes(charset.name());
       } catch (UnsupportedEncodingException e) {
         throw new IllegalStateException(
-            "An existing charser cannot possibly be unsupported.");
+            "An existing charset cannot possibly be unsupported.");
       }
     }
   }

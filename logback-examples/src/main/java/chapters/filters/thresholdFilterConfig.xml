@@ -7,9 +7,9 @@
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>INFO</level>
     </filter>
-    <layout>
+    <encoder>
       <pattern>%-4relative [%thread] %-5level %logger{30} - %msg%n</pattern>
-    </layout>
+    </encoder>
   </appender>
 
   

@@ -33,10 +33,12 @@ public class ExceptionEvaluatorExample {
       lc.reset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      StatusPrinter.print(lc);
+      // StatusPrinter will handle this
     }
-    for (int i = 0; i < 5; i++) {
-      if (i == 3) {
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+    
+    for (int i = 0; i < 3; i++) {
+      if (i == 1) {
         logger.debug("logging statement " + i, new TestException(
             "do not display this"));
       } else {

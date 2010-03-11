@@ -1,15 +1,15 @@
 <configuration>
 
-	<conversionRule conversionWord="sample" converterClass="chapters.layouts.MySampleConverter" />
+	<conversionRule conversionWord="sample" 
+                  converterClass="chapters.layouts.MySampleConverter" />
 	
-  <appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%-4relative [%thread] %sample - %msg%n</Pattern>
-    </layout>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-4relative [%thread] %sample - %msg%n</pattern>
+    </encoder>>
   </appender>
 
-  <root level="debug">
+  <root level="DEBUG">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

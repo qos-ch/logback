@@ -1,14 +1,13 @@
 <configuration>
 
-  <appender name="STDOUT"
-    class="ch.qos.logback.core.ConsoleAppender">
-    <Filter class="chapters.filters.SampleFilter" />
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="chapters.filters.SampleFilter" />
 
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <pattern>
         %-4relative [%thread] %-5level %logger - %msg%n
       </pattern>
-    </layout>
+    </encoder>
   </appender>
 	
   <root>
