@@ -169,11 +169,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     sbuf.append(LINE_SEPARATOR);
     
     cssBuilder.addCss(sbuf);
-//    if (cssBuilder == null) {
-//      DefaultCssBuilder.addDefaultCSS(sbuf);
-//    } else {
-//      cssBuilder.addExternalCSS(sbuf);
-//    }
+
     sbuf.append(LINE_SEPARATOR);
     sbuf.append("  </head>");
     sbuf.append(LINE_SEPARATOR);

@@ -88,7 +88,7 @@
 		<div class="source">10489 DEBUG [main] com.marsupial.Pouch - Hello world.</div>
 
 		<p>Here is a possible implementation, authored by the Texan developer:</p>
-		<em>Example 5.0: Sample implementation of a Layout
+		<em>Example: Sample implementation of a Layout
 			<a href="../xref/chapters/layouts/MySampleLayout.html">
 			(logback-examples/src/main/java/chapters/layouts/MySampleLayout.java)</a></em>
 
@@ -328,7 +328,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
 
  
 		<em>
-			Example 5.1: Sample usage of a PatternLayout
+			Example: Sample usage of a PatternLayout
 			<a href="../xref/chapters/layouts/PatternSample.html">
 			(logback-examples/src/main/java/chapters/layouts/PatternSample.java)</a>
 		</em>
@@ -1271,7 +1271,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     document.</p>
 
 		<em>
-			Example 5.2: Sample usage of EventEvaluators
+			Example: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapters/layouts/callerEvaluatorConfig.xml)
 		</em>
 		<pre class="prettyprint source">&lt;configuration>
@@ -1303,7 +1303,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     mentioned in above configuration file.</p>
 		
     <p><em>
-			Example 5.2: Sample usage of EventEvaluators
+			Example: Sample usage of EventEvaluators
 			<a href="../xref/chapters/layouts/CallerEvaluatorExample.html">
 			(logback-examples/src/main/java/chapters/layouts/CallerEvaluatorExample.java)</a>
 		</em>
@@ -1397,7 +1397,7 @@ Caller+0   at chapters.layouts.CallerEvaluatorExample.main(CallerEvaluatorExampl
 		printed.</p>
 
    <p><em>
-			Example 5.2: Sample usage of EventEvaluators
+			Example: Sample usage of EventEvaluators
 			<a href="../xref/chapters/layouts/ExceptionEvaluatorExample.html">
 			(logback-examples/src/main/java/chapters/layouts/ExceptionEvaluatorExample.java)</a>
 		</em>
@@ -1446,7 +1446,7 @@ public class ExceptionEvaluatorExample {
     </p>
 
 		<em>
-			Example 5.3: Sample usage of EventEvaluators
+			Example: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapters/layouts/exceptionEvaluatorConfig.xml)
 		</em>
 		<pre class="prettyprint source">&lt;configuration>
@@ -1527,7 +1527,7 @@ java.lang.Exception: display
 		colors the level of the logging event, according to ANSI terminal
 		conventions. Here is a possible implementation:</p>
 		
-<em> Example 5.4: Sample Converter Example 
+<em> Example: Sample Converter Example 
 <a href="../xref/chapters/layouts/MySampleConverter.html">
 (src/main/java/chapters/layouts/MySampleConverter.java)</a></em>
 <pre class="prettyprint source">package chapters.layouts;
@@ -1580,7 +1580,7 @@ public class MySampleConverter extends ClassicConverter {
 		<code>Converter</code>. For this purpose, we need to declare the
 		new conversion word in the configuration file, as shown below:</p>
 		
-<em> Example 5.4: Sample Converter Example (src/main/java/chapters/layouts/mySampleConverterConfig.xml)</em>
+<em> Example: Sample Converter Example (src/main/java/chapters/layouts/mySampleConverterConfig.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;conversionRule conversionWord="sample" 
@@ -1663,6 +1663,7 @@ public class MySampleConverter extends ClassicConverter {
     the use of <code>HTMLLayout</code>.
     </p>
 
+<em> Example: HTMLLayout Example (src/main/java/chapters/layouts/htmlLayoutConfig1.xml)</em>
 <pre class="prettyprint source">&lt;configuration debug="true"&gt;
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -1679,29 +1680,12 @@ public class MySampleConverter extends ClassicConverter {
 &lt;/configuration>
 </pre>
 
-   <p>The next application logs a few messages finishing with an
-   exception.</p>
-  
-  <pre class="prettyprint source">import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+   <p>The <a
+   href="../xref/chapters/layouts/TrivialMain.html">TrivialMain</a>
+   application logs a few messages finishing with an exception. The
+   commmand:</p>
 
-public class TrivialMain {
-  public static void main(String[] args) throws InterruptedException {
-    Logger logger = LoggerFactory.getLogger(TrivialMain.class);
-    for(int i = 0; i &lt; 6; i ++) {
-      if(i % 5 == 0) {
-        logger.warn("a warning message "+i);
-      } else {
-        logger.debug("hello world number" +i);
-      }
-    }
-    logger.error("Finish off with fireworks", new Exception("Just testing"));
-  }
-}</pre>
-
-   <p>The command</p>
-
-  <p class="source">java chapters.layouts.TrivialMain src/main/java/chapters/appenders/conf/logback-HtmlToConsole.xml</p>
+   <p class="source">java chapters.layouts.TrivialMain src/main/java/chapters/layouts/htmlLayoutConfig1.xml</p>
 
     <p>will create the file <em>test.html</em> in the current
     folder. The contents of <em>test.html</em> should be similar to:
@@ -1750,64 +1734,19 @@ public class TrivialMain {
     <code>&lt;layout&gt;</code> element, as shown below.
 		</p>
 
-<pre class="prettyprint source">&lt;layout>
-  ...
+<pre class="prettyprint source">&lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+  &lt;pattern>%relative...%msg&lt;/pattern>
   &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
-    &lt;url>path_to_StyleFile.css&lt;/url>
+    &lt;!-- url where the css file is located --&gt;
+    &lt;url>http://...&lt;/url>
   &lt;/cssBuilder>	
-  ...
 &lt;/layout></pre>
 
 	
 		<p>The <code>HTMLLayout</code> is often used in conjunction with
-		<code>SMTPAppender</code>, in order to send an email pleasantly
-		formatted in HTML. Here is a typical configuration:
+		<code>SMTPAppender</code> so that outgoing email is pleasantly
+		formatted in HTML.
 		</p>
-
-		<pre class="prettyprint source">&lt;configuration&gt;
-  &lt;appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender"&gt;
-    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
-      &lt;pattern>%relative%thread%mdc%level%class%msg&lt;/pattern&gt;
-    &lt;/layout&gt;
-    &lt;From>sender.email@domain.net&lt;/From>
-    &lt;SMTPHost>mail.domain.net&lt;/SMTPHost>
-    &lt;Subject>LastEvent: %class - %msg &lt;/Subject>
-    &lt;To>destination.email@domain.net&lt;/To> 
-  &lt;/appender&gt;
-
-  &lt;root level="debug">
-    &lt;appender-ref ref="SMTP" /&gt;
-  &lt;/root&gt;
-&lt;/configuration&gt;</pre>
-
-		<p><code>HTMLLayout</code> can also be used with any
-		<code>FileAppender</code>, including a a rolling file appender, as
-		shown in the sample configuration below.
-    </p>
-		
-    <pre class="prettyprint source">&lt;configuration>
-  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;file>lastLogEntries.html&lt;/file>
-    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      &lt;fileNamePattern>logEntries.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
-    &lt;/rollingPolicy>
-
-    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-       &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
-         &lt;cssBuilder class="ch.qos.logback.core.html.UrlCssBuilder">
-           &lt;url>address_of_a_custom_stylesheet.css&lt;/url>
-         &lt;/cssBuilder>	
-         &lt;pattern>%relative%thread%mdc%level%logger%msg&lt;/pattern>
-         <b>&lt;title>Logging Events&lt;/title></b>
-      &lt;/layout>
-    &lt;/encoder>
-  &lt;/appender> 
-
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="FILE" />
-  &lt;/root>
-&lt;/configuration></pre>
-
     <h2><a name="log4jXMLLayout" href="#log4jXMLLayout">Log4j
     XMLLayout</a></h2>
 
@@ -1815,8 +1754,7 @@ public class TrivialMain {
     <p><a
     href="../xref/ch/qos/logback/classic/log4j/XMLLayout.html">XMLLayout</a>
     (part of logback-classic) generates output in a log4j.dtd
-    compliant format. It can be used to inter-operate with tools such
-    as <a
+    compliant format to interoperate with tools such as <a
     href="http://logging.apache.org/chainsaw/index.html">Chainsaw</a>
     and <a href="http://vigilog.sourceforge.net/">Vigilog</a> capable
     of processing files generated by <a
@@ -1837,6 +1775,7 @@ public class TrivialMain {
 
     <p>Here is a sample configuration</p>
 
+<em> Example: Log4jXMLLayout Example (src/main/java/chapters/layouts/log4jXMLLayout.xml)</em>
     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>test.xml&lt;/file>
@@ -1852,7 +1791,7 @@ public class TrivialMain {
   &lt;/root>
 &lt;/configuration> </pre>
     
-		<h2>Logback access</h2>
+		<h1><a name="logback-access" href="#logback-access">Logback access</a></h1>
 
 		<p>Most logback-access layouts are mere adaptations of
 		logback-classic layouts. Logback-classic and logback-access
