@@ -20,8 +20,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.util.StatusPrinter;
 
-
-
 /**
  * This application generates log messages in numbers specified by the
  * user. 
@@ -34,6 +32,7 @@ public class EMail {
 
     int runLength = Integer.parseInt(args[0]);
     String configFile = args[1];
+
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     JoranConfigurator configurator = new JoranConfigurator();

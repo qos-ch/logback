@@ -423,7 +423,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * @see #setCharsetEncoding(String)
    * @return the charset encoding value
    */
-  String getCharsetEncoding() {
+  public String getCharsetEncoding() {
     return charsetEncoding;
   }
 
@@ -433,7 +433,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * 
    * @param charsetEncoding
    */
-  void setCharsetEncoding(String charsetEncoding) {
+  public void setCharsetEncoding(String charsetEncoding) {
     this.charsetEncoding = charsetEncoding;
   }
 

@@ -158,7 +158,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
         postProcessEvent(event);
         Serializable serEvent = getPST().transform(event);
         oos.writeObject(serEvent);
-        // addInfo("=========Flushing.");
         oos.flush();
         if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
           counter = 0;

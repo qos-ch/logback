@@ -68,6 +68,12 @@
     after the connection to the server is re-established.
     </p>
 
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-193">LBCLASSIC-193</a>. <code>SyslogAppender</code>
+    will no longer shutdown when messages over 256Kb cause an
+    <code>IOException</code>.
+    </p>
+
     <p>Added <a
     href="manual/appenders.html#OnMarkerEvaluator">OnMarkerEvaluator</a>
     which evaluates to true in the presence of user-specified
@@ -95,6 +101,12 @@
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCORE-130">LBCORE-130</a>. <code>FileNamePattern</code>
     no longer treats parenthesis as special.
+    </p>
+
+    <p>The <span class="option">CharsetEncoder</span> property in
+    <code>SMTPAppender</code> can now be accessed and set from
+    configuration files. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-194">LBCLASSIC-194</a>.
     </p>
 
     <hr width="80%" align="center" />
