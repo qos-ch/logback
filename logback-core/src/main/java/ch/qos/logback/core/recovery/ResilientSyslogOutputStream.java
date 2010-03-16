@@ -13,50 +13,40 @@
  */
 package ch.qos.logback.core.recovery;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
-public class ResilientFileOutputStream extends ResilientOutputStreamBase {
+import ch.qos.logback.core.net.SyslogOutputStream;
 
-  File file;
+public class ResilientSyslogOutputStream extends ResilientOutputStreamBase {
 
-  public ResilientFileOutputStream(File file, boolean append)
-      throws FileNotFoundException {
-    this.file = file;
-    this.os = new FileOutputStream(file, append);
+
+  String syslogHost;
+  int port;
+  
+  public ResilientSyslogOutputStream(String syslogHost, int port)
+      throws UnknownHostException, SocketException {
+    this.syslogHost = syslogHost;
+    this.port = port;
+    super.os = new SyslogOutputStream(syslogHost, port);
     this.presumedClean = true;
   }
 
-  public FileChannel getChannel() {
-    if (os == null) {
-      return null;
-    }
-    final FileOutputStream fos = (FileOutputStream) os;
-    return fos.getChannel();
-  }
-
-  public File getFile() {
-    return file;
-  }
-
-
   @Override
   String getDescription() {
-    return "file ["+file+"]";
+    return "syslog ["+syslogHost+":"+port+"]";
   }
 
   @Override
   OutputStream openNewOutputStream() throws IOException {
-    return  new FileOutputStream(file, true);
+    return  new SyslogOutputStream(syslogHost, port);
   }
   
   @Override
   public String toString() {
-    return "c.q.l.c.recovery.ResilientFileOutputStream@"
+    return "c.q.l.c.recovery.ResilientSyslogOutputStream@"
         + System.identityHashCode(this);
   }
 

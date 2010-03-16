@@ -21,38 +21,45 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.net.mock.MockSyslogServer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.net.SyslogConstants;
+import ch.qos.logback.core.recovery.RecoveryCoordinator;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest {
 
+  LoggerContext lc = new LoggerContext();
+  SyslogAppender sa = new SyslogAppender();
+  MockSyslogServer mockServer;
+  String loggerName = this.getClass().getName();
+  Logger logger = lc.getLogger(loggerName);
+
   @Before
   public void setUp() throws Exception {
+    lc.setName("test");
+    sa.setContext(lc);
   }
 
   @After
   public void tearDown() throws Exception {
   }
 
-  @Test
-  public void basic() throws InterruptedException {
+  public void setMockServerAndConfigure(int expectedCount)
+      throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
 
-    MockSyslogServer mockServer = new MockSyslogServer(1, port);
+    mockServer = new MockSyslogServer(expectedCount, port);
     mockServer.start();
     // give MockSyslogServer head start
+
     Thread.sleep(100);
 
-    LoggerContext lc = new LoggerContext();
-    lc.setName("test");
-    SyslogAppender sa = new SyslogAppender();
-    sa.setContext(lc);
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
@@ -63,12 +70,20 @@ public class SyslogAppenderTest {
     String loggerName = this.getClass().getName();
     Logger logger = lc.getLogger(loggerName);
     logger.addAppender(sa);
+
+  }
+
+  @Test
+  public void basic() throws InterruptedException {
+
+    setMockServerAndConfigure(1);
     String logMsg = "hello";
     logger.debug(logMsg);
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
     mockServer.join(8000);
+
     assertTrue(mockServer.isFinished());
     assertEquals(1, mockServer.getMessageList().size());
     String msg = mockServer.getMessageList().get(0);
@@ -80,39 +95,20 @@ public class SyslogAppenderTest {
     assertTrue(msg.startsWith(expected));
 
     String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
-    checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName
-        + " " + logMsg);
+    checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
+        + logMsg);
 
   }
 
   @Test
   public void tException() throws InterruptedException {
-    int port = RandomUtil.getRandomServerPort();
+    setMockServerAndConfigure(21);
 
-    MockSyslogServer mockServer = new MockSyslogServer(21, port);
-    mockServer.start();
-    // give MockSyslogServer head start
-    Thread.sleep(100);
-
-    LoggerContext lc = new LoggerContext();
-    lc.setName("test");
-    SyslogAppender sa = new SyslogAppender();
-    sa.setContext(lc);
-    sa.setSyslogHost("localhost");
-    sa.setFacility("MAIL");
-    sa.setPort(port);
-    sa.setSuffixPattern("[%thread] %logger %msg");
-    sa.start();
-    assertTrue(sa.isStarted());
-
-    String loggerName = this.getClass().getName();
-    Logger logger = lc.getLogger(loggerName);
-    logger.addAppender(sa);
     String logMsg = "hello";
     String exMsg = "just testing";
     Exception ex = new Exception(exMsg);
     logger.debug(logMsg, ex);
-    // StatusPrinter.print(lc.getStatusManager());
+    StatusPrinter.print(lc);
 
     // wait max 2 seconds for mock server to finish. However, it should
     // much sooner than that.
@@ -133,13 +129,44 @@ public class SyslogAppenderTest {
 
     String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
     String threadName = Thread.currentThread().getName();
-    String regex = expectedPrefix + "\\[" + threadName + "\\] "
-        + loggerName + " " + logMsg;
+    String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
+        + " " + logMsg;
     checkRegexMatch(msg, regex);
   }
-  
+
   private void checkRegexMatch(String s, String regex) {
-    assertTrue("The string ["+s+"] did not match regex ["+regex+"]", s.matches(regex));
+    assertTrue("The string [" + s + "] did not match regex [" + regex + "]", s
+        .matches(regex));
+  }
+
+  @Test
+  public void large() throws InterruptedException {
+    setMockServerAndConfigure(1);
+    StringBuilder largeBuf = new StringBuilder();
+    for (int i = 0; i < 2 * 1024 * 1024; i++) {
+      largeBuf.append('a');
+    }
+    logger.debug(largeBuf.toString());
+
+    String logMsg = "hello";
+    logger.debug(logMsg);
+    Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+10);
+    logger.debug(logMsg);
+    
+    mockServer.join(8000);
+    assertTrue(mockServer.isFinished());
+    
+    // the first message is wasted
+    assertEquals(1, mockServer.getMessageList().size());
+    String msg = mockServer.getMessageList().get(0);
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
+    assertTrue(msg.startsWith(expected));
+    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
+    String threadName = Thread.currentThread().getName();
+    String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
+        + " " + logMsg;
+    checkRegexMatch(msg, regex);
   }
 
   @Test

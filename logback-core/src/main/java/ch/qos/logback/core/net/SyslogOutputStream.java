@@ -13,8 +13,9 @@
  */
 package ch.qos.logback.core.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -22,10 +23,10 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * SyslogWriter is a wrapper around the {@link DatagramSocket} class so that it
- * behaves like a {@link Writer}.
+ * SyslogOutputStream is a wrapper around the {@link DatagramSocket} class so that it
+ * behaves like an {@link OutputStream}.
  */
-public class SyslogWriter extends Writer {
+public class SyslogOutputStream extends OutputStream {
 
   /**
    * The maximum length after which we discard the existing string buffer and
@@ -35,39 +36,41 @@ public class SyslogWriter extends Writer {
 
   private InetAddress address;
   private DatagramSocket ds;
-  private StringBuffer buf = new StringBuffer();
+  private ByteArrayOutputStream baos = new ByteArrayOutputStream();
   final private int port;
 
-  public SyslogWriter(String syslogHost, int port) throws UnknownHostException,
+  public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException,
       SocketException {
     this.address = InetAddress.getByName(syslogHost);
     this.port = port;
     this.ds = new DatagramSocket();
   }
 
-  public void write(char[] charArray, int offset, int len) throws IOException {
-    buf.append(charArray, offset, len);
-  }
-
-  public void write(String str) throws IOException {
-    buf.append(str);
-
+  public void write(byte[] byteArray, int offset, int len) throws IOException {
+    baos.write(byteArray, offset, len);
   }
 
   public void flush() throws IOException {
-    byte[] bytes = buf.toString().getBytes();
+    byte[] bytes = baos.toByteArray();
     DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address,
         port);
 
+    // clean up for next round
+    if (baos.size() > MAX_LEN) {
+      baos = new ByteArrayOutputStream();
+    } else {
+      baos.reset();
+    }
+    
+    // after a failure, it can happen that bytes.length is zero
+    // in that case, there is no point in sending out an empty message/
+    if(bytes.length == 0) {
+      return;
+    }
     if (this.ds != null) {
       ds.send(packet);
     }
-    // clean up for next round
-    if (buf.length() > MAX_LEN) {
-      buf = new StringBuffer();
-    } else {
-      buf.setLength(0);
-    }
+  
   }
 
   public void close() {
@@ -77,6 +80,11 @@ public class SyslogWriter extends Writer {
 
   public int getPort() {
     return port;
+  }
+
+  @Override
+  public void write(int b) throws IOException {
+    baos.write(b);
   }
 
 }

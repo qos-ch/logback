@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -25,19 +26,20 @@ import ch.qos.logback.core.Layout;
  * Base class for SyslogAppender.
  * 
  * @author Ceki G&uumllc&uuml;
- *
+ * 
  * @param <E>
  */
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
-  final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL + "#syslog_layout";
-  final static int MSG_SIZE_LIMIT = 256*1024;
-  
+  final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL
+      + "#syslog_layout";
+  final static int MSG_SIZE_LIMIT = 256 * 1024;
+
   Layout<E> layout;
   String facilityStr;
   String syslogHost;
   protected String suffixPattern;
-  SyslogWriter sw;
+  SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
 
   public void start() {
@@ -48,13 +50,14 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     try {
-      sw = new SyslogWriter(syslogHost, port);
+      sos = new SyslogOutputStream(syslogHost, port);
     } catch (UnknownHostException e) {
       addError("Could not create SyslogWriter", e);
       errorCount++;
     } catch (SocketException e) {
-      errorCount++;
-      addError("Failed to bind to a random datagram socket ", e);
+      addWarn(
+          "Failed to bind to a random datagram socket. Will try to reconnect later.",
+          e);
     }
 
     if (layout == null) {
@@ -65,7 +68,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       super.start();
     }
   }
-  
+
   abstract public Layout<E> buildLayout(String facilityStr);
 
   abstract public int getSeverityForEvent(Object eventObject);
@@ -78,20 +81,19 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
     try {
       String msg = layout.doLayout(eventObject);
-      if(msg != null && msg.length() > MSG_SIZE_LIMIT) {
+      if (msg != null && msg.length() > MSG_SIZE_LIMIT) {
         msg = msg.substring(0, MSG_SIZE_LIMIT);
       }
-      sw.write(msg);
-      sw.flush();
-      postProcess(eventObject, sw);
+      sos.write(msg.getBytes());
+      sos.flush();
+      postProcess(eventObject, sos);
     } catch (IOException ioe) {
       addError("Failed to send diagram to " + syslogHost, ioe);
-      stop();
     }
   }
-  
-  protected void postProcess(Object event, SyslogWriter sw) {
-    
+
+  protected void postProcess(Object event, OutputStream sw) {
+
   }
 
   /**
@@ -174,10 +176,10 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The <b>Facility</b> option must be set one of the strings KERN, USER,
-   * MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP,
-   * AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5,
-   * LOCAL6, LOCAL7. Case is not important.
+   * The <b>Facility</b> option must be set one of the strings KERN, USER, MAIL,
+   * DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
+   * ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6,
+   * LOCAL7. Case is not important.
    * 
    * <p>
    * See {@link SyslogConstants} and RFC 3164 for more information about the
@@ -206,22 +208,22 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     this.port = port;
   }
 
-
   public Layout<E> getLayout() {
     return layout;
   }
 
   public void setLayout(Layout<E> layout) {
-    addWarn("The layout of a SyslogAppender cannot be set directly. See also "+SYSLOG_LAYOUT_URL);
+    addWarn("The layout of a SyslogAppender cannot be set directly. See also "
+        + SYSLOG_LAYOUT_URL);
   }
 
   @Override
   public void stop() {
-    sw.close();
+    sos.close();
     super.stop();
   }
 
-  /**
+/**
    * See {@link #setSuffixPattern(String).
    * 
    * @return
