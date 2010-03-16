@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+
+  <appender name="CUSTOM" class="chapters.appenders.CountingConsoleAppender">
+    <layout>
+      <Pattern>%date [%thread] %-5level %logger - %msg%n</Pattern>
+    </layout>
+    <limit>5</limit>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="CUSTOM" />
+  </root>  
+</configuration>
+
+
+

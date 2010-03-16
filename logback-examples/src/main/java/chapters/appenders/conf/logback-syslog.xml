@@ -1,0 +1,13 @@
+<configuration>
+
+  <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    <syslogHost>${syslogHost}</syslogHost>
+    <facility>${facility}</facility>
+    <suffixPattern>%-4relative [%thread] %-5level - %msg</suffixPattern>
+  </appender>
+	
+	<root level="DEBUG">
+		<appender-ref ref="SYSLOG" />
+	</root>
+</configuration>
+

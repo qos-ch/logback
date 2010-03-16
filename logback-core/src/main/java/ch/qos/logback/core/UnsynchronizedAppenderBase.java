@@ -31,8 +31,6 @@ import ch.qos.logback.core.status.WarnStatus;
 abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements
     Appender<E> {
 
-  protected Layout<E> layout;
-  
   protected boolean started = false;
 
   // using a ThreadLocal instead of a boolean add 75 nanoseconds per
@@ -145,13 +143,5 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
   
   public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
-  }
-
-  public Layout<E> getLayout() {
-    return layout;
-  }
-
-  public void setLayout(Layout<E> layout) {
-    this.layout = layout;
   }
 }

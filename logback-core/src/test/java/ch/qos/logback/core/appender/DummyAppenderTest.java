@@ -15,37 +15,40 @@ package ch.qos.logback.core.appender;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.layout.DummyLayout;
-import ch.qos.logback.core.layout.NopLayout;
 
 
-public class DummyAppenderTest {
+public class DummyAppenderTest extends AbstractAppenderTest<Object> {
 
-  
+  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+  DummyWriterAppender<Object> da = new DummyWriterAppender<Object>(baos);
+   
   protected Appender<Object> getAppender() {
-    return new DummyAppender<Object>(new StringWriter());
+    return da;
   }
   
   protected Appender<Object> getConfiguredAppender() {
-    DummyAppender<Object> da = new DummyAppender<Object>(new StringWriter());
-    da.setLayout(new NopLayout<Object>());
+    da.setEncoder(new DummyEncoder<Object>());
     da.start();
     return da;
   }
 
   @Test
-  public void testBasic() {
-    StringWriter sw = new StringWriter();
-    DummyAppender<Object> da = new DummyAppender<Object>(sw);
-    da.setLayout(new DummyLayout<Object>());
+  public void testBasic() throws IOException {
+    Encoder<Object> encoder = new DummyEncoder<Object>();
+    encoder.init(baos);
+    da.setEncoder(encoder);
     da.start();
     da.doAppend(new Object());
-    assertEquals(DummyLayout.DUMMY, sw.getBuffer().toString());
+    assertEquals(DummyLayout.DUMMY, baos.toString());
   }
   
 }

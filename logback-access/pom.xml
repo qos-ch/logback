@@ -49,7 +49,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tomcat</groupId>
+      <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
@@ -58,6 +58,13 @@
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>

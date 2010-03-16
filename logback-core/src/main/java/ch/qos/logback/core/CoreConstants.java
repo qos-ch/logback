@@ -50,9 +50,6 @@ public class CoreConstants {
    * By convention, we assume that the static method named "valueOf" taking 
    * a string argument can restore a given object from its string 
    * representation.
-   * 
-   * <p>Classes participating in this convention must be declared
-   * as stringStorable in a (logback) context.
    */
   static public final String VALUE_OF = "valueOf";
   
@@ -74,6 +71,8 @@ public class CoreConstants {
   
   
   public final static char PERCENT_CHAR = '%';
+  public static final char LEFT_PARENTHESIS_CHAR = '(';
+  public static final char RIGHT_PARENTHESIS_CHAR = ')';
   
   /** 
    * Number of rows before in an HTML table before, 
@@ -93,6 +92,9 @@ public class CoreConstants {
   public static long REFERENCE_BIPS = 9000;
   
   
+  // maximum error acoutn to report
+  static public final int MAX_ERROR_COUNT = 4;
+  
   
   static public final char DOT = '.';
   static public final char TAB = '\t';
@@ -104,4 +106,13 @@ public class CoreConstants {
   // configuration, then file.getURL() is registered
   public static String URL_OF_LAST_CONFIGURATION_VIA_JORAN = "URL_OF_LAST_CONFIGURATION_VIA_JORAN";
   
+
+  /**
+   * The key under which the local host name is registered in the logger
+   * context.
+   */
+  public static final String HOSTNAME_KEY = "HOSTNAME";
+  
+  
+  public static int BYTES_PER_INT = 4;
 }

@@ -16,9 +16,9 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 import java.io.IOException;
 
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
-
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
@@ -46,7 +46,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     if (triggeringPolicy == null) {
       addWarn("No TriggeringPolicy was set for the RollingFileAppender named "
           + getName());
-      addWarn("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_tp");
+      addWarn("For more information, please visit "+CODES_URL+"#rfa_no_tp");
       return;
     }
 
@@ -59,7 +59,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     if (rollingPolicy == null) {
       addError("No RollingPolicy was set for the RollingFileAppender named "
           + getName());
-      addError("For more information, please visit http://logback.qos.ch/codes.html#rfa_no_rp");
+      addError("For more information, please visit "+CODES_URL+"rfa_no_rp");
       return;
     }
 
@@ -85,7 +85,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     // allow setting the file name to null if mandated by prudent mode
     if (file != null && ((triggeringPolicy != null) || (rollingPolicy != null))) {
       addError("File property must be set before any triggeringPolicy or rollingPolicy properties");
-      addError("Visit http://logback.qos.ch/codes.html#rfa_file_after for more information");
+      addError("Visit "+CODES_URL+"#rfa_file_after for more information");
     }
     super.setFile(file);
   }
@@ -98,32 +98,34 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   /**
    * Implemented by delegating most of the rollover work to a rolling policy.
    */
-  public synchronized void rollover() {
-    // Note: This method needs to be synchronized because it needs exclusive
-    // access while it closes and then re-opens the target file.
-    //
-    // make sure to close the hereto active log file! Renaming under windows
-    // does not work for open files.
-    this.closeWriter();
+  public void rollover() {
+    synchronized (lock) {
+      // Note: This method needs to be synchronized because it needs exclusive
+      // access while it closes and then re-opens the target file.
+      //
+      // make sure to close the hereto active log file! Renaming under windows
+      // does not work for open files.
+      this.closeOutputStream();
 
-    try {
-      rollingPolicy.rollover();
-    } catch (RolloverFailure rf) {
-      addWarn("RolloverFailure occurred. Deferring roll-over.");
-      // we failed to roll-over, let us not truncate and risk data loss
-      this.append = true;
-    }
+      try {
+        rollingPolicy.rollover();
+      } catch (RolloverFailure rf) {
+        addWarn("RolloverFailure occurred. Deferring roll-over.");
+        // we failed to roll-over, let us not truncate and risk data loss
+        this.append = true;
+      }
 
-    try {
-      // update the currentlyActiveFile
-      // http://jira.qos.ch/browse/LBCORE-90
-      currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
+      try {
+        // update the currentlyActiveFile
+        // http://jira.qos.ch/browse/LBCORE-90
+        currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
 
-      // This will also close the file. This is OK since multiple
-      // close operations are safe.
-      this.openFile(rollingPolicy.getActiveFileName());
-    } catch (IOException e) {
-      addError("setFile(" + fileName + ", false) call failed.", e);
+        // This will also close the file. This is OK since multiple
+        // close operations are safe.
+        this.openFile(rollingPolicy.getActiveFileName());
+      } catch (IOException e) {
+        addError("setFile(" + fileName + ", false) call failed.", e);
+      }
     }
   }
 

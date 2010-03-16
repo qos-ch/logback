@@ -15,7 +15,6 @@ package ch.qos.logback.access.db;
 
 import static org.junit.Assert.assertEquals;
 
-import java.net.InetAddress;
 import java.util.Random;
 
 import org.junit.After;
@@ -37,7 +36,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderIntegrationTest {
 
-  static String LOCAL_HOST_NAME;
+  static String LOCAL_HOST_NAME = Env.getLocalHostName();
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
 
   int diff = new Random(System.nanoTime()).nextInt(10000);
@@ -45,8 +44,6 @@ public class DBAppenderIntegrationTest {
   
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    InetAddress localhostIA = InetAddress.getLocalHost();
-    LOCAL_HOST_NAME = localhostIA.getHostName();
   }
 
   @AfterClass
@@ -85,12 +82,7 @@ public class DBAppenderIntegrationTest {
     if(!Env.isJDK6OrHigher()) {
       return false;
     }
-    for (String conformingHost : CONFORMING_HOST_LIST) {
-      if (conformingHost.equalsIgnoreCase(LOCAL_HOST_NAME)) {
-        return true;
-      }
-    }
-    return false;
+    return Env.isLocalHostNameInList(CONFORMING_HOST_LIST);
   }
 
   @Test

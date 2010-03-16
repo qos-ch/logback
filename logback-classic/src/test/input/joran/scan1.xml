@@ -4,9 +4,9 @@
 <configuration scan="true" scanPeriod="1 millisecond">
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <Pattern>yx %d - %m%n"</Pattern>  
-    </layout>
+    </encoder>
   </appender>
     
   <root level="TRACE">  

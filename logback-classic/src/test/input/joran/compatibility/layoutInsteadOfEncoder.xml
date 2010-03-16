@@ -1,0 +1,15 @@
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>target/test-output/layoutInsteadOfEncoder.log</file>
+    <append>true</append>
+                
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%msg%n</pattern>
+    </layout>
+  </appender>
+        
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

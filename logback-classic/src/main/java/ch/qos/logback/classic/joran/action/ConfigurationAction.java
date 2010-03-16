@@ -19,6 +19,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -38,13 +39,12 @@ public class ConfigurationAction extends Action {
         || debugAttrib.equalsIgnoreCase("null")) {
       addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
-      // LoggerContext loggerContext = (LoggerContext) context;
-      // ConfiguratorBase.attachTemporaryConsoleAppender(context);
-
       debugMode = true;
     }
 
     processScanAttrib(attributes);
+
+    new ContextUtil(context).addHostNameAsProperty();
 
     // the context is turbo filter attachable, so it is pushed on top of the
     // stack

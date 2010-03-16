@@ -25,7 +25,15 @@ public class BodyEvent extends SaxEvent {
     this.text = text;
   }
 
+  /**
+   * Always trim trailing spaces from the body text.
+   * 
+   * @return
+   */
   public String getText() {
+    if(text != null) {
+      return text.trim();
+    } 
     return text;
   }
 

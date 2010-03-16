@@ -17,7 +17,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.PropertySetter;
+import ch.qos.logback.core.joran.util.PropertySetter;
 
 
 

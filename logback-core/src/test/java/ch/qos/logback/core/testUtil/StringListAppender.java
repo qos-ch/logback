@@ -47,12 +47,10 @@ public class StringListAppender<E> extends AppenderBase<E> {
     strList.add(res);
   }
 
-  @Override
   public Layout<E> getLayout() {
     return layout;
   }
 
-  @Override
   public void setLayout(Layout<E> layout) {
     this.layout = layout;
   }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<included>
+
+  <appender name="includedConsole"  class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned by default the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    <encoder>
+      <param name="Pattern" value="%d - %m%n" />
+    </encoder>
+  </appender>
+
+</included>

@@ -18,6 +18,7 @@ import java.util.Map;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 
 /**
  * The central interface in logback-classic. In a nutshell, logback-classic is
@@ -26,7 +27,7 @@ import ch.qos.logback.classic.Level;
  * @author Ceki G&uuml;lc&uuml;
  * @since 0.9.16
  */
-public interface ILoggingEvent {
+public interface ILoggingEvent extends DeferredProcessingAware {
 
   public String getThreadName();
 

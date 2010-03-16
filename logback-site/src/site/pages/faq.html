@@ -26,9 +26,8 @@
     <h3>Logback project</h3>
 
     <ol>
-      <li><a href="#why_lgpl">Why is logback distributed under LGPL and
-      not the Apache Software License?</a>
-      </li>
+      <li><a href="#why_lgpl">Why is logback distributed under LGPL
+      and not the Apache Software License?</a> </li>
 
       <li><a href="#dependecy">What are logback's dependencies, i.e.
       JDK version and third-party libraries?</a>
@@ -86,24 +85,30 @@
       <h2>Logback project</h2>
       
       <dl>
-        <dt> 
-          <a name="why_lgpl" href="#why_lgpl">Why is logback distributed
-          under LGPL and not the Apache Software License?</a>
-        </dt>
+        <dt>
+          <a name="why_lgpl" href="#why_lgpl">Why is logback
+          distributed under LGPL and not the Apache Software License
+          (ASL)?</a> </dt>
         
         <dd>
-          <p>The logback project is distributed under the LGPL license
-          in order to emphasize the fact that it is a related but
-          <em>different</em> project than log4j.
+          <p>The logback project is dual licensed under the LGPL and
+          the EPL for two mains reasons. For one, the different
+          license emphasizes that the fact that logback is a related
+          but <em>different</em> project than log4j. 
           </p>
 
-          <p>Given that Java v7 will be distributed under GPL, we expect
-          GPL and LGPL to become even more prevalent in the Java world.
+          <p>Both the LGPL and EPL are reasonable and widely-accepted
+          licenses. In contrast to the ASL, both the LGPL and he EPL
+          require that derivate work be licensed under the same
+          license. While there might be debate about the exact
+          definition of derivative work, we find such reciprocity both
+          justified and morally appealing -- that tis the second
+          reason for our choice of the LGPL &amp; EPL
+          dual-license. The subtly more liberal approach embodied in
+          the ASL is not necessarily wrong. It is the expression of a
+          different balance.
           </p>
           
-          <p>In short, LGPL is a reasonable and widely-accepted
-          license. Let well alone.
-          </p>
         </dd>
       </dl>
 
@@ -322,7 +327,7 @@
           place the file <em>logback.xml</em> under the
           <em>$JETTY_HOME/resources</em> directory. You can find
           sample configuration files in the
-          <em>logback-examples/src/main/java/chapter4/conf/</em>
+          <em>logback-examples/src/main/java/chapters/appenders/conf/</em>
           folder shipping within the logback distribution.
           </p>
 

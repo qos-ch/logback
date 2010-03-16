@@ -23,13 +23,13 @@ import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.util.TeztConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -42,7 +42,7 @@ public class EvaluatorJoranTest  {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(TeztConstants.TEST_DIR_PREFIX + "input/joran/simpleEvaluator.xml");
+    jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
     
     
     Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
@@ -63,7 +63,7 @@ public class EvaluatorJoranTest  {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
     jc.setContext(loggerContext);
-    jc.doConfigure(TeztConstants.TEST_DIR_PREFIX + "input/joran/ignore.xml");
+    jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
     
     Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);

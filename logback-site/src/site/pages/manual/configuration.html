@@ -121,7 +121,7 @@
     </p>
 
 
-    <h3>Automatically configuring logback</h3>
+    <h3><a name="automaticConf" href="#automaticConf">Automatically configuring logback</a></h3>
 
     <p>The simplest way to configure logback is by letting logback
     fall back to its default configuration. Let us give a taste of how
@@ -131,9 +131,9 @@
 
     <em>Example 3.<span class="autoEx"/>: Simple example of
     <code>BasicConfigurator</code> usage <a
-    href="../xref/chapter3/MyApp1.html">(logback-examples/src/main/java/chapter3/MyApp1.java)</a></em>
+    href="../xref/chapters/configuration/MyApp1.html">(logback-examples/src/main/java/chapters/configuration/MyApp1.java)</a></em>
 
-    <pre class="prettyprint source">package chapter3;
+    <pre class="prettyprint source">package manual.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,10 +155,10 @@ public class MyApp1 {
   </p>
 
   <em>Example 3.<span class="autoEx"/>: Small class doing logging 
-  <a href="../xref/chapter3/Foo.html">(logback-examples/src/main/java/chapter3/Foo.java)</a>
+  <a href="../xref/chapters/configuration/Foo.html">(logback-examples/src/main/java/chapters/configuration/Foo.java)</a>
   </em>
 
-  <pre class="prettyprint source">package chapter3;
+  <pre class="prettyprint source">package chapters.configuration;
   
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,8 +178,6 @@ public class Foo {
     details.
     </p>
 
-  
-
     <p>Assuming the configuration files <em>logback-test.xml</em> or
     <em>logback.xml</em> are not present, logback will default to
     invoking <a
@@ -187,18 +185,18 @@ public class Foo {
     which will set up a minimal configuration. This minimal
     configuration consists of a <code>ConsoleAppender</code> attached
     to the root logger.  The output is formatted using a
-    <code>PatternLayout</code> set to the pattern <em>%d{HH:mm:ss.SSS}
-    [%thread] %-5level %logger{36} - %msg%n</em>. Moreover, by default
-    the root logger is assigned the <code>DEBUG</code> level.
+    <code>PatternLayoutEncoder</code> set to the pattern
+    <em>%d{HH:mm:ss.SSS}&nbsp;[%thread]&nbsp;%-5level&nbsp;%logger{36}&nbsp;-&nbsp;%msg%n</em>. Moreover, by default the root logger is assigned the
+    <code>DEBUG</code> level.
     </p>
 
-    <p>Thus, the output of the command <em>java chapter3.MyApp1</em>
+    <p>Thus, the output of the command <em>java chapters.configuration.MyApp1</em>
     should be similar to:
     </p>
 
-    <p class="source">16:06:09.031 [main] INFO  chapter3.MyApp1 - Entering application.
-16:06:09.046 [main] DEBUG chapter3.Foo - Did it again!
-16:06:09.046 [main] INFO  chapter3.MyApp1 - Exiting application.</p>
+    <p class="source">16:06:09.031 [main] INFO  chapters.configuration.MyApp1 - Entering application.
+16:06:09.046 [main] DEBUG chapters.configuration.Foo - Did it again!
+16:06:09.046 [main] INFO  chapters.configuration.MyApp1 - Exiting application.</p>
 
 
    <div class="highlight">
@@ -234,15 +232,17 @@ public class Foo {
    </p>
 
  <p><em>Example 3.<span class="autoEx"/>: Basic configuration file
-  (logback-examples/src/main/java/chapter3/sample0.xml)</em></p>
+  (logback-examples/src/main/java/chapters/configuration/sample0.xml)</em></p>
 
 
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -255,7 +255,9 @@ public class Foo {
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
 
-   <h4>Automatic printing of status messages in case of warning or errors</h4>
+   <h4><a name="automaticStatusPrinting"
+   href="#automaticStatusPrinting">Automatic printing of status
+   messages in case of warning or errors</a></h4>
 
    <div class="highlight">
      <p>If warning or errors occur during the parsing of the
@@ -276,7 +278,7 @@ public class Foo {
 
     <em>Example 3.<span class="autoEx"/>: Print logback's internal status information
     <a
-    href="../xref/chapter3/MyApp2.html">(logback-examples/src/main/java/chapter3/MyApp2.java)</a></em>
+    href="../xref/chapters/configuration/MyApp2.html">(logback-examples/src/main/java/chapters/configuration/MyApp2.java)</a></em>
 
   
 <pre class="prettyprint lang-java source">
@@ -298,9 +300,9 @@ public class Foo {
 17:44:58,812 |-INFO in ch.qos.logback.classic.joran.action.LevelAction - root level set to DEBUG
 17:44:58,812 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[root]
 
-17:44:58.828 [main] INFO  chapter3.MyApp2 - Entering application.
-17:44:58.828 [main] DEBUG chapter3.Foo - Did it again!
-17:44:58.828 [main] INFO  chapter3.MyApp2 - Exiting application.
+17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Entering application.
+17:44:58.828 [main] DEBUG chapters.configuration.Foo - Did it again!
+17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Exiting application.
 </pre></div>
 
   <p>At the end of this output, you can recognize the lines that were
@@ -325,15 +327,17 @@ public class Foo {
 
    <em>Example 3.<span class="autoEx"/>: Basic configuration file
    using debug mode
-   (logback-examples/src/main/java/chapter3/sample1.xml)</em>
+   (logback-examples/src/main/java/chapters/configuration/sample1.xml)</em>
 
 <pre class="prettyprint source">
 &lt;configuration <b>debug="true"</b>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -373,7 +377,7 @@ public class Foo {
    file external to the application.
    </p>
 
-   <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapter3.MyApp1</p>
+   <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
 
 
    <h3><a name="autoScan" href="#autoScan">Automatically reloading
@@ -397,7 +401,7 @@ public class Foo {
    </p>
   <em>Example 3.<span class="autoEx"/>: Scanning for changes in
   configuration file and automatic re-configuraion
-  (logback-examples/src/main/java/chapter3/scan1.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/scan1.xml)</em>
 
 <pre class="prettyprint source">
 &lt;configuration <b>scan="true"</b>> 
@@ -414,7 +418,7 @@ public class Foo {
 
   <em>Example 3.<span class="autoEx"/>: Specifying a different
   scanning period
-  (logback-examples/src/main/java/chapter3/scan2.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/scan2.xml)</em>
 
 <pre class="prettyprint source">
 &lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
@@ -466,9 +470,9 @@ public class Foo {
    
    <p><em>Example 3.<span class="autoEx"/>: Invoking
    <code>JoranConfigurator</code> directly <a
-   href="../xref/chapter3/MyApp3.html">(logback-examples/src/main/java/chapter3/MyApp3.java)</a></em></p>
+   href="../xref/chapters/configuration/MyApp3.html">(logback-examples/src/main/java/chapters/configuration/MyApp3.java)</a></em></p>
 
-<pre class="prettyprint source">package chapter3;
+<pre class="prettyprint source">package chapters.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -540,8 +544,8 @@ public class MyApp3 {
    <code>LoggerContext</code> as an HTML table. Here is sample output.
    </p>
    
-   <a href="images/chapter3/lbClassicStatus.jpg">
-     <img src="images/chapter3/lbClassicStatus.jpg" alt="click to enlarge" width="90%"/>
+   <a href="images/chapters/configuration/lbClassicStatus.jpg">
+     <img src="images/chapters/configuration/lbClassicStatus.jpg" alt="click to enlarge" width="90%"/>
    </a>
 
    <p>To add this servlet to your web-application, add the following
@@ -584,7 +588,7 @@ public class MyApp3 {
    </p>
 
    <p>Here is <a
-   href="../xref/chapter3/AddStatusListenerApp.html">sample code</a>
+   href="../xref/chapters/configuration/AddStatusListenerApp.html">sample code</a>
    to register an OnConsoleStatusListener instance with the
    StatusManager.
    </p>
@@ -601,7 +605,7 @@ public class MyApp3 {
    <p>It is also possible to register one or more status listeners
    within a configuration file. Here is an example.</p>
 
-  <p><em>Example 3.<span class="autoEx"/>: Registering a status listener (logback-examples/src/main/java/chapter3/onConsoleStatusListener.xml)</em></p>
+  <p><em>Example 3.<span class="autoEx"/>: Registering a status listener (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</em></p>
 
    <pre class="prettyprint source">&lt;configuration>
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
@@ -617,120 +621,136 @@ public class MyApp3 {
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
    
 
-
-
    <h2>
      <a name="syntax" href="#syntax">Configuration file Syntax</a>
    </h2>
 
-	<p>To obtain these different logging behaviors we do not need to
-	recompile code.  You can easily configure logback so as to disable
-	logging for certain parts of your application, or direct output to a
-	UNIX Syslog daemon, to a database, to a log visualizer, or forward
-	logging events to a remote logback server, which would log according
-	to local server policy, for example by forwarding the log event to a
-	second logback server.
-  </p>
+   <p>As you have seen thus far in the manual with plenty of examples
+   still to follow, logback allows you to redefine logging behavior
+   without needing to recompile your code.  Indeed, you can easily
+   configure logback so as to disable logging for certain parts of
+   your application, or direct output to a UNIX Syslog daemon, to a
+   database, to a log visualizer, or forward logging events to a
+   remote logback server, which would log according to local server
+   policy, for example by forwarding the log event to a second logback
+   server.
+   </p>
 	
-  <p>The remainder of this section presents the syntax of
-  configuration files. 
-  </p>
+   <p>The remainder of this section presents the syntax of
+   configuration files. 
+   </p>
 
-  <p>As shall become clear, the syntax of logback configuration files
-  is extremely flexible. As such, it is not possible to specify the
-  allowed syntax with a DTD file or an XML schema. Nevertheless, the
-  very basic structure of the configuration file can be described as,
-  &lt;configuration> element, followed by zero or more &lt;appender>
-  elements, followed by zero or more &lt;logger> elements, followed by
-  at most one &lt;root> element. The following diagram illustrates
-  this basic structure.</p>
+   <p>As shall be demonstrated over and over, the syntax of logback
+   configuration files is extremely flexible. As such, it is not
+   possible to specify the allowed syntax with a DTD file or an XML
+   schema. Nevertheless, the very basic structure of the configuration
+   file can be described as, <code>&lt;configuration></code> element,
+   followed by zero or more <code>&lt;appender></code> elements,
+   followed by zero or more <code>&lt;logger></code> elements,
+   followed by at most one <code>&lt;root></code> element. The
+   following diagram illustrates this basic structure.</p>
 
   
   <p align="left">
-    <img src="images/chapter3/basicSyntax.png" 
+    <img src="images/chapters/configuration/basicSyntax.png" 
          alt="basic Syntax" title="Basic configuration file structure"/>
   </p>
 
 
   <div class="highlight">
     <p>If you are unsure which case to use for a given tag name, just
-    follow the camelCase convention which should usually be
-    corrrect.</p>
-  </div>
+    follow the <a
+    href="http://en.wikipedia.org/wiki/CamelCase">camelCase
+    convention</a> which is almost always the corrrect convention.</p>
+    </div>
 
-  <p>As of logback version 0.9.17, tag names pertaining to explicit
-  rules are case insensitive.  For example, both
-  <code>&lt;logger></code>, <code>&lt;Logger></code> and
-  <code>&lt;LOGGER></code> are valid configuration elements and will
-  be interpreted in the same way. Note that XML well-formedness rules
-  still apply, if you open a tag as <code>&lt;xyz></code> you must
-  close it as <code>&lt;/xyz></code>, <code>&lt;/XyZ></code> will not
-  work. As for <a href="onJoran.html#implicit">implicit rules</a>, tag
-  names are case sensitive except for the first letter.  Thus,
-  <code>&lt;xyz></code> and <code>&lt;Xyz></code> are equivalent but
-  not <code>&lt;xYz></code>.  Implicit rules usually follow the <a
-  href="http://en.wikipedia.org/wiki/CamelCase">camel case</a>
-  convention, common in the Java world. Since it is not trivially easy
-  tell when a tag is associated with an explicit action and when it is
-  associated with an implicit action, it is not trivial to say whether
-  an XML tag is totally case-insensitive or case-insensitive with
-  respect to the first letter. If you are unsure which case to use for
-  a given tag name, just follow the camelCase convention which should
-  usually be correct.
+    <h4><a name="caseSensitivity" href="#caseSensitivity">Case
+    sensitivity of tag names</a></h4>
+   
+
+    <p>As of logback version 0.9.17, tag names pertaining to explicit
+    rules are case insensitive.  For example, both
+    <code>&lt;logger></code>, <code>&lt;Logger></code> and
+    <code>&lt;LOGGER></code> are valid configuration elements and will
+    be interpreted in the same way. Note that XML well-formedness
+    rules still apply, if you open a tag as <code>&lt;xyz></code> you
+    must close it as <code>&lt;/xyz></code>, <code>&lt;/XyZ></code>
+    will not work. As for <a href="onJoran.html#implicit">implicit
+    rules</a>, tag names are case sensitive except for the first
+    letter.  Thus, <code>&lt;xyz></code> and <code>&lt;Xyz></code> are
+    equivalent but not <code>&lt;xYz></code>.  Implicit rules usually
+    follow the <a href="http://en.wikipedia.org/wiki/CamelCase">camel
+    case</a> convention, common in the Java world. Since it is not
+    easy tell when a tag is associated with an explicit action and
+    when it is associated with an implicit action, it is not trivial
+    to say whether an XML tag is case-sensitive or insensitive with
+    respect to the first letter. If you are unsure which case to use
+    for a given tag name, just follow the camelCase convention which
+    is almost always the correct convention.
+    </p>
+
+    <h4><a name="loggerElement"
+    href="#loggerElement">Configuring loggers, or the
+    <code>&lt;logger></code> element</a></h4>
+
+    <p>At this point should have at least some understanding of <a
+    href="architecture.html#effectiveLevel">level inherirance</a> and
+    the <a href="architecture.html#basic_selection">basic selection
+    rule</a>. Otherwise, and unless you are an egyptologist, logback
+    configuration will be no more meaningful to you than
+    are hieroglyphics.
+    </p>
+
+    <p>A logger is configured using the <code>&lt;logger></code>
+    element. A <code>&lt;logger></code> element takes exactly one
+    mandatory <span class="attr">name</span> attribute, an optional
+    <span class="attr">level</span> attribute, and an optional <span
+    class="attr">additivity</span> attribute, admitting the values
+    <em>true</em> or <em>false</em>. The value of the <span
+    class="attr">level</span> attribute admitting the one of the
+    case-insensitive string values TRACE, DEBUG, INFO, WARN, ERROR,
+    ALL or OFF. The special case-insensitive value <em>INHERITED</em>,
+    or its synonym <em>NULL</em>, will force the level of the logger
+    to be inherited from higher up in the hierarchy. This comes in
+    handy in case you set the level of a logger and later decide that
+    it should inherit its level.
+    </p>
+
+    <p>The <code>&lt;logger></code> element may contain zero or more
+    <code>&lt;appender-ref></code> elements; each appender thus
+    referenced is added to the named logger. It is important to keep
+    mind that each named logger that is declared with a
+    <code>&lt;logger></code> element first has all its appenders
+    removed and only then are the referenced appenders attached to it.
+    In particular, if there are no appender references, then the named
+    logger will lose all its appenders.
+    </p>
+
+
+
+  <h4><a name="rootElement" href="#rootElement">Configuring the root
+  logger, or the <code>&lt;root></code> element</a></h4>
+
+  <p>The <code>&lt;root></code> element configures the root logger. It
+  admits a single attribute, namely the <span
+  class="attr">level</span> attribute. It does not admit any other
+  attributes because the additivity flag does not apply to the root
+  logger.  Moreover, since the root logger is already named as "ROOT",
+  it does not admit a name attribute either. The value of the level
+  attribute can be one of the case-insensitive strings TRACE, DEBUG,
+  INFO, WARN, ERROR, ALL or OFF. Note that the level of the root
+  logger cannot be set to INHERITED or NULL.
   </p>
 
-  <h4>Configuring Loggers, or the <code>&lt;logger></code> element</h4>
 
-  <p>A logger is configured using the <code>logger</code> element. A
-  <em>logger</em> element takes exactly one mandatory <span
-  class="attr">name</span> attribute, an optional <span
-  class="attr">level</span> attribute, and an optional <span
-  class="attr">additivity</span> attribute, which admits the values
-  <em>true</em> or <em>false</em>. The value of the <span
-  class="attr">level</span> attribute can be one of the
-  case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or
-  OFF. The special case-insensitive value <em>INHERITED</em>, or its
-  synonym <em>NULL</em>, will force the level of the logger to be
-  inherited from higher up in the hierarchy. This comes in handy in
-  case you set the level of a logger and later decide that it should
-  inherit its level.
-  </p>
-
-  <p>The <em>logger</em> element may contain zero or more
-  <em>appender-ref</em> elements; each appender thus referenced is
-  added to the named logger. It is important to keep mind that each
-  named logger that is declared with a &lt;logger element first has
-  all its appenders removed and only then are the referenced appenders
-  attached to it.  In particular, if there are no appender references,
-  then the named logger will lose all its appenders.
-  </p>
-
-
-
-  <h4>Configuring the root logger, or the <code>&lt;root></code>
-  element</h4>
-
-
-
-  <p>The &lt;root> element configures the root logger. It admits a
-  single attribute, namely the <span class="attr">level</span>
-  attribute. It does not admit any other attributes because the
-  additivity flag does not apply to the root logger.  Moreover, since
-  the root logger is already named as "ROOT", it does not admit a name
-  attribute either. The value of the level attribute can be set to one
-  of the case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL
-  or OFF. Note that the level of the root logger cannot be set to
-  INHERITED or NULL.
-  </p>
-
-
-  <p>The &lt;root> element admits zero or more &lt;appender-ref>
-  elements.  Similar to the &lt;logger element, declaring a &lt;root
+  <p>The <code>&lt;root></code> element admits zero or more
+  <code>&lt;appender-ref></code> elements.  Similar to the
+  <code>&lt;logger></code> element, declaring a <code>&lt;root></code>
   element will have the effect of first closing and then detaching all
   its current appenders and only subsequently will referenced
-  appenders, if any, will be added.  In particular, if it has no
-  appender references, then the root logger will lose all its
-  appenders.
+  appenders, if any, will be added.  In particular, if the
+  <code>&lt;root></code> element contains no appender references, then
+  the root logger will lose all its appenders.
   </p>
 
   <h4>Example</h4>
@@ -738,20 +758,22 @@ public class MyApp3 {
   <p>Setting the level of a logger or root logger is as simple as
   declaring it and setting its level, as the next example
   illustrates. Suppose we are no longer interested in seeing any DEBUG
-  messages from any component belonging to the "chapter3" package. The
+  messages from any component belonging to the "chapters.configuration" package. The
   following configuration file shows how to achieve that.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Setting the level of a logger (logback-examples/src/main/java/chapter3/sample2.xml)</em>
+<em>Example 3.<span class="autoEx"/>: Setting the level of a logger (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  <b>&lt;logger name="chapter3" level="INFO"/></b>
+  <b>&lt;logger name="chapters.configuration" level="INFO"/></b>
 
   &lt;!-- Strictly speaking, the level attribute is not necessary since --&gt;
   &lt;!-- the level of the root level is set to DEBUG by default.       --&gt;
@@ -761,33 +783,37 @@ public class MyApp3 {
   
 &lt;/configuration></pre>
 
-  <p>This new configuration will yield the following output, when
-  invoked with the <em>MyApp3</em> application.
+  <p>When the above configuration file is given as argument to the
+  <em>MyApp3</em> application, it will yield the following output:
   </p>
 
-<pre class="source">17:34:07.578 [main] INFO  chapter3.MyApp3 - Entering application.
-17:34:07.578 [main] INFO  chapter3.MyApp3 - Exiting application.</pre>
+<pre class="source">17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</pre>
+
+  <p>Note that the message of level DEBUG generated by the <a
+  href="../xref/chapters/configuration/Foo.html">"chapters.configuration.Foo"</a>
+  logger has been supressed. See also the Foo class.</p>
 
   <p>You can configure the levels of as many loggers as you wish.  In
   the next configuration file, we set the level of the
-  <em>chapter3</em> logger to INFO but at the same time set the level
-  of the <em>chapter3.Foo</em> logger to <code>DEBUG</code>.
+  <em>chapters.configuration</em> logger to INFO but at the same time set the level
+  of the <em>chapters.configuration.Foo</em> logger to <code>DEBUG</code>.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Setting the level of multiple loggers (logback-examples/src/main/java/chapter3/sample3.xml)</em>
+<em>Example 3.<span class="autoEx"/>: Setting the level of multiple loggers (logback-examples/src/main/java/chapters/configuration/sample3.xml)</em>
 <pre class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>
+    &lt;encoder>
+      &lt;pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-     &lt;/Pattern>
-    &lt;/layout>
+     &lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  <b>&lt;logger name="chapter3" level="INFO" />
-  &lt;logger name="chapter3.Foo" level="DEBUG" /></b>
+  <b>&lt;logger name="chapters.configuration" level="INFO" /></b>
+  <b>&lt;logger name="chapters.configuration.Foo" level="DEBUG" /></b>
 
   &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
@@ -799,9 +825,9 @@ public class MyApp3 {
   result in the following output on the console:
   </p>
 
-<p class="prettyprint source">17:39:27.593 [main] INFO  chapter3.MyApp3 - Entering application.
-17:39:27.593 [main] DEBUG chapter3.Foo - Did it again!
-17:39:27.593 [main] INFO  chapter3.MyApp3 - Exiting application.</p>
+<p class="prettyprint source">17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+17:39:27.593 [main] DEBUG chapters.configuration.Foo - Did it again!
+17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</p>
 
    <p>The table below list the loggers and their levels, after
    <code>JoranConfigurator</code> has configured logback with the
@@ -820,17 +846,17 @@ public class MyApp3 {
        <td><code>DEBUG</code></td>
      </tr>
      <tr class="alt">
-       <td>chapter3</td>
+       <td>chapters.configuration</td>
        <td><code>INFO</code></td>
        <td><code>INFO</code></td>
      </tr>
      <tr>
-       <td>chapter3.MyApp3</td>
+       <td>chapters.configuration.MyApp3</td>
        <td><code>null</code></td>
        <td><code>INFO</code></td>
      </tr>
      <tr class="alt">
-       <td>chapter3.Foo</td>
+       <td>chapters.configuration.Foo</td>
        <td><code>DEBUG</code></td>
        <td><code>DEBUG</code></td>
      </tr>
@@ -840,7 +866,7 @@ public class MyApp3 {
   <code>INFO</code> in the <code>MyApp3</code> class as well as the
   DEBUG messages in <code>Foo.doIt()</code> are all enabled. Note that
   the level of the root logger is always set to a non-null value,
-  which is DEBUG by default.  
+  DEBUG by default.
   </p>
 
   <p>Let us note that the <a
@@ -854,19 +880,19 @@ public class MyApp3 {
   </p>
 
   <em>Example 3.<span class="autoEx"/>: Logger level sample
-  (logback-examples/src/main/java/chapter3/sample4.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/sample4.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
    class="ch.qos.logback.core.ConsoleAppender">
-   &lt;layout class="ch.qos.logback.classic.PatternLayout">
-     &lt;Pattern>
+   &lt;encoder>
+     &lt;pattern>
         %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-      &lt;/Pattern>
-    &lt;/layout>
+      &lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  <b>&lt;logger name="chapter3" level="INFO" /></b>
+  <b>&lt;logger name="chapters.configuration" level="INFO" /></b>
 
   &lt;!-- turn OFF all logging (children can override) -->
   &lt;root <b>level="OFF"</b>>
@@ -891,17 +917,17 @@ public class MyApp3 {
       <td><code>OFF</code></td>
     </tr>
     <tr class="alt">
-      <td>chapter3</td>
+      <td>chapters.configuration</td>
       <td><code>INFO</code></td>
       <td><code>INFO</code></td>
     </tr>
     <tr>
-      <td>chapter3.MyApp3</td>
+      <td>chapters.configuration.MyApp3</td>
       <td><code>null</code></td>
       <td><code>INFO</code></td>
     </tr>
     <tr class="alt">
-      <td>chapter3.Foo</td>
+      <td>chapters.configuration.Foo</td>
       <td><code>null</code></td>
       <td><code>INFO</code></td>
     </tr>
@@ -914,46 +940,62 @@ public class MyApp3 {
   yield:
   </p>
 
-  <div class="source"><pre>17:52:23.609 [main] INFO chapter3.MyApp3 - Entering application.
-17:52:23.609 [main] INFO chapter3.MyApp3 - Exiting application.</pre></div>
+  <div class="source"><pre>17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Entering application.
+17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Exiting application.</pre></div>
 
   <p>Thus, the level of the root logger has no apparent effect because
-  the loggers in <code>chapter3.MyApp3</code> and
-  <code>chapter3.Foo</code> classes are all enabled for the
-  <code>INFO</code> level.  As a side note, the <em>chapter3</em>
+  the loggers in <code>chapters.configuration.MyApp3</code> and
+  <code>chapters.configuration.Foo</code> classes are all enabled for the
+  <code>INFO</code> level.  As a side note, the <em>chapters.configuration</em>
   logger exists by virtue of its declaration in the configuration file
   - even if the Java source code does not directly refer to it.
   </p>
 
-  <h4>Configuring Appenders</h4>
+  <h4><a name="configuringAppenders"
+  href="#configuringAppenders">Configuring Appenders</a></h4>
 
-  <p>Appenders are configured using <code>&lt;appender></code>
-  elements, taking two attributes <span class="attr">name</span> and
-  <span class="attr">class</span>, both of which are mandatory.  The
+  <p>An appenders is configured with the <code>&lt;appender></code>
+  element, which takes two mandatroy attributes <span
+  class="attr">name</span> and <span class="attr">class</span>.  The
   <span class="attr">name</span> attribute specifies the name of the
   appender whereas the <span class="attr">class</span> attribute
-  specifies the fully qualified name of the class of which the named
-  appender will be an instance.  The <code>&lt;appender></code>
-  element may contain zero or one <code>&lt;layout></code> elements
-  and zero or more <code>&lt;filter></code> elements. Appart from
-  these two common elements, <code>&lt;appender></code> elements may
-  contain any number of element corresponding to javabean properties
-  of the appender class. Seamlessly supporting any property of a given
-  logback component is one of the major strengths of Joran. The
+  specifies the fully qualified name of the appender class to
+  instantiate. The <code>&lt;appender></code> element may contain zero
+  or one <code>&lt;layout></code> elements, zero or more
+  <code>&lt;encoder></code> elements and zero or more
+  <code>&lt;filter></code> elements. Appart from these three common
+  elements, <code>&lt;appender></code> elements may contain any number
+  of elements corresponding to javabean properties of the appender
+  class. Seamlessly supporting any property of a given logback
+  component is one of the major strengths of <a
+  href="onJoran.html">Joran</a> as discussed in a later chapter. The
   following diagram illustrates the common structure. Note that
   support for properties is not visible.
   </p>
 
   <p align="left">
-    <img src="images/chapter3/appenderSyntax.png" 
+    <img src="images/chapters/configuration/appenderSyntax.png" 
          alt="Appender Syntax" title="Appender element syntax"/>
   </p>
 
   <p>The <code>&lt;layout></code> element takes a mandatory class
-  attribute specifying the fully qualified name of the class of which
-  the associated layout should be an instance. Like the
-  <code>&lt;appender></code> element, it may contain other elements
-  corresponding to properties of the layout class.
+  attribute specifying the fully qualified name of the layout class to
+  instantiate.  As with the the <code>&lt;appender></code> element,
+  <code>&lt;layout></code> may contain other elements corresponding to
+  properties of the layout instance. Since it's such a common case, if
+  the layout class is <code>PatternLayout</code>, then the class
+  attribute can be omitted as specified by <a
+  href="onJoran.html#defaultClassMapping">default class mapping</a>
+  rules.
+  </p>
+
+  <p>The <code>&lt;encoder></code> element takes a mandatory class
+  attribute specifying the fully qualified name of the encoder class
+  to instantiate. Since it's such a common case, if the encoder class
+  is <code>PatternLayoutEncoder</code>, then the class attribute can
+  be omitted as specified by <a
+  href="onJoran.html#defaultClassMapping">default class mapping</a>
+  rules.
   </p>
 
   <p>Logging to multiple appenders is as easy as defining the various
@@ -961,47 +1003,50 @@ public class MyApp3 {
   configuration file illustrates:
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Multiple loggers (logback-examples/src/main/java/chapter3/multiple.xml)</em>
+<em>Example 3.<span class="autoEx"/>: Multiple loggers (logback-examples/src/main/java/chapters/configuration/multiple.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;appender name="<b>STDOUT</b>"
-    class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+  &lt;appender name="<b>STDOUT</b>" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
-    <b>&lt;appender-ref ref="FILE" />
-    &lt;appender-ref ref="STDOUT" /></b>
+    <b>&lt;appender-ref ref="FILE" /></b>
+    <b>&lt;appender-ref ref="STDOUT" /></b>
   &lt;/root>
 &lt;/configuration></pre>
 
   <p>This configuration scripts defines two appenders called
   <em>FILE</em> and <em>STDOUT</em>.  The <em>FILE</em> appender logs
-  to a file called <em>myApp.log</em>. The layout for this appender is
-  a <code>PatternLayout</code> that outputs the date, level, thread
-  name, logger name, file name and line number where the log request
-  is located, the message and line separator character(s).  The second
-  appender called <code>STDOUT</code> outputs to the console.  The
-  layout for this appender outputs only the message string followed by
-  a line separator.
+  to a file called <em>myApp.log</em>. The encoder for this appender
+  is a <code>PatternLayoutEncoder</code> that outputs the date, level,
+  thread name, logger name, file name and line number where the log
+  request is located, the message and line separator character(s).
+  The second appender called <code>STDOUT</code> outputs to the
+  console.  The encoder for this appender outputs only the message
+  string followed by a line separator.
   </p>
 
   <p>The appenders are attached to the root logger by referencing them
   by name within an <em>appender-ref</em> element. Note that each
-  appender has its own layout. Layouts are usually not designed to be
-  shared by multiple appenders. As such, logback configuration files
-  do not provide any syntactical means for sharing layouts.
+  appender has its own encoder. Encoders are usually not designed to
+  be shared by multiple appenders. The same is true for layouts. As
+  such, logback configuration files do not provide any syntactical
+  means for sharing encoders or layouts.
   </p>
+
+  <h4><a name="cumulative" href="#cumulative">Appenders accumulate</a>
+  </h4>
 
   <p>By default, <b>appenders are cumulative</b>: a logger will log to
   the appenders attached to itself (if any) as well as all the
@@ -1011,16 +1056,16 @@ public class MyApp3 {
   </p>
 
   <em>Example 3.<span class="autoEx"/>: Duplicate appender
-  (logback-examples/src/main/java/chapter3/duplicate.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;logger name="chapter3">
+  &lt;logger name="chapters.configuration">
     &lt;appender-ref ref="STDOUT" />
   &lt;/logger>
 
@@ -1033,19 +1078,19 @@ public class MyApp3 {
   yield the following output:
   </p>
 
-<p class="source">14:25:36.343 [main] INFO  chapter3.MyApp3 - Entering application.
-14:25:36.343 [main] INFO  chapter3.MyApp3 - Entering application.
-14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
-14:25:36.359 [main] DEBUG chapter3.Foo - Did it again!
-14:25:36.359 [main] INFO  chapter3.MyApp3 - Exiting application.
-14:25:36.359 [main] INFO  chapter3.MyApp3 - Exiting application.</p>
+<p class="source">14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again!
+14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again!
+14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.
+14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</p>
 
   <p>Notice the duplicated output. The appender named <em>STDOUT</em>
-  is attached to two loggers, to root and to <em>chapter3</em>. Since
-  the root logger is the ancestor of all loggers and <em>chapter3</em>
-  is the parent of <em>chapter3.MyApp3</em> and <em>chapter3.Foo</em>,
+  is attached to two loggers, to root and to <em>chapters.configuration</em>. Since
+  the root logger is the ancestor of all loggers and <em>chapters.configuration</em>
+  is the parent of <em>chapters.configuration.MyApp3</em> and <em>chapters.configuration.Foo</em>,
   logging request made with these two loggers will be output twice,
-  once because <em>STDOUT</em> is attached to <em>chapter3</em> and
+  once because <em>STDOUT</em> is attached to <em>chapters.configuration</em> and
   once because it is attached to <em>root</em>.
   </p>
 
@@ -1057,23 +1102,23 @@ public class MyApp3 {
   </p>
 
   <em>Example 3.<span class="autoEx"/>: Multiple appender
-  (logback-examples/src/main/java/chapter3/restricted.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/restricted.xml)</em>
   <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;logger name="chapter3">
+  &lt;logger name="chapters.configuration">
     &lt;appender-ref ref="FILE" />
   &lt;/logger>
 
@@ -1084,11 +1129,15 @@ public class MyApp3 {
 
   <p>In this example, the console appender will log all the messages
   (for all loggers in the system) whereas only logging request
-  originating from loggers <em>chapter3</em> and below go into the
+  originating from loggers <em>chapters.configuration</em> and below go into the
   <em>myApp.log</em> file.
   </p>
 	
-  <h4>Overriding the default cumulative behaviour</h4>
+  <h4>
+    <a name="overrridingCumulativity" href="#overrridingCumulativity">
+      Overriding the default cumulative behaviour
+    </a>
+  </h4>
 
   <p>In case the default cumulative behavior turns out to be
   unsuitable for your needs, you can override it by setting the
@@ -1097,23 +1146,23 @@ public class MyApp3 {
   of the tree.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Additivity flag (logback-examples/src/main/java/chapter3/additivityFlag.xml)</em>
+<em>Example 3.<span class="autoEx"/>: Additivity flag (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>foo.log&lt;/file>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
-  &lt;logger name="chapter3.Foo" <b>additivity="false"</b>>
+  &lt;logger name="chapters.configuration.Foo" <b>additivity="false"</b>>
     &lt;appender-ref ref="FILE" />
   &lt;/logger>
 
@@ -1123,15 +1172,15 @@ public class MyApp3 {
 &lt;/configuration></pre>
 
   <p>This example, the appender named <em>FILE</em> is attached to the
-  <em>chapter3.Foo</em> logger. Moreover, the <em>chapter3.Foo</em>
+  <em>chapters.configuration.Foo</em> logger. Moreover, the <em>chapters.configuration.Foo</em>
   logger has its additivity flag set to false such that its logging
   output will be sent to the appender named <em>FILE</em> but not to
   any appender attached higher in the hierarchy. Other loggers remain
-  oblivious to the additivity setting of the <em>chapter3.Foo</em>
+  oblivious to the additivity setting of the <em>chapters.configuration.Foo</em>
   logger.  Running the <code>MyApp3</code> application with the
   <em>additivityFlag.xml</em> configuration file will output results
-  on the console from the <em>chapter3.MyApp3</em> logger.  However,
-  output from the <em>chapter3.Foo</em> logger will appear in the
+  on the console from the <em>chapters.configuration.MyApp3</em> logger.  However,
+  output from the <em>chapters.configuration.Foo</em> logger will appear in the
   <em>foo.log</em> file and only in that file.
   </p>
 
@@ -1148,7 +1197,8 @@ public class MyApp3 {
   sequence. For example, if <em>java.home.dir</em> system property is
   set to <em>/home/xyz</em>, then every occurrence of the sequence
   <em>${java.home.dir}</em> will be interpreted as <em>/home/xyz</em>.
-  </p>
+  As it often comes in handy, the variable ${HOSTNAME} is
+  automatically defined.</p>
 
   <h4>properties are inserted into the logger context</h4>
 
@@ -1165,19 +1215,18 @@ public class MyApp3 {
   </p>
 
   <em>Example 3.<span class="autoEx"/>: Simple Variable substitution
-  (logback-examples/src/main/java/chapter3/variableSubstitution1.xml)
+  (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
   </em>
 
   <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1195,17 +1244,16 @@ public class MyApp3 {
   <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
 
   <em>Example 3.<span class="autoEx"/>: System Variable substitution
-  (logback-examples/src/main/java/chapter3/variableSubstitution2.xml)
+  (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
   </em>
   
   <pre class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1221,19 +1269,18 @@ public class MyApp3 {
 
   <em>Example 3.<span class="autoEx"/>: Variable substitution using a
   separate file
-  (logback-examples/src/main/java/chapter3/variableSubstitution3.xml)
+  (logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml)
   </em>
 
   <pre class="prettyprint source">&lt;configuration>
 
-  <b>&lt;property file="src/main/java/chapter3/variables1.properties" /></b>
+  <b>&lt;property file="src/main/java/chapters/configuration/variables1.properties" /></b>
 
-  &lt;appender name="FILE"
-     class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-       &lt;Pattern>%msg%n&lt;/Pattern>
-     &lt;/layout>
+     &lt;encoder>
+       &lt;pattern>%msg%n&lt;/pattern>
+     &lt;/encoder>
    &lt;/appender>
 
    &lt;root level="debug">
@@ -1249,7 +1296,7 @@ public class MyApp3 {
    </p>
 
    <em>Example 3.<span class="autoEx"/>: Variable file
-   (logback-examples/src/main/java/chapter3/variables1.properties)</em>
+   (logback-examples/src/main/java/chapters/configuration/variables1.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien</pre>
 
@@ -1260,12 +1307,11 @@ public class MyApp3 {
 
   <b>&lt;property resource="resource1.properties" /></b>
 
-  &lt;appender name="FILE"
-     class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
      <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>
-     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-       &lt;Pattern>%msg%n&lt;/Pattern>
-     &lt;/layout>
+     &lt;encoder>
+       &lt;pattern>%msg%n&lt;/pattern>
+     &lt;/encoder>
    &lt;/appender>
 
    &lt;root level="debug">
@@ -1285,7 +1331,7 @@ public class MyApp3 {
 
 
    <em>Example 3.<span class="autoEx"/>: Nested variable references
-   (logback-examples/src/main/java/chapter3/variables2.properties)</em>
+   (logback-examples/src/main/java/chapters/configuration/variables2.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien
 fileName=myApp.log
@@ -1298,18 +1344,17 @@ fileName=myApp.log
     
     <em>Example 3.<span class="autoEx"/>: Variable substitution using
     a separate file
-    (logback-examples/src/main/java/chapter3/variableSubstitution4.xml)</em>
+    (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)</em>
 
     <pre class="prettyprint source">&lt;configuration>
 
   &lt;property file="variables2.properties" />
 
-  &lt;appender name="FILE"
-    class="ch.qos.logback.core.FileAppender">
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${destination}&lt;/file></b>
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1341,10 +1386,10 @@ fileName=myApp.log
   </p>
 
   <em>Example 3.<span class="autoEx"/>: File include
-  (logback-examples/src/main/java/chapter3/containingConfig.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/containingConfig.xml)</em>
 
   <pre class="prettyprint source">&lt;configuration>
-  <b>&lt;include file="src/main/java/chapter3/includedConfig.xml"/></b>
+  <b>&lt;include file="src/main/java/chapters/configuration/includedConfig.xml"/></b>
 
   &lt;root level="DEBUG">
     &lt;appender-ref ref="includedConsole" />
@@ -1358,13 +1403,13 @@ fileName=myApp.log
   </p>
 
   <em>Example 3.<span class="autoEx"/>: File include
-  (logback-examples/src/main/java/chapter3/includedConfig.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/includedConfig.xml)</em>
 
   <pre class="source"><b class="green big">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>"%d - %m%n"&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>"%d - %m%n"&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 <b class="green big">&lt;/included></b></pre>
 
@@ -1391,13 +1436,13 @@ fileName=myApp.log
   </p>
   
   <em>Example 3.<span class="autoEx"/>: Set the context name and display it
-  (logback-examples/src/main/java/chapter3/contextName.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/contextName.xml)</em>
   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="debug">
@@ -1421,15 +1466,15 @@ fileName=myApp.log
    </p>
 
    <em>Example 3.<span class="autoEx"/>: Insert as properties env-entries obtained via JNDI
-  (logback-examples/src/main/java/chapter3/insertFromJNDI.xml)</em>
+  (logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml)</em>
    <pre class="prettyprint source">&lt;configuration>
   <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
   <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%d %contextName %level %msg %logger{50}%n&lt;/Pattern>
-    &lt;/layout>
+    &lt;encoder>
+      &lt;pattern>%d %contextName %level %msg %logger{50}%n&lt;/pattern>
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="DEBUG">

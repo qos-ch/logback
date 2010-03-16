@@ -23,9 +23,8 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.layout.DummyLayout;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
@@ -69,9 +68,8 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     // We purposefully use the \n as the line separator.
     // This makes the regression test system independent.
     Context context = new ContextBase();
-    Layout<Object> layout = new DummyLayout<Object>();
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
-    rfa.setLayout(layout);
+    rfa.setEncoder(new DummyEncoder<Object>());
     rfa.setContext(new ContextBase());
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
@@ -99,10 +97,9 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
   public void smoke() throws Exception {
     Context context = new ContextBase();
 
-    EchoLayout<Object> layout = new EchoLayout<Object>();
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     rfa.setName("ROLLING");
-    rfa.setLayout(layout);
+    rfa.setEncoder(new EchoEncoder<Object>());
     rfa.setContext(context);
     // make the .log show first
     rfa.setFile(randomOutputDir + "a-sizeBased-smoke.log");
@@ -143,9 +140,8 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
   @Test
   public void test3() throws Exception {
     Context context = new ContextBase();
-    EchoLayout<Object> layout = new EchoLayout<Object>();
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
-    rfa.setLayout(layout);
+    rfa.setEncoder(new EchoEncoder<Object>());
     rfa.setContext(context);
     rfa.setFile(randomOutputDir + "a-sbr-test3.log");
 

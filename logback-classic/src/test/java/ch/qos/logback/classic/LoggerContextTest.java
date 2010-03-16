@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.StatusManager;
 
 public class LoggerContextTest {
@@ -213,6 +214,12 @@ public class LoggerContextTest {
     lc.reset();
     assertFalse(root.isTraceEnabled());
     assertTrue(root.isDebugEnabled());
+  }
+  
+  @Test
+  public void evaluatorMapPostReset() {
+    lc.reset();
+    assertNotNull(lc.getObject(CoreConstants.EVALUATOR_MAP));
   }
   
 }

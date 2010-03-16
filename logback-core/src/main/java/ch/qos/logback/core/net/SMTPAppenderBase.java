@@ -30,6 +30,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -43,7 +44,8 @@ import ch.qos.logback.core.util.OptionHelper;
  * An abstract class that provides support for sending events to an email
  * address.
  * 
- * <p>See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further
+ * <p>
+ * See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further
  * documentation.
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -52,7 +54,9 @@ import ch.qos.logback.core.util.OptionHelper;
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   protected Layout<E> subjectLayout;
-
+  
+  protected Layout<E> layout;
+  
   private List<String> to = new ArrayList<String>();
   private String from;
   private String subjectStr = null;
@@ -69,6 +73,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   protected MimeMessage mimeMsg;
 
   protected EventEvaluator<E> eventEvaluator;
+
+  private int errorCount = 0;
 
   /**
    * return a layout for the subjet string as appropriate for the module. If the
@@ -153,7 +159,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         sendBuffer(eventObject);
       }
     } catch (EvaluationException ex) {
-      addError("SMTPAppender's EventEvaluator threw an Exception" + ex);
+      errorCount ++;
+      if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
+        addError("SMTPAppender's EventEvaluator threw an Exception" + ex);
+      }
     }
   }
 
@@ -162,9 +171,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   /**
    * This method determines if there is a sense in attempting to append.
    * 
-   * <p> It checks whether there is a set output target and also if there is a
-   * set layout. If these checks fail, then the boolean value <code>false</code>
-   * is returned.
+   * <p>
+   * It checks whether there is a set output target and also if there is a set
+   * layout. If these checks fail, then the boolean value <code>false</code> is
+   * returned.
    */
   public boolean checkEntryConditions() {
     if (!this.started) {
@@ -350,8 +360,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The <b>To</b> option takes a string value which should be an e-mail
-   * address of one of the recipients.
+   * The <b>To</b> option takes a string value which should be an e-mail address
+   * of one of the recipients.
    */
   public void addTo(String to) {
     this.to.add(to);
@@ -384,8 +394,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The <b>EventEvaluator</b> option takes a string value representing the
-   * name of the class implementing the {@link EventEvaluators} interface. A
+   * The <b>EventEvaluator</b> option takes a string value representing the name
+   * of the class implementing the {@link EventEvaluators} interface. A
    * corresponding object will be instantiated and assigned as the event
    * evaluator for the SMTPAppender.
    */
@@ -413,7 +423,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * @see #setCharsetEncoding(String)
    * @return the charset encoding value
    */
-  String getCharsetEncoding() {
+  public String getCharsetEncoding() {
     return charsetEncoding;
   }
 
@@ -423,8 +433,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * 
    * @param charsetEncoding
    */
-  void setCharsetEncoding(String charsetEncoding) {
+  public void setCharsetEncoding(String charsetEncoding) {
     this.charsetEncoding = charsetEncoding;
+  }
+
+  public Layout<E> getLayout() {
+    return layout;
+  }
+
+  public void setLayout(Layout<E> layout) {
+    this.layout = layout;
   }
 
 }

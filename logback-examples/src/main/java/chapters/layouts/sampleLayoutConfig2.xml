@@ -1,0 +1,16 @@
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+ 
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="chapters.layouts.MySampleLayout2">
+        <prefix>MyPrefix</prefix>
+        <printThreadName>false</printThreadName>
+      </layout>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

@@ -15,6 +15,7 @@ package ch.qos.logback.classic;
 
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.status.InfoStatus;
@@ -43,12 +44,12 @@ public class BasicConfigurator {
     ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
     ca.setContext(lc);
     ca.setName("console");
-    PatternLayout pl = new PatternLayout();
+    PatternLayoutEncoder pl = new PatternLayoutEncoder();
     pl.setContext(lc);
     pl.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
     pl.start();
 
-    ca.setLayout(pl);
+    ca.setEncoder(pl);
     ca.start();
     Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     rootLogger.addAppender(ca);

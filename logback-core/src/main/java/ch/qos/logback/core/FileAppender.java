@@ -13,14 +13,12 @@
  */
 package ch.qos.logback.core;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
+import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.util.FileUtil;
 
 /**
@@ -31,12 +29,12 @@ import ch.qos.logback.core.util.FileUtil;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class FileAppender<E> extends WriterAppender<E> {
+public class FileAppender<E> extends OutputStreamAppender<E> {
 
   /**
    * Append to or truncate the file? The default value for this variable is
-   * <code>true</code>, meaning that by default a <code>FileAppender</code>
-   * will append to an existing file and not truncate it.
+   * <code>true</code>, meaning that by default a <code>FileAppender</code> will
+   * append to an existing file and not truncate it.
    */
   protected boolean append = true;
 
@@ -45,19 +43,7 @@ public class FileAppender<E> extends WriterAppender<E> {
    */
   protected String fileName = null;
 
-  /**
-   * Do we do bufferedIO?
-   */
-  protected boolean bufferedIO = false;
-
-  /**
-   * The size of the IO buffer. Default is 8K.
-   */
-  protected int bufferSize = 8 * 1024;
-
   private boolean prudent = false;
-
-  private FileChannel fileChannel = null;
 
   /**
    * As in most cases, the default constructor does nothing.
@@ -81,13 +67,6 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   /**
-   * @deprecated Use isAppend instead
-   */
-  public boolean getAppend() {
-    return append;
-  }
-
-  /**
    * Returns the value of the <b>Append</b> property.
    */
   public boolean isAppend() {
@@ -107,7 +86,8 @@ public class FileAppender<E> extends WriterAppender<E> {
   /**
    * Returns the value of the <b>File</b> property.
    * 
-   * <p>This method may be overridden by derived classes.
+   * <p>
+   * This method may be overridden by derived classes.
    * 
    */
   public String getFile() {
@@ -116,8 +96,8 @@ public class FileAppender<E> extends WriterAppender<E> {
 
   /**
    * If the value of <b>File</b> is not <code>null</code>, then
-   * {@link #openFile} is called with the values of <b>File</b> and <b>Append</b>
-   * properties.
+   * {@link #openFile} is called with the values of <b>File</b> and
+   * <b>Append</b> properties.
    */
   public void start() {
     int errors = 0;
@@ -129,24 +109,6 @@ public class FileAppender<E> extends WriterAppender<E> {
           setAppend(true);
           addWarn("Setting \"Append\" property to true on account of \"Prudent\" mode");
         }
-        if (getImmediateFlush() == false) {
-          setImmediateFlush(true);
-          addWarn("Setting \"ImmediateFlush\" to true on account of \"Prudent\" mode");
-        }
-
-        if (bufferedIO == true) {
-          setBufferedIO(false);
-          addWarn("Setting \"BufferedIO\" property to false on account of \"Prudent\" mode");
-        }
-      }
-
-      // In case both bufferedIO and immediateFlush are set, the former
-      // takes priority because 'immediateFlush' is set to true by default.
-      // If the user explicitly set bufferedIO, then we should follow her
-      // directives.
-      if (bufferedIO) {
-        setImmediateFlush(false);
-        addInfo("Setting \"ImmediateFlush\" property to false on account of \"bufferedIO\" property");
       }
 
       try {
@@ -165,61 +127,44 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   /**
-   * <p> Sets and <i>opens</i> the file where the log output will go. The
-   * specified file must be writable.
+   * <p>
+   * Sets and <i>opens</i> the file where the log output will go. The specified
+   * file must be writable.
    * 
-   * <p> If there was already an opened file, then the previous file is closed
+   * <p>
+   * If there was already an opened file, then the previous file is closed
    * first.
    * 
-   * <p> <b>Do not use this method directly. To configure a FileAppender or one
-   * of its subclasses, set its properties one by one and then call start().</b>
+   * <p>
+   * <b>Do not use this method directly. To configure a FileAppender or one of
+   * its subclasses, set its properties one by one and then call start().</b>
    * 
    * @param filename
-   *                The path to the log file.
+   *          The path to the log file.
    * @param append
-   *                If true will append to fileName. Otherwise will truncate
-   *                fileName.
+   *          If true will append to fileName. Otherwise will truncate fileName.
    * @param bufferedIO
    * @param bufferSize
    * 
    * @throws IOException
    * 
    */
-  public synchronized void openFile(String file_name) throws IOException {
-    File file = new File(file_name);
-    if (FileUtil.mustCreateParentDirectories(file)) {
-      boolean result = FileUtil.createMissingParentDirectories(file);
-      if (!result) {
-        addError("Failed to create parent directories for ["
-            + file.getAbsolutePath() + "]");
+  public void openFile(String file_name) throws IOException {
+    synchronized (lock) {
+      File file = new File(file_name);
+      if (FileUtil.mustCreateParentDirectories(file)) {
+        boolean result = FileUtil.createMissingParentDirectories(file);
+        if (!result) {
+          addError("Failed to create parent directories for ["
+              + file.getAbsolutePath() + "]");
+        }
       }
+
+      ResilientFileOutputStream resilientFos = new ResilientFileOutputStream(
+          file, append);
+      resilientFos.setContext(context);
+      setOutputStream(resilientFos);
     }
-
-    FileOutputStream fileOutputStream = new FileOutputStream(file_name, append);
-    if (prudent) {
-      fileChannel = fileOutputStream.getChannel();
-    }
-    Writer w = createWriter(fileOutputStream);
-    if (bufferedIO) {
-      w = new BufferedWriter(w, bufferSize);
-    }
-    setWriter(w);
-  }
-
-  public boolean isBufferedIO() {
-    return bufferedIO;
-  }
-
-  public void setBufferedIO(boolean bufferedIO) {
-    this.bufferedIO = bufferedIO;
-  }
-
-  public int getBufferSize() {
-    return bufferSize;
-  }
-
-  public void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
   }
 
   /**
@@ -245,7 +190,12 @@ public class FileAppender<E> extends WriterAppender<E> {
     this.append = append;
   }
 
-  final private void safeWrite(String s) throws IOException {
+  final private void safeWrite(E event) throws IOException {
+    ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) getOutputStream();
+    FileChannel fileChannel = resilientFOS.getChannel();
+    if (fileChannel == null) {
+      return;
+    }
     FileLock fileLock = null;
     try {
       fileLock = fileChannel.lock();
@@ -254,7 +204,7 @@ public class FileAppender<E> extends WriterAppender<E> {
       if (size != position) {
         fileChannel.position(size);
       }
-      super.writerWrite(s, true);
+      super.writeOut(event);
     } finally {
       if (fileLock != null) {
         fileLock.release();
@@ -263,11 +213,11 @@ public class FileAppender<E> extends WriterAppender<E> {
   }
 
   @Override
-  protected void writerWrite(String s, boolean flush) throws IOException {
-    if (prudent && fileChannel != null) {
-      safeWrite(s);
+  protected void writeOut(E event) throws IOException {
+    if (prudent) {
+      safeWrite(event);
     } else {
-      super.writerWrite(s, flush);
+      super.writeOut(event);
     }
   }
 }

@@ -28,6 +28,89 @@
 
     <hr width="80%" align="center" />
 
+    <h3>March 2010 - Release of version 0.9.19</h3>
+
+
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+    <h4>Breaking change: FileAppender now expects an Encoder</h4>
+
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LBCORE-128">LBCORE-128</a>,
+    <code>WriterAppender</code> has been renamed as
+    <code>OutputStreamAppender</code>, <code>FileAppender</code> now
+    sub-classing the latter. <code>OutputStreamAppender</code> and
+    sub-classes now take an <code>Encoder</code> instead of a
+    <code>Layout</code>. 
+    </p>
+
+    <p>Contrary to layouts which simply transform a logging event into
+    a String, an encoder is responsible for writing the actual event
+    or more accurately the representation of the event onto the output
+    stream. The role of the enclosing appender is now limited to
+    managing the output stream (opening/closing) but not writing
+    actual contents onto the stream. This change will require <a
+    href="codes.html#layoutInsteadOfEncoder"> modifications to
+    existing configuration files</a>. We hope to make up for this
+    inconvenience with cool new features which are only possible using
+    encoders.
+    </p>
+
+    </div>
+
+    <p><code>FileAppender</code> and derived classes can now
+    gracefully deal with IO failures and recover quickly after the
+    original cause of the IO failure is corrected. For example, if the
+    log file is located on a <a
+    href="http://en.wikipedia.org/wiki/Network-attached_storage">network-attached
+    storage (NAS)</a>, and the connection to the NAS server is lost,
+    <code>FileAppender</code> and derived classes will recover quickly
+    after the connection to the server is re-established.
+    </p>
+
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-193">LBCLASSIC-193</a>. <code>SyslogAppender</code>
+    will no longer shutdown when messages over 256Kb cause an
+    <code>IOException</code>.
+    </p>
+
+    <p>Added <a
+    href="manual/appenders.html#OnMarkerEvaluator">OnMarkerEvaluator</a>
+    which evaluates to true in the presence of user-specified
+    markers. When used with <code>SMTPAppender</code>, it can trigger
+    an outgoing email message when an event matches user-specified
+    marker.</p>
+
+    <p>Request header names in AccessEvent (logback-access) are now
+    stored in a case insensitive way as specified in RFC 2616.  This
+    prevents compatibility issues, in particular with recent versions
+    of Tomcat whcih store request header names in lower-case.</p>
+
+
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCORE-134">LBCORE-134</a>
+    reported by Michael Franz. While reading configuration files (in
+    XML), the event handler will correctly process body text, in
+    particular spaces, even when delivered in multiple chunks. The
+    previous behavior of trimming leading and trailing white space has
+    been preserved. Moreover, body text consisting of white space
+    surrounding child elements is ignored.
+    </p>
+    
+
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCORE-130">LBCORE-130</a>. <code>FileNamePattern</code>
+    no longer treats parenthesis as special.
+    </p>
+
+    <p>The <span class="option">CharsetEncoder</span> property in
+    <code>SMTPAppender</code> can now be accessed and set from
+    configuration files. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-194">LBCLASSIC-194</a>.
+    </p>
+
+    <hr width="80%" align="center" />
+
     <h3>3rd of December 2009 - Release of version 0.9.18</h3>
 
     <p>After a very long investigation resulting in somewhat a better

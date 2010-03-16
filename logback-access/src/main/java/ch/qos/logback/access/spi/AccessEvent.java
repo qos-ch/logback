@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.Cookie;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -40,7 +42,7 @@ import ch.qos.logback.access.servlet.Util;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class AccessEvent implements Serializable {
+public class AccessEvent implements Serializable, DeferredProcessingAware {
 
   
   private static final long serialVersionUID = 866718993618836343L;
@@ -228,6 +230,7 @@ public class AccessEvent implements Serializable {
 
   public String getRequestHeader(String key) {
     String result = null;
+    key = key.toLowerCase();
     if (requestHeaderMap == null) {
       if (httpRequest != null) {
         buildRequestHeaderMap();
@@ -251,7 +254,6 @@ public class AccessEvent implements Serializable {
       return list.elements();
     }
     return httpRequest.getHeaderNames();
-
   }
 
   public Map<String, String> getRequestHeaderMap() {
@@ -262,7 +264,9 @@ public class AccessEvent implements Serializable {
   }
 
   public void buildRequestHeaderMap() {
-    requestHeaderMap = new HashMap<String, String>();
+    // according to RFC 2616 header names are case insensitive
+    // latest versions of Tomcat return header names in lower-case
+    requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
     Enumeration e = httpRequest.getHeaderNames();
     if (e == null) {
       return;

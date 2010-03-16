@@ -14,6 +14,7 @@
 package ch.qos.logback.core.appender;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -25,14 +26,14 @@ import org.junit.Test;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
-import ch.qos.logback.core.layout.NopLayout;
-import ch.qos.logback.core.util.TeeOutputStream;
 
 
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
-  TeeOutputStream tee;
+  XTeeOutputStream tee;
   PrintStream original;
 
 
@@ -45,7 +46,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     // tee = new TeeOutputStream(original);
     
     // keep the console quiet
-    tee = new TeeOutputStream(null);
+    tee = new XTeeOutputStream(null);
     
     // redirect System.out to tee
     System.setOut(new PrintStream(tee));
@@ -63,7 +64,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   protected Appender<Object> getConfiguredAppender() {
     ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
-    ca.setLayout(new NopLayout<Object>());
+    ca.setEncoder(new NopEncoder<Object>());
     ca.start();
     return ca;
   }
@@ -71,7 +72,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   @org.junit.Test
   public void testBasic() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-    ca.setLayout(new DummyLayout<Object>());
+    ca.setEncoder(new DummyEncoder<Object>());
     ca.start();
     ca.doAppend(new Object());
     assertEquals(DummyLayout.DUMMY, tee.toString());
@@ -80,9 +81,9 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   @org.junit.Test
   public void testOpen() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-    DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
-    dummyLayout.setFileHeader("open");
-    ca.setLayout(dummyLayout);
+    DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
+    dummyEncoder.setFileHeader("open");
+    ca.setEncoder(dummyEncoder);
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
@@ -92,12 +93,15 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   @Test
   public void testClose() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-    DummyLayout<Object> dummyLayout = new DummyLayout<Object>();
-    dummyLayout.setFileFooter("CLOSED");
-    ca.setLayout(dummyLayout);
+    DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
+    dummyEncoder.setFileFooter("CLOSED");
+    ca.setEncoder(dummyEncoder);
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
+    // ConsoleAppender must keep the underlying stream open.
+    // The console is not ours to close.
+    assertFalse(tee.isClosed());
     assertEquals(DummyLayout.DUMMY + "CLOSED", tee.toString());
   }
 
@@ -106,12 +110,12 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   @Test  
   public void testUTF16BE() throws UnsupportedEncodingException {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-    ca.setLayout(new DummyLayout<Object>());
+    DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
     String encodingName = "UTF-16BE";
-    ca.setEncoding(encodingName);
+    dummyEncoder.setEncodingName(encodingName);
+    ca.setEncoder(dummyEncoder);
     ca.start();
     ca.doAppend(new Object());
-
     assertEquals(DummyLayout.DUMMY, new String(tee.toByteArray(), encodingName));
   }
 

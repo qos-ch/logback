@@ -33,16 +33,6 @@ public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E
   void doAppend(E event) throws LogbackException;
 
   /**
-   * Set the {@link Layout} for this appender.
-   */
-  public void setLayout(Layout<E> layout);
-
-  /**
-   * Returns this appenders layout.
-   */
-  public Layout<E> getLayout();
-
-  /**
    * Set the name of this appender. The name is used by other components to
    * identify this appender.
    * 

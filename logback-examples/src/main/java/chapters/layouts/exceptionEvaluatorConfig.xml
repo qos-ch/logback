@@ -1,0 +1,16 @@
+<configuration>
+
+  <evaluator name="DISPLAY_EX_EVAL">
+    <expression>throwable != null &amp;&amp; throwable instanceof chapters.layouts.TestException</expression>
+  </evaluator>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%msg%n%xEx{full, DISPLAY_EX_EVAL}</pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

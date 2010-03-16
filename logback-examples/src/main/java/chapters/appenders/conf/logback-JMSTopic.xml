@@ -1,0 +1,17 @@
+<configuration>
+
+	<appender name="Topic" class="ch.qos.logback.classic.net.JMSTopicAppender">
+		<InitialContextFactoryName>
+			org.apache.activemq.jndi.ActiveMQInitialContextFactory
+		</InitialContextFactoryName>
+		<ProviderURL>tcp://localhost:61616</ProviderURL>
+		<TopicConnectionFactoryBindingName>
+			ConnectionFactory
+		</TopicConnectionFactoryBindingName>
+		<TopicBindingName>MyTopic</TopicBindingName>
+	</appender>
+
+  <root level="debug">
+		<appender-ref ref="Topic" />
+	</root>
+</configuration>

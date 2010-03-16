@@ -27,12 +27,13 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.layout.DummyLayout;
-import ch.qos.logback.core.layout.NopLayout;
+import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -45,7 +46,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   protected Appender<Object> getConfiguredAppender() {
     FileAppender<Object> appender = new FileAppender<Object>();
-    appender.setLayout(new NopLayout<Object>());
+    appender.setEncoder(new NopEncoder<Object>());
     appender.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX+"temp.log");
     appender.setName("test");
     appender.setContext(context);
@@ -58,7 +59,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "temp.log";
 
     FileAppender<Object> appender = new FileAppender<Object>();
-    appender.setLayout(new DummyLayout<Object>());
+    appender.setEncoder(new DummyEncoder<Object>());
     appender.setAppend(false);
     appender.setFile(filename);
     appender.setName("smoke");
@@ -78,7 +79,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         + "/testing.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
-    appender.setLayout(new DummyLayout<Object>());
+    appender.setEncoder(new DummyEncoder<Object>());
     appender.setAppend(false);
     appender.setFile(filename);
     appender.setName("testCreateParentFolders");
@@ -100,26 +101,23 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "testing.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
-    appender.setLayout(new DummyLayout<Object>());
+    appender.setEncoder(new DummyEncoder<Object>());
     appender.setFile(filename);
     appender.setName("testPrudentMode");
     appender.setContext(context);
 
     appender.setAppend(false);
-    appender.setImmediateFlush(false);
-    appender.setBufferedIO(true);
     appender.setPrudent(true);
     appender.start();
 
-    assertTrue(appender.getImmediateFlush());
     assertTrue(appender.isAppend());
-    assertFalse(appender.isBufferedIO());
 
     StatusManager sm = context.getStatusManager();
+    StatusPrinter.print(context);
     assertEquals(Status.WARN, sm.getLevel());
     List<Status> statusList = sm.getCopyOfStatusList();
-    assertTrue("Expecting status list size to be larger than 3, but was "
-        + statusList.size(), statusList.size() > 3);
+    assertTrue("Expecting status list size to be 2 or larger, but was "
+        + statusList.size(), statusList.size() >= 2);
     String msg1 = statusList.get(1).getMessage();
 
     assertTrue("Got message [" + msg1 + "]", msg1

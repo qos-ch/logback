@@ -1,0 +1,15 @@
+<!-- This file is intended to be executed by Caculator2. 
+     It is not suited for Calculator1 due to nested computation 
+     elements.
+   -->
+
+<computation name="toto">
+  <computation>
+    <literal value="7"/>
+    <literal value="3"/>
+    <add/>
+  </computation>   
+ 
+  <literal value="3"/>
+  <multiply/>
+</computation>

@@ -1,0 +1,17 @@
+<configuration>
+
+	<appender name="Queue" class="ch.qos.logback.classic.net.JMSQueueAppender">
+		<InitialContextFactoryName>
+			org.apache.activemq.jndi.ActiveMQInitialContextFactory
+		</InitialContextFactoryName>
+		<ProviderURL>tcp://localhost:61616</ProviderURL>
+		<QueueConnectionFactoryBindingName>
+			ConnectionFactory
+		</QueueConnectionFactoryBindingName>
+		<QueueBindingName>MyQueue</QueueBindingName>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="Queue" />
+	</root>
+</configuration>

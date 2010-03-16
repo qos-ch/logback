@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.issue.lbclassic135.lbclassic139;
 
+import java.util.Vector;
+
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -27,7 +29,7 @@ public class Worker extends RunnableWithCounterAndDone {
   static final int SLEEP_DUIRATION = 50;
   
   private Logger logger; 
-  private final Object lock = new Object();
+  private final Vector lock = new Vector();
 
   final LoggerContext loggerContext;
   Worker(LoggerContext lc) {

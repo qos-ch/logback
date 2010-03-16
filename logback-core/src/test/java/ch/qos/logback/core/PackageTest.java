@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { ContextBaseTest.class, WriterAppenderTest.class })
+@SuiteClasses( { ContextBaseTest.class, OutputStreamAppenderTest.class, FileAppenderResilienceTest.class, FileAppenderResilience_AS_ROOT_Test.class })
 public class PackageTest {
 }

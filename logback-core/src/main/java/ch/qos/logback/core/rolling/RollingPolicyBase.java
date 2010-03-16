@@ -55,7 +55,6 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
     }
   }
 
-  
   public void setFileNamePattern(String fnp) {
     fileNamePatternStr = fnp;
   }

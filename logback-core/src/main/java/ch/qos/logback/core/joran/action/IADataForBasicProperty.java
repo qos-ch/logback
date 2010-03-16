@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import ch.qos.logback.core.joran.spi.PropertySetter;
+import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
 /**

@@ -23,7 +23,7 @@
     </div>
     <div id="content">
       
-    <h1>Chapter 7: Mapped Diagnostic Context</h1>
+    <h1>Chapter 8: Mapped Diagnostic Context</h1>
 
     <div class="quote">     
       <p><em>Lock the doors.</em></p>
@@ -96,12 +96,12 @@ public class MDC {
 
 		<p>
 			The next application named 
-			<code><a href="../xref/chapter7/SimpleMDC.html">SimpleMDC</a></code> 
+			<code><a href="../xref/chapters/mdc/SimpleMDC.html">SimpleMDC</a></code> 
 			demonstrates this basic principle.
 		</p>
-<em>Example 7.1: Basic MDC usage (<a href="../xref/chapter7/SimpleMDC.html">
-logback-examples/src/main/java/chapter7/SimpleMDC.java)</a></em>
-<pre class="prettyprint source">package chapter7;
+<em>Example 7.1: Basic MDC usage (<a href="../xref/chapters/mdc/SimpleMDC.html">
+logback-examples/src/main/java/chapters/mdc/SimpleMDC.java)</a></em>
+<pre class="prettyprint source">package chapters.mdc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,9 +213,9 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		retrieve the distinct factors of an integer.
 		</p>
 
-<em>Example 7.2: The service interface (<a href="../xref/chapter7/NumberCruncher.html">
-logback-examples/src/main/java/chapter7/NumberCruncher.java)</a></em>
-<pre class="prettyprint source">package chapter7;
+<em>Example 7.2: The service interface (<a href="../xref/chapters/mdc/NumberCruncher.html">
+logback-examples/src/main/java/chapters/mdc/NumberCruncher.java)</a></em>
+<pre class="prettyprint source">package chapters.mdc;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -237,9 +237,9 @@ public interface NumberCruncher extends Remote {
 			an RMI Registry on the local host that accepts requests on a well-known port.  
 		</p>
 
-<em>Example 7.3: The server side (<a href="../xref/chapter7/NumberCruncherServer.html">
-logback-examples/src/main/java/chapter7/NumberCruncherServer.java)</a></em>
-<pre class="prettyprint source">package chapter7;
+<em>Example 7.3: The server side (<a href="../xref/chapters/mdc/NumberCruncherServer.html">
+logback-examples/src/main/java/chapters/mdc/NumberCruncherServer.java)</a></em>
+<pre class="prettyprint source">package chapters.mdc;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -341,7 +341,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java chapter7.NumberCruncherServer configFile\n" +
+    System.err.println("Usage: java chapters.mdc.NumberCruncherServer configFile\n" +
       "   where configFile is a logback configuration file.");
     System.exit(1);
   }
@@ -412,12 +412,12 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			cruncher example. Start the server with the following command:
 		</p>
 		
-<div class="source"><pre>java chapter7.NumberCruncherServer src/main/java/chapter7/mdc1.xml</pre></div>
+<div class="source"><pre>java chapters.mdc.NumberCruncherServer src/main/java/chapters/mdc/mdc1.xml</pre></div>
 		
 		<p>
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
-<em>Example 7.4: Configuration file (logback-examples/src/main/java/chapter7/mdc1.xml)</em>
+<em>Example 7.4: Configuration file (logback-examples/src/main/java/chapters/mdc/mdc1.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout>
@@ -440,7 +440,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			application:  	
 		</p>
 		
-<div class="source"><pre>java chapter7.NumberCruncherClient <em>hostname</em></pre></div>
+<div class="source"><pre>java chapters.mdc.NumberCruncherClient <em>hostname</em></pre></div>
 
 		<p>
 			where <em>hostname</em> is the host where the 
@@ -530,9 +530,9 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		
 		<p>Here is an implementation of such a filter:</p>
 
-<em>Example 7.5: User servlet filter (<a href="../xref/chapter7/UserServletFilter.html">
-logback-examples/src/main/java/chapter7/UserServletFilter.java)</a></em>
-<pre class="prettyprint source">package chapter7;
+<em>Example 7.5: User servlet filter (<a href="../xref/chapters/mdc/UserServletFilter.html">
+logback-examples/src/main/java/chapters/mdc/UserServletFilter.java)</a></em>
+<pre class="prettyprint source">package chapters.mdc;
 
 import java.io.IOException;
 import java.security.Principal;

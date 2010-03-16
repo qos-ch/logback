@@ -21,10 +21,11 @@ import ch.qos.logback.core.rolling.helper.DefaultArchiveRemover;
 /**
  * 
  * @author Ceki G&uuml;lc&uuml;
- *
+ * 
  * @param <E>
  */
-public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
+public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
+    TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
   @Override
   public void start() {
@@ -33,7 +34,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     archiveRemover.setContext(context);
     started = true;
   }
-  
+
   public boolean isTriggeringEvent(File activeFile, final E event) {
     long time = getCurrentTime();
     if (time >= nextCheck) {
@@ -46,5 +47,10 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     } else {
       return false;
     }
+  }
+
+  @Override
+  public String toString() {
+    return "c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy";
   }
 }

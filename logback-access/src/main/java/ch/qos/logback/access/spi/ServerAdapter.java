@@ -26,9 +26,5 @@ public interface ServerAdapter {
 
   long getContentLength();
   int getStatusCode();
-//  String getResponseHeader(String key);
-//  List<String> getResponseHeaderNameList();
-//  Map<String, String> getResponseHeaderMap();
-  
   Map<String, String> buildResponseHeaderMap();
 }

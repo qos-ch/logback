@@ -1,0 +1,19 @@
+<configuration>
+
+  <appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %class - %msg%n</pattern>
+    </encoder>
+    <from>sender_email@host.ch</from>                          
+    <SMTPHost>mail.host.ch</SMTPHost>
+    
+    <subject>Last Event: %-10logger %nopex</subject>           
+    
+    <to>recipient_email@host.ch</to>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="SMTP" />
+  </root>
+</configuration>
+

@@ -39,7 +39,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     if (OptionHelper.isEmpty(className)) {
       className = defaultClassName();
-      addWarn("Assuming default evaluator class [" + className + "]");
+      addInfo("Assuming default evaluator class [" + className + "]");
     }
 
     if (OptionHelper.isEmpty(className)) {
@@ -106,7 +106,11 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       try {
         Map<String, EventEvaluator> evaluatorMap = (Map<String, EventEvaluator>) context
             .getObject(CoreConstants.EVALUATOR_MAP);
-        evaluatorMap.put(evaluator.getName(), evaluator);
+        if(evaluatorMap == null) {
+          addError("Could not find EvaluatorMap");
+        } else {
+          evaluatorMap.put(evaluator.getName(), evaluator);
+        }
       } catch (Exception ex) {
         addError("Could not set evaluator named [" + evaluator + "].", ex);
       }

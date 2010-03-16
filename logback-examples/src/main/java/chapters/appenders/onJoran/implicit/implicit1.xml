@@ -1,0 +1,21 @@
+<foo>
+
+  <!-- These elements will print due to the implicit rule -->
+  <xyz printme="true">
+    <abc printme="true"/>
+  </xyz>
+
+  <!-- This element has no associated rule and no implicit rule 
+       applies for it because the printme attribute is not set. -->  
+  <xyz/>
+
+  
+  
+  <!-- This element will not be printed even if its printme 
+       attribute  is set because implicit rules are invoked only 
+       if no explicit rule matches the element. The */foo rule
+       matches the following element.
+       --> 
+  <foo printme="true"/>
+
+</foo>

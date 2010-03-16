@@ -13,9 +13,9 @@
         <MaxFileSize>${sizeThreshold}</MaxFileSize>
       </TimeBasedFileNamingAndTriggeringPolicy>
     </rollingPolicy>
-    <layout>
+    <encoder>
       <Pattern>%msg%n</Pattern>
-    </layout>
+    </encoder>
   </appender>
 
 

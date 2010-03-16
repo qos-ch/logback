@@ -24,8 +24,8 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.layout.EchoLayout;
+import ch.qos.logback.core.encoder.EchoEncoder;
+import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.CoreTestConstants;
 
@@ -39,12 +39,12 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class RenamingTest {
 
-  Layout<Object> layout;
+  Encoder<Object> encoder;
   Context context = new ContextBase();
 
   @Before
   public void setUp() throws Exception {
-    layout = new EchoLayout<Object>();
+    encoder = new EchoEncoder<Object>();
 
     File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "test.log");
     target.mkdirs();
@@ -55,7 +55,7 @@ public class RenamingTest {
   public void testRename() throws Exception {
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
-    rfa.setLayout(layout);
+    rfa.setEncoder(encoder);
     rfa.setContext(context);
 
     // rollover by the second

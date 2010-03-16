@@ -28,7 +28,7 @@ public class Checker {
     System.err
         .println("Usage: java "
             + Checker.class.getName()
-            + " runLength filename stamp0 stamp1 ..\n"
+            + " runLength filename stamp0 stamp1 ..stampN\n"
             + "   runLength (integer) the number of logs to generate perthread\n"
             + "    filename (string) the filename where to write\n"
             + "   stamp0 JVM instance stamp0\n"
@@ -57,13 +57,11 @@ public class Checker {
 
     String regExp = "^" + stamp + " DEBUG - " + LoggingThread.msgLong
         + " (\\d+)$";
-    // System.out.println(regExp);
     Pattern p = Pattern.compile(regExp);
 
     String line;
     int expected = 0;
     while ((line = br.readLine()) != null) {
-      // System.out.println(line);
       Matcher m = p.matcher(line);
       if (m.matches()) {
         String g = m.group(1);
@@ -86,7 +84,5 @@ public class Checker {
     }
     fr.close();
     br.close();
-
   }
-
 }

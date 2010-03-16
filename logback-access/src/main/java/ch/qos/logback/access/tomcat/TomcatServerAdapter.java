@@ -53,7 +53,4 @@ public class TomcatServerAdapter implements ServerAdapter {
     }
     return responseHeaderMap;
   }
-  
-
-
 }

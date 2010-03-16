@@ -16,7 +16,7 @@ package ch.qos.logback.classic.multiJVM;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
@@ -61,16 +61,14 @@ public class SafeModeRollingFileAppender {
     LoggerContext loggerContext = new LoggerContext();
 
     RollingFileAppender<ILoggingEvent> rfa = new RollingFileAppender<ILoggingEvent>();
-    PatternLayout patternLayout = new PatternLayout();
+    PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
     patternLayout.setPattern(stamp + " %5p - %-50m%n");
     patternLayout.setContext(loggerContext);
     patternLayout.start();
 
-    rfa.setLayout(patternLayout);
+    rfa.setEncoder(patternLayout);
     
     rfa.setAppend(true);
-    rfa.setImmediateFlush(true);
-    rfa.setBufferedIO(false);
     rfa.setPrudent(safetyMode);
     rfa.setContext(loggerContext);
 

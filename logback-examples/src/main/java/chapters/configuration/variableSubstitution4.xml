@@ -1,0 +1,15 @@
+<configuration>
+
+  <property file="src/main/java/chapters/configuration/variables2.properties" />
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${destination}/myApp.log</file>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

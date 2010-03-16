@@ -1,0 +1,18 @@
+<configuration>
+
+  <evaluator name="DISPLAY_CALLER_EVAL">
+    <expression>
+      logger.contains("chapters.layouts") &amp;&amp; message.contains("who calls thee")
+    </expression>
+  </evaluator>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level - %msg%n%caller{2, DISPLAY_CALLER_EVAL}</pattern> 
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

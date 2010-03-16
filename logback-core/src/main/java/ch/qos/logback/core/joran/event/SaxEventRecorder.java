@@ -37,17 +37,16 @@ import ch.qos.logback.core.status.Status;
 
 public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
-  
   final ContextAwareImpl cai;
-  
+
   public SaxEventRecorder() {
-    cai =  new ContextAwareImpl(this);
+    cai = new ContextAwareImpl(this);
   }
+
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
   Locator locator;
   Pattern globalPattern = new Pattern();
 
- 
   final public void recordEvents(InputStream inputStream) throws JoranException {
     recordEvents(new InputSource(inputStream));
   }
@@ -104,28 +103,22 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   }
 
   public void characters(char[] ch, int start, int length) {
-
-    String body = new String(ch, start, length);
-    if (body == null) {
-      return;
-    }
-
-    // if the body string is null
-    if (body != null) {
-      String bodyTrimmed = body.trim();
-      if (bodyTrimmed.length() == 0) {
-        return;
-      }
-    }
-
+    String bodyStr = new String(ch, start, length);
     SaxEvent lastEvent = getLastEvent();
     if (lastEvent instanceof BodyEvent) {
       BodyEvent be = (BodyEvent) lastEvent;
-      be.append(body);
+      be.append(bodyStr);
     } else {
-      saxEventList.add(new BodyEvent(body, getLocator()));
+      // ignore space only text if the previous event is not a BodyEvent
+      if (!isSpaceOnly(bodyStr)) {
+        saxEventList.add(new BodyEvent(bodyStr, getLocator()));
+      }
     }
+  }
 
+  boolean isSpaceOnly(String bodyStr) {
+    String bodyTrimmed = bodyStr.trim();
+    return (bodyTrimmed.length() == 0);
   }
 
   SaxEvent getLastEvent() {
@@ -156,8 +149,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
-    addError("Parsing fatal error on line " + spe.getLineNumber() + " and column "
-        + spe.getColumnNumber(), spe);
+    addError("Parsing fatal error on line " + spe.getLineNumber()
+        + " and column " + spe.getColumnNumber(), spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {

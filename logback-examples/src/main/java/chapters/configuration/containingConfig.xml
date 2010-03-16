@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+  <include file="src/main/java/chapters/configuration/includedConfig.xml" />
+
+  <root level="DEBUG">
+    <appender-ref ref="includedConsole" />
+  </root>
+
+
+</configuration>

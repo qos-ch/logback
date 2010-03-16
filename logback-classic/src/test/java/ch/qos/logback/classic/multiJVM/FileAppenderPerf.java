@@ -16,7 +16,7 @@ package ch.qos.logback.classic.multiJVM;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -33,16 +33,14 @@ public class FileAppenderPerf {
 
     FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
 
-    PatternLayout patternLayout = new PatternLayout();
+    PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
     patternLayout.setPattern("%5p %c - %m%n");
     patternLayout.setContext(loggerContext);
     patternLayout.start();
 
-    fa.setLayout(patternLayout);
+    fa.setEncoder(patternLayout);
     fa.setFile(filename);
     fa.setAppend(false);
-    fa.setImmediateFlush(true);
-    fa.setBufferedIO(false);
     fa.setPrudent(safetyMode);
     fa.setContext(loggerContext);
     fa.start();

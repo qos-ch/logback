@@ -38,6 +38,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -75,7 +76,7 @@ public class IncludeActionTest {
   static final String INCLUDED_AS_RESOURCE = "asResource/joran/inclusion/includedAsResource.xml";
 
   int diff = RandomUtil.getPositiveInt();
-  
+
   public IncludeActionTest() {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
@@ -145,22 +146,22 @@ public class IncludeActionTest {
     File f = new File(tmpOut);
     assertTrue(f.exists());
     assertTrue(f.delete());
-    
+
   }
 
-  String copyToTemp(String in)  throws IOException {
+  String copyToTemp(String in) throws IOException {
     FileInputStream fis = new FileInputStream(in);
-    String out = CoreTestConstants.OUTPUT_DIR_PREFIX+"out"+diff;
+    String out = CoreTestConstants.OUTPUT_DIR_PREFIX + "out" + diff;
     FileOutputStream fos = new FileOutputStream(out);
     int b;
-    while((b=fis.read()) != -1) {
+    while ((b = fis.read()) != -1) {
       fos.write(b);
     }
     fis.close();
     fos.close();
     return out;
   }
-  
+
   @Test
   public void malformedURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, "htp://logback.qos.ch");
@@ -176,7 +177,11 @@ public class IncludeActionTest {
     tc.doConfigure(TOP_BY_URL);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
     StatusChecker sc = new StatusChecker(context.getStatusManager());
-    assertTrue(sc.containsException(UnknownHostException.class));
+    // OS X throws IOException instead of UnknownHostException
+    // http://jira.qos.ch/browse/LBCORE-129
+    if (!Env.isMac()) {
+      assertTrue(sc.containsException(UnknownHostException.class));
+    }
   }
 
   @Test

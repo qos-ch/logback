@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint();">
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
@@ -23,8 +23,14 @@
     </div>
     <div id="content">
       
-    <h2>Migration from log4j</h2>
+    <h2>Chapter 12: Migration from log4j</h2> 
 
+    <div class="quote">
+      <p><em>The more things change, the more they remain the
+      same. </em></p>
+      
+      <p>&mdash;ALPHONSE KARR, <em>Les Gu&ecirc;pes</em></p>
+    </div>
 
     <p>This chapter deals with the topic of migrating custom log4j
     components such as appenders or layouts to logback-classic.
@@ -35,7 +41,10 @@
     <code>org.apache.log4j</code> package, can be automatically
     migrated to use SLF4J via the <a
     href="http://www.slf4j.org/migrator.html">SLF4J migrator
-    tool</a>. 
+    tool</a>. To migrate <em>log4j.property</em> files into its
+    logback equivalent, you can use the <a
+    href="http://logback.qos.ch/translator/">log4j.properties
+    translator</a>.
     </p>
 
     <p>From a broader perspective, log4j and logback-classic are
@@ -60,13 +69,13 @@
 
     <p>Let us begin by migrating a hypothetcical and trivially simple
     log4j layout named <a
-    href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+    href="../xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
     which returns the message contained in a logging events as the
     formatted message. Here is the code.
     </p>
     
 
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
@@ -87,10 +96,10 @@ public class TrivialLog4jLayout extends Layout {
 }</pre>
 
     <p>The logback-classic equivalent named <a
-    href="../xref/chapter11/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
+    href="../xref/chapters/migrationFromLog4j/TrivialLogbackLayout.html">TrivialLogbackLayout</a>
     would be </p>
     
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -131,10 +140,10 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
    
    <p>Migrating an appender is quite similar to migrating layout. Here
    is a trivially simple appender called <a
-   href="../xref/chapter11/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
+   href="../xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
    which writes on the console the string returned by its layout.</p>
    
-    <pre class="prettyprint source">package chapter11;
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
@@ -157,11 +166,11 @@ public class TrivialLog4jAppender extends AppenderSkeleton {
 }</pre>
 
    <p>The logback-classic equivalent named <a
-   href="../xref/chapter11/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
+   href="../xref/chapters/migrationFromLog4j/TrivialLogbackAppender.html">TrivialLogbackAppender</a>
    would be written as</p>
 
 
-   <pre class="prettyprint source">package chapter11;
+   <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;

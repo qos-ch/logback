@@ -17,9 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import ch.qos.logback.classic.jmx.JMXConfiguratorTest;
-
 @RunWith(Suite.class)
-@SuiteClasses(JMXConfiguratorTest.class)
+@SuiteClasses({JaninoEventEvaluatorTest.class, OnMarkerEvaluatorTest.class})
 public class PackageTest {
 }

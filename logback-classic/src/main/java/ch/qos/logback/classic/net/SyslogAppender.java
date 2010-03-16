@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.net;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
@@ -24,7 +25,6 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
-import ch.qos.logback.core.net.SyslogWriter;
 
 /**
  * This appender can be used to send messages to a remote syslog daemon. <p> For
@@ -75,7 +75,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   }
 
   @Override
-  protected void postProcess(Object eventObject, SyslogWriter sw) {
+  protected void postProcess(Object eventObject, OutputStream sw) {
     ILoggingEvent event = (ILoggingEvent) eventObject;
 
     String prefix = prefixLayout.doLayout(event);
@@ -85,9 +85,9 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
         for (StackTraceElementProxy step : stepArray) {
-          sw.write(prefix);
-          sw.write(CoreConstants.TAB);
-          sw.write(step.toString());
+          StringBuilder sb = new StringBuilder();
+          sb.append(prefix).append(CoreConstants.TAB).append(step);
+          sw.write(sb.toString().getBytes());
           sw.flush();
         }
       } catch (IOException e) {

@@ -146,12 +146,18 @@ public interface Logger {
   public void error(String message); 
 }</pre>
 
+
+
+    <h3><a name="effectiveLevel"
+			href="#effectiveLevel">Effective Level aka Level Inheritance</a>
+    </h3>
+
 		<p>Loggers may be assigned levels. The set of possible levels,
 		that is TRACE, DEBUG, INFO, WARN and ERROR are defined in the
 		<code>ch.qos.logback.classic.Level</code> class. Note that in
-		logback, the level class is final and cannot be derived, as a much
-		more flexible approach exists in the form of <code>Marker</code>
-		objects.
+		logback, the <code>Level</code> class is final and cannot be
+		sub-classed, as a much more flexible approach exists in the form
+		of <code>Marker</code> objects.
 		</p>
 
 		<p>If a given logger is not assigned a level, then it inherits one
@@ -159,8 +165,7 @@ public interface Logger {
 		</p>
 
 		<div class="definition">
-			<div class="deftitle"><a name="effectiveLevel"
-			href="#effectiveLevel">Effective Level (Level Inheritance)</a></div>
+		
       
 			<p>The effective level for a given logger <em>L</em>, is equal
 			to the first non-null level in its hierarchy, starting at
@@ -173,6 +178,7 @@ public interface Logger {
 		root logger always has an assigned level. By default, this level
 		is DEBUG.
 		</p>
+
 		<p>Below are four examples with various assigned level values and
 		the resulting effective (inherited) levels according to the level
 		inheritance rule.
@@ -633,7 +639,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		something akin to:
 		</p>
 
-		<div class="prettyprint source"><pre>176  [main] DEBUG chapter2.HelloWorld2 - Hello world.</pre></div>
+		<div class="prettyprint source"><pre>176  [main] DEBUG manual.architecture.HelloWorld2 - Hello world.</pre></div>
 
 		<p>The first field is the number of milliseconds elapsed since the
 		start of the program. The second field is the thread making the
@@ -677,9 +683,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		hand, if the logger is enabled for the DEBUG level, you will incur
 		the cost of evaluating whether the logger is enabled or not,
 		twice: once in <code>debugEnabled</code> and once in
-		<code>debug</code>.  This is an insignificant overhead because
-		evaluating a logger takes less than 1% of the time it takes to
-		actually log a request.
+		<code>debug</code>.  In practice, this overhead is insignificant
+		because evaluating a logger takes less than 1% of the time it
+		takes to actually log a request.
 		</p>
 
 		<h4>Better alternative</h4>
@@ -815,7 +821,10 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
     want to click on the image to display its bigger version.
   </p>
 
-  <a href="underTheHood.html"><img src="images/chapter2/underTheHoodSequence2_small.gif" alt="underTheHoodSequence2_small.gif"/></a>
+  <a href="underTheHood.html">
+    <img src="images/manual/architecture/underTheHoodSequence2_small.gif" 
+         alt="underTheHoodSequence2_small.gif"/>
+  </a>
 
   <a name="Performance"></a>
   <h3>Performance</h3>

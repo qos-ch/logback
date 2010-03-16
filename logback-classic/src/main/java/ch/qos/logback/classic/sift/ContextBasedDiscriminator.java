@@ -18,10 +18,11 @@ import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * This discriminator essentially returns the value mapped to an MDC key. If the
- * said value is null, then a default value is returned.
+ * This discriminator returns the value context to which this event is attached
+ * to. If the said value is null, then a default value is returned.
  * 
- * <p>Both Key and the DefaultValue are user specified properties.
+ * <p>
+ * Both Key and the DefaultValue are user specified properties.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -66,7 +67,8 @@ public class ContextBasedDiscriminator extends ContextAwareBase implements
   }
 
   public void setKey(String key) {
-    throw new UnsupportedOperationException("Key cannot be set. Using fixed key "+KEY);
+    throw new UnsupportedOperationException(
+        "Key cannot be set. Using fixed key " + KEY);
   }
 
   /**
