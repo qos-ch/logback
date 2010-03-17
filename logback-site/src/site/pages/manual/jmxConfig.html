@@ -155,11 +155,10 @@ public class MyContextListener implements ServletContextListener {
     web-applications will collide.
     </p>
     
-    <p>To avoid such undesirable collisions, you can instruct each
-    <code>JMXConfigurator</code> instance to have a different name by
-    setting the "contextName" attribute of the
-    <code>&lt;jmxConfigurator></code> element in the logback
-    configuration file.
+    <p>To avoid such undesirable collisions, you simply <a
+    href="configuration.html#contextName">set the name of your
+    application's logging context</a> and <code>JMXConfigurator</code>
+    will automatically use the name you have set.
     </p>
 
     <p>For example, if you deploy two web-applications named "Koala"
@@ -167,11 +166,19 @@ public class MyContextListener implements ServletContextListener {
     configuration
     </p>
     
-    <p class="source">&lt;jmxConfigurator <b>contextName="Koala"</b> /></p>
+    <pre class="prettyprint source">&lt;configuration>
+  <b>&lt;contextName>Koala&lt;/contextName></b>
+  &lt;jmxConfigurator/>
+  ...
+&lt;configuration></pre>
 
     <p>and in Wombat logback configuration file, you would write:</p>
 
-    <p class="source">&lt;jmxConfigurator <b>contextName="Womcat"</b> /></p>
+    <pre class="prettyprint source">&lt;configuration>
+  <b>&lt;contextName>Wombat&lt;/contextName></b>x
+  &lt;jmxConfigurator/>
+  ...
+&lt;configuration></pre>
 
     <p>In jconsole's MBeans panel, you would two distinct
     <code>JMXConfigurator</code> instances:</p>
