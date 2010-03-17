@@ -17,8 +17,8 @@ public class ClassicConstants {
   static public final String USER_MDC_KEY = "user";
 
   public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
-  public static String JNDI_CONFIGURATION_RESOURCE = "java:comp/env/logback/configuration-resource";
-  public static String JNDI_CONTEXT_NAME = "java:comp/env/logback/context-name";
+  public static final String JNDI_CONFIGURATION_RESOURCE = "java:comp/env/logback/configuration-resource";
+  public static final String JNDI_CONTEXT_NAME = "java:comp/env/logback/context-name";
 
   /**
    * The maximum number of package separators (dots) that abbreviation
@@ -32,4 +32,9 @@ public class ClassicConstants {
    * The default stack data depth computed during caller data extraction.
    */
   public static final int DEFAULT_MAX_CALLEDER_DATA_DEPTH = 8;
+  
+  public final static String REQUEST_REMOTE_HOST_MDC_KEY = "request.remoteHost";
+  public final static String REQUEST_USER_AGENT_MDC_KEY = "request.userAgent";
+  public final static String REQUEST_REQUST_URI = "request.requestURI";
+  
 }

@@ -56,7 +56,7 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E>
    * 
    * @return First option, may be null.
    */
-  protected String getFirstOption() {
+  public String getFirstOption() {
     if (optionList == null || optionList.size() == 0) {
       return null;
     } else {

@@ -16,6 +16,7 @@ package ch.qos.logback.classic.html;
 import java.util.Map;
 
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.pattern.MDCConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.html.DefaultCssBuilder;
 import ch.qos.logback.core.html.HTMLLayoutBase;
@@ -122,5 +123,20 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
 
   public void setThrowableRenderer(IThrowableRenderer<ILoggingEvent> throwableRenderer) {
     this.throwableRenderer = throwableRenderer;
+  }
+  
+  @Override
+  protected String computeConverterName(Converter c) {
+    if(c instanceof MDCConverter) {
+      MDCConverter mc = (MDCConverter) c;
+      String key = mc.getFirstOption();
+      if(key != null) {
+        return key;
+      } else {
+        return "MDC";
+      }
+    } else {    
+      return super.computeConverterName(c);
+    }
   }
 }

@@ -615,7 +615,8 @@ public class UserServletFilter implements Filter {
 		
 
 
-  <h3>MDC And Managed Threads</h3>
+  <h3><a name="managedThreads" href="#managedThreads">MDC And Managed
+  Threads</a></h3>
 
   <p>A copy of the mapped diagnostic context can not always be
   inherited by worker threads from the initiating thread. This is the
@@ -634,6 +635,74 @@ public class UserServletFilter implements Filter {
   managed thread.
   </p>
 
+  <h2><a name="mis"
+  href="#mis"><code>MDCInsertingServletFilter</code></a></h2>
+
+  <p>Within web-applications, it often proves helpful to know the
+  hostname, request uri and user-agent associated with a given http
+  request. <a
+  href="../xref/ch/qos/logback/classic/helpers/MDCInsertingServletFilter.html"><code>MDCInsertingServletFilter</code></a>
+  inserts such data into the MDC under the following keys.
+  </p>
+
+  <table class="bodyTable">
+    <tr>
+      <th>MDC key</th>
+      <th>MDC value</th>
+    </tr>
+
+    <tr  class="alt">
+      <td>request.remoteHost</td>
+      <td>as returned by the <a
+      href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getRemoteHost%28%29">getRemoteHost90</a>
+      method
+      </td>
+    </tr>
+
+    <tr>
+      <td>request.requestURI</td>
+      <td>
+        as returned by <a
+        href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getRequestURI%28%29">getRequestURI()</a>
+        method
+      </td>
+    </tr>
+
+    <tr  class="alt">
+      <td>request.userAgent</td>
+      <td>value of the "User-Agent" header
+      </td>
+    </tr>
+
+  </table>
+
+  <p>To install <code>MDCInsertingServletFilter</code> add the
+  following lines to your web-application's <em>web.xml</em> file</p>
+
+  <pre class="prettyprint source">&lt;filter>
+  &lt;filter-name>MDCInsertingServletFilter&lt;/filter-name>
+  &lt;filter-class>
+    ch.qos.logback.classic.helpers.MDCInsertingServletFilter
+  &lt;/filter-class>
+&lt;/filter>
+&lt;filter-mapping>
+  &lt;filter-name>MDCInsertingServletFilter&lt;/filter-name>
+  &lt;url-pattern>/*&lt;/url-pattern>
+&lt;/filter-mapping> </pre>
+
+  <p><b>If your web-app has multiple filter, make sure that
+  <code>MDCInsertingServletFilter</code> is declared before other
+  filters.</b> For example, assuming the main processing in your
+  web-app is done in filter 'F', the MDC values set by
+  <code>MDCInsertingServletFilter</code> will not be seen by the code
+  invoked by 'F' if <code>MDCInsertingServletFilter</code> comes after
+  'F'.
+  </p>
+
+  <p>Once the filter is installed, values corresponding to each MDC
+  key will be output by the %X <a
+  href="layouts.html#conversionWord">conversion word</a>.
+  </p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>

@@ -30,17 +30,15 @@ import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
 
 /**
- * A servlet filter that puts the environment-dependend
- * LoggerContext in a Threadlocal variable.
+ * A servlet filter that puts the environment dependent LoggerContext in a
+ * ThreadLocal variable, removing it after the request is processed.
  * 
- * It removes it after the request is processed.
- *
- * To use it, add the following lines to a web.xml file
- * 
+ * <p>To use it, add the following lines to a web.xml file
+ *  
  * <filter>
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <filter-class>
- *     ch.qos.userApp.LoggerContextFilter
+ *     ch.qos.logback.classic.selector.servlet.LoggerContextFilter
  *   </filter-class>
  * </filter>
  * <filter-mapping>
