@@ -27,6 +27,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
 
@@ -105,6 +106,21 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     assertEquals(DummyLayout.DUMMY + "CLOSED", tee.toString());
   }
 
+  // See http://jira.qos.ch/browse/LBCORE-143
+  @Test
+  public void changeInConsole() {
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    EchoEncoder<Object> encoder = new EchoEncoder<Object>();
+    ca.setEncoder(encoder);
+    ca.start();
+    ca.doAppend("a");
+    assertEquals("a"+CoreConstants.LINE_SEPARATOR, tee.toString());
+    
+    XTeeOutputStream newTee = new XTeeOutputStream(null);
+    System.setOut(new PrintStream(newTee));
+    ca.doAppend("b");
+    assertEquals("b"+CoreConstants.LINE_SEPARATOR, newTee.toString());
+  }
 
 
   @Test  

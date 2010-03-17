@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core;
 
+import ch.qos.logback.core.helpers.ConsoleOutputStreamWrapper;
+import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 
@@ -25,13 +27,14 @@ import ch.qos.logback.core.status.WarnStatus;
  * at http://logback.qos.ch/manual/appenders.html#ConsoleAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
+ * @author Tom SH Liu
  */
 
 public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
   public static final String SYSTEM_OUT = "System.out";
   public static final String SYSTEM_ERR = "System.err";
-  protected String target = SYSTEM_OUT;
+  protected ConsoleTarget target = ConsoleTarget.SystemOut;
 
   /**
    * As in most logback components, the default constructor does nothing.
@@ -47,22 +50,28 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     String v = value.trim();
 
     if (SYSTEM_OUT.equalsIgnoreCase(v)) {
-      target = SYSTEM_OUT;
+      target = ConsoleTarget.SystemOut;
     } else if (SYSTEM_ERR.equalsIgnoreCase(v)) {
-      target = SYSTEM_ERR;
+      target = ConsoleTarget.SystemErr;
     } else {
       targetWarn(value);
     }
   }
 
   /**
-   * Returns the current value of the <b>Target</b> property. The default value
+   * Returns the current value of the <b>target</b> property. The default value
    * of the option is "System.out".
    * 
    * See also {@link #setTarget}.
    */
   public String getTarget() {
-    return target;
+    switch (target) {
+    case SystemOut:
+      return SYSTEM_OUT;
+    case SystemErr:
+      return SYSTEM_ERR;
+    }
+    throw new IllegalStateException("Unexpected target value ["+target+"]");
   }
 
   void targetWarn(String val) {
@@ -74,22 +83,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   }
 
   public void start() {
-    if (target.equals(SYSTEM_OUT)) {
-      setOutputStream(System.out);
-    } else {
-      setOutputStream(System.err);
-    }
+    setOutputStream(new ConsoleOutputStreamWrapper(target));
     super.start();
-  }
-
-  /**
-   * This method overrides the parent
-   * {@link OutputStreamAppender#closeOutputStream} implementation because the
-   * console stream is not ours to close.
-   */
-  @Override
-  protected final void closeOutputStream() {
-    encoderClose();
   }
 
 }
