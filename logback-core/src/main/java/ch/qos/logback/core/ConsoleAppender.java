@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core;
 
-import ch.qos.logback.core.helpers.ConsoleOutputStreamWrapper;
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
@@ -28,33 +27,23 @@ import ch.qos.logback.core.status.WarnStatus;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
+ * @author Ruediger Dohna
  */
 
 public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
-  public static final String SYSTEM_OUT = "System.out";
-  public static final String SYSTEM_ERR = "System.err";
   protected ConsoleTarget target = ConsoleTarget.SystemOut;
-
-  /**
-   * As in most logback components, the default constructor does nothing.
-   */
-  public ConsoleAppender() {
-  }
 
   /**
    * Sets the value of the <b>Target</b> option. Recognized values are
    * "System.out" and "System.err". Any other value will be ignored.
    */
   public void setTarget(String value) {
-    String v = value.trim();
-
-    if (SYSTEM_OUT.equalsIgnoreCase(v)) {
-      target = ConsoleTarget.SystemOut;
-    } else if (SYSTEM_ERR.equalsIgnoreCase(v)) {
-      target = ConsoleTarget.SystemErr;
-    } else {
+    ConsoleTarget t = ConsoleTarget.findByName(value.trim());
+    if (t == null) {
       targetWarn(value);
+    } else {
+      target = t;
     }
   }
 
@@ -65,26 +54,18 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
    * See also {@link #setTarget}.
    */
   public String getTarget() {
-    switch (target) {
-    case SystemOut:
-      return SYSTEM_OUT;
-    case SystemErr:
-      return SYSTEM_ERR;
-    }
-    throw new IllegalStateException("Unexpected target value ["+target+"]");
+    return target.getName();
   }
 
-  void targetWarn(String val) {
-    Status status = new WarnStatus("[" + val
-        + " should be System.out or System.err.", this);
-    status.add(new WarnStatus(
-        "Using previously set target, System.out by default.", this));
+  private void targetWarn(String val) {
+    Status status = new WarnStatus("[" + val + " should be in " + ConsoleTarget.values(), this);
+    status.add(new WarnStatus("Using previously set target, System.out by default.", this));
     addStatus(status);
   }
 
+  @Override
   public void start() {
-    setOutputStream(new ConsoleOutputStreamWrapper(target));
+    setOutputStream(target.getStream());
     super.start();
   }
-
 }
