@@ -70,6 +70,20 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
     }
   }
 
+  synchronized public void stopAndRemoveNow(String key) {
+    TEntry found = null;
+    for (TEntry te : entryList) {
+      if (key.equals(te.key)) {
+        found = te;
+        break;
+      }
+    }
+    if (found != null) {
+      entryList.remove(found);
+    }
+
+  }
+
   final private boolean isEntryStale(TEntry entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }

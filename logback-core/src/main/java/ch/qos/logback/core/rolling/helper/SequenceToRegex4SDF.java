@@ -58,7 +58,7 @@ class SequenceToRegex4SDF {
     case 'S':
       return number(occurrences);
     case 'E':
-      return ".{3,12}";
+      return ".{2,12}";
     case 'a':
       return ".{2}";
     case 'z':

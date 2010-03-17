@@ -81,7 +81,8 @@ public abstract class SiftingAppenderBase<E> extends
           appenderTracker.put(discriminatingValue, appender, timestamp);
         }
       } catch (JoranException e) {
-        addError("Failed to build appender for [" + discriminatingValue + "]", e);
+        addError("Failed to build appender for [" + discriminatingValue + "]",
+            e);
         return;
       }
     }
@@ -97,9 +98,20 @@ public abstract class SiftingAppenderBase<E> extends
     this.discriminator = discriminator;
   }
 
-  
+  // sometime one needs to close a nested appender immediately
+  // for example when executing a command which has its own nested appender
+  // and the command also cleans up after itself. However, an open file appender
+  // will prevent the folder from being deleted
+  // see http://www.qos.ch/pipermail/logback-user/2010-March/001487.html
+  /**
+   * @since 0.9.19
+   */
+  public AppenderTracker getAppenderTracer() {
+    return appenderTracker;
+  }
+
   public String getDiscriminatorKey() {
-    if(discriminator != null) {
+    if (discriminator != null) {
       return discriminator.getKey();
     } else {
       return null;

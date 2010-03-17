@@ -27,6 +27,5 @@ public interface AppenderTracker<E> {
   void stopStaleAppenders(long timestamp);
   List<String> keyList();
   List<Appender<E>> valueList();
-
-
+  void stopAndRemoveNow(String key);
 }

@@ -22,34 +22,52 @@ public class ScenarioBasedAppenderTrackerTest {
 
   Simulator simulator;
 
+  int INVERSE_OF_NO_REMOVE = Integer.MAX_VALUE;
+  
+  
   void verify() {
-    AppenderTracker at = simulator.appenderTracker;
+    AppenderTracker at = simulator.realAppenderTracker;
     AppenderTracker t_at = simulator.t_appenderTracker;
-    //List<String> resultKeys = at.keyList();
-    //List<String> witnessKeys = t_at.keyList();
     assertEquals(t_at.keyList(), at.keyList());
   }
-
+  
   @Test
   public void shortTest() {
-    simulator = new Simulator(20, AppenderTracker.THRESHOLD / 2);
+    simulator = new Simulator(20, AppenderTracker.THRESHOLD / 2, INVERSE_OF_NO_REMOVE);
     simulator.buildScenario(200);
     simulator.simulate();
     verify();
   }
 
+
+  @Test
+  public void shortTestWithRemovals() {
+    simulator = new Simulator(10, AppenderTracker.THRESHOLD / 10, 2);
+    simulator.buildScenario(200);
+    simulator.simulate();
+    verify();
+  }
+  
   @Test
   public void mediumTest() {
-    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 2);
+    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 2, INVERSE_OF_NO_REMOVE);
     simulator.buildScenario(20000);
     simulator.simulate();
     verify();
   }
 
   @Test
+  public void mediumTestWithRemovals() {
+    simulator = new Simulator(10, AppenderTracker.THRESHOLD / 100, 2);
+    simulator.buildScenario(20000);
+    simulator.simulate();
+    verify();
+  }
+  
+  @Test
   @Ignore
-  public void longetTest() {
-    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 200);
+  public void longTest() {
+    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 200, 10);
     simulator.buildScenario(2000000);
     simulator.simulate();
     verify();

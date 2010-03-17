@@ -74,6 +74,28 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     }
   } 
 
+  /**
+   * @since 0.9.19
+   * @param key
+   */
+  public synchronized void stopAndRemoveNow(String key) {
+    Entry e = head;
+    Entry found = null;
+    while (e != tail) {
+      if(key.equals(e.key)) {
+        found = e;
+        break;
+      }
+      e = e.next;
+    }
+    if(found != null) {
+      rearrangePreexistingLinks(e);
+      map.remove(key);
+      Appender appender = e.value;
+      appender.stop();
+    }
+  }
+  
   public List<String> keyList() {
     List<String> result = new LinkedList<String>();
     Entry e = head;
