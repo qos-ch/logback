@@ -69,9 +69,9 @@
     </p>
 
     <p>Fixed <a
-    href="http://jira.qos.ch/browse/LBCLASSIC-193">LBCLASSIC-193</a>. <code>SyslogAppender</code>
-    will no longer shutdown when messages over 256Kb cause an
-    <code>IOException</code>.
+    href="http://jira.qos.ch/browse/LBCLASSIC-193">LBCLASSIC-193</a>.
+    <code>SyslogAppender</code> will no longer shutdown when messages
+    over 256Kb cause an <code>IOException</code>.
     </p>
 
     <p>Added <a
@@ -97,10 +97,17 @@
     surrounding child elements is ignored.
     </p>
     
+    <p><code>SiftingAppender</code> now exposes its
+    <code>AppenderTracker</code>. Moreover, the
+    <code>stopAndRemoveNow(String key)</code> method was added to
+    <code>AppenderTracker</code>, allowing immediate removal of a
+    nested appender.
+    </p>
 
     <p>Fixed <a
-    href="http://jira.qos.ch/browse/LBCORE-130">LBCORE-130</a>. <code>FileNamePattern</code>
-    no longer treats parenthesis as special.
+    href="http://jira.qos.ch/browse/LBCORE-130">LBCORE-130</a>.
+    <code>FileNamePattern</code> no longer treats parenthesis as
+    special.
     </p>
 
     <p>The <span class="option">CharsetEncoder</span> property in

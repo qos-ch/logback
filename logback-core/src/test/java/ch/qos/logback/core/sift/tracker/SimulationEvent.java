@@ -16,15 +16,21 @@ package ch.qos.logback.core.sift.tracker;
 
 public class SimulationEvent {
 
-  public String key;
-  public long timestamp;
-
-  public SimulationEvent(String key, long timestamp) {
+  public enum SimEventType {
+    PUT, REMOVE_NOW;
+  }
+  
+  final public String key;
+  final public long timestamp;
+  final public SimEventType simEventType;
+  
+  public SimulationEvent(SimEventType simEventType, String key, long timestamp) {
+    this.simEventType = simEventType;
     this.key = key;
     this.timestamp = timestamp;
   }
 
   public String toString() {
-      return "Event: k=" + key +", timestamp=" + timestamp;
+      return "Type: "+simEventType+", Event: k=" + key +", timestamp=" + timestamp;
   }
 }
