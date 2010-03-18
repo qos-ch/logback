@@ -19,26 +19,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
-  int diff = new Random().nextInt(100);
-  Context context = new ContextBase();
+  int diff = RandomUtil.getPositiveInt();
 
   protected Appender<Object> getAppender() {
     return new FileAppender<Object>();

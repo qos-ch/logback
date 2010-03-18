@@ -55,6 +55,7 @@ abstract public class AbstractAppenderTest<E>  {
   @Test
   public void testNoStart() {
     Appender<E> appender = getAppender();
+    appender.setContext(context);
     appender.setName("doh");
     // is null OK?
     appender.doAppend(null);

@@ -41,7 +41,7 @@ public class Parser<E> extends ContextAwareBase {
     try {
       TokenStream ts = new TokenStream(pattern, escapeUtil);
       this.tokenList = ts.tokenize();
-    } catch (NullPointerException npe) {
+    } catch (IllegalArgumentException npe) {
       throw new ScanException("Failed to initialize Parser", npe);
     }
   }

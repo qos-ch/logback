@@ -61,9 +61,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   @Override
   public Appender<Object> getAppender() {
-    ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
-    ca.setContext(context);
-    return ca;
+    return  new ConsoleAppender<Object>();
   }
 
   protected Appender<Object> getConfiguredAppender() {

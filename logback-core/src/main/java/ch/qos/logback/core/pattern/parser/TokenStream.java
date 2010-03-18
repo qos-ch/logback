@@ -20,24 +20,29 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
-
-
 /**
- * <p>Return a steady stream of tokens. <p/>
+ * <p>
+ * Return a steady stream of tokens.
+ * <p/>
  * 
- * <p>The returned tokens are one of:
- * LITERAL, '%', FORMAT_MODIFIER, KEYWWORD, OPTION, LEFT_PARENTHESIS, and
- * RIGHT_PARENTHESIS.</p>
+ * <p>
+ * The returned tokens are one of: LITERAL, '%', FORMAT_MODIFIER, KEYWWORD,
+ * OPTION, LEFT_PARENTHESIS, and RIGHT_PARENTHESIS.
+ * </p>
  * 
- * <p>The '\' character is used as escape. It can be used to escape '_', '%', '(' and 
- * '('.<p>
+ * <p>
+ * The '\' character is used as escape. It can be used to escape '_', '%', '('
+ * and '('.
+ * <p>
  * 
- * <p>Note that there is no EOS token returned.</p>
+ * <p>
+ * Note that there is no EOS token returned.
+ * </p>
  */
 class TokenStream {
 
   private static final char ESCAPE_CHAR = '\\';
-  private static final char PERCENT_CHAR = CoreConstants.PERCENT_CHAR; 
+  private static final char PERCENT_CHAR = CoreConstants.PERCENT_CHAR;
   private static final char CURLY_LEFT = '{';
   private static final char CURLY_RIGHT = '}';
 
@@ -49,7 +54,7 @@ class TokenStream {
   final String pattern;
   final int patternLength;
   final IEscapeUtil escapeUtil;
-  
+
   int state = LITERAL_STATE;
   int pointer = 0;
 
@@ -57,10 +62,11 @@ class TokenStream {
   TokenStream(String pattern) {
     this(pattern, new RegularEscapeUtil());
   }
-  
+
   TokenStream(String pattern, IEscapeUtil escapeUtil) {
-    if(pattern == null || pattern.length() == 0) {
-      throw new NullPointerException("null or empty pattern string not allowed");
+    if (pattern == null || pattern.length() == 0) {
+      throw new IllegalArgumentException(
+          "null or empty pattern string not allowed");
     }
     this.pattern = pattern;
     patternLength = pattern.length();
