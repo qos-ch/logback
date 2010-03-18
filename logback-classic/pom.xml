@@ -275,7 +275,8 @@ org.slf4j.test_osgi
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               ch.qos.logback.core.rolling, 
-              ch.qos.logback.core.rolling.helper,
+              ch.qos.logback.core.rolling.helper,           
+              ch.qos.logback.classic.util,
               *
             </Import-Package>
 
