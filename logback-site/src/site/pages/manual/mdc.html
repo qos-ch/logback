@@ -550,9 +550,7 @@ import org.slf4j.MDC;
 
 public class UserServletFilter implements Filter {
 
-  boolean userRegistered = false;
-  
-  private final String userKey = "username";
+  private final String USER_KEY = "username";
   
   public void destroy() {
   }
@@ -560,26 +558,23 @@ public class UserServletFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
     FilterChain chain) throws IOException, ServletException {
 
-    HttpServletRequest req = (HttpServletRequest) request;
-    
+    boolean successfulRegistration = false;
+
+    HttpServletRequest req = (HttpServletRequest) request;    
     Principal principal = req.getUserPrincipal();
     // Please note that we could have also used a cookie to 
     // retrieve the user name
 
     if (principal != null) {
       String username = principal.getName();
-      registerUsername(username);
-    } else {
-      HttpSession session = req.getSession();
-      String username = (String)session.getAttribute(userKey);
-      registerUsername(username);
-    }
-    
+      successfulRegistration = registerUsername(username);
+    } 
+
     try {
       chain.doFilter(request, response);
     } finally {
-      if (userRegistered) {
-        MDC.remove(userKey);
+      if (successfulRegistration) {
+        MDC.remove(USER_KEY);
       }
     }
   }
@@ -587,21 +582,27 @@ public class UserServletFilter implements Filter {
   public void init(FilterConfig arg0) throws ServletException {
   }
   
-  private void registerUsername(String username) {
+
+  /**
+   * Register the user in the MDC under USER_KEY.
+   * 
+   * @param username
+   * @return true id the user can be successfully registered
+   */
+  private boolean registerUsername(String username) {
     if (username != null &amp;&amp; username.trim().length() > 0) {
-      MDC.put(userKey, username);
-      userRegistered = true;
+      MDC.put(USER_KEY, username);
+      return true;
     }
+    return false;
   }
 }</pre>
 
 	<p>When the filter's <code>doFilter()</code> method is called, it
 	first looks for a <code>java.security.Principal</code> object in the
 	request. This object contains the name of the currently
-	authenticated user. In case the user principal is not set, the
-	filter looks for a session attribute matching a given key (here
-	<em>username</em>).  If a user information is found, it is
-	registered in the <code>MDC</code>.
+	authenticated user. If a user information is found, it is registered
+	in the <code>MDC</code>.
 	</p>
 		
 	<p>Once the filter chain has completed, the filter removes the user
