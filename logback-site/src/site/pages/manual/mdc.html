@@ -652,15 +652,23 @@ public class UserServletFilter implements Filter {
     </tr>
 
     <tr  class="alt">
-      <td>request.remoteHost</td>
+      <td><code>req.remoteHost</code></td>
       <td>as returned by the <a
-      href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getRemoteHost%28%29">getRemoteHost90</a>
+      href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getRemoteHost%28%29">getRemoteHost()</a>
       method
       </td>
     </tr>
 
-    <tr>
-      <td>request.requestURI</td>
+    <tr >
+      <td><code>req.xForwardedFor</code></td>
+      <td>value of the <a
+      href="http://en.wikipedia.org/wiki/X-Forwarded-For">"X-Forwarded-For"</a>
+      header
+      </td>
+    </tr>
+
+    <tr class="alt">
+      <td><code>req.requestURI</code></td>
       <td>
         as returned by <a
         href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getRequestURI%28%29">getRequestURI()</a>
@@ -668,8 +676,8 @@ public class UserServletFilter implements Filter {
       </td>
     </tr>
 
-    <tr  class="alt">
-      <td>request.userAgent</td>
+    <tr >
+      <td><code>req.userAgent</code></td>
       <td>value of the "User-Agent" header
       </td>
     </tr>
@@ -701,8 +709,15 @@ public class UserServletFilter implements Filter {
 
   <p>Once the filter is installed, values corresponding to each MDC
   key will be output by the %X <a
-  href="layouts.html#conversionWord">conversion word</a>.
+  href="layouts.html#conversionWord">conversion word</a> acoording to
+  the key passes as first option. For example, to print the remote
+  host followed by the request URI on one line, the date followed by
+  the message on the next, you would set <code>PatternLayout</code>'s
+  pattern to:
+  
   </p>
+
+  <p class="source">%X{req.remoteHost} %X{req.requestURI}%n%d - %m%n</p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
