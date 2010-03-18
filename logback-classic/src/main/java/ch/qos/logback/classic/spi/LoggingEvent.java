@@ -19,11 +19,11 @@ import java.util.Map;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
-import org.slf4j.impl.LogbackMDCAdapter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 
 /**
  * The internal representation of logging events. When an affirmative decision

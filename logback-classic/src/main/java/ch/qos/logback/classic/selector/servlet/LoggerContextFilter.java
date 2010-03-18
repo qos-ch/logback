@@ -23,11 +23,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 
 /**
  * A servlet filter that puts the environment dependent LoggerContext in a
@@ -58,7 +58,7 @@ public class LoggerContextFilter implements Filter {
       FilterChain chain) throws IOException, ServletException {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    ContextSelector selector = StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
     ContextJNDISelector sel = null;
 
     if (selector instanceof ContextJNDISelector) {

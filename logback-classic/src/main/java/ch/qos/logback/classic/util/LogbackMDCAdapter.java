@@ -11,13 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package org.slf4j.impl;
+package ch.qos.logback.classic.util;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.spi.MDCAdapter;
+
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument
@@ -39,7 +40,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
 
   final CopyOnInheritThreadLocal copyOnInheritThreadLocal = new CopyOnInheritThreadLocal();
 
-  LogbackMDCAdapter() {
+  public LogbackMDCAdapter() {
   }
 
   /**

@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package org.slf4j.impl;
+package ch.qos.logback.classic.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +23,9 @@ import java.util.Random;
 
 import org.junit.Test;
 import org.slf4j.MDC;
+
+import ch.qos.logback.classic.util.CopyOnInheritThreadLocal;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 
 public class LogbackMDCAdapterTest {
 

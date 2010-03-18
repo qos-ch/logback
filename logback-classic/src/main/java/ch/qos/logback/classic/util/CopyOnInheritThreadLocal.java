@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package org.slf4j.impl;
+package ch.qos.logback.classic.util;
 
 import java.util.HashMap;
 

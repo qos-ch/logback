@@ -21,10 +21,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.JNDIUtil;
 
 public class ContextDetachingSCL implements ServletContextListener {
@@ -41,7 +41,7 @@ public class ContextDetachingSCL implements ServletContextListener {
     if (loggerContextName != null) {
       System.out.println("About to detach context named " + loggerContextName);
       
-      ContextSelector selector = StaticLoggerBinder.getSingleton().getContextSelector();
+      ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
       LoggerContext context = selector.detachLoggerContext(loggerContextName);
       if (context != null) {
         Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
