@@ -19,19 +19,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import org.junit.Test;
 import org.slf4j.MDC;
 
-import ch.qos.logback.classic.util.CopyOnInheritThreadLocal;
-import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class LogbackMDCAdapterTest {
 
   final static String A_SUFFIX = "A_SUFFIX";
 
-  int diff = new Random().nextInt();
+  int diff = RandomUtil.getPositiveInt();
 
   /**
    * Test that CopyOnInheritThreadLocal does not barf when the 

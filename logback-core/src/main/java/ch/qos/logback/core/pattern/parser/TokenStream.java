@@ -59,8 +59,8 @@ class TokenStream {
   }
   
   TokenStream(String pattern, IEscapeUtil escapeUtil) {
-    if(pattern == null) {
-      throw new NullPointerException("null pattern string not allowed");
+    if(pattern == null || pattern.length() == 0) {
+      throw new NullPointerException("null or empty pattern string not allowed");
     }
     this.pattern = pattern;
     patternLength = pattern.length();

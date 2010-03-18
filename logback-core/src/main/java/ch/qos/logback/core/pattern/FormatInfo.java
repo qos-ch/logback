@@ -50,7 +50,7 @@ public class FormatInfo {
    */
   public static FormatInfo valueOf(String str) throws IllegalArgumentException {
     if (str == null) {
-      new NullPointerException("Argument cannot be null");
+      throw new NullPointerException("Argument cannot be null");
     }
 
     FormatInfo fi = new FormatInfo();

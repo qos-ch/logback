@@ -14,6 +14,7 @@
 package ch.qos.logback.core.pattern.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -240,6 +241,17 @@ public class ParserTest {
       witness.next = composite;
 
       assertEquals(witness, t);
+    }
+  }
+  
+  @Test
+  public void empty() {
+    try {
+    Parser p = new Parser("");
+    p.parse();
+      fail("");
+    } catch(ScanException e) {
+      
     }
   }
 }

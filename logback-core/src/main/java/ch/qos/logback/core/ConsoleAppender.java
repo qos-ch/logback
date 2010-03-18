@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core;
 
+import java.util.Arrays;
+
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
@@ -41,6 +43,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   public void setTarget(String value) {
     ConsoleTarget t = ConsoleTarget.findByName(value.trim());
     if (t == null) {
+      System.out.println("**************");
       targetWarn(value);
     } else {
       target = t;
@@ -58,8 +61,10 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   }
 
   private void targetWarn(String val) {
-    Status status = new WarnStatus("[" + val + " should be in " + ConsoleTarget.values(), this);
-    status.add(new WarnStatus("Using previously set target, System.out by default.", this));
+    Status status = new WarnStatus("[" + val + "] should be one of "
+        + Arrays.toString(ConsoleTarget.values()), this);
+    status.add(new WarnStatus(
+        "Using previously set target, System.out by default.", this));
     addStatus(status);
   }
 

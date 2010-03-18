@@ -79,12 +79,28 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
+    plb.setPattern(null);
     plb.start();
     String s = plb.doLayout(getEventObject());
     assertEquals("", s);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    //StatusPrinter.print(context.getStatusManager());
-    assertTrue(checker.containsMatch("Failed to parse pattern \"null\""));
+    StatusPrinter.print(context);
+    assertTrue(checker.containsMatch("Empty or null pattern."));
+  }
+
+  @Test
+  public void testEmptyPattern() {
+    //System.out.println("testNullPattern");
+    PatternLayoutBase<E> plb = getPatternLayoutBase();
+    Context context = new ContextBase();
+    plb.setContext(context);
+    plb.setPattern("");
+    plb.start();
+    String s = plb.doLayout(getEventObject());
+    assertEquals("", s);
+    StatusChecker checker = new StatusChecker(context.getStatusManager());
+    StatusPrinter.print(context);
+    assertTrue(checker.containsMatch("Empty or null pattern."));
   }
 
 }
