@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import ch.qos.logback.classic.db.names.DBNameResolver;
+import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.db.DBAppenderBase;
@@ -38,27 +40,14 @@ import ch.qos.logback.core.db.DBAppenderBase;
  * @author S&eacute;bastien Pennec
  */
 public class DBAppender extends DBAppenderBase<ILoggingEvent> {
-  protected final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-  protected final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
-  protected static final String insertSQL;
+  protected String insertPropertiesSQL;
+  protected String insertExceptionSQL;
+  protected String insertSQL;
   protected static final Method GET_GENERATED_KEYS_METHOD;
 
+  private DBNameResolver dbNameResolver;
+
   static {
-    StringBuffer sql = new StringBuffer();
-    sql.append("INSERT INTO logging_event (");
-    sql.append("timestmp, ");
-    sql.append("formatted_message, ");
-    sql.append("logger_name, ");
-    sql.append("level_string, ");
-    sql.append("thread_name, ");
-    sql.append("reference_flag, ");
-    sql.append("caller_filename, ");
-    sql.append("caller_class, ");
-    sql.append("caller_method, ");
-    sql.append("caller_line) ");
-    sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?,?)");
-    insertSQL = sql.toString();
-    
     // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
     Method getGeneratedKeysMethod;
     try {
@@ -72,6 +61,20 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   }
   
   public DBAppender() {
+  }
+
+  public void setDbNameResolver(DBNameResolver dbNameResolver) {
+    this.dbNameResolver = dbNameResolver;
+  }
+
+  @Override
+  public void start() {
+    if(dbNameResolver == null)
+      dbNameResolver = new DefaultDBNameResolver();
+    insertExceptionSQL = SQLBuilder.buildInsertExceptionSQL(dbNameResolver);
+    insertPropertiesSQL = SQLBuilder.buildInsertPropertiesSQL(dbNameResolver);
+    insertSQL = SQLBuilder.buildInsertSQL(dbNameResolver);
+    super.start();
   }
 
   @Override
