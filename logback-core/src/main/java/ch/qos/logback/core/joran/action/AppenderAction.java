@@ -102,8 +102,6 @@ public class AppenderAction<E> extends Action {
       addWarn("The object at the of the stack is not the appender named ["
           + appender.getName() + "] pushed earlier.");
     } else {
-      addInfo("Popping appender named [" + appender.getName()
-          + "] from the object stack");
       ec.popObject();
     }
   }

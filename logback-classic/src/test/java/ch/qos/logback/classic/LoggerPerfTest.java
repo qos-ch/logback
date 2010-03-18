@@ -23,7 +23,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import ch.qos.logback.core.appender.NOPAppender;
+import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.Env;
 
 public class LoggerPerfTest {
