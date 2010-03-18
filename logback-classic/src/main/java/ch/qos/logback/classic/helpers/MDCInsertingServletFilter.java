@@ -64,6 +64,8 @@ public class MDCInsertingServletFilter implements Filter {
           .getRequestURI());
       MDC.put(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY, httpServletRequest
           .getHeader("User-Agent"));
+      MDC.put(ClassicConstants.REQUEST_X_FORWARDED_FOR, httpServletRequest
+          .getHeader("X-Forwarded-For"));
     }
 
   }

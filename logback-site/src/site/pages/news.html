@@ -68,6 +68,13 @@
     after the connection to the server is re-established.
     </p>
 
+    <p>The packages under <code>ch.qos.logback.classic</code>
+    namespace no longer depend on <code>org.slf4j.impl</code>. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-184">LBCLASSIC-184</a>
+    reported by Gunnar Wagenknecht.
+    </p>
+
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCLASSIC-193">LBCLASSIC-193</a>.
     <code>SyslogAppender</code> will no longer shutdown when messages

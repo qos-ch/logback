@@ -33,8 +33,9 @@ public class ClassicConstants {
    */
   public static final int DEFAULT_MAX_CALLEDER_DATA_DEPTH = 8;
   
-  public final static String REQUEST_REMOTE_HOST_MDC_KEY = "request.remoteHost";
-  public final static String REQUEST_USER_AGENT_MDC_KEY = "request.userAgent";
-  public final static String REQUEST_REQUST_URI = "request.requestURI";
+  public final static String REQUEST_REMOTE_HOST_MDC_KEY = "req.remoteHost";
+  public final static String REQUEST_USER_AGENT_MDC_KEY = "req.userAgent";
+  public final static String REQUEST_REQUST_URI = "req.requestURI";
+  public final static String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
   
 }

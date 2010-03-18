@@ -270,13 +270,15 @@ org.slf4j.test_osgi
                  config files). They won't be found by Bnd's analysis
                  of java code. -->
 
+            <!-- importing ch.qos.logback.classic.util is strange but
+                 is required for the OSGi integration tests to pass
+                 -->
             <Import-Package>
               sun.reflect;resolution:=optional, 
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               ch.qos.logback.core.rolling, 
               ch.qos.logback.core.rolling.helper,           
-              ch.qos.logback.classic.util,
               *
             </Import-Package>
 
