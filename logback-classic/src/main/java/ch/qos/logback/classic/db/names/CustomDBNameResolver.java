@@ -95,11 +95,11 @@ public class CustomDBNameResolver implements DBNameResolver {
     lePropertyColumnNameOverrides.put(LoggingEventPropertyColumnName.EVENT_ID, columnName);
   }
 
-  public void setMappedKeyColumnName(String columnName) {
+  public void setLoggingEventPropertyMappedKeyColumnName(String columnName) {
     lePropertyColumnNameOverrides.put(LoggingEventPropertyColumnName.MAPPED_KEY, columnName);
   }
 
-  public void setMappedValueColumnName(String columnName) {
+  public void setLoggingEventPropertyMappedValueColumnName(String columnName) {
     lePropertyColumnNameOverrides.put(LoggingEventPropertyColumnName.MAPPED_VALUE, columnName);
   }
 
