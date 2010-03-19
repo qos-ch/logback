@@ -59,17 +59,17 @@
   <p>In practical terms, this means that configuration files need to
   be changed</p>
   
-  <p class="red bold">from (BAD)</p>
+  <p class="red bold">from (DEPRECATED)</p>
   
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>testFile.log&lt;/file>
     ...
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
+      &lt;pattern>%msg%n&lt;/pattern>
     &lt;/layout>
   &lt;/appender>   </pre>
 
-  <p class="red bold">or the shorter equivalent (BAD)</p>
+  <p class="red bold">or the shorter equivalent (DEPRECATED)</p>
 
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>testFile.log&lt;/file>
@@ -105,7 +105,11 @@
 
 
   <p>We hope to make up for this inconvenience with cool new features
-  which are only possible using encoders.</p>
+  which are only possible using encoders. <b>During a transition
+  period, layouts passed as parameter will be automatically wrapped by
+  an encoder so that configuration files in the old format (using a
+  layout instead of encoder) will continue to work unmodifed.</b>
+  </p>
 
   <hr/>
   

@@ -13,13 +13,15 @@
  */
 package ch.qos.logback.core;
 
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
 import ch.qos.logback.core.encoder.Encoder;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
-import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
 /**
  * OutputStreamAppender appends events to a {@link OutputStream}. This class
@@ -87,9 +89,14 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
   }
 
-  public void setLayout(Layout layout) {
-    addError("This appender no longer admits a layout as a sub-component, set an encoder instead.");
-    addError("See also "+CODES_URL+"#layoutInsteadOfEncoder for details");
+  public void setLayout(Layout<E> layout) {
+    addWarn("This appender no longer admits a layout as a sub-component, set an encoder instead.");
+    addWarn("To ensure compatibility, wrapping your layout in LayoutWrappingEncoder.");
+    addWarn("See also "+CODES_URL+"#layoutInsteadOfEncoder for details");
+    LayoutWrappingEncoder<E> lwe = new LayoutWrappingEncoder<E>();
+    lwe.setLayout(layout);
+    lwe.setContext(context);
+    this.encoder = lwe;
   }
 
   @Override
@@ -223,5 +230,5 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
   public void setEncoder(Encoder<E> encoder) {
     this.encoder = encoder;
   }
-
+  
 }

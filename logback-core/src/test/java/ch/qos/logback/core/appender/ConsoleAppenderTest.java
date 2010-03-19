@@ -32,7 +32,6 @@ import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 

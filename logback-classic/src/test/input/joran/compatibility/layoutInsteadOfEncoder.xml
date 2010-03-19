@@ -1,6 +1,6 @@
 <configuration>
 
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+  <appender name="LIOE" class="ch.qos.logback.core.FileAppender">
     <file>target/test-output/layoutInsteadOfEncoder.log</file>
     <append>true</append>
                 
@@ -10,6 +10,6 @@
   </appender>
         
   <root level="debug">
-    <appender-ref ref="FILE" />
+    <appender-ref ref="LIOE" />
   </root>
 </configuration>
