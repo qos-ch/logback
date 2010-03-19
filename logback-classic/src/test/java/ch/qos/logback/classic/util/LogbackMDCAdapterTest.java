@@ -51,6 +51,18 @@ public class LogbackMDCAdapterTest {
     assertNull(childThread.childHM);
   }
   
+  @Test
+  public void removeForNullKey() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.remove(null);
+  }
+
+  @Test
+  public void removeInexistnetKey() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.remove("abcdlw0");
+  }
+  
   class ChildThreadForMDCAdapter extends Thread {
 
     LogbackMDCAdapter logbackMDCAdapter;

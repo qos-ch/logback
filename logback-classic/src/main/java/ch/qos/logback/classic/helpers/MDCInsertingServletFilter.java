@@ -31,8 +31,9 @@ import ch.qos.logback.classic.ClassicConstants;
  * A servlet filter that inserts various values retrieved from the incoming http
  * request into the MDC.
  * 
- * <p>The values are removed after the request is processed.
- *
+ * <p>
+ * The values are removed after the request is processed.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MDCInsertingServletFilter implements Filter {
@@ -57,11 +58,15 @@ public class MDCInsertingServletFilter implements Filter {
 
     MDC.put(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY, request
         .getRemoteHost());
-    
+
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-      MDC.put(ClassicConstants.REQUEST_REQUST_URI, httpServletRequest
+      MDC.put(ClassicConstants.REQUEST_REQUEST_URI, httpServletRequest
           .getRequestURI());
+      StringBuffer requestURL = httpServletRequest.getRequestURL();
+      if (requestURL != null) {
+        MDC.put(ClassicConstants.REQUEST_REQUEST_URL, requestURL.toString());
+      }
       MDC.put(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY, httpServletRequest
           .getHeader("User-Agent"));
       MDC.put(ClassicConstants.REQUEST_X_FORWARDED_FOR, httpServletRequest
@@ -72,8 +77,11 @@ public class MDCInsertingServletFilter implements Filter {
 
   void clearMDC() {
     MDC.remove(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY);
-    MDC.remove(ClassicConstants.REQUEST_REQUST_URI);
+    MDC.remove(ClassicConstants.REQUEST_REQUEST_URI);
+    // removing possibly inexistent item is OK
+    MDC.remove(ClassicConstants.REQUEST_REQUEST_URL);
     MDC.remove(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY);
+    MDC.remove(ClassicConstants.REQUEST_X_FORWARDED_FOR);
   }
 
   public void init(FilterConfig arg0) throws ServletException {

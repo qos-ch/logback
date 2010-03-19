@@ -35,7 +35,8 @@ public class ClassicConstants {
   
   public final static String REQUEST_REMOTE_HOST_MDC_KEY = "req.remoteHost";
   public final static String REQUEST_USER_AGENT_MDC_KEY = "req.userAgent";
-  public final static String REQUEST_REQUST_URI = "req.requestURI";
+  public final static String REQUEST_REQUEST_URI = "req.requestURI";
+  public final static String REQUEST_REQUEST_URL = "req.requestURL";
   public final static String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
   
 }
