@@ -32,8 +32,14 @@
       <version>4.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  
+
   <properties>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
