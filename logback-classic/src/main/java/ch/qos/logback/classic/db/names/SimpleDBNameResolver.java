@@ -13,7 +13,7 @@ public class SimpleDBNameResolver implements DBNameResolver {
   private String columnNameSuffix = "";
 
   public String getTableName(TableName tableName) {
-    return tableNamePrefix + tableName.name() + columnNamePrefix;
+    return tableNamePrefix + tableName.name() + tableNameSuffix;
   }
 
   public String getLoggingEventColumnName(LoggingEventColumnName columnName) {
