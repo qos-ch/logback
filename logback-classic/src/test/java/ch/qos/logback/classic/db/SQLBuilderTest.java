@@ -1,5 +1,6 @@
 package ch.qos.logback.classic.db;
 
+import ch.qos.logback.classic.db.names.CustomDBNameResolver;
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
 import org.junit.Test;
@@ -51,6 +52,70 @@ public class SQLBuilderTest {
     assertThat(sql).isEqualTo(expected);
   }
 
+  @Test
+  public void shouldReturnCustomSqlInsertLoggingEventQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createCustomDBNameResolver();
 
+    //when
+    String sql = SQLBuilder.buildInsertSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO alpha (a, b, c, d, e, f, g, h, i, j) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
+
+  private DBNameResolver createCustomDBNameResolver() {
+    final CustomDBNameResolver nameResolver = new CustomDBNameResolver();
+    nameResolver.setLoggingEventTableName("alpha");
+    nameResolver.setLoggingEventExceptionTableName("beta");
+    nameResolver.setLoggingEventPropertyTableName("gamma");
+
+    nameResolver.setLoggingEventTimestmpColumnName("a");
+    nameResolver.setLoggingEventFormattedMessageColumnName("b");
+    nameResolver.setLoggingEventLoggerNameColumnName("c");
+    nameResolver.setLoggingEventLevelStringColumnName("d");
+    nameResolver.setLoggingEventThreadNameColumnName("e");
+    nameResolver.setLoggingEventReferenceFlagColumnName("f");
+    nameResolver.setLoggingEventCallerFilenameColumnName("g");
+    nameResolver.setLoggingEventCallerClassColumnName("h");
+    nameResolver.setLoggingEventCallerMethodColumnName("i");
+    nameResolver.setLoggingEventCallerLineColumnName("j");
+
+    nameResolver.setLoggingEventExceptionEventIdColumnName("k");
+    nameResolver.setLoggingEventExceptionIColumnName("l");
+    nameResolver.setLoggingEventExceptionTraceLineColumnName("m");
+
+    nameResolver.setLoggingEventPropertyEventIdColumnName("n");
+    nameResolver.setLoggingEventPropertyMappedKeyColumnName("o");
+    nameResolver.setLoggingEventPropertyMappedValueColumnName("p");
+    return nameResolver;
+  }
+
+  @Test
+  public void shouldReturnCustomSqlInsertExceptionQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createCustomDBNameResolver();
+
+    //when
+    String sql = SQLBuilder.buildInsertExceptionSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO beta (k, l, m) VALUES (?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldReturnCustomtSqlInsertLoggingPropertyQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createCustomDBNameResolver();
+
+    //when
+    String sql = SQLBuilder.buildInsertPropertiesSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO gamma (n, o, p) VALUES (?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
 
 }
