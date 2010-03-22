@@ -67,6 +67,7 @@ public class MDCInsertingServletFilter implements Filter {
       if (requestURL != null) {
         MDC.put(ClassicConstants.REQUEST_REQUEST_URL, requestURL.toString());
       }
+      MDC.put(ClassicConstants.REQUEST_QUERY_STRING, httpServletRequest.getQueryString());
       MDC.put(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY, httpServletRequest
           .getHeader("User-Agent"));
       MDC.put(ClassicConstants.REQUEST_X_FORWARDED_FOR, httpServletRequest
@@ -78,6 +79,7 @@ public class MDCInsertingServletFilter implements Filter {
   void clearMDC() {
     MDC.remove(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY);
     MDC.remove(ClassicConstants.REQUEST_REQUEST_URI);
+    MDC.remove(ClassicConstants.REQUEST_QUERY_STRING);
     // removing possibly inexistent item is OK
     MDC.remove(ClassicConstants.REQUEST_REQUEST_URL);
     MDC.remove(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY);

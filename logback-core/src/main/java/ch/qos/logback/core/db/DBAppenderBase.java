@@ -98,10 +98,9 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
       subAppend(eventObject, connection, insertStatement);
 
       // we no longer need the insertStatement
-      if (insertStatement != null) {
-        insertStatement.close();
-        insertStatement = null;
-      }
+      close(insertStatement);
+      insertStatement = null;
+      
       connection.commit();
     } catch (Throwable sqle) {
       addError("problem appending event", sqle);
@@ -137,9 +136,6 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     }
 
     if (!gotGeneratedKeys) {
-      insertStatement.close();
-      insertStatement = null;
-
       idStatement = connection.createStatement();
       idStatement.setMaxRows(1);
       rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
@@ -152,14 +148,18 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
     rs.close();
 
-    if (idStatement != null) {
-      idStatement.close();
-      idStatement = null;
-    }
-
+    close(idStatement);
+    idStatement = null;
+    
     return eventId;
   }
 
+  void close(Statement statement) throws SQLException {
+    if(statement != null) {
+      statement.close();
+    }
+  }
+  
   @Override
   public void stop() {
     super.stop();
