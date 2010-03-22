@@ -76,12 +76,19 @@ public class DBAppenderIntegrationTest {
     for (int i = 1; i <= runLength; i++) {
       logger.debug("This is a debug message. Message number: " + i);
     }
-    logger.error("At last an error.", new Exception("Just testing"));
 
+    Exception e = new Exception("Just testing", getCause());
+    logger
+        .error("At last an error.", e);
+    e.printStackTrace();
     // check that there were no errors
     StatusPrinter.print(lc);
     assertEquals(Status.INFO, lc.getStatusManager().getLevel());
 
+  }
+
+  Throwable getCause() {
+    return new IllegalStateException("test cause");
   }
 
   static boolean isConformingHostAndJDK16OrHigher(String[] conformingHostList) {

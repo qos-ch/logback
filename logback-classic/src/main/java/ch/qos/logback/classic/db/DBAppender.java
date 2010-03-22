@@ -25,15 +25,18 @@ import java.util.Set;
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.db.DBAppenderBase;
 
 /**
  * The DBAppender inserts logging events into three database tables in a format
- * independent of the Java programming language. 
+ * independent of the Java programming language.
  * 
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#DBAppender
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#DBAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
@@ -51,7 +54,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
     Method getGeneratedKeysMethod;
     try {
-      // the 
+      // the
       getGeneratedKeysMethod = PreparedStatement.class.getMethod(
           "getGeneratedKeys", (Class[]) null);
     } catch (Exception ex) {
@@ -59,7 +62,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
     GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
   }
-  
+
   public DBAppender() {
   }
 
@@ -69,7 +72,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
   @Override
   public void start() {
-    if(dbNameResolver == null)
+    if (dbNameResolver == null)
       dbNameResolver = new DefaultDBNameResolver();
     insertExceptionSQL = SQLBuilder.buildInsertExceptionSQL(dbNameResolver);
     insertPropertiesSQL = SQLBuilder.buildInsertPropertiesSQL(dbNameResolver);
@@ -85,7 +88,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     bindLoggingEventWithInsertStatement(insertStatement, event);
     // This is expensive... should we do it every time?
     bindCallerDataWithPreparedStatement(insertStatement, event.getCallerData());
-    
+
     int updateCount = insertStatement.executeUpdate();
     if (updateCount != 1) {
       addWarn("Failed to insert loggingEvent");
@@ -97,12 +100,12 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     insertProperties(mergedMap, connection, eventId);
 
     if (event.getThrowableProxy() != null) {
-      insertThrowable(event.getThrowableProxy().getStackTraceElementProxyArray(), connection, eventId);
+      insertThrowable(event.getThrowableProxy(), connection, eventId);
     }
   }
 
-  void bindLoggingEventWithInsertStatement(PreparedStatement stmt, ILoggingEvent event)
-      throws SQLException {
+  void bindLoggingEventWithInsertStatement(PreparedStatement stmt,
+      ILoggingEvent event) throws SQLException {
     stmt.setLong(1, event.getTimeStamp());
     stmt.setString(2, event.getFormattedMessage());
     stmt.setString(3, event.getLoggerName());
@@ -111,8 +114,8 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     stmt.setShort(6, DBHelper.computeReferenceMask(event));
   }
 
-  void bindCallerDataWithPreparedStatement(PreparedStatement stmt, StackTraceElement[] callerDataArray)
-      throws SQLException {
+  void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
+      StackTraceElement[] callerDataArray) throws SQLException {
     StackTraceElement callerData = callerDataArray[0];
     if (callerData != null) {
       stmt.setString(7, callerData.getFileName());
@@ -128,7 +131,8 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     // we consider that event-specific properties should have priority over
     // context-wide
     // properties.
-    Map<String, String> loggerContextMap = event.getLoggerContextVO().getPropertyMap();
+    Map<String, String> loggerContextMap = event.getLoggerContextVO()
+        .getPropertyMap();
     Map<String, String> mdcMap = event.getMDCPropertyMap();
     if (loggerContextMap != null) {
       mergedMap.putAll(loggerContextMap);
@@ -149,7 +153,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   protected String getInsertSQL() {
     return insertSQL;
   }
-  
+
   protected void insertProperties(Map<String, String> mergedMap,
       Connection connection, int eventId) throws SQLException {
     Set propertiesKeys = mergedMap.keySet();
@@ -180,28 +184,71 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       insertPropertiesStatement = null;
     }
   }
-  
-  protected void insertThrowable(StackTraceElementProxy[] stepArray, Connection connection,
+
+  /**
+   * Add an exception statement either as a batch or execute immediately if
+   * batch updates are not supported.
+   */
+  void updateExceptionStatement(PreparedStatement exceptionStatement,
+      String txt, short i, int eventId) throws SQLException {
+    exceptionStatement.setInt(1, eventId);
+    exceptionStatement.setShort(2, i);
+    exceptionStatement.setString(3, txt);
+    if (cnxSupportsBatchUpdates) {
+      exceptionStatement.addBatch();
+    } else {
+      exceptionStatement.execute();
+    }
+  }
+
+  short buildExceptionStatement(IThrowableProxy tp, short baseIndex,
+      PreparedStatement insertExceptionStatement, int eventId)
+      throws SQLException {
+
+    StringBuilder buf = new StringBuilder();
+    ThrowableProxyUtil.printFirstLine(buf, tp);
+    updateExceptionStatement(insertExceptionStatement, buf.toString(),
+        baseIndex++, eventId);
+
+    int commonFrames = tp.getCommonFrames();
+    StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
+    for (int i = 0; i < stepArray.length - commonFrames; i++) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(CoreConstants.TAB);
+      ThrowableProxyUtil.printSTEP(sb, stepArray[i]);
+      updateExceptionStatement(insertExceptionStatement, sb.toString(),
+          baseIndex++, eventId);
+    }
+
+    if (commonFrames > 0) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(CoreConstants.TAB).append("... ").append(commonFrames).append(
+          " common frames omitted");
+      updateExceptionStatement(insertExceptionStatement, sb.toString(),
+          baseIndex++, eventId);
+    }
+
+    return baseIndex;
+  }
+
+  protected void insertThrowable(IThrowableProxy tp, Connection connection,
       int eventId) throws SQLException {
 
-    PreparedStatement insertExceptionStatement = connection
+    PreparedStatement exceptionStatement = connection
         .prepareStatement(insertExceptionSQL);
 
-    for (short i = 0; i < stepArray.length; i++) {
-      insertExceptionStatement.setInt(1, eventId);
-      insertExceptionStatement.setShort(2, i);
-      insertExceptionStatement.setString(3, stepArray[i].toString());
-      if (cnxSupportsBatchUpdates) {
-        insertExceptionStatement.addBatch();
-      } else {
-        insertExceptionStatement.execute();
-      }
+    short baseIndex = 0;
+    while (tp != null) {
+      baseIndex = buildExceptionStatement(tp, baseIndex, exceptionStatement,
+          eventId);
+      tp = tp.getCause();
     }
+
     if (cnxSupportsBatchUpdates) {
-      insertExceptionStatement.executeBatch();
+      exceptionStatement.executeBatch();
     }
-    insertExceptionStatement.close();
-    insertExceptionStatement = null;
+    exceptionStatement.close();
+    exceptionStatement = null;
 
   }
 }
