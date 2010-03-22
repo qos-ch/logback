@@ -85,7 +85,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     bindLoggingEventWithInsertStatement(insertStatement, event);
     // This is expensive... should we do it every time?
     bindCallerDataWithPreparedStatement(insertStatement, event.getCallerData());
-
+    
     int updateCount = insertStatement.executeUpdate();
     if (updateCount != 1) {
       addWarn("Failed to insert loggingEvent");

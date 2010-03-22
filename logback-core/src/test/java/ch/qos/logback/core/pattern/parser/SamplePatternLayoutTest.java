@@ -22,7 +22,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 
-public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest {
+public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 
   Context context = new ContextBase();
 

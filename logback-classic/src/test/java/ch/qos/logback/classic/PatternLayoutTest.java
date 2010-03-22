@@ -36,7 +36,7 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.testUtil.StringListAppender;
 
-public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
+public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
   private PatternLayout pl = new PatternLayout();
   private LoggerContext lc = new LoggerContext();
@@ -44,7 +44,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
   Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
   
   ILoggingEvent le;
-  List optionList = new ArrayList();
+  List<String> optionList = new ArrayList<String>();
 
   public PatternLayoutTest() {
     super();
@@ -68,7 +68,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     return makeLoggingEvent(null);
   }
 
-  public PatternLayoutBase getPatternLayoutBase() {
+  public PatternLayoutBase<ILoggingEvent> getPatternLayoutBase() {
     return new PatternLayout();
   }
 
@@ -170,7 +170,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest {
     root.getAppender("LIST");
     String msg  = "Simon says";
     logger.debug(msg);
-    StringListAppender sla = (StringListAppender)    root.getAppender("LIST");
+    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>)    root.getAppender("LIST");
     assertNotNull(sla);
     assertEquals(1, sla.strList.size());
     assertEquals(SampleConverter.SAMPLE_STR+" - "+msg, sla.strList.get(0)); 

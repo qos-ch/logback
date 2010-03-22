@@ -24,6 +24,7 @@ import java.sql.Statement;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialect;
+import ch.qos.logback.core.db.dialect.SQLDialectCode;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -82,6 +83,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     this.connectionSource = connectionSource;
   }
 
+  
   @Override
   public void append(E eventObject) {
     Connection connection = null;
@@ -90,8 +92,13 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
       connection.setAutoCommit(false);
       PreparedStatement insertStatement;
       if (cnxSupportsGetGeneratedKeys) {
+        String EVENT_ID_COL_NAME = "EVENT_ID";
+        // see 
+        if(connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
+          EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
+        }
         insertStatement = connection.prepareStatement(getInsertSQL(),
-            new String[] {"EVENT_ID"});
+            new String[] {EVENT_ID_COL_NAME});
       } else {
         insertStatement = connection.prepareStatement(getInsertSQL());
       }

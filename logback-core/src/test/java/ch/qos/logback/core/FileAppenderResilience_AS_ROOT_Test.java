@@ -47,7 +47,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
   FileAppender<Object> fa = new FileAppender<Object>();
 
   static boolean isConformingHost() {
-    return Env.isLocalHostNameInList(new String[] { "gimmel" });
+    return Env.isLocalHostNameInList(new String[] { "haro" });
   }
 
   @Before

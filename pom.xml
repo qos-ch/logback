@@ -93,12 +93,11 @@
         <artifactId>hsqldb</artifactId>
         <version>1.8.0.7</version>
       </dependency>
-
       <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>1.2.131</version>
-      </dependency>
+	<groupId>postgresql</groupId>
+	<artifactId>postgresql</artifactId>
+	<version>8.4-701.jdbc4</version>
+      </dependency> 
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>catalina</artifactId>
@@ -125,10 +124,10 @@
         <version>1.0</version>
       </dependency>    
       <dependency>
-			  <groupId>javax.servlet</groupId>
-			  <artifactId>servlet-api</artifactId>
-			  <version>2.5</version>
-		</dependency> 
+	<groupId>javax.servlet</groupId>
+	<artifactId>servlet-api</artifactId>
+	<version>2.5</version>
+      </dependency> 
     </dependencies>
   </dependencyManagement>
   

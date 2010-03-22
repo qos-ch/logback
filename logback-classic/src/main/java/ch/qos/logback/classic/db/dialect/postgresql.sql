@@ -1,11 +1,11 @@
-# This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
-#
-# It is intended for PostgreSQL databases.
+-- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
+--
+-- It is intended for PostgreSQL databases.
 
 DROP TABLE    logging_event_property;
 DROP TABLE    logging_event_exception;
-DROP SEQUENCE logging_event_id_seq;
 DROP TABLE    logging_event;
+DROP SEQUENCE logging_event_id_seq;
 
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START 1;

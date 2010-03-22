@@ -82,6 +82,12 @@
     </dependency>
 
     <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>      
+    </dependency>
+
+    <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <scope>compile</scope>
@@ -302,12 +308,6 @@ org.slf4j.test_osgi
           <artifactId>mysql-connector-java</artifactId>
           <version>5.0.8</version>
           <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-          <version>8.2-507.jdbc3</version>
         </dependency>
 
         <!-- locally installed artifact -->

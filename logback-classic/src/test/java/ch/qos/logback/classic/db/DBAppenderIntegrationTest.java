@@ -38,10 +38,11 @@ public class DBAppenderIntegrationTest {
 
   static String LOCAL_HOST_NAME;
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
+  static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
 
   int diff = new Random(System.nanoTime()).nextInt(10000);
   LoggerContext lc = new LoggerContext();
-  
+
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     InetAddress localhostIA = InetAddress.getLocalHost();
@@ -54,7 +55,7 @@ public class DBAppenderIntegrationTest {
 
   @Before
   public void setUp() throws Exception {
-    lc.setName("lc"+diff);
+    lc.setName("lc" + diff);
   }
 
   @After
@@ -76,23 +77,27 @@ public class DBAppenderIntegrationTest {
       logger.debug("This is a debug message. Message number: " + i);
     }
     logger.error("At last an error.", new Exception("Just testing"));
-    
+
     // check that there were no errors
     StatusPrinter.print(lc);
     assertEquals(Status.INFO, lc.getStatusManager().getLevel());
-    
+
   }
-  
-  static boolean isConformingHostAndJDK16OrHigher() {
-    if(!Env.isJDK6OrHigher()) {
+
+  static boolean isConformingHostAndJDK16OrHigher(String[] conformingHostList) {
+    if (!Env.isJDK6OrHigher()) {
       return false;
     }
-    for (String conformingHost : CONFORMING_HOST_LIST) {
+    for (String conformingHost : conformingHostList) {
       if (conformingHost.equalsIgnoreCase(LOCAL_HOST_NAME)) {
         return true;
       }
     }
     return false;
+  }
+
+  static boolean isConformingHostAndJDK16OrHigher() {
+    return isConformingHostAndJDK16OrHigher(CONFORMING_HOST_LIST);
   }
 
   @Test
@@ -123,7 +128,7 @@ public class DBAppenderIntegrationTest {
     }
     doTest("src/test/input/integration/db/oracle11g-with-driver.xml");
   }
-  
+
   @Test
   public void mysql() throws Exception {
     // perform test only on conforming hosts
@@ -132,14 +137,15 @@ public class DBAppenderIntegrationTest {
     }
     doTest("src/test/input/integration/db/mysql-with-driver.xml");
   }
-  
+
   @Test
   public void postgres() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHostAndJDK16OrHigher()) {
+    if (!isConformingHostAndJDK16OrHigher(POSTGRES_CONFORMING_HOST_LIST)) {
       return;
     }
+    System.out.println("doing test");
     doTest("src/test/input/integration/db/postgresql-with-driver.xml");
   }
-  
+
 }
