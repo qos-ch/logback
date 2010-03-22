@@ -11,8 +11,8 @@ public class SQLBuilder {
   static String buildInsertPropertiesSQL(DBNameResolver dbNameResolver) {
     StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
     sqlBuilder.append(dbNameResolver.getTableName(TableName.LOGGING_EVENT_PROPERTY)).append(" (");
-    sqlBuilder.append(dbNameResolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.EVENT_ID)).append(",");
-    sqlBuilder.append(dbNameResolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_KEY)).append(",");
+    sqlBuilder.append(dbNameResolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.EVENT_ID)).append(", ");
+    sqlBuilder.append(dbNameResolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_KEY)).append(", ");
     sqlBuilder.append(dbNameResolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_VALUE)).append(") ");
     sqlBuilder.append("VALUES (?, ?, ?)");
     return sqlBuilder.toString();
@@ -21,8 +21,8 @@ public class SQLBuilder {
   static String buildInsertExceptionSQL(DBNameResolver dbNameResolver) {
     StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
     sqlBuilder.append(dbNameResolver.getTableName(TableName.LOGGING_EVENT_EXCEPTION)).append(" (");
-    sqlBuilder.append(dbNameResolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.EVENT_ID)).append(",");
-    sqlBuilder.append(dbNameResolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.I)).append(",");
+    sqlBuilder.append(dbNameResolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.EVENT_ID)).append(", ");
+    sqlBuilder.append(dbNameResolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.I)).append(", ");
     sqlBuilder.append(dbNameResolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.TRACE_LINE)).append(") ");
     sqlBuilder.append("VALUES (?, ?, ?)");
     return sqlBuilder.toString();
@@ -41,7 +41,7 @@ public class SQLBuilder {
     sqlBuilder.append(dbNameResolver.getLoggingEventColumnName(LoggingEventColumnName.CALLER_CLASS)).append(", ");
     sqlBuilder.append(dbNameResolver.getLoggingEventColumnName(LoggingEventColumnName.CALLER_METHOD)).append(", ");
     sqlBuilder.append(dbNameResolver.getLoggingEventColumnName(LoggingEventColumnName.CALLER_LINE)).append(") ");
-    sqlBuilder.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
+    sqlBuilder.append("VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
     return sqlBuilder.toString();
   }
 }
