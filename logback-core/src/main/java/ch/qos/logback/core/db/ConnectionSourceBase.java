@@ -55,9 +55,9 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
       supportsGetGeneratedKeys = util.supportsGetGeneratedKeys(meta);
       supportsBatchUpdates = util.supportsBatchUpdates(meta);
       dialectCode = DBUtil.discoverSQLDialect(meta);
-      System.out.println("Driver name="+meta.getDriverName());
-      System.out.println("Driver version="+meta.getDriverVersion());
-      System.out.println("supportsGetGeneratedKeys="+supportsGetGeneratedKeys);
+      addInfo("Driver name="+meta.getDriverName());
+      addInfo("Driver version="+meta.getDriverVersion());
+      addInfo("supportsGetGeneratedKeys="+supportsGetGeneratedKeys);
       
     } catch (SQLException se) {
       addWarn("Could not discover the dialect to use.", se);

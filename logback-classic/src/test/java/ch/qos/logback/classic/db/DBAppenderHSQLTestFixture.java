@@ -25,7 +25,7 @@ import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
 
-public class DBAppenderTestFixture  {
+public class DBAppenderHSQLTestFixture  {
 
   public static final String HSQLDB_DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   // String serverProps;
@@ -37,7 +37,7 @@ public class DBAppenderTestFixture  {
   // boolean isNetwork = true;
   HsqlMode mode = HsqlMode.MEM;
 
-  public DBAppenderTestFixture() {
+  public DBAppenderHSQLTestFixture() {
   }
 
   public void setUp() throws SQLException {

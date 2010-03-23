@@ -94,9 +94,14 @@
         <version>1.8.0.7</version>
       </dependency>
       <dependency>
-	<groupId>postgresql</groupId>
-	<artifactId>postgresql</artifactId>
-	<version>8.4-701.jdbc4</version>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.2.132</version>
+      </dependency>
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>8.4-701.jdbc4</version>
       </dependency> 
       <dependency>
         <groupId>org.apache.tomcat</groupId>

@@ -50,7 +50,6 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
           "DBAppender cannot function without a connection source");
     }
 
-    System.out.println(connectionSource.supportsGetGeneratedKeys());
     sqlDialect = DBUtil
         .getDialectFromCode(connectionSource.getSQLDialectCode());
     if (getGeneratedKeysMethod() != null) {

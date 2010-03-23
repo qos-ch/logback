@@ -31,21 +31,23 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class DBAppenderTest  {
+public class DBAppenderH2Test  {
 
   LoggerContext lc;
   Logger logger;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  DBAppenderTestFixture dbAppenderTestFixture;
+  DBAppenderH2TestFixture dbAppenderH2TestFixture;
   
   @Before
   public void setUp() throws SQLException {
-    dbAppenderTestFixture = new DBAppenderTestFixture();
-    dbAppenderTestFixture.setUp();
+    dbAppenderH2TestFixture = new DBAppenderH2TestFixture();
 
+    dbAppenderH2TestFixture.setUp();
+    
     lc = new LoggerContext();
     lc.setName("default");
     logger = lc.getLogger("root");
@@ -54,10 +56,12 @@ public class DBAppenderTest  {
     appender.setContext(lc);
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
-    connectionSource.setDriverClass(DBAppenderTestFixture.HSQLDB_DRIVER_CLASS);
-    connectionSource.setUrl(dbAppenderTestFixture.url);
-    connectionSource.setUser(dbAppenderTestFixture.user);
-    connectionSource.setPassword(dbAppenderTestFixture.password);
+    connectionSource.setDriverClass(DBAppenderH2TestFixture.H2_DRIVER_CLASS);
+    connectionSource.setUrl(dbAppenderH2TestFixture.url);
+    connectionSource.setUser(dbAppenderH2TestFixture.user);
+    connectionSource.setPassword(dbAppenderH2TestFixture.password);
+    
+
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
     appender.start();
@@ -69,7 +73,7 @@ public class DBAppenderTest  {
     lc = null;
     appender = null;
     connectionSource = null;
-    dbAppenderTestFixture.tearDown();
+    dbAppenderH2TestFixture.tearDown();
   }
 
   @Test
@@ -77,7 +81,8 @@ public class DBAppenderTest  {
     ILoggingEvent event = createLoggingEvent();
 
     appender.append(event);
-    //StatusPrinter.print(lc.getStatusManager());
+    
+    StatusPrinter.print(lc);
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
