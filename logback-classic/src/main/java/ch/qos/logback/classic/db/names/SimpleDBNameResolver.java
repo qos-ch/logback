@@ -13,34 +13,34 @@ public class SimpleDBNameResolver implements DBNameResolver {
   private String columnNameSuffix = "";
 
   public String getTableName(TableName tableName) {
-    return tableNamePrefix + tableName.name() + tableNameSuffix;
+    return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
   }
 
   public String getLoggingEventColumnName(LoggingEventColumnName columnName) {
-    return columnNamePrefix + columnName.name() + columnNameSuffix;
+    return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
   }
 
   public String getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName columnName) {
-    return columnNamePrefix + columnName.name() + columnNameSuffix;
+    return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
   }
 
   public String getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName columnName) {
-    return columnNamePrefix + columnName.name() + columnNameSuffix;
+    return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
   }
 
   public void setTableNamePrefix(String tableNamePrefix) {
-    this.tableNamePrefix = tableNamePrefix;
+    this.tableNamePrefix = tableNamePrefix != null? tableNamePrefix : "";
   }
 
   public void setTableNameSuffix(String tableNameSuffix) {
-    this.tableNameSuffix = tableNameSuffix;
+    this.tableNameSuffix = tableNameSuffix != null? tableNameSuffix : "";
   }
 
   public void setColumnNamePrefix(String columnNamePrefix) {
-    this.columnNamePrefix = columnNamePrefix;
+    this.columnNamePrefix = columnNamePrefix != null? columnNamePrefix : "";
   }
 
   public void setColumnNameSuffix(String columnNameSuffix) {
-    this.columnNameSuffix = columnNameSuffix;
+    this.columnNameSuffix = columnNameSuffix != null? columnNameSuffix : "";
   }
 }

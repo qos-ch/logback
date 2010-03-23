@@ -3,6 +3,7 @@ package ch.qos.logback.classic.db;
 import ch.qos.logback.classic.db.names.CustomDBNameResolver;
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
+import ch.qos.logback.classic.db.names.SimpleDBNameResolver;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -106,7 +107,7 @@ public class SQLBuilderTest {
   }
 
   @Test
-  public void shouldReturnCustomtSqlInsertLoggingPropertyQuery() throws Exception {
+  public void shouldReturnCustomSqlInsertLoggingPropertyQuery() throws Exception {
     //given
     DBNameResolver nameResolver = createCustomDBNameResolver();
 
@@ -115,6 +116,54 @@ public class SQLBuilderTest {
 
     //then
     final String expected = "INSERT INTO gamma (n, o, p) VALUES (?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
+
+  private DBNameResolver createSimpleDBNameResolver() {
+    final SimpleDBNameResolver nameResolver = new SimpleDBNameResolver();
+    nameResolver.setTableNamePrefix("tp_");
+    nameResolver.setTableNameSuffix("_ts");
+    nameResolver.setColumnNamePrefix("cp_");
+    nameResolver.setColumnNameSuffix("_cs");
+    return nameResolver;
+  }
+
+  @Test
+  public void shouldReturnSimpleSqlInsertLoggingEventQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createSimpleDBNameResolver();
+
+    //when
+    String sql = SQLBuilder.buildInsertSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO tp_logging_event_ts (cp_timestmp_cs, cp_formatted_message_cs, cp_logger_name_cs, cp_level_string_cs, cp_thread_name_cs, cp_reference_flag_cs, cp_caller_filename_cs, cp_caller_class_cs, cp_caller_method_cs, cp_caller_line_cs) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldReturnSimpleSqlInsertExceptionQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createSimpleDBNameResolver();
+
+    //when
+    String sql = SQLBuilder.buildInsertExceptionSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO tp_logging_event_exception_ts (cp_event_id_cs, cp_i_cs, cp_trace_line_cs) VALUES (?, ?, ?)";
+    assertThat(sql).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldReturnSimpleSqlInsertLoggingPropertyQuery() throws Exception {
+    //given
+    DBNameResolver nameResolver = createSimpleDBNameResolver();
+
+    //when
+    String sql = SQLBuilder.buildInsertPropertiesSQL(nameResolver);
+
+    //then
+    final String expected = "INSERT INTO tp_logging_event_property_ts (cp_event_id_cs, cp_mapped_key_cs, cp_mapped_value_cs) VALUES (?, ?, ?)";
     assertThat(sql).isEqualTo(expected);
   }
 
