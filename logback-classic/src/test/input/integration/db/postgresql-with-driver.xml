@@ -12,7 +12,7 @@
   </appender>
   
   <root>
-    <level value="debug" />
+    <level value="DEBUG" />
     <appender-ref ref="DB" />
   </root>
 </configuration>

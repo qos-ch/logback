@@ -9,7 +9,7 @@ CREATE SEQUENCE access_event_id_seq MINVALUE 1 START WITH 1;
 CREATE TABLE access_event 
   (
     timestmp          NUMBER(20) NOT NULL,
-   	requestURI        VARCHAR(254),
+    requestURI    VARCHAR(254),
     requestURL        VARCHAR(254),
     remoteHost        VARCHAR(254),
     remoteUser        VARCHAR(254),
@@ -18,7 +18,7 @@ CREATE TABLE access_event
     method            VARCHAR(254),
     serverName        VARCHAR(254),
     postContent       VARCHAR(254),
-    event_id          NUMBER(10) PRIMARY KEY
+    event_id          NUMBER(20) PRIMARY KEY
   );
 
 -- the / suffix may or may not be needed depending on your SQL Client
@@ -38,7 +38,7 @@ CREATE TRIGGER access_event_id_seq_trig
 
 CREATE TABLE access_event_header
   (
-    event_id	      NUMBER(10) NOT NULL,
+    event_id	      NUMBER(20) NOT NULL,
     header_key        VARCHAR2(254) NOT NULL,
     header_value      VARCHAR2(1024),
     PRIMARY KEY(event_id, header_key),

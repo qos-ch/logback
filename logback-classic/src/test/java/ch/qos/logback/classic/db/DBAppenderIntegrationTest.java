@@ -14,9 +14,16 @@
 package ch.qos.logback.classic.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
-import java.util.Random;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,9 +36,11 @@ import org.slf4j.MDC;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderIntegrationTest {
@@ -41,8 +50,8 @@ public class DBAppenderIntegrationTest {
   static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
   static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "haro" };
   static String[] ORACLE_CONFORMING_HOST_LIST = new String[] { "haro" };
-  
-  int diff = new Random(System.nanoTime()).nextInt(10000);
+
+  int diff = RandomUtil.getPositiveInt();
   LoggerContext lc = new LoggerContext();
 
   @BeforeClass
@@ -66,7 +75,17 @@ public class DBAppenderIntegrationTest {
     lc.stop();
   }
 
-  public void doTest(String configFile) throws JoranException {
+  DriverManagerConnectionSource getConnectionSource() {
+    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) lc
+        .getLogger(Logger.ROOT_LOGGER_NAME);
+
+    DBAppender dbAppender = (DBAppender) root.getAppender("DB");
+    assertNotNull(dbAppender);
+    return (DriverManagerConnectionSource) dbAppender.getConnectionSource();
+
+  }
+
+  public void doTest(String configFile) throws JoranException, SQLException {
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(lc);
     configurator.doConfigure(configFile);
@@ -76,16 +95,86 @@ public class DBAppenderIntegrationTest {
     MDC.put("userid", "user" + diff);
     int runLength = 5;
     for (int i = 1; i <= runLength; i++) {
-      logger.debug("This is a debug message. Message number: " + i);
+      logger.debug("This is a debug message. Message number: " + (diff + i));
     }
 
     Exception e = new Exception("Just testing", getCause());
-    logger
-        .error("At last an error.", e);
-    // check that there were no errors
-    StatusPrinter.print(lc);
-    assertEquals(Status.INFO, lc.getStatusManager().getLevel());
+    logger.error("At last an error.", e);
 
+    long lastEventId = getLastEventId();
+    verify(lastEventId);
+
+    // check that there were no errors
+    StatusChecker checker = new StatusChecker(lc);
+    assertTrue(checker.isErrorFree());
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+  }
+
+  long getLastEventId() throws SQLException {
+    DriverManagerConnectionSource cs = getConnectionSource();
+
+    Connection con = cs.getConnection();
+    Statement statement = con.createStatement();
+    statement.setMaxRows(1);
+    ResultSet rs = statement
+        .executeQuery("select event_id from logging_event order by event_id desc");
+    rs.next();
+    long eventId = rs.getLong(1);
+    rs.close();
+    statement.close();
+    return eventId;
+  }
+
+  void verify(long lastEventId) throws SQLException {
+    verifyDebugMsg(lastEventId);
+    verifyException(lastEventId);
+    verifyProperty(lastEventId);
+
+  }
+
+  void verifyDebugMsg(long lastEventId) throws SQLException {
+    DriverManagerConnectionSource cs = getConnectionSource();
+    Connection con = cs.getConnection();
+    Statement statement = con.createStatement();
+    ResultSet rs = statement
+        .executeQuery("select formatted_message from logging_event where event_id='"
+            + (lastEventId - 1) + "'");
+    rs.next();
+    String msg = rs.getString(1);
+    assertEquals("This is a debug message. Message number: " + (diff + 5), msg);
+  }
+
+  void verifyProperty(long lastEventId) throws SQLException {
+    DriverManagerConnectionSource cs = getConnectionSource();
+    Connection con = cs.getConnection();
+    Statement statement = con.createStatement();
+    ResultSet rs = statement
+        .executeQuery("select mapped_key, mapped_value from logging_event_property where event_id='"
+            + (lastEventId - 1) + "'");
+  
+    Map<String, String> witness = lc.getCopyOfPropertyMap();
+    witness.putAll(MDC.getCopyOfContextMap());
+    
+    Map map = new HashMap();
+    while (rs.next()) {
+      String key = rs.getString(1);
+      String val = rs.getString(2);
+      map.put(key, val);
+    }
+    
+    assertEquals(witness, map);
+  }
+
+  void verifyException(long lastEventId) throws SQLException {
+    DriverManagerConnectionSource cs = getConnectionSource();
+    Connection con = cs.getConnection();
+    Statement statement = con.createStatement();
+    ResultSet rs = statement
+        .executeQuery("select trace_line from logging_event_exception where event_id='"
+            + (lastEventId) + "' AND I='0'");
+    rs.next();
+    String traceLine = rs.getString(1);
+    assertEquals("java.lang.Exception: Just testing", traceLine);
   }
 
   Throwable getCause() {

@@ -14,17 +14,21 @@
 package ch.qos.logback.classic.db.names;
 
 /**
+ * The default name resolver simply returns the enum passes as parameter
+ * as a lower case string.
+ * 
  * @author Tomasz Nurkiewicz
- * @since 2010-03-16
+ * @author Ceki Gulcu
+ * @since  0.9.19
  */
 public class DefaultDBNameResolver implements DBNameResolver {
 
   public <N extends Enum<?>> String getTableName(N tableName) {
-    return tableName.toString();
+    return tableName.toString().toLowerCase();
   }
 
   public <N extends Enum<?>> String getColumnName(N columnName) {
-    return columnName.toString();
+    return columnName.toString().toLowerCase();
   }
 
 }

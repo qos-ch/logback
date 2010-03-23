@@ -14,7 +14,7 @@ CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START 1;
 CREATE TABLE logging_event 
   (
     timestmp         BIGINT NOT NULL,
-   	formatted_message  TEXT NOT NULL,
+    formatted_message  TEXT NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
     thread_name       VARCHAR(254),
@@ -23,12 +23,12 @@ CREATE TABLE logging_event
     caller_class      VARCHAR(254) NOT NULL,
     caller_method     VARCHAR(254) NOT NULL,
     caller_line       CHAR(4) NOT NULL,
-    event_id          INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
+    event_id          BIGINT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
   );
 
 CREATE TABLE logging_event_property
   (
-    event_id	      INT NOT NULL,
+    event_id	      BIGINT NOT NULL,
     mapped_key        VARCHAR(254) NOT NULL,
     mapped_value      VARCHAR(1024),
     PRIMARY KEY(event_id, mapped_key),
@@ -37,7 +37,7 @@ CREATE TABLE logging_event_property
 
 CREATE TABLE logging_event_exception
   (
-    event_id         INT NOT NULL,
+    event_id         BIGINT NOT NULL,
     i                SMALLINT NOT NULL,
     trace_line       VARCHAR(254) NOT NULL,
     PRIMARY KEY(event_id, i),

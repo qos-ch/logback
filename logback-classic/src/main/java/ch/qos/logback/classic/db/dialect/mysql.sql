@@ -5,47 +5,47 @@
 
 
 BEGIN;
-DROP TABLE IF EXISTS LOGGING_EVENT_PROPERTY;
-DROP TABLE IF EXISTS LOGGING_EVENT_EXCEPTION;
-DROP TABLE IF EXISTS LOGGING_EVENT;
+DROP TABLE IF EXISTS logging_event_property;
+DROP TABLE IF EXISTS logging_event_exception;
+DROP TABLE IF EXISTS logging_event;
 COMMIT;
 
 
 BEGIN;
-CREATE TABLE LOGGING_EVENT 
+CREATE TABLE logging_event 
   (
-    TIMESTMP         BIGINT NOT NULL,
-    FORMATTED_MESSAGE  TEXT NOT NULL,
-    LOGGER_NAME       VARCHAR(254) NOT NULL,
-    LEVEL_STRING      VARCHAR(254) NOT NULL,
-    THREAD_NAME       VARCHAR(254),
-    REFERENCE_FLAG    SMALLINT,
-    CALLER_FILENAME   VARCHAR(254) NOT NULL,
-    CALLER_CLASS      VARCHAR(254) NOT NULL,
-    CALLER_METHOD     VARCHAR(254) NOT NULL,
-    CALLER_LINE       CHAR(4) NOT NULL,
-    EVENT_ID          INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+    timestmp         BIGINT NOT NULL,
+    formatted_message  TEXT NOT NULL,
+    logger_name       VARCHAR(254) NOT NULL,
+    level_string      VARCHAR(254) NOT NULL,
+    thread_name       VARCHAR(254),
+    reference_flag    SMALLINT,
+    caller_filename   VARCHAR(254) NOT NULL,
+    caller_class      VARCHAR(254) NOT NULL,
+    caller_method     VARCHAR(254) NOT NULL,
+    caller_line       CHAR(4) NOT NULL,
+    event_id          BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
   );
 COMMIT;
 
 BEGIN;
-CREATE TABLE LOGGING_EVENT_PROPERTY
+CREATE TABLE logging_event_property
   (
-    EVENT_ID	      INT NOT NULL,
-    MAPPED_KEY        VARCHAR(254) NOT NULL,
-    MAPPED_VALUE      TEXT,
-    PRIMARY KEY(EVENT_ID, MAPPED_KEY),
-    FOREIGN KEY (EVENT_ID) REFERENCES LOGGING_EVENT(EVENT_ID)
+    event_id	      BIGINT NOT NULL,
+    mapped_key        VARCHAR(254) NOT NULL,
+    mapped_value      TEXT,
+    PRIMARY KEY(event_id, mapped_key),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );
 COMMIT;
 
 BEGIN;
-CREATE TABLE LOGGING_EVENT_EXCEPTION
+CREATE TABLE logging_event_exception
   (
-    EVENT_ID         INT NOT NULL,
-    I                SMALLINT NOT NULL,
-    TRACE_LINE       VARCHAR(254) NOT NULL,
-    PRIMARY KEY(EVENT_ID, I),
-    FOREIGN KEY (EVENT_ID) REFERENCES LOGGING_EVENT(EVENT_ID)
+    event_id         BIGINT NOT NULL,
+    i                SMALLINT NOT NULL,
+    trace_line       VARCHAR(254) NOT NULL,
+    PRIMARY KEY(event_id, i),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );
 COMMIT;

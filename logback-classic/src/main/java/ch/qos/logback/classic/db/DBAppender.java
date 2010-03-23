@@ -95,8 +95,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
 
     long eventId = selectEventId(insertStatement, connection);
-
-    System.out.println("eventId"+eventId);
     
     Map<String, String> mergedMap = mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
@@ -248,7 +246,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
     if (cnxSupportsBatchUpdates) {
       exceptionStatement.executeBatch();
-      System.out.println("executin batch");
     }
     exceptionStatement.close();
     exceptionStatement = null;
