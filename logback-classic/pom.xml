@@ -94,6 +94,13 @@
     </dependency>
 
     <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.9</version>
+      <scope>test</scope>      
+    </dependency>
+
+    <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <scope>compile</scope>
@@ -309,13 +316,6 @@ org.slf4j.test_osgi
       <id>host-orion</id>
 
       <dependencies>
-        <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-          <version>5.0.8</version>
-          <scope>test</scope>
-        </dependency>
-
         <!-- locally installed artifact -->
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>

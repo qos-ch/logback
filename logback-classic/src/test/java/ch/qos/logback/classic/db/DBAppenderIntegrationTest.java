@@ -39,6 +39,7 @@ public class DBAppenderIntegrationTest {
   static String LOCAL_HOST_NAME;
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
   static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
+  static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "haro" };
 
   int diff = new Random(System.nanoTime()).nextInt(10000);
   LoggerContext lc = new LoggerContext();
@@ -80,7 +81,6 @@ public class DBAppenderIntegrationTest {
     Exception e = new Exception("Just testing", getCause());
     logger
         .error("At last an error.", e);
-    e.printStackTrace();
     // check that there were no errors
     StatusPrinter.print(lc);
     assertEquals(Status.INFO, lc.getStatusManager().getLevel());
@@ -139,7 +139,7 @@ public class DBAppenderIntegrationTest {
   @Test
   public void mysql() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHostAndJDK16OrHigher()) {
+    if (!isConformingHostAndJDK16OrHigher(MYSQL_CONFORMING_HOST_LIST)) {
       return;
     }
     doTest("src/test/input/integration/db/mysql-with-driver.xml");
