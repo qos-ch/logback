@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( {DBAppenderHSQLTest.class})
+@SuiteClasses( { DBAppenderHSQLTest.class, DBAppenderH2Test.class,
+    DBAppenderIntegrationTest.class })
 public class PackageTest {
 }

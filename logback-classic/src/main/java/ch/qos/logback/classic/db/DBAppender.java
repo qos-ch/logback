@@ -94,8 +94,10 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       addWarn("Failed to insert loggingEvent");
     }
 
-    int eventId = selectEventId(insertStatement, connection);
+    long eventId = selectEventId(insertStatement, connection);
 
+    System.out.println("eventId"+eventId);
+    
     Map<String, String> mergedMap = mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
 
@@ -155,7 +157,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   }
 
   protected void insertProperties(Map<String, String> mergedMap,
-      Connection connection, int eventId) throws SQLException {
+      Connection connection, long eventId) throws SQLException {
     Set propertiesKeys = mergedMap.keySet();
     if (propertiesKeys.size() > 0) {
       PreparedStatement insertPropertiesStatement = connection
@@ -165,7 +167,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         String key = (String) i.next();
         String value = (String) mergedMap.get(key);
 
-        insertPropertiesStatement.setInt(1, eventId);
+        insertPropertiesStatement.setLong(1, eventId);
         insertPropertiesStatement.setString(2, key);
         insertPropertiesStatement.setString(3, value);
 
@@ -190,8 +192,8 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
    * batch updates are not supported.
    */
   void updateExceptionStatement(PreparedStatement exceptionStatement,
-      String txt, short i, int eventId) throws SQLException {
-    exceptionStatement.setInt(1, eventId);
+      String txt, short i, long eventId) throws SQLException {
+    exceptionStatement.setLong(1, eventId);
     exceptionStatement.setShort(2, i);
     exceptionStatement.setString(3, txt);
     if (cnxSupportsBatchUpdates) {
@@ -202,7 +204,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   }
 
   short buildExceptionStatement(IThrowableProxy tp, short baseIndex,
-      PreparedStatement insertExceptionStatement, int eventId)
+      PreparedStatement insertExceptionStatement, long eventId)
       throws SQLException {
 
     StringBuilder buf = new StringBuilder();
@@ -232,7 +234,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   }
 
   protected void insertThrowable(IThrowableProxy tp, Connection connection,
-      int eventId) throws SQLException {
+      long eventId) throws SQLException {
 
     PreparedStatement exceptionStatement = connection
         .prepareStatement(insertExceptionSQL);
@@ -246,6 +248,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
     if (cnxSupportsBatchUpdates) {
       exceptionStatement.executeBatch();
+      System.out.println("executin batch");
     }
     exceptionStatement.close();
     exceptionStatement = null;

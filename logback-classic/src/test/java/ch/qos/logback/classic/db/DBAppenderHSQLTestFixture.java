@@ -108,51 +108,51 @@ public class DBAppenderHSQLTestFixture  {
     Connection conn = newConnection();
     assertNotNull(conn);
     StringBuffer buf = new StringBuffer();
-    buf.append("CREATE TABLE logging_event (");
-    buf.append("timestmp BIGINT NOT NULL,");
-    buf.append("formatted_message LONGVARCHAR NOT NULL,");
-    buf.append("logger_name VARCHAR(256) NOT NULL,");
-    buf.append("level_string VARCHAR(256) NOT NULL,");
-    buf.append("thread_name VARCHAR(256),");
-    buf.append("reference_flag SMALLINT,");
-    buf.append("caller_filename VARCHAR(256), ");
-    buf.append("caller_class VARCHAR(256), ");
-    buf.append("caller_method VARCHAR(256), ");
-    buf.append("caller_line CHAR(4), ");
-    buf.append("event_id INT NOT NULL IDENTITY);");
+    buf.append("CREATE TABLE LOGGING_EVENT (");
+    buf.append("TIMESTMP BIGINT NOT NULL,");
+    buf.append("FORMATTED_MESSAGE LONGVARCHAR NOT NULL,");
+    buf.append("LOGGER_NAME VARCHAR(256) NOT NULL,");
+    buf.append("LEVEL_STRING VARCHAR(256) NOT NULL,");
+    buf.append("THREAD_NAME VARCHAR(256),");
+    buf.append("REFERENCE_FLAG SMALLINT,");
+    buf.append("CALLER_FILENAME VARCHAR(256), ");
+    buf.append("CALLER_CLASS VARCHAR(256), ");
+    buf.append("CALLER_METHOD VARCHAR(256), ");
+    buf.append("CALLER_LINE CHAR(4), ");
+    buf.append("EVENT_ID BIGINT NOT NULL IDENTITY);");
     query(conn, buf.toString());
 
     buf = new StringBuffer();
-    buf.append("CREATE TABLE logging_event_property (");
-    buf.append("event_id INT NOT NULL,");
-    buf.append("mapped_key  VARCHAR(254) NOT NULL,");
-    buf.append("mapped_value LONGVARCHAR,");
-    buf.append("PRIMARY KEY(event_id, mapped_key),");
-    buf.append("FOREIGN KEY (event_id) REFERENCES logging_event(event_id));");
+    buf.append("CREATE TABLE LOGGING_EVENT_PROPERTY (");
+    buf.append("EVENT_ID BIGINT NOT NULL,");
+    buf.append("MAPPED_KEY  VARCHAR(254) NOT NULL,");
+    buf.append("MAPPED_VALUE LONGVARCHAR,");
+    buf.append("PRIMARY KEY(EVENT_ID, MAPPED_KEY),");
+    buf.append("FOREIGN KEY (EVENT_ID) REFERENCES LOGGING_EVENT(EVENT_ID));");
     query(conn, buf.toString());
 
     buf = new StringBuffer();
-    buf.append("CREATE TABLE logging_event_exception (");
-    buf.append("event_id INT NOT NULL,");
-    buf.append("i SMALLINT NOT NULL,");
-    buf.append("trace_line VARCHAR(256) NOT NULL,");
-    buf.append("PRIMARY KEY(event_id, i),");
-    buf.append("FOREIGN KEY (event_id) REFERENCES logging_event(event_id));");
+    buf.append("CREATE TABLE LOGGING_EVENT_EXCEPTION (");
+    buf.append("EVENT_ID BIGINT NOT NULL,");
+    buf.append("I SMALLINT NOT NULL,");
+    buf.append("TRACE_LINE VARCHAR(256) NOT NULL,");
+    buf.append("PRIMARY KEY(EVENT_ID, I),");
+    buf.append("FOREIGN KEY (EVENT_ID) REFERENCES LOGGING_EVENT(EVENT_ID));");
     query(conn, buf.toString());
   }
 
   private  void dropTables() throws SQLException {
     Connection conn = newConnection();
     StringBuffer buf = new StringBuffer();
-    buf.append("DROP TABLE logging_event_exception IF EXISTS;");
+    buf.append("DROP TABLE LOGGING_EVENT_EXCEPTION IF EXISTS;");
     query(conn, buf.toString());
 
     buf = new StringBuffer();
-    buf.append("DROP TABLE logging_event_property IF EXISTS;");
+    buf.append("DROP TABLE LOGGING_EVENT_PROPERTY IF EXISTS;");
     query(conn, buf.toString());
 
     buf = new StringBuffer();
-    buf.append("DROP TABLE logging_event IF EXISTS;");
+    buf.append("DROP TABLE LOGGING_EVENT IF EXISTS;");
     query(conn, buf.toString());
   }
 

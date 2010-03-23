@@ -82,7 +82,7 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
     }
     
     if (insertHeaders) {
-      int eventId = selectEventId(insertStatement, connection);
+      long eventId = selectEventId(insertStatement, connection);
       addRequestHeaders(event, connection, eventId);
     }
   }
@@ -102,7 +102,7 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
   }
   
   void addRequestHeaders(AccessEvent event,
-      Connection connection, int eventId) throws SQLException {
+      Connection connection, long eventId) throws SQLException {
     Enumeration names = event.getRequestHeaderNames();
     if (names.hasMoreElements()) {
       PreparedStatement insertHeaderStatement = connection
@@ -113,7 +113,7 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
         String key = (String) names.nextElement();
         String value = (String) event.getRequestHeader(key);
 
-        insertHeaderStatement.setInt(1, eventId);
+        insertHeaderStatement.setLong(1, eventId);
         insertHeaderStatement.setString(2, key);
         insertHeaderStatement.setString(3, value);
 

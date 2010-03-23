@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
+import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderH2Test  {
@@ -39,8 +42,8 @@ public class DBAppenderH2Test  {
   Logger logger;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
-
   DBAppenderH2TestFixture dbAppenderH2TestFixture;
+  int diff = RandomUtil.getPositiveInt();
   
   @Before
   public void setUp() throws SQLException {
@@ -58,6 +61,7 @@ public class DBAppenderH2Test  {
     connectionSource.setContext(lc);
     connectionSource.setDriverClass(DBAppenderH2TestFixture.H2_DRIVER_CLASS);
     connectionSource.setUrl(dbAppenderH2TestFixture.url);
+    System.out.println("cs.url="+dbAppenderH2TestFixture.url);
     connectionSource.setUser(dbAppenderH2TestFixture.user);
     connectionSource.setPassword(dbAppenderH2TestFixture.password);
     
@@ -109,17 +113,23 @@ public class DBAppenderH2Test  {
   @Test
   public void testAppendThrowable() throws SQLException {
     ILoggingEvent event = createLoggingEvent();
-
     appender.append(event);
-    
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event_exception where event_id = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION WHERE EVENT_ID=1");
+    rs.next();
+    String expected = "java.lang.Exception: test Ex";
+    String firstLine = rs.getString(3);
+    assertTrue("["+firstLine+"] does not match ["+expected+"]", firstLine.contains(expected));
+    
     int i = 0;
     while (rs.next()) {
-      assertEquals(event.getThrowableProxy().getStackTraceElementProxyArray()[i].toString(), rs.getString(3));
+      expected = event.getThrowableProxy().getStackTraceElementProxyArray()[i].toString();
+      String st = rs.getString(3);
+      assertTrue("["+st+"] does not match ["+expected+"]", st.contains(expected));
       i++;
     }
+    assertTrue(i != 0);
     
     rs.close();
     stmt.close();
@@ -127,21 +137,24 @@ public class DBAppenderH2Test  {
   
   @Test
   public void testContextInfo() throws SQLException {
-    ILoggingEvent event = createLoggingEvent();
     lc.putProperty("testKey1", "testValue1");
+    MDC.put("k"+diff, "v"+diff);
+    ILoggingEvent event = createLoggingEvent();
     
     appender.append(event);
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event_property where event_id = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_PROPERTY WHERE EVENT_ID=1");
     Map<String, String> map = appender.mergePropertyMaps(event);
+    int i = 0;
     while (rs.next()) {
       String key = rs.getString(2);
       assertEquals(map.get(key), rs.getString(3));
-      //System.out.println("value: " + map.get(key));
+      i++;
     }
-    
+    assertTrue(map.size() != 0);
+    assertEquals(map.size(), i);
     rs.close();
     stmt.close();
   }

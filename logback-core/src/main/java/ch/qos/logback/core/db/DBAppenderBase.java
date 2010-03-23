@@ -118,7 +118,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
   protected abstract void subAppend(Object eventObject, Connection connection,
       PreparedStatement statement) throws Throwable;
 
-  protected int selectEventId(PreparedStatement insertStatement,
+  protected long selectEventId(PreparedStatement insertStatement,
       Connection connection) throws SQLException, InvocationTargetException {
     ResultSet rs = null;
     Statement idStatement = null;
@@ -150,7 +150,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     // A ResultSet cursor is initially positioned before the first row;
     // the first call to the method next makes the first row the current row
     rs.next();
-    int eventId = rs.getInt(1);
+    long eventId = rs.getLong(1);
 
     rs.close();
 
