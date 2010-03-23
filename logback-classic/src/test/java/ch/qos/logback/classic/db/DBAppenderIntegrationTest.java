@@ -40,7 +40,8 @@ public class DBAppenderIntegrationTest {
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
   static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
   static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "haro" };
-
+  static String[] ORACLE_CONFORMING_HOST_LIST = new String[] { "haro" };
+  
   int diff = new Random(System.nanoTime()).nextInt(10000);
   LoggerContext lc = new LoggerContext();
 
@@ -117,10 +118,9 @@ public class DBAppenderIntegrationTest {
   }
 
   @Test
-  @Ignore
   public void oracle10g() throws Exception {
     // perform test only on conforming hosts
-    if (!isConformingHostAndJDK16OrHigher()) {
+    if (!isConformingHostAndJDK16OrHigher(ORACLE_CONFORMING_HOST_LIST)) {
       return;
     }
     doTest("src/test/input/integration/db/oracle10g-with-driver.xml");

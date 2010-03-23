@@ -13,11 +13,11 @@
 
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START WITH 1;
-
+CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START WITH 1;
 CREATE TABLE logging_event 
   (
     timestmp         NUMBER(20) NOT NULL,
-   	formatted_message  VARCHAR2(4000) NOT NULL,
+    formatted_message  VARCHAR2(4000) NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
     thread_name       VARCHAR(254),

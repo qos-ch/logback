@@ -314,7 +314,6 @@ org.slf4j.test_osgi
     <profile>
       <!-- Integration tests require the host-orion profile -->
       <id>host-orion</id>
-
       <dependencies>
         <!-- locally installed artifact -->
         <dependency>
@@ -334,6 +333,19 @@ org.slf4j.test_osgi
 
     </profile>
 
+    <profile>
+      <!-- Integration tests require the host-hora profile -->
+      <id>host-hora</id>
+      <dependencies>
+        <!-- locally installed artifact -->
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId>
+          <version>10.2.0.1</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>
