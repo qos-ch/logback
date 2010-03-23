@@ -576,6 +576,23 @@ WARN  [main]: Message 2</p>
 							<td>20 oct. 2006;14:06:49.812	</td>
 						</tr>
 					</table>
+
+          <p>In addition to the date pattern, this converter admits a
+          second option as the timezone. Thus, the
+          '%date{HH:mm:ss.SSS,Australia/Perth} would print the time in
+          the time zone of Perth Australia, the worlds most isolated
+          city.
+          </p>
+
+          <p>Given that the comma ',' character is the option
+          separator, the pattern string [HH:mm:ss,SSS] will print the
+          time in the [SSS] time zone which does not exist. Thus, the
+          time will be printed in the default GMT timezone. If you
+          wish to include a comma in your date pattern, then simply
+          enclose the pattern between quotes. For example,
+          %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
+          </p>
+
 				</td>
 			</tr>
 
