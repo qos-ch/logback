@@ -1,7 +1,9 @@
 
 # memeory aid 
 mvn clean
-mvn -P javadocjar install
+mvn iinstall
 mvn site:site
-mvn javadoc:jar
+#mvn javadoc:jar
 mvn assembly:assembly
+mvn deploy -P javadocjar
+mvn site:deploy -N
