@@ -48,7 +48,7 @@ public class DBAppenderIntegrationTest {
   static String LOCAL_HOST_NAME;
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
   static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
-  static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "haro" };
+  static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "hetz", "haro" };
   static String[] ORACLE_CONFORMING_HOST_LIST = new String[] { "haro" };
 
   int diff = RandomUtil.getPositiveInt();
@@ -144,6 +144,7 @@ public class DBAppenderIntegrationTest {
     assertEquals("This is a debug message. Message number: " + (diff + 5), msg);
   }
 
+  @SuppressWarnings("unchecked")
   void verifyProperty(long lastEventId) throws SQLException {
     DriverManagerConnectionSource cs = getConnectionSource();
     Connection con = cs.getConnection();
@@ -155,7 +156,7 @@ public class DBAppenderIntegrationTest {
     Map<String, String> witness = lc.getCopyOfPropertyMap();
     witness.putAll(MDC.getCopyOfContextMap());
     
-    Map map = new HashMap();
+    Map<String, String> map = new HashMap<String, String>();
     while (rs.next()) {
       String key = rs.getString(1);
       String val = rs.getString(2);

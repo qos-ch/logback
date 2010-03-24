@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialect;
 import ch.qos.logback.core.db.dialect.SQLDialectCode;
@@ -31,7 +31,7 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public abstract class DBAppenderBase<E> extends AppenderBase<E> {
+public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
 
   protected ConnectionSource connectionSource;
   protected boolean cnxSupportsGetGeneratedKeys = false;
@@ -76,13 +76,12 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * @param connectionSource
-   *                The connectionSource to set.
+   *          The connectionSource to set.
    */
   public void setConnectionSource(ConnectionSource connectionSource) {
     this.connectionSource = connectionSource;
   }
 
-  
   @Override
   public void append(E eventObject) {
     Connection connection = null;
@@ -90,23 +89,32 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
       PreparedStatement insertStatement;
+
       if (cnxSupportsGetGeneratedKeys) {
         String EVENT_ID_COL_NAME = "EVENT_ID";
-        // see 
-        if(connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
+        // see
+        if (connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
           EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
         }
         insertStatement = connection.prepareStatement(getInsertSQL(),
-            new String[] {EVENT_ID_COL_NAME});
+            new String[] { EVENT_ID_COL_NAME });
       } else {
         insertStatement = connection.prepareStatement(getInsertSQL());
       }
-      subAppend(eventObject, connection, insertStatement);
+
+      long eventId;
+      // inserting an event and getting the result must be exclusive
+      synchronized (this) {
+        subAppend(eventObject, connection, insertStatement);
+        eventId = selectEventId(insertStatement, connection);
+      }
+      System.out.println("eventid="+eventId);
+      secondarySubAppend(eventObject, connection, eventId);
 
       // we no longer need the insertStatement
       close(insertStatement);
       insertStatement = null;
-      
+
       connection.commit();
     } catch (Throwable sqle) {
       addError("problem appending event", sqle);
@@ -115,8 +123,11 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  protected abstract void subAppend(Object eventObject, Connection connection,
+  protected abstract void subAppend(E eventObject, Connection connection,
       PreparedStatement statement) throws Throwable;
+
+  protected abstract void secondarySubAppend(E eventObject, Connection connection,
+      long eventId) throws Throwable;
 
   protected long selectEventId(PreparedStatement insertStatement,
       Connection connection) throws SQLException, InvocationTargetException {
@@ -144,7 +155,8 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     if (!gotGeneratedKeys) {
       idStatement = connection.createStatement();
       idStatement.setMaxRows(1);
-      rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
+      String selectInsertIdStr = sqlDialect.getSelectInsertId();
+      rs = idStatement.executeQuery(selectInsertIdStr);
     }
 
     // A ResultSet cursor is initially positioned before the first row;
@@ -156,16 +168,16 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
     close(idStatement);
     idStatement = null;
-    
+
     return eventId;
   }
 
   void close(Statement statement) throws SQLException {
-    if(statement != null) {
+    if (statement != null) {
       statement.close();
     }
   }
-  
+
   @Override
   public void stop() {
     super.stop();

@@ -50,11 +50,15 @@ public class SQLBuilder {
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.LEVEL_STRING)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.THREAD_NAME)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.REFERENCE_FLAG)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.ARG0)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.ARG1)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.ARG2)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.ARG3)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_FILENAME)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_CLASS)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_METHOD)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_LINE)).append(") ");
-    sqlBuilder.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
+    sqlBuilder.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     return sqlBuilder.toString();
   }
 }

@@ -70,9 +70,8 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
   }
 
   @Override
-  protected void subAppend(Object eventObject, Connection connection,
+  protected void subAppend(AccessEvent event, Connection connection,
       PreparedStatement insertStatement) throws Throwable {
-    AccessEvent event = (AccessEvent) eventObject;
 
     addAccessEvent(insertStatement, event);
     
@@ -80,9 +79,11 @@ public class DBAppender extends DBAppenderBase<AccessEvent> {
     if (updateCount != 1) {
       addWarn("Failed to insert access event");
     }
-    
+  }
+  
+  protected void secondarySubAppend(AccessEvent event, Connection connection,
+      long eventId) throws Throwable {
     if (insertHeaders) {
-      long eventId = selectEventId(insertStatement, connection);
       addRequestHeaders(event, connection, eventId);
     }
   }

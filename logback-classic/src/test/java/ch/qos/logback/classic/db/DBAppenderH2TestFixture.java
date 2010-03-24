@@ -87,6 +87,10 @@ public class DBAppenderH2TestFixture  {
     buf.append("LEVEL_STRING VARCHAR(256) NOT NULL,");
     buf.append("THREAD_NAME VARCHAR(256),");
     buf.append("REFERENCE_FLAG SMALLINT,");
+    buf.append("ARG0 VARCHAR(256),");
+    buf.append("ARG1 VARCHAR(256),");
+    buf.append("ARG2 VARCHAR(256),");
+    buf.append("ARG3 VARCHAR(256),");
     buf.append("CALLER_FILENAME VARCHAR(256), ");
     buf.append("CALLER_CLASS VARCHAR(256), ");
     buf.append("CALLER_METHOD VARCHAR(256), ");

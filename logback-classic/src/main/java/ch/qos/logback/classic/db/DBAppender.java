@@ -50,6 +50,22 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
   private DBNameResolver dbNameResolver;
 
+  static final int TIMESTMP_INDEX = 1;
+  static final int  FORMATTED_MESSAGE_INDEX  = 2;
+  static final int  LOGGER_NAME_INDEX = 3;
+  static final int  LEVEL_STRING_INDEX = 4;
+  static final int  THREAD_NAME_INDEX = 5;
+  static final int  REFERENCE_FLAG_INDEX = 6;
+  static final int  ARG0_INDEX = 7;
+  static final int  ARG1_INDEX = 8;
+  static final int  ARG2_INDEX = 9;
+  static final int  ARG3_INDEX = 10;
+  static final int  CALLER_FILENAME_INDEX = 11;
+  static final int  CALLER_CLASS_INDEX = 12;
+  static final int  CALLER_METHOD_INDEX = 13;
+  static final int  CALLER_LINE_INDEX = 14;
+  static final int  EVENT_ID_INDEX  = 15;
+  
   static {
     // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
     Method getGeneratedKeysMethod;
@@ -81,11 +97,12 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   }
 
   @Override
-  protected void subAppend(Object eventObject, Connection connection,
+  protected void subAppend(ILoggingEvent event, Connection connection,
       PreparedStatement insertStatement) throws Throwable {
-    ILoggingEvent event = (ILoggingEvent) eventObject;
 
     bindLoggingEventWithInsertStatement(insertStatement, event);
+    bindLoggingEventArgumentsWithPreparedStatement(insertStatement, event.getArgumentArray());
+    
     // This is expensive... should we do it every time?
     bindCallerDataWithPreparedStatement(insertStatement, event.getCallerData());
 
@@ -93,9 +110,10 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     if (updateCount != 1) {
       addWarn("Failed to insert loggingEvent");
     }
-
-    long eventId = selectEventId(insertStatement, connection);
-    
+  }
+  
+  protected void secondarySubAppend(ILoggingEvent event, Connection connection,
+      long eventId) throws Throwable {
     Map<String, String> mergedMap = mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
 
@@ -106,22 +124,48 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
   void bindLoggingEventWithInsertStatement(PreparedStatement stmt,
       ILoggingEvent event) throws SQLException {
-    stmt.setLong(1, event.getTimeStamp());
-    stmt.setString(2, event.getFormattedMessage());
-    stmt.setString(3, event.getLoggerName());
-    stmt.setString(4, event.getLevel().toString());
-    stmt.setString(5, event.getThreadName());
-    stmt.setShort(6, DBHelper.computeReferenceMask(event));
+    stmt.setLong(TIMESTMP_INDEX, event.getTimeStamp());
+    stmt.setString(FORMATTED_MESSAGE_INDEX, event.getFormattedMessage());
+    stmt.setString(LOGGER_NAME_INDEX, event.getLoggerName());
+    stmt.setString(LEVEL_STRING_INDEX, event.getLevel().toString());
+    stmt.setString(THREAD_NAME_INDEX, event.getThreadName());
+    stmt.setShort(REFERENCE_FLAG_INDEX, DBHelper.computeReferenceMask(event));
   }
 
+  void bindLoggingEventArgumentsWithPreparedStatement(PreparedStatement stmt,
+      Object[] argArray) throws SQLException {
+    
+    int arrayLen = argArray != null ? argArray.length : 0;
+    
+    for(int i = 0; i < arrayLen && i < 4; i++) {
+      stmt.setString(ARG0_INDEX+i, truncateTo254(argArray[i].toString()));
+    }
+    if(arrayLen < 4) {
+      for(int i = arrayLen; i < 4; i++) {
+        stmt.setString(ARG0_INDEX+i, null);
+      }
+    }
+  }
+
+  String truncateTo254(String s) {
+    if(s == null) {
+      return null;
+    }
+    if(s.length() <= 254) {
+      return s;
+    } else {
+      return s.substring(0, 254);
+    }
+  }
+  
   void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
       StackTraceElement[] callerDataArray) throws SQLException {
     StackTraceElement callerData = callerDataArray[0];
     if (callerData != null) {
-      stmt.setString(7, callerData.getFileName());
-      stmt.setString(8, callerData.getClassName());
-      stmt.setString(9, callerData.getMethodName());
-      stmt.setString(10, Integer.toString(callerData.getLineNumber()));
+      stmt.setString(CALLER_FILENAME_INDEX, callerData.getFileName());
+      stmt.setString(CALLER_CLASS_INDEX, callerData.getClassName());
+      stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
+      stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));
     }
   }
 
