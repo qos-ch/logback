@@ -101,13 +101,15 @@ public class DBAppenderIntegrationTest {
     Exception e = new Exception("Just testing", getCause());
     logger.error("At last an error.", e);
 
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+    
     long lastEventId = getLastEventId();
     verify(lastEventId);
 
     // check that there were no errors
     StatusChecker checker = new StatusChecker(lc);
     assertTrue(checker.isErrorFree());
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+   
   }
 
   long getLastEventId() throws SQLException {
@@ -241,7 +243,7 @@ public class DBAppenderIntegrationTest {
     if (!isConformingHostAndJDK16OrHigher(POSTGRES_CONFORMING_HOST_LIST)) {
       return;
     }
-    System.out.println("doing test");
+    System.out.println("running postgres() test");
     doTest("src/test/input/integration/db/postgresql-with-driver.xml");
   }
 
