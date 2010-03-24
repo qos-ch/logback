@@ -28,7 +28,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>March 2010 - Release of version 0.9.19</h3>
+    <h3>March 24, 2010 - Release of version 0.9.19</h3>
 
 
     <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
@@ -79,14 +79,19 @@
 
       <p>Existing databases can be migrated to the new table structure
       by altering the existing tables. Here is how it would be done
-      in PostgreSQL.</p>
+      in PostgreSQL and MySQL.</p>
 
-      <pre class="prettyprint">
-ALTER TABLE logging_event ADD COLUMN arg0 CARCHAR(254);
+      <pre class="prettyprint">ALTER TABLE logging_event ADD COLUMN arg0 VARCHAR(254);
 ALTER TABLE logging_event ADD COLUMN arg1 VARCHAR(254);
-ALTER TABLE logging_event ADD COLUMN arg3 VARCHAR(254);
-ALTER TABLE logging_event ADD COLUMN arg3 VARCHAR(254);
-</pre>
+ALTER TABLE logging_event ADD COLUMN arg2 VARCHAR(254);
+ALTER TABLE logging_event ADD COLUMN arg3 VARCHAR(254);</pre>
+
+    <p>In Oracle:</p>
+
+    <pre class="prettyprint">ALTER TABLE logging_event ADD arg0 VARCHAR(254);
+ALTER TABLE logging_event ADD arg1 VARCHAR(254);
+ALTER TABLE logging_event ADD arg2 VARCHAR(254);
+ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
 
       
     </div>
