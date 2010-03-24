@@ -1,7 +1,7 @@
 
-# memeory aid 
+# memory aid 
 mvn clean
-mvn iinstall
+mvn install
 mvn site:site
 #mvn javadoc:jar
 mvn assembly:assembly
