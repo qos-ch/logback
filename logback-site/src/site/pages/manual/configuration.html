@@ -1413,12 +1413,37 @@ fileName=myApp.log
   &lt;/appender>
 <b class="green big">&lt;/included></b></pre>
 
-  <p>The file to be included can be referenced as a file, as a URL or
-  as a resource. To reference a file use the <span
-  class="attr">file</span> attribute. To reference a URL use the <span
-  class="attr">url</span> attribute. To reference a resource, use the
-  <span class="attr">resource</span> attribute.
-  </p>
+
+  <p>Again, if you have note already, please note the mandatory <code
+  class="big green">&lt;included></code> element.</p>
+
+  <p>The contents to include can be referenced as a file, as a
+  resource, or as a URL.</p>
+
+  <ul>
+
+    <li><b>As a file:</b><br/> To include a file use the <span
+    class="attr">file</span> attribute. You can use relative paths but
+    note that the current directory is defined by the application and
+    is not necessarily related to the path of the configuration
+    file.</li>
+
+    <li><p><b>As a resource:</b><br/> To include a resource, i.e a
+    file found on the class path, use the <span
+    class="attr">resource</span> attribute.</p>
+
+    <pre class="prettyprint source">&lt;include resource="includedConfig.xml"/></pre>
+    
+    </li>
+
+    <li><p><b>As a URL:</b><br/> To include the contents of a URL use
+    the <span class="attr">url</span> attribute.</p>
+
+    <pre class="prettyprint source">&lt;include url="http://some.host.com/includedConfig.xml"/></pre>
+
+    </li>
+  </ul>
+
 
 
   <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>

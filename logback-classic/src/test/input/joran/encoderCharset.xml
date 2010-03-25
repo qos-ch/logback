@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="true">
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d - %m%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+    
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE" />
+  </root>
+  
+</configuration>
+  
