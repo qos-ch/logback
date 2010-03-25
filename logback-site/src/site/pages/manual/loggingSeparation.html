@@ -66,7 +66,8 @@
     of the container itself.
     </p>
 
-    <h2>The simplest and easiest approach</h2>
+    <h2><a name="easy" href="#easy">The simplest and easiest
+    approach</a></h2>
 
     <p>Assuming your container supports child first class loading,
     separation of logging can be accomplished by embedding a copy of
@@ -112,15 +113,16 @@
     parent class loader.  This implies that slf4j and logback jar
     files must also be accessible to the parent class loader. Note
     that for this scenario to occur a class must be shared
-    <em>and</em> use slf4j, which is somewhat uncommon.
+    <em>and</em> use slf4j.
     </p>
 
     <p>However, if the container itself uses SLF4J and defaults to
-    parent-first class loading, then you need context selectors. Read
-    on.
+    parent-first class loading, then you need context selectors in
+    order to acheive logging separation. Read on.
     </p>
 
-    <h2>Context Selectors</h2>
+    <h2><a name="contextSelectors" href="#contextSelectors">Context
+    Selectors</a></h2>
 
 
     <p>Logback provides a mechanism for a single instance of SLF4J and
@@ -131,7 +133,7 @@
     <pre class="prettyprint source">Logger logger = LoggerFactory.getLogger("foo");</pre>
 
     <p>the <code>getLogger</code>() method in
-    <code>LoggerFactory</code> class asks the SLF4J binding for a
+    <code>LoggerFactory</code> class will ask the SLF4J binding for a
     <code>ILoggerFactory</code>. When SLF4J is bound to logback, the
     task of returning an <code>ILoggerFactory</code> is delegated to
     an instance of <a
@@ -164,14 +166,15 @@
     </p>
 
 
-    <h3>ContextJNDISelector</h3>
+    <h3><a name="ContextJNDISelector"
+    href="#ContextJNDISelector">ContextJNDISelector</a></h3>
 
     <p>Logback-classic ships with a selector called
     <code>ContextJNDISelector</code> which selects the logger context
-    based on data available in JNDI. This leverages JNDI data
-    separation mandated by the J2EE specification. The same
-    environment variable can be set to carry a different value in each
-    application.
+    based on data available via JNDI lookup. This approach leverages
+    JNDI data separation mandated by the J2EE specification. Thus, the
+    same environment variable can be set to carry a different value in
+    different applications.
     </p>
 
     <p>To enable <code>ContextJNDISelector</code>, the
@@ -181,9 +184,11 @@
     <p class="source">-Dlogback.ContextSelector=JNDI</p>
 
     <p>Note that JNDI is a convenient shorthand for
-    "ch.qos.logback.classic.selector.ContextJNDISelector".</p>
+    <code>ch.qos.logback.classic.selector.ContextJNDISelector</code>.</p>
 
-    <h3>Setting JNDI variables in applications</h3>
+    <h3><a name="settingJNDIVariables"
+    href="#settingJNDIVariables">Setting JNDI variables in
+    applications</a></h3>
     
     <p>In each of your applications, you need to name the logging
     context for the application. For a web-application, JNDI
@@ -221,12 +226,13 @@
 &lt;/env-entry></pre> 
 
 
-    <h3>Configuring Tomcat for ContextJNDISelector</h3>
+    <h3><a name="jndiTomcat" href="#jndiTomcat">Configuring Tomcat for
+    ContextJNDISelector</a></h3>
 
     <p>First, place the logback jars (that is
     logback-classic-${project.version}.jar,
     logback-core-${project.version}.jar and
-    slf4j-api-${slff4j.version}.jar) in Tomcat's global (shared) class
+    slf4j-api-${slf4j.version}.jar) in Tomcat's global (shared) class
     folder. In Tomcat 6.x, this directory is
     <em>$TOMCAT_HOME/lib/</em>.
     </p>
@@ -239,24 +245,26 @@
     <p class="source">JAVA_OPTS="$JAVA_OPTS -Dlogback.ContextSelector=JNDI"</p>
 
 
-    <h3>Hot deploying applications</h3>
-
+    <h3><a name="hotDeploy" href="#hotDeploy">Hot deploying
+    applications</a></h3>
 
     <p>When the web-application is recycled or shutdown, we strongly
-    recommend that the older <code>LoggerContext</code> be closed and
-    subsequently discarded. Logback ships with a
-    <code>ServletContextListener</code> called
-    <code>ContextDetachingSCL</code>, designed specifically for
-    detaching the <code>ContextSelector</code> instance associated
-    with the older web-application instance. In order to install it,
-    add the following lines to your web-applications <em>web.xml</em>
+    recommend that the incumbent <code>LoggerContext</code> be closed
+    so that it can be properly gargabe collected. Logback ships with a
+    <code>ServletContextListener</code> called <a
+    href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html"><code>ContextDetachingSCL</code></a>,
+    designed specifically for detaching the
+    <code>ContextSelector</code> instance associated with the older
+    web-application instance. It can be installed by adding the
+    following lines into your web-applications <em>web.xml</em>
     file.</p>
 
     <pre class="prettyprint source">&lt;listener>
   &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
 &lt;/listener></pre>
 
-    <h3>Better performance</h3>
+    <h3><a name="betterPerf" href="betterPerf">Better
+    performance</a></h3>
 
     <p>When <code>ContextJNDISelector</code> is active, each time a
     logger is retrieved, a JNDI lookup must be performed. This can
@@ -264,7 +272,7 @@
     non-static (aka instance) logger references. Logback ships with a
     servlet filter named <a
     href="../xref/ch/qos/logback/classic/selector/servlet/LoggerContextFilter.html">LoggerContextFilter</a>,
-    specifically designed to circumvent the JNDI lookup cost. It can
+    specifically designed to avoid the JNDI lookup cost. It can
     be installed by adding the following lines to your applications
     web.xml file.</p>
 

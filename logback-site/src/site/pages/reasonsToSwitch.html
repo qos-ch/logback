@@ -28,8 +28,8 @@
 
     <h3><a name="fasterImpl" href="#fasterImpl">Faster implementation</a></h3>
 
-    <p>Based on our previous work done on log4j, logback internals
-    have been re-written to perform about ten times faster on certain
+    <p>Based on our previous work on log4j, logback internals have
+    been re-written to perform about ten times faster on certain
     critical execution paths. Not only are logback components faster,
     they have a smaller memory footprint as well.</p>
 
@@ -81,7 +81,8 @@
     chainsaw, except that Lilith is designed to handle large amounts of
     logging data without flinching.</p>
   
-    <h3><a name="grace" href="#grace">Prudent mode and graceful recovery</a></h3>
+    <h3><a name="grace" href="#grace">Prudent mode and graceful
+    recovery</a></h3>
 
     <p>In <a href="manual/appenders.html#prudent">prudent mode</a>,
     multiple <code>FileAppender</code> instances running on multiple
@@ -93,7 +94,8 @@
     <p>Logback's <code>FileAppender</code> and all its sub-classes,
     including <code>RollingFileAppender</code>, can gracefully recover
     from I/O failures. Thus, if a file server fails temporarily, you
-    no longer need to restart your application just to repair logging.
+    no longer need to restart your application just to get logging
+    working again.
     </p>
 
 
@@ -183,9 +185,16 @@ java.lang.Exception: 99 is invalid
     stack trace, as a developper you will no longer need to ask them
     to send you information about the versions of packages they are
     using. The information will be part of the stack trace. See <a
-    href="manual/layouts.html#conversionWord">"%xThrowable" conversion
+    href="manual/layouts.html#xThrowable">"%xThrowable" conversion
     word</a> for details.
     </p>
+
+    <p>This feature can be quite helpful to the point that some users
+    mistakenly consider it a <a
+    href="http://www.jetbrains.net/devnet/message/5259058">feature of
+    their IDE</a>.
+    </p>
+
 
     <h3><a name="maxHistory" href="#maxHistory">Automatic erasure of
     old log archives</a></h3>
@@ -203,11 +212,11 @@ java.lang.Exception: 99 is invalid
     </p>
 
    
-    <h3><a href="">In summary</a></h3>
+    <h3><a name="inSummary" href="#inSummary">In summary</a></h3>
 
-    <p>We have listed a small number of reasons for preferring logback
-    over log4j. Given that logback builds upon the log4j experience,
-    to put it simply, logback is just a better log4j.</p>
+    <p>We have listed a number of reasons for preferring logback over
+    log4j. Given that logback builds upon on our previous work on
+    log4j, simply put, logback is just a better log4j.</p>
 
     <script src="templates/footer.js" type="text/javascript"></script>	   
     </div>

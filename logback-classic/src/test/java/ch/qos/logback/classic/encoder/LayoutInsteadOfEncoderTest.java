@@ -44,8 +44,6 @@ public class LayoutInsteadOfEncoderTest {
     ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
     assertTrue(fileAppender.isStarted());
-    
-    LayoutWrappingEncoder<ILoggingEvent> lwe = (LayoutWrappingEncoder<ILoggingEvent>) fileAppender.getEncoder();
-    
+    assertTrue(fileAppender.getEncoder() instanceof LayoutWrappingEncoder);
   }
 }

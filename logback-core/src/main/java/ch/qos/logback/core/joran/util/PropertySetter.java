@@ -21,7 +21,6 @@ import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
@@ -388,10 +387,6 @@ public class PropertySetter extends ContextAwareBase {
 
   private String capitalizeFirstLetter(String name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
-  }
-
-  boolean isOfTypeCharset(Class<?> parameterClas) {
-    return Charset.class.isAssignableFrom(parameterClas);
   }
 
   protected Method getMethod(String methodName) {

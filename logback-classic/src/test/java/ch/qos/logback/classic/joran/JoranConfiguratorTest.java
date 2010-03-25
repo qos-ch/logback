@@ -33,7 +33,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.StatusChecker;
@@ -288,6 +290,25 @@ public class JoranConfiguratorTest {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
     String expected = sdf.format(new Date());
     assertEquals("expected \"" + expected + "\" but got " + r, expected, r);
+  }
+
+  @Test
+  public void encoderCharset() throws JoranException, IOException,
+      InterruptedException {
+
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "encoderCharset.xml";
+    configure(configFileAsStr);
+    
+    ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CONSOLE");
+    assertNotNull(consoleAppender);
+    LayoutWrappingEncoder<ILoggingEvent> encoder = (LayoutWrappingEncoder<ILoggingEvent>) consoleAppender.getEncoder();
+    
+    assertEquals("UTF-8", encoder.getCharset().displayName());
+    
+    StatusChecker checker = new StatusChecker(loggerContext);
+    assertTrue(checker.isErrorFree());
+    
   }
 
 }

@@ -40,6 +40,8 @@ public class StringToObjectConverter {
       return true;
     } else if (parameterClass.isEnum()) {
       return true;
+    } else if (isOfTypeCharset(parameterClass)) {
+      return true;
     }
     return false;
   }
