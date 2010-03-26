@@ -230,7 +230,7 @@
 
     <p>When the web-application is recycled or shutdown, we strongly
     recommend that the incumbent <code>LoggerContext</code> be closed
-    so that it can be properly gargabe collected. Logback ships with a
+    so that it can be properly garbage collected. Logback ships with a
     <code>ServletContextListener</code> called <a
     href="../xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html"><code>ContextDetachingSCL</code></a>,
     designed specifically for detaching the
@@ -312,11 +312,12 @@
     by virtue of <code>ContextJNDISelector</code>.
     </p>
     
-    <p>If a class, say Mustafar, belongs to a library shared by both
-    kenobi and yoda, as long as Mustafar has non static loggers, each
-    invocation of <code>LoggerFactory.getLogger()</code> will return a
-    logger belonging to a logger context associated with the
-    calling/current application. But if Mustafar has a static logger
+    <p>If a class, say <code>Mustafar</code>, belongs to a library
+    shared by both <em>kenobi</em> and <em>yoda</em>, as long as
+    <code>Mustafar</code> has non static loggers, each invocation of
+    <code>LoggerFactory.getLogger()</code> will return a logger
+    belonging to a logger context associated with the calling/current
+    application. But if <code>Mustafar</code> has a static logger
     reference, then its logger will be attach to logger context of the
     application that calls it first. Thus,
     <code>ContextJNDISelector</code> does not provide logging
@@ -324,22 +325,21 @@
     references. This corner case has eluded a solution for eons.</p>
 
 
-
     <p>The only way to solve this issue transparently and perfectly
     would be to introduce another level of indirection inside loggers
     so that each logger-shell somehow delegated work to an inner
     logger attached to the appropriate context. This approach would be
     quite difficult to implement and would incur a significant
-    computational overhead. It is not an approach logback developpers
-    plan to pursue.
+    computational overhead. It is not an approach we plan to pursue.
     </p>
 
-
-    <p>One could trivially solve the "shared class static logger"
-    problem by moving the shared classes inside the web-apps (unshare
-    them). If unsharing is not possible, then let <a
+    <p>It goes without saying that one could trivially solve the
+    "shared class static logger" problem by moving the shared classes
+    inside the web-apps (unshare them). If unsharing is not possible,
+    then we can solicit the magical powers of <a
     href="appenders.html#SiftingAppender"><code>SiftingAppender</code></a>
-    separate logging using JNDI data as separation criteria.
+    in order to separate logging using JNDI data as separation
+    criteria.
     </p>
 
     <p>Logback ships with a discriminator called <a
@@ -363,7 +363,7 @@
       &lt;appender name="FILE-${contextName}" class="ch.qos.logback.core.FileAppender">
         &lt;file><b>${contextName}.log</b>&lt;/file>
         &lt;encoder>
-          &lt;pattern>%-50(%level %logger{35}) %contextName - %msg%n&lt;/pattern>
+          &lt;pattern>%-50(%level %logger{35}) cn=%contextName - %msg%n&lt;/pattern>
          &lt;/encoder>
       &lt;/appender>
      &lt;/sift>
@@ -375,28 +375,111 @@
 &lt;/configuration></pre>
 
 
-  <p>If kenobi and yoda are web-applications, then the above
-  configuration will output yoda's logs output to <em>yoda.log</em>
-  and kenobi's logs to <em>kenobi.log</em>, this even logs generated
-  by static logger refences located in shared classes.</p>
+   <p>If kenobi and yoda are web-applications, then the above
+   configuration will output yoda's logs output to <em>yoda.log</em>
+   and kenobi's logs to <em>kenobi.log</em>, this even logs generated
+   by static logger references located in shared classes.</p>
+ 
+   <p>You can try out the technique just described with the help of the
+   <a
+   href="http://github.com/ceki/logback-starwars">logback-starwars</a>
+   project.
+   </p>
+ 
+ 
+   <p>The above approach solves the logging separation problem but is
+   rather complex. It requires the proper installation of
+   <code>ContextJNDISelector</code> and mandates that appenders be
+   wrapped by <code>SiftingAppender</code> which is a non-trivial beast
+   in itself.
+   </p>
+ 
+   <p>Note that each logging context can be configured using the same
+   file or alternatively different files. The choice is up to
+   you. Instructing all contexts to use the same configuration file
+   is simpler as only one file has to be maintained.  Maintaining a
+   distinct configuration file for each application is harder to
+   maintain but allows for more flexibility.</p>
+ 
+   <p>So are we done yet? Can we declare victory and go home? Well, not
+   quite.</p>
+ 
+   <p>Let's assume the web-application <code>yoda</code> is initialized
+   before <code>kenobi</code>. To initialize <code>yoda</code>, visit
+   <code>http://localhost:port/yoda/servlet</code> which will invoke
+   the <code>YodaServlet</code>. This servlet just says hello and logs
+   message before calling the <code>foo</code> method in
+   <code>Mustafar</code> which not-surprisingly logs a simple message
+   and returns.
+   </p>
+ 
+   <p>After <code>YodaServlet</code> is called, the contents of
+   <em>yoda.log</em> file should contain</p>
+ 
+   <pre class="source">DEBUG ch.qos.starwars.yoda.YodaServlet             cn=yoda - in doGet()
+DEBUG ch.qos.starwars.shared.Mustafar              cn=yoda - in foo()</pre>
+ 
+   <p>Note how both log entries are associated with the "yoda" context
+   name. At this stage and until the server stops, the
+   <code>ch.qos.starwars.shared.Mustafar</code> logger is attached to
+   the 'yoda' context and will remain so until the server is stopped.
+   </p>
 
-  <p>The above approach solves the logging separation problem but is
-  rather complex. It requires the proper installation of
-  <code>ContextJNDISelector</code> and mandates that appenders be
-  wrapped by <code>SiftingAppender</code> which is a non-trivial beast
-  in itself.
-  </p>
+   <p>Visiting <code>http://localhost:port/kenobi/servlet</code> will
+   output the following in <em>kenobi.log</em>.</p>
 
-  <p>Note that each logging context can be confiured using the same
-  file or alternatively different files. The choice is up to
-  you. Instruicting all contexts to use the same configuiration file
-  is simpler as only one file has to be maintained.  Maintaining a
-  distinct configuration file for each application is harder to
-  maintain but allows for more flexibility.</p>
+   <pre class="source">DEBUG c.qos.starwars.kenobi.KenobiServlet          <b>cn=kenobi</b> - in doGet()
+DEBUG ch.qos.starwars.shared.Mustafar              <b>cn=yoda</b> - in foo()</pre>
 
-  <p>So are we done yet? Well, not quite.</p>
+   <p>Note that even if the
+   <code>ch.qos.starwars.shared.Mustafar</code> logger outputs to
+   <em>kenobi.log</em> it is still attached to 'yoda'. Thus, we have
+   two distinct logging contexts logging to the same file, in this
+   case <em>kenobi.log</em>. Each of these contexts reference
+   <code>FileAppender</code> instances, nested within distinct
+   <code>SiftingAppender</code> instances, logging to the same
+   file. Although logging separation seems to function according to
+   our wishes, FileAppender instances cannot safely write to the same
+   file unless they enable <span class="option">prudent</span>
+   mode. Otherwise, the target file will be corrupted.</p>
+   
+   <p>Here is the configuration file enabling prudent mode:</p>
+
+    <pre class="prettyprint source">&lt;configuration>
+
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />  
+
+  &lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    &lt;discriminator class="ch.qos.logback.classic.sift.JNDIBasedContextDiscriminator">
+      &lt;defaultValue>unknown&lt;/defaultValue>
+    &lt;/discriminator>
+    &lt;sift>
+      &lt;appender name="FILE-${contextName}" class="ch.qos.logback.core.FileAppender">
+        &lt;file>${contextName}.log&lt;/file>
+        <b>&lt;prudent>true&lt;/prudent></b>
+        &lt;encoder>
+          &lt;pattern>%-50(%level %logger{35}) cn=%contextName - %msg%n&lt;/pattern>
+         &lt;/encoder>
+      &lt;/appender>
+     &lt;/sift>
+    &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SIFT" />
+  &lt;/root>
+&lt;/configuration></pre>
 
 
-  <script src="../templates/footer.js"
-  type="text/javascript"></script> </div>
-  </body> </html>
+   <p>If you were able to keep up with the discussion thus far and
+   have actually tried the logback-starwars examples, then you must be
+   truly obsessed with logging. You should seek <a
+   href="http://www.qos.ch/shop/products/professionalSupport">professional
+   help</a>.</p>
+
+
+
+   <script src="../templates/footer.js"
+   type="text/javascript"></script> </div>
+   
+   </body> 
+</html>

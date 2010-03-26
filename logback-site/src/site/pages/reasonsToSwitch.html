@@ -196,10 +196,10 @@ java.lang.Exception: 99 is invalid
     </p>
 
 
-    <h3><a name="maxHistory" href="#maxHistory">Automatic erasure of
+    <h3><a name="maxHistory" href="#maxHistory">Automatic removal of
     old log archives</a></h3>
 
-    <p>By setting the <span class="option">MaxHistory</span> property
+    <p>By setting the <span class="option">maxHistory</span> property
     of <a
     href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
     or <a
@@ -207,11 +207,10 @@ java.lang.Exception: 99 is invalid
     you can control the maximum number of archived files. If your
     rolling policy calls for monthly rollover and you wish to keep 1
     year's worth of logs, simply set the <span
-    class="option">MaxHistory</span> property to 12. Archived log
+    class="option">maxHistory</span> property to 12. Archived log
     files older than 12 months will be automatically removed.
     </p>
 
-   
     <h3><a name="inSummary" href="#inSummary">In summary</a></h3>
 
     <p>We have listed a number of reasons for preferring logback over
