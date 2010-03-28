@@ -23,6 +23,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 
 
 
@@ -31,7 +32,8 @@ abstract public class AbstractAppenderTest<E>  {
   
   abstract protected Appender<E> getAppender();
   abstract protected Appender<E> getConfiguredAppender();
-
+  Context context = new ContextBase();
+  
   @Test
   public void testNewAppender() {
     // new appenders should be inactive
@@ -53,13 +55,12 @@ abstract public class AbstractAppenderTest<E>  {
   @Test
   public void testNoStart() {
     Appender<E> appender = getAppender();
-    Context context = new ContextBase();
     appender.setContext(context);
     appender.setName("doh");
     // is null OK?
     appender.doAppend(null);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    //StatusPrinter.print(context.getStatusManager());
+    StatusPrinter.print(context);
     assertTrue(checker.containsMatch("Attempted to append to non started appender \\[doh\\]."));
   }
 }

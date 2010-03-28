@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
+import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,20 +33,23 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class DBAppenderTest  {
+public class DBAppenderHSQLTest  {
 
   LoggerContext lc;
   Logger logger;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  DBAppenderTestFixture dbAppenderTestFixture;
+  DBAppenderHSQLTestFixture dbAppenderHSQLTestFixture;
+  int diff = RandomUtil.getPositiveInt();
   
   @Before
   public void setUp() throws SQLException {
-    dbAppenderTestFixture = new DBAppenderTestFixture();
-    dbAppenderTestFixture.setUp();
+    dbAppenderHSQLTestFixture = new DBAppenderHSQLTestFixture();
+    dbAppenderHSQLTestFixture.setUp();
 
     lc = new LoggerContext();
     lc.setName("default");
@@ -54,10 +59,10 @@ public class DBAppenderTest  {
     appender.setContext(lc);
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
-    connectionSource.setDriverClass(DBAppenderTestFixture.HSQLDB_DRIVER_CLASS);
-    connectionSource.setUrl(dbAppenderTestFixture.url);
-    connectionSource.setUser(dbAppenderTestFixture.user);
-    connectionSource.setPassword(dbAppenderTestFixture.password);
+    connectionSource.setDriverClass(DBAppenderHSQLTestFixture.HSQLDB_DRIVER_CLASS);
+    connectionSource.setUrl(dbAppenderHSQLTestFixture.url);
+    connectionSource.setUser(dbAppenderHSQLTestFixture.user);
+    connectionSource.setPassword(dbAppenderHSQLTestFixture.password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
     appender.start();
@@ -69,7 +74,7 @@ public class DBAppenderTest  {
     lc = null;
     appender = null;
     connectionSource = null;
-    dbAppenderTestFixture.tearDown();
+    dbAppenderHSQLTestFixture.tearDown();
   }
 
   @Test
@@ -77,22 +82,23 @@ public class DBAppenderTest  {
     ILoggingEvent event = createLoggingEvent();
 
     appender.append(event);
-    //StatusPrinter.print(lc.getStatusManager());
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM logging_event");
     if (rs.next()) {
-      assertEquals(event.getTimeStamp(), rs.getLong(1));
-      assertEquals(event.getFormattedMessage(), rs.getString(2));
-      assertEquals(event.getLoggerName(), rs.getString(3));
-      assertEquals(event.getLevel().toString(), rs.getString(4));
-      assertEquals(event.getThreadName(), rs.getString(5));
-      assertEquals(DBHelper.computeReferenceMask(event), rs.getShort(6));
+      assertEquals(event.getTimeStamp(), rs.getLong(DBAppender.TIMESTMP_INDEX));
+      assertEquals(event.getFormattedMessage(), rs.getString(DBAppender.FORMATTED_MESSAGE_INDEX));
+      assertEquals(event.getLoggerName(), rs.getString(DBAppender.LOGGER_NAME_INDEX));
+      assertEquals(event.getLevel().toString(), rs.getString(DBAppender.LEVEL_STRING_INDEX));
+      assertEquals(event.getThreadName(), rs.getString(DBAppender.THREAD_NAME_INDEX));
+      assertEquals(DBHelper.computeReferenceMask(event), rs.getShort(DBAppender.REFERENCE_FLAG_INDEX));
+      assertEquals(String.valueOf(diff), rs.getString(DBAppender.ARG0_INDEX));
       StackTraceElement callerData = event.getCallerData()[0];
-      assertEquals(callerData.getFileName(), rs.getString(7));
-      assertEquals(callerData.getClassName(), rs.getString(8));
-      assertEquals(callerData.getMethodName(), rs.getString(9));
+      assertEquals(callerData.getFileName(), rs.getString(DBAppender.CALLER_FILENAME_INDEX));
+      assertEquals(callerData.getClassName(), rs.getString(DBAppender.CALLER_CLASS_INDEX));
+      assertEquals(callerData.getMethodName(), rs.getString(DBAppender.CALLER_METHOD_INDEX));
     } else {
       fail("No row was inserted in the database");
     }
@@ -109,34 +115,46 @@ public class DBAppenderTest  {
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event_exception where event_id = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION where EVENT_ID = 0");
+    
+    rs.next();
+    String expected = "java.lang.Exception: test Ex";
+    String firstLine = rs.getString(3);
+    assertTrue("["+firstLine+"] does not match ["+expected+"]", firstLine.contains(expected));
+    
     int i = 0;
     while (rs.next()) {
-      assertEquals(event.getThrowableProxy().getStackTraceElementProxyArray()[i].toString(), rs.getString(3));
+      expected = event.getThrowableProxy().getStackTraceElementProxyArray()[i].toString();
+      String st = rs.getString(3);
+      assertTrue("["+st+"] does not match ["+expected+"]", st.contains(expected));
       i++;
     }
-    
+    assertTrue(i != 0);
     rs.close();
     stmt.close();
   }
   
   @Test
   public void testContextInfo() throws SQLException {
-    ILoggingEvent event = createLoggingEvent();
     lc.putProperty("testKey1", "testValue1");
+    MDC.put("k"+diff, "v"+diff);
+    ILoggingEvent event = createLoggingEvent();
     
     appender.append(event);
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event_property where event_id = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_PROPERTY  WHERE EVENT_ID = 0");
     Map<String, String> map = appender.mergePropertyMaps(event);
+    System.out.println("ma.size="+map.size());
+    int i = 0;
     while (rs.next()) {
       String key = rs.getString(2);
       assertEquals(map.get(key), rs.getString(3));
-      //System.out.println("value: " + map.get(key));
+      i++;
     }
-    
+    assertTrue(map.size() != 0);
+    assertEquals(map.size(), i);
     rs.close();
     stmt.close();
   }
@@ -164,7 +182,7 @@ public class DBAppenderTest  {
 
   private ILoggingEvent createLoggingEvent() {
     ILoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
-        Level.DEBUG, "test message", new Exception("test Ex"), null);
+        Level.DEBUG, "test message", new Exception("test Ex"), new Integer[] {diff});
     return le;
   }
 }

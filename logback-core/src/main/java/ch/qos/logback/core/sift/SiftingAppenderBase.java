@@ -14,7 +14,9 @@
 package ch.qos.logback.core.sift;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
@@ -77,9 +79,11 @@ public abstract class SiftingAppenderBase<E> extends
     if (appender == null) {
       try {
         appender = appenderFactory.buildAppender(context, discriminatingValue);
-        if (appender != null) {
-          appenderTracker.put(discriminatingValue, appender, timestamp);
+        if (appender == null) {
+          appender = buildNOPAppender(discriminatingValue);
         }
+        appenderTracker.put(discriminatingValue, appender, timestamp);
+
       } catch (JoranException e) {
         addError("Failed to build appender for [" + discriminatingValue + "]",
             e);
@@ -96,6 +100,18 @@ public abstract class SiftingAppenderBase<E> extends
 
   public void setDiscriminator(Discriminator<E> discriminator) {
     this.discriminator = discriminator;
+  }
+  
+  
+  int nopaWarningCount = 0;
+  
+  NOPAppender<E> buildNOPAppender(String discriminatingValue) {
+    NOPAppender<E> nopa = new NOPAppender<E>();
+    if(nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
+      nopaWarningCount++;
+      addError("Failed to build an appender for discriminating value ["+discriminatingValue+"]");
+    }
+    return nopa;
   }
 
   // sometime one needs to close a nested appender immediately

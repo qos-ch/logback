@@ -138,7 +138,7 @@ public class DBAppenderTest  {
     
     AccessEvent event = createAccessEvent();
     appender.append(event);
-
+    
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM access_event_header");
@@ -169,12 +169,15 @@ public class DBAppenderTest  {
 
   @Test
   public void testAppendMultipleEvents() throws SQLException {
+    setInsertHeadersAndStart(false);
     String uri = "testAppendMultipleEvents";
     for (int i = 0; i < 10; i++) {
       AccessEvent event = createAccessEvent(uri);
       appender.append(event);
     }
 
+    StatusPrinter.print(context);
+    
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM access_event where requestURI='"+uri+"'");

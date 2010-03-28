@@ -13,9 +13,8 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +23,15 @@ import org.junit.Test;
 
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
 
-public class TokenStreamTest  {
-
+public class TokenStreamTest {
 
   @Test
   public void testEmpty() throws ScanException {
-    List tl = new TokenStream("").tokenize();
-    List witness = new ArrayList();
-    assertEquals(witness, tl);
+    try {
+      new TokenStream("").tokenize();
+      fail("empty string not allowed");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test
@@ -330,8 +330,8 @@ public class TokenStreamTest  {
   @Test
   public void testWindowsLikeBackSlashes() throws ScanException {
     {
-      List tl = new TokenStream("c:\\hello\\world.%i", new AlmostAsIsEscapeUtil())
-          .tokenize();
+      List tl = new TokenStream("c:\\hello\\world.%i",
+          new AlmostAsIsEscapeUtil()).tokenize();
 
       List<Token> witness = new ArrayList<Token>();
       witness.add(new Token(Token.LITERAL, "c:\\hello\\world."));

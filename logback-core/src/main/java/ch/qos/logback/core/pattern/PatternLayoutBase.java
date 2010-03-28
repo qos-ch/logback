@@ -71,7 +71,11 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
   }
 
   public void start() {
-    try {
+    if(pattern == null || pattern.length() == 0) {
+      addError("Empty or null pattern.");
+      return;
+    }
+    try { 
       Parser<E> p = new Parser<E>(pattern);
       if (getContext() != null) {
         p.setContext(getContext());

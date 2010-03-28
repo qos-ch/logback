@@ -17,11 +17,11 @@ CREATE TABLE access_event (
   method VARCHAR(254),
   serverName VARCHAR(254),
   postContent VARCHAR(254),
-  event_id INT NOT NULL IDENTITY);
+  event_id BIGINT NOT NULL IDENTITY);
 
 
 CREATE TABLE access_event_header (
-  event_id INT NOT NULL,
+  event_id BIGINT NOT NULL,
   header_key  VARCHAR(254) NOT NULL,
   header_value LONGVARCHAR,
   PRIMARY KEY(event_id, header_key),

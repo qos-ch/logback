@@ -5,7 +5,7 @@
   
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>0.9.19-SNAPSHOT</version>
+  <version>0.9.20-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
   
@@ -43,7 +43,7 @@
   <properties>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
-    <slf4j.version>1.5.10</slf4j.version>
+    <slf4j.version>1.5.11</slf4j.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>  
   </properties>
   
@@ -100,6 +100,23 @@
         <version>1.8.0.7</version>
       </dependency>
       <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.2.132</version>
+      </dependency>
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>8.4-701.jdbc4</version>
+      </dependency> 
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.9</version>
+      </dependency>
+
+
+      <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>catalina</artifactId>
         <version>6.0.20</version>
@@ -125,10 +142,10 @@
         <version>1.0</version>
       </dependency>    
       <dependency>
-			  <groupId>javax.servlet</groupId>
-			  <artifactId>servlet-api</artifactId>
-			  <version>2.5</version>
-		</dependency> 
+	<groupId>javax.servlet</groupId>
+	<artifactId>servlet-api</artifactId>
+	<version>2.5</version>
+      </dependency> 
     </dependencies>
   </dependencyManagement>
   

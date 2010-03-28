@@ -19,10 +19,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 
@@ -30,14 +30,14 @@ public class ContextDetachingSCLTest  {
   
   static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
 
-  ContextDetachingSCL listener;
+  ContextDetachingSCL cobtextDetachingSCL;
   
   @Before
   public void setUp() throws Exception {
     System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
     //LoggerFactory.setup();
     
-    listener = new ContextDetachingSCL();
+    cobtextDetachingSCL = new ContextDetachingSCL();
     
     MockInitialContextFactory.initialize();
     MockInitialContext mic = MockInitialContextFactory.getContext();
@@ -58,8 +58,8 @@ public class ContextDetachingSCLTest  {
 
   @Test
   public void testDetach() {
-    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
-    listener.contextDestroyed(null);
+    ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+    cobtextDetachingSCL.contextDestroyed(null);
     assertEquals(0, selector.getCount());
   }
   
@@ -68,12 +68,12 @@ public class ContextDetachingSCLTest  {
   public void testDetachWithMissingContext() {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
-    ContextJNDISelector selector = (ContextJNDISelector) StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
     assertEquals("tata", selector.getLoggerContext().getName());
 
     mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
     assertEquals("titi", selector.getLoggerContext().getName());
-    listener.contextDestroyed(null);
+    cobtextDetachingSCL.contextDestroyed(null);
 
     assertEquals(2, selector.getCount());
   }

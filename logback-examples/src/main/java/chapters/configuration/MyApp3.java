@@ -40,7 +40,7 @@ public class MyApp3 {
       lc.reset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      je.printStackTrace();
+      // StatusPrinter will handle this
     }
     StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 

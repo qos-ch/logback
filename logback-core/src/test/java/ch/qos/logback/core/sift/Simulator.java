@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.appender.NOPAppender;
+import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.sift.tracker.AppenderTrackerTImpl;
 import ch.qos.logback.core.sift.tracker.SimulationEvent;
 import ch.qos.logback.core.sift.tracker.SimulationEvent.SimEventType;

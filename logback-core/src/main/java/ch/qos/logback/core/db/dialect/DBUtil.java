@@ -30,6 +30,8 @@ public class DBUtil extends ContextAwareBase {
   // private static final String MSSQL_PART = "mssqlserver4";
   private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
+  private static final String H2_PART = "h2";
+  private static final String SYBASE_SQLANY_PART = "sql anywhere";
 
   public static SQLDialectCode discoverSQLDialect(DatabaseMetaData meta) {
     SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
@@ -48,6 +50,10 @@ public class DBUtil extends ContextAwareBase {
         return SQLDialectCode.MSSQL_DIALECT;
       } else if (dbName.indexOf(HSQL_PART) != -1) {
         return SQLDialectCode.HSQL_DIALECT;
+      } else if (dbName.indexOf(H2_PART) != -1) {
+        return SQLDialectCode.H2_DIALECT;
+      } else if (dbName.indexOf(SYBASE_SQLANY_PART) != -1) {
+        return SQLDialectCode.SYBASE_SQLANYWHERE_DIALECT;
       } else {
         return SQLDialectCode.UNKNOWN_DIALECT;
       }
@@ -64,24 +70,31 @@ public class DBUtil extends ContextAwareBase {
     switch (sqlDialectType) {
     case POSTGRES_DIALECT:
       sqlDialect = new PostgreSQLDialect();
-
       break;
+
     case MYSQL_DIALECT:
       sqlDialect = new MySQLDialect();
-
       break;
+    
     case ORACLE_DIALECT:
       sqlDialect = new OracleDialect();
-
       break;
+    
     case MSSQL_DIALECT:
       sqlDialect = new MsSQLDialect();
-
       break;
+    
     case HSQL_DIALECT:
       sqlDialect = new HSQLDBDialect();
 
+    case H2_DIALECT:
+      sqlDialect = new H2Dialect();
       break;
+      
+    case SYBASE_SQLANYWHERE_DIALECT:
+      sqlDialect = new SybaseSqlAnywhereDialect();
+      break;
+
     }
     return sqlDialect;
   }

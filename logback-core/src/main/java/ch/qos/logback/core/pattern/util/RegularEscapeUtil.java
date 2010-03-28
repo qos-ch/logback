@@ -43,7 +43,7 @@ public class RegularEscapeUtil implements IEscapeUtil {
         break;
       default:
         String commaSeperatedEscapeChars = formatEscapeCharsForListing(escapeChars);
-        new IllegalArgumentException("Illegal char '" + next + " at column "
+        throw new IllegalArgumentException("Illegal char '" + next + " at column "
             + pointer + ". Only \\\\, \\_" + commaSeperatedEscapeChars
             + ", \\t, \\n, \\r combinations are allowed as escape characters.");
       }

@@ -11,18 +11,24 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.util;
 
-import org.slf4j.LoggerFactory;
+package ch.qos.logback.core.db.dialect;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+public class SybaseSqlAnywhereDialect implements SQLDialect {
 
-public class LoggerStatusPrinter {
+  /** 
+  * The Sybase SQLAnywhere Dialect 
+  * 
+  * Note that the dialect is not needed if your JDBC driver supports 
+  * the getGeneratedKeys method introduced in JDBC 3.0 specification.
+  * 
+  * @author Michael Lynch 
+  */ 
 
-  public static void printStatusInDefaultContext() {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    StatusPrinter.print(lc);
+  public static final String SELECT_CURRVAL = "SELECT @@identity id";
+
+  public String getSelectInsertId() {
+    return SELECT_CURRVAL;
   }
 
 }

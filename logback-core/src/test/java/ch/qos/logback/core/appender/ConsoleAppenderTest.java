@@ -30,13 +30,13 @@ import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
-
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   XTeeOutputStream tee;
   PrintStream original;
-
 
   @Before
   public void setUp() throws Exception {
@@ -45,10 +45,10 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     // collect them so that the output can be compared against
     // some expected output data
     // tee = new TeeOutputStream(original);
-    
+
     // keep the console quiet
     tee = new XTeeOutputStream(null);
-    
+
     // redirect System.out to tee
     System.setOut(new PrintStream(tee));
   }
@@ -60,8 +60,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   @Override
   public Appender<Object> getAppender() {
-    return new ConsoleAppender<Object>();
-  } 
+    return  new ConsoleAppender<Object>();
+  }
 
   protected Appender<Object> getConfiguredAppender() {
     ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
@@ -78,7 +78,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.doAppend(new Object());
     assertEquals(DummyLayout.DUMMY, tee.toString());
   }
-  
+
   @org.junit.Test
   public void testOpen() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
@@ -88,9 +88,10 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.start();
     ca.doAppend(new Object());
     ca.stop();
-    assertEquals("open"+CoreConstants.LINE_SEPARATOR+DummyLayout.DUMMY, tee.toString());
+    assertEquals("open" + CoreConstants.LINE_SEPARATOR + DummyLayout.DUMMY, tee
+        .toString());
   }
-  
+
   @Test
   public void testClose() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
@@ -114,16 +115,15 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.setEncoder(encoder);
     ca.start();
     ca.doAppend("a");
-    assertEquals("a"+CoreConstants.LINE_SEPARATOR, tee.toString());
-    
+    assertEquals("a" + CoreConstants.LINE_SEPARATOR, tee.toString());
+
     XTeeOutputStream newTee = new XTeeOutputStream(null);
     System.setOut(new PrintStream(newTee));
     ca.doAppend("b");
-    assertEquals("b"+CoreConstants.LINE_SEPARATOR, newTee.toString());
+    assertEquals("b" + CoreConstants.LINE_SEPARATOR, newTee.toString());
   }
 
-
-  @Test  
+  @Test
   public void testUTF16BE() throws UnsupportedEncodingException {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
@@ -135,5 +135,21 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     assertEquals(DummyLayout.DUMMY, new String(tee.toByteArray(), encodingName));
   }
 
+  @Test
+  public void wrongTarget() {
+    ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+    EchoEncoder<Object> encoder = new EchoEncoder<Object>();
+    System.out.println("xxx");
+    ca.setTarget("foo");
+    ca.setEncoder(encoder);
+    ca.start();
+    ca.doAppend("a");
+    StatusChecker checker = new StatusChecker(context);
+    //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [SystemOut, SystemErr]
+    //21:28:01,246   |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by default.
+                                           
+    checker.containsMatch(Status.ERROR, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
+
+  }
 
 }

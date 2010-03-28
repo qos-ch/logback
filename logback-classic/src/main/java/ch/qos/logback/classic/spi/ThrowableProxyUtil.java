@@ -81,7 +81,7 @@ public class ThrowableProxyUtil {
     return sb.toString();
   }
 
-  static void appendPackagingData(StringBuilder builder, StackTraceElementProxy step) {
+  public static void appendPackagingData(StringBuilder builder, StackTraceElementProxy step) {
     if (step != null) {
       ClassPackagingData cpd = step.getClassPackagingData();
       if (cpd != null) {

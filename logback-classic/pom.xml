@@ -5,7 +5,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.19-SNAPSHOT</version>
+    <version>0.9.20-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -79,6 +79,25 @@
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>      
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.9</version>
+      <scope>test</scope>      
     </dependency>
 
     <dependency>
@@ -270,12 +289,15 @@ org.slf4j.test_osgi
                  config files). They won't be found by Bnd's analysis
                  of java code. -->
 
+            <!-- importing ch.qos.logback.classic.util is strange but
+                 is required for the OSGi integration tests to pass
+                 -->
             <Import-Package>
               sun.reflect;resolution:=optional, 
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               ch.qos.logback.core.rolling, 
-              ch.qos.logback.core.rolling.helper,
+              ch.qos.logback.core.rolling.helper,           
               *
             </Import-Package>
 
@@ -292,21 +314,7 @@ org.slf4j.test_osgi
     <profile>
       <!-- Integration tests require the host-orion profile -->
       <id>host-orion</id>
-
       <dependencies>
-        <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-          <version>5.0.8</version>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-          <version>8.2-507.jdbc3</version>
-        </dependency>
-
         <!-- locally installed artifact -->
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
@@ -325,6 +333,19 @@ org.slf4j.test_osgi
 
     </profile>
 
+    <profile>
+      <!-- Integration tests require the host-hora profile -->
+      <id>host-hora</id>
+      <dependencies>
+        <!-- locally installed artifact -->
+        <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc14</artifactId>
+          <version>10.2.0.1</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>

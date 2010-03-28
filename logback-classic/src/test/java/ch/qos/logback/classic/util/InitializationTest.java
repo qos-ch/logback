@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -60,7 +61,7 @@ public class InitializationTest {
   // However, this is something we try to avoid in order to simplify the life
   // of users trying to follows the manual and logback-examples from an IDE
   public void atoconfig() {
-    Appender appender = root.getAppender("STDOUT");
+    Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
     assertNotNull(appender);
     assertTrue(appender instanceof ConsoleAppender);
   }
@@ -79,7 +80,7 @@ public class InitializationTest {
     }
     {
       lc.stop();
-      Appender appender = root.getAppender("STDOUT");
+      Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
       assertNull(appender);
     }
   }
@@ -96,7 +97,7 @@ public class InitializationTest {
     //lc.reset();
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
     new ContextInitializer(lc).autoConfig();
-    Appender appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
+    Appender<ILoggingEvent> appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
     assertNotNull(appender);
   }
   

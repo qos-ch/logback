@@ -19,10 +19,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.impl.StaticLoggerBinderFriend;
 
 import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.Context;
@@ -55,7 +55,7 @@ public class ContextJNDISelectorTest  {
 
   @Test
   public void testGetExistingContext() {
-    ContextSelector selector = StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
     Context context = selector.getLoggerContext();
     assertEquals("toto", context.getName());
   }
@@ -67,7 +67,7 @@ public class ContextJNDISelectorTest  {
     
     LoggerFactory.getLogger(ContextDetachingSCLTest.class);
     
-    ContextJNDISelector selector = (ContextJNDISelector)StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector)ContextSelectorStaticBinder.getSingleton().getContextSelector();
     Context context = selector.getLoggerContext();
     assertEquals("tata", context.getName());
     System.out.println(selector.getContextNames());
@@ -79,7 +79,7 @@ public class ContextJNDISelectorTest  {
     MockInitialContext mic = MockInitialContextFactory.getContext();
     mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, null);
 
-    ContextJNDISelector selector = (ContextJNDISelector)StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextJNDISelector selector = (ContextJNDISelector)ContextSelectorStaticBinder.getSingleton().getContextSelector();
     Context context = selector.getLoggerContext();
     
     assertEquals("default", context.getName());    

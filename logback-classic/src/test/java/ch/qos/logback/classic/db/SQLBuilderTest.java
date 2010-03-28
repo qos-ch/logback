@@ -1,9 +1,6 @@
 package ch.qos.logback.classic.db;
 
-import ch.qos.logback.classic.db.names.CustomDBNameResolver;
-import ch.qos.logback.classic.db.names.DBNameResolver;
-import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
-import ch.qos.logback.classic.db.names.SimpleDBNameResolver;
+import ch.qos.logback.classic.db.names.*;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -23,7 +20,7 @@ public class SQLBuilderTest {
     String sql = SQLBuilder.buildInsertSQL(nameResolver);
 
     //then
-    final String expected = "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, reference_flag, caller_filename, caller_class, caller_method, caller_line) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)";
+    final String expected = "INSERT INTO logging_event (timestmp, formatted_message, logger_name, level_string, thread_name, reference_flag, arg0, arg1, arg2, arg3, caller_filename, caller_class, caller_method, caller_line) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     assertThat(sql).isEqualTo(expected);
   }
 
@@ -62,34 +59,37 @@ public class SQLBuilderTest {
     String sql = SQLBuilder.buildInsertSQL(nameResolver);
 
     //then
-    final String expected = "INSERT INTO alpha (a, b, c, d, e, f, g, h, i, j) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)";
+    final String expected = "INSERT INTO alpha (a, b, c, d, e, f, a0, a1, a2, a3, g, h, i, j) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     assertThat(sql).isEqualTo(expected);
   }
 
   private DBNameResolver createCustomDBNameResolver() {
     final CustomDBNameResolver nameResolver = new CustomDBNameResolver();
-    nameResolver.setLoggingEventTableName("alpha");
-    nameResolver.setLoggingEventExceptionTableName("beta");
-    nameResolver.setLoggingEventPropertyTableName("gamma");
+    nameResolver.overrideTableName(TableName.LOGGING_EVENT, "alpha");
+    nameResolver.overrideTableName(TableName.LOGGING_EVENT_EXCEPTION.name(), "beta");
+    nameResolver.overrideTableName(TableName.LOGGING_EVENT_PROPERTY, "gamma");
 
-    nameResolver.setLoggingEventTimestmpColumnName("a");
-    nameResolver.setLoggingEventFormattedMessageColumnName("b");
-    nameResolver.setLoggingEventLoggerNameColumnName("c");
-    nameResolver.setLoggingEventLevelStringColumnName("d");
-    nameResolver.setLoggingEventThreadNameColumnName("e");
-    nameResolver.setLoggingEventReferenceFlagColumnName("f");
-    nameResolver.setLoggingEventCallerFilenameColumnName("g");
-    nameResolver.setLoggingEventCallerClassColumnName("h");
-    nameResolver.setLoggingEventCallerMethodColumnName("i");
-    nameResolver.setLoggingEventCallerLineColumnName("j");
+    nameResolver.overrideColumnName(ColumnName.TIMESTMP, "a");
+    nameResolver.overrideColumnName(ColumnName.FORMATTED_MESSAGE, "b");
+    nameResolver.overrideColumnName(ColumnName.LOGGER_NAME, "c");
+    nameResolver.overrideColumnName(ColumnName.LEVEL_STRING, "d");
+    nameResolver.overrideColumnName(ColumnName.THREAD_NAME, "e");
+    nameResolver.overrideColumnName(ColumnName.REFERENCE_FLAG, "f");
+    nameResolver.overrideColumnName(ColumnName.ARG0.name(), "a0");
+    nameResolver.overrideColumnName(ColumnName.ARG1.name(), "a1");
+    nameResolver.overrideColumnName(ColumnName.ARG2.name(), "a2");
+    nameResolver.overrideColumnName(ColumnName.ARG3.name(), "a3");
+    nameResolver.overrideColumnName(ColumnName.CALLER_FILENAME.name(), "g");
+    nameResolver.overrideColumnName(ColumnName.CALLER_CLASS.name(), "h");
+    nameResolver.overrideColumnName(ColumnName.CALLER_METHOD.name(), "i");
+    nameResolver.overrideColumnName(ColumnName.CALLER_LINE.name(), "j");
 
-    nameResolver.setLoggingEventExceptionEventIdColumnName("k");
-    nameResolver.setLoggingEventExceptionIColumnName("l");
-    nameResolver.setLoggingEventExceptionTraceLineColumnName("m");
+    nameResolver.overrideColumnName(ColumnName.EVENT_ID.name(), "k");
+    nameResolver.overrideColumnName(ColumnName.I.name(), "l");
+    nameResolver.overrideColumnName(ColumnName.TRACE_LINE.name(), "m");
 
-    nameResolver.setLoggingEventPropertyEventIdColumnName("n");
-    nameResolver.setLoggingEventPropertyMappedKeyColumnName("o");
-    nameResolver.setLoggingEventPropertyMappedValueColumnName("p");
+    nameResolver.overrideColumnName(ColumnName.MAPPED_KEY.name(), "o");
+    nameResolver.overrideColumnName(ColumnName.MAPPED_VALUE.name(), "p");
     return nameResolver;
   }
 
@@ -115,7 +115,7 @@ public class SQLBuilderTest {
     String sql = SQLBuilder.buildInsertPropertiesSQL(nameResolver);
 
     //then
-    final String expected = "INSERT INTO gamma (n, o, p) VALUES (?, ?, ?)";
+    final String expected = "INSERT INTO gamma (k, o, p) VALUES (?, ?, ?)";
     assertThat(sql).isEqualTo(expected);
   }
 
@@ -137,7 +137,7 @@ public class SQLBuilderTest {
     String sql = SQLBuilder.buildInsertSQL(nameResolver);
 
     //then
-    final String expected = "INSERT INTO tp_logging_event_ts (cp_timestmp_cs, cp_formatted_message_cs, cp_logger_name_cs, cp_level_string_cs, cp_thread_name_cs, cp_reference_flag_cs, cp_caller_filename_cs, cp_caller_class_cs, cp_caller_method_cs, cp_caller_line_cs) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)";
+    final String expected = "INSERT INTO tp_logging_event_ts (cp_timestmp_cs, cp_formatted_message_cs, cp_logger_name_cs, cp_level_string_cs, cp_thread_name_cs, cp_reference_flag_cs, cp_arg0_cs, cp_arg1_cs, cp_arg2_cs, cp_arg3_cs, cp_caller_filename_cs, cp_caller_class_cs, cp_caller_method_cs, cp_caller_line_cs) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     assertThat(sql).isEqualTo(expected);
   }
 

@@ -26,9 +26,22 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+
     <hr width="80%" align="center" />
 
-    <h3>March 2010 - Release of version 0.9.19</h3>
+    <h3>March , 2010 - Release of version 0.9.20</h3>
+
+    <p>Fixed issue related to charsets in
+    <code>LayoutWrappingEncoder</code> not being recognized in config
+    files.</p>
+    
+
+
+    <!-- ============================================================== -->
+
+    <hr width="80%" align="center" />
+
+    <h3>March 24, 2010 - Release of version 0.9.19</h3>
 
 
     <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
@@ -53,11 +66,48 @@
     href="codes.html#layoutInsteadOfEncoder"> modifications to
     existing configuration files</a>. We hope to make up for this
     inconvenience with cool new features which are only possible using
-    encoders.
+    encoders. <b>During a transition period, layouts passed as
+    parameter will be automatically wrapped by an encoder so that
+    configuration files in the old format (using a layout instead of
+    encoder) will continue to work unmodifed.</b>
     </p>
 
     </div>
 
+    <br/>
+
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+      <h4>Breaking change: DBAppender in logback-classic expects four
+      additional columns
+      </h4>
+      
+      <p>Instead of lumping log request arguments into a field,
+      <code>DBAppender</code> (in logback-classic) now outputs up to
+      four arguments in the logging request in separate columns, named
+      <code>arg0</code>, <code>arg1</code>, <code>arg2</code> and
+      <code>arg4</code>. This solves <a
+      href="http://jira.qos.ch/browse/LBCLASSIC-187">LBCLASSIC-187</a>
+      reported by Greg Thomas.</p>
+
+      <p>Existing databases can be migrated to the new table structure
+      by altering the existing tables. Here is how it would be done
+      in PostgreSQL and MySQL.</p>
+
+      <pre class="prettyprint">ALTER TABLE logging_event ADD COLUMN arg0 VARCHAR(254);
+ALTER TABLE logging_event ADD COLUMN arg1 VARCHAR(254);
+ALTER TABLE logging_event ADD COLUMN arg2 VARCHAR(254);
+ALTER TABLE logging_event ADD COLUMN arg3 VARCHAR(254);</pre>
+
+    <p>In Oracle:</p>
+
+    <pre class="prettyprint">ALTER TABLE logging_event ADD arg0 VARCHAR(254);
+ALTER TABLE logging_event ADD arg1 VARCHAR(254);
+ALTER TABLE logging_event ADD arg2 VARCHAR(254);
+ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
+
+      
+    </div>
     <p><code>FileAppender</code> and derived classes can now
     gracefully deal with IO failures and recover quickly after the
     original cause of the IO failure is corrected. For example, if the
@@ -66,6 +116,13 @@
     storage (NAS)</a>, and the connection to the NAS server is lost,
     <code>FileAppender</code> and derived classes will recover quickly
     after the connection to the server is re-established.
+    </p>
+
+    <p>The packages under <code>ch.qos.logback.classic</code>
+    namespace no longer depend on <code>org.slf4j.impl</code>. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-184">LBCLASSIC-184</a>
+    reported by Gunnar Wagenknecht.
     </p>
 
     <p>Fixed <a
@@ -123,6 +180,40 @@
     href="http://jira.qos.ch/browse/LBCORE-143">LBCORE-143</a> as
     reported by Tom SH Liu.
     </p>
+
+    <p>DBAppender now outputs exception class and message. It will
+    also output root causes, fixing
+    <a href="http://jira.qos.ch/browse/LBCLASSIC-170">LBCLASSIC-170</a>
+    reported by Tomasz Nurkiewicz.
+    </p>
+
+    <p>You can now override table and column names in DBAppender. This
+    feature was requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-188">LBCLASSIC-188</a>
+    reported by Tomasz Nurkiewicz.
+    </p>
+
+    <p>Fixed missing EVENT_ID column problem on PostgreSQL as reported
+    in <a href="http://jira.qos.ch/browse/LBCORE-126">LBCORE-126</a>
+    by Brian Edwards.</p>
+
+    <p>Event id values in DBAppender are now 64bit instead of 32. This
+    change was requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-198">LBCLASSIC-198</a>
+    by Michael Lynch.
+    </p>
+
+    <p>Added Sybase SQLAnywhere support in DBAppender. This feature
+    was requested by Michael Lynch in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-197">LBCLASSIC-197</a>.
+    </p>
+
+    <p>Added H2 support in DBAppender.</p>
+
+
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBSITE-36">LBSITE-36</a> reported
+    by John Jimenez.</p>
 
     <hr width="80%" align="center" />
 

@@ -15,8 +15,6 @@ package org.slf4j.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Random;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +26,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class RecursiveInitializationTest {
 
-  int diff = new Random().nextInt();
+  int diff = RandomUtil.getPositiveInt();
 
   @Before
   public void setUp() throws Exception {

@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({InitializationTest.class, LevelToSyslogSeverityTest.class} )
+@SuiteClasses({InitializationTest.class, LogbackMDCAdapterTest.class, LevelToSyslogSeverityTest.class} )
 
 public class PackageTest {
 }

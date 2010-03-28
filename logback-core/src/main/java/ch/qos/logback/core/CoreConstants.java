@@ -92,7 +92,7 @@ public class CoreConstants {
   public static long REFERENCE_BIPS = 9000;
   
   
-  // maximum error acoutn to report
+  // the max number of times an error should be reported
   static public final int MAX_ERROR_COUNT = 4;
   
   

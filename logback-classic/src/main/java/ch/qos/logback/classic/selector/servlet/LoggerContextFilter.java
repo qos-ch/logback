@@ -23,24 +23,22 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 
 /**
- * A servlet filter that puts the environment-dependend
- * LoggerContext in a Threadlocal variable.
+ * A servlet filter that puts the environment dependent LoggerContext in a
+ * ThreadLocal variable, removing it after the request is processed.
  * 
- * It removes it after the request is processed.
- *
- * To use it, add the following lines to a web.xml file
- * 
+ * <p>To use it, add the following lines to a web.xml file
+ *  
  * <filter>
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <filter-class>
- *     ch.qos.userApp.LoggerContextFilter
+ *     ch.qos.logback.classic.selector.servlet.LoggerContextFilter
  *   </filter-class>
  * </filter>
  * <filter-mapping>
@@ -60,7 +58,7 @@ public class LoggerContextFilter implements Filter {
       FilterChain chain) throws IOException, ServletException {
 
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    ContextSelector selector = StaticLoggerBinder.getSingleton().getContextSelector();
+    ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
     ContextJNDISelector sel = null;
 
     if (selector instanceof ContextJNDISelector) {

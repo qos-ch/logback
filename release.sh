@@ -1,7 +1,12 @@
 
-# memeory aid 
+# memory aid 
 mvn clean
-mvn -P javadocjar install
+mvn install
 mvn site:site
-mvn javadoc:jar
+#mvn javadoc:jar
 mvn assembly:assembly
+mvn deploy -P javadocjar
+mvn site:deploy -N
+
+#git tag -a release_${VERSION_NUMBER}
+#git push --tags

@@ -91,7 +91,7 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     if(found != null) {
       rearrangePreexistingLinks(e);
       map.remove(key);
-      Appender appender = e.value;
+      Appender<E> appender = e.value;
       appender.stop();
     }
   }

@@ -21,7 +21,7 @@ public class DefaultDBNameResolverTest {
   @Test
   public void testGetLoggingEventColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventColumnName(LoggingEventColumnName.LOGGER_NAME);
+    String columnName = resolver.getColumnName(ColumnName.LOGGER_NAME);
 
     //then
     assertThat(columnName).isEqualTo("logger_name");
@@ -30,7 +30,7 @@ public class DefaultDBNameResolverTest {
   @Test
   public void testGetLoggingEventPropertyColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_KEY);
+    String columnName = resolver.getColumnName(ColumnName.MAPPED_KEY);
 
     //then
     assertThat(columnName).isEqualTo("mapped_key");
@@ -39,7 +39,7 @@ public class DefaultDBNameResolverTest {
   @Test
   public void testGetLoggingEventExceptionColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.TRACE_LINE);
+    String columnName = resolver.getColumnName(ColumnName.TRACE_LINE);
 
     //then
     assertThat(columnName).isEqualTo("trace_line");

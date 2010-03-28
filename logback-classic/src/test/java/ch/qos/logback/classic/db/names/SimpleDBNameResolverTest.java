@@ -30,7 +30,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("tp_logging_event");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("thread_name");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("thread_name");
   }
 
   @Test
@@ -42,7 +42,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("logging_event_ts");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("thread_name");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("thread_name");
   }
 
   @Test
@@ -55,7 +55,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("tp_logging_event_ts");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("thread_name");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("thread_name");
   }
 
   @Test
@@ -67,7 +67,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("logging_event");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("cp_thread_name");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("cp_thread_name");
   }
 
   @Test
@@ -79,7 +79,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("logging_event");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("thread_name_cs");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("thread_name_cs");
   }
 
   @Test
@@ -92,7 +92,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("logging_event");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("cp_thread_name_cs");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("cp_thread_name_cs");
   }
 
   @Test
@@ -107,7 +107,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("tp_logging_event_ts");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("cp_thread_name_cs");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("cp_thread_name_cs");
   }
 
   @Test
@@ -122,7 +122,7 @@ public class SimpleDBNameResolverTest {
 
     //then
     assertThat(nameResolver.getTableName(TableName.LOGGING_EVENT)).isEqualTo("logging_event");
-    assertThat(nameResolver.getLoggingEventColumnName(LoggingEventColumnName.THREAD_NAME)).isEqualTo("thread_name");
+    assertThat(nameResolver.getColumnName(ColumnName.THREAD_NAME)).isEqualTo("thread_name");
   }
 
 }

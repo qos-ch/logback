@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package org.slf4j.impl;
+package ch.qos.logback.classic.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,16 +19,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import org.junit.Test;
 import org.slf4j.MDC;
+
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class LogbackMDCAdapterTest {
 
   final static String A_SUFFIX = "A_SUFFIX";
 
-  int diff = new Random().nextInt();
+  int diff = RandomUtil.getPositiveInt();
 
   /**
    * Test that CopyOnInheritThreadLocal does not barf when the 
@@ -48,6 +49,18 @@ public class LogbackMDCAdapterTest {
     childThread.join();
     assertTrue(childThread.successul);
     assertNull(childThread.childHM);
+  }
+  
+  @Test
+  public void removeForNullKey() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.remove(null);
+  }
+
+  @Test
+  public void removeInexistnetKey() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.remove("abcdlw0");
   }
   
   class ChildThreadForMDCAdapter extends Thread {

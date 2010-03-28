@@ -21,16 +21,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialect;
+import ch.qos.logback.core.db.dialect.SQLDialectCode;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
-public abstract class DBAppenderBase<E> extends AppenderBase<E> {
+public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
 
   protected ConnectionSource connectionSource;
   protected boolean cnxSupportsGetGeneratedKeys = false;
@@ -49,7 +50,6 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
           "DBAppender cannot function without a connection source");
     }
 
-    System.out.println(connectionSource.supportsGetGeneratedKeys());
     sqlDialect = DBUtil
         .getDialectFromCode(connectionSource.getSQLDialectCode());
     if (getGeneratedKeysMethod() != null) {
@@ -76,7 +76,7 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * @param connectionSource
-   *                The connectionSource to set.
+   *          The connectionSource to set.
    */
   public void setConnectionSource(ConnectionSource connectionSource) {
     this.connectionSource = connectionSource;
@@ -89,19 +89,32 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
       PreparedStatement insertStatement;
+
       if (cnxSupportsGetGeneratedKeys) {
+        String EVENT_ID_COL_NAME = "EVENT_ID";
+        // see
+        if (connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
+          EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
+        }
         insertStatement = connection.prepareStatement(getInsertSQL(),
-            new String[] {"EVENT_ID"});
+            new String[] { EVENT_ID_COL_NAME });
       } else {
         insertStatement = connection.prepareStatement(getInsertSQL());
       }
-      subAppend(eventObject, connection, insertStatement);
+
+      long eventId;
+      // inserting an event and getting the result must be exclusive
+      synchronized (this) {
+        subAppend(eventObject, connection, insertStatement);
+        eventId = selectEventId(insertStatement, connection);
+      }
+      System.out.println("eventid="+eventId);
+      secondarySubAppend(eventObject, connection, eventId);
 
       // we no longer need the insertStatement
-      if (insertStatement != null) {
-        insertStatement.close();
-        insertStatement = null;
-      }
+      close(insertStatement);
+      insertStatement = null;
+
       connection.commit();
     } catch (Throwable sqle) {
       addError("problem appending event", sqle);
@@ -110,10 +123,13 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  protected abstract void subAppend(Object eventObject, Connection connection,
+  protected abstract void subAppend(E eventObject, Connection connection,
       PreparedStatement statement) throws Throwable;
 
-  protected int selectEventId(PreparedStatement insertStatement,
+  protected abstract void secondarySubAppend(E eventObject, Connection connection,
+      long eventId) throws Throwable;
+
+  protected long selectEventId(PreparedStatement insertStatement,
       Connection connection) throws SQLException, InvocationTargetException {
     ResultSet rs = null;
     Statement idStatement = null;
@@ -137,27 +153,29 @@ public abstract class DBAppenderBase<E> extends AppenderBase<E> {
     }
 
     if (!gotGeneratedKeys) {
-      insertStatement.close();
-      insertStatement = null;
-
       idStatement = connection.createStatement();
       idStatement.setMaxRows(1);
-      rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
+      String selectInsertIdStr = sqlDialect.getSelectInsertId();
+      rs = idStatement.executeQuery(selectInsertIdStr);
     }
 
     // A ResultSet cursor is initially positioned before the first row;
     // the first call to the method next makes the first row the current row
     rs.next();
-    int eventId = rs.getInt(1);
+    long eventId = rs.getLong(1);
 
     rs.close();
 
-    if (idStatement != null) {
-      idStatement.close();
-      idStatement = null;
-    }
+    close(idStatement);
+    idStatement = null;
 
     return eventId;
+  }
+
+  void close(Statement statement) throws SQLException {
+    if (statement != null) {
+      statement.close();
+    }
   }
 
   @Override

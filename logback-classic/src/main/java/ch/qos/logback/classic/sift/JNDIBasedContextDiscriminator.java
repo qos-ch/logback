@@ -13,11 +13,10 @@
  */
 package ch.qos.logback.classic.sift;
 
-import org.slf4j.impl.StaticLoggerBinder;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -45,7 +44,7 @@ public class JNDIBasedContextDiscriminator extends ContextAwareBase implements
    * Return the name of the current context name as found in the logging event.
    */
   public String getDiscriminatingValue(ILoggingEvent event) {
-    ContextSelector selector = StaticLoggerBinder.getSingleton()
+    ContextSelector selector = ContextSelectorStaticBinder.getSingleton()
         .getContextSelector();
 
     if (selector == null) {

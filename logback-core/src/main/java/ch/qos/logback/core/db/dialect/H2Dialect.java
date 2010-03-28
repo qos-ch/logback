@@ -11,18 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package chapters.architecture;
+package ch.qos.logback.core.db.dialect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+/**
+ * The HSQLDB dialect.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public class H2Dialect implements SQLDialect {
+  public static final String SELECT_CURRVAL = "CALL IDENTITY()";
 
-import ch.qos.logback.classic.util.LoggerStatusPrinter;
-
-public class HelloWorld2 {
-
-  public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger("manual.architecture.HelloWorld2");
-    logger.debug("Hello world.");
-    LoggerStatusPrinter.printStatusInDefaultContext();
+  public String getSelectInsertId() {
+    return SELECT_CURRVAL;
   }
+  
 }

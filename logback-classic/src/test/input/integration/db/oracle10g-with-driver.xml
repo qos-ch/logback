@@ -2,17 +2,17 @@
 
 <configuration>
 
-	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-			<driverClass>oracle.jdbc.OracleDriver</driverClass>
-			<url>jdbc:oracle:thin:@localhost:1522:xe</url>
-			<user>hr</user>
-			<password>hr</password>
-		</connectionSource>
-	</appender>
-	
-	<root>
-		<level value="debug" />
-		<appender-ref ref="DB" />
-	</root>
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+      <driverClass>oracle.jdbc.OracleDriver</driverClass>
+      <url>jdbc:oracle:thin:@localhost:1521:xe</url>
+      <user>test</user>
+      <password>test</password>
+    </connectionSource>
+  </appender>
+  
+  <root>
+    <level value="debug" />
+    <appender-ref ref="DB" />
+  </root>
 </configuration>

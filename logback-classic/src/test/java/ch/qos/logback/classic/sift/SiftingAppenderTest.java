@@ -16,6 +16,7 @@ package ch.qos.logback.classic.sift;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -29,9 +30,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.sift.AppenderTracker;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -65,12 +69,53 @@ public class SiftingAppenderTest {
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
     ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("smoke", timestamp);
-
-    StatusPrinter.print(loggerContext);
     assertNotNull(listAppender);
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
+  }
+
+  @Test
+  public void zeroNesting() throws JoranException {
+    configure(PREFIX + "zeroNesting.xml");
+    logger.debug("hello");
+    logger.debug("hello");
+    logger.debug("hello");
+    logger.debug("hello");
+    logger.debug("hello");
+
+    long timestamp = 0;
+
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) sa
+        .getAppenderTracker().get("smoke", timestamp);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+
+    assertNotNull(nopa);
+    StatusChecker sc = new StatusChecker(loggerContext);
+    assertTrue(sc.containsMatch(ErrorStatus.ERROR, "No nested appenders found"));
+    assertTrue(sc.containsMatch(ErrorStatus.ERROR,
+        "Failed to build an appender for discriminating value \\[smoke\\]"));
+  }
+
+  @Test
+  public void multipleNesting() throws JoranException {
+    configure(PREFIX + "multipleNesting.xml");
+    logger.debug("hello");
+    logger.debug("hello");
+    logger.debug("hello");
+
+    long timestamp = 0;
+
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) sa
+        .getAppenderTracker().get("smoke", timestamp);
+    StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+
+    assertNotNull(listAppender);
+    StatusChecker sc = new StatusChecker(loggerContext);
+    assertTrue(sc.containsMatch(ErrorStatus.ERROR,
+        "Only and only one appender can be nested"));
   }
 
   @Test
@@ -82,7 +127,6 @@ public class SiftingAppenderTest {
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("default", timestamp);
 
-    StatusPrinter.print(loggerContext);
     assertNotNull(listAppender);
     List<String> strList = listAppender.strList;
     assertEquals(1, strList.size());
@@ -99,8 +143,6 @@ public class SiftingAppenderTest {
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
     ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
         .getAppenderTracker().get("a", timestamp);
-    StatusPrinter.print(loggerContext);
-
     assertNotNull(listAppender);
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
@@ -115,4 +157,5 @@ public class SiftingAppenderTest {
     assertEquals(1, ha.getAppenderTracker().keyList().size());
     assertEquals("cycleDefault", ha.getAppenderTracker().keyList().get(0));
   }
+
 }

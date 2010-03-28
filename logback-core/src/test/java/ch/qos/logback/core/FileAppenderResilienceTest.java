@@ -17,6 +17,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.ResilienceUtil;
 
+@Ignore
 public class FileAppenderResilienceTest {
 
   FileAppender<Object> fa = new FileAppender<Object>();
@@ -46,7 +47,6 @@ public class FileAppenderResilienceTest {
   }
 
   @Test
-  @Ignore
   public void manual() throws InterruptedException, IOException {
     Runner runner = new Runner(fa);
     Thread t = new Thread(runner);

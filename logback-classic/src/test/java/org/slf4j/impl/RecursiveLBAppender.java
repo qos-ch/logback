@@ -15,7 +15,6 @@ package org.slf4j.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class RecursiveLBAppender extends AppenderBase<ILoggingEvent> {
 
@@ -41,7 +41,7 @@ public class RecursiveLBAppender extends AppenderBase<ILoggingEvent> {
   
   @Override
   public void start() {
-    int diff = new Random().nextInt();
+    int diff = RandomUtil.getPositiveInt();
     Logger logger = LoggerFactory.getLogger("ResursiveLBAppender"+diff);
     logger.info("testing");
     super.start();

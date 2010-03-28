@@ -36,15 +36,15 @@ public class ConverterUtil {
 
   
   public static<E> Converter<E> findTail(Converter<E> head) {
-    Converter<E> c = head;
-    while (c != null) {
-      Converter<E> next = c.getNext();
+    Converter<E> p = head;
+    while (p != null) {
+      Converter<E> next = p.getNext();
       if (next == null) {
         break;
       } else {
-        c = next;
+        p = next;
       }
     }
-    return c;
+    return p;
   }
 }

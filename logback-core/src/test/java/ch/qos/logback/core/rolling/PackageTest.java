@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
     TimeBasedRollingTest.class, TimeBasedRollingWithArchiveRemovalTest.class,
     MultiThreadedRollingTest.class,
     SizeAndTimeBasedFNATP_Test.class,
+    RollingFileAppenderTest.class,
     ch.qos.logback.core.rolling.helper.PackageTest.class })
 public class PackageTest {
 }

@@ -29,7 +29,7 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultLoggingEventColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventColumnName(LoggingEventColumnName.LOGGER_NAME);
+    String columnName = resolver.getColumnName(ColumnName.LOGGER_NAME);
 
     //then
     assertThat(columnName).isEqualTo("logger_name");
@@ -38,7 +38,7 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultLoggingPropertyColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_VALUE);
+    String columnName = resolver.getColumnName(ColumnName.MAPPED_VALUE);
 
     //then
     assertThat(columnName).isEqualTo("mapped_value");
@@ -47,7 +47,7 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultLoggingExceptionColumnName() throws Exception {
     //when
-    String columnName = resolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.EVENT_ID);
+    String columnName = resolver.getColumnName(ColumnName.EVENT_ID);
 
     //then
     assertThat(columnName).isEqualTo("event_id");
@@ -56,7 +56,7 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnModifiedTableName() throws Exception {
     //when
-    resolver.setLoggingEventExceptionTableName("tbl_logging_event_exception");
+  resolver.overrideTableName(TableName.LOGGING_EVENT_EXCEPTION.name(), "tbl_logging_event_exception");
     String tableName = resolver.getTableName(TableName.LOGGING_EVENT_EXCEPTION);
 
     //then
@@ -64,10 +64,10 @@ public class CustomDBNameResolverTest {
   }
 
   @Test
-  public void shouldReturnModifiedLoggingEventColumnName() throws Exception {
+  public void shouldReturnModifiedColumnName() throws Exception {
     //when
-    resolver.setLoggingEventCallerFilenameColumnName("c_caller_filename");
-    String columnName = resolver.getLoggingEventColumnName(LoggingEventColumnName.CALLER_FILENAME);
+    resolver.overrideColumnName(ColumnName.CALLER_FILENAME.name(), "c_caller_filename");
+    String columnName = resolver.getColumnName(ColumnName.CALLER_FILENAME);
 
     //then
     assertThat(columnName).isEqualTo("c_caller_filename");
@@ -76,8 +76,8 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnModifiedLoggingPropertyColumnName() throws Exception {
     //when
-    resolver.setLoggingEventPropertyMappedKeyColumnName("c_mapped_key");
-    String columnName = resolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.MAPPED_KEY);
+    resolver.overrideColumnName(ColumnName.MAPPED_KEY.name(), "c_mapped_key");
+    String columnName = resolver.getColumnName(ColumnName.MAPPED_KEY);
 
     //then
     assertThat(columnName).isEqualTo("c_mapped_key");
@@ -86,8 +86,8 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnModifiedLoggingExceptionColumnName() throws Exception {
     //when
-    resolver.setLoggingEventExceptionIColumnName("c_i");
-    String columnName = resolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.I);
+    resolver.overrideColumnName(ColumnName.I.name(), "c_i");
+    String columnName = resolver.getColumnName(ColumnName.I);
 
     //then
     assertThat(columnName).isEqualTo("c_i");
@@ -96,7 +96,7 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultTableNameWhenNullGiven() throws Exception {
     //when
-    resolver.setLoggingEventExceptionTableName(null);
+    resolver.overrideColumnName(TableName.LOGGING_EVENT_EXCEPTION.name(), null);
     String tableName = resolver.getTableName(TableName.LOGGING_EVENT_PROPERTY);
 
     //then
@@ -104,10 +104,10 @@ public class CustomDBNameResolverTest {
   }
 
   @Test
-  public void shouldReturnDefaultLoggingEventColumnNameWhenNullGiven() throws Exception {
+  public void shouldReturnDefaultColumnNameWhenNullGiven() throws Exception {
     //when
-    resolver.setLoggingEventCallerFilenameColumnName(null);
-    String columnName = resolver.getLoggingEventColumnName(LoggingEventColumnName.CALLER_CLASS);
+    resolver.overrideColumnName(ColumnName.CALLER_CLASS.name(), null);
+    String columnName = resolver.getColumnName(ColumnName.CALLER_CLASS);
 
     //then
     assertThat(columnName).isEqualTo("caller_class");
@@ -116,8 +116,8 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultLoggingPropertyColumnNameWhenNullGiven() throws Exception {
     //when
-    resolver.setLoggingEventPropertyMappedKeyColumnName(null);
-    String columnName = resolver.getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName.EVENT_ID);
+    resolver.overrideColumnName(ColumnName.EVENT_ID.name(), null);
+    String columnName = resolver.getColumnName(ColumnName.EVENT_ID);
 
     //then
     assertThat(columnName).isEqualTo("event_id");
@@ -126,8 +126,8 @@ public class CustomDBNameResolverTest {
   @Test
   public void shouldReturnDefaultLoggingExceptionColumnNameWhenNullGiven() throws Exception {
     //when
-    resolver.setLoggingEventExceptionIColumnName(null);
-    String columnName = resolver.getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName.I);
+    resolver.overrideColumnName(ColumnName.I.name(), null);
+    String columnName = resolver.getColumnName(ColumnName.I);
 
     //then
     assertThat(columnName).isEqualTo("i");

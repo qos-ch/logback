@@ -13,24 +13,16 @@
  */
 package org.slf4j.impl;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.Util;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.selector.ContextJNDISelector;
-import ch.qos.logback.classic.selector.ContextSelector;
-import ch.qos.logback.classic.selector.DefaultContextSelector;
 import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
@@ -38,7 +30,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * The binding of {@link LoggerFactory} class with an actual instance of
  * {@link ILoggerFactory} is performed using information returned by this class.
  * 
- * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
+ * @author <a href="http://www.qos.ch/shop/products/log4jManual">Ceki G&uuml;lc&uuml;</a>
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
@@ -47,7 +39,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
    * against. The value of this field is usually modified with each release.
    */
   // to avoid constant folding by the compiler, this field must *not* be final
-  public static String REQUESTED_API_VERSION = "1.5.8"; // !final
+  public static String REQUESTED_API_VERSION = "1.5.11"; // !final
 
   final static String NULL_CS_URL = CoreConstants.CODES_URL + "#null_CS";
 
@@ -56,14 +48,16 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
    */
   private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
 
+  private static Object KEY = new Object();
+
   static {
     SINGLETON.init();
   }
 
   private boolean initialized = false;
   private LoggerContext defaultLoggerContext = new LoggerContext();
-  private ContextSelector contextSelector;
-
+  private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
+  
   private StaticLoggerBinder() {
     defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
   }
@@ -92,19 +86,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
             je);
       }
       StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
-
-      // See if a special context selector is needed
-      String contextSelectorStr = OptionHelper
-          .getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
-      if (contextSelectorStr == null) {
-        contextSelector = new DefaultContextSelector(defaultLoggerContext);
-      } else if (contextSelectorStr.equals("JNDI")) {
-        // if jndi is specified, let's use the appropriate class
-        contextSelector = new ContextJNDISelector(defaultLoggerContext);
-      } else {
-        contextSelector = dynamicalContextSelector(defaultLoggerContext,
-            contextSelectorStr);
-      }
+      contextSelectorBinder.init(defaultLoggerContext, KEY);
       initialized = true;
     } catch (Throwable t) {
       // we should never get here
@@ -113,55 +95,23 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     }
   }
 
-  /**
-   * Intantiate the context selector class designated by the user. The selector
-   * must have a constructor taking a LoggerContext instance as an argument.
-   * 
-   * @param defaultLoggerContext
-   * @param contextSelectorStr
-   * @return an instance of the designated context selector class
-   * @throws ClassNotFoundException
-   * @throws SecurityException
-   * @throws NoSuchMethodException
-   * @throws IllegalArgumentException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws InvocationTargetException
-   */
-  static ContextSelector dynamicalContextSelector(
-      LoggerContext defaultLoggerContext, String contextSelectorStr)
-      throws ClassNotFoundException, SecurityException, NoSuchMethodException,
-      IllegalArgumentException, InstantiationException, IllegalAccessException,
-      InvocationTargetException {
-    Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
-    Constructor cons = contextSelectorClass
-        .getConstructor(new Class[] { LoggerContext.class });
-    return (ContextSelector) cons.newInstance(defaultLoggerContext);
-  }
+  
 
   public ILoggerFactory getLoggerFactory() {
     if (!initialized) {
       return defaultLoggerContext;
     }
 
-    if (contextSelector == null) {
+    if (contextSelectorBinder.getContextSelector() == null) {
       throw new IllegalStateException(
           "contextSelector cannot be null. See also " + NULL_CS_URL);
     }
-    return contextSelector.getLoggerContext();
+    return contextSelectorBinder.getContextSelector().getLoggerContext();
   }
 
   public String getLoggerFactoryClassStr() {
-    return contextSelector.getClass().getName();
+    return contextSelectorBinder.getContextSelector().getClass().getName();
   }
 
-  /**
-   * Return the {@link ContextSelector} instance in use.
-   * 
-   * @return the ContextSelector instance in use
-   */
-  public ContextSelector getContextSelector() {
-    return contextSelector;
-  }
-
+ 
 }

@@ -37,14 +37,14 @@ public class EnsureExceptionHandling implements
    * 
    */
   public void process(Converter<ILoggingEvent> head) {
+    if(head == null) {
+      // this should never happen
+      throw new IllegalArgumentException("cannot process empty chain");
+    }
     if (!chainHandlesThrowable(head)) {
       Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
       Converter<ILoggingEvent> exConverter = new ExtendedThrowableProxyConverter();
-      if (tail == null) {
-        head = exConverter;
-      } else {
-        tail.setNext(exConverter);
-      }
+      tail.setNext(exConverter);
     }
   }
 

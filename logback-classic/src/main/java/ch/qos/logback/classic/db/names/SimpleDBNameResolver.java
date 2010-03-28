@@ -8,23 +8,18 @@ package ch.qos.logback.classic.db.names;
 public class SimpleDBNameResolver implements DBNameResolver {
 
   private String tableNamePrefix = "";
+
   private String tableNameSuffix = "";
+
   private String columnNamePrefix = "";
+
   private String columnNameSuffix = "";
 
-  public String getTableName(TableName tableName) {
+  public <N extends Enum<?>> String getTableName(N tableName) {
     return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
   }
 
-  public String getLoggingEventColumnName(LoggingEventColumnName columnName) {
-    return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
-  }
-
-  public String getLoggingEventPropertyColumnName(LoggingEventPropertyColumnName columnName) {
-    return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
-  }
-
-  public String getLoggingEventExceptionColumnName(LoggingEventExceptionColumnName columnName) {
+  public <N extends Enum<?>> String getColumnName(N columnName) {
     return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
   }
 

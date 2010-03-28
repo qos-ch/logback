@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.appender.NOPAppender;
+import ch.qos.logback.core.helpers.NOPAppender;
 
 /**
  * This test case verifies all the methods of AppenderAttableImpl work properly.

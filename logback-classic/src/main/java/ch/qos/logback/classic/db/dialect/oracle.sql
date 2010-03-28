@@ -17,11 +17,15 @@ CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START WITH 1;
 CREATE TABLE logging_event 
   (
     timestmp         NUMBER(20) NOT NULL,
-   	formatted_message  VARCHAR2(4000) NOT NULL,
+    formatted_message  VARCHAR2(4000) NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
     thread_name       VARCHAR(254),
     reference_flag    SMALLINT,
+    arg0              VARCHAR(254),
+    arg1              VARCHAR(254),
+    arg2              VARCHAR(254),
+    arg3              VARCHAR(254),
     caller_filename   VARCHAR(254) NOT NULL,
     caller_class      VARCHAR(254) NOT NULL,
     caller_method     VARCHAR(254) NOT NULL,
