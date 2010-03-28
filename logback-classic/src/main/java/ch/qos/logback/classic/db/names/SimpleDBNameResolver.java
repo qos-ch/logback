@@ -1,9 +1,10 @@
 package ch.qos.logback.classic.db.names;
 
 /**
- * TODO: Handle null prefixes/suffixes somehow
+ * Adds custom prefix/suffix to table and column names.
+ *
  * @author Tomasz Nurkiewicz
- * @since 2010-03-19
+ * @since 0.9.20
  */
 public class SimpleDBNameResolver implements DBNameResolver {
 

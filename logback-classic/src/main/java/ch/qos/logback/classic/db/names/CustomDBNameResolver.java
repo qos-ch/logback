@@ -17,8 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Allows to override any table or column name to arbitrary value.
+ *
  * @author Tomasz Nurkiewicz
- * @since 2010-03-16
+ * @author Ceki Gulcu
+ * @since 0.9.19
  */
 public class CustomDBNameResolver implements DBNameResolver {
 
@@ -51,8 +54,5 @@ public class CustomDBNameResolver implements DBNameResolver {
   public <N extends Enum<?>> void overrideColumnName(N referenceColumnName, String name) {
     columnNameOverrides.put(referenceColumnName.name(), name);
   }
-
-
-  
 
 }
