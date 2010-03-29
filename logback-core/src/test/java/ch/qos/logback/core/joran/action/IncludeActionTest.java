@@ -52,7 +52,8 @@ public class IncludeActionTest {
   Context context = new ContextBase();
   TrivialConfigurator tc;
 
-  static final String INCLUSION_DIR_PREFIX = "src/test/input/joran/inclusion/";
+  static final String INCLUSION_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX
+      + "inclusion/";
 
   static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX + "topByFile.xml";
 
@@ -77,7 +78,8 @@ public class IncludeActionTest {
 
   int diff = RandomUtil.getPositiveInt();
 
-  public IncludeActionTest() {
+  @Before
+  public void setUp() throws Exception {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/inc"), new IncAction());
@@ -85,10 +87,6 @@ public class IncludeActionTest {
 
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
-  }
-
-  @Before
-  public void setUp() throws Exception {
     IncAction.reset();
   }
 

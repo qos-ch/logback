@@ -53,7 +53,8 @@ import ch.qos.logback.core.util.StatusPrinter;
  * This class is an implementation of tomcat's Valve interface, by extending
  * ValveBase.
  * 
- * <p>For more information on using LogbackValve please refer to the online
+ * <p>
+ * For more information on using LogbackValve please refer to the online
  * documentation on <a
  * href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
  * 
@@ -65,11 +66,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
-  
+
   private long birthTime = System.currentTimeMillis();
   Object configurationLock = new Object();
 
-  
   // Attributes from ContextBase:
   private String name;
   StatusManager sm = new BasicStatusManager();
@@ -167,8 +167,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       // TODO better exception handling
       aai.appendLoopOnAppenders(accessEvent);
     } finally {
-      request
-          .removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+      request.removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
     }
   }
 
@@ -226,6 +225,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return (String) this.propertyMap.get(key);
   }
 
+  public Map<String, String> getCopyOfPropertyMap() {
+    return new HashMap<String, String>(this.propertyMap);
+  }
+
   public Object getObject(String key) {
     return objectMap.get(key);
   }
@@ -249,7 +252,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
-  
+
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
@@ -273,7 +276,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public Object getConfigurationLock() {
     return configurationLock;
   }
-  
+
   // ====== Methods from catalina Lifecycle =====
 
   public void addLifecycleListener(LifecycleListener arg0) {

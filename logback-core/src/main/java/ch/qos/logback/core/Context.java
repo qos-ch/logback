@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core;
 
+import java.util.Map;
+
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
 
@@ -65,6 +67,14 @@ public interface Context extends PropertyContainer {
    */
   public void putProperty(String key, String value);
 
+  
+  /**
+   * Get a copy of the property map
+   * @return
+   * @since 0.9.20
+   */
+  public Map<String, String> getCopyOfPropertyMap();
+  
   /**
    * Contexts are named objects.
    * 

@@ -138,10 +138,11 @@ public class HelloWorld1 {
 
     <p>Logback can report information about its internal state using a
     built-in status system. Important events occuring during logback's
-    lifetime can be accessed through a <code>StatusManager</code>. For
-    the time being, let us instruct logback to print its internal
-    state. This is accomplished by a static method in the
-    <code>LoggerStatusPrinter</code> class.
+    lifetime can be accessed through a component called
+    <code>StatusManager</code>. For the time being, let us instruct
+    logback to print its internal state by invoking the static
+    <code>print()</code> method of the <code>StatusPrinter</code>
+    class.
     </p>
 
 <em>Example 1.2: Printing Logger Status (<a href="../xref/chapters/introduction/HelloWorld2.html">logback-examples/src/main/java/chapters/introduction/HelloWorld2.java</a>)</em>

@@ -1,7 +1,14 @@
+-- Logback: the reliable, generic, fast and flexible logging framework.
+-- Copyright (C) 1999-2010, QOS.ch. All rights reserved.
+--
+-- See http://logback.qos.ch/license.html for the applicable licensing 
+-- conditions.
+
+
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 --
--- It is intended for Oracle 9i, 10g and 11g databases. Tested on version 9.2, 10g and 
--- 11g.
+-- It is intended for Oracle 9i, 10g and 11g databases. Tested on version 9.2, 
+-- 10g and 11g.
 
 -- The following lines are useful in cleaning any previously existing tables 
 

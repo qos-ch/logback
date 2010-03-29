@@ -31,6 +31,8 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
+  static String ANY = "*";
+  
   // key: Pattern instance, value: ArrayList containing actions
   HashMap<Pattern, List<Action>> rules = new HashMap<Pattern, List<Action>>();
 
@@ -86,7 +88,8 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     } else if ((actionList = tailMatch(currentPattern)) != null) {
       return actionList;
     } else if ((actionList = prefixMatch(currentPattern)) != null) {
-      // System.out.println(currentPattern + " prefixMatches "+actionList);
+      return actionList;
+    } else if ((actionList = middleMatch(currentPattern)) != null) { 
       return actionList;
     } else {
       return null;
@@ -99,12 +102,9 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
     for (Pattern p : rules.keySet()) {
 
-      if ((p.size() > 1) && p.get(0).equals("*")) {
+      if ((p.size() > 1) && p.get(0).equals(ANY)) {
         int r = currentPattern.getTailMatchLength(p);
-
-        // System.out.println("tailMatch " +r);
         if (r > max) {
-          // System.out.println("New longest tailMatch "+p);
           max = r;
           longestMatchingPattern = p;
         }
@@ -124,11 +124,8 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
     for (Pattern p : rules.keySet()) {
       String last = p.peekLast();
-      if ("*".equals(last)) {
+      if (ANY.equals(last)) {
         int r = currentPattern.getPrefixMatchLength(p);
-
-        // System.out.println("r = "+ r + ", p= "+p);
-
         // to qualify the match length must equal p's size omitting the '*'
         if ((r == p.size() - 1) && (r > max)) {
           // System.out.println("New longest prefixMatch "+p);
@@ -139,13 +136,49 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     if (longestMatchingPattern != null) {
-      // System.out.println("prefixMatch will return"
-      // +rules.get(longestMatchingPattern));
       return rules.get(longestMatchingPattern);
     } else {
       return null;
     }
   }
+
+  List middleMatch(Pattern currentPattern) {
+    
+    int max = 0;
+    Pattern longestMatchingPattern = null;
+
+    for (Pattern p : rules.keySet()) {
+      String last = p.peekLast();
+      String first = null;
+      if(p.size() > 1) {
+        first = p.get(0);
+      }
+      if (ANY.equals(last) && ANY.equals(first)) {
+        List<String> partList = p.getCopyOfPartList();
+        if(partList.size() > 2) {
+          partList.remove(0);
+          partList.remove(partList.size()-1);
+        }
+        
+        int r = 0;
+        Pattern clone = new Pattern(partList);        
+        if(currentPattern.isContained(clone)) {
+          r = clone.size();
+        }
+        if (r > max) {
+          max = r;
+          longestMatchingPattern = p;
+        }
+      }
+    }
+
+    if (longestMatchingPattern != null) {
+      return rules.get(longestMatchingPattern);
+    } else {
+      return null;
+    }
+  }
+  
 
   public String toString() {
     final String TAB = "  ";

@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -34,6 +35,8 @@ import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class JaninoEventEvaluatorTest {
 
@@ -44,6 +47,8 @@ public class JaninoEventEvaluatorTest {
 
   JaninoEventEvaluator jee = new JaninoEventEvaluator();
 
+  int diff = RandomUtil.getPositiveInt();
+  
   public JaninoEventEvaluatorTest() {
     jee.setContext(loggerContext);
 
@@ -99,6 +104,21 @@ public class JaninoEventEvaluatorTest {
     assertTrue(jee.evaluate(event));
   }
 
+
+  @Test
+  public void mdcAsString() throws Exception {
+    String k = "key"+diff;
+    
+    MDC.put("key"+diff, "value"+diff);
+    jee.setExpression("mdc.get(\""+k+"\").contains(\"alue\")");
+    jee.start();
+    StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+    
+    LoggingEvent event = makeLoggingEvent(null);
+    assertTrue(jee.evaluate(event));
+    MDC.remove(k);
+  }
+  
   @Test
   public void marker() throws Exception {
     jee.setExpression("marker.contains(\"BLUE\")");
@@ -109,6 +129,7 @@ public class JaninoEventEvaluatorTest {
     assertTrue(jee.evaluate(event));
   }
 
+  
   @Test
   public void withNullMarker_LBCORE_118() throws Exception {
     jee.setExpression("marker.contains(\"BLUE\")");

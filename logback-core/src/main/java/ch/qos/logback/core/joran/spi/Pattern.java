@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A pattern is used to designate XML elements in a document.
@@ -28,7 +29,12 @@ public class Pattern {
   // contains String instances
   ArrayList<String> partList = new ArrayList<String>();
 
+
   public Pattern() {
+  }
+
+  public Pattern(List<String> list) {
+    partList.addAll(list);
   }
 
   /**
@@ -71,6 +77,10 @@ public class Pattern {
     // System.out.println(components);
   }
 
+  public List<String> getCopyOfPartList() {
+    return new ArrayList<String>(partList);
+  }
+  
   public Object clone() {
     Pattern p = new Pattern();
     p.partList.addAll(this.partList);
@@ -136,10 +146,18 @@ public class Pattern {
         break;
       }
     }
-
     return match;
   }
 
+  public boolean isContained(Pattern p) {
+    if(p == null) {
+      return false;
+    }
+    String lStr = this.toString();
+    return lStr.contains(p.toString());
+  }
+  
+  
   /**
    * Returns the number of "prefix" components that this pattern has in common
    * with the pattern p passed as parameter. By "prefix" components we mean the

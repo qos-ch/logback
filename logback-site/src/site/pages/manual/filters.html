@@ -362,6 +362,15 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				<td>A map containing all the MDC values at the time of the
 				creation of the logging event. A value can be accessed by
 				using the following expression: <em>mdc.get("myKey")</em>.
+
+        <p>The <code>java.util.Map</code> type is non-parametirezied
+        because Janino does not support generics. It follows that the
+        type returned by <code>mdc.get()</code> is <code>Object</code>
+        and not <code>String</code>. To invoke <code>String</code>
+        methods on the returned value, it must be cast as
+        <code>String</code>. For example,
+        <code>((String)&nbsp;mdc.get("k")).contains("val")</code>.
+        </p>
 				</td>
 			</tr>
 

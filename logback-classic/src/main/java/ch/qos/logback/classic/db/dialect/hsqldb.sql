@@ -1,3 +1,10 @@
+# Logback: the reliable, generic, fast and flexible logging framework.
+# Copyright (C) 1999-2010, QOS.ch. All rights reserved.
+#
+# See http://logback.qos.ch/license.html for the applicable licensing 
+# conditions.
+
+
 # This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender.
 #
 # It is intended for HSQL databases. It has been tested on HSQL 1.8.07.

@@ -72,7 +72,7 @@ public class Interpreter {
   final private InterpretationContext interpretationContext;
   final private ArrayList<ImplicitAction> implicitActions;
   final private CAI_WithLocatorSupport cai;
-  Pattern pattern;
+  public Pattern pattern;
   Locator locator;
   EventPlayer player;
 

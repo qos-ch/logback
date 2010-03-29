@@ -1,3 +1,9 @@
+# Logback: the reliable, generic, fast and flexible logging framework.
+# Copyright (C) 1999-2010, QOS.ch. All rights reserved.
+#
+# See http://logback.qos.ch/license.html for the applicable licensing 
+# conditions.
+
 # This SQL script creates the required tables by ch.qos.logback.access.db.DBAppender.
 #
 # It is intended for MySQL databases. It has been tested on MySQL 5.0.22 with 
