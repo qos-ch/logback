@@ -307,8 +307,10 @@ public class JoranConfiguratorTest {
     assertEquals("UTF-8", encoder.getCharset().displayName());
     
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree());
-    
+    assertTrue(checker.isErrorFree()); 
   }
+  
+
+
 
 }

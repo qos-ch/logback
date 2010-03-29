@@ -29,7 +29,6 @@ import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.TimestampAction;
-import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
@@ -66,10 +65,6 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
     
     rs.addRule(new Pattern("configuration/timestamp"),
         new TimestampAction());
-    
-    rs.addRule(new Pattern("*/if"),
-        new IfAction());
-    
     
     // the contextProperty pattern is deprecated. It is undocumented
     // and will be dropped in future versions of logback

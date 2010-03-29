@@ -1,0 +1,29 @@
+
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${randomOutputDir}/conditional.log</file>
+    <encoder>
+      <pattern>%d %-5level %logger{35} - %msg %n</pattern>
+   </encoder>
+  </appender>
+
+  <root level="ERROR">
+     <appender-ref ref="FILE" />
+  </root>
+
+
+  <if condition='property("HOSTNAME").contains("${aHost}")'>
+    <then>
+      <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+          <pattern>%d %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+      </appender>
+      <root>
+        <appender-ref ref="CON" />
+      </root>
+    </then>
+  </if>
+
+</configuration>

@@ -23,9 +23,11 @@ public class IfAction extends Action {
       throws ActionException {
 
     ic.pushObject(this);
+    
     Condition condition = null;
     String conditionAttribute = attributes.getValue(CONDITION_ATTR);
     if (!OptionHelper.isEmpty(conditionAttribute)) {
+      conditionAttribute = OptionHelper.substVars(conditionAttribute, context);
       PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder();
       pesb.setContext(context);
       try {
