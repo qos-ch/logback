@@ -1,6 +1,7 @@
 package ch.qos.logback.core.joran.conditional;
 
 import java.util.List;
+import java.util.Stack;
 
 import org.xml.sax.Attributes;
 
@@ -14,14 +15,22 @@ import ch.qos.logback.core.util.OptionHelper;
 public class IfAction extends Action {
   private static final String CONDITION_ATTR = "condition";
   
-  Boolean boolResult;
-  List<SaxEvent> thenSaxEventList;
-  List<SaxEvent> elseSaxEventList;
 
+  Stack<IfState> stack = new Stack<IfState>();
+  
   @Override
   public void begin(InterpretationContext ic, String name, Attributes attributes)
       throws ActionException {
 
+    IfState state = new IfState();
+    boolean emptyStack = stack.isEmpty();
+    stack.push(state);
+
+    if(!emptyStack) {
+      return;
+    }
+    
+    state.active = true;
     ic.pushObject(this);
     
     Condition condition = null;
@@ -37,7 +46,7 @@ public class IfAction extends Action {
       }
      
       if(condition!=null) {
-        boolResult = condition.evaluate();
+        state.boolResult = condition.evaluate();
       }
       
     }
@@ -47,6 +56,12 @@ public class IfAction extends Action {
   @Override
   public void end(InterpretationContext ic, String name) throws ActionException {
 
+    IfState state = stack.pop();
+    if(!state.active) {
+      return;
+    }
+   
+    
     Object o = ic.peekObject();
     if (o == null) {
       throw new IllegalStateException("Unexpected null object on stack");
@@ -62,15 +77,15 @@ public class IfAction extends Action {
     }
     ic.popObject();
 
-    if (boolResult == null) {
+    if (state.boolResult == null) {
       addError("Failed to determine \"if then else\" result");
       return;
     }
 
     Interpreter interpreter = ic.getJoranInterpreter();
-    List<SaxEvent> listToPlay = thenSaxEventList;
-    if (!boolResult) {
-      listToPlay = elseSaxEventList;
+    List<SaxEvent> listToPlay = state.thenSaxEventList;
+    if (!state.boolResult) {
+      listToPlay = state.elseSaxEventList;
     }
     
     // insert past this event
@@ -80,11 +95,29 @@ public class IfAction extends Action {
 
 
   public void setThenSaxEventList(List<SaxEvent> thenSaxEventList) {
-    this.thenSaxEventList = thenSaxEventList;
+    IfState state = stack.firstElement();
+    if(state.active) {
+      state.thenSaxEventList = thenSaxEventList;
+    } else {
+      throw new IllegalStateException("setThenSaxEventList() invoked on inactive IfAction");
+    }
   }
 
   public void setElseSaxEventList(List<SaxEvent> elseSaxEventList) {
-    this.elseSaxEventList = elseSaxEventList;
+    IfState state = stack.firstElement();
+    if(state.active) {
+      state.elseSaxEventList = elseSaxEventList;
+    } else {
+      throw new IllegalStateException("setElseSaxEventList() invoked on inactive IfAction");
+    }
+
   }
 
+}
+
+class IfState {
+  Boolean boolResult;
+  List<SaxEvent> thenSaxEventList;
+  List<SaxEvent> elseSaxEventList;
+  boolean active;
 }

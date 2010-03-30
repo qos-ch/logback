@@ -173,6 +173,13 @@ public class InterpretationContext extends ContextAwareBase implements
     return OptionHelper.substVars(value, this);
   }
 
+
+  
+
+  public boolean isListenerListEmpty() {
+    return listenerList.isEmpty();
+  }
+  
   public void addInPlayListener(InPlayListener ipl) {
     if (listenerList.contains(ipl)) {
       addWarn("InPlayListener " + ipl + " has been already registered");

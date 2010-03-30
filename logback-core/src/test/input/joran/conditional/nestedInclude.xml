@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<x>
+  <stack name="BEGIN"/>
+
+  <if condition='1 != 1'>
+    <then>
+      <stack name="t0"/>
+      <include file="${thenFileToInclude}"/>
+      <stack name="t1"/>
+    </then>
+    <else>
+      <stack name="e0"/>
+      <include file="${elseFileToInclude}"/>
+      <stack name="e1"/>
+    </else>
+  </if>
+  <stack name="END"/>
+
+</x>
+

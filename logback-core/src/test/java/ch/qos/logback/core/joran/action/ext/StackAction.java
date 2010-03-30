@@ -14,30 +14,27 @@
 package ch.qos.logback.core.joran.action.ext;
 
 
+import java.util.Stack;
+
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 
 
-public class StackCounterAction extends Action {
- Layout layout;
+public class StackAction extends Action {
 
-
-  public StackCounterAction() {
-  }
+  public static Stack<String> stack = new Stack<String>();
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    //String str = "Pushing "+name+"-begin";
-    ec.pushObject(name+"-begin");
+    stack.push(attributes.getValue("name"));
   }
 
   public void end(InterpretationContext ec, String name) {
-    ec.pushObject(name+"-end");    
   }
 
-  public void finish(InterpretationContext ec) {
+  static public void reset() {
+    stack.clear();
   }
 }

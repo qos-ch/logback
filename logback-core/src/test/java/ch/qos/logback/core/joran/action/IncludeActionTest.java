@@ -23,7 +23,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Stack;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +35,7 @@ import org.xml.sax.SAXParseException;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
-import ch.qos.logback.core.joran.action.ext.IncAction;
+import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
@@ -57,6 +59,9 @@ public class IncludeActionTest {
 
   static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX + "topByFile.xml";
 
+  static final String INTERMEDIARY_FILE = INCLUSION_DIR_PREFIX + "intermediaryByFile.xml";
+
+  
   static final String SUB_FILE = INCLUSION_DIR_PREFIX + "subByFile.xml";
 
   static final String MULTI_INCLUDE_BY_FILE = INCLUSION_DIR_PREFIX
@@ -82,43 +87,42 @@ public class IncludeActionTest {
   public void setUp() throws Exception {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
-    rulesMap.put(new Pattern("x/inc"), new IncAction());
     rulesMap.put(new Pattern("x/include"), new IncludeAction());
-
+    rulesMap.put(new Pattern("x/stack"), new StackAction());
+    
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
-    IncAction.reset();
   }
 
   @After
   public void tearDown() throws Exception {
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     context = null;
     System.clearProperty(INCLUDE_KEY);
     System.clearProperty(SECOND_FILE_KEY);
     System.clearProperty(SUB_FILE_KEY);
+    StackAction.reset();
   }
 
   @Test
   public void basicFile() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
     tc.doConfigure(TOP_BY_FILE);
-    verifyConfig(2);
+    verifyConfig(new String[] {"IA", "IB"});
   }
 
   @Test
   public void basicResource() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_AS_RESOURCE);
     tc.doConfigure(INCLUDE_BY_RESOURCE);
-    StatusPrinter.print(context);
-    verifyConfig(2);
+    verifyConfig(new String[] {"AR_A", "AR_B"});
   }
 
   @Test
   public void basicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
-    StatusPrinter.print(context);
-    verifyConfig(2);
+    verifyConfig(new String[] {"IA", "IB"});
   }
 
   @Test
@@ -184,37 +188,28 @@ public class IncludeActionTest {
 
   @Test
   public void nestedInclude() throws JoranException {
-    System.setProperty(SUB_FILE_KEY, INCLUDED_FILE);
-    System.setProperty(INCLUDE_KEY, SECOND_FILE);
+    System.setProperty(SUB_FILE_KEY, SUB_FILE);
+    System.setProperty(INCLUDE_KEY, INTERMEDIARY_FILE);
     tc.doConfigure(TOP_BY_FILE);
-    StatusPrinter.print(context);
-    verifyConfig(1);
-
-  }
+    Stack<String> witness = new Stack<String>();
+    witness.push("a");
+    witness.push("b");
+    witness.push("c");
+    assertEquals(witness, StackAction.stack);
+    }
 
   @Test
   public void multiInclude() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
     System.setProperty(SECOND_FILE_KEY, SECOND_FILE);
     tc.doConfigure(MULTI_INCLUDE_BY_FILE);
-    verifyConfig(3);
+    verifyConfig(new String[] {"IA", "IB", "SECOND"});
   }
-
-  @Test
-  public void saxParseException() throws JoranException {
-    System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
-    System.setProperty(SECOND_FILE_KEY, SECOND_FILE);
-    tc.doConfigure(MULTI_INCLUDE_BY_FILE);
-    verifyConfig(3);
+  
+  void verifyConfig(String[] expected) {
+    Stack<String> witness = new Stack<String>();
+    witness.addAll(Arrays.asList(expected));
+    assertEquals(witness, StackAction.stack);
   }
-
-  @Test
-  public void errorInDoBegin() {
-
-  }
-
-  void verifyConfig(int expected) {
-    assertEquals(expected, IncAction.beginCount);
-    assertEquals(expected, IncAction.endCount);
-  }
+  
 }

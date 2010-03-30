@@ -3,7 +3,7 @@
 
 <included>
 
-  <inc increment="1"/>
-  <inc increment="1"/>
+  <stack name="AR_A" />
+  <stack name="AR_B" />
 
 </included>

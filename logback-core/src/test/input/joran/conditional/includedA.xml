@@ -2,7 +2,6 @@
 <!DOCTYPE included>
 
 <included>
-
-  <stack name="SECOND"/>
-  
+  <stack name="IncludedA0"/>
+  <stack name="IncludedA1"/>
 </included>

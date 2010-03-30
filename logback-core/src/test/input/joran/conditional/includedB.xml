@@ -2,7 +2,5 @@
 <!DOCTYPE included>
 
 <included>
-
-  <stack name="SECOND"/>
-  
+  <stack name="IncludedB0"/>  
 </included>

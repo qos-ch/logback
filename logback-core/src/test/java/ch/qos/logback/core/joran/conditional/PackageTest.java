@@ -11,22 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran;
+package ch.qos.logback.core.joran.conditional;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({SkippingInInterpreterTest.class, TrivialConfiguratorTest.class, ch.qos.logback.core.joran.action.PackageTest.class,
-  ch.qos.logback.core.joran.event.PackageTest.class,
-  ch.qos.logback.core.joran.util.PackageTest.class,
-  ch.qos.logback.core.joran.spi.PackageTest.class,
-  ch.qos.logback.core.joran.replay.PackageTest.class,
-  ch.qos.logback.core.joran.implicitAction.PackageTest.class,
-  ch.qos.logback.core.joran.conditional.PackageTest.class,
-  
- })
+@SuiteClasses( { PropertyEvalScriptBuilderTest.class, IfThenElseTest.class,
+    IfThenElseAndIncludeCompositionTest.class })
 public class PackageTest {
 
 }

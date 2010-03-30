@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -28,6 +27,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -36,14 +36,21 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class IfThenElseTest {
+public class IfThenElseAndIncludeCompositionTest {
 
   Context context = new ContextBase();
   TrivialConfigurator tc;
   int diff = RandomUtil.getPositiveInt();
   static final String CONDITIONAL_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX
-  + "conditional/";
+      + "conditional/";
 
+  final static String THEN_FILE_TO_INCLUDE_KEY = "thenFileToInclude";
+  final static String ELSE_FILE_TO_INCLUDE_KEY = "elseFileToInclude";
+  
+  static final String NESTED_INCLUDE_FILE = CONDITIONAL_DIR_PREFIX+"nestedInclude.xml";
+  static final String THEN_FILE_TO_INCLUDE = CONDITIONAL_DIR_PREFIX+"includedA.xml";
+  static final String ELSE_FILE_TO_INCLUDE = CONDITIONAL_DIR_PREFIX+"includedB.xml";
+  
   
   @Before
   public void setUp() throws Exception {
@@ -55,6 +62,7 @@ public class IfThenElseTest {
     rulesMap.put(new Pattern("*/if/then/*"), new NOPAction());
     rulesMap.put(new Pattern("*/if/else"), new ElseAction());
     rulesMap.put(new Pattern("*/if/else/*"), new NOPAction());    
+    rulesMap.put(new Pattern("x/include"), new IncludeAction());
     
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
@@ -62,36 +70,24 @@ public class IfThenElseTest {
 
   @After
   public void tearDown() throws Exception {
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+    context = null;
     StackAction.reset();
   }
-
+  
   @Test
-  public void if0_Then() throws JoranException {
-    context.putProperty("Ki1", "Val1");
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if0.xml");
-    StatusPrinter.printIfErrorsOccured(context);
-    verifyConfig(new String[] {"BEGIN", "a", "END"});
+  public void includeNestedWithinIf() throws JoranException {
+    context.putProperty(THEN_FILE_TO_INCLUDE_KEY, THEN_FILE_TO_INCLUDE);
+    context.putProperty(ELSE_FILE_TO_INCLUDE_KEY, ELSE_FILE_TO_INCLUDE);
+    tc.doConfigure(NESTED_INCLUDE_FILE);
+    verifyConfig(new String[] {"BEGIN", "e0", "IncludedB0", "e1", "END"});
   }
-
-  @Test
-  public void if0_Else() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if0.xml");
-    verifyConfig(new String[] {"BEGIN", "b", "END"});
-  }
-
-  @Test
-  public void nestedIf() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"nestedIf.xml");
-    StatusPrinter.printIfErrorsOccured(context);
-    verifyConfig(new String[] {"BEGIN", "a", "c", "END"});
-  }
+  
   
   void verifyConfig(String[] expected) {
     Stack<String> witness = new Stack<String>();
     witness.addAll(Arrays.asList(expected));
     assertEquals(witness, StackAction.stack);
   }
-  
-  
   
 }

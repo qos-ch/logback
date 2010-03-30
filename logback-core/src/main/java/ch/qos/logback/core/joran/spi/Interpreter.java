@@ -337,29 +337,6 @@ public class Interpreter {
       player.addEventsDynamically(eventList, offset);
     }
   }
-
-  /**
-   * Pop from the stack if the top most element matches 'name'. Returns whether
-   * the top most element matched.
-   * 
-   * @param name
-   * @return whether the top most element matched 'name'
-   */
-  public boolean popIfMatch(String name) {
-    boolean match = pattern.peekLast().equals(name);
-    if (match) {
-      pattern.pop();
-    }
-    return match;
-  }
-  
-  /**
-   * Intended for internal use.
-   * @param name
-   */
-  public void patternPush(String name) {
-    pattern.push(name);
-  }
 }
 
 /**
