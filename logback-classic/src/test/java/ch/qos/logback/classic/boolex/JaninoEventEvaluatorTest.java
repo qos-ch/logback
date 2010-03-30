@@ -110,7 +110,7 @@ public class JaninoEventEvaluatorTest {
     String k = "key"+diff;
     
     MDC.put("key"+diff, "value"+diff);
-    jee.setExpression("mdc.get(\""+k+"\").contains(\"alue\")");
+    jee.setExpression("((String) mdc.get(\""+k+"\")).contains(\"alue\")");
     jee.start();
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
     

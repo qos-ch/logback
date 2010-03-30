@@ -14,6 +14,8 @@
 package ch.qos.logback.classic.joran.conditional;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,6 +31,8 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -59,7 +63,7 @@ public class ConditionalTest {
   }
   
   @Test
-  public void conditionalConsoleApp() throws JoranException, IOException,
+  public void conditionalConsoleApp_THEN() throws JoranException, IOException,
       InterruptedException {
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
@@ -71,7 +75,33 @@ public class ConditionalTest {
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNotNull(consoleAppender);
     StatusPrinter.printIfErrorsOccured(context);
-
-
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
   }
+  
+  @Test
+  public void conditionalConsoleApp_ELSE() throws JoranException, IOException,
+      InterruptedException {
+
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "conditional/conditionalConsoleApp_ELSE.xml";
+    configure(configFileAsStr);
+    
+    StatusPrinter.print(context);
+    
+    
+    FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
+    assertNotNull(fileAppender);
+    
+    ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
+    assertNull(consoleAppender);
+    
+    ListAppender listAppender = (ListAppender) root.getAppender("LIST");
+    assertNotNull(listAppender);
+    
+    //StatusPrinter.printIfErrorsOccured(context);
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
+  }
+
 }

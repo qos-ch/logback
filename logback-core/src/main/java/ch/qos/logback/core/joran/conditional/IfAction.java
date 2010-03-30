@@ -73,13 +73,11 @@ public class IfAction extends Action {
       listToPlay = elseSaxEventList;
     }
     
-    if (interpreter.pattern.peekLast().equals("if")) {
-      interpreter.pattern.pop();
-      interpreter.play(listToPlay);
-      interpreter.pattern.push("if");
-    }
+    // insert past this event
+    interpreter.addEventsDynamically(listToPlay, 1);
 
   }
+
 
   public void setThenSaxEventList(List<SaxEvent> thenSaxEventList) {
     this.thenSaxEventList = thenSaxEventList;

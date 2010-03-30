@@ -72,7 +72,7 @@ public class Interpreter {
   final private InterpretationContext interpretationContext;
   final private ArrayList<ImplicitAction> implicitActions;
   final private CAI_WithLocatorSupport cai;
-  public Pattern pattern;
+  private Pattern pattern;
   Locator locator;
   EventPlayer player;
 
@@ -102,17 +102,19 @@ public class Interpreter {
     actionListStack = new Stack<List>();
     player = new EventPlayer(this);
   }
-  
-  public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
+
+  public void setInterpretationContextPropertiesMap(
+      Map<String, String> propertiesMap) {
     interpretationContext.setPropertiesMap(propertiesMap);
   }
+
   /**
    * @deprecated replaced by {@link #getInterpretationContext()}
    */
   public InterpretationContext getExecutionContext() {
     return getInterpretationContext();
   }
-  
+
   public InterpretationContext getInterpretationContext() {
     return interpretationContext;
   }
@@ -149,9 +151,9 @@ public class Interpreter {
       cai.addError(errMsg);
     }
   }
-  
+
   /**
-   * This method is used to 
+   * This method is used to
    */
   private void pushEmptyActionList() {
     actionListStack.add(EMPTY_LIST);
@@ -179,10 +181,11 @@ public class Interpreter {
   }
 
   private void endElement(String namespaceURI, String localName, String qName) {
-    // given that an action list is always pushed for every startElement, we need
+    // given that an action list is always pushed for every startElement, we
+    // need
     // to always pop for every endElement
     List applicableActionList = (List) actionListStack.pop();
-   
+
     if (skip != null) {
       if (skip.equals(pattern)) {
         skip = null;
@@ -248,7 +251,8 @@ public class Interpreter {
 
     // logger.debug("set of applicable patterns: " + applicableActionList);
     if (applicableActionList == null) {
-      applicableActionList = lookupImplicitAction(pattern, attributes, interpretationContext);
+      applicableActionList = lookupImplicitAction(pattern, attributes,
+          interpretationContext);
     }
 
     return applicableActionList;
@@ -328,10 +332,33 @@ public class Interpreter {
     player.play(eventList);
   }
 
-  public void addEventsDynamically(List<SaxEvent> eventList) {
+  public void addEventsDynamically(List<SaxEvent> eventList, int offset) {
     if (player != null) {
-      player.addEventsDynamically(eventList);
+      player.addEventsDynamically(eventList, offset);
     }
+  }
+
+  /**
+   * Pop from the stack if the top most element matches 'name'. Returns whether
+   * the top most element matched.
+   * 
+   * @param name
+   * @return whether the top most element matched 'name'
+   */
+  public boolean popIfMatch(String name) {
+    boolean match = pattern.peekLast().equals(name);
+    if (match) {
+      pattern.pop();
+    }
+    return match;
+  }
+  
+  /**
+   * Intended for internal use.
+   * @param name
+   */
+  public void patternPush(String name) {
+    pattern.push(name);
   }
 }
 

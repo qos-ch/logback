@@ -9,7 +9,6 @@ import org.codehaus.janino.ClassBodyEvaluator;
 import org.codehaus.janino.CompileException;
 import org.codehaus.janino.Parser.ParseException;
 import org.codehaus.janino.Scanner.ScanException;
-import org.junit.Before;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -24,7 +23,6 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
 
   Map<String, String> map = new HashMap<String, String>();
 
-  @Before
   public Condition build(String script) throws IllegalAccessException,
       CompileException, ParseException, ScanException, InstantiationException,
       SecurityException, NoSuchMethodException, IllegalArgumentException,

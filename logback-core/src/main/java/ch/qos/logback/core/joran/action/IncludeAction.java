@@ -65,7 +65,8 @@ public class IncludeAction extends Action {
     // remove the <included> tag from the beginning and </included> from the end
     trimHeadAndTail(recorder);
 
-    ec.getJoranInterpreter().addEventsDynamically(recorder.saxEventList);
+    // offset = 2, because we need to get past this element as well as the end element
+    ec.getJoranInterpreter().addEventsDynamically(recorder.saxEventList, 2);
   }
 
   void close(InputStream in) {

@@ -11,14 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.joran;
+package ch.qos.logback.classic.joran.conditional;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+
 @RunWith(Suite.class)
-@SuiteClasses( { JoranConfiguratorTest.class, EvaluatorJoranTest.class,
-    ch.qos.logback.classic.joran.conditional.PackageTest.class })
+@SuiteClasses( { ConditionalTest.class})
 public class PackageTest {
 }
