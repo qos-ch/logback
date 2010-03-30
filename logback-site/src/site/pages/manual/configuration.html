@@ -129,8 +129,8 @@
     <code>MyApp1</code>.
     </p>
 
-    <em>Example 3.<span class="autoEx"/>: Simple example of
-    <code>BasicConfigurator</code> usage <a
+    <em>Example: Simple example of <code>BasicConfigurator</code>
+    usage <a
     href="../xref/chapters/configuration/MyApp1.html">(logback-examples/src/main/java/chapters/configuration/MyApp1.java)</a></em>
 
     <pre class="prettyprint source">package manual.configuration;
@@ -154,7 +154,7 @@ public class MyApp1 {
   instantiates a Foo object. The Foo class is listed below:
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Small class doing logging 
+  <em>Example: Small class doing logging 
   <a href="../xref/chapters/configuration/Foo.html">(logback-examples/src/main/java/chapters/configuration/Foo.java)</a>
   </em>
 
@@ -231,7 +231,7 @@ public class Foo {
    seen.
    </p>
 
- <p><em>Example 3.<span class="autoEx"/>: Basic configuration file
+ <p><em>Example: Basic configuration file
   (logback-examples/src/main/java/chapters/configuration/sample0.xml)</em></p>
 
 
@@ -276,7 +276,7 @@ public class Foo {
    addition of two lines of code for printing internal status
    data.</p>
 
-    <em>Example 3.<span class="autoEx"/>: Print logback's internal status information
+    <em>Example: Print logback's internal status information
     <a
     href="../xref/chapters/configuration/MyApp2.html">(logback-examples/src/main/java/chapters/configuration/MyApp2.java)</a></em>
 
@@ -325,7 +325,7 @@ public class Foo {
    </p>
 
 
-   <em>Example 3.<span class="autoEx"/>: Basic configuration file
+   <em>Example: Basic configuration file
    using debug mode
    (logback-examples/src/main/java/chapters/configuration/sample1.xml)</em>
 
@@ -399,7 +399,7 @@ public class Foo {
    <code>&lt;configuration></code> element to true, as shown next.
 
    </p>
-  <em>Example 3.<span class="autoEx"/>: Scanning for changes in
+  <em>Example: Scanning for changes in
   configuration file and automatic re-configuraion
   (logback-examples/src/main/java/chapters/configuration/scan1.xml)</em>
 
@@ -416,7 +416,7 @@ public class Foo {
    units of milliseconds, seconds, minutes or hours. Here is an
    example:</p>
 
-  <em>Example 3.<span class="autoEx"/>: Specifying a different
+  <em>Example: Specifying a different
   scanning period
   (logback-examples/src/main/java/chapters/configuration/scan2.xml)</em>
 
@@ -468,7 +468,7 @@ public class Foo {
    application, <em>MyApp3</em>, invokes JoranConfigurator on a
    configuration file passed as a parameter.</p>
    
-   <p><em>Example 3.<span class="autoEx"/>: Invoking
+   <p><em>Example: Invoking
    <code>JoranConfigurator</code> directly <a
    href="../xref/chapters/configuration/MyApp3.html">(logback-examples/src/main/java/chapters/configuration/MyApp3.java)</a></em></p>
 
@@ -605,7 +605,7 @@ public class MyApp3 {
    <p>It is also possible to register one or more status listeners
    within a configuration file. Here is an example.</p>
 
-  <p><em>Example 3.<span class="autoEx"/>: Registering a status listener (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</em></p>
+  <p><em>Example: Registering a status listener (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</em></p>
 
    <pre class="prettyprint source">&lt;configuration>
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
@@ -762,7 +762,7 @@ public class MyApp3 {
   following configuration file shows how to achieve that.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Setting the level of a logger (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
+<em>Example: Setting the level of a logger (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -800,7 +800,7 @@ public class MyApp3 {
   of the <em>chapters.configuration.Foo</em> logger to <code>DEBUG</code>.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Setting the level of multiple loggers (logback-examples/src/main/java/chapters/configuration/sample3.xml)</em>
+<em>Example: Setting the level of multiple loggers (logback-examples/src/main/java/chapters/configuration/sample3.xml)</em>
 <pre class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -879,7 +879,7 @@ public class MyApp3 {
   <em>sample4.xml</em> is a case in point:
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Logger level sample
+  <em>Example: Logger level sample
   (logback-examples/src/main/java/chapters/configuration/sample4.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
@@ -1003,7 +1003,7 @@ public class MyApp3 {
   configuration file illustrates:
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Multiple loggers (logback-examples/src/main/java/chapters/configuration/multiple.xml)</em>
+<em>Example: Multiple loggers (logback-examples/src/main/java/chapters/configuration/multiple.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
@@ -1055,7 +1055,7 @@ public class MyApp3 {
   duplicated.
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Duplicate appender
+  <em>Example: Duplicate appender
   (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
@@ -1101,7 +1101,7 @@ public class MyApp3 {
   set of loggers flow into a specific appender.
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Multiple appender
+  <em>Example: Multiple appender
   (logback-examples/src/main/java/chapters/configuration/restricted.xml)</em>
   <pre class="prettyprint source">&lt;configuration>
 
@@ -1146,7 +1146,7 @@ public class MyApp3 {
   of the tree.
   </p>
 
-<em>Example 3.<span class="autoEx"/>: Additivity flag (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</em>
+<em>Example: Additivity flag (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1184,6 +1184,44 @@ public class MyApp3 {
   <em>foo.log</em> file and only in that file.
   </p>
 
+
+  <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>
+
+  <p>As mentioned <a href="architecture.html#LoggerContext">in an
+  earlier chapter</a>, every logger is attached to logger context. By
+  default, the logger context is called "default". However, you can
+  set a different name with the help of the
+  <code>&lt;contextName></code> configuration directive. Note that
+  once set, the logger context name <a
+  href="../apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)">cannot
+  be changed</a>. Setting the context name is a simple and
+  straightforward method in order to distinguish between multiple
+  applications logging to the same target.
+  </p>
+  
+  <em>Example: Set the context name and display it
+  (logback-examples/src/main/java/chapters/configuration/contextName.xml)</em>
+  <pre class="prettyprint source">&lt;configuration>
+  <b>&lt;contextName>myAppName&lt;/contextName></b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+  <p>This last examples illustrates naming of the logger
+  context. Adding the the <a
+  href="layouts.html#conversionWord">contextName conversion word</a>
+  in layout's pattern will output the said name.</p>
+  
+  <!-- =============================================================== -->
+ 
+
   <h4><a name="variableSubstitution"
   href="#variableSubstitution">Variable substitution</a></h4>
 
@@ -1214,7 +1252,7 @@ public class MyApp3 {
   output file.
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Simple Variable substitution
+  <em>Example: Simple Variable substitution
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
   </em>
 
@@ -1243,7 +1281,7 @@ public class MyApp3 {
   
   <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
 
-  <em>Example 3.<span class="autoEx"/>: System Variable substitution
+  <em>Example: System Variable substitution
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
   </em>
   
@@ -1267,7 +1305,7 @@ public class MyApp3 {
   how one can do such a setup.
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: Variable substitution using a
+  <em>Example: Variable substitution using a
   separate file
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml)
   </em>
@@ -1295,7 +1333,7 @@ public class MyApp3 {
    file might look like.
    </p>
 
-   <em>Example 3.<span class="autoEx"/>: Variable file
+   <em>Example: Variable file
    (logback-examples/src/main/java/chapters/configuration/variables1.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien</pre>
@@ -1330,7 +1368,7 @@ public class MyApp3 {
    </p>
 
 
-   <em>Example 3.<span class="autoEx"/>: Nested variable references
+   <em>Example: Nested variable references
    (logback-examples/src/main/java/chapters/configuration/variables2.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien
@@ -1342,7 +1380,7 @@ fileName=myApp.log
     "fileName".
     </p>
     
-    <em>Example 3.<span class="autoEx"/>: Variable substitution using
+    <em>Example: Variable substitution using
     a separate file
     (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)</em>
 
@@ -1374,9 +1412,134 @@ fileName=myApp.log
   operator. For example, assuming <em>aKey</em> is not defined,
   <code>"${aKey<b>:-golden</b>}"</code> will be interpreted as
   "golden".</p>
-  
+  <!-- ============================================================== -->
 
- 
+  <h3><a name="conditional" href="#conditional">Conditional
+  processing of configuration files</a></h3>
+  
+  <p>XML syntax is awfully cumbersome to serve as a basis for a
+  general purpose programming language. Nevertheless, recognizing the
+  fact that developers need to juggle between several configuration
+  files targeting different environments, e.g. development, testing
+  and production. Often the different files have substantial parts in
+  common differing only in a few places. To avoid duplication, logback
+  supports conditional processing of configuration files with the help
+  of <code>&lt;if></code>, <code>&lt;then></code> and
+  <code>&lt;else></code> elements.</p>
+
+  <p>The general format for conditional statements is shown below.</p>
+
+  <pre class="prettyprint source">&lt;configuration>
+
+   &lt;!-- if-then form -->
+   &lt;if condition="some conditional expression">
+    &lt;then>
+      ...
+    &lt;/then>
+  &lt;/if>
+  
+  &lt;!-- if-then-else form -->
+  &lt;if condition="some conditional expression">
+    &lt;then>
+      ...
+    &lt;/then>
+    &lt;else>
+      ...
+    &lt;/else>    
+  &lt;/if>
+
+&lt;/configuration></pre>  
+
+  <p>The condition is a java expression where only context properties
+  or system properties are accessible. For a key passed as argument,
+  the <code>property</code>() or its shorter equivalent
+  <code>p</code>() methods return the String value of the property.
+  For example, to access the value a property with key "k", you would
+  write <code>property("k")</code> or equivalently
+  <code>p("k")</code>. If the property with key "k" is undefined, the
+  property method will return the empty string and not null. This
+  avoids the need to to check for null values.</p>
+
+  <p>In the next example, the <code>ConsoleAppender</code> will be
+  attached to the root logger, but only if the HOSTNAME is
+  "torino". Note that the <code>FileAppender</code> named "FILE" is
+  attached to the root logger in any case.
+  </p>
+
+
+  <pre class="prettyprint source">&lt;configuration>
+
+  <b>&lt;if condition='property("HOSTNAME").contains("torino")'></b>
+    <b>&lt;then></b>
+      &lt;appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+        &lt;encoder>
+          &lt;pattern>%d %-5level %logger{35} - %msg %n&lt;/pattern>
+        &lt;/encoder>
+      &lt;/appender>
+      &lt;root>
+        &lt;appender-ref ref="CON" />
+      &lt;/root>
+    <b>&lt;/then></b>
+  <b>&lt;/if></b>
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    &lt;file>${randomOutputDir}/conditional.log&lt;/file>
+    &lt;encoder>
+      &lt;pattern>%d %-5level %logger{35} - %msg %n&lt;/pattern>
+   &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="ERROR">
+     &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+  
+  <p>Conditional processing is supported everywhere within the
+  <code>&lt;configuration></code> element. Nested if-then-else
+  statements are also supported. However, as mentioned earlier, XML is
+  not a good basis for scripting, and too many conditionals can
+  quickly render your configuration files ungrokable.
+  </p>
+
+
+  <!-- ============================================================== -->
+
+   <h3><a name="insertFromJNDI" href="#insertFromJNDI">Obtaining
+   variables from JNDI</a></h3>
+
+   <p>Under certain circumstances, you may want to make use of
+   env-entries stored in JNDI. The <code>&lt;insertFromJNDI></code>
+   configuration directive extracts an env-entry stored in JNDI and
+   inserts it as variable as specified by the <span
+   class="attr">as</span> attribute.
+   </p>
+
+   <em>Example: Insert as properties env-entries obtained via JNDI
+  (logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml)</em>
+   <pre class="prettyprint source">&lt;configuration>
+  <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
+  <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d %contextName %level %msg %logger{50}%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+  <p>In this last example, the "java:comp/env/appName" env-entry is
+  inserted as the <span class="variable">appName</span> property. Note
+  that the <code>&lt;contextName></code> directive sets the context
+  name based on the value of the <span class="variable">appName</span>
+  property inserted by the previous <code>&lt;insertFromJNDI></code>
+  directive.
+  </p>
+
   <h3><a name="fileInclusion" href="#fileInclusion">File
   inclusion</a></h3>
 
@@ -1385,7 +1548,7 @@ fileName=myApp.log
   element, as shown below:
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: File include
+  <em>Example: File include
   (logback-examples/src/main/java/chapters/configuration/containingConfig.xml)</em>
 
   <pre class="prettyprint source">&lt;configuration>
@@ -1402,7 +1565,7 @@ fileName=myApp.log
   <code>ConsoleAppender</code> could be declared as:
   </p>
 
-  <em>Example 3.<span class="autoEx"/>: File include
+  <em>Example: File include
   (logback-examples/src/main/java/chapters/configuration/includedConfig.xml)</em>
 
   <pre class="source"><b class="green big">&lt;included></b>
@@ -1444,77 +1607,6 @@ fileName=myApp.log
     </li>
   </ul>
 
-
-
-  <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>
-
-  <p>As mentioned <a href="architecture.html#LoggerContext">in an
-  earlier chapter</a>, every logger is attached to logger context. By
-  default, the logger context is called "default". However, you can
-  set a different name with the help of the
-  <code>&lt;contextName></code> configuration directive. Note that
-  once set, the logger context name <a
-  href="../apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)">cannot
-  be changed</a>. Setting the context name is a simple and
-  straightforward method in order to distinguish between multiple
-  applications logging to the same target.
-  </p>
-  
-  <em>Example 3.<span class="autoEx"/>: Set the context name and display it
-  (logback-examples/src/main/java/chapters/configuration/contextName.xml)</em>
-  <pre class="prettyprint source">&lt;configuration>
-  <b>&lt;contextName>myAppName&lt;/contextName></b>
-  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;encoder>
-      &lt;pattern>%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-
-  &lt;root level="debug">
-    &lt;appender-ref ref="STDOUT" />
-  &lt;/root>
-&lt;/configuration></pre>
-
-  <p>This last examples illustrates naming of the logger
-  context. Adding the the <a
-  href="layouts.html#conversionWord">contextName conversion word</a>
-  in layout's pattern will output the said name.</p>
-
-   <h3><a name="insertFromJNDI" href="#insertFromJNDI">Obtaining
-   variables from JNDI</a></h3>
-
-   <p>Under certain circumstances, you may want to make use of
-   env-entries stored in JNDI. The <code>&lt;insertFromJNDI></code>
-   configuration directive extracts an env-entry stored in JNDI and
-   inserts it as variable as specified by the <span
-   class="attr">as</span> attribute.
-   </p>
-
-   <em>Example 3.<span class="autoEx"/>: Insert as properties env-entries obtained via JNDI
-  (logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml)</em>
-   <pre class="prettyprint source">&lt;configuration>
-  <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
-  <b>&lt;contextName><span class="green">${appName}</span>&lt;/contextName></b>
-
-  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;encoder>
-      &lt;pattern>%d %contextName %level %msg %logger{50}%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>
-&lt;/configuration></pre>
-
-  <p>In this last example, the "java:comp/env/appName" env-entry is
-  inserted as the <span class="variable">appName</span> property. Note
-  that the <code>&lt;contextName></code> directive sets the context
-  name based on the value of the <span class="variable">appName</span>
-  property inserted by the previous <code>&lt;insertFromJNDI></code>
-  directive..
-
-</p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>

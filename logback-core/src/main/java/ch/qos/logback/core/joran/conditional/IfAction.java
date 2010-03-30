@@ -87,9 +87,12 @@ public class IfAction extends Action {
     if (!state.boolResult) {
       listToPlay = state.elseSaxEventList;
     }
-    
-    // insert past this event
-    interpreter.addEventsDynamically(listToPlay, 1);
+
+    // if boolResult==false & missing else,  listToPlay may be null
+    if(listToPlay != null) {
+      // insert past this event
+      interpreter.addEventsDynamically(listToPlay, 1);
+    }
 
   }
 

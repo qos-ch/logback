@@ -15,6 +15,7 @@ package ch.qos.logback.core.joran.conditional;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -62,6 +64,7 @@ public class IfThenElseTest {
 
   @After
   public void tearDown() throws Exception {
+    StatusPrinter.printIfErrorsOccured(context);
     StackAction.reset();
   }
 
@@ -69,7 +72,6 @@ public class IfThenElseTest {
   public void if0_Then() throws JoranException {
     context.putProperty("Ki1", "Val1");
     tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if0.xml");
-    StatusPrinter.printIfErrorsOccured(context);
     verifyConfig(new String[] {"BEGIN", "a", "END"});
   }
 
@@ -79,6 +81,22 @@ public class IfThenElseTest {
     verifyConfig(new String[] {"BEGIN", "b", "END"});
   }
 
+  @Test
+  public void ifWithoutElse_True() throws JoranException {
+    context.putProperty("Ki1", "Val1");
+    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifWithoutElse.xml");
+    verifyConfig(new String[] {"BEGIN", "a", "END"});
+  }
+
+  @Test
+  public void ifWithoutElse_False() throws JoranException {
+    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifWithoutElse.xml");
+    verifyConfig(new String[] {"BEGIN", "END"});
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
+  }
+
+  
   @Test
   public void nestedIf() throws JoranException {
     tc.doConfigure(CONDITIONAL_DIR_PREFIX+"nestedIf.xml");

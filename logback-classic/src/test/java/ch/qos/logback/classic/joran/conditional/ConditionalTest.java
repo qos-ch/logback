@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,69 +38,83 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
-
 public class ConditionalTest {
 
   LoggerContext context = new LoggerContext();
   Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
 
-  
   int diff = RandomUtil.getPositiveInt();
   String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
-  
+
   @Before
   public void setUp() throws UnknownHostException {
-    context.setName("c"+diff);
+    context.setName("c" + diff);
     context.putProperty("randomOutputDir", randomOutputDir);
-    InetAddress localhost = InetAddress.getLocalHost();
-    context.putProperty("aHost", localhost.getCanonicalHostName());
   }
- 
-  
+
+  @After
+  public void tearDown() {
+    StatusPrinter.printIfErrorsOccured(context);
+  }
+
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(context);
     jc.doConfigure(file);
   }
-  
+
   @Test
-  public void conditionalConsoleApp_THEN() throws JoranException, IOException,
-      InterruptedException {
+  public void conditionalConsoleApp_IF_THEN_True() throws JoranException,
+      IOException, InterruptedException {
+    InetAddress localhost = InetAddress.getLocalHost();
+    context.putProperty("aHost", localhost.getCanonicalHostName());
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
         + "conditional/conditionalConsoleApp.xml";
     configure(configFileAsStr);
     FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
     assertNotNull(fileAppender);
-    
+
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNotNull(consoleAppender);
-    StatusPrinter.printIfErrorsOccured(context);
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
   }
-  
+
   @Test
-  public void conditionalConsoleApp_ELSE() throws JoranException, IOException,
-      InterruptedException {
+  public void conditionalConsoleApp_IF_THEN_False() throws JoranException,
+      IOException, InterruptedException {
+
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+        + "conditional/conditionalConsoleApp.xml";
+    configure(configFileAsStr);
+    FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
+    assertNotNull(fileAppender);
+
+    ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
+    assertNull(consoleAppender);
+    StatusChecker checker = new StatusChecker(context);
+    assertTrue(checker.isErrorFree());
+  }
+
+  @Test
+  public void conditionalConsoleApp_IF_THEN_ELSE() throws JoranException,
+      IOException, InterruptedException {
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
         + "conditional/conditionalConsoleApp_ELSE.xml";
     configure(configFileAsStr);
-    
-    StatusPrinter.print(context);
-    
-    
+
     FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
     assertNotNull(fileAppender);
-    
+
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNull(consoleAppender);
-    
+
     ListAppender listAppender = (ListAppender) root.getAppender("LIST");
     assertNotNull(listAppender);
-    
-    //StatusPrinter.printIfErrorsOccured(context);
+
+    // StatusPrinter.printIfErrorsOccured(context);
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
   }
