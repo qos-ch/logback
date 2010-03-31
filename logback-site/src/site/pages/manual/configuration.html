@@ -1417,8 +1417,21 @@ fileName=myApp.log
   <h3><a name="conditional" href="#conditional">Conditional
   processing of configuration files</a></h3>
   
-  <p>XML syntax is awfully cumbersome to serve as a basis for a
-  general purpose programming language. Nevertheless, recognizing the
+  <p>Developers often need to juggle between several logback
+  configuration files targeting different environments such as
+  development, testing and production. These configuration files have
+  substantial parts in common differing only in a few places. To avoid
+  duplication, logback supports conditional processing of
+  configuration files with the help of <code>&lt;if></code>,
+  <code>&lt;then></code> and <code>&lt;else></code> elements so that a
+  single configuration file can adequately target several
+  environments.
+  </p>
+
+XML syntax is awfully cumbersome to serve as a basis for a
+  general purpose programming language. Developers often need to juggle between several logback configuration files targeting different environments such as development, testing and production
+
+Nevertheless, recognizing the
   fact that developers need to juggle between several configuration
   files targeting different environments, e.g. development, testing
   and production. Often the different files have substantial parts in
@@ -1497,11 +1510,14 @@ fileName=myApp.log
   
   <p>Conditional processing is supported everywhere within the
   <code>&lt;configuration></code> element. Nested if-then-else
-  statements are also supported. However, as mentioned earlier, XML is
-  not a good basis for scripting, and too many conditionals can
-  quickly render your configuration files ungrokable.
+  statements are also supported. However, XML syntax is awfully
+  cumbersome and is ill suited as the foundation of a general purpose
+  programming langiage.  Consequently, too many conditionals will
+  quickly render your configuration files ungrokable to subsequent
+  readers of your configuration files, including yourself.
   </p>
 
+  
 
   <!-- ============================================================== -->
 
