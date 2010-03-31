@@ -26,6 +26,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
@@ -109,11 +110,15 @@ public class ReconfigurePerf {
     return rocf;
   }
 
-
+  LoggingEvent newEvent(Level level, String msg) {
+    LoggingEvent event =  new LoggingEvent(null, logger, level, msg, null, null);
+    return event;
+  }
+  
   public double directLoop(ReconfigureOnChangeFilter rocf) {
     long start = System.nanoTime();
     for (int i = 0; i < LOOP_LEN; i++) {
-      rocf.decide(null, logger, Level.DEBUG, " ", null, null);
+      rocf.decide(newEvent(Level.DEBUG, " "));
     }
     long end = System.nanoTime();
     return (end - start) / (1.0d * LOOP_LEN);

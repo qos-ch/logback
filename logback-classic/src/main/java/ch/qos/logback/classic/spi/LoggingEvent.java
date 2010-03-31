@@ -95,6 +95,7 @@ public class LoggingEvent implements ILoggingEvent {
 
   public LoggingEvent(String fqcn, Logger logger, Level level, String message,
       Throwable throwable, Object[] argArray) {
+    
     this.fqnOfLoggerClass = fqcn;
     this.loggerName = logger.getName();
     this.loggerContext = logger.getLoggerContext();
@@ -113,7 +114,9 @@ public class LoggingEvent implements ILoggingEvent {
 
     // bug 85 (we previously failed to set this.argumentArray)
     this.argumentArray = argArray;
+  }
 
+  public void secondaryInit() {
     timeStamp = System.currentTimeMillis();
 
     // the case is ugly but under the circumstances acceptable
@@ -121,7 +124,7 @@ public class LoggingEvent implements ILoggingEvent {
         .getMDCAdapter();
     mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
-
+  
   public void setArgumentArray(Object[] argArray) {
     if (this.argumentArray != null) {
       throw new IllegalStateException("argArray has been already set");

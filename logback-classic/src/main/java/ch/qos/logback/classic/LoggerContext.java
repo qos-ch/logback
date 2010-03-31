@@ -21,7 +21,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.slf4j.ILoggerFactory;
-import org.slf4j.Marker;
 
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextListener;
@@ -30,7 +29,6 @@ import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
@@ -60,7 +58,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   private Hashtable<String, Logger> loggerCache;
 
   private LoggerContextVO loggerContextRemoteView;
-  private final TurboFilterList turboFilterList = new TurboFilterList();
+  
+  // allow the Logger class access to this list
+  final TurboFilterList turboFilterList = new TurboFilterList();
   private boolean packagingDataEnabled = true;
 
   private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
@@ -248,36 +248,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
       tf.stop();
     }
     turboFilterList.clear();
-  }
-
-  final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object[] params, final Throwable t) {
-    if (turboFilterList.size() == 0) {
-      return FilterReply.NEUTRAL;
-    }
-    return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, params, t);
-  }
-
-  final FilterReply getTurboFilterChainDecision_1(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object param, final Throwable t) {
-    if (turboFilterList.size() == 0) {
-      return FilterReply.NEUTRAL;
-    }
-    return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, new Object[] { param }, t);
-  }
-
-  final FilterReply getTurboFilterChainDecision_2(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object param1, final Object param2, final Throwable t) {
-    if (turboFilterList.size() == 0) {
-      return FilterReply.NEUTRAL;
-    }
-    return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, new Object[] { param1, param2 }, t);
   }
 
   // === start listeners ==============================================

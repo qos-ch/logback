@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import org.slf4j.Marker;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
@@ -57,9 +54,8 @@ public class DuplicateMessageFilter extends TurboFilter {
   }
 
   @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level,
-      String format, Object[] params, Throwable t) {
-    int count = msgCache.getMessageCountAndThenIncrement(format);
+  public FilterReply decide(LoggingEvent event) {
+    int count = msgCache.getMessageCountAndThenIncrement(event.getMessage());
     if (count <= allowedRepetitions) {
       return FilterReply.NEUTRAL;
     } else {

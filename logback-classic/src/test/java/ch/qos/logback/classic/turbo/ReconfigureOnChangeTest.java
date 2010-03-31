@@ -24,6 +24,7 @@ import java.net.URL;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Marker;
 import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -32,6 +33,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
@@ -66,6 +68,12 @@ public class ReconfigureOnChangeTest {
   Logger logger = loggerContext.getLogger(this.getClass());
   MultiThreadedHarness harness;
 
+  
+  LoggingEvent newEvent(Marker marker) {
+    LoggingEvent event =  new LoggingEvent(null, logger, null, null, null, null);
+    event.setMarker(marker);
+    return event;
+  }
   @Before
   public void setUp() {
     System.out.println("======== TEST START");
@@ -192,10 +200,17 @@ public class ReconfigureOnChangeTest {
     BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 
+  LoggingEvent newEvent(Level level, String msg) {
+    LoggingEvent event =  new LoggingEvent(null, logger, level, msg, null, null);
+    return event;
+  }
+
   public double directLoop(ReconfigureOnChangeFilter rocf) {
+    LoggingEvent event = newEvent(Level.DEBUG, " ");
+    
     long start = System.nanoTime();
     for (int i = 0; i < LOOP_LEN; i++) {
-      rocf.decide(null, logger, Level.DEBUG, " ", null, null);
+      rocf.decide(event);
     }
     long end = System.nanoTime();
     return (end - start) / (1.0d * LOOP_LEN);
@@ -219,7 +234,7 @@ public class ReconfigureOnChangeTest {
     double avg = indirectLoop();
     System.out.println(avg);
     // the reference was computed on Orion (Ceki's computer)
-    long referencePerf = 68;
+    long referencePerf = 68+150; // extra 150 for LoggingEvent creation and gc
     BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 

@@ -21,6 +21,9 @@ import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 
 public class MarkerFilterTest {
@@ -28,15 +31,16 @@ public class MarkerFilterTest {
   static String MARKER_NAME = "toto";
   
   Marker totoMarker = MarkerFactory.getMarker(MARKER_NAME);
-  
+  LoggerContext context = new LoggerContext();
+  Logger logger = context.getLogger(this.getClass());
 
   @Test
   public void testNoMarker() {
     MarkerFilter mkt = new MarkerFilter();
     mkt.start();
     assertFalse(mkt.isStarted());
-    assertEquals(FilterReply.NEUTRAL, mkt.decide(totoMarker, null, null, null, null, null));
-    assertEquals(FilterReply.NEUTRAL, mkt.decide(null, null, null, null, null, null));
+    assertEquals(FilterReply.NEUTRAL, mkt.decide(newEvent(totoMarker)));
+    assertEquals(FilterReply.NEUTRAL, mkt.decide(newEvent(null)));
 
   }
 
@@ -50,8 +54,15 @@ public class MarkerFilterTest {
 
     mkt.start();
     assertTrue(mkt.isStarted());
-    assertEquals(FilterReply.DENY, mkt.decide(null, null, null, null, null, null));
-    assertEquals(FilterReply.ACCEPT, mkt.decide(totoMarker, null, null, null, null, null));
+    assertEquals(FilterReply.DENY, mkt.decide(newEvent(null)));
+    assertEquals(FilterReply.ACCEPT, mkt.decide(newEvent(totoMarker)));
   }
+  
+  LoggingEvent newEvent(Marker marker) {
+    LoggingEvent event =  new LoggingEvent(null, logger, null, null, null, null);
+    event.setMarker(marker);
+    return event;
+  }
+
   
 }

@@ -62,6 +62,7 @@ public class JaninoEventEvaluatorTest {
     LoggingEvent e = new LoggingEvent(
         ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
         logger, Level.INFO, "Some message", ex, null);
+    e.secondaryInit();
     return e;
   }
 

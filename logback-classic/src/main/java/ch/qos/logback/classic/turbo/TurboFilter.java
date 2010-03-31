@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import org.slf4j.Marker;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -50,8 +47,7 @@ public abstract class TurboFilter extends ContextAwareBase implements LifeCycle 
    * @param t
    * @return
    */
-  public abstract FilterReply decide(Marker marker, Logger logger,
-      Level level, String format, Object[] params, Throwable t);
+  public abstract FilterReply decide(LoggingEvent event);
 
   public void start() {
     this.start = true;

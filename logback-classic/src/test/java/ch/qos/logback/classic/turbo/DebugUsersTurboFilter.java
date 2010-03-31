@@ -17,11 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.MDC;
-import org.slf4j.Marker;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
@@ -40,8 +39,8 @@ public class DebugUsersTurboFilter extends TurboFilter {
   List<String> userList = new ArrayList<String>(); 
   
   @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-    if (!level.equals(Level.DEBUG)) {
+  public FilterReply decide(LoggingEvent event) {
+    if (!event.getLevel().equals(Level.DEBUG)) {
       return FilterReply.NEUTRAL;
     } 
     String user = MDC.get(ClassicConstants.USER_MDC_KEY);

@@ -32,8 +32,8 @@ public class LoggerPerfTest {
   static long NORMAL_RUN_LENGTH = 1 * 1000 * 1000;
   static long SHORTENED_RUN_LENGTH = 500 * 1000;
 
-  LoggerContext lc = new LoggerContext();
-  Logger lbLogger = lc.getLogger(this.getClass());
+  LoggerContext context = new LoggerContext();
+  Logger lbLogger = context.getLogger(this.getClass());
   org.slf4j.Logger logger = lbLogger;
 
   @Before
@@ -46,15 +46,15 @@ public class LoggerPerfTest {
     double avg = computeDurationOfDisabledLogsWith_1_NOPFilter(1,
         NORMAL_RUN_LENGTH);
     System.out.println("durationOfDisabledLogsWith_1_NOPFilter=" + avg);
-    long referencePerf = 60;
-
+    
+    long referencePerf = 60+150;  // 150 for LoggingEvent creation and gc
     BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
   }
 
   double computeDurationOfDisabledLogsWith_1_NOPFilter(int numOfFilters,
       long len) {
     for (int i = 0; i < numOfFilters; i++) {
-      lc.addTurboFilter(new NOPTurboFilter());
+      context.addTurboFilter(new NOPTurboFilter());
     }
     lbLogger.setLevel(Level.OFF);
     for (long i = 0; i < len; i++)

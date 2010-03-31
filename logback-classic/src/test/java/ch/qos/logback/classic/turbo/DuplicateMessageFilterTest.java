@@ -13,27 +13,31 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 
 public class DuplicateMessageFilterTest {
 
+  LoggerContext context = new LoggerContext();
+  Logger logger = context.getLogger(this.getClass());
+  
   @Test
   public void smoke() {
     DuplicateMessageFilter dmf = new DuplicateMessageFilter();
     dmf.setAllowedRepetitions(0);
     dmf.start();
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "x", null,
-        null));
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "y", null,
-        null));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("x")));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("y")));
     assertEquals(FilterReply.DENY, dmf
-        .decide(null, null, null, "x", null, null));
+        .decide(newEvent("x")));
     assertEquals(FilterReply.DENY, dmf
-        .decide(null, null, null, "y", null, null));
+        .decide(newEvent("y")));
   }
 
   @Test
@@ -42,12 +46,9 @@ public class DuplicateMessageFilterTest {
     dmf.setAllowedRepetitions(1);
     dmf.setCacheSize(1);
     dmf.start();
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a", null,
-        null));
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "b", null,
-        null));
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a", null,
-        null));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("a")));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("b")));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("a")));
   }
 
   @Test
@@ -59,16 +60,13 @@ public class DuplicateMessageFilterTest {
     dmf.setCacheSize(cacheSize);
     dmf.start();
     for (int i = 0; i < cacheSize + margin; i++) {
-      assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a" + i,
-          null, null));
+      assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("a" + i)));
     }
     for (int i = cacheSize - 1; i >= margin; i--) {
-      assertEquals(FilterReply.DENY, dmf.decide(null, null, null, "a" + i,
-          null, null));
+      assertEquals(FilterReply.DENY, dmf.decide(newEvent("a" + i)));
     }
     for (int i = margin - 1; i >= 0; i--) {
-      assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a" + i,
-          null, null));
+      assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent("a" + i)));
     }
   }
 
@@ -80,10 +78,12 @@ public class DuplicateMessageFilterTest {
     dmf.setAllowedRepetitions(0);
     dmf.setCacheSize(10);
     dmf.start();
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, null, null,
-        null));
-    assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, null, null,
-        null));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent(null)));
+    assertEquals(FilterReply.NEUTRAL, dmf.decide(newEvent(null)));
+  }
+
+  LoggingEvent newEvent(String m) {
+    return new LoggingEvent(null, logger, null, m, null, null);
   }
 
 }

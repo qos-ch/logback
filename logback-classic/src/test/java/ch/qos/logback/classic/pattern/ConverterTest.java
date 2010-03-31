@@ -48,9 +48,11 @@ public class ConverterTest {
   // forces the returned caller information to match the caller stack for this
   // this particular test.
   LoggingEvent makeLoggingEvent(Exception ex) {
-    return new LoggingEvent(
+    LoggingEvent le =  new LoggingEvent(
         ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
         logger, Level.INFO, "Some message", ex, null);
+    le.secondaryInit();
+    return le;
   }
 
   Exception getException(String msg, Exception cause) {
@@ -74,7 +76,7 @@ public class ConverterTest {
       StringBuffer buf = new StringBuffer();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("75", buf.toString());
+      assertEquals("77", buf.toString());
     }
   }
 

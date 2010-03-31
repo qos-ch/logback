@@ -186,6 +186,7 @@ public class LoggingEventSerializationTest {
   private LoggingEvent createLoggingEvent() {
     LoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
         Level.DEBUG, "test message", null, null);
+    le.secondaryInit();
     return le;
   }
 

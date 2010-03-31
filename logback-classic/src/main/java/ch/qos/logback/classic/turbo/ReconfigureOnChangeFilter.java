@@ -17,12 +17,9 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import org.slf4j.Marker;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
@@ -94,8 +91,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   private int invocationCounter = 0;
 
   @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level,
-      String format, Object[] params, Throwable t) {
+  public FilterReply decide(LoggingEvent event) {
     if (!isStarted()) {
       return FilterReply.NEUTRAL;
     }
