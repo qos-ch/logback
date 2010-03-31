@@ -108,7 +108,6 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
         subAppend(eventObject, connection, insertStatement);
         eventId = selectEventId(insertStatement, connection);
       }
-      System.out.println("eventid="+eventId);
       secondarySubAppend(eventObject, connection, eventId);
 
       // we no longer need the insertStatement

@@ -1,9 +1,12 @@
 package ch.qos.logback.classic.db;
 
-import ch.qos.logback.classic.db.names.*;
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import ch.qos.logback.classic.db.names.DBNameResolver;
+import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
+import ch.qos.logback.classic.db.names.SimpleDBNameResolver;
 
 /**
  * @author Tomasz Nurkiewicz
@@ -50,74 +53,6 @@ public class SQLBuilderTest {
     assertThat(sql).isEqualTo(expected);
   }
 
-  @Test
-  public void shouldReturnCustomSqlInsertLoggingEventQuery() throws Exception {
-    //given
-    DBNameResolver nameResolver = createCustomDBNameResolver();
-
-    //when
-    String sql = SQLBuilder.buildInsertSQL(nameResolver);
-
-    //then
-    final String expected = "INSERT INTO alpha (a, b, c, d, e, f, a0, a1, a2, a3, g, h, i, j) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    assertThat(sql).isEqualTo(expected);
-  }
-
-  private DBNameResolver createCustomDBNameResolver() {
-    final CustomDBNameResolver nameResolver = new CustomDBNameResolver();
-    nameResolver.overrideTableName(TableName.LOGGING_EVENT, "alpha");
-    nameResolver.overrideTableName(TableName.LOGGING_EVENT_EXCEPTION.name(), "beta");
-    nameResolver.overrideTableName(TableName.LOGGING_EVENT_PROPERTY, "gamma");
-
-    nameResolver.overrideColumnName(ColumnName.TIMESTMP, "a");
-    nameResolver.overrideColumnName(ColumnName.FORMATTED_MESSAGE, "b");
-    nameResolver.overrideColumnName(ColumnName.LOGGER_NAME, "c");
-    nameResolver.overrideColumnName(ColumnName.LEVEL_STRING, "d");
-    nameResolver.overrideColumnName(ColumnName.THREAD_NAME, "e");
-    nameResolver.overrideColumnName(ColumnName.REFERENCE_FLAG, "f");
-    nameResolver.overrideColumnName(ColumnName.ARG0.name(), "a0");
-    nameResolver.overrideColumnName(ColumnName.ARG1.name(), "a1");
-    nameResolver.overrideColumnName(ColumnName.ARG2.name(), "a2");
-    nameResolver.overrideColumnName(ColumnName.ARG3.name(), "a3");
-    nameResolver.overrideColumnName(ColumnName.CALLER_FILENAME.name(), "g");
-    nameResolver.overrideColumnName(ColumnName.CALLER_CLASS.name(), "h");
-    nameResolver.overrideColumnName(ColumnName.CALLER_METHOD.name(), "i");
-    nameResolver.overrideColumnName(ColumnName.CALLER_LINE.name(), "j");
-
-    nameResolver.overrideColumnName(ColumnName.EVENT_ID.name(), "k");
-    nameResolver.overrideColumnName(ColumnName.I.name(), "l");
-    nameResolver.overrideColumnName(ColumnName.TRACE_LINE.name(), "m");
-
-    nameResolver.overrideColumnName(ColumnName.MAPPED_KEY.name(), "o");
-    nameResolver.overrideColumnName(ColumnName.MAPPED_VALUE.name(), "p");
-    return nameResolver;
-  }
-
-  @Test
-  public void shouldReturnCustomSqlInsertExceptionQuery() throws Exception {
-    //given
-    DBNameResolver nameResolver = createCustomDBNameResolver();
-
-    //when
-    String sql = SQLBuilder.buildInsertExceptionSQL(nameResolver);
-
-    //then
-    final String expected = "INSERT INTO beta (k, l, m) VALUES (?, ?, ?)";
-    assertThat(sql).isEqualTo(expected);
-  }
-
-  @Test
-  public void shouldReturnCustomSqlInsertLoggingPropertyQuery() throws Exception {
-    //given
-    DBNameResolver nameResolver = createCustomDBNameResolver();
-
-    //when
-    String sql = SQLBuilder.buildInsertPropertiesSQL(nameResolver);
-
-    //then
-    final String expected = "INSERT INTO gamma (k, o, p) VALUES (?, ?, ?)";
-    assertThat(sql).isEqualTo(expected);
-  }
 
   private DBNameResolver createSimpleDBNameResolver() {
     final SimpleDBNameResolver nameResolver = new SimpleDBNameResolver();

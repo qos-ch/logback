@@ -11,15 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.db;
+package ch.qos.logback.classic.db.names;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { DBAppenderHSQLTest.class, DBAppenderH2Test.class,
-    DBAppenderIntegrationTest.class, SQLBuilderTest.class,
-    ch.qos.logback.classic.db.names.PackageTest.class})
+@SuiteClasses( { DefaultDBNameResolverTest.class,
+    SimpleDBNameResolverTest.class })
 public class PackageTest {
 }
