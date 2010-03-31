@@ -24,8 +24,8 @@ public class SQLBuilder {
   static String buildInsertPropertiesSQL(DBNameResolver dbNameResolver) {
     StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
     sqlBuilder.append(dbNameResolver.getTableName(TableName.LOGGING_EVENT_PROPERTY)).append(" (");
-    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.EVENT_ID)).append(",");
-    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.MAPPED_KEY)).append(",");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.EVENT_ID)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.MAPPED_KEY)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.MAPPED_VALUE)).append(") ");
     sqlBuilder.append("VALUES (?, ?, ?)");
     return sqlBuilder.toString();
@@ -34,8 +34,8 @@ public class SQLBuilder {
   static String buildInsertExceptionSQL(DBNameResolver dbNameResolver) {
     StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
     sqlBuilder.append(dbNameResolver.getTableName(TableName.LOGGING_EVENT_EXCEPTION)).append(" (");
-    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.EVENT_ID)).append(",");
-    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.I)).append(",");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.EVENT_ID)).append(", ");
+    sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.I)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.TRACE_LINE)).append(") ");
     sqlBuilder.append("VALUES (?, ?, ?)");
     return sqlBuilder.toString();
@@ -58,7 +58,7 @@ public class SQLBuilder {
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_CLASS)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_METHOD)).append(", ");
     sqlBuilder.append(dbNameResolver.getColumnName(ColumnName.CALLER_LINE)).append(") ");
-    sqlBuilder.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    sqlBuilder.append("VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     return sqlBuilder.toString();
   }
 }

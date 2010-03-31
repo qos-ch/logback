@@ -17,8 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Allows to override any table or column name to arbitrary value.
+ *
  * @author Tomasz Nurkiewicz
- * @since 2010-03-16
+ * @author Ceki Gulcu
+ * @since 0.9.19
  */
 public class CustomDBNameResolver implements DBNameResolver {
 
@@ -27,18 +30,17 @@ public class CustomDBNameResolver implements DBNameResolver {
   private final Map<String, String> columnNameOverrides = new HashMap<String, String>();
   
   public <N extends Enum<?>> String getTableName(N tableName) {
-    if (tableNameOverrides.get(tableName) != null)
-      return tableNameOverrides.get(tableName);
+    if (tableNameOverrides.get(tableName.name()) != null)
+      return tableNameOverrides.get(tableName.name());
     return defaultDbNameResolver.getTableName(tableName);
   }
 
   public <N extends Enum<?>> String getColumnName(N columnName) {
-    if (columnNameOverrides.get(columnName) != null)
-      return columnNameOverrides.get(columnName);
+    if (columnNameOverrides.get(columnName.name()) != null)
+      return columnNameOverrides.get(columnName.name());
     return defaultDbNameResolver.getColumnName(columnName);
   }
-  
-  
+
   public void overrideTableName(String reference, String name) {
     tableNameOverrides.put(reference, name);
   }
@@ -46,7 +48,11 @@ public class CustomDBNameResolver implements DBNameResolver {
     columnNameOverrides.put(reference, name);
   }
 
-
-  
+  public <N extends Enum<?>> void overrideTableName(N referenceTableName, String name) {
+    tableNameOverrides.put(referenceTableName.name(), name);
+  }
+  public <N extends Enum<?>> void overrideColumnName(N referenceColumnName, String name) {
+    columnNameOverrides.put(referenceColumnName.name(), name);
+  }
 
 }

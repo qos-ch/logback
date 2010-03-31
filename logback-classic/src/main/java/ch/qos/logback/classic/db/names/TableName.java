@@ -2,7 +2,7 @@ package ch.qos.logback.classic.db.names;
 
 /**
  * @author Tomasz Nurkiewicz
- * @since 2010-03-15
+ * @since 0.9.19
  */
 public enum TableName {
 

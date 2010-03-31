@@ -46,7 +46,6 @@ public class FileAppenderResilienceTest {
   }
 
   @Test
-  @Ignore
   public void manual() throws InterruptedException, IOException {
     Runner runner = new Runner(fa);
     Thread t = new Thread(runner);
