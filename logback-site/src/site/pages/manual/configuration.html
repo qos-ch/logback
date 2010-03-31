@@ -1238,13 +1238,13 @@ public class MyApp3 {
   As it often comes in handy, the variable ${HOSTNAME} is
   automatically defined.</p>
 
-  <h4>properties are inserted into the logger context</h4>
+  <h4>Properties are inserted into the logger context</h4>
 
   <p>Note that the values defined via <code>&lt;property></code>
   element are actually inserted into the logger context. In other
   words, they become properties of the logger context.  Consequently,
-  they will be available in all logging events as well as remotely
-  after serialization.</p>
+  they will be available in all logging events, including those sent
+  to remote hosts via serialization.</p>
 
   <p>The next example shows a variable, a.k.a. a substitution
   property, declared the beginning of the configuration file. It is
@@ -1367,7 +1367,6 @@ public class MyApp3 {
    properties file shown below gives an example.
    </p>
 
-
    <em>Example: Nested variable references
    (logback-examples/src/main/java/chapters/configuration/variables2.properties)</em>
 
@@ -1400,9 +1399,9 @@ fileName=myApp.log
   &lt;/root>
 &lt;/configuration></pre>
 
-  <h4><a name="defaultValuesForVariables"
+  <h3><a name="defaultValuesForVariables"
   href="#defaultValuesForVariables">Default substitution values for
-  variables</a></h4>
+  variables</a></h3>
 
   <p>Under certain circumstances, it may be desirable for a variable
   to have a default value in case it is not declared or its value is
@@ -1412,6 +1411,57 @@ fileName=myApp.log
   operator. For example, assuming <em>aKey</em> is not defined,
   <code>"${aKey<b>:-golden</b>}"</code> will be interpreted as
   "golden".</p>
+
+
+  <!-- ============================================================== -->
+  <h3><a name="hostname" href="#hostname">HOSTNAME property</a></h3>
+
+  <p>As it often comes in handy, the <code>HOSTNAME</code> property is
+  defined automatically during configuration.</p>
+
+  <!-- ============================================================== -->
+  
+  <h3><a name="timestamp" href="#timestamp">Setting a timestamp</a></h3>
+
+  <p>The <em>timestamp</em> element can define a property according to
+  current date and time. The <em>timestamp</em> element is <a
+  href="appenders.html#uniquelyNamed">explained in a subsequent
+  chapter</a>.</p>
+
+  <!-- ============================================================== -->
+  <h3><a name="definingPropsOnTheFly"
+  href="#definingPropsOnTheFly">Defining properties on the
+  fly</a></h3>
+
+  <p>You may define properties from within the configuration file
+  using the <code>&lt;define></code> element. The define element takes
+  mandatory attributes: <span class="attr">name</span> and <span
+  class="attr">class</span>. The <span class="attr">name</span>
+  attribute designates the name of the property to set whereas the
+  <span class="attr">class</span> attribute designates any class
+  implementing the <a
+  href="../xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>
+  interface. The value returned by the <code>getPropertyValue</code>()
+  method of the <code>PropertyDefiner</code> will be placed into the
+  named property.
+  </p>
+
+  <p>Here is an example.</p>
+
+  <pre class="prettyprint source">&lt;configuration>
+
+  &lt;define name="rootLevel" class="a.class.implementing.PropertyDefiner">
+    &lt;aProperty>of a.class.implementing.PropertyDefiner&lt;/aProperty>
+  &lt;/define>
+  
+  &lt;root level="${rootLevel}"/>
+&lt;/configuration></pre>
+
+  <p>At present time, logback does not ship with any classes
+  implementing <code>PropertyDefiner</code>. We merely provide an
+  extension point so that you may define properties dynamically.
+  </p>
+
   <!-- ============================================================== -->
 
   <h3><a name="conditional" href="#conditional">Conditional
@@ -1517,7 +1567,6 @@ Nevertheless, recognizing the
   readers of your configuration files, including yourself.
   </p>
 
-  
 
   <!-- ============================================================== -->
 

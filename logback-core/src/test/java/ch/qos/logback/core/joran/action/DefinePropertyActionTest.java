@@ -18,7 +18,6 @@ import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,8 @@ import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
@@ -40,7 +40,7 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class DefinePropertyActionTest {
 
-  private static final String DEFINE_XML_DIR = CoreTestConstants.JORAN_INPUT_PREFIX
+  private static final String DEFINE_INPUT_DIR = CoreTestConstants.JORAN_INPUT_PREFIX
       + "define/";
   private static final String GOOD_XML = "good.xml";
   private static final String NONAME_XML = "noname.xml";
@@ -48,82 +48,61 @@ public class DefinePropertyActionTest {
   private static final String BADCLASS_XML = "badclass.xml";
 
   SimpleConfigurator sc;
-  Context context;
+  Context context = new ContextBase();
   DefinePropertyAction definerAction;
   InterpretationContext ic;
+  StatusChecker checker = new StatusChecker(context);
 
   @Before
   public void setUp() throws Exception {
-    context = new ContextBase();
+
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("define"), new DefinePropertyAction());
     sc = new SimpleConfigurator(rulesMap);
     sc.setContext(context);
-
-  }
-
-  @Test
-  public void testAllRight() throws JoranException {
-    sc.doConfigure(DEFINE_XML_DIR + GOOD_XML);
-    // get from context
-    String inContextFoo = context.getProperty("foo");
-    // get from real class
-    FooPropertyDefiner fooDefiner = new FooPropertyDefiner();
-    fooDefiner.setFooName("Monster");
-    String fromRealClassFoo = fooDefiner.getPropertyValue();
-    assertEquals(inContextFoo, fromRealClassFoo);
-  }
-
-  @Test
-  public void testNoName() throws JoranException {
-    sc.doConfigure(DEFINE_XML_DIR + NONAME_XML);
-    // get from context
-    String inContextFoo = context.getProperty("foo");
-    assertNull(inContextFoo);
-    // check context errors
-    assertTrue(checkError("Missing property name for property definer. Near [define] line 1"));
-  }
-
-  @Test
-  public void testNoClass() throws JoranException {
-    sc.doConfigure(DEFINE_XML_DIR + NOCLASS_XML);
-    // get from context
-    String inContextFoo = context.getProperty("foo");
-    assertNull(inContextFoo);
-    // check context errors
-    assertTrue(checkError("Missing class name for property definer. Near [define] line 1"));
-  }
-
-  @Test
-  public void testBadClass() throws JoranException {
-    sc.doConfigure(DEFINE_XML_DIR + BADCLASS_XML);
-    // get from context
-    String inContextFoo = context.getProperty("foo");
-    assertNull(inContextFoo);
-    // check context errors
-    assertTrue(checkBadClassError());
   }
 
   @After
   public void tearDown() throws Exception {
-    context = null;
-    sc = null;
+    //StatusPrinter.printInCaseOfErrorsOrWarnings(context);
   }
 
-  private boolean checkError(String waitedMsg) {
-    Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
-    ErrorStatus es1 = (ErrorStatus) it.next();
-    return waitedMsg.equals(es1.getMessage());
+  @Test
+  public void good() throws JoranException {
+    sc.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
+    // get from context
+    String inContextFoo = context.getProperty("foo");
+    assertEquals("monster", inContextFoo);
   }
 
-  private boolean checkBadClassError() {
-    Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
-    // skip info about class instantiating
-    it.next();
-    // check error status
-    ErrorStatus es1 = (ErrorStatus) it.next();
-    return "Could not create an PropertyDefiner of type [a.b.c.Foo]."
-        .equals(es1.getMessage());
+  @Test
+  public void noName() throws JoranException {
+    sc.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+    // get from context
+    String inContextFoo = context.getProperty("foo");
+    assertNull(inContextFoo);
+    // check context errors
+    assertTrue(checker.containsMatch(Status.ERROR,
+        "Missing property name for property definer. Near \\[define\\] line 1"));
+  }
+
+  @Test
+  public void noClass() throws JoranException {
+    sc.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
+    String inContextFoo = context.getProperty("foo");
+    assertNull(inContextFoo);
+    assertTrue(checker.containsMatch(Status.ERROR,
+        "Missing class name for property definer. Near \\[define\\] line 1"));
+  }
+
+  @Test
+  public void testBadClass() throws JoranException {
+    sc.doConfigure(DEFINE_INPUT_DIR + BADCLASS_XML);
+    // get from context
+    String inContextFoo = context.getProperty("foo");
+    assertNull(inContextFoo);
+    // check context errors
+    checker.containsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
   }
 
 }

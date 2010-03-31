@@ -15,15 +15,19 @@ package ch.qos.logback.core.joran.action;
 
 import ch.qos.logback.core.PropertyDefinerBase;
 
-public class FooPropertyDefiner extends PropertyDefinerBase {
+public class AsLowerCasePropertyDefiner extends PropertyDefinerBase {
 
-  private String fooName;
+  String val;
 
   public String getPropertyValue() {
-    return "Foo[" + fooName + "]";
+    if (val == null) {
+      return null;
+    } else {
+      return val.toLowerCase();
+    }
   }
 
-  public void setFooName(String fooName) {
-    this.fooName = fooName;
+  public void setValue(String val) {
+    this.val = val;
   }
 }
