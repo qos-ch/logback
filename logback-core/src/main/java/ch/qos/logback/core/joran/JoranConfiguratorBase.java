@@ -22,6 +22,7 @@ import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
+import ch.qos.logback.core.joran.action.DefinePropertyAction;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
@@ -48,7 +49,6 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class JoranConfiguratorBase extends GenericConfigurator {
-  
 
   public List getErrorList() {
     return null;
@@ -56,29 +56,27 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
-   
-    rs.addRule(new Pattern("configuration/property"),
-        new PropertyAction());
-    
+
+    rs.addRule(new Pattern("configuration/property"), new PropertyAction());
+
     rs.addRule(new Pattern("configuration/substitutionProperty"),
         new PropertyAction());
-    
-    rs.addRule(new Pattern("configuration/timestamp"),
-        new TimestampAction());
-    
+
+    rs.addRule(new Pattern("configuration/timestamp"), new TimestampAction());
+
+    rs.addRule(new Pattern("configuration/define"), new DefinePropertyAction());
+
     // the contextProperty pattern is deprecated. It is undocumented
     // and will be dropped in future versions of logback
     rs.addRule(new Pattern("configuration/contextProperty"),
         new ContextPropertyAction());
-    
+
     rs.addRule(new Pattern("configuration/conversionRule"),
         new ConversionRuleAction());
 
     rs.addRule(new Pattern("configuration/statusListener"),
         new StatusListenerAction());
 
-    
-    
     rs.addRule(new Pattern("configuration/appender"), new AppenderAction());
     rs.addRule(new Pattern("configuration/appender/appender-ref"),
         new AppenderRefAction());
@@ -101,7 +99,8 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   @Override
   protected void buildInterpreter() {
     super.buildInterpreter();
-    Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+    Map<String, Object> omap = interpreter.getInterpretationContext()
+        .getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
   }
