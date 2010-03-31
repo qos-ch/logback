@@ -46,7 +46,8 @@ public class SiftingAppenderTest {
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-
+  StatusChecker sc = new StatusChecker(loggerContext);
+  
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(loggerContext);
@@ -92,7 +93,6 @@ public class SiftingAppenderTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(nopa);
-    StatusChecker sc = new StatusChecker(loggerContext);
     assertTrue(sc.containsMatch(ErrorStatus.ERROR, "No nested appenders found"));
     assertTrue(sc.containsMatch(ErrorStatus.ERROR,
         "Failed to build an appender for discriminating value \\[smoke\\]"));
@@ -113,7 +113,6 @@ public class SiftingAppenderTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(listAppender);
-    StatusChecker sc = new StatusChecker(loggerContext);
     assertTrue(sc.containsMatch(ErrorStatus.ERROR,
         "Only and only one appender can be nested"));
   }

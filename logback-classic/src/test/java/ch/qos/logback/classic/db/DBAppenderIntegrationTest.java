@@ -92,7 +92,9 @@ public class DBAppenderIntegrationTest {
 
     Logger logger = lc.getLogger(DBAppenderIntegrationTest.class);
 
-    MDC.put("userid", "user" + diff);
+    // the key userid is used in SiftingAppender test
+    // suffix with diff to avoid collision
+    MDC.put("userid"+diff, "user" + diff);
     int runLength = 5;
     for (int i = 1; i <= runLength; i++) {
       logger.debug("This is a debug message. Message number: " + (diff + i));
