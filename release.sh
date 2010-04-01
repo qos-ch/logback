@@ -1,5 +1,7 @@
-
 # memory aid 
+
+mvn versions:set -DnewVersion=${VERSION_NUMBER}
+
 mvn clean
 mvn install
 mvn site:site
@@ -10,3 +12,6 @@ mvn site:deploy -N
 
 #git tag -a release_${VERSION_NUMBER}
 #git push --tags
+
+
+#git push github --tags
