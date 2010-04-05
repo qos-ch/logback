@@ -59,9 +59,9 @@ public class IncludeActionTest {
 
   static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX + "topByFile.xml";
 
-  static final String INTERMEDIARY_FILE = INCLUSION_DIR_PREFIX + "intermediaryByFile.xml";
+  static final String INTERMEDIARY_FILE = INCLUSION_DIR_PREFIX
+      + "intermediaryByFile.xml";
 
-  
   static final String SUB_FILE = INCLUSION_DIR_PREFIX + "subByFile.xml";
 
   static final String MULTI_INCLUDE_BY_FILE = INCLUSION_DIR_PREFIX
@@ -89,7 +89,7 @@ public class IncludeActionTest {
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/include"), new IncludeAction());
     rulesMap.put(new Pattern("x/stack"), new StackAction());
-    
+
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
   }
@@ -108,21 +108,21 @@ public class IncludeActionTest {
   public void basicFile() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
     tc.doConfigure(TOP_BY_FILE);
-    verifyConfig(new String[] {"IA", "IB"});
+    verifyConfig(new String[] { "IA", "IB" });
   }
 
   @Test
   public void basicResource() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_AS_RESOURCE);
     tc.doConfigure(INCLUDE_BY_RESOURCE);
-    verifyConfig(new String[] {"AR_A", "AR_B"});
+    verifyConfig(new String[] { "AR_A", "AR_B" });
   }
 
   @Test
   public void basicURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
     tc.doConfigure(TOP_BY_URL);
-    verifyConfig(new String[] {"IA", "IB"});
+    verifyConfig(new String[] { "IA", "IB" });
   }
 
   @Test
@@ -178,12 +178,13 @@ public class IncludeActionTest {
     System.setProperty(INCLUDE_KEY, "http://logback2345.qos.ch");
     tc.doConfigure(TOP_BY_URL);
     assertEquals(Status.ERROR, context.getStatusManager().getLevel());
-    StatusChecker sc = new StatusChecker(context.getStatusManager());
+    StatusChecker sc = new StatusChecker(context.getStatusManager()); 
+
     // OS X throws IOException instead of UnknownHostException
     // http://jira.qos.ch/browse/LBCORE-129
-    if (!Env.isMac()) {
-      assertTrue(sc.containsException(UnknownHostException.class));
-    }
+    // This behavior has been observed on Windows XP as well
+    assertTrue(sc.containsException(UnknownHostException.class)
+        || sc.containsException(IOException.class));
   }
 
   @Test
@@ -196,20 +197,20 @@ public class IncludeActionTest {
     witness.push("b");
     witness.push("c");
     assertEquals(witness, StackAction.stack);
-    }
+  }
 
   @Test
   public void multiInclude() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
     System.setProperty(SECOND_FILE_KEY, SECOND_FILE);
     tc.doConfigure(MULTI_INCLUDE_BY_FILE);
-    verifyConfig(new String[] {"IA", "IB", "SECOND"});
+    verifyConfig(new String[] { "IA", "IB", "SECOND" });
   }
-  
+
   void verifyConfig(String[] expected) {
     Stack<String> witness = new Stack<String>();
     witness.addAll(Arrays.asList(expected));
     assertEquals(witness, StackAction.stack);
   }
-  
+
 }
