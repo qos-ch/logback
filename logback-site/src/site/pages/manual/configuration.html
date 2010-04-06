@@ -1480,8 +1480,7 @@ fileName=myApp.log
 
   <p>The general format for conditional statements is shown below.</p>
 
-  <pre class="prettyprint source">&lt;configuration>
-
+  <pre class="prettyprint source">
    &lt;!-- if-then form -->
    &lt;if condition="some conditional expression">
     &lt;then>
@@ -1497,9 +1496,7 @@ fileName=myApp.log
     &lt;else>
       ...
     &lt;/else>    
-  &lt;/if>
-
-&lt;/configuration></pre>  
+  &lt;/if></pre>  
 
   <p>The condition is a java expression where only context properties
   or system properties are accessible. For a key passed as argument,
@@ -1509,7 +1506,9 @@ fileName=myApp.log
   write <code>property("k")</code> or equivalently
   <code>p("k")</code>. If the property with key "k" is undefined, the
   property method will return the empty string and not null. This
-  avoids the need to to check for null values.</p>
+  avoids the need to to check for null values. If you need to check
+  whether a property is null, the <code>isNull()</code> method is
+  provided. For example, you can write <code>isNull("k")</code>.</p>
 
   <p>In the next example, the <code>ConsoleAppender</code> will be
   attached to the root logger, but only if the HOSTNAME is
@@ -1546,13 +1545,13 @@ fileName=myApp.log
 &lt;/configuration></pre>
 
   
-  <p>Conditional processing is supported everywhere within the
+  <p>Conditional processing is supported <em>anywhere</em> within the
   <code>&lt;configuration></code> element. Nested if-then-else
   statements are also supported. However, XML syntax is awfully
   cumbersome and is ill suited as the foundation of a general purpose
-  programming langiage.  Consequently, too many conditionals will
+  programming language.  Consequently, too many conditionals will
   quickly render your configuration files ungrokable to subsequent
-  readers of your configuration files, including yourself.
+  readers, including yourself.
   </p>
 
 
