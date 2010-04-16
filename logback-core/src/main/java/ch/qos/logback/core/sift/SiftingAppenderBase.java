@@ -14,8 +14,8 @@
 package ch.qos.logback.core.sift;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 
@@ -29,7 +29,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Ceki Gulcu
  */
 public abstract class SiftingAppenderBase<E> extends
-    UnsynchronizedAppenderBase<E> {
+    AppenderBase<E> {
 
   protected AppenderTracker<E> appenderTracker = new AppenderTrackerImpl<E>();
   AppenderFactoryBase<E> appenderFactory;
@@ -73,9 +73,8 @@ public abstract class SiftingAppenderBase<E> extends
 
     String discriminatingValue = discriminator.getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
-
+    
     Appender<E> appender = appenderTracker.get(discriminatingValue, timestamp);
-
     if (appender == null) {
       try {
         appender = appenderFactory.buildAppender(context, discriminatingValue);
@@ -91,6 +90,7 @@ public abstract class SiftingAppenderBase<E> extends
       }
     }
     appenderTracker.stopStaleAppenders(timestamp);
+    
     appender.doAppend(event);
   }
 
