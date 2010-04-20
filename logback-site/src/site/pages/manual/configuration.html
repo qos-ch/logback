@@ -718,49 +718,48 @@ public class MyApp3 {
 
     <p>The <code>&lt;logger></code> element may contain zero or more
     <code>&lt;appender-ref></code> elements; each appender thus
-    referenced is added to the named logger. It is important to keep
-    mind that each named logger that is declared with a
-    <code>&lt;logger></code> element first has all its appenders
-    removed and only then are the referenced appenders attached to it.
-    In particular, if there are no appender references, then the named
-    logger will lose all its appenders.
+    referenced is added to the named logger. Note that contrary to
+    log4j, logback-classic does <em>not</em> close or remove any
+    previously referenced appenders before adding the new appender
+    reference.
     </p>
 
 
 
-  <h4><a name="rootElement" href="#rootElement">Configuring the root
-  logger, or the <code>&lt;root></code> element</a></h4>
+   <h4><a name="rootElement" href="#rootElement">Configuring the root
+   logger, or the <code>&lt;root></code> element</a></h4>
 
-  <p>The <code>&lt;root></code> element configures the root logger. It
-  admits a single attribute, namely the <span
-  class="attr">level</span> attribute. It does not admit any other
-  attributes because the additivity flag does not apply to the root
-  logger.  Moreover, since the root logger is already named as "ROOT",
-  it does not admit a name attribute either. The value of the level
-  attribute can be one of the case-insensitive strings TRACE, DEBUG,
-  INFO, WARN, ERROR, ALL or OFF. Note that the level of the root
-  logger cannot be set to INHERITED or NULL.
-  </p>
+   <p>The <code>&lt;root></code> element configures the root
+   logger. It admits a single attribute, namely the <span
+   class="attr">level</span> attribute. It does not admit any other
+   attributes because the additivity flag does not apply to the root
+   logger.  Moreover, since the root logger is already named as
+   "ROOT", it does not admit a name attribute either. The value of the
+   level attribute can be one of the case-insensitive strings TRACE,
+   DEBUG, INFO, WARN, ERROR, ALL or OFF. Note that the level of the
+   root logger cannot be set to INHERITED or NULL.
+   </p>
 
 
-  <p>The <code>&lt;root></code> element admits zero or more
-  <code>&lt;appender-ref></code> elements.  Similar to the
-  <code>&lt;logger></code> element, declaring a <code>&lt;root></code>
-  element will have the effect of first closing and then detaching all
-  its current appenders and only subsequently will referenced
-  appenders, if any, will be added.  In particular, if the
-  <code>&lt;root></code> element contains no appender references, then
-  the root logger will lose all its appenders.
-  </p>
+   <p>The <code>&lt;root></code> element admits zero or more
+   <code>&lt;appender-ref></code> elements.  Similar to the
+   <code>&lt;logger></code> element, the <code>&lt;root></code>
+   element may contain zero or more <code>&lt;appender-ref></code>
+   elements; each appender thus referenced is added to the root
+   logger. Note that contrary to log4j, logback-classic does
+   <em>not</em> close or remove any previously referenced appenders
+   before adding the new appender reference to the root logger.
+   </p>
 
-  <h4>Example</h4>
+   <h4>Example</h4>
 
-  <p>Setting the level of a logger or root logger is as simple as
-  declaring it and setting its level, as the next example
-  illustrates. Suppose we are no longer interested in seeing any DEBUG
-  messages from any component belonging to the "chapters.configuration" package. The
-  following configuration file shows how to achieve that.
-  </p>
+   <p>Setting the level of a logger or root logger is as simple as
+   declaring it and setting its level, as the next example
+   illustrates. Suppose we are no longer interested in seeing any
+   DEBUG messages from any component belonging to the
+   "chapters.configuration" package. The following configuration file
+   shows how to achieve that.
+   </p>
 
 <em>Example: Setting the level of a logger (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
