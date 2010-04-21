@@ -165,7 +165,7 @@
 		<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a> class
 		implements jetty's <code><a
 		href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
-		interface. Jetty delegates the manament of access logging
+		interface. Jetty delegates the management of access logging
 		functionality to implementations of this interface.
 		</p>
 
@@ -214,11 +214,11 @@
   <a name="configuration"></a>
 	<h1>Logback-access configuration</h1>
 	
-  <p>Altough similar, the <em>logback-access.xml</em> file is slightly
+  <p>Although similar, the <em>logback-access.xml</em> file is slightly
   different than its more common counterpart in logback-classic.
   Appenders and Layouts are declared the exact same way. However, in
   the access module there is no notion of loggers and consequently
-  logger elements are disallowed in logback-access configuraiton
+  logger elements are disallowed in logback-access configuration
   files.
 	</p>
 
@@ -242,9 +242,9 @@
 		It declares a <code>ConsoleAppender</code> which prints its output
 		on the console.  The <code>ConsoleAppender</code> contains a
 		<code>PatternLayout</code> object responsible to format this
-		output. The log format is specied by the "%h %l %u %user %date
+		output. The log format is specified by the "%h %l %u %user %date
 		"%r" %s %b" pattern which incidentally corresponds to Common Log
-		Format (CLF). This format is recognized by log analysers such as
+		Format (CLF). This format is recognized by log analyzers such as
 		<a href="http://www.analog.cx/">Analog</a> or <a
 		href="http://awstats.sourceforge.net/">AWStats</a>. 
 		</p>
@@ -310,7 +310,7 @@
 
 		<p>Logback-access ships with an http-specific implementation of <a
 		href="xref/ch/qos/logback/access/PatternLayout.html">
-		<code>PatternLayout</code></a>. For detailled instructions on how
+		<code>PatternLayout</code></a>. For detailed instructions on how
 		to use the <code>PatternLayout</code>, please refer to the <a
 		href="manual/layouts.html#AccessPatternLayout">corresponding
 		chapter</a> of the logback manual.
@@ -341,8 +341,8 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"</pre></div>
 
 		<p>After you launch Tomcat, you can access the MBeans exposed by
-		Tomcat throught he JConsole application, which can be started with
-		the following command:
+		Tomcat via the JConsole application, which can be started with the
+		following command:
 		</p>
 <div class="source"><pre>jconsole</pre></div>
 
@@ -455,7 +455,7 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 
  <p>For debugging purposes, it is often handy to capture the client
  request as well as the server response as is. The
- <code>TeeFilter</code> was desgined precisely for this purpose.
+ <code>TeeFilter</code> was designed precisely for this purpose.
  </p>
  
  <p>The <code>TeeFilter</code> is a regular servlet filter. Like other
@@ -477,10 +477,10 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
   <p>We have tested <code>TeeFilter</code> to the best of our
   ability. However, since it duplicates the input stream of the
   request and the output stream of the response, it may interfere with
-  your application. For large input or output, it will add masurable
+  your application. For large input or output, it will add measurable
   latency. Although we have already fixed all currently known bugs,
   <code>TeeFilter</code> has broken otherwise correctly behaving
-  applications. Thus, in case of doubt, do not hesitate to disabl
+  applications. Thus, in case of doubt, do not hesitate to disable
   <code>TeeFilter</code>.
   
   </p>
@@ -507,7 +507,7 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 &lt;/configuration&gt;</p>
 
   <p>Few clicks accessing the <a href="demo.html">logback-demo</a>
-  application configured as outlined above, yeilds:</p>
+  application configured as outlined above, yields:</p>
 
   <p class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
 Host: localhost:8080
