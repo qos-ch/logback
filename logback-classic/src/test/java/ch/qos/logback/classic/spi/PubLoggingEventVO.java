@@ -28,10 +28,8 @@ import ch.qos.logback.classic.Level;
  * A read/write and serializable implementation of {@link ILoggingEvent}.
  * 
  * @author Ceki G&uuml;lc&uuml;
-
  */
 public class PubLoggingEventVO implements ILoggingEvent, Serializable {
-
 
   private static final long serialVersionUID = -3385765861078946218L;
 
@@ -54,8 +52,6 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
   public Marker marker;
   public Map<String, String> mdcPropertyMap;
   public long timeStamp;
-
-
 
   public String getThreadName() {
     return threadName;
@@ -83,7 +79,8 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     }
 
     if (argumentArray != null) {
-      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray);
+      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray)
+          .getMessage();
     } else {
       formattedMessage = message;
     }
@@ -114,8 +111,6 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
   public long getTimeStamp() {
     return timeStamp;
   }
-
-
 
   public long getContextBirthTime() {
     return loggerContextVO.getBirthTime();
@@ -222,7 +217,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
       return false;
     return true;
   }
-  
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(timeStamp);

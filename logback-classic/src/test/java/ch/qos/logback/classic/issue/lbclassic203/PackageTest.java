@@ -11,17 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.issue;
+package ch.qos.logback.classic.issue.lbclassic203;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import ch.qos.logback.classic.issue.lbclassic135.lbclassic139.LB139_DeadlockTest;
-
 @RunWith(Suite.class)
-@SuiteClasses( { LB139_DeadlockTest.class,
-    ch.qos.logback.classic.issue.lbclassic135.lbclassic139.PackageTest.class,
-    ch.qos.logback.classic.issue.lbclassic203.PackageTest.class })
+@SuiteClasses(ConcurrentSiftingTest.class)
 public class PackageTest {
 }

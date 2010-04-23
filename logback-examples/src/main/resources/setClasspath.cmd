@@ -10,5 +10,4 @@ set CLASSPATH=%CLASSPATH%;%LB_HOME%/logback-core-${project.version}.jar
 set CLASSPATH=%CLASSPATH%;%LB_HOME%/logback-examples/logback-examples-${project.version}.jar
 set CLASSPATH=%CLASSPATH%;%LB_HOME%/logback-examples/lib/slf4j-api-${slf4j.version}.jar
 
-
 REM echo %CLASSPATH%

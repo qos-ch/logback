@@ -73,7 +73,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
     // add caller data only if it is there already
     // fixes http://jira.qos.ch/browse/LBCLASSIC-145
-    if(le.hasCallerData()) {
+    if (le.hasCallerData()) {
       ledo.callerDataArray = le.getCallerData();
     }
     return ledo;
@@ -105,7 +105,8 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     }
 
     if (argumentArray != null) {
-      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray);
+      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray)
+          .getMessage();
     } else {
       formattedMessage = message;
     }
@@ -136,8 +137,6 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
   public long getTimeStamp() {
     return timeStamp;
   }
-
-
 
   public long getContextBirthTime() {
     return loggerContextVO.getBirthTime();

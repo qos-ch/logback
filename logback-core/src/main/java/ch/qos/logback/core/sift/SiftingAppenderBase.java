@@ -106,11 +106,13 @@ public abstract class SiftingAppenderBase<E> extends
   int nopaWarningCount = 0;
   
   NOPAppender<E> buildNOPAppender(String discriminatingValue) {
-    NOPAppender<E> nopa = new NOPAppender<E>();
     if(nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
       nopaWarningCount++;
       addError("Failed to build an appender for discriminating value ["+discriminatingValue+"]");
     }
+    NOPAppender<E> nopa = new NOPAppender<E>();
+    nopa.setContext(context);
+    nopa.start();
     return nopa;
   }
 

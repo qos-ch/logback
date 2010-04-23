@@ -20,7 +20,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 /**
- * 
  * An appender which calls logback recursively
  * 
  * @author Ralph Goers

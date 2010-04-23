@@ -80,12 +80,18 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * synchronized on 'this' (Logger) protecting against simultaneous
    * re-configuration of this logger (a very unlikely scenario).
    * 
-   * <p> It is further assumed that the AppenderAttachableImpl is responsible
-   * for its internal synchronization and thread safety. Thus, we can get away
-   * with *not* synchronizing on the 'aai' (check null/ read) because <p> 1) the
-   * 'aai' variable is immutable once set to non-null <p> 2) 'aai' is getAndSet
-   * only within addAppender which is synchronized <p> 3) all the other methods
-   * check whether 'aai' is null <p> 4) AppenderAttachableImpl is thread safe
+   * <p>
+   * It is further assumed that the AppenderAttachableImpl is responsible for
+   * its internal synchronization and thread safety. Thus, we can get away with
+   * *not* synchronizing on the 'aai' (check null/ read) because
+   * <p>
+   * 1) the 'aai' variable is immutable once set to non-null
+   * <p>
+   * 2) 'aai' is getAndSet only within addAppender which is synchronized
+   * <p>
+   * 3) all the other methods check whether 'aai' is null
+   * <p>
+   * 4) AppenderAttachableImpl is thread safe
    */
   private transient AppenderAttachableImpl<ILoggingEvent> aai;
   /**
@@ -158,17 +164,18 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       // nothing to do;
       return;
     }
-    if(newLevel == null && isRootLogger()) {
-      throw new IllegalArgumentException("The level of the root logger cannot be set to null");
+    if (newLevel == null && isRootLogger()) {
+      throw new IllegalArgumentException(
+          "The level of the root logger cannot be set to null");
     }
-        
+
     level = newLevel;
     if (newLevel == null) {
       effectiveLevelInt = parent.effectiveLevelInt;
     } else {
       effectiveLevelInt = newLevel.levelInt;
     }
-    
+
     if (childrenList != null) {
       int len = childrenList.size();
       for (int i = 0; i < len; i++) {
@@ -203,8 +210,9 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   /**
-   * Remove all previously added appenders from this logger instance. <p/> This
-   * is useful when re-reading configuration information.
+   * Remove all previously added appenders from this logger instance.
+   * <p/>
+   * This is useful when re-reading configuration information.
    */
   public void detachAndStopAllAppenders() {
     if (aai != null) {
@@ -254,7 +262,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * Invoke all the appenders of this logger.
    * 
    * @param event
-   *                The event to log
+   *          The event to log
    */
   public void callAppenders(ILoggingEvent event) {
     int writes = 0;
@@ -291,7 +299,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   static int getSeparatorIndexOf(String name) {
     return getSeparatorIndexOf(name, 0);
   }
-  
+
   /**
    * Get the position of the separator character, if any, starting at position
    * 'fromIndex'.
@@ -300,35 +308,35 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @param fromIndex
    * @return
    */
-  static int getSeparatorIndexOf(String name, int  fromIndex) {
+  static int getSeparatorIndexOf(String name, int fromIndex) {
     int i = name.indexOf(CoreConstants.DOT, fromIndex);
-    if(i != -1) {
+    if (i != -1) {
       return i;
     } else {
       return name.indexOf(CoreConstants.DOLLAR, fromIndex);
     }
   }
-  
+
   /**
    * Create a child of this logger by suffix, that is, the part of the name
    * extending this logger. For example, if this logger is named "x.y" and the
    * lastPart is "z", then the created child logger will be named "x.y.z".
    * 
-   * <p> IMPORTANT: Calls to this method must be within a synchronized block on
-   * this logger.
+   * <p>
+   * IMPORTANT: Calls to this method must be within a synchronized block on this
+   * logger.
    * 
    * @param lastPart
-   *                the suffix (i.e. last part) of the child logger name. This
-   *                parameter may not include dots, i.e. the logger separator
-   *                character.
+   *          the suffix (i.e. last part) of the child logger name. This
+   *          parameter may not include dots, i.e. the logger separator
+   *          character.
    * @return
    */
   Logger createChildByLastNamePart(final String lastPart) {
     int i_index = getSeparatorIndexOf(lastPart);
     if (i_index != -1) {
       throw new IllegalArgumentException("Child name [" + lastPart
-          + " passed as parameter, may not include ["
-          + CoreConstants.DOT + "]");
+          + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
     }
 
     if (childrenList == null) {
@@ -338,8 +346,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     if (this.isRootLogger()) {
       childLogger = new Logger(lastPart, this, this.loggerContext);
     } else {
-      childLogger = new Logger(
-          name + CoreConstants.DOT + lastPart, this,
+      childLogger = new Logger(name + CoreConstants.DOT + lastPart, this,
           this.loggerContext);
     }
     childrenList.add(childLogger);
@@ -349,13 +356,13 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
   private void localLevelReset() {
     effectiveLevelInt = Level.DEBUG_INT;
-    if(isRootLogger()) {
+    if (isRootLogger()) {
       level = Level.DEBUG;
     } else {
       level = null;
     }
   }
-  
+
   void recursiveReset() {
     detachAndStopAllAppenders();
     localLevelReset();
@@ -375,8 +382,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   static private final int DEFAULT_CHILD_ARRAY_SIZE = 5;
 
   Logger createChildByName(final String childName) {
-    int i_index = getSeparatorIndexOf(childName, this.name
-        .length() + 1);
+    int i_index = getSeparatorIndexOf(childName, this.name.length() + 1);
     if (i_index != -1) {
       throw new IllegalArgumentException("For logger [" + this.name
           + "] child name [" + childName
@@ -814,7 +820,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void log(Marker marker, String fqcn, int levelInt, String message,
-      Throwable t) {
+      Object[] argArray, Throwable t) {
     Level level = null;
     switch (levelInt) {
     case LocationAwareLogger.TRACE_INT:
@@ -835,7 +841,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     default:
       throw new IllegalArgumentException(levelInt + " not a valid level value");
     }
-    filterAndLog_0_Or3Plus(fqcn, marker, level, message, null, t);
+    filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
   }
 
   /**

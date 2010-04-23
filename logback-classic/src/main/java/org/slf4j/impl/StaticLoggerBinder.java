@@ -30,7 +30,8 @@ import ch.qos.logback.core.util.StatusPrinter;
  * The binding of {@link LoggerFactory} class with an actual instance of
  * {@link ILoggerFactory} is performed using information returned by this class.
  * 
- * @author <a href="http://www.qos.ch/shop/products/log4jManual">Ceki G&uuml;lc&uuml;</a>
+ * @author <a href="http://www.qos.ch/shop/products/log4jManual">Ceki
+ *         G&uuml;lc&uuml;</a>
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
@@ -56,8 +57,9 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   private boolean initialized = false;
   private LoggerContext defaultLoggerContext = new LoggerContext();
-  private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
-  
+  private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder
+      .getSingleton();
+
   private StaticLoggerBinder() {
     defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
   }
@@ -82,20 +84,17 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       try {
         new ContextInitializer(defaultLoggerContext).autoConfig();
       } catch (JoranException je) {
-        Util.reportFailure("Failed to auto configure default logger context",
-            je);
+        Util.report("Failed to auto configure default logger context", je);
       }
       StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
       contextSelectorBinder.init(defaultLoggerContext, KEY);
       initialized = true;
     } catch (Throwable t) {
       // we should never get here
-      Util.reportFailure("Failed to instantiate ["
-          + LoggerContext.class.getName() + "]", t);
+      Util.report("Failed to instantiate [" + LoggerContext.class.getName()
+          + "]", t);
     }
   }
-
-  
 
   public ILoggerFactory getLoggerFactory() {
     if (!initialized) {
@@ -113,5 +112,4 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     return contextSelectorBinder.getContextSelector().getClass().getName();
   }
 
- 
 }

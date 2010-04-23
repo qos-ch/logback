@@ -264,7 +264,7 @@
             <exclude>**/TestConstants.java</exclude>
             <exclude>**/test_osgi/BundleTest.java</exclude>
 org.slf4j.test_osgi
-            <exclude>**/SerializationPerfsTest.java</exclude>
+            <exclude>**/SerializationPerfTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

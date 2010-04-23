@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.slf4j.MDC;
 import org.slf4j.Marker;
+import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
@@ -30,11 +31,13 @@ import ch.qos.logback.classic.util.LogbackMDCAdapter;
  * is made to log then a <code>LoggingEvent</code> instance is created. This
  * instance is passed around to the different logback-classic components.
  * 
- * <p> Writers of logback-classic components such as appenders should be aware
- * of that some of the LoggingEvent fields are initialized lazily. Therefore, an
+ * <p>
+ * Writers of logback-classic components such as appenders should be aware of
+ * that some of the LoggingEvent fields are initialized lazily. Therefore, an
  * appender wishing to output data to be later correctly read by a receiver,
  * must initialize "lazy" fields prior to writing them out. See the
- * {@link #prepareForDeferredProcessing()} method for the exact list. </p>
+ * {@link #prepareForDeferredProcessing()} method for the exact list.
+ * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -45,7 +48,8 @@ public class LoggingEvent implements ILoggingEvent {
    * Fully qualified name of the calling Logger class. This field does not
    * survive serialization.
    * 
-   * <p> Note that the getCallerInformation() method relies on this fact.
+   * <p>
+   * Note that the getCallerInformation() method relies on this fact.
    */
   transient String fqnOfLoggerClass;
 
@@ -61,8 +65,10 @@ public class LoggingEvent implements ILoggingEvent {
   /**
    * Level of logging event.
    * 
-   * <p> This field should not be accessed directly. You shoud use the {@link
-   * #getLevel} method instead. </p>
+   * <p>
+   * This field should not be accessed directly. You shoud use the
+   * {@link #getLevel} method instead.
+   * </p>
    * 
    */
   private transient Level level;
@@ -103,6 +109,16 @@ public class LoggingEvent implements ILoggingEvent {
 
     this.message = message;
 
+    FormattingTuple ft = MessageFormatter.arrayFormat(message, argArray);
+    formattedMessage = ft.getMessage();
+
+    if (throwable == null) {
+      argumentArray = ft.getArgArray();
+      throwable = ft.getThrowable();
+    } else {
+      this.argumentArray = argArray;
+    }
+
     if (throwable != null) {
       this.throwableProxy = new ThrowableProxy(throwable);
       LoggerContext lc = logger.getLoggerContext();
@@ -111,12 +127,9 @@ public class LoggingEvent implements ILoggingEvent {
       }
     }
 
-    // bug 85 (we previously failed to set this.argumentArray)
-    this.argumentArray = argArray;
-
     timeStamp = System.currentTimeMillis();
 
-    // the case is ugly but under the circumstances acceptable
+    // ugly but under the circumstances acceptable
     LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC
         .getMDCAdapter();
     mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
@@ -154,9 +167,9 @@ public class LoggingEvent implements ILoggingEvent {
 
   /**
    * @param threadName
-   *                The threadName to set.
+   *          The threadName to set.
    * @throws IllegalStateException
-   *                 If threadName has been already set.
+   *           If threadName has been already set.
    */
   public void setThreadName(String threadName) throws IllegalStateException {
     if (this.threadName != null) {
@@ -188,9 +201,9 @@ public class LoggingEvent implements ILoggingEvent {
    * This method should be called prior to serializing an event. It should also
    * be called when using asynchronous or deferred logging.
    * 
-   * <p> Note that due to performance concerns, this method does NOT extract
-   * caller data. It is the responsibility of the caller to extract caller
-   * information.
+   * <p>
+   * Note that due to performance concerns, this method does NOT extract caller
+   * data. It is the responsibility of the caller to extract caller information.
    */
   public void prepareForDeferredProcessing() {
     this.getFormattedMessage();
@@ -242,8 +255,10 @@ public class LoggingEvent implements ILoggingEvent {
    * null at the time of its invocation, this method extracts location
    * information. The collected information is cached for future use.
    * 
-   * <p> Note that after serialization it is impossible to correctly extract
-   * caller information. </p>
+   * <p>
+   * Note that after serialization it is impossible to correctly extract caller
+   * information.
+   * </p>
    */
   public StackTraceElement[] getCallerData() {
     if (callerDataArray == null) {
@@ -283,9 +298,9 @@ public class LoggingEvent implements ILoggingEvent {
     if (formattedMessage != null) {
       return formattedMessage;
     }
-
     if (argumentArray != null) {
-      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray);
+      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray)
+          .getMessage();
     } else {
       formattedMessage = message;
     }

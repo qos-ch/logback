@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2010, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -41,14 +41,14 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
 
-  static String PREFIX = ClassicTestConstants.JORAN_INPUT_PREFIX + "sift/";
+  static String SIFT_FOLDER_PREFIX = ClassicTestConstants.JORAN_INPUT_PREFIX + "sift/";
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
   StatusChecker sc = new StatusChecker(loggerContext);
   
-  void configure(String file) throws JoranException {
+  protected void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(loggerContext);
     jc.doConfigure(file);
@@ -56,7 +56,7 @@ public class SiftingAppenderTest {
 
   @Test
   public void unsetDefaultValueProperty() throws JoranException {
-    configure(PREFIX + "unsetDefaultValueProperty.xml");
+    configure(SIFT_FOLDER_PREFIX + "unsetDefaultValueProperty.xml");
     logger.debug("hello");
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     assertFalse(sa.isStarted());
@@ -64,7 +64,7 @@ public class SiftingAppenderTest {
 
   @Test
   public void smoke() throws JoranException {
-    configure(PREFIX + "smoke.xml");
+    configure(SIFT_FOLDER_PREFIX + "smoke.xml");
     logger.debug("smoke");
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
@@ -78,7 +78,7 @@ public class SiftingAppenderTest {
 
   @Test
   public void zeroNesting() throws JoranException {
-    configure(PREFIX + "zeroNesting.xml");
+    configure(SIFT_FOLDER_PREFIX + "zeroNesting.xml");
     logger.debug("hello");
     logger.debug("hello");
     logger.debug("hello");
@@ -100,7 +100,7 @@ public class SiftingAppenderTest {
 
   @Test
   public void multipleNesting() throws JoranException {
-    configure(PREFIX + "multipleNesting.xml");
+    configure(SIFT_FOLDER_PREFIX + "multipleNesting.xml");
     logger.debug("hello");
     logger.debug("hello");
     logger.debug("hello");
@@ -119,7 +119,7 @@ public class SiftingAppenderTest {
 
   @Test
   public void defaultLayoutRule() throws JoranException {
-    configure(PREFIX + "defaultLayoutRule.xml");
+    configure(SIFT_FOLDER_PREFIX + "defaultLayoutRule.xml");
     logger.debug("hello");
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
@@ -135,7 +135,7 @@ public class SiftingAppenderTest {
   @Test
   public void testWholeCycle() throws JoranException {
     String mdcKey = "cycle";
-    configure(PREFIX + "completeCycle.xml");
+    configure(SIFT_FOLDER_PREFIX + "completeCycle.xml");
     MDC.put(mdcKey, "a");
     logger.debug("smoke");
     long timestamp = System.currentTimeMillis();
