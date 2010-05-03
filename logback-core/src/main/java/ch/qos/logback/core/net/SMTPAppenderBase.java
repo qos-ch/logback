@@ -159,9 +159,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         sendBuffer(eventObject);
       }
     } catch (EvaluationException ex) {
-      errorCount ++;
+      errorCount ++; 
       if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
-        addError("SMTPAppender's EventEvaluator threw an Exception" + ex);
+        addError("SMTPAppender's EventEvaluator threw an Exception-", ex);
       }
     }
   }
@@ -425,7 +425,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    */
   public String getCharsetEncoding() {
     return charsetEncoding;
-  }
+  } 
 
   /**
    * Set the character set encoding of the outgoing email messages. The default

@@ -13,28 +13,64 @@
  */
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.spi.ContextAware;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class FileUtil {
 
 
-  public static boolean mustCreateParentDirectories(File file) {
+  static public boolean mustCreateParentDirectories(File file) {
     File parent = file.getParentFile();
-    if(parent != null && !parent.exists()) {
+    if (parent != null && !parent.exists()) {
       return true;
     } else {
       return false;
     }
   }
-  
-  public static boolean  createMissingParentDirectories(File file) {
+
+  static public boolean createMissingParentDirectories(File file) {
     File parent = file.getParentFile();
-    if(parent == null || parent.exists()) {
+    if (parent == null || parent.exists()) {
       throw new IllegalStateException(file + " should not have a null parent");
-    } 
-    if(parent.exists()) {
+    }
+    if (parent.exists()) {
       throw new IllegalStateException(file + " should not have existing parent directory");
-    } 
+    }
     return parent.mkdirs();
+  }
+
+
+  static public String resourceAsString(ContextAware ca, ClassLoader classLoader, String resourceName) {
+    URL url = classLoader.getResource(resourceName);
+    if (url == null) {
+      ca.addError("Failed to find resource [" + resourceName + "]");
+      return null;
+    }
+
+    URLConnection urlConnection = null;
+    try {
+      urlConnection = url.openConnection();
+      urlConnection.setUseCaches(false);
+      InputStream is = urlConnection.getInputStream();
+      InputStreamReader isr = new InputStreamReader(is);
+      char[] buf = new char[128];
+      StringBuilder builder = new StringBuilder();
+      int count = -1;
+      while ((count = isr.read(buf, 0, buf.length)) != -1) {
+        builder.append(buf, 0, count);
+      }
+      isr.close();
+      is.close();
+      return builder.toString();
+    } catch (IOException e) {
+      ca.addError("Failled to open " + resourceName, e);
+    }
+    return null;
   }
 }

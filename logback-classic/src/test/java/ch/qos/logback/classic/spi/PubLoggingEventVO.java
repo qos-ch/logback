@@ -124,6 +124,10 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     return mdcPropertyMap;
   }
 
+  public Map<String, String> getMdc() {
+    return mdcPropertyMap;
+  }
+
   public void prepareForDeferredProcessing() {
   }
 

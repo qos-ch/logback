@@ -312,6 +312,10 @@ public class LoggingEvent implements ILoggingEvent {
     return mdcPropertyMap;
   }
 
+  public Map<String, String> getMdc() {
+    return mdcPropertyMap;
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();

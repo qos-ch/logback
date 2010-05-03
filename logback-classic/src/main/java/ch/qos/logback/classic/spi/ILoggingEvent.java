@@ -69,8 +69,15 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
   public Marker getMarker();
 
+  /**
+   * Returns the MDC map.
+   */
   public Map<String, String> getMDCPropertyMap();
 
+  /**
+   * Synonym for [@link #getMDCPropertyMap}.
+   */
+  public Map<String, String> getMdc();
   public long getTimeStamp();
 
   public void prepareForDeferredProcessing();

@@ -22,7 +22,6 @@ abstract public class EventEvaluatorBase<E> extends ContextAwareBase implements
   boolean started;
 
   public String getName() {
-
     return name;
   }
 

@@ -149,7 +149,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
   public Map<String, String> getMDCPropertyMap() {
     return mdcPropertyMap;
   }
-
+  public Map<String, String> getMdc() {
+    return mdcPropertyMap;
+  }
+  
   public void prepareForDeferredProcessing() {
   }
 

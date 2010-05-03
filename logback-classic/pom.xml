@@ -115,6 +115,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <type>test-jar</type>
@@ -178,8 +186,18 @@
   </dependencies>
 
   <build>
-    <plugins>
 
+    <resources>
+      <resource>
+        <directory>src/main/groovy</directory>
+        <includes>
+          <include>**/EvaluatorTemplate.groovy</include>
+        </includes>
+      </resource>
+    </resources>
+
+  
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -187,6 +205,21 @@
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -289,15 +322,14 @@ org.slf4j.test_osgi
                  config files). They won't be found by Bnd's analysis
                  of java code. -->
 
-            <!-- importing ch.qos.logback.classic.util is strange but
-                 is required for the OSGi integration tests to pass
-                 -->
             <Import-Package>
               sun.reflect;resolution:=optional, 
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               ch.qos.logback.core.rolling, 
-              ch.qos.logback.core.rolling.helper,           
+              ch.qos.logback.core.rolling.helper,
+              org.codehaus.groovy.*;resolution:=optional,
+              groovy.lang.*;resolution:=optional,
               *
             </Import-Package>
 
