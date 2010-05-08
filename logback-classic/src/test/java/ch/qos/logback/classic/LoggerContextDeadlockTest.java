@@ -37,14 +37,14 @@ public class LoggerContextDeadlockTest {
   public void tearDown() throws Exception {
   }
 
-  @Test(timeout=20000)
+  @Test(timeout = 20000)
   public void testLBCLASSIC_81() throws JoranException {
 
 
     getLoggerThread.start();
     for (int i = 0; i < 500; i++) {
-      ByteArrayInputStream baos = new ByteArrayInputStream(new String(
-      "<configuration><root level=\"DEBUG\"/></configuration>").getBytes());
+      ByteArrayInputStream baos = new ByteArrayInputStream(
+              "<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
       jc.doConfigure(baos);
     }
   }
@@ -52,13 +52,15 @@ public class LoggerContextDeadlockTest {
   class GetLoggerThread extends Thread {
 
     final LoggerContext loggerContext;
+
     GetLoggerThread(LoggerContext loggerContext) {
       this.loggerContext = loggerContext;
     }
+
     @Override
     public void run() {
       for (int i = 0; i < 10000; i++) {
-        if(i % 100 == 0) {
+        if (i % 100 == 0) {
           try {
             Thread.sleep(1);
           } catch (InterruptedException e) {

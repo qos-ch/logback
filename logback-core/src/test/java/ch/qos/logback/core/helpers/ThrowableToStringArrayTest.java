@@ -43,7 +43,7 @@ public class ThrowableToStringArrayTest {
     String[] sa = ThrowableToStringArray.convert(t);
     StringBuilder sb = new StringBuilder();
     for (String tdp : sa) {
-      sb.append(tdp.toString());
+      sb.append(tdp);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
     String expected = sw.toString();

@@ -43,7 +43,7 @@ public class CompositeConverter<E> extends FormattingConverter<E> {
     buf.append(formattingInfo);
     
     if (childConverter != null) {
-      buf.append(", children: "+childConverter);
+      buf.append(", children: ").append(childConverter);
     }
     buf.append(">");
     return buf.toString();
