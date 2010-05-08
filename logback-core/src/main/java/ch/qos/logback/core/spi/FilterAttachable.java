@@ -28,14 +28,6 @@ public interface FilterAttachable<E> {
    */
   public void addFilter(Filter<E> newFilter);
 
-  /**
-   * Get first filter in the chain.
-   * 
-   * @deprecated This method will be removed in future versions. Please use
-   *             {@link #getCopyOfAttachedFiltersList()} method instead.
-   */
-  public Filter getFirstFilter();
-
   public void clearAllFilters();
 
   /**

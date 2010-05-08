@@ -128,10 +128,6 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     fai.addFilter(newFilter);
   }
 
-  public Filter getFirstFilter() {
-    return fai.getFirstFilter();
-  }
-
   public void clearAllFilters() {
     fai.clearAllFilters();
   }

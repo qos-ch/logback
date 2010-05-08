@@ -152,7 +152,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
   public void openFile(String file_name) throws IOException {
     synchronized (lock) {
       File file = new File(file_name);
-      if (FileUtil.mustCreateParentDirectories(file)) {
+      if (FileUtil.isParentDirectoryCreationRequired(file)) {
         boolean result = FileUtil.createMissingParentDirectories(file);
         if (!result) {
           addError("Failed to create parent directories for ["

@@ -30,7 +30,7 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends
   /**
    * Set the host/parent {@link TimeBasedRollingPolicy}.
    * 
-   * @param the
+   * @param tbrp
    *                parent TimeBasedRollingPolicy
    */
   void setTimeBasedRollingPolicy(TimeBasedRollingPolicy<E> tbrp);

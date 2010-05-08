@@ -30,7 +30,7 @@
 
     <h3>April xx, 2010 - Release of version 0.9.21</h3>
 
-    <p>SLF4J dependency upgraded to 1.6.0-RC0.</p>
+    <p>SLF4J dependency upgraded to 1.6.0</p>
 
     <p>Fixed concurrency problem in <code>SiftingAppender</code> as
     reported in <a
@@ -43,6 +43,12 @@
     which processes boolean expression written in the Groovy language.
     </p>
 
+    <p>Fixed rollover problem occuring when the target directory was
+    missing as reported in <a
+    href="http://jira.qos.ch/browse/LBCORE-151">LBCORE-151</a> by
+    Torsten Juergeleit.
+    </p>
+    
 
     <hr width="80%" align="center" />
 
@@ -71,6 +77,8 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-87">LBCLASSIC-87</a>.
     </p>
  
+    <p>Removed the previously deprecated <code>getFirstFilter</code>
+    method in <code>FilterAttachable</code> interface.</p>
 
     <!-- ============================================================== -->
 

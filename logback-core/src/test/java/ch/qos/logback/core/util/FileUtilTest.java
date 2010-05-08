@@ -51,9 +51,9 @@ public class FileUtilTest {
     cleanupList.add(file);
     cleanupList.add(file.getParentFile());
 
-    assertTrue(FileUtil.mustCreateParentDirectories(file));
+    assertTrue(FileUtil.isParentDirectoryCreationRequired(file));
     assertTrue(FileUtil.createMissingParentDirectories(file));
-    assertFalse(FileUtil.mustCreateParentDirectories(file));
+    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
   }
   
   @Test
@@ -65,8 +65,8 @@ public class FileUtilTest {
     cleanupList.add(file.getParentFile());
     cleanupList.add(file.getParentFile().getParentFile());
     
-    assertTrue(FileUtil.mustCreateParentDirectories(file));
+    assertTrue(FileUtil.isParentDirectoryCreationRequired(file));
     assertTrue(FileUtil.createMissingParentDirectories(file));
-    assertFalse(FileUtil.mustCreateParentDirectories(file));
+    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
   }
 }

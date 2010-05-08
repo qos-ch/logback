@@ -25,7 +25,7 @@ import java.net.URLConnection;
 public class FileUtil {
 
 
-  static public boolean mustCreateParentDirectories(File file) {
+  static public boolean isParentDirectoryCreationRequired(File file) {
     File parent = file.getParentFile();
     if (parent != null && !parent.exists()) {
       return true;
@@ -36,7 +36,7 @@ public class FileUtil {
 
   static public boolean createMissingParentDirectories(File file) {
     File parent = file.getParentFile();
-    if (parent == null || parent.exists()) {
+    if (parent == null) {
       throw new IllegalStateException(file + " should not have a null parent");
     }
     if (parent.exists()) {

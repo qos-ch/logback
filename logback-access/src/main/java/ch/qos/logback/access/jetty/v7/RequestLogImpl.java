@@ -249,8 +249,4 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
-
-  public Filter getFirstFilter() {
-    return fai.getFirstFilter();
-  }
 }

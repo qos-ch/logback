@@ -38,19 +38,18 @@ import ch.qos.logback.core.util.CoreTestConstants;
 /**
  * Scaffolding for various rolling tests. Some assumptions are made: - rollover
  * periodicity is 1 second (without precluding size based roll-over)
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
  */
 public class ScaffoldingForRollingTests {
 
   static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
   static public final SimpleDateFormat SDF = new SimpleDateFormat(
-      DATE_PATTERN_WITH_SECONDS);
+          DATE_PATTERN_WITH_SECONDS);
 
   int diff = RandomUtil.getPositiveInt();
   protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff
-      + "/";
+          + "/";
   EchoEncoder<Object> encoder = new EchoEncoder<Object>();
   Context context = new ContextBase();
   protected List<String> expectedFilenameList = new ArrayList<String>();
@@ -68,7 +67,7 @@ public class ScaffoldingForRollingTests {
 
   public static void existenceCheck(String filename) {
     assertTrue("File " + filename + " does not exist", new File(filename)
-        .exists());
+            .exists());
   }
 
   public static File[] getFilesInDirectory(String outputDirStr) {
@@ -77,7 +76,7 @@ public class ScaffoldingForRollingTests {
   }
 
   public static void fileContentCheck(File[] fileArray, int runLength,
-      String prefix) throws IOException {
+                                      String prefix) throws IOException {
     List<String> stringList = new ArrayList<String>();
     for (File file : fileArray) {
       FileToBufferUtil.readIntoList(file, stringList);
@@ -92,14 +91,14 @@ public class ScaffoldingForRollingTests {
   }
 
   public static void sortedContentCheck(String outputDirStr, int runLength,
-      String prefix) throws IOException {
+                                        String prefix) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
     FileFilterUtil.sortFileArrayByName(fileArray);
     fileContentCheck(fileArray, runLength, prefix);
   }
 
   public static void reverseSortedContentCheck(String outputDirStr,
-      int runLength, String prefix) throws IOException {
+                                               int runLength, String prefix) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
     FileFilterUtil.reverseSortFileArrayByName(fileArray);
     fileContentCheck(fileArray, runLength, prefix);
@@ -108,7 +107,7 @@ public class ScaffoldingForRollingTests {
   public static void existenceCheck(List<String> filenameList) {
     for (String filename : filenameList) {
       assertTrue("File " + filename + " does not exist", new File(filename)
-          .exists());
+              .exists());
     }
   }
 
@@ -127,6 +126,7 @@ public class ScaffoldingForRollingTests {
   }
 
   // assuming rollover every second
+
   protected void recomputeRolloverThreshold(long ct) {
     long delta = ct % 1000;
     nextRolloverThreshold = (ct - delta) + 1000;
@@ -151,27 +151,27 @@ public class ScaffoldingForRollingTests {
   }
 
   static void waitForCompression(TimeBasedRollingPolicy<Object> tbrp)
-      throws InterruptedException, ExecutionException, TimeoutException {
+          throws InterruptedException, ExecutionException, TimeoutException {
     if (tbrp.future != null && !tbrp.future.isDone()) {
       tbrp.future.get(200, TimeUnit.MILLISECONDS);
     }
   }
 
-  protected void addExpectedFileName_ByDate(String testId, Date date,
-      boolean gzExtension) {
+  protected void addExpectedFileName_ByDate(String outputDir, String testId, Date date,
+                                            boolean gzExtension) {
 
-    String fn = randomOutputDir + testId + "-" + SDF.format(date);
+    String fn = outputDir + testId + "-" + SDF.format(date);
     if (gzExtension) {
       fn += ".gz";
     }
     expectedFilenameList.add(fn);
   }
 
-  protected void addExpectedFileNamedIfItsTime_ByDate(String testId,
-      boolean gzExtension) {
+  protected void addExpectedFileNamedIfItsTime_ByDate(String outputDir, String testId,
+                                                      boolean gzExtension) {
     if (passThresholdTime(nextRolloverThreshold)) {
-      addExpectedFileName_ByDate(testId, getDateOfCurrentPeriodsStart(),
-          gzExtension);
+      addExpectedFileName_ByDate(outputDir, testId, getDateOfCurrentPeriodsStart(),
+              gzExtension);
       recomputeRolloverThreshold(currentTime);
     }
   }

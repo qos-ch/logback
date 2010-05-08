@@ -36,17 +36,6 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
   }
 
   /**
-   * Get first filter in the chain.
-   */
-  public Filter<E> getFirstFilter() {
-    if (filterList.size() > 0) {
-      return filterList.get(0);
-    } else {
-      return null;
-    }
-  }
-
-  /**
    * Clear the filter chain
    */
   public void clearAllFilters() {

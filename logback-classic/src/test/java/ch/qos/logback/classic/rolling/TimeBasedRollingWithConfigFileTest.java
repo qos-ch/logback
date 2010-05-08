@@ -34,7 +34,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.status.StatusChecker;
 
 public class TimeBasedRollingWithConfigFileTest extends
-    ScaffoldingForRollingTests {
+        ScaffoldingForRollingTests {
 
   LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(this.getClass());
@@ -67,7 +67,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     String testId = "basic";
     lc.putProperty("testId", testId);
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId
-        + ".xml");
+            + ".xml");
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());
 
@@ -76,18 +76,18 @@ public class TimeBasedRollingWithConfigFileTest extends
     expectedFilenameList.add(randomOutputDir + "z" + testId);
 
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
-        .getAppender("ROLLING");
+            .getAppender("ROLLING");
 
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
-        .getTriggeringPolicy();
+            .getTriggeringPolicy();
     TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp
-        .getTimeBasedFileNamingAndTriggeringPolicy();
+            .getTimeBasedFileNamingAndTriggeringPolicy();
 
     String prefix = "Hello---";
     int runLength = 4;
     for (int i = 0; i < runLength; i++) {
       logger.debug(prefix + i);
-      addExpectedFileNamedIfItsTime_ByDate(testId, false);
+      addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
       tbnatp.setCurrentTime(currentTime);
     }
@@ -108,21 +108,21 @@ public class TimeBasedRollingWithConfigFileTest extends
     sizeThreshold = prefix.length() * approxWritesPerPeriod;
     lc.putProperty("sizeThreshold", "" + sizeThreshold);
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId
-        + ".xml");
+            + ".xml");
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     expectedFilenameList.add(randomOutputDir + "z" + testId);
 
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
-        .getAppender("ROLLING");
+            .getAppender("ROLLING");
 
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());
 
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
-        .getTriggeringPolicy();
+            .getTriggeringPolicy();
     TimeBasedFileNamingAndTriggeringPolicy tbnatp = tprp
-        .getTimeBasedFileNamingAndTriggeringPolicy();
+            .getTimeBasedFileNamingAndTriggeringPolicy();
 
     int timeIncrement = 1000 / approxWritesPerPeriod;
     int runLength = approxWritesPerPeriod * 3;
@@ -140,19 +140,19 @@ public class TimeBasedRollingWithConfigFileTest extends
     // match exactly the expected archive files. Thus, we aim for
     // an approximate match
     assertTrue("exitenceCount=" + eCount + ", expectedFilenameList.size="
-        + expectedFilenameList.size(), eCount >= 4
-        && eCount > expectedFilenameList.size() / 2);
+            + expectedFilenameList.size(), eCount >= 4
+            && eCount > expectedFilenameList.size() / 2);
   }
 
   void addExpectedFileNamedIfItsTime(String testId, String msg,
-      boolean gzExtension) {
+                                     boolean gzExtension) {
     fileSize += msg.getBytes().length;
 
     if (passThresholdTime(nextRolloverThreshold)) {
       fileIndexCounter = 0;
       fileSize = 0;
       addExpectedFileName(testId, getDateOfPreviousPeriodsStart(),
-          fileIndexCounter, gzExtension);
+              fileIndexCounter, gzExtension);
       recomputeRolloverThreshold(currentTime);
       return;
     }
@@ -161,17 +161,17 @@ public class TimeBasedRollingWithConfigFileTest extends
     // fileIndexCounter 0 and 1
     if ((fileIndexCounter < 1) && fileSize > sizeThreshold) {
       addExpectedFileName(testId, getDateOfPreviousPeriodsStart(),
-          ++fileIndexCounter, gzExtension);
+              ++fileIndexCounter, gzExtension);
       fileSize = -1;
       return;
     }
   }
 
   void addExpectedFileName(String testId, Date date, int fileIndexCounter,
-      boolean gzExtension) {
+                           boolean gzExtension) {
 
     String fn = randomOutputDir + testId + "-" + SDF.format(date) + "."
-        + fileIndexCounter;
+            + fileIndexCounter;
     System.out.println("Adding " + fn);
     if (gzExtension) {
       fn += ".gz";
@@ -180,11 +180,11 @@ public class TimeBasedRollingWithConfigFileTest extends
   }
 
   @Override
-  protected void addExpectedFileNamedIfItsTime_ByDate(String testId,
-      boolean gzExtension) {
+  protected void addExpectedFileNamedIfItsTime_ByDate(String outputDir, String testId,
+                                                      boolean gzExtension) {
     if (passThresholdTime(nextRolloverThreshold)) {
-      addExpectedFileName_ByDate(testId, getDateOfPreviousPeriodsStart(),
-          gzExtension);
+      addExpectedFileName_ByDate(outputDir, testId, getDateOfPreviousPeriodsStart(),
+              gzExtension);
       recomputeRolloverThreshold(currentTime);
     }
   }

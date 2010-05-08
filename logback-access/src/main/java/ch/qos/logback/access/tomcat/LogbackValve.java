@@ -241,10 +241,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     fai.addFilter(newFilter);
   }
 
-  public Filter getFirstFilter() {
-    return fai.getFirstFilter();
-  }
-
   public void clearAllFilters() {
     fai.clearAllFilters();
   }

@@ -84,8 +84,4 @@ public class AccessContext extends ContextBase implements
   public FilterReply getFilterChainDecision(AccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
-
-  public Filter<AccessEvent> getFirstFilter() {
-    return fai.getFirstFilter();
-  }
 }

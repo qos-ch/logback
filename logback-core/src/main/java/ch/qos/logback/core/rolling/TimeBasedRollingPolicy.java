@@ -70,6 +70,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     compressor = new Compressor(compressionMode);
     compressor.setContext(context);
 
+    // wcs : without compression suffix
     fileNamePatternWCS = new FileNamePattern(computeFileNameStr_WCS(
         fileNamePatternStr, compressionMode), this.context);
 
@@ -126,7 +127,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
         renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
-      }
+      } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
     } else {
       if (getParentsRawFileProperty() == null) {
         future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName);

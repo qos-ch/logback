@@ -122,10 +122,6 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements
     fai.addFilter(newFilter);
   }
 
-  public Filter getFirstFilter() {
-    return fai.getFirstFilter();
-  }
-
   public void clearAllFilters() {
     fai.clearAllFilters();
   }

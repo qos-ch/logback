@@ -21,40 +21,44 @@ import java.io.IOException;
 
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.util.FileUtil;
 
 
 /**
  * Utility class to help solving problems encountered while renaming files.
- * @author Ceki Gulcu  
+ *
+ * @author Ceki Gulcu
  */
 public class RenameUtil extends ContextAwareBase {
 
-  
+
   /**
    * A robust file renaming method which in case of failure falls back to
    * renaming by copying. In case, the file to be renamed is open by another
    * process, renaming by copying will succeed whereas regular renaming will
    * fail. However, renaming by copying is much slower.
-   * 
+   *
    * @param from
    * @param to
    * @throws RolloverFailure
    */
   public void rename(String from, String to) throws RolloverFailure {
-    if(from.equals(to)) {
-      addWarn("From and to file are the same ["+from+"]. Skipping.");
+    if (from.equals(to)) {
+      addWarn("From and to file are the same [" + from + "]. Skipping.");
       return;
     }
     File fromFile = new File(from);
 
     if (fromFile.exists()) {
       File toFile = new File(to);
-      addInfo("Renaming file ["+fromFile+"] to ["+toFile+"]");
+      createMissingTargetDirsIfNecessary(toFile);
+
+      addInfo("Renaming file [" + fromFile + "] to [" + toFile + "]");
 
       boolean result = fromFile.renameTo(toFile);
 
       if (!result) {
-        addWarn("Failed to rename file ["+fromFile+"] to ["+toFile+"].");
+        addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "].");
         addWarn("Attempting to rename by copying.");
         renameByCopying(from, to);
       }
@@ -63,10 +67,10 @@ public class RenameUtil extends ContextAwareBase {
     }
   }
 
-  static final int BUF_SIZE = 32*1024;
-  
+  static final int BUF_SIZE = 32 * 1024;
+
   public void renameByCopying(String from, String to)
-      throws RolloverFailure {
+          throws RolloverFailure {
     try {
       FileInputStream fis = new FileInputStream(from);
       FileOutputStream fos = new FileOutputStream(to);
@@ -83,14 +87,24 @@ public class RenameUtil extends ContextAwareBase {
       File fromFile = new File(from);
 
       if (!fromFile.delete()) {
-        addWarn("Could not delete "+ from);
+        addWarn("Could not delete " + from);
       }
     } catch (IOException ioe) {
       addError("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
     }
   }
-  
+
+  void createMissingTargetDirsIfNecessary(File toFile) throws RolloverFailure {
+    if (FileUtil.isParentDirectoryCreationRequired(toFile)) {
+      boolean result = FileUtil.createMissingParentDirectories(toFile);
+      if (!result) {
+        throw new RolloverFailure("Failed to create parent directories for ["
+                + toFile.getAbsolutePath() + "]");
+      }
+    }
+  }
+
   @Override
   public String toString() {
     return "c.q.l.co.rolling.helper.RenameUtil";

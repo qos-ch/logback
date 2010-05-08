@@ -84,7 +84,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     appender.start();
     appender.doAppend(new Object());
     appender.stop();
-    assertFalse(FileUtil.mustCreateParentDirectories(file));
+    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
     assertTrue(file.exists());
 
     // cleanup
