@@ -5,7 +5,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.21</version>
+    <version>0.9.22-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -45,6 +45,15 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -76,6 +85,15 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

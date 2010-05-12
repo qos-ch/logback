@@ -1,6 +1,6 @@
 # memory aid 
 
-mvn versions:set -DnewVersion=${VERSION_NUMBER}
+mvn versions:set -DnewVersion=${VERSION_NUMBER} -DgenerateBackupPoms=false
 
 mvn clean
 mvn install

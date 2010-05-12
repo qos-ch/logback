@@ -1,0 +1,67 @@
+
+/* =========== popup ================== */
+#backgroundPopup {  
+  display:none;  
+  position:fixed;  
+  _position:absolute; /* hack for internet explorer 6*/  
+  height:100%;  
+  width:100%;  
+  top:0;  
+  left:0;  
+  background:#000000;  
+  border:1px solid #cecece;  
+  z-index:1;  
+} 
+
+#popupContents {  
+  display:none;  
+  position:fixed;  
+  _position:absolute; /* hack for internet explorer 6*/  
+  height: 150px;  
+  width:  408px;   
+  background:#FFFFFF;  
+  border: 2px solid #cecece;  
+  z-index:2;  
+  padding-left: 1ex;   
+  font-size:13px;  
+} 
+
+#popupContents p {
+ margin: 0px;
+}
+#popupContents h3 {
+ margin: 0px;
+}
+
+#popupContactClose {  
+  font-size:14px;  
+  line-height:14px;  
+  right:6px;  
+  top:4px;  
+  position:absolute;  
+  color:#6fa5fd;  
+  font-weight:700;  
+  display:block;  
+} 
+
+a.popupLink {
+  background: #FFF; 
+  color: #0079C5;   
+  font-family: "Comic Sans MS", sans-serif;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: bold;
+
+  border-top:    2px solid #DDD;  
+  border-left:   2px solid #DDD;  
+  border-right:  2px solid #888;  
+  border-bottom: 2px solid #888;    
+  padding: 0px 1em 0px 1em;
+  margin:  0px 0px 3px 0px; 
+}
+
+a.popupLink:hover {
+   background: #E0E0EF;
+   cursor: pointer;
+}
+

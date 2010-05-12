@@ -62,47 +62,75 @@
   <p class="red bold">from (DEPRECATED)</p>
   
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    &lt;file>testFile.log&lt;/file>
-    ...
-    &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;pattern>%msg%n&lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>   </pre>
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;layout class="ch.qos.logback.classic.PatternLayout">
+    &lt;pattern>%msg%n&lt;/pattern>
+  &lt;/layout>
+&lt;/appender>   </pre>
 
   <p class="red bold">or the shorter equivalent (DEPRECATED)</p>
 
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    &lt;file>testFile.log&lt;/file>
-    ...
-    &lt;!-- layout are assigned the type
-         ch.qos.logback.classic.PatternLayout by default -->
-    &lt;layout>
-      &lt;pattern>%msg%n&lt;/pattern>
-    &lt;/layout>
-  &lt;/appender>   </pre>
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;!-- layout are assigned the type ch.qos.logback.classic.PatternLayout by default -->
+  &lt;layout>
+    &lt;pattern>%msg%n&lt;/pattern>
+  &lt;/layout>
+&lt;/appender>   </pre>
 
 
   <p class="green bold">to (GOOD)</p>
     <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    &lt;file>testFile.log&lt;/file>
-    ...
-    &lt;encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      &lt;pattern>%msg%n&lt;/pattern>
-    &lt;/encode>
-  &lt;/appender>   </pre>
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    &lt;pattern>%msg%n&lt;/pattern>
+  &lt;/encode>
+&lt;/appender>   </pre>
  
   <p class="green bold">or the shorter equivalent (GOOD)</p>
 
    <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    &lt;file>testFile.log&lt;/file>
-    ...
-    &lt;!-- encoders are assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-    &lt;encoder>
-      &lt;pattern>%msg%n&lt;/pattern>
-    &lt;/encode>
-  &lt;/appender>   </pre>
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;!-- encoders are assigned the type 
+       ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+  &lt;encoder>
+    &lt;pattern>%msg%n&lt;/pattern>
+  &lt;/encode>
+&lt;/appender>   </pre>
 
+
+  <p>For layout type other than <code>PatternLayout</code>, for
+  example <code>HTMLLayout</code>, your configuration files need to be
+  changed
+  </p>
+
+  <p class="red bold">from (DEPRECATED)</p>
+
+  <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+    &lt;pattern>%msg%n&lt;/pattern>
+  &lt;/layout>
+&lt;/appender> </pre>
+
+
+  <p class="green bold">to (GOOD)</p>
+    <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+  &lt;file>testFile.log&lt;/file>
+  ...
+  &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/layout>
+  &lt;/encoder>
+&lt;/appender> </pre>
+  
+  
 
   <p>We hope to make up for this inconvenience with cool new features
   which are only possible using encoders. <b>During a transition
