@@ -17,6 +17,7 @@
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
+     <script type="text/javascript" src="../js/dsl.js"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -231,11 +232,12 @@ public class Foo {
    seen.
    </p>
 
- <p><em>Example: Basic configuration file
-  (logback-examples/src/main/java/chapters/configuration/sample0.xml)</em></p>
+  <em>Example: Basic configuration file
+  (logback-examples/src/main/java/chapters/configuration/sample0.xml)</em>
+  <span class="asGroovy" onclick="return asGroovy('sample0');">View as .grovvy</span>
 
 
-<pre class="prettyprint source">&lt;configuration>
+  <pre id="sample0" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;!-- encoders are assigned the type
@@ -328,8 +330,9 @@ public class Foo {
    <em>Example: Basic configuration file
    using debug mode
    (logback-examples/src/main/java/chapters/configuration/sample1.xml)</em>
+   <span class="asGroovy" onclick="return asGroovy('sample1');">View as .grovvy</span>
 
-<pre class="prettyprint source">
+   <pre id="sample1" class="prettyprint source">
 &lt;configuration <b>debug="true"</b>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
@@ -403,9 +406,10 @@ public class Foo {
   configuration file and automatic re-configuraion
   (logback-examples/src/main/java/chapters/configuration/scan1.xml)</em>
 
-<pre class="prettyprint source">
+  <span class="asGroovy" onclick="return asGroovy('scan1');">View as .grovvy</span>
+<pre id="scan1" class="prettyprint source">
 &lt;configuration <b>scan="true"</b>> 
-  ...
+  ... 
 &lt;/configuration> </pre>
 
 
@@ -419,8 +423,8 @@ public class Foo {
   <em>Example: Specifying a different
   scanning period
   (logback-examples/src/main/java/chapters/configuration/scan2.xml)</em>
-
-<pre class="prettyprint source">
+  <span class="asGroovy" onclick="return asGroovy('scan2');">View as .grovvy</span>
+  <pre id="scan2" class="prettyprint source">
 &lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
   ...
 &lt;/configuration> </pre>
@@ -605,9 +609,11 @@ public class MyApp3 {
    <p>It is also possible to register one or more status listeners
    within a configuration file. Here is an example.</p>
 
-  <p><em>Example: Registering a status listener (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</em></p>
+   <p><em>Example: Registering a status listener
+   (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</em></p>
 
-   <pre class="prettyprint source">&lt;configuration>
+   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .grovvy</span>
+   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
 
   ... the rest of the configuration file  
@@ -761,8 +767,11 @@ public class MyApp3 {
    shows how to achieve that.
    </p>
 
-<em>Example: Setting the level of a logger (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+   <em>Example: Setting the level of a logger
+   (logback-examples/src/main/java/chapters/configuration/sample2.xml)</em>
+
+   <span class="asGroovy" onclick="return asGroovy('sample2');">View as .grovvy</span>
+   <pre id="sample2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;!-- encoders are assigned the type
@@ -799,8 +808,11 @@ public class MyApp3 {
   of the <em>chapters.configuration.Foo</em> logger to <code>DEBUG</code>.
   </p>
 
-<em>Example: Setting the level of multiple loggers (logback-examples/src/main/java/chapters/configuration/sample3.xml)</em>
-<pre class="source prettyprint">&lt;configuration>
+  <em>Example: Setting the level of multiple loggers
+  (logback-examples/src/main/java/chapters/configuration/sample3.xml)</em>
+  
+  <span class="asGroovy" onclick="return asGroovy('sample3');">View as .grovvy</span>
+  <pre id="sample3" class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -880,7 +892,8 @@ public class MyApp3 {
 
   <em>Example: Logger level sample
   (logback-examples/src/main/java/chapters/configuration/sample4.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('sample4');">View as .grovvy</span>
+  <pre id="sample4" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
    class="ch.qos.logback.core.ConsoleAppender">
@@ -1002,8 +1015,10 @@ public class MyApp3 {
   configuration file illustrates:
   </p>
 
-<em>Example: Multiple loggers (logback-examples/src/main/java/chapters/configuration/multiple.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+  <em>Example: Multiple loggers
+  (logback-examples/src/main/java/chapters/configuration/multiple.xml)</em>
+  <span class="asGroovy" onclick="return asGroovy('multiple');">View as .grovvy</span>
+  <pre id="multiple" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
@@ -1056,7 +1071,9 @@ public class MyApp3 {
 
   <em>Example: Duplicate appender
   (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+
+  <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .grovvy</span>
+  <pre id="duplicate" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -1102,7 +1119,8 @@ public class MyApp3 {
 
   <em>Example: Multiple appender
   (logback-examples/src/main/java/chapters/configuration/restricted.xml)</em>
-  <pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('restricted');">View as .grovvy</span>
+  <pre id="restricted" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>myApp.log&lt;/file>
@@ -1127,9 +1145,9 @@ public class MyApp3 {
 &lt;/configuration></pre>
 
   <p>In this example, the console appender will log all the messages
-  (for all loggers in the system) whereas only logging request
-  originating from loggers <em>chapters.configuration</em> and below go into the
-  <em>myApp.log</em> file.
+  (for all loggers in the system) whereas only logging requests
+  originating from the <em>chapters.configuration</em> logger and its
+  children will go into the <em>myApp.log</em> file.
   </p>
 	
   <h4>
@@ -1145,8 +1163,11 @@ public class MyApp3 {
   of the tree.
   </p>
 
-<em>Example: Additivity flag (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+  <em>Example: Additivity flag
+  (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</em>
+
+  <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .grovvy</span>
+  <pre id="additivityFlag" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>foo.log&lt;/file>
@@ -1200,7 +1221,9 @@ public class MyApp3 {
   
   <em>Example: Set the context name and display it
   (logback-examples/src/main/java/chapters/configuration/contextName.xml)</em>
-  <pre class="prettyprint source">&lt;configuration>
+
+  <span class="asGroovy" onclick="return asGroovy('contextName');">View as .grovvy</span>
+  <pre id="contextName" class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -1255,7 +1278,8 @@ public class MyApp3 {
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
   </em>
 
-  <pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('variableSubstitution1');">View as .grovvy</span>
+  <pre id="variableSubstitution1" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
 
@@ -1283,8 +1307,8 @@ public class MyApp3 {
   <em>Example: System Variable substitution
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
   </em>
-  
-  <pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .grovvy</span>
+  <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <b>&lt;file>${USER_HOME}/myApp.log&lt;/file></b>

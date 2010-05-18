@@ -6,7 +6,7 @@ body {
 	font-size: 12px;
 }
 
-#left, #right {
+#left, #right, span.asGroovy {
 	width: 0px;
 	height: 0px;
   display: none;
@@ -27,5 +27,4 @@ table.bodyTable th {
 	vertical-align: text-top;
 	text-align:center;
 }
-
 

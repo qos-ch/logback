@@ -25,7 +25,7 @@ div.source {
 .source, .command, .console { 
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
-  background:#eee;
+  background: #eee;
   font-family: Courier, "MS Courier New", Prestige, monospace;
   padding-left: 1ex;
   white-space: pre;

@@ -15,6 +15,7 @@
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -105,8 +106,9 @@
 		events, the value NEUTRAL is returned.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Basic custom filter (<a href="../xref/chapters/filters/SampleFilter.html">logback-examples/src/main/java/chapters/filters/SampleFilter.java</a>)</em>		
-<pre class="prettyprint source">package chapters.filters;
+    <em>Example: Basic custom filter (<a
+    href="../xref/chapters/filters/SampleFilter.html">logback-examples/src/main/java/chapters/filters/SampleFilter.java</a>)</em>
+    <pre class="prettyprint source">package chapters.filters;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
@@ -128,8 +130,10 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		<code>SampleFilter</code> to a <code>ConsoleAppener</code>.
 		</p>
 
-<em>Example 6.<span class="autoEx"/>: SampleFilter configuration (logback-examples/src/main/java/chapters/filters/SampleFilterConfig.xml)</em>				
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: SampleFilter configuration
+    (logback-examples/src/main/java/chapters/filters/SampleFilterConfig.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('SampleFilterConfig');">View as .grovvy</span>
+    <pre id="SampleFilterConfig" class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
     <b>&lt;filter class="chapters.filters.SampleFilter" /></b>
@@ -183,8 +187,10 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Sample LevelFilter configuration (logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml)</em>				
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: Sample LevelFilter configuration
+    (logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('levelFilterConfig');">View as .grovvy</span>
+    <pre id="levelFilterConfig" class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
       &lt;level>INFO&lt;/level>
@@ -214,8 +220,10 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		configuration file.
 		</p>
 
-<em>Example 6.<span class="autoEx"/>: Sample ThresholdFilter configuration (logback-examples/src/main/java/chapters/filters/thresholdFilterConfig.xml)</em>				
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: Sample ThresholdFilter configuration
+    (logback-examples/src/main/java/chapters/filters/thresholdFilterConfig.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('thresholdFilterConfig');">View as .grovvy</span>
+    <pre id="thresholdFilterConfig"  class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;!-- deny all events with a level below INFO, that is TRACE and DEBUG -->
@@ -294,8 +302,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>Here is a more complete example.</p>
 
-<pre class="prettyprint source">&lt;configuration>
-
+    <span class="asGroovy" onclick="return asGroovy('GEventEvaluator');">View as .grovvy</span>
+    <pre id="GEventEvaluator"  class="prettyprint source">&lt;configuration>
+    
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
       &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator"> 
@@ -506,9 +515,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>Here is a concrete example.</p>
 
-<em>Example 6.<span class="autoEx"/>: Basic event evaluator usage (logback-examples/src/main/java/chapters/filters/basicEventEvaluator.xml)</em>
+    <em>Example: Basic event evaluator usage
+    (logback-examples/src/main/java/chapters/filters/basicEventEvaluator.xml)</em>
 
-<pre class="prettyprint source longline">&lt;configuration>
+    <span class="asGroovy" onclick="return asGroovy('basicEventEvaluator');">View as .grovvy</span>
+    <pre id="basicEventEvaluator" class="prettyprint source longline">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
@@ -614,9 +625,10 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
 
     <p>An example should clarify the point:</p>
 
-<em>Example 6.<span class="autoEx"/>: Defining matchers in an event evaluator (logback-examples/src/main/java/chapters/filters/evaluatorWithMatcher.xml)</em>
+    <em>Example: Defining matchers in an event evaluator (logback-examples/src/main/java/chapters/filters/evaluatorWithMatcher.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('evaluatorWithMatcher');">View as .grovvy</span>
 
-    <pre class="prettyprint source">&lt;configuration debug="true">
+    <pre id="evaluatorWithMatcher" class="prettyprint source">&lt;configuration debug="true">
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
@@ -703,7 +715,7 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     slightly more complex filter:
     </p>
     
-<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> (<a href="../xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>)</em>		
+<em>Example: Basic custom <code>TurboFilter</code> (<a href="../xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>)</em>		
 <pre class="prettyprint source">package chapters.filters;
 
 import org.slf4j.Marker;
@@ -768,8 +780,12 @@ public class SampleTurboFilter extends TurboFilter {
 		created <code>TurboFilter</code>.
 		</p>
 		
-<em>Example 6.<span class="autoEx"/>: Basic custom <code>TurboFilter</code> configuration (logback-examples/src/main/java/chapters/filters/sampleTurboFilterConfig.xml)</em>		
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: Basic custom <code>TurboFilter</code> configuration
+    (logback-examples/src/main/java/chapters/filters/sampleTurboFilterConfig.xml)</em>
+
+    <span class="asGroovy" onclick="return asGroovy('sampleTurboFilterConfig');">View as .grovvy</span>
+
+    <pre id="sampleTurboFilterConfig"  class="prettyprint source">&lt;configuration>
   <b>&lt;turboFilter class="chapters.filters.SampleTurboFilter">
     &lt;Marker>sample&lt;/Marker>
   &lt;/turboFilter></b>
@@ -803,9 +819,12 @@ public class SampleTurboFilter extends TurboFilter {
    	<code>MDCFilter</code> and <code>MarkerFilter</code>.
    	</p>
    	
-<em>Example 6.<span class="autoEx"/>: <code>MDCFilter</code> and <code>MarkerFilter</code> 
-configuration (logback-examples/src/main/java/chapters/filters/turboFilters.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>MDCFilter</code> and <code>MarkerFilter</code>
+    configuration
+    (logback-examples/src/main/java/chapters/filters/turboFilters.xml)</em>
+
+    <span class="asGroovy" onclick="return asGroovy('turboFilters');">View as .grovvy</span>
+    <pre id="turboFilters" class="prettyprint source">&lt;configuration>
 
   &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
     &lt;MDCKey>username&lt;/MDCKey>
@@ -930,9 +949,11 @@ logger.debug("Hello {}.", name1);</pre>
     </p>
 
     
-<em>Example 6.<span class="autoEx"/>: <code>DuplicateMessageFilter</code> 
-configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>DuplicateMessageFilter</code> 
+    configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.xml)</em>
+
+    <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .grovvy</span>
+    <pre id="duplicateMessage" class="prettyprint source">&lt;configuration>
 
   <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
 
@@ -1005,7 +1026,7 @@ configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.
     error will be logged:
     </p>
    	
-<em>Example 6.<span class="autoEx"/>: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
+<em>Example: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

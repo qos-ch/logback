@@ -14,6 +14,7 @@
   <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -159,7 +160,8 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		
 		<em>Example: Configuration of MySampleLayout
 		(logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+    <span class="asGroovy" onclick="return asGroovy('sampleLayoutConfig');">View as .grovvy</span>
+<pre id="sampleLayoutConfig" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"></b>
@@ -171,7 +173,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>
-
+   
 		<p>The sample application <a
 		href="../xref/chapters/layouts/SampleLogging.html">
 		<code>chapters.layouts.SampleLogging</code></a> configures logback
@@ -266,7 +268,8 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     </p> 
 
 
-    <pre class="prettyprint source">&lt;configuration>
+    <span class="asGroovy" onclick="return asGroovy('MySampleLayout2');">View as .grovvy</span>
+    <pre id="MySampleLayout2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -1291,7 +1294,11 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 			Example: Sample usage of EventEvaluators
 			(logback-examples/src/main/java/chapters/layouts/callerEvaluatorConfig.xml)
 		</em>
-		<pre class="prettyprint source">&lt;configuration>
+
+    <span class="asGroovy" onclick="return asGroovy('callerEvaluatorConfig');">View as .grovvy</span>
+
+
+		<pre id="callerEvaluatorConfig" class="prettyprint source">&lt;configuration>
   <b>&lt;evaluator name="DISP_CALLER_EVAL">
     &lt;expression>logger.contains("chapters.layouts") &amp;amp;&amp;amp; \
       message.contains("who calls thee")&lt;/expression>
@@ -1598,7 +1605,8 @@ public class MySampleConverter extends ClassicConverter {
 		new conversion word in the configuration file, as shown below:</p>
 		
 <em> Example: Sample Converter Example (src/main/java/chapters/layouts/mySampleConverterConfig.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+ <span class="asGroovy" onclick="return asGroovy('mySampleConverterConfig');">View as .grovvy</span>
+<pre id="mySampleConverterConfig" class="prettyprint source">&lt;configuration>
 
   <b>&lt;conversionRule conversionWord="sample" 
                   converterClass="chapters.layouts.MySampleConverter" /></b>
@@ -1606,7 +1614,7 @@ public class MySampleConverter extends ClassicConverter {
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
       &lt;pattern>%-4relative [%thread] <b>%sample</b> - %msg%n&lt;/pattern>
-    &lt;/encoder
+    &lt;/encoder>
   &lt;/appender>
 
   &lt;root level="DEBUG">
@@ -1681,7 +1689,8 @@ public class MySampleConverter extends ClassicConverter {
     </p>
 
 <em> Example: HTMLLayout Example (src/main/java/chapters/layouts/htmlLayoutConfig1.xml)</em>
-<pre class="prettyprint source">&lt;configuration debug="true"&gt;
+<span class="asGroovy" onclick="return asGroovy('htmlLayoutConfig1');">View as .grovvy</span>
+<pre id="htmlLayoutConfig1" class="prettyprint source">&lt;configuration debug="true"&gt;
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
@@ -1793,7 +1802,8 @@ public class MySampleConverter extends ClassicConverter {
     <p>Here is a sample configuration</p>
 
 <em> Example: Log4jXMLLayout Example (src/main/java/chapters/layouts/log4jXMLLayout.xml)</em>
-    <pre class="prettyprint source">&lt;configuration>
+<span class="asGroovy" onclick="return asGroovy('log4jXMLLayout');">View as .grovvy</span>
+    <pre id="log4jXMLLayout" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>test.xml&lt;/file>
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">

@@ -1,3 +1,16 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2010, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.classic.gaffer;
 
 import ch.qos.logback.core.util.Duration;
@@ -11,44 +24,61 @@ import ch.qos.logback.core.spi.ContextAwareImpl
 import ch.qos.logback.core.spi.ContextAwareBase
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
-import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Appender
+import ch.qos.logback.core.status.StatusListener
+import java.text.SimpleDateFormat
+import ch.qos.logback.classic.turbo.TurboFilter
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * @author Ceki G&uuml;c&uuml;
  */
 
-@Mixin(ContextAwareBase)
-public class ConfigurationDelegate {
+public class ConfigurationDelegate extends ContextAwareBase {
 
   List<Appender> appenderList = [];
 
-  void configuration(Closure closure) {
-    configuration([:], closure)
+
+  Object getDeclaredOrigin() {
+    //println "ConfigurationDelegate"
+    return "ConfigurationDelegate"
   }
 
-
-  void configuration(Map map, Closure closure) {
-    processScanAttributes(map.scan, map.scanPeriod);
-  }
-
-  private void processScanAttributes(boolean scan, String scanPeriodStr) {
-    if (scan) {
-      ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-      rocf.setContext(context);
-      if (scanPeriodStr) {
-        try {
-          Duration duration = Duration.valueOf(scanPeriodStr);
-          rocf.setRefreshPeriod(duration.getMilliseconds());
-          addInfo("Setting ReconfigureOnChangeFilter scanning period to "
-                  + duration);
-        } catch (NumberFormatException nfe) {
-          addError("Error while converting [" + scanAttrib + "] to long", nfe);
-        }
+  void scan(String scanPeriodStr = null) {
+    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
+    rocf.setContext(context);
+    if (scanPeriodStr) {
+      try {
+        Duration duration = Duration.valueOf(scanPeriodStr);
+        rocf.setRefreshPeriod(duration.getMilliseconds());
+        addInfo("Setting ReconfigureOnChangeFilter scanning period to "
+                + duration);
+      } catch (NumberFormatException nfe) {
+        addError("Error while converting [" + scanAttrib + "] to long", nfe);
       }
-      rocf.start();
-      addInfo("Adding ReconfigureOnChangeFilter as a turbo filter");
-      context.addTurboFilter(rocf);
     }
+    rocf.start();
+    addInfo("Adding ReconfigureOnChangeFilter as a turbo filter");
+    context.addTurboFilter(rocf);
+  }
+
+  void statusListener(Class listenerClass) {
+    StatusListener statusListener = listenerClass.newInstance()
+    context.statusManager.add(statusListener)
+    addInfo("Added status listener of type [${listenerClass.canonicalName}]");
+  }
+
+  void conversionRule(String conversionWord, Class converterClass) {
+    String converterClassName = converterClass.getName();
+
+    Map<String, String> ruleRegistry = (Map) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+    if (ruleRegistry == null) {
+      ruleRegistry = new HashMap<String, String>();
+      context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
+    }
+    // put the new rule into the rule registry
+    addInfo("registering conversion word " + conversionWord + " with class [" + converterClassName + "]");
+    ruleRegistry.put(conversionWord, converterClassName);
   }
 
   void root(Level level, List<String> appenderNames = []) {
@@ -66,11 +96,11 @@ public class ConfigurationDelegate {
 
       if (appenderNames) {
         appenderNames.each { aName ->
-          Appender appender = appenderList.find { it.name == aName };
+          Appender appender = appenderList.find { it -> it.name == aName };
           if (appender != null) {
             logger.addAppender(appender);
           } else {
-            addError("Failed to find appender named [${it.name}]");
+            addError("Failed to find appender named [${aName}]");
           }
         }
       }
@@ -84,7 +114,9 @@ public class ConfigurationDelegate {
   }
 
   void appender(String name, Class clazz, Closure closure = null) {
+    addInfo("About to instantiate appender of type [" + clazz.name + "]");
     Appender appender = clazz.newInstance();
+    addInfo("Naming appender as [" + name + "]");
     appender.name = name
     appender.context = context
     appenderList.add(appender)
@@ -96,6 +128,28 @@ public class ConfigurationDelegate {
       closure();
     }
     appender.start();
+  }
+
+  void turboFilter(Class clazz, Closure closure = null) {
+    addInfo("About to instantiate turboFilter of type [" + clazz.name + "]");
+    TurboFilter turboFilter = clazz.newInstance();
+    turboFilter.context = context
+
+    if (closure != null) {
+      ComponentDelegate componentDelegate = new ComponentDelegate(turboFilter);
+      componentDelegate.context = context;
+      closure.delegate = componentDelegate;
+      closure.resolveStrategy = Closure.DELEGATE_FIRST
+      closure();
+    }
+    turboFilter.start();
+    addInfo("Adding aforementioned turbo filter to context");
+    context.addTurboFilter(turboFilter)
+  }
+
+  String timestamp(String datePattern) {
+    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+    sdf.format(new Date());
   }
 }
 

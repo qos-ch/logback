@@ -7,12 +7,13 @@
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" /    
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"/>    
   </head>
   <body onload="prettyPrint()">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
     <div id="left">      
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -334,8 +335,10 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<code>ConsoleAppender</code>.
 	</p>
 
-  <em>Example 4.<span class="autoEx"/>: ConsoleAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-Console.xml)</em>
-  <pre class="prettyprint source">&lt;configuration>
+  <em>Example: ConsoleAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-Console.xml)</em>
+  <span class="asGroovy" onclick="return asGroovy('logback_Console');">View as .grovvy</span>
+
+  <pre id="logback_Console" class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;!-- encoders are assigned the type
@@ -470,8 +473,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <code>FileAppender</code>:
 	 </p>
 
-   <em>Example 4.<span class="autoEx"/>: FileAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-fileAppender.xml)</em>
-   <pre class="prettyprint source">&lt;configuration>
+   <em>Example: FileAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-fileAppender.xml)</em>
+   <span class="asGroovy" onclick="return asGroovy('logback-fileAppender');">View as .grovvy</span>
+   <pre id="logback-fileAppender"  class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>testFile.log&lt;/file>
@@ -508,8 +512,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    element. Here's an example.</p>
 
 
-   <em>Example 4.<span class="autoEx"/>: Uniquely named FileAppender configuration by timestamp (logback-examples/src/main/java/chapters/appenders/conf/logback-timestamp.xml)</em>
-   <pre class="prettyprint source">&lt;configuration>
+   <em>Example: Uniquely named FileAppender configuration by timestamp (logback-examples/src/main/java/chapters/appenders/conf/logback-timestamp.xml)</em>
+  <span class="asGroovy" onclick="return asGroovy('logback-timestamp');">View as .grovvy</span>
+   <pre id="logback-timestamp" class="prettyprint source">&lt;configuration>
 
   &lt;!-- Insert the current time formatted as "yyyyMMdd'T'HHmmss" under
        the key "bySecond" into the logger context. This value will be
@@ -848,10 +853,11 @@ public interface RollingPolicy extends LifeCycle {
    class="option">fileNamePattern</span> option.
    </p>
 	
-   <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+   <em>Example: Sample configuration of a <code>RollingFileAppender</code> using a 
    <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingFixedWindow.xml)</em>
 
-   <pre class="prettyprint source">&lt;configuration>
+   <span class="asGroovy" onclick="return asGroovy('logback-RollingFixedWindow');">View as .grovvy</span>
+   <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;file>test.log&lt;/file></b>
 
@@ -1159,13 +1165,14 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>.
    </p>
 	
-   <em>Example 4.<span class="autoEx"/>: Sample configuration of a
+   <em>Example: Sample configuration of a
    <code>RollingFileAppender</code> using a
 
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingTimeBased.xml)</em>
 
-   <pre class="prettyprint source">&lt;configuration>
+   <span class="asGroovy" onclick="return asGroovy('logback-RollingTimeBased');">View as .grovvy</span>
+   <pre id="logback-RollingTimeBased" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>logFile.log&lt;/file>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -1192,12 +1199,13 @@ public interface RollingPolicy extends LifeCycle {
     mode.
     </p>
 
-   <em>Example 4.<span class="autoEx"/>: Sample configuration of a
+   <em>Example: Sample configuration of a
    <code>RollingFileAppender</code> using a
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/java/chapters/appenders/conf/logback-PrudentTimeBasedRolling.xml)</em>
 
-  <pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('logback-PrudentTimeBasedRolling');">View as .grovvy</span>
+  <pre id="logback-PrudentTimeBasedRolling" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;!-- Support multiple-JVM writing to the same log file --></b>
     <b>&lt;prudent>true&lt;/prudent></b>
@@ -1208,7 +1216,7 @@ public interface RollingPolicy extends LifeCycle {
 
     &lt;encoder>
       &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
-    &lt;/encocer>
+    &lt;/encoder>
   &lt;/appender> 
 
   &lt;root level="DEBUG">
@@ -1233,15 +1241,17 @@ public interface RollingPolicy extends LifeCycle {
     <p>Here is a sample configuration file demonstrating time and size
     based log file archiving.</p>
     
-  <em>Example 4.<span class="autoEx"/>: Sample configuration for
+  <em>Example: Sample configuration for
   <code>SizeAndTimeBasedFNATP</code> 
   (logback-examples/src/main/java/chapters/appenders/conf/logback-sizeAndTime.xml)</em>
-  <pre class="prettyprint source">&lt;configuration>
+
+  <span class="asGroovy" onclick="return asGroovy('logback-sizeAndTime');">View as .grovvy</span>
+  <pre id="logback-sizeAndTime" class="prettyprint source">&lt;configuration>
   &lt;appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>mylog.txt&lt;/file>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;!-- rollover daily -->
-      &lt;fileNamePattern><b>mylog-%d{yyyy-MM-dd}.<span class="big red">%i</span>.txt</b>&lt;/fileNamePattern>
+      &lt;fileNamePattern><b>mylog-%d{yyyy-MM-dd}.<span class="big">%i</span>.txt</b>&lt;/fileNamePattern>
       <b>&lt;timeBasedFileNamingAndTriggeringPolicy</b>
             <b>class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"></b>
         &lt;!-- or whenever the file size reaches 100MB -->
@@ -1339,9 +1349,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		the log file reaches 5MB in size.
 		</p>
 
-    <em>Example 4.<span class="autoEx"/>: Sample configuration of a <code>RollingFileAppender</code> using a 
+    <em>Example: Sample configuration of a <code>RollingFileAppender</code> using a 
     <code>SizeBasedTriggeringPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingSizeBased.xml)</em>
-    <pre class="prettyprint source">&lt;configuration>
+
+    <span class="asGroovy" onclick="return asGroovy('logback-RollingSizeBased');">View as .grovvy</span>
+    <pre id="logback-RollingSizeBased" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>test.log&lt;/file>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -1353,7 +1365,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <b>&lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
       &lt;maxFileSize>5MB&lt;/maxFileSize>
     &lt;/triggeringPolicy></b>
-    &lt;encoder
+    &lt;encoder>
       &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
@@ -1558,8 +1570,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			and attaches it to the root logger.
 		</p>
 
-		<em>Example 4.<span class="autoEx"/>: SocketAppender configuration (logback-examples/src/main/java/chapters/appenders/socket/client1.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+		<em>Example: SocketAppender configuration (logback-examples/src/main/java/chapters/appenders/socket/client1.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('client1');">View as .grovvy</span>
+<pre id="client1" class="prettyprint source">&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
     &lt;RemoteHost>${host}&lt;/RemoteHost>
@@ -2017,8 +2030,9 @@ Context ctx = new InitialContext(env);</pre>
 			<code>JMSTopicAppender</code> is rather straightforward to configure:
 		</p>
 
-		<em>Example 4.<span class="autoEx"/>: JMSTopicAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSTopic.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+		<em>Example: JMSTopicAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSTopic.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('logback-JMSTopic');">View as .grovvy</span>
+<pre id="logback-JMSTopic" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="Topic"
     class="ch.qos.logback.classic.net.JMSTopicAppender">
@@ -2085,8 +2099,9 @@ Context ctx = new InitialContext(env);</pre>
 			A typical <code>JMSQueueAppender</code> configuration file looks very
 			similar to that of a <code>JMSTopicAppender</code>.
 		</p>
-		<em>Example 4.<span class="autoEx"/>: JMSQueueAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSQueue.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+		<em>Example: JMSQueueAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSQueue.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('logback-JMSQueue');">View as .grovvy</span>
+    <pre id="logback-JMSQueue" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="Queue"
     class="ch.qos.logback.classic.net.JMSQueueAppender">
@@ -2300,8 +2315,9 @@ Context ctx = new InitialContext(env);</pre>
 		<code>Email</code> application:
 		</p>	
 		
-    <em>Example 4.<span class="autoEx"/>: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/mail/mail1.xml)</em>		
-    <pre class="prettyprint source">&lt;configuration>	  
+    <em>Example: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/mail/mail1.xml)</em>	
+    <span class="asGroovy" onclick="return asGroovy('mail1');">View as .grovvy</span>	
+    <pre id="mail1" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
     &lt;To>EMAIL-DESTINATION&lt;/To>
@@ -2415,9 +2431,10 @@ Context ctx = new InitialContext(env);</pre>
 		1024th event triggers an email message.
 		</p>
 
-<em>Example 4.<span class="autoEx"/>: A <code>EventEvaluator</code> implementation
+    <em>Example: A <code>EventEvaluator</code> implementation
 that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapters/appenders/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapters/appenders/mail/CounterBasedEvaluator.java</a>)</em>
-<pre class="prettyprint source">package chapters.appenders.mail;
+   
+   <pre class="prettyprint source">package chapters.appenders.mail;
 
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -2466,10 +2483,10 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		evaluator.
 		</p>
 
-<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with custom 
-<code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapters/appenders/mail/mail3.xml)</em>
-
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>SMTPAppender</code> with custom 
+    <code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapters/appenders/mail/mail3.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('mail3');">View as .grovvy</span>	
+    <pre id="mail3" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;Evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
     &lt;BufferSize>1050&lt;/BufferSize>
@@ -2515,10 +2532,11 @@ logger.error(<b>notifyAdminMarker</b>,
    TRANSACTION_FAILURE marker.
    </p>
 
-   <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> with 
+   <em>Example: <code>SMTPAppender</code> with 
    <code>OnMarkerEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker.xml)</em>
 
-    <pre class="prettyprint source">&lt;configuration>
+   <span class="asGroovy" onclick="return asGroovy('mailWithMarker');">View as .grovvy</span>	
+   <pre id="mailWithMarker" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
       &lt;marker>NOTIFY_ADMIN&lt;/marker>
@@ -2563,9 +2581,10 @@ logger.error(<b>notifyAdminMarker</b>,
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail with the SSL protocol. </p>
     
-    <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to Gmail using SSL (logback-examples/src/main/java/chapters/appenders/mail/gmailSSL.xml)</em>
+    <em><code>SMTPAppender</code> to Gmail using SSL (logback-examples/src/main/java/chapters/appenders/mail/gmailSSL.xml)</em>
 
-    <pre class="prettyprint source">&lt;configuration>
+    <span class="asGroovy" onclick="return asGroovy('gmailSSL');">View as .grovvy</span>	
+    <pre id="gmailSSL" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost></b>
     <b>&lt;SMTPPort>465&lt;/SMTPPort></b>
@@ -2594,9 +2613,10 @@ logger.error(<b>notifyAdminMarker</b>,
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
 
-    <em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapters/appenders/mail/gmailSTARTTLS.xml)</em>
+    <em>Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapters/appenders/mail/gmailSTARTTLS.xml)</em>
 
-    <pre class="prettyprint source">&lt;configuration>	  
+    <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLS');">View as .grovvy</span>	
+    <pre id="gmailSTARTTLS" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
     &lt;SMTPPort>587&lt;/SMTPPort>
@@ -2913,8 +2933,9 @@ logger.error(<b>notifyAdminMarker</b>,
 			The following configuration file is what one would need.
 		</p>
 		
-<em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-driverManager');">View as .grovvy</span>	
+    <pre id="append-toMySQL-with-driverManager" class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
@@ -2991,8 +3012,11 @@ logger.error(<b>notifyAdminMarker</b>,
 			<code>javax.sql.DataSource</code>.
 		</p>
 	
-<em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-with-datasource.xml)</em>	
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-with-datasource.xml)</em>	
+
+
+    <span class="asGroovy" onclick="return asGroovy('append-with-datasource');">View as .grovvy</span>	
+    <pre id="append-with-datasource" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
      <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -3104,8 +3128,11 @@ logger.error(<b>notifyAdminMarker</b>,
 			without any pooling.
 		</p>
     
-    <em>Example 4.<span class="autoEx"/> <code>DBAppender</code> configuration without pooling (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource.xml)</em>	
-    <pre class="prettyprint source">&lt;configuration>
+    <em>Example 4.<span class="autoEx"/> <code>DBAppender</code>
+    configuration without pooling
+    (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource.xml)</em>
+    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource');">View as .grovvy</span>	
+    <pre id="append-toMySQL-with-datasource" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -3122,7 +3149,7 @@ logger.error(<b>notifyAdminMarker</b>,
   &lt;root level="DEBUG">
     &lt;appender-ref ref="DB" />
   &lt;/root>
-&lt;/configuration</pre>
+&lt;/configuration></pre>
 
 		<p>With this configuration file, sending 500 logging events to a
 		MySQL database takes a whopping 5 seconds, that is 10 milliseconds
@@ -3137,8 +3164,9 @@ logger.error(<b>notifyAdminMarker</b>,
 		<em>c3p0-VERSION.jar</em> in the classpath.
 		</p>
 
-    <em>Example 4.<span class="autoEx"/>: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
-    <pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>DBAppender</code> configuration with pooling (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</em>			
+    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource-and-pooling');">View as .grovvy</span>	
+    <pre id="append-toMySQL-with-datasource-and-pooling" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource
@@ -3272,8 +3300,9 @@ logger.error(<b>notifyAdminMarker</b>,
 			Here is a sample configuration using a <code>SyslogAppender</code>.
 		</p>
 		
-<em>Example 4.<span class="autoEx"/>: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-syslog.xml)</em>				
-<pre class="prettyprint source">&lt;configuration>
+    <em>Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-syslog.xml)</em>	
+    <span class="asGroovy" onclick="return asGroovy('logback-syslog');">View as .grovvy</span>	
+    <pre id="logback-syslog" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="SYSLOG"
     class="ch.qos.logback.classic.net.SyslogAppender">
@@ -3283,7 +3312,7 @@ logger.error(<b>notifyAdminMarker</b>,
   &lt;/appender>
 
   &lt;root level="DEBUG">
-    &lt;appender-ref ref="STDOUT" />
+    &lt;appender-ref ref="SYSLOG" />
   &lt;/root>
 &lt;/configuration></pre>
 
@@ -3328,7 +3357,7 @@ logger.debug("Alice says hello"); </p>
     <code>SiftingAppender</code>.</p>
 
 
-    <em>Example 4.<span class="autoEx"/>: <code>SiftingAppender</code>
+    <em>Example: <code>SiftingAppender</code>
     configuration
     (logback-examples/src/main/java/chapters/appenders/sift/byUserid.xml)</em>
 
@@ -3538,7 +3567,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		<p>
 			Here is a sample configuration of a <code>SMTPAppender</code> in the access environment.
 		</p>
-<em>Example 4.<span class="autoEx"/>: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/access/logback-smtp.xml)</em>					
+<em>Example: <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/access/logback-smtp.xml)</em>					
 <pre class="prettyprint source">&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
   &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
@@ -3708,7 +3737,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			Here is a sample configuration that uses <code>DBAppender</code>.
 		</p>
 
-    <em>Example 4.<span class="autoEx"/>: DBAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/access/logback-DB.xml)</em>		
+    <em>Example: DBAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/access/logback-DB.xml)</em>		
     <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
@@ -3747,7 +3776,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     
     <p>Below is an example configuration file.</p>
 
-    <em>Example 4.<span class="autoEx"/>: SiftingAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/sift/access-siftingFile.xml)</em>		
+    <em>Example: SiftingAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/sift/access-siftingFile.xml)</em>		
     
     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">

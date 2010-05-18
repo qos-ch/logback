@@ -13,12 +13,13 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.core.Appender
 import ch.qos.logback.core.helpers.NOPAppender
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder
+import ch.qos.logback.classic.PatternLayout
 
 /**
  * @author Ceki G&uuml;c&uuml;
  */
 class ConfigurationDelegateTest {
-
 
   LoggerContext context = new LoggerContext()
   ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
@@ -39,7 +40,7 @@ class ConfigurationDelegateTest {
 
   @Test
   void scan() {
-    configurationDelegate.configuration([scan: true, scanPeriod: "10seconds"]) {}
+    configurationDelegate.scan("10seconds")
     assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeFilter"))
     assertTrue(statusChecker.containsMatch("Adding ReconfigureOnChangeFilter as a turbo filter"))
 
@@ -48,6 +49,14 @@ class ConfigurationDelegateTest {
     ReconfigureOnChangeFilter rocf = (ReconfigureOnChangeFilter) filter;
     assertEquals(10 * 1000, rocf.refreshPeriod)
   }
+
+  @Test
+  void timestamp() {
+    String result = configurationDelegate.timestamp("yyyy")
+    long year = Calendar.getInstance().get(Calendar.YEAR);
+    assertEquals(year.toString(), result)
+  }
+
 
   @Test
   void loggerWithoutName() {
@@ -131,5 +140,26 @@ class ConfigurationDelegateTest {
     assertNotNull(back)
     assertEquals("C", back.name)
     assertEquals("System.err", back.target)
+  }
+
+
+  @Test
+  void appenderWithEncoder() {
+    configurationDelegate.appender("C", ConsoleAppender) {
+      encoder (LayoutWrappingEncoder) {
+        layout (PatternLayout) {
+          pattern = "%m%n"
+        }
+      }
+    }
+    Appender back = configurationDelegate.appenderList.find {it.name = "C"}
+    assertNotNull(back)
+    assertEquals("C", back.name)
+    ConsoleAppender ca = back
+    assertNotNull(ca.encoder)
+    assertNotNull(ca.encoder.layout)
+    PatternLayout layout =  ca.encoder.layout
+    assertEquals("%m%n", layout.pattern)
+
   }
 }

@@ -6,7 +6,7 @@
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%-4relative [%thread] %sample - %msg%n</pattern>
-    </encoder>>
+    </encoder>
   </appender>
 
   <root level="DEBUG">

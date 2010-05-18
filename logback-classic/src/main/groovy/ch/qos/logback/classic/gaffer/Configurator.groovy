@@ -13,35 +13,32 @@
  */
 package ch.qos.logback.classic.gaffer
 
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.core.util.ContextUtil
+
 class Configurator {
 
-  static void main(String[] args) {
-    runArchitectureRules(new File("src/ch/test/toto.groovy"))
+  LoggerContext context
+  //ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
+
+  Configurator(LoggerContext context) {
+    this.context = context
+    //configurationDelegate.context = context;
   }
 
-  static void runArchitectureRules(File dsl) {
-    //LoggerFactory loggerFactory = new LoggerFactory();
-    ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
-    //AppenderAction appenderAction = new AppenderAction();
-
-
+  void run(String dslText) {
     Binding binding = new Binding();
-    binding.setProperty("DEBUG", new Integer(1));
-    Script dslScript = new GroovyShell(binding).parse(dsl.text)
-    ExpandoMetaClass emc = new ExpandoMetaClass(dslScript.class, false);
-
-    //configurationDelegate.metaClass.logger = loggerFactory.&logger
-    //configurationDelegate.metaClass.appender = appenderAction.&appender
-
-    emc.configuration = {Closure cl ->
-      println "executing configuration"
-      cl.delegate = configuration
-      cl();
-    }
-
-
-    emc.initialize();
-    dslScript.metaClass = emc;
+    binding.setProperty("hostname", ContextUtil.getLocalHostName());
+    Script dslScript = new GroovyShell(binding).parse(dslText)
+    
+    dslScript.metaClass.mixin(ConfigurationDelegate)
+    dslScript.setContext(context)
+    dslScript.metaClass.getDeclaredOrigin = { println "getDeclaredOrigin"; dslScript }
+//    metaClass.statusListener = configurationDelegate.&statusListener
+//    dslScript.metaClass.scan = configurationDelegate.&scan
+//    dslScript.metaClass.appender = configurationDelegate.&appender
+//    dslScript.metaClass.root = configurationDelegate.&root
+//    dslScript.metaClass.logger = configurationDelegate.&logger
 
     dslScript.run()
   }

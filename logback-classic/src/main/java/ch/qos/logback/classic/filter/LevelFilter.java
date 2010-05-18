@@ -45,8 +45,8 @@ public class LevelFilter extends AbstractMatcherFilter<ILoggingEvent> {
     }
   }
 
-  public void setLevel(String level) {
-    this.level = Level.toLevel(level);
+  public void setLevel(Level level) {
+    this.level = level;
   }
 
   public void start() {
