@@ -5,18 +5,6 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.core.status.OnConsoleStatusListener
 import ch.qos.logback.classic.Logger
 
-
-context.name = "a"
-
-Logger xLogger = context.getLogger("x")
-xLogger.setLevel(Level.INFO)
-
-statusListener OnConsoleStatusListener
-
-println "hostname ${hostname}"
-
-addInfo("xxx")
-
 appender("C", ConsoleAppender) {
   encoder(LayoutWrappingEncoder) {
     layout(PatternLayout) {
@@ -24,5 +12,4 @@ appender("C", ConsoleAppender) {
     }
   }
 }
-
 root Level.WARN, ["C"]

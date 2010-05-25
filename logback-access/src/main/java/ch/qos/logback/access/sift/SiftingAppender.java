@@ -36,10 +36,6 @@ public class SiftingAppender extends SiftingAppenderBase<AccessEvent> {
     super.start();
   }
 
-  AppenderTracker<AccessEvent> getAppenderTracker() {
-    return appenderTracker;
-  }
-
   @Override
   protected long getTimestamp(AccessEvent event) {
     return event.getTimeStamp();

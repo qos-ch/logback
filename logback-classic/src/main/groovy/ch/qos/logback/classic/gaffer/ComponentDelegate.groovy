@@ -13,22 +13,26 @@
  */
 package ch.qos.logback.classic.gaffer
 
-import ch.qos.logback.core.Appender
 import ch.qos.logback.core.spi.ContextAwareBase
 import ch.qos.logback.core.spi.LifeCycle
 import ch.qos.logback.core.spi.ContextAware
+import java.beans.Introspector
 
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-
-@Mixin(ContextAwareBase)
-class ComponentDelegate {
+class ComponentDelegate extends ContextAwareBase {
 
   final Object component;
 
+  final List fieldsToCaccade = [];
+
   ComponentDelegate(Object component) {
     this.component = component;
+  }
+
+  Object getDeclaredOrigin() {
+    return "ComponentDelegate"
   }
 
   String getLabel() { "component" }
@@ -36,36 +40,64 @@ class ComponentDelegate {
   String getLabelFistLetterInUpperCase() { getLabel()[0].toUpperCase() + getLabel().substring(1) }
 
   void methodMissing(String name, def args) {
-    
-    if (component.hasProperty(name)) {
-      String subComponentName
-      Class clazz
-      Closure closure
-      (subComponentName, clazz, closure) = analyzeArgs(args)
-      if (clazz != null) {
-        Object subComponent = clazz.newInstance()
-        if (subComponentName && subComponent.hasProperty(name)) {
-          subComponent.name = subComponentName;
-        }
-        if (subComponent instanceof ContextAware) {
-          subComponent.context = context;
-        }
-        if (closure) {
-          ComponentDelegate subDelegate = new ComponentDelegate(subComponent)
-          subDelegate.context = context
-          closure.delegate = subDelegate
-          closure.resolveStrategy = Closure.DELEGATE_FIRST
-          closure()
-        }
-        if (subComponent instanceof LifeCycle) {
-          subComponent.start();
-        }
-        component."${name}" = subComponent;
+    NestingType nestingType = PropertyUtil.nestingType(component, name);
+    if (nestingType == NestingType.NA) {
+      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
+      return;
+    }
+
+    String subComponentName
+    Class clazz
+    Closure closure
+    (subComponentName, clazz, closure) = analyzeArgs(args)
+    if (clazz != null) {
+      Object subComponent = clazz.newInstance()
+      if (subComponentName && subComponent.hasProperty(name)) {
+        subComponent.name = subComponentName;
       }
+      if (subComponent instanceof ContextAware) {
+        subComponent.context = context;
+      }
+      if (closure) {
+        ComponentDelegate subDelegate = new ComponentDelegate(subComponent)
+
+        cascadeFields(subDelegate);
+        for (String k: fieldsToCaccade) {
+          //println "caccading ${k} with value ${this."${k}"}"
+          //subDelegate.metaClass."${k}" = this."${k}"
+        }
+
+
+        subDelegate.context = context
+        closure.delegate = subDelegate
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
+      }
+      if (subComponent instanceof LifeCycle) {
+        subComponent.start();
+      }
+      PropertyUtil.attach(nestingType, component, subComponent, name)
     } else {
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no [${name}] property ")
+      addError("No 'class' argument specified for [${name}] in ${getLabel()} ${getComponentName()} of type [${component.getClass().canonicalName}]");
     }
   }
+
+  void cascadeFields(ComponentDelegate subDelegate) {
+    for (String k: fieldsToCaccade) {
+      println "cacsading ${k} with value ${this."${k}"}"
+      subDelegate.metaClass."${k}" = this."${k}"
+    }
+  }
+
+  void propertyMissing(String name, def value) {
+    NestingType nestingType = PropertyUtil.nestingType(component, name);
+    if (nestingType == NestingType.NA) {
+      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
+      return;
+    }
+    PropertyUtil.attach(nestingType, component, value, name)
+  }
+
 
   def analyzeArgs(Object[] args) {
     String name;
@@ -120,27 +152,5 @@ class ComponentDelegate {
     else
       return ""
 
-  }
-
-  void propertyMissing(String name, def value) {
-    name = camelCasify(name);
-    if (component.hasProperty(name)) {
-      //println "-- component has property $name"
-      component."${name}" = value;
-    } else {
-      // println "-- component does not have property [$name]"
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no [${name}] property ")
-    }
-  }
-
-  String camelCasify(String name) {
-    if(name == null || name.length() == 0)
-      return name;
-
-    String firstLetter = new String(name.getAt(0)).toLowerCase();
-    if(name.length() == 1)
-      return firstLetter
-    else
-      return firstLetter + name.substring(1);
   }
 }

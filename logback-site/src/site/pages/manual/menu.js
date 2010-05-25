@@ -11,4 +11,5 @@ document.write('<p class="menu"><a href="mdc.html"><b>Ch8: Mapped Diagnostic Con
 document.write('<p class="menu"><a href="loggingSeparation.html"><b>Ch9: Logging Separation</b></a>');
 document.write('<p class="menu"><a href="jmxConfig.html"><b>Ch10: JMX Configurator</b></a>');
 document.write('<p class="menu"><a href="onJoran.html"><b>Ch11: Joran</b></a>');
-document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch12: Migration from log4j</b></a>');
+document.write('<p class="menu"><a href="groovy.html"><b>Ch12: Groovy Configuration</b></a>');
+document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch13: Migration from log4j</b></a>');

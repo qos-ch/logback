@@ -57,7 +57,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   
   protected Layout<E> layout;
   
-  private List<String> to = new ArrayList<String>();
+  private List<String> toList = new ArrayList<String>();
   private String from;
   private String subjectStr = null;
   private String smtpHost;
@@ -131,7 +131,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         mimeMsg.setFrom();
       }
 
-      mimeMsg.setRecipients(Message.RecipientType.TO, parseAddress(to));
+      mimeMsg.setRecipients(Message.RecipientType.TO, parseAddress(toList));
 
       subjectLayout = makeSubjectLayout(subjectStr);
 
@@ -234,10 +234,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * Returns value of the <b>To</b> option.
+   * Returns value of the <b>toList</b> option.
    */
-  public List<String> getTo() {
-    return to;
+  public List<String> getToList() {
+    return toList;
   }
 
   /**
@@ -364,7 +364,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * of one of the recipients.
    */
   public void addTo(String to) {
-    this.to.add(to);
+    this.toList.add(to);
   }
 
   // for testing purpose only
@@ -395,7 +395,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * The <b>EventEvaluator</b> option takes a string value representing the name
-   * of the class implementing the {@link EventEvaluators} interface. A
+   * of the class implementing the {@link EventEvaluator} interface. A
    * corresponding object will be instantiated and assigned as the event
    * evaluator for the SMTPAppender.
    */

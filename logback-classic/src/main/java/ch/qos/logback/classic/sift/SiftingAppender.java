@@ -31,10 +31,6 @@ import ch.qos.logback.core.sift.SiftingAppenderBase;
  */
 public class SiftingAppender extends SiftingAppenderBase<ILoggingEvent> {
 
-  AppenderTracker<ILoggingEvent> getAppenderTracker() {
-    return appenderTracker;
-  }
-
   @Override
   protected long getTimestamp(ILoggingEvent event) {
     return event.getTimeStamp();

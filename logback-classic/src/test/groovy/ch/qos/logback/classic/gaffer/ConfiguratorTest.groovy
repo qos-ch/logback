@@ -29,6 +29,11 @@ import ch.qos.logback.core.testUtil.StringListAppender
 import ch.qos.logback.classic.testUtil.SampleConverter
 import ch.qos.logback.core.util.StatusPrinter
 
+import ch.qos.logback.classic.boolex.JaninoEventEvaluator
+import ch.qos.logback.core.filter.EvaluatorFilter
+import ch.qos.logback.core.boolex.Matcher
+import static org.junit.Assert.assertTrue
+
 /**
  * @author Ceki G&uuml;c&uuml;
  */
@@ -100,4 +105,55 @@ class ConfiguratorTest {
     assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
   }
 
+  @Test
+  void evaluatorWithMatcher() {
+    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "evaluatorWithMatcher.groovy")
+    String dslText = file.text
+    configurator.run dslText
+
+    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+    assertTrue ca.isStarted()
+
+    EvaluatorFilter ef = ca.getCopyOfAttachedFiltersList()[0];
+    assertTrue ef.isStarted()
+
+    JaninoEventEvaluator jee = ef.evaluator
+    assertTrue jee.isStarted()
+    Matcher m = jee.matcherList[0]
+    assertTrue m.isStarted()
+  }
+
+  @Test
+  void propertyCascading0() {
+    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading0.groovy")
+    String dslText = file.text
+    configurator.run dslText
+
+    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+    assertTrue ca.isStarted()
+   
+    assertEquals("HELLO %m%n", ca.encoder.layout.pattern)
+  }
+  @Test
+  void propertyCascading1() {
+    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading1.groovy")
+    String dslText = file.text
+    configurator.run dslText
+
+    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+    assertTrue ca.isStarted()
+    assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
+  }
+
+  @Test
+  void propertyCascading2() {
+    context.putProperty("p", "HELLO");
+    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading2.groovy")
+    String dslText = file.text
+    configurator.run dslText
+
+    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+    assertTrue ca.isStarted()
+    assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
+  }
 }

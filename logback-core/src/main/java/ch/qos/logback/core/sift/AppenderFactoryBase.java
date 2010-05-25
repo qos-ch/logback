@@ -28,7 +28,6 @@ public abstract class AppenderFactoryBase<E> {
   protected AppenderFactoryBase(List<SaxEvent> eventList) {
     this.eventList = new ArrayList<SaxEvent>(eventList);
     removeSiftElement();
-
   }
 
   void removeSiftElement() {

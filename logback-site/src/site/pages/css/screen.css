@@ -28,6 +28,7 @@ p.menu {
  padding-bottom: 0px; 
  margin-top: 0px;
  margin-bottom: 0px;
+ font-size: smaller;
 }
 
 
@@ -126,7 +127,7 @@ span.asGroovy {
    border-right:  2px solid #888;  
    border-bottom: 2px solid #888;    
    padding: 0px 1em 0px 1em;
-   margin:  -1ex 0px 0px 0px; 
+   margin:  -4px 4px 0 4px; 
    float: right;
 }
  

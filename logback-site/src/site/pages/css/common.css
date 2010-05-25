@@ -14,6 +14,12 @@ a {
  text-decoration: underline;
 }
 
+.example {
+  width: 90%;
+  font-style: italic;
+}
+
+
 div.source {
  margin-top: 1em;
 }

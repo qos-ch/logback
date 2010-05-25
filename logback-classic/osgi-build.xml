@@ -69,7 +69,7 @@
       <copy file="lib/slf4j-api-${slf4j.version}.jar" todir="${bundlesDir}"/>
       <copy file="../logback-core/target/logback-core-${currentVersion}.jar" todir="${bundlesDir}"/>
       <copy file="target/logback-classic-${currentVersion}.jar" todir="${bundlesDir}"/>
-      <echo>value of t = @{t}</echo>
+      <echo>value of binding = @{binding}</echo>
     </sequential>
   </macrodef>
 

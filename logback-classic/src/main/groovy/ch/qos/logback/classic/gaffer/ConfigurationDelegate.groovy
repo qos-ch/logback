@@ -122,12 +122,23 @@ public class ConfigurationDelegate extends ContextAwareBase {
     appenderList.add(appender)
     if (closure != null) {
       AppenderDelegate ad = new AppenderDelegate(appender);
+      copyContributions(ad, appender)
       ad.context = context;
       closure.delegate = ad;
       closure.resolveStrategy = Closure.DELEGATE_FIRST
       closure();
     }
     appender.start();
+  }
+
+  private void copyContributions(AppenderDelegate appenderDelegate, Appender appender) {
+    if(appender instanceof ConfigurationContributor) {
+      ConfigurationContributor cc = (ConfigurationContributor) appender;
+      cc.getMappings().each() { oldName, newName ->
+         appenderDelegate.metaClass."${newName}" = appender.&"$oldName"
+      }
+    }
+
   }
 
   void turboFilter(Class clazz, Closure closure = null) {

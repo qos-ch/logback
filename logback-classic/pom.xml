@@ -326,7 +326,7 @@ org.slf4j.test_osgi
               sun.reflect;resolution:=optional, 
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
-              ch.qos.logback.core.rolling, 
+              org.slf4j, ch.qos.logback.core.rolling, 
               ch.qos.logback.core.rolling.helper,
               org.codehaus.groovy.*;resolution:=optional,
               groovy.lang.*;resolution:=optional,

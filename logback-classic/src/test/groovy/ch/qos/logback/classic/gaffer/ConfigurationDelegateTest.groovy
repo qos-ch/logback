@@ -15,6 +15,8 @@ import ch.qos.logback.core.helpers.NOPAppender
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.core.util.StatusPrinter
+import ch.qos.logback.classic.net.SMTPAppender
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -160,6 +162,27 @@ class ConfigurationDelegateTest {
     assertNotNull(ca.encoder.layout)
     PatternLayout layout =  ca.encoder.layout
     assertEquals("%m%n", layout.pattern)
+
+  }
+
+    @Test
+  void appenderSMTP() {
+    configurationDelegate.appender("SMTP", SMTPAppender) {
+      to = "a"
+      to = "b"
+      layout (PatternLayout) {
+          pattern = "%m%n"
+      }
+    }
+       StatusPrinter.print context
+    Appender back = configurationDelegate.appenderList.find {it.name = "SMTP"}
+    assertNotNull(back)
+    assertEquals("SMTP", back.name)
+    SMTPAppender sa = back
+    PatternLayout layout =  sa.layout
+    assertEquals("%m%n", layout.pattern)
+
+    assertEquals(["a", "b"], sa.toList.sort());
 
   }
 }
