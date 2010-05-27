@@ -42,23 +42,68 @@
 
 
     <p>Domains-specific languages are rather pervasive. The XML-based
-    logback configuration can be be viewed as an example of a DSL. By
-    the very nature of XML, XML-based configuration files are quite
-    verbose and bulky. Moreover, a relatively large body of code in
-    logback, namely Joran, is dedicated to processes these XML-based
+    logback configuration can be viewed as an example DSL. By the very
+    nature of XML, XML-based configuration files are quite verbose and
+    bulky. Moreover, a relatively large body of code in logback,
+    namely Joran, is dedicated to processes these XML-based
     configuration files. Joran supports nifty features such as
-    variable subsitution, conditional processing and on-the-fly
-    extensibility. Not only Joran is a complex beast, the
+    variable substitution, conditional processing and on-the-fly
+    extensibility. However, not only Joran is a complex beast, the
     user-experience it provides can be described as unsatisfactory or
     at the very least unintuitive.
     </p>
 
     <p>The Groovy-based DSL described in this chapter aims to be
     consistent, intuitive, and powerful. Everything you can do XML in
-    configuration files, you can do in Groovy in a much shorter
-    syntax. There is even a tool to automatically migrate XML
+    configuration files, you can do in Groovy with a much shorter
+    syntax. To help you migrate to Groovy style configuration, we have
+    developped a <a
+    href="http://logback.qos.ch/translator/asGroovy.html">tool to
+    automatically migrate your <em>logback.xml</em> files to
+    <em>logback.groovy</em></a>.
+    </p>
 
 
+    <h2>General philosophy</h2>
+    
+    <p>As a general rule, <em>logback.groovy</em> files are groovy
+    programs. And since groovy is a super-set of Java, whatever
+    configuration actions you can perform in Java, you can do the same
+    within a <em>logback.groovy</em> file. However, since configuring
+    logback progammatically using Java syntax can be very cumbersome,
+    we added a few logback-specific extensions to make your life
+    easier. We limited the number of such logback-specific extensions
+    to an absolute minimum. If you are already familiar with groovy,
+    you should be able to read, understand and even write your own
+    logback.groovy files with great ease. Those unfamiliar with Groovy
+    should still find logback.groovy syntax much more comfortable to
+    use than logback.xml.
+    </p>
+
+    <p>Logback.groovy syntax consists of 6 methods described next in
+    their customary order of appearance. Strictly speaking the order
+    of invocation of the methods does matter except that appenders
+    MUST be defined before they can be attached to a logger.</p>
+
+    <h3><code>scan(String scanPeriodStr = null)</code> method</h3>
+
+    <p>Invoking the scan() method instructs logback to periodically
+    scan the logback.groovy file for changes. Whenever a change is
+    detected, the logback.groovy file is reloaded.</p>
+
+    <h3>statusListener(Class listenerClass)</h3>
+    
+    <h3>conversionRule(String conversionWord, Class converterClass)</h3>
+
+
+    <h3> root(Level level, List<String> appenderNames = [])</String>
+
+    <h3>logger(String name, Level level, List<String> appenderNames = [], Boolean additivity = null)</String>
+
+    <h3>appender(String name, Class clazz, Closure closure = null)</h3>
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
 
     </div>
   </body>
