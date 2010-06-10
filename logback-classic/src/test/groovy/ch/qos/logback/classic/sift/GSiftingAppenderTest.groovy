@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic.sift
 
-import ch.qos.logback.classic.gaffer.Configurator
+import ch.qos.logback.classic.gaffer.GafferConfigurator
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
@@ -41,7 +41,7 @@ class GSiftingAppenderTest {
   Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME)
   Logger logger = context.getLogger(this.getClass())
   int diff = RandomUtil.getPositiveInt();
-  Configurator configurator = new Configurator(context);
+  GafferConfigurator configurator = new GafferConfigurator(context);
   StatusChecker checker = new StatusChecker(context)
 
   @After

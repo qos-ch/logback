@@ -41,16 +41,16 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
 
 
-    <p>Domains-specific languages are rather pervasive. The XML-based
-    logback configuration can be viewed as an example DSL. By the very
-    nature of XML, XML-based configuration files are quite verbose and
-    bulky. Moreover, a relatively large body of code in logback,
-    namely Joran, is dedicated to processes these XML-based
-    configuration files. Joran supports nifty features such as
-    variable substitution, conditional processing and on-the-fly
-    extensibility. However, not only Joran is a complex beast, the
-    user-experience it provides can be described as unsatisfactory or
-    at the very least unintuitive.
+    <p>Domains-specific languages or DSLs are rather pervasive. The
+    XML-based logback configuration can be viewed as a DSL
+    instance. By the very nature of XML, XML-based configuration files
+    are quite verbose and rather bulky. Moreover, a relatively large
+    body of code in logback, namely Joran, is dedicated to processes
+    these XML-based configuration files. Joran supports nifty features
+    such as variable substitution, conditional processing and
+    on-the-fly extensibility. However, not only Joran is a complex
+    beast, the user-experience it provides can be described as
+    unsatisfactory or at the very least unintuitive.
     </p>
 
     <p>The Groovy-based DSL described in this chapter aims to be
@@ -72,36 +72,204 @@
     within a <em>logback.groovy</em> file. However, since configuring
     logback progammatically using Java syntax can be very cumbersome,
     we added a few logback-specific extensions to make your life
-    easier. We limited the number of such logback-specific extensions
-    to an absolute minimum. If you are already familiar with groovy,
-    you should be able to read, understand and even write your own
-    logback.groovy files with great ease. Those unfamiliar with Groovy
-    should still find logback.groovy syntax much more comfortable to
-    use than logback.xml.
+    easier. We try hard to limit the number of logback-specific
+    syntactic extensions to an absolute minimum. If you are already
+    familiar with groovy, you should be able to read, understand and
+    even write your own <em>logback.groovy</em> files with great
+    ease. Those unfamiliar with Groovy should still find
+    <em>logback.groovy</em> syntax much more comfortable to use than
+    <em>logback.xml</em>.
     </p>
 
-    <p>Logback.groovy syntax consists of 6 methods described next in
-    their customary order of appearance. Strictly speaking the order
-    of invocation of the methods does matter except that appenders
-    MUST be defined before they can be attached to a logger.</p>
+    <p><em>Logback.groovy</em> syntax consists of half a dozen methods
+    described next in the reverse order of their customary
+    appearance. Strictly speaking, the order of invocation of these
+    methods does NOT matter, with one exception: appenders MUST be
+    defined before they can be attached to a logger.</p>
 
-    <h3><code>scan(String scanPeriodStr = null)</code> method</h3>
+    <!-- ========================================================== -->
+
+    <h3> &#8226; <span class="code">root(Level level, List&lt;String> appenderNames = [])</span></h3>
+
+    <p>The <code>root</code> method can be used to set the level of
+    the root logger. As an optional second argument of type
+    <code>List&lt;String></code>, can be used to attach previously
+    defined appenders by name. If you do not specify the list of
+    appender names, then an empty list is assumed. In groovy, an empty
+    list is denoted by <code>[]</code>.</p>
+
+    <p>To set the level of the root logger to WARN, you would write:</p>
+
+    <pre class="prettyprint">import static ch.qos.logback.classic.Level.WARN
+
+root(WARN)</pre>
+
+    <p>To set the level of the root logger to DEBUG, and attach 
+    appenders named "CONSOLE" and "FILE" to root, you would write:</p>
+
+    <pre class="prettyprint">import static ch.qos.logback.classic.Level.INFO
+
+root(INFO, ["CONSOLE", "FILE"])</pre>
+
+    <p>In the previous example, it is assumed that the appenders named
+    "CONSOLE" and "FILE" were already defined. Defining appenders will
+    be discussed shortly.
+    </p>
+
+    <!-- ========================================================== -->
+
+    <h3>&#8226; <span class="code">logger(String name, Level level, List&lt;String> appenderNames = [], <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Boolean additivity = null)</span></h3>
+
+    <p>The <code>logger()</code> method takes four arguments, of which
+    the last two are optional. The first argument is the name of the
+    logger to configure. The second argument is the level of the
+    designated logger. Setting the level of a logger to
+    <code>null</code> forces it to <a
+    href="architecture.html#effectiveLevel">inherit its level</a> from
+    its nearest ancestor with an assigned level. The third argument of
+    type <code>List&lt;String></code> is optional and defaults to an
+    emtpy list if omitted. The appender names in the list are attached
+    to the designated logger. The forth argument of type
+    <code>Boolean</code> is also optional and controls the <a
+    href="architecture.html#additivity">additivity flag</a>. If
+    omitted, it defaults to <code>null</code>.
+    </p> 
+
+    <p>For example, the following script set the level of the
+    "com.foo" logger to INFO.</p>
+
+       <pre class="prettyprint">import static ch.qos.logback.classic.Level.INFO
+
+logger("com.foo", INFO)</pre>
+
+    <p>The next script sets the level of the "com.foo" logger to
+    DEBUG, and attaches the appender named "CONSOLE" to it.</p>
+
+  <pre class="prettyprint">import static ch.qos.logback.classic.Level.DEBUG
+
+logger("com.foo", DEBUG, ["CONSOLE"])</pre>
+    
+   <p>The next script is similiar to the previous one, except that it
+   also sets the the additivity flag of the "com.foo" logger to
+   false.</p>
+
+  <pre class="prettyprint">import static ch.qos.logback.classic.Level.DEBUG
+
+logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
+
+
+    <!-- ========================================================== -->
+    <h3>&#8226; <span class="code">appender(String name, Class clazz, Closure closure = null)</span></h3>
+
+    <p>The appender method takes the name of the appender being
+    configured as its first argument. The second mandatory argument is
+    the class of the appender to instantiate. The third argument is a
+    closure containing further configuration instructions. If omitted,
+    it defaults to null.</p>
+
+    <p>Most appenders require properties to be set and sub-components
+    to be injected to function properly. Properties are set using the
+    '=' operator (assignment). Sub-components are injected by invoking
+    a method named after the property and passing that method the
+    class to instantiate as an argument. This convention can be
+    applied recursively to configure properties as well as
+    sub-components of any appender sub-component. </p>
+    
+    <p>For example, the following script instantiates a
+    <code>FileAppender</code> named "FILE", setting its <span
+    class="option">file</span> property to "testFile.log" and its
+    <span class="option">append</span> property to false. An encoder
+    of type <code>PatternLayoutEncoder</code> is injected into the
+    appender. The pattern property of the encoder is set to "%level
+    %logger - %msg%n". The appender is then attached to the root
+    logger.</p>
+
+    <pre class="prettyprint">import ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+import ch.qos.logback.core.FileAppender
+
+import static ch.qos.logback.classic.Level.DEBUG
+
+appender("FILE", FileAppender) {
+  file = "testFile.log"
+  append = true
+  encoder(PatternLayoutEncoder) {
+    pattern = "%level %logger - %msg%n"
+  }
+}
+
+root(DEBUG, ["FILE"])</pre>
+
+    <p>
+    </p>
+
+    
+  
+    <!-- ========================================================== -->        
+    <h3>&#8226; <span class="code">conversionRule(String conversionWord, Class converterClass)</span></h3>
+
+    <p>After creating your own <a
+    href="layouts.html#customConversionSpecifier">conversion
+    specifier</a>, you need to inform logback of its existence. Here
+    is a sample logback.groovy file which instructs logback to use
+    MySampleConverter whenever the <code>%sample</code> conversion
+    word is encountered.
+    </p>
+
+    <pre class="prettyprint">
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.core.ConsoleAppender
+import chapters.layouts.MySampleConverter
+
+import static ch.qos.logback.classic.Level.DEBUG
+
+conversionRule("sample", MySampleConverter)
+appender("STDOUT", ConsoleAppender) {
+  encoder(PatternLayoutEncoder) {
+    pattern = "%-4relative [%thread] %<b>sample</b> - %msg%n"
+  }
+}
+root(DEBUG, ["STDOUT"])</pre>
+
+   <!-- ========================================================== -->
+   <h3>&#8226; <span class="code">scan(String scanPeriod = null)</span></h3>
 
     <p>Invoking the scan() method instructs logback to periodically
     scan the logback.groovy file for changes. Whenever a change is
-    detected, the logback.groovy file is reloaded.</p>
+    detected, the <em>logback.groovy</em> file is reloaded.</p>
 
-    <h3>statusListener(Class listenerClass)</h3>
+    <pre class="prettyprint">scan()</pre>
+
+    <p>By default, the configuration file will be scanned for changes
+    once every minute. You can specify a different scanning period by
+    passing a "scanPeriod" string value. Values can be specified in
+    units of milliseconds, seconds, minutes or hours. Here is an
+    example:
+    </p>
+
+    <pre class="prettyprint">scan("30 seconds")</pre>
     
-    <h3>conversionRule(String conversionWord, Class converterClass)</h3>
+    <p>If no unit of time is specified, then the unit of time is
+    assumed to be milliseconds, which is usually inappropriate. If you
+    change the default scanning period, do not forget to specify a
+    time unit. For additional details on how scanning works, please
+    refer to the <a href="configuration.html#autoScan">section on
+    automatic reloading</a>.
+    </p>
+    
+    <!-- ========================================================== -->
+  
+    <h3>&#8226; <span class="code">statusListener(Class listenerClass)</span></h3>
 
+    <p>You can add a status listener by invoking the
+    <code>statusListener</code> method and passing a listener class as
+    an argument. Here is an example:</p>
 
-    <h3> root(Level level, List<String> appenderNames = [])</String>
+    <pre class="prettyprint">import ch.qos.logback.core.status.OnConsoleStatusListener
 
-    <h3>logger(String name, Level level, List<String> appenderNames = [], Boolean additivity = null)</String>
-
-    <h3>appender(String name, Class clazz, Closure closure = null)</h3>
-
+statusListener(OnConsoleStatusListener)</pre>
+ 
+    <p><a href="configuration.html#statusListener">Status listeners</a> were described in an earlier
+    chapter.</p>
 
     <script src="../templates/footer.js" type="text/javascript"></script>
 

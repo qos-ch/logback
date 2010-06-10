@@ -15,22 +15,32 @@ package ch.qos.logback.classic.gaffer
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.util.ContextUtil
+import ch.qos.logback.core.CoreConstants
 
-class Configurator {
+class GafferConfigurator {
 
   LoggerContext context
   //ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
 
-  Configurator(LoggerContext context) {
+  GafferConfigurator(LoggerContext context) {
     this.context = context
     //configurationDelegate.context = context;
+  }
+
+  protected void informContextOfURLUsedForConfiguration(URL url) {
+    context.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN, url);
+  }
+
+  void run(URL url) {
+    informContextOfURLUsedForConfiguration(url);
+    run(url.text);
   }
 
   void run(String dslText) {
     Binding binding = new Binding();
     binding.setProperty("hostname", ContextUtil.getLocalHostName());
     Script dslScript = new GroovyShell(binding).parse(dslText)
-    
+
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
     dslScript.metaClass.getDeclaredOrigin = { println "getDeclaredOrigin"; dslScript }

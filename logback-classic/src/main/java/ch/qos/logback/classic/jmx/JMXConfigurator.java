@@ -44,7 +44,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * A class that provides access to logback components via JMX.
  * 
  * <p>Since this class implements {@link JMXConfiguratorMBean} it has to be
- * named as Configurator}.
+ * named as JMXConfigurator}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

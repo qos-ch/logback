@@ -37,13 +37,13 @@ import static org.junit.Assert.assertTrue
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-class ConfiguratorTest {
+class GafferConfiguratorTest {
 
   LoggerContext context = new LoggerContext();
   Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME)
   Logger logger = context.getLogger(this.getClass())
   int diff = RandomUtil.getPositiveInt();
-  Configurator configurator = new Configurator(context);
+  GafferConfigurator configurator = new GafferConfigurator(context);
 
   @Before
   void setUp() {

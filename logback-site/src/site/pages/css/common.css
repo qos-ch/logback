@@ -219,8 +219,9 @@ table.bodyTable tr td p:first-child {
   font-weight: bold;	
 }
 
-code {
+.code {
 	font-family: Courier, monospace;
+ 	color: #666;	
 }
 
 .variable {

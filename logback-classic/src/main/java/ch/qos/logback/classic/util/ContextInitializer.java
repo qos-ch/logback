@@ -21,7 +21,9 @@ import java.util.List;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -32,13 +34,15 @@ import ch.qos.logback.core.util.OptionHelper;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
+
 /**
  * This class contains logback's logic for automatic configuration
- * 
+ *
  * @author Ceki Gulcu
  */
 public class ContextInitializer {
 
+  final public static String GROOVY_AUTOCONFIG_FILE = "logback.groovy";
   final public static String AUTOCONFIG_FILE = "logback.xml";
   final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
   final public static String CONFIG_FILE_PROPERTY = "logback.configurationFile";
@@ -55,6 +59,28 @@ public class ContextInitializer {
     if (url == null) {
       throw new IllegalArgumentException("URL argument cannot be null");
     }
+    if (url.toString().endsWith("groovy")) {
+      if (EnvUtil.isGroovyAvailable()) {
+        GafferConfigurator gafferConfigurator = new GafferConfigurator(loggerContext);
+        gafferConfigurator.run(url);
+      } else {
+        StatusManager sm = loggerContext.getStatusManager();
+        if (url == null) {
+          sm.add(new ErrorStatus("Groovy classes are not available on the class path]",
+                  loggerContext));
+        }
+      }
+
+
+      if (url.toString().endsWith("xml")) {
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(loggerContext);
+        configurator.doConfigure(url);
+      }
+
+    }
+
+  void joranConfigureByResource(URL url) throws JoranException {
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(loggerContext);
     configurator.doConfigure(url);
@@ -62,7 +88,7 @@ public class ContextInitializer {
 
   private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader, boolean updateStatus) {
     String logbackConfigFile = OptionHelper.getSystemProperty(CONFIG_FILE_PROPERTY);
-    
+
     if (logbackConfigFile != null) {
       URL result = null;
       try {
@@ -99,17 +125,23 @@ public class ContextInitializer {
       return url;
     }
 
-    url = Loader.getResource(TEST_AUTOCONFIG_FILE, myClassLoader);
-    if (updateStatus) {
-      statusOnResourceSearch(TEST_AUTOCONFIG_FILE, myClassLoader, url);
-    }
+    url = getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader, updateStatus);
     if (url != null) {
       return url;
     }
 
-    url = Loader.getResource(AUTOCONFIG_FILE, myClassLoader);
+    url = getResource(TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
+    if (url != null) {
+      return url;
+    }
+
+    return getResource(AUTOCONFIG_FILE, myClassLoader, updateStatus);
+  }
+
+  private URL getResource(String filename, ClassLoader myClassLoader, boolean updateStatus) {
+    URL url = Loader.getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader);
     if (updateStatus) {
-      statusOnResourceSearch(AUTOCONFIG_FILE, myClassLoader, url);
+      statusOnResourceSearch(GROOVY_AUTOCONFIG_FILE, myClassLoader, url);
     }
     return url;
   }
@@ -124,33 +156,33 @@ public class ContextInitializer {
     }
   }
 
-  private void multiplicityWarning(String resourceName, ClassLoader classLoader ) {
+  private void multiplicityWarning(String resourceName, ClassLoader classLoader) {
     List<URL> urlList = null;
     StatusManager sm = loggerContext.getStatusManager();
     try {
       urlList = Loader.getResourceOccurenceCount(resourceName, classLoader);
     } catch (IOException e) {
       sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]",
-          loggerContext, e));
+              loggerContext, e));
     }
-    if(urlList != null && urlList.size() > 1) {
+    if (urlList != null && urlList.size() > 1) {
       sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.",
-          loggerContext));
-      for(URL url: urlList) {
-      sm.add(new WarnStatus("Resource ["+resourceName+"] occurs at ["+url.toString()+"]",
-          loggerContext));
+              loggerContext));
+      for (URL url : urlList) {
+        sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]",
+                loggerContext));
       }
     }
   }
-  
+
   private void statusOnResourceSearch(String resourceName, ClassLoader classLoader, URL url) {
     StatusManager sm = loggerContext.getStatusManager();
     if (url == null) {
       sm.add(new InfoStatus("Could NOT find resource [" + resourceName + "]",
-          loggerContext));
+              loggerContext));
     } else {
-      sm.add(new InfoStatus("Found resource [" + resourceName + "] at ["+url.toString()+"]",
-          loggerContext));
+      sm.add(new InfoStatus("Found resource [" + resourceName + "] at [" + url.toString() + "]",
+              loggerContext));
       multiplicityWarning(resourceName, classLoader);
     }
   }
