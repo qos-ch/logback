@@ -30,7 +30,8 @@ public enum ConsoleTarget {
     public void write(int b) throws IOException {
       System.out.write(b);
     }
-    @Override+    public void write(byte b[]) throws IOException {
+    @Override
+    public void write(byte b[]) throws IOException {
       System.out.write(b);
     }
     @Override
