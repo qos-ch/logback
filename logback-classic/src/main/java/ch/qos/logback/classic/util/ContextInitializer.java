@@ -66,19 +66,17 @@ public class ContextInitializer {
       } else {
         StatusManager sm = loggerContext.getStatusManager();
         if (url == null) {
-          sm.add(new ErrorStatus("Groovy classes are not available on the class path]",
+          sm.add(new ErrorStatus("Groovy classes are not available on the class path. Aborting initialization.",
                   loggerContext));
         }
       }
-
-
-      if (url.toString().endsWith("xml")) {
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(loggerContext);
-        configurator.doConfigure(url);
-      }
-
     }
+    if (url.toString().endsWith("xml")) {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(loggerContext);
+      configurator.doConfigure(url);
+    }
+  }
 
   void joranConfigureByResource(URL url) throws JoranException {
     JoranConfigurator configurator = new JoranConfigurator();
@@ -88,7 +86,6 @@ public class ContextInitializer {
 
   private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader, boolean updateStatus) {
     String logbackConfigFile = OptionHelper.getSystemProperty(CONFIG_FILE_PROPERTY);
-
     if (logbackConfigFile != null) {
       URL result = null;
       try {
@@ -139,9 +136,9 @@ public class ContextInitializer {
   }
 
   private URL getResource(String filename, ClassLoader myClassLoader, boolean updateStatus) {
-    URL url = Loader.getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader);
+    URL url = Loader.getResource(filename, myClassLoader);
     if (updateStatus) {
-      statusOnResourceSearch(GROOVY_AUTOCONFIG_FILE, myClassLoader, url);
+      statusOnResourceSearch(filename, myClassLoader, url);
     }
     return url;
   }

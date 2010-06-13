@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
