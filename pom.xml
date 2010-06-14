@@ -17,7 +17,9 @@
     <url>http://www.qos.ch</url>
   </organization>
   <inceptionYear>2005</inceptionYear>
-     
+    
+  
+ 
   <modules>
     <module>logback-core</module>
     <module>logback-classic</module>
@@ -26,11 +28,20 @@
     <module>logback-examples</module>
   </modules>
 
+ <properties>
+    <!-- slf4j.version property is used below, in
+         logback-classic/pom.xml and in setClasspath.cmd -->
+    <slf4j.version>1.6.0</slf4j.version>
+    <junit.version>4.7</junit.version>
+
+    <consolePlugin.version>1.1.0</consolePlugin.version>  
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.7</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -41,13 +52,7 @@
     </dependency>
   </dependencies>
 
-  <properties>
-    <!-- slf4j.version property is used below, in
-         logback-classic/pom.xml and in setClasspath.cmd -->
-    <slf4j.version>1.6.0</slf4j.version>
-    <consolePlugin.version>1.1.0</consolePlugin.version>  
-  </properties>
-  
+ 
   <dependencyManagement>
     <dependencies>
       <!-- Project modules -->

@@ -27,7 +27,9 @@ import ch.qos.logback.core.helpers.NOPAppender
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-class GSiftingAppender extends AppenderBase<ILoggingEvent> implements ConfigurationContributor {
+
+// The GMaven plugin does not support generics, so we use   AppenderBase instead of AppenderBase<ILoggingEvent>
+class GSiftingAppender extends AppenderBase implements ConfigurationContributor {
 
 
   protected AppenderTracker<ILoggingEvent> appenderTracker = new AppenderTrackerImpl<ILoggingEvent>();
@@ -87,7 +89,8 @@ class GSiftingAppender extends AppenderBase<ILoggingEvent> implements Configurat
   }
 
   @Override
-  protected void append(ILoggingEvent event) {
+  public void append(Object object) {
+    ILoggingEvent event = (ILoggingEvent) object;
     if (!isStarted()) {
       return;
     }

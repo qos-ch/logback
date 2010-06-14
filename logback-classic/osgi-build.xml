@@ -18,28 +18,39 @@
 
 	<echo message="compile classpath: ${currentVersion}" />
 	<echo message="test classpath:    ${test_classpath}" />
-	<echo message="basedir:           ${basedir}" />
+
+
 
   <property name="iBundleJar" value="target/iBundle.jar"/>
   <property name="bundlesDir" value="bundle"/>
 
 
-	<!-- this is really very ugly, but it's the only way to circumvent
-  	     http://jira.codehaus.org/browse/MANTRUN-95
-	-->
-	<taskdef name="junit" classpath="${test_classpath}" 
-           classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" />
+	<echo message="===============================" />
+	<echo message="basedir:           ${basedir}" />
+	<echo message="===============================" />
+            
+  <path id="basicCP">
+    <pathelement location="${org.apache.felix:org.apache.felix.main:jar}" />    
+    <pathelement location="target/classes/" />
+    <pathelement location="target/test-classes" />  
+    <!--		
+      <pathelement location="${org.slf4j:slf4j-api:jar}" />
+      <pathelement location="../logback-core/target/classes/" />
+      <pathelement location="../logback-core/target/test-classes/" />	
+    -->
+	</path >
+
 
 	<path id="minimal">
 		<pathelement location="target/test-classes/" />
 	</path >
 
   <target name="copySLF4J_JAR">
-    <echo>Copying ${slf4jJAR} to lib/</echo>
+    <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
     <delete>
       <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
     </delete>
-    <copy file="${slf4jJAR}" todir="lib/" />
+    <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
   </target>
 
 	<target name="init" depends="copySLF4J_JAR">
@@ -80,8 +91,8 @@
 
 	<target name="logback" unless="maven.test.skip">
     <prepareOSGiHarness binding="logback"/>
-    <junit printsummary="yes" fork="yes" dir="${basedir}" haltonfailure="yes">
-			<classpath path="${test_classpath}"/>
+    <junit printsummary="yes" fork="yes" dir="${basedir}" haltonfailure="yes">    
+      <classpath refid="basicCP"/>
       <formatter type="plain" />
       <test fork="yes" todir="target/unit-reports" name="org.slf4j.test_osgi.BundleTest" />
     </junit>

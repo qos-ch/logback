@@ -1,0 +1,41 @@
+<project name="integration" default="testAll" basedir=".">
+
+	<!--
+		This build file is usually run indirectly via Maven.
+		
+		When running this build file through Ant directly, you must
+		define the slf4jVersion property on the command line, e.g.:
+		
+		ant  -Dslf4jVersion=1.5.4-SNAPSHOT	
+	-->
+	
+	<echo message="slf4j.version:  ${slf4j.version}" />
+
+	<path id="basicClasspath">
+		<pathelement location="../logback-core/target/classes/" />
+		<pathelement location="../logback-core/target/test-classes/" />
+		<pathelement location="./target/classes/" />
+		<pathelement location="./target/test-classes/" />
+		<pathelement location="./lib/slf4j-api-${slf4j.version}.jar" />
+    <pathelement location="./src/test/input/integration/autoInit/" />
+	</path >
+
+
+
+
+	<target name="testAll" depends="testWithoutGroovy">
+	</target>
+
+
+
+	<target name="testWithoutGroovy">
+		<junit printsummary="yes" fork="no" haltonfailure="yes">
+			<classpath refid="basicClasspath" />
+			<formatter type="plain" />
+			<test fork="yes" todir="target/unit-reports" 
+            outfile="TEST-NoGroovy" 
+            name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
+		</junit>
+	</target>
+
+</project>

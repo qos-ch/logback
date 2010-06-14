@@ -65,10 +65,8 @@ public class ContextInitializer {
         gafferConfigurator.run(url);
       } else {
         StatusManager sm = loggerContext.getStatusManager();
-        if (url == null) {
-          sm.add(new ErrorStatus("Groovy classes are not available on the class path. Aborting initialization.",
-                  loggerContext));
-        }
+        sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.",
+                loggerContext));
       }
     }
     if (url.toString().endsWith("xml")) {
