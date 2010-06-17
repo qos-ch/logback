@@ -61,14 +61,9 @@ class ComponentDelegate extends ContextAwareBase {
       if (closure) {
         ComponentDelegate subDelegate = new ComponentDelegate(subComponent)
 
-        cascadeFields(subDelegate);
-        for (String k: fieldsToCaccade) {
-          //println "caccading ${k} with value ${this."${k}"}"
-          //subDelegate.metaClass."${k}" = this."${k}"
-        }
-
-
+        cascadeFields(subDelegate)
         subDelegate.context = context
+        injectParent(subComponent)
         closure.delegate = subDelegate
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
@@ -86,6 +81,12 @@ class ComponentDelegate extends ContextAwareBase {
     for (String k: fieldsToCaccade) {
       println "cacsading ${k} with value ${this."${k}"}"
       subDelegate.metaClass."${k}" = this."${k}"
+    }
+  }
+
+  void injectParent(Object subComponent) {
+    if(subComponent.hasProperty("parent")) {
+      subComponent.parent = component;
     }
   }
 

@@ -17,6 +17,10 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.core.util.StatusPrinter
 import ch.qos.logback.classic.net.SMTPAppender
+import ch.qos.logback.core.rolling.RollingFileAppender
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.core.util.CoreTestConstants
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -27,6 +31,8 @@ class ConfigurationDelegateTest {
   ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
   StatusChecker statusChecker = new StatusChecker(context)
   int diff = RandomUtil.getPositiveInt();
+
+  String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
   @Before
   void setUp() {
@@ -148,8 +154,8 @@ class ConfigurationDelegateTest {
   @Test
   void appenderWithEncoder() {
     configurationDelegate.appender("C", ConsoleAppender) {
-      encoder (LayoutWrappingEncoder) {
-        layout (PatternLayout) {
+      encoder(LayoutWrappingEncoder) {
+        layout(PatternLayout) {
           pattern = "%m%n"
         }
       }
@@ -160,29 +166,50 @@ class ConfigurationDelegateTest {
     ConsoleAppender ca = back
     assertNotNull(ca.encoder)
     assertNotNull(ca.encoder.layout)
-    PatternLayout layout =  ca.encoder.layout
+    PatternLayout layout = ca.encoder.layout
     assertEquals("%m%n", layout.pattern)
 
   }
 
-    @Test
+  @Test
   void appenderSMTP() {
     configurationDelegate.appender("SMTP", SMTPAppender) {
       to = "a"
       to = "b"
-      layout (PatternLayout) {
-          pattern = "%m%n"
+      layout(PatternLayout) {
+        pattern = "%m%n"
       }
     }
-       StatusPrinter.print context
+    //StatusPrinter.print context
     Appender back = configurationDelegate.appenderList.find {it.name = "SMTP"}
     assertNotNull(back)
     assertEquals("SMTP", back.name)
     SMTPAppender sa = back
-    PatternLayout layout =  sa.layout
+    PatternLayout layout = sa.layout
     assertEquals("%m%n", layout.pattern)
 
     assertEquals(["a", "b"], sa.toList.sort());
+  }
 
+  // test parent injection
+
+  @Test
+  void appenderRolling() {
+
+    String logFile = randomOutputDir+"log.txt";
+
+    configurationDelegate.appender("ROLLING", RollingFileAppender) {
+      file = logFile
+      rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = randomOutputDir+"log.%d{yyyy-MM}.log.zip"
+      }
+      encoder(PatternLayoutEncoder) {
+        pattern = '%msg%n'
+      }
+    }
+    // StatusPrinter.print context
+    RollingFileAppender back = configurationDelegate.appenderList.find {it.name = "ROLLING"}
+    assertNotNull(back)
+    assertEquals(logFile, back.rollingPolicy.getParentsRawFileProperty())
   }
 }

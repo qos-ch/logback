@@ -72,9 +72,10 @@
     </p>
 
     <p>Logback can be configured either programmatically or with a
-    configuration script (expressed in XML format). By the way,
-    existing log4j users can convert their <em>log4j.properties</em>
-    files to <em>logback.xml</em> using our <a
+    configuration script expressed in XML or Groovy format. By the
+    way, existing log4j users can convert their
+    <em>log4j.properties</em> files to <em>logback.xml</em> using our
+    <a
     href="http://logback.qos.ch/translator/">PropertiesTranslator</a>
     web-application.
     </p>
@@ -86,7 +87,14 @@
     <ol>
       <li>
         <p>Logback tries to find a file called
-        <em>logback-test.xml</em> <a
+        <em>logback.groovy</em> <a
+        href="../faq.html#configFileLocation">in the
+        classpath</a>.</p>
+      </li>
+
+      <li>
+        <p>If no such file is found, logback tries to find a file
+        called <em>logback-test.xml</em> <a
         href="../faq.html#configFileLocation">in the
         classpath</a>.</p>
       </li>
@@ -106,9 +114,9 @@
 
     </ol>
 
-    <p>The third and last step is meant to provide a default (but very
-    basic) logging functionality in the absence of a configuration
-    file.
+    <p>The fourth and last step is meant to provide a default (but
+    very basic) logging functionality in the absence of a
+    configuration file.
     </p>
 
 

@@ -22,6 +22,7 @@ import java.io.OutputStream;
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author Ruediger Dohna
+ * @author David Roussel
  */
 public enum ConsoleTarget {
 
