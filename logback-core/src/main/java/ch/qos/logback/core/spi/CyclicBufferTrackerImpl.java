@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2010, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,49 +11,57 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.sift;
+package ch.qos.logback.core.spi;
+
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.helpers.CyclicBuffer;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.CoreConstants;
-
 /**
- * Track appenders by a key. When an appender is not used for
- * longer than THRESHOLD, stop it.
- * @author Ceki Gulcu
+ * @author Ceki G&uuml;c&uuml;
  */
-public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
+public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
 
-  Map<String, Entry> map = new HashMap<String, Entry>();
- 
-  Entry head; // least recently used entries are towards the head
-  Entry tail; // most recently used entries are towards the tail
+  int bufferSize = DEFAULT_BUFFER_SIZE;
+  int maxNumBuffers = DEFAULT_NUMBER_OF_BUFFERS;
+  int bufferCount = 0;
 
+  private Map<String, Entry> map = new HashMap<String, Entry>();
+
+  private Entry head; // least recently used entries are towards the head
+  private Entry tail; // most recently used entries are towards the tail
   long lastCheck = 0;
 
-  AppenderTrackerImpl() {
+  public CyclicBufferTrackerImpl() {
     head = new Entry(null, null, 0);
     tail = head;
   }
 
-
-  public synchronized void put(String key, Appender<E> value, long timestamp) {
-    Entry entry = map.get(key);
-    if (entry == null) {
-      entry = new Entry(key, value, timestamp);
-      map.put(key, entry);
-    }
-    moveToTail(entry);
+  public int getBufferSize() {
+    return bufferSize;
   }
 
-  public synchronized Appender<E> get(String key, long timestamp) {
+  public void setBufferSize(int size) {
+  }
+
+  public int getMaxNumberOfBuffers() {
+    return maxNumBuffers;
+  }
+
+  public void setMaxNumberOfBuffers(int maxNumBuffers) {
+    this.maxNumBuffers = maxNumBuffers;
+  }
+
+  public CyclicBuffer<E> get(String key, long timestamp) {
     Entry existing = map.get(key);
     if (existing == null) {
-      return null;
+      CyclicBuffer<E> cb = processNewEntry(key, timestamp);
+      return cb;
     } else {
       existing.setTimestamp(timestamp);
       moveToTail(existing);
@@ -61,60 +69,25 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     }
   }
 
-  
-  public synchronized void stopStaleAppenders(long now) {
-    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
-      return;
-    }
-    lastCheck = now;
-    while (head.value != null && isEntryStale(head,now)) {
-      Appender<E> appender = head.value;
-      appender.stop();
+  private CyclicBuffer<E> processNewEntry(String key, long timestamp) {
+    CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
+    Entry entry = new Entry(key, cb, timestamp);
+    map.put(key, entry);
+    bufferCount++;
+    rearrangeTailLinks(entry);
+    if (bufferCount >= maxNumBuffers) {
       removeHead();
     }
-  } 
-
-  /**
-   * @since 0.9.19
-   * @param key
-   */
-  public synchronized void stopAndRemoveNow(String key) {
-    Entry e = head;
-    Entry found = null;
-    while (e != tail) {
-      if(key.equals(e.key)) {
-        found = e;
-        break;
-      }
-      e = e.next;
-    }
-    if(found != null) {
-      rearrangePreexistingLinks(e);
-      map.remove(key);
-      Appender<E> appender = e.value;
-      appender.stop();
-    }
-  }
-  
-  public List<String> keyList() {
-    List<String> result = new LinkedList<String>();
-    Entry e = head;
-    while (e != tail) {
-      result.add(e.key);
-      e = e.next;
-    }
-    return result;
-  }
-  
-  
-  final private boolean isEntryStale(Entry entry, long now) {
-    return ((entry.timestamp + THRESHOLD) < now);
+    return cb;
   }
 
-  
   private void removeHead() {
-    // System.out.println("RemoveHead called");
+    CyclicBuffer cb = head.value;
+    if (cb != null) {
+      cb.clear();
+    }
     map.remove(head.key);
+    bufferCount--;
     head = head.next;
     head.prev = null;
   }
@@ -136,6 +109,32 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     }
   }
 
+
+  public synchronized void clearStaleBuffers(long now) {
+    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+      return;
+    }
+    lastCheck = now;
+    while (head.value != null && isEntryStale(head, now)) {
+      CyclicBuffer<E> cb = head.value;
+      cb.clear();
+      removeHead();
+    }
+  }
+
+  final private boolean isEntryStale(Entry entry, long now) {
+    return ((entry.timestamp + THRESHOLD) < now);
+  }
+
+   List<String> keyList() {
+    List<String> result = new LinkedList<String>();
+    Entry e = head;
+    while (e != tail) {
+      result.add(e.key);
+      e = e.next;
+    }
+    return result;
+  }
   private void rearrangeTailLinks(Entry e) {
     if (head == tail) {
       head = e;
@@ -149,47 +148,21 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     tail.prev = e;
   }
 
-  public void dump() {
-    Entry e = head;
-    System.out.print("N:");
-    while (e != null) {
-      // System.out.print(e+"->");
-      System.out.print(e.key + ", ");
-      e = e.next;
-    }
-    System.out.println();
-  }
-
-
-
-  public List<Appender<E>> valueList() {
-    List<Appender<E>> result = new LinkedList<Appender<E>>();
-    Entry e = head;
-    while (e != tail) {
-      result.add(e.value);
-      e = e.next;
-    }
-    return result;
-  }
-  
   // ================================================================
+
   private class Entry {
     Entry next;
     Entry prev;
 
     String key;
-    Appender<E> value;
+    CyclicBuffer<E> value;
     long timestamp;
 
-    Entry(String k, Appender<E> v, long timestamp) {
+    Entry(String k, CyclicBuffer<E> v, long timestamp) {
       this.key = k;
       this.value = v;
       this.timestamp = timestamp;
     }
-
-//    public long getTimestamp() {
-//      return timestamp;
-//    }
 
     public void setTimestamp(long timestamp) {
       this.timestamp = timestamp;

@@ -34,9 +34,6 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
 public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
 
   static final String DEFAULT_SUBJECT_PATTERN = "%m";
-  
-  private int bufferSize = 512;
-  protected CyclicBuffer<AccessEvent> cb = new CyclicBuffer<AccessEvent>(bufferSize);
 
   /**
    * The default constructor will instantiate the appender with a
@@ -56,40 +53,20 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
 
   /**
    * Perform SMTPAppender specific appending actions, mainly adding the event to
-   * a cyclic buffer.
+   * the appropriate cyclic buffer.
    */
-  protected void subAppend(AccessEvent event) {
+  protected void subAppend(CyclicBuffer<AccessEvent> cb, AccessEvent event) {
     cb.add(event);
-    // addInfo("Added event to the cyclic buffer: " + event.getMessage());
   }
 
   @Override
-  protected void fillBuffer(StringBuffer sbuf) {
+  protected void fillBuffer(CyclicBuffer<AccessEvent> cb, StringBuffer sbuf) {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
       // sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
       AccessEvent event = (AccessEvent) cb.get();
       sbuf.append(layout.doLayout(event));
     }
-  }
-
-  /**
-   * The <b>BufferSize</b> option takes a positive integer representing the
-   * maximum number of logging events to collect in a cyclic buffer. When the
-   * <code>BufferSize</code> is reached, oldest events are deleted as new
-   * events are added to the buffer. By default the size of the cyclic buffer is
-   * 512 events.
-   */
-  public void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
-    cb.resize(bufferSize);
-  }
-
-  /**
-   * Returns value of the <b>BufferSize</b> option.
-   */
-  public int getBufferSize() {
-    return bufferSize;
   }
 
   @Override

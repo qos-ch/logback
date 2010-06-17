@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 import javax.mail.Address;
 import javax.mail.MessagingException;
 
+import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.core.spi.CyclicBufferTracker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,11 +36,15 @@ import ch.qos.logback.core.Layout;
 public class DilutedSMTPAppenderTest {
 
   SMTPAppender appender;
+  CyclicBufferTracker cbTracker;
+  CyclicBuffer cb;
 
   @Before
   public void setUp() throws Exception {
     LoggerContext lc = new LoggerContext();
     appender = new SMTPAppender();
+    cbTracker = appender.getCyclicBufferTracker();
+    cb = cbTracker.get("", 0);
     appender.setContext(lc);
     appender.setName("smtp");
     appender.setFrom("user@host.dom");
@@ -92,8 +98,8 @@ public class DilutedSMTPAppenderTest {
     LoggingEvent event = new LoggingEvent();
     event.setThreadName("thead name");
     event.setLevel(Level.DEBUG);
-    appender.subAppend(event);
-    assertEquals(1, appender.cb.length());
+    appender.subAppend(cb, event);
+    assertEquals(1, cb.length());
   }
 
   @Test

@@ -34,6 +34,11 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
+import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.core.sift.DefaultDiscriminator;
+import ch.qos.logback.core.sift.Discriminator;
+import ch.qos.logback.core.spi.CyclicBufferTracker;
+import ch.qos.logback.core.spi.CyclicBufferTrackerImpl;
 import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -43,20 +48,20 @@ import ch.qos.logback.core.util.OptionHelper;
 /**
  * An abstract class that provides support for sending events to an email
  * address.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further
  * documentation.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   protected Layout<E> subjectLayout;
-  
+
   protected Layout<E> layout;
-  
+
   private List<String> toList = new ArrayList<String>();
   private String from;
   private String subjectStr = null;
@@ -74,15 +79,17 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   protected EventEvaluator<E> eventEvaluator;
 
+  protected Discriminator<E> discriminator = new DefaultDiscriminator<E>();
+  protected CyclicBufferTracker<E> cbTracker = new CyclicBufferTrackerImpl<E>();
+
   private int errorCount = 0;
 
   /**
    * return a layout for the subjet string as appropriate for the module. If the
    * subjectStr parameter is null, then a default value for subjectStr should be
    * used.
-   * 
+   *
    * @param subjectStr
-   * 
    * @return a layout as appropriate for the module
    */
   abstract protected Layout<E> makeSubjectLayout(String subjectStr);
@@ -152,26 +159,31 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       return;
     }
 
-    subAppend(eventObject);
+
+    String key =  discriminator.getDiscriminatingValue(eventObject);
+
+    CyclicBuffer<E> cb = cbTracker.get(key, System.currentTimeMillis());
+
+    subAppend(cb, eventObject);
 
     try {
       if (eventEvaluator.evaluate(eventObject)) {
-        sendBuffer(eventObject);
+        sendBuffer(cb, eventObject);
       }
     } catch (EvaluationException ex) {
-      errorCount ++; 
+      errorCount++;
       if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
         addError("SMTPAppender's EventEvaluator threw an Exception-", ex);
       }
     }
   }
 
-  abstract protected void subAppend(E eventObject);
+  abstract protected void subAppend(CyclicBuffer<E> cb, E eventObject);
 
   /**
    * This method determines if there is a sense in attempting to append.
-   * 
-   * <p>
+   * <p/>
+   * <p/>
    * It checks whether there is a set output target and also if there is a set
    * layout. If these checks fail, then the boolean value <code>false</code> is
    * returned.
@@ -179,7 +191,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   public boolean checkEntryConditions() {
     if (!this.started) {
       addError("Attempting to append to a non-started appender: "
-          + this.getName());
+              + this.getName());
       return false;
     }
 
@@ -195,8 +207,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     if (this.layout == null) {
       addError("No layout set for appender named ["
-          + name
-          + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
+              + name
+              + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
       return false;
     }
     return true;
@@ -243,7 +255,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   /**
    * Send the contents of the cyclic buffer as an e-mail message.
    */
-  protected void sendBuffer(E lastEventObject) {
+  protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
 
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
@@ -260,7 +272,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       if (presentationHeader != null) {
         sbuf.append(presentationHeader);
       }
-      fillBuffer(sbuf);
+      fillBuffer(cb, sbuf);
       String presentationFooter = layout.getPresentationFooter();
       if (presentationFooter != null) {
         sbuf.append(presentationFooter);
@@ -272,14 +284,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
       if (subjectLayout != null) {
         mimeMsg.setSubject(subjectLayout.doLayout(lastEventObject),
-            charsetEncoding);
+                charsetEncoding);
       }
 
       String contentType = layout.getContentType();
 
       if (ContentTypeUtil.isTextual(contentType)) {
         part.setText(sbuf.toString(), charsetEncoding, ContentTypeUtil
-            .getSubType(contentType));
+                .getSubType(contentType));
       } else {
         part.setContent(sbuf.toString(), layout.getContentType());
       }
@@ -295,7 +307,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  abstract protected void fillBuffer(StringBuffer sbuf);
+  abstract protected void fillBuffer(CyclicBuffer<E> cb, StringBuffer sbuf);
 
   /**
    * Returns value of the <b>From</b> option.
@@ -344,7 +356,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * The port where the SMTP server is running. Default value is 25.
-   * 
+   *
    * @param port
    */
   public void setSMTPPort(int port) {
@@ -352,11 +364,27 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * @see #setSMTPPort(int)
    * @return
+   * @see #setSMTPPort(int)
    */
   public int getSMTPPort() {
     return smtpPort;
+  }
+
+  public CyclicBufferTracker<E> getCyclicBufferTracker() {
+    return cbTracker;
+  }
+
+  public void setCyclicBufferTracker(CyclicBufferTracker<E> cbTracker) {
+    this.cbTracker = cbTracker;
+  }
+
+  public Discriminator<E> getDiscriminator() {
+    return discriminator;
+  }
+
+  public void setDiscriminator(Discriminator<E> discriminator) {
+    this.discriminator = discriminator;
   }
 
   /**
@@ -368,11 +396,13 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   // for testing purpose only
+
   public Message getMessage() {
     return mimeMsg;
   }
 
   // for testing purpose only
+
   public void setMessage(MimeMessage msg) {
     this.mimeMsg = msg;
   }
@@ -420,17 +450,17 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * @see #setCharsetEncoding(String)
    * @return the charset encoding value
+   * @see #setCharsetEncoding(String)
    */
   public String getCharsetEncoding() {
     return charsetEncoding;
-  } 
+  }
 
   /**
    * Set the character set encoding of the outgoing email messages. The default
    * encoding is "UTF-8" which usually works well for most purposes.
-   * 
+   *
    * @param charsetEncoding
    */
   public void setCharsetEncoding(String charsetEncoding) {

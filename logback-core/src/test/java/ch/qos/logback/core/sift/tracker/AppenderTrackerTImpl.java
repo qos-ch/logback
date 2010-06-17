@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.sift.AppenderTracker;
 
 /**
@@ -61,7 +62,7 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
   }
 
   synchronized public void stopStaleAppenders(long timestamp) {
-    if (lastCheck + MILLIS_IN_ONE_SECOND > timestamp) {
+    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > timestamp) {
       return;
     }
     lastCheck = timestamp;

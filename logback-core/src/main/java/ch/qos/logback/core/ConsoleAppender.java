@@ -43,7 +43,6 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   public void setTarget(String value) {
     ConsoleTarget t = ConsoleTarget.findByName(value.trim());
     if (t == null) {
-      System.out.println("**************");
       targetWarn(value);
     } else {
       target = t;

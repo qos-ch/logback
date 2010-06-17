@@ -115,4 +115,5 @@ public class CoreConstants {
   
   
   public static int BYTES_PER_INT = 4;
+  public static final int MILLIS_IN_ONE_SECOND = 1000;
 }
