@@ -43,7 +43,7 @@ public class CompilerTest  {
 
 
   String write(final Converter<Object> head, Object event) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     Converter<Object> c = head;
     while (c != null) {
       c.write(buf, event);

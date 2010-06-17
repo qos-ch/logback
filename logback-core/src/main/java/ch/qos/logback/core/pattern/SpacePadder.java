@@ -20,7 +20,7 @@ public class SpacePadder {
       "                ", // 16 spaces
       "                                " }; // 32 spaces
 
-  final static public void leftPad(StringBuffer buf, String s, int desiredLength) {
+  final static public void leftPad(StringBuilder buf, String s, int desiredLength) {
     int actualLen = 0;
     if (s != null) {
       actualLen = s.length();
@@ -33,7 +33,7 @@ public class SpacePadder {
     }
   }
 
-  final static public void rightPad(StringBuffer buf, String s, int desiredLength) {
+  final static public void rightPad(StringBuilder buf, String s, int desiredLength) {
     int actualLen = 0;
     if (s != null) {
       actualLen = s.length();
@@ -49,7 +49,7 @@ public class SpacePadder {
   /**
    * Fast space padding method.
    */
-  final static public void spacePad(StringBuffer sbuf, int length) {
+  final static public void spacePad(StringBuilder sbuf, int length) {
     while (length >= 32) {
       sbuf.append(SPACES[5]);
       length -= 32;

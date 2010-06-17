@@ -112,7 +112,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));
     buf.append("\">");
-    buf.append(c.convert(event));
+    c.write(buf, event);
     buf.append("</td>");
     buf.append(LINE_SEPARATOR);
   }

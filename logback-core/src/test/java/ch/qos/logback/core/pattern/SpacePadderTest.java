@@ -42,13 +42,13 @@ public class SpacePadderTest {
   @Test
   public void smoke() {
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "a";
       SpacePadder.leftPad(buf, s, 4);
       assertEquals("   a", buf.toString());
     }
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "a";
       SpacePadder.rightPad(buf, s, 4);
       assertEquals("a   ", buf.toString());
@@ -59,12 +59,12 @@ public class SpacePadderTest {
   public void nullString() {
     String s = null;
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       SpacePadder.leftPad(buf, s, 2);
       assertEquals("  ", buf.toString());
     }
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       SpacePadder.rightPad(buf, s, 2);
       assertEquals("  ", buf.toString());
     }
@@ -73,14 +73,14 @@ public class SpacePadderTest {
   @Test
   public void longString() {
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "abc";
       SpacePadder.leftPad(buf, s, 2);
       assertEquals(s, buf.toString());
     }
 
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "abc";
       SpacePadder.rightPad(buf, s, 2);
       assertEquals(s, buf.toString());
@@ -90,13 +90,13 @@ public class SpacePadderTest {
   @Test
   public void lengthyPad() {
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "abc";
       SpacePadder.leftPad(buf, s, 33);
       assertEquals("                              abc", buf.toString());
     }
     {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       String s = "abc";
       SpacePadder.rightPad(buf, s, 33);
       assertEquals("abc                              ", buf.toString());

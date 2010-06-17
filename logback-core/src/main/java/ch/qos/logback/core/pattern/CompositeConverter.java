@@ -15,12 +15,12 @@ package ch.qos.logback.core.pattern;
 
 public class CompositeConverter<E> extends FormattingConverter<E> {
 
-  StringBuffer buf = new StringBuffer();
+  StringBuilder buf = new StringBuilder();
   Converter<E> childConverter;
 
   public String convert(E event) {
     if (buf.capacity() > MAX_CAPACITY) {
-      buf = new StringBuffer(INITIAL_BUF_SIZE);
+      buf = new StringBuilder(INITIAL_BUF_SIZE);
     } else {
       buf.setLength(0);
     }
@@ -36,7 +36,7 @@ public class CompositeConverter<E> extends FormattingConverter<E> {
   }
 
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("CompositeConverter<");
     
     if(formattingInfo != null)

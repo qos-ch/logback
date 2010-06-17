@@ -112,7 +112,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
   }
 
   protected String writeLoopOnConverters(E event) {
-    StringBuffer buf = new StringBuffer(128);
+    StringBuilder buf = new StringBuilder(128);
     Converter<E> c = head;
     while (c != null) {
       c.write(buf, event);

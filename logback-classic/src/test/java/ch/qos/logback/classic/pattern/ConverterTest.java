@@ -71,7 +71,7 @@ public class ConverterTest {
   public void testLineOfCaller() {
     {
       DynamicConverter<ILoggingEvent> converter = new LineOfCallerConverter();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
       assertEquals("75", buf.toString());
@@ -82,14 +82,14 @@ public class ConverterTest {
   public void testLevel() {
     {
       DynamicConverter<ILoggingEvent> converter = new LevelConverter();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       assertEquals("INFO", buf.toString());
     }
     {
       DynamicConverter<ILoggingEvent> converter = new LevelConverter();
       converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       assertEquals("I", buf.toString());
     }
@@ -98,7 +98,7 @@ public class ConverterTest {
   @Test
   public void testThread() {
     DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
     assertTrue(buf.toString().matches(regex));
@@ -107,7 +107,7 @@ public class ConverterTest {
   @Test
   public void testMessage() {
     DynamicConverter<ILoggingEvent> converter = new MessageConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     assertEquals("Some message", buf.toString());
   }
@@ -115,7 +115,7 @@ public class ConverterTest {
   @Test
   public void testLineSeparator() {
     DynamicConverter<ILoggingEvent> converter = new LineSeparatorConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
   }
@@ -124,7 +124,7 @@ public class ConverterTest {
   public void testException() {
     {
       DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
     }
 
@@ -132,7 +132,7 @@ public class ConverterTest {
       DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
       this.optionList.add("3");
       converter.setOptionList(this.optionList);
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
     }
   }
@@ -141,7 +141,7 @@ public class ConverterTest {
   public void testLogger() {
     {
       ClassicConverter converter = new LoggerConverter();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       assertEquals(this.getClass().getName(), buf.toString());
     }
@@ -151,7 +151,7 @@ public class ConverterTest {
       this.optionList.add("20");
       converter.setOptionList(this.optionList);
       converter.start();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       assertEquals("c.q.l.c.p.ConverterTest", buf.toString());
     }
@@ -162,7 +162,7 @@ public class ConverterTest {
       this.optionList.add("0");
       converter.setOptionList(this.optionList);
       converter.start();
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       assertEquals("ConverterTest", buf.toString());
     }
@@ -174,7 +174,7 @@ public class ConverterTest {
     this.optionList.add("5");
     converter.setOptionList(this.optionList);
     converter.start();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     
     char c = 'a';
     int extraParts = 3;
@@ -203,7 +203,7 @@ public class ConverterTest {
   @Test
   public void testClass() {
     DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     assertEquals(this.getClass().getName(), buf.toString());
   }
@@ -211,7 +211,7 @@ public class ConverterTest {
   @Test
   public void testMethodOfCaller() {
     DynamicConverter<ILoggingEvent> converter = new MethodOfCallerConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     assertEquals("testMethodOfCaller", buf.toString());
   }
@@ -219,7 +219,7 @@ public class ConverterTest {
   @Test
   public void testFileOfCaller() {
     DynamicConverter<ILoggingEvent> converter = new FileOfCallerConverter();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, le);
     assertEquals("ConverterTest.java", buf.toString());
   }
@@ -230,7 +230,7 @@ public class ConverterTest {
       DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
       converter.start();
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       if (buf.length() < 10) {
         fail("buf is too short");
@@ -244,7 +244,7 @@ public class ConverterTest {
       converter.setOptionList(this.optionList);
       converter.start();
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       LoggingEvent event = makeLoggingEvent(null);
       event.setMarker(MarkerFactory.getMarker("XXX"));
       converter.write(buf, event);
@@ -262,7 +262,7 @@ public class ConverterTest {
       converter.setOptionList(this.optionList);
       converter.start();
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       LoggingEvent event = makeLoggingEvent(null);
       event.setMarker(MarkerFactory.getMarker("YYY"));
       converter.write(buf, event);
@@ -279,7 +279,7 @@ public class ConverterTest {
       converter.setOptionList(this.optionList);
       converter.start();
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       LoggingEvent event = makeLoggingEvent(null);
       event.setMarker(MarkerFactory.getMarker("YYY"));
       converter.write(buf, event);
@@ -297,7 +297,7 @@ public class ConverterTest {
       converter.setOptionList(this.optionList);
       converter.start();
 
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       if (buf.length() < 10) {
         fail("buf is too short");
@@ -310,8 +310,8 @@ public class ConverterTest {
   @Test
   public void testRelativeTime() throws Exception {
     DynamicConverter<ILoggingEvent> converter = new RelativeTimeConverter();
-    StringBuffer buf0 = new StringBuffer();
-    StringBuffer buf1 = new StringBuffer();
+    StringBuilder buf0 = new StringBuilder();
+    StringBuilder buf1 = new StringBuilder();
     ILoggingEvent e0 = makeLoggingEvent(null);
     ILoggingEvent e1 = makeLoggingEvent(null);
     converter.write(buf0, e0);
@@ -329,7 +329,7 @@ public class ConverterTest {
 
     ILoggingEvent event = makeLoggingEvent(null);
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     converter.write(buf, event);
 
     String expected = "<"

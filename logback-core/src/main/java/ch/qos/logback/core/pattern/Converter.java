@@ -38,7 +38,7 @@ abstract public class Converter<E> {
    * @param buf The input buffer where data is appended
    * @param event The event from where data is extracted
    */
-  public void write(StringBuffer buf, E event) {
+  public void write(StringBuilder buf, E event) {
     buf.append(convert(event));
   }
   

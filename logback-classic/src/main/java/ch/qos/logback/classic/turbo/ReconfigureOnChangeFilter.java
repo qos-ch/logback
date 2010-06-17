@@ -17,6 +17,10 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import ch.qos.logback.classic.gaffer.GafferConfigurator;
+import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.StatusManager;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
@@ -30,9 +34,8 @@ import ch.qos.logback.core.status.InfoStatus;
 
 /**
  * Reconfigure a LoggerContext when the configuration file changes.
- * 
+ *
  * @author Ceki Gulcu
- * 
  */
 public class ReconfigureOnChangeFilter extends TurboFilter {
 
@@ -55,14 +58,14 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   @Override
   public void start() {
     URL url = (URL) context
-        .getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
+            .getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
     if (url != null) {
       fileToScan = convertToFile(url);
       if (fileToScan != null) {
         synchronized (lock) {
           long inSeconds = refreshPeriod / 1000;
           addInfo("Will scan for changes in file [" + fileToScan + "] every "
-              + inSeconds + " seconds. ");
+                  + inSeconds + " seconds. ");
           lastModified = fileToScan.lastModified();
           updateNextCheck(System.currentTimeMillis());
         }
@@ -95,7 +98,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
 
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level,
-      String format, Object[] params, Throwable t) {
+                            String format, Object[] params, Throwable t) {
     if (!isStarted()) {
       return FilterReply.NEUTRAL;
     }
@@ -119,6 +122,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // by detaching reconfiguration to a new thread, we release the various
   // locks held by the current thread, in particular, the AppenderAttachable
   // reader lock.
+
   private void detachReconfigurationToNewThread() {
     // Even though this method resets the loggerContext, which clears the
     // list of turbo filters including this instance, it is still possible
@@ -135,6 +139,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   }
 
   // This method is synchronized to prevent near-simultaneous re-configurations
+
   protected boolean changeDetected() {
     long now = System.currentTimeMillis();
     if (now >= nextCheck) {
@@ -162,17 +167,32 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
 
   class ReconfiguringThread extends Thread {
     public void run() {
-      JoranConfigurator jc = new JoranConfigurator();
-      jc.setContext(context);
       LoggerContext lc = (LoggerContext) context;
-      lc.reset();
-      try {
-        jc.doConfigure(fileToScan);
-      } catch (JoranException e) {
-        addError("Failure during reconfiguration", e);
+
+      if (fileToScan.toString().endsWith("groovy")) {
+        if (EnvUtil.isGroovyAvailable()) {
+          lc.reset();
+          GafferConfigurator gafferConfigurator = new GafferConfigurator(lc);
+          gafferConfigurator.run(fileToScan);
+          lc.getStatusManager().add(
+                  new InfoStatus("done resetting the logging context", this));
+        } else {
+          StatusManager sm = context.getStatusManager();
+          sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.",
+                  context));
+        }
+      } else if (fileToScan.toString().endsWith("xml")) {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        lc.reset();
+        try {
+          jc.doConfigure(fileToScan);
+          lc.getStatusManager().add(
+                  new InfoStatus("done resetting the logging context", this));
+        } catch (JoranException e) {
+          addError("Failure during reconfiguration", e);
+        }
       }
-      lc.getStatusManager().add(
-          new InfoStatus("done resetting the logging context", this));
     }
   }
 }

@@ -297,7 +297,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     TRACE, DEBUG, INFO, WARN and ERROR are also exported into the
     scope of the expression. Thus, "event.level == DEBUG" is a valid
     groovy expression which will return <code>true</code> only if the
-    current logging event's level is equal to DEBUG.
+    current logging event's level is identical to DEBUG. For other
+    comparison operators, the level field should be converter to
+    integer with the <code>toInt()</code> operator.
     </p>
 
     <p>Here is a more complete example.</p>
@@ -309,7 +311,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
       &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator"> 
         &lt;expression>
-           e.level>=WARN
+           e.level.toInt() >= WARN.toInt()
              &amp;amp;&amp;amp;  &lt;!-- Stands for &amp;&amp; in XML -->
            !(e.mdc?.get("req.userAgent") ~= /Googlebot|msnbot|Yahoo/ )
         &lt;/expression>
@@ -471,7 +473,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				<td><code>Map</code></td>
 				<td>A map containing all the MDC values at the time of the
 				creation of the logging event. A value can be accessed by
-				using the following expression: <em>mdc.get("myKey")</em>.
+				using the following expression: <em>mdc.get("myKey")</em>. The
+				'mdc' variable can be null and this possibility should be
+				checked for in evaluator expressions.
 
         <p>The <code>java.util.Map</code> type is non-parametirezied
         because Janino does not support generics. It follows that the

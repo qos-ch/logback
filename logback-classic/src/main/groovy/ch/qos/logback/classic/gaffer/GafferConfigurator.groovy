@@ -36,6 +36,11 @@ class GafferConfigurator {
     run(url.text);
   }
 
+  void run(File file) {
+    informContextOfURLUsedForConfiguration(file.toURI().toURL());
+    run(file.text);
+  }
+
   void run(String dslText) {
     Binding binding = new Binding();
     binding.setProperty("hostname", ContextUtil.getLocalHostName());

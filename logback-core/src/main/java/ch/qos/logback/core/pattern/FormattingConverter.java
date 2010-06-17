@@ -32,7 +32,8 @@ abstract public class FormattingConverter<E> extends Converter<E> {
     this.formattingInfo = formattingInfo;
   }
 
-  final public void write(StringBuffer buf, E event) {
+  @Override
+  final public void write(StringBuilder buf, E event) {
     String s = convert(event);
     
     if(formattingInfo == null) {

@@ -19,7 +19,7 @@ package ch.qos.logback.classic.util;
 public class EnvUtil {
 
 
-  static boolean isGroovyAvailable() {
+  static public boolean isGroovyAvailable() {
     ClassLoader classLoader =  EnvUtil.class.getClassLoader();
     try {
       Class bindingClass = classLoader.loadClass("groovy.lang.Binding");

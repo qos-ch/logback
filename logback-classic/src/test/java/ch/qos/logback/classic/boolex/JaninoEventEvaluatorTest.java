@@ -71,7 +71,6 @@ public class JaninoEventEvaluatorTest {
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
-    // System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
@@ -81,7 +80,6 @@ public class JaninoEventEvaluatorTest {
     jee.start();
 
     ILoggingEvent event = makeLoggingEvent(null);
-    // System.out.println(event);
     assertTrue(jee.evaluate(event));
   }
 
@@ -262,4 +260,13 @@ public class JaninoEventEvaluatorTest {
     assertTrue(jee.evaluate(event));
   }
 
+
+  @Test
+  public void nullMDC() throws EvaluationException {
+    jee.setExpression("mdc == null");
+    jee.start();
+
+    LoggingEvent event = makeLoggingEvent(null);
+    assertTrue(jee.evaluate(event));
+  }
 }
