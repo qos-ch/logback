@@ -7,7 +7,6 @@
       <!-- you specify add as many markers as you want -->
       <marker>ANOTHER_MARKER</marker>
     </evaluator>
-    <BufferSize>1050</BufferSize>
     <SMTPHost>${smtpHost}</SMTPHost>
     <To>${to}</To>
     <From>${from}</From>

@@ -51,7 +51,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     TEntry te = getEntry(key);
     if (te == null) {
       CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
-      te = new  TEntry<E>(key, cb, timestamp);
+      te = new TEntry<E>(key, cb, timestamp);
       entryList.add(te);
       return cb;
     } else {
@@ -67,7 +67,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
   }
 
   public void clearStaleBuffers(long now) {
-   if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
       return;
     }
     lastCheck = now;
@@ -76,6 +76,11 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
       entryList.remove(0);
     }
   }
+
+  public int size() {
+    return entryList.size();
+  }
+
 
   // ==================================================================
 

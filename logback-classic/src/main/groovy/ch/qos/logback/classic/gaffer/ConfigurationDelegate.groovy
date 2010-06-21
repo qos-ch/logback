@@ -40,8 +40,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
 
 
   Object getDeclaredOrigin() {
-    //println "ConfigurationDelegate"
-    return "ConfigurationDelegate"
+    return this;
   }
 
   void scan(String scanPeriodStr = null) {
@@ -129,6 +128,11 @@ public class ConfigurationDelegate extends ContextAwareBase {
       closure();
     }
     appender.start();
+  }
+
+
+  public void toto(String m) {
+    println "xxxxxxxxxxxxxxxxxxxx "+m;
   }
 
   private void copyContributions(AppenderDelegate appenderDelegate, Appender appender) {

@@ -31,10 +31,6 @@ class ComponentDelegate extends ContextAwareBase {
     this.component = component;
   }
 
-  Object getDeclaredOrigin() {
-    return "ComponentDelegate"
-  }
-
   String getLabel() { "component" }
 
   String getLabelFistLetterInUpperCase() { getLabel()[0].toUpperCase() + getLabel().substring(1) }
@@ -79,7 +75,6 @@ class ComponentDelegate extends ContextAwareBase {
 
   void cascadeFields(ComponentDelegate subDelegate) {
     for (String k: fieldsToCaccade) {
-      println "cacsading ${k} with value ${this."${k}"}"
       subDelegate.metaClass."${k}" = this."${k}"
     }
   }

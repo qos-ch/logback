@@ -35,6 +35,9 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
   private static SimpleDateFormat SDF = new SimpleDateFormat(
       "yyyy-MM-dd HH:mm:ss");
 
+  static String SUBMIT = "submit";
+  static String CLEAR = "Clear";
+
   protected abstract StatusManager getStatusManager(HttpServletRequest req, HttpServletResponse resp);
 
   protected abstract String getPageTitle(HttpServletRequest req, HttpServletResponse resp);
@@ -44,7 +47,6 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
   protected void service(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
 
-    System.out.println("service called");
     count = 0;
     StatusManager sm = getStatusManager(req, resp);
 
@@ -58,6 +60,17 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
     output.append("<body>\r\n");
     output.append(getPageTitle(req, resp));
 
+
+    output.append("<form method=\"POST\">\r\n");
+    output.append("<input type=\"submit\" name=\""+SUBMIT+"\" value=\""+CLEAR+"\">");
+    output.append("</form>\r\n");
+
+
+    if(CLEAR.equalsIgnoreCase(req.getParameter(SUBMIT))) {
+      sm.clear();
+      sm.add(new InfoStatus("Cleared all status messages", this));
+    }
+    
     output.append("<table>");
     StringBuilder buf = new StringBuilder();
     if(sm != null) {

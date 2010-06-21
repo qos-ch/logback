@@ -70,8 +70,8 @@
     programs. And since groovy is a super-set of Java, whatever
     configuration actions you can perform in Java, you can do the same
     within a <em>logback.groovy</em> file. However, since configuring
-    logback progammatically using Java syntax can be very cumbersome,
-    we added a few logback-specific extensions to make your life
+    logback progammatically using Java syntax can be cumbersome, we
+    added a few logback-specific extensions to make your life
     easier. We try hard to limit the number of logback-specific
     syntactic extensions to an absolute minimum. If you are already
     familiar with groovy, you should be able to read, understand and
@@ -80,6 +80,11 @@
     <em>logback.groovy</em> syntax much more comfortable to use than
     <em>logback.xml</em>.
     </p>
+
+    <p>Given that <em>logback.groovy</em> files are groovy programs
+    with minimal logback-specific extensins, <em>all</em> the usual
+    groovy constructs such as class imports, variable definitions,
+    if-else statements are avaiable in <em>logback.groovy</em> files.</p>
 
     <p><em>Logback.groovy</em> syntax consists of half a dozen methods
     described next in the reverse order of their customary

@@ -282,8 +282,6 @@
           <execution>
             <id>ant-integration-test</id>
             <phase>package</phase>
-      
-
             <configuration>
               <tasks>      
                 <property name="slf4j.version" value="${slf4j.version}"/>

@@ -31,11 +31,17 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
   int maxNumBuffers = DEFAULT_NUMBER_OF_BUFFERS;
   int bufferCount = 0;
 
+  // 5 minutes
+  static final int DELAY_BETWEEN_CLEARING_STALE_BUFFERS = 300*CoreConstants.MILLIS_IN_ONE_SECOND ;
+
+ 
+
   private Map<String, Entry> map = new HashMap<String, Entry>();
 
   private Entry head; // least recently used entries are towards the head
   private Entry tail; // most recently used entries are towards the tail
   long lastCheck = 0;
+
 
   public CyclicBufferTrackerImpl() {
     head = new Entry(null, null, 0);
@@ -111,15 +117,20 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
 
 
   public synchronized void clearStaleBuffers(long now) {
-    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+    if (lastCheck + DELAY_BETWEEN_CLEARING_STALE_BUFFERS > now) {
       return;
     }
     lastCheck = now;
+
     while (head.value != null && isEntryStale(head, now)) {
       CyclicBuffer<E> cb = head.value;
       cb.clear();
       removeHead();
     }
+  }
+
+  public int size() {
+    return map.size();
   }
 
   final private boolean isEntryStale(Entry entry, long now) {

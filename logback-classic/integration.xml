@@ -23,12 +23,12 @@
 
 
 
-	<target name="testAll" depends="testWithoutGroovy">
+	<target name="testAll" depends="testWithoutGroovy" unless="maven.test.skip">
 	</target>
 
 
 
-	<target name="testWithoutGroovy">
+	<target name="testWithoutGroovy" unless="maven.test.skip">
 		<junit printsummary="yes" fork="no" haltonfailure="yes">
 			<classpath refid="basicClasspath" />
 			<formatter type="plain" />

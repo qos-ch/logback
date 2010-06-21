@@ -58,8 +58,14 @@ public interface CyclicBufferTracker<E> {
 
   /**
    * Clear (and detach) buffers which are stale.
-   * 
+   *
    * @param now
    */
   void clearStaleBuffers(long now);
+
+  /**
+   * The size of the internal map/list/collection holding the cyclic buffers.
+   * @return  size of internal collection
+   */
+  int size();
 }

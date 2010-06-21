@@ -2141,10 +2141,11 @@ Context ctx = new InitialContext(env);</pre>
 
    <p>The <a
    href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
-   accumulates logging events in a fixed-size buffer and sends them in
-   an email after a user-specified event occurs.  By default, the
-   email transmission is triggered by a logging event of level ERROR
-   or higher.
+   accumulates logging events in one or more fixed-size buffers and
+   sends the contents of the appropriate bugger in an email after a
+   user-specified event occurs.  By default, the email transmission is
+   triggered by a logging event of level ERROR or higher. Moreover, by
+   default, a single buffer is used for all events.
    </p>
 		
    <p>The various properties for <code>SMTPAppender</code> are
@@ -2210,20 +2211,30 @@ Context ctx = new InitialContext(env);</pre>
         </td>
       </tr>
       <tr class="alt">
-        <td><b><span class="option">BufferSize</span></b></td>
-        <td><code>int</code></td>
+
+
+        <td><b><span class="option">Discriminator</span></b></td>
+        <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
-          The <span class="option">BufferSize</span> option takes a
-          positive integer representing the maximum number of logging
-          events to collect in a cyclic buffer. When the <span
-          class="option">BufferSize</span> is reached, oldest events
-          are deleted as new events are added to the buffer.  The
-          default size of the cyclic buffer is 512.
+          <p>With the help of a <span
+          class="option">Discriminator</span>,
+          <code>SMTPAppender</code> can scatter incoming events into
+          different buffers according to the value returned by the
+          discriminator. The default discriminator always returns the
+          same value so that the same buffer is used for all events.
+          </p>
+
+          <p>By specifiying a discriminator other than the default
+          one, it would be possible to receive email messages
+          containing a events pertaining to a particular user, user
+          session or client IP address.
+          </p>
         </td>
       </tr>
       <tr >
         <td><b><span class="option">Evaluator</span></b></td>
-        <td><code>String</code></td>
+        <td><code><a
+        href="../xref/ch/qos/logback/classic/boolex/IEvaluator.html">IEvaluator</a></code></td>
         <td>
           <p>This option is declared by creating a new
           <code>&lt;EventEvaluator/></code> element. The name of the
@@ -2294,14 +2305,12 @@ Context ctx = new InitialContext(env);</pre>
 
 		</table>		
 		
-		<p>The SMTPAppender keeps only the last <span
-		class="option">BufferSize</span> logging events in its cyclic
-		buffer, throwing away older events when its buffer becomes full.
-		Thus, the number of logging events delivered in any e-mail sent by
-		<code>SMTPAppender</code> is upper-bounded by <span
-		class="option">BufferSize</span>. This keeps memory requirements
-		bounded while still delivering a reasonable amount of application
-		context.
+		<p>The <code>SMTPAppender</code> keeps only the last 256 logging
+		events in its cyclic buffer, throwing away older events when its
+		buffer becomes full.  Thus, the number of logging events delivered
+		in any e-mail sent by <code>SMTPAppender</code> is upper-bounded
+		by 256. This keeps memory requirements bounded while still
+		delivering a reasonable amount of application context.
 		</p>
 		
 		<p>The <code>SMTPAppender</code> relies on the JavaMail API.  It
@@ -2316,7 +2325,6 @@ Context ctx = new InitialContext(env);</pre>
 		the following examples.
 		</p>
 		
-
 		<p>A sample application, <a
 		href="../xref/chapters/appenders/mail/EMail.html"><code>chapters.appenders.mail.EMail</code></a>
 		generates a number of log messages messages followed by a single
@@ -2359,10 +2367,10 @@ Context ctx = new InitialContext(env);</pre>
 		configuration file, execute the following command:
 		</p>
 		
-<div class="source"><pre>java chapters.appenders.mail.EMail 300 src/main/java/chapters/appenders/mail/mail1.xml</pre></div>
+<div class="source"><pre>java chapters.appenders.mail.EMail 100 src/main/java/chapters/appenders/mail/mail1.xml</pre></div>
 
 		<p>The recipient you specified should receive an email message
-		containing 300 logging events formatted by
+		containing 100 logging events formatted by
 		<code>PatternLayout</code> The figure below is the resulting email
 		message as shown by Mozilla Thunderbird.
 		</p>
@@ -2401,12 +2409,12 @@ Context ctx = new InitialContext(env);</pre>
 		for further details.
     </p>
     
-    <p>Given that the default size of the cyclic buffer is 512, the
-    recipient should see an email message containing 512 events
-    conveniently formatted in an HTML table. Note that this run of the
-    <code>chapters.appenders.mail.Email</code> application generated 10'000
-    events of which only the last 512 were included in the outgoing
-    email.
+    <p>Given that the size of the cyclic buffer is 256, the recipient
+    should see an email message containing 256 events conveniently
+    formatted in an HTML table. Note that this run of the
+    <code>chapters.appenders.mail.Email</code> application generated
+    10'000 events of which only the last 256 were included in the
+    outgoing email.
 		</p>
 		
     <p><img src="images/chapters/appenders/smtpAppender2.jpg" alt="2nd email"/></p>
@@ -2495,8 +2503,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		<p>Setting the <span class="option">Evaluator</span> option of
 		<code>SMTPAppender</code> instructs it to use a custom evaluator.
 		The next configuration file attaches a <code>SMTPAppender</code>
-		to the root logger.  This appender has a buffer size of 2048 and
-		uses a <code>CounterBasedEvaluator</code> instance as its event
+		to the root logger.  This appender uses a
+		<code>CounterBasedEvaluator</code> instance as its event
 		evaluator.
 		</p>
 
@@ -2506,7 +2514,6 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     <pre id="mail3" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;Evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
-    &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>
     &lt;From>${from}&lt;/From>
@@ -2560,7 +2567,6 @@ logger.error(<b>notifyAdminMarker</b>,
       &lt;!-- you specify add as many markers as you want -->
       &lt;marker>TRANSACTION_FAILURE&lt;/marker>
     &lt;/evaluator></b>
-    &lt;BufferSize>1050&lt;/BufferSize>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>
     &lt;From>${from}&lt;/From>
@@ -2657,6 +2663,61 @@ logger.error(<b>notifyAdminMarker</b>,
   &lt;/root>  
 &lt;/configuration></pre>
 
+
+    <h3><a name="smtpDiscriminator"
+    href="#smtpDiscriminator">SMTPAppender with
+    MDCDiscriminator</a></h3>
+
+    <p>As mentioned earlier, by specifiying a discriminator other than
+    the default one, SMTPAppender will generate email messages
+    containing events pertaining to a particular user, user session or
+    client IP address, depending on the discriminator.
+    </p>
+
+    <p>The next example uses <a
+    href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDsicriminator</a>
+    focused on the MDC key named "req.remoteHost" which is assumed to
+    contain the IP address of the remote host accessing a fictitious
+    application. In a web-application, you could use <a
+    href="mdc.html#mis">MDCInsertingServletFilter</a> to populate MDC
+    values.
+    </p>
+
+    <p class="example">Example: <code>SMTPAppender</code> with
+    MDCBasedDsicriminator
+    (logback-examples/src/main/java/chapters/appenders/mail/mailWithMDCBasedDiscriminator.xml)</p>
+
+    <span class="asGroovy" onclick="return asGroovy('mailWithMDCBasedDiscriminator');">View as .grovvy</span>	
+    <pre id="mailWithMDCBasedDiscriminator" class="prettyprint source">&lt;configuration>	  
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
+    &lt;to>EMAIL-DESTINATION&lt;/to>
+    &lt;from>SENDER-EMAIL&lt;/from>
+
+    <b>&lt;discriminator class="ch.qos.logback.classic.sift.MDCBasedDiscriminator"></b>
+      <b>&lt;key>req.remoteHost&lt;/key></b>
+      <b>&lt;defaultValue>default&lt;/defaultValue></b>
+    <b>&lt;/discriminator></b>
+
+    &lt;subject>${HOSTNAME} -- %X{req.remoteHost} %msg"&lt;/subject>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout">
+      &lt;pattern>%date%level%thread%X{req.remoteHost}%X{req.requestURL}%logger%msg&lt;/pattern>
+    &lt;/layout>
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level level="DEBUG"/>
+    &lt;appender-ref ref="EMAIL" />
+  &lt;/root>  
+&lt;/configuration></pre>
+
+    <p>Thus, each outgoing emails generated by
+    <code>SMTPAppender</code> will belong to a <em>unique</em> remote
+    host, greatly facilitating problem diagnosis.
+    </p>
+    
+    <!-- =========================================================== -->
+    <!-- =========================================================== -->
 
 
     <h3>

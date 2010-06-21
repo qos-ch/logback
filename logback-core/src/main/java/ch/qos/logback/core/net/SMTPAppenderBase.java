@@ -58,6 +58,13 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
+
+  // ~ 14 days
+  static final int MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
+
+  long lastTrackerStatusPrint = 0;
+  int delayBetweenStatusMessages = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
+
   protected Layout<E> subjectLayout;
 
   protected Layout<E> layout;
@@ -159,11 +166,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       return;
     }
 
-
-    String key =  discriminator.getDiscriminatingValue(eventObject);
-
-    CyclicBuffer<E> cb = cbTracker.get(key, System.currentTimeMillis());
-
+    String key = discriminator.getDiscriminatingValue(eventObject);
+    long now = System.currentTimeMillis();
+    CyclicBuffer<E> cb = cbTracker.get(key, now);
     subAppend(cb, eventObject);
 
     try {
@@ -174,6 +179,15 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       errorCount++;
       if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
         addError("SMTPAppender's EventEvaluator threw an Exception-", ex);
+      }
+    }
+    cbTracker.clearStaleBuffers(now);
+    if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
+      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
+      lastTrackerStatusPrint = now;
+      // quadruple 'delay' assuming less than max delay 
+      if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
+        delayBetweenStatusMessages *= 4;
       }
     }
   }
