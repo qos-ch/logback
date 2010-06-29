@@ -45,22 +45,28 @@ public class MDCInsertingServletFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
 
+
     insertIntoMDC(request);
 
     try {
       chain.doFilter(request, response);
     } finally {
+       System.out.println("*********** clearMDC()");
       clearMDC();
     }
   }
 
   void insertIntoMDC(ServletRequest request) {
 
+
     MDC.put(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY, request
         .getRemoteHost());
 
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
+      System.out.println("Inserting into MDC "+httpServletRequest.getRequestURL());
+
       MDC.put(ClassicConstants.REQUEST_REQUEST_URI, httpServletRequest
           .getRequestURI());
       StringBuffer requestURL = httpServletRequest.getRequestURL();
