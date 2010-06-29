@@ -131,9 +131,10 @@ class GafferConfiguratorTest {
 
     ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
     assertTrue ca.isStarted()
-   
+
     assertEquals("HELLO %m%n", ca.encoder.layout.pattern)
   }
+  
   @Test
   void propertyCascading1() {
     File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading1.groovy")

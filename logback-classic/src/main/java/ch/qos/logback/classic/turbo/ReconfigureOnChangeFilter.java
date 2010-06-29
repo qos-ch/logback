@@ -17,7 +17,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
+import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
@@ -172,14 +172,11 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       if (fileToScan.toString().endsWith("groovy")) {
         if (EnvUtil.isGroovyAvailable()) {
           lc.reset();
-          GafferConfigurator gafferConfigurator = new GafferConfigurator(lc);
-          gafferConfigurator.run(fileToScan);
-          lc.getStatusManager().add(
-                  new InfoStatus("done resetting the logging context", this));
+          // avoid directly referring to GafferConfigurator so as to avoid
+          // loading  groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
+          GafferUtil.runGafferConfiguratorOn(lc, this, fileToScan);
         } else {
-          StatusManager sm = context.getStatusManager();
-          sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.",
-                  context));
+          addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
         }
       } else if (fileToScan.toString().endsWith("xml")) {
         JoranConfigurator jc = new JoranConfigurator();

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,9 @@ public class ReconfigureOnChangeTest {
   // http://jira.qos.ch/browse/LBCORE-119
   final static String SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
       + "turbo/scan 1.xml";
+
+    final static String G_SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+      + "turbo/scan 1.groovy";
 
   final static String SCAN_LBCLASSIC_154_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
       + "turbo/scan_lbclassic154.xml";
@@ -90,6 +94,11 @@ public class ReconfigureOnChangeTest {
     jc.doConfigure(file);
   }
 
+  void gConfigure(File file) throws JoranException {
+    GafferConfigurator gc = new GafferConfigurator(loggerContext);
+    gc.run(file);
+  }
+
   RunnableWithCounterAndDone[] buildRunnableArray(File configFile) {
     RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
     rArray[0] = new Updater(configFile);
@@ -112,9 +121,22 @@ public class ReconfigureOnChangeTest {
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
   public void scan1() throws JoranException, IOException, InterruptedException {
-    System.out.println("***SCAN1");
     File file = new File(SCAN1_FILE_AS_STR);
     configure(file);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+    harness.execute(runnableArray);
+
+    loggerContext.getStatusManager().add(
+        new InfoStatus("end of execution ", this));
+
+    long expectedRreconfigurations = runnableArray[0].getCounter();
+    verify(expectedRreconfigurations);
+  }
+
+  @Test
+  public void gscan1() throws JoranException, IOException, InterruptedException {
+    File file = new File(G_SCAN1_FILE_AS_STR);
+    gConfigure(file);
     RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
     harness.execute(runnableArray);
 

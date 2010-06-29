@@ -45,7 +45,8 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
    * DefaultValue property.
    */
   public String getDiscriminatingValue(ILoggingEvent event) {
-    String mdcValue = MDC.get(key);
+    // http://jira.qos.ch/browse/LBCLASSIC-213
+    String mdcValue = event.getMdc().get(key);
     if (mdcValue == null) {
       return defaultValue;
     } else {

@@ -28,7 +28,8 @@ import ch.qos.logback.core.Appender
 import ch.qos.logback.core.status.StatusListener
 import java.text.SimpleDateFormat
 import ch.qos.logback.classic.turbo.TurboFilter
-import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.CoreConstants
+import ch.qos.logback.core.util.ContextUtil;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -37,7 +38,6 @@ import ch.qos.logback.core.CoreConstants;
 public class ConfigurationDelegate extends ContextAwareBase {
 
   List<Appender> appenderList = [];
-
 
   Object getDeclaredOrigin() {
     return this;
@@ -128,11 +128,6 @@ public class ConfigurationDelegate extends ContextAwareBase {
       closure();
     }
     appender.start();
-  }
-
-
-  public void toto(String m) {
-    println "xxxxxxxxxxxxxxxxxxxx "+m;
   }
 
   private void copyContributions(AppenderDelegate appenderDelegate, Appender appender) {
