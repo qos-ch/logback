@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({SiftingAppenderTest.class})
+@SuiteClasses({MDCBasedDiscriminatorTest.class, SiftingAppenderTest.class})
 public class PackageTest  {
 }

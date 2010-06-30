@@ -22,7 +22,7 @@ import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
-    ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
+        ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
   protected TimeBasedRollingPolicy<E> tbrp;
 
@@ -46,28 +46,27 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
     DateTokenConverter dtc = tbrp.fileNamePattern.getDateTokenConverter();
     if (dtc == null) {
       throw new IllegalStateException("FileNamePattern ["
-          + tbrp.fileNamePattern.getPattern()
-          + "] does not contain a valid DateToken");
+              + tbrp.fileNamePattern.getPattern()
+              + "] does not contain a valid DateToken");
     }
 
     rc = new RollingCalendar();
     rc.init(dtc.getDatePattern());
     addInfo("The date pattern is '" + dtc.getDatePattern()
-        + "' from file name pattern '" + tbrp.fileNamePattern.getPattern()
-        + "'.");
+            + "' from file name pattern '" + tbrp.fileNamePattern.getPattern()
+            + "'.");
     rc.printPeriodicity(this);
 
-    
-    if (dateInCurrentPeriod == null) {
-      setDateInCurrentPeriod(new Date(getCurrentTime()));
-      
-      if (tbrp.getParentsRawFileProperty() != null) {
-        File currentFile = new File(tbrp.getParentsRawFileProperty());
-        if (currentFile.exists() && currentFile.canRead()) {
-          setDateInCurrentPeriod(new Date(currentFile.lastModified()));
-        }
+
+    setDateInCurrentPeriod(new Date(getCurrentTime()));
+    if (tbrp.getParentsRawFileProperty() != null) {
+      File currentFile = new File(tbrp.getParentsRawFileProperty());
+      if (currentFile.exists() && currentFile.canRead()) {
+        setDateInCurrentPeriod(new Date(currentFile.lastModified()));
       }
     }
+
+    addInfo("Setting initial period to " + dateInCurrentPeriod);
     computeNextCheck();
   }
 

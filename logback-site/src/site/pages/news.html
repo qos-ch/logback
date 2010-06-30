@@ -28,6 +28,19 @@
 
     <hr width="80%" align="center" />
 
+    <h3>June 30th, 2010 - Release of version 0.9.24</h3>
+
+    <p>Fixed NullPointerException thrown by
+    <code>MDCBasedDiscriminator</code> in case the MDC map is
+    null.</p>
+
+    <p>Fixed issue with <code>SizeAndTimeBasedFNATP</code> in presence
+    of application stop/restart and non-null file proprety. This issue
+    was reported by Tom Liu in <a
+    href="http://jira.qos.ch/browse/LBCORE-131">LBCORE-131</a>.</p>
+
+    <hr width="80%" align="center" />
+
     <h3>June 29th, 2010 - Release of version 0.9.23</h3>
 
     <p>Fixed Groovy runtime dependency problem with
@@ -36,7 +49,7 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-214">LBCLASSIC-214</a>
     by Alvin Chee.</p>
 
-    <p>Fixed MDCBasedDiscriminator so that it supports deferred
+    <p>Fixed <code>MDCBasedDiscriminator</code> so that it supports deferred
     processing. This issue was reported in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-213">LBCLASSIC-213</a>
     by Torsten Juergeleit.</p>

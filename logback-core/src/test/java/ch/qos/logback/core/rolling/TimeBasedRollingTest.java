@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,8 +78,8 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     tbrp.setContext(context);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
-    tbrp.timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
-    tbrp.timeBasedTriggering.setCurrentTime(givenTime);
+    tbrp.timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
+    tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
     rfa.setRollingPolicy(tbrp);
     tbrp.start();
     rfa.start();
@@ -100,13 +99,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     int i = 0;
@@ -128,14 +127,14 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), true);
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       // when i == 2, file name should not have .gz extension
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, i != 2);
       rfa1.doAppend("Hello---" + i);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
       waitForCompression(tbrp1);
     }
 
@@ -162,27 +161,27 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
 
     initRFA(rfa2, null);
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
-            + DATE_PATTERN_WITH_SECONDS + "}", tbrp1.timeBasedTriggering
+            + DATE_PATTERN_WITH_SECONDS + "}", tbrp1.timeBasedFileNamingAndTriggeringPolicy
             .getCurrentTime());
 
     for (int i = 0; i <= 2; i++) {
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       rfa2.doAppend("World---" + i);
       incCurrentTime(100);
-      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     int i = 0;
@@ -205,13 +204,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
@@ -228,7 +227,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       rfa2.doAppend("World---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(100);
-      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     massageExpectedFilesToCorresponToCurrentTarget("test4.log");
@@ -251,13 +250,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i <= 2; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     rfa1.stop();
@@ -276,7 +275,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       rfa2.doAppend("World---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(100);
-      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     massageExpectedFilesToCorresponToCurrentTarget("test4B.log");
@@ -303,13 +302,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     massageExpectedFilesToCorresponToCurrentTarget("test5.log");
@@ -336,13 +335,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomOutputDir, testId, getDateOfCurrentPeriodsStart(), true);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, true);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
       waitForCompression(tbrp1);
     }
 
@@ -373,13 +372,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     addExpectedFileName_ByDate(randomTargetDir, testId, getDateOfCurrentPeriodsStart(), false);
 
     incCurrentTime(1100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (int i = 0; i < 3; i++) {
       rfa1.doAppend("Hello---" + i);
       addExpectedFileNamedIfItsTime_ByDate(randomTargetDir, testId, false);
       incCurrentTime(500);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
     massageExpectedFilesToCorresponToCurrentTarget("missingTargetDir.log");
     int i = 0;

@@ -182,8 +182,8 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
     tbrp.setMaxHistory(maxHistory);
     tbrp.setParent(rfa);
-    tbrp.timeBasedTriggering = tbfnatp;
-    tbrp.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp.timeBasedFileNamingAndTriggeringPolicy = tbfnatp;
+    tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
@@ -196,7 +196,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
       rfa
           .doAppend("Hello ----------------------------------------------------------"
               + i);
-      tbrp.timeBasedTriggering.setCurrentTime(addTime(tbrp.timeBasedTriggering
+      tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy
           .getCurrentTime(), periodDurationInMillis / ticksPerPeriod));
 
       // wait every now and then for the compression job

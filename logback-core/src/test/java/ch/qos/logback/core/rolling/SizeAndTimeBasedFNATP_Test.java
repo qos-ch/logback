@@ -14,15 +14,18 @@
 package ch.qos.logback.core.rolling;
 
 
+import java.io.File;
 import java.util.Date;
 
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusManager;
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SizeAndTimeBasedFNATP_Test extends
-    ScaffoldingForRollingTests {
+        ScaffoldingForRollingTests {
 
   SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP;
   RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
@@ -30,6 +33,8 @@ public class SizeAndTimeBasedFNATP_Test extends
 
   RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
   TimeBasedRollingPolicy<Object> tbrp2 = new TimeBasedRollingPolicy<Object>();
+
+  StatusManager sm = context.getStatusManager();
 
   int fileSize = 0;
   int fileIndexCounter = 0;
@@ -50,8 +55,8 @@ public class SizeAndTimeBasedFNATP_Test extends
   }
 
   void initTRBP(RollingFileAppender<Object> rfa,
-      TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
-      int sizeThreshold, long givenTime, long lastCheck) {
+                TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
+                int sizeThreshold, long givenTime, long lastCheck) {
 
     sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
     tbrp.setContext(context);
@@ -59,7 +64,7 @@ public class SizeAndTimeBasedFNATP_Test extends
     tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
-    tbrp.timeBasedTriggering.setCurrentTime(givenTime);
+    tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
 //    if (lastCheck != 0) {
 //      tbrp.timeBasedTriggering.setDateInCurrentPeriod(new Date(lastCheck));
 //    }
@@ -75,13 +80,13 @@ public class SizeAndTimeBasedFNATP_Test extends
     initRFA(rfa1, file);
     sizeThreshold = 300;
     initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
-        + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
 
     addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
-        fileIndexCounter, false);
+            fileIndexCounter, false);
 
     incCurrentTime(100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     int runLength = 100;
     String prefix = "Hello -----------------";
@@ -91,7 +96,7 @@ public class SizeAndTimeBasedFNATP_Test extends
       rfa1.doAppend(msg);
       addExpectedFileNamedIfItsTime(testId, msg, false);
       incCurrentTime(20);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
     massageExpectedFilesToCorresponToCurrentTarget(file);
@@ -105,13 +110,13 @@ public class SizeAndTimeBasedFNATP_Test extends
     initRFA(rfa1, null);
     sizeThreshold = 300;
     initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
-        + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
 
     addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
-        fileIndexCounter, false);
+            fileIndexCounter, false);
 
     incCurrentTime(100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     int runLength = 100;
     String prefix = "Hello -----------------";
@@ -121,7 +126,7 @@ public class SizeAndTimeBasedFNATP_Test extends
       rfa1.doAppend(msg);
       addExpectedFileNamedIfItsTime(testId, msg, false);
       incCurrentTime(20);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
     existenceCheck(expectedFilenameList);
     sortedContentCheck(randomOutputDir, runLength, prefix);
@@ -133,30 +138,30 @@ public class SizeAndTimeBasedFNATP_Test extends
     initRFA(rfa1, null);
     sizeThreshold = 300;
     initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
-        + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
 
     addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
-        fileIndexCounter, false);
+            fileIndexCounter, false);
 
     incCurrentTime(100);
-    tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     int runLength = 100;
     String prefix = "Hello -----------------";
-    
+
     int i = 0;
-    
+
     for (; i < runLength; i++) {
       String msg = prefix + i;
       rfa1.doAppend(msg);
       addExpectedFileNamedIfItsTime(testId, msg, false);
       incCurrentTime(20);
-      tbrp1.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
     rfa1.stop();
     initRFA(rfa2, null);
     initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
-        + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
 
     runLength *= 2;
     for (; i < runLength; i++) {
@@ -164,15 +169,66 @@ public class SizeAndTimeBasedFNATP_Test extends
       addExpectedFileNamedIfItsTime(testId, msg, false);
       rfa2.doAppend(msg);
       incCurrentTime(100);
-      tbrp2.timeBasedTriggering.setCurrentTime(currentTime);
+      tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
     StatusPrinter.print(context);
     existenceCheck(expectedFilenameList);
     sortedContentCheck(randomOutputDir, runLength, prefix);
   }
-  
-  
-  
+
+  @Test
+  public void noCompression_FileSet_WithStopStart_4() throws Exception {
+    String testId = "test4";
+    String file = randomOutputDir + testId + ".log";
+    initRFA(rfa1, file);
+    sizeThreshold = 300;
+    initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+
+    incCurrentTime(100);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+
+
+    String prefix = "Hello -----------------";
+
+    int runLength = 100;
+    int i = 0;
+
+    for (; i < runLength; i++) {
+      incCurrentTime(20);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      String msg = prefix + i;
+      rfa1.doAppend(msg);
+      addExpectedFileNamedIfItsTime(testId, msg, false);
+
+    }
+    rfa1.stop();
+
+    File f = new File(file);
+    f.setLastModified(currentTime);
+
+    sm.add(new InfoStatus("Time when rfa1 is stopped: " + new Date(currentTime), this));
+    sm.add(new InfoStatus("currentTime%1000=" + (currentTime % 1000), this));
+
+    initRFA(rfa2, file);
+    initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0);
+
+    runLength *= 2;
+    for (; i < runLength; i++) {
+      incCurrentTime(100);
+      tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      String msg = prefix + i;
+      addExpectedFileNamedIfItsTime(testId, msg, false);
+      rfa2.doAppend(msg);
+    }
+    StatusPrinter.print(context);
+    massageExpectedFilesToCorresponToCurrentTarget(file);
+    sortedContentCheck(randomOutputDir, runLength, prefix);
+    existenceCheck(expectedFilenameList);
+  }
+
+
   void massageExpectedFilesToCorresponToCurrentTarget(String file) {
     // we added one too many files by date
     expectedFilenameList.remove(expectedFilenameList.size() - 1);
@@ -180,14 +236,14 @@ public class SizeAndTimeBasedFNATP_Test extends
   }
 
   void addExpectedFileNamedIfItsTime(String testId, String msg,
-      boolean gzExtension) {
+                                     boolean gzExtension) {
     fileSize += msg.getBytes().length;
 
     if (passThresholdTime(nextRolloverThreshold)) {
       fileIndexCounter = 0;
       fileSize = 0;
       addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
-          fileIndexCounter, gzExtension);
+              fileIndexCounter, gzExtension);
       recomputeRolloverThreshold(currentTime);
       return;
     }
@@ -196,20 +252,21 @@ public class SizeAndTimeBasedFNATP_Test extends
     // fileIndexCounter 0 and 1
     if ((fileIndexCounter < 1) && fileSize > sizeThreshold) {
       addExpectedFileName(testId, getDateOfCurrentPeriodsStart(),
-          ++fileIndexCounter, gzExtension);
+              ++fileIndexCounter, gzExtension);
       fileSize = 0;
       return;
     }
   }
 
   void addExpectedFileName(String testId, Date date, int fileIndexCounter,
-      boolean gzExtension) {
+                           boolean gzExtension) {
 
     String fn = randomOutputDir + testId + "-" + SDF.format(date) + "-"
-        + fileIndexCounter + ".txt";
+            + fileIndexCounter + ".txt";
     if (gzExtension) {
       fn += ".gz";
     }
+    sm.add(new InfoStatus("xx Adding " + fn, this));
     expectedFilenameList.add(fn);
   }
 

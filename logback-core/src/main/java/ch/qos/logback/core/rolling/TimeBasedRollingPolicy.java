@@ -50,7 +50,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   private int maxHistory = NO_DELETE_HISTORY;
   private ArchiveRemover archiveRemover;
 
-  TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering;
+  TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
 
   public void start() {
     // set the LR for our utility object
@@ -77,29 +77,29 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
 
-    if (timeBasedTriggering == null) {
-      timeBasedTriggering = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
+    if (timeBasedFileNamingAndTriggeringPolicy == null) {
+      timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
     }
-    timeBasedTriggering.setContext(context);
-    timeBasedTriggering.setTimeBasedRollingPolicy(this);
-    timeBasedTriggering.start();
+    timeBasedFileNamingAndTriggeringPolicy.setContext(context);
+    timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
+    timeBasedFileNamingAndTriggeringPolicy.start();
 
     // the maxHistory property is given to TimeBasedRollingPolicy instead of to
     // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
     // for the user at the cost of inconsistency at the level of this code.
     if (maxHistory != NO_DELETE_HISTORY) {
-      archiveRemover = timeBasedTriggering.getArchiveRemover();
+      archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
       archiveRemover.setMaxHistory(maxHistory);
     }
   }
 
   public void setTimeBasedFileNamingAndTriggeringPolicy(
       TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
-    this.timeBasedTriggering = timeBasedTriggering;
+    this.timeBasedFileNamingAndTriggeringPolicy = timeBasedTriggering;
   }
 
   public TimeBasedFileNamingAndTriggeringPolicy<E> getTimeBasedFileNamingAndTriggeringPolicy() {
-    return timeBasedTriggering;
+    return timeBasedFileNamingAndTriggeringPolicy;
   }
 
   static public String computeFileNameStr_WCS(String fileNamePatternStr,
@@ -121,7 +121,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     // when rollover is called the elapsed period's file has
     // been already closed. This is a working assumption of this method.
 
-    String elapsedPeriodsFileName = timeBasedTriggering
+    String elapsedPeriodsFileName = timeBasedFileNamingAndTriggeringPolicy
         .getElapsedPeriodsFileName();
 
     if (compressionMode == CompressionMode.NONE) {
@@ -137,7 +137,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
 
     if (archiveRemover != null) {
-      archiveRemover.clean(new Date(timeBasedTriggering.getCurrentTime()));
+      archiveRemover.clean(new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
     }
   }
 
@@ -180,13 +180,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     if (parentsRawFileProperty != null) {
       return parentsRawFileProperty;
     } else {
-      return timeBasedTriggering
+      return timeBasedFileNamingAndTriggeringPolicy
           .getCurrentPeriodsFileNameWithoutCompressionSuffix();
     }
   }
 
   public boolean isTriggeringEvent(File activeFile, final E event) {
-    return timeBasedTriggering.isTriggeringEvent(activeFile, event);
+    return timeBasedFileNamingAndTriggeringPolicy.isTriggeringEvent(activeFile, event);
   }
 
   /**

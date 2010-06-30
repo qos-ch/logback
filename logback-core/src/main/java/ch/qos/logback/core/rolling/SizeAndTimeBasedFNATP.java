@@ -23,7 +23,7 @@ import ch.qos.logback.core.util.FileSize;
 
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends
-    TimeBasedFileNamingAndTriggeringPolicyBase<E> {
+        TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
   int currentPeriodsCounter = 0;
   FileSize maxFileSize;
@@ -37,15 +37,16 @@ public class SizeAndTimeBasedFNATP<E> extends
 
     archiveRemover = new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
     archiveRemover.setContext(context);
-    
+
     // we need to get the correct value of currentPeriodsCounter.
     // usually the value is 0, unless the appender or the application
     // is stopped and restarted within the same period
-    if (tbrp.getParentsRawFileProperty() == null) {
-      String regex = tbrp.fileNamePattern.toRegex(dateInCurrentPeriod);
-      String stemRegex = FileFilterUtil.afterLastSlash(regex);
-      computeCurrentPeriodsHighestCounterValue(stemRegex);
-    }
+    String regex = tbrp.fileNamePattern.toRegex(dateInCurrentPeriod);
+    String stemRegex = FileFilterUtil.afterLastSlash(regex);
+
+
+    computeCurrentPeriodsHighestCounterValue(stemRegex);
+
     started = true;
   }
 
@@ -54,42 +55,50 @@ public class SizeAndTimeBasedFNATP<E> extends
 
     File parentDir = file.getParentFile();
     File[] matchingFileArray = FileFilterUtil
-        .filesInFolderMatchingStemRegex(parentDir, stemRegex);
+            .filesInFolderMatchingStemRegex(parentDir, stemRegex);
 
     if (matchingFileArray == null || matchingFileArray.length == 0) {
+      currentPeriodsCounter = 0;
       return;
     }
     FileFilterUtil.reverseSortFileArrayByName(matchingFileArray);
     currentPeriodsCounter = FileFilterUtil.extractCounter(matchingFileArray[0], stemRegex);
+    if (tbrp.getParentsRawFileProperty() != null) {
+      currentPeriodsCounter++;
+    }
   }
 
   // IMPORTANT: This field can be updated by multiple threads. It follows that
   // its values may *not* be incremented sequentially. However, we don't care
   // about the actual value of the field except that from time to time the
-  // expression (invocationCounter++ & 0xF) == 0xF) should be true.
+  // expression (invocationCounter++ & invocationMask) == invocationMask) should be true.
   private int invocationCounter;
+  private int invocationMask = 0x1;
 
   public boolean isTriggeringEvent(File activeFile, final E event) {
-   
+
     long time = getCurrentTime();
     if (time >= nextCheck) {
       Date dateInElapsedPeriod = dateInCurrentPeriod;
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
-          .convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
+              .convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
       currentPeriodsCounter = 0;
       setDateInCurrentPeriod(time);
       computeNextCheck();
       return true;
     }
 
-    // for performance reasons, check for changes every 16 invocations
-    if (((invocationCounter++) & 0xF) != 0xF) {
+    // for performance reasons, check for changes every 16,invocationMask invocations
+    if (((++invocationCounter) & invocationMask) != invocationMask) {
       return false;
+    }
+    if (invocationMask < 0x0F)  {
+      invocationMask = (invocationMask << 1) + 1 ;
     }
 
     if (activeFile.length() >= maxFileSize.getSize()) {
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
-          .convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
+              .convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
       currentPeriodsCounter++;
       return true;
     }
@@ -100,7 +109,7 @@ public class SizeAndTimeBasedFNATP<E> extends
   @Override
   public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
     return tbrp.fileNamePatternWCS.convertMultipleArguments(
-        dateInCurrentPeriod, currentPeriodsCounter);
+            dateInCurrentPeriod, currentPeriodsCounter);
   }
 
   public String getMaxFileSize() {
