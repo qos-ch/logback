@@ -84,8 +84,9 @@
     <p>Given that <em>logback.groovy</em> files are groovy programs
     with minimal logback-specific extensins, <em>all</em> the usual
     groovy constructs such as class imports, variable definitions,
-    evaluation of ${..} expressions in a string (GStrings), if-else
-    statements are all avaiable in <em>logback.groovy</em> files.</p>
+    evaluation of $&#123;..&#125; expressions contained in strings
+    (GStrings), if-else statements are all avaiable in
+    <em>logback.groovy</em> files.</p>
 
     <h2>Extensions specific to <em>logback.groovy</em></h2>
 
@@ -182,7 +183,9 @@ logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
     a method named after the property and passing that method the
     class to instantiate as an argument. This convention can be
     applied recursively to configure properties as well as
-    sub-components of any appender sub-component. </p>
+    sub-components of any appender sub-component. This approach is at
+    the heart of <em>logback.groovy</em> scripts and is probably the
+    only convention that needs learning.</p>
     
     <p>For example, the following script instantiates a
     <code>FileAppender</code> named "FILE", setting its <span
@@ -322,10 +325,11 @@ root(DEBUG, ["STDOUT"])</pre>
     <p>The <em>logback.groovy</em> is an internal DSL meaning that its
     contents are executed as a groovy script. Thus, all the usual
     groovy constructs such as class imports, GString, variable
-    definitions, evaluation of ${..} expressions in a string
-    (GStrings), if-else statements are all avaiable in logback.groovy
-    files. In the following discussion, we will present typical uses
-    of these groovy constructs in <em>logback.groovy</em> files.
+    definitions, evaluation of $&#123;..&#125; expressions contained
+    within strings (GStrings), if-else statements are all avaiable in
+    logback.groovy files. In the following discussion, we will present
+    typical uses of these groovy constructs in <em>logback.groovy</em>
+    files.
     </p>
 
 
@@ -357,8 +361,8 @@ root(DEBUG, ["FILE"])</pre>
 
     <h3>Printing on the console</h3>
 
-    <p>You can invoke the println method to print on the console. Here
-    is an example.</p>
+    <p>You can invoke Groovy's <code>println</code> method to print on
+    the console. Here is an example.</p>
 
     <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.FileAppender
@@ -423,13 +427,14 @@ appender("STDOUT", ConsoleAppender) {
    <h3>Everything is context aware with a reference to the current
    context</h3>
 
-   <p>The execution of the logback.grooy script is done within a scope
-   of a <a
+   <p>The execution of the <em>logback.grooy</em> script is done
+   within a scope of a <a
    href="../xref/ch/qos/logback/core/spi/ContextAware.html">ContextAware</a>
    object. Thus, the current context is always accessible using the
-   '<code>context</code>' variable and you can add status messages
-   using <code>addInfo</code>(), <code>addWarn</code> and addError
-   methods.</p>
+   '<code>context</code>' variable and you can invoke
+   <code>addInfo</code>(), <code>addWarn</code>() and
+   <code>addError</code>() methods to send status messages to the
+   context's <code>StatusManager</code>.</p>
 
    <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.FileAppender
@@ -463,9 +468,9 @@ root(DEBUG, ["FILE"])</pre>
    <h3>Conditional configuration</h3>
    
    <p>Given that Groovy is a fully-fledged programming language,
-   conditional statements allow for a single logback.groovy file to
-   adapt to various environments such as development, testing or
-   production.</p>
+   conditional statements allow for a single <em>logback.groovy</em>
+   file to adapt to various environments such as development, testing
+   or production.</p>
 
    <p>In the next script, a console appender is activated on hosts
    other than pixie or orion, our production machines. Note that the

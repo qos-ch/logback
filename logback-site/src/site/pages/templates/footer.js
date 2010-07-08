@@ -1,10 +1,6 @@
 
 document.write('<table class="footer">')
 
-
-
-document.write('</tr>')
-
 document.write('<tr>')
 
 document.write('  <td>')
