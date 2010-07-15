@@ -48,7 +48,7 @@ class GafferConfigurator {
 
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
-    dslScript.metaClass.getDeclaredOrigin = { println "getDeclaredOrigin"; dslScript }
+    dslScript.metaClass.getDeclaredOrigin = { dslScript }
 //    metaClass.statusListener = configurationDelegate.&statusListener
 //    dslScript.metaClass.scan = configurationDelegate.&scan
 //    dslScript.metaClass.appender = configurationDelegate.&appender
