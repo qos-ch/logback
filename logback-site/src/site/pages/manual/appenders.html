@@ -454,8 +454,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          </p>
 
          <p>Prudent mode effectively serializes IO operations between
-         all JVMs writing to the same file. Thus, as he number of JVMs
-         competing to access the file increases so will the delay
+         all JVMs writing to the same file. Thus, as the number of
+         JVMs competing to access the file increases so will the delay
          incurred by each I/O operation. As long as the <em>total</em>
          number of I/O operations is in the order of 20 log requests
          per second, the impact on performance should be
