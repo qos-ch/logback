@@ -18,9 +18,9 @@ import java.net.URL;
 import java.security.AccessControlException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import ch.qos.logback.core.Context;
 
@@ -67,16 +67,17 @@ public class Loader {
    * @return
    * @throws IOException
    */
-  public static List<URL> getResourceOccurenceCount(String resource,
-                                                    ClassLoader classLoader) throws IOException {
-    List<URL> urlList = new ArrayList<URL>();
+
+  public static Set<URL> getResourceOccurenceCount(String resource,
+                                                   ClassLoader classLoader) throws IOException {
+    // See LBCLASSIC-159
+    Set<URL> urlSet = new HashSet<URL>();
     Enumeration<URL> urlEnum = classLoader.getResources(resource);
     while (urlEnum.hasMoreElements()) {
       URL url = urlEnum.nextElement();
-      urlList.add(url);
+      urlSet.add(url);
     }
-
-    return urlList;
+    return urlSet;
   }
 
   /**
@@ -139,6 +140,7 @@ public class Loader {
 
   /**
    * Returns the class loader of clazz in an access privileged section.
+   *
    * @param clazz
    * @return
    */
