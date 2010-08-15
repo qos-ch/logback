@@ -23,4 +23,35 @@ public class TeztHelper {
     Throwable cause = makeNestedException(level - 1);
     return new Exception("nesting level =" + level, cause);
   }
+
+  /**
+   * Usage:
+   * <pre>
+   * String s = "123";
+   * positionOf("1").in(s) < positionOf("3").in(s)
+   * </pre>
+   *
+   * @param pattern Plain text to be found
+   * @return StringPosition fluent interface
+   */
+  public static StringPosition positionOf(String pattern) {
+    return new StringPosition(pattern);
+  }
+
+  public static class StringPosition {
+    private final String pattern;
+
+    public StringPosition(String pattern) {
+      this.pattern = pattern;
+    }
+
+    public int in(String s) {
+      final int position = s.indexOf(pattern);
+      if(position < 0)
+        throw new IllegalArgumentException("String '" + pattern + "' not found in: '" + s + "'");
+      return position;
+    }
+
+  }
+
 }

@@ -96,7 +96,6 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
   }
 
   public String convert(ILoggingEvent event) {
-    StringBuilder buf = new StringBuilder(32);
 
     IThrowableProxy tp = event.getThrowableProxy();
     if (tp == null) {
@@ -135,10 +134,16 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
     }
 
-    while (tp != null) {
-      printThrowableProxy(buf, tp);
-      tp = tp.getCause();
+    return printThrowableToString(tp);
     }
+
+  protected String printThrowableToString(IThrowableProxy tp) {
+      StringBuilder buf = new StringBuilder(32);
+      IThrowableProxy currentThrowable = tp;
+      while (currentThrowable != null) {
+          printThrowableProxy(buf, currentThrowable);
+          currentThrowable = currentThrowable.getCause();
+      }
     return buf.toString();
   }
 
@@ -166,7 +171,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     if (commonFrames > 0 && unrestrictedPrinting) {
-      buf.append("\t... " + tp.getCommonFrames()).append(
+      buf.append("\t... ").append(tp.getCommonFrames()).append(
           " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
     }
   }

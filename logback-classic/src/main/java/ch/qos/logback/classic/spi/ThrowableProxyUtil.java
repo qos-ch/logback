@@ -117,7 +117,7 @@ public class ThrowableProxyUtil {
     }
     
     if (commonFrames > 0) {
-      sb.append("\t... " + commonFrames).append(" common frames omitted")
+      sb.append("\t... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
     
@@ -128,6 +128,17 @@ public class ThrowableProxyUtil {
     if (commonFrames > 0) {
       buf.append(CoreConstants.CAUSED_BY);
     }
+    printExceptionMessage(buf, tp);
+  }
+
+  static public void printFirstLineRootCauseFirst(StringBuilder buf, IThrowableProxy tp) {
+    if (tp.getCause() != null) {
+      buf.append(CoreConstants.WRAPPED_BY);
+    }
+    printExceptionMessage(buf, tp);
+  }
+
+  private static void printExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
     buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
   }
 }
