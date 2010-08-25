@@ -407,13 +407,13 @@ public class Foo {
    the said configuration file changes. In order to instruct
    logback-classic to scan for changes in its configuration file and
    to automatically re-configure itself set the <span
-   class="attr">scan</span> atrribute of the
+   class="attr">scan</span> attribute of the
    <code>&lt;configuration></code> element to true, as shown next.
 
    </p>
   
    <p class="example">Example: Scanning for changes in configuration
-   file and automatic re-configuraion
+   file and automatic re-configuration
    (logback-examples/src/main/java/chapters/configuration/scan1.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('scan1');">View as .grovvy</span>
@@ -602,9 +602,9 @@ public class MyApp3 {
    </p>
 
    <p>Here is <a
-   href="../xref/chapters/configuration/AddStatusListenerApp.html">sample code</a>
-   to register an OnConsoleStatusListener instance with the
-   StatusManager.
+   href="../xref/chapters/configuration/AddStatusListenerApp.html">sample
+   code</a> to register an <code>OnConsoleStatusListener</code>
+   instance with the StatusManager.
    </p>
 
    <pre class="prettyprint source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
@@ -710,7 +710,7 @@ public class MyApp3 {
     <code>&lt;logger></code> element</a></h4>
 
     <p>At this point should have at least some understanding of <a
-    href="architecture.html#effectiveLevel">level inherirance</a> and
+    href="architecture.html#effectiveLevel">level inheritance</a> and
     the <a href="architecture.html#basic_selection">basic selection
     rule</a>. Otherwise, and unless you are an egyptologist, logback
     configuration will be no more meaningful to you than
