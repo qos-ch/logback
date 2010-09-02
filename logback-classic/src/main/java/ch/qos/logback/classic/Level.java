@@ -37,7 +37,7 @@ public final class Level implements java.io.Serializable {
   public static final Integer WARN_INTEGER = new Integer(WARN_INT);
   public static final Integer INFO_INTEGER = new Integer(INFO_INT);
   public static final Integer DEBUG_INTEGER = new Integer(DEBUG_INT);
-  public static final Integer TRACE_INTEGER = new Integer(DEBUG_INT);
+  public static final Integer TRACE_INTEGER = new Integer(TRACE_INT);
   public static final Integer ALL_INTEGER = new Integer(ALL_INT);
 
   /**
