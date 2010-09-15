@@ -53,7 +53,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   static final long MILLIS_IN_MINUTE = 60 * 1000;
   static final long MILLIS_IN_HOUR = 60 * MILLIS_IN_MINUTE;
   static final long MILLIS_IN_DAY = 24 * MILLIS_IN_HOUR;
-  static final long MILLIS_IN_MONTH = 30 * MILLIS_IN_DAY;
+  static final long MILLIS_IN_MONTH = (long) ((365.0/12) * MILLIS_IN_DAY);
 
   int diff = RandomUtil.getPositiveInt();
   protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff
