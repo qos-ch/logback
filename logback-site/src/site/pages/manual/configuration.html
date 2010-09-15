@@ -622,7 +622,7 @@ public class MyApp3 {
    <p class="example">Example: Registering a status listener
    (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .grovvy</span>
+   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
    <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
 
@@ -780,7 +780,7 @@ public class MyApp3 {
    <p class="example">Example: Setting the level of a logger
    (logback-examples/src/main/java/chapters/configuration/sample2.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('sample2');">View as .grovvy</span>
+   <span class="asGroovy" onclick="return asGroovy('sample2');">View as .groovy</span>
    <pre id="sample2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -821,7 +821,7 @@ public class MyApp3 {
   <p class="example">Example: Setting the level of multiple loggers
   (logback-examples/src/main/java/chapters/configuration/sample3.xml)</p>
   
-  <span class="asGroovy" onclick="return asGroovy('sample3');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('sample3');">View as .groovy</span>
   <pre id="sample3" class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -894,7 +894,7 @@ public class MyApp3 {
   href="architecture.html#basic_selection">basic-selection rule</a>
   depends on the effective level of the logger being invoked, not the
   level of the logger where appenders are attached. Loback will first
-  determine wheteher a logging statement is enabled or not, and if
+  determine whether a logging statement is enabled or not, and if
   enabled, it will invoke the appenders found in the logger hierarchy,
   regardless of their level. The configuration file
   <em>sample4.xml</em> is a case in point:
@@ -902,7 +902,7 @@ public class MyApp3 {
 
   <p class="example">Example: Logger level sample
   (logback-examples/src/main/java/chapters/configuration/sample4.xml)</p>
-  <span class="asGroovy" onclick="return asGroovy('sample4');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('sample4');">View as .groovy</span>
   <pre id="sample4" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -977,7 +977,7 @@ public class MyApp3 {
   href="#configuringAppenders">Configuring Appenders</a></h4>
 
   <p>An appenders is configured with the <code>&lt;appender></code>
-  element, which takes two mandatroy attributes <span
+  element, which takes two mandatory attributes <span
   class="attr">name</span> and <span class="attr">class</span>.  The
   <span class="attr">name</span> attribute specifies the name of the
   appender whereas the <span class="attr">class</span> attribute
@@ -1028,7 +1028,7 @@ public class MyApp3 {
   <p class="example">Example: Multiple loggers
   (logback-examples/src/main/java/chapters/configuration/multiple.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('multiple');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('multiple');">View as .groovy</span>
   <pre id="multiple" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
@@ -1083,7 +1083,7 @@ public class MyApp3 {
   <p class="example">Example: Duplicate appender
   (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .groovy</span>
   <pre id="duplicate" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1130,7 +1130,7 @@ public class MyApp3 {
 
   <p class="example">Example: Multiple appender
   (logback-examples/src/main/java/chapters/configuration/restricted.xml)</p>
-  <span class="asGroovy" onclick="return asGroovy('restricted');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('restricted');">View as .groovy</span>
   <pre id="restricted" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1177,7 +1177,7 @@ public class MyApp3 {
   <p class="example">Example: Additivity flag
   (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .groovy</span>
   <pre id="additivityFlag" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1233,7 +1233,7 @@ public class MyApp3 {
   <p class="example">Example: Set the context name and display it
   (logback-examples/src/main/java/chapters/configuration/contextName.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('contextName');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('contextName');">View as .groovy</span>
   <pre id="contextName" class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1290,7 +1290,7 @@ public class MyApp3 {
   </p>
 
   <span class="asGroovy" onclick="return
-  asGroovy('variableSubstitution1');">View as .grovvy</span>
+  asGroovy('variableSubstitution1');">View as .groovy</span>
   <pre id="variableSubstitution1" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
@@ -1319,7 +1319,7 @@ public class MyApp3 {
   <p class="example">Example: System Variable substitution
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
   </p>
-  <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .grovvy</span>
+  <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .groovy</span>
   <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">

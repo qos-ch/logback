@@ -132,7 +132,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <em>Example: SampleFilter configuration
     (logback-examples/src/main/java/chapters/filters/SampleFilterConfig.xml)</em>
-    <span class="asGroovy" onclick="return asGroovy('SampleFilterConfig');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('SampleFilterConfig');">View as .groovy</span>
     <pre id="SampleFilterConfig" class="prettyprint source">&lt;configuration>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
@@ -189,7 +189,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 		
     <em>Example: Sample LevelFilter configuration
     (logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml)</em>
-    <span class="asGroovy" onclick="return asGroovy('levelFilterConfig');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('levelFilterConfig');">View as .groovy</span>
     <pre id="levelFilterConfig" class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -222,7 +222,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <em>Example: Sample ThresholdFilter configuration
     (logback-examples/src/main/java/chapters/filters/thresholdFilterConfig.xml)</em>
-    <span class="asGroovy" onclick="return asGroovy('thresholdFilterConfig');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('thresholdFilterConfig');">View as .groovy</span>
     <pre id="thresholdFilterConfig"  class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE"
     class="ch.qos.logback.core.ConsoleAppender">
@@ -304,7 +304,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>Here is a more complete example.</p>
 
-    <span class="asGroovy" onclick="return asGroovy('GEventEvaluator');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('GEventEvaluator');">View as .groovy</span>
     <pre id="GEventEvaluator"  class="prettyprint source">&lt;configuration>
     
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -522,7 +522,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <em>Example: Basic event evaluator usage
     (logback-examples/src/main/java/chapters/filters/basicEventEvaluator.xml)</em>
 
-    <span class="asGroovy" onclick="return asGroovy('basicEventEvaluator');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('basicEventEvaluator');">View as .groovy</span>
     <pre id="basicEventEvaluator" class="prettyprint source longline">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -630,7 +630,7 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     <p>An example should clarify the point:</p>
 
     <em>Example: Defining matchers in an event evaluator (logback-examples/src/main/java/chapters/filters/evaluatorWithMatcher.xml)</em>
-    <span class="asGroovy" onclick="return asGroovy('evaluatorWithMatcher');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('evaluatorWithMatcher');">View as .groovy</span>
 
     <pre id="evaluatorWithMatcher" class="prettyprint source">&lt;configuration debug="true">
 
@@ -787,7 +787,7 @@ public class SampleTurboFilter extends TurboFilter {
     <em>Example: Basic custom <code>TurboFilter</code> configuration
     (logback-examples/src/main/java/chapters/filters/sampleTurboFilterConfig.xml)</em>
 
-    <span class="asGroovy" onclick="return asGroovy('sampleTurboFilterConfig');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('sampleTurboFilterConfig');">View as .groovy</span>
 
     <pre id="sampleTurboFilterConfig"  class="prettyprint source">&lt;configuration>
   <b>&lt;turboFilter class="chapters.filters.SampleTurboFilter">
@@ -827,7 +827,7 @@ public class SampleTurboFilter extends TurboFilter {
     configuration
     (logback-examples/src/main/java/chapters/filters/turboFilters.xml)</em>
 
-    <span class="asGroovy" onclick="return asGroovy('turboFilters');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('turboFilters');">View as .groovy</span>
     <pre id="turboFilters" class="prettyprint source">&lt;configuration>
 
   &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
@@ -956,7 +956,7 @@ logger.debug("Hello {}.", name1);</pre>
     <em>Example: <code>DuplicateMessageFilter</code> 
     configuration (logback-examples/src/main/java/chapters/filters/duplicateMessage.xml)</em>
 
-    <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .grovvy</span>
+    <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .groovy</span>
     <pre id="duplicateMessage" class="prettyprint source">&lt;configuration>
 
   <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
