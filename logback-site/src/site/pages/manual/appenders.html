@@ -65,7 +65,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 }</pre>
 
 	<p>Most of the methods in the <code>Appender</code> interface are
-	made of setter and getter methods. A notable exception is the
+	setters and getters. A notable exception is the
 	<code>doAppend()</code> method taking an object instance of type
 	<em>E</em> as its only parameter. The actual type of <em>E</em>
 	would vary depending on the logback module. Within the
@@ -300,8 +300,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
   the console, or more precisely on <em>System.out</em> or
   <em>System.err</em>, the former being the default
-  target. <code>ConsoleAppender</code> formats events with the hellp
-  of an encoder specified by the user. Encoders will be discussed in a
+  target. <code>ConsoleAppender</code> formats events with the help of
+  an encoder specified by the user. Encoders will be discussed in a
   subsequent chapter. Both <em>System.out</em> and <em>System.err</em>
   are of type <code>java.io.PrintStream</code>.  Consequently, they
   are wrapped inside an <code>OutputStreamWriter</code> which buffers
@@ -586,8 +586,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    below</a>) will determine if and exactly when rollover
    occurs. Thus, <code>RollingPolicy</code> is responsible for the
    <em>what</em> and <code>TriggeringPolicy</code> is responsible for
-   the <em>when</em>. <code>RollingPolicy</code> is described
-   </p>
+   the <em>when</em>. </p>
 	
    <p>To be of any use, a <code>RollingFileAppender</code> must have
    both a <code>RollingPolicy</code> and a
@@ -906,9 +905,10 @@ public interface RollingPolicy extends LifeCycle {
    interfaces.
    </p>
 
-   <p><code>TimeBasedRollingPolicy</code>'s admits two properties, the
-   mandatory <span class="option">fileNamePattern</span> property and
-   the optional <span class="option">maxHistory</span> property.
+   <p><code>TimeBasedRollingPolicy</code>'s configuration admits two
+   properties, the mandatory <span
+   class="option">fileNamePattern</span> property and the optional
+   <span class="option">maxHistory</span> property.
    </p>
 
    <table class="bodyTable">
@@ -2142,7 +2142,7 @@ Context ctx = new InitialContext(env);</pre>
    <p>The <a
    href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
    accumulates logging events in one or more fixed-size buffers and
-   sends the contents of the appropriate bugger in an email after a
+   sends the contents of the appropriate bufferer in an email after a
    user-specified event occurs.  By default, the email transmission is
    triggered by a logging event of level ERROR or higher. Moreover, by
    default, a single buffer is used for all events.

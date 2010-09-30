@@ -218,7 +218,7 @@ public class Foo {
     </div>   
 
    <p>The <code>MyApp1</code> application links to logback via calls
-   <code>org.slf4j.LoggerFactory</code> and
+   to <code>org.slf4j.LoggerFactory</code> and
    <code>org.slf4j.Logger</code> classes, retrieve the loggers it
    wishes to use, and chugs on.  Note that the only dependencies of
    the <code>Foo</code> class on logback are through
@@ -527,7 +527,7 @@ public class MyApp3 {
    currently in effect, creates a new <code>JoranConfigurator</code>,
    sets the context on which it will operate, resets the logger
    context, and then finally asks the configurator to configure the
-   context using configuration file passed as parameter to the
+   context using the configuration file passed as a parameter to the
    application. Internal status data is printed in case of warnings or
    errors.
    </p>   
@@ -547,7 +547,7 @@ public class MyApp3 {
    data associated with a logback context. To keep memory usage at
    reasonable levels, the default <code>StatusManager</code>
    implementation stores the status messages in two separate parts:
-   the header part and the tail part. The header part stores the fist
+   the header part and the tail part. The header part stores the first
    <em>H</em> status messages whereas the tail part stores the last
    <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
    although these values may change in future releases.</p>
@@ -709,12 +709,12 @@ public class MyApp3 {
     href="#loggerElement">Configuring loggers, or the
     <code>&lt;logger></code> element</a></h4>
 
-    <p>At this point should have at least some understanding of <a
+    <p>At this point you should have at least some understanding of <a
     href="architecture.html#effectiveLevel">level inheritance</a> and
     the <a href="architecture.html#basic_selection">basic selection
     rule</a>. Otherwise, and unless you are an egyptologist, logback
-    configuration will be no more meaningful to you than
-    are hieroglyphics.
+    configuration will be no more meaningful to you than are
+    hieroglyphics.
     </p>
 
     <p>A logger is configured using the <code>&lt;logger></code>
@@ -893,7 +893,7 @@ public class MyApp3 {
   <p>Let us note that the <a
   href="architecture.html#basic_selection">basic-selection rule</a>
   depends on the effective level of the logger being invoked, not the
-  level of the logger where appenders are attached. Loback will first
+  level of the logger where appenders are attached. Logback will first
   determine whether a logging statement is enabled or not, and if
   enabled, it will invoke the appenders found in the logger hierarchy,
   regardless of their level. The configuration file
@@ -976,7 +976,7 @@ public class MyApp3 {
   <h4><a name="configuringAppenders"
   href="#configuringAppenders">Configuring Appenders</a></h4>
 
-  <p>An appenders is configured with the <code>&lt;appender></code>
+  <p>An appender is configured with the <code>&lt;appender></code>
   element, which takes two mandatory attributes <span
   class="attr">name</span> and <span class="attr">class</span>.  The
   <span class="attr">name</span> attribute specifies the name of the
@@ -1051,7 +1051,7 @@ public class MyApp3 {
   &lt;/root>
 &lt;/configuration></pre>
 
-  <p>This configuration scripts defines two appenders called
+  <p>These configuration scripts define two appenders called
   <em>FILE</em> and <em>STDOUT</em>.  The <em>FILE</em> appender logs
   to a file called <em>myApp.log</em>. The encoder for this appender
   is a <code>PatternLayoutEncoder</code> that outputs the date, level,
@@ -1113,12 +1113,14 @@ public class MyApp3 {
 14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</p>
 
   <p>Notice the duplicated output. The appender named <em>STDOUT</em>
-  is attached to two loggers, to root and to <em>chapters.configuration</em>. Since
-  the root logger is the ancestor of all loggers and <em>chapters.configuration</em>
-  is the parent of <em>chapters.configuration.MyApp3</em> and <em>chapters.configuration.Foo</em>,
-  logging request made with these two loggers will be output twice,
-  once because <em>STDOUT</em> is attached to <em>chapters.configuration</em> and
-  once because it is attached to <em>root</em>.
+  is attached to two loggers, to root and to
+  <em>chapters.configuration</em>. Since the root logger is the
+  ancestor of all loggers and <em>chapters.configuration</em> is the
+  parent of both <em>chapters.configuration.MyApp3</em> and
+  <em>chapters.configuration.Foo</em>, each logging request made with
+  these two loggers will be output twice, once because <em>STDOUT</em>
+  is attached to <em>chapters.configuration</em> and once because it
+  is attached to <em>root</em>.
   </p>
 
   <p>Appender additivity is not intended as a trap for new users.  It
@@ -1219,10 +1221,10 @@ public class MyApp3 {
   <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>
 
   <p>As mentioned <a href="architecture.html#LoggerContext">in an
-  earlier chapter</a>, every logger is attached to logger context. By
-  default, the logger context is called "default". However, you can
-  set a different name with the help of the
-  <code>&lt;contextName></code> configuration directive. Note that
+  earlier chapter</a>, every logger is attached to a logger
+  context. By default, the logger context is called
+  "default". However, you can set a different name with the help of
+  the <code>&lt;contextName></code> configuration directive. Note that
   once set, the logger context name <a
   href="../apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)">cannot
   be changed</a>. Setting the context name is a simple and
@@ -1247,8 +1249,8 @@ public class MyApp3 {
   &lt;/root>
 &lt;/configuration></pre>
 
-  <p>This last examples illustrates naming of the logger
-  context. Adding the the <a
+  <p>This last example illustrates naming of the logger
+  context. Adding the <a
   href="layouts.html#conversionWord">contextName conversion word</a>
   in layout's pattern will output the said name.</p>
   
@@ -1363,9 +1365,9 @@ public class MyApp3 {
 
    <p>This configuration file contains a reference to a file named
    <em>variables1.properties</em>.  The variables contained in that
-   file will be read defined within the context of the logback
-   configuration file. Here is what the <em>variable.properties</em>
-   file might look like.
+   file will be read and then defined within the context of the
+   logback configuration file. Here is what the
+   <em>variable.properties</em> file might look like.
    </p>
 
    <em>Example: Variable file
@@ -1598,7 +1600,7 @@ fileName=myApp.log
    <p>Under certain circumstances, you may want to make use of
    env-entries stored in JNDI. The <code>&lt;insertFromJNDI></code>
    configuration directive extracts an env-entry stored in JNDI and
-   inserts it as variable as specified by the <span
+   inserts it as a variable whose key is as specified by the <span
    class="attr">as</span> attribute.
    </p>
 

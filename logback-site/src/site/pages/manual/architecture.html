@@ -745,11 +745,11 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   <h4>1. Get the filter chain decision</h4>
 
   <p>If it exists, the <code>TurboFilter</code> chain is
-  invoked. Turbo filters can set a context-wide threshold, or to
-  filter out certain events based on information such as
-  <code>Marker</code>, <code>Level</code>, <code>Logger</code>,
-  message, or the <code>Throwable</code> that are associated with each
-  logging request.  If the reply of the filter chain is
+  invoked. Turbo filters can set a context-wide threshold, or filter
+  out certain events based on information such as <code>Marker</code>,
+  <code>Level</code>, <code>Logger</code>, message, or the
+  <code>Throwable</code> that are associated with each logging
+  request.  If the reply of the filter chain is
   <code>FilterReply.DENY</code>, then the logging request is
   dropped. If it is <code>FilterReply.NEUTRAL</code>, then we continue
   with the next step, i.e. step 2. In case the reply is
@@ -880,12 +880,12 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
     and 4 microseconds to format a message with 1 and 3 parameters.
   </p>
 
-  <p> Please notice that, despite the performance points that we just
-  discussed, inserting logging statements in tight loops or very
-  frequently invoked code is a lose-lose proposal and is likely to
-  result in degraded performance. Logging in tight loops slow down
-  your application even if logging is turned off, and if logging is
-  turned on, they will generate massive (and hence useless) output.
+  <p> Please notice that, despite the performance points just
+  discussed, inserting logging statements in tight loops (very
+  frequently invoked code) is a lose-lose proposal and is likely to
+  result in degraded performance.  Logging in tight loops will slow
+  down your application even if logging is turned off, and if logging
+  is turned on, will generate massive (and hence useless) output.
   </p>
 
   <h4>2. The performance of deciding whether to log or not to log when
