@@ -2669,14 +2669,14 @@ logger.error(<b>notifyAdminMarker</b>,
     MDCDiscriminator</a></h3>
 
     <p>As mentioned earlier, by specifiying a discriminator other than
-    the default one, SMTPAppender will generate email messages
-    containing events pertaining to a particular user, user session or
-    client IP address, depending on the discriminator.
+    the default one, <code>SMTPAppender</code> will generate email
+    messages containing events pertaining to a particular user, user
+    session or client IP address, depending on the specified discriminator.
     </p>
 
-    <p>The next example uses <a
-    href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDsicriminator</a>
-    focused on the MDC key named "req.remoteHost" which is assumed to
+    <p>The next example illustrates the use of<a
+    href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>
+    in conjuction with the MDC key named "req.remoteHost", assumed to
     contain the IP address of the remote host accessing a fictitious
     application. In a web-application, you could use <a
     href="mdc.html#mis">MDCInsertingServletFilter</a> to populate MDC
