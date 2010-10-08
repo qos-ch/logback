@@ -21,7 +21,7 @@ class GafferConfigurator {
 
   LoggerContext context
   //ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
-
+                         
   GafferConfigurator(LoggerContext context) {
     this.context = context
     //configurationDelegate.context = context;
