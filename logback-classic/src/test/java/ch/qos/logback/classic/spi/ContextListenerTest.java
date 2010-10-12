@@ -15,17 +15,19 @@ package ch.qos.logback.classic.spi;
 
 import static org.junit.Assert.assertEquals;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.BasicContextListener.UpdateType;
 
-public class ContextListenerTest  {
-  
+public class ContextListenerTest {
+
   LoggerContext context;
   BasicContextListener listener;
-  
+
   @Before
   public void setUp() throws Exception {
     context = new LoggerContext();
@@ -60,5 +62,22 @@ public class ContextListenerTest  {
     context.start();
     assertEquals(UpdateType.START, listener.updateType);
     assertEquals(listener.context, context);
+  }
+
+  void checkLevelChange(String loggerName, Level level) {
+    Logger logger = context.getLogger(loggerName);
+    logger.setLevel(level);
+
+    assertEquals(UpdateType.LEVEL_CHANGE, listener.updateType);
+    assertEquals(listener.logger, logger);
+    assertEquals(listener.level, level);
+
+  }
+
+  @Test
+  public void testLevelChange() {
+    checkLevelChange("a", Level.INFO);
+    checkLevelChange("a.b", Level.ERROR);
+    checkLevelChange("a.b.c", Level.DEBUG);
   }
 }

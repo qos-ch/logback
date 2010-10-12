@@ -184,6 +184,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
         child.handleParentLevelChange(effectiveLevelInt);
       }
     }
+    // inform listeners
+    loggerContext.fireOnLevelChange(this, newLevel);
   }
 
   /**

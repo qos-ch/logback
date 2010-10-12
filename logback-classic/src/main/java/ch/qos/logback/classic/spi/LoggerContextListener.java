@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.spi;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
 public interface LoggerContextListener {
@@ -27,4 +29,5 @@ public interface LoggerContextListener {
   public void onStart(LoggerContext context);
   public void onReset(LoggerContext context);
   public void onStop(LoggerContext context);
+  public void onLevelChange(Logger logger, Level level);
 }

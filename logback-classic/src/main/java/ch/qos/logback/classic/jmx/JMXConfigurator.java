@@ -261,6 +261,10 @@ public class JMXConfigurator extends ContextAwareBase implements
     stop();
   }
 
+  public void onLevelChange(Logger logger, Level level) {
+    // nothing to do
+  }
+
   public void onReset(LoggerContext context) {
     addInfo("onReset() method called JMXActivator [" + objectNameAsString + "]");
   }

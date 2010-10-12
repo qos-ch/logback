@@ -308,6 +308,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     return new ArrayList<LoggerContextListener>(loggerContextListenerList);
   }
 
+  void fireOnLevelChange(Logger logger, Level level) {
+    for (LoggerContextListener listener : loggerContextListenerList) {
+      listener.onLevelChange(logger, level);
+    }
+  }
+
   private void fireOnReset() {
     for (LoggerContextListener listener : loggerContextListenerList) {
       listener.onReset(this);

@@ -13,14 +13,18 @@
  */
 package ch.qos.logback.classic.spi;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
 public class BasicContextListener implements LoggerContextListener {
 
-  enum UpdateType { NONE, START, RESET, STOP};
+  enum UpdateType { NONE, START, RESET, STOP , LEVEL_CHANGE};
   
   UpdateType updateType = UpdateType.NONE;
   LoggerContext context;
+  Logger logger;
+  Level level;
   
   boolean resetResistant;
   
@@ -42,8 +46,15 @@ public class BasicContextListener implements LoggerContextListener {
     updateType =  UpdateType.STOP;;
     this.context = context;
   }
-  
+
   public boolean isResetResistant() {
     return resetResistant;
   }
+
+  public void onLevelChange(Logger logger, Level level) {
+    updateType = UpdateType.LEVEL_CHANGE;
+    this.logger = logger;
+    this.level = level;
+  }
+  
 }
