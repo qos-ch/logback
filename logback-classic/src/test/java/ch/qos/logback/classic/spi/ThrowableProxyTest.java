@@ -39,12 +39,12 @@ public class ThrowableProxyTest {
     t.printStackTrace(pw);
 
     IThrowableProxy tp = new ThrowableProxy(t);
-    
+
     String result = ThrowableProxyUtil.asString(tp);
     result = result.replace("common frames omitted", "more");
-        
+
     String expected = sw.toString();
-    
+
     System.out.println("========expected");
     System.out.println(expected);
 
@@ -71,6 +71,26 @@ public class ThrowableProxyTest {
     verify(w);
   }
 
+  // see also http://jira.qos.ch/browse/LBCLASSIC-216
+  @Test
+  public void nullSTE() {
+    Throwable t = new Exception("someMethodWithNullException") {
+      @Override
+      public StackTraceElement[] getStackTrace() {
+        return null;
+      }
+    };
+    // we can't test output as Throwable.printStackTrace method uses
+    // the private getOurStackTrace method instead of getStackTrace
+
+    // tests  ThrowableProxyUtil.steArrayToStepArray
+    new ThrowableProxy(t);
+
+    // tests  ThrowableProxyUtil.findNumberOfCommonFrames
+    Exception top = new Exception("top", t);
+    new ThrowableProxy(top);
+  }
+
   @Test
   public void multiNested() {
     Exception w = null;
@@ -84,6 +104,15 @@ public class ThrowableProxyTest {
 
   void someMethod() throws Exception {
     throw new Exception("someMethod");
+  }
+
+  void someMethodWithNullException() throws Exception {
+    throw new Exception("someMethodWithNullException") {
+      @Override
+      public StackTraceElement[] getStackTrace() {
+        return null;
+      }
+    };
   }
 
   void someOtherMethod() throws Exception {

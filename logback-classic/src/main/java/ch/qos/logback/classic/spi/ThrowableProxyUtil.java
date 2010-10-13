@@ -39,6 +39,9 @@ public class ThrowableProxyUtil {
   }
 
   static StackTraceElementProxy[] steArrayToStepArray(StackTraceElement[] stea) {
+    if(stea == null) {
+      return new StackTraceElementProxy[0];
+    }
     StackTraceElementProxy[] stepa = new StackTraceElementProxy[stea.length];
     for (int i = 0; i < stepa.length; i++) {
       stepa[i] = new StackTraceElementProxy(stea[i]);
@@ -48,7 +51,7 @@ public class ThrowableProxyUtil {
 
   static int findNumberOfCommonFrames(StackTraceElement[] steArray,
       StackTraceElementProxy[] parentSTEPArray) {
-    if (parentSTEPArray == null) {
+    if (parentSTEPArray == null || steArray == null) {
       return 0;
     }
 
