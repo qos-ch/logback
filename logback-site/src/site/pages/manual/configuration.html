@@ -1699,6 +1699,62 @@ fileName=myApp.log
   </ul>
 
 
+  <!-- ==================== ContextListener =================== -->
+  <h2><a name="contextListener" href="#contextListener">Adding a context listener</a></h2>
+
+  <p>Instances of the <a
+  href="../xref/ch/qos/logback/classic/spi/LoggerContextListener.html">LoggerContextListener</a>
+  interface listen to events pertaining to the lifecycle of a logger
+  context. 
+  </p>
+
+
+  <p><code>JMXConfigurator</code> is one implementation of the
+  <code>LoggerContextListener</code> interface. It is desribed in a <a
+  href="jmxConfig.html">subsequent chapter</a>.
+  </p>
+
+  <h3><a name="LevelChangePropagator"
+  href="#LevelChangePropagator">LevelChangePropagator</a></h3>
+
+  <p>As of version 0.9.25, logback-classic ships with <a
+  href="../xref/ch/qos/logback/classic/jul/LevelChangePropagator.html">LevelChangePropagator</a>,
+  an implementation of <code>LoggerContextListener</code> which
+  propagates changes made to the level of any logback-classic logger
+  onto the java.util.logging framework. Such propagation eliminates
+  the performance impact of disabled log statements. Instances of <a
+  href="http://download.oracle.com/javase/1.5.0/docs/api/java/util/logging/LogRecord.html?is-external=true">LogRecord</a>
+  will be sent to logback (via SLF4J) only for enabled log
+  statements. This makes it reasonable for real-world applications to
+  use the <a
+  href="http://www.slf4j.org/legacy.html#jul-to-slf4j">jul-to-slf4j</a>
+  bridge.
+  </p>
+
+
+  <p>The contextListener element can be used to install <code>LevelChangePropagator</code> as shown next.</p>
+  
+  <pre class="prettyprint source">&lt;configuration debug="false">
+  <b>&lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/></b>
+  .... 
+&lt;/configuration></pre>
+
+  <p>Setting the <span class="option">resetJUL</span> propery of
+  LevelChangePropagator will reset all previous level configurations
+  of all j.u.l. loggers. Previously installed handlers however will be
+  left untouched.</p>
+
+  <pre class="prettyprint source">&lt;configuration debug="false">
+  &lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <b>&lt;resetJUL>true&lt;/resetJUL></b>
+  &lt;/contextListener>
+  ....
+&lt;/configuration></pre>
+  <p>
+  </p>
+  
+
+
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
 </body>

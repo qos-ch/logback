@@ -60,7 +60,7 @@ public class JMXConfiguratorAction extends Action {
     ObjectName objectName = MBeanUtil.string2ObjectName(context, this,
         objectNameAsStr);
     if (objectName == null) {
-      addError("Failed to for ObjectName for ["+objectNameAsStr+"]");
+      addError("Failed construct ObjectName for ["+objectNameAsStr+"]");
       return;
     }
     

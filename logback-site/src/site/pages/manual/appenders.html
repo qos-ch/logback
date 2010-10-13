@@ -151,7 +151,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	access to the appender.
 	</p>
 
-  <p>Since such syncronization is not always appropriate, logback
+  <p>Since such synchronization is not always appropriate, logback
   ships with <a
   href="../xref/ch/qos/logback/core/UnsynchronizedAppenderBase.html"><code>ch.qos.logback.core.UnsynchronizedAppenderBase</code></a>
   which is very similar to the <a
@@ -243,7 +243,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	provides basic services that other appenders build upon.  Users do
 	not usually instantiate <code>OutputStreamAppender</code> objects
 	directly.  Since in general the <code>java.io.OutputStream</code>
-	type cannot be conveninetly mapped to a string, as there is no way
+	type cannot be conveniently mapped to a string, as there is no way
 	to specify the target <code>OutputStream</code> object in a
 	configuration script.  Simply put, you cannot configure a
 	<code>OutputStreamAppender</code> from a configuration file.
@@ -274,14 +274,14 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   <p>Given the structure of current hard drives and performance tests
   we have conducted, it appears that turning off immediate flushing or
   buffering of character to byte conversions have rather small impact
-  on performance. As such, as of logback vesion 0.9.19, the <span
+  on performance. As such, as of logback version 0.9.19, the <span
   class="option">ImmediateFlush</span>, <span
   class="option">BufferedIO</span> and <span
   class="option">BufferSize</span> properties have been removed
   without replacement.
   </p>
 
-  <p>The <code>OutputStreamAppender</code> is the superclass of three other
+  <p>The <code>OutputStreamAppender</code> is the super-class of three other
 	appenders, namely <code>ConsoleAppender</code>,
 	<code>FileAppender</code> which in turn is the super class of
 	<code>RollingFileAppender</code>. The next figure illustrates the
@@ -936,7 +936,7 @@ public interface RollingPolicy extends LifeCycle {
          omitted.
          
          <p>By setting the <span class="option">file</span> property
-         of the containig <code>FileAppender</code>, you can decouple
+         of the containing <code>FileAppender</code>, you can decouple
          the location of the active log file and the location of the
          archived log files. The current logs will be always targeted
          at the file specified by the <span class="option">file</span>
@@ -1324,7 +1324,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <p>The most widely-used triggering policy, namely
     <code>TimeBasedRollingPolicy</code> which also doubles as a
-    rolliging policy, was already <a
+    rolling policy, was already <a
     href="#TimeBasedRollingPolicy">discussed earlier</a> along with
     other rolling policies. </p>
 		
@@ -2224,7 +2224,7 @@ Context ctx = new InitialContext(env);</pre>
           same value so that the same buffer is used for all events.
           </p>
 
-          <p>By specifiying a discriminator other than the default
+          <p>By specifying a discriminator other than the default
           one, it would be possible to receive email messages
           containing a events pertaining to a particular user, user
           session or client IP address.
@@ -2552,7 +2552,7 @@ logger.error(<b>notifyAdminMarker</b>,
    new Exception("Just testing"));</pre>
 
    <p>The next configuration file will cause outgoing emails to be
-   sent only in presensce of events bearing the NOTIFY_ADMIN or the
+   sent only in presence of events bearing the NOTIFY_ADMIN or the
    TRANSACTION_FAILURE marker.
    </p>
 
@@ -2676,7 +2676,7 @@ logger.error(<b>notifyAdminMarker</b>,
 
     <p>The next example illustrates the use of<a
     href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>
-    in conjuction with the MDC key named "req.remoteHost", assumed to
+    in conjunction with the MDC key named "req.remoteHost", assumed to
     contain the IP address of the remote host accessing a fictitious
     application. In a web-application, you could use <a
     href="mdc.html#mis">MDCInsertingServletFilter</a> to populate MDC

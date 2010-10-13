@@ -40,7 +40,6 @@ public class RootLoggerAction extends Action {
       addInfo("Setting level of ROOT logger to " + level);
       root.setLevel(level);
     }
-
     ec.pushObject(root);
   }
 
