@@ -126,9 +126,8 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         ((ContextAware) actionData.getNestedComplexProperty())
             .setContext(this.context);
       }
-      // getLogger().debug(
-      addInfo("Pushing component [" + localName
-          + "] on top of the object stack.");
+      //addInfo("Pushing component [" + localName
+      //    + "] on top of the object stack.");
       ec.pushObject(actionData.getNestedComplexProperty());
 
     } catch (Exception oops) {

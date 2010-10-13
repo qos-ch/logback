@@ -378,6 +378,12 @@ public class Foo {
    printed.
    </p>
 
+   <p>It is highly recommended to register a status listener,
+   e.g. <code>OnConsoleStatusListener</code>, so that problems
+   occuring during the lifetime of your applicaiton, well after
+   logback is initialized, can be reported. See the section on <a
+   href="#statusListener">status listeners</a> further below.</p>
+
    <h3><a name="configFileProperty"
    href="#configFileProperty">Specifying the location of the default
    configuration file as a system property</a></h3>
@@ -614,7 +620,9 @@ public class MyApp3 {
 
    <p>Note that the registered status listener will receive status
    events subsequent to its registration. It will not receive prior
-   messages.</p>
+   messages. Thus, it is usually a good idea to place status listener
+   registration directives at top of the configuration file before
+   other directives.</p>
 
    <p>It is also possible to register one or more status listeners
    within a configuration file. Here is an example.</p>

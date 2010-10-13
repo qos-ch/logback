@@ -99,6 +99,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   }
 
   public void rollover() throws RolloverFailure {
+
     // Inside this method it is guaranteed that the hereto active log file is
     // closed.
     // If maxIndex <= 0, then there is no file renaming to be done.
