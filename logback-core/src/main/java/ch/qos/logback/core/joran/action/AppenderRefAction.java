@@ -46,7 +46,7 @@ public class AppenderRefAction extends Action {
 
     AppenderAttachable appenderAttachable = (AppenderAttachable) o;
 
-    String appenderName = attributes.getValue(ActionConst.REF_ATTRIBUTE);
+    String appenderName = ec.subst(attributes.getValue(ActionConst.REF_ATTRIBUTE));
 
     if (OptionHelper.isEmpty(appenderName)) {
       // print a meaningful error message and return

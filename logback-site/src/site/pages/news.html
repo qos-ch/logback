@@ -28,6 +28,25 @@
 
     <hr width="80%" align="center" />
 
+    <h3>October 13th, 2010 - Release of version 0.9.25</h3>
+
+    <p>Logback-classic now supports <a
+    href="manual/configuration.html#LevelChangePropagator">propagation
+    of level changes from logback-classic onto the
+    j.u.l. framework</a>. This significantly reduces the performance
+    impact of disabled log statements making it reasonable for
+    real-world applications to use the <a
+    href="http://slf4j.org/legacy.html#jul-to-slf4j">jul-to-slf4j
+    bridge</a>.
+    </p>
+
+    <p>The <code>&lt;appender-ref></code> element now supports
+    <a href="manual/configuration.html#variableSubstitution">variable substitution</a>, thus fixing <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-224">LBCLASSIC-224</a>
+    as reported by David Harrigan.
+
+    <hr width="80%" align="center" />
+
     <h3>June 30th, 2010 - Release of version 0.9.24</h3>
 
     <p>Fixed NullPointerException thrown by
