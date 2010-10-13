@@ -46,6 +46,14 @@
     as reported by David Harrigan.
     </p>
 
+    <p>As reported in <a
+    href="http://jira.qos.ch/browse/LBCORE-164">LBCORE-164</a>,
+    <code>SizeAndTimeBasedFNATP</code> would cause previous logging
+    files with indexes over nine to be overwitten on application
+    restart. This complex bug was reported and precisely diagnosed by
+    Dieter Mueller. He has also proposed a fix which was subsequently
+    adopted as is.</p>
+
     <hr width="80%" align="center" />
 
     <h3>June 30th, 2010 - Release of version 0.9.24</h3>

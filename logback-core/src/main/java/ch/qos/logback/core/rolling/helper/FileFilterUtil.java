@@ -88,6 +88,16 @@ public class FileFilterUtil {
     return matchingFileArray;
   }
 
+  static public int findHighestCounter(File[] matchingFileArray, final String stemRegex) {
+    int max = Integer.MIN_VALUE;
+    for (File aFile : matchingFileArray) {
+      int aCounter = FileFilterUtil.extractCounter(aFile, stemRegex);
+      if (max < aCounter)
+        max = aCounter;
+    }
+    return max;
+  }
+
   static public int extractCounter(File file, final String stemRegex) {
     Pattern p = Pattern.compile(stemRegex);
     String lastFileName = file.getName();

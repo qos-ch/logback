@@ -61,8 +61,7 @@ public class SizeAndTimeBasedFNATP<E> extends
       currentPeriodsCounter = 0;
       return;
     }
-    FileFilterUtil.reverseSortFileArrayByName(matchingFileArray);
-    currentPeriodsCounter = FileFilterUtil.extractCounter(matchingFileArray[0], stemRegex);
+    currentPeriodsCounter = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
     if (tbrp.getParentsRawFileProperty() != null) {
       currentPeriodsCounter++;
     }
@@ -92,8 +91,8 @@ public class SizeAndTimeBasedFNATP<E> extends
     if (((++invocationCounter) & invocationMask) != invocationMask) {
       return false;
     }
-    if (invocationMask < 0x0F)  {
-      invocationMask = (invocationMask << 1) + 1 ;
+    if (invocationMask < 0x0F) {
+      invocationMask = (invocationMask << 1) + 1;
     }
 
     if (activeFile.length() >= maxFileSize.getSize()) {

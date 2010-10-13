@@ -13,12 +13,13 @@
  */
 package ch.qos.logback.core.helpers;
 
+import ch.qos.logback.core.util.FileUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ThrowableToStringArrayTest.class})
+@SuiteClasses({ThrowableToStringArrayTest.class, FileUtilTest.class})
 public class PackageTest {
 
 }
