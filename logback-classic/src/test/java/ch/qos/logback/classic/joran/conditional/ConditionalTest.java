@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2010, QOS.ch. All rights reserved.
- * 
+ *
  * This program and the accompanying materials are dual-licensed under either
  * the terms of the Eclipse Public License v1.0 as published by the Eclipse
  * Foundation
- * 
+ *
  * or (per the licensee's choosing)
- * 
+ *
  * under the terms of the GNU Lesser General Public License version 2.1 as
  * published by the Free Software Foundation.
  */
@@ -65,12 +65,13 @@ public class ConditionalTest {
 
   @Test
   public void conditionalConsoleApp_IF_THEN_True() throws JoranException,
-      IOException, InterruptedException {
+          IOException, InterruptedException {
     InetAddress localhost = InetAddress.getLocalHost();
+    System.out.println("In conditionalConsoleApp_IF_THEN_True, setting property aHost as [" + localhost.getCanonicalHostName() + "]");
     context.putProperty("aHost", localhost.getCanonicalHostName());
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "conditional/conditionalConsoleApp.xml";
+            + "conditional/conditionalConsoleApp.xml";
     configure(configFileAsStr);
     FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
     assertNotNull(fileAppender);
@@ -83,10 +84,10 @@ public class ConditionalTest {
 
   @Test
   public void conditionalConsoleApp_IF_THEN_False() throws JoranException,
-      IOException, InterruptedException {
+          IOException, InterruptedException {
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "conditional/conditionalConsoleApp.xml";
+            + "conditional/conditionalConsoleApp.xml";
     configure(configFileAsStr);
     FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
     assertNotNull(fileAppender);
@@ -99,10 +100,10 @@ public class ConditionalTest {
 
   @Test
   public void conditionalConsoleApp_IF_THEN_ELSE() throws JoranException,
-      IOException, InterruptedException {
+          IOException, InterruptedException {
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "conditional/conditionalConsoleApp_ELSE.xml";
+            + "conditional/conditionalConsoleApp_ELSE.xml";
     configure(configFileAsStr);
 
     FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
