@@ -80,6 +80,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   }
 
   @Override
+  public void stop() {
+    if(rollingPolicy != null) rollingPolicy.stop();
+    if(triggeringPolicy != null) triggeringPolicy.stop();
+    super.stop();
+  }
+
+  @Override
   public void setFile(String file) {
     // http://jira.qos.ch/browse/LBCORE-94
     // allow setting the file name to null if mandated by prudent mode

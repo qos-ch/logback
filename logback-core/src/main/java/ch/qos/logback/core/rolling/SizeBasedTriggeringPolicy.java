@@ -50,7 +50,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
   // its values may *not* be incremented sequentially. However, we don't care
   // about the actual value of the field except that from time to time the
   // expression (invocationCounter++ & 0xF) == 0xF) should be true.
-  private int invocationCounter;
+  private int invocationCounter = 0xF;
 
   public boolean isTriggeringEvent(final File activeFile, final E event) {
     // for performance reasons, check for changes every 16 invocations

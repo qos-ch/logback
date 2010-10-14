@@ -96,6 +96,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 
     compressor = new Compressor(compressionMode);
     compressor.setContext(this.context);
+    super.start();
   }
 
   public void rollover() throws RolloverFailure {
