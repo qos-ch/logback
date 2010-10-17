@@ -114,7 +114,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   
   protected void secondarySubAppend(ILoggingEvent event, Connection connection,
       long eventId) throws Throwable {
-    Map<String, String> mergedMap = mergePropertyMaps(event);
+    Map<String, String> mergedMap = DBHelper.mergePropertyMaps(event);
     insertProperties(mergedMap, connection, eventId);
 
     if (event.getThrowableProxy() != null) {
@@ -138,7 +138,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     int arrayLen = argArray != null ? argArray.length : 0;
     
     for(int i = 0; i < arrayLen && i < 4; i++) {
-      stmt.setString(ARG0_INDEX+i, truncateTo254(argArray[i].toString()));
+      stmt.setString(ARG0_INDEX+i, DBHelper.truncateTo254(argArray[i].toString()));
     }
     if(arrayLen < 4) {
       for(int i = arrayLen; i < 4; i++) {
@@ -147,17 +147,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
   }
 
-  String truncateTo254(String s) {
-    if(s == null) {
-      return null;
-    }
-    if(s.length() <= 254) {
-      return s;
-    } else {
-      return s.substring(0, 254);
-    }
-  }
-  
   void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
       StackTraceElement[] callerDataArray) throws SQLException {
     StackTraceElement callerData = callerDataArray[0];
@@ -167,25 +156,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
       stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));
     }
-  }
-
-  Map<String, String> mergePropertyMaps(ILoggingEvent event) {
-    Map<String, String> mergedMap = new HashMap<String, String>();
-    // we add the context properties first, then the event properties, since
-    // we consider that event-specific properties should have priority over
-    // context-wide
-    // properties.
-    Map<String, String> loggerContextMap = event.getLoggerContextVO()
-        .getPropertyMap();
-    Map<String, String> mdcMap = event.getMDCPropertyMap();
-    if (loggerContextMap != null) {
-      mergedMap.putAll(loggerContextMap);
-    }
-    if (mdcMap != null) {
-      mergedMap.putAll(mdcMap);
-    }
-
-    return mergedMap;
   }
 
   @Override

@@ -15,6 +15,9 @@ package ch.qos.logback.classic.db;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -43,5 +46,35 @@ public class DBHelper {
       mask |= EXCEPTION_EXISTS;
     }
     return mask;
+  }
+
+  public static String truncateTo254(final String s) {
+    if(s == null) {
+      return null;
+    }
+    if(s.length() <= 254) {
+      return s;
+    } else {
+      return s.substring(0, 254);
+    }
+  }
+
+  public static Map<String, String> mergePropertyMaps(ILoggingEvent event) {
+    Map<String, String> mergedMap = new HashMap<String, String>();
+    // we add the context properties first, then the event properties, since
+    // we consider that event-specific properties should have priority over
+    // context-wide
+    // properties.
+    Map<String, String> loggerContextMap = event.getLoggerContextVO()
+        .getPropertyMap();
+    Map<String, String> mdcMap = event.getMDCPropertyMap();
+    if (loggerContextMap != null) {
+      mergedMap.putAll(loggerContextMap);
+    }
+    if (mdcMap != null) {
+      mergedMap.putAll(mdcMap);
+    }
+
+    return mergedMap;
   }
 }

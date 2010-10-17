@@ -147,7 +147,7 @@ public class DBAppenderH2Test  {
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_PROPERTY WHERE EVENT_ID=1");
-    Map<String, String> map = appender.mergePropertyMaps(event);
+    Map<String, String> map = DBHelper.mergePropertyMaps(event);
     int i = 0;
     while (rs.next()) {
       String key = rs.getString(2);
