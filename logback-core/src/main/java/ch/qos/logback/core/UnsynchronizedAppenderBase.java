@@ -40,11 +40,8 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
-  private ThreadLocal<Boolean> guard = new ThreadLocal<Boolean>() {
-    protected Boolean initialValue() {
-      return false;
-    }
-  };
+  private ThreadLocal<Boolean> guard = new ThreadLocal<Boolean>();
+
 
   /**
    * Appenders are named.
@@ -65,14 +62,14 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
   public void doAppend(E eventObject) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
-
+      
     // prevent re-entry.
-    if (guard.get()) {
+    if (Boolean.TRUE.equals(guard.get())) {
       return;
     }
 
     try {
-      guard.set(true);
+      guard.set(Boolean.TRUE);
 
       if (!this.started) {
         if (statusRepeatCount++ < ALLOWED_REPEATS) {
@@ -95,7 +92,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
         addError("Appender [" + name + "] failed to append.", e);
       }
     } finally {
-      guard.set(false);
+      guard.set(Boolean.FALSE);
     }
   }
 
@@ -136,7 +133,6 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     return fai.getCopyOfAttachedFiltersList();
   }
 
-  
   public FilterReply getFilterChainDecision(E event) {
     return fai.getFilterChainDecision(event);
   }
