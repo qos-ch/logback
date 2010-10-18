@@ -28,31 +28,32 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 public class LogbackMDCAdapterTest {
 
   final static String A_SUFFIX = "A_SUFFIX";
+  final static String B_SUFFIX = "B_SUFFIX";
 
   int diff = RandomUtil.getPositiveInt();
 
   /**
-   * Test that CopyOnInheritThreadLocal does not barf when the 
+   * Test that CopyOnInheritThreadLocal does not barf when the
    * MDC hashmap is null
-   * 
+   *
    * @throws InterruptedException
    */
   @Test
-  public void lbclassic77() throws InterruptedException {
+  public void lbclassic77Test() throws InterruptedException {
     LogbackMDCAdapter lma = new LogbackMDCAdapter();
 
     HashMap<String, String> parentHM = getHashMapFromMDCAdapter(lma);
     assertNull(parentHM);
-    
+
     ChildThreadForMDCAdapter childThread = new ChildThreadForMDCAdapter(lma);
     childThread.start();
     childThread.join();
     assertTrue(childThread.successul);
     assertNull(childThread.childHM);
   }
-  
+
   @Test
-  public void removeForNullKey() {
+  public void removeForNullKeyTest() {
     LogbackMDCAdapter lma = new LogbackMDCAdapter();
     lma.remove(null);
   }
@@ -62,7 +63,7 @@ public class LogbackMDCAdapterTest {
     LogbackMDCAdapter lma = new LogbackMDCAdapter();
     lma.remove("abcdlw0");
   }
-  
+
   class ChildThreadForMDCAdapter extends Thread {
 
     LogbackMDCAdapter logbackMDCAdapter;
@@ -72,7 +73,7 @@ public class LogbackMDCAdapterTest {
     ChildThreadForMDCAdapter(LogbackMDCAdapter logbackMDCAdapter) {
       this.logbackMDCAdapter = logbackMDCAdapter;
     }
-    
+
     @Override
     public void run() {
       childHM = getHashMapFromMDCAdapter(logbackMDCAdapter);
@@ -82,30 +83,43 @@ public class LogbackMDCAdapterTest {
   }
 
   // ================================================= 
+
   /**
    * Test that LogbackMDCAdapter copies its hashmap when a child
    * thread inherits it.
-   * 
+   *
    * @throws InterruptedException
    */
   @Test
-  public void copyOnInheritence() throws InterruptedException {
+  public void copyOnInheritenceTest() throws InterruptedException {
     String mdcKey = "x" + diff;
     String otherMDCKey = "o" + diff;
     MDC.put(mdcKey, mdcKey + A_SUFFIX);
 
-    HashMap<String, String> parentHM = getHashMapFromMDC();
 
     ChildThreadForMDC childThread = new ChildThreadForMDC(mdcKey, otherMDCKey);
     childThread.start();
+    MDC.put(mdcKey, mdcKey + B_SUFFIX);
     childThread.join();
 
     assertNull(MDC.get(otherMDCKey));
     assertTrue(childThread.successul);
+
+    HashMap<String, String> parentHM = getHashMapFromMDC();
     assertTrue(parentHM != childThread.childHM);
+
+    HashMap<String, String> parentHMWitness = new  HashMap<String, String>();
+    parentHMWitness.put(mdcKey, mdcKey + B_SUFFIX);
+    assertEquals(parentHMWitness, parentHM);
+
+    HashMap<String, String> childHMWitness = new  HashMap<String, String>();
+    childHMWitness.put(mdcKey, mdcKey + A_SUFFIX);
+    childHMWitness.put(otherMDCKey, otherMDCKey + A_SUFFIX);
+    assertEquals(childHMWitness, childThread.childHM);
+
   }
 
-   
+
   class ChildThreadForMDC extends Thread {
 
     String mdcKey;
@@ -120,24 +134,23 @@ public class LogbackMDCAdapterTest {
 
     @Override
     public void run() {
-      childHM = getHashMapFromMDC();
-
       MDC.put(otherMDCKey, otherMDCKey + A_SUFFIX);
       assertNotNull(MDC.get(mdcKey));
       assertEquals(mdcKey + A_SUFFIX, MDC.get(mdcKey));
       assertEquals(otherMDCKey + A_SUFFIX, MDC.get(otherMDCKey));
       successul = true;
+      childHM = getHashMapFromMDC();
     }
   }
 
   HashMap<String, String> getHashMapFromMDCAdapter(LogbackMDCAdapter lma) {
-    CopyOnInheritThreadLocal copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
+     InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
     return copyOnInheritThreadLocal.get();
   }
 
   HashMap<String, String> getHashMapFromMDC() {
     LogbackMDCAdapter lma = (LogbackMDCAdapter) MDC.getMDCAdapter();
-    CopyOnInheritThreadLocal copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
+     InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
     return copyOnInheritThreadLocal.get();
   }
 }
