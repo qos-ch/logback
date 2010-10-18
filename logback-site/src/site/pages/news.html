@@ -32,10 +32,19 @@
     <h3>xxxx, 2010 - Release of version 0.9.26</h3>
 
 
+    <p>Fixed <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-183">LBCLASSIC-183</a>
+    as reported by Anthony Whitford. Upon application restart, Tomcat
+    should no longer complain about ThreadLocal variables created
+    internally by logback.
+    </p>
+
     <p>When stopped, <code>RollingFileAppender</code> now calls
     <code>stop()</code> on its policy objects, fixing <a
     href="http://jira.qos.ch/browse/LBCORE-114">LBCORE-114</a>
     reported by Anders Wallgren.</p>
+
+
 
     <h3>October 13th, 2010 - Release of version 0.9.25</h3>
 

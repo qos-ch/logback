@@ -36,11 +36,11 @@
 		complex distributed applications.  Most real-world distributed
 		systems need to deal with multiple clients simultaneously.  In a
 		typical multithreaded implementation of such a system, different
-		threads will handle different clients. A possible but discouraged
-		approach to differentiate the logging output of one client from
-		another consists of instantiating a new and separate logger for
-		each client.  This technique promotes the proliferation of loggers
-		and considerably increases their management overhead.
+		threads will handle different clients. A possible but slightly
+		discouraged approach to differentiate the logging output of one
+		client from another consists of instantiating a new and separate
+		logger for each client.  This technique promotes the proliferation
+		of loggers and may increase their management overhead.
 		</p>
 		
     <script src="../templates/setup.js" type="text/javascript"></script>
@@ -93,6 +93,9 @@ public class MDC {
 		appropriately configured, will automatically include this
 		information in each log entry.
 		</p>
+
+    <p>Please note that MDC as implemented by logback-classic assumes
+    that values are placed into the MDC with moderate frequency. </p>
 
 		<p>
 			The next application named 
