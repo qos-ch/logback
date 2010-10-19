@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.status;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -29,31 +27,56 @@ import java.util.List;
 public class OnConsoleStatusListener extends ContextAwareBase implements StatusListener, LifeCycle {
 
 
-    boolean isStarted = false;
+  boolean isStarted = false;
+  long retrospective = 300;
 
-    private void print(Status status) {
-        StringBuilder sb = new StringBuilder();
-        StatusPrinter.buildStr(sb, "", status);
-        System.out.print(sb);
-    }
-    public void addStatusEvent(Status status) {
-        if (!isStarted)
-            return;
+  private void print(Status status) {
+    StringBuilder sb = new StringBuilder();
+    StatusPrinter.buildStr(sb, "", status);
+    System.out.print(sb);
+  }
+
+  public void addStatusEvent(Status status) {
+    if (!isStarted)
+      return;
+    print(status);
+  }
+
+  /**
+   * Print status messages retrospectively
+   */
+  private void retrospectivePrint() {
+    long now = System.currentTimeMillis();
+    StatusManager sm = context.getStatusManager();
+    List<Status> statusList = sm.getCopyOfStatusList();
+    for (Status status : statusList) {
+      long timestamp = status.getDate();
+      if (now - timestamp < retrospective) {
         print(status);
       }
-
-    public void start() {
-        isStarted = true;
-        StatusManager sm = context.getStatusManager();
-        List<Status>statusList = sm.getCopyOfStatusList();
-        for(sta)
     }
+  }
 
-    public void stop() {
-        isStarted = false;
+  public void start() {
+    isStarted = true;
+    if (retrospective > 0) {
+      retrospectivePrint();
     }
+  }
 
-    public boolean isStarted() {
-        return isStarted;
-    }
+  public void setRetrospective(long retrospective) {
+    this.retrospective = retrospective;
+  }
+
+  public long getRetrospective() {
+    return retrospective;
+  }
+
+  public void stop() {
+    isStarted = false;
+  }
+
+  public boolean isStarted() {
+    return isStarted;
+  }
 }

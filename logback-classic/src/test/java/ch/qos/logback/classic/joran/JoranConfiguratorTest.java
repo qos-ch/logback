@@ -21,6 +21,7 @@ import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
 
@@ -371,5 +372,17 @@ public class JoranConfiguratorTest {
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
   }
 
+  @Test
+  @Ignore
+  public void onConsoleRetro() throws JoranException, IOException, InterruptedException {
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+            + "/onConsoleRetro.xml";
+    configure(configFileAsStr);
+    System.out.println("xxxxxxxxxxxxx");
+    Thread.sleep(400);
+
+    loggerContext.reset();
+    configure(configFileAsStr);
+  }
 
 }
