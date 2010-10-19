@@ -27,8 +27,9 @@ import java.util.List;
 public class OnConsoleStatusListener extends ContextAwareBase implements StatusListener, LifeCycle {
 
 
+  static final long DEFAULT_RESTROSPECTIVE = 300;
   boolean isStarted = false;
-  long retrospective = 300;
+  long retrospective = DEFAULT_RESTROSPECTIVE;
 
   private void print(Status status) {
     StringBuilder sb = new StringBuilder();
