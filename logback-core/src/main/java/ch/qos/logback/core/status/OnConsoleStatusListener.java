@@ -13,20 +13,47 @@
  */
 package ch.qos.logback.core.status;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import java.util.List;
 
 /**
  * Print all new incoming status messages on the console.
- * 
- * @author Ceki G&uuml;lc&uuml;
  *
+ * @author Ceki G&uuml;lc&uuml;
  */
-public class OnConsoleStatusListener implements StatusListener {
+public class OnConsoleStatusListener extends ContextAwareBase implements StatusListener, LifeCycle {
 
 
-  public void addStatusEvent(Status status) {
-    StringBuilder sb = new StringBuilder();
-    StatusPrinter.buildStr(sb, "", status);
-    System.out.print(sb);
-  }
+    boolean isStarted = false;
+
+    private void print(Status status) {
+        StringBuilder sb = new StringBuilder();
+        StatusPrinter.buildStr(sb, "", status);
+        System.out.print(sb);
+    }
+    public void addStatusEvent(Status status) {
+        if (!isStarted)
+            return;
+        print(status);
+      }
+
+    public void start() {
+        isStarted = true;
+        StatusManager sm = context.getStatusManager();
+        List<Status>statusList = sm.getCopyOfStatusList();
+        for(sta)
+    }
+
+    public void stop() {
+        isStarted = false;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
 }
