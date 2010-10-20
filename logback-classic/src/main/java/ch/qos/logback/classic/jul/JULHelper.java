@@ -20,6 +20,8 @@ public class JULHelper {
 
   static public java.util.logging.Level asJULLevel(Level lbLevel) {
     switch (lbLevel.levelInt) {
+      case Level.ALL_INT:
+        return java.util.logging.Level.ALL;
       case Level.TRACE_INT:
         return java.util.logging.Level.FINEST;
       case Level.DEBUG_INT:
@@ -30,6 +32,8 @@ public class JULHelper {
         return java.util.logging.Level.WARNING;
       case Level.ERROR_INT:
         return java.util.logging.Level.SEVERE;
+      case Level.OFF_INT:
+        return java.util.logging.Level.OFF;
       default:
         throw new IllegalArgumentException("Unexpected level [" + lbLevel + "]");
     }
