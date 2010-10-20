@@ -130,6 +130,7 @@ table.bodyTable th {
 
 
 table.bodyTable td {
+  vertical-align: text-top;
   padding-left: 0.5ex;
   padding-bottom: 0.5ex;
 }

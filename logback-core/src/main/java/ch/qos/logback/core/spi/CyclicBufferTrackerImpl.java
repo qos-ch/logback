@@ -32,9 +32,10 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
   int bufferCount = 0;
 
   // 5 minutes
-  static final int DELAY_BETWEEN_CLEARING_STALE_BUFFERS = 300*CoreConstants.MILLIS_IN_ONE_SECOND ;
+  static final int DELAY_BETWEEN_CLEARING_STALE_BUFFERS = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
- 
+
+  boolean isStarted = false;
 
   private Map<String, Entry> map = new HashMap<String, Entry>();
 
@@ -52,7 +53,8 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     return bufferSize;
   }
 
-  public void setBufferSize(int size) {
+  public void setBufferSize(int bufferSize) {
+    this.bufferSize = bufferSize;
   }
 
   public int getMaxNumberOfBuffers() {
@@ -137,7 +139,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 
-   List<String> keyList() {
+  List<String> keyList() {
     List<String> result = new LinkedList<String>();
     Entry e = head;
     while (e != tail) {
@@ -146,6 +148,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     }
     return result;
   }
+
   private void rearrangeTailLinks(Entry e) {
     if (head == tail) {
       head = e;

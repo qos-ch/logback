@@ -29,7 +29,7 @@
     <hr width="80%" align="center" />
 
 
-    <h3>xxxx, 2010 - Release of version 0.9.26</h3>
+    <h3>20th of October, 2010 - Release of version 0.9.26</h3>
 
 
     <p>Fixed <a
@@ -39,12 +39,22 @@
     internally by logback.
     </p>
 
+    <p><code>SMPTAppender</code> now lets users to set a custom buffer
+    size for the outgoing messages. This fixes <a
+    href="http://jira.qos.ch/browse/LBCORE-170">LBCORE-170</a> as
+    requested by Peter Royal.
+    </p>
+
     <p>When stopped, <code>RollingFileAppender</code> now calls
     <code>stop()</code> on its policy objects, fixing <a
     href="http://jira.qos.ch/browse/LBCORE-114">LBCORE-114</a>
     reported by Anders Wallgren.</p>
 
-
+    <p>Added mapping for OFF and ALL levels in <code>JULHelper</code>
+    as requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-226">LBCLASSIC-226</a>
+    by Christian Brensing.
+    </p>
 
     <h3>October 13th, 2010 - Release of version 0.9.25</h3>
 

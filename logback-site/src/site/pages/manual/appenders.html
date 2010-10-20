@@ -2246,10 +2246,10 @@ Context ctx = new InitialContext(env);</pre>
           
           
           <p>In the absence of this option, <code>SMTPAppender</code>
-          is assigned an <a
+          is assigned an instance of <a
           href="../xref/ch/qos/logback/classic/boolex/OnErrorEvaluator.html">OnErrorEvaluator</a>
-          instance which triggers email transmission when it
-          encounters an event of level <em>ERROR</em> or higher.
+          which triggers email transmission when it encounters an
+          event of level <em>ERROR</em> or higher.
           </p>
 
           <!--
@@ -2270,28 +2270,59 @@ Context ctx = new InitialContext(env);</pre>
 
         </td>
       </tr>
+
       <tr class="alt">
+        <td  valign="top"><b><span class="option">CyclicBufferTracker</span></b>
+        </td>
+        <td><a href="../xref/ch/qos/logback/core/spi/CyclicBufferTracker.html"><code>CyclicBufferTracker</code></a>
+        </td>
+        <td>
+          <p>As the name indicates a <code>CyclicBufferTracker</code>
+          tracks cyclic buffers. It does so based on the keys returned
+          by the <span class="option">Discriminator</span> (see
+          above).
+          </p>
+          <p>If you don't specify a CyclicBufferTracker, an instance
+          of <a
+          href="../xref/ch/qos/logback/core/spi/CyclicBufferTrackerImpl.html">CyclicBufferTrackerImpl</a>
+          will be automatically created. By default, this instance
+          will keep events in a cyclic buffer of size 256. You may
+          change the size with the help of the <code>BufferSize</code>
+          option.</p>
+        </td>
+        
+      </tr>
+      <tr>
         <td><b><span class="option">Username</span></b></td>
         <td><code>String</code></td> <td>The username value to use
         during plain user/password authentication. By default, this
-        parameter is null.  </td> </tr> <tr > <td><b><span
-        class="option">Password</span></b></td>
-        <td><code>String</code></td> <td>The password value to use for
-        plain user/password authentication. By default, this parameter
-        is null.  </td> </tr> <tr class="alt"> <td><b><span
-        class="option">STARTTLS</span></b></td>
-        <td><code>boolean</code></td> <td>If this parameter is set to
-        true, then this appender will issue the STARTTLS command (if
-        the server supports it) causing the connection to switch to
-        SSL. Note that the connection is initially non-encrypted. By
-        default, this parameter is set to false.  </td> </tr> <tr >
+        parameter is null.  </td> 
+      </tr> 
+      <tr class="alt">
+        <td><b><span class="option">Password</span></b></td>
+        <td><code>String</code></td>
+        <td>The password value to use for plain user/password
+        authentication. By default, this parameter is null.  
+        </td>
+      </tr>
+      <tr> 
+        <td><b><span class="option">STARTTLS</span></b> </td>
+        <td><code>boolean</code></td> 
+        <td>If this parameter is set to true, then this appender
+        will issue the STARTTLS command (if the server supports it)
+        causing the connection to switch to SSL. Note that the
+        connection is initially non-encrypted. By default, this
+        parameter is set to false.
+        </td> 
+      </tr>
+      <tr class="alt">
         <td><b><span class="option">SSL</span></b></td>
         <td><code>boolean</code></td> <td>If this parameter is set to
         true, then this appender will open an SSL connection to the
         server. By default, this parameter is set to false.  </td>
-        </tr>
+      </tr>
 
-      <tr  class="alt">
+      <tr>
         <td><b><span class="option">CharsetEncoding</span></b></td>
         <td><code>String</code></td>
         <td>The outgoing email message will be encoded in the
@@ -2431,6 +2462,34 @@ Context ctx = new InitialContext(env);</pre>
     CSS would make the resulting output too voluminous,
     <code>HTMLLayout</code> does not use inline CSS.
     </p>
+
+    <h3><a name="cyclicBufferSize" href="#cyclicBufferSize">Custom buffer size</a></h3>
+
+    <p>By default, the outgoing message will contain the last 256
+    messages seen by <code>SMTPAppender</code>. If your heart so
+    desires, you may set a different buffer size as shown in the next example.
+    </p>
+
+   <p class="example">Example:  <code>SMTPAppender</code> configuration with a custom bufer size (logback-examples/src/main/java/chapters/appenders/mail/customBufferSize.xml)</p>	
+    <pre class="prettyprint source">&lt;configuration>   
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
+    &lt;To>${to}&lt;/To>
+    &lt;From>${from}&lt;/From>
+    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;Layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+
+    <b>&lt;CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl"></b>
+      <b>&lt;!-- send just one log entry per email --></b>
+      <b>&lt;BufferSize>1&lt;/BufferSize></b>
+    <b>&lt;/CyclicBufferTracker></b>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="EMAIL" />
+  &lt;/root>  
+&lt;/configuration>    </pre>
+    
 
     <h3>Triggering event</h3>
 

@@ -43,8 +43,6 @@ public class DilutedSMTPAppenderTest {
   public void setUp() throws Exception {
     LoggerContext lc = new LoggerContext();
     appender = new SMTPAppender();
-    cbTracker = appender.getCyclicBufferTracker();
-    cb = cbTracker.get("", 0);
     appender.setContext(lc);
     appender.setName("smtp");
     appender.setFrom("user@host.dom");
@@ -53,6 +51,9 @@ public class DilutedSMTPAppenderTest {
     appender.setSubject("logging report");
     appender.addTo("sebastien.nospam@qos.ch");
     appender.start();
+    cbTracker = appender.getCyclicBufferTracker();
+    cb = cbTracker.get("", 0);
+
   }
 
   private static Layout<ILoggingEvent> buildLayout(LoggerContext lc) {

@@ -87,7 +87,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   protected EventEvaluator<E> eventEvaluator;
 
   protected Discriminator<E> discriminator = new DefaultDiscriminator<E>();
-  protected CyclicBufferTracker<E> cbTracker = new CyclicBufferTrackerImpl<E>();
+  protected CyclicBufferTracker<E> cbTracker;
 
   private int errorCount = 0;
 
@@ -105,6 +105,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * Start the appender
    */
   public void start() {
+
+    if(cbTracker == null) {
+      cbTracker = new CyclicBufferTrackerImpl<E>();
+    }
+
     Properties props = new Properties(OptionHelper.getSystemProperties());
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);

@@ -1,0 +1,22 @@
+<configuration>
+
+  <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <SMTPHost>localhost</SMTPHost>
+    <SMTPPort>${port}</SMTPPort>
+    <To>nospam@qos.ch</To>
+    <From>user@host.dom</From>
+    <Subject>%logger - %m</Subject>
+
+    <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
+      <BufferSize>1</BufferSize>
+    </CyclicBufferTracker>
+    
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%message</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="EMAIL" />
+  </root>
+</configuration>
