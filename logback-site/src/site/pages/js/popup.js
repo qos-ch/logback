@@ -96,7 +96,7 @@ $(document).ready(function(){
 
 	$("#announce").click(function(){
     $.cookies.set("SURVEY", "YES", {expiresAt:  getDateInSixMonths()});
-    window.location='http://ceki.questionform.com/public/logbackDSL';
+    window.location='http://www.qos.ch/mailman/listinfo/announce';
 	});
 });
 
