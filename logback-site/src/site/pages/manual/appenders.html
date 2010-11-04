@@ -2232,7 +2232,8 @@ Context ctx = new InitialContext(env);</pre>
         </td>
       </tr>
       <tr >
-        <td><b><span class="option">Evaluator</span></b></td>
+        <td><b><span class="option"><a name="smtpAppender_Evaluator"
+        href="#smtpAppender_Evaluator">Evaluator</a></span></b></td>
         <td><code><a
         href="../xref/ch/qos/logback/classic/boolex/IEvaluator.html">IEvaluator</a></code></td>
         <td>
@@ -2265,7 +2266,9 @@ Context ctx = new InitialContext(env);</pre>
           (discussed below) and a powerful evaluator called <a
           href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html"><code>JaninoEventEvaluator</code></a>,
           discussed in <a href="filters.html#evalutatorFilter">another
-          chapter</a>.
+          chapter</a>. The more recent versions of logback ship with
+          an even more powerful evaluator called <a
+          href="filters.html#GEventEvaluator"><code>GEventEvaluator</code></a>.
           </p>
 
         </td>
@@ -2644,7 +2647,60 @@ logger.error(<b>notifyAdminMarker</b>,
   chapters.appenders.mail.Marked_EMail src/main/java/chapters/appenders/mail/mailWithMarker.xml</pre>
 
 
-    
+    <p>Note that instead of using the marker-centric
+    OnMarkerEvaluator, we could use the much more generic <a
+    href="filters.html#JaninoEventEvaluator"><code>JaninoEventEvaluator</code></a>
+    or its even more powerful cousin <a
+    href="filters.html#GEventEvaluator"><code>GEventEvaluator</code></a>.
+    </p>
+
+    <p>The following configuration file uses JaninoEventEvaluator
+    instead of OnMarkerEvaluator but is otherwise equivalent to the
+    previous configuration file.
+    </p>
+
+    <p class="example">Example: <code>SMTPAppender</code> with 
+   <code>JaninoEventEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker_Janino.xml)</p>
+
+   <span class="asGroovy" onclick="return asGroovy('mailWithMarker_Janino');">View as .groovy</span>	
+    <pre id="mailWithMarker_Janino" class="prettyprint source">&lt;configuration>
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    &lt;evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+      &lt;expression>
+        (marker != null) &amp;&amp;
+        (marker.contains("NOTIFY_ADMIN") || marker.contains("TRANSACTION_FAILURE"))
+      &lt;/expression>
+    &lt;/evaluator>    
+    ... same as above
+  &lt;/appender>
+&lt;/configuration></pre>
+
+    <p>Here is the equivalent evaluator using <a
+    href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
+
+    <p class="example">Example: the same with 
+   <code>GEventEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker_GEvent.xml)</p>
+   <span class="asGroovy" onclick="return asGroovy('mailWithMarker_GEventEvaluator');">View as .groovy</span>	
+
+   <pre id="mailWithMarker_GEventEvaluator" class="prettyprint source">&lt;configuration>
+  &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator">
+      &lt;expression>
+        e.marker?.contains("NOTIFY_ADMIN") || e.marker?.contains("TRANSACTION_FAILURE")
+      &lt;/expression>
+    &lt;/evaluator>    
+    ... same as above
+  &lt;/appender>
+&lt;/configuration></pre>
+
+    <p>Note that since the event may lack a marker, the value of
+    e.marker can be null. Hence the use of Groovy's <a
+    href="http://groovy.codehaus.org/Null+Object+Pattern">safe
+    derefencing opeator</a>, that is the .? operator.
+    </p>
+
+
+
     <h3><a name="smtpAuthentication"
     href="#smtpAuthentication">Authentication/STARTTLS/SSL</a></h3>
 

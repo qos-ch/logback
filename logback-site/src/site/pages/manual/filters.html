@@ -272,15 +272,15 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     is a concrete <a
     href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html"><code>EventEvaluator</code></a>
     implementation taking artibtrary Groovy language boolean
-    expressions as the evaluation criteria. It admits an arbitrary
-    boolean expression written in Groovy. We refer such groovy
-    language boolean expressions as "groovy evaulation
+    expressions as the evaluation criteria.  We refer such groovy
+    language boolean expressions as "groovy evalation
     expressions". Groovy evaluation expressions enable hereto
     unprecedented flexibility in event
     filtering. <code>GEventEvaluator</code> requires the Groovy
     runtime. Please see the <a
     href="../setup.html#gEventEvaluator">corresponding section</a> of
-    the setup document.
+    the setup document on adding the Groovy runtinme to your class
+    path.
     </p>
 
     <p>Evaluation expressions are compiled on-the-fly during the
@@ -292,14 +292,16 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>The evaluation expression acts on the current logging event,
     logback automatically inserts the current logging event of type <a
-    href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent.</a>
-    as a variable called 'event' and its shorthand 'e'. The variables
-    TRACE, DEBUG, INFO, WARN and ERROR are also exported into the
-    scope of the expression. Thus, "event.level == DEBUG" is a valid
-    groovy expression which will return <code>true</code> only if the
-    current logging event's level is identical to DEBUG. For other
-    comparison operators, the level field should be converter to
-    integer with the <code>toInt()</code> operator.
+    href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>
+    as a variable referred to as '<em>event</em>' as well as its
+    shorthand referred to as '<em>e</em>'. The variables TRACE, DEBUG,
+    INFO, WARN and ERROR are also exported into the scope of the
+    expression. Thus, "event.level == DEBUG" and "e.level == DEBUG"
+    are equvalent and valid groovy expressions which will return
+    <code>true</code> only if the current logging event's level is
+    identical to DEBUG. For other comparison operators on levels, the
+    level field should be converted to integer with the
+    <code>toInt()</code> operator.
     </p>
 
     <p>Here is a more complete example.</p>

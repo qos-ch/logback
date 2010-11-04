@@ -4,10 +4,10 @@
   <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />  
 
   <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-      <marker>NOTIFY_ADMIN</marker>
-      <!-- you specify add as many markers as you want -->
-      <marker>ANOTHER_MARKER</marker>
+    <evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator">
+      <expression>
+        e.marker?.contains("NOTIFY_ADMIN") || e.marker?.contains("TRANSACTION_FAILURE")
+      </expression>
     </evaluator>
     <SMTPHost>${smtpHost}</SMTPHost>
     <To>${to}</To>
