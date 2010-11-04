@@ -81,6 +81,13 @@ public class JoranConfiguratorTest {
   }
 
   @Test
+  public void additivity() throws JoranException {
+    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "additivity.xml");
+    Logger logger = loggerContext.getLogger("additivityTest");
+    assertFalse(logger.isAdditive());
+   }
+
+  @Test
   public void rootLoggerLevelSettingBySystemProperty() throws JoranException {
     String propertyName = "logback.level";
 
@@ -99,7 +106,6 @@ public class JoranConfiguratorTest {
   @Test
   public void loggerLevelSettingBySystemProperty() throws JoranException {
     String propertyName = "logback.level";
-
     System.setProperty(propertyName, "DEBUG");
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX
             + "loggerLevelByProperty.xml");

@@ -67,9 +67,9 @@ public class LoggerAction extends Action {
       }
     }
 
-    if (!OptionHelper.isEmpty(ActionConst.ADDITIVITY_ATTRIBUTE)) {
-      boolean additive = OptionHelper.toBoolean(attributes
-          .getValue(ActionConst.ADDITIVITY_ATTRIBUTE), true);
+    String additivityStr =  ec.subst(attributes.getValue(ActionConst.ADDITIVITY_ATTRIBUTE));
+    if (!OptionHelper.isEmpty(additivityStr)) {
+      boolean additive = OptionHelper.toBoolean(additivityStr, true);
       addInfo("Setting additivity of logger [" + loggerName + "] to "
           + additive);
       logger.setAdditive(additive);
