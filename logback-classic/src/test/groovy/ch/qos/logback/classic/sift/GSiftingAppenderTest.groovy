@@ -31,6 +31,7 @@ import ch.qos.logback.core.status.StatusChecker
 import ch.qos.logback.core.status.Status
 import static junit.framework.Assert.assertNull
 import org.junit.After
+import static ch.qos.logback.classic.ClassicTestConstants.OUTPUT_DIR_PREFIX;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -95,14 +96,14 @@ class GSiftingAppenderTest {
     FileAppender unknownAppender = tracker.get("unknown", System.currentTimeMillis())
     assertNotNull(unknownAppender)
     assertEquals("FILE-unknown", unknownAppender.name)
-    assertEquals("test-unknown.log", unknownAppender.file)
+    assertEquals(OUTPUT_DIR_PREFIX+"test-unknown.log", unknownAppender.file)
 
     MDC.put("userid", "a");
     logger.debug("y");
     FileAppender aAppender = tracker.get("a", System.currentTimeMillis())
     assertNotNull(aAppender)
     assertEquals("FILE-a", aAppender.name)
-    assertEquals("test-a.log", aAppender.file)
+    assertEquals(OUTPUT_DIR_PREFIX+"test-a.log", aAppender.file)
     assertEquals("a - %msg%n", aAppender.encoder.pattern)
   }
 

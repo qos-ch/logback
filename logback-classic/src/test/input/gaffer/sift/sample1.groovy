@@ -8,8 +8,7 @@ import static ch.qos.logback.classic.Level.DEBUG
 import ch.qos.logback.classic.sift.GSiftingAppender
 import ch.qos.logback.classic.sift.MDCBasedDiscriminator
 import ch.qos.logback.core.FileAppender
-import ch.qos.logback.core.read.ListAppender
-
+import static ch.qos.logback.classic.ClassicTestConstants.OUTPUT_DIR_PREFIX;
 
 appender("SIFT", GSiftingAppender) {
   discriminator(MDCBasedDiscriminator) {
@@ -18,7 +17,7 @@ appender("SIFT", GSiftingAppender) {
   }
   sift {
     appender("FILE-${userid}", FileAppender) {
-      file = "test-${userid}.log"
+      file = OUTPUT_DIR_PREFIX+"test-${userid}.log"
       append = false
       encoder(PatternLayoutEncoder) {
         println "in encoder userid=${userid}"
