@@ -16,7 +16,7 @@ package ch.qos.logback.classic.gaffer
 import ch.qos.logback.core.spi.ContextAwareBase
 import ch.qos.logback.core.spi.LifeCycle
 import ch.qos.logback.core.spi.ContextAware
-import java.beans.Introspector
+import ch.qos.logback.core.joran.spi.NoAutoStartUtil
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -64,7 +64,7 @@ class ComponentDelegate extends ContextAwareBase {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
       }
-      if (subComponent instanceof LifeCycle) {
+      if (subComponent instanceof LifeCycle && NoAutoStartUtil.notMarkedWithNoAutoStart(subComponent)) {
         subComponent.start();
       }
       PropertyUtil.attach(nestingType, component, subComponent, name)
