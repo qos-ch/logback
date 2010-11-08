@@ -6,7 +6,8 @@
     <SMTPHost>${smtpHost}</SMTPHost>
     <To>${to}</To>
     <From>${from}</From>
-    <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+    <Subject>%logger{20} - %m</Subject>
+    <Layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   </appender>
 
   <root level="debug">

@@ -52,8 +52,8 @@ public class Marked_EMail {
       }
     }
 
-    Marker notifyAdminMarker = MarkerFactory.getMarker("NOTIFY_ADMIN");
-    logger.error(notifyAdminMarker,
+    Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
+    logger.error(notifyAdmin,
         "This is a serious an error requiring the admin's attention",
         new Exception("Just testing"));
 

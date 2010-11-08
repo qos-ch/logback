@@ -11,6 +11,7 @@
     <SMTPHost>${smtpHost}</SMTPHost>
     <To>${to}</To>
     <From>${from}</From>
+    <subject>%logger{20} - %m</subject>
     <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   </appender>
 

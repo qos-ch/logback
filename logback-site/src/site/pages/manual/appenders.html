@@ -2479,7 +2479,7 @@ Context ctx = new InitialContext(env);</pre>
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>
     &lt;From>${from}&lt;/From>
-    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;Subject>%logger{20} - %m&lt;/Subject>
     &lt;Layout class="ch.qos.logback.classic.html.HTMLLayout"/>
 
     <b>&lt;CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl"></b>
@@ -2579,6 +2579,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
     &lt;To>${to}&lt;/To>
     &lt;From>${from}&lt;/From>
+    &lt;Subject>%logger{20} - %m&lt;/Subject>
+
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 
@@ -2592,30 +2594,31 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     based triggering</a> 
     </h3>
 
-    <p>Although reasonable, a policy whereby event's of level ERROR
-    trigger an outgoing email may result in too many emails,
-    cluttering the targeted user's mailbox. Logback ships with another
-    triggering policy, called <a
+    <p>Although reasonable the default triggering policy whereby every
+    event of level ERROR triggers an outgoing email may result in too
+    many emails, cluttering the targeted user's mailbox. Logback ships
+    with another triggering policy, called <a
     href="../xref/ch/qos/logback/classic/boolex/OnMarkerEvaluator.html">OnMarkerEvaluator</a>. It
-    is based on markers allowing for a very effective way for trigger
-    control. In essence, emails are triggered only if the event is
-    marked with a user-specified marker. An example should make the
-    point clearer.
+    is based on markers. In essence, emails are triggered only if the
+    event is marked with a user-specified marker. The next example
+    should make the point clearer.
     </p>
 
-    <p>The <a href="../xref/chapters/appenders/mail/Marked_EMail.html">Marked_EMail</a> application contains several logging
-    statements some of which are of level ERROR. One noteworthy
-    statement contains  a marker. Here is the relevant code.
+    <p>The <a
+    href="../xref/chapters/appenders/mail/Marked_EMail.html">Marked_EMail</a>
+    application contains several logging statements some of which are
+    of level ERROR. One noteworthy statement contains a marker. Here
+    is the relevant code.
     </p>
 
-    <pre class="prettyprint source">Marker notifyAdminMarker = MarkerFactory.getMarker("NOTIFY_ADMIN");
-logger.error(<b>notifyAdminMarker</b>,
+    <pre class="prettyprint source">Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
+logger.error(<b>notifyAdmin</b>,
   "This is a serious an error requiring the admin's attention",
    new Exception("Just testing"));</pre>
 
-   <p>The next configuration file will cause outgoing emails to be
-   sent only in presence of events bearing the NOTIFY_ADMIN or the
-   TRANSACTION_FAILURE marker.
+   <p>The next configuration file will trigger outgoing emails only in
+   presence of events bearing the NOTIFY_ADMIN or the
+   TRANSACTION_FAILURE markers.
    </p>
 
    <p class="example">Example: <code>SMTPAppender</code> with 
@@ -2647,15 +2650,19 @@ logger.error(<b>notifyAdminMarker</b>,
   chapters.appenders.mail.Marked_EMail src/main/java/chapters/appenders/mail/mailWithMarker.xml</pre>
 
 
+  <h4><a name="marker_JaninoEventEvaluator"
+    href="#marker_GEventEvaluator">Marker-based triggering with
+    JaninoEventEvaluator</a></h4>
+
     <p>Note that instead of using the marker-centric
-    OnMarkerEvaluator, we could use the much more generic <a
+    <code>OnMarkerEvaluator</code>, we could use the much more generic
+    <a
     href="filters.html#JaninoEventEvaluator"><code>JaninoEventEvaluator</code></a>
     or its even more powerful cousin <a
     href="filters.html#GEventEvaluator"><code>GEventEvaluator</code></a>.
-    </p>
-
-    <p>The following configuration file uses JaninoEventEvaluator
-    instead of OnMarkerEvaluator but is otherwise equivalent to the
+    For example, the following configuration file uses
+    <code>JaninoEventEvaluator</code> instead of
+    <code>OnMarkerEvaluator</code> but is otherwise equivalent to the
     previous configuration file.
     </p>
 
@@ -2675,6 +2682,9 @@ logger.error(<b>notifyAdminMarker</b>,
   &lt;/appender>
 &lt;/configuration></pre>
 
+    <h4><a name="marker_GEventEvaluator"
+    href="#marker_GEventEvaluator">Marker-based triggering with
+    GEventEvaluator</a></h4>
     <p>Here is the equivalent evaluator using <a
     href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
 

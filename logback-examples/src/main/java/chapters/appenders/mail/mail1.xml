@@ -5,7 +5,7 @@
     <To>EMAIL-DESTINATION</To>
     <To>ANOTHER_EMAIL_DESTINATION</To> <!-- additional destinations are possible -->
     <From>SENDER-EMAIL</From>
-    <Subject>TESTING: %logger{20} - %m</Subject>
+    <Subject>%logger{20} - %m</Subject>
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%date %-5level %logger - %message%n</Pattern>
     </layout>	    
