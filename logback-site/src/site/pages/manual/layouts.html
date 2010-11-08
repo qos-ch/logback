@@ -930,13 +930,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
           in reality [wombat.jar:1.7].
           </p>
           
-          <p>User reports (see <a
-          href="http://jira.qos.ch/browse/LBCLASSIC-212">LBCLASSIC-212</a>)
-          indicate that Netbeans chokes on packaging information. If
-          you are a Netbeans user, then you should disable packaging
-          information in stack traces by adding "%ex" at the end of of
-          your conversion pattern. For example, "%d %logger - %m%n"
-          should be rewritten as "%d %logger - %m%n<b>%ex</b>"
+          <p><a
+          href="http://jira.qos.ch/browse/LBCLASSIC-212">Feedback from
+          users</a> indicates that Netbeans chokes on packaging
+          information. If you are a Netbeans user, then you should
+          disable packaging information in stack traces by adding
+          "%ex" at the end of of your conversion pattern. For example,
+          "%d %logger - %m%n" should be rewritten as "%d %logger -
+          %m%n<b>%ex</b>"
           </p>
         </td>
 
