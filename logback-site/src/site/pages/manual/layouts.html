@@ -797,13 +797,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 			</tr>
 			<tr>
 				<td align="center">
-					<b>ex</b>{<em>length</em>} <br /> 
-          	<b>exception</b>{<em>length</em>} <br /> 
-					<b>throwable</b>{<em>length</em>} <br />
+					<b>ex</b>{<em>depth</em>} <br /> 
+          	<b>exception</b>{<em>depth</em>} <br /> 
+					<b>throwable</b>{<em>depth</em>} <br />
           <br />
-					<b>ex</b>{length, evaluator-1, ..., evaluator-n} <br />
-					<b>exception</b>{length, evaluator-1, ..., evaluator-n} <br />
-					<b>throwable</b>{length, evaluator-1, ..., evaluator-n}
+					<b>ex</b>{depth, evaluator-1, ..., evaluator-n} <br />
+					<b>exception</b>{depth, evaluator-1, ..., evaluator-n} <br />
+					<b>throwable</b>{depth, evaluator-1, ..., evaluator-n}
 				</td>
 
 				<td>
@@ -869,13 +869,13 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
       <tr class="alt">
 				<td align="center">
           <a name="xThrowable" href="#xThrowable">
-					<b>xEx</b>{<em>length</em>} <br /> 
-          <b>xException</b>{<em>length</em>} <br /> 
-					<b>xThrowable</b>{<em>length</em>} <br />
+					<b>xEx</b>{<em>depth</em>} <br /> 
+          <b>xException</b>{<em>depth</em>} <br /> 
+					<b>xThrowable</b>{<em>depth</em>} <br />
           <br />
-					<b>xEx</b>{length, evaluator-1, ..., evaluator-n} <br />
-					<b>xException</b>{length, evaluator-1, ..., evaluator-n} <br />
-					<b>xThrowable</b>{length, evaluator-1, ..., evaluator-n}
+					<b>xEx</b>{depth, evaluator-1, ..., evaluator-n} <br />
+					<b>xException</b>{depth, evaluator-1, ..., evaluator-n} <br />
+					<b>xThrowable</b>{depth, evaluator-1, ..., evaluator-n}
           </a>
 				</td>
 
@@ -930,6 +930,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
           in reality [wombat.jar:1.7].
           </p>
           
+          <p>User reports (see <a
+          href="http://jira.qos.ch/browse/LBCLASSIC-212">LBCLASSIC-212</a>)
+          indicate that Netbeans chokes on packaging information. If
+          you are a Netbeans user, then you should disable packaging
+          information in stack traces by adding "%ex" at the end of of
+          your conversion pattern. For example, "%d %logger - %m%n"
+          should be rewritten as "%d %logger - %m%n<b>%ex</b>"
+          </p>
         </td>
 
       </tr>
