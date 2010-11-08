@@ -2181,8 +2181,14 @@ Context ctx = new InitialContext(env);</pre>
       <tr class="alt">
         <td><b><span class="option">From</span></b></td>
         <td><code>String</code></td>
-        <td>The stated originator of the email messages sent by
-        <code>SMTPAppender</code>.
+        <td>The originator of the email messages sent by
+        <code>SMTPAppender</code> in the <a
+        href="http://en.wikipedia.org/wiki/Email_address">usual email
+        address format</a>. If you wish to include the sender's name,
+        then use the format
+        "Adam&nbsp;Smith&nbsp;&amp;lt;smith@moral.org&amp;gt;" so that
+        the message appears as originating from
+        "Adam&nbsp;Smith&nbsp;&lt;smith@moral.org&gt;".
         </td>
       </tr>
       <tr>
