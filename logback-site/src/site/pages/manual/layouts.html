@@ -1007,12 +1007,36 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 		</table>
 
+
+    <h4>% character has special meaning</h4>
+
     <p>Given that in the context of conversion patterns the percent
     sign carries special meaning, in order to include it as a literal,
     it needs to be escaped with a backslash, e.g. "%d %p <b>\%</b>
     %m%n".
     </p>
 
+    <h4>Restrictions on literals immediately following conversion
+    words</h4>
+
+    <p>In most cases literals naturally contain spaces or other
+    delimiting characters so that they are not confused with
+    conversion words. For example, the pattern
+    "%level&nbsp;[%thread]&nbsp;-&nbsp;%message%n" contains the string
+    literals <code>"&nbsp;["</code> and
+    <code>"]&nbsp;-&nbsp;"</code>. However, if a character which can
+    be part of a java identifier immediately follows a conversion
+    word, logback's pattern parser will be fooled into thinking that
+    the literal is part of the conversion word. For example, the
+    pattern "%date<b>%nHello</b>" will be interpreted as two
+    conversion words %date and %nHello and since %nHello is not a
+    known conversion word, logback will output %PARSER_ERROR[nHello]
+    for %nHello. If you wish the string literal "Hello" to immediately
+    separate %n and Hello, pass an empty argument list to %n. For
+    example, "%date<b>%n{}</b>Hello" will be interpreted as %date
+    followed by %n followed by the literal "Hello".
+
+    </p>
 
     <h2><a name="formatModifiers" href="#formatModifiers">Format
     modifiers</a></h2>
@@ -1181,6 +1205,29 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     "<code>%.-1level</code>".
     </p>
     
+		<h2><a name="cwOptions" href="#cwOptions">Conversion word
+		options</a></h2>
+
+		<p>
+			A conversion specifier can be followed by options. The are
+			always declared between braces. We have already seen some of the
+			possibilities offered by options, for instance in conjunction
+			with the MDC conversion specifier, as in:
+			<em>%mdc{someKey}</em>.
+		</p>
+
+    <p>A conversion specifier might have more than one option. For
+    example, a conversion specifier that makes use of evaluators,
+    which will be covered soon, may add evaluator names to the option
+    list, as shown below:</p>
+
+		<pre class="prettyprint source">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
+      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
+        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
+    &lt;/layout>
+  &lt;/appender></pre>
     
 
 		<h2><a name="Parentheses" href="#Parentheses">Parentheses are
@@ -1239,30 +1286,6 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     interpreted as literals.
     </p>
 
-		<h3><a name="cwOptions" href="#cwOptions">Options</a></h3>
-
-		<p>
-			A conversion specifier can be followed by options. The are
-			always declared between braces. We have already seen some of the
-			possibilities offered by options, for instance in conjunction
-			with the MDC conversion specifier, as in:
-			<em>%mdc{someKey}</em>.
-		</p>
-
-    <p>A conversion specifier might have more than one option. For
-    example, a conversion specifier that makes use of evaluators,
-    which will be covered soon, may add evaluator names to the option
-    list, as shown below:</p>
-
-		<pre class="prettyprint source">
-  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
-      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
-    &lt;/layout>
-  &lt;/appender></pre>
-
-		
 		<h2><a name="Evaluators" href="#Evaluators">Evaluators</a></h2>
 
 		<p>As mentioned above, option lists come in handy when a

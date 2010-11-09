@@ -1278,10 +1278,11 @@ public class MyApp3 {
   sequence. For example, if <em>java.home.dir</em> system property is
   set to <em>/home/xyz</em>, then every occurrence of the sequence
   <em>${java.home.dir}</em> will be interpreted as <em>/home/xyz</em>.
-  As it often comes in handy, the variable ${HOSTNAME} is
-  automatically defined.</p>
+  As they often come in handy, the ${HOSTNAME} and ${CONTEXT_NAME}
+  variables are automatically defined.</p>
 
-  <h4>Properties are inserted into the logger context</h4>
+  <h4><a name="propsPartOfContext"
+  href="#propsPartOfContext">Properties are inserted into the context</a></h4>
 
   <p>Note that the values defined via <code>&lt;property></code>
   element are actually inserted into the logger context. In other
@@ -1465,6 +1466,12 @@ fileName=myApp.log
   defined automatically during configuration.</p>
 
   <!-- ============================================================== -->
+  <h3><a name="context_name" href="#context_name">CONTEXT_NAME property</a></h3>
+
+  <p>When a context is asked for a property named
+  <code>CONTEXT_NAME</code> it returns with its own name.</p>
+
+  <!-- ============================================================== -->
   
   <h3><a name="timestamp" href="#timestamp">Setting a timestamp</a></h3>
 
@@ -1622,7 +1629,7 @@ fileName=myApp.log
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
-      &lt;pattern>%d %contextName %level %msg %logger{50}%n&lt;/pattern>
+      &lt;pattern>%d ${CONTEXT_NAME} %level %msg %logger{50}%n&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
 

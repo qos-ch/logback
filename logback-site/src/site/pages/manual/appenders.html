@@ -1466,8 +1466,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		<p>The remote server is identified by the <span
-		class="option">RemoteHost</span> and <span
-		class="option">Port</span> properties.
+		class="option">remoteHost</span> and <span
+		class="option">port</span> properties.
 		<code>SocketAppender</code> properties are listed in the following
 		table.
 		</p>
@@ -1479,18 +1479,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			<th>Description</th>
       </tr>
       <tr class="b">
-        <td><b><span class="option">IncludeCallerData</span></b></td>
+        <td><b><span class="option">includeCallerData</span></b></td>
         <td><code>boolean</code></td>
         <td>
           <p>
-            The <span class="option">IncludeCallerData</span> option takes a boolean value. 
+            The <span class="option">includeCallerData</span> option takes a boolean value. 
             If true, the caller data will be available to the remote host. 
             By default no caller data is sent to the server.
           </p>
         </td>
       </tr>
       <tr class="a">
-        <td><b><span class="option">Port</span></b></td>
+        <td><b><span class="option">port</span></b></td>
         <td><code>int</code></td>
         <td>
           <p>
@@ -1499,10 +1499,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>	
       <tr class="b">
-        <td><b><span class="option">ReconnectionDelay</span></b></td>
+        <td><b><span class="option">reconnectionDelay</span></b></td>
         <td><code>int</code></td>
         <td>
-          The <span class="option">ReconnectionDelay</span> option takes a 
+          The <span class="option">reconnectionDelay</span> option takes a 
           positive integer representing the number of milliseconds to wait between 
           each failed connection attempt to the server. 
           The default value of this option is 30'000 which corresponds to 30 seconds. 
@@ -1512,7 +1512,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr class="a">
-        <td><b><span class="option">RemoteHost</span></b></td>
+        <td><b><span class="option">remoteHost</span></b></td>
         <td><code>String</code></td>
         <td>
           The host name of the server.
@@ -1587,10 +1587,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 <pre id="client1" class="prettyprint source">&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
-    &lt;RemoteHost>${host}&lt;/RemoteHost>
-    &lt;Port>${port}&lt;/Port>
-    &lt;ReconnectionDelay>10000&lt;/ReconnectionDelay>
-    &lt;IncludeCallerData>${includeCallerData}&lt;/IncludeCallerData>
+    &lt;remoteHost>${host}&lt;/remoteHost>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+    &lt;includeCallerData>${includeCallerData}&lt;/includeCallerData>
   &lt;/appender>
 
   &lt;root level="DEBUG">
@@ -1602,8 +1602,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 	
 		<p>
 			Note that in the above configuration scripts the values for the 
-			<span class="option">RemoteHost</span>, <span class="option">Port</span> and
-			<span class="option">IncludeCallerData</span> properties
+			<span class="option">remoteHost</span>, <span class="option">port</span> and
+			<span class="option">includeCallerData</span> properties
 			are not given directly but as substituted variable keys. The values for the variables 
 			can be specified as system properties: 
 		</p>
@@ -1640,502 +1640,22 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <p class="source">2006-11-06 17:37:30,968 DEBUG [Thread-0] [?:?] chapters.appenders.socket.SocketClient2 - Hi</p>
 
-		<p>
-			The outcome can be easily changed by instructing the <code>SocketAppender</code> 
-			to include caller data by setting the <span class="option">IncludeCallerData</span> 
-			option to true. Using the following command will do the trick:
+		<p>The outcome can be easily changed by instructing the
+		<code>SocketAppender</code> to include caller data by setting the
+		<span class="option">includeCallerData</span> option to
+		true. Using the following command will do the trick:
 		</p>
 
-<div class="source"><pre>java -Dhost=localhost -Dport=6000 -DincludeCallerData=true \
-  chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/client1.xml
-</pre></div>
+   <pre class="source">java -Dhost=localhost -Dport=6000 -DincludeCallerData=true \
+  chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/client1.xml</pre>
 
-		<p>
-			As deserialized events can be handled in the same way as locally 
-			generated events, they even can be sent to a second server for further treatment. 
-			As an exercise, you may wish to setup two servers where the first server 
-			tunnels the events it receives from its clients to a second server.
+		<p>As deserialized events can be handled in the same way as
+		locally generated events, they even can be sent to a second server
+		for further treatment.  As an exercise, you may wish to setup two
+		servers where the first server tunnels the events it receives from
+		its clients to a second server.
 		</p>
 		
-		<a name="JMSAppenderBase"></a>
-		<h3>JMSAppenderBase</h3>
-		
-		<p>
-		 The <a href="../xref/ch/qos/logback/core/net/JMSAppenderBase.html">
-		 <code>JMSAppenderBase</code></a> subclasses conceptually accomplish
-		 the same task as the <code>SocketAppender</code> but as the name 
-		 suggests it is based on the JMS API instead of TCP sockets. 
-		 JMS or the Java Message Service API 
-		 provides an abstraction for Message-Oriented Middleware (MOM) products. 
-		 One of the key architectural concepts in JMS is the decoupling of message 
-		 producers and message consumers. Senders do not have to wait for receivers 
-		 to handle messages and conversely the receiver consumes messages as they 
-		 become available; messages are said to be delivered asynchronously. Just as 
-		 importantly, consumers as well as producers can be added or removed at will 
-		 to a JMS channel. The set of the message producers and message consumers can 
-		 vary independently and transparently over time, with both sets oblivious 
-		 to each other.
-		</p>
-		
-		<p>The JMS specification provides for two types of messaging
-		models, publish-and-subscribe and point-to-point queueing. Logback
-		supports the former model with <code>JMSTopicAppender</code> and
-		the latter with <code>JMSQueueAppender</code> Both appenders
-		extend the <code>JMSAppenderBase</code> class and publish
-		serialized events to a topic or queue specified by the user.
-		</p>
-		
-    <p>One or more <code>JMSTopicSink</code> or
-    <code>JMSQueueSink</code> applications can register with a JMS
-    server and consume the serialized events.  The consumers of events
-    generated by JMS appenders need not only be
-    <code>JMSTopicSink</code> or <code>JMSQueueSink</code>
-    applications. Any application or MessageDrivenBean capable of
-    subscribing to the appropriate topic or queue and consuming
-    serialized logging event messages would be suitable.  Additional
-    consumers could be quickly built based on the
-    <code>JMSTopicSink</code> or <code>JMSQueueSink</code> model.
-		</p>
-		
-		<p>
-			Here are <code>JMSAppenderBase</code>'s properties:
-		</p>
-		
-	<table class="bodyTable">
-			<tr class="a">
-			<th>Property Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">InitialContextFactoryName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The class name of the initial JNDI context factory. There is no need 
-					to set this option if you have a properly configured <em>jndi.properties</em> 
-					file or if <code>JMSAppenderBase</code> subclass is running 
-					within an application server. 
-				</p>
-				<p>
-					If you set this option, you should 
-					also set the <span class="option">ProviderURL</span> option.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">ProviderURL</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					This option specifies configuration information for the 
-					JNDI service provider. The value of the property should contain a 
-					URL string (e.g. <em>ldap://somehost:389</em>). 
-				</p>
-				<p>
-					The <span class="option">ProviderURL</span> option is taken into 
-					account only if the <span class="option">InitialContextFactoryName</span> 
-					option is specified. It is ignored otherwise.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">URLPkgPrefixes</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-						This option contains the list of package prefixes to 
-						use when loading in URL context factories. The value of the 
-						property should be a colon-separated list of package 
-						prefixes for the class name of the URL context factory class.
-				</p>
-				<p>
-						For JBoss the value of this option should be:
-						org.jboss.naming:org.jnp.interfaces
-						This option is not needed under Weblogic.
-				</p>
-				<p>
-						This option is taken into account only if the 
-						<span class="option">InitialContextFactoryName</span> 
-						option is specified. It is ignored otherwise.
-				</p>
-			</td>
-		</tr>		
-		<tr class="a">
-			<td><b><span class="option">SecurityPrincipalName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-						The security principal name to use when accessing the JNDI namespace. 
-						This option is usually not required.
-				</p>
-				<p>
-						This option is taken into account only if the 
-						<span class="option">InitialContextFactoryName</span> 
-						option is specified. It is ignored otherwise.
-				</p>
-			</td>
-		</tr>				
-		<tr class="b">
-			<td>
-				<b>
-					<span class="option">SecurityCredentials</span>
-				</b>
-			</td>
-			<td>
-				<code>String</code>
-			</td>
-			<td>
-				<p>
-					The security credentials to use when accessing the
-					JNDI namespace. This option is usually not required.
-				</p>
-				<p>
-					This option is taken into account only if the
-					<span class="option">
-						InitialContextFactoryName
-					</span>
-					option is specified. It is ignored otherwise.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td>
-				<b>
-					<span class="option">UserName</span>
-				</b>
-			</td>
-			<td>
-				<code>String</code>
-			</td>
-			<td>
-				<p>
-					The username to use when creating a topic or queue connection.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td>
-				<b>
-					<span class="option">Password</span>
-				</b>
-			</td>
-			<td>
-				<code>String</code>
-			</td>
-			<td>
-				<p>
-					The password to use when creating a topic or queue connection.
-				</p>
-			</td>
-		</tr>
-	</table>		
-	
-		<p>
-			JMS topics, queues and connection factories are administered objects that are obtained 
-			using the JNDI API. This in turn implies the necessity of retrieving a JNDI Context. 
-			There are two common methods for obtaining a JNDI Context. If a file resource named 
-			<em>jndi.properties</em> is available to the JNDI API, it will use the information 
-			found therein to retrieve an initial JNDI context. 
-			To obtain an initial context, one simply calls:	
-		</p>
-
-<div class="source"><pre>InitialContext jndiContext = new InitialContext();</pre></div>
-
-		<p>
-			Calling the no-argument <code>InitialContext()</code> constructor will also work 
-			from within Enterprise Java Beans (EJBs). 
-			Indeed, it is part of the EJB contract for application servers to provide 
-			each enterprise bean an environment naming context (ENC).
-		</p>
-		
-		<p>
-			In the second approach, several predetermined properties are specified. 
-			These properties are passed to the <code>InitialContext</code> constructor 
-			to connect to the naming service provider. 
-			For example, to connect to an 
-			<a href="http://www.activemq.org/site/home.html"><code>ActiveMQ</code></a> 
-			naming server one would write:
-		</p>
-
-<pre class="prettyprint source longline">Properties env = new Properties();
-env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-env.put(Context.PROVIDER_URL, "tcp://<em>hostname</em>:61616");
-Context ctx = new InitialContext(env);</pre>
-
-		<p>
-			where <em>hostname</em> is the host where the ActiveMQ server is running.  
-		</p>
-		
-		<p>
-			Other JNDI providers will obviously require different values. 
-			As mentioned previously, the initial JNDI context can be obtained by calling 
-			the no-argument <code>InitialContext()</code> constructor from within EJBs. 
-			Only clients running in a separate JVM need to be concerned about 
-			the <em>jndi.properties</em> file or setting the different properties 
-			before calling <code>InitialContext</code> constructor taking a 
-			Properties (i.e. Hashtable) parameter. 
-		</p>
-		
-		<h4>Comments on JMS appenders</h4>
-		
-		<p>Transmitting a packet of information using JMS is certain to be
-		substantially slower than sending the same packet using raw TCP
-		sockets. JMS vendors bragging about the performance of their
-		messaging platform tend to omit this simple fact.  Guaranteed
-		store and forward messaging comes at a hefty price.  In return for
-		increased cost, JMS messaging provides decoupling of sender and
-		receiver. As long as the JMS provider is reachable, messages will
-		eventually arrive at the destination.  However, what if the JMS
-		server is down or simply unreachable?
-		</p>
-		
-		<p>According to the JMS specification, producers can mark a
-		message as either persistent or non-persistent. The persistent
-		delivery mode instructs the JMS provider to log the message to
-		stable storage as part of the client's send operation, allowing
-		the message to survive provider crashes. JMS appenders do not set
-		the delivery mode of messages they produce because according to
-		the JMS specification, the delivery mode is considered as an
-		administered property.
-		</p>
-		
-		<p>Once a message reaches the JMS provider, the provider assumes
-		the responsibility of delivering it to its destination, relieving
-		the client from this chore.  What if the JMS server is
-		unreachable? The JMS API provides an
-		<code>ExceptionListener</code> interface to deal with this
-		situation.  When the client runtime of the JMS provider detects a
-		lost connection to the JMS server, it calls the
-		<code>onException()</code> method of the registered
-		<code>ExceptionListener</code>. Once notified of the problem,
-		client code can attempt to reestablish the connection. According
-		to the section 4.3.8 of the JMS specification, the provider should
-		attempt to resolve connection problems prior to notifying the
-		client.  The JMS appenders do not implement the
-		<code>ExceptionListener</code> interface.
-		</p>
-		
-		<a name="JMSTopicAppender"></a>
-		<h3>JMSTopicAppender</h3>
-		
-		<p>
-			The  <a href="../xref/ch/qos/logback/classic/net/JMSTopicAppender.html">
-			<code>JMSTopicAppender</code></a> acts as a message producer to a publish and subscribe
-			Topic.
-		</p>
-		
-		<p>
-			Its most important method, <code>doAppend()</code> is listed below:
-		</p>
-		
-<pre class="prettyprint source">public void append(ILoggingEvent event) {
-  if (!isStarted()) {
-    return;
-  }
-
-  try {
-    ObjectMessage msg = topicSession.createObjectMessage();
-    Serializable so = pst.transform(event);
-    msg.setObject(event);
-    topicPublisher.publish(msg);
-    successiveFailureCount = 0;
-  } catch (Exception e) {
-    successiveFailureCount++;
-    if (successiveFailureCount > SUCCESSIVE_FAILURE_LIMIT) {
-      stop();
-    }
-      addError("Could not publish message in JMSTopicAppender [" + name + "].", e);
-  }
-}</pre>
-
-		<p>
-			The <code>isStarted()</code> method allows the appender to check
-			whether prerequisite conditions for its proper functioning, in
-			particular the availability of a valid and open
-			<code>TopicConnection</code> and a <code>TopicSession</code>,
-			are fulfilled. If that is not the case, the append method
-			returns without performing any work.  If the prerequisite
-			conditions are fulfilled, then the method proceeds to publish
-			the logging event. This is done by obtaining a
-			<code>javax.jms.ObjectMessage</code> from the
-			<code>TopicSession</code> and then setting its payload to the
-			logging event received as the input parameter. Once the payload
-			of the message is set, it is published. Note that the
-			<code>ILoggingEvent</code> is transformed to a serializable
-			object by a <a
-			href="../xref/ch/qos/logback/core/spi/PreSerializationTransformer.html">PreSerializationTransformer</a>. Only
-			Serializable objects can be transported within an
-			<code>ObjectMessage</code>.
-		</p>
-		
-		<p>
-			In summary, the <code>JMSTopicAppender</code> broadcasts messages consisting 
-			of a serialized <code>LoggingEvent</code> payload over a user-specified 
-			JMS topic. These events can be processed by a 
-			<a href="../xref/ch/qos/logback/classic/net/JMSTopicSink.html">
-			<code>JMSTopicSink</code></a>
-			or a similar consumer. According to JMS specification, the provider 
-			will asynchronously call the <code>onMessage()</code> of duly registered 
-			and subscribed <code>javax.jms.MessageListener</code> objects. 
-			The <code>onMessage()</code> method in <code>JMSTopicSink</code>
-			is implemented as follows:
-		</p>
-
-<pre class="prettyprint source">public void onMessage(javax.jms.Message message) {
-  ILoggingEvent event;
-  try {
-    if (message instanceof ObjectMessage) {
-      ObjectMessage objectMessage = (ObjectMessage) message;
-      event = (ILoggingEvent) objectMessage.getObject();
-      Logger log = (Logger) LoggerFactory.getLogger(event.getLoggerName());
-      log.callAppenders(event);
-    } else {
-      logger.warn("Received message is of type " + message.getJMSType()
-          + ", was expecting ObjectMessage.");
-    }
-  } catch (JMSException jmse) {
-    logger.error("Exception thrown while processing incoming message.", jmse);
-  }
-}</pre>
-
-		<p>
-			The <code>onMessage()</code> method begins by retrieving the logging event's payload. 
-			It then obtains a Logger with the same name as the logger name of the incoming event. 
-			The event is then logged through this logger as if it were generated locally, 
-			by calling its <code>callAppenders()</code> method. The <code>SocketNode</code> class used by 
-			<code>SimpleSocketServer</code> handles incoming logging events essentially in the same way.
-		</p>
-		
-		<p>
-			Some properties are proper to <code>JMSTopicAppender</code>. They are 
-			listed below.
-		</p>
-		
-		<table class="bodyTable">
-			<tr class="a">
-			<th>Property Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">TopicConnectionFactoryBindingName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The name of the topic factory. There is no default value for this mandatory option.
-				</p>
-			</td>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">TopicBindingName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The name of the topic to use. There is no default value for this mandatory option.
-				</p>
-			</td>
-		</tr>
-		</table>
-		
-		<p>
-			<code>JMSTopicAppender</code> is rather straightforward to configure:
-		</p>
-
-    <p class="example">Example: JMSTopicAppender configuration
-    (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSTopic.xml)</p>
-
-    <span class="asGroovy" onclick="return asGroovy('logback-JMSTopic');">View as .groovy</span>
-    <pre id="logback-JMSTopic" class="prettyprint source">&lt;configuration>
-
-  &lt;appender name="Topic"
-    class="ch.qos.logback.classic.net.JMSTopicAppender">
-    &lt;InitialContextFactoryName>
-      org.apache.activemq.jndi.ActiveMQInitialContextFactory
-    &lt;/InitialContextFactoryName>
-    &lt;ProviderURL>tcp://localhost:61616&lt;/ProviderURL>
-    &lt;TopicConnectionFactoryBindingName>
-      ConnectionFactory
-    &lt;/TopicConnectionFactoryBindingName>
-    &lt;TopicBindingName>MyTopic&lt;/TopicBindingName>
-  &lt;/appender>
-
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="Topic" />
-  &lt;/root>
-&lt;/configuration></pre>
-		
-		<a name="JMSQueueAppender"></a>
-		<h3>JMSQueueAppender</h3>
-		
-		<p>
-			The  <a href="../xref/ch/qos/logback/classic/net/JMSQueueAppender.html">
-			<code>JMSQueueAppender</code></a> acts as a message producer to a point-to-point
-			Queue.
-		</p>
-		
-		<p>
-			It works in a very similar manner to the <code>JMSTopicAppender</code>.
-		</p>
-		
-		<p>
-			Some properties are proper to <code>JMSQueueAppender</code>. They are 
-			listed below.
-		</p>
-		
-		<table class="bodyTable">
-			<tr class="a">
-			<th>Property Name</th>
-			<th>Type</th>
-			<th>Description</th>
-		</tr>
-		<tr class="b">
-			<td><b><span class="option">QueueConnectionFactoryBindingName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The name of the queue factory. There is no default value for this mandatory option.
-				</p>
-			</td>
-		</tr>
-		<tr class="a">
-			<td><b><span class="option">QueueBindingName</span></b></td>
-			<td><code>String</code></td>
-			<td>
-				<p>
-					The name of the queue to use. There is no default value for this mandatory option.
-				</p>
-			</td>
-		</tr>
-		</table>
-		
-		<p>
-			A typical <code>JMSQueueAppender</code> configuration file looks very
-			similar to that of a <code>JMSTopicAppender</code>.
-		</p>
-
-    <p class="example">Example: JMSQueueAppender configuration
-    (logback-examples/src/main/java/chapters/appenders/conf/logback-JMSQueue.xml)</p>
-    
-    <span class="asGroovy" onclick="return asGroovy('logback-JMSQueue');">View as .groovy</span>
-    <pre id="logback-JMSQueue" class="prettyprint source">&lt;configuration>
-
-  &lt;appender name="Queue"
-    class="ch.qos.logback.classic.net.JMSQueueAppender">
-    &lt;InitialContextFactoryName>
-      org.apache.activemq.jndi.ActiveMQInitialContextFactory
-    &lt;/InitialContextFactoryName>
-    &lt;ProviderURL>tcp://localhost:61616&lt;/ProviderURL>
-    &lt;QueueConnectionFactoryBindingName>
-      ConnectionFactory
-    &lt;/QueueConnectionFactoryBindingName>
-    &lt;QueueBindingName>MyQueue&lt;/QueueBindingName>
-  &lt;/appender>
-
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="Queue" />
-  &lt;/root>
-&lt;/configuration></pre>	
 		
    <h3><a name="SMTPAppender" href="#SMTPAppender">SMTPAppender</a></h3>
 
@@ -2160,26 +1680,26 @@ Context ctx = new InitialContext(env);</pre>
       </tr>
 
       <tr>
-        <td><b><span class="option">SMTPHost</span></b></td>
+        <td><b><span class="option">smtpHost</span></b></td>
         <td><code>String</code></td>
         <td>The host name of the SMTP server. This parameter is mandatory.</td>
       </tr>
       
       <tr class="alt">
-        <td><b><span class="option">SMTPPort</span></b></td>
+        <td><b><span class="option">smtpPort</span></b></td>
         <td><code>int</code></td>
         <td>The port where the SMTP server is listening. Defaults to
         25.</td>
       </tr>
       
       <tr>
-        <td><b><span class="option">To</span></b></td>
+        <td><b><span class="option">to</span></b></td>
         <td><code>String</code></td>
         <td>The email address of the recipient. Multiple recipients
         can be specified by using several &lt;To&gt; elements.</td>
       </tr>
       <tr class="alt">
-        <td><b><span class="option">From</span></b></td>
+        <td><b><span class="option">from</span></b></td>
         <td><code>String</code></td>
         <td>The originator of the email messages sent by
         <code>SMTPAppender</code> in the <a
@@ -2192,7 +1712,7 @@ Context ctx = new InitialContext(env);</pre>
         </td>
       </tr>
       <tr>
-        <td><b><span class="option">Subject</span></b></td>
+        <td><b><span class="option">subject</span></b></td>
         <td><code>String</code></td>
         <td> 
           <p>The subject of the email. It can be any value accepted as
@@ -2206,7 +1726,7 @@ Context ctx = new InitialContext(env);</pre>
           that triggered the email message.
           </p>
 
-          <p>Assuming the <span class="option">Subject</span> option
+          <p>Assuming the <span class="option">subject</span> option
           is set to "Log: %logger - %msg" and the triggering event's
           logger is named "com.foo.Bar", and contains the message
           "Hello world", then the outgoing email will have the subject
@@ -2219,7 +1739,7 @@ Context ctx = new InitialContext(env);</pre>
       <tr class="alt">
 
 
-        <td><b><span class="option">Discriminator</span></b></td>
+        <td><b><span class="option">discriminator</span></b></td>
         <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
           <p>With the help of a <span
@@ -2239,7 +1759,7 @@ Context ctx = new InitialContext(env);</pre>
       </tr>
       <tr >
         <td><b><span class="option"><a name="smtpAppender_Evaluator"
-        href="#smtpAppender_Evaluator">Evaluator</a></span></b></td>
+        href="#smtpAppender_Evaluator">evaluator</a></span></b></td>
         <td><code><a
         href="../xref/ch/qos/logback/classic/boolex/IEvaluator.html">IEvaluator</a></code></td>
         <td>
@@ -2281,18 +1801,18 @@ Context ctx = new InitialContext(env);</pre>
       </tr>
 
       <tr class="alt">
-        <td  valign="top"><b><span class="option">CyclicBufferTracker</span></b>
+        <td  valign="top"><b><span class="option">cyclicBufferTracker</span></b>
         </td>
         <td><a href="../xref/ch/qos/logback/core/spi/CyclicBufferTracker.html"><code>CyclicBufferTracker</code></a>
         </td>
         <td>
-          <p>As the name indicates a <code>CyclicBufferTracker</code>
-          tracks cyclic buffers. It does so based on the keys returned
-          by the <span class="option">Discriminator</span> (see
-          above).
+          <p>As the name indicates, an instance of the
+          <code>CyclicBufferTracker</code> class tracks cyclic
+          buffers. It does so based on the keys returned by the <span
+          class="option">discriminator</span> (see above).
           </p>
-          <p>If you don't specify a CyclicBufferTracker, an instance
-          of <a
+          <p>If you don't specify a <span
+          class="option">cyclicBufferTracker</span>, an instance of <a
           href="../xref/ch/qos/logback/core/spi/CyclicBufferTrackerImpl.html">CyclicBufferTrackerImpl</a>
           will be automatically created. By default, this instance
           will keep events in a cyclic buffer of size 256. You may
@@ -2302,13 +1822,13 @@ Context ctx = new InitialContext(env);</pre>
         
       </tr>
       <tr>
-        <td><b><span class="option">Username</span></b></td>
+        <td><b><span class="option">username</span></b></td>
         <td><code>String</code></td> <td>The username value to use
         during plain user/password authentication. By default, this
         parameter is null.  </td> 
       </tr> 
       <tr class="alt">
-        <td><b><span class="option">Password</span></b></td>
+        <td><b><span class="option">password</span></b></td>
         <td><code>String</code></td>
         <td>The password value to use for plain user/password
         authentication. By default, this parameter is null.  
@@ -2332,7 +1852,7 @@ Context ctx = new InitialContext(env);</pre>
       </tr>
 
       <tr>
-        <td><b><span class="option">CharsetEncoding</span></b></td>
+        <td><b><span class="option">charsetEncoding</span></b></td>
         <td><code>String</code></td>
         <td>The outgoing email message will be encoded in the
         designated <a
@@ -2384,13 +1904,13 @@ Context ctx = new InitialContext(env);</pre>
     <span class="asGroovy" onclick="return asGroovy('mail1');">View as .groovy</span>	
     <pre id="mail1" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
-    &lt;To>EMAIL-DESTINATION&lt;/To>
-    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible --&gt;
-    &lt;From>SENDER-EMAIL&lt;/From>
-    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
+    &lt;to>EMAIL-DESTINATION&lt;/to>
+    &lt;to>ANOTHER_EMAIL_DESTINATION&lt;/to> &lt;!-- additional destinations are possible --&gt;
+    &lt;from>SENDER-EMAIL&lt;/from>
+    &lt;subject>TESTING: %logger{20} - %m&lt;/subject>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %-5level %logger{35} - %message%n&lt;/Pattern>
+      &lt;pattern>%date %-5level %logger{35} - %message%n&lt;/pattern>
     &lt;/layout>	    
   &lt;/appender>
 
@@ -2401,8 +1921,8 @@ Context ctx = new InitialContext(env);</pre>
 
 		<p>Before trying out <code>chapters.appenders.mail.Email</code> application
 		with the above configuration file, you must set the <span
-		class="option">SMTPHost</span>, <span class="option">To</span> and
-		<span class="option">From</span> properties to values appropriate for
+		class="option">smtpHost</span>, <span class="option">to</span> and
+		<span class="option">from</span> properties to values appropriate for
 		your environment. Once you have set the correct values in the
 		configuration file, execute the following command:
 		</p>
@@ -2418,16 +1938,16 @@ Context ctx = new InitialContext(env);</pre>
     <p><img src="images/chapters/appenders/smtpAppender1.jpg" alt="resulting email"/></p>
 		
 		<p>In the next example configuration file <em>mail2.xml</em>, the
-		values for the <span class="option">SMTPHost</span>, <span
+		values for the <span class="option">smtpHost</span>, <span
 		class="option">To</span> and <span class="option">From</span>
 		properties are determined by variable substitution. Here is the
 		relevant part of <em>mail2.xml</em>.
 		</p>		
 
     <pre class="prettyprint source">&lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-  &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
-  &lt;To>${to}&lt;/To>
-  &lt;From>${from}&lt;/From>
+  &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+  &lt;to>${to}&lt;/to>
+  &lt;from>${from}&lt;/from>
   &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
 &lt;/appender></pre>
 		
@@ -2482,16 +2002,16 @@ Context ctx = new InitialContext(env);</pre>
    <p class="example">Example:  <code>SMTPAppender</code> configuration with a custom bufer size (logback-examples/src/main/java/chapters/appenders/mail/customBufferSize.xml)</p>	
     <pre class="prettyprint source">&lt;configuration>   
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
-    &lt;To>${to}&lt;/To>
-    &lt;From>${from}&lt;/From>
-    &lt;Subject>%logger{20} - %m&lt;/Subject>
-    &lt;Layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+    &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+    &lt;to>${to}&lt;/to>
+    &lt;from>${from}&lt;/from>
+    &lt;subject>%logger{20} - %m&lt;/subject>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
 
-    <b>&lt;CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl"></b>
+    <b>&lt;cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl"></b>
       <b>&lt;!-- send just one log entry per email --></b>
-      <b>&lt;BufferSize>1&lt;/BufferSize></b>
-    <b>&lt;/CyclicBufferTracker></b>
+      <b>&lt;bufferSize>1&lt;/bufferSize></b>
+    <b>&lt;/cyclicBufferTracker></b>
   &lt;/appender>
 
   &lt;root level="DEBUG">
@@ -2581,11 +2101,11 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     <span class="asGroovy" onclick="return asGroovy('mail3');">View as .groovy</span>	
     <pre id="mail3" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <b>&lt;Evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
-    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
-    &lt;To>${to}&lt;/To>
-    &lt;From>${from}&lt;/From>
-    &lt;Subject>%logger{20} - %m&lt;/Subject>
+    <b>&lt;evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
+    &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+    &lt;to>${to}&lt;/to>
+    &lt;from>${from}&lt;/from>
+    &lt;subject>%logger{20} - %m&lt;/subject>
 
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
@@ -2638,9 +2158,9 @@ logger.error(<b>notifyAdmin</b>,
       &lt;!-- you specify add as many markers as you want -->
       &lt;marker>TRANSACTION_FAILURE&lt;/marker>
     &lt;/evaluator></b>
-    &lt;SMTPHost>${smtpHost}&lt;/SMTPHost>
-    &lt;To>${to}&lt;/To>
-    &lt;From>${from}&lt;/From>
+    &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+    &lt;to>${to}&lt;/to>
+    &lt;from>${from}&lt;/from>
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 
@@ -2742,18 +2262,18 @@ logger.error(<b>notifyAdmin</b>,
     <span class="asGroovy" onclick="return asGroovy('gmailSSL');">View as .groovy</span>	
     <pre id="gmailSSL" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <b>&lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost></b>
-    <b>&lt;SMTPPort>465&lt;/SMTPPort></b>
-    <b>&lt;SSL>true&lt;/SSL></b>
-    <b>&lt;Username>YOUR_USERNAME@gmail.com&lt;/Username></b>
-    <b>&lt;Password>YOUR_GMAIL_PASSWORD&lt;/Password></b>
+    <b>&lt;smtpHost>smtp.gmail.com&lt;/smtpHost></b>
+    <b>&lt;smtpPort>465&lt;/smtpPort></b>
+    <b>&lt;ssl>true&lt;/ssl></b>
+    <b>&lt;username>YOUR_USERNAME@gmail.com&lt;/username></b>
+    <b>&lt;password>YOUR_GMAIL_PASSWORD&lt;/password></b>
 
-    &lt;To>EMAIL-DESTINATION&lt;/To>
-    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible -->
-    &lt;From>YOUR_USERNAME@gmail.com&lt;/From>
-    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;to>EMAIL-DESTINATION&lt;/to>
+    &lt;to>ANOTHER_EMAIL_DESTINATION&lt;/to> &lt;!-- additional destinations are possible -->
+    &lt;from>YOUR_USERNAME@gmail.com&lt;/from>
+    &lt;subject>TESTING: %logger{20} - %m&lt;/subject>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %-5level %logger{35} - %message%n&lt;/Pattern>
+      &lt;pattern>%date %-5level %logger{35} - %message%n&lt;/pattern>
     &lt;/layout>	    
   &lt;/appender>
 
@@ -2774,18 +2294,18 @@ logger.error(<b>notifyAdmin</b>,
     <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLS');">View as .groovy</span>	
     <pre id="gmailSTARTTLS" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;SMTPHost>smtp.gmail.com&lt;/SMTPHost>
-    &lt;SMTPPort>587&lt;/SMTPPort>
+    &lt;smtpHost>smtp.gmail.com&lt;/smtpHost>
+    &lt;smtpPort>587&lt;/smtpPort>
     &lt;STARTTLS>true&lt;/STARTTLS>
-    &lt;Username>YOUR_USERNAME@gmail.com&lt;/Username>
-    &lt;Password>YOUR_GMAIL_xPASSWORD&lt;/Password>
+    &lt;username>YOUR_USERNAME@gmail.com&lt;/username>
+    &lt;password>YOUR_GMAIL_xPASSWORD&lt;/password>
     
-    &lt;To>EMAIL-DESTINATION&lt;/To>
-    &lt;To>ANOTHER_EMAIL_DESTINATION&lt;/To> &lt;!-- additional destinations are possible -->
-    &lt;From>YOUR_USERNAME@gmail.com&lt;/From>
-    &lt;Subject>TESTING: %logger{20} - %m&lt;/Subject>
+    &lt;to>EMAIL-DESTINATION&lt;/to>
+    &lt;to>ANOTHER_EMAIL_DESTINATION&lt;/to> &lt;!-- additional destinations are possible -->
+    &lt;from>YOUR_USERNAME@gmail.com&lt;/from>
+    &lt;subject>TESTING: %logger{20} - %m&lt;/subject>
     &lt;layout class="ch.qos.logback.classic.PatternLayout">
-      &lt;Pattern>%date %-5level %logger - %message%n&lt;/Pattern>
+      &lt;pattern>%date %-5level %logger - %message%n&lt;/pattern>
     &lt;/layout>	    
   &lt;/appender>
 
@@ -2821,7 +2341,7 @@ logger.error(<b>notifyAdmin</b>,
     <span class="asGroovy" onclick="return asGroovy('mailWithMDCBasedDiscriminator');">View as .groovy</span>	
     <pre id="mailWithMDCBasedDiscriminator" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    &lt;SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/SMTPHost>
+    &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
     &lt;to>EMAIL-DESTINATION&lt;/to>
     &lt;from>SENDER-EMAIL&lt;/from>
 
@@ -3428,7 +2948,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="b">
 				<td>
 					<b>
-						<span class="option">SyslogHost</span>
+						<span class="option">syslogHost</span>
 					</b>
 				</td>
 				<td>
@@ -3441,7 +2961,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="a">
 				<td>
 					<b>
-						<span class="option">Port</span>
+						<span class="option">port</span>
 					</b>
 				</td>
 				<td>
@@ -3455,7 +2975,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="b">
 				<td>
 					<b>
-						<span class="option">Facility</span>
+						<span class="option">facility</span>
 					</b>
 				</td>
 				<td>
@@ -3463,11 +2983,11 @@ logger.error(<b>notifyAdmin</b>,
 				</td>
 				<td>
 					<p>
-						The <span class="option">Facility</span> is meant to identify 
+						The <span class="option">facility</span> is meant to identify 
 						the source of a message.
 					</p>
 					<p>
-						The <span class="option">Facility</span> option must be set one 
+						The <span class="option">facility</span> option must be set one 
 						of the strings <em>KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, 
 						CRON, AUTHPRIV, FTP, NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, 
 						LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.
@@ -3477,19 +2997,19 @@ logger.error(<b>notifyAdmin</b>,
       <tr class="a">
         <td>
           <b>
-            <span class="option">SuffixPattern</span>
+            <span class="option">suffixPattern</span>
           </b>
 				</td>
 				<td>
 					<code>String</code>
 				</td>
 				<td>
-					<p>The <span class="option">SuffixPattern</span> option
+					<p>The <span class="option">suffixPattern</span> option
 					specifies the format of the non-standardized part of the
 					message sent to the syslog server. By default, its value is
 					<em>[%thread] %logger %msg</em>. Any value that a
 					<code>PatternLayout</code> could use is a correct <span
-					class="option">SuffixPattern</span> value.
+					class="option">suffixPattern</span> value.
 					</p>
 				</td>
 			</tr>
@@ -3505,7 +3025,7 @@ logger.error(<b>notifyAdmin</b>,
 		<p>
 			Since the format of a syslog request follows rather strict rules, there is no layout
 			to be used with <code>SyslogAppender</code>. However, the using the 
-			<span class="option">SuffixPattern</span> option lets the user display whatever
+			<span class="option">suffixPattern</span> option lets the user display whatever
 			information she wishes.
 		</p>
 		
@@ -3517,11 +3037,10 @@ logger.error(<b>notifyAdmin</b>,
     <span class="asGroovy" onclick="return asGroovy('logback-syslog');">View as .groovy</span>	
     <pre id="logback-syslog" class="prettyprint source">&lt;configuration>
 
-  &lt;appender name="SYSLOG"
-    class="ch.qos.logback.classic.net.SyslogAppender">
-    &lt;SyslogHost>remote_home&lt;/SyslogHost>
-    &lt;Facility>AUTH&lt;/Facility>
-    &lt;SuffixPattern>[%thread] %logger %msg&lt;/SuffixPattern>
+  &lt;appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    &lt;syslogHost>remote_home&lt;/syslogHost>
+    &lt;facility>AUTH&lt;/facility>
+    &lt;suffixPattern>[%thread] %logger %msg&lt;/suffixPattern>
   &lt;/appender>
 
   &lt;root level="DEBUG">
@@ -3583,15 +3102,15 @@ logger.debug("Alice says hello"); </p>
          desired discriminator type is
          ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
     <b>&lt;discriminator></b>
-      <b>&lt;Key><span class="green">userid</span>&lt;/Key></b>
-      <b>&lt;DefaultValue>unknown&lt;/DefaultValue></b>
+      <b>&lt;key><span class="green">userid</span>&lt;/key></b>
+      <b>&lt;defaultValue>unknown&lt;/defaultValue></b>
     <b>&lt;/discriminator></b>
     <b>&lt;sift></b>
       <b>&lt;appender name="FILE-<span class="green">${userid}</span>" class="ch.qos.logback.core.FileAppender"></b>
-        <b>&lt;File><span class="green">${userid}</span>.log&lt;/File></b>
-        <b>&lt;Append>false&lt;/Append></b>
+        <b>&lt;file><span class="green">${userid}</span>.log&lt;/file></b>
+        <b>&lt;append>false&lt;/append></b>
         <b>&lt;layout class="ch.qos.logback.classic.PatternLayout"></b>
-          <b>&lt;Pattern>%d [%thread] %level %mdc %logger{35} - %msg%n&lt;/Pattern></b>
+          <b>&lt;pattern>%d [%thread] %level %mdc %logger{35} - %msg%n&lt;/pattern></b>
         <b>&lt;/layout></b>
       <b>&lt;/appender></b>
     <b>&lt;/sift></b>
@@ -3609,7 +3128,7 @@ logger.debug("Alice says hello"); </p>
     will use the MDC value associated with the <span
     class="option">Key</span> property as a discriminator. If that
     value is null, then the value associated with the <span
-    class="option">DefaultValue</span> property will be used.
+    class="option">defaultValue</span> property will be used.
     </p>
 
     <p>The <code>SiftingAppender</code> is unique in its capacity to
@@ -3789,16 +3308,16 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 <pre class="prettyprint source">&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
   &lt;layout class="ch.qos.logback.access.html.HTMLLayout">
-    &lt;Pattern>%h%l%u%t%r%s%b&lt;/Pattern>
+    &lt;pattern>%h%l%u%t%r%s%b&lt;/pattern>
   &lt;/layout>
     
   <b>&lt;Evaluator class="ch.qos.logback.access.net.URLEvaluator">
     &lt;URL>url1.jsp&lt;/URL>
     &lt;URL>directory/url2.html&lt;/URL>
   &lt;/Evaluator></b>
-  &lt;From>sender_email@host.com&lt;/From>
-  &lt;SMTPHost>mail.domain.com&lt;/SMTPHost>
-  &lt;To>recipient_email@host.com&lt;/To>
+  &lt;from>sender_email@host.com&lt;/from>
+  &lt;smtpHost>mail.domain.com&lt;/smtpHost>
+  &lt;to>recipient_email@host.com&lt;/to>
 &lt;/appender></pre>
 
 		<p>This way of triggering the email lets users select pages that
@@ -3807,8 +3326,6 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		accessed previously, and any information the user wants to be
 		included in the email.
 		</p>
-		
-		
 
 		<a name="AccessDBAppender"></a>
 		<h3>DBAppender</h3>
@@ -3923,8 +3440,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			</tr>
 			</table>
 
-		<p>
-			All properties of classic's <code>DBAppender</code> are available
+		<p>All properties of classic's <code>DBAppender</code> are available
 			in access' <code>DBAppender</code>. The latter offers one more option,
 			described below.
 		</p>
@@ -3950,12 +3466,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 				</td>
 			</tr>
 		</table>
-		
-		<p>
-			Here is a sample configuration that uses <code>DBAppender</code>.
-		</p>
 
-    <p class="example">Example: DBAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/access/logback-DB.xml)</em>		
+		<p>Here is a sample configuration that uses <code>DBAppender</code>.</p>
+
+    <p class="example">Example: DBAppender configuration <em>(logback-examples/src/main/java/chapters/appenders/conf/access/logback-DB.xml)</em></p>
+    
     <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.access.db.DBAppender">
@@ -3983,7 +3498,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     uses a designated field in AccessEvent as basis for selecting a
     nested appender. If the value of the designated field is null,
     then the value specified in the <span
-    class="option">DefaultValue</span> property is used.
+    class="option">defaultValue</span> property is used.
     </p>
 
     <p>The desginated AccessEvent field can be one of COOKIE,
@@ -4002,13 +3517,13 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
       &lt;Key>id&lt;/Key>
       &lt;FieldName>SESSION_ATTRIBUTE&lt;/FieldName>
       &lt;AdditionalKey>username&lt;/AdditionalKey>
-      &lt;DefaultValue>NA&lt;/DefaultValue>
+      &lt;defaultValue>NA&lt;/defaultValue>
     &lt;/Discriminator>
     &lt;sift>
        &lt;appender name="${id}" class="ch.qos.logback.core.FileAppender">
-        &lt;File>byUser/${id}.log&lt;/File>
+        &lt;file>byUser/${id}.log&lt;/file>
         &lt;layout class="ch.qos.logback.access.PatternLayout">
-          &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
+          &lt;pattern>%h %l %u %t \"%r\" %s %b&lt;/pattern>
         &lt;/layout>
       &lt;/appender>
     &lt;/sift>

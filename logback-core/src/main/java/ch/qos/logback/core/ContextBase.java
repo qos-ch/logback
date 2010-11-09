@@ -17,11 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.status.StatusManager;
+import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
 public class ContextBase implements Context {
 
   private long birthTime = System.currentTimeMillis();
-  
+
   private String name;
   private StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
@@ -31,7 +32,7 @@ public class ContextBase implements Context {
   Map<String, Object> objectMap = new HashMap<String, Object>();
 
   Object configurationLock = new Object();
-  
+
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -40,10 +41,10 @@ public class ContextBase implements Context {
    * Set the {@link StatusManager} for this context. Note that by default this
    * context is initialized with a {@link BasicStatusManager}. A null value for
    * the 'statusManager' argument is not allowed.
-   * 
+   *
    * <p> A malicious attacker can set the status manager to a dummy instance,
    * disabling internal error reporting.
-   * 
+   *
    * @param statusManager
    *                the new status manager
    */
@@ -63,7 +64,17 @@ public class ContextBase implements Context {
     this.propertyMap.put(key, val);
   }
 
+  /**
+   * Given a key, return the corresponding property value. If invoked with
+   * the special key "CONTEXT_NAME", the name of the context is returned.
+   *
+   * @param key
+   * @return
+   */
   public String getProperty(String key) {
+    if(CONTEXT_NAME_KEY.equals(key))
+          return getName();
+
     return (String) this.propertyMap.get(key);
   }
 
@@ -91,7 +102,7 @@ public class ContextBase implements Context {
    * The context name can be set only if it is not already set, or if the
    * current name is the default context name, namely "default", or if the
    * current name and the old name are the same.
-   * 
+   *
    * @throws IllegalStateException
    *                 if the context already has a name, other than "default".
    */

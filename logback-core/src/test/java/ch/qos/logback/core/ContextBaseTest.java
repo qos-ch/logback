@@ -29,7 +29,7 @@ public class ContextBaseTest {
     context.setName("hello");
   }
 
-  
+
   @Test
   public void idempotentNameTest() {
     context.setName("hello");
@@ -56,5 +56,16 @@ public class ContextBaseTest {
     context.reset();
     assertNull(context.getProperty("keyA"));
     assertNull(context.getObject("keyA"));
+  }
+
+  @Test
+  public void contextNameProperty() {
+    assertNull(context.getProperty(CoreConstants.CONTEXT_NAME_KEY));
+    String HELLO = "hello";
+    context.setName(HELLO);
+    assertEquals(HELLO, context.getProperty(CoreConstants.CONTEXT_NAME_KEY));
+    // good to have a raw reference to the "CONTEXT_NAME" as most clients would
+    // not go through CoreConstants
+    assertEquals(HELLO, context.getProperty("CONTEXT_NAME"));
   }
 }

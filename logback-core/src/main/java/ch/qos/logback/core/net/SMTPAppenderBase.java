@@ -359,18 +359,42 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The <b>SMTPHost</b> option takes a string value which should be a the host
-   * name of the SMTP server that will send the e-mail message.
+   * Alias for smtpHost
+   * @param smtpHost
    */
   public void setSMTPHost(String smtpHost) {
+    setSmtpHost(smtpHost);
+  }
+
+  /**
+   * The <b>smtpHost</b> option takes a string value which should be a the host
+   * name of the SMTP server that will send the e-mail message.
+   */
+  public void setSmtpHost(String smtpHost) {
     this.smtpHost = smtpHost;
+  }
+
+  /**
+   * Alias for getSmtpHost().
+   */
+  public String getSMTPHost() {
+    return getSmtpHost();
   }
 
   /**
    * Returns value of the <b>SMTPHost</b> option.
    */
-  public String getSMTPHost() {
+  public String getSmtpHost() {
     return smtpHost;
+  }
+
+  /**
+   * Alias for {@link #setSmtpPort}.
+   *
+   * @param port
+   */
+  public void setSMTPPort(int port) {
+   setSmtpPort(port);
   }
 
   /**
@@ -378,15 +402,22 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    *
    * @param port
    */
-  public void setSMTPPort(int port) {
+  public void setSmtpPort(int port) {
     this.smtpPort = port;
   }
 
   /**
+   * Alias for {@link #getSmtpPort}
    * @return
-   * @see #setSMTPPort(int)
-   */
+  */
   public int getSMTPPort() {
+    return getSmtpPort();
+  }
+  /**
+   * See {@link #setSmtpPort}
+   * @return
+   */
+  public int getSmtpPort() {
     return smtpPort;
   }
 

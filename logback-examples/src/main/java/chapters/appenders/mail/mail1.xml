@@ -1,13 +1,13 @@
 <configuration>
 	  
   <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-    <SMTPHost>ADDRESS-OF-YOUR-SMTP-HOST</SMTPHost>
-    <To>EMAIL-DESTINATION</To>
-    <To>ANOTHER_EMAIL_DESTINATION</To> <!-- additional destinations are possible -->
-    <From>SENDER-EMAIL</From>
-    <Subject>%logger{20} - %m</Subject>
+    <smtpHost>ADDRESS-OF-YOUR-SMTP-HOST</smtpHost>
+    <to>EMAIL-DESTINATION</to>
+    <to>ANOTHER_EMAIL_DESTINATION</to> <!-- additional destinations are possible -->
+    <from>SENDER-EMAIL</from>
+    <subject>%logger{20} - %m</subject>
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%date %-5level %logger - %message%n</Pattern>
+      <pattern>%date %-5level %logger - %message%n</pattern>
     </layout>	    
   </appender>
 

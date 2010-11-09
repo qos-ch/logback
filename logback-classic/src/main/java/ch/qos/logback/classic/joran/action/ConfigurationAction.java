@@ -80,9 +80,6 @@ public class ConfigurationAction extends Action {
       addInfo("End of configuration.");
       LoggerContext loggerContext = (LoggerContext) context;
       StatusPrinter.print(loggerContext);
-
-      // LoggerContext loggerContext = (LoggerContext) context;
-      // ConfiguratorBase.detachTemporaryConsoleAppender(repository, errorList);
     }
     ec.popObject();
   }

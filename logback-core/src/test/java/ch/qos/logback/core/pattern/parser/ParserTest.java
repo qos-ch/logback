@@ -226,6 +226,18 @@ public class ParserTest {
     }
   }
 
+  // see http://jira.qos.ch/browse/LBCORE-180
+  @Test
+  public void keywordGluedToLitteral() throws Exception {
+      {
+      Parser p = new Parser("%x{}a");
+      Node t = p.parse();
+      KeywordNode witness = new KeywordNode("x");
+      witness.next = new Node(Node.LITERAL, "a");
+      assertEquals(witness, t);
+    }
+  }
+
   @Test
   public void testCompositeFormatting() throws Exception {
 

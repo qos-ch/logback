@@ -63,8 +63,8 @@ class Compiler<E> extends ContextAwareBase {
         } else {
           // if the appropriate dynaconverter cannot be found, then replace
           // it with a dummy LiteralConverter indicating an error.
-          Converter<E> errConveter = new LiteralConverter<E>("%PARSER_ERROR_"
-              + kn.getValue());
+          Converter<E> errConveter = new LiteralConverter<E>("%PARSER_ERROR["
+              + kn.getValue()+"]");
           addStatus(new ErrorStatus("[" + kn.getValue()
               + "] is not a valid conversion word", this));
           addToList(errConveter);
