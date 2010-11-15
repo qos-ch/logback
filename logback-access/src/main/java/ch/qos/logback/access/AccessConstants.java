@@ -25,4 +25,11 @@ public class AccessConstants {
   public final static String IMAGE_JPEG = "image/jpeg";
   public final static String IMAGE_GIF = "image/gif";
   public final static String IMAGE_PNG = "image/png";
+
+
+
+
+    public final static String TEE_FILTER_INCLUDES_PARAM = "includes";
+    public final static String TEE_FILTER_EXCLUDES_PARAM = "excludes";
+
 }

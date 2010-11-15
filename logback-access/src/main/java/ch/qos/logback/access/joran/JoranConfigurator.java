@@ -15,10 +15,14 @@ package ch.qos.logback.access.joran;
 
 
 import ch.qos.logback.access.PatternLayout;
+import ch.qos.logback.access.PatternLayoutEncoder;
+import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.joran.action.EvaluatorAction;
 import ch.qos.logback.access.sift.SiftAction;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.NOPAction;
@@ -51,6 +55,11 @@ public class JoranConfigurator extends JoranConfiguratorBase {
   protected void addDefaultNestedComponentRegistryRules(
       DefaultNestedComponentRegistry registry) {
     registry.add(AppenderBase.class, "layout", PatternLayout.class);
+          registry
+        .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
+
+    registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
+    registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
   }
 
 }
