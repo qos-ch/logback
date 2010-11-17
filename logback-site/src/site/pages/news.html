@@ -37,11 +37,16 @@
     reported by Augusto Rodriguez.
     </p>
 
+    <p><code>TeeFilter</code> now takes include and exclude parameters
+    so that it can be enabled or disabled by host. This solves <a
+    href="http://jira.qos.ch/browse/LBACCESS-15">LBACCESS-15</a>.</p>
+
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCLASSIC-231">LBCLASSIC-231</a>
     as reported by Jeff Skjonsby. When configuring
-    SizeAndTimeBasedFNATP, <code>GaggerConfigurator</code> (Groovy)
-    will no longer throw a <code>NullPointerException</code>.
+    <code>SizeAndTimeBasedFNATP</code>,
+    <code>GaggerConfigurator</code> (Groovy) will no longer throw a
+    <code>NullPointerException</code>.
     </p>
 
     <p>Every context now returns its own name when asked for the
@@ -50,8 +55,6 @@
     requested by Michael Osipov.
     </p>
 
-    <p><code>TeeFilter</code> now takes include and exclude parameters
-    so that it can be enabled or disabled by host.</p>
 
     <h3>20th of October, 2010 - Release of version 0.9.26</h3>
 
