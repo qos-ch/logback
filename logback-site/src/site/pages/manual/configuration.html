@@ -1485,8 +1485,8 @@ fileName=myApp.log
   href="#definingPropsOnTheFly">Defining properties on the
   fly</a></h3>
 
-  <p>You may define properties from within the configuration file
-  using the <code>&lt;define></code> element. The define element takes
+  <p>You may define properties dynamically using the
+  <code>&lt;define></code> element. The define element takes two
   mandatory attributes: <span class="attr">name</span> and <span
   class="attr">class</span>. The <span class="attr">name</span>
   attribute designates the name of the property to set whereas the
@@ -1494,8 +1494,8 @@ fileName=myApp.log
   implementing the <a
   href="../xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>
   interface. The value returned by the <code>getPropertyValue</code>()
-  method of the <code>PropertyDefiner</code> will be placed into the
-  named property.
+  method of the <code>PropertyDefiner</code> instance will be the
+  value of the named property.
   </p>
 
   <p>Here is an example.</p>

@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Catpuring HTTP communications</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
+
+  </head>
+  <body onload="prettyPrint()">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+      
+      <h2>Capturing incoming HTTP requests and outgoing responses</h2>
+
+      <p>Logback ships with a module called logback-access which
+      integrates with Servlet containers such as Jetty or Tomcat to
+      provide rich and powerful HTTP-access log functionality.
+      </p>
+
+      <p>When diagnosing issues in a web-application, it is very
+      helpful to be able to capture incoming HTTP requests and the
+      outgoing response. This is particularly true for a
+      web-applications offering web-services using <a
+      href="http://en.wikipedia.org/wiki/SOAP">SOAP</a>. Having access
+      to the "raw" SOAP message makes it much easier to diagnose
+      errors caused by misspelled namespaces or missing fields.
+      </p>
+
+      <p>Certain Web-Service stacks can be easily configured to log
+      the SOAP traffic. For instance, with JBoss' Web-services stack,
+      you can set the level of the
+      <code>org.jboss.ws.core.MessageTrace</code> logger to
+      <code>TRACE</code> in order to enable SOAP message tracing as <a
+      href="http://community.jboss.org/wiki/JBossWS-Log4j">documented
+      in the Jboss wiki</a>.
+      </p>
+
+      <p>If you are using a different Web-Services stack, e.g. Metro,
+      it might not be very convenient to enable SOAP message
+      tracing. In that case, and assuming you application is deployed
+      on Tomcat, you might want to enable <a
+      href="http://tomcat.apache.org/tomcat-7.0-doc/config/filter.html#Request_Dumper_Filter">RequestDumperFilter</a>.
+      Unfortunately, not only is <code>RequestDumperFilter</code>
+      rather hard to install, it does not dump the payload of the
+      incoming request nor the outgoing response.
+      </p>
+
+      <p>With help of logback-access and the <a
+      href="../access.html#teeFilter">TeeFilter</a> you can capture
+      the full input and output for each request as explained below.
+  
+      </p>
+
+      <h3>Capturing</h3>
+
+      <p>The <code>TeeFilter</code>, as any other servlet filter needs
+      to be declared in your web-application's <em>web.xml</em>
+      file. Here is the decleration to add to your web-application's
+      <em>web.xml</em> file.
+      </p>
+
+    <pre class="prettyprint source">&lt;filter&gt;
+  &lt;filter-name&gt;TeeFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;ch.qos.logback.access.servlet.TeeFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;TeeFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;</pre>
+
+      <p>The <code>TeeFilter</code> requires the logback-access module
+      to be installed in your web-server. The installation of
+      logback-access is explained <a
+      href="../access.html">elsewhere</a>. Once you have installed
+      logback-access into your Servlet container, e.g. Tomcat or
+      Jetty, you can configure logback-access according to your wishes
+      with the help of a configuration file named
+      <em>logback-access.xml</em>.
+      </p>
+      
+      <p>Here is a sample <em>logback-access.xml</em> configuration
+      file which will output the full contents of the request and
+      response on the console.
+      </p>
+
+  <pre class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;      
+      &lt;pattern&gt;%fullRequest%n%n%fullResponse&lt;/pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+	
+  &lt;appender-ref ref="STDOUT" /&gt;
+&lt;/configuration&gt;</pre>
+      
+     <p>Here is the output generated when accessing the <a
+     href="../demo.html">logback-demo</a> application configured as shown
+     above, yields:</p>
+
+     <p class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8) Gecko/20070312 Firefox/1.5.0
+Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://localhost:8080/logback-demo/login.jsp
+Cookie: JSESSIONID=15c7tqi9ehlwk;  OID324nkzcmr=null; OID32862zgoa=null; 
+
+
+
+<b>HTTP/1.1 200 OK</b>
+Content-Type: text/html; charset=iso-8859-1
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
+
+
+&lt;html&gt;
+&lt;head&gt;
+        &lt;LINK REL=StyleSheet HREF="css/pk.css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h2&gt;Logback demo center&lt;/h2&gt;
+
+[snip, so that text is reasonably sized]</p>
+
+<p>&nbsp;</p>
+
+      <p>
+      </p>
+
+
+      <h3>Enabling only in the integration environment</h3>
+
+      <h3>Filtering captured requests</h3>
+
+      
+      <script src="../templates/footer.js" type="text/javascript"></script>	
+    </div>
+  </body>
+</html>
+ 

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-    <title>Logback Access</title>
+    <title>Logback-access</title>
     <link rel="stylesheet" type="text/css" href="css/common.css" />
     <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
@@ -19,7 +19,7 @@
     </div>
     <div id="content">  
 	
-    <h2>Access log with logback, Jetty and Tomcat</h2>
+    <h2>HTTP-access logs with logback-access, Jetty and Tomcat</h2>
 
     <div class="author">
 			Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec
@@ -30,16 +30,17 @@
 
 		<h1>Introduction</h1>
 
-    <p>The logback-access module integrates with Servlet containers
-    such as Jetty or Tomcat to provide rich and powerful HTTP-access
-    log functionality.
+    <p>The logback-access module, part of the standard logback
+    distribution, integrates with Servlet containers such as Jetty or
+    Tomcat to provide rich and powerful HTTP-access log functionality.
     </p>
 		
 		<p>Logback was designed as a modular framework from the
 		start. Making logback-core reusable under different circumstances
 		without much recoding was one of our main goals. In accordance
-		with this strategy, logback-access builds on top of
-		logback-core. </p>
+		with this strategy, logback-access builds on top of logback-core
+		and can thus provide much of the functionality of logback-classic
+		but in the scope of HTPP-access logging. </p>
 
     <a name="tomcat"></a>
 		<h1>Logback-access under Tomcat</h1>
@@ -496,9 +497,9 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 
   <pre class="prettyprint source">&lt;configuration&gt;
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
-    &lt;layout class="ch.qos.logback.access.PatternLayout"&gt;      
-      &lt;Pattern&gt;%fullRequest%n%n%fullResponse&lt;/Pattern&gt;
-    &lt;/layout&gt;
+    &lt;encoder&gt;      
+      &lt;pattern&gt;%fullRequest%n%n%fullResponse&lt;/pattern&gt;
+    &lt;/encoder&gt;
   &lt;/appender&gt;
 	
   &lt;appender-ref ref="STDOUT" /&gt;
@@ -549,7 +550,7 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
   supports <code>includes</code> and <code>excludes</code> parameters.
   <code>TeeFilter</code> will be active if the current host is listed
   in the includes list and absent in the excludes list. An empty
-  includes list is interepreted as to contain all possible host names
+  includes list is interpreted as to contain all possible host names
   in the universe.
   </p>
 
@@ -560,8 +561,8 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
   &lt;filter-name>TeeFilter&lt;/filter-name>
   &lt;filter-class>ch.qos.logback.access.servlet.TeeFilter&lt;/filter-class>
   &lt;init-param>
-    &lt;param-name>includes&lt;/param-name>
-    &lt;param-value>orion, gemini&lt;/param-value>
+    <b>&lt;param-name>includes&lt;/param-name></b>
+    <b>&lt;param-value>orion, gemini&lt;/param-value></b>
   &lt;/init-param>
 &lt;/filter>  </pre>
 
@@ -572,8 +573,8 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
   &lt;filter-name>TeeFilter&lt;/filter-name>
   &lt;filter-class>ch.qos.logback.access.servlet.TeeFilter&lt;/filter-class>
   &lt;init-param>
-    &lt;param-name>excludes&lt;/param-name>
-    &lt;param-value>orion, gemini&lt;/param-value>
+    <b>&lt;param-name>excludes&lt;/param-name></b>
+    <b>&lt;param-value>orion, gemini&lt;/param-value></b>
   &lt;/init-param>
 &lt;/filter>  </pre>
     
