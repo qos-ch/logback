@@ -141,13 +141,45 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
 
 <p>&nbsp;</p>
 
-      <p>
+      <h3>Disabling <code>TeeFilter</code> in the production
+      environment</h3>
+
+      <p>Due to its instrusive nature, <code>TeeFilter</code> can slow
+      down performance. Moreover, altough we have fixed all currently
+      known bugs, <code>TeeFilter</code> has broken otherwise
+      correctly behaving applications in the past. Thus, while
+      extremely useful during problem hunting, we do not recommend
+      having <code>TeeFilter</code> active in production systems. In
+      order to avoid shipping different code for test and production
+      environments, <code>TeeFilter</code> supports includes and
+      excludes parameters. <code>TeeFilter</code> will be active if
+      the current host is listed in the includes list and absent in
+      the excludes list. By special convention, an empty
+      <em>includes</em> list is interpreted as to contain all possible
+      host names in the universe.
+      </p>
+      
+      <p>Assume we wish to capture HTTP traffic on all hosts except on
+      orion and gemini, the hostnames of the the production systems,
+      we would write:</p>
+
+        <pre class="prettyprint source">&lt;filter>
+  &lt;filter-name>TeeFilter&lt;/filter-name>
+  &lt;filter-class>ch.qos.logback.access.servlet.TeeFilter&lt;/filter-class>
+  &lt;init-param>
+    <b>&lt;!-- exclude captures on production systems --></b>
+    <b>&lt;param-name>excludes&lt;/param-name></b>
+    <b>&lt;param-value>orion, gemini&lt;/param-value></b>
+  &lt;/init-param>
+&lt;/filter>  </pre>
+  
+      <p>If it is easier, you could also explicitly name the machines
+      of the integration envrionment in the includes list.
       </p>
 
-
-      <h3>Enabling only in the integration environment</h3>
-
       <h3>Filtering captured requests</h3>
+
+      
 
       
       <script src="../templates/footer.js" type="text/javascript"></script>	

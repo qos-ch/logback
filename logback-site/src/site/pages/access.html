@@ -549,9 +549,9 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
   code for test and production environments, <code>TeeFilter</code>
   supports <code>includes</code> and <code>excludes</code> parameters.
   <code>TeeFilter</code> will be active if the current host is listed
-  in the includes list and absent in the excludes list. An empty
-  includes list is interpreted as to contain all possible host names
-  in the universe.
+  in the includes list and absent in the excludes list. By special
+  convention, an empty includes list is interpreted as to contain all
+  possible host names in the universe.
   </p>
 
   <p>To enable <code>TeeFilter</code> only on the hosts named "orion"
