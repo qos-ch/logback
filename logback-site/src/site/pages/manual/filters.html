@@ -247,18 +247,21 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p><a
     href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>
-    is a generic filter encapsulating an <a
+    is a generic filter encapsulating an
+    <code>EventEvaluator</code>. As the name intimates, an
+    <a
     href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
-    <code>EventEvaluator</code></a> which evaluates whether a given
-    criteria is met. On match and respectively on mismatch, the
-    <code>EvaluatorFilter</code> will return the value corresponding
-    to <span class="option">onMatch</span> and respectively to <span
-    class="option">onMismatch</span> properties.
+    <code>EventEvaluator</code></a> evaluates whether a given criteria
+    is met for a given event. On match and respectively on mismatch,
+    the hosting <code>EvaluatorFilter</code> will return the value
+    specified by <span class="option">onMatch</span> and respectively
+    to <span class="option">onMismatch</span> properties.
     </p>
 
-    <p>The <code>EventEvaluator</code> is an abstract class and you
+
+    <p>Note that <code>EventEvaluator</code> is an abstract class. You
     can implement your own event evaluation logic by sub-classing
-    <code>EventEvaluator</code>. 
+    <code>EventEvaluator</code>.
     </p>
     
 
@@ -363,11 +366,11 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <p>Logback-classic ships with another concrete
     <code>EventEvaluator</code> implementation called <a
     href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>
-    which taking artibtrary java language boolean expressions as the
+    taking arbitrary java language boolean expressions as the
     evaluation criteria. We refer to such java language boolean
-    expressions as "<em>evaulation expressions</em>". Evaluation
+    expressions as "<em>evaluation expressions</em>". Evaluation
     expressions enable great flexibility in event
-    filtering.<code>JaninoEventEvaluator</code> requires the <a
+    filtering. <code>JaninoEventEvaluator</code> requires the <a
     href="http://docs.codehaus.org/display/JANINO/Home">Janino
     library</a>. Please see the <a
     href="../setup.html#janino">corresponding section</a> of the setup
@@ -381,14 +384,15 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <p>Evaluation expressions are compiled on-the-fly during the
     interpretation of the configuration file. As a user, you do not
     need to worry about the actual plumbing. However, it is your
-    reponsibility to ensure that the java-language expression is
-    boolean, that it evaluates to true or false. </p>
+    reponsibility to ensure that the java-language expression returns
+    a boolean, i.e. that it evaluates to true or false. </p>
 
 
-    <p>Given that an evaluation expression acts on the current logging
-    event, logback automatically exports various fields of the logging
-    event as variables accessible from the evaluation expression. The
-    case-sensitive names these variables is listed below.
+    <p>The evaluation expression is evaluated on the current logging
+    event. Logback-classic automatically exports various fields of the
+    logging event as variables accessible from the evaluation
+    expression. The case-sensitive names of these exported variables
+    are listed below.
     </p>
 
 		<table class="bodyTable">
@@ -1002,85 +1006,158 @@ logger.debug("Hello {}.", name1);</pre>
     because only 5 repetitions are allowed by default.
     </p>
 
-    <h2>In logback-access</h2>
+    <h1><a name="logbac-access" href="#logback-access">In logback-access</a></h1>
     
     <p>Logback-access offers most of the features available with
-    logback-classic. <code>Filter</code> objects are available and
-    work in the same way as their logback-classic counterparts. They
-    handle access' implementation of logging events:
-    <code>AccessEvent</code>.  Thus, a customized filter for logback
-    access follows strictly the same rules as those for
-    logback-classic, except for the event type received as parameter.
-    On the other hand, <code>TurboFilter</code> objects are supported
-    by logback-access.
+    logback-classic. In particular, <code>Filter</code> objects are
+    available and work in the same way as their logback-classic
+    counterparts, with one notable difference. Instead of
+    <code>LoggingEvent</code> instances logback-access filters act
+    upon <a
+    href="../xref/ch/qos/logback/access/spi/AccessEvent.html"><code>AccessEvent</code></a>
+    instances. At present time, logback-access ships with a limited
+    number of filters described below. If you would like to suggest
+    additional filters, please contact the logback-dev mailing list.
     </p>
-    
-    <h3>Filters</h3>
-    
-    <p><code>EvaluatorFilter</code> objects with java expressions
-    supplied in in <code>evaluator</code> configuration elements are
-    supported by logback-access. However, list implicit variables
-    available for constructing an expression are different. Only the
-    <code>AccessEvent</code> object can be used by inserting the
-    <em>event</em> variable in the expression. Nevertheless the access
-    <code>evaluator</code> is just as powerfull. All the request and
-    response components are reachable from the <em>event</em>
-    variable.
-    </p>    
-    
-    <p>Here is a sample configuration that will ensure that any 404
-    error will be logged:
-    </p>
-   	
-<em>Example: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
-<pre class="prettyprint source">&lt;configuration>
+
+		<h2><a name="countingFilter"
+		href="#countingFilter"><code>CountingFilter</code></a></h2>
+		
+		<p>With the help of <a
+		href="xref/ch/qos/logback/access/filter/CountingFilter.html"><code>CountingFilter</code></a>
+		class, logback-access can provide statistical data about access to
+		the web-server. Upon initialization, <code>CountingFilter</code>
+		registers itself as an MBean onto the platform's JMX server. You
+		can then interrogate that MBean for statistical data,
+		e.g. averages by minute, hour, day, week, or month. Other
+		statistics such the count for the preceding week, day, hour or
+		month as well as the total count are also available.
+		</p>
+		
+		<p>The following <em>logback-access.xml</em> configuration file
+		declares a <code>CountingFilter</code>.  </p>
+
+    <pre class="prettyprint source">&lt;configuration>
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+  <b>&lt;filter class="ch.qos.logback.access.filter.CountingFilter">
+    &lt;name>countingFilter&lt;/name>
+  &lt;/filter></b>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="myEval">
-        &lt;expression>event.getStatusCode() == 404&lt;/expression>
-      &lt;/evaluator>
-      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
-      &lt;onMatch>ACCEPT&lt;/onMatch>
-    &lt;/filter></b>
-   &lt;encoder>
-      &lt;pattern>
-        %h %l %u %t %r %s %b
-      &lt;/pattern>
+    &lt;encoder>
+      &lt;pattern>%h %l %u %t \"%r\" %s %b&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />
 &lt;/configuration></pre>
 
-		<p>We might imagine a slightly more complex use of filters to
-		ensure logging of 404 errors, except those returned on access to
-		CSS resources. Here is what such a configuration would look like:
-		</p>	
+    <p>You can examine the various statistics maintained by
+    <code>CountingFilter</code> on your platform's JMX server via the
+    <code>jconsole</code> application. </p>
 
-    <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator2.xml)</em>
-    <pre class="prettyprint source">&lt;configuration>
+
+    <img alt="CountingFilter via jconsole" src="images/chapters/filters/countingFilter.png" />
+	
+    <h3><a name="access_EvalutorFilter"
+    href="#access_EvalutorFilter"><code>EvaluatorFilter</code></a></h3>
+
+    
+    <p><a
+    href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>
+    is a generic filter encapsulating an
+    <code>EventEvaluator</code>. As the name intimates, an
+    <a
+    href="../xref/ch/qos/logback/core/boolex/EventEvaluator.html">
+    <code>EventEvaluator</code></a> evaluates whether a given criteria
+    is met for a given event. On match and respectively on mismatch,
+    the hosting <code>EvaluatorFilter</code> will return the value
+    specified by <span class="option">onMatch</span> and respectively
+    to <span class="option">onMismatch</span> properties. Note that
+    <code>EvaluatorFilter</code> has been previously discussed in the
+    context of logback-classic (<a href="#evalutatorFilter">see
+    above</a>). The present text is mostly a repetition of the
+    previous discussion.</p>
+
+
+    <p>Note that <code>EventEvaluator</code> is an abstract class. You
+    can implement your own event evaluation logic by sub-classing
+    <code>EventEvaluator</code>. Logback-access ships with a concrete
+    implementation named <a
+    href="../xref/ch/qos/logback/access/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>. 
+    It takes  arbitrary java language boolean expressions as the
+    evaluation criteria. We refer to such java language boolean
+    expressions as "<em>evaluation expressions</em>". Evaluation
+    expressions enable great flexibility in event
+    filtering. <code>JaninoEventEvaluator</code> requires the <a
+    href="http://docs.codehaus.org/display/JANINO/Home">Janino
+    library</a>. Please see the <a
+    href="../setup.html#janino">corresponding section</a> of the setup
+    document.  
+    </p>
+
+    <p>Evaluation expressions are compiled on-the-fly during the
+    interpretation of the configuration file. As a user, you do not
+    need to worry about the actual plumbing. However, it is your
+    reponsibility to ensure that the java-language expression returns
+    a boolean, i.e. that it evaluates to true or false. </p>
+
+
+    <p>The evaluation expression is evaluated on the current access
+    event. Logback-access automatically exports the current
+    <code>AccessEvent</code> instance under the variable name
+    <b><code>event</code></b>. You can read the various data
+    associated with the HTTP request as well as the HTTP response via
+    the <code>event</code> variable. Please refer to the the <a
+    href="../xref/ch/qos/logback/access/spi/AccessEvent.html"><code>AccessEvent</code>
+    class source code</a> for the exact list.
+    </p>
+    
+    <p>The next logback-access configuration file illustrates
+    filtering based on the <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404
+    (Not Found)</a> HTTP response code. Every request resulting in a
+    404 will be printed on the console.</p>
+   	
+<em>Example: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml)</em>
+<pre class="prettyprint source">&lt;configuration>
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="Eval404">
+      &lt;evaluator>
         &lt;expression>event.getStatusCode() == 404&lt;/expression>
       &lt;/evaluator>
-      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
-      &lt;onMatch>ACCEPT&lt;/onMatch>
-    &lt;/filter>
-    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator name="EvalCSS">
-        &lt;expression>event.getRequestURI().contains("css")&lt;/expression>
-      &lt;/evaluator>
-      &lt;onMismatch>NEUTRAL&lt;/onMismatch>
-      &lt;onMatch>DENY&lt;/onMatch>
+      &lt;onMismatch>DENY&lt;/onMismatch>
     &lt;/filter></b>
-   &lt;encoder>
-      &lt;pattern>
-        %h %l %u %t %r %s %b
-      &lt;/pattern>
-    &lt;/encoder>
+   &lt;encoder>&lt;pattern>%h %l %u %t %r %s %b&lt;/pattern>&lt;/encoder>
+  &lt;/appender>
+
+  &lt;appender-ref ref="STDOUT" />
+&lt;/configuration></pre>
+
+		<p>In the next example, we still log request resulting 404 errors,
+		except those requests asking for CSS files.
+		</p>	
+
+
+    <em>Example 6.10: Access Evaluator (logback-examples/src/main/java/chapters/filters/accessEventEvaluator2.xml)</em>
+    <pre class="prettyprint source">&lt;configuration>
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator name="Eval404">
+        &lt;expression>
+         <b>(event.getStatusCode() == 404)</b>
+           <b>&amp;amp;&amp;amp;</b>  &lt;!-- ampersand characters need to be escaped -->
+         <b>!(event.getRequestURI().contains(".css"))</b>
+        &lt;/expression>
+      &lt;/evaluator>
+      &lt;onMismatch>DENY&lt;/onMismatch>
+    &lt;/filter>
+
+   &lt;encoder>&lt;pattern>%h %l %u %t %r %s %b&lt;/pattern>&lt;/encoder>
   &lt;/appender>
 
   &lt;appender-ref ref="STDOUT" />

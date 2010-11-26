@@ -1,20 +1,17 @@
 <configuration>
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
-	<appender name="STDOUT"
-		class="ch.qos.logback.core.ConsoleAppender">
-		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-			<evaluator name="myEval">
-				<expression>event.getStatusCode() == 404</expression>
-			</evaluator>
-			<OnMismatch>NEUTRAL</OnMismatch>
-			<OnMatch>ACCEPT</OnMatch>
-		</filter>
-		<layout class="ch.qos.logback.access.PatternLayout">
-			<pattern>
-				%h %l %u %t %r %s %b
-			</pattern>
-		</layout>
-	</appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <evaluator>
+        <expression>event.getStatusCode() == 404</expression>
+      </evaluator>
+      <onMismatch>DENY</onMismatch>
+      <onMatch>ACCEPT</onMatch>
+    </filter>
 
-	<appender-ref ref="STDOUT" />
+   <encoder><pattern>%h %l %u %t %r %s %b</pattern></encoder>
+  </appender>
+
+  <appender-ref ref="STDOUT" />
 </configuration>

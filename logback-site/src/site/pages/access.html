@@ -417,51 +417,17 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 		</p>
 
 
-		<h2><code>CountingFilter</code></h2>
-		
-		<p>With the help of <a
-		href="xref/ch/qos/logback/access/filter/CountingFilter.html"><code>CountingFilter</code></a>
-		class, logback-access can provide statistical data about access to
-		the web-server.
-		</p>
-		
-		<p>If you wish to make use of <code>CountingFilter</code>, you to
-		declare it, as any other filter:
-		</p>
-
-    <pre class="prettyprint source">&lt;configuration>
-  <b>&lt;filter class="ch.qos.logback.access.filter.CountingFilter">
-    &lt;name>countingFilter&lt;/name>
-  &lt;/filter></b>
-
-  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;encoder>
-      &lt;pattern>%h %l %u %t \"%r\" %s %b&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-
-  &lt;appender-ref ref="STDOUT" />
-&lt;/configuration></pre>
-
-		<p>This component registers itself to the JMX server and publishes
-		the statistical data such as averages by minute, by hour, by day,
-		by week, and by month. Last month's, week's, day's, hour's and
-		minute's counts as well as the total number of access are also
-		exposed.
-		</p>
-
-
-    <h2><a name="teeFilter" href="#teeFilter"><code>TeeFilter</code></a></h2>
+    <h2><a name="teeFilter"
+    href="#teeFilter"><code>TeeFilter</code> <span class="small">(a servlet-filter)</span></a></h2>
 
     <p>In order to diagnose bugs in a web-application, it is often
     handy to capture the client's request as well as the server's
-    response as is. The <code>TeeFilter</code> was designed precisely
-    for this purpose.
-    </p>
- 
-    <p>The <code>TeeFilter</code> is a regular servlet filter. Like other
-    servlet filters, it needs to be declared in your web-application's
-    <em>web.xml</em> file:
+    response. The <code>TeeFilter</code> was designed precisely for
+    this purpose. It should be noted that <code>TeeFilter</code> is a
+    regular <a
+    href="http://download.oracle.com/javaee/5/api/javax/servlet/Filter.html">servlet
+    filter</a>. Like other servlet filters, it needs to be declared in
+    your web-application's <em>web.xml</em> file:
     </p>
 
     <pre class="prettyprint source">&lt;filter&gt;
