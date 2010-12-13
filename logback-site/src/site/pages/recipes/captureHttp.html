@@ -200,11 +200,11 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
       probe made by the load-balancer.
       </p>
 
-      <p>We need to a way to filter-out these probes so that they are
-      no longer contaminate the log output. However, we need a way to
+      <p>We need to a way to filter-out these probes so that they no
+      longer contaminate the log output. In other words, we need to
       distinguish probes emanating from the load-balancer from other
-      requests that we deem desirable. The contents of the requests
-      can give you clues about possible criteria.</p>
+      requests. The contents of the probes can give us clues about
+      possible distinguishing criteria.</p>
 
       <p>Here is a sample probe as logged by logback-access:</p>
 
@@ -218,16 +218,17 @@ X-Powered-By: Servlet 2.4;
 Cache-Control: no-cache
 Pragma: No-cache </pre>
 
-      <p>From the above, we can see that the load-blancer probes use
-      the <a
+      <p>From the above, we can see that the load-blancer probes
+      employ the <a
       href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4">HTTP
       HEAD method</a> instead of the usual GET or POST. We can also
       see that the request URI for the probes contains the string
       "probe".</p>
 
       <p>Here is a <em>logback-access.xml</em> configuration file
-      which will deny any access event which uses the HEAD
-      method. Note that it is based on Janino.</p>
+      which will deny any <code>AccessEvent</code> where the method is
+      HEAD. Note that events are evaluated using
+      <code>JaninoEventEvaluator</code> which requires Janino.</p>
 
       <pre class="prettyprint source">&lt;configuration>
   &lt;!-- always a good idea to install OnConsoleStatusListener -->

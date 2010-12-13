@@ -101,4 +101,10 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     pl.start();
     return pl;
   }
+
+  protected PatternLayout makeNewToPatternLayout(String toPattern) {
+    PatternLayout pl = new PatternLayout();
+    pl.setPattern(toPattern+"%nopex");
+    return pl;
+  }
 }

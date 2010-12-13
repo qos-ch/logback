@@ -79,4 +79,12 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
     pl.start();
     return pl;
   }
+
+    protected PatternLayout makeNewToPatternLayout(String toPattern) {
+    PatternLayout pl = new PatternLayout();
+    pl.setPattern(toPattern);
+    return pl;
+  }
+
+
 }

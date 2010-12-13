@@ -35,6 +35,7 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.sift.DefaultDiscriminator;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
@@ -58,18 +59,21 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
-
+    static InternetAddress[] EMPTY_IA_ARRAY = new InternetAddress[0];
   // ~ 14 days
   static final int MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   long lastTrackerStatusPrint = 0;
   int delayBetweenStatusMessages = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
+
+
+
   protected Layout<E> subjectLayout;
 
   protected Layout<E> layout;
 
-  private List<String> toList = new ArrayList<String>();
+  private List<PatternLayoutBase<E>> toPatternLayoutList = new ArrayList<PatternLayoutBase<E>>();
   private String from;
   private String subjectStr = null;
   private String smtpHost;
@@ -150,8 +154,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         mimeMsg.setFrom();
       }
 
-      mimeMsg.setRecipients(Message.RecipientType.TO, parseAddress(toList));
-
       subjectLayout = makeSubjectLayout(subjectStr);
 
       started = true;
@@ -190,7 +192,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
       addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
       lastTrackerStatusPrint = now;
-      // quadruple 'delay' assuming less than max delay 
+      // quadruple 'delay' assuming less than max delay
       if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
         delayBetweenStatusMessages *= 4;
       }
@@ -246,29 +248,35 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  InternetAddress[] parseAddress(List<String> addressList) {
+  private List<InternetAddress> parseAddress(E event) {
+    int len = toPatternLayoutList.size();
 
-    InternetAddress[] iaArray = new InternetAddress[addressList.size()];
+    List<InternetAddress> iaList = new ArrayList<InternetAddress>();
 
-    for (int i = 0; i < addressList.size(); i++) {
+    for (int i = 0; i < len; i++) {
       try {
-        InternetAddress[] tmp = InternetAddress.parse(addressList.get(i), true);
+        PatternLayoutBase<E> emailPL = toPatternLayoutList.get(i);
+        String email = emailPL.doLayout(event);
+        if(email == null || email.length() == 0) {
+          continue;
+        }
+        InternetAddress[] tmp = InternetAddress.parse(email, true);
         // one <To> element should contain one email address
-        iaArray[i] = tmp[0];
+        iaList.add(tmp[0]);
       } catch (AddressException e) {
-        addError("Could not parse address [" + addressList.get(i) + "].", e);
-        return null;
+        addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event ["+event+"]", e);
+        return iaList;
       }
     }
 
-    return iaArray;
+    return iaList;
   }
 
   /**
    * Returns value of the <b>toList</b> option.
    */
-  public List<String> getToList() {
-    return toList;
+  public List<PatternLayoutBase<E>> getToList() {
+    return toPatternLayoutList;
   }
 
   /**
@@ -306,6 +314,13 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 charsetEncoding);
       }
 
+     List<InternetAddress> destinationAddresses  =  parseAddress(lastEventObject);
+     if(destinationAddresses.isEmpty()) {
+       addInfo("Empty destination address. Aborting email transmission");
+       return;
+     }
+     mimeMsg.setRecipients(Message.RecipientType.TO, destinationAddresses.toArray(EMPTY_IA_ARRAY));
+
       String contentType = layout.getContentType();
 
       if (ContentTypeUtil.isTextual(contentType)) {
@@ -325,6 +340,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       addError("Error occured while sending e-mail notification.", e);
     }
   }
+
+
 
   abstract protected void fillBuffer(CyclicBuffer<E> cb, StringBuffer sbuf);
 
@@ -437,17 +454,28 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     this.discriminator = discriminator;
   }
 
-  /**
-   * The <b>To</b> option takes a string value which should be an e-mail address
-   * of one of the recipients.
-   */
   public void addTo(String to) {
-    this.toList.add(to);
+     if(to == null || to.length() == 0) {
+       throw new IllegalArgumentException("Null or empty <to> property");
+     }
+     PatternLayoutBase plb = makeNewToPatternLayout(to.trim());
+     plb.setContext(context);
+     plb.start();
+     this.toPatternLayoutList.add(plb);
   }
 
-  // for testing purpose only
+  abstract protected PatternLayoutBase<E> makeNewToPatternLayout(String toPattern);
 
-  public Message getMessage() {
+ public List<String> getToAsListOfString() {
+   List<String> toList = new ArrayList<String>();
+   for(PatternLayoutBase plb: toPatternLayoutList) {
+       toList.add(plb.getPattern());
+   }
+   return toList;
+ }
+
+  // for testing purpose only
+ public Message getMessage() {
     return mimeMsg;
   }
 

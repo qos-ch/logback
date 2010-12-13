@@ -189,7 +189,7 @@ class ConfigurationDelegateTest {
     PatternLayout layout = sa.layout
     assertEquals("%m%n", layout.pattern)
 
-    assertEquals(["a", "b"], sa.toList.sort());
+    assertEquals(["a%nopex", "b%nopex"], sa.getToAsListOfString().sort());
   }
 
   // test parent injection

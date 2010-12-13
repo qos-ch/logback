@@ -81,9 +81,7 @@ public class DilutedSMTPAppenderTest {
       addressArray = null;
       address = null;
 
-      addressArray = appender.getMessage().getAllRecipients();
-      address = addressArray[0];
-      assertEquals("sebastien.nospam@qos.ch", address.toString());
+      assertEquals("sebastien.nospam@qos.ch%nopex", appender.getToAsListOfString().get(0));
 
       assertEquals("logging report", appender.getSubject());
 

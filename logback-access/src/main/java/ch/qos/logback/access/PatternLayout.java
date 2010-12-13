@@ -182,5 +182,4 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
     }
     super.start();
   }
-
 }

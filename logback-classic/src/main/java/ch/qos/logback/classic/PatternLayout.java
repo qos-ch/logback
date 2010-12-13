@@ -139,5 +139,4 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     }
     return writeLoopOnConverters(event);
   }
-
 }
