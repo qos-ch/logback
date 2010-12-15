@@ -30,7 +30,5 @@ import org.junit.runners.Suite.SuiteClasses;
   ch.qos.logback.core.sift.PackageTest.class, 
   ch.qos.logback.core.encoder.PackageTest.class,
   ch.qos.logback.core.recovery.PackageTest.class})
-public class
-        AllCoreTest {
-
+public class AllCoreTest {
 }

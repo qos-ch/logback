@@ -24,17 +24,17 @@ import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
  * <p>
  * Return a steady stream of tokens.
  * <p/>
- * 
+ * <p/>
  * <p>
- * The returned tokens are one of: LITERAL, '%', FORMAT_MODIFIER, KEYWWORD,
+ * The returned tokens are one of: LITERAL, '%', FORMAT_MODIFIER, SIMPLE_KEYWORD, COMPOSITE_KEYWORD
  * OPTION, LEFT_PARENTHESIS, and RIGHT_PARENTHESIS.
  * </p>
- * 
+ * <p/>
  * <p>
  * The '\' character is used as escape. It can be used to escape '_', '%', '('
  * and '('.
  * <p>
- * 
+ * <p/>
  * <p>
  * Note that there is no EOS token returned.
  * </p>
@@ -42,7 +42,6 @@ import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 class TokenStream {
 
   private static final char ESCAPE_CHAR = '\\';
-  private static final char PERCENT_CHAR = CoreConstants.PERCENT_CHAR;
   private static final char CURLY_LEFT = '{';
   private static final char CURLY_RIGHT = '}';
 
@@ -66,7 +65,7 @@ class TokenStream {
   TokenStream(String pattern, IEscapeUtil escapeUtil) {
     if (pattern == null || pattern.length() == 0) {
       throw new IllegalArgumentException(
-          "null or empty pattern string not allowed");
+              "null or empty pattern string not allowed");
     }
     this.pattern = pattern;
     patternLength = pattern.length();
@@ -83,105 +82,121 @@ class TokenStream {
 
       switch (state) {
 
-      case LITERAL_STATE:
-        switch (c) {
-        case ESCAPE_CHAR:
-          escape("%()", buf);
+        case LITERAL_STATE:
+          handleLiteralState(c, tokenList, buf);
           break;
-        case PERCENT_CHAR:
-          addValuedToken(Token.LITERAL, buf, tokenList);
-          tokenList.add(Token.PERCENT_TOKEN);
-          state = FORMAT_MODIFIER_STATE;
+        //
+        case FORMAT_MODIFIER_STATE:
+          handleFormatModifierState(c, tokenList, buf);
           break;
-
-        case CoreConstants.RIGHT_PARENTHESIS_CHAR:
-          if (buf.length() >= 1 && buf.charAt(buf.length() - 1) == '\\') {
-            buf.deleteCharAt(buf.length() - 1);
-            buf.append(CoreConstants.RIGHT_PARENTHESIS_CHAR);
-          } else {
-            addValuedToken(Token.LITERAL, buf, tokenList);
-            tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
+        case OPTION_STATE:
+          switch (c) {
+            case CURLY_RIGHT:
+              addValuedToken(Token.OPTION, buf, tokenList);
+              state = LITERAL_STATE;
+              break;
+            case ESCAPE_CHAR:
+              escape("%{}", buf);
+              break;
+            default:
+              buf.append(c);
           }
+          break;
+        case KEYWORD_STATE:
+          handleKeywordState(c, tokenList, buf);
           break;
 
         default:
-          buf.append(c);
-        }
-        break;
-      //
-      case FORMAT_MODIFIER_STATE:
-        if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
-          addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
-          tokenList.add(Token.LEFT_PARENTHESIS_TOKEN);
-          state = LITERAL_STATE;
-        } else if (Character.isJavaIdentifierStart(c)) {
-          addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
-          state = KEYWORD_STATE;
-          buf.append(c);
-        } else {
-          buf.append(c);
-        }
-        break;
-      case OPTION_STATE:
-        switch (c) {
-        case CURLY_RIGHT:
-          addValuedToken(Token.OPTION, buf, tokenList);
-          state = LITERAL_STATE;
-          break;
-        case ESCAPE_CHAR:
-          escape("%{}", buf);
-          break;
-        default:
-          buf.append(c);
-        }
-        break;
-      case KEYWORD_STATE:
-        if (c == CURLY_LEFT) {
-          addValuedToken(Token.KEYWORD, buf, tokenList);
-          state = OPTION_STATE;
-        } else if (Character.isJavaIdentifierPart(c)) {
-          buf.append(c);
-        } else if (c == PERCENT_CHAR) {
-          addValuedToken(Token.KEYWORD, buf, tokenList);
-          tokenList.add(Token.PERCENT_TOKEN);
-          state = FORMAT_MODIFIER_STATE;
-        } else {
-          addValuedToken(Token.KEYWORD, buf, tokenList);
-          if (c == CoreConstants.RIGHT_PARENTHESIS_CHAR) {
-            // if c is a right parenthesis, then add it as such
-            tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
-          } else if (c == ESCAPE_CHAR) {
-            if ((pointer < patternLength)) {
-              char next = pattern.charAt(pointer++);
-              escapeUtil.escape("%()", buf, next, pointer);
-            }
-          } else {
-            buf.append(c);
-          }
-          state = LITERAL_STATE;
-        }
-        break;
-
-      default:
       }
     }
 
     // EOS
     switch (state) {
-    case LITERAL_STATE:
-      addValuedToken(Token.LITERAL, buf, tokenList);
-      break;
-    case KEYWORD_STATE:
-      tokenList.add(new Token(Token.KEYWORD, buf.toString()));
-      buf.setLength(0);
-      break;
+      case LITERAL_STATE:
+        addValuedToken(Token.LITERAL, buf, tokenList);
+        break;
+      case KEYWORD_STATE:
+        tokenList.add(new Token(Token.SIMPLE_KEYWORD, buf.toString()));
+        buf.setLength(0);
+        break;
 
-    case FORMAT_MODIFIER_STATE:
-    case OPTION_STATE:
-      throw new ScanException("Unexpected end of pattern string");
+      case FORMAT_MODIFIER_STATE:
+      case OPTION_STATE:
+        throw new ScanException("Unexpected end of pattern string");
     }
 
     return tokenList;
+  }
+
+  private void handleFormatModifierState(char c, List<Token> tokenList, StringBuffer buf) {
+    if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
+      addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
+      tokenList.add(Token.BARE_COMPOSITE_KEYWORD_TOKEN);
+      state = LITERAL_STATE;
+    } else if (Character.isJavaIdentifierStart(c)) {
+      addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
+      state = KEYWORD_STATE;
+      buf.append(c);
+    } else {
+      buf.append(c);
+    }
+  }
+
+  private void handleLiteralState(char c, List<Token> tokenList, StringBuffer buf) {
+    switch (c) {
+      case ESCAPE_CHAR:
+        escape("%()", buf);
+        break;
+
+      case CoreConstants.PERCENT_CHAR:
+        addValuedToken(Token.LITERAL, buf, tokenList);
+        tokenList.add(Token.PERCENT_TOKEN);
+        state = FORMAT_MODIFIER_STATE;
+        break;
+
+      case CoreConstants.RIGHT_PARENTHESIS_CHAR:
+        if (buf.length() >= 1 && buf.charAt(buf.length() - 1) == '\\') {
+          buf.deleteCharAt(buf.length() - 1);
+          buf.append(CoreConstants.RIGHT_PARENTHESIS_CHAR);
+        } else {
+          addValuedToken(Token.LITERAL, buf, tokenList);
+          tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
+        }
+        break;
+
+      default:
+        buf.append(c);
+    }
+  }
+
+  private void handleKeywordState(char c, List<Token> tokenList, StringBuffer buf) {
+    if (c == CURLY_LEFT) {
+      addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
+      state = OPTION_STATE;
+    } else if (Character.isJavaIdentifierPart(c)) {
+      buf.append(c);
+    } else if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
+      addValuedToken(Token.COMPOSITE_KEYWORD, buf, tokenList);
+      state = LITERAL_STATE;
+    } else if (c == CoreConstants.PERCENT_CHAR) {
+      addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
+      tokenList.add(Token.PERCENT_TOKEN);
+      state = FORMAT_MODIFIER_STATE;
+    } else {
+      addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
+      if (c == CoreConstants.RIGHT_PARENTHESIS_CHAR) {
+        // if c is a right parenthesis, then add it as such
+        tokenList.add(Token.RIGHT_PARENTHESIS_TOKEN);
+      } else if (c == ESCAPE_CHAR) {
+        if ((pointer < patternLength)) {
+          char next = pattern.charAt(pointer++);
+          escapeUtil.escape("%()", buf, next, pointer);
+        }
+      } else {
+        buf.append(c);
+      }
+      state = LITERAL_STATE;
+    }
   }
 
   void escape(String escapeChars, StringBuffer buf) {

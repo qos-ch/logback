@@ -13,17 +13,45 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.FormatInfo;
+import ch.qos.logback.core.pattern.IdentityCompositeConverter;
+import ch.qos.logback.core.pattern.ReplacingCompositeConverter;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+// ~=lamda
+// E = TE|T
+
+// Left factorization
+// E = T(E|~)
+// Eopt = E|~
+// replace E|~ with Eopt in E
+// E = TEopt
+
+// T = LITERAL | '%' C | '%' FORMAT_MODIFIER C
+// C = SIMPLE_KEYWORD OPTION | COMPOSITE_KEYWORD COMPOSITE
+// OPTION = {...} | ~
+// COMPOSITE = E ')' OPTION
+
+
 
 public class Parser<E> extends ContextAwareBase {
+
+  public final static Map<String, String> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<String, String>();
+  public final static String REPLACER_CONVERTER_WORD = "replace";
+  static {
+    DEFAULT_COMPOSITE_CONVERTER_MAP.put(Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString(),
+            IdentityCompositeConverter.class.getName());
+    DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACER_CONVERTER_WORD,
+             ReplacingCompositeConverter.class.getName());
+
+  }
 
   final List tokenList;
   int pointer = 0;
@@ -32,7 +60,6 @@ public class Parser<E> extends ContextAwareBase {
     this.tokenList = ts.tokenize();
   }
 
-  // this variant should be used for testing purposes only
   public Parser(String pattern) throws ScanException {
     this(pattern, new RegularEscapeUtil());
   }
@@ -46,38 +73,49 @@ public class Parser<E> extends ContextAwareBase {
     }
   }
 
-  public Node parse() throws ScanException {
-    return E();
-  }
-
   /**
    * When the parsing step is done, the Node list can be transformed into a
    * converter chain.
-   * 
+   *
    * @param top
    * @param converterMap
    * @return
    * @throws ScanException
    */
-  public Converter<E> compile(final Node top, Map converterMap) {
-    Compiler<E> compiler = new Compiler<E>(top, converterMap);
+  public Converter<E> compile(final Node top, Map converterMap, Map compositeConverterMap) {
+    Compiler<E> compiler = new Compiler<E>(top, converterMap, compositeConverterMap);
     compiler.setContext(context);
     //compiler.setStatusManager(statusManager);
     return compiler.compile();
   }
 
+  public Node parse() throws ScanException {
+    return E();
+  }
+
+  // E = TEopt
   Node E() throws ScanException {
-    // System.out.println("in E()");
     Node t = T();
     if (t == null) {
       return null;
     }
     Node eOpt = Eopt();
     if (eOpt != null) {
-      // System.out.println("setting next node to " + eOpt);
       t.setNext(eOpt);
     }
     return t;
+  }
+
+  // Eopt = E|~
+  Node Eopt() throws ScanException {
+    // System.out.println("in Eopt()");
+    Token next = getCurentToken();
+    // System.out.println("Current token is " + next);
+    if (next == null) {
+      return null;
+    } else {
+      return E();
+    }
   }
 
   Node T() throws ScanException {
@@ -117,17 +155,6 @@ public class Parser<E> extends ContextAwareBase {
 
   }
 
-  Node Eopt() throws ScanException {
-    // System.out.println("in Eopt()");
-    Token next = getCurentToken();
-    // System.out.println("Current token is " + next);
-    if (next == null) {
-      return null;
-    } else {
-      return E();
-    }
-  }
-
   FormattingNode C() throws ScanException {
     Token t = getCurentToken();
     // System.out.println("in C()");
@@ -135,11 +162,11 @@ public class Parser<E> extends ContextAwareBase {
     expectNotNull(t, "a LEFT_PARENTHESIS or KEYWORD");
     int type = t.getType();
     switch (type) {
-    case Token.KEYWORD:
+    case Token.SIMPLE_KEYWORD:
       return SINGLE();
-    case Token.LEFT_PARENTHESIS:
+    case Token.COMPOSITE_KEYWORD:
       advanceTokenPointer();
-      return COMPOSITE();
+      return COMPOSITE(t.getValue().toString());
     default:
       throw new IllegalStateException("Unexpected token " + t);
     }
@@ -149,19 +176,19 @@ public class Parser<E> extends ContextAwareBase {
     // System.out.println("in SINGLE()");
     Token t = getNextToken();
     // System.out.println("==" + t);
-    KeywordNode keywordNode = new KeywordNode(t.getValue());
+    SimpleKeywordNode keywordNode = new SimpleKeywordNode(t.getValue());
 
     Token ot = getCurentToken();
     if (ot != null && ot.getType() == Token.OPTION) {
-      List optionList = new OptionTokenizer((String) ot.getValue()).tokenize();
+      List<String> optionList = new OptionTokenizer((String) ot.getValue()).tokenize();
       keywordNode.setOptions(optionList);
       advanceTokenPointer();
     }
     return keywordNode;
   }
 
-  FormattingNode COMPOSITE() throws ScanException {
-    CompositeNode compositeNode = new CompositeNode();
+  FormattingNode COMPOSITE(String keyword) throws ScanException {
+    CompositeNode compositeNode = new CompositeNode(keyword);
 
     Node childNode = E();
     // System.out.println("Child node: " + childNode);
@@ -176,6 +203,12 @@ public class Parser<E> extends ContextAwareBase {
           "Expecting RIGHT_PARENTHESIS token but got " + t);
     } else {
       // System.out.println("got expected ')'");
+    }
+    Token ot = getCurentToken();
+    if (ot != null && ot.getType() == Token.OPTION) {
+      List<String> optionList = new OptionTokenizer((String) ot.getValue()).tokenize();
+      compositeNode.setOptions(optionList);
+      advanceTokenPointer();
     }
     return compositeNode;
   }

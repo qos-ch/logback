@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2010, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,23 +13,21 @@
  */
 package ch.qos.logback.core.pattern;
 
-public class CompositeConverter<E> extends FormattingConverter<E> {
+abstract public class CompositeConverter<E> extends DynamicConverter<E> {
 
-  StringBuilder buf = new StringBuilder();
   Converter<E> childConverter;
 
   public String convert(E event) {
-    if (buf.capacity() > MAX_CAPACITY) {
-      buf = new StringBuilder(INITIAL_BUF_SIZE);
-    } else {
-      buf.setLength(0);
-    }
+    StringBuilder buf = new StringBuilder();
 
     for (Converter<E> c = childConverter; c != null; c = c.next) {
       c.write(buf, event);
     }
-    return buf.toString();
+    String intermediary = buf.toString();
+    return transform(intermediary);
   }
+
+  abstract String transform(String in);
 
   public void setChildConverter(Converter<E> child) {
     childConverter = child;

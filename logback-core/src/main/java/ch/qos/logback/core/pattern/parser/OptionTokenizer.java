@@ -52,7 +52,7 @@ public class OptionTokenizer {
     this.escapeUtil = escapeUtil;
   }
 
-  List tokenize() throws ScanException {
+  List<String> tokenize() throws ScanException {
     List<String> tokenList = new ArrayList<String>();
     StringBuffer buf = new StringBuffer();
 

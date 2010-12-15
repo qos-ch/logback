@@ -15,8 +15,8 @@ package ch.qos.logback.core.pattern.parser;
 
 public class Node {
 	static final int LITERAL = 0;
-	static final int KEYWORD = 1;
-	static final int COMPOSITE = 2;
+	static final int SIMPLE_KEYWORD = 1;
+	static final int COMPOSITE_KEYWORD = 2;
 
 	final int type;
 	final Object value;

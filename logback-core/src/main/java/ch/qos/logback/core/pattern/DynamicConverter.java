@@ -21,7 +21,7 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E>
     implements LifeCycle {
 
   // Contains a list of option Strings.
-  private List optionList;
+  private List<String> optionList;
 
   /**
    * Is this component active?
@@ -46,7 +46,7 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E>
     return started;
   }
 
-  public void setOptionList(List optionList) {
+  public void setOptionList(List<String> optionList) {
     this.optionList = optionList;
   }
 
@@ -60,11 +60,11 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E>
     if (optionList == null || optionList.size() == 0) {
       return null;
     } else {
-      return (String) optionList.get(0);
+      return optionList.get(0);
     }
   }
 
-  protected List getOptionList() {
+  protected List<String> getOptionList() {
     return optionList;
   }
 }

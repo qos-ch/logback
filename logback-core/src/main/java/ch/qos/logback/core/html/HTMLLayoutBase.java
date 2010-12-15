@@ -83,7 +83,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
       Parser<E> p = new Parser<E>(pattern);
       p.setContext(getContext());
       Node t = p.parse();
-      this.head = p.compile(t, getEffectiveConverterMap());
+      this.head = p.compile(t, getEffectiveConverterMap(), Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
       ConverterUtil.startConverters(this.head);
     } catch (ScanException ex) {
       addError("Incorrect pattern found", ex);

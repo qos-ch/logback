@@ -29,6 +29,7 @@ public class DateConverter extends ClassicConverter {
 
   public void start() {
 
+
     String datePattern = getFirstOption();
     if (datePattern == null) {
       datePattern = CoreConstants.ISO8601_PATTERN;

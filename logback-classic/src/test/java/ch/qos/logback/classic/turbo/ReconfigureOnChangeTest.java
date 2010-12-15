@@ -179,7 +179,7 @@ public class ReconfigureOnChangeTest {
     // we can't have the test succeed under JDK 1.5, punt and require 1.6+
     if (Env.isJDK6OrHigher()) {
       assertTrue(failMsg,
-          (effectiveResets * 1.3) >= (expectedReconfigurations * 1.0));
+          (effectiveResets * 1.4) >= (expectedReconfigurations * 1.0));
     }
   }
 

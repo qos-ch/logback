@@ -25,6 +25,8 @@ import ch.qos.logback.core.pattern.FormatInfo;
 
 public class ParserTest {
 
+  String BARE = Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString();
+
   @Test
   public void testBasic() throws Exception {
     Parser p = new Parser("hello");
@@ -40,7 +42,7 @@ public class ParserTest {
       Parser p = new Parser("hello%xyz");
       Node t = p.parse();
       Node witness = new Node(Node.LITERAL, "hello");
-      witness.next = new KeywordNode("xyz");
+      witness.next = new SimpleKeywordNode("xyz");
       assertEquals(witness, t);
     }
 
@@ -48,7 +50,7 @@ public class ParserTest {
       Parser p = new Parser("hello%xyz{x}");
       Node t = p.parse();
       Node witness = new Node(Node.LITERAL, "hello");
-      KeywordNode n = new KeywordNode("xyz");
+      SimpleKeywordNode n = new SimpleKeywordNode("xyz");
       List<String> optionList = new ArrayList<String>();
       optionList.add("x");
       n.setOptions(optionList);
@@ -64,8 +66,8 @@ public class ParserTest {
       Node t = p.parse();
 
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
-      Node child = new KeywordNode("child");
+      CompositeNode composite = new CompositeNode(BARE);
+      Node child = new SimpleKeywordNode("child");
       composite.setChildNode(child);
       witness.next = composite;
 
@@ -81,8 +83,8 @@ public class ParserTest {
       Node t = p.parse();
 
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
-      Node child = new KeywordNode("child");
+      CompositeNode composite = new CompositeNode(BARE);
+      Node child = new SimpleKeywordNode("child");
       composite.setChildNode(child);
       witness.next = composite;
       child.next = new Node(Node.LITERAL, " ");
@@ -93,11 +95,11 @@ public class ParserTest {
       Parser p = new Parser("hello%(%child %h)");
       Node t = p.parse();
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
-      Node child = new KeywordNode("child");
+      CompositeNode composite = new CompositeNode(BARE);
+      Node child = new SimpleKeywordNode("child");
       composite.setChildNode(child);
       child.next = new Node(Node.LITERAL, " ");
-      child.next.next = new KeywordNode("h");
+      child.next.next = new SimpleKeywordNode("h");
       witness.next = composite;
       assertEquals(witness, t);
     }
@@ -106,14 +108,14 @@ public class ParserTest {
       Parser p = new Parser("hello%(%child %h) %m");
       Node t = p.parse();
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
-      Node child = new KeywordNode("child");
+      CompositeNode composite = new CompositeNode(BARE);
+      Node child = new SimpleKeywordNode("child");
       composite.setChildNode(child);
       child.next = new Node(Node.LITERAL, " ");
-      child.next.next = new KeywordNode("h");
+      child.next.next = new SimpleKeywordNode("h");
       witness.next = composite;
       composite.next = new Node(Node.LITERAL, " ");
-      composite.next.next = new KeywordNode("m");
+      composite.next.next = new SimpleKeywordNode("m");
       assertEquals(witness, t);
     }
 
@@ -121,17 +123,17 @@ public class ParserTest {
       Parser p = new Parser("hello%( %child \\(%h\\) ) %m");
       Node t = p.parse();
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
+      CompositeNode composite = new CompositeNode(BARE);
       Node child = new Node(Node.LITERAL, " ");
       composite.setChildNode(child);
       Node c = child;
-      c = c.next = new KeywordNode("child");
+      c = c.next = new SimpleKeywordNode("child");
       c = c.next = new Node(Node.LITERAL, " (");
-      c = c.next = new KeywordNode("h");
+      c = c.next = new SimpleKeywordNode("h");
       c = c.next = new Node(Node.LITERAL, ") ");
       witness.next = composite;
       composite.next = new Node(Node.LITERAL, " ");
-      composite.next.next = new KeywordNode("m");
+      composite.next.next = new SimpleKeywordNode("m");
       assertEquals(witness, t);
 
     }
@@ -142,15 +144,15 @@ public class ParserTest {
     {
       Parser p = new Parser("%top %(%child%(%h))");
       Node t = p.parse();
-      Node witness = new KeywordNode("top");
+      Node witness = new SimpleKeywordNode("top");
       Node w = witness.next = new Node(Node.LITERAL, " ");
-      CompositeNode composite = new CompositeNode();
+      CompositeNode composite = new CompositeNode(BARE);
       w = w.next = composite;
-      Node child = new KeywordNode("child");
+      Node child = new SimpleKeywordNode("child");
       composite.setChildNode(child);
-      composite = new CompositeNode();
+      composite = new CompositeNode(BARE);
       child.next = composite;
-      composite.setChildNode(new KeywordNode("h"));
+      composite.setChildNode(new SimpleKeywordNode("h"));
 
       assertEquals(witness, t);
     }
@@ -161,14 +163,14 @@ public class ParserTest {
     {
       Parser p = new Parser("%45x");
       Node t = p.parse();
-      FormattingNode witness = new KeywordNode("x");
+      FormattingNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
       assertEquals(witness, t);
     }
     {
       Parser p = new Parser("%4.5x");
       Node t = p.parse();
-      FormattingNode witness = new KeywordNode("x");
+      FormattingNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(4, 5));
       assertEquals(witness, t);
     }
@@ -176,14 +178,14 @@ public class ParserTest {
     {
       Parser p = new Parser("%-4.5x");
       Node t = p.parse();
-      FormattingNode witness = new KeywordNode("x");
+      FormattingNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(4, 5, false, true));
       assertEquals(witness, t);
     }
     {
       Parser p = new Parser("%-4.-5x");
       Node t = p.parse();
-      FormattingNode witness = new KeywordNode("x");
+      FormattingNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(4, 5, false, false));
       assertEquals(witness, t);
     }
@@ -191,10 +193,10 @@ public class ParserTest {
     {
       Parser p = new Parser("%-4.5x %12y");
       Node t = p.parse();
-      FormattingNode witness = new KeywordNode("x");
+      FormattingNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(4, 5, false, true));
       Node n = witness.next = new Node(Node.LITERAL, " ");
-      n = n.next = new KeywordNode("y");
+      n = n.next = new SimpleKeywordNode("y");
       ((FormattingNode) n).setFormatInfo(new FormatInfo(12, Integer.MAX_VALUE));
       assertEquals(witness, t);
     }
@@ -205,7 +207,7 @@ public class ParserTest {
     {
       Parser p = new Parser("%45x{'test '}");
       Node t = p.parse();
-      KeywordNode witness = new KeywordNode("x");
+      SimpleKeywordNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
       List<String> ol = new ArrayList<String>();
       ol.add("test ");
@@ -216,7 +218,7 @@ public class ParserTest {
     {
       Parser p = new Parser("%45x{a, b}");
       Node t = p.parse();
-      KeywordNode witness = new KeywordNode("x");
+      SimpleKeywordNode witness = new SimpleKeywordNode("x");
       witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
       List<String> ol = new ArrayList<String>();
       ol.add("a");
@@ -232,7 +234,7 @@ public class ParserTest {
       {
       Parser p = new Parser("%x{}a");
       Node t = p.parse();
-      KeywordNode witness = new KeywordNode("x");
+      SimpleKeywordNode witness = new SimpleKeywordNode("x");
       witness.next = new Node(Node.LITERAL, "a");
       assertEquals(witness, t);
     }
@@ -246,7 +248,7 @@ public class ParserTest {
       Node t = p.parse();
 
       Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode();
+      CompositeNode composite = new CompositeNode(BARE);
       composite.setFormatInfo(new FormatInfo(5, Integer.MAX_VALUE));
       Node child = new Node(Node.LITERAL, "XYZ");
       composite.setChildNode(child);

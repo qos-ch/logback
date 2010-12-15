@@ -13,11 +13,12 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-public class CompositeNode extends FormattingNode {
+public class CompositeNode extends SimpleKeywordNode {
 	Node childNode;
 
-	CompositeNode() {
-		super(Node.COMPOSITE);
+	CompositeNode(String keyword) {
+		super(Node.COMPOSITE_KEYWORD, keyword);
+
 	}
 
 	public Node getChildNode() {

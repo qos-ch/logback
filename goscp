@@ -1,0 +1,3 @@
+TARGET=cgulcu@hqchnesoa07:/srv/jboss-eap-4.3.0.GA_CP05/jboss-as/server/nesoa-04-esb-01/lib/
+
+scp logback-core/target/logback-core-0.9.27-SNAPSHOT.jar logback-classic/target/logback-classic-0.9.27-SNAPSHOT.jar logback-access/target/logback-access-0.9.27-SNAPSHOT.jar   $TARGET
