@@ -16,6 +16,7 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.pattern.util.AsIsEscapeUtil;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
@@ -43,7 +44,7 @@ public class OptionTokenizer {
    * @param pattern
    */
   OptionTokenizer(String pattern) {
-    this(pattern, new RegularEscapeUtil());
+    this(pattern, new AsIsEscapeUtil());
   }
   
   OptionTokenizer(String pattern, IEscapeUtil escapeUtil) {
@@ -67,6 +68,8 @@ public class OptionTokenizer {
         case '\t':
         case '\r':
         case '\n':
+          break;
+        case COMMA_CHAR:
           break;
         case SINGLE_QUOTE_CHAR:
         case DOUBLE_QUOTE_CHAR:

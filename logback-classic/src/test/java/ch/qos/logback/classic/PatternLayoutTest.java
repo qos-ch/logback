@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +44,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
   private LoggerContext lc = new LoggerContext();
   Logger logger = lc.getLogger(ConverterTest.class);
   Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-  
+
   ILoggingEvent le;
   List<String> optionList = new ArrayList<String>();
 
@@ -59,8 +61,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
   ILoggingEvent makeLoggingEvent(Exception ex) {
     return new LoggingEvent(
-        ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
-        logger, Level.INFO, "Some message", ex, null);
+            ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
+            logger, Level.INFO, "Some message", ex, null);
   }
 
   @Override
@@ -80,7 +82,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
     // message
     String regex = ISO_REGEX + " INFO " + MAIN_REGEX
-        + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
+            + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
 
     assertTrue(val.matches(regex));
   }
@@ -100,7 +102,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     String val = pl.doLayout(getEventObject());
     // 2008-03-18 21:55:54,250 c.q.l.c.pattern.ConverterTest - Some message
     String regex = ISO_REGEX
-        + " c.q.l.c.p.ConverterTest          - Some message\\s*";
+            + " c.q.l.c.p.ConverterTest          - Some message\\s*";
     assertTrue(val.matches(regex));
   }
 
@@ -109,10 +111,11 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     pl.setPattern("%property{a}");
     pl.start();
     lc.putProperty("a", "b");
-    
+
     String val = pl.doLayout(getEventObject());
     assertEquals("b", val);
   }
+
   @Test
   public void testNopExeptionHandler() {
     pl.setPattern("%nopex %m%n");
@@ -140,8 +143,26 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
     // message
     String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
-        + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
+            + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
+  }
+
+  @Test
+  public void replace() {
+//    {
+//      pl.setPattern("%replace(a){'a', 'b'}");
+//      pl.start();
+//      String val = pl.doLayout(getEventObject());
+//      assertEquals("b", val);
+//    }
+    {
+      pl.setPattern("%replace(a1234b){'\\d{4\\}', 'XXXX'}");
+      pl.start();
+      StatusPrinter.print(lc);
+      String val = pl.doLayout(getEventObject());
+      assertEquals("aXXXXb", val);
+    }
+
   }
 
   @Test
@@ -168,11 +189,13 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
   public void testConversionRuleSupportInPatternLayout() throws JoranException {
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/patternLayout0.xml");
     root.getAppender("LIST");
-    String msg  = "Simon says";
+    String msg = "Simon says";
     logger.debug(msg);
-    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>)    root.getAppender("LIST");
+    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
     assertNotNull(sla);
     assertEquals(1, sla.strList.size());
-    assertEquals(SampleConverter.SAMPLE_STR+" - "+msg, sla.strList.get(0)); 
+    assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
   }
+
+
 }

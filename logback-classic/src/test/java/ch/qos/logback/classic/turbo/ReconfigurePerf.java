@@ -33,14 +33,16 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.testUtil.Env;
 
+import static org.junit.Assert.fail;
+
 public class ReconfigurePerf {
   final static int THREAD_COUNT = 50;
-  final static int LOOP_LEN = 1000 * 1000;
+  //final static int LOOP_LEN = 1000 * 1000;
 
   // the space in the file name mandated by
   // http://jira.qos.ch/browse/LBCORE-119
   final static String CONF_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
-      + "turbo/scan_perf.xml";
+      + "turbo/scan_perf_barebones.xml";
 
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
@@ -60,9 +62,9 @@ public class ReconfigurePerf {
     // take into account propagation latency occurs on Linux
     if (Env.isLinux()) {
       sleepBetweenUpdates = 850;
-      totalTestDuration = sleepBetweenUpdates * 5;
+      totalTestDuration = sleepBetweenUpdates * 25;
     } else {
-      totalTestDuration = sleepBetweenUpdates * 10;
+      totalTestDuration = sleepBetweenUpdates * 50;
     }
     harness = new MultiThreadedHarness(totalTestDuration);
   }
@@ -86,11 +88,11 @@ public class ReconfigurePerf {
   public void scan1() throws JoranException, IOException, InterruptedException {
     File file = new File(CONF_FILE_AS_STR);
     configure(file);
-    doRun();
-    doRun();
-    doRun();
+    //doRun();
+    //doRun();
+    //doRun();
     System.out.println("ENTER :");
-    System.in.read();
+    //System.in.read();
     doRun();
   }
 
@@ -99,28 +101,28 @@ public class ReconfigurePerf {
     harness.execute(runnableArray);
   }
   
-  ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
-    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-    rocf.setContext(loggerContext);
-    File file = new File(CONF_FILE_AS_STR);
-    loggerContext.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN,
-        file.toURI().toURL());
-    rocf.start();
-    return rocf;
-  }
+//  ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
+//    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
+//    rocf.setContext(loggerContext);
+//    File file = new File(CONF_FILE_AS_STR);
+//    loggerContext.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN,
+//        file.toURI().toURL());
+//    rocf.start();
+//    return rocf;
+//  }
 
 
-  public double directLoop(ReconfigureOnChangeFilter rocf) {
-    long start = System.nanoTime();
-    for (int i = 0; i < LOOP_LEN; i++) {
-      rocf.decide(null, logger, Level.DEBUG, " ", null, null);
-    }
-    long end = System.nanoTime();
-    return (end - start) / (1.0d * LOOP_LEN);
-  }
-
-  void addInfo(String msg, Object o) {
-    loggerContext.getStatusManager().add(new InfoStatus(msg, o));
-  }
+//  public double directLoop(ReconfigureOnChangeFilter rocf) {
+//    long start = System.nanoTime();
+//    for (int i = 0; i < LOOP_LEN; i++) {
+//      rocf.decide(null, logger, Level.DEBUG, " ", null, null);
+//    }
+//    long end = System.nanoTime();
+//    return (end - start) / (1.0d * LOOP_LEN);
+//  }
+//
+//  void addInfo(String msg, Object o) {
+//    loggerContext.getStatusManager().add(new InfoStatus(msg, o));
+//  }
 
 }

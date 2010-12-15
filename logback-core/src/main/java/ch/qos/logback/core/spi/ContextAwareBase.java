@@ -29,6 +29,14 @@ import ch.qos.logback.core.status.WarnStatus;
 public class ContextAwareBase implements ContextAware {
   private int noContextWarning = 0;
   protected Context context;
+  final Object declaredOrigin;
+
+  public ContextAwareBase() {
+    declaredOrigin = this;
+  }
+  public ContextAwareBase(Object declaredOrigin) {
+    this.declaredOrigin = declaredOrigin;
+  }
 
   public void setContext(Context context) {
     if (this.context == null) {
@@ -56,7 +64,7 @@ public class ContextAwareBase implements ContextAware {
    * @return the declared origin, by default 'this'
    */ 
   protected Object getDeclaredOrigin() {
-    return this;
+    return declaredOrigin;
   }
 
   public void addStatus(Status status) {

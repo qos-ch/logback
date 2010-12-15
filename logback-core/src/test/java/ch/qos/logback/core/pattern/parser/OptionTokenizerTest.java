@@ -118,6 +118,20 @@ public class OptionTokenizerTest  {
       witness.add("b");
       assertEquals(witness, ol);
     }
+    {
+      List ol = new OptionTokenizer("'a', b").tokenize();
+      List<String> witness = new ArrayList<String>();
+      witness.add("a");
+      witness.add("b");
+      assertEquals(witness, ol);
+    }
+    {
+      List ol = new OptionTokenizer("'', b").tokenize();
+      List<String> witness = new ArrayList<String>();
+      witness.add("");
+      witness.add("b");
+      assertEquals(witness, ol);
+    }
   }
 
 }

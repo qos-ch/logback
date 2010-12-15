@@ -94,7 +94,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // its values may *not* be incremented sequentially. However, we don't care
   // about the actual value of the field except that from time to time the
   // expression (invocationCounter++ & 0xF) == 0xF) should be true.
-  private int invocationCounter = 0;
+  private long invocationCounter = 0;
 
   @Override
   public FilterReply decide(Marker marker, Logger logger, Level level,
@@ -108,6 +108,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
+    //System.out.println(".");
     synchronized (lock) {
       boolean changed = changeDetected();
       if (changed) {

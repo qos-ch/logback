@@ -13,19 +13,45 @@
  */
 package ch.qos.logback.core.pattern;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAware;
+
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ReplacingCompositeConverter<E> extends CompositeConverter<E> {
 
+  Pattern pattern;
   String regex;
-  String by;
+  String replacement;
 
   public void start() {
-     final List<String> optionList = getOptionList();
-     regex = optionList.get(0);
+    final List<String> optionList = getOptionList();
+    if (optionList == null) {
+      addError("at least two options are expected whereas you have declared none");
+      return;
+    }
+
+    int numOpts = optionList.size();
+
+    if (numOpts < 2) {
+      addError("at least two options are expected whereas you have declared only " + numOpts + "as [" + optionList + "]");
+      return;
+    }
+    regex = optionList.get(0);
+    pattern = Pattern.compile(regex);
+
+    //.matcher(this).replaceAll(replacement);
+
+    replacement = optionList.get(1);
+    System.out.println("regex="+regex);
+    super.start();
   }
+
   @Override
   String transform(String in) {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    if (!started)
+      return in;
+    return pattern.matcher(in).replaceAll(replacement);
   }
 }
