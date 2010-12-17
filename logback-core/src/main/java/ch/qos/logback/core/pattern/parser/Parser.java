@@ -118,14 +118,10 @@ public class Parser<E> extends ContextAwareBase {
     }
   }
 
+  // T = LITERAL | '%' C | '%' FORMAT_MODIFIER C
   Node T() throws ScanException {
-    // System.out.println("in T()");
     Token t = getCurentToken();
-    if (t == null) {
-      throw new IllegalStateException("a LITERAL or '%'");
-    }
-
-    // System.out.println("Current token is " + t);
+    expectNotNull(t, "a LITERAL or '%'");
 
     switch (t.getType()) {
     case Token.LITERAL:
@@ -137,7 +133,7 @@ public class Parser<E> extends ContextAwareBase {
       FormatInfo fi;
       Token u = getCurentToken();
       FormattingNode c;
-      expectNotNull(u, "a FORMAT_MODIFIER, KEYWORD or LEFT_PARENTHESIS");
+      expectNotNull(u, "a FORMAT_MODIFIER, SIMPLE_KEYWORD or COMPOUND_KEYWORD");
       if (u.getType() == Token.FORMAT_MODIFIER) {
         fi = FormatInfo.valueOf((String) u.getValue());
         advanceTokenPointer();

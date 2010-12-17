@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class OptionTokenizerTest  {
+public class OptionTokenizerTest {
 
   @Test
   public void testEmpty() throws ScanException {
@@ -66,17 +66,19 @@ public class OptionTokenizerTest  {
     {
       List ol = new OptionTokenizer("' x\\t'").tokenize();
       List<String> witness = new ArrayList<String>();
-      witness.add(" x\t");
+      witness.add(" x\\t");
       assertEquals(witness, ol);
     }
 
     {
       List ol = new OptionTokenizer("' x\\''").tokenize();
       List<String> witness = new ArrayList<String>();
-      witness.add(" x\'");
+      witness.add(" x\\'");
       assertEquals(witness, ol);
     }
   }
+
+
 
   @Test
   public void testDoubleQuote() throws ScanException {
@@ -97,14 +99,14 @@ public class OptionTokenizerTest  {
     {
       List ol = new OptionTokenizer("\" x\\t\"").tokenize();
       List<String> witness = new ArrayList<String>();
-      witness.add(" x\t");
+      witness.add(" x\\t");
       assertEquals(witness, ol);
     }
 
     {
       List ol = new OptionTokenizer("\" x\\\"\"").tokenize();
       List<String> witness = new ArrayList<String>();
-      witness.add(" x\"");
+      witness.add(" x\\\"");
       assertEquals(witness, ol);
     }
   }
