@@ -37,7 +37,7 @@
     
     
 		<p>If your server run on JDK 1.6 or later, then you can just
-		invoke <code>jconsole</code> application on the commmand line and
+		invoke the <code>jconsole</code> application on the command line and
 		then connect to your server's MBeanServer. If you are running an
 		older JVM, then you should read the section on <a
 		href="#jmxEnablingServer">JMX enabling your server</a>.
@@ -76,23 +76,23 @@
 		
 		<ul>
       <li>Reload logback configuration using the default configuration
-      file </li>
+      file.</li>
 
-      <li>Reload the configuration with the specified URL</li>
-      <li>Reload the configuration with the specified file</li>
+      <li>Reload the configuration with the specified URL.</li>
+      <li>Reload the configuration with the specified file.</li>
 
 			<li>Set the level of a specified logger. To set to null, pass
 			the string "null" as value.</li>
-      <li>Get the level of a specified logger. Returned value can be
+      <li>Get the level of a specified logger. The returned value can be
       null.</li>
 			<li>Get the <a href="architecture.html#effectiveLevel">effective
-			level</a> of a specified logger</li>
+			level</a> of a specified logger.</li>
 		</ul>
 		
     <p><code>JMXConfigurator</code> exposes the list of existing
     loggers and a status list as attributes.</p>
     
-    <p>The status list can help you diagnose logbacks internal
+    <p>The status list can help you diagnose logback's internal
     state.</p>
 
     <img src="images/chapters/jmxConfigurator/statusList.gif" alt="statusList.gif"/>   
@@ -106,12 +106,12 @@
     from being garbage collected when it is stopped or re-deployed,
     resulting in a severe memory leak.</p>
 
-    <p>Thus, unless your application is standalone java application,
+    <p>Thus, unless your application is a standalone Java application,
     you MUST unregister the <code>JMXConfigurator</code> instance from
     the JVM's Mbeans server. Invoking the <code>reset</code>() method
     of the appropriate <code>LoggerContext</code> will automatically
     unregister any JMXConfigurator instance. A good place to reset the
-    logger context is in the the <code>contextDestroyed</code>()
+    logger context is in the <code>contextDestroyed</code>()
     method of a
     <code>javax.servlet.ServletContextListener</code>. Here is sample
     code:</p>
@@ -143,11 +143,11 @@ public class MyContextListener implements ServletContextListener {
     </h2>
 
     <p>If you deploy multiple web-applications in the same server,
-    then, and assuming you have not overriden the default <a
-    href="contextSelector.html">context selector</a>, and assuming you
+    and if you have not overridden the default <a
+    href="contextSelector.html">context selector</a>, and if you
     have placed a copy of <em>logback-*.jar</em> and
     <em>slf4j-api.jar</em> under the <em>WEB-INF/lib</em> folder of
-    each web-application, by default each <code>JMXConfigurator</code>
+    each web-application, then by default each <code>JMXConfigurator</code>
     instance will be registered under the same name, that is,
     "ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator". In
     other words, by default the various <code>JMXConfigurator</code>
@@ -180,14 +180,14 @@ public class MyContextListener implements ServletContextListener {
   ...
 &lt;configuration></pre>
 
-    <p>In jconsole's MBeans panel, you would two distinct
+    <p>In jconsole's MBeans panel, you would see two distinct
     <code>JMXConfigurator</code> instances:</p>
 
     <img src="images/chapters/jmxConfigurator/multiple.gif" alt="multiple.gif"/>   
 
     <p>You may fully control the name under which JMXConfigurator is
-    registered with MBeans server with the help of the "objectName"
-    attribute of <code>&lt;jmxConfigurator></code> element.</p>
+    registered with an MBeans server with the help of the "objectName"
+    attribute of the <code>&lt;jmxConfigurator></code> element.</p>
     
     <!-- ============ JMX enabling your  server ================== -->
 
@@ -199,7 +199,7 @@ public class MyContextListener implements ServletContextListener {
     <p>If your server runs with JDK 1.6 or later, your server should
     be JMX enabled by default.</p>
 
-		<p>For older JVMs, we suggest that you refer JMX-related
+		<p>For older JVMs, we suggest that you refer to the JMX-related
 		documentation of your web-server. Such documentation is available
 		for both <a
 		href="http://tomcat.apache.org/tomcat-6.0-doc/monitoring.html">Tomcat</a>
@@ -236,8 +236,8 @@ public class MyContextListener implements ServletContextListener {
 &lt;/Get> </pre>
 
     <p>If you wish to access the MBeans exposed by Jetty via the
-    <code>jconsole</code> application, then you need start jetty after
-    having set the "com.sun.management.jmxremote" java system
+    <code>jconsole</code> application, then you need to start Jetty after
+    having set the "com.sun.management.jmxremote" Java system
     property.
     </p>
 
@@ -246,8 +246,8 @@ public class MyContextListener implements ServletContextListener {
     
     <p class="source">java <b>-Dcom.sun.management.jmxremote</b> -jar start.jar [config files]</p>
 
-    <p>And if you wish to launch jetty as a Maven plugin, then you
-    need set the "com.sun.management.jmxremote" system property via
+    <p>And if you wish to launch Jetty as a Maven plugin, then you
+    need to set the "com.sun.management.jmxremote" system property via
     the <code>MAVEN_OPTS</code> shell variable:
     </p>
 
@@ -266,10 +266,10 @@ mvn jetty:run</p>
 
     <h4>MX4J with Jetty (tested under JDK 1.5 and 1.6)</h4>
 
-    <p>Ig you wish to acces <code>JMXConfigurator</code> via MX4J's
+    <p>If you wish to access <code>JMXConfigurator</code> via MX4J's
     HTTP interface and assuming you have already downloaded <a
     href="http://mx4j.sourceforge.net/">MX4J</a>, you then need to
-    modify the jetty configuration file discussed previously by adding
+    modify the Jetty configuration file discussed previously by adding
     an instruction to set the management port.
     </p>
     
@@ -294,7 +294,7 @@ mvn jetty:run</p>
     class path.
     </p>
 
-    <p>If you are running jetty as a Maven plug-in, then you need to add 
+    <p>If you are running Jetty as a Maven plug-in, then you need to add
     <em>mx4j-tools</em> as a dependency.</p>
 
     <pre class="prettyprint source">&lt;plugin>
@@ -338,7 +338,7 @@ mvn jetty:run</p>
 		
     <p class="source">CATALINA_OPTS="-Dcom.sun.management.jmxremote"</p>
 
-		<p>Once started with these options, Mbeans exposed by Tomcat as
+		<p>Once started with these options, MBeans exposed by Tomcat as
 		well logback's <code>JMXConfigurator</code> can be accessed with
 		<code>jconsole</code> by issuing the following command in a shell:
 		</p>
@@ -360,7 +360,7 @@ mvn jetty:run</p>
 		</p>
 		
     <p>Assuming you have already downloaded <a
-    href="http://mx4j.sourceforge.net/">MX4J</a>, placethe
+    href="http://mx4j.sourceforge.net/">MX4J</a>, place the
     <em>mx4j-tools.jar</em> file under the <em>$TOMCAT_HOME/bin/</em>
     directory. Then, add the following lines to the
     <em>$TOMCAT_HOME/bin/catalina.sh</em> configuration file:

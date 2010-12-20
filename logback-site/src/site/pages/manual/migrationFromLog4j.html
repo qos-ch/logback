@@ -51,23 +51,23 @@
     closely related. The core components, such as loggers, appenders
     and layouts exist in both frameworks and serve identical
     purposes. Similarly, the most important internal data-structure,
-    namely <code>LoggingEvent</code> exists in both frameworks with
-    rather similar but non-identical implementations. Most notably, In
+    namely <code>LoggingEvent</code>, exists in both frameworks with
+    rather similar but non-identical implementations. Most notably, in
     logback-classic <code>LoggingEvent</code> implements the
-    <code>ILoggingEvent</code> interface. Most of the changes requried
+    <code>ILoggingEvent</code> interface. Most of the changes required
     in migrating log4j components to logback-classic are related to
     differences in implementation of the <code>LoggingEvent</code>
     class. Rest assured, these differences are rather limited. If in
     spite of your best efforts you are unable to migrate any given
     log4j component to logback-classic, do post a question on the <a
     href="../mailinglist.html">logback-dev mailing list</a>. A logback
-    developper should be able to provide guidance.
+    developer should be able to provide guidance.
     </p>
 
     
     <h3>Migrating a log4j layout</h3>
 
-    <p>Let us begin by migrating a hypothetcical and trivially simple
+    <p>Let us begin by migrating a hypothetical and trivially simple
     log4j layout named <a
     href="../xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>
     which returns the message contained in a logging events as the
@@ -202,7 +202,7 @@ public class TrivialLogbackAppender extends AppenderBase&lt;ILoggingEvent> {
    <code>requiresLayout</code> method is not used in logback and can
    be removed. In logback, the <code>stop</code>() method is the
    equivalent of log4j's <code>close</code>() method. However,
-   <code>AppenderBase</code> in logback-classic, contains an nop
+   <code>AppenderBase</code> in logback-classic, contains a nop
    implementation for <code>stop</code> which is sufficient for the
    purposes of this trivial appender.
    </p>

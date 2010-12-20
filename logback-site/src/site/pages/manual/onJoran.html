@@ -51,7 +51,7 @@
     folder.
     </p>
 
-    <p>To install joran, simply <a href="../download.html">download</a>
+    <p>To install Joran, simply <a href="../download.html">download</a>
     logback and add <em>logback-core-${version}.jar</em> to your
     classpath.</p>
     
@@ -64,10 +64,10 @@
     their properties are specified within the <em>ejb.xml</em>
     file. Similarly, logback settings can be specified in a
     configuration file, expressed in XML format. Annotations available
-    in JDK 1.5 and heavily used in EJB 3.0 replace many of directives
-    previously found in XML files. Joran also makes use of annonations
-    but at a much smaller extent. Due to the dynamic nature of logback
-    configuration data (compared to EJBs) Joran's use of annonations
+    in JDK 1.5 and heavily used in EJB 3.0 replace many directives
+    previously found in XML files. Joran also makes use of annotations
+    but to a much smaller extent. Due to the dynamic nature of logback
+    configuration data (compared to EJBs) Joran's use of annotations
     is rather limited.
     </p>
 
@@ -79,8 +79,8 @@
     the configuration file changed. The modified code had to be
     recompiled and redeployed. Just as importantly, the code of the
     <code>DOMConfigurator</code> consisted of loops dealing with
-    children elements containing many interspersed if/else
-    statements. One could not help but notice that that particular
+    child elements containing many interspersed if/else
+    statements. One could not help but notice that this particular
     code reeked of redundancy and duplication.  The <a
     href="http://jakarta.apache.org/commons/digester/">commons-digester
     project</a> had shown us that it was possible to parse XML files
@@ -147,8 +147,8 @@
 
     <p>A Joran pattern is essentially a string. There are two kind of
     patterns, <em>exact</em> and <em>wildcard</em>. The pattern "a/b"
-    can be used to match <code>&lt;b></code> element nested within a
-    top-level <code>&lt;a></code> element. The "a/b" will not match
+    can be used to match a <code>&lt;b></code> element nested within a
+    top-level <code>&lt;a></code> element. The "a/b" pattern will not match
     any other element, hence the <em>exact</em> match designation.</p>
 
     <p>Wildcards can be used to match suffixes or prefixes. For
@@ -166,7 +166,7 @@
     association of patterns. Actions extend the <a
     href="../xref/ch/qos/logback/core/joran/action/Action.html"><code>Action</code></a>
     class, consisting of the following abstract methods. Other methods
-    have been omitted for berevity.
+    have been omitted for brevity.
     </p>
 
 
@@ -200,8 +200,8 @@ public abstract class Action {
 }</pre>
 
    <p>Thus, every action must implement the <code>begin()</code> and
-   <code>end()</code> methods. The implemetnation of the
-   <code>body()</code> method being optional on account of the
+   <code>end()</code> methods. The implementation of the
+   <code>body()</code> method is optional on account of the
    empty/nop implementation provided by <code>Action</code>.</p>
 
 
@@ -215,10 +215,10 @@ public abstract class Action {
 
    <p>As mentioned above, Joran is built on top of the SAX API. As an
    XML document is parsed, each element generates events corresponding
-   to the start, body and end of each element. When a joran
+   to the start, body and end of each element. When a Joran
    configurator receives these events, it will attempt to find in its
    rule store an action corresponding to the <em>current
-   pattern</em>.. For example, the current pattern for the start, body
+   pattern</em>. For example, the current pattern for the start, body
    or end event of element <em>B</em> nested within a top-level
    <em>A</em> element is "A/B".  The current pattern is a data
    structure maintained automatically by Joran as it receives and
@@ -226,7 +226,7 @@ public abstract class Action {
 
    <p>When several rules match the current pattern, then exact
    matches override suffix matches, and suffix matches overide prefix
-   matches. For exact details of implementation, please see the <a
+   matches. For exact details of the implementation, please see the <a
    href="../xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.html">SimpleRuleStore</a>
    class.
    </p>
@@ -259,14 +259,14 @@ public abstract class Action {
    trivial action called <a
    href="../xref/chapters/onJoran/helloWorld/HelloWorldAction.html">
    <code>HelloWorldAction</code></a> which prints "Hello World" on the
-   console when it's <code>begin()</code> method is invoked. The
+   console when its <code>begin()</code> method is invoked. The
    parsing of XML files is done by a configurator. For the purposes of
-   this chapter, we have developped a very simple configurator called
+   this chapter, we have developed a very simple configurator called
    <a
    href="../xref/chapters/onJoran/SimpleConfigurator.html"><code>SimpleConfigurator</code></a>.
    The <a
    href="../xref/chapters/onJoran/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>
-   application brings all pieces together.
+   application brings all these pieces together:
    </p>
 
    <ul>
@@ -276,10 +276,10 @@ public abstract class Action {
      <code>HelloWorldAction</code> instance</li>
      <li>It creates a <code>SimpleConfigutator</code>, passing it the
      aforementioned rules map</li>
-     <li>it then invokes the <code>doConfigure</code> method of the
+     <li>It then invokes the <code>doConfigure</code> method of the
      configurator, passing the designated XML file as parameter
      </li>
-     <li>as a last step, the accumulated Status message in the context,
+     <li>As a last step, the accumulated Status message in the context,
      if any, are printed</li>
    </ul>
 
@@ -294,7 +294,7 @@ public abstract class Action {
    
     <p class="command">java chapters.onJoran.helloWorld.HelloWorld src/main/java/chapters/onJoran/helloWorld/hello.xml</p>
 
-    <p>You are highly encourared to poke about this example, by adding
+    <p>You are highly encourared to poke about in this example, by adding
     new rules on the rule store, modifying the XML document
     (hello.xml) and adding new actions.
     </p>
@@ -427,7 +427,7 @@ public abstract class Action {
   will pop two previously pushed integers, i.e. 10 and 3, and compute
   their product.  It will push the result, i.e. 30, at the top of the
   stack. At the very end, in reponse to the end event corresponding to
-  the &lt;;/computation&gt; tag, the ComputationAction1 will print the
+  the &lt;/computation&gt; tag, the ComputationAction1 will print the
   object at the top of the stack. Thus, running:
   </p>
 
@@ -491,7 +491,7 @@ public abstract class Action {
   attaches the resulting object to the parent.
   </p>
 
-  <p>Joran supports similar capability in the form of implicit
+  <p>Joran supports a similar capability in the form of implicit
   actions. Joran keeps a list of implicit actions which are applied if
   no explicit pattern could match the current pattern.  However,
   applying an implicit action may not be always appropriate. Before
@@ -499,7 +499,7 @@ public abstract class Action {
   whether it is appropriate in the current situation. Only if the
   action replies in the affirmative does the Joran configurator invoke
   the (implicit) action. Note that this extra step makes it possible
-  to support multiple implicit actions for or possibly none, if no
+  to support multiple implicit actions or possibly none, if no
   implicit action is appropriate for a given situation.
   </p>
 
@@ -553,7 +553,7 @@ Element [abc] asked to be printed.
 20:33:43,750 |-ERROR in c.q.l.c.joran.spi.Interpreter@<b>10:9</b> - no applicable action for [xyz], current pattern is [[foo][xyz]]</p>
 
   <p>Given that <code>NOPAction</code> instance is explicitly
-  associated with the "*/foo" pattern, <code>NOPActgion</code>'s
+  associated with the "*/foo" pattern, <code>NOPAction</code>'s
   <code>begin()</code> and <code>end()</code> methods are invoked on
   &lt;foo> elements. <code>PrintMeImplicitAction</code> is never
   triggered for any of the &lt;foo&gt; elements. For other elements,
@@ -582,20 +582,20 @@ Element [abc] asked to be printed.
   </p>
 
   <p><code>NestedBasicPropertyIA</code> is applicable for any property
-  whose type, is a primitive type, or equivalent object type in the
-  <code>java.lang</code> package, an enumeration type, or any type
+  whose type is a primitive type (or equivalent object type in the
+  <code>java.lang</code> package), an enumeration type, or any type
   adhering to the "valueOf" convention.  Such properties are said to
   be <em>basic</em> or <em>simple</em>. A class is said to adhere to
   the "valueOf" convention if it contains a static method named
   <code>valueOf</code>() taking a <code>java.lang.String</code> as
   parameter and returning an instance of the type in question.  At
-  present time, <a
+  present, the <a
   href="../xref/ch/qos/logback/classic/Level.html"><code>Level</code></a>,
   <a
   href="../xref/ch/qos/logback/core/util/Duration.html"><code>Duration</code></a>
   and <a
   href="../xref/ch/qos/logback/core/util/FileSize.html"><code>FileSize</code></a>
-  classes follow this convention..
+  classes follow this convention.
   </p>
   
   <p><code>NestedComplexPropertyIA</code> action is applicable, in the
@@ -619,21 +619,21 @@ Element [abc] asked to be printed.
 
   <ol>
     <li>there is an internal rule associating the parent object's
-    property with a designated class,
+    property with a designated class
     </li>
     <li>the setter method contains a @DefaultClass attribute
-    designating a given class,</li>
+    designating a given class</li>
 
-    <li>the parameter type of the setter method is a contcrete class
-    possessing a public constructor,
+    <li>the parameter type of the setter method is a concrete class
+    possessing a public constructor
     </li>
   </ol>
 
   <h4><a name="defaultClassMapping"
   href="#defaultClassMapping">Default class mapping</a></h4>
 
-  <p>In logback-classic, there are a handful of inernal rules mapping
-  parent class/property name couples to a default class. These are
+  <p>In logback-classic, there are a handful of internal rules mapping
+  parent class/property name pairs to a default class. These are
   listed in the table below.</p>
 
   <table class="bodyTable">
@@ -693,7 +693,7 @@ Element [abc] asked to be printed.
 
   
   <p>Note that in addition to single simple properties or single
-  complex properties, logback's implicit actions support collectons of
+  complex properties, logback's implicit actions support collections of
   properties, be they simple or complex. Instead of a setter method,
   the property is specified by an "adder" method.</p>
 

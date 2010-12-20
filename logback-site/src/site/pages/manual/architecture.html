@@ -56,9 +56,9 @@
     switch back and forth between logback and other logging systems
     such as log4j or java.util.logging (JUL) introduced in JDK
     1.4. The third module called <em>access</em> integrates with
-    Servlet containers to provide HTTP-access log functionality. The
-    access module will be covered in a <a
-    href="../access.html">separate document</a>.
+    Servlet containers to provide HTTP-access log functionality. A
+    separate document covers
+    <a href="../access.html">access module documentation</a>.
     </p>
 
     <p>In the reminder of this document, we will write "logback" to
@@ -152,8 +152,8 @@ public interface Logger {
 			href="#effectiveLevel">Effective Level aka Level Inheritance</a>
     </h3>
 
-		<p>Loggers may be assigned levels. The set of possible levels,
-		that is TRACE, DEBUG, INFO, WARN and ERROR are defined in the
+		<p>Loggers may be assigned levels. The set of possible levels
+		(TRACE, DEBUG, INFO, WARN and ERROR) are defined in the
 		<code>ch.qos.logback.classic.Level</code> class. Note that in
 		logback, the <code>Level</code> class is final and cannot be
 		sub-classed, as a much more flexible approach exists in the form
@@ -477,7 +477,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		<p>Thus, it is possible to configure a logger and then to retrieve
 		the same instance somewhere else in the code without passing
 		around references. In fundamental contradiction to biological
-		parenthood, where parents always preceed their children, logback
+		parenthood, where parents always precede their children, logback
 		loggers can be created and configured in any order. In particular,
 		a "parent" logger will find and link to its descendants even if it
 		is instantiated after them.
@@ -573,7 +573,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 				<td>A1</td>
 
 				<td>Since the root logger stands at the top of the logger
-				hiearchy, the additivity flag does not apply to it.
+				hierarchy, the additivity flag does not apply to it.
 				</td>
 			</tr>
 			<tr class="alt">
@@ -665,7 +665,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 
 		<p>incurs the cost of constructing the message parameter, that is
 		converting both integer <code>i</code> and <code>entry[i]</code>
-		to a String, and concatenating intermediate strings. This,
+		to a String, and concatenating intermediate strings. This is
 		regardless of whether the message will be logged or not.
 		</p>
 
@@ -698,11 +698,11 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		<pre class="prettyprint source">Object entry = new SomeObject(); 
 logger.debug("The entry is {}.", entry);</pre>
 
-		<p>After evaluting whether to log or not, and only if the decision
+		<p>Only after evaluating whether to log or not, and only if the decision
 		is positive, will the logger implementation format the message and
 		replace the '{}' pair with the string value of <code>entry</code>.
 		In other words, this form does not incur the cost of parameter
-		construction in case the log statement is disabled.
+		construction when the log statement is disabled.
 		</p>
 
 
@@ -716,7 +716,7 @@ logger.debug("The entry is {}.", entry);</pre>
 logger.debug("The new entry is {}.", entry);</pre>
 
 
-		<p>A two argument variant is also availalble. For example, you can
+		<p>A two argument variant is also available. For example, you can
 		write:
 		</p>
 
@@ -807,7 +807,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   String. Note that some appenders, such as the
   <code>SocketAppender</code>, do not transform the logging event into
   a string but serialize it instead.  Consequently, they do not
-  require nor have a layout.
+  have nor require a layout.
   </p>
 
   <h4>6. Sending out the <code>LoggingEvent</code></h4>
@@ -876,8 +876,8 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
     margin.  The message will be formatted only if the request is
     processed to the appenders.  If it is processed, the component
     that formats the message offers high performance and does not
-    impact negatively the overall process.  It respectively takes 2
-    and 4 microseconds to format a message with 1 and 3 parameters.
+    negatively impact the overall process.  It takes 2
+    and 4 microseconds respectively to format a message with 1 and 3 parameters.
   </p>
 
   <p> Please notice that, despite the performance points just

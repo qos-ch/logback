@@ -47,10 +47,10 @@
     layout to transform an event into a string and write it out using
     a <code>java.io.Writer</code>. In previous versions of logback,
     users would nest a <code>PatternLayout</code> within
-    <code>FileAppender</code>. As for logback 0.9.19,
+    <code>FileAppender</code>. Since logback 0.9.19,
     <code>FileAppender</code> and sub-classes <a
     href="../codes.html#layoutInsteadOfEncoder">expect an encoder and no
-    longer admit a layout</a>.
+    longer take a layout</a>.
     </p>
 
     <p>Why the breaking change?
@@ -61,14 +61,14 @@
     layout has no control over when events get written out, layouts
     cannot aggregate events into batches. Contrast this with encoders
     which not only have total control over the format of the bytes
-    written out, also control when (and if) those bytes get written
+    written out, but also control when (and if) those bytes get written
     out.
     </p>
 
     <p>At the present time (2010-03-08),
     <code>PatternLayoutEncoder</code> is the only really useful
     encoder. It merely wraps a <code>PatternLayout</code> which does
-    most of the work. Thus, may seem that encoders do not bring much
+    most of the work. Thus, it may seem that encoders do not bring much
     to the table except needless complexity. However, we hope that
     with the advent of new and powerful encoders this impression will
     change.</p>
@@ -99,7 +99,7 @@ public interface Encoder&lt;E> extends ContextAware, LifeCycle {
 
   /**
    * Encode and write an event to the appropriate {@link OutputStream}.
-   * Implementations are free to differ writing out of the encoded event and
+   * Implementations are free to defer writing out of the encoded event and
    * instead write in batches.
    */
   void doEncode(E event) throws IOException;
@@ -113,8 +113,8 @@ public interface Encoder&lt;E> extends ContextAware, LifeCycle {
   void close() throws IOException;
 }</pre>
 
-    <p>As you can see, the Encoder interface consists of few method
-    but surprisingly enough many useful things can be accomplished with
+    <p>As you can see, the Encoder interface consists of few methods,
+    but surprisingly many useful things can be accomplished with
     those methods.
     </p>
 

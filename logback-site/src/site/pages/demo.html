@@ -62,7 +62,7 @@
   and a <code>RollingFileAppender</code>. The
   <code>RollingFileAppender</code> sends logging events to a file
   called <em>logFile.log</em> and will rollover the active file every
-  minute. The old file will be renamed and compressed to <em>zip</em>
+  minute. The old file will be renamed and compressed to a <em>zip</em>
   file. The <code>ConsoleAppender</code> will output the logging
   requests to the console, and shorten the logger names to gain space
   on the console window, without loss of legibility. For example,
@@ -71,8 +71,8 @@
   </p>
 
   <p>We highly encourage you to study the <em>logback.xml</em>
-  configuratiun file located under the <em>src/main/resources/</em>
-  folder. You might want to keep open this file in an editor window,
+  configuration file located under the <em>src/main/resources/</em>
+  folder. You might want to keep this file open in an editor window,
   since we will modify its contents thoughout the demo.
   </p>
 
@@ -82,7 +82,7 @@
   created up until now. <code>Status</code> objects are a part of
   logback's internal reporting framework. They allow you to see what
   is going on inside logback, and check that a configuration file has
-  been parsed correctly, or that a rollovers occur as expected.
+  been parsed correctly, or that rollovers occur as expected.
   </p>
 
   <p>You should be seeing log messages printed on the console and the
@@ -90,7 +90,7 @@
   </p>
 
   <p>If you visit the <em>View logs</em> page (by clicking on the link
-  located in the menu on the left), you should see empty contemts. Let
+  located in the menu on the left), you should see it has no content. Let
   us change that by uncommenting <strong>two</strong> parts in the
   config file.</p>
 
@@ -107,23 +107,23 @@
 &lt;appender-ref ref="CYCLIC" />
 --&gt;</p>
 
-  <p>The <code>&lt;appender-ref></code> element element, found at the
+  <p>The <code>&lt;appender-ref></code> element found at the
   end of the configuration file links an appender to a given logger,
   in this particular case the root logger.
   </p>
 
-  <p>A <code>CyclicBuffer</code> keeps track of incoming logging event
+  <p>A <code>CyclicBuffer</code> keeps track of the incoming logging event
   stream in a <a
   href="http://en.wikipedia.org/wiki/Circular_buffer">circular
   buffer</a> for later display. After having removed the comments
-  around the two elemetns shown above, reload the logback-demo
+  around the two element/s shown above, reload the logback-demo
   web-application by exiting the previous "mvn" command with
   <em>CTRL-C</em> and issuing it again:
   </p>
 
   <p class="source">mvn package  jetty:run</p>
 
-  <p>This time <em>View logs</em> page should have contents.</p>
+  <p>This time the <em>View logs</em> page should have contents.</p>
 
   <img src="images/cyclicView.png" alt="view logs"/>
 
@@ -140,7 +140,7 @@
   <em>Howdydy-diddly-ho</em> messages is wasteful. We can get rid of
   them with an appropriate filter. Uncomment the block entitled
   <em>Cyclic buffer with Evaluator</em>. You should then comment the
-  block entitled "Basic Cyclic buffer" that we uncommmented
+  block entitled "Basic Cyclic buffer" that we uncommented
   earlier.</p>
 
   <p>Let's take a look at the filter we've just added: </p>
@@ -157,12 +157,12 @@
 &lt;/filter></p>
 
   <p>The <code>&lt;expression></code> element uses the familiar
-  Java-language syntax. It checks that the name of the logger contains
+  Java language syntax. It checks that the name of the logger contains
   the String <em>LoggingTask</em>, but also that its message contains
   the string <em>Howdydy-diddly-ho</em>.  Moreover, in order to be
   sure that the <em>Howdydy-diddly-ho</em> task actually works, we add
   a last condition which checks that that at least 20 seconds have
-  elapsed after application launch. The variables references in the
+  elapsed after application launch. The variable references in the
   expression, namely (<code>logger</code>, <code>message</code> and
   <code>event</code>) are implicitly made available by logback.  The
   <code>&lt;OnMatch></code> element lets the user specify the filter's
@@ -177,7 +177,7 @@
 
   <h4>Turbo Filters</h4>
 
-  <p>Logback support with a special category of filters called
+  <p>Logback supports a special category of filters called
   TurboFilters.  <code>TurboFilter</code> objects are ultra-fast,
   context-wide filters. They can be very useful by setting
   context-wide (i.e. global) conditions for enabling or disabling
@@ -212,17 +212,17 @@
   ...
 &lt;/root></p>
 
-  <p>Now restart the server as previously</p>
+  <p>Now restart the server as before.</p>
 
-  <p>Once on the demo main webpage again, perform a number of actions
+  <p>Once on the main demo webpage again, perform a number of actions
   (e.g. calculate a few prime numbers) and visit the <em>View
   logs</em> page. The table should be empty.
   </p>
 
-  <p>Now log in into the logback-demo web-application with the
+  <p>Now login to the logback-demo web-application with the
   username <em>sebastien</em> and perform a few prime
   computations. The <em>View logs</em> page should show the logging
-  events thgat were generated. Moreover, each logging event will have
+  events that were generated. Moreover, each logging event will have
   an MDC field associated with the name of the logged in user, in this
   case, sebastien. Please log off before continuing the demo, using
   the <em>logout</em> button on the left.
@@ -230,10 +230,10 @@
 
  <img src="images/turboFilterForMDC.png" alt="mdc filters"/>
 
- <h4>Parametrized logging</h4>
+ <h4>Parameterized logging</h4>
 
  <p><a
- href="http://www.slf4j.org/faq.html#logging_performance">Parametrized
+ href="http://www.slf4j.org/faq.html#logging_performance">Parameterized
  logging </a> is not a logback feature per se. It is part of
  SLF4J. Usually, a logging request is issued as follows:
  </p>
@@ -253,9 +253,9 @@
   if the log statement is enabled.
   </p>
 
-  <p>At present, let us see what kind of gain can we expect from this
+  <p>At present, let us see what kind of gain we can expect from this
   alternative approach. First, go to the <em>Prime number</em> page
-  and compute factors for intergers of your choice. Check the time it
+  and compute factors for integers of your choice. Check the time it
   takes to compute the results. To see a clearer difference between
   the two formatting methods, you might want to try the two big
   integers that are listed below the prime number textbox. Jot down
@@ -263,7 +263,7 @@
   </p>
 
   <p>Now let us edit the <code>NumberCruncherImpl</code> class in
-  order to use parametrized logging.  You will find this class in the
+  order to use parameterized logging.  You will find this class in the
   <em>src/main/java/ch/qos/logback/demo/prime/</em> directory. Comment
   line 54 (doing unconditional message concatenation) and uncomment
   line 55 (parameterized logging). Restart the server with <em>mvn
@@ -271,11 +271,11 @@
   beforehand.
   </p>
 
-  <p>The time required to complete the computation should much lower
+  <p>The time required to complete the computation should be much lower
   this time. Remember that we have turned off all logging in the
   previous step of this demo. In the initial version, we were
   constructing the message (<em>"Trying "+i+" as a factor."</em>) each
-  time a factor was tested.  With the paramatrized logging, the
+  time a factor was tested.  With the parameterized logging, the
   construction of the message was postponed and, since logging was
   turned off, never done. Thus, parameterized logging can
   significantly reduce the cost of disabled log statements.
@@ -287,16 +287,16 @@
   part of the SLF4J API. If you look at the LoggingTask class (part of
   logback-demo) which includes the <em>Howdydy-diddly-ho</em> log
   statement, you should see that it is bound to a marker named
-  <code>HOWDY</code> marker.  Assume we wish to drop log statements
-  bearing the <code>HOWDY</code> marker.  Here is the
-  <code>TurboFilter</code> to do just that.
+  <code>HOWDY</code> marker.  If you wish to drop log statements
+  bearing the <code>HOWDY</code> marker, you can use this
+  <code>TurboFilter</code> to do so:
   </p>
 
   <p class="source">&lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
     &lt;Name>HOWDY_FILTER&lt;/Name>
-		&lt;Marker>HOWDY&lt;/Marker>
-		&lt;OnMatch>DENY&lt;/OnMatch>
-	&lt;/turboFilter> </p>
+    &lt;Marker>HOWDY&lt;/Marker>
+    &lt;OnMatch>DENY&lt;/OnMatch>
+&lt;/turboFilter> </p>
   
   <p>After you have set the root logger's level back to <em>DEBUG</em>
   and uncommented the MarkerFilter block in <em>logback.xml</em>,
@@ -305,7 +305,7 @@
 
 
   <p>The logs bearing the <em>Howdydy-diddly-ho</em> message should no
-  longer appear as they associated with a HOWDY marker. You can check
+  longer appear as they are associated with a HOWDY marker. You can check
   that by visiting the <em>View Logs</em> page.
   </p>
 
@@ -335,20 +335,20 @@
 &lt;/configuration></pre></div>
 
   <p>Note that logback-classic and logback-access are configured via
-  different files, <em>logback.xml</em> and respectively
-  <em>logback-acces.xml</em>. At present time, you might want to turn
+  different files: <em>logback.xml</em> and
+  <em>logback-access.xml</em> respectively. If you wanted to turn
   off logging for logback-classic by setting the level of the root
-  logger to OFF. Logback-access will be unaffected by this change.
+  logger to OFF, logback-access would be unaffected by this change.
   </p>
 
-  <p>To see the logs produced by logback access, just visit a few
+  <p>To see the logs produced by logback-access, just visit a few
   pages and look at your console. The information contained in each
   line has been specified in the configuration file. The
   <code>ConsoleAppender</code> named <em>STDOUT</em> contains a
-  <code>PatternLayout</code> component.  This very component that one
-  uses in logback classic to display either the message, logger name
-  or level of the request is used in logback access to display the
-  request method, requested page, status code and many others.
+  <code>PatternLayout</code> component.  This layout component is
+  used in logback-classic to display either the message, logger name
+  or level of the request, but in logback-access it is used to display the
+  request method, requested page, status code and many other fields.
   </p>
 
 <p>Here is a sample output for this appender.</p>
@@ -377,7 +377,7 @@
   page is accessed.
   </p>
 
-  <p>The configuration lines that are necessary are listed below.
+  <p>The necessary configuration lines are listed below.
   </p>
 
   <p class="source">&lt;appender name="STDOUT_LOTTERY"
@@ -421,31 +421,31 @@
   now. At every try, logback will produce a log as shown below:
   </p>
 
-  <p class="source">LOTTERY: 192.168.1.6 [POST /logback-demo/Lottery.do HTTP/1.1] Guess=321</p>>
+  <p class="source">LOTTERY: 192.168.1.6 [POST /logback-demo/Lottery.do HTTP/1.1] Guess=321</p>
 
   <h4>Sending emails</h4>
 
-  <p>Logback access provides several components that are usually used
+  <p>Logback-access provides several components that are usually used
   by the classic module. For example, a <code>SMTPAppender</code> can
   be used to send an email when a specific event occurs. Here, we will
   contact the lottery administrator each time a winner is detected. To
   achieve this, we will add a <code>SMTPAppender</code> to the
   existing configuration. Please uncomment the part of
   <em>logback-access.xml</em> named <em>Lottery to Email</em>. Do not
-  forget to uncomment the <em>appender-ref</em> element, at the end of
-  the configuration file, referencing the appender called
-  <em>SMTP</em>. In the appender element, notice the use of a
-  <code>URLEvaluator</code>. This evaluator allows us to only specify
-  one or more URLs that have to be watched. When one of them are
+  forget to uncomment the <em>appender-ref</em> element at the end of
+  the configuration file that references the <em>SMTP</em> appender.
+  In the appender element, notice the use of a
+  <code>URLEvaluator</code>. This evaluator allows us to specify
+  one or more URLs that are to be watched. When one of them is
   accessed, an email is sent.
   </p>
 
   <p>A reload of the configuration has to be done before we can test
   this new component. Once done, try to play the lottery with the
-  number <em>99</em>.  You should see a congratulation message but,
+  number <em>99</em>.  You should see a "congratulation" message but,
   most importantly, the specified recipients should have a new mail in
   their mailbox. The content of the email is a nicely formatted HTML
-  table with informations about the access that have occured before
+  table with information about the accesses that occurred before
   the triggering event.
   </p>
 
@@ -454,12 +454,12 @@
   <p>Logback publishes several components via JMX. This allows you to
   see the status of certain objects, and change several configuration
   parameters.  Publishing logback's components via JMX is possible
-  with Jetty and Tomcat. For more information about JMXConfigurator
+  with Jetty and Tomcat. For more information about the JMXConfigurator
   please refer to the <a href="manual/jmxConfig.html">relevant
   chapter</a> in the manual.
   </p>
 
-  <p>Let us test the level setting possibility of the configurator.
+  <p>Let us test setting levels using the configurator.
   The <em>Prime Number</em> page requests two types of logs. When the
   calculation checks if a number is a factor, a <em>DEBUG</em> log is
   displayed. When the calculation has found a factor, a <em>INFO</em>

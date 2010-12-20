@@ -41,51 +41,51 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
 
 
-    <p>Domains-specific languages or DSLs are rather pervasive. The
+    <p>Domain-specific languages or DSLs are rather pervasive. The
     XML-based logback configuration can be viewed as a DSL
     instance. By the very nature of XML, XML-based configuration files
     are quite verbose and rather bulky. Moreover, a relatively large
-    body of code in logback, namely Joran, is dedicated to processes
+    body of code in logback, namely Joran, is dedicated to processing
     these XML-based configuration files. Joran supports nifty features
     such as variable substitution, conditional processing and
-    on-the-fly extensibility. However, not only Joran is a complex
+    on-the-fly extensibility. However, not only is Joran a complex
     beast, the user-experience it provides can be described as
     unsatisfactory or at the very least unintuitive.
     </p>
 
     <p>The Groovy-based DSL described in this chapter aims to be
-    consistent, intuitive, and powerful. Everything you can do XML in
+    consistent, intuitive, and powerful. Everything you can do using XML in
     configuration files, you can do in Groovy with a much shorter
     syntax. To help you migrate to Groovy style configuration, we have
-    developped a <a
+    developed a <a
     href="http://logback.qos.ch/translator/asGroovy.html">tool to
-    automatically migrate your existing<em>logback.xml</em> files to
+    automatically migrate your existing <em>logback.xml</em> files to
     <em>logback.groovy</em></a>.
     </p>
 
 
     <h2>General philosophy</h2>
     
-    <p>As a general rule, <em>logback.groovy</em> files are groovy
-    programs. And since groovy is a super-set of Java, whatever
+    <p>As a general rule, <em>logback.groovy</em> files are Groovy
+    programs. And since Groovy is a super-set of Java, whatever
     configuration actions you can perform in Java, you can do the same
     within a <em>logback.groovy</em> file. However, since configuring
     logback progammatically using Java syntax can be cumbersome, we
     added a few logback-specific extensions to make your life
     easier. We try hard to limit the number of logback-specific
     syntactic extensions to an absolute minimum. If you are already
-    familiar with groovy, you should be able to read, understand and
+    familiar with Groovy, you should be able to read, understand and
     even write your own <em>logback.groovy</em> files with great
     ease. Those unfamiliar with Groovy should still find
     <em>logback.groovy</em> syntax much more comfortable to use than
     <em>logback.xml</em>.
     </p>
 
-    <p>Given that <em>logback.groovy</em> files are groovy programs
-    with minimal logback-specific extensins, <em>all</em> the usual
+    <p>Given that <em>logback.groovy</em> files are Groovy programs
+    with minimal logback-specific extensions, <em>all</em> the usual
     groovy constructs such as class imports, variable definitions,
     evaluation of $&#123;..&#125; expressions contained in strings
-    (GStrings), if-else statements are all avaiable in
+    (GStrings), and if-else statements are available in
     <em>logback.groovy</em> files.</p>
 
     <h2>Extensions specific to <em>logback.groovy</em></h2>
@@ -105,7 +105,7 @@
     the root logger. As an optional second argument of type
     <code>List&lt;String></code>, can be used to attach previously
     defined appenders by name. If you do not specify the list of
-    appender names, then an empty list is assumed. In groovy, an empty
+    appender names, then an empty list is assumed. In Groovy, an empty
     list is denoted by <code>[]</code>.</p>
 
     <p>To set the level of the root logger to WARN, you would write:</p>
@@ -138,14 +138,14 @@ root(INFO, ["CONSOLE", "FILE"])</pre>
     href="architecture.html#effectiveLevel">inherit its level</a> from
     its nearest ancestor with an assigned level. The third argument of
     type <code>List&lt;String></code> is optional and defaults to an
-    emtpy list if omitted. The appender names in the list are attached
-    to the designated logger. The forth argument of type
+    empty list if omitted. The appender names in the list are attached
+    to the designated logger. The fourth argument of type
     <code>Boolean</code> is also optional and controls the <a
     href="architecture.html#additivity">additivity flag</a>. If
     omitted, it defaults to <code>null</code>.
     </p> 
 
-    <p>For example, the following script set the level of the
+    <p>For example, the following script sets the level of the
     "com.foo" logger to INFO.</p>
 
        <pre class="prettyprint source">import static ch.qos.logback.classic.Level.INFO
@@ -219,8 +219,8 @@ root(DEBUG, ["FILE"])</pre>
     <h3>&#8226; <span class="code">timestamp(String datePattern)</span></h3>
 
     <p>The <code>timestamp()</code> method method returns a string
-    corresponding to the current time formatted according to
-    <code>datePattern</code> passed as parameter. The datePattern
+    corresponding to the current time formatted according to the
+    <code>datePattern</code> passed as a parameter. The datePattern
     parameter should follow the conventions defined by <a
     href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
     </p>
@@ -323,12 +323,12 @@ root(DEBUG, ["STDOUT"])</pre>
     <h2>Internal DSL, i.e. it's all groovy baby!</h2>
 
     <p>The <em>logback.groovy</em> is an internal DSL meaning that its
-    contents are executed as a groovy script. Thus, all the usual
-    groovy constructs such as class imports, GString, variable
+    contents are executed as a Groovy script. Thus, all the usual
+    Groovy constructs such as class imports, GString, variable
     definitions, evaluation of $&#123;..&#125; expressions contained
-    within strings (GStrings), if-else statements are all avaiable in
+    within strings (GStrings), if-else statements are all available in
     logback.groovy files. In the following discussion, we will present
-    typical uses of these groovy constructs in <em>logback.groovy</em>
+    typical uses of these Groovy constructs in <em>logback.groovy</em>
     files.
     </p>
 
@@ -336,7 +336,7 @@ root(DEBUG, ["STDOUT"])</pre>
     <h3>Variable definitions and GStrings</h3>
 
     <p>You can define variables anywhere within a
-    <em>logback.groovy</em> files, then use the variable within a
+    <em>logback.groovy</em> file, then use the variable within a
     GString. Here is an example.</p>
 
     <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
@@ -427,8 +427,8 @@ appender("STDOUT", ConsoleAppender) {
    <h3>Everything is context aware with a reference to the current
    context</h3>
 
-   <p>The execution of the <em>logback.grooy</em> script is done
-   within a scope of a <a
+   <p>The execution of the <em>logback.groovy</em> script is done
+   within the scope of a <a
    href="../xref/ch/qos/logback/core/spi/ContextAware.html">ContextAware</a>
    object. Thus, the current context is always accessible using the
    '<code>context</code>' variable and you can invoke

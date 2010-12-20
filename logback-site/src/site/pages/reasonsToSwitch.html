@@ -71,8 +71,8 @@
     file. Most of the examples in the documentation use this XML
     syntax. However, as of logback version 0.9.22, <a
     href="manual/groovy.html">configuration files written in
-    Groovy</a> are also supported. Compared to XML, groovy style
-    configuration is more intuitive, consistent and have a much
+    Groovy</a> are also supported. Compared to XML, Groovy-style
+    configuration is more intuitive, consistent and has a much
     shorter syntax.
     </p>
 
@@ -83,7 +83,7 @@
     logback.groovy</a>.
     </p>
 
-    <p>We also plan to support configration files written in
+    <p>We also plan to support configuration files written in
     Scala.</p>
     
 
@@ -129,7 +129,7 @@
     <p>Developers often need to juggle between several logback
     configuration files targeting different environments such as
     development, testing and production. These configuration files
-    have substantial parts in common differing only in a few
+    have substantial parts in common, differing only in a few
     places. To avoid duplication, logback supports <a
     href="manual/configuration.html#conditional">conditional
     processing of configuration files</a> with the help of
@@ -217,12 +217,12 @@ java.lang.Exception: 99 is invalid
   at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:417) [jetty-6.1.12.jar:6.1.12]
   at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:230) [jetty-6.1.12.jar:6.1.12]</pre>
 
-    <p>From the above, you can recognize that the applicaiton is using
+    <p>From the above, you can recognize that the application is using
     Struts version 1.2.9 and was deployed under jetty version
     6.1.12. Thus, stack traces will quickly inform the reader about
     the classes invervening in the exception but also the package and
     package versions they belong to. When your customers send you a
-    stack trace, as a developper you will no longer need to ask them
+    stack trace, as a developer you will no longer need to ask them
     to send you information about the versions of packages they are
     using. The information will be part of the stack trace. See <a
     href="manual/layouts.html#xThrowable">"%xThrowable" conversion
@@ -245,7 +245,7 @@ java.lang.Exception: 99 is invalid
     or <a
     href="manual/appenders.html#SizeAndTimeBasedFNATP">SizeAndTimeBasedFNATP</a>,
     you can control the maximum number of archived files. If your
-    rolling policy calls for monthly rollover and you wish to keep 1
+    rolling policy calls for monthly rollover and you wish to keep one
     year's worth of logs, simply set the <span
     class="option">maxHistory</span> property to 12. Archived log
     files older than 12 months will be automatically removed.
@@ -260,7 +260,7 @@ java.lang.Exception: 99 is invalid
     logback distribution, integrates with Servlet containers such as
     Jetty or Tomcat to provide rich and powerful HTTP-access log
     functionality. Since logback-access was part of the initial
-    design, all the logback-classic features you came love are
+    design, all the logback-classic features you love are
     available in logback-access as well.</p>
 
     <h3><a name="inSummary" href="#inSummary">In summary</a></h3>

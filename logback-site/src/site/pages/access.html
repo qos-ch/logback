@@ -166,7 +166,7 @@
 		<p>The <a
 		href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
 		<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a> class
-		implements jetty's <code><a
+		implements Jetty's <code><a
 		href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
 		interface. Jetty delegates the management of access logging
 		functionality to implementations of this interface.
@@ -180,7 +180,7 @@
 	
 		<p>In order to configure Jetty to use logback-access's
 		<code>RequestLogImpl</code>, please add the following lines to
-		jetty's main configuration file, namely
+		Jetty's main configuration file, namely
 		<em>$JETTY_HOME/etc/jetty.xml</em>:
 		</p>
 		<pre class="prettyprint source">&lt;Ref id="requestLog"&gt;
@@ -200,8 +200,8 @@
     </p>
 	
 		<p>As long the path is specified, you can place the logback
-		configuration file in any location. Here is another example of
-		jetty configuration file, including the path to the
+		configuration file in any location. Here is another example of a
+		Jetty configuration file, including the path to the
 		<em>logback-access.xml</em> configuration file.
 		</p>
 		
@@ -473,7 +473,7 @@ CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-impl.jar</pre></div>
 
   <p>Here is the output generated when accessing the <a
   href="demo.html">logback-demo</a> application configured as shown
-  above, yields:</p>
+  above:</p>
 
   <p class="source"><b>GET /logback-demo/index.jsp HTTP/1.1</b>
 Host: localhost:8080

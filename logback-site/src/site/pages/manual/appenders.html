@@ -68,7 +68,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	setters and getters. A notable exception is the
 	<code>doAppend()</code> method taking an object instance of type
 	<em>E</em> as its only parameter. The actual type of <em>E</em>
-	would vary depending on the logback module. Within the
+	will vary depending on the logback module. Within the
 	logback-classic module <em>E</em> would be of type <a
 	href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>
 	and within the logback-access module it would be of type <a
@@ -134,7 +134,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
       return;
     }
     
-    // ok, we now invoke derived class' implementation of append
+    // ok, we now invoke the derived class's implementation of append
     this.append(eventObject);
 
   } finally {
@@ -156,7 +156,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   href="../xref/ch/qos/logback/core/UnsynchronizedAppenderBase.html"><code>ch.qos.logback.core.UnsynchronizedAppenderBase</code></a>
   which is very similar to the <a
   href="../xref/ch/qos/logback/core/AppenderBase.html"><code>AppenderBase</code></a>
-  class. For the sake of conciseness, we want to be discussing
+  class. For the sake of conciseness, we will be discussing
   <code>UnsynchronizedAppenderBase</code> in the remainder of this document.
   </p>
 
@@ -183,7 +183,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	an appender, Joran, logback's configuration framework, calls the
 	<code>start()</code> method to signal the appender to activate its
 	properties.  Depending on its kind, an appender may fail to start if
-	certain properties are missing or because of interferences between
+	certain properties are missing or because of interference between
 	various properties.  For example, given that file creation depends on
 	truncation mode, <code>FileAppender</code> cannot act on the value
 	of its <code>File</code> option until the value of the Append option
@@ -202,7 +202,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 	<p>The next <code>if</code> statement checks the result of the
 	attached filters.  Depending on the decision resulting from the
-	filter chain, events can be denied or alternatively accepted.  In
+	filter chain, events can be denied or explicitly accepted.  In
 	the absence of a decision by the filter chain, events are accepted
 	by default.
 	</p>
@@ -242,7 +242,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	appends events to a <code>java.io.OutputStream</code>.  This class
 	provides basic services that other appenders build upon.  Users do
 	not usually instantiate <code>OutputStreamAppender</code> objects
-	directly.  Since in general the <code>java.io.OutputStream</code>
+	directly, since in general the <code>java.io.OutputStream</code>
 	type cannot be conveniently mapped to a string, as there is no way
 	to specify the target <code>OutputStream</code> object in a
 	configuration script.  Simply put, you cannot configure a
@@ -431,7 +431,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        href="#prudent">prudent</a></span></b></td>
        <td><code>boolean</code></td>
 
-       <td>In prudent mode, <code>FileAppeder</code> will safely
+       <td>In prudent mode, <code>FileAppender</code> will safely
          write to the specified file, even in the presence of other
          <code>FileAppender</code> instances running in different
          JVMs, potentially running on different hosts. The default
@@ -553,7 +553,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    available to subsequent configuration elements <a
    href="configuration.html#variableSubstitution">as a
    variable</a>. The <span class="attr">datePattern</span> attribute
-   denoted the date pattern used to convert the current time (at which
+   denotes the date pattern used to convert the current time (at which
    the configuration file is parsed) into a string. The date pattern
    should follow the conventions defined in <a
    href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
@@ -569,7 +569,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    
    <p><a
 	 href="../xref/ch/qos/logback/core/rolling/RollingFileAppender.html"><code>RollingFileAppender</code></a>
-	 extends <code>FileAppender</code> with the capability to roll log
+	 extends <code>FileAppender</code> with the capability to rollover log
 	 files.  For example, <code>RollingFileAppender</code> can log to a
 	 file named <em>log.txt</em> file and, once a certain condition is
 	 met, change its logging target to another file.
@@ -593,7 +593,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <code>TriggeringPolicy</code> set up. However, if its
    <code>RollingPolicy</code> also implements the
    <code>TriggeringPolicy</code> interface, then only the former needs
-   to be set up.
+   to be specified explicitly.
    </p>
 	
    <p>Here are the available properties for <code>RollingFileAppender</code>:</p>
@@ -701,7 +701,7 @@ public interface RollingPolicy extends LifeCycle {
 
    <p>The <code>rollover</code> method accomplishes the work involved
    in archiving the current log file.  The
-   <code>getActiveFileName()</code> method is called to compute a the
+   <code>getActiveFileName()</code> method is called to compute the
    file name of the current log file (where live logs are written
    to). As indicated by <code>getCompressionMode</code> method a
    RollingPolicy is also responsible for determining the compression
@@ -760,11 +760,11 @@ public interface RollingPolicy extends LifeCycle {
        <td>
          <p>This option represents the pattern that will be followed
          by the <code>FixedWindowRollingPolicy</code> when renaming
-         the log files. If must contain the string <em>%i</em>, which
+         the log files. It must contain the string <em>%i</em>, which
          will indicate the position where the value of the current
          window index will be inserted.
          </p>
-         <p>For example, using <em>MyLogFile%i.log</em>, associated
+         <p>For example, using <em>MyLogFile%i.log</em> associated
          with minimum and maximum values of <em>1</em> and <em>3</em>
          will produce archive files named <em>MyLogFile1.log</em>,
          <em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
@@ -772,7 +772,7 @@ public interface RollingPolicy extends LifeCycle {
          <p>Note that file compression is also specified via this
          property. For example, <span
          class="option">fileNamePattern</span> set to
-         <em>MyLogFile%i.log.zip</em> means that archived file must be
+         <em>MyLogFile%i.log.zip</em> means that archived files must be
          compressed using the <em>zip</em> format; <em>gz</em> format
          is also supported.
          </p>
@@ -905,7 +905,7 @@ public interface RollingPolicy extends LifeCycle {
    interfaces.
    </p>
 
-   <p><code>TimeBasedRollingPolicy</code>'s configuration admits two
+   <p><code>TimeBasedRollingPolicy</code>'s configuration has two
    properties, the mandatory <span
    class="option">fileNamePattern</span> property and the optional
    <span class="option">maxHistory</span> property.
@@ -922,7 +922,7 @@ public interface RollingPolicy extends LifeCycle {
        <td><code>String</code></td>
        <td>
          The mandatory <span class="option">fileNamePattern</span>
-         property defines the name of the rolled (archived) log
+         property defines the name of the rolled-over (archived) log
          files. Its value should consist of the name of the file, plus
          a suitably placed <em>%d</em> conversion specifier.  The
          <em>%d</em> conversion specifier may contain a date-and-time
@@ -1317,9 +1317,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 }</pre>
 
 		<p>The <code>isTriggeringEvent()</code> method takes as parameters
-		the active file, and the logging event currently being
+		the active file and the logging event currently being
 		processed. The concrete implementation determines whether the
-		rollover should occur or not, based on the said parameters.
+		rollover should occur or not, based on these parameters.
 		</p>
 
     <p>The most widely-used triggering policy, namely
@@ -1333,7 +1333,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<p><a
 		href="../xref/ch/qos/logback/core/rolling/SizeBasedTriggeringPolicy.html">
-		<code>SizeBasedTriggeringPolicy</code></a> looks at size of the
+		<code>SizeBasedTriggeringPolicy</code></a> looks at the size of the
 		currently active file. If it grows larger than the specified size,
 		it will signal the owning <code>RollingFileAppender</code> to
 		trigger the rollover of the existing active file.
@@ -1354,7 +1354,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<p>Here is a sample configuration with a
 		<code>RollingFileAppender</code> in conjunction with
-		<code>SizeBasedTriggeringPolicy</code> triggering roll over when
+		<code>SizeBasedTriggeringPolicy</code> triggering rollover when
 		the log file reaches 5MB in size.
 		</p>
 
@@ -1404,7 +1404,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       <a name="SocketAppender" href="#SocketAppender">SocketAppender</a>
     </h3>
 		
-		<p>The appenders covered this far were only able to log on local
+		<p>The appenders covered thus far are only able to log to local
 		resources.  In contrast, the <a
 		href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
 		<code>SocketAppender</code></a> is designed to log to a remote
@@ -1419,7 +1419,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		locally. Multiple <code>SocketAppender</code> instances running on
 		different machines can direct their logging output to a central
 		log server whose format is fixed.  <code>SocketAppender</code>
-		does not admit an associated layout because it sends serialized
+		does not take an associated layout because it sends serialized
 		events to a remote server.  <code>SocketAppender</code> operates
 		above the <em>Transmission Control Protocol (TCP)</em> layer which
 		provides a reliable, sequenced, flow-controlled end-to-end octet
@@ -1751,7 +1751,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           </p>
 
           <p>By specifying a discriminator other than the default
-          one, it would be possible to receive email messages
+          one, it is possible to receive email messages
           containing a events pertaining to a particular user, user
           session or client IP address.
           </p>
@@ -1766,7 +1766,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           <p>This option is declared by creating a new
           <code>&lt;EventEvaluator/></code> element. The name of the
           class that the user wishes to use as the
-          <code>SMTPAppender</code>'s <code>Evaluator</code> can needs
+          <code>SMTPAppender</code>'s <code>Evaluator</code> needs
           to be specified via the <span class="attr">class</span>
           attribute.
           </p>
@@ -1879,7 +1879,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		download the <a
 		href="http://java.sun.com/products/javamail/">JavaMail API</a> and
 		the <a
-		href="http://java.sun.com/beans/glasgow/jaf.html">Java-Beans
+		href="http://java.sun.com/beans/glasgow/jaf.html">JavaBeans
 		Activation Framework</a> from their respective websites.  Make
 		sure to place these two jar files in the classpath before trying
 		the following examples.
@@ -1887,7 +1887,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
 		<p>A sample application, <a
 		href="../xref/chapters/appenders/mail/EMail.html"><code>chapters.appenders.mail.EMail</code></a>
-		generates a number of log messages messages followed by a single
+		generates a number of log messages followed by a single
 		error message. It takes two parameters. The first parameter is an
 		integer corresponding to the number of logging events to
 		generate. The second parameter is the logback configuration
@@ -1939,7 +1939,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
 		<p>In the next example configuration file <em>mail2.xml</em>, the
 		values for the <span class="option">smtpHost</span>, <span
-		class="option">To</span> and <span class="option">From</span>
+		class="option">to</span> and <span class="option">from</span>
 		properties are determined by variable substitution. Here is the
 		relevant part of <em>mail2.xml</em>.
 		</p>		
@@ -1984,8 +1984,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     However, they sometimes automatically downgrade HTML to
     plaintext. For example, to view HTML email in Thunderbird, the
     "View&rarr;Message&nbsp;Body&nbsp;As&rarr;Original HTML" option
-    must be set. Yahoo!Mail's support for HTML email, in particular
-    its CSS support is very good. GMail on the other hand, while it
+    must be set. Yahoo! Mail's support for HTML email, in particular
+    its CSS support is very good. Gmail on the other hand, while it
     honors the basic HTML table structure, ignores the internal CSS
     formatting. Gmail supports inline CSS formatting but since inline
     CSS would make the resulting output too voluminous,
@@ -2024,7 +2024,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <p>If the Evaluator property is not set, the
     <code>SMTPAppender</code> defaults to an <a
-    href="../xref/ch/qos/logback/classic/boolex/OnErrorEvaluator.html">OnErrorEveluator</a>
+    href="../xref/ch/qos/logback/classic/boolex/OnErrorEvaluator.html">OnErrorEvaluator</a>
     instance which triggers email transmission when it encounters an
     event of level ERROR. While triggering an outgoing email in
     response to an error is relatively reasonable, it is possible to
@@ -2040,7 +2040,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		<code>SMTPAppender</code> contains one and only one evaluator
 		object.  This object may manage its own internal state. For
 		illustrative purposes, the <code>CounterBasedEvaluator</code>
-		class listed next, implements an event evaluator whereby every
+		class listed next implements an event evaluator whereby every
 		1024th event triggers an email message.
 		</p>
 
@@ -2120,7 +2120,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     based triggering</a> 
     </h3>
 
-    <p>Although reasonable the default triggering policy whereby every
+    <p>Although reasonable, the default triggering policy whereby every
     event of level ERROR triggers an outgoing email may result in too
     many emails, cluttering the targeted user's mailbox. Logback ships
     with another triggering policy, called <a
@@ -2232,7 +2232,7 @@ logger.error(<b>notifyAdmin</b>,
     <p>Note that since the event may lack a marker, the value of
     e.marker can be null. Hence the use of Groovy's <a
     href="http://groovy.codehaus.org/Null+Object+Pattern">safe
-    derefencing opeator</a>, that is the .? operator.
+    dereferencing operator</a>, that is the .? operator.
     </p>
 
 
@@ -2325,7 +2325,7 @@ logger.error(<b>notifyAdmin</b>,
     session or client IP address, depending on the specified discriminator.
     </p>
 
-    <p>The next example illustrates the use of<a
+    <p>The next example illustrates the use of <a
     href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>
     in conjunction with the MDC key named "req.remoteHost", assumed to
     contain the IP address of the remote host accessing a fictitious
@@ -2362,7 +2362,7 @@ logger.error(<b>notifyAdmin</b>,
   &lt;/root>  
 &lt;/configuration></pre>
 
-    <p>Thus, each outgoing emails generated by
+    <p>Thus, each outgoing email generated by
     <code>SMTPAppender</code> will belong to a <em>unique</em> remote
     host, greatly facilitating problem diagnosis.
     </p>
@@ -2397,7 +2397,7 @@ logger.error(<b>notifyAdmin</b>,
 		<p>If your JDBC driver supports the <code>getGeneratedKeys</code>
 		method introduced in JDBC 3.0 specification, assuming you have
 		created the appropriate database tables as mentioned above, then
-		no more steps are required, excluding the usual logback
+		no more steps are required, except for the usual logback
 		configuration.
 		</p>
 
@@ -2772,7 +2772,7 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 		<p>
-			Not that in this configuration sample, we make heavy use of substitution variables.
+			Note that in this configuration sample, we make heavy use of substitution variables.
 			They are sometimes handy when connection details have to be centralized in a
 			single configuration file and shared by logback and other frameworks.
 		</p>	
@@ -2800,7 +2800,7 @@ logger.error(<b>notifyAdmin</b>,
 			source will be bound to a JNDI context.
 		</p>
 
-		<p>This is a very powerful possibility of Joran. If you'd like to
+		<p>This is a very powerful capability of Joran. If you'd like to
 			read more about Joran, please see the <a
 			href="onJoran.html">chapter to Joran</a>.
 		</p>
@@ -2969,7 +2969,7 @@ logger.error(<b>notifyAdmin</b>,
 				</td>
 				<td>
 					The port number on the syslog server to connect to. Normally, one would not want 
-					to change the default value, that is <em>514</em>.
+					to change the default value of <em>514</em>.
 				</td>
 			</tr>
 			<tr class="b">
@@ -2987,7 +2987,7 @@ logger.error(<b>notifyAdmin</b>,
 						the source of a message.
 					</p>
 					<p>
-						The <span class="option">facility</span> option must be set one 
+						The <span class="option">facility</span> option must be set to one
 						of the strings <em>KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, 
 						CRON, AUTHPRIV, FTP, NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, 
 						LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.
@@ -3024,7 +3024,7 @@ logger.error(<b>notifyAdmin</b>,
 		
 		<p>
 			Since the format of a syslog request follows rather strict rules, there is no layout
-			to be used with <code>SyslogAppender</code>. However, the using the 
+			to be used with <code>SyslogAppender</code>. However, using the
 			<span class="option">suffixPattern</span> option lets the user display whatever
 			information she wishes.
 		</p>
@@ -3336,7 +3336,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		</p>
 
 		<p>Two tables are used by <code>DBAppender</code>:
-		<em>access_event</em> and <em>access_event_header</em>. They all
+		<em>access_event</em> and <em>access_event_header</em>. They both
 		must exist before <code>DBAppender</code> can be used. Logback
 		ships with SQL scripts that will create the tables.  They can be
 		found in the
@@ -3414,7 +3414,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		
 		<p>
 			The <em>access_event_header</em> table contains the header of each
-			requests. The information is organised as shown below:
+			request. The information is organised as shown below:
 		</p>
 
 		<table class="bodyTable">
@@ -3441,7 +3441,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			</table>
 
 		<p>All properties of classic's <code>DBAppender</code> are available
-			in access' <code>DBAppender</code>. The latter offers one more option,
+			in access's <code>DBAppender</code>. The latter offers one more option,
 			described below.
 		</p>
 		
@@ -3495,7 +3495,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     logback-access the default discriminator, namely <a
     href="../xref/ch/qos/logback/access/sift/AccessEventDiscriminator.html">AccessEventDiscriminator</a>,
     is not MDC based. As its name suggests, AccessEventDiscriminator,
-    uses a designated field in AccessEvent as basis for selecting a
+    uses a designated field in AccessEvent as the basis for selecting a
     nested appender. If the value of the designated field is null,
     then the value specified in the <span
     class="option">defaultValue</span> property is used.

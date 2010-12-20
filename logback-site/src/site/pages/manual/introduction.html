@@ -34,7 +34,7 @@
       much more complex entities in four months than they can
       build.</em></p>
       
-      <p>&mdash;FREDERIC P. BROOKS, JR., <em>The Mythical Man-Month</em></p>
+      <p>&mdash;FREDERICK P. BROOKS, JR., <em>The Mythical Man-Month</em></p>
     </div>
 
 
@@ -44,13 +44,13 @@
 
     <p>Logback is intended as a successor to the popular log4j
     project.  It was designed by Ceki G&#252;lc&#252;, log4j's
-    founder.  It builds upon a decade long experience gained in
+    founder.  It builds upon a decade of experience gained in
     designing industrial-strength logging systems. The resulting
-    product, logback is faster with a smaller footprint than all
+    product logback is faster and has a smaller footprint than all
     existing logging systems, sometimes by a wide margin. Logback also
     offers unique and rather useful features such as Markers,
     parameterized logging statements, conditional stack tracing and
-    powerful event filtering. These are only a few examples of useful
+    powerful event filtering. These are only a few examples of the useful
     features logback has to offer. For its own error reporting,
     logback relies on <code>Status</code> objects, which greatly
     facilitate troubleshooting. You may wish to rely on Status objects
@@ -66,8 +66,8 @@
     <a name="Requirements"></a>
     <h3>Requirements</h3>
 
-    <p>Logback-classic module requires the presence
-    <em>slf4j-api.jar</em>, <em>logback-core.jar</em> in addition to
+    <p>Logback-classic module requires the presence of
+    <em>slf4j-api.jar</em> and <em>logback-core.jar</em> in addition to
     <em>logback-classic.jar</em> on the classpath.
     </p>
 
@@ -99,7 +99,7 @@ public class HelloWorld1 {
     href="http://slf4j.org/api/org/slf4j/Logger.html"><code>Logger</code></a>
     and <a
     href="http://slf4j.org/api/org/slf4j/LoggerFactory.html"><code>LoggerFactory</code></a>
-    classes defined in the SLF4J API, more specifically within the
+    classes defined in the SLF4J API, specifically within the
      <code>org.slf4j</code> package.
     </p>
 
@@ -117,8 +117,8 @@ public class HelloWorld1 {
     <p>Note that the above example does not reference any logback
     classes. In most cases, as far as logging is concerned, your
     classes will only need to import SLF4J classes. Thus, the vast
-    majority, if not all, of your classes will be cognizant of SLF4J
-    API and oblivious to the existence of logback.
+    majority, if not all, of your classes will use the SLF4J
+    API and will be oblivious to the existence of logback.
     </p>
 
 
@@ -182,7 +182,7 @@ public class HelloWorld2 {
   policy, which is a basic <code>ConsoleAppender</code>.  An
   <code>Appender</code> is a class that can be seen as an output
   destination. Appenders exist for many different destinations
-  including the console, files, Syslog, TCP Socket, JMS and many
+  including the console, files, Syslog, TCP Sockets, JMS and many
   more. Users can also easily create their own Appenders as
   appropriate for their specific situation.
   </p>
@@ -199,7 +199,7 @@ public class HelloWorld2 {
   </p>
 
   <p>Note that in the above example we have instructed logback to
-  print its internal state by invoking
+  print its internal state by invoking the
   <code>StatusPrinter.print()</code> method. Logback's internal status
   information can be very useful in diagnosing logback-related
   problems.

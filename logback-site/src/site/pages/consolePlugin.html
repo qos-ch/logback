@@ -60,7 +60,7 @@
     </p>
     
     <p>
-     Once the transfert is complete, unzip the file called 
+     Once the transfer is complete, unzip the file called
      <code>ch.qos.logback.eclipse_<em>VERSION</em>.zip</code>. Place the folder
      found inside the archive in the following directory: <em>ECLIPSE_INSTALL/plugins/</em>
      where <em>ECLIPSE_INSTALL</em> is the directory where you've installed Eclipse.
@@ -93,7 +93,7 @@
     events to the localhost, on port <em>4321</em> by default. That's all it takes to run your
     software and log to the logback plugin. By default, logging events are not filtered, but please
     keep in mind that context-wide filtering in your logging configuration may affect the events
-    that are recieved by the logback plugin.
+    that are received by the logback plugin.
    </p>
     
    <p>If you already have
@@ -127,8 +127,8 @@
    
    <p>
     The first button on the left clears the console. The second button toggles
-    the auto-scroll functionnality. When enabled, you will always see the latest
-    logs that have been recieved by the plugin. If you disable the auto scrolling, 
+    the auto-scroll functionality. When enabled, you will always see the latest
+    logs that have been received by the plugin. If you disable the auto scrolling,
     the view will display the current logs, and add the new ones at the bottom of
     the list.
    </p>
@@ -152,15 +152,15 @@
    
    <p>
     Double-clicking on a log entry will open a Java editor and show you the line
-    where the entry was requested. It is an easy way to be access directly
-    to the class and method that logged the selected entry.
+    where the entry was requested. It is an easy way to directly access
+    the class and method that logged the selected entry.
    </p>
    
    <p>
     When an icon is shown on the left of the logging event, it means that the
     logging event contains a stacktrace. Right-clicking on the line reveals
     a sub-menu that lets you open Eclipse's StackTrace Console and display the
-    stacktrace. You can click on the underlined parts of the stack trace to open
+    stacktrace. You can click on the underlined parts of the stacktrace to open
     an editor revealing the selected class.
    </p>
    
@@ -224,7 +224,7 @@
     view before the list is trimmed. By default, the logback plugin will display
     20'000 events. Once this number is reached, the plugin automatically drops
     the 30% oldest logs. Please note that changing this value to a too much higher
-    value might lead to memory issues, or even crashing Eclipse.
+    value might lead to memory issues, or even crash Eclipse.
    </p>
    
    
@@ -232,12 +232,12 @@
    
    <p>
     The logback plugin lets you filter logging events when they are
-    recieved. It uses the powerfull <code>EvaluatorFilter</code>objects 
+    received. It uses the powerful <code>EvaluatorFilter</code> objects
     that are available in logback. For detailled information about these filters, you might want
     to check the <a href="manual/filters.html">corresponding documentation</a> 
     in the logback manual. In this document, we will only
     cover some basic points, enough to get you started using the filtering
-    functionnality of the logback plugin.
+    functionality of the logback plugin.
    </p>
    
    <p>
@@ -254,8 +254,8 @@
    </p>
    
    <p>
-    A filter is composed of three informations. First, a Java expression,
-    that will be evaluated for each logging event that is recieved by
+    A filter is composed of three pieces of information. First, a Java expression,
+    that will be evaluated for each logging event that is received by
     the logback plugin. This expression can use a set of common variables
     such as <code>level</code>, <code>logger</code>, <code>message</code>, 
     and several others. For a complete list of available variables, please
@@ -264,8 +264,9 @@
    </p>
    
    <p>
-    The second and third informations that compose a filter are the
-    action that will be taken depending on the result of the evaluation.
+    The second and third pieces of information that compose a filter are the
+    actions that will be taken depending on the result of the evaluation, for
+    a filter match and a filter mismatch.
     Three actions are possible: <em>ACCEPT</em>, <em>DENY</em>
     or <em>NEUTRAL</em>. Setting a filter's reply to <em>ACCEPT</em>
     or <em>DENY</em> will prevent the plugin from evaluating any
@@ -302,7 +303,7 @@
     We've just created a filter that will drop any requests whose
     level is lower than <em>INFO</em>. Note the use of the <em>NEUTRAL</em>
     value as the action to be taken when the filter is matched. Since
-    we do not know what other filters might want to do, there is not reason
+    we do not know what other filters might want to do, there is no reason
     to stop evaluating when the level is higher or equal to <em>INFO</em>.
    </p>
    
@@ -317,7 +318,7 @@
    </p>
    
    <p>
-    You should now be ready to experience the logback plugin and use its functionnalites.
+    You should now be ready to experience the logback plugin and use its functionality.
     If you have any question about its use, feel free to use the logback
     <a href="mailinglist.html">mailing lists</a>.
    </p>

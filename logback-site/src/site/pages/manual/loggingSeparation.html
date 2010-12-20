@@ -52,7 +52,7 @@
     <p>The chapter deals with a relatively difficult problem of
     providing a separate logging environment for multiple applications
     running on the same web or EJB container. In the remainder of this
-    chapter the term "application" will be used to refer either a
+    chapter the term "application" will be used to refer to either a
     web-application or a J2EE application interchangeably.  In a
     separated logging environment, each application sees a distinct
     logback environment, so that the logback configuration of one
@@ -69,7 +69,7 @@
     <h2><a name="easy" href="#easy">The simplest and easiest
     approach</a></h2>
 
-    <p>Assuming your container supports child first class loading,
+    <p>Assuming your container supports child-first class loading,
     separation of logging can be accomplished by embedding a copy of
     slf4j and logback jar files in each of your applications. For
     web-applications, placing slf4j and logback jar files under the
@@ -189,7 +189,7 @@
     file called <em>logback-kenobi.xml</em> as a <em>resource</em>
     using the thread context class loader. Thus, for example for the
     kenobi web-application, <em>logback-kenobi.xml</em> should be
-    placed under the under the <em>WEB-INF/classes</em> folder.
+    placed under the <em>WEB-INF/classes</em> folder.
     </p>
 
     <p>If you wish to, you may specify a different configuration file
@@ -208,9 +208,9 @@
   &lt;env-entry-value>aFolder/my_config.xml&lt;/env-entry-value>
 &lt;/env-entry></pre> 
 
-    <p>The <em>my_config.xml</em> should be placed under
-    <em>WEB-INF/classes/aFolfer/</em>. The important point to remember
-    is that the configuration is looked up as a java resource using
+    <p>The file <em>my_config.xml</em> should be placed under
+    <em>WEB-INF/classes/aFolder/</em>. The important point to remember
+    is that the configuration is looked up as a Java resource using
     the current thread's context class loader.
     </p>
     
@@ -258,11 +258,11 @@
     <p>When <code>ContextJNDISelector</code> is active, each time a
     logger is retrieved, a JNDI lookup must be performed. This can
     negatively impact performance, especially if you are using
-    non-static (aka instance) logger references. Logback ships with a
+    non-static (a.k.a. instance) logger references. Logback ships with a
     servlet filter named <a
     href="../xref/ch/qos/logback/classic/selector/servlet/LoggerContextFilter.html">LoggerContextFilter</a>,
     specifically designed to avoid the JNDI lookup cost. It can
-    be installed by adding the following lines to your applications
+    be installed by adding the following lines to your application's
     web.xml file.</p>
 
  <pre class="prettyprint source">&lt;filter>
@@ -278,7 +278,7 @@
    <code>LoggerContextFilter</code> will obtain the logger context
    associated with the application and then place it in a
    <code>ThreadLocal</code> variable. <code>ContextJNDISelector</code>
-   will first check if the said <code>ThreadLocal</code> variable is
+   will first check if the <code>ThreadLocal</code> variable is
    set. If it is set, then JNDI lookup will skipped. Note that at the
    end of the http request, the <code>ThreadLocal</code> variable will
    be nulled.  Installing <code>LoggerContextFilter</code> improves
@@ -327,7 +327,7 @@
     <code>LoggerFactory.getLogger()</code> will return a logger
     belonging to a logger context associated with the calling/current
     application. But if <code>Mustafar</code> has a static logger
-    reference, then its logger will be attach to logger context of the
+    reference, then its logger will be attached to the logger context of the
     application that calls it first. Thus,
     <code>ContextJNDISelector</code> does not provide logging
     separation in case of shared classes using static logger
@@ -385,8 +385,8 @@
 
 
    <p>If kenobi and yoda are web-applications, then the above
-   configuration will output yoda's logs output to <em>yoda.log</em>
-   and kenobi's logs to <em>kenobi.log</em>, this even logs generated
+   configuration will output yoda's log output to <em>yoda.log</em>
+   and kenobi's logs to <em>kenobi.log</em>; this even works for logs generated
    by static logger references located in shared classes.</p>
  
    <p>You can try out the technique just described with the help of the
@@ -446,7 +446,7 @@ DEBUG ch.qos.starwars.shared.Mustafar               <b>cn=yoda</b> - in foo()</p
    two distinct logging contexts logging to the same file, in this
    case <em>kenobi.log</em>. Each of these contexts reference
    <code>FileAppender</code> instances, nested within distinct
-   <code>SiftingAppender</code> instances, logging to the same
+   <code>SiftingAppender</code> instances, that are logging to the same
    file. Although logging separation seems to function according to
    our wishes, FileAppender instances cannot safely write to the same
    file unless they enable <span class="option">prudent</span>
