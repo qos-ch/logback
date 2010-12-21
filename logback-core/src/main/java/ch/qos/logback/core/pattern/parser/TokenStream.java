@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import ch.qos.logback.core.CoreConstants;
+import static ch.qos.logback.core.CoreConstants.CURLY_LEFT;
+import static ch.qos.logback.core.CoreConstants.ESCAPE_CHAR;
+
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
@@ -42,15 +45,7 @@ import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
  */
 class TokenStream {
 
-  private static final char ESCAPE_CHAR = '\\';
-  private static final char CURLY_LEFT = '{';
-  private static final char CURLY_RIGHT = '}';
-
-  private static final int LITERAL_STATE = 0;
-  private static final int FORMAT_MODIFIER_STATE = 1;
-  private static final int KEYWORD_STATE = 2;
-  private static final int OPTION_STATE = 3;
-  private static final int RIGHT_PARENTHESIS_STATE = 4;
+  enum TokenizerState { LITERAL_STATE,  FORMAT_MODIFIER_STATE, KEYWORD_STATE, OPTION_STATE,  RIGHT_PARENTHESIS_STATE}
 
   final String pattern;
   final int patternLength;
@@ -58,7 +53,7 @@ class TokenStream {
 
   final IEscapeUtil optionEscapeUtil = new RestrictedEscapeUtil();
 
-  int state = LITERAL_STATE;
+  TokenizerState state = TokenizerState.LITERAL_STATE;
   int pointer = 0;
 
   // this variant should be used for testing purposes only
@@ -92,7 +87,7 @@ class TokenStream {
           handleFormatModifierState(c, tokenList, buf);
           break;
         case OPTION_STATE:
-          handleOptionState(c, tokenList, buf);
+          processOption(c, tokenList, buf);
           break;
         case KEYWORD_STATE:
           handleKeywordState(c, tokenList, buf);
@@ -131,40 +126,31 @@ class TokenStream {
       case CoreConstants.RIGHT_PARENTHESIS_CHAR:
         break;
       case CURLY_LEFT:
-        state = OPTION_STATE;
+        state = TokenizerState.OPTION_STATE;
         break;
       case ESCAPE_CHAR:
         escape("%{}", buf);
-        state = LITERAL_STATE;
+        state = TokenizerState.LITERAL_STATE;
         break;
       default:
         buf.append(c);
-        state = LITERAL_STATE;
+        state = TokenizerState.LITERAL_STATE;
     }
   }
 
-  private void handleOptionState(char c, List<Token> tokenList, StringBuffer buf) {
-    switch (c) {
-      case CURLY_RIGHT:
-        addValuedToken(Token.OPTION, buf, tokenList);
-        state = LITERAL_STATE;
-        break;
-      case ESCAPE_CHAR:
-        optionEscape("}", buf);
-        break;
-      default:
-        buf.append(c);
-    }
+  private void processOption(char c, List<Token> tokenList, StringBuffer buf) throws ScanException {
+    OptionTokenizer ot = new OptionTokenizer(this);
+    ot.tokenize(c, tokenList);
   }
 
   private void handleFormatModifierState(char c, List<Token> tokenList, StringBuffer buf) {
     if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
       addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
       tokenList.add(Token.BARE_COMPOSITE_KEYWORD_TOKEN);
-      state = LITERAL_STATE;
+      state = TokenizerState.LITERAL_STATE;
     } else if (Character.isJavaIdentifierStart(c)) {
       addValuedToken(Token.FORMAT_MODIFIER, buf, tokenList);
-      state = KEYWORD_STATE;
+      state = TokenizerState.KEYWORD_STATE;
       buf.append(c);
     } else {
       buf.append(c);
@@ -180,12 +166,12 @@ class TokenStream {
       case CoreConstants.PERCENT_CHAR:
         addValuedToken(Token.LITERAL, buf, tokenList);
         tokenList.add(Token.PERCENT_TOKEN);
-        state = FORMAT_MODIFIER_STATE;
+        state = TokenizerState.FORMAT_MODIFIER_STATE;
         break;
 
       case CoreConstants.RIGHT_PARENTHESIS_CHAR:
         addValuedToken(Token.LITERAL, buf, tokenList);
-        state = RIGHT_PARENTHESIS_STATE;
+        state = TokenizerState.RIGHT_PARENTHESIS_STATE;
         break;
 
       default:
@@ -199,17 +185,17 @@ class TokenStream {
       buf.append(c);
     } else if (c == CURLY_LEFT) {
       addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
-      state = OPTION_STATE;
+      state = TokenizerState.OPTION_STATE;
     } else if (c == CoreConstants.LEFT_PARENTHESIS_CHAR) {
       addValuedToken(Token.COMPOSITE_KEYWORD, buf, tokenList);
-      state = LITERAL_STATE;
+      state = TokenizerState.LITERAL_STATE;
     } else if (c == CoreConstants.PERCENT_CHAR) {
       addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
       tokenList.add(Token.PERCENT_TOKEN);
-      state = FORMAT_MODIFIER_STATE;
+      state = TokenizerState.FORMAT_MODIFIER_STATE;
     } else if (c == CoreConstants.RIGHT_PARENTHESIS_CHAR) {
       addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
-      state = RIGHT_PARENTHESIS_STATE;
+      state = TokenizerState.RIGHT_PARENTHESIS_STATE;
     } else {
       addValuedToken(Token.SIMPLE_KEYWORD, buf, tokenList);
       if (c == ESCAPE_CHAR) {
@@ -220,7 +206,7 @@ class TokenStream {
       } else {
         buf.append(c);
       }
-      state = LITERAL_STATE;
+      state = TokenizerState.LITERAL_STATE;
     }
   }
 

@@ -137,7 +137,6 @@ public class ConfigurationDelegate extends ContextAwareBase {
          appenderDelegate.metaClass."${newName}" = appender.&"$oldName"
       }
     }
-
   }
 
   void turboFilter(Class clazz, Closure closure = null) {

@@ -20,111 +20,130 @@ import ch.qos.logback.core.pattern.util.AsIsEscapeUtil;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
+import static ch.qos.logback.core.CoreConstants.CURLY_RIGHT;
+
+
+import static ch.qos.logback.core.CoreConstants.ESCAPE_CHAR;
+import static ch.qos.logback.core.CoreConstants.COMMA_CHAR;
+import static ch.qos.logback.core.CoreConstants.SINGLE_QUOTE_CHAR;
+import static ch.qos.logback.core.CoreConstants.DOUBLE_QUOTE_CHAR;
+
+
+import ch.qos.logback.core.pattern.parser.TokenStream.TokenizerState;
+
 public class OptionTokenizer {
 
   private final static int EXPECTING_STATE = 0;
-  private final static int COLLECTING_STATE = 1;
+  private final static int RAW_COLLECTING_STATE = 1;
   private final static int QUOTED_COLLECTING_STATE = 2;
 
-  private static final char ESCAPE_CHAR = '\\';
-  private static final char COMMA_CHAR = ',';
-  private static final char DOUBLE_QUOTE_CHAR = '"';
-  private static final char SINGLE_QUOTE_CHAR = '\'';
 
+  final IEscapeUtil escapeUtil;
+  final TokenStream tokenStream;
   final String pattern;
   final int patternLength;
-  final IEscapeUtil escapeUtil;
-  
+
   char quoteChar;
-  int pointer = 0;
   int state = EXPECTING_STATE;
 
-  /**
-   * This variant is used in tests
-   * @param pattern
-   */
-  OptionTokenizer(String pattern) {
-    this(pattern, new AsIsEscapeUtil());
+  OptionTokenizer(TokenStream tokenStream) {
+    this(tokenStream, new AsIsEscapeUtil());
   }
-  
-  OptionTokenizer(String pattern, IEscapeUtil escapeUtil) {
-    this.pattern = pattern;
-    patternLength = pattern.length();
+
+  OptionTokenizer(TokenStream tokenStream, IEscapeUtil escapeUtil) {
+    this.tokenStream = tokenStream;
+    this.pattern = tokenStream.pattern;
+    this.patternLength = tokenStream.patternLength;
     this.escapeUtil = escapeUtil;
   }
 
-  List<String> tokenize() throws ScanException {
-    List<String> tokenList = new ArrayList<String>();
+  void tokenize(char firstChar, List<Token> tokenList) throws ScanException {
     StringBuffer buf = new StringBuffer();
+    List<String> optionList = new ArrayList<String>();
+    char c = firstChar;
 
-    while (pointer < patternLength) {
-      char c = pattern.charAt(pointer);
-      pointer++;
-
+    while (tokenStream.pointer < patternLength) {
       switch (state) {
-      case EXPECTING_STATE:
-        switch (c) {
-        case ' ':
-        case '\t':
-        case '\r':
-        case '\n':
+        case EXPECTING_STATE:
+          switch (c) {
+            case ' ':
+            case '\t':
+            case '\r':
+            case '\n':
+              break;
+            case COMMA_CHAR:
+              break;
+            case SINGLE_QUOTE_CHAR:
+            case DOUBLE_QUOTE_CHAR:
+              state = QUOTED_COLLECTING_STATE;
+              quoteChar = c;
+              break;
+            case CURLY_RIGHT:
+              emitOptionToken(tokenList, optionList);
+              return;
+            default:
+              buf.append(c);
+              state = RAW_COLLECTING_STATE;
+          }
           break;
-        case COMMA_CHAR:
+        case RAW_COLLECTING_STATE:
+          switch (c) {
+            case COMMA_CHAR:
+              optionList.add(buf.toString().trim());
+              buf.setLength(0);
+              state = EXPECTING_STATE;
+              break;
+            case CURLY_RIGHT:
+              optionList.add(buf.toString().trim());
+              emitOptionToken(tokenList, optionList);
+              return;
+            default:
+              buf.append(c);
+          }
           break;
-        case SINGLE_QUOTE_CHAR:
-        case DOUBLE_QUOTE_CHAR:
-          state = QUOTED_COLLECTING_STATE;
-          quoteChar = c;
-          break;
-        default:
-          buf.append(c);
-          state = COLLECTING_STATE;
-        }
-        break;
-      case COLLECTING_STATE:
-        switch (c) {
-        case COMMA_CHAR:
-          tokenList.add(buf.toString().trim());
-          buf.setLength(0);
-          state = EXPECTING_STATE;
-          break;
-        default:
-          buf.append(c);
-        }
-        break;
-      case QUOTED_COLLECTING_STATE:
-        if (c == quoteChar) {
-          tokenList.add(buf.toString());
-          buf.setLength(0);
-          state = EXPECTING_STATE;
-        } else if (c == ESCAPE_CHAR) {
-          escape(String.valueOf(quoteChar), buf);
-        } else {
-          buf.append(c);
-        }
+        case QUOTED_COLLECTING_STATE:
+          if (c == quoteChar) {
+            optionList.add(buf.toString());
+            buf.setLength(0);
+            state = EXPECTING_STATE;
+          } else if (c == ESCAPE_CHAR) {
+            escape(String.valueOf(quoteChar), buf);
+          } else {
+            buf.append(c);
+          }
 
-        break;
+          break;
       }
+
+      c = pattern.charAt(tokenStream.pointer);
+      tokenStream.pointer++;
     }
+
 
     // EOS
-    switch (state) {
-    case EXPECTING_STATE:
-      break;
-    case COLLECTING_STATE:
-      tokenList.add(buf.toString().trim());
-      break;
-    default:
-      throw new ScanException("Unexpected end of pattern string");
+    if (c == CURLY_RIGHT) {
+      if(state == EXPECTING_STATE) {
+        emitOptionToken(tokenList, optionList);
+      } else if(state == RAW_COLLECTING_STATE){
+        optionList.add(buf.toString().trim());
+        emitOptionToken(tokenList, optionList);
+      } else {
+        throw new ScanException("Unexpected end of pattern string in OptionTokenizer");
+      }
+    } else {
+      throw new ScanException("Unexpected end of pattern string in OptionTokenizer");
     }
+  }
 
-    return tokenList;
+  void emitOptionToken( List<Token> tokenList, List<String> optionList) {
+     tokenList.add(new Token(Token.OPTION, optionList));
+     tokenStream.state = TokenizerState.LITERAL_STATE;
   }
 
   void escape(String escapeChars, StringBuffer buf) {
-    if ((pointer < patternLength)) {
-      char next = pattern.charAt(pointer++);
-      escapeUtil.escape(escapeChars, buf, next, pointer);
+    if ((tokenStream.pointer < patternLength)) {
+      char next = pattern.charAt(tokenStream.pointer++);
+      escapeUtil.escape(escapeChars, buf, next, tokenStream.pointer);
     }
   }
 }

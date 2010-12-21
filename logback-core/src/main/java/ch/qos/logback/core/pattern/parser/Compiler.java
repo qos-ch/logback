@@ -26,12 +26,10 @@ class Compiler<E> extends ContextAwareBase {
   Converter<E> tail;
   final Node top;
   final Map converterMap;
-  final Map compositeConverterMap;
 
-  Compiler(final Node top, final Map converterMap, Map compositeConverterMap) {
+  Compiler(final Node top, final Map converterMap) {
     this.top = top;
     this.converterMap = converterMap;
-    this.compositeConverterMap = compositeConverterMap;
   }
 
   Converter<E> compile() {
@@ -47,7 +45,7 @@ class Compiler<E> extends ContextAwareBase {
           compositeConverter.setFormattingInfo(cn.getFormatInfo());
           compositeConverter.setOptionList(cn.getOptions());
           Compiler<E> childCompiler = new Compiler<E>(cn.getChildNode(),
-                  converterMap, compositeConverterMap);
+                  converterMap);
           childCompiler.setContext(context);
           Converter<E> childConverter = childCompiler.compile();
           compositeConverter.setChildConverter(childConverter);
@@ -122,7 +120,7 @@ class Compiler<E> extends ContextAwareBase {
   @SuppressWarnings("unchecked")
   CompositeConverter<E> createCompiteConverter(CompositeNode cn) {
     String keyword = (String) cn.getValue();
-    String converterClassStr = (String) compositeConverterMap.get(keyword);
+    String converterClassStr = (String) converterMap.get(keyword);
 
     if (converterClassStr != null) {
       try {

@@ -213,7 +213,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   void waitForCompression(TimeBasedRollingPolicy<Object> tbrp)
       throws InterruptedException, ExecutionException, TimeoutException {
     if (tbrp.future != null && !tbrp.future.isDone()) {
-      tbrp.future.get(200, TimeUnit.MILLISECONDS);
+      tbrp.future.get(800, TimeUnit.MILLISECONDS);
     }
   }
 

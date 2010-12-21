@@ -999,8 +999,28 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
           omitted, the returned value will be "Property_HAS_NO_KEY",
           expliciting the error condition.</p>
           
-          <p>
+        </td>
+      </tr>
+
+      <tr class="alt">
+        <td align="center">
+          <a name="replace" href="#replace"><b>replace(<em>p</em>){r, t}</b></a>
+        </td>
+        
+        <td>
+          <p>Replaces occurrences of 'r', a regex, with its
+          replacement 't' in the string produces by the sub-pattern
+          'p'. For example, "%replace(%msg){'\s', ''}" will remove all
+          spaces contained in the event message. 
           </p>
+
+          <p>The pattern 'p' can be arbitrarily complex and in
+          particular can contain multiple conversion keywords. For
+          instance, "%replace(%logger %msg){'\.', '/'}" will replace
+          all dots in the logger or the message of the event with a
+          forward slash.
+          </p>
+
           
         </td>
       </tr>
@@ -1208,12 +1228,10 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 		<h2><a name="cwOptions" href="#cwOptions">Conversion word
 		options</a></h2>
 
-		<p>
-			A conversion specifier can be followed by options. The are
-			always declared between braces. We have already seen some of the
-			possibilities offered by options, for instance in conjunction
-			with the MDC conversion specifier, as in:
-			<em>%mdc{someKey}</em>.
+		<p>A conversion specifier can be followed by options. The are
+		always declared between braces. We have already seen some of the
+		possibilities offered by options, for instance in conjunction with
+		the MDC conversion specifier, as in: <em>%mdc{someKey}</em>.
 		</p>
 
     <p>A conversion specifier might have more than one option. For
@@ -1221,14 +1239,24 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     which will be covered soon, may add evaluator names to the option
     list, as shown below:</p>
 
-		<pre class="prettyprint source">
-  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    &lt;layout class="ch.qos.logback.classic.PatternLayout"> 
-      &lt;param name="Pattern" value="%-4relative [%thread] %-5level - %msg%n \
-        <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>" /> 
-    &lt;/layout>
-  &lt;/appender></pre>
+		<pre class="prettyprint source">&lt;pattern>%-4relative [%thread] %-5level - %msg%n \
+  <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>&lt;/pattern></pre>
     
+    <p>If the option includes special characters such as a braces, spaces or
+    commas, you can enclose it between single or double quotes. For
+    example, consider the next pattern.</p>
+
+		<pre class="prettyprint source">&lt;pattern>%-5level - %replace(%msg)<b>{'\d{14,16}', 'XXXX'}</b>%n&lt;/pattern></pre>
+
+
+    <p>We pass the options <code>\d{16}</code> and <code>XXXX</code>
+    to the <code>replace</code> conversion word. It replaces any
+    sequence of 14, 15 or 16 digits contained in the message with XXXX
+    effectively obfuscating credit card numbers. Note that "\d" which
+    is a shorthand for a single digit in regular expressions. The
+    "{14,16\}" is interpreted as "{14, 16}", that is, repeat the
+    previous item at least 14 but at most 16 times.
+    </p>
 
 		<h2><a name="Parentheses" href="#Parentheses">Parentheses are
 		special</a></h2>

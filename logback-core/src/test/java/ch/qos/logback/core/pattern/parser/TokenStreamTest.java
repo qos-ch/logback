@@ -108,7 +108,9 @@ public class TokenStreamTest {
     List<Token> witness = new ArrayList<Token>();
     witness.add(Token.PERCENT_TOKEN);
     witness.add(new Token(Token.SIMPLE_KEYWORD, "d"));
-    witness.add(new Token(Token.OPTION, "1234"));
+    List ol = new ArrayList<String>();
+    ol.add("1234");
+    witness.add(new Token(Token.OPTION, ol));
     witness.add(new Token(Token.LITERAL, " ["));
     witness.add(Token.PERCENT_TOKEN);
     witness.add(new Token(Token.FORMAT_MODIFIER, "34.-67"));
@@ -198,7 +200,9 @@ public class TokenStreamTest {
       List<Token> witness = new ArrayList<Token>();
       witness.add(Token.PERCENT_TOKEN);
       witness.add(new Token(Token.SIMPLE_KEYWORD, "x"));
-      witness.add(new Token(Token.OPTION, "t"));
+      List ol = new ArrayList<String>();
+      ol.add("t");
+      witness.add(new Token(Token.OPTION, ol));
       assertEquals(witness, tl);
     }
 
@@ -207,7 +211,10 @@ public class TokenStreamTest {
       List<Token> witness = new ArrayList<Token>();
       witness.add(Token.PERCENT_TOKEN);
       witness.add(new Token(Token.SIMPLE_KEYWORD, "x"));
-      witness.add(new Token(Token.OPTION, "t,y"));
+      List ol = new ArrayList<String>();
+      ol.add("t");
+      ol.add("y");
+      witness.add(new Token(Token.OPTION, ol));
       assertEquals(witness, tl);
     }
 
@@ -216,16 +223,21 @@ public class TokenStreamTest {
       List<Token> witness = new ArrayList<Token>();
       witness.add(Token.PERCENT_TOKEN);
       witness.add(new Token(Token.SIMPLE_KEYWORD, "x"));
-      witness.add(new Token(Token.OPTION, "\"hello world.\", \"12y  \""));
+      List ol = new ArrayList<String>();
+      ol.add("hello world.");
+      ol.add("12y  ");
+      witness.add(new Token(Token.OPTION, ol));
       assertEquals(witness, tl);
     }
 
     {
-      List tl = new TokenStream("%x{opt\\}}").tokenize();
+      List tl = new TokenStream("%x{'opt}'}").tokenize();
       List<Token> witness = new ArrayList<Token>();
       witness.add(Token.PERCENT_TOKEN);
       witness.add(new Token(Token.SIMPLE_KEYWORD, "x"));
-      witness.add(new Token(Token.OPTION, "opt}"));
+      List ol = new ArrayList<String>();
+      ol.add("opt}");
+      witness.add(new Token(Token.OPTION, ol));
       assertEquals(witness, tl);
     }
   }
@@ -239,7 +251,9 @@ public class TokenStreamTest {
     witness.add(new Token(Token.LITERAL, "hello "));
     witness.add(Token.PERCENT_TOKEN);
     witness.add(new Token(Token.SIMPLE_KEYWORD, "class"));
-    witness.add(new Token(Token.OPTION, ".4?"));
+    List ol = new ArrayList<String>();
+     ol.add(".4?");
+     witness.add(new Token(Token.OPTION, ol));
     witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
     assertEquals(witness, tl);
   }
@@ -258,7 +272,9 @@ public class TokenStreamTest {
     witness.add(new Token(Token.LITERAL, "hello "));
     witness.add(Token.PERCENT_TOKEN);
     witness.add(new Token(Token.SIMPLE_KEYWORD, "class"));
-    witness.add(new Token(Token.OPTION, ".4?"));
+    List ol = new ArrayList<String>();
+    ol.add(".4?");
+    witness.add(new Token(Token.OPTION, ol));
     witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
     assertEquals(witness, tl);
   }
@@ -366,6 +382,7 @@ public class TokenStreamTest {
       assertEquals(witness, tl);
     }
   }
+
   @Test
   public void compositedKeywordFollowedByOptions() throws ScanException {
     {
@@ -376,7 +393,9 @@ public class TokenStreamTest {
       witness.add(new Token(Token.COMPOSITE_KEYWORD, "d"));
       witness.add(new Token(Token.LITERAL, "A"));
       witness.add(Token.RIGHT_PARENTHESIS_TOKEN);
-      witness.add(new Token(Token.OPTION, "o"));
+      List ol = new ArrayList<String>();
+      ol.add("o");
+      witness.add(new Token(Token.OPTION, ol));
 
       assertEquals(witness, tl);
     }

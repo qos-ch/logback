@@ -74,6 +74,14 @@ public class CoreConstants {
   public static final char LEFT_PARENTHESIS_CHAR = '(';
   public static final char RIGHT_PARENTHESIS_CHAR = ')';
 
+  public static final char ESCAPE_CHAR = '\\';
+  public static final char CURLY_LEFT = '{';
+  public static final char CURLY_RIGHT = '}';
+  public static final char COMMA_CHAR = ',';
+  public static final char DOUBLE_QUOTE_CHAR = '"';
+  public static final char SINGLE_QUOTE_CHAR = '\'';
+
+
   /**
    * Number of rows before in an HTML table before,
    * we close the table and create a new one

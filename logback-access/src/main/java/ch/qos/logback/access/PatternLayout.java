@@ -43,6 +43,7 @@ import ch.qos.logback.access.pattern.ServerNameConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
+import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
  * <p>
@@ -70,6 +71,7 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
   public static String COMBINED_PATTERN_NAME = "combined";
 
   static {
+    defaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
 
     defaultConverterMap.put("a", RemoteIPAddressConverter.class.getName());
     defaultConverterMap.put("remoteIP", RemoteIPAddressConverter.class

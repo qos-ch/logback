@@ -1693,10 +1693,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
       
       <tr>
-        <td><b><span class="option">to</span></b></td>
+        <td><a name="smtpTo" href="#smtpTo"><b><span class="option">to</span></b></a></td>
         <td><code>String</code></td>
-        <td>The email address of the recipient. Multiple recipients
-        can be specified by using several &lt;To&gt; elements.</td>
+        <td>The email address of the recipient as a pattern. The
+        pattern is evaluated anew with the triggering event as input
+        for each outgoing email. Multiple recipients can be specified
+        by using several <code>&lt;to></code> elements.</td>
       </tr>
       <tr class="alt">
         <td><b><span class="option">from</span></b></td>

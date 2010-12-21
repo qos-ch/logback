@@ -66,7 +66,7 @@ public class FileNamePattern extends ContextAwareBase {
       Parser<Object> p = new Parser<Object>(patternForParsing, new AlmostAsIsEscapeUtil());
       p.setContext(context);
       Node t = p.parse();
-      this.headTokenConverter = p.compile(t, CONVERTER_MAP, Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
+      this.headTokenConverter = p.compile(t, CONVERTER_MAP);
 
     } catch (ScanException sce) {
       addError("Failed to parse pattern \"" + pattern + "\".", sce);

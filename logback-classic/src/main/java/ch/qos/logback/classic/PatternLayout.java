@@ -40,6 +40,7 @@ import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
+import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
  * <p>
@@ -58,6 +59,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
   static {
+    defaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
 
     defaultConverterMap.put("d", DateConverter.class.getName());
     defaultConverterMap.put("date", DateConverter.class.getName());

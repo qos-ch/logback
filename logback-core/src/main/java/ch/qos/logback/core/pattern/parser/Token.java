@@ -15,6 +15,7 @@ package ch.qos.logback.core.pattern.parser;
 
 class Token {
 
+
   static final int PERCENT = 37;
   //static final int LEFT_PARENTHESIS = 40;
   static final int RIGHT_PARENTHESIS = 41;
@@ -22,6 +23,7 @@ class Token {
   static final int DOT = 46;
   static final int CURLY_LEFT = 123;
   static final int CURLY_RIGHT = 125;
+
   static final int LITERAL = 1000;
   static final int FORMAT_MODIFIER = 1002;
   static final int SIMPLE_KEYWORD = 1004;

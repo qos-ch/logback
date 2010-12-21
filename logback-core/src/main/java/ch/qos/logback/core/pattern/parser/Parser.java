@@ -44,13 +44,12 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public class Parser<E> extends ContextAwareBase {
 
   public final static Map<String, String> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<String, String>();
-  public final static String REPLACER_CONVERTER_WORD = "replace";
+  public final static String REPLACE_CONVERTER_WORD = "replace";
   static {
     DEFAULT_COMPOSITE_CONVERTER_MAP.put(Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString(),
             IdentityCompositeConverter.class.getName());
-    DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACER_CONVERTER_WORD,
+    DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACE_CONVERTER_WORD,
              ReplacingCompositeConverter.class.getName());
-
   }
 
   final List tokenList;
@@ -82,8 +81,8 @@ public class Parser<E> extends ContextAwareBase {
    * @return
    * @throws ScanException
    */
-  public Converter<E> compile(final Node top, Map converterMap, Map compositeConverterMap) {
-    Compiler<E> compiler = new Compiler<E>(top, converterMap, compositeConverterMap);
+  public Converter<E> compile(final Node top, Map converterMap) {
+    Compiler<E> compiler = new Compiler<E>(top, converterMap);
     compiler.setContext(context);
     //compiler.setStatusManager(statusManager);
     return compiler.compile();
@@ -176,7 +175,7 @@ public class Parser<E> extends ContextAwareBase {
 
     Token ot = getCurentToken();
     if (ot != null && ot.getType() == Token.OPTION) {
-      List<String> optionList = new OptionTokenizer((String) ot.getValue()).tokenize();
+      List<String> optionList = (List<String>) ot.getValue();
       keywordNode.setOptions(optionList);
       advanceTokenPointer();
     }
@@ -202,7 +201,7 @@ public class Parser<E> extends ContextAwareBase {
     }
     Token ot = getCurentToken();
     if (ot != null && ot.getType() == Token.OPTION) {
-      List<String> optionList = new OptionTokenizer((String) ot.getValue()).tokenize();
+      List<String> optionList = (List<String>) ot.getValue();
       compositeNode.setOptions(optionList);
       advanceTokenPointer();
     }

@@ -138,7 +138,7 @@ public class ParserTest {
 
     }
   }
-  
+
   @Test
   public void testNested() throws Exception {
     {
@@ -203,41 +203,39 @@ public class ParserTest {
   }
 
   @Test
-  public void testOptions() throws Exception {
-    {
-      Parser p = new Parser("%45x{'test '}");
-      Node t = p.parse();
-      SimpleKeywordNode witness = new SimpleKeywordNode("x");
-      witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
-      List<String> ol = new ArrayList<String>();
-      ol.add("test ");
-      witness.setOptions(ol);
-      assertEquals(witness, t);
-    }
+  public void testOptions0() throws Exception {
+    Parser p = new Parser("%45x{'test '}");
+    Node t = p.parse();
+    SimpleKeywordNode witness = new SimpleKeywordNode("x");
+    witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
+    List<String> ol = new ArrayList<String>();
+    ol.add("test ");
+    witness.setOptions(ol);
+    assertEquals(witness, t);
+  }
 
-    {
-      Parser p = new Parser("%45x{a, b}");
-      Node t = p.parse();
-      SimpleKeywordNode witness = new SimpleKeywordNode("x");
-      witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
-      List<String> ol = new ArrayList<String>();
-      ol.add("a");
-      ol.add("b");
-      witness.setOptions(ol);
-      assertEquals(witness, t);
-    }
+  @Test
+  public void testOptions1() throws Exception {
+    Parser p = new Parser("%45x{a, b}");
+    Node t = p.parse();
+    SimpleKeywordNode witness = new SimpleKeywordNode("x");
+    witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
+    List<String> ol = new ArrayList<String>();
+    ol.add("a");
+    ol.add("b");
+    witness.setOptions(ol);
+    assertEquals(witness, t);
   }
 
   // see http://jira.qos.ch/browse/LBCORE-180
   @Test
   public void keywordGluedToLitteral() throws Exception {
-      {
-      Parser p = new Parser("%x{}a");
-      Node t = p.parse();
-      SimpleKeywordNode witness = new SimpleKeywordNode("x");
-      witness.next = new Node(Node.LITERAL, "a");
-      assertEquals(witness, t);
-    }
+    Parser p = new Parser("%x{}a");
+    Node t = p.parse();
+    SimpleKeywordNode witness = new SimpleKeywordNode("x");
+    witness.setOptions(new ArrayList<String>());
+    witness.next = new Node(Node.LITERAL, "a");
+    assertEquals(witness, t);
   }
 
   @Test
@@ -257,15 +255,15 @@ public class ParserTest {
       assertEquals(witness, t);
     }
   }
-  
+
   @Test
   public void empty() {
     try {
-    Parser p = new Parser("");
-    p.parse();
+      Parser p = new Parser("");
+      p.parse();
       fail("");
-    } catch(ScanException e) {
-      
+    } catch (ScanException e) {
+
     }
   }
 }
