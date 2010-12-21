@@ -1,0 +1,15 @@
+<configuration>
+
+  <conversionRule conversionWord="sample"
+    converterClass="ch.qos.logback.classic.testUtil.SampleConverter" />
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%replace(%msg){'\d{14,16}', 'XXXX'}</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>
