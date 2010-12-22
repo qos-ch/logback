@@ -33,9 +33,13 @@
     <p>Added a new section in the documentation about <a
     href="recipes/index.html">real-world inspired recipes</a>.</p>
 
-    <p><code>PatternLayout</code> now supports
-    compound conversion words of which <a
-    href="manual/layouts.html#replace">"%replace"</a> is one example.
+    <p><code>PatternLayout</code> now supports compound conversion
+    words of which <a
+    href="manual/layouts.html#replace">"%replace"</a> is one
+    example. This change involved a significant re-write of the
+    pattern tokenizer, the pattern parser and the pattern
+    compiler. However, the changes should be backward compatible as far
+    as users are concerned.
     </p>
 
     <p>The <a href="manual/appenders.html#smtpTo"><span
