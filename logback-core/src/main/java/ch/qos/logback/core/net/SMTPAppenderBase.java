@@ -175,7 +175,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     String key = discriminator.getDiscriminatingValue(eventObject);
     long now = System.currentTimeMillis();
-    CyclicBuffer<E> cb = cbTracker.get(key, now);
+    CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
     subAppend(cb, eventObject);
 
     try {
@@ -188,7 +188,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         addError("SMTPAppender's EventEvaluator threw an Exception-", ex);
       }
     }
+
+
+    if(isEventMarkedForBufferRemoval(eventObject)) {
+      cbTracker.removeBuffer(key);
+    }
+
     cbTracker.clearStaleBuffers(now);
+
+
+
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
       addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
       lastTrackerStatusPrint = now;
@@ -198,6 +207,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       }
     }
   }
+
+  abstract protected boolean isEventMarkedForBufferRemoval(E eventObject);
 
   abstract protected void subAppend(CyclicBuffer<E> cb, E eventObject);
 

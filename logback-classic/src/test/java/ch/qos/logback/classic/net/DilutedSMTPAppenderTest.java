@@ -52,7 +52,7 @@ public class DilutedSMTPAppenderTest {
     appender.addTo("sebastien.nospam@qos.ch");
     appender.start();
     cbTracker = appender.getCyclicBufferTracker();
-    cb = cbTracker.get("", 0);
+    cb = cbTracker.getOrCreate("", 0);
 
   }
 

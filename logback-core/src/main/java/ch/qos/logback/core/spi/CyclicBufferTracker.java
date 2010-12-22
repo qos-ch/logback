@@ -54,7 +54,12 @@ public interface CyclicBufferTracker<E> {
    * @param timestamp
    * @return
    */
-  CyclicBuffer<E> get(String key, long timestamp);
+  CyclicBuffer<E> getOrCreate(String key, long timestamp);
+
+  /**
+   * Remove a cyclic buffer identified by its key.
+   */
+  void removeBuffer(String key);
 
   /**
    * Clear (and detach) buffers which are stale.

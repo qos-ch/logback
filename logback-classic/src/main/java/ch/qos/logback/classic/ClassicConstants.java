@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.classic;
 
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 public class ClassicConstants {
   static public final String USER_MDC_KEY = "user";
 
@@ -41,4 +44,6 @@ public class ClassicConstants {
   public final static String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
 
   public final static String GAFFER_CONFIGURATOR_FQCN = "ch.qos.logback.classic.gaffer.GafferConfigurator";
+
+  public final static Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker("FINALIZE_SESSION");
 }

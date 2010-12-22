@@ -30,9 +30,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
   protected String elapsedPeriodsFileName;
   protected RollingCalendar rc;
 
-  protected long currentTime;
-  // indicate whether the time has been forced or not
-  protected boolean isTimeForced = false;
+  protected long currentTime = -1;
   protected Date dateInCurrentPeriod = null;
 
   protected long nextCheck;
@@ -102,12 +100,11 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
 
   public void setCurrentTime(long timeInMillis) {
     currentTime = timeInMillis;
-    isTimeForced = true;
   }
 
   public long getCurrentTime() {
     // if time is forced return the time set by user
-    if (isTimeForced) {
+    if (currentTime >= 0) {
       return currentTime;
     } else {
       return System.currentTimeMillis();

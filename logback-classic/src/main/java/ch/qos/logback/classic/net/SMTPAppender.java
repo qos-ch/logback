@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.net;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.boolex.OnErrorEvaluator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -20,6 +21,7 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
+import org.slf4j.Marker;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -86,6 +88,15 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     }
   }
 
+  protected boolean isEventMarkedForBufferRemoval(ILoggingEvent eventObject) {
+    Marker marker = eventObject.getMarker();
+    if(marker == null)
+      return false;
+
+    return marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER);
+  }
+
+
   @Override
   protected Layout<ILoggingEvent> makeSubjectLayout(String subjectStr) {
     if(subjectStr == null) {
@@ -101,6 +112,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     pl.start();
     return pl;
   }
+
 
   protected PatternLayout makeNewToPatternLayout(String toPattern) {
     PatternLayout pl = new PatternLayout();

@@ -170,7 +170,7 @@ public class PrimeAction extends Action {
   <p>To isolate a given transaction, there must first be a way to
   distinguish it from other transactions. Typically this would be
   accomplished by putting the unique identifier of the transaction
-  into the the MDC.
+  into the MDC.
   </p>
 
   <pre class="prettyprint source">String transactionId = ...; // extract id from transaction 
@@ -236,8 +236,12 @@ MDC.put("txId", transactionId); </pre>
       <b>&lt;key>txId&lt;/key></b>
       <b>&lt;defaultValue>default&lt;/defaultValue></b>
     <b>&lt;/discriminator></b>
+  &lt;/appender>  
 
-  &lt;/appender>  </pre>
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SMTP" /> 
+  &lt;/root>
+&lt;/configuration> </pre>
 
    <p>After starting the logback-demo web-application with the above
    configuration file (with <span class="option">smtpHost</span> and
@@ -315,8 +319,12 @@ MDC.put("txId", transactionId); </pre>
       &lt;key>uuid&lt;/key>
       &lt;defaultValue>default&lt;/defaultValue>
     &lt;/discriminator>
+  &lt;/appender>
 
-  &lt;/appender>  </pre>
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SMTP" /> 
+  &lt;/root>
+&lt;/configuration>  </pre>
       <script src="../templates/footer.js" type="text/javascript"></script>	
     </div>
   </body>

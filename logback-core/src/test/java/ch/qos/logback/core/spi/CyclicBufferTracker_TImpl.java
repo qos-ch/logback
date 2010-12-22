@@ -16,8 +16,6 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
   int bufferSize = DEFAULT_BUFFER_SIZE;
   int maxNumBuffers = DEFAULT_NUMBER_OF_BUFFERS;
-  int bufferCount = 0;
-
 
   List<TEntry> entryList = new LinkedList<TEntry>();
   long lastCheck = 0;
@@ -47,12 +45,27 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     return null;
   }
 
-  public CyclicBuffer<E> get(String key, long timestamp) {
+  List<String> keyList() {
+    Collections.sort(entryList);
+
+    List<String> result = new LinkedList<String>();
+    for (int i = 0; i < entryList.size(); i++) {
+      TEntry te = entryList.get(i);
+      result.add(te.key);
+    }
+    return result;
+  }
+
+
+  public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
     TEntry te = getEntry(key);
     if (te == null) {
       CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
       te = new TEntry<E>(key, cb, timestamp);
       entryList.add(te);
+      if (entryList.size() >= maxNumBuffers) {
+        entryList.remove(0);
+      }
       return cb;
     } else {
       te.timestamp = timestamp;
@@ -60,6 +73,16 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
       return te.value;
     }
 
+  }
+
+  public void removeBuffer(String k) {
+    for (int i = 0; i < entryList.size(); i++) {
+      TEntry te = entryList.get(i);
+      if (te.key.equals(k)) {
+        entryList.remove(i);
+        return;
+      }
+    }
   }
 
   final private boolean isEntryStale(TEntry entry, long now) {

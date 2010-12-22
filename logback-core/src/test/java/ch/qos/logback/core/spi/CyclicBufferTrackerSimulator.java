@@ -20,14 +20,16 @@ import java.util.*;
  */
 public class CyclicBufferTrackerSimulator {
 
-  CyclicBufferTrackerImpl<Object> realAppenderTracker = new CyclicBufferTrackerImpl<Object>();
-  CyclicBufferTrackerImpl t_appenderTracker = new CyclicBufferTrackerImpl();
+  CyclicBufferTrackerImpl<Object> realCBTracker = new CyclicBufferTrackerImpl<Object>();
+  CyclicBufferTracker_TImpl<Object> t_CBTracker = new CyclicBufferTracker_TImpl<Object>();
 
   List<SimulationEvent> scenario = new ArrayList<SimulationEvent>();
   List<String> keySpace = new ArrayList<String>();
   int maxTimestampInc;
   Random randomKeyGen = new Random(100);
-  Random random = new Random(11234);
+  Random simulatorRandom = new Random(11234);
+
+  int deleteToInsertRatio = 10;
 
   CyclicBufferTrackerSimulator(int keySpaceLen, int maxTimestampInc) {
     this.maxTimestampInc = maxTimestampInc;
@@ -35,7 +37,7 @@ public class CyclicBufferTrackerSimulator {
     for (int i = 0; i < keySpaceLen; i++) {
       String k = getRandomKeyStr();
       if (checkMap.containsKey(k)) {
-        System.out.println("random key collision occured");
+        System.out.println("random key collision occurred");
         k += "" + i;
       }
       keySpace.add(k);
@@ -54,10 +56,15 @@ public class CyclicBufferTrackerSimulator {
     long timestamp = 30000;
     int keySpaceLen = keySpace.size();
     for (int i = 0; i < simLen; i++) {
-      int index = random.nextInt(keySpaceLen);
-      timestamp += random.nextInt(maxTimestampInc);
+      int index = simulatorRandom.nextInt(keySpaceLen);
+      timestamp += simulatorRandom.nextInt(maxTimestampInc);
+      EventType eventType = EventType.INSERT;
+      if (simulatorRandom.nextInt(deleteToInsertRatio) == 0) {
+        eventType = EventType.DELETE;
+      }
+
       String key = keySpace.get(index);
-      scenario.add(new SimulationEvent(key, timestamp));
+      scenario.add(new SimulationEvent(eventType, key, timestamp));
     }
   }
 
@@ -72,23 +79,36 @@ public class CyclicBufferTrackerSimulator {
             CyclicBufferTracker<Object> tracker) {
     String key = simulationEvent.key;
     long timestamp = simulationEvent.timestamp;
-    tracker.get(key, timestamp);
+    EventType eventType = simulationEvent.eventType;
+    switch (eventType) {
+      case INSERT:
+        tracker.getOrCreate(key, timestamp);
+        break;
+      case DELETE:
+        tracker.removeBuffer(key);
+        break;
+    }
   }
 
   public void simulate() {
     for (SimulationEvent simeEvent : scenario) {
-      play(simeEvent, realAppenderTracker);
-      play(simeEvent, t_appenderTracker);
+      play(simeEvent, realCBTracker);
+      play(simeEvent, t_CBTracker);
     }
   }
 
   // =========================================================================
+  enum EventType {
+    INSERT, DELETE;
+  }
 
   class SimulationEvent {
     final public String key;
     final public long timestamp;
+    final EventType eventType;
 
-    public SimulationEvent(String key, long timestamp) {
+    public SimulationEvent(EventType eventType, String key, long timestamp) {
+      this.eventType = eventType;
       this.key = key;
       this.timestamp = timestamp;
     }

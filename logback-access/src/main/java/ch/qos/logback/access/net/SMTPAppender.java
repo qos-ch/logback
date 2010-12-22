@@ -63,7 +63,7 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
   protected void fillBuffer(CyclicBuffer<AccessEvent> cb, StringBuffer sbuf) {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
-      // sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
+      // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
       AccessEvent event = (AccessEvent) cb.get();
       sbuf.append(layout.doLayout(event));
     }
@@ -86,5 +86,8 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
     return pl;
   }
 
+  protected boolean isEventMarkedForBufferRemoval(AccessEvent eventObject) {
+    return false;
+  }
 
 }

@@ -22,25 +22,45 @@ public class CyclicBufferTrackerImplTest {
     long now = 3000;
     tracker.clearStaleBuffers(now);
     assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.bufferCount);
   }
 
-    @Test
+  @Test
   public void empty1() {
     long now = 3000;
-    assertNotNull(tracker.get(key, now++));
-    now += CyclicBufferTracker.THRESHOLD+1000;
+    assertNotNull(tracker.getOrCreate(key, now++));
+    now += CyclicBufferTracker.THRESHOLD + 1000;
     tracker.clearStaleBuffers(now);
     assertEquals(0, tracker.keyList().size());
-    assertNotNull(tracker.get(key, now++));
+    assertEquals(0, tracker.bufferCount);
+
+    assertNotNull(tracker.getOrCreate(key, now++));
   }
 
   @Test
   public void smoke() {
     long now = 3000;
-    CyclicBuffer<Object> cb = tracker.get(key, now);
-    assertEquals(cb, tracker.get(key, now++));
-    now += AppenderTrackerImpl.THRESHOLD+1000;
+    CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
+    assertEquals(cb, tracker.getOrCreate(key, now++));
+    now += AppenderTrackerImpl.THRESHOLD + 1000;
     tracker.clearStaleBuffers(now);
     assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.bufferCount);
   }
+
+  @Test
+  public void destroy() {
+    long now = 3000;
+    CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
+    cb.add(new Object());
+    assertEquals(1, cb.length());
+    tracker.removeBuffer(key);
+    assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.bufferCount);
+    assertEquals(0, cb.length());
+  }
+
+
+
+
 }

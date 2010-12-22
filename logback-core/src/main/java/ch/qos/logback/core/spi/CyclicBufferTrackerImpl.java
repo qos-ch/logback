@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.spi;
 
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
@@ -65,7 +64,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     this.maxNumBuffers = maxNumBuffers;
   }
 
-  public CyclicBuffer<E> get(String key, long timestamp) {
+  public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
     Entry existing = map.get(key);
     if (existing == null) {
       CyclicBuffer<E> cb = processNewEntry(key, timestamp);
@@ -77,12 +76,25 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     }
   }
 
+  public void removeBuffer(String key) {
+    Entry existing = map.get(key);
+    if (existing != null) {
+      bufferCount--;
+      map.remove(key);
+      unlink(existing);
+      CyclicBuffer<E> cb = existing.value;
+      if(cb != null) {
+        cb.clear();
+      }
+    }
+  }
+
   private CyclicBuffer<E> processNewEntry(String key, long timestamp) {
     CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
     Entry entry = new Entry(key, cb, timestamp);
     map.put(key, entry);
     bufferCount++;
-    rearrangeTailLinks(entry);
+    linkBeforeTail(entry);
     if (bufferCount >= maxNumBuffers) {
       removeHead();
     }
@@ -101,11 +113,11 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
   }
 
   private void moveToTail(Entry e) {
-    rearrangePreexistingLinks(e);
-    rearrangeTailLinks(e);
+    unlink(e);
+    linkBeforeTail(e);
   }
 
-  private void rearrangePreexistingLinks(Entry e) {
+  private void unlink(Entry e) {
     if (e.prev != null) {
       e.prev.next = e.next;
     }
@@ -125,8 +137,6 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     lastCheck = now;
 
     while (head.value != null && isEntryStale(head, now)) {
-      CyclicBuffer<E> cb = head.value;
-      cb.clear();
       removeHead();
     }
   }
@@ -149,7 +159,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     return result;
   }
 
-  private void rearrangeTailLinks(Entry e) {
+  private void linkBeforeTail(Entry e) {
     if (head == tail) {
       head = e;
     }

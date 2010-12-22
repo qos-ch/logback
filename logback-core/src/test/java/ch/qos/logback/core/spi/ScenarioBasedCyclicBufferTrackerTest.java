@@ -26,9 +26,9 @@ public class ScenarioBasedCyclicBufferTrackerTest {
 
   CyclicBufferTrackerSimulator simulator;
 
-   void verify() {
-    CyclicBufferTrackerImpl<Object> at = simulator.realAppenderTracker;
-    CyclicBufferTrackerImpl<Object> t_at = simulator.t_appenderTracker;
+  void verify() {
+    CyclicBufferTrackerImpl<Object> at = simulator.realCBTracker;
+    CyclicBufferTracker_TImpl<Object> t_at = simulator.t_CBTracker;
     assertEquals(t_at.keyList(), at.keyList());
   }
 
@@ -48,7 +48,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
     verify();
   }
 
-    @Test
+  @Test
   public void longTest() {
     simulator = new CyclicBufferTrackerSimulator(128, CyclicBufferTracker.THRESHOLD / 2);
     simulator.buildScenario(200000);
