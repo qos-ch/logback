@@ -40,9 +40,6 @@ public class ReplacingCompositeConverter<E> extends CompositeConverter<E> {
     }
     regex = optionList.get(0);
     pattern = Pattern.compile(regex);
-
-    //.matcher(this).replaceAll(replacement);
-
     replacement = optionList.get(1);
     super.start();
   }

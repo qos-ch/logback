@@ -59,18 +59,14 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
-    static InternetAddress[] EMPTY_IA_ARRAY = new InternetAddress[0];
+  static InternetAddress[] EMPTY_IA_ARRAY = new InternetAddress[0];
   // ~ 14 days
   static final int MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   long lastTrackerStatusPrint = 0;
   int delayBetweenStatusMessages = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
-
-
-
   protected Layout<E> subjectLayout;
-
   protected Layout<E> layout;
 
   private List<PatternLayoutBase<E>> toPatternLayoutList = new ArrayList<PatternLayoutBase<E>>();
@@ -110,7 +106,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    */
   public void start() {
 
-    if(cbTracker == null) {
+    if (cbTracker == null) {
       cbTracker = new CyclicBufferTrackerImpl<E>();
     }
 
@@ -189,14 +185,12 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       }
     }
 
-
-    if(isEventMarkedForBufferRemoval(eventObject)) {
+    // immediately remove the buffer if asked by the user
+    if (isEventMarkedForBufferRemoval(eventObject)) {
       cbTracker.removeBuffer(key);
     }
 
     cbTracker.clearStaleBuffers(now);
-
-
 
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
       addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
@@ -268,14 +262,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       try {
         PatternLayoutBase<E> emailPL = toPatternLayoutList.get(i);
         String email = emailPL.doLayout(event);
-        if(email == null || email.length() == 0) {
+        if (email == null || email.length() == 0) {
           continue;
         }
         InternetAddress[] tmp = InternetAddress.parse(email, true);
         // one <To> element should contain one email address
         iaList.add(tmp[0]);
       } catch (AddressException e) {
-        addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event ["+event+"]", e);
+        addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event + "]", e);
         return iaList;
       }
     }
@@ -325,12 +319,12 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 charsetEncoding);
       }
 
-     List<InternetAddress> destinationAddresses  =  parseAddress(lastEventObject);
-     if(destinationAddresses.isEmpty()) {
-       addInfo("Empty destination address. Aborting email transmission");
-       return;
-     }
-     mimeMsg.setRecipients(Message.RecipientType.TO, destinationAddresses.toArray(EMPTY_IA_ARRAY));
+      List<InternetAddress> destinationAddresses = parseAddress(lastEventObject);
+      if (destinationAddresses.isEmpty()) {
+        addInfo("Empty destination address. Aborting email transmission");
+        return;
+      }
+      mimeMsg.setRecipients(Message.RecipientType.TO, destinationAddresses.toArray(EMPTY_IA_ARRAY));
 
       String contentType = layout.getContentType();
 
@@ -351,8 +345,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       addError("Error occured while sending e-mail notification.", e);
     }
   }
-
-
 
   abstract protected void fillBuffer(CyclicBuffer<E> cb, StringBuffer sbuf);
 
@@ -388,6 +380,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * Alias for smtpHost
+   *
    * @param smtpHost
    */
   public void setSMTPHost(String smtpHost) {
@@ -422,7 +415,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
    * @param port
    */
   public void setSMTPPort(int port) {
-   setSmtpPort(port);
+    setSmtpPort(port);
   }
 
   /**
@@ -436,13 +429,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * Alias for {@link #getSmtpPort}
+   *
    * @return
-  */
+   */
   public int getSMTPPort() {
     return getSmtpPort();
   }
+
   /**
    * See {@link #setSmtpPort}
+   *
    * @return
    */
   public int getSmtpPort() {
@@ -466,27 +462,27 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   }
 
   public void addTo(String to) {
-     if(to == null || to.length() == 0) {
-       throw new IllegalArgumentException("Null or empty <to> property");
-     }
-     PatternLayoutBase plb = makeNewToPatternLayout(to.trim());
-     plb.setContext(context);
-     plb.start();
-     this.toPatternLayoutList.add(plb);
+    if (to == null || to.length() == 0) {
+      throw new IllegalArgumentException("Null or empty <to> property");
+    }
+    PatternLayoutBase plb = makeNewToPatternLayout(to.trim());
+    plb.setContext(context);
+    plb.start();
+    this.toPatternLayoutList.add(plb);
   }
 
   abstract protected PatternLayoutBase<E> makeNewToPatternLayout(String toPattern);
 
- public List<String> getToAsListOfString() {
-   List<String> toList = new ArrayList<String>();
-   for(PatternLayoutBase plb: toPatternLayoutList) {
-       toList.add(plb.getPattern());
-   }
-   return toList;
- }
+  public List<String> getToAsListOfString() {
+    List<String> toList = new ArrayList<String>();
+    for (PatternLayoutBase plb : toPatternLayoutList) {
+      toList.add(plb.getPattern());
+    }
+    return toList;
+  }
 
   // for testing purpose only
- public Message getMessage() {
+  public Message getMessage() {
     return mimeMsg;
   }
 

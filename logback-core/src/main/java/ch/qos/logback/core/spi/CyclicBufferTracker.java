@@ -31,8 +31,6 @@ public interface CyclicBufferTracker<E> {
   public int getBufferSize();
 
   public void setBufferSize(int size);
-
-
   public int getMaxNumberOfBuffers();
 
   /**

@@ -1695,10 +1695,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       <tr>
         <td><a name="smtpTo" href="#smtpTo"><b><span class="option">to</span></b></a></td>
         <td><code>String</code></td>
-        <td>The email address of the recipient as a pattern. The
-        pattern is evaluated anew with the triggering event as input
-        for each outgoing email. Multiple recipients can be specified
-        by using several <code>&lt;to></code> elements.</td>
+        <td>The email address of the recipient as a
+        <em>pattern</em>. The pattern is evaluated anew with the
+        triggering event as input for each outgoing email. Multiple
+        recipients can be specified by using several
+        <code>&lt;to></code> elements.</td>
       </tr>
       <tr class="alt">
         <td><b><span class="option">from</span></b></td>
@@ -1818,8 +1819,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           href="../xref/ch/qos/logback/core/spi/CyclicBufferTrackerImpl.html">CyclicBufferTrackerImpl</a>
           will be automatically created. By default, this instance
           will keep events in a cyclic buffer of size 256. You may
-          change the size with the help of the <code>BufferSize</code>
-          option.</p>
+          change the size with the help of the <span
+          class="option">bufferSize</span> option (see below).</p>
         </td>
         
       </tr>
@@ -2369,6 +2370,45 @@ logger.error(<b>notifyAdmin</b>,
     host, greatly facilitating problem diagnosis.
     </p>
     
+    <h4><a name= "bufferManagement" href="#bufferManagement">On buffer
+    management in very busy systems</a></h4>
+
+    <p>Internally, each distinct value returned by the disciminator
+    will cause the creation of a new cyclic buffer. However, at most
+    <span class="option">maxNumberOfBuffers</span> (by default 64)
+    will be maintained.  Whenever the number of buffers rises above
+    <span class="option">maxNumberOfBuffers</span>, the least recently
+    updated buffer is automatically discarded. As a second safety
+    measure, any buffer which has not been updated in the last 30
+    minutes will be automatically discarded as well.</p>
+
+    <p>On systems serving a large number of transactions per minute,
+    allowing only a small number for <span
+    class="option">maxNumberOfBuffers</span> (by default 64) will
+    often cause the number of events in the outgoing email to be
+    unnecessarily small. Indeed, in the presence of a large number of
+    transactions, there will be more than one buffer associated with
+    the same transaction as buffers will be killed and re-born in
+    succession for the same discriminator value (or transaction). Note
+    that in even such very busy systems, the maximum number of cyclic
+    buffers is capped by <span
+    class="option">maxNumberOfBuffers</span>.
+    </p>
+
+    <p>To avoid such yo-yo effects, <code>SMTPAppender</code> will
+    release the buffer associated with a given discriminator key as
+    soon as it sees an event marked as "FINALIZE_SESSION". This will
+    cause the appropriate buffer to be discarded at the end of each
+    transaction. You can then safely increase the value of <span
+    class="option">maxNumberOfBuffers</span> to a larger value such as
+    512 or 1024 without risking running out of memory.
+    </p>
+
+    <p>Thuse reare three distinct but complementary mechanisms working
+    together to manage cyclic buffers. They ensure that only relevant
+    buffers are kept alive at any given moment, even in very busy
+    systems.</p>
+
     <!-- =========================================================== -->
     <!-- =========================================================== -->
 
