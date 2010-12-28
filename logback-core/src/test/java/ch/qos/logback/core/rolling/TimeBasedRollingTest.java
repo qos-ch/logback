@@ -230,7 +230,10 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
     }
 
+    System.out.println("Before "+expectedFilenameList);
     massageExpectedFilesToCorresponToCurrentTarget("test4.log");
+    System.out.println("After "+expectedFilenameList);
+
 
     int i = 0;
     for (String fn : expectedFilenameList) {

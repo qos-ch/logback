@@ -31,6 +31,10 @@ trait RollingScaffolding {
   protected var nextRolloverThreshold: Long = 0;
   protected var expectedFilenameList: List[String] = Nil
 
+  val FILE_OPTION_SET = true
+  val FILE_OPTION_BLANK = false
+
+
   def setUpScaffolding: Unit = {
     context.setName("test")
     cal.set(Calendar.MILLISECOND, 333)
@@ -78,8 +82,21 @@ trait RollingScaffolding {
   }
 
   private[rolling] def waitForCompression(tbrp: TimeBasedRollingPolicy[AnyRef]): Unit = {
-      if (tbrp.future != null && !tbrp.future.isDone) {
-        tbrp.future.get(200, TimeUnit.MILLISECONDS)
-      }
+    if (tbrp.future != null && !tbrp.future.isDone) {
+      tbrp.future.get(200, TimeUnit.MILLISECONDS)
     }
   }
+
+  private[rolling] def testId2FileName(testId: String): String = {
+    return randomOutputDir + testId + ".log"
+  }
+
+  // =========================================================================
+  // utility methods
+  // =========================================================================
+  private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String): Unit = {
+    expectedFilenameList = expectedFilenameList.dropRight(1)
+    expectedFilenameList +=  (randomOutputDir + file)
+  }
+
+}
