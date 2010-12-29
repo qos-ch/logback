@@ -50,13 +50,15 @@ public class IfThenElseAndIncludeCompositionTest {
   static final String NESTED_INCLUDE_FILE = CONDITIONAL_DIR_PREFIX+"nestedInclude.xml";
   static final String THEN_FILE_TO_INCLUDE = CONDITIONAL_DIR_PREFIX+"includedA.xml";
   static final String ELSE_FILE_TO_INCLUDE = CONDITIONAL_DIR_PREFIX+"includedB.xml";
-  
+
+  StackAction stackAction = new StackAction();
+
   
   @Before
   public void setUp() throws Exception {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
-    rulesMap.put(new Pattern("x/stack"), new StackAction());
+    rulesMap.put(new Pattern("x/stack"), stackAction);
     rulesMap.put(new Pattern("*/if"), new IfAction());
     rulesMap.put(new Pattern("*/if/then"), new ThenAction());
     rulesMap.put(new Pattern("*/if/then/*"), new NOPAction());
@@ -72,7 +74,7 @@ public class IfThenElseAndIncludeCompositionTest {
   public void tearDown() throws Exception {
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     context = null;
-    StackAction.reset();
+    //StackAction.reset();
   }
   
   @Test
@@ -87,7 +89,7 @@ public class IfThenElseAndIncludeCompositionTest {
   void verifyConfig(String[] expected) {
     Stack<String> witness = new Stack<String>();
     witness.addAll(Arrays.asList(expected));
-    assertEquals(witness, StackAction.stack);
+    assertEquals(witness, stackAction.getStack());
   }
   
 }

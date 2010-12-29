@@ -46,12 +46,14 @@ public class IfThenElseTest {
   static final String CONDITIONAL_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX
   + "conditional/";
 
-  
+
+  StackAction stackAction = new StackAction();
+
   @Before
   public void setUp() throws Exception {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
-    rulesMap.put(new Pattern("x/stack"), new StackAction());
+    rulesMap.put(new Pattern("x/stack"), stackAction);
     rulesMap.put(new Pattern("*/if"), new IfAction());
     rulesMap.put(new Pattern("*/if/then"), new ThenAction());
     rulesMap.put(new Pattern("*/if/then/*"), new NOPAction());
@@ -65,7 +67,7 @@ public class IfThenElseTest {
   @After
   public void tearDown() throws Exception {
     StatusPrinter.printIfErrorsOccured(context);
-    StackAction.reset();
+    //StackAction.reset();
   }
 
   @Test
@@ -107,7 +109,7 @@ public class IfThenElseTest {
   void verifyConfig(String[] expected) {
     Stack<String> witness = new Stack<String>();
     witness.addAll(Arrays.asList(expected));
-    assertEquals(witness, StackAction.stack);
+    assertEquals(witness, stackAction.getStack());
   }
   
   

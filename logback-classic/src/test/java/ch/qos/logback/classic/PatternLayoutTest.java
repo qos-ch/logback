@@ -82,10 +82,11 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     String val = pl.doLayout(getEventObject());
     // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
     // message
+    //2010-12-29 19:04:26,137 INFO [pool-1-thread-47] c.q.l.c.pattern.ConverterTest - Some message
     String regex = ISO_REGEX + " INFO " + MAIN_REGEX
             + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
 
-    assertTrue(val.matches(regex));
+    assertTrue("val="+val, val.matches(regex));
   }
 
   @Test

@@ -39,7 +39,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   PrintStream original;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp()  {
     original = System.out;
     // tee will output bytes on System out but it will also
     // collect them so that the output can be compared against
@@ -54,7 +54,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown()  {
     System.setOut(original);
   }
 
@@ -147,7 +147,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker checker = new StatusChecker(context);
     //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [SystemOut, SystemErr]
     //21:28:01,246   |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by default.
-                                           
+
     checker.containsMatch(Status.ERROR, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
 
   }

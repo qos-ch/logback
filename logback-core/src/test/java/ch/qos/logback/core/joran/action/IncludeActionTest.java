@@ -82,12 +82,14 @@ public class IncludeActionTest {
 
   int diff = RandomUtil.getPositiveInt();
 
+  StackAction stackAction = new StackAction();
+
   @Before
   public void setUp() throws Exception {
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/include"), new IncludeAction());
-    rulesMap.put(new Pattern("x/stack"), new StackAction());
+    rulesMap.put(new Pattern("x/stack"), stackAction);
 
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
@@ -100,7 +102,7 @@ public class IncludeActionTest {
     System.clearProperty(INCLUDE_KEY);
     System.clearProperty(SECOND_FILE_KEY);
     System.clearProperty(SUB_FILE_KEY);
-    StackAction.reset();
+    //StackAction.reset();
   }
 
   @Test
@@ -195,7 +197,7 @@ public class IncludeActionTest {
     witness.push("a");
     witness.push("b");
     witness.push("c");
-    assertEquals(witness, StackAction.stack);
+    assertEquals(witness, stackAction.getStack());
   }
 
   @Test
@@ -209,7 +211,7 @@ public class IncludeActionTest {
   void verifyConfig(String[] expected) {
     Stack<String> witness = new Stack<String>();
     witness.addAll(Arrays.asList(expected));
-    assertEquals(witness, StackAction.stack);
+    assertEquals(witness, stackAction.getStack());
   }
 
 }
