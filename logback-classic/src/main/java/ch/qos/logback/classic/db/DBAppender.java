@@ -138,7 +138,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     int arrayLen = argArray != null ? argArray.length : 0;
     
     for(int i = 0; i < arrayLen && i < 4; i++) {
-      stmt.setString(ARG0_INDEX+i, truncateTo254(argArray[i].toString()));
+      stmt.setString(ARG0_INDEX+i, asStringTruncatedTo254(argArray[i]));
     }
     if(arrayLen < 4) {
       for(int i = arrayLen; i < 4; i++) {
@@ -147,7 +147,12 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
   }
 
-  String truncateTo254(String s) {
+  String asStringTruncatedTo254(Object o) {
+     String s = null;
+     if(o != null) {
+         s= o.toString();
+     }
+
     if(s == null) {
       return null;
     }
