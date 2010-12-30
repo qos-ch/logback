@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
@@ -40,6 +41,9 @@ public class SocketAppenderTest {
   static final int SLEEP_AFTER_LOG = 100;
 
   int port = 4561;
+  int diff = RandomUtil.getPositiveInt();
+  String mdcKey = "key"+diff;
+
   LoggerContext lc = new LoggerContext();
   LoggerContext serverLC = new LoggerContext();
   ListAppender<ILoggingEvent> la = new ListAppender<ILoggingEvent>();
@@ -116,7 +120,7 @@ public class SocketAppenderTest {
 
     Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    MDC.put("key", "testValue");
+    MDC.put(mdcKey, "testValue");
     logger.debug("test msg");
 
     Thread.sleep(SLEEP_AFTER_LOG);
@@ -128,7 +132,7 @@ public class SocketAppenderTest {
 
     ILoggingEvent remoteEvent = la.list.get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
-    assertEquals("testValue", MDCPropertyMap.get("key"));
+    assertEquals("testValue", MDCPropertyMap.get(mdcKey));
     assertNull(remoteEvent.getCallerData());
   }
 
@@ -186,10 +190,10 @@ public class SocketAppenderTest {
 
     Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    MDC.put("key", "testValue");
+    MDC.put(mdcKey, "testValue");
     logger.debug("test msg");
 
-    MDC.put("key", "updatedTestValue");
+    MDC.put(mdcKey, "updatedTestValue");
     logger.debug("test msg 2");
     Thread.sleep(SLEEP_AFTER_LOG);
 
@@ -204,7 +208,7 @@ public class SocketAppenderTest {
     // the updated MDC property.
     ILoggingEvent remoteEvent = la.list.get(1);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
-    assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
+    assertEquals("updatedTestValue", MDCPropertyMap.get(mdcKey));
   }
 
   @Test
