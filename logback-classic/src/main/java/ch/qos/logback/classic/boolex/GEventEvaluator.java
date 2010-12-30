@@ -41,6 +41,7 @@ public class GEventEvaluator extends EventEvaluatorBase<ILoggingEvent> {
   }
 
   public void start() {
+    int errors = 0;
     if (expression == null || expression.length() == 0) {
       addError("Empty expression");
       return;
@@ -54,7 +55,7 @@ public class GEventEvaluator extends EventEvaluatorBase<ILoggingEvent> {
     currentPackageName = currentPackageName.replace('.', '/');
 
     String scriptText = FileUtil.resourceAsString(this, classLoader, currentPackageName + "/EvaluatorTemplate.groovy");
-    if(scriptText == null) {
+    if (scriptText == null) {
       return;
     }
 
@@ -70,13 +71,17 @@ public class GEventEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
     } catch (CompilationFailedException cfe) {
       addError("Failed to compile expression [" + expression + "]", cfe);
+      errors++;
     } catch (Exception e) {
       addError("Failed to compile expression [" + expression + "]", e);
+      errors++;
     }
+    if (errors == 0)
+      super.start();
   }
 
   public boolean evaluate(ILoggingEvent event) throws NullPointerException, EvaluationException {
-    if(delegateEvaluator == null) {
+    if (delegateEvaluator == null) {
       return false;
     }
     return delegateEvaluator.doEvaluate(event);
