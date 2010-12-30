@@ -44,7 +44,7 @@ public class LoggerPerfTest {
   @Test
   public void durationOfDisabledLogsWith_1_NOPFilter() {
     double avg = computeDurationOfDisabledLogsWith_1_NOPFilter(1,
-        NORMAL_RUN_LENGTH);
+            NORMAL_RUN_LENGTH);
     System.out.println("durationOfDisabledLogsWith_1_NOPFilter=" + avg);
     long referencePerf = 60;
 
@@ -52,7 +52,7 @@ public class LoggerPerfTest {
   }
 
   double computeDurationOfDisabledLogsWith_1_NOPFilter(int numOfFilters,
-      long len) {
+                                                       long len) {
     for (int i = 0; i < numOfFilters; i++) {
       lc.addTurboFilter(new NOPTurboFilter());
     }
@@ -81,6 +81,9 @@ public class LoggerPerfTest {
     lbLogger.setLevel(Level.OFF);
     for (long i = 0; i < len; i++)
       logger.isDebugEnabled();
+    Thread.yield();
+    for (long i = 0; i < len; i++)
+      logger.isDebugEnabled();
 
     long start = System.nanoTime();
     for (long i = 0; i < len; i++)
@@ -102,6 +105,10 @@ public class LoggerPerfTest {
     lbLogger.setLevel(Level.OFF);
     for (long i = 0; i < len; i++)
       logger.debug("Toto");
+    Thread.yield();
+    for (long i = 0; i < len; i++)
+      logger.debug("Toto");
+    Thread.yield();
 
     long start = System.nanoTime();
     for (long i = 0; i < len; i++)
@@ -118,7 +125,7 @@ public class LoggerPerfTest {
 
     long referencePerf = 30;
     BogoPerf.assertDuration(avgDuration, referencePerf,
-        CoreConstants.REFERENCE_BIPS);
+            CoreConstants.REFERENCE_BIPS);
   }
 
   double computeDurationOfDisabledLog_1_Parameter(long len) {
@@ -148,7 +155,7 @@ public class LoggerPerfTest {
 
     long referencePerf = 800;
     BogoPerf.assertDuration(avgDuration, referencePerf,
-        CoreConstants.REFERENCE_BIPS);
+            CoreConstants.REFERENCE_BIPS);
   }
 
   double computeDurationOfEnabledLog(long len) {
@@ -201,14 +208,14 @@ public class LoggerPerfTest {
     double tolerance = threadCount * .125; // Very little thread contention
     // should occur in this test.
     double max = ((((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC) * iterCount)
-        * tolerance;
+            * tolerance;
     double serialized = (((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC)
-        * iterCount * threadCount;
+            * iterCount * threadCount;
     double actual = ((double) (end - start)) / NANOS_IN_ONE_SEC;
     System.out
-        .printf(
-            "Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n",
-            actual, max, serialized);
+            .printf(
+                    "Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n",
+                    actual, max, serialized);
     assertTrue("Exceeded maximum expected time.", actual < max);
   }
 

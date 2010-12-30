@@ -90,8 +90,8 @@ public class RenameUtilTest {
 
     filenames[0] = randomOutputDirAsStr + "test-" + sdf.format(currentTime);
 
-    // set currentTime to next second plus 50 millis
-    currentTime += 1000 - (currentTime % 1000) + 50;
+    // set currentTime to next second plus 250 millis
+    currentTime += 1000 - (currentTime % 1000) + 250;
     tbnatp.setCurrentTime(currentTime);
 
     rfa.doAppend("Hello 1");

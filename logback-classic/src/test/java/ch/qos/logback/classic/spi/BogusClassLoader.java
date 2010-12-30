@@ -20,7 +20,7 @@ import java.net.URLClassLoader;
  * A trivial class loader which throws a NoClassDefFoundError if the requested
  * class name contains the string "Bogus".
  * 
- * @author Ceki Gülcü
+ * @author Ceki Gulcu
  */
 public class BogusClassLoader extends URLClassLoader {
 

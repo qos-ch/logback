@@ -158,6 +158,7 @@ public class HTMLLayoutTest {
     {
       Element tdElement = (Element) trElement.elements().get(1);
       String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
+      System.out.println(tdElement.getText());
       assertTrue(tdElement.getText().matches(regex));
     }
     {

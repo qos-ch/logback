@@ -221,6 +221,24 @@
       </plugin>
 
       <plugin>
+         <groupId>org.scala-tools</groupId>
+         <artifactId>maven-scala-plugin</artifactId>
+         <version>2.14.3</version>
+         <configuration>
+           <testSourceDir>src/test/scala</testSourceDir>
+         </configuration>
+         <executions>
+           <execution>
+             <id>scala-test-compile</id>
+             <phase>process-test-resources</phase>
+             <goals>
+               <goal>testCompile</goal>
+             </goals>
+           </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -300,7 +318,6 @@
         <configuration>
           <!-- once, never, -->
           <forkMode>once</forkMode>
-          <parallel>classes</parallel>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>

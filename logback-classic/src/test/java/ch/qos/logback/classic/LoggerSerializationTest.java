@@ -22,9 +22,12 @@ import java.io.ObjectOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public class LoggerSerializationTest {
 
+  // force SLF4J initialization for subsequent Logger readResolce ooperaiton
+  org.slf4j.Logger unused = LoggerFactory.getLogger(this.getClass());
   LoggerContext lc;
   Logger logger;
 

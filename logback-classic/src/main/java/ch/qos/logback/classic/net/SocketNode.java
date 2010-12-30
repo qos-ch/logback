@@ -48,7 +48,7 @@ public class SocketNode implements Runnable {
   ObjectInputStream ois;
   SocketAddress remoteSocketAddress;
   
-  static Logger logger = (Logger) LoggerFactory.getLogger(SocketNode.class);
+  Logger logger;
   boolean closed = false;
   SimpleSocketServer socketServer;
   
@@ -57,6 +57,8 @@ public class SocketNode implements Runnable {
     this.socket = socket;
     remoteSocketAddress = socket.getRemoteSocketAddress();
     this.context = context;
+    logger = context.getLogger(SocketNode.class);
+
     try {
       ois = new ObjectInputStream(new BufferedInputStream(socket
           .getInputStream()));

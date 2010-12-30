@@ -20,7 +20,7 @@ import java.net.URLClassLoader;
  * An almost trivial no fuss implementation of a class loader following the
  * child-first delegation model.
  * 
- * @author Ceki Gülcü
+ * @author Ceki Gulcu
  */
 public class LocalFirstClassLoader extends URLClassLoader {
 

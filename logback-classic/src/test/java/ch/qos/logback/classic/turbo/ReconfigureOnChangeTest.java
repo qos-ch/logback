@@ -60,7 +60,7 @@ public class ReconfigureOnChangeTest {
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
   // latency occurs in Linux but is even larger (>600 ms)
-  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 110;
+  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 210;
 
   int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
 
@@ -72,7 +72,7 @@ public class ReconfigureOnChangeTest {
 
   @Before
   public void setUp() {
-    System.out.println("======== TEST START");
+    System.out.println("======== TEST START, time"+System.currentTimeMillis());
     // take into account propagation latency occurs on Linux or Mac
     if (Env.isLinux() || Env.isMac()) {
       sleepBetweenUpdates = 950;
@@ -129,8 +129,8 @@ public class ReconfigureOnChangeTest {
     loggerContext.getStatusManager().add(
         new InfoStatus("end of execution ", this));
 
-    long expectedRreconfigurations = runnableArray[0].getCounter();
-    verify(expectedRreconfigurations);
+    long expectedReconfigurations = runnableArray[0].getCounter();
+    verify(expectedReconfigurations);
   }
 
   @Test
@@ -170,7 +170,7 @@ public class ReconfigureOnChangeTest {
     int effectiveResets = checker
         .matchCount("Resetting and reconfiguring context");
     // the number of effective resets must be equal or less than
-    // expectedRreconfigurations
+    // expectedReconfigurations
     assertTrue(effectiveResets <= expectedReconfigurations);
     // however, there should be some effective resets
     String failMsg = "effective=" + effectiveResets + ", expected="

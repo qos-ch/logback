@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { RenameUtilTest.class, SizeBasedRollingTest.class,
-    TimeBasedRollingTest.class, TimeBasedRollingWithArchiveRemovalTest.class,
+    TimeBasedRolling2Test.class, TimeBasedRollingWithArchiveRemovalTest.class,
     MultiThreadedRollingTest.class,
     SizeAndTimeBasedFNATP_Test.class,
     RollingFileAppenderTest.class,

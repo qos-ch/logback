@@ -95,7 +95,7 @@ public class LoggingEventSerializationPerfTest {
     }
     double rt = doLoop(builder, LOOP_LEN);
     System.out
-        .println("avetage time per logging event " + rt + " nanoseconds");
+        .println("average time per logging event " + rt + " nanoseconds");
 
     long averageSize = (long) (noos.size() / (LOOP_LEN));
     System.out.println("noos size " + noos.size() + " average size="

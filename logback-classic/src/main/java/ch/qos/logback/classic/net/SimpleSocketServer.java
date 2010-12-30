@@ -53,7 +53,7 @@ public class SimpleSocketServer extends Thread {
   private boolean closed = false;
   private ServerSocket serverSocket;
   private List<SocketNode> socketNodeList = new ArrayList<SocketNode>();
-  
+
   public static void main(String argv[]) throws Exception {
     int port = -1;
     if (argv.length == 2) {
@@ -81,6 +81,7 @@ public class SimpleSocketServer extends Thread {
       serverSocket = new ServerSocket(port);
       while (!closed) {
         logger.info("Waiting to accept a new client.");
+        signalAlmostReadiness();
         Socket socket = serverSocket.accept();
         logger.info("Connected to client at " + socket.getInetAddress());
         logger.info("Starting new socket node.");
@@ -89,7 +90,6 @@ public class SimpleSocketServer extends Thread {
           socketNodeList.add(newSocketNode);
         }
         new Thread(newSocketNode).start();
-        signalSocketNodeCreation();
       }
     } catch (Exception e) {
       if(closed) {
@@ -104,7 +104,7 @@ public class SimpleSocketServer extends Thread {
    * Signal another thread that we have established a conneciton
    *  This is useful for testing purposes.
    */
-  void signalSocketNodeCreation() {
+  void signalAlmostReadiness() {
     synchronized(this) {
       this.notifyAll();
     }
