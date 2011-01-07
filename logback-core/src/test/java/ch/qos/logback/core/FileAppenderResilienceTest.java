@@ -92,10 +92,12 @@ class Runner extends RunnableWithCounterAndDone {
       counter++;
       fa.doAppend("hello " + counter);
       if (counter % 1024 == 0) {
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-        }
+        Thread.yield();//(10);
+
+//        try {
+//          Thread.sleep(10);
+//        } catch (InterruptedException e) {
+//        }
       }
     }
   }
