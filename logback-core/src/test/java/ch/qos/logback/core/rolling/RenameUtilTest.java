@@ -55,56 +55,7 @@ public class RenameUtilTest {
     randomOutputDir.mkdirs();
   }
 
-
-  /**
-   * This test case aims to unit test/reproduce problems encountered while
-   * renaming the log file under windows. However, it is not clear how
-   * the test lives up to this claim.
-   */
-  @Test
-  public void rename() throws Exception {
-    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
-    rfa.setEncoder(encoder);
-    rfa.setContext(context);
-
-    // rollover by the second
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[2];
-
-    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern(randomOutputDirAsStr + "test-%d{"
-            + datePattern + "}");
-    tbrp.setContext(context);
-    tbrp.setParent(rfa);
-    tbrp.start();
-
-    TimeBasedFileNamingAndTriggeringPolicy tbnatp = tbrp
-            .getTimeBasedFileNamingAndTriggeringPolicy();
-    tbnatp.setCurrentTime(currentTime);
-
-    rfa.setRollingPolicy(tbrp);
-    rfa.start();
-
-    rfa.doAppend("Hello 0");
-
-    filenames[0] = randomOutputDirAsStr + "test-" + sdf.format(currentTime);
-
-    // set currentTime to next second plus 250 millis
-    currentTime += 1000 - (currentTime % 1000) + 250;
-    tbnatp.setCurrentTime(currentTime);
-
-    rfa.doAppend("Hello 1");
-
-    filenames[1] = randomOutputDirAsStr + "test-" + sdf.format(currentTime);
-
-    for (int i = 0; i < filenames.length; i++) {
-      assertTrue(Compare.compare(filenames[i], CoreTestConstants.TEST_DIR_PREFIX
-              + "witness/rolling/renaming." + i));
-    }
-  }
-
-  @Test
+ @Test
   public void renameToNonExistingDirectory() throws IOException, RolloverFailure {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);

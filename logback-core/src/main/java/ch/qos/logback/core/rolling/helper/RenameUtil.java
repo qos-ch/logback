@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.FileUtil;
@@ -31,6 +33,7 @@ import ch.qos.logback.core.util.FileUtil;
  */
 public class RenameUtil extends ContextAwareBase {
 
+  static String RENAMING_ERROR_URL = CoreConstants.CODES_URL+"#renamingError";
 
   /**
    * A robust file renaming method which in case of failure falls back to
@@ -59,8 +62,9 @@ public class RenameUtil extends ContextAwareBase {
 
       if (!result) {
         addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "].");
-        addWarn("Attempting to rename by copying.");
-        renameByCopying(from, to);
+        addWarn("Please consider leaving the [file] option of "+ RollingFileAppender.class.getSimpleName()+" empty.");
+        addWarn("See also "+ RENAMING_ERROR_URL);
+
       }
     } else {
       throw new RolloverFailure("File [" + from + "] does not exist.");

@@ -16,10 +16,9 @@ package ch.qos.logback.core.rolling
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import ch.qos.logback.core.util.Compare
-import ch.qos.logback.core.util.CoreTestConstants
 import ch.qos.logback.core.encoder.EchoEncoder
-import java.io.File
+import java.io.{FileOutputStream, File}
+import ch.qos.logback.core.util.{StatusPrinter, Compare, CoreTestConstants}
 
 class TimeBasedRolling2Test extends RollingScaffolding {
 
@@ -54,7 +53,8 @@ class TimeBasedRolling2Test extends RollingScaffolding {
     rfa.start
   }
 
-  def genericTest(testId: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int): Unit = {
+  type CheckFunction = ((String, Boolean, String) => Unit)
+  def genericTest(checkFunction: CheckFunction)(testId: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int): Unit = {
     val withCompression = compressionSuffix.length > 0
     val fileName = if (fileOptionIsSet) testId2FileName(testId) else null;
     initRFA(rfa1, fileName);
@@ -86,6 +86,13 @@ class TimeBasedRolling2Test extends RollingScaffolding {
       massageExpectedFilesToCorresponToCurrentTarget(testId + ".log")
     }
 
+    checkFunction(testId, withCompression, compressionSuffix)
+  }
+
+  // defaultTest uses the defaultCheck function
+  val defaultTest = genericTest(defaultCheck)_
+
+  def defaultCheck(testId: String, withCompression: Boolean, compressionSuffix:String) = {
     var i = 0;
     for (fn <- expectedFilenameList) {
       val suffix: String = if (withCompression) addGZIfNotLast(i, compressionSuffix) else ""
@@ -93,8 +100,17 @@ class TimeBasedRolling2Test extends RollingScaffolding {
       assertTrue(Compare.compare(fn, witnessFileName));
       i += 1
     }
+  }
+
+  def zCheck(testId: String, withCompression: Boolean, compressionSuffix:String) = {
+    val lastFile = expectedFilenameList.last
+    val witnessFileName: String = CoreTestConstants.TEST_DIR_PREFIX + "witness/rolling/tbr-" + testId
+    println(lastFile+"  "+witnessFileName)
+    assertTrue(Compare.compare(lastFile, witnessFileName));
 
   }
+
+
 
   def doRestart(testId: String, fileOptionIsSet: Boolean, waitDuration: Int) {
     // change the timestamp of the currently actively file
@@ -120,41 +136,63 @@ class TimeBasedRolling2Test extends RollingScaffolding {
 
   @Test
   def noCompression_FileBlank_NoRestart_1 = {
-    genericTest("test1", "", FILE_OPTION_BLANK, NO_RESTART)
+    defaultTest("test1", "", FILE_OPTION_BLANK, NO_RESTART)
   }
 
   @Test
   def withCompression_FileBlank_NoRestart_2 = {
-    genericTest("test2", ".gz", FILE_OPTION_BLANK, NO_RESTART);
+    defaultTest("test2", ".gz", FILE_OPTION_BLANK, NO_RESTART);
   }
 
   @Test
   def noCompression_FileBlank_StopRestart_3 = {
-    genericTest("test3", "", FILE_OPTION_BLANK, WITH_RESTART);
+    defaultTest("test3", "", FILE_OPTION_BLANK, WITH_RESTART);
   }
 
   @Test
   def noCompression_FileSet_StopRestart_4 = {
-    genericTest("test4", "", FILE_OPTION_SET, WITH_RESTART);
+    defaultTest("test4", "", FILE_OPTION_SET, WITH_RESTART);
   }
 
   @Test
   def noCompression_FileSet_StopRestart_WithLongWait_4B = {
-    genericTest("test4B", "", FILE_OPTION_SET, WITH_RESTART_AND_LONG_WAIT);
+    defaultTest("test4B", "", FILE_OPTION_SET, WITH_RESTART_AND_LONG_WAIT);
   }
 
   @Test
   def noCompression_FileSet_NoRestart_5 = {
-    genericTest("test5", "", FILE_OPTION_SET, NO_RESTART);
+    defaultTest("test5", "", FILE_OPTION_SET, NO_RESTART);
   }
 
   @Test
   def withCompression_FileSet_NoRestart_6 = {
-    genericTest("test6", ".gz", FILE_OPTION_SET, NO_RESTART);
+    defaultTest("test6", ".gz", FILE_OPTION_SET, NO_RESTART);
   }
 
   @Test
   def withMissingTargetDir = {
-    genericTest("missingTargetDir", "", FILE_OPTION_SET, NO_RESTART);
+    defaultTest("missingTargetDir", "", FILE_OPTION_SET, NO_RESTART);
   }
+
+
+  @Test
+  def renaming = {
+
+    var fos: FileOutputStream = null
+    try {
+      val fileName = testId2FileName("failed_rename");
+      val file= new File(fileName)
+      file.getParentFile.mkdirs
+
+      fos = new FileOutputStream(fileName)
+      genericTest(zCheck)("failed_rename", "", FILE_OPTION_SET, NO_RESTART)
+
+    } finally {
+      StatusPrinter.print(context)
+      if(fos != null) fos.close;
+    }
+  }
+
+
+
 }
