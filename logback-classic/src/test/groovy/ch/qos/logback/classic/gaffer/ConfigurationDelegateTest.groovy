@@ -22,6 +22,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.util.CoreTestConstants
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
+import ch.qos.logback.core.joran.action.TimestampAction
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -62,6 +63,13 @@ class ConfigurationDelegateTest {
   @Test
   void timestamp() {
     String result = configurationDelegate.timestamp("yyyy")
+    long year = Calendar.getInstance().get(Calendar.YEAR);
+    assertEquals(year.toString(), result)
+  }
+
+  @Test
+  void timestampWithContextBirthAsReference() {
+    String result = configurationDelegate.timestamp("yyyy", context.birthTime)
     long year = Calendar.getInstance().get(Calendar.YEAR);
     assertEquals(year.toString(), result)
   }

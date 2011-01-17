@@ -118,7 +118,7 @@ public class ContextBase implements Context {
     }
   }
 
-  public long getBithTime() {
+  public long getBirthTime() {
     return birthTime;
   }
 

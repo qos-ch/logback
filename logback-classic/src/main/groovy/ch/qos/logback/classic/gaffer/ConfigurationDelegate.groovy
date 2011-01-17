@@ -29,7 +29,8 @@ import ch.qos.logback.core.status.StatusListener
 import java.text.SimpleDateFormat
 import ch.qos.logback.classic.turbo.TurboFilter
 import ch.qos.logback.core.CoreConstants
-import ch.qos.logback.core.util.ContextUtil;
+import ch.qos.logback.core.util.ContextUtil
+import ch.qos.logback.core.joran.action.TimestampAction;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -156,9 +157,18 @@ public class ConfigurationDelegate extends ContextAwareBase {
     context.addTurboFilter(turboFilter)
   }
 
-  String timestamp(String datePattern) {
+  String timestamp(String datePattern, long timeReference = -1) {
+    Date reference = null;
+
+    if(timeReference == -1) {
+      addInfo("Using current interpretation time, i.e. now, as time reference.");
+      reference = new Date()
+    } else {
+      reference = new Date(timeReference)
+      addInfo("Using " + reference +" as time reference.");
+    }
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    sdf.format(new Date());
+    sdf.format(reference)
   }
 }
 

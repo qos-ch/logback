@@ -44,7 +44,7 @@ public class LoggerContextVO implements Serializable {
   public LoggerContextVO(LoggerContext lc) {
     this.name = lc.getName();
     this.propertyMap = lc.getCopyOfPropertyMap();
-    this.birthTime = lc.getBithTime();
+    this.birthTime = lc.getBirthTime();
   }
 
   public String getName() {

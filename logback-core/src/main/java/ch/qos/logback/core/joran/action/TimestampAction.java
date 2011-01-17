@@ -32,6 +32,8 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class TimestampAction extends Action {
   static String DATE_PATTERN_ATTRIBUTE = "datePattern";
+  static String TIME_REFERENCE_ATTRIBUTE = "timeReference";
+  static String CONTEXT_BIRTH = "contextBirth";
 
   boolean inError = false;
 
@@ -40,7 +42,7 @@ public class TimestampAction extends Action {
       throws ActionException {
     String keyStr = attributes.getValue(KEY_ATTRIBUTE);
     if (OptionHelper.isEmpty(keyStr)) {
-      addError("Attrubute named [" + KEY_ATTRIBUTE + "] cannot be empty");
+      addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
       inError = true;
     }
     String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
@@ -50,11 +52,22 @@ public class TimestampAction extends Action {
       inError = true;
     }
 
+    String timeReferenceStr = attributes.getValue(TIME_REFERENCE_ATTRIBUTE);
+    Date timeReference = null;
+    if (CONTEXT_BIRTH.equalsIgnoreCase(timeReferenceStr)) {
+      addInfo("Using context birth as time reference.");
+      timeReference = new Date(context.getBirthTime());
+    } else {
+      timeReference =  new Date();
+      addInfo("Using current interpretation time, i.e. now, as time reference.");
+    }
+
+
     if (inError)
       return;
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePatternStr);
-    String val = sdf.format(new Date());
+    String val = sdf.format(timeReference);
 
     addInfo("Adding property to the context with key=\"" + keyStr
         + "\" and value=\"" + val + "\" to the context");

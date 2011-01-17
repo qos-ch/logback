@@ -216,18 +216,24 @@ root(DEBUG, ["FILE"])</pre>
 
     
     <!-- ========================================================== -->        
-    <h3>&#8226; <span class="code">timestamp(String datePattern)</span></h3>
+    <h3>&#8226; <span class="code">timestamp(String datePattern, long timeReference = -1)</span></h3>
 
     <p>The <code>timestamp()</code> method method returns a string
-    corresponding to the current time formatted according to the
-    <code>datePattern</code> passed as a parameter. The datePattern
-    parameter should follow the conventions defined by <a
-    href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
+    corresponding to the <code>timeReference</code> parameter
+    formatted according to the <code>datePattern</code> parameter. The
+    <code>datePattern</code> parameter should follow the conventions
+    defined by <a
+    href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>. If
+    the <code>timeReference</code> value is unspecified, it defaults
+    to -1, in which case current time, that is time when the
+    configuration file is parsed, is used as the time
+    reference. Depending on the circumstances, occasion, you might
+    wish to use <code>context.birthTime</code> as the time reference.
     </p>
 
     <p>In the next example, the <code>bySecond</code> variable is
     assigned the current time in the "yyyyMMdd'T'HHmmss" format. The
-    bySecond variable is then used to define the value of the <span
+    "bySecond" variable is then used to define the value of the <span
     class="option">file</span> property.
     </p>
 

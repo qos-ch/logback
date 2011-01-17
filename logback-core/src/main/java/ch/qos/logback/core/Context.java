@@ -95,7 +95,7 @@ public interface Context extends PropertyContainer {
    * 
    * @return The time as measured when this class was created.
    */
-  public long getBithTime();
+  public long getBirthTime();
   
   /**
    * Object used for synchronization purposes. 

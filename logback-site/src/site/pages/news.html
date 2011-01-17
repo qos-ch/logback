@@ -30,6 +30,21 @@
 
     <h3>January xx, 2011 - Release of version 0.9.28</h3>
 
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+  
+    <h4>Breaking change: In the Context interface, the previously
+    misspelled property <code>bithTime</code> is now renamed as
+    <code>birthTime</code>.</h4>
+
+    <p>In the <a
+    href="apidocs/ch/qos/logback/core/Context.html">Context</a>
+    interface, the previously misspelled property
+    <code>bithTime</code> ia now renamed as
+    <code>birthTime</code>. This is a backward-incompatible
+    change. All pre-existing references to "bithTime" property now
+    need to referenced as "birthTime".</p>
+    </div>
+
     <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-238">issue
     238</a> reported by Robert Elliot. <code>GEventEvaluator</code>'s
     start method now correctly sets the state of the instance.
@@ -39,6 +54,11 @@
     fixes <a
     href="http://jira.qos.ch/browse/LBCLASSIC-239">LBCLASSIC-239</a>
     reported by Artyom Kalita.</p>
+
+    <p>It is now possible to use the context birth time as the time
+    reference for the <a
+    href="manual/appenders.html#uniquelyNamed"><code>&lt;timestamp></code></a>
+    element in configuration files.</p>
 
     <hr width="80%" align="center" />
 
