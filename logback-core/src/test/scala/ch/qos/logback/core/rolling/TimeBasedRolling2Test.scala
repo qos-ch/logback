@@ -176,7 +176,7 @@ class TimeBasedRolling2Test extends RollingScaffolding {
 
 
   @Test
-  def renaming = {
+  def failed_rename = {
 
     var fos: FileOutputStream = null
     try {

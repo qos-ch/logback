@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class ResilienceUtil {
 
   
-  static public void verify(String logfile, String regexp, long totalSteps, double bestCase) throws NumberFormatException, IOException {
+  static public void verify(String logfile, String regexp, long totalSteps, double bestCaseSuccessRatio) throws NumberFormatException, IOException {
     FileReader fr = new FileReader(logfile);
     BufferedReader br = new BufferedReader(fr);
     Pattern p = Pattern.compile(regexp);
@@ -35,9 +35,8 @@ public class ResilienceUtil {
     fr.close();
     br.close();
 
-    double expectedSuccessRate = bestCase * 0.7;
-    // at least 40% of the logs should have been written
-    int lowerLimit = (int) (totalSteps*expectedSuccessRate);
+    double successRatioLowerBound = bestCaseSuccessRatio * 0.9;
+    int lowerLimit = (int) (totalSteps*successRatioLowerBound);
     assertTrue("totalLines="+totalLines+" less than "+lowerLimit, totalLines > lowerLimit);
     
     // we want some gaps which indicate recuperation

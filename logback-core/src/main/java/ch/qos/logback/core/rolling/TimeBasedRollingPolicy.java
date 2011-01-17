@@ -86,7 +86,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
     // the maxHistory property is given to TimeBasedRollingPolicy instead of to
     // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
-    // for the user at the cost of inconsistency at the level of this code.
+    // for the user at the cost of inconsistency here.
     if (maxHistory != NO_DELETE_HISTORY) {
       archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
       archiveRemover.setMaxHistory(maxHistory);

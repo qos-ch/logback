@@ -709,185 +709,9 @@ public interface RollingPolicy extends LifeCycle {
    its parent via the <code>setParent</code> method.
    </p>
 
-   <h4>	
-     <a name="FixedWindowRollingPolicy" 
-     href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
-   </h4>
+   <!-- =================
+        ================= -->
 
-   <p>When rolling over, <a
-   href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
-   <code>FixedWindowRollingPolicy</code></a> renames files according
-   to a fixed window algorithm as described below.
-   </p>
-
-   <p>The <span class="option">fileNamePattern</span> option
-   represents the file name pattern for the archived (rolled over) log
-   files.  This option is required and must include an integer token
-   <em>%i</em> somewhere within the pattern.
-   </p>
-	
-   <p>Here are the available properties for
-   <code>FixedWindowRollingPolicy</code>
-   </p>
-	
-   <table class="bodyTable">
-     <tr class="a">
-       <th>Property Name</th>
-       <th>Type</th>
-       <th>Description</th>
-     </tr>
-     <tr class="b">
-       <td><b><span class="option">minIndex</span></b></td>
-       <td><code>int</code></td>
-       <td>
-         <p>This option represents the lower bound for the window's
-         index.
-         </p>
-       </td>
-     </tr>
-     <tr class="a">
-       <td><b><span class="option">maxIndex</span></b></td>
-       <td><code>int</code></td>
-       <td>
-         <p>This option represents the upper bound for the window's
-         index.
-         </p>
-       </td>
-     </tr>
-     <tr class="b">
-       <td><b><span class="option">fileNamePattern</span></b></td>
-       <td><code>String</code></td>
-       <td>
-         <p>This option represents the pattern that will be followed
-         by the <code>FixedWindowRollingPolicy</code> when renaming
-         the log files. It must contain the string <em>%i</em>, which
-         will indicate the position where the value of the current
-         window index will be inserted.
-         </p>
-         <p>For example, using <em>MyLogFile%i.log</em> associated
-         with minimum and maximum values of <em>1</em> and <em>3</em>
-         will produce archive files named <em>MyLogFile1.log</em>,
-         <em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
-         </p>
-         <p>Note that file compression is also specified via this
-         property. For example, <span
-         class="option">fileNamePattern</span> set to
-         <em>MyLogFile%i.log.zip</em> means that archived files must be
-         compressed using the <em>zip</em> format; <em>gz</em> format
-         is also supported.
-         </p>
-       </td>
-     </tr>			
-   </table>
-   
-   <p>Given that the fixed window rolling policy requires as many file
-   renaming operations as the window size, large window sizes are
-   strongly discouraged. When large values are specified by the user,
-   the current implementation will automatically reduce the window
-   size to 12.
-   </p>
-
-   <p>Let us go over a more concrete example of the fixed window
-   rollover policy. Suppose that <span class="option">minIndex</span>
-   is set to <em>1</em>, <span class="option">maxIndex</span> set to
-   <em>3</em>, <span class="option">fileNamePattern</span> property
-   set to <em>foo%i.log</em>, and that <span
-   class="option">fileNamePattern</span> property is set to
-   <em>foo.log</em>.
-   </p>
-	
-   <table class="bodyTable">
-     <tr class="a">
-       <th>Number of rollovers</th>
-       <th>Active output target</th>
-       <th>Archived log files</th>
-       <th>Description</th>
-     </tr>
-		<tr class="b">
-			<td>0</td>
-			<td>foo.log</td>
-			<td>-</td>
-			<td>No rollover has happened yet, logback logs into the initial
-			file.
-			</td>
-     </tr>		
-     <tr class="a">
-       <td>1</td>
-       <td>foo.log</td>
-       <td>foo1.log</td>
-       <td>First rollover. <em>foo.log</em> is renamed as
-       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
-       becomes the active output target.
-       </td>
-     </tr>
-     <tr class="b">
-       <td>2</td>
-       <td>foo.log</td>
-       <td>foo1.log, foo2.log</td>
-       <td>Second rollover. <em>foo1.log</em> is renamed as
-       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
-       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
-       becomes the active output target.
-       </td>
-     </tr>
-     <tr class="a">
-       <td>3</td>
-       <td>foo.log</td>
-       <td>foo1.log, foo2.log, foo3.log</td>
-       <td>Third rollover.  <em>foo2.log</em> is renamed as
-       <em>foo3.log</em>. <em>foo1.log</em> is renamed as
-       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
-       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
-       becomes the active output target.
-       </td>
-     </tr>
-     <tr class="b">
-       <td>4</td>
-       <td>foo.log</td>
-       <td>foo1.log, foo2.log, foo3.log</td>
-       <td>In this and subsequent rounds, the rollover begins by
-       deleting <em>foo3.log</em>. Other files are renamed by
-       incrementing their index as shown in previous steps. In this and
-       subsequent rollovers, there will be three archive logs and one
-       active log file.
-       </td>
-     </tr>
-   </table>
-	
-   <p>The configuration file below gives an example of configuring
-   <code>RollingFileAppender</code> and
-   <code>FixedWindowRollingPolicy</code>. Note that the <span
-   class="option">File</span> option is mandatory even if it contains
-   some of the same information as conveyed with the <span
-   class="option">fileNamePattern</span> option.
-   </p>
-	
-   <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
-   <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
-
-   <span class="asGroovy" onclick="return asGroovy('logback-RollingFixedWindow');">View as .groovy</span>
-   <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
-  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <b>&lt;file>test.log&lt;/file></b>
-
-    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      &lt;fileNamePattern>tests.%i.log.zip&lt;/fileNamePattern>
-      &lt;minIndex>1&lt;/minIndex>
-      &lt;maxIndex>3&lt;/maxIndex>
-    &lt;/rollingPolicy></b>
-
-    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      &lt;maxFileSize>5MB&lt;/maxFileSize>
-    &lt;/triggeringPolicy>
-    &lt;encoder>
-      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-	
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="FILE" />
-  &lt;/root>
-&lt;/configuration></pre>
 	
    <h4>
      <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
@@ -1119,7 +943,7 @@ public interface RollingPolicy extends LifeCycle {
          <em>/wombat/foo.txt</em> file will be created where logging
          output will go for the rest of November 24rd. At midnight
          November 24th, <em>/wombat/foo.txt</em> will be compressed and
-         renamed as <em>/wombat/foo.2009-11-24.gz</em>. and so on.
+         renamed as <em>/wombat/foo.2009-11-24.gz</em> and so on.
          </p>
        </td>
      </tr>
@@ -1140,9 +964,13 @@ public interface RollingPolicy extends LifeCycle {
 	 the file specified by the <span class="option">file</span>
 	 property. It follows that the name of the active log file will not
 	 change over time. However, if you choose to omit the <span
-	 class="option">File</span> property, then the active file will be
+	 class="option">file</span> property, then the active file will be
 	 computed anew for each period based on the value of <span
-	 class="option">fileNamePattern</span>.
+	 class="option">fileNamePattern</span>. By leaving the <span
+	 class="option">file</span> option unset you can avoid file <a
+	 href="../codes.html#renamingError">renaming errors</a> which occur
+	 while there exist external file handles refrencing log files during
+	 roll over.
    </p>
 	
    <p>The <span class="option">maxHistory</span> property controls the
@@ -1228,6 +1056,187 @@ public interface RollingPolicy extends LifeCycle {
     &lt;/encoder>
   &lt;/appender> 
 
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+
+   <h4>	
+     <a name="FixedWindowRollingPolicy" 
+     href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
+   </h4>
+
+   <p>When rolling over, <a
+   href="../xref/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
+   <code>FixedWindowRollingPolicy</code></a> renames files according
+   to a fixed window algorithm as described below.
+   </p>
+
+   <p>The <span class="option">fileNamePattern</span> option
+   represents the file name pattern for the archived (rolled over) log
+   files.  This option is required and must include an integer token
+   <em>%i</em> somewhere within the pattern.
+   </p>
+	
+   <p>Here are the available properties for
+   <code>FixedWindowRollingPolicy</code>
+   </p>
+	
+   <table class="bodyTable">
+     <tr class="a">
+       <th>Property Name</th>
+       <th>Type</th>
+       <th>Description</th>
+     </tr>
+     <tr class="b">
+       <td><b><span class="option">minIndex</span></b></td>
+       <td><code>int</code></td>
+       <td>
+         <p>This option represents the lower bound for the window's
+         index.
+         </p>
+       </td>
+     </tr>
+     <tr class="a">
+       <td><b><span class="option">maxIndex</span></b></td>
+       <td><code>int</code></td>
+       <td>
+         <p>This option represents the upper bound for the window's
+         index.
+         </p>
+       </td>
+     </tr>
+     <tr class="b">
+       <td><b><span class="option">fileNamePattern</span></b></td>
+       <td><code>String</code></td>
+       <td>
+         <p>This option represents the pattern that will be followed
+         by the <code>FixedWindowRollingPolicy</code> when renaming
+         the log files. It must contain the string <em>%i</em>, which
+         will indicate the position where the value of the current
+         window index will be inserted.
+         </p>
+         <p>For example, using <em>MyLogFile%i.log</em> associated
+         with minimum and maximum values of <em>1</em> and <em>3</em>
+         will produce archive files named <em>MyLogFile1.log</em>,
+         <em>MyLogFile2.log</em> and <em>MyLogFile3.log</em>.
+         </p>
+         <p>Note that file compression is also specified via this
+         property. For example, <span
+         class="option">fileNamePattern</span> set to
+         <em>MyLogFile%i.log.zip</em> means that archived files must be
+         compressed using the <em>zip</em> format; <em>gz</em> format
+         is also supported.
+         </p>
+       </td>
+     </tr>			
+   </table>
+   
+   <p>Given that the fixed window rolling policy requires as many file
+   renaming operations as the window size, large window sizes are
+   strongly discouraged. When large values are specified by the user,
+   the current implementation will automatically reduce the window
+   size to 12.
+   </p>
+
+   <p>Let us go over a more concrete example of the fixed window
+   rollover policy. Suppose that <span class="option">minIndex</span>
+   is set to <em>1</em>, <span class="option">maxIndex</span> set to
+   <em>3</em>, <span class="option">fileNamePattern</span> property
+   set to <em>foo%i.log</em>, and that <span
+   class="option">fileNamePattern</span> property is set to
+   <em>foo.log</em>.
+   </p>
+	
+   <table class="bodyTable">
+     <tr class="a">
+       <th>Number of rollovers</th>
+       <th>Active output target</th>
+       <th>Archived log files</th>
+       <th>Description</th>
+     </tr>
+		<tr class="b">
+			<td>0</td>
+			<td>foo.log</td>
+			<td>-</td>
+			<td>No rollover has happened yet, logback logs into the initial
+			file.
+			</td>
+     </tr>		
+     <tr class="a">
+       <td>1</td>
+       <td>foo.log</td>
+       <td>foo1.log</td>
+       <td>First rollover. <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="b">
+       <td>2</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log</td>
+       <td>Second rollover. <em>foo1.log</em> is renamed as
+       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="a">
+       <td>3</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log, foo3.log</td>
+       <td>Third rollover.  <em>foo2.log</em> is renamed as
+       <em>foo3.log</em>. <em>foo1.log</em> is renamed as
+       <em>foo2.log</em>.  <em>foo.log</em> is renamed as
+       <em>foo1.log</em>. A new <em>foo.log</em> file is created and
+       becomes the active output target.
+       </td>
+     </tr>
+     <tr class="b">
+       <td>4</td>
+       <td>foo.log</td>
+       <td>foo1.log, foo2.log, foo3.log</td>
+       <td>In this and subsequent rounds, the rollover begins by
+       deleting <em>foo3.log</em>. Other files are renamed by
+       incrementing their index as shown in previous steps. In this and
+       subsequent rollovers, there will be three archive logs and one
+       active log file.
+       </td>
+     </tr>
+   </table>
+	
+   <p>The configuration file below gives an example of configuring
+   <code>RollingFileAppender</code> and
+   <code>FixedWindowRollingPolicy</code>. Note that the <span
+   class="option">File</span> option is mandatory even if it contains
+   some of the same information as conveyed with the <span
+   class="option">fileNamePattern</span> option.
+   </p>
+	
+   <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
+   <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
+
+   <span class="asGroovy" onclick="return asGroovy('logback-RollingFixedWindow');">View as .groovy</span>
+   <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <b>&lt;file>test.log&lt;/file></b>
+
+    <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      &lt;fileNamePattern>tests.%i.log.zip&lt;/fileNamePattern>
+      &lt;minIndex>1&lt;/minIndex>
+      &lt;maxIndex>3&lt;/maxIndex>
+    &lt;/rollingPolicy></b>
+
+    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      &lt;maxFileSize>5MB&lt;/maxFileSize>
+    &lt;/triggeringPolicy>
+    &lt;encoder>
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+	
   &lt;root level="DEBUG">
     &lt;appender-ref ref="FILE" />
   &lt;/root>

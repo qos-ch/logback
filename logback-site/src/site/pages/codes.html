@@ -352,20 +352,47 @@
 
   <hr/>
 
-  <p><a name="renamingError" href="#renamingError">Failed to rename file [x]] to [y]</a>
+  <p><a name="renamingError" href="#renamingError">Failed to rename file [x] to [y].</a>
   </p>
 
   <p>A log file cannot be renamed if there are handles referencing
   that file. For example, when the file is read by another process
-  such as less, tail, etc. During application hot redeployment, the
-  old instance of the application will have open references to the log
-  file as long as the old instance is not gargabe collected.
+  such as <code>less</code>, <code>tail</code>, etc. During
+  application hot-redeployment, the old instance of the application
+  will have open references to log files until the old instance is
+  completely shutdown or until the <code>stop()</code> method on its
+  <a
+  href="apidocs/ch/qos/logback/classic/LoggerContext.html"><code>LoggerContext</code></a>
+  is invoked.
   </p>
 
-  <p>File renaming problems can be avoided altogether if the <span
+  <p>In practice, it can be hard to ensure that there are no file
+  handle references to log files. It can be easier to avoid file
+  renaming altogether. As a first step, let us note that for
+  <code>TimeBasedRollingPolicy</code>, the <span
+  class="option">file</span> option can be omitted. If omitted, no
+  file renaming will be performed during roll over. Thus, in order to
+  avoid file renaming errors just leave blank the <span
   class="option">file</span> option of
-  <code>RollingFileAppender</code> is left blank. 
+  <code>RollingFileAppender</code>, as shown in the next configuration
+  snippet.
   </p>
+
+  <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  &lt;!-- <span class="option">file</span> option left unset/blank -->
+  &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    &lt;fileNamePattern>mylog.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
+  &lt;/rollingPolicy>
+
+  &lt;encoder>
+    &lt;pattern>%relative [%thread] %level %logger - %msg%n&lt;/pattern>
+  &lt;/encoder>
+&lt;/appender></pre>
+
+   <p>For <code>FixedWindowRollingPolicy</code>, the file option is
+   mandatory.
+   </p>
+ 
   
   <hr/>
 
