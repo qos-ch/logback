@@ -366,6 +366,13 @@
   is invoked.
   </p>
 
+  <p>On the Windows platform, <a
+  href="http://technet.microsoft.com/en-us/sysinternals/bb896653">Process
+  Explorer</a> can help you locate the processes which reference a
+  given file (Find -&gt; Find Handle or DLL). On Linux, you can use
+  the <a href="http://www.manpagez.com/man/8/lsof/">lsof</a> command
+  to find which process has a file open.</p>
+
   <p>In practice, it can be hard to ensure that there are no file
   handle references to log files. It can be easier to avoid file
   renaming altogether. As a first step, let us note that for

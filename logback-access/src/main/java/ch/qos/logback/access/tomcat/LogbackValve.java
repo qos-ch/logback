@@ -265,7 +265,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     this.name = name;
   }
 
-  public long getBithTime() {
+  public long getBirthTime() {
     return birthTime;
   }
 
