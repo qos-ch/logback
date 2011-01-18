@@ -76,7 +76,7 @@ public class FileAppenderResilienceTest {
 
     double bestCaseSuccessRatio = 1/delayCoeff;
     ResilienceUtil
-        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio);
+        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio*0.9);
   }
 }
 
