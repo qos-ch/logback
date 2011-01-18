@@ -159,8 +159,8 @@ public class ReconfigureOnChangeTest {
     loggerContext.getStatusManager().add(
         new InfoStatus("end of execution ", this));
 
-    long expectedRreconfigurations = runnableArray[0].getCounter();
-    verify(expectedRreconfigurations);
+    long expectedReconfigurations = runnableArray[0].getCounter();
+    verify(expectedReconfigurations);
   }
 
   void verify(long expectedReconfigurations) {
@@ -172,10 +172,10 @@ public class ReconfigureOnChangeTest {
     // the number of effective resets must be equal or less than
     // expectedReconfigurations
     assertTrue(effectiveResets <= expectedReconfigurations);
+
     // however, there should be some effective resets
     String failMsg = "effective=" + effectiveResets + ", expected="
         + expectedReconfigurations;
-
     // we can't have the test succeed under JDK 1.5, punt and require 1.6+
     if (Env.isJDK6OrHigher()) {
       assertTrue(failMsg,

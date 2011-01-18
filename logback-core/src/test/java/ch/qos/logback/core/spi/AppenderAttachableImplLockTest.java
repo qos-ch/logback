@@ -13,11 +13,7 @@
  */
 package ch.qos.logback.core.spi;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.makeThreadSafe;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import org.easymock.EasyMock;
 
 import org.junit.Test;
 
@@ -57,9 +53,9 @@ public class AppenderAttachableImplLockTest {
   @Test(timeout = 1000)
   public void getAppenderBoom() {
 
-    Appender<Integer> mockAppender1 = createStrictMock(Appender.class);
-    expect(mockAppender1.getName()).andThrow(new OutOfMemoryError("oops"));
-    replay(mockAppender1);
+    Appender<Integer> mockAppender1 = EasyMock.createStrictMock(Appender.class);
+    EasyMock.expect(mockAppender1.getName()).andThrow(new OutOfMemoryError("oops"));
+    EasyMock.replay(mockAppender1);
 
     aai.addAppender(mockAppender1);
     try {
@@ -69,20 +65,20 @@ public class AppenderAttachableImplLockTest {
       // this leaves the read lock locked.
     }
 
-    Appender<Integer> mockAppender2=createStrictMock(Appender.class);
+    Appender<Integer> mockAppender2=EasyMock.createStrictMock(Appender.class);
     // the next call will lock
-     aai.addAppender(mockAppender2);
-     verify(mockAppender1);
+    aai.addAppender(mockAppender2);
+    EasyMock.verify(mockAppender1);
   }
 
   @SuppressWarnings("unchecked")
   @Test(timeout = 1000)
   public void detachAppenderBoom() throws InterruptedException {
-    Appender<Integer> mockAppender = createStrictMock(Appender.class);
-    makeThreadSafe(mockAppender, true);
-    expect(mockAppender.getName()).andThrow(new OutOfMemoryError("oops"));
+    Appender<Integer> mockAppender = EasyMock.createStrictMock(Appender.class);
+    EasyMock.makeThreadSafe(mockAppender, true);
+    EasyMock.expect(mockAppender.getName()).andThrow(new OutOfMemoryError("oops"));
     mockAppender.doAppend(17);
-    replay(mockAppender);
+    EasyMock.replay(mockAppender);
 
     aai.addAppender(mockAppender);
     Thread t = new Thread(new Runnable() {
@@ -101,7 +97,7 @@ public class AppenderAttachableImplLockTest {
 
     // the next call will lock
     aai.appendLoopOnAppenders(17);
-    verify(mockAppender);
+    EasyMock.verify(mockAppender);
   }
 
 }
