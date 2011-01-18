@@ -19,6 +19,7 @@ import org.junit.Test
 import ch.qos.logback.core.encoder.EchoEncoder
 import java.io.{FileOutputStream, File}
 import ch.qos.logback.core.util.{StatusPrinter, Compare, CoreTestConstants}
+import ch.qos.logback.core.testUtil.Env
 
 class TimeBasedRolling2Test extends RollingScaffolding {
 
@@ -176,7 +177,9 @@ class TimeBasedRolling2Test extends RollingScaffolding {
 
 
   @Test
-  def failed_rename = {
+  def failed_rename: Unit = {
+
+    if(!Env.isWindows) return null
 
     var fos: FileOutputStream = null
     try {
