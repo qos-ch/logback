@@ -39,7 +39,7 @@ public class ResilienceUtil {
     assertTrue("totalLines="+totalLines+" less than "+lowerLimit, totalLines > lowerLimit);
     
     // we want some gaps which indicate recuperation
-    assertTrue("gaps="+gaps+" less than 3", gaps > 3);
+    assertTrue("gaps="+gaps+" less than 3", gaps >= 3);
     
   }
 }
