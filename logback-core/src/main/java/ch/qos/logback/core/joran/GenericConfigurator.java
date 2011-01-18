@@ -21,9 +21,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.xml.sax.InputSource;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
@@ -86,9 +86,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
-    getContext().putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN, url);
+    ConfigurationWatchListUtil.updateWatchList(context, url);
   }
-  
+
   final public void doConfigure(InputStream inputStream) throws JoranException {
     doConfigure(new InputSource(inputStream));
   }

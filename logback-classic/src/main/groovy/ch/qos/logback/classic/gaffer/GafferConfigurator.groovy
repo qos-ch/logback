@@ -15,7 +15,8 @@ package ch.qos.logback.classic.gaffer
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.core.util.ContextUtil
-import ch.qos.logback.core.CoreConstants
+
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil
 
 class GafferConfigurator {
 
@@ -28,7 +29,7 @@ class GafferConfigurator {
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
-    context.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN, url);
+    ConfigurationWatchListUtil.updateWatchList(context, url);
   }
 
   void run(URL url) {

@@ -295,7 +295,7 @@ public class JoranConfiguratorTest {
       logger.debug("after " + i);
     }
 
-    // StatusPrinter.print(loggerContext);
+    StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree());
     assertTrue(checker.containsMatch("Resetting and reconfiguring context"));

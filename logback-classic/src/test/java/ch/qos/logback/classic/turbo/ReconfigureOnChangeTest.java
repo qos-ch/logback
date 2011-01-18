@@ -19,9 +19,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import ch.qos.logback.classic.gaffer.GafferConfigurator;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,15 +108,6 @@ public class ReconfigureOnChangeTest {
     return rArray;
   }
 
-  @Test
-  // See http://jira.qos.ch/browse/LBCORE-119
-  public void fileToURLAndBack() throws MalformedURLException {
-    File file = new File("a b.xml");
-    URL url = file.toURI().toURL();
-    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-    File back = rocf.convertToFile(url);
-    assertEquals(file.getName(), back.getName());
-  }
 
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
@@ -187,8 +178,7 @@ public class ReconfigureOnChangeTest {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(loggerContext);
     File file = new File(SCAN1_FILE_AS_STR);
-    loggerContext.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN,
-        file.toURI().toURL());
+    ConfigurationWatchListUtil.updateWatchList(loggerContext, file.toURI().toURL());
     rocf.start();
     return rocf;
   }

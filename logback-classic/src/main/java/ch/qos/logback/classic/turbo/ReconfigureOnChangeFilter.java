@@ -15,19 +15,18 @@ package ch.qos.logback.classic.turbo;
 
 import java.io.File;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.util.List;
 
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.InfoStatus;
@@ -49,42 +48,26 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   public final static long DEFAULT_REFRESH_PERIOD = 60 * 1000;
 
   long refreshPeriod = DEFAULT_REFRESH_PERIOD;
-  File fileToScan;
-  protected long nextCheck;
-  volatile long lastModified;
+  URL mainConfigurationURL;
+  protected volatile long nextCheck;
 
-  Object lock = new Object();
+  ConfigurationWatchList cwl;
 
   @Override
   public void start() {
-    URL url = (URL) context
-            .getObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN);
-    if (url != null) {
-      fileToScan = convertToFile(url);
-      if (fileToScan != null) {
-        synchronized (lock) {
-          long inSeconds = refreshPeriod / 1000;
-          addInfo("Will scan for changes in file [" + fileToScan + "] every "
-                  + inSeconds + " seconds. ");
-          lastModified = fileToScan.lastModified();
-          updateNextCheck(System.currentTimeMillis());
-        }
-        super.start();
+    cwl = ConfigurationWatchListUtil.getConfigurationWatchList(context);
+    if (cwl != null) {
+      mainConfigurationURL = cwl.getMainURL();
+      List<File> watchList = cwl.getCopyOfFileWatchList();
+      long inSeconds = refreshPeriod / 1000;
+      addInfo("Will scan for changes in [" + watchList + "] every "
+              + inSeconds + " seconds. ");
+      synchronized (cwl) {
+        updateNextCheck(System.currentTimeMillis());
       }
-    } else {
-      addError("Could not find URL of file to scan.");
-    }
-  }
-
-  @SuppressWarnings("deprecation")
-  File convertToFile(URL url) {
-    String protocol = url.getProtocol();
-    if ("file".equals(protocol)) {
-      File file = new File(URLDecoder.decode(url.getFile()));
-      return file;
-    } else {
-      addError("URL [" + url + "] is not of type file");
-      return null;
+      super.start();
+    }  else {
+      addWarn("Empty ConfigurationWatchList in context");
     }
   }
 
@@ -108,12 +91,14 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    //System.out.println(".");
-    synchronized (lock) {
-      boolean changed = changeDetected();
-      if (changed) {
+    synchronized (cwl) {
+      if (changeDetected()) {
+        // Even though reconfiguration involves resetting the loggerContext,
+        // which clears the list of turbo filters including this instance, it is
+        // still possible for this instance to be subsequently invoked by another
+        // thread if it was already executing when the context was reset.
+        disableSubsequentReconfiguration();
         detachReconfigurationToNewThread();
-
       }
     }
 
@@ -123,14 +108,8 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // by detaching reconfiguration to a new thread, we release the various
   // locks held by the current thread, in particular, the AppenderAttachable
   // reader lock.
-
   private void detachReconfigurationToNewThread() {
-    // Even though this method resets the loggerContext, which clears the
-    // list of turbo filters including this instance, it is still possible
-    // for this instance to be subsequently invoked by another thread if it
-    // was already executing when the context was reset.
-    disableSubsequentRecofiguration();
-    addInfo("Detected change in [" + fileToScan + "]");
+    addInfo("Detected change in [" + cwl.getCopyOfFileWatchList() + "]");
     addInfo("Resetting and reconfiguring context [" + context.getName() + "]");
     new ReconfiguringThread().start();
   }
@@ -139,23 +118,17 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     nextCheck = now + refreshPeriod;
   }
 
-  // This method is synchronized to prevent near-simultaneous re-configurations
-
   protected boolean changeDetected() {
     long now = System.currentTimeMillis();
     if (now >= nextCheck) {
       updateNextCheck(now);
-      return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
+      return cwl.changeDetected();
     }
     return false;
   }
 
-  String currentThreadName() {
-    return Thread.currentThread().getName();
-  }
-
-  void disableSubsequentRecofiguration() {
-    lastModified = SENTINEL;
+  void disableSubsequentReconfiguration() {
+    nextCheck = Long.MAX_VALUE;
   }
 
   public long getRefreshPeriod() {
@@ -169,22 +142,21 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   class ReconfiguringThread extends Thread {
     public void run() {
       LoggerContext lc = (LoggerContext) context;
-
-      if (fileToScan.toString().endsWith("groovy")) {
+      if (mainConfigurationURL.toString().endsWith("groovy")) {
         if (EnvUtil.isGroovyAvailable()) {
           lc.reset();
           // avoid directly referring to GafferConfigurator so as to avoid
           // loading  groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-          GafferUtil.runGafferConfiguratorOn(lc, this, fileToScan);
+          GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
         } else {
           addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
         }
-      } else if (fileToScan.toString().endsWith("xml")) {
+      } else if (mainConfigurationURL.toString().endsWith("xml")) {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         lc.reset();
         try {
-          jc.doConfigure(fileToScan);
+          jc.doConfigure(mainConfigurationURL);
           lc.getStatusManager().add(
                   new InfoStatus("done resetting the logging context", this));
         } catch (JoranException e) {
