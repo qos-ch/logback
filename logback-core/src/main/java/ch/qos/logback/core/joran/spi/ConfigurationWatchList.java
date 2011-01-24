@@ -37,7 +37,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
     }
   }
 
-  void addToWatchList(URL url) {
+  public void addToWatchList(URL url) {
     addAsFileToWatch(url);
   }
 

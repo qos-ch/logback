@@ -13,13 +13,16 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.event.SaxEvent;
@@ -41,7 +44,7 @@ public class IncludeAction extends Action {
 
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
+          throws ActionException {
 
     SaxEventRecorder recorder = new SaxEventRecorder();
 
@@ -105,7 +108,7 @@ public class IncludeAction extends Action {
       return true;
     }
     throw new IllegalStateException("Count value [" + count
-        + "] is not expected");
+            + "] is not expected");
   }
 
   private InputStream getInputStreamByFilePath(String pathToFile) {
@@ -118,15 +121,17 @@ public class IncludeAction extends Action {
     }
   }
 
-  private InputStream getInputStreamByUrl(String urlAttribute) {
-    URL url;
+  URL attributeToURL(String urlAttribute) {
     try {
-      url = new URL(urlAttribute);
+      return new URL(urlAttribute);
     } catch (MalformedURLException mue) {
       String errMsg = "URL [" + urlAttribute + "] is not well formed.";
       addError(errMsg, mue);
       return null;
     }
+  }
+
+  private InputStream getInputStreamByUrl(URL url) {
     return openURL(url);
   }
 
@@ -140,38 +145,63 @@ public class IncludeAction extends Action {
     }
   }
 
-  private InputStream getInputStreamByResource(String resourceAttribute) {
+  URL resourceAsURL(String resourceAttribute) {
     URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
     if (url == null) {
       String errMsg = "Could not find resource corresponding to ["
-          + resourceAttribute + "]";
+              + resourceAttribute + "]";
       addError(errMsg);
       return null;
+    } else
+      return url;
+  }
+
+  URL filePathAsURL(String path) {
+    URI uri = new File(path).toURI();
+    try {
+      return uri.toURL();
+    } catch (MalformedURLException e) {
+      // impossible to get here
+      e.printStackTrace();
+      return null;
     }
+  }
+
+  private InputStream getInputStreamByResource(URL url) {
     return openURL(url);
   }
 
-  InputStream getInputStream(InterpretationContext ec, Attributes attributes) {
+  URL getInputURL(InterpretationContext ec, Attributes attributes) {
     String fileAttribute = attributes.getValue(FILE_ATTR);
     String urlAttribute = attributes.getValue(URL_ATTR);
     String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
 
     if (!OptionHelper.isEmpty(fileAttribute)) {
-      attributeInUse = ec.subst(fileAttribute);
-      return getInputStreamByFilePath(attributeInUse);
+      this.attributeInUse = ec.subst(fileAttribute);
+      return filePathAsURL(attributeInUse);
     }
 
     if (!OptionHelper.isEmpty(urlAttribute)) {
-      attributeInUse = ec.subst(urlAttribute);
-      return getInputStreamByUrl(attributeInUse);
+      this.attributeInUse = ec.subst(urlAttribute);
+      return attributeToURL(attributeInUse);
     }
 
     if (!OptionHelper.isEmpty(resourceAttribute)) {
-      attributeInUse = ec.subst(resourceAttribute);
-      return getInputStreamByResource(attributeInUse);
+      this.attributeInUse = ec.subst(resourceAttribute);
+      return resourceAsURL(attributeInUse);
     }
     // given previous checkAttributes() check we cannot reach this line
-    throw new IllegalStateException("A input stream should have been returned");
+    throw new IllegalStateException("A URL stream should have been returned");
+
+  }
+
+  InputStream getInputStream(InterpretationContext ec, Attributes attributes) {
+    URL inputURL = getInputURL(ec, attributes);
+    if(inputURL == null)
+      return null;
+
+    ConfigurationWatchListUtil.addToWatchList(context, inputURL);
+    return openURL(inputURL);
   }
 
   private void trimHeadAndTail(SaxEventRecorder recorder) {
@@ -196,7 +226,7 @@ public class IncludeAction extends Action {
   }
 
   private void parseAndRecord(InputStream inputSource, SaxEventRecorder recorder)
-      throws JoranException {
+          throws JoranException {
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
   }

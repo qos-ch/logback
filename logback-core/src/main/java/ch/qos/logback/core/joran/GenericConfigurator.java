@@ -86,7 +86,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
-    ConfigurationWatchListUtil.updateWatchList(context, url);
+    ConfigurationWatchListUtil.setMainWatchURL(context, url);
   }
 
   final public void doConfigure(InputStream inputStream) throws JoranException {

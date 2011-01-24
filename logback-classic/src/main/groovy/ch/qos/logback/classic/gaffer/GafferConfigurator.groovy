@@ -29,7 +29,7 @@ class GafferConfigurator {
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
-    ConfigurationWatchListUtil.updateWatchList(context, url);
+    ConfigurationWatchListUtil.setMainWatchURL(context, url);
   }
 
   void run(URL url) {

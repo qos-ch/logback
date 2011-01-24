@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Random;
 
 import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
@@ -49,13 +50,25 @@ public class ReconfigureOnChangeTest {
   // the space in the file name mandated by
   // http://jira.qos.ch/browse/LBCORE-119
   final static String SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
-      + "turbo/scan 1.xml";
+          + "turbo/scan 1.xml";
 
-    final static String G_SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
-      + "turbo/scan 1.groovy";
+  final static String G_SCAN1_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/scan 1.groovy";
 
   final static String SCAN_LBCLASSIC_154_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
-      + "turbo/scan_lbclassic154.xml";
+          + "turbo/scan_lbclassic154.xml";
+
+  final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/inclusion/topLevel0.xml";
+
+  final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/inclusion/topByResource.xml";
+
+
+  final static String INCLUSION_SCAN_INNER0_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/inclusion/inner0.xml";
+
+  final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
@@ -72,7 +85,7 @@ public class ReconfigureOnChangeTest {
 
   @Before
   public void setUp() {
-    System.out.println("======== TEST START, time"+System.currentTimeMillis());
+    System.out.println("======== TEST START, time" + System.currentTimeMillis());
     // take into account propagation latency occurs on Linux or Mac
     if (Env.isLinux() || Env.isMac()) {
       sleepBetweenUpdates = 950;
@@ -109,22 +122,57 @@ public class ReconfigureOnChangeTest {
   }
 
 
-  // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
-  @Test
-  public void scan1() throws JoranException, IOException, InterruptedException {
-    File file = new File(SCAN1_FILE_AS_STR);
-    configure(file);
-    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+  void doScanTest(File topLevelFile, File fileToTouch) throws JoranException, IOException, InterruptedException {
+    configure(topLevelFile);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(fileToTouch);
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
-        new InfoStatus("end of execution ", this));
+            new InfoStatus("end of execution ", this));
 
     long expectedReconfigurations = runnableArray[0].getCounter();
     verify(expectedReconfigurations);
+
   }
 
-  @Test
+  // chose a test at random. These tests are rather long...
+    // check for deadlocks
+  @Test(timeout = 20000)
+  public void randomTest()  throws JoranException, IOException, InterruptedException {
+    Random rand = new Random(System.currentTimeMillis());
+    switch(rand.nextInt(5)) {
+      case 0: scan1();
+        break;
+      case 1: scanWithFileInclusion();
+        break;
+      case 2: scanWithResourceInclusion();
+        break;
+      case 3: scan_lbclassic154();
+        break;
+      case 4: gscan1();
+        break;
+    }
+  }
+
+  // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
+  public void scan1() throws JoranException, IOException, InterruptedException {
+    File file = new File(SCAN1_FILE_AS_STR);
+    doScanTest(file, file);
+  }
+
+  public void scanWithFileInclusion() throws JoranException, IOException, InterruptedException {
+    File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
+    File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
+    doScanTest(topLevelFile, innerFile);
+  }
+
+  public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
+    File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
+    File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
+    doScanTest(topLevelFile, innerFile);
+  }
+
+
   public void gscan1() throws JoranException, IOException, InterruptedException {
     File file = new File(G_SCAN1_FILE_AS_STR);
     gConfigure(file);
@@ -132,45 +180,46 @@ public class ReconfigureOnChangeTest {
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
-        new InfoStatus("end of execution ", this));
+            new InfoStatus("end of execution ", this));
 
     long expectedRreconfigurations = runnableArray[0].getCounter();
     verify(expectedRreconfigurations);
   }
 
   // check for deadlocks
-  @Test(timeout = 20000)
+  //Attr_Test(timeout = 20000)
   public void scan_lbclassic154() throws JoranException, IOException,
-      InterruptedException {
+          InterruptedException {
     File file = new File(SCAN_LBCLASSIC_154_FILE_AS_STR);
     configure(file);
     RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
-        new InfoStatus("end of execution ", this));
+            new InfoStatus("end of execution ", this));
 
     long expectedReconfigurations = runnableArray[0].getCounter();
     verify(expectedReconfigurations);
   }
+
 
   void verify(long expectedReconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
     assertTrue(checker.isErrorFree());
     int effectiveResets = checker
-        .matchCount("Resetting and reconfiguring context");
+            .matchCount("Resetting and reconfiguring context");
     // the number of effective resets must be equal or less than
     // expectedReconfigurations
     assertTrue(effectiveResets <= expectedReconfigurations);
 
     // however, there should be some effective resets
     String failMsg = "effective=" + effectiveResets + ", expected="
-        + expectedReconfigurations;
+            + expectedReconfigurations;
     // we can't have the test succeed under JDK 1.5, punt and require 1.6+
     if (Env.isJDK6OrHigher()) {
       assertTrue(failMsg,
-          (effectiveResets * 1.5) >= (expectedReconfigurations * 1.0));
+              (effectiveResets * 1.5) >= (expectedReconfigurations * 1.0));
     }
   }
 
@@ -178,7 +227,7 @@ public class ReconfigureOnChangeTest {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(loggerContext);
     File file = new File(SCAN1_FILE_AS_STR);
-    ConfigurationWatchListUtil.updateWatchList(loggerContext, file.toURI().toURL());
+    ConfigurationWatchListUtil.setMainWatchURL(loggerContext, file.toURI().toURL());
     rocf.start();
     return rocf;
   }
