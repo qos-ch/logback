@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.janino.ExpressionEvaluator;
+import org.codehaus.janino.ScriptEvaluator;
 
 /**
  * Abstract class which sets the groundwork for janino based evaluations.
@@ -37,7 +38,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
 
   private String expression;
 
-  ExpressionEvaluator ee;
+  ScriptEvaluator scriptEvaluator;
   private int errorCount = 0;
 
   abstract protected String getDecoratedExpression();
@@ -54,9 +55,8 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
   public void start() {
     try {
       assert context != null;
-      ClassLoader cl = context.getClass().getClassLoader();
-      ee = new ExpressionEvaluator(getDecoratedExpression(), EXPRESSION_TYPE,
-          getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS, cl);
+      scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE,
+          getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS);
       super.start();
     } catch (Exception e) {
       addError(
@@ -70,7 +70,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
           + "] was called in stopped state");
     }
     try {
-      Boolean result = (Boolean) ee.evaluate(getParameterValues(event));
+      Boolean result = (Boolean) scriptEvaluator.evaluate(getParameterValues(event));
       return result.booleanValue();
     } catch (Exception ex) {
       errorCount++;

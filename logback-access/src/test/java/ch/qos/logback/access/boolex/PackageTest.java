@@ -11,21 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.access;
+package ch.qos.logback.access.boolex;
 
+import junit.framework.TestCase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { ch.qos.logback.access.spi.PackageTest.class,
-    ch.qos.logback.access.boolex.PackageTest.class,
-    ch.qos.logback.access.net.PackageTest.class,
-    ch.qos.logback.access.pattern.PackageTest.class,
-    ch.qos.logback.access.jetty.PackageTest.class,
-    ch.qos.logback.access.filter.PackageTest.class,
-    ch.qos.logback.access.servlet.PackageTest.class,
-    ch.qos.logback.access.sift.PackageTest.class })
-public class AllAccessTest {
-
+@SuiteClasses({JaninoEventEvaluatorTest.class})
+public class PackageTest extends TestCase {
 }

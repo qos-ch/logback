@@ -468,6 +468,53 @@
   </p>
   
   <hr/>
+
+  <!-- ============================================================= -->
+  <p><a name="block" href="#block">As of logback version 0.9.28,
+  JaninoEventEvaluator expects Java blocks.</a>
+  </p>
+
+  <p>As of logback version 0.9.28, JaninoEvaluator expects Java
+  "block", i.e. the body of a method. In previous versions only
+  boolean expressions were allowed. For backward compatibility
+  reasons, whenever logback sees a boolean expression it will attempt
+  to convert it to a block by prefixing the expression with "return"
+  and suffixing it with a semicolon.
+  </p>
+
+  <p>Boolean expressions can quickly become hairy. For example, the
+  following boolean expression is rather difficult to grok.
+</p>
+
+  <pre class="prettyprint source"> !logger.startsWith("org.apache.http")
+  ||
+  ( logger.equals("org.apache.http.wire")  &amp;&amp;
+       (mdc != null &amp;&amp; mdc.get("entity") != null
+         &amp;&amp;
+       ((String) mdc.get("entity")).contains("someSpecialValue"))
+       &amp;&amp;
+     !message.contains("someSecret")
+  )</pre>
+
+  <p>whereas as its Java block equivalent is considerably easier to
+  follow.</p>
+
+<pre class="prettyprint source">if(logger.startsWith("org.apache.http"))
+  return true;
+
+if(mdc == null || mdc.get("entity") == null)
+  return false;
+
+String payee = (String) mdc.get("entity");
+
+if(logger.equals("org.apache.http.wire") &amp;&amp;
+  payee.contains("someSpecialValue") &amp;&amp;
+  !message.contains("someSecret")) {
+  return true;
+}
+
+return false;</pre>
+
   
   <script src="templates/footer.js" type="text/javascript"></script>
   </div>

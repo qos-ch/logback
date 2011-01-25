@@ -28,7 +28,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>January xx, 2011 - Release of version 0.9.28</h3>
+    <h3>January 25th, 2011 - Release of version 0.9.28</h3>
 
     <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
   
@@ -48,6 +48,14 @@
     <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-238">issue
     238</a> reported by Robert Elliot. <code>GEventEvaluator</code>'s
     start method now correctly sets the state of the instance.
+    </p>
+
+    <p><code>JaninoEventEvaluator</code> now expects Java blocks
+    instead of boolean expressions. For even moderately complex
+    logical statements, blocks can be more convenient to read or to
+    write compared with boolean expressions. To ensure backward
+    compatibility, existing boolean expressions are converted into
+    blocks on the fly.
     </p>
 
     <p>Corrected handling of null valued arguments by DBAppender. This

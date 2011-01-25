@@ -366,8 +366,8 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <p>Logback-classic ships with another concrete
     <code>EventEvaluator</code> implementation called <a
     href="../xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>
-    taking arbitrary Java language boolean expressions as the
-    evaluation criteria. We refer to such Java language boolean
+    taking an arbitrary Java language block returning a boolean value
+    as the evaluation criteria. We refer to such Java language boolean
     expressions as "<em>evaluation expressions</em>". Evaluation
     expressions enable great flexibility in event
     filtering. <code>JaninoEventEvaluator</code> requires the <a
@@ -534,7 +534,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
       &lt;evaluator> &lt;!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
-        &lt;expression><span class="green">message.contains("billing")</span>&lt;/expression>
+        &lt;expression><span class="green">return message.contains("billing");</span>&lt;/expression>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
       &lt;OnMatch>DENY&lt;/OnMatch>
@@ -565,7 +565,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
     <p>The <em>expression</em> element corresponds to the evaluation
     expression just discussed. The expression
-    <code>message.contains("billing")</code> returns a boolean
+    <code>return message.contains("billing");</code> returns a boolean
     value. Notice that the <em>message</em> variable is exported
     automatically by <code>JaninoEventEvaluator</code>.
     </p>
@@ -621,6 +621,31 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
 		
+
+    <p>Evaluation expressions can be Java blocks. For example, the
+    following is a valid expression.</p>
+
+    <pre class="prettyprint source">&lt;evaluator>
+  &lt;expression>
+    if(logger.startsWith("org.apache.http"))
+      return true;
+
+    if(mdc == null || mdc.get("entity") == null)
+      return false;
+
+    String payee = (String) mdc.get("entity");
+
+    if(logger.equals("org.apache.http.wire") &amp;amp;&amp;amp; &lt;!-- &amp; encoded as &amp;amp; -->
+        payee.contains("someSpecialValue") &amp;amp;&amp;amp;
+        !message.contains("someSecret")) {
+      return true;
+    }
+
+    return false;
+  &lt;/expression>
+&lt;/evaluator></pre>
+
+
  	  <h2><a name="matcher" href="#matcher">Matchers</a></h2>
 
     <p>While it is possible to do pattern matching by invoking the <a
@@ -1085,16 +1110,16 @@ logger.debug("Hello {}.", name1);</pre>
     can implement your own event evaluation logic by sub-classing
     <code>EventEvaluator</code>. Logback-access ships with a concrete
     implementation named <a
-    href="../xref/ch/qos/logback/access/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>. 
-    It takes  arbitrary Java language boolean expressions as the
-    evaluation criteria. We refer to such Java language boolean
-    expressions as "<em>evaluation expressions</em>". Evaluation
-    expressions enable great flexibility in event
+    href="../xref/ch/qos/logback/access/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>.
+    It takes arbitrary Java language boolean expressions as the
+    evaluation criteria. We refer to such Java language blocks as
+    "<em>evaluation expresisons</em>". Evaluation expressions enable
+    great flexibility in event
     filtering. <code>JaninoEventEvaluator</code> requires the <a
     href="http://docs.codehaus.org/display/JANINO/Home">Janino
     library</a>. Please see the <a
     href="../setup.html#janino">corresponding section</a> of the setup
-    document.  
+    document.
     </p>
 
     <p>Evaluation expressions are compiled on-the-fly during the

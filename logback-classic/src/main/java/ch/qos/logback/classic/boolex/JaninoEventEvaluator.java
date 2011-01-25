@@ -78,7 +78,14 @@ public class JaninoEventEvaluator extends
   }
 
   protected String getDecoratedExpression() {
-    return IMPORT_LEVEL + getExpression();
+    String expression = getExpression();
+    if(!expression.contains("return")) {
+      expression = "return "+expression +";";
+      addInfo("Adding [return] prefix and a semicolon suffix. Expression becomes ["+expression+"]");
+      addInfo("See also "+CoreConstants.CODES_URL+"#block");
+
+    }
+    return IMPORT_LEVEL + expression;
   }
 
   protected String[] getParameterNames() {
