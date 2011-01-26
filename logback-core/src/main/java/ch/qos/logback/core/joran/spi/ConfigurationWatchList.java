@@ -68,7 +68,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
       File file = new File(URLDecoder.decode(url.getFile()));
       return file;
     } else {
-      addError("URL [" + url + "] is not of type file");
+      addInfo("URL [" + url + "] is not of type file");
       return null;
     }
   }
