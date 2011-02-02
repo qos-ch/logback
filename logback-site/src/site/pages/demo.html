@@ -28,13 +28,13 @@
     <h3>Installation</h3>
 
     <p> First, please download the logback demo. You will need to
-    install a <a href="http://subversion.tigris.org/">Subversion</a>
+    install a <a href="http://git-scm.com/">git</a>
     client and issue the following command on a console:
     </p>
   
-    <p class="source">svn co http://svn.qos.ch/repos/logback-demo/tags/STABLE logback-demo</p>
+    <p class="source">git clone http://git.qos.ch/logback-demo/ logback-demo</p>
 
-    <p>This will checkout a copy of the logback demonstration
+    <p>This will retreive a copy of the logback demonstration
     web-application to a directory called <em>logback-demo</em>. The
     logback demo can be packaged as a <em>war</em> file and deployed
     to an application server. We strongly recommend the use of <a
@@ -48,27 +48,28 @@
     command:
     </p>
 
-  <div class="source"><pre>mvn package jetty:run</pre></div>
+    <div class="source"><pre>mvn package jetty:run</pre></div>
     
-  <p>Then, visit <a
-  href="http://localhost:8080/logback-demo/">http://localhost:8080/logback-demo/</a>
-  to view the main page of the logback demo.
-  </p>
+    <p>Then, visit <a
+    href="http://localhost:8080/logback-demo/">http://localhost:8080/logback-demo/</a>
+    to view the main page of the logback demo.
+    </p>
 
-  <h3>Logback-classic</h3>
+    <h3>Logback-classic</h3>
 
-  <p>By default (or as packaged), logback-demo configures
-  logback-classic with two appenders: a <code>ConsoleAppender</code>
-  and a <code>RollingFileAppender</code>. The
-  <code>RollingFileAppender</code> sends logging events to a file
-  called <em>logFile.log</em> and will rollover the active file every
-  minute. The old file will be renamed and compressed to a <em>zip</em>
-  file. The <code>ConsoleAppender</code> will output the logging
-  requests to the console, and shorten the logger names to gain space
-  on the console window, without loss of legibility. For example,
-  <code>ch.qos.logback.demo.prime.NumberCruncherImpl </code> will be
-  abbreviated as <code>c.q.l.d.prime.NumberCruncherImpl</code>.
-  </p>
+    <p>By default (or as packaged), logback-demo configures
+    logback-classic with two appenders: a <code>ConsoleAppender</code>
+    and a <code>RollingFileAppender</code>. The
+    <code>RollingFileAppender</code> sends logging events to a file
+    called <em>logFile.log</em> and will rollover the active file
+    every minute. The old file will be renamed and compressed to a
+    <em>zip</em> file. The <code>ConsoleAppender</code> will output
+    the logging requests to the console, and shorten the logger names
+    to gain space on the console window, without loss of
+    legibility. For example,
+    <code>ch.qos.logback.demo.prime.NumberCruncherImpl </code> will be
+    abbreviated as <code>c.q.l.d.prime.NumberCruncherImpl</code>.
+    </p>
 
   <p>We highly encourage you to study the <em>logback.xml</em>
   configuration file located under the <em>src/main/resources/</em>
