@@ -1,0 +1,16 @@
+
+<configuration>
+
+  <if condition='property("HOSTNAME") != null'>
+    <then>
+      <root level="ERROR"/>
+    </then>
+    <else>
+      <root level="INFO"/>
+    </else>
+  </if>
+
+  <root level="WARN"/>
+
+
+</configuration>

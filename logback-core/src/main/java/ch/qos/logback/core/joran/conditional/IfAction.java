@@ -3,6 +3,7 @@ package ch.qos.logback.core.joran.conditional;
 import java.util.List;
 import java.util.Stack;
 
+import ch.qos.logback.core.util.EnvUtil;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
@@ -14,7 +15,8 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class IfAction extends Action {
   private static final String CONDITION_ATTR = "condition";
-  
+
+  public static String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
 
   Stack<IfState> stack = new Stack<IfState>();
   
@@ -30,11 +32,17 @@ public class IfAction extends Action {
       return;
     }
     
-    state.active = true;
     ic.pushObject(this);
-    
+    if(!EnvUtil.isJaninoAvailable()) {
+       addError(MISSING_JANINO_MSG);
+       return;
+     }
+
+    state.active = true;
     Condition condition = null;
     String conditionAttribute = attributes.getValue(CONDITION_ATTR);
+
+
     if (!OptionHelper.isEmpty(conditionAttribute)) {
       conditionAttribute = OptionHelper.substVars(conditionAttribute, context);
       PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder();

@@ -23,7 +23,8 @@
 
 
 
-	<target name="testAll" depends="testWithoutGroovy" unless="maven.test.skip">
+	<target name="testAll" depends="testWithoutGroovy, testConditionalsWithoutJanino" 
+          unless="maven.test.skip">
 	</target>
 
 
@@ -37,5 +38,19 @@
             name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
 		</junit>
 	</target>
+
+
+	<target name="testConditionalsWithoutJanino" unless="maven.test.skip">
+		<junit printsummary="yes" fork="no" haltonfailure="yes">
+			<classpath refid="basicClasspath" />
+			<formatter type="plain" />
+			<test fork="yes" todir="target/unit-reports" 
+            outfile="TEST-NoJanino" 
+            name="ch.qos.logback.classic.boolex.ConditionalWithoutJanino" />
+		</junit>
+	</target>
+
+
+
 
 </project>
