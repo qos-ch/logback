@@ -32,6 +32,9 @@ abstract public class ThenOrElseActionBase extends Action {
   @Override
   public void begin(InterpretationContext ic, String name, Attributes attributes)
       throws ActionException {
+
+    if(!weAreActive(ic)) return;
+
     ThenActionState state = new ThenActionState();
     if (ic.isListenerListEmpty()) {
       ic.addInPlayListener(state);
@@ -40,8 +43,17 @@ abstract public class ThenOrElseActionBase extends Action {
     stateStack.push(state);
   }
 
+  boolean weAreActive(InterpretationContext ic) {
+    Object o = ic.peekObject();
+    if(!(o instanceof IfAction)) return false;
+    IfAction ifAction = (IfAction) o;
+    return ifAction.isActive();
+  }
+
   @Override
   public void end(InterpretationContext ic, String name) throws ActionException {
+    if(!weAreActive(ic)) return;
+
     ThenActionState state = stateStack.pop();
     if (state.isRegistered) {
       ic.removeInPlayListener(state);

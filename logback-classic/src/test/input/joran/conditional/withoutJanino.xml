@@ -1,6 +1,8 @@
 
 <configuration>
 
+  <logger name="a" level="WARN"/>
+
   <if condition='property("HOSTNAME") != null'>
     <then>
       <root level="ERROR"/>
