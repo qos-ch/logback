@@ -46,7 +46,12 @@ public class ConditionalWithoutJanino {
   // assume that janino.jar ia NOT on the classpath
   @Test
   public void condtionalWithoutJanino() throws JoranException {
-    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/withoutJanino.xml");
+    String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/withoutJanino.xml";
+    String currentDir = System.getProperty("user.dir");
+    if(!currentDir.contains("logback-classic")) {
+         configFile =  "logback-classic/"+configFile;
+    }
+    configure(configFile);
     StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.containsMatch(IfAction.MISSING_JANINO_MSG));
