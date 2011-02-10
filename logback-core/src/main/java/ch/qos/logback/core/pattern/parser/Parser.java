@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.pattern.IdentityCompositeConverter;
@@ -43,6 +44,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class Parser<E> extends ContextAwareBase {
 
+  public final static String MISSING_RIGHT_PARENTHESIS = CoreConstants.CODES_URL+"#missingRightParenthesis";
   public final static Map<String, String> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<String, String>();
   public final static String REPLACE_CONVERTER_WORD = "replace";
   static {
@@ -186,18 +188,15 @@ public class Parser<E> extends ContextAwareBase {
     CompositeNode compositeNode = new CompositeNode(keyword);
 
     Node childNode = E();
-    // System.out.println("Child node: " + childNode);
-
     compositeNode.setChildNode(childNode);
 
     Token t = getNextToken();
-    // System.out.println("Next token is" + t);
 
-    if (t.getType() != Token.RIGHT_PARENTHESIS) {
-      throw new IllegalStateException(
-          "Expecting RIGHT_PARENTHESIS token but got " + t);
-    } else {
-      // System.out.println("got expected ')'");
+    if (t == null || t.getType() != Token.RIGHT_PARENTHESIS) {
+        String msg = "Expecting RIGHT_PARENTHESIS token but got " + t;
+        addError(msg);
+        addError("See also "+MISSING_RIGHT_PARENTHESIS);
+        throw new ScanException(msg);
     }
     Token ot = getCurentToken();
     if (ot != null && ot.getType() == Token.OPTION) {

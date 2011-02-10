@@ -41,7 +41,12 @@ class Compiler<E> extends ContextAwareBase {
           break;
         case Node.COMPOSITE_KEYWORD:
           CompositeNode cn = (CompositeNode) n;
-          CompositeConverter<E> compositeConverter = createCompiteConverter(cn);
+          CompositeConverter<E> compositeConverter = createCompositeConverter(cn);
+          if(compositeConverter == null) {
+            addError("Failed to create converter for [%"+cn.getValue()+"] keyword");
+            addToList(new LiteralConverter<E>("%PARSER_ERROR["+cn.getValue()+"]"));
+            break;
+          }
           compositeConverter.setFormattingInfo(cn.getFormatInfo());
           compositeConverter.setOptionList(cn.getOptions());
           Compiler<E> childCompiler = new Compiler<E>(cn.getChildNode(),
@@ -100,7 +105,7 @@ class Compiler<E> extends ContextAwareBase {
                 converterClassStr, DynamicConverter.class, context);
       } catch (Exception e) {
         addError("Failed to instantiate converter class [" + converterClassStr
-                + "]", e);
+                + "] for keyword ["+keyword+"]", e);
         return null;
       }
     } else {
@@ -118,7 +123,7 @@ class Compiler<E> extends ContextAwareBase {
    * @return
    */
   @SuppressWarnings("unchecked")
-  CompositeConverter<E> createCompiteConverter(CompositeNode cn) {
+  CompositeConverter<E> createCompositeConverter(CompositeNode cn) {
     String keyword = (String) cn.getValue();
     String converterClassStr = (String) converterMap.get(keyword);
 
@@ -128,7 +133,7 @@ class Compiler<E> extends ContextAwareBase {
                 converterClassStr, CompositeConverter.class, context);
       } catch (Exception e) {
         addError("Failed to instantiate converter class [" + converterClassStr
-                + "]", e);
+                + "] as a composite converter for keyword ["+keyword+"]", e);
         return null;
       }
     } else {

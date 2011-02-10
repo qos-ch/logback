@@ -130,7 +130,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
   }
 
   public String toString() {
-    return this.getClass().getName() + "(" + getPattern() + ")";
+    return this.getClass().getName() + "(\"" + getPattern() + "\")";
   }
 
   public Map<String, String> getInstanceConverterMap() {

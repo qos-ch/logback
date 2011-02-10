@@ -1263,7 +1263,9 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
     <p>In logback, parentheses within the pattern string are treated
     as grouping tokens. Thus, it is possible to group a sub-pattern
-    and apply formatting directives on that sub-pattern.
+    and apply formatting directives on that sub-pattern. As of version
+    0.9.27, logback supports composite conversion words such as <a
+    href="#replace">%replace</a> which can transform sub-patterns.
     </p>
 
     <p>For example, the pattern</p> 
@@ -1300,18 +1302,12 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     </p>
 
     
-    <p>The latter form is more comfortable to read, especially for
-    long log files.</p>
+    <p>The latter form is more comfortable to read.</p>
     
     <p>If you need to treat the parenthesis character as a literal, it
     needs to be escaped by preceding each parenthesis with a
     backslash. As in, <b>\(</b>%d{HH:mm:ss.SSS}
-    [%thread]<b>\)</b>. Strictly speaking, only the closing parenthesis
-    needs to be escaped. Thus, "<b>(</b>%d&nbsp;[%thread]<b>\)</b>" is
-    equivalent to "<b>\(</b>%d&nbsp;[%thread]<b>\)</b>". But since it
-    is not easy to recall which parenthesis needs escaping and which
-    doesn't, you can escape both so that they are
-    interpreted as literals.
+    [%thread]<b>\)</b>. 
     </p>
 
 		<h2><a name="Evaluators" href="#Evaluators">Evaluators</a></h2>

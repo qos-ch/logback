@@ -14,11 +14,17 @@
 package ch.qos.logback.core.pattern.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.core.pattern.FormatInfo;
@@ -26,6 +32,8 @@ import ch.qos.logback.core.pattern.FormatInfo;
 public class ParserTest {
 
   String BARE = Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString();
+  Context context = new ContextBase();
+
 
   @Test
   public void testBasic() throws Exception {
@@ -135,8 +143,9 @@ public class ParserTest {
       composite.next = new Node(Node.LITERAL, " ");
       composite.next.next = new SimpleKeywordNode("m");
       assertEquals(witness, t);
-
     }
+
+
   }
 
   @Test
@@ -240,20 +249,18 @@ public class ParserTest {
 
   @Test
   public void testCompositeFormatting() throws Exception {
+    Parser p = new Parser("hello%5(XYZ)");
+    Node t = p.parse();
 
-    {
-      Parser p = new Parser("hello%5(XYZ)");
-      Node t = p.parse();
+    Node witness = new Node(Node.LITERAL, "hello");
+    CompositeNode composite = new CompositeNode(BARE);
+    composite.setFormatInfo(new FormatInfo(5, Integer.MAX_VALUE));
+    Node child = new Node(Node.LITERAL, "XYZ");
+    composite.setChildNode(child);
+    witness.next = composite;
 
-      Node witness = new Node(Node.LITERAL, "hello");
-      CompositeNode composite = new CompositeNode(BARE);
-      composite.setFormatInfo(new FormatInfo(5, Integer.MAX_VALUE));
-      Node child = new Node(Node.LITERAL, "XYZ");
-      composite.setChildNode(child);
-      witness.next = composite;
+    assertEquals(witness, t);
 
-      assertEquals(witness, t);
-    }
   }
 
   @Test
@@ -266,4 +273,20 @@ public class ParserTest {
 
     }
   }
+
+  @Test
+  public void lbcore193() throws Exception {
+    try {
+      Parser p = new Parser("hello%(abc");
+      p.setContext(context);
+      Node t = p.parse();
+      fail("where the is exception?");
+    } catch (ScanException ise) {
+      assertEquals("Expecting RIGHT_PARENTHESIS token but got null", ise.getMessage());
+    }
+    StatusChecker sc = new StatusChecker(context);
+    assertTrue(sc.containsMatch("Expecting RIGHT_PARENTHESIS"));
+    assertTrue(sc.containsMatch("See also " + Parser.MISSING_RIGHT_PARENTHESIS));
+  }
+
 }

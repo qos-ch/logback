@@ -1,0 +1,16 @@
+<configuration debug="${log.debug:-false}">
+    <!-- <property resource="configuration.properties"/> -->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+             <!-- <pattern>%date %level [%thread] %logger(%file:%line\\) - %msg%n</pattern>     -->
+            <pattern>%date %level [%thread] %logger(%file:%line\)</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="scratch" level="${log.level:-INFO}"/>
+
+    <root level="${log-all.level:-DEBUG}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
+import ch.qos.logback.core.pattern.parser.Parser;
+import ch.qos.logback.core.pattern.parser.ScanException;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,6 +51,7 @@ public class JoranConfiguratorTest {
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+  StatusChecker sc = new StatusChecker(loggerContext);
 
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
@@ -85,7 +89,7 @@ public class JoranConfiguratorTest {
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "additivity.xml");
     Logger logger = loggerContext.getLogger("additivityTest");
     assertFalse(logger.isAdditive());
-   }
+  }
 
   @Test
   public void rootLoggerLevelSettingBySystemProperty() throws JoranException {
@@ -389,6 +393,17 @@ public class JoranConfiguratorTest {
 
     loggerContext.reset();
     configure(configFileAsStr);
+  }
+
+  @Test
+  public void lbcore193() throws JoranException {
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+            + "lbcore193.xml";
+    configure(configFileAsStr);
+    StatusPrinter.print(loggerContext);
+    sc.containsException(ScanException.class);
+    sc.containsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
+    sc.containsMatch(Status.ERROR, "See also "+ Parser.MISSING_RIGHT_PARENTHESIS);
   }
 
 }

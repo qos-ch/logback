@@ -397,8 +397,8 @@
   &lt;/encoder>
 &lt;/appender></pre>
 
-   <p>For <code>FixedWindowRollingPolicy</code>, the file option is
-   mandatory.
+   <p>Note that for <code>FixedWindowRollingPolicy</code>, the <span
+   class="option">file</span> property is mandatory.
    </p>
  
   
@@ -515,6 +515,22 @@ if(logger.equals("org.apache.http.wire") &amp;&amp;
 
 return false;</pre>
 
+   <p>
+   </p>
+   <hr/>
+   <!-- ============================================================= -->
+   <p><a name="missingRightParenthesis"
+   href="#missingRightParenthesis">In a conversion pattern, opened
+   parenthesis must be closed.</a>
+   </p>
+   
+   <p>In conversion patterns, <a
+   href="manual/layouts.html#Parentheses">parentheses are special</a>
+   because they are treated as grouping tokens. If a parenthesis
+   character needs to be viewed as a literal, it needs to be escaped
+   by preceding each parenthesis with a backslash. As in,
+   <b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\) </b>.
+   </p>
   
   <script src="templates/footer.js" type="text/javascript"></script>
   </div>

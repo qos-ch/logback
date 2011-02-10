@@ -32,7 +32,7 @@ public class ConfigurationAction extends Action {
   boolean debugMode = false;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
+    String debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
 
     if (OptionHelper.isEmpty(debugAttrib)
         || debugAttrib.equalsIgnoreCase("false")
