@@ -24,77 +24,72 @@ trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"
   final val SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS)
   private[rolling] var context: Context = new ContextBase
-  private[rolling] var diff: Int = RandomUtil.getPositiveInt
-  protected var currentTime: Long = 0L
-  protected var randomOutputDir: String = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/"
-  private[rolling] var cal: Calendar = Calendar.getInstance
-  protected var nextRolloverThreshold: Long = 0;
+  private[rolling] var diff = RandomUtil.getPositiveInt
+  protected var currentTime = 0L
+  protected var randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/"
+  private[rolling] var cal = Calendar.getInstance
+  protected var nextRolloverThreshold = 0L;
   protected var expectedFilenameList: List[String] = Nil
 
   val FILE_OPTION_SET = true
   val FILE_OPTION_BLANK = false
 
 
-  def setUpScaffolding: Unit = {
+  def setUpScaffolding {
     context.setName("test")
     cal.set(Calendar.MILLISECOND, 333)
     currentTime = cal.getTimeInMillis
-    nextRolloverThreshold = recomputeRolloverThreshold(currentTime)
+    recomputeRolloverThreshold()
   }
 
-  protected def incCurrentTime(increment: Long): Unit = {
+  protected def incCurrentTime(increment: Long) {
     currentTime += increment
   }
 
-  protected def getDateOfCurrentPeriodsStart: Date = {
-    var delta: Long = currentTime % 1000
-    return new Date(currentTime - delta)
+  protected def getDateOfCurrentPeriodsStart = {
+    val delta: Long = currentTime % 1000
+    new Date(currentTime - delta)
   }
 
-  protected def addExpectedFileName_ByDate(outputDir: String, testId: String, date: Date, gzExtension: Boolean): Unit = {
+  protected def addExpectedFileName_ByDate(outputDir: String, testId: String, date: Date, gzExtension: Boolean) {
     var fn: String = outputDir + testId + "-" + SDF.format(date)
     if (gzExtension) {
       fn += ".gz"
     }
     expectedFilenameList += fn
-
   }
 
-  protected def addExpectedFileNamedIfItsTime_ByDate(outputDir: String, testId: String, gzExtension: Boolean): Unit = {
+  protected def addExpectedFileNamedIfItsTime_ByDate(outputDir: String, testId: String, gzExtension: Boolean) {
     if (passThresholdTime(nextRolloverThreshold)) {
       addExpectedFileName_ByDate(outputDir, testId, getDateOfCurrentPeriodsStart, gzExtension)
-      nextRolloverThreshold = recomputeRolloverThreshold(currentTime)
+      recomputeRolloverThreshold()
     }
   }
 
-  protected def passThresholdTime(nextRolloverThreshold: Long): Boolean = {
-    return currentTime >= nextRolloverThreshold
+  protected def passThresholdTime(nextRolloverThreshold: Long) = currentTime >= nextRolloverThreshold
+
+  protected def recomputeRolloverThreshold() {
+    val delta = currentTime % 1000
+    nextRolloverThreshold = (currentTime - delta) + 1000
   }
 
-  protected def recomputeRolloverThreshold(ct: Long): Long = {
-    var delta: Long = ct % 1000
-    (ct - delta) + 1000
-  }
-
-  private[rolling] def addGZIfNotLast(i: Int, suff: String): String = {
-    var lastIndex: Int = expectedFilenameList.size - 1
+  private[rolling] def addGZIfNotLast(i: Int, suff: String) = {
+    val lastIndex = expectedFilenameList.size - 1
     if (i != lastIndex) suff else ""
   }
 
-  private[rolling] def waitForCompression(tbrp: TimeBasedRollingPolicy[AnyRef]): Unit = {
+  private[rolling] def waitForCompression(tbrp: TimeBasedRollingPolicy[AnyRef]) {
     if (tbrp.future != null && !tbrp.future.isDone) {
       tbrp.future.get(200, TimeUnit.MILLISECONDS)
     }
   }
 
-  private[rolling] def testId2FileName(testId: String): String = {
-    return randomOutputDir + testId + ".log"
-  }
+  private[rolling] def testId2FileName(testId: String) = randomOutputDir + testId + ".log"
 
   // =========================================================================
   // utility methods
   // =========================================================================
-  private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String): Unit = {
+  private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String) {
     expectedFilenameList = expectedFilenameList.dropRight(1)
     expectedFilenameList +=  (randomOutputDir + file)
   }

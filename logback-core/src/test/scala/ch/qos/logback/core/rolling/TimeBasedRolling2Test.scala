@@ -23,19 +23,19 @@ import ch.qos.logback.core.testUtil.Env
 
 class TimeBasedRolling2Test extends RollingScaffolding {
 
-  private[rolling] var rfa1: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
-  private[rolling] var tbrp1: TimeBasedRollingPolicy[AnyRef] = new TimeBasedRollingPolicy[AnyRef]
-  private[rolling] var rfa2: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
-  private[rolling] var tbrp2: TimeBasedRollingPolicy[AnyRef] = new TimeBasedRollingPolicy[AnyRef]
+  private[rolling] val rfa1 = new RollingFileAppender[AnyRef]
+  private[rolling] val tbrp1 = new TimeBasedRollingPolicy[AnyRef]
+  private[rolling] val rfa2 = new RollingFileAppender[AnyRef]
+  private[rolling] val tbrp2 = new TimeBasedRollingPolicy[AnyRef]
 
-  private[rolling] var encoder: EchoEncoder[AnyRef] = new EchoEncoder[AnyRef]
+  private[rolling] val encoder = new EchoEncoder[AnyRef]
 
   @Before
-  def setUp: Unit = {
+  def setUp {
     setUpScaffolding
   }
 
-  private[rolling] def initRFA(rfa: RollingFileAppender[AnyRef], filename: String): Unit = {
+  private[rolling] def initRFA(rfa: RollingFileAppender[AnyRef], filename: String) {
     rfa.setContext(context)
     rfa.setEncoder(encoder)
     if (filename != null) {
@@ -43,7 +43,7 @@ class TimeBasedRolling2Test extends RollingScaffolding {
     }
   }
 
-  private[rolling] def initTRBP(rfa: RollingFileAppender[AnyRef], tbrp: TimeBasedRollingPolicy[AnyRef], filenamePattern: String, givenTime: Long): Unit = {
+  private[rolling] def initTRBP(rfa: RollingFileAppender[AnyRef], tbrp: TimeBasedRollingPolicy[AnyRef], filenamePattern: String, givenTime: Long) {
     tbrp.setContext(context)
     tbrp.setFileNamePattern(filenamePattern)
     tbrp.setParent(rfa)
@@ -55,7 +55,7 @@ class TimeBasedRolling2Test extends RollingScaffolding {
   }
 
   type CheckFunction = ((String, Boolean, String) => Unit)
-  def genericTest(checkFunction: CheckFunction)(testId: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int): Unit = {
+  def genericTest(checkFunction: CheckFunction)(testId: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int) {
     val withCompression = compressionSuffix.length > 0
     val fileName = if (fileOptionIsSet) testId2FileName(testId) else null;
     initRFA(rfa1, fileName);
@@ -93,7 +93,7 @@ class TimeBasedRolling2Test extends RollingScaffolding {
   // defaultTest uses the defaultCheck function
   val defaultTest = genericTest(defaultCheck)_
 
-  def defaultCheck(testId: String, withCompression: Boolean, compressionSuffix:String) = {
+  def defaultCheck(testId: String, withCompression: Boolean, compressionSuffix:String) {
     var i = 0;
     for (fn <- expectedFilenameList) {
       val suffix: String = if (withCompression) addGZIfNotLast(i, compressionSuffix) else ""
@@ -103,15 +103,12 @@ class TimeBasedRolling2Test extends RollingScaffolding {
     }
   }
 
-  def zCheck(testId: String, withCompression: Boolean, compressionSuffix:String) = {
+  def zCheck(testId: String, withCompression: Boolean, compressionSuffix:String) {
     val lastFile = expectedFilenameList.last
     val witnessFileName: String = CoreTestConstants.TEST_DIR_PREFIX + "witness/rolling/tbr-" + testId
     println(lastFile+"  "+witnessFileName)
     assertTrue(Compare.compare(lastFile, witnessFileName));
-
   }
-
-
 
   def doRestart(testId: String, fileOptionIsSet: Boolean, waitDuration: Int) {
     // change the timestamp of the currently actively file
@@ -136,32 +133,32 @@ class TimeBasedRolling2Test extends RollingScaffolding {
   val WITH_RESTART_AND_LONG_WAIT = 2000
 
   @Test
-  def noCompression_FileBlank_NoRestart_1 = {
+  def noCompression_FileBlank_NoRestart_1 {
     defaultTest("test1", "", FILE_OPTION_BLANK, NO_RESTART)
   }
 
   @Test
-  def withCompression_FileBlank_NoRestart_2 = {
+  def withCompression_FileBlank_NoRestart_2 {
     defaultTest("test2", ".gz", FILE_OPTION_BLANK, NO_RESTART);
   }
 
   @Test
-  def noCompression_FileBlank_StopRestart_3 = {
+  def noCompression_FileBlank_StopRestart_3 {
     defaultTest("test3", "", FILE_OPTION_BLANK, WITH_RESTART);
   }
 
   @Test
-  def noCompression_FileSet_StopRestart_4 = {
+  def noCompression_FileSet_StopRestart_4 {
     defaultTest("test4", "", FILE_OPTION_SET, WITH_RESTART);
   }
 
   @Test
-  def noCompression_FileSet_StopRestart_WithLongWait_4B = {
+  def noCompression_FileSet_StopRestart_WithLongWait_4B {
     defaultTest("test4B", "", FILE_OPTION_SET, WITH_RESTART_AND_LONG_WAIT);
   }
 
   @Test
-  def noCompression_FileSet_NoRestart_5 = {
+  def noCompression_FileSet_NoRestart_5 {
     defaultTest("test5", "", FILE_OPTION_SET, NO_RESTART);
   }
 
@@ -171,15 +168,15 @@ class TimeBasedRolling2Test extends RollingScaffolding {
   }
 
   @Test
-  def withMissingTargetDir = {
+  def withMissingTargetDir {
     defaultTest("missingTargetDir", "", FILE_OPTION_SET, NO_RESTART);
   }
 
 
   @Test
-  def failed_rename: Unit = {
+  def failed_rename {
 
-    if(!Env.isWindows) return null
+    if(!Env.isWindows) return
 
     var fos: FileOutputStream = null
     try {
