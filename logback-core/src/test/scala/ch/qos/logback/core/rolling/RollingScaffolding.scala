@@ -13,12 +13,18 @@
  */
 package ch.qos.logback.core.rolling
 
-import ch.qos.logback.core.{ContextBase, Context}
-import ch.qos.logback.core.util.CoreTestConstants
-import ch.qos.logback.core.testUtil.RandomUtil
-import java.util.{Date, Calendar}
+import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
+
 import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
+import java.io.File
+import java.util.{ArrayList, Date, Calendar}
+
+import ch.qos.logback.core.{ContextBase, Context}
+import ch.qos.logback.core.util.CoreTestConstants
+import ch.qos.logback.core.testUtil.{FileToBufferUtil, RandomUtil}
+import helper.FileFilterUtil
 
 trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"
@@ -91,7 +97,33 @@ trait RollingScaffolding {
   // =========================================================================
   private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String) {
     expectedFilenameList = expectedFilenameList.dropRight(1)
-    expectedFilenameList +=  (randomOutputDir + file)
+    expectedFilenameList += (randomOutputDir + file)
   }
 
+  def getFilesInDirectory(outputDirStr: String) = new File(outputDirStr).listFiles
+
+  def fileContentCheck(fileArray: Array[File], runLength: Int, prefix: String) {
+    val stringList = new ArrayList[String]
+    for (file <- fileArray) {
+      FileToBufferUtil.readIntoList(file, stringList)
+    }
+    val witnessList = new ArrayList[String]
+
+    for (i <- 0 to runLength - 1) {
+      witnessList.add(prefix + i)
+    }
+    assertEquals(witnessList, stringList)
+  }
+
+  def reverseSortedContentCheck(outputDirStr: String, runLength: Int, prefix: String): Unit = {
+    val fileArray = getFilesInDirectory(outputDirStr)
+    FileFilterUtil.reverseSortFileArrayByName(fileArray)
+    fileContentCheck(fileArray, runLength, prefix)
+  }
+
+  def existenceCheck(filenameList: List[String]) {
+    for (filename <- filenameList) {
+      assertTrue("File " + filename + " does not exist", new File(filename).exists)
+    }
+  }
 }
