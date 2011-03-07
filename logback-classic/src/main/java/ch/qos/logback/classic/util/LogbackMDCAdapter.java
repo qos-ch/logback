@@ -44,7 +44,20 @@ public class LogbackMDCAdapter implements MDCAdapter {
   // method, the maps diverge as they should.
   final InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = new InheritableThreadLocal<HashMap<String, String>>();
 
+  private static final int WRITE_OPERATION = 1;
+  private static final int READ_OPERATION = 2;
+
+  final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
+
+
+
   public LogbackMDCAdapter() {
+  }
+
+  private Integer getAndSetLastOperation(int op) {
+    Integer lastOp = lastOperation.get();
+    lastOperation.set(WRITE_OPERATION);
+    return lastOp;
   }
 
   /**
@@ -70,14 +83,19 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
 
     HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
+    Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
-    HashMap<String, String> newMap = new HashMap<String, String>();
-    if (oldMap != null) {
-      newMap.putAll(oldMap);
+    if(lastOp == null || lastOp.intValue() == READ_OPERATION) {
+      HashMap<String, String> newMap = new HashMap<String, String>();
+      if (oldMap != null) {
+        newMap.putAll(oldMap);
+      }
+      // the newMap replaces the old one for serialisation's sake
+      copyOnInheritThreadLocal.set(newMap);
+      newMap.put(key, val);
+    } else {
+      oldMap.put(key, val);
     }
-    // the newMap replaces the old one for serialisation's sake
-    copyOnInheritThreadLocal.set(newMap);
-    newMap.put(key, val);
   }
 
   /**
@@ -96,6 +114,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
   }
 
+
   /**
    * Remove the the context identified by the <code>key</code> parameter.
    * <p/>
@@ -110,14 +129,19 @@ public class LogbackMDCAdapter implements MDCAdapter {
       return;
     }
     HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
+    if(oldMap == null) return;
 
-    HashMap<String, String> newMap = new HashMap<String, String>();
-    if (oldMap != null) {
+    Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
+
+    if(lastOp == null || lastOp.intValue() == READ_OPERATION) {
+      HashMap<String, String> newMap = new HashMap<String, String>();
       newMap.putAll(oldMap);
+      // the newMap replaces the old one for serialisation's sake
+      copyOnInheritThreadLocal.set(newMap);
+      newMap.remove(key);
+    } else {
+      oldMap.remove(key);
     }
-    // the newMap replaces the old one for serialisation's sake
-    copyOnInheritThreadLocal.set(newMap);
-    newMap.remove(key);
   }
 
   /**
@@ -125,11 +149,8 @@ public class LogbackMDCAdapter implements MDCAdapter {
    */
   public void clear() {
     HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
-
-    if (hashMap != null) {
-      hashMap.clear();
-      copyOnInheritThreadLocal.remove();
-    }
+    Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
+    copyOnInheritThreadLocal.remove();
   }
 
   /**
@@ -137,6 +158,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * internally.
    */
   public Map<String, String> getPropertyMap() {
+    lastOperation.set(READ_OPERATION);
     return copyOnInheritThreadLocal.get();
   }
 
@@ -158,6 +180,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * null.
    */
   public Set<String> getKeys() {
+    lastOperation.set(READ_OPERATION);
     HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
 
     if (hashMap != null) {

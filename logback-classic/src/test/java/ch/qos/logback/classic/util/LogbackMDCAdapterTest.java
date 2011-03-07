@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -31,6 +32,7 @@ public class LogbackMDCAdapterTest {
   final static String B_SUFFIX = "B_SUFFIX";
 
   int diff = RandomUtil.getPositiveInt();
+
 
   /**
    * Test that CopyOnInheritThreadLocal does not barf when the
@@ -92,29 +94,30 @@ public class LogbackMDCAdapterTest {
    */
   @Test
   public void copyOnInheritenceTest() throws InterruptedException {
-    String mdcKey = "x" + diff;
-    String otherMDCKey = "o" + diff;
-    MDC.put(mdcKey, mdcKey + A_SUFFIX);
+    CountDownLatch countDownLatch = new CountDownLatch(1);
+    String firstKey = "x" + diff;
+    String secondKey = "o" + diff;
+    MDC.put(firstKey, firstKey + A_SUFFIX);
 
-
-    ChildThreadForMDC childThread = new ChildThreadForMDC(mdcKey, otherMDCKey);
+    ChildThreadForMDC childThread = new ChildThreadForMDC(firstKey, secondKey, countDownLatch);
     childThread.start();
-    MDC.put(mdcKey, mdcKey + B_SUFFIX);
+    countDownLatch.await();
+    MDC.put(firstKey, firstKey + B_SUFFIX);
     childThread.join();
 
-    assertNull(MDC.get(otherMDCKey));
+    assertNull(MDC.get(secondKey));
     assertTrue(childThread.successul);
 
     HashMap<String, String> parentHM = getHashMapFromMDC();
     assertTrue(parentHM != childThread.childHM);
 
     HashMap<String, String> parentHMWitness = new  HashMap<String, String>();
-    parentHMWitness.put(mdcKey, mdcKey + B_SUFFIX);
+    parentHMWitness.put(firstKey, firstKey + B_SUFFIX);
     assertEquals(parentHMWitness, parentHM);
 
     HashMap<String, String> childHMWitness = new  HashMap<String, String>();
-    childHMWitness.put(mdcKey, mdcKey + A_SUFFIX);
-    childHMWitness.put(otherMDCKey, otherMDCKey + A_SUFFIX);
+    childHMWitness.put(firstKey, firstKey + A_SUFFIX);
+    childHMWitness.put(secondKey, secondKey + A_SUFFIX);
     assertEquals(childHMWitness, childThread.childHM);
 
   }
@@ -122,22 +125,25 @@ public class LogbackMDCAdapterTest {
 
   class ChildThreadForMDC extends Thread {
 
-    String mdcKey;
-    String otherMDCKey;
+    String firstKey;
+    String secondKey;
     boolean successul;
     HashMap<String, String> childHM;
+    CountDownLatch countDownLatch;
 
-    ChildThreadForMDC(String mdcKey, String otherMDCKey) {
-      this.mdcKey = mdcKey;
-      this.otherMDCKey = otherMDCKey;
+    ChildThreadForMDC(String firstKey, String secondKey, CountDownLatch countDownLatch) {
+      this.firstKey = firstKey;
+      this.secondKey = secondKey;
+      this.countDownLatch = countDownLatch;
     }
 
     @Override
     public void run() {
-      MDC.put(otherMDCKey, otherMDCKey + A_SUFFIX);
-      assertNotNull(MDC.get(mdcKey));
-      assertEquals(mdcKey + A_SUFFIX, MDC.get(mdcKey));
-      assertEquals(otherMDCKey + A_SUFFIX, MDC.get(otherMDCKey));
+      MDC.put(secondKey, secondKey + A_SUFFIX);
+      assertNotNull(MDC.get(firstKey));
+      assertEquals(firstKey + A_SUFFIX, MDC.get(firstKey));
+      countDownLatch.countDown();
+      assertEquals(secondKey + A_SUFFIX, MDC.get(secondKey));
       successul = true;
       childHM = getHashMapFromMDC();
     }
