@@ -436,10 +436,19 @@ public interface Logger {
 		
 		<p>Here is an example of the basic selection rule.</p>
 
-		<pre class="prettyprint source">// get a logger instance named "com.foo"
-Logger logger = LoggerFactory.getLogger("com.foo");
-//set its Level to <span class="blue">INFO</span>
+		<pre class="prettyprint source">import ch.qos.logback.classic.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+....
+
+// get a logger instance named "com.foo". Let us further assume that the
+// logger is of type  ch.qos.logback.classic.Logger so that we can
+// set its level
+ch.qos.logback.classic.Logger logger = 
+        (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
+//set its Level to <span class="blue">INFO</span>. The setLevel() method requires a logback logger
 logger.setLevel(Level. <span class="blue">INFO</span>);
+
 Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
 
 // This request is enabled, because <span class="green bold">WARN</span> &gt;= <span class="blue">INFO</span>
