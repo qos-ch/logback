@@ -85,7 +85,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
-    if(lastOp == null || lastOp.intValue() == READ_OPERATION) {
+    if(lastOp == null || lastOp.intValue() == READ_OPERATION || oldMap ==  null) {
       HashMap<String, String> newMap = new HashMap<String, String>();
       if (oldMap != null) {
         newMap.putAll(oldMap);

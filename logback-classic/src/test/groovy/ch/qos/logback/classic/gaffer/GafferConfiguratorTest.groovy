@@ -157,14 +157,4 @@ class GafferConfiguratorTest {
     assertTrue ca.isStarted()
     assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
   }
-
-  @Test
-  void p() {
-    context.putProperty("p", "HELLO");
-      File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "x.groovy")
-      String dslText = file.text
-      configurator.run dslText
-      StatusPrinter.print(context)
-
-  }
 }
