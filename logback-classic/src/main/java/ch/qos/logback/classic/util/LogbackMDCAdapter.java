@@ -35,7 +35,7 @@ import org.slf4j.spi.MDCAdapter;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class LogbackMDCAdapter implements MDCAdapter {
+public final class LogbackMDCAdapter implements MDCAdapter {
 
 
   // We no longer use CopyOnInheritThreadLocal in order to solve LBCLASSIC-183
@@ -47,17 +47,29 @@ public class LogbackMDCAdapter implements MDCAdapter {
   private static final int WRITE_OPERATION = 1;
   private static final int READ_OPERATION = 2;
 
+  // keeps track of the last operation performed
   final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
-
-
 
   public LogbackMDCAdapter() {
   }
 
   private Integer getAndSetLastOperation(int op) {
     Integer lastOp = lastOperation.get();
-    lastOperation.set(WRITE_OPERATION);
+    lastOperation.set(op);
     return lastOp;
+  }
+
+  private boolean wasLastOpReadOrNull(Integer lastOp) {
+    return lastOp == null || lastOp.intValue() == READ_OPERATION;
+  }
+
+  private HashMap<String, String> duplicateAndInsertNewMap(HashMap<String, String> oldMap) {
+    HashMap<String, String> newMap = new HashMap<String, String>();
+    if (oldMap != null)
+      newMap.putAll(oldMap);
+    // the newMap replaces the old one for serialisation's sake
+    copyOnInheritThreadLocal.set(newMap);
+    return newMap;
   }
 
   /**
@@ -68,12 +80,6 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * <p/>
    * If the current thread does not have a context map it is created as a side
    * effect of this call.
-   * <p/>
-   * <p/>
-   * Each time a value is added, a new instance of the map is created. This is
-   * to be certain that the serialization process will operate on the updated
-   * map and not send a reference to the old map, thus not allowing the remote
-   * logback component to see the latest changes.
    *
    * @throws IllegalArgumentException in case the "key" parameter is null
    */
@@ -85,13 +91,8 @@ public class LogbackMDCAdapter implements MDCAdapter {
     HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
-    if(lastOp == null || lastOp.intValue() == READ_OPERATION || oldMap ==  null) {
-      HashMap<String, String> newMap = new HashMap<String, String>();
-      if (oldMap != null) {
-        newMap.putAll(oldMap);
-      }
-      // the newMap replaces the old one for serialisation's sake
-      copyOnInheritThreadLocal.set(newMap);
+    if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
+      HashMap<String, String> newMap = duplicateAndInsertNewMap(oldMap);
       newMap.put(key, val);
     } else {
       oldMap.put(key, val);
@@ -99,58 +100,46 @@ public class LogbackMDCAdapter implements MDCAdapter {
   }
 
   /**
-   * Get the context identified by the <code>key</code> parameter.
-   * <p/>
-   * <p/>
-   * This method has no side effects.
-   */
-  public String get(String key) {
-    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
-
-    if ((hashMap != null) && (key != null)) {
-      return hashMap.get(key);
-    } else {
-      return null;
-    }
-  }
-
-
-  /**
    * Remove the the context identified by the <code>key</code> parameter.
    * <p/>
-   * <p/>
-   * Each time a value is removed, a new instance of the map is created. This is
-   * to be certain that the serialization process will operate on the updated
-   * map and not send a reference to the old map, thus not allowing the remote
-   * logback component to see the latest changes.
    */
   public void remove(String key) {
     if (key == null) {
       return;
     }
     HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
-    if(oldMap == null) return;
+    if (oldMap == null) return;
 
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
-    if(lastOp == null || lastOp.intValue() == READ_OPERATION) {
-      HashMap<String, String> newMap = new HashMap<String, String>();
-      newMap.putAll(oldMap);
-      // the newMap replaces the old one for serialisation's sake
-      copyOnInheritThreadLocal.set(newMap);
+    if (wasLastOpReadOrNull(lastOp)) {
+      HashMap<String, String> newMap = duplicateAndInsertNewMap(oldMap);
       newMap.remove(key);
     } else {
       oldMap.remove(key);
     }
   }
 
+
   /**
    * Clear all entries in the MDC.
    */
   public void clear() {
-    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
-    Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
+    lastOperation.set(WRITE_OPERATION);
     copyOnInheritThreadLocal.remove();
+  }
+
+  /**
+   * Get the context identified by the <code>key</code> parameter.
+   * <p/>
+   */
+  public String get(String key) {
+    Map<String, String> map = getPropertyMap();
+    if ((map != null) && (key != null)) {
+      return map.get(key);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -160,6 +149,20 @@ public class LogbackMDCAdapter implements MDCAdapter {
   public Map<String, String> getPropertyMap() {
     lastOperation.set(READ_OPERATION);
     return copyOnInheritThreadLocal.get();
+  }
+
+  /**
+   * Returns the keys in the MDC as a {@link Set}. The returned value can be
+   * null.
+   */
+  public Set<String> getKeys() {
+    Map<String, String> map = getPropertyMap();
+
+    if (map != null) {
+      return map.keySet();
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -175,35 +178,14 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
   }
 
-  /**
-   * Returns the keys in the MDC as a {@link Set}. The returned value can be
-   * null.
-   */
-  public Set<String> getKeys() {
-    lastOperation.set(READ_OPERATION);
-    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
-
-    if (hashMap != null) {
-      return hashMap.keySet();
-    } else {
-      return null;
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public void setContextMap(Map contextMap) {
-    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
+    lastOperation.set(WRITE_OPERATION);
 
     HashMap<String, String> newMap = new HashMap<String, String>();
     newMap.putAll(contextMap);
 
     // the newMap replaces the old one for serialisation's sake
     copyOnInheritThreadLocal.set(newMap);
-
-    // hints for the garbage collector
-    if (oldMap != null) {
-      oldMap.clear();
-      oldMap = null;
-    }
   }
 }

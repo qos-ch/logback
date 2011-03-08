@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
@@ -61,10 +62,33 @@ public class LogbackMDCAdapterTest {
   }
 
   @Test
-  public void removeInexistnetKey() {
+  public void removeInexistentKey() {
     LogbackMDCAdapter lma = new LogbackMDCAdapter();
     lma.remove("abcdlw0");
   }
+
+
+  @Test
+  public void sequenceWithGet() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.put("k0", "v0");
+    Map<String, String> map0 = lma.copyOnInheritThreadLocal.get();
+    lma.get("k0");  // point 0
+    lma.put("k0", "v1");
+    // verify that map0 is that in point 0
+    assertEquals("v0", map0.get("k0"));
+  }
+
+  @Test
+  public void sequenceWithGetPropertyMap() {
+    LogbackMDCAdapter lma = new LogbackMDCAdapter();
+    lma.put("k0", "v0");
+    Map<String, String> map0 = lma.getPropertyMap();  // point 0
+    lma.put("k0", "v1");
+    // verify that map0 is that in point 0
+    assertEquals("v0", map0.get("k0"));
+  }
+
 
   class ChildThreadForMDCAdapter extends Thread {
 
@@ -111,11 +135,11 @@ public class LogbackMDCAdapterTest {
     HashMap<String, String> parentHM = getHashMapFromMDC();
     assertTrue(parentHM != childThread.childHM);
 
-    HashMap<String, String> parentHMWitness = new  HashMap<String, String>();
+    HashMap<String, String> parentHMWitness = new HashMap<String, String>();
     parentHMWitness.put(firstKey, firstKey + B_SUFFIX);
     assertEquals(parentHMWitness, parentHM);
 
-    HashMap<String, String> childHMWitness = new  HashMap<String, String>();
+    HashMap<String, String> childHMWitness = new HashMap<String, String>();
     childHMWitness.put(firstKey, firstKey + A_SUFFIX);
     childHMWitness.put(secondKey, secondKey + A_SUFFIX);
     assertEquals(childHMWitness, childThread.childHM);
@@ -150,13 +174,13 @@ public class LogbackMDCAdapterTest {
   }
 
   HashMap<String, String> getHashMapFromMDCAdapter(LogbackMDCAdapter lma) {
-     InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
+    InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
     return copyOnInheritThreadLocal.get();
   }
 
   HashMap<String, String> getHashMapFromMDC() {
     LogbackMDCAdapter lma = (LogbackMDCAdapter) MDC.getMDCAdapter();
-     InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
+    InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
     return copyOnInheritThreadLocal.get();
   }
 }
