@@ -71,8 +71,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     compressor.setContext(context);
 
     // wcs : without compression suffix
-    fileNamePatternWCS = new FileNamePattern(computeFileNameStr_WCS(
-        fileNamePatternStr, compressionMode), this.context);
+    fileNamePatternWCS = new FileNamePattern(Compressor.computeFileNameStr_WCS(
+            fileNamePatternStr, compressionMode), this.context);
 
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
@@ -102,20 +102,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
   public TimeBasedFileNamingAndTriggeringPolicy<E> getTimeBasedFileNamingAndTriggeringPolicy() {
     return timeBasedFileNamingAndTriggeringPolicy;
-  }
-
-  static public String computeFileNameStr_WCS(String fileNamePatternStr,
-      CompressionMode compressionMode) {
-    int len = fileNamePatternStr.length();
-    switch (compressionMode) {
-    case GZ:
-      return fileNamePatternStr.substring(0, len - 3);
-    case ZIP:
-      return fileNamePatternStr.substring(0, len - 4);
-    case NONE:
-      return fileNamePatternStr;
-    }
-    throw new IllegalStateException("Execution should not reach this point");
   }
 
   public void rollover() throws RolloverFailure {

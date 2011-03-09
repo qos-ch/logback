@@ -108,7 +108,7 @@ public class LogbackMDCAdapterTest {
     }
   }
 
-  // ================================================= 
+  // =================================================
 
   /**
    * Test that LogbackMDCAdapter copies its hashmap when a child
@@ -146,6 +146,28 @@ public class LogbackMDCAdapterTest {
 
   }
 
+  // see also http://jira.qos.ch/browse/LBCLASSIC-253
+  @Test
+  public void clearOnChildThreadShouldNotAffectParent() throws InterruptedException {
+    String firstKey = "x" + diff;
+    String secondKey = "o" + diff;
+
+    MDC.put(firstKey, firstKey+A_SUFFIX);
+    assertEquals(firstKey+A_SUFFIX, MDC.get(firstKey));
+
+    Thread clearer = new ChildThreadForMDC(firstKey, secondKey) {
+      @Override
+      public void run() {
+        MDC.clear();
+        assertNull(MDC.get(firstKey));
+      }
+    };
+
+    clearer.start();
+    clearer.join();
+
+    assertEquals(firstKey+A_SUFFIX, MDC.get(firstKey));
+  }
 
   class ChildThreadForMDC extends Thread {
 
@@ -154,6 +176,10 @@ public class LogbackMDCAdapterTest {
     boolean successul;
     HashMap<String, String> childHM;
     CountDownLatch countDownLatch;
+
+    ChildThreadForMDC(String firstKey, String secondKey) {
+      this(firstKey, secondKey, null);
+    }
 
     ChildThreadForMDC(String firstKey, String secondKey, CountDownLatch countDownLatch) {
       this.firstKey = firstKey;
@@ -166,7 +192,7 @@ public class LogbackMDCAdapterTest {
       MDC.put(secondKey, secondKey + A_SUFFIX);
       assertNotNull(MDC.get(firstKey));
       assertEquals(firstKey + A_SUFFIX, MDC.get(firstKey));
-      countDownLatch.countDown();
+      if(countDownLatch != null) countDownLatch.countDown();
       assertEquals(secondKey + A_SUFFIX, MDC.get(secondKey));
       successul = true;
       childHM = getHashMapFromMDC();

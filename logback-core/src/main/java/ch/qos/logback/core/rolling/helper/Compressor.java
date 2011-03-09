@@ -35,19 +35,9 @@ public class Compressor extends ContextAwareBase {
 
   final CompressionMode compressionMode;
 
-  // final String nameOfFile2Compress;
-  // final String nameOfCompressedFile;
-
   public Compressor(CompressionMode compressionMode) {
     this.compressionMode = compressionMode;
   }
-
-  // public Compressor(CompressionMode compressionMode, String
-  // nameOfFile2Compress, String nameOfCompressedFile) {
-  // this.compressionMode = compressionMode;
-  // //this.nameOfFile2Compress = nameOfFile2Compress;
-  // //this.nameOfCompressedFile = nameOfCompressedFile;
-  // }
 
   public void compress(String nameOfFile2Compress, String nameOfCompressedFile) {
     switch (compressionMode) {
@@ -132,8 +122,7 @@ public class Compressor extends ContextAwareBase {
   // all having the same name, which could make it harder for the user
   // to unzip the file without collisions
   ZipEntry computeZipEntry(File zippedFile) {
-    String nameOfFileNestedWithinArchive = TimeBasedRollingPolicy
-        .computeFileNameStr_WCS(zippedFile.getName(), compressionMode);
+    String nameOfFileNestedWithinArchive = computeFileNameStr_WCS(zippedFile.getName(), compressionMode);
     return new ZipEntry(nameOfFileNestedWithinArchive);
   }
 
@@ -182,6 +171,20 @@ public class Compressor extends ContextAwareBase {
       addStatus(new ErrorStatus("Error occurred while compressing ["
           + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
     }
+  }
+
+  static public String computeFileNameStr_WCS(String fileNamePatternStr,
+                                              CompressionMode compressionMode) {
+    int len = fileNamePatternStr.length();
+    switch (compressionMode) {
+      case GZ:
+        return fileNamePatternStr.substring(0, len - 3);
+      case ZIP:
+        return fileNamePatternStr.substring(0, len - 4);
+      case NONE:
+        return fileNamePatternStr;
+    }
+    throw new IllegalStateException("Execution should not reach this point");
   }
 
   @Override
