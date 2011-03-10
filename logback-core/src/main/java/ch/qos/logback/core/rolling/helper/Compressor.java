@@ -50,6 +50,13 @@ public class Compressor extends ContextAwareBase {
   // }
 
   public void compress(String nameOfFile2Compress, String nameOfCompressedFile) {
+      
+    // ensure path structure exists for destination file
+    File compressedFile = new File(nameOfCompressedFile);
+    if (compressedFile.getParentFile() != null) {
+      compressedFile.getParentFile().getAbsoluteFile().mkdirs();
+    }
+
     switch (compressionMode) {
     case GZ:
       addInfo("GZ compressing [" + nameOfFile2Compress + "].");
