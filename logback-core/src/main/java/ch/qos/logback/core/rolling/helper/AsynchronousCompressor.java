@@ -25,10 +25,10 @@ public class AsynchronousCompressor {
   }
 
   public Future<?> compressAsynchronously(String nameOfFile2Compress,
-      String nameOfCompressedFile) {
+      String nameOfCompressedFile, String innerEntryName) {
     ExecutorService executor = Executors.newScheduledThreadPool(1);
     Future<?> future = executor.submit(new CompressionRunnable(compressor,
-        nameOfFile2Compress, nameOfCompressedFile));
+        nameOfFile2Compress, nameOfCompressedFile, innerEntryName));
     executor.shutdown();
     return future;
   }

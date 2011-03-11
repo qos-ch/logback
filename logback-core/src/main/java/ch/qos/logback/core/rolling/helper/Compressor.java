@@ -39,7 +39,13 @@ public class Compressor extends ContextAwareBase {
     this.compressionMode = compressionMode;
   }
 
-  public void compress(String nameOfFile2Compress, String nameOfCompressedFile) {
+    /**
+     *
+     * @param nameOfFile2Compress
+     * @param nameOfCompressedFile
+     * @param innerEntryName The name of the file within the zip file. Use for ZIP compression.
+     */
+  public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
     switch (compressionMode) {
     case GZ:
       addInfo("GZ compressing [" + nameOfFile2Compress + "].");
@@ -47,7 +53,7 @@ public class Compressor extends ContextAwareBase {
       break;
     case ZIP:
       addInfo("ZIP compressing [" + nameOfFile2Compress + "].");
-      zipCompress(nameOfFile2Compress, nameOfCompressedFile);
+      zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
       break;
     case NONE:
       throw new UnsupportedOperationException(
@@ -55,13 +61,18 @@ public class Compressor extends ContextAwareBase {
     }
   }
 
-  private void zipCompress(String nameOfFile2zip, String nameOfZippedFile) {
+  private void zipCompress(String nameOfFile2zip, String nameOfZippedFile, String innerEntryName) {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
       addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip
           + "] does not exist.", this));
 
+      return;
+    }
+
+    if(innerEntryName == null) {
+      addStatus(new WarnStatus("The innerEntryName parameter cannot be null", this));
       return;
     }
 
@@ -83,7 +94,7 @@ public class Compressor extends ContextAwareBase {
       ZipOutputStream zos = new ZipOutputStream(fos);
       FileInputStream fis = new FileInputStream(nameOfFile2zip);
 
-      ZipEntry zipEntry = computeZipEntry(zippedFile);
+      ZipEntry zipEntry = computeZipEntry(innerEntryName);
       zos.putNextEntry(zipEntry);
 
       byte[] inbuf = new byte[8102];
@@ -112,7 +123,7 @@ public class Compressor extends ContextAwareBase {
   // Case 1: RawFile = null, Patern = foo-%d.zip
   // nestedFilename = foo-${current-date}
   //
-  // Case 2: RawFile = hello.txtm, Pattern = = foo-%d.zip
+  // Case 2: RawFile = hello.txt, Pattern = = foo-%d.zip
   // nestedFilename = foo-${current-date}
   //
   // in both cases, the strategy consisting of removing the compression
@@ -122,9 +133,14 @@ public class Compressor extends ContextAwareBase {
   // all having the same name, which could make it harder for the user
   // to unzip the file without collisions
   ZipEntry computeZipEntry(File zippedFile) {
-    String nameOfFileNestedWithinArchive = computeFileNameStr_WCS(zippedFile.getName(), compressionMode);
+    return computeZipEntry(zippedFile.getName());
+  }
+
+  ZipEntry computeZipEntry(String filename) {
+    String nameOfFileNestedWithinArchive = computeFileNameStr_WCS(filename, compressionMode);
     return new ZipEntry(nameOfFileNestedWithinArchive);
   }
+
 
   private void gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);

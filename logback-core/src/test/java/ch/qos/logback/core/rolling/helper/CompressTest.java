@@ -84,7 +84,7 @@ public class CompressTest {
     compressor.setContext(context);
     compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
         + "input/compress1.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
-        + "compress1.txt.gz");
+        + "compress1.txt.gz", null);
 
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
@@ -99,7 +99,7 @@ public class CompressTest {
     compressor.setContext(context);
     compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
         + "input/compress2.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
-        + "compress2.txt");
+        + "compress2.txt", null);
 
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
@@ -115,7 +115,7 @@ public class CompressTest {
     compressor.setContext(context);
     compressor.compress(CoreTestConstants.TEST_DIR_PREFIX
         + "input/compress3.txt", CoreTestConstants.OUTPUT_DIR_PREFIX
-        + "compress3.txt");
+        + "compress3.txt", "compress3.txt");
     StatusChecker checker = new StatusChecker(context);
     assertTrue(checker.isErrorFree());
 

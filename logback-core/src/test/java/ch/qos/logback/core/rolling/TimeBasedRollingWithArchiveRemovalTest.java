@@ -29,6 +29,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +49,6 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   static final String MONTHLY_DATE_PATTERN = "yyyy-MM";
   static final String MONTHLY_CROLOLOG_DATE_PATTERN = "yyyy/MM";
 
-  static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
   static final String DAILY_CROLOLOG_DATE_PATTERN = "yyyy/MM/dd";
 
   static final long MILLIS_IN_MINUTE = 60 * 1000;
@@ -112,14 +113,15 @@ public class TimeBasedRollingWithArchiveRemovalTest {
         + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods);
     int beginPeriod = Calendar.getInstance().get(Calendar.MONTH);
     boolean extraFolder = extraFolder(numPeriods, 12, beginPeriod, maxHistory);
+    StatusPrinter.print(context);
     check(expectedCountWithFolders(2, extraFolder));
   }
 
   @Test
   public void dailyRollover() throws Exception {
-    slashCount = computeSlashCount(DAILY_DATE_PATTERN);
+    slashCount = computeSlashCount(CoreConstants.DAILY_DATE_PATTERN);
     doRollover(
-        randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt.zip",
+        randomOutputDir + "clean-%d{" + CoreConstants.DAILY_DATE_PATTERN + "}.txt.zip",
         MILLIS_IN_DAY, 5, 5 * 3);
     check(expectedCountWithoutFolders(5));
   }
@@ -142,9 +144,9 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000");
     tbfnatp = sizeAndTimeBasedFNATP;
 
-    slashCount = computeSlashCount(DAILY_DATE_PATTERN);
+    slashCount = computeSlashCount(CoreConstants.DAILY_DATE_PATTERN);
     doRollover(
-        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip",
+        randomOutputDir + "/%d{" + CoreConstants.DAILY_DATE_PATTERN + "}-clean.%i.zip",
         MILLIS_IN_DAY, 5, 5 * 4);
 
     // make .zip optional so that if for one reason or another, no size-based
@@ -163,7 +165,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
     slashCount = 1;
     doRollover(
-        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip",
+        randomOutputDir + "/%d{" + CoreConstants.DAILY_DATE_PATTERN + "}/clean.%i.zip",
         MILLIS_IN_DAY, 5, 5 * 4);
     checkDirPatternCompliance(6);
   }

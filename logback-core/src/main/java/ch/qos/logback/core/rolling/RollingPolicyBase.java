@@ -33,6 +33,8 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
 
   private FileAppender parent;
 
+  // use to name files within zip file, i.e. the zipEntry
+  FileNamePattern zipEntryFileNamePattern;
   private boolean started;
 
   /**

@@ -86,10 +86,6 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
     this.dateInCurrentPeriod = _dateInCurrentPeriod;
   }
 
-  public Date getDateInCurrentPeriod() {
-    return dateInCurrentPeriod;
-  }
-
   public String getElapsedPeriodsFileName() {
     return elapsedPeriodsFileName;
   }

@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 
 /**
@@ -29,6 +30,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
    * The conversion word/character with which this converter is registered.
    */
   public final static String CONVERTER_KEY = "d";
+  public static final String DEFAULT_DATE_PATTERN = CoreConstants.DAILY_DATE_PATTERN;
 
   private String datePattern;
   private SimpleDateFormat sdf;
@@ -39,8 +41,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
   public void start() {
     this.datePattern = getFirstOption();
     if (this.datePattern == null) {
-      this.datePattern = "yyyy-MM-dd";
-      ;
+      this.datePattern = DEFAULT_DATE_PATTERN;
     }
     sdf = new SimpleDateFormat(datePattern);
   }

@@ -42,8 +42,7 @@ public class DefaultArchiveRemover extends ContextAwareBase implements
       return true;
     }
     // if the literal string subsequent to the dtc contains a /, we also
-    // need
-    // parent cleaning
+    // need parent cleaning
 
     Converter<Object> p = fileNamePattern.headTokenConverter;
 
@@ -88,17 +87,17 @@ public class DefaultArchiveRemover extends ContextAwareBase implements
    * times.
    * 
    * @param dir
-   * @param recursivityCount
+   * @param depth
    */
-  void removeFolderIfEmpty(File dir, int recursivityCount) {
+  void removeFolderIfEmpty(File dir, int depth) {
     // we should never go more than 3 levels higher
-    if (recursivityCount >= 3) {
+    if (depth >= 3) {
       return;
     }
     if (dir.isDirectory() && FileFilterUtil.isEmptyDirectory(dir)) {
       addInfo("deleting folder [" + dir +"]");
       dir.delete();
-      removeFolderIfEmpty(dir.getParentFile(), recursivityCount + 1);
+      removeFolderIfEmpty(dir.getParentFile(), depth + 1);
     }
   }
 

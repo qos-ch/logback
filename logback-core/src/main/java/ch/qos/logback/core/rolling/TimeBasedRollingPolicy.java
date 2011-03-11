@@ -18,12 +18,8 @@ import java.util.Date;
 import java.util.concurrent.Future;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.ArchiveRemover;
-import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
-import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.Compressor;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
-import ch.qos.logback.core.rolling.helper.RenameUtil;
+import ch.qos.logback.core.rolling.helper.*;
+import ch.qos.logback.core.util.FileUtil;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -77,6 +73,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
 
+     if(compressionMode == CompressionMode.ZIP) {
+      String zipEntryFileNamePatternStr = transformFileNamePattern2ZipEntry(fileNamePatternStr);
+      zipEntryFileNamePattern = new FileNamePattern(zipEntryFileNamePatternStr, context);
+    }
+
     if (timeBasedFileNamingAndTriggeringPolicy == null) {
       timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
     }
@@ -93,6 +94,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
 
     super.start();
+  }
+
+  private String transformFileNamePattern2ZipEntry(String fileNamePatternStr) {
+    String slashified = FileFilterUtil.slashify(fileNamePatternStr);
+    return FileFilterUtil.afterLastSlash(slashified);
   }
 
   public void setTimeBasedFileNamingAndTriggeringPolicy(
@@ -112,15 +118,18 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     String elapsedPeriodsFileName = timeBasedFileNamingAndTriggeringPolicy
         .getElapsedPeriodsFileName();
 
+    String elpasedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
+
+
     if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
         renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
       } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
     } else {
       if (getParentsRawFileProperty() == null) {
-        future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName);
+        future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elpasedPeriodStem);
       } else {
-        future = renamedRawAndAsyncCompress(elapsedPeriodsFileName);
+        future = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elpasedPeriodStem);
       }
     }
 
@@ -129,18 +138,18 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile)
+  Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-    return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile);
+    return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
   }
 
-  Future renamedRawAndAsyncCompress(String nameOfCompressedFile)
+  Future renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     String parentsRawFile = getParentsRawFileProperty();
     String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
     renameUtil.rename(parentsRawFile, tmpTarget);
-    return asyncCompress(tmpTarget, nameOfCompressedFile);
+    return asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
   }
 
   /**
