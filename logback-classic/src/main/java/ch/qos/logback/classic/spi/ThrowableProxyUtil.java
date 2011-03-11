@@ -117,7 +117,7 @@ public class ThrowableProxyUtil {
     }
     
     if (commonFrames > 0) {
-      sb.append("\t... " + commonFrames).append(" common frames omitted")
+      sb.append("\t... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
     

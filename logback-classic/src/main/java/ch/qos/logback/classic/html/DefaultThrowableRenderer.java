@@ -53,7 +53,7 @@ public class DefaultThrowableRenderer implements
     
     if (commonFrames > 0) {
       sbuf.append(TRACE_PREFIX);
-      sbuf.append("\t... " + commonFrames).append(" common frames omitted")
+      sbuf.append("\t... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
   }

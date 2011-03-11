@@ -166,7 +166,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     if (commonFrames > 0 && unrestrictedPrinting) {
-      buf.append("\t... " + tp.getCommonFrames()).append(
+      buf.append("\t... ").append(tp.getCommonFrames()).append(
           " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
     }
   }
