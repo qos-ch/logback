@@ -27,7 +27,7 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
   LRUMessageCache(int cacheSize) {
     super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
     if (cacheSize < 1) {
-      throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
+      throw new IllegalArgumentException("Cache size cannot be smaller than 1");
     }
     this.cacheSize = cacheSize;
   }
