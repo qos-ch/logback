@@ -17,7 +17,7 @@ public class T_Entry<K> implements Comparable {
 
   K k;
   long sequenceNumber;
-  
+
   T_Entry(K k, long sn) {
     this.k = k;
     this.sequenceNumber = sn;
