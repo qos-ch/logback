@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
-import ch.qos.logback.core.spi.DeferredProcessingAware;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -42,16 +41,12 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class AccessEvent implements Serializable, DeferredProcessingAware {
+public class AccessEvent implements Serializable, IAccessEvent {
 
   
   private static final long serialVersionUID = 866718993618836343L;
   
-  public final static String NA = "-";
-  public final static String[] NA_STRING_ARRAY = new String[] { AccessEvent.NA };
-
-  public final static String EMPTY = "";
-  public static final int SENTINEL = -1;
+  private static final String EMPTY = "";
 
   private transient final HttpServletRequest httpRequest;
   private transient final HttpServletResponse httpResponse;
@@ -129,7 +124,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         requestURI = httpRequest.getRequestURI();
       } else {
-        requestURI = AccessEvent.NA;
+        requestURI = NA;
       }
     }
     return requestURI;
@@ -154,7 +149,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
         buf.append(httpRequest.getProtocol());
         requestURL = buf.toString();
       } else {
-        requestURL = AccessEvent.NA;
+        requestURL = NA;
       }
     }
     return requestURL;
@@ -167,7 +162,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
         // determine if remote lookup will be performed
         remoteHost = httpRequest.getRemoteHost();
       } else {
-        remoteHost = AccessEvent.NA;
+        remoteHost = NA;
       }
     }
     return remoteHost;
@@ -178,7 +173,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         remoteUser = httpRequest.getRemoteUser();
       } else {
-        remoteUser = AccessEvent.NA;
+        remoteUser = NA;
       }
     }
     return remoteUser;
@@ -189,7 +184,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         protocol = httpRequest.getProtocol();
       } else {
-        protocol = AccessEvent.NA;
+        protocol = NA;
       }
     }
     return protocol;
@@ -200,7 +195,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         method = httpRequest.getMethod();
       } else {
-        method = AccessEvent.NA;
+        method = NA;
       }
     }
     return method;
@@ -211,7 +206,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         serverName = httpRequest.getServerName();
       } else {
-        serverName = AccessEvent.NA;
+        serverName = NA;
       }
     }
     return serverName;
@@ -222,7 +217,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
       if (httpRequest != null) {
         remoteAddr = httpRequest.getRemoteAddr();
       } else {
-        remoteAddr = AccessEvent.NA;
+        remoteAddr = NA;
       }
     }
     return remoteAddr;
@@ -243,7 +238,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
     if (result != null) {
       return result;
     } else {
-      return AccessEvent.NA;
+      return NA;
     }
   }
 
@@ -305,12 +300,12 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
     if (httpRequest != null) {
       Object value = httpRequest.getAttribute(key);
       if (value == null) {
-        return AccessEvent.NA;
+        return NA;
       } else {
         return value.toString();
       }
     } else {
-      return AccessEvent.NA;
+      return NA;
     }
   }
 
@@ -318,12 +313,12 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
     if (httpRequest != null) {
       String[] value = httpRequest.getParameterValues(key);
       if (value == null) {
-        return NA_STRING_ARRAY;
+        return new String[] { NA };
       } else {
         return value;
       }
     } else {
-      return NA_STRING_ARRAY;
+      return new String[] { NA };
     }
   }
 
@@ -332,7 +327,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
     if (httpRequest != null) {
       Cookie[] cookieArray = httpRequest.getCookies();
       if (cookieArray == null) {
-        return AccessEvent.NA;
+        return NA;
       }
 
       for (Cookie cookie : cookieArray) {
@@ -341,7 +336,7 @@ public class AccessEvent implements Serializable, DeferredProcessingAware {
         }
       }
     }
-    return AccessEvent.NA;
+    return NA;
   }
 
   public long getContentLength() {
