@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.pattern;
+package ch.qos.logback.classic.turbo.lru;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,12 +26,12 @@ import java.util.Map;
  * @param <K>
  * @param <V>
  */
-public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+public class X_LRUCache<K, V> extends LinkedHashMap<K, V> {
   private static final long serialVersionUID = -6592964689843698200L;
 
   final int cacheSize;
 
-  public LRUCache(int cacheSize) {
+  public X_LRUCache(int cacheSize) {
     super((int) (cacheSize*(4.0f/3)), 0.75f, true);
     if(cacheSize < 1) {
       throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
