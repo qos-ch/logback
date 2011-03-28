@@ -14,7 +14,7 @@
 package ch.qos.logback.access.net;
 
 import ch.qos.logback.access.PatternLayout;
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.helpers.CyclicBuffer;
@@ -31,7 +31,7 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  * @author S&eacute;bastien Pennec
  * 
  */
-public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
+public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
 
   static final String DEFAULT_SUBJECT_PATTERN = "%m";
 
@@ -47,7 +47,7 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
    * Use <code>evaluator</code> passed as parameter as the {@link
    * EventEvaluator} for this SMTPAppender.
    */
-  public SMTPAppender(EventEvaluator<AccessEvent> evaluator) {
+  public SMTPAppender(EventEvaluator<IAccessEvent> evaluator) {
     this.eventEvaluator = evaluator;
   }
 
@@ -55,22 +55,22 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
    * Perform SMTPAppender specific appending actions, mainly adding the event to
    * the appropriate cyclic buffer.
    */
-  protected void subAppend(CyclicBuffer<AccessEvent> cb, AccessEvent event) {
+  protected void subAppend(CyclicBuffer<IAccessEvent> cb, IAccessEvent event) {
     cb.add(event);
   }
 
   @Override
-  protected void fillBuffer(CyclicBuffer<AccessEvent> cb, StringBuffer sbuf) {
+  protected void fillBuffer(CyclicBuffer<IAccessEvent> cb, StringBuffer sbuf) {
     int len = cb.length();
     for (int i = 0; i < len; i++) {
       // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
-      AccessEvent event = (AccessEvent) cb.get();
+      IAccessEvent event = cb.get();
       sbuf.append(layout.doLayout(event));
     }
   }
 
   @Override
-  protected Layout<AccessEvent> makeSubjectLayout(String subjectStr) {
+  protected Layout<IAccessEvent> makeSubjectLayout(String subjectStr) {
     if(subjectStr == null) {
       subjectStr = DEFAULT_SUBJECT_PATTERN;
     }
@@ -80,13 +80,13 @@ public class SMTPAppender extends SMTPAppenderBase<AccessEvent> {
     return pl;
   }
 
-    protected PatternLayout makeNewToPatternLayout(String toPattern) {
+  protected PatternLayout makeNewToPatternLayout(String toPattern) {
     PatternLayout pl = new PatternLayout();
     pl.setPattern(toPattern);
     return pl;
   }
 
-  protected boolean isEventMarkedForBufferRemoval(AccessEvent eventObject) {
+  protected boolean isEventMarkedForBufferRemoval(IAccessEvent eventObject) {
     return false;
   }
 

@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Request;
@@ -62,7 +63,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author S&eacute;bastien Pennec
  */
 public class LogbackValve extends ValveBase implements Lifecycle, Context,
-    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
+    AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
@@ -78,9 +79,9 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   // serialized. For the time being, we ignore this shortcoming.
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
-  private FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
+  private FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
 
-  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
+  AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
   String filename;
   boolean quiet;
   boolean started;
@@ -158,7 +159,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       getNext().invoke(request, response);
 
       TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-      AccessEvent accessEvent = new AccessEvent(request, response, adapter);
+      IAccessEvent accessEvent = new AccessEvent(request, response, adapter);
 
       if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
         return;
@@ -175,19 +176,19 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     started = false;
   }
 
-  public void addAppender(Appender<AccessEvent> newAppender) {
+  public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
-  public Iterator<Appender<AccessEvent>> iteratorForAppenders() {
+  public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
-  public Appender<AccessEvent> getAppender(String name) {
+  public Appender<IAccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender<AccessEvent> appender) {
+  public boolean isAttached(Appender<IAccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
@@ -196,7 +197,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   }
 
-  public boolean detachAppender(Appender<AccessEvent> appender) {
+  public boolean detachAppender(Appender<IAccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
@@ -237,7 +238,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     objectMap.put(key, value);
   }
 
-  public void addFilter(Filter<AccessEvent> newFilter) {
+  public void addFilter(Filter<IAccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -245,11 +246,11 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     fai.clearAllFilters();
   }
 
-  public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
+  public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
 
-  public FilterReply getFilterChainDecision(AccessEvent event) {
+  public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 

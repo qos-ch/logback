@@ -19,13 +19,13 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 
 import ch.qos.logback.access.spi.AccessContext;
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.spi.FilterReply;
 
 // Contributors: Moses Hohman <mmhohman@rainbow.uchicago.edu>
 
 /**
- * Read {@link AccessEvent} objects sent from a remote client using Sockets
+ * Read {@link IAccessEvent} objects sent from a remote client using Sockets
  * (TCP). These logging events are logged according to local policy, as if they
  * were generated locally.
  * 
@@ -56,12 +56,12 @@ public class SocketNode implements Runnable {
   }
 
   public void run() {
-    AccessEvent event;
+    IAccessEvent event;
 
     try {
       while (true) {
         // read an event from the wire
-        event = (AccessEvent) ois.readObject();
+        event = (IAccessEvent) ois.readObject();
         //check that the event should be logged
         if (context.getFilterChainDecision(event) == FilterReply.DENY) {
           break;

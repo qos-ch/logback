@@ -15,7 +15,7 @@ package ch.qos.logback.access.pattern;
 
 import java.util.Enumeration;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 
 /**
@@ -30,7 +30,7 @@ import ch.qos.logback.core.CoreConstants;
 public class FullRequestConverter extends AccessConverter {
 
   @Override
-  public String convert(AccessEvent ae) {
+  public String convert(IAccessEvent ae) {
     StringBuffer buf = new StringBuffer();
     buf.append(ae.getRequestURL());
     buf.append(CoreConstants.LINE_SEPARATOR);

@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class StatusCodeConverter extends AccessConverter {
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
     return Integer.toString(accessEvent.getStatusCode());
   }
 

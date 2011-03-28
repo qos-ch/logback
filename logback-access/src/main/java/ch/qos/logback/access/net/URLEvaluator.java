@@ -16,7 +16,7 @@ package ch.qos.logback.access.net;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -44,7 +44,7 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator, Li
   }
     
   public boolean evaluate(Object eventObject) throws NullPointerException, EvaluationException {
-    AccessEvent event = (AccessEvent)eventObject;
+    IAccessEvent event = (IAccessEvent)eventObject;
     String url = event.getRequestURL();
     for(String expected:URLList) {
       if (url.contains(expected)) {

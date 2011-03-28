@@ -16,6 +16,7 @@ package ch.qos.logback.access.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.Test;
 
 import ch.qos.logback.access.dummy.DummyRequest;
@@ -52,7 +53,7 @@ public class SocketAppenderTest {
     assertTrue(mockSocketServer.finished);
     assertEquals(1, mockSocketServer.accessEventList.size());
 
-    AccessEvent remoteEvent = mockSocketServer.accessEventList.get(0);
+    IAccessEvent remoteEvent = mockSocketServer.accessEventList.get(0);
     //check that the values are available although the request and response
     //objects did not survive serialization
     assertEquals("headerValue1", remoteEvent.getRequestHeader("headerName1"));
@@ -78,12 +79,11 @@ public class SocketAppenderTest {
     socketAppender.start();
   }
   
-  private AccessEvent buildNewAccessEvent() {
+  private IAccessEvent buildNewAccessEvent() {
     DummyRequest request = new DummyRequest();
     DummyResponse response = new DummyResponse();
     DummyServerAdapter adapter = new DummyServerAdapter(request, response);
     
-    AccessEvent ae = new AccessEvent(request, response, adapter);
-    return ae;
+    return new AccessEvent(request, response, adapter);
   }
 }

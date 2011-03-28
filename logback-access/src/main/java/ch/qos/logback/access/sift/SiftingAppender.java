@@ -13,9 +13,8 @@
  */
 package ch.qos.logback.access.sift;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
-import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
 
@@ -29,7 +28,7 @@ import ch.qos.logback.core.sift.SiftingAppenderBase;
  * 
  * @author Ceki Gulcu
  */
-public class SiftingAppender extends SiftingAppenderBase<AccessEvent> {
+public class SiftingAppender extends SiftingAppenderBase<IAccessEvent> {
 
   @Override
   public void start() {
@@ -37,13 +36,13 @@ public class SiftingAppender extends SiftingAppenderBase<AccessEvent> {
   }
 
   @Override
-  protected long getTimestamp(AccessEvent event) {
+  protected long getTimestamp(IAccessEvent event) {
     return event.getTimeStamp();
   }
 
   @Override
   @DefaultClass(AccessEventDiscriminator.class)
-  public void setDiscriminator(Discriminator<AccessEvent> discriminator) {
+  public void setDiscriminator(Discriminator<IAccessEvent> discriminator) {
     super.setDiscriminator(discriminator);
   }
 }

@@ -24,6 +24,7 @@ import org.mortbay.jetty.Response;
 
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
@@ -108,13 +109,13 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
+    AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
       + "logback-access.xml";
 
-  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
-  FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
+  AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
+  FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
   String filename;
   boolean started = false;
 
@@ -125,7 +126,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public void log(Request jettyRequest, Response jettyResponse) {
     JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
         jettyResponse);
-    AccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
+    IAccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
         adapter);
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
@@ -203,19 +204,19 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return false;
   }
 
-  public void addAppender(Appender<AccessEvent> newAppender) {
+  public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
-  public Iterator<Appender<AccessEvent>> iteratorForAppenders() {
+  public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
-  public Appender<AccessEvent> getAppender(String name) {
+  public Appender<IAccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender<AccessEvent> appender) {
+  public boolean isAttached(Appender<IAccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
@@ -224,7 +225,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   }
 
-  public boolean detachAppender(Appender<AccessEvent> appender) {
+  public boolean detachAppender(Appender<IAccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
@@ -232,7 +233,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     return aai.detachAppender(name);
   }
 
-  public void addFilter(Filter<AccessEvent> newFilter) {
+  public void addFilter(Filter<IAccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -240,11 +241,11 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     fai.clearAllFilters();
   }
 
-  public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
+  public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
   
-  public FilterReply getFilterChainDecision(AccessEvent event) {
+  public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 

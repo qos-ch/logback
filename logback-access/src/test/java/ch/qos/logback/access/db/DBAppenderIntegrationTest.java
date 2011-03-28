@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,7 +28,6 @@ import org.junit.Test;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessContext;
-import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
@@ -64,10 +64,10 @@ public class DBAppenderIntegrationTest {
     configurator.setContext(context);
     configurator.doConfigure(configFile);
 
-    Appender<AccessEvent> appender = context.getAppender("DB");
+    Appender<IAccessEvent> appender = context.getAppender("DB");
     
     for (int i = 0; i < 10; i++) {
-      AccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
+      IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
       appender.doAppend(event);
     }
     

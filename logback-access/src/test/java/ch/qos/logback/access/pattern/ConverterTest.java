@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ import ch.qos.logback.access.spi.AccessEvent;
 
 public class ConverterTest  {
 
-  AccessEvent event;
+  IAccessEvent event;
   DummyRequest request;
   DummyResponse response;
 
@@ -191,10 +192,9 @@ public class ConverterTest  {
     assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
   }
 
-  private AccessEvent createEvent() {
+  private IAccessEvent createEvent() {
     DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-    AccessEvent ae = new AccessEvent(request, response, dummyAdapter);
-    return ae;
+    return new AccessEvent(request, response, dummyAdapter);
   }
 
 }

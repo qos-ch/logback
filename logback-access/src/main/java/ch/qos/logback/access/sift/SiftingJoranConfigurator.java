@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
@@ -26,7 +26,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
 public class SiftingJoranConfigurator extends
-    SiftingJoranConfiguratorBase<AccessEvent> {
+    SiftingJoranConfiguratorBase<IAccessEvent> {
 
   String key;
   String value;
@@ -59,7 +59,7 @@ public class SiftingJoranConfigurator extends
   }
 
   @SuppressWarnings("unchecked")
-  public Appender<AccessEvent> getAppender() {
+  public Appender<IAccessEvent> getAppender() {
     Map<String, Object> omap = interpreter.getInterpretationContext()
         .getObjectMap();
     HashMap appenderMap = (HashMap) omap.get(ActionConst.APPENDER_BAG);
@@ -68,6 +68,6 @@ public class SiftingJoranConfigurator extends
     if(values.size() == 0) {
       return null;
     }
-    return (Appender<AccessEvent>) values.iterator().next();
+    return (Appender<IAccessEvent>) values.iterator().next();
   }
 }

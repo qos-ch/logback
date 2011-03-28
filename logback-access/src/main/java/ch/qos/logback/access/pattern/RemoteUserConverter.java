@@ -13,16 +13,16 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class RemoteUserConverter extends AccessConverter {
 
   
-  public String convert(AccessEvent accessEvent) {    
+  public String convert(IAccessEvent accessEvent) {
     
     String user = accessEvent.getRemoteUser();
     if(user == null) {
-      return AccessEvent.NA;
+      return IAccessEvent.NA;
     } else {
       return user;
     }

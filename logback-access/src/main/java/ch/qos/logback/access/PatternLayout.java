@@ -41,14 +41,14 @@ import ch.qos.logback.access.pattern.ResponseContentConverter;
 import ch.qos.logback.access.pattern.ResponseHeaderConverter;
 import ch.qos.logback.access.pattern.ServerNameConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
  * <p>
  * This class is a module-specific implementation of
- * {@link ch.qos.logback.classic.PatternLayout} to allow http-specific patterns
+ * {@link ch.qos.logback.access.PatternLayout} to allow http-specific patterns
  * to be used. The <code>ch.qos.logback.access.PatternLayout</code> provides a
  * way to format the logging output that is just as easy and flexible as the
  * usual <code>PatternLayout</code>.
@@ -60,7 +60,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class PatternLayout extends PatternLayoutBase<AccessEvent> {
+public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
 
@@ -167,7 +167,7 @@ public class PatternLayout extends PatternLayoutBase<AccessEvent> {
     return defaultConverterMap;
   }
 
-  public String doLayout(AccessEvent event) {
+  public String doLayout(IAccessEvent event) {
     if (!isStarted()) {
       return null;
     }

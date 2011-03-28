@@ -16,7 +16,7 @@ package ch.qos.logback.access.pattern;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class LocalIPAddressConverter extends AccessConverter {
 
@@ -30,7 +30,7 @@ public class LocalIPAddressConverter extends AccessConverter {
     }
   }
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
     return localIPAddressStr;
   }
 

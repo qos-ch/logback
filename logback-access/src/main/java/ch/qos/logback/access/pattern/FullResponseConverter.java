@@ -15,13 +15,13 @@ package ch.qos.logback.access.pattern;
 
 import java.util.List;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 
 public class FullResponseConverter extends AccessConverter {
 
   @Override
-  public String convert(AccessEvent ae) {
+  public String convert(IAccessEvent ae) {
     StringBuffer buf = new StringBuffer();
     
     buf.append("HTTP/1.1 ");

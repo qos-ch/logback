@@ -16,13 +16,18 @@ package ch.qos.logback.access.net;
 import java.io.Serializable;
 
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class AccessEventPreSerializationTransformer implements
-    PreSerializationTransformer<AccessEvent> {
+    PreSerializationTransformer<IAccessEvent> {
 
-  public Serializable transform(AccessEvent event) {
-    return event;
+  public Serializable transform(IAccessEvent event) {
+    if (event instanceof AccessEvent) {
+      return (AccessEvent)event;
+    } else {
+      throw new IllegalArgumentException("Unsupported type "+event.getClass().getName());
+    }
   }
 
 }

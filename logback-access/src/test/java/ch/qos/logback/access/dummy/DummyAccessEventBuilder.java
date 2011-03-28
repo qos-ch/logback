@@ -14,17 +14,17 @@
 package ch.qos.logback.access.dummy;
 
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class DummyAccessEventBuilder {
 
   
-  static public AccessEvent buildNewAccessEvent() {
+  static public IAccessEvent buildNewAccessEvent() {
     DummyRequest request = new DummyRequest();
     DummyResponse response = new DummyResponse();
     DummyServerAdapter adapter = new DummyServerAdapter(request, response);
     
-    AccessEvent ae = new AccessEvent(request, response, adapter);
-    return ae;
+    return new AccessEvent(request, response, adapter);
   }
   
 }

@@ -13,14 +13,14 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class ContentLengthConverter extends AccessConverter {
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
     long len = accessEvent.getContentLength();
-    if(len == AccessEvent.SENTINEL) {
-      return AccessEvent.NA;
+    if(len == IAccessEvent.SENTINEL) {
+      return IAccessEvent.NA;
     } else {
     return Long.toString(len);
     } 

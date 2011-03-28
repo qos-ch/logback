@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 public class RemoteHostConverter extends AccessConverter {
 
   
-  public String convert(AccessEvent accessEvent) {    
+  public String convert(IAccessEvent accessEvent) {
     return accessEvent.getRemoteHost();
   }
 

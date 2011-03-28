@@ -16,19 +16,19 @@ package ch.qos.logback.access.boolex;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
 
-public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<AccessEvent> {
+public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent> {
 
   public final static List<String> DEFAULT_PARAM_NAME_LIST = new ArrayList<String>();
   public final static List<Class> DEFAULT_PARAM_TYPE_LIST = new ArrayList<Class>();
 
   static {
     DEFAULT_PARAM_NAME_LIST.add("event");
-    DEFAULT_PARAM_TYPE_LIST.add(AccessEvent.class);
+    DEFAULT_PARAM_TYPE_LIST.add(IAccessEvent.class);
   }
 
 
@@ -67,8 +67,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<AccessEvent> 
     return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
-  protected Object[] getParameterValues(AccessEvent event) {
-    AccessEvent accessEvent = (AccessEvent) event;
+  protected Object[] getParameterValues(IAccessEvent accessEvent) {
     final int matcherListSize = matcherList.size();
 
     int i = 0;
@@ -77,7 +76,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<AccessEvent> 
     values[i++] = accessEvent;
 
     for (int j = 0; j < matcherListSize; j++) {
-      values[i++] = (Matcher) matcherList.get(j);
+      values[i++] = matcherList.get(j);
     }
 
     return values;

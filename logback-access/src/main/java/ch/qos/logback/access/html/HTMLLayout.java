@@ -18,7 +18,7 @@ import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import java.util.Map;
 
 import ch.qos.logback.access.PatternLayout;
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 
@@ -37,7 +37,7 @@ import ch.qos.logback.core.pattern.Converter;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
+public class HTMLLayout extends HTMLLayoutBase<IAccessEvent> {
 
   /**
    * Default pattern string for log output.
@@ -58,7 +58,7 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
     return PatternLayout.defaultConverterMap;
   }
 
-  public String doLayout(AccessEvent event) {
+  public String doLayout(IAccessEvent event) {
     StringBuilder buf = new StringBuilder();
     startNewTableIfLimitReached(buf);
 
@@ -76,7 +76,7 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
     }
     buf.append(LINE_SEPARATOR);
 
-    Converter<AccessEvent> c = head;
+    Converter<IAccessEvent> c = head;
     while (c != null) {
       appendEventToBuffer(buf, c, event);
       c = c.getNext();
@@ -87,8 +87,8 @@ public class HTMLLayout extends HTMLLayoutBase<AccessEvent> {
     return buf.toString();
   }
 
-  private void appendEventToBuffer(StringBuilder buf, Converter<AccessEvent> c,
-      AccessEvent event) {
+  private void appendEventToBuffer(StringBuilder buf, Converter<IAccessEvent> c,
+      IAccessEvent event) {
     buf.append("<td class=\"");
     buf.append(computeConverterName(c));
     buf.append("\">");
