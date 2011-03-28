@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 
 
 public class LineSeparatorConverter extends AccessConverter {
 
-  public String convert(AccessEvent event) {
+  public String convert(IAccessEvent event) {
     return CoreConstants.LINE_SEPARATOR;
   }
 }

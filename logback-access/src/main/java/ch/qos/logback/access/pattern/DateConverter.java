@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 
 
@@ -60,7 +60,7 @@ public class DateConverter extends AccessConverter {
   }
   
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
   
     long timestamp = accessEvent.getTimeStamp();
     

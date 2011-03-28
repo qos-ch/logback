@@ -32,16 +32,16 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author S&eacute;bastien Pennec
  */
 public class AccessContext extends ContextBase implements
-    AppenderAttachable<AccessEvent>, FilterAttachable<AccessEvent> {
+    AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
-  AppenderAttachableImpl<AccessEvent> aai = new AppenderAttachableImpl<AccessEvent>();
-  FilterAttachableImpl<AccessEvent> fai = new FilterAttachableImpl<AccessEvent>();
+  AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
+  FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
 
-  public void callAppenders(AccessEvent event) {
+  public void callAppenders(IAccessEvent event) {
     aai.appendLoopOnAppenders(event);
   }
 
-  public void addAppender(Appender<AccessEvent> newAppender) {
+  public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
@@ -49,7 +49,7 @@ public class AccessContext extends ContextBase implements
     aai.detachAndStopAllAppenders();
   }
 
-  public boolean detachAppender(Appender<AccessEvent> appender) {
+  public boolean detachAppender(Appender<IAccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
@@ -57,19 +57,19 @@ public class AccessContext extends ContextBase implements
     return aai.detachAppender(name);
   }
 
-  public Appender<AccessEvent> getAppender(String name) {
+  public Appender<IAccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 
-  public boolean isAttached(Appender<AccessEvent> appender) {
+  public boolean isAttached(Appender<IAccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
-  public Iterator<Appender<AccessEvent>> iteratorForAppenders() {
+  public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
-  public void addFilter(Filter<AccessEvent> newFilter) {
+  public void addFilter(Filter<IAccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
@@ -77,11 +77,11 @@ public class AccessContext extends ContextBase implements
     fai.clearAllFilters();
   }
 
-  public List<Filter<AccessEvent>> getCopyOfAttachedFiltersList() {
+  public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
 
-  public FilterReply getFilterChainDecision(AccessEvent event) {
+  public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 }

@@ -16,12 +16,12 @@ package ch.qos.logback.access.net;
 
 import java.net.InetAddress;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * Sends {@link AccessEvent} objects to a remote a log server, usually a
+ * Sends {@link IAccessEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
  * 
  * For more information about this appender, please refer to the online manual at
@@ -32,9 +32,9 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  */
 
-public class SocketAppender extends SocketAppenderBase<AccessEvent> {
+public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
   
-  PreSerializationTransformer<AccessEvent> pst = new AccessEventPreSerializationTransformer();
+  PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
   
   public SocketAppender() {
   }
@@ -58,12 +58,11 @@ public class SocketAppender extends SocketAppenderBase<AccessEvent> {
   }
   
   @Override
-  protected void postProcessEvent(AccessEvent event) {
-    AccessEvent ae = (AccessEvent)event;
-    ae.prepareForDeferredProcessing();
+  protected void postProcessEvent(IAccessEvent event) {
+    event.prepareForDeferredProcessing();
   }
 
-  public PreSerializationTransformer<AccessEvent> getPST() {
+  public PreSerializationTransformer<IAccessEvent> getPST() {
     return pst;
   }
 }

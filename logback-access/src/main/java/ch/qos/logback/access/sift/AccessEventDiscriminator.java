@@ -16,14 +16,14 @@ package ch.qos.logback.access.sift;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * 
  * AccessEventDiscriminator's job is to return the value of a designated field
- * in an {@link AccessEvent} instance.
+ * in an {@link IAccessEvent} instance.
  * 
  * <p>The field is specified via the {@link FieldName} property.
  * 
@@ -31,7 +31,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  */
 public class AccessEventDiscriminator extends ContextAwareBase implements
-    Discriminator<AccessEvent> {
+    Discriminator<IAccessEvent> {
 
   boolean started = false;
 
@@ -53,7 +53,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
   FieldName fieldName;
   String additionalKey;
 
-  public String getDiscriminatingValue(AccessEvent acccessEvent) {
+  public String getDiscriminatingValue(IAccessEvent acccessEvent) {
     String rawValue = getRawDiscriminatingValue(acccessEvent);
     if (rawValue == null || rawValue.length() == 0) {
       return defaultValue;
@@ -62,7 +62,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     }
   }
 
-  public String getRawDiscriminatingValue(AccessEvent acccessEvent) {
+  public String getRawDiscriminatingValue(IAccessEvent acccessEvent) {
     switch (fieldName) {
     case COOKIE:
       // tested
@@ -84,16 +84,16 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     }
   }
 
-  private String getRequestAttribute(AccessEvent acccessEvent) {
+  private String getRequestAttribute(IAccessEvent acccessEvent) {
     String attr = acccessEvent.getAttribute(additionalKey);
-    if (AccessEvent.NA.equals(attr)) {
+    if (IAccessEvent.NA.equals(attr)) {
       return null;
     } else {
       return attr;
     }
   }
 
-  private String getRequestURI(AccessEvent acccessEvent) {
+  private String getRequestURI(IAccessEvent acccessEvent) {
     String uri = acccessEvent.getRequestURI();
     if (uri != null && uri.length() >= 1 && uri.charAt(0) == '/') {
       return uri.substring(1);
@@ -102,7 +102,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     }
   }
 
-  private String getSessionAttribute(AccessEvent acccessEvent) {
+  private String getSessionAttribute(IAccessEvent acccessEvent) {
     HttpServletRequest req = acccessEvent.getRequest();
     if (req != null) {
       HttpSession session = req.getSession(false);

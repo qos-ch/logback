@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
@@ -27,7 +28,6 @@ import org.mortbay.jetty.handler.AbstractHandler;
 import org.mortbay.util.ByteArrayISO8859Writer;
 
 import ch.qos.logback.access.PatternLayoutEncoder;
-import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.ConsoleAppender;
 
@@ -56,7 +56,7 @@ public class JettyFixture extends JettyFixtureBase {
     appender.setName("list");
     appender.start();
 
-    ConsoleAppender<AccessEvent> console = new ConsoleAppender<AccessEvent>();
+    ConsoleAppender<IAccessEvent> console = new ConsoleAppender<IAccessEvent>();
     console.setContext(requestLogImpl);
     console.setName("console");
     PatternLayoutEncoder layout = new PatternLayoutEncoder();

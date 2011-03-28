@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -30,7 +30,7 @@ public class RequestHeaderConverter extends AccessConverter {
     super.start();
   }
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
     if(!isStarted()) {
       return "INACTIVE_HEADER_CONV";
     }

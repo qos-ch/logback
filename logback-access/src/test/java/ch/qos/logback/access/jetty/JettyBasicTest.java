@@ -21,11 +21,11 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -85,7 +85,7 @@ public class JettyBasicTest {
     }
 
     assertTrue(listAppender.list.size() > 0);
-    AccessEvent event = (AccessEvent) listAppender.list.get(0);
+    IAccessEvent event = listAppender.list.get(0);
     assertEquals("127.0.0.1", event.getRemoteHost());
     assertEquals("localhost", event.getServerName());
     listAppender.list.clear();
@@ -122,7 +122,7 @@ public class JettyBasicTest {
     }
 
     @SuppressWarnings("unused")
-    AccessEvent event = (AccessEvent) listAppender.list.get(0);
+    IAccessEvent event = listAppender.list.get(0);
 
     // we should test the contents of the requests
     // assertEquals(msg, event.getRequestContent());

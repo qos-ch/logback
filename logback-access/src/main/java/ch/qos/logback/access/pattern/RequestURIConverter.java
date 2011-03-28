@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 
 /**
  * The request URI.
@@ -22,7 +22,7 @@ import ch.qos.logback.access.spi.AccessEvent;
  */
 public class RequestURIConverter extends AccessConverter {
 
-  public String convert(AccessEvent accessEvent) {
+  public String convert(IAccessEvent accessEvent) {
     return accessEvent.getRequestURI();
   }
 

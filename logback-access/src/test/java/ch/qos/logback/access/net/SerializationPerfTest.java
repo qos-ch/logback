@@ -16,9 +16,9 @@ package ch.qos.logback.access.net;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import junit.framework.TestCase;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
-import ch.qos.logback.access.spi.AccessEvent;
 
 public class SerializationPerfTest extends TestCase {
 
@@ -48,7 +48,7 @@ public class SerializationPerfTest extends TestCase {
     int pauseCounter = 0;
     for (int i = 0; i < loopNumber; i++) {
       try {
-        AccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
+        IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
         //average time for the next method: 5000 nanos
         ae.prepareForDeferredProcessing();
         oos.writeObject(ae);
@@ -76,7 +76,7 @@ public class SerializationPerfTest extends TestCase {
     // System.out.println("Beginning mesured run");
     for (int i = 0; i < loopNumber; i++) {
       try {
-        AccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
+        IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
         t1 = System.nanoTime();
         //average length of the next method: 4000 nanos
         ae.prepareForDeferredProcessing();

@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.access.pattern;
 
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.spi.ContextAware;
@@ -21,7 +21,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.Status;
 
 
-abstract public class AccessConverter extends DynamicConverter<AccessEvent> implements ContextAware {
+abstract public class AccessConverter extends DynamicConverter<IAccessEvent> implements ContextAware {
 
   public final static char SPACE_CHAR = ' ';
   public final static char QUESTION_CHAR = '?';

@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.access.jetty.RequestLogImpl;
-import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -77,18 +77,18 @@ public class SiftingAppenderTest {
 
     long now = System.currentTimeMillis();
     {
-      ListAppender<AccessEvent> listAppender = (ListAppender<AccessEvent>) siftingAppender
+      ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
           .getAppenderTracker().get("NA", now);
       assertEquals(1, listAppender.list.size());
     }
     
     {
-      ListAppender<AccessEvent> listAppender = (ListAppender<AccessEvent>) siftingAppender
+      ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
           .getAppenderTracker().get("x", now);
       assertEquals(2, listAppender.list.size());
     }
     {
-      ListAppender<AccessEvent> listAppender = (ListAppender<AccessEvent>) siftingAppender
+      ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
           .getAppenderTracker().get("y", now);
       assertEquals(1, listAppender.list.size());
     }

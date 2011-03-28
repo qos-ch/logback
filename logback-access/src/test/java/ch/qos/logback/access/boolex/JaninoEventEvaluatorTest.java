@@ -17,12 +17,11 @@ package ch.qos.logback.access.boolex;
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
-import ch.qos.logback.access.net.URLEvaluator;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.boolex.EvaluationException;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +52,7 @@ public class JaninoEventEvaluatorTest {
   public void smoke() throws EvaluationException {
     evaluator.setExpression("event.getProtocol().equals(\"testProtocol\")");
     evaluator.start();
-    AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
     assertTrue( evaluator.evaluate(ae));
   }
 
@@ -62,7 +61,7 @@ public class JaninoEventEvaluatorTest {
     evaluator.setExpression("String protocol = event.getProtocol();" +
             "return protocol.equals(\"testProtocol\");");
     evaluator.start();
-    AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
     assertTrue(evaluator.evaluate(ae));
   }
 
@@ -70,7 +69,7 @@ public class JaninoEventEvaluatorTest {
   public void invalidExpression() throws EvaluationException {
     evaluator.setExpression("return true");
     evaluator.start();
-    AccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
    try {
      evaluator.evaluate(ae);
      fail("Was expecting an exception");
