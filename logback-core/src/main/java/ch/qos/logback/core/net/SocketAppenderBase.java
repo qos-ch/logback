@@ -135,8 +135,10 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       if (reconnectionDelay > 0) {
         msg += " We will try again later.";
         fireConnector(); // fire the connector thread
+        addInfo(msg, e);
+      } else {
+        addWarn(msg, e);
       }
-      addWarn(msg, e);
     }
   }
 
