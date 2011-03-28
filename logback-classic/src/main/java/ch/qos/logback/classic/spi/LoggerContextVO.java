@@ -47,6 +47,12 @@ public class LoggerContextVO implements Serializable {
     this.birthTime = lc.getBirthTime();
   }
 
+  public LoggerContextVO(String name, Map<String,String> propertyMap, long birthTime) {
+    this.name = name;
+    this.propertyMap = propertyMap;
+    this.birthTime = birthTime;
+  }
+
   public String getName() {
     return name;
   }
