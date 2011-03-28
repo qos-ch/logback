@@ -38,7 +38,7 @@ class LBCORE_199 extends RollingScaffolding {
   def smoke() {
     println("ba")
     initRFA("toto.log")
-    fwrp.setFileNamePattern("tests.%i.log.gz")
+    fwrp.setFileNamePattern("tests.%i.log.zip")
     fwrp.minIndex = 1
     fwrp.maxIndex = 3
     fwrp.setParent(rfa)

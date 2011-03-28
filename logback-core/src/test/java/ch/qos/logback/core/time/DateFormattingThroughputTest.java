@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-@Ignore
 public class DateFormattingThroughputTest {
 
 
@@ -30,7 +29,7 @@ public class DateFormattingThroughputTest {
     SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
     RunnableWithCounterAndDone[] sdfRunnables = buildSDFRunnables(sdf);
     tp.execute(sdfRunnables);
-    tp.printThroughput("SDF with synchronization:   ", true);
+    tp.printThroughput("SDF with synchronization:   ", false);
   }
 
   RunnableWithCounterAndDone[] buildSDFRunnables(SimpleDateFormat sdf) {
@@ -49,7 +48,7 @@ public class DateFormattingThroughputTest {
     DateTimeFormatter fmt = DateTimeFormat.forPattern(PATTERN);
     RunnableWithCounterAndDone[] yodaRunnables = buildYodaRunnables(fmt);
     tp.execute(yodaRunnables);
-    tp.printThroughput("Yoda:   ", true);
+    tp.printThroughput("Yoda:   ", false);
   }
 
   RunnableWithCounterAndDone[] buildYodaRunnables(DateTimeFormatter fmt) {
@@ -64,6 +63,7 @@ public class DateFormattingThroughputTest {
   class SDFRunnabable extends RunnableWithCounterAndDone {
 
     SimpleDateFormat sdf;
+    long lasttime = -1;
 
     SDFRunnabable(SimpleDateFormat sdf) {
       this.sdf = sdf;
@@ -71,10 +71,16 @@ public class DateFormattingThroughputTest {
 
     public void run() {
       while (!done) {
-        synchronized (sdf) {
-          sdf.format(new Date());
-        }
         counter++;
+        long now = System.currentTimeMillis();
+        if (now == lasttime) {
+
+        } else {
+          lasttime = now;
+          synchronized (sdf) {
+            sdf.format(new Date());
+          }
+        }
       }
     }
   }
@@ -82,6 +88,7 @@ public class DateFormattingThroughputTest {
   class YodaTimeRunnable extends RunnableWithCounterAndDone {
 
     DateTimeFormatter yodaDTFt;
+    long lasttime = -1;
 
     YodaTimeRunnable(DateTimeFormatter dtf) {
       this.yodaDTFt = dtf;
@@ -89,9 +96,13 @@ public class DateFormattingThroughputTest {
 
     public void run() {
       while (!done) {
-        long now = System.currentTimeMillis();
-        yodaDTFt.print(now);
         counter++;
+        long now = System.currentTimeMillis();
+        if (now == lasttime) {
+        } else {
+          lasttime = now;
+          yodaDTFt.print(now);
+        }
       }
     }
   }
