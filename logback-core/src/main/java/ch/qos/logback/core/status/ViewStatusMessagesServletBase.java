@@ -28,11 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.Transform;
+import ch.qos.logback.core.util.CachingDateFormatter;
 
 abstract public class ViewStatusMessagesServletBase extends HttpServlet {
 
   private static final long serialVersionUID = -3551928133801157219L;
-  private static SimpleDateFormat SDF = new SimpleDateFormat(
+  private static CachingDateFormatter SDF = new CachingDateFormatter(
       "yyyy-MM-dd HH:mm:ss");
 
   static String SUBMIT = "submit";

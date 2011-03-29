@@ -30,7 +30,8 @@ import java.text.SimpleDateFormat
 import ch.qos.logback.classic.turbo.TurboFilter
 import ch.qos.logback.core.CoreConstants
 import ch.qos.logback.core.util.ContextUtil
-import ch.qos.logback.core.joran.action.TimestampAction;
+import ch.qos.logback.core.joran.action.TimestampAction
+import ch.qos.logback.core.util.CachingDateFormatter;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -158,17 +159,17 @@ public class ConfigurationDelegate extends ContextAwareBase {
   }
 
   String timestamp(String datePattern, long timeReference = -1) {
-    Date reference = null;
+    long now = -1;
 
     if(timeReference == -1) {
       addInfo("Using current interpretation time, i.e. now, as time reference.");
-      reference = new Date()
+      now = System.currentTimeMillis()
     } else {
-      reference = new Date(timeReference)
-      addInfo("Using " + reference +" as time reference.");
+      now = timeReference
+      addInfo("Using " + now +" as time reference.");
     }
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    sdf.format(reference)
+    CachingDateFormatter sdf = new CachingDateFormatter(datePattern);
+    sdf.format(now)
   }
 }
 

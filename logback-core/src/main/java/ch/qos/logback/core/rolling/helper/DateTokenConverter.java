@@ -18,6 +18,7 @@ import java.util.Date;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.util.CachingDateFormatter;
 
 /**
  * Returns a date formatted by SimpleDateFormatter.
@@ -33,7 +34,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
   public static final String DEFAULT_DATE_PATTERN = CoreConstants.DAILY_DATE_PATTERN;
 
   private String datePattern;
-  private SimpleDateFormat sdf;
+  private CachingDateFormatter cdf;
 
   public DateTokenConverter() {
   }
@@ -43,11 +44,11 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
     if (this.datePattern == null) {
       this.datePattern = DEFAULT_DATE_PATTERN;
     }
-    sdf = new SimpleDateFormat(datePattern);
+    cdf = new CachingDateFormatter(datePattern);
   }
 
   public String convert(Date date) {
-    return sdf.format(date);
+    return cdf.format(date.getTime());
   }
 
   public String convert(Object o) {

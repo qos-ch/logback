@@ -14,8 +14,6 @@
 package ch.qos.logback.core.util;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class StatusPrinter {
 
   private static PrintStream ps = System.out;
 
-  static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+  static CachingDateFormatter cachingDateFormat = new CachingDateFormatter(
       "HH:mm:ss,SSS");
 
   public static void setPrintStream(PrintStream printStream) {
@@ -151,9 +149,8 @@ public class StatusPrinter {
       prefix = indentation + "|-";
     }
 
-    if (simpleDateFormat != null) {
-      Date date = new Date(s.getDate());
-      String dateStr = simpleDateFormat.format(date);
+    if (cachingDateFormat != null) {
+      String dateStr = cachingDateFormat.format(s.getDate());
       sb.append(dateStr).append(" ");
     }
     sb.append(prefix).append(s).append(CoreConstants.LINE_SEPARATOR);

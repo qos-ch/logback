@@ -357,6 +357,7 @@
               org.xml.*;resolution:=optional,
               org.slf4j, ch.qos.logback.core.rolling, 
               ch.qos.logback.core.rolling.helper,
+              ch.qos.logback.core.util,
               org.codehaus.groovy.*;resolution:=optional,
               groovy.lang.*;resolution:=optional,
               *

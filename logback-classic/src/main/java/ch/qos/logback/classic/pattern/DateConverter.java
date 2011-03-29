@@ -20,12 +20,13 @@ import java.util.TimeZone;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.CachingDateFormatter;
 
 public class DateConverter extends ClassicConverter {
 
   long lastTimestamp = -1;
   String timestampStrCache = null;
-  SimpleDateFormat simpleFormat = null;
+  CachingDateFormatter cachingDateFormatter = null;
 
   public void start() {
 
@@ -40,14 +41,14 @@ public class DateConverter extends ClassicConverter {
     }
 
     try {
-      simpleFormat = new SimpleDateFormat(datePattern);
+      cachingDateFormatter = new CachingDateFormatter(datePattern);
       // maximumCacheValidity =
       // CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
       addWarn("Could not instantiate SimpleDateFormat with pattern "
           + datePattern, e);
       // default to the ISO8601 format
-      simpleFormat = new SimpleDateFormat(CoreConstants.ISO8601_PATTERN);
+      cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN);
     }
 
     List optionList = getOptionList();
@@ -55,25 +56,12 @@ public class DateConverter extends ClassicConverter {
     // if the option list contains a TZ option, then set it.
     if (optionList != null && optionList.size() > 1) {
       TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
-      simpleFormat.setTimeZone(tz);
+      cachingDateFormatter.setTimeZone(tz);
     }
   }
 
   public String convert(ILoggingEvent le) {
     long timestamp = le.getTimeStamp();
-
-    synchronized (this) {
-      // if called multiple times within the same millisecond
-      // return cache value
-      if (timestamp == lastTimestamp) {
-        return timestampStrCache;
-      } else {
-        lastTimestamp = timestamp;
-        // SimpleDateFormat is not thread safe. 
-        // See also http://jira.qos.ch/browse/LBCLASSIC-36
-        timestampStrCache = simpleFormat.format(new Date(timestamp));
-        return timestampStrCache;
-      }
-    }
+    return cachingDateFormatter.format(timestamp);
   }
 }

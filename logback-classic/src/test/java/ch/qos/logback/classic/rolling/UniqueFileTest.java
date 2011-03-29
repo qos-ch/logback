@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.qos.logback.core.util.CachingDateFormatter;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -51,8 +52,8 @@ public class UniqueFileTest {
   @Test
   public void basic() throws Exception {
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "unique.xml");
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    String timestamp = sdf.format(new Date()); 
+    CachingDateFormatter sdf = new CachingDateFormatter("yyyyMMdd'T'HHmmss");
+    String timestamp = sdf.format(System.currentTimeMillis());
     
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree());

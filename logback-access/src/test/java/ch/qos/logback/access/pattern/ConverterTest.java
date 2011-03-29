@@ -63,7 +63,7 @@ public class ConverterTest  {
     DateConverter converter = new DateConverter();
     converter.start();
     String result = converter.convert(event);
-    assertEquals(converter.simpleFormat.format(event.getTimeStamp()), result);
+    assertEquals(converter.cachingDateFormatter.format(event.getTimeStamp()), result);
   }
 
   public void testLineLocalPortConverter() {

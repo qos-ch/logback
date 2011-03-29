@@ -14,15 +14,15 @@
 package ch.qos.logback.core.rolling
 
 import ch.qos.logback.core.{ContextBase, Context}
-import ch.qos.logback.core.util.CoreTestConstants
 import ch.qos.logback.core.testUtil.RandomUtil
 import java.util.{Date, Calendar}
 import java.util.concurrent.TimeUnit
 import java.text.SimpleDateFormat
+import ch.qos.logback.core.util.{CachingDateFormatter, CoreTestConstants}
 
 trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"
-  final val SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS)
+  final val SDF = new CachingDateFormatter(DATE_PATTERN_WITH_SECONDS)
   private[rolling] var context: Context = new ContextBase
   private[rolling] var diff: Int = RandomUtil.getPositiveInt
   protected var currentTime: Long = 0L
@@ -52,7 +52,7 @@ trait RollingScaffolding {
   }
 
   protected def addExpectedFileName_ByDate(outputDir: String, testId: String, date: Date, gzExtension: Boolean): Unit = {
-    var fn: String = outputDir + testId + "-" + SDF.format(date)
+    var fn: String = outputDir + testId + "-" + SDF.format(date.getTime)
     if (gzExtension) {
       fn += ".gz"
     }

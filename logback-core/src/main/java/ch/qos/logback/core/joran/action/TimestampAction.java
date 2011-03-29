@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.action;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.qos.logback.core.util.CachingDateFormatter;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.ActionException;
@@ -53,12 +54,12 @@ public class TimestampAction extends Action {
     }
 
     String timeReferenceStr = attributes.getValue(TIME_REFERENCE_ATTRIBUTE);
-    Date timeReference = null;
+    long timeReference = -1;
     if (CONTEXT_BIRTH.equalsIgnoreCase(timeReferenceStr)) {
       addInfo("Using context birth as time reference.");
-      timeReference = new Date(context.getBirthTime());
+      timeReference = context.getBirthTime();
     } else {
-      timeReference =  new Date();
+      timeReference =  System.currentTimeMillis();
       addInfo("Using current interpretation time, i.e. now, as time reference.");
     }
 
@@ -66,7 +67,7 @@ public class TimestampAction extends Action {
     if (inError)
       return;
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePatternStr);
+    CachingDateFormatter sdf = new CachingDateFormatter(datePatternStr);
     String val = sdf.format(timeReference);
 
     addInfo("Adding property to the context with key=\"" + keyStr

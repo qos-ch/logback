@@ -23,6 +23,7 @@ import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -315,8 +316,8 @@ public class JoranConfiguratorTest {
 
     String r = loggerContext.getProperty("testTimestamp");
     assertNotNull(r);
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-    String expected = sdf.format(new Date());
+    CachingDateFormatter sdf = new CachingDateFormatter("yyyy-MM");
+    String expected = sdf.format(System.currentTimeMillis());
     assertEquals("expected \"" + expected + "\" but got " + r, expected, r);
   }
 
