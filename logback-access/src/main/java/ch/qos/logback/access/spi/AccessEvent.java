@@ -121,7 +121,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
   public String getRequestURI() {
     if (requestURI == null) {
-      if (httpRequest != null) {
+      if (httpRequest != null && httpRequest.getRequestURI() != null) {
         requestURI = httpRequest.getRequestURI();
       } else {
         requestURI = NA;
@@ -170,7 +170,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
   public String getRemoteUser() {
     if (remoteUser == null) {
-      if (httpRequest != null) {
+      if (httpRequest != null && httpRequest.getRemoteUser() != null) {
         remoteUser = httpRequest.getRemoteUser();
       } else {
         remoteUser = NA;
