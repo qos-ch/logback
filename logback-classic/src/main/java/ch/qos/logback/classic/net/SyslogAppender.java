@@ -31,7 +31,7 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
  * more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SyslogAppender
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 

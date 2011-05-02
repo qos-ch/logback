@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class MockSyslogServer extends Thread {
 

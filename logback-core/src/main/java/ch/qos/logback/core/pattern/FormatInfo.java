@@ -45,7 +45,7 @@ public class FormatInfo {
    * a FormatInfo.
    * 
    * @param str A String to convert into a FormatInfo object
-   * @return A newly created and approprioately initialized FormatInfo object.
+   * @return A newly created and appropriately initialized FormatInfo object.
    * @throws IllegalArgumentException
    */
   public static FormatInfo valueOf(String str) throws IllegalArgumentException {

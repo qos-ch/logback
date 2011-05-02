@@ -16,7 +16,7 @@ package ch.qos.logback.core.boolex;
 /**
  * This exception wraps exceptions thrown while evaluating events.
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class EvaluationException extends Exception {
 

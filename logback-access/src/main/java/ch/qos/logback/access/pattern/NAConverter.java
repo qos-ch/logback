@@ -19,7 +19,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
  * Always returns the NA (not available) string which is "-" in the case
  * of access conversions. 
  *
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class NAConverter extends AccessConverter {
   

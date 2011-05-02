@@ -20,7 +20,7 @@ import java.io.InputStream;
 /**
  * Keep the file "output/test.log open for 10 seconds so that we can test
  * RollingFileAppender's ability to roll file open by another process.
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class FileOpener {
   public static void main(String[] args) throws Exception {

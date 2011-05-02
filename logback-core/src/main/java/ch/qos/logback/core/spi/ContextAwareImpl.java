@@ -25,7 +25,7 @@ import ch.qos.logback.core.status.WarnStatus;
  * A helper class that implements ContextAware methods. Use this class to
  * implement the ContextAware interface by composition.
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class ContextAwareImpl implements ContextAware {
 

@@ -69,7 +69,7 @@ public class Transform {
   
 
   /**
-   * Ensures that embeded CDEnd strings (]]>) are handled properly within
+   * Ensures that embedded CDEnd strings (]]>) are handled properly within
    * message, NDC and throwable tag text.
    * 
    * @param output

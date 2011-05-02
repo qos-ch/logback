@@ -39,7 +39,7 @@ import ch.qos.logback.core.status.WarnStatus;
 /**
  * LoggerContext glues many of the logback-classic components together. In
  * principle, every logback-classic component instance is attached either
- * directly or indirecty to a LoggerContext instance. Just as importantly
+ * directly or indirectly to a LoggerContext instance. Just as importantly
  * LoggerContext implements the {@link ILoggerFactory} acting as the
  * manufacturing source of {@link Logger} instances.
  * 

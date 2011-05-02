@@ -18,7 +18,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 /**
  * The request URI.
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class RequestURIConverter extends AccessConverter {
 

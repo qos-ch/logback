@@ -30,7 +30,7 @@ public class LoggerContextAwareBase extends ContextAwareBase implements LoggerCo
 
   public void setContext(Context context) {
     // check that the context is of type LoggerContext. Otherwise, throw an exception
-    // Context == null is a degenarate case but nonetheless permitted.
+    // Context == null is a degenerate case but nonetheless permitted.
     if(context instanceof LoggerContext || context == null) {
       super.setContext(context);
     } else {

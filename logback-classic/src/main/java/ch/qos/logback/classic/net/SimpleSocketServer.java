@@ -101,7 +101,7 @@ public class SimpleSocketServer extends Thread {
   }
 
   /**
-   * Signal another thread that we have established a conneciton
+   * Signal another thread that we have established a connection
    *  This is useful for testing purposes.
    */
   void signalAlmostReadiness() {

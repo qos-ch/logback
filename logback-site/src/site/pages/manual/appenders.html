@@ -993,7 +993,7 @@ public interface RollingPolicy extends LifeCycle {
 	 class="option">fileNamePattern</span>. By leaving the <span
 	 class="option">file</span> option unset you can avoid file <a
 	 href="../codes.html#renamingError">renaming errors</a> which occur
-	 while there exist external file handles refrencing log files during
+	 while there exist external file handles referencing log files during
 	 roll over.
    </p>
 	
@@ -2355,7 +2355,7 @@ logger.error(<b>notifyAdmin</b>,
     href="#smtpDiscriminator">SMTPAppender with
     MDCDiscriminator</a></h3>
 
-    <p>As mentioned earlier, by specifiying a discriminator other than
+    <p>As mentioned earlier, by specifying a discriminator other than
     the default one, <code>SMTPAppender</code> will generate email
     messages containing events pertaining to a particular user, user
     session or client IP address, depending on the specified discriminator.
@@ -2406,7 +2406,7 @@ logger.error(<b>notifyAdmin</b>,
     <h4><a name= "bufferManagement" href="#bufferManagement">On buffer
     management in very busy systems</a></h4>
 
-    <p>Internally, each distinct value returned by the disciminator
+    <p>Internally, each distinct value returned by the discriminator
     will cause the creation of a new cyclic buffer. However, at most
     <span class="option">maxNumberOfBuffers</span> (by default 64)
     will be maintained.  Whenever the number of buffers rises above
@@ -2437,7 +2437,7 @@ logger.error(<b>notifyAdmin</b>,
     512 or 1024 without risking running out of memory.
     </p>
 
-    <p>Thuse reare three distinct but complementary mechanisms working
+    <p>There are three distinct but complementary mechanisms working
     together to manage cyclic buffers. They ensure that only relevant
     buffers are kept alive at any given moment, even in very busy
     systems.</p>
@@ -3576,7 +3576,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     class="option">defaultValue</span> property is used.
     </p>
 
-    <p>The desginated AccessEvent field can be one of COOKIE,
+    <p>The designated AccessEvent field can be one of COOKIE,
     REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT,
     REQUEST_URI. Note that the first three fields require that the
     <span class="option">AdditionalKey</span> property also be
@@ -3609,7 +3609,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 
     <p>In the above configuration file, a <code>SiftingAppender</code>
     nests <code>FileAppender</code> instances. The key "id" is
-    designated as a variable which will be availabe to the nested
+    designated as a variable which will be available to the nested
     <code>FileAppender</code> instances. The default discriminator,
     namely <code>AccessEventDiscriminator</code>, will search for a
     "username" session attribute in each <code>AccessEvent</code>. If

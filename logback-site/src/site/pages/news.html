@@ -32,7 +32,7 @@
 
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBCLASSIC-254">LBCLASSIC-254</a>,
-    a performace issue in <code>LogbackMDCAdapter</code> as reported
+    a performance issue in <code>LogbackMDCAdapter</code> as reported
     by Michael Franz.</p>
 
     <p>Given that events reference a snapshot of the current MDC map,
@@ -43,14 +43,14 @@
     to fix LBCLASSIC-254</p>.
 
     <p><code>ConfigurationWatchList</code> no longer emits an error
-    message when it encouters a configuraton file placed in a jar
+    message when it encounters a configuration file placed in a jar
     file, fixing <a
     href="http://jira.qos.ch/browse/LBCLASSIC-246">LBCLASSIC-246</a>
     as reported by Joern Huxhorn.
     </p>
 
     <p>Logback now emits a clearer error message in case a conversion
-    pattern misses a closing parenthesis or if an openening
+    pattern misses a closing parenthesis or if an opening
     parenthesis is misplaced. This fixes <a
     href="http://jira.qos.ch/browse/LBCORE-193">LBCORE-193</a>
     reported by B. K. Oxley.</p>
@@ -78,7 +78,7 @@
     <p>In the <a
     href="apidocs/ch/qos/logback/core/Context.html">Context</a>
     interface, the previously misspelled property
-    <code>bithTime</code> ia now renamed as
+    <code>bithTime</code> is now renamed as
     <code>birthTime</code>. This is a backward-incompatible
     change. All pre-existing references to "bithTime" property now
     need to referenced as "birthTime".</p>
@@ -204,7 +204,7 @@
     <p>As reported in <a
     href="http://jira.qos.ch/browse/LBCORE-164">LBCORE-164</a>,
     <code>SizeAndTimeBasedFNATP</code> would cause previous logging
-    files with indexes over nine to be overwitten on application
+    files with indexes over nine to be overwritten on application
     restart. This complex bug was reported and precisely diagnosed by
     Dieter Mueller. He has also proposed a fix which was subsequently
     adopted as is.</p>
@@ -218,7 +218,7 @@
     null.</p>
 
     <p>Fixed issue with <code>SizeAndTimeBasedFNATP</code> in presence
-    of application stop/restart and non-null file proprety. This issue
+    of application stop/restart and non-null file property. This issue
     was reported by Tom Liu in <a
     href="http://jira.qos.ch/browse/LBCORE-131">LBCORE-131</a>.</p>
 
@@ -279,7 +279,7 @@
     which processes boolean expression written in the Groovy language.
     </p>
 
-    <p>Fixed rollover problem occuring when the target directory was
+    <p>Fixed rollover problem occurring when the target directory was
     missing as reported in <a
     href="http://jira.qos.ch/browse/LBCORE-151">LBCORE-151</a> by
     Torsten Juergeleit. A closely related problem was reported in <a
@@ -350,7 +350,7 @@
     encoders. <b>During a transition period, layouts passed as
     parameter will be automatically wrapped by an encoder so that
     configuration files in the old format (using a layout instead of
-    encoder) will continue to work unmodifed.</b>
+    encoder) will continue to work unmodified.</b>
     </p>
 
     </div>
@@ -422,7 +422,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     <p>Request header names in AccessEvent (logback-access) are now
     stored in a case insensitive way as specified in RFC 2616.  This
     prevents compatibility issues, in particular with recent versions
-    of Tomcat whcih store request header names in lower-case.</p>
+    of Tomcat which store request header names in lower-case.</p>
 
 
     <p>Fixed <a
@@ -517,10 +517,10 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     href="http://jira.qos.ch/browse/LBCLASSIC-165">LBCLASSIC-165</a>
     and <a
     href="http://jira.qos.ch/browse/LBCLASSIC-121">LBCLASSIC-121</a>
-    by applying the relavant patches supplied by Hugues Malphettes.
+    by applying the relevant patches supplied by Hugues Malphettes.
     </p>
 
-    <p>Made the OSGi import declerations for Janino and javax optional
+    <p>Made the OSGi import declarations for Janino and javax optional
     as proposed by David Varnes in <a
     href="http://jira.qos.ch/browse/LBCORE-101">LBCORE-101</a>.</p>
 
@@ -565,7 +565,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
 
     <p>When a logger is named after an inner class, the '$' is used as
     a separator, instead of the usual '.'. This fixes the level
-    inheritence issue described in <a
+    inheritance issue described in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-102">LBCLASSIC-102</a>
     and as reported by Joern Huxhorn.</p>
 
@@ -617,7 +617,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
 
 
     <p>The <code>TimeBasedTriggeringPolicy</code> has been heavily
-    refactored. It is now possible to trigger rolling simultaenously
+    refactored. It is now possible to trigger rolling simultaneously
     by <a href="manual/appenders.html#SizeAndTimeBasedFNATP">time and
     by size</a>, fixing <a
     href="http://jira.qos.ch/browse/LBCORE-61">LBCORE-61</a>.
@@ -744,7 +744,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     and the other for <a
     href="access.html#viewingStatusMessages">logback-access</a>.</p>
 
-    <p>Added the <code>clear()</code> mthod to the
+    <p>Added the <code>clear()</code> method to the
     <code>StatusManager</code> interface. After reconfiguration, it
     may be desirable to clear the status list maintained by a
     <code>StatusManager</code>. This change was requested by Alexis
@@ -917,7 +917,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     <code>NullPointerException</code> would be thrown.
     </p>
 
-    <p>In reponse to <a
+    <p>In response to <a
     href="http://jira.qos.ch/browse/LBCLASSIC-61">LBCLASSIC-61</a>, <a
     href="http://jira.qos.ch/browse/LBCLASSIC-33">LBCLASSIC-33</a>, <a
     href="http://jira.qos.ch/browse/LBCLASSIC-14">LBCLASSIC-24</a> and
@@ -928,7 +928,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     <p>Fixed <a
     href="http://jira.qos.ch/browse/LBGENERAL-22">LBGENERAL-22</a>. The
     <a href="http://logback.qos.ch/translator/">log4j.properties
-    translator</a> web-application has been significatnly refactored.
+    translator</a> web-application has been significantly refactored.
     </p>
 
     <p>Fixed improvement request <a
@@ -1002,7 +1002,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
 
   <p>Fixed <a
   href="http://jira.qos.ch/browse/LBCLASSIC-77">LBCLASSIC-77</a>
-  reported independenly by Gianni Doe, Yannick Haudry and Yossi Shaul.
+  reported independently by Gianni Doe, Yannick Haudry and Yossi Shaul.
   The childValue() method of <code>CopyOnInheritThreadLocal</code>
   class part of MDC code no longer throws a
   <code>NullPointerException</code>.
@@ -1020,13 +1020,13 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   <p>The LogbackValve in logback-access (ensuring integration with
   Tomcat), will now systematically print its internal status upon
   initialization, unless told to be quiet. This greatly helps
-  troubleshooting the configration of logback-access under Tomcat.
+  troubleshooting the configuration of logback-access under Tomcat.
   </p>
 
   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=147">bug
-  147</a> which occured when the user inadvertently attempted to set
+  147</a> which occurred when the user inadvertently attempted to set
   the layout of a <code>SyslogAppender</code>.  The code now actively
-  prevents this. Documenation has been updated to reflect the change.
+  prevents this. Documentation has been updated to reflect the change.
   </p>
 
   <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-56">bug
@@ -1038,7 +1038,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   href="http://svn.qos.ch/viewvc?view=rev&amp;revision=1678">now
   cleared</a> when the <code>reset</code>() method is called. This
   problem was reported on May 1st, 2008, by Julia Hu on the logback
-  developpers list.
+  developers list.
   </p>
 
   <!-- ========================== LB CORE ================== -->
@@ -1048,7 +1048,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   rollover, compression of large files would bring all logging to a
   halt. In this latest release, the rolled over file is first renamed,
   which is a relatively fast operation, and only then is the renamed
-  file compressed asyncronously (in a separate thread).
+  file compressed asynchronously (in a separate thread).
   </p>
 
   <p>Fixed issue <a
@@ -1118,8 +1118,8 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   <p>Fixed issue <a
   href="http://jira.qos.ch/browse/LBCLASSIC-68">LBCLASSIC-68</a>
   reported by Gili Tzabari. In environments where the TCCL (Thread
-  Context Class Laoder) was not set, logback was unable to located its
-  default configuraiton files. Logback now uses the class loader that
+  Context Class Loader) was not set, logback was unable to located its
+  default configuration files. Logback now uses the class loader that
   loaded logback itself to locate its resources instead of the
   TCCL. This approach is simpler and deemed to cover more
   environments, i.e. more widely applicable.
@@ -1141,7 +1141,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   </p>
 
   <p>Added a new TurboFilter called DynamicThresholdFilter which can
-  filter events depending on MDC values based on a variery of criteria
+  filter events depending on MDC values based on a variety of criteria
   such as company name, product or the end user. This filter was
   contributed by Ralph Goers in <a
   href="http://jira.qos.ch/browse/LBCLASSIC-53">LBCLASSIC-53</a>.  
@@ -1160,8 +1160,8 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   64</a> and independently by Peter Huber.
   </p>
   
-  <p>Logback no longer includes retro-weaver generted jars for JDK
-  1.4. There seemes to be little interest in JDK 1.4 builds. Calling
+  <p>Logback no longer includes retro-weaver generated jars for JDK
+  1.4. There seems to be little interest in JDK 1.4 builds. Calling
   retro-weaver increases logback's build time by a few seconds each
   time &ndash; seconds in which we can do more productive things.
   </p>
@@ -1220,7 +1220,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   <p>Fixed <a href="http://bugzilla.qos.ch/show_bug.cgi?id=52">bug
   52</a> reported by Kenichi Masuko. The bug has been fixed on March
   8th, 2007. Starting with this release, Joran will support the
-  injection of any enum tpye, not just <code>FilterReply</code>.
+  injection of any enum type, not just <code>FilterReply</code>.
   </p>
 
   <hr width="80%" align="center" />
@@ -1330,7 +1330,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   automatic initialization, it makes better sense to first check for
   <em>logback-test.xml</em> file and only if that fails, to check for
   <em>logback.xml</em>. Maven2 will guarantee that the
-  logback-test.xml file, if places undder test/resources will not be
+  logback-test.xml file, if places under test/resources will not be
   included in the artifact it produces.
   </p>
 
@@ -1349,7 +1349,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   </p>
     
   <p>The logback team released today the first version of a plugin for
-  Eclipse that allows developpers to visualize logs generated by a
+  Eclipse that allows developers to visualize logs generated by a
   running application.  It offers several nice features. Please check
   the <a href="consolePlugin.html">console plugin-in guide</a> for
   more details.
@@ -1490,7 +1490,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   <p>Version 0.7.1 of logback has been released.
   </p>
   
-  <p>This version contains more detailled information about logback
+  <p>This version contains more detailed information about logback
   access module, and its JMX components. A <a
   href="access.html">dedicated page</a> explains how to configure and
   use logback access in Tomcat and Jetty, and access some of its
@@ -1544,7 +1544,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   configuration examples has been added.
   </p>
 		
-  <p>Logback now uses continous integration in its development.
+  <p>Logback now uses continuous integration in its development.
   </p>
 		
   <p>Tests have been improved, many new have been added.  This release
@@ -1563,7 +1563,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   </p>
 
   <p>As in the previous release, a major area of work is the
-  documentation which is being continously improved.
+  documentation which is being continuously improved.
   </p>
 
   <hr width="80%" align="center" />
@@ -1584,7 +1584,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   explaining possible reasons for the error.
   </p>
 
-  <p>A joran documentation was added, with examples in the core
+  <p>Joran documentation was added, with examples in the core
   module.
   </p>
 	

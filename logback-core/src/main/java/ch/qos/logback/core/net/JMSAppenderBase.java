@@ -167,7 +167,7 @@ public abstract class JMSAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The paswword to use when creating a topic session.
+   * The password to use when creating a topic session.
    */
   public void setPassword(String password) {
     this.password = password;

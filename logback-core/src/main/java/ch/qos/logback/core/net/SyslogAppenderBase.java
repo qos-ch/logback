@@ -25,7 +25,7 @@ import ch.qos.logback.core.Layout;
 /**
  * Base class for SyslogAppender.
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * 
  * @param <E>
  */
@@ -201,7 +201,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The port number on the syslog server to connect to. Nornally, wou would not
+   * The port number on the syslog server to connect to. Normally, you would not
    * want to change the default value, that is 514.
    */
   public void setPort(int port) {
@@ -233,8 +233,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * The <b>suffixPattern</b> option specifies the fortmat of the
-   * non-standardized part the message sent to the syslog server.
+   * The <b>suffixPattern</b> option specifies the format of the
+   * non-standardized part of the message sent to the syslog server.
    * 
    * @param pattern
    */

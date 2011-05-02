@@ -263,7 +263,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    * 
    * <p>
    * It stops trying whenever a connection is established. It will restart to
-   * try reconnect to the server when previpously open connection is droppped.
+   * try reconnect to the server when previously open connection is dropped.
    * 
    * @author Ceki G&uuml;lc&uuml;
    * @since 0.8.4
