@@ -15,10 +15,12 @@
 package ch.qos.logback.core.net;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import ch.qos.logback.core.CoreConstants;
@@ -124,6 +126,7 @@ public abstract class SocketAppenderBase<E> extends UnsynchronizedAppenderBase<E
 
     this.started = false;
     cleanUp();
+    performAdditionalCleanup(); // see comment on method
   }
 
   /**
@@ -317,6 +320,73 @@ public abstract class SocketAppenderBase<E> extends UnsynchronizedAppenderBase<E
   }
 
   /**
+   * This method performs additional cleanup to work around the issue described in LBCORE-205.
+   *
+   * The class java.io.ObjectStreamClass, which is used for serialization, has an internal class Caches
+   * that keeps SoftReferences to classes previously (de)serialized. This causes a semi-leak since it prevents
+   * unloading of those classes (and their classloader, including all other loaded classes) until memory is
+   * running really low, forcing the SoftReferences to be collected by the garbage collection.
+   *
+   * This, in turn, causes a leak warning in Tomcat 7 leak-detection.
+   * One could argue that this is a false positive since the webapp will, at some point, be completely collected.
+   *
+   * Regardless of this point, the fix below will, beside fixing the warning, relieve stress from the garbage
+   * collector, since the amount of memory kept by a webapp classloader can be quite significant.
+   * Freeing up those resources as soon as possible does make sense in any case.
+   *
+   * Calling the method below should be quite safe.
+   * All relevant exceptions (including SecurityException) are handled properly.
+   * Clearing the maps in Caches is a safe operation, too, since they are instances of ConcurrentMap and clear()
+   * is performed atomic. Sudden cleanup of those maps would occur "naturally" in case of low memory, anyway.
+   *
+   * The only small "downside" will be a little bit of slowdown in case of further (de)serialization directly
+   * afterwards since the caches will need to be repopulated.
+   */
+  private void performAdditionalCleanup() {
+    Throwable t=null;
+    String className = "java.io.ObjectStreamClass$Caches";
+    try {
+      Class clazz = Class.forName(className);
+      clearStaticMap(clazz, "localDescs");
+      clearStaticMap(clazz, "reflectors");
+    } catch (ClassNotFoundException e) {
+      t = e;
+    } catch (SecurityException e) {
+      t = e;
+    }
+
+    if(t != null) {
+      addWarn("Failed to perform cleanup. Could not load class "+className+".", t);
+    }
+  }
+
+
+  private void clearStaticMap(Class clazz, String fieldName) {
+    Throwable t=null;
+    try {
+      Field field = clazz.getDeclaredField(fieldName);
+      field.setAccessible(true);
+      Object value = field.get(null);
+      if(value instanceof Map) {
+        Map map = (Map) value;
+        map.clear();
+        addInfo("Cleared map '"+fieldName+"' of class "+clazz.getName()+".");
+      } else {
+        addWarn("Failed to clear field '" + fieldName +"' of class " + clazz.getName()+". Field is not a map but " + value + ".");
+      }
+    } catch (NoSuchFieldException e) {
+      t = e;
+    } catch (IllegalAccessException e) {
+      t = e;
+    } catch (SecurityException e) {
+      t = e;
+    }
+    if(t != null) {
+      addWarn("Failed to clear field '" + fieldName +"' of class " + clazz.getName()+".");
+    }
+  }
+
+  /**
    * The Connector will reconnect when the server becomes available again. It
    * does this by attempting to open a new connection every
    * <code>reconnectionDelay</code> milliseconds.
@@ -360,5 +430,4 @@ public abstract class SocketAppenderBase<E> extends UnsynchronizedAppenderBase<E
      * called."); }
      */
   }
-
 }
