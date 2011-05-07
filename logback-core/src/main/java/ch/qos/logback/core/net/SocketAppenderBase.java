@@ -14,14 +14,15 @@
 // Contributors: Dan MacDonald <dan@redknee.com>
 package ch.qos.logback.core.net;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicReference;
 
-import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -30,19 +31,25 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
+ * @author J&ouml;rn Huxhorn
  */
 
-public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
-
+public abstract class SocketAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
+  private static final int MAX_PORT = 65535;
   /**
    * The default port number of remote logging server (4560).
    */
-  static final int DEFAULT_PORT = 4560;
+  public static final int DEFAULT_PORT = 4560;
 
   /**
    * The default reconnection delay (30000 milliseconds or 30 seconds).
    */
-  static final int DEFAULT_RECONNECTION_DELAY = 30000;
+  public static final int DEFAULT_RECONNECTION_DELAY = 30000;
+
+  /**
+   * The default connection timeout (10000 milliseconds or 10 seconds).
+   */
+  private static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
 
   /**
    * We remember host name as String in addition to the resolved InetAddress so
@@ -50,14 +57,15 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    */
   protected String remoteHost;
 
-  protected InetAddress address;
   protected int port = DEFAULT_PORT;
-  protected ObjectOutputStream oos;
-  protected int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+  private final AtomicReference<ObjectOutputStream> atomicOutputStream=new AtomicReference<ObjectOutputStream>();
 
-  private Connector connector;
+  private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
 
-  protected int counter = 0;
+  private Thread connectorThread;
+
+  private int counter = 0;
+  private int connectionTimeout=DEFAULT_CONNECTION_TIMEOUT;
 
   /**
    * Start this appender.
@@ -71,14 +79,31 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
           + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
     }
 
-    if (address == null) {
+    if (port > MAX_PORT) {
+      errorCount++;
+      addError("Invalid port " + port + " was configured for appender"
+          + name
+          + " For more information, please visit http://logback.qos.ch/codes.html#socket_invalid_port");
+    }
+
+    if (remoteHost == null) {
       errorCount++;
       addError("No remote address was configured for appender"
           + name
           + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
     }
 
-    connect(address, port);
+    cleanUp();
+    try {
+      closeAndIgnore(atomicOutputStream.getAndSet(createOutputStream()));
+    } catch (IOException e) {
+      String msg = "Could not connect to remote logback server at ["  + remoteHost + "].";
+      if (reconnectionDelay > 0) {
+        msg += " We will try again later.";
+        fireConnector(); // fire the connector thread
+      }
+      addInfo(msg, e);
+    }
 
     if (errorCount == 0) {
       this.started = true;
@@ -105,38 +130,47 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    * Drop the connection to the remote host and release the underlying connector
    * thread if it has been created
    */
-  public void cleanUp() {
-    if (oos != null) {
-      try {
-        oos.close();
-      } catch (IOException e) {
-        addError("Could not close oos.", e);
-      }
-      oos = null;
+  private void cleanUp() {
+    Thread t;
+    synchronized(this) {
+      t=connectorThread;
     }
-    if (connector != null) {
+
+    if (t != null) {
       addInfo("Interrupting the connector.");
-      connector.interrupted = true;
-      connector = null; // allow gc
+      t.interrupt();
+      try {
+        t.join();
+      } catch (InterruptedException e) {
+        // ignore
+      }
     }
+    
+    closeAndIgnore(atomicOutputStream.getAndSet(null));
   }
 
-  void connect(InetAddress address, int port) {
-    if (this.address == null)
-      return;
-    try {
-      // First, close the previous connection if any.
-      cleanUp();
-      oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
-    } catch (IOException e) {
 
-      String msg = "Could not connect to remote logback server at ["
-          + address.getHostName() + "].";
-      if (reconnectionDelay > 0) {
-        msg += " We will try again later.";
-        fireConnector(); // fire the connector thread
-      }
-      addInfo(msg, e);
+  private ObjectOutputStream createOutputStream() throws IOException {
+    if (this.remoteHost == null)
+      return null;
+    if (this.port <= 0 || this.port > MAX_PORT)
+      return null;
+
+    InetAddress address = getAddressByName(remoteHost);
+    if(address == null) {
+      return null;
+    }
+
+    Socket socket = new Socket();
+    SocketAddress socketAddress = new InetSocketAddress(address, port);
+
+    socket.connect(socketAddress, connectionTimeout);
+
+    try {
+         return new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+    } catch(IOException ex) {
+      socket.close();
+      throw ex;
     }
   }
 
@@ -146,39 +180,45 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     if (event == null)
       return;
 
-    if (address == null) {
-      addError("No remote host is set for SocketAppender named \""
-          + this.name
-          + "\". For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
-      return;
-    }
-
+    ObjectOutputStream oos = atomicOutputStream.get();
     if (oos != null) {
+      postProcessEvent(event);
+      Serializable serEvent = getPST().transform(event);
       try {
-        postProcessEvent(event);
-        Serializable serEvent = getPST().transform(event);
-        oos.writeObject(serEvent);
-        oos.flush();
-        if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
-          counter = 0;
-          // Failing to reset the object output stream every now and
-          // then creates a serious memory leak.
-          // System.err.println("Doing oos.reset()");
-          oos.reset();
-        }
-      } catch (IOException e) {
-        if (oos != null) {
-          try {
-            oos.close();
-          } catch (IOException ignore) {
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (oos) {
+          oos.writeObject(serEvent);
+          oos.flush();
+          if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
+            counter = 0;
+            // Failing to reset the object output stream every now and
+            // then creates a serious memory leak.
+            // System.err.println("Doing oos.reset()");
+            oos.reset();
           }
         }
-
-        oos = null;
+      } catch (IOException e) {
+        closeAndIgnore(oos);
+        closeAndIgnore(atomicOutputStream.getAndSet(null));
         addWarn("Detected problem with connection: " + e);
-        if (reconnectionDelay > 0) {
+        if (reconnectionDelay > 0 && started) {
+          // only create connector if reconnectionDelay has been defined
+          // and this appender has not already been stopped
           fireConnector();
         }
+      }
+    }
+  }
+
+  private void closeAndIgnore(ObjectOutputStream outputStream) {
+    if(outputStream != null) {
+      try {
+        outputStream.reset();
+      } catch (IOException ignore) {
+      }
+      try {
+        outputStream.close();
+      } catch (IOException ignore) {
       }
     }
   }
@@ -186,13 +226,12 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   protected abstract void postProcessEvent(E event);
   protected abstract PreSerializationTransformer<E> getPST();
 
-  void fireConnector() {
-    if (connector == null) {
+  private synchronized void fireConnector() {
+    if (connectorThread == null) {
       addInfo("Starting a new connector thread.");
-      connector = new Connector();
-      connector.setDaemon(true);
-      connector.setPriority(Thread.MIN_PRIORITY);
-      connector.start();
+      connectorThread = new Thread(new Connector(), name+" Connector");
+      connectorThread.setDaemon(true);
+      connectorThread.start();
     }
   }
 
@@ -209,7 +248,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    * The <b>RemoteHost</b> property takes the name of of the host where a corresponding server is running.
    */
   public void setRemoteHost(String host) {
-    address = getAddressByName(host);
     remoteHost = host;
   }
 
@@ -255,7 +293,29 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     return reconnectionDelay;
   }
 
-  
+  /**
+   * Returns value of the <b>connectionTimeout</b> property.
+   *
+   * @return the connection timeout in milliseconds.
+   */
+  public int getConnectionTimeout() {
+    return connectionTimeout;
+  }
+
+  /**
+   * The <b>connectionTimeout</b> property takes a positive integer representing
+   * the number of milliseconds until a connection attempt to a server timeouts.
+   * The default value of this option is 10000 which corresponds to 10 seconds.
+   *
+   * <p>
+   * A timeout of zero is interpreted as an infinite timeout. The connection
+   * will then block until established or an error occurs.
+   * @param connectionTimeout connection timeout in milliseconds
+   */
+  public void setConnectionTimeout(int connectionTimeout) {
+    this.connectionTimeout = connectionTimeout;
+  }
+
   /**
    * The Connector will reconnect when the server becomes available again. It
    * does this by attempting to open a new connection every
@@ -263,38 +323,34 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    * 
    * <p>
    * It stops trying whenever a connection is established. It will restart to
-   * try reconnect to the server when previpously open connection is droppped.
+   * try reconnect to the server when previously open connection is dropped.
    * 
    * @author Ceki G&uuml;lc&uuml;
    * @since 0.8.4
    */
-  class Connector extends Thread {
-
-    boolean interrupted = false;
+  class Connector implements Runnable {
 
     public void run() {
-      Socket socket;
-      while (!interrupted) {
+      for(;;) {
         try {
-          sleep(reconnectionDelay);
-          addInfo("Attempting connection to " + address.getHostName());
-          socket = new Socket(address, port);
-          synchronized (this) {
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            connector = null;
-            addInfo("Connection established. Exiting connector thread.");
-            break;
-          }
+          Thread.sleep(reconnectionDelay);
+          addInfo("Attempting connection to " + remoteHost);
+          closeAndIgnore(atomicOutputStream.getAndSet(createOutputStream()));
+          addInfo("Connection established. Exiting connector thread.");
+          break;
         } catch (InterruptedException e) {
           addInfo("Connector interrupted. Leaving loop.");
-          return;
+          break;
         } catch (java.net.ConnectException e) {
-          addInfo("Remote host " + address.getHostName()
-              + " refused connection.");
+          closeAndIgnore(atomicOutputStream.getAndSet(null));
+          addInfo("Remote host " + remoteHost + " refused connection.");
         } catch (IOException e) {
-          addInfo("Could not connect to " + address.getHostName()
-              + ". Exception is " + e);
+          closeAndIgnore(atomicOutputStream.getAndSet(null));          
+          addInfo("Could not connect to " + remoteHost + ". Exception is " + e);
         }
+      }
+      synchronized(SocketAppenderBase.this) {
+        connectorThread = null;
       }
       // addInfo("Exiting Connector.run() method.");
     }
