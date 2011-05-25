@@ -13,11 +13,16 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,12 +35,10 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
- * 
  * Do not forget to call start() when configuring programatically.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
  */
 public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
 
@@ -45,13 +48,13 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     super.setUp();
     {
       File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX
-          + "sizeBased-smoke.log");
+              + "sizeBased-smoke.log");
       target.mkdirs();
       target.delete();
     }
     {
       File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX
-          + "sbr-test3.log");
+              + "sbr-test3.log");
       target.mkdirs();
       target.delete();
     }
@@ -83,7 +86,7 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     sbtp.setMaxFileSize("100");
     sbtp.start();
     fwrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX
-        + "sizeBased-test1.%i");
+            + "sizeBased-test1.%i");
     try {
       fwrp.start();
       fail("The absence of activeFileName option should have caused an exception.");
@@ -125,7 +128,7 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     String prefix = "hello";
     for (int i = 0; i < runLength; i++) {
       Thread.sleep(10);
-      rfa.doAppend(prefix+i);
+      rfa.doAppend(prefix + i);
     }
 
     expectedFilenameList.add(randomOutputDir + "a-sizeBased-smoke.log");
@@ -167,12 +170,12 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     String prefix = "hello";
     for (int i = 0; i < runLength; i++) {
       Thread.sleep(10);
-      rfa.doAppend("hello"+i);
+      rfa.doAppend("hello" + i);
     }
 
-    expectedFilenameList.add(randomOutputDir        + "a-sbr-test3.log");
-    expectedFilenameList.add(randomOutputDir        + "sbr-test3.0.gz");
-    expectedFilenameList.add(randomOutputDir        + "sbr-test3.1.gz");
+    expectedFilenameList.add(randomOutputDir + "a-sbr-test3.log");
+    expectedFilenameList.add(randomOutputDir + "sbr-test3.0.gz");
+    expectedFilenameList.add(randomOutputDir + "sbr-test3.1.gz");
 
     existenceCheck(expectedFilenameList);
     reverseSortedContentCheck(randomOutputDir, runLength, prefix);
@@ -206,11 +209,11 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
     String prefix = "hello";
     for (int i = 0; i < runLength; i++) {
       Thread.sleep(10);
-      rfa.doAppend("hello"+i);
+      rfa.doAppend("hello" + i);
     }
-    expectedFilenameList.add(randomOutputDir        + "a-sbr-test3.log");
-    expectedFilenameList.add(randomOutputDir        + "sbr-test3.0.zip");
-    expectedFilenameList.add(randomOutputDir        + "sbr-test3.1.zip");
+    expectedFilenameList.add(randomOutputDir + "a-sbr-test3.log");
+    expectedFilenameList.add(randomOutputDir + "sbr-test3.0.zip");
+    expectedFilenameList.add(randomOutputDir + "sbr-test3.1.zip");
 
     existenceCheck(expectedFilenameList);
     reverseSortedContentCheck(randomOutputDir, runLength, prefix);
@@ -219,17 +222,25 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
 
   }
 
-  private void zipEntryNameCheck(List<String> expectedFilenameList) {
-    for(String filepath: expectedFilenameList) {
-      if(filepath.endsWith(".zip")) {
-        checkZipEntyName(filepath, "sbr-test3.%i.zip");
+  private void zipEntryNameCheck(List<String> expectedFilenameList) throws IOException {
+    for (String filepath : expectedFilenameList) {
+      if (filepath.endsWith(".zip")) {
+        checkZipEntryName(filepath, "sbr-test3.%i.zip");
       }
     }
   }
 
   SimpleDateFormat SDF = new SimpleDateFormat();
-  private void checkZipEntyName(String filepath, String pattern) {
-      fail("to be continued");
+
+  private void checkZipEntryName(String filepath, String pattern) throws IOException {
+    System.out.println("Checking ["+filepath+"]");
+    ZipFile zf = new ZipFile(filepath);
+    Enumeration entries = zf.entries();
+    assert(entries.hasMoreElements());
+    ZipEntry firstZipEntry = (ZipEntry) entries.nextElement();
+    assert(!entries.hasMoreElements());
+    System.out.println("Testing zip entry ["+firstZipEntry.getName()+"]");
+    assertTrue(firstZipEntry.getName().matches("sbr-test3.20\\d{2}-\\d{2}-\\d{2}_\\d{4}"));
 
   }
 }

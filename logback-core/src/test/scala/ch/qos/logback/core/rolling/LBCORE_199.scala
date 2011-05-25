@@ -36,7 +36,6 @@ class LBCORE_199 extends RollingScaffolding {
 
   @Test
   def smoke() {
-    println("ba")
     initRFA("toto.log")
     fwrp.setFileNamePattern("tests.%i.log.zip")
     fwrp.minIndex = 1

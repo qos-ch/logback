@@ -37,6 +37,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   RenameUtil util = new RenameUtil();
   Compressor compressor;
 
+  public static String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
+
   /**
    * It's almost always a bad idea to have a large window size, say over 12.
    */
@@ -104,7 +106,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   private String transformFileNamePatternFromInt2Date(String fileNamePatternStr) {
     String slashified = FileFilterUtil.slashify(fileNamePatternStr);
     String stemOfFileNamePattern = FileFilterUtil.afterLastSlash(slashified);
-    return stemOfFileNamePattern.replace("%i", "%d");
+    return stemOfFileNamePattern.replace("%i", "%d{"+ZIP_ENTRY_DATE_PATTERN+"}");
   }
 
   public void rollover() throws RolloverFailure {
