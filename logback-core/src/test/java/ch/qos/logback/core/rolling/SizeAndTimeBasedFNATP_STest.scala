@@ -13,9 +13,15 @@
  */
 package ch.qos.logback.core.rolling
 
+import org.junit.Test
+
 /**
  * @author Ceki G&uuml;c&uuml;
 */
 class SizeAndTimeBasedFNATP_STest {
 
+  @Test
+  def x() {
+
+  }
 }
