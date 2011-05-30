@@ -50,13 +50,18 @@ trait RollingScaffolding {
     currentTime += increment
   }
 
+  protected def getMillisOfCurrentPeriodsStart: Long = {
+    var delta: Long = currentTime % 1000
+    return (currentTime - delta)
+  }
+
   protected def getDateOfCurrentPeriodsStart: Date = {
     var delta: Long = currentTime % 1000
     return new Date(currentTime - delta)
   }
 
-  protected def addExpectedFileName_ByDate(outputDir: String, testId: String, date: Date, gzExtension: Boolean): Unit = {
-    var fn: String = outputDir + testId + "-" + SDF.format(date.getTime)
+  protected def addExpectedFileName_ByDate(outputDir: String, testId: String, millis: Long, gzExtension: Boolean): Unit = {
+    var fn: String = outputDir + testId + "-" + SDF.format(millis)
     if (gzExtension) {
       fn += ".gz"
     }
@@ -66,7 +71,7 @@ trait RollingScaffolding {
 
   protected def addExpectedFileNamedIfItsTime_ByDate(outputDir: String, testId: String, gzExtension: Boolean): Unit = {
     if (passThresholdTime(nextRolloverThreshold)) {
-      addExpectedFileName_ByDate(outputDir, testId, getDateOfCurrentPeriodsStart, gzExtension)
+      addExpectedFileName_ByDate(outputDir, testId, getMillisOfCurrentPeriodsStart, gzExtension)
       nextRolloverThreshold = recomputeRolloverThreshold(currentTime)
     }
   }
@@ -100,7 +105,7 @@ trait RollingScaffolding {
   // =========================================================================
   private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String): Unit = {
     expectedFilenameList = expectedFilenameList.dropRight(1)
-    expectedFilenameList =  expectedFilenameList ::: List(randomOutputDir + file)
+    expectedFilenameList = expectedFilenameList ::: List(file) 
   }
 
   def existenceCheck(filenameList: List[String]): Unit = {
@@ -114,7 +119,13 @@ trait RollingScaffolding {
     return outputDir.listFiles
   }
 
-  def reverseSortedContentCheck(outputDirStr: String, runLength: Int, prefix: String): Unit = {
+  def sortedContentCheck(outputDirStr: String, runLength: Int, prefix: String) {
+    var fileArray: Array[File] = getFilesInDirectory(outputDirStr)
+    FileFilterUtil.sortFileArrayByName(fileArray)
+    fileContentCheck(fileArray, runLength, prefix)
+  }
+   
+  def reverseSortedContentCheck(outputDirStr: String, runLength: Int, prefix: String) {
     var fileArray: Array[File] = getFilesInDirectory(outputDirStr)
     FileFilterUtil.reverseSortFileArrayByName(fileArray)
     fileContentCheck(fileArray, runLength, prefix)
@@ -127,7 +138,7 @@ trait RollingScaffolding {
       FileToBufferUtil.readIntoList(file, stringList)
     }
     var witnessList: List[String] = Nil
-    for(i <- 0 until runLength) {
+    for (i <- 0 until runLength) {
       witnessList = (prefix + i) :: witnessList
     }
     witnessList = witnessList.reverse

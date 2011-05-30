@@ -1,25 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
- 
+
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
   <version>0.9.29-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
-  
+
   <url>http://logback.qos.ch</url>
-  
+
   <organization>
     <name>QOS.ch</name>
     <url>http://www.qos.ch</url>
   </organization>
   <inceptionYear>2005</inceptionYear>
-    
-  
- 
+
+
   <modules>
     <module>logback-core</module>
     <module>logback-classic</module>
@@ -28,7 +27,7 @@
     <module>logback-examples</module>
   </modules>
 
- <properties>
+  <properties>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
     <slf4j.version>1.6.1</slf4j.version>
@@ -37,7 +36,7 @@
     <scala.version>2.9.0</scala.version>
     <groovy.version>1.7.6</groovy.version>
     <surefire.version>2.6</surefire.version>
-    <consolePlugin.version>1.1.0</consolePlugin.version>  
+    <consolePlugin.version>1.1.0</consolePlugin.version>
   </properties>
 
   <dependencies>
@@ -55,7 +54,7 @@
     </dependency>
   </dependencies>
 
- 
+
   <dependencyManagement>
     <dependencies>
       <!-- Project modules -->
@@ -64,20 +63,20 @@
         <artifactId>logback-core</artifactId>
         <version>${project.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
-      
+
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${project.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-access</artifactId>
@@ -122,7 +121,7 @@
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>8.4-701.jdbc4</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
@@ -149,17 +148,17 @@
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>servlet-api-2.5</artifactId>
         <version>6.1.1</version>
-      </dependency>           
+      </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-jms_1.1_spec</artifactId>
         <version>1.0</version>
-      </dependency>    
+      </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>2.5</version>
-      </dependency> 
+      </dependency>
 
       <dependency>
         <groupId>org.scala-lang</groupId>
@@ -169,9 +168,8 @@
 
     </dependencies>
   </dependencyManagement>
-  
- 
-  
+
+
   <build>
     <extensions>
       <extension>
@@ -180,7 +178,27 @@
         <version>1.0-beta-1</version>
       </extension>
     </extensions>
+
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/test/scala</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -203,20 +221,34 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-idea-plugin</artifactId>
-        <configuration>
-          <jdkLevel>1.5</jdkLevel>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
           <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+          <projectnatures>
+            <projectnature>org.scala-ide.sdt.core.scalanature</projectnature>
+            <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+          </projectnatures>
+          <buildcommands>
+            <buildcommand>org.scala-ide.sdt.core.scalabuilder</buildcommand>
+          </buildcommands>
+<!--          <classpathContainers>
+            <classpathContainer>org.scala-ide.sdt.launching.SCALA_CONTAINER</classpathContainer>
+            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
+            </classpathContainer>
+          </classpathContainers>
+          -->
+<!--          <excludes>
+            <exclude>org.scala-lang:scala-library</exclude>
+            <exclude>org.scala-lang:scala-compiler</exclude>
+          </excludes>
+    -->
+          <sourceIncludes>
+            <sourceInclude>**/*.scala</sourceInclude>
+            <sourceInclude>**/*.java</sourceInclude>
+          </sourceIncludes>
         </configuration>
-      </plugin>   			
+      </plugin>
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -234,10 +266,10 @@
           <outputDirectory>target/site/dist/</outputDirectory>
         </configuration>
       </plugin>
-    
+
     </plugins>
   </build>
-  
+
   <reporting>
     <plugins>
       <plugin>
@@ -258,19 +290,21 @@
           <linkJavadoc>true</linkJavadoc>
         </configuration>
       </plugin>
-      <plugin>  
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>
           maven-project-info-reports-plugin
         </artifactId>
         <reportSets>
-          <reportSet><reports></reports></reportSet>
+          <reportSet>
+            <reports></reports>
+          </reportSet>
         </reportSets>
-			</plugin>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>       
+        <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <aggregate>true</aggregate>
           <!--<linksource>true</linksource>-->
@@ -286,7 +320,9 @@
             </group>
             <group>
               <title>Logback Classic</title>
-              <packages>ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*</packages>
+              <packages>
+                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
+              </packages>
             </group>
             <group>
               <title>Logback Access</title>
@@ -301,35 +337,35 @@
               <packages>chapter*:joran*</packages>
             </group>
           </groups>
-        </configuration>      
+        </configuration>
       </plugin>
-      
+
     </plugins>
 
   </reporting>
 
   <scm>
     <connection>scm:svn:http://svn.qos.ch/repos/logback/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk/</developerConnection>
+    <developerConnection>scm:svn:https://svn.qos.ch/repos/logback/trunk/
+    </developerConnection>
     <url>http://svn.qos.ch/repos/logback/trunk/</url>
   </scm>
-   
+
   <distributionManagement>
     <site>
       <id>pixie</id>
       <url>scp://pixie.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
-    
+
     <repository>
       <id>pixie</id>
       <url>scp://pixie.qos.ch/var/mvnrepo/</url>
     </repository>
-        
+
   </distributionManagement>
 
- 
-  
-  <profiles>    
+
+  <profiles>
     <profile>
       <id>testSkip</id>
       <properties>
@@ -337,7 +373,7 @@
       </properties>
     </profile>
     <profile>
-      <id>license</id>     
+      <id>license</id>
       <build>
         <plugins>
           <plugin>
@@ -355,7 +391,7 @@
               <useDefaultMapping>true</useDefaultMapping>
               <properties>
                 <year>1999</year>
-              </properties>     
+              </properties>
               <headerDefinitions>
                 <headerDefinition>src/main/javadocHeaders.xml</headerDefinition>
               </headerDefinitions>
@@ -377,10 +413,10 @@
           </releases>
         </pluginRepository>
       </pluginRepositories>
-   </profile>
+    </profile>
 
-   <profile>
-     <id>javadocjar</id>
+    <profile>
+      <id>javadocjar</id>
       <build>
         <plugins>
           <plugin>
@@ -399,6 +435,6 @@
       </build>
     </profile>
 
- </profiles>
+  </profiles>
 
 </project>

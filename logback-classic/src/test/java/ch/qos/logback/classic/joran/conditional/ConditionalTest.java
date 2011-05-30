@@ -63,6 +63,7 @@ public class ConditionalTest {
     jc.doConfigure(file);
   }
 
+  @SuppressWarnings("rawtypes")
   @Test
   public void conditionalConsoleApp_IF_THEN_True() throws JoranException,
           IOException, InterruptedException {
@@ -82,6 +83,7 @@ public class ConditionalTest {
     assertTrue(checker.isErrorFree());
   }
 
+  @SuppressWarnings("rawtypes")
   @Test
   public void conditionalConsoleApp_IF_THEN_False() throws JoranException,
           IOException, InterruptedException {
@@ -98,6 +100,7 @@ public class ConditionalTest {
     assertTrue(checker.isErrorFree());
   }
 
+  @SuppressWarnings("rawtypes")
   @Test
   public void conditionalConsoleApp_IF_THEN_ELSE() throws JoranException,
           IOException, InterruptedException {
@@ -106,7 +109,7 @@ public class ConditionalTest {
             + "conditional/conditionalConsoleApp_ELSE.xml";
     configure(configFileAsStr);
 
-    FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
+	FileAppender fileAppender = (FileAppender) root.getAppender("FILE");
     assertNotNull(fileAppender);
 
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
