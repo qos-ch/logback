@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import ch.qos.logback.core.CoreConstants;
@@ -367,12 +367,11 @@ public abstract class SocketAppenderBase<E> extends UnsynchronizedAppenderBase<E
       Field field = clazz.getDeclaredField(fieldName);
       field.setAccessible(true);
       Object value = field.get(null);
-      if(value instanceof Map) {
-        Map map = (Map) value;
-        map.clear();
+      if(value instanceof ConcurrentHashMap) {
+        ((ConcurrentHashMap) value).clear();
         addInfo("Cleared map '"+fieldName+"' of class "+clazz.getName()+".");
       } else {
-        addWarn("Failed to clear field '" + fieldName +"' of class " + clazz.getName()+". Field is not a map but " + value + ".");
+        addWarn("Failed to clear field '" + fieldName +"' of class " + clazz.getName()+". Field is not a ConcurrentHashMap but " + value + ".");
       }
     } catch (NoSuchFieldException e) {
       t = e;
