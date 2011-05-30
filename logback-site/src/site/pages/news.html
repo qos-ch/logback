@@ -40,7 +40,14 @@
     MDC.clear operation. This issue was reported in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-253">LBCLASSIC-253</a>
     by Tommy Becker and independently fixed by the changes designated
-    to fix LBCLASSIC-254</p>.
+    to fix LBCLASSIC-254.</p>
+
+    <p>As reported by Deepak Vadgama in <a
+    href="http://jira.qos.ch/browse/LBCORE-199">LBCORE-199</a>, the
+    entry in every zip file created by
+    <code>FixedWindowRollingPolicy</code> had the same name. The issue
+    was solved by adding a timestamp to the name of the entry in the
+    zip files as suggested by a Benoit Xhenseval.</p> 
 
     <p><code>ConfigurationWatchList</code> no longer emits an error
     message when it encouters a configuraton file placed in a jar
@@ -61,7 +68,7 @@
     </p>
 
     <p>The AccessEvent class in logback-access module now implements
-    the IAccessEvent interface. This fixes <a
+    the <code>IAccessEvent</code> interface. This fixes <a
     href="http://jira.qos.ch/browse/LBACCESS-12">LBACCESS-12</a>
     reported by Joern Huxhorn.</p>
     

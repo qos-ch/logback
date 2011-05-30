@@ -178,8 +178,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     Map<String, String> mergedMap = new HashMap<String, String>();
     // we add the context properties first, then the event properties, since
     // we consider that event-specific properties should have priority over
-    // context-wide
-    // properties.
+    // context-wide properties.
     Map<String, String> loggerContextMap = event.getLoggerContextVO()
         .getPropertyMap();
     Map<String, String> mdcMap = event.getMDCPropertyMap();

@@ -14,20 +14,24 @@
 package ch.qos.logback.core.rolling
 
 import ch.qos.logback.core.{ContextBase, Context}
-import ch.qos.logback.core.testUtil.RandomUtil
-import java.util.{Date, Calendar}
+import helper.FileFilterUtil
 import java.util.concurrent.TimeUnit
-import java.text.SimpleDateFormat
 import ch.qos.logback.core.util.{CachingDateFormatter, CoreTestConstants}
+import org.junit.Assert._
+import java.io.File
+import ch.qos.logback.core.testUtil.{FileToBufferUtil, RandomUtil}
+import java.util.{ArrayList, Date, Calendar}
 
 trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"
   final val SDF = new CachingDateFormatter(DATE_PATTERN_WITH_SECONDS)
-  private[rolling] var context: Context = new ContextBase
-  private[rolling] var diff: Int = RandomUtil.getPositiveInt
+
+  var context: Context = new ContextBase
+  var diff: Int = RandomUtil.getPositiveInt
+
   protected var currentTime: Long = 0L
   protected var randomOutputDir: String = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/"
-  private[rolling] var cal: Calendar = Calendar.getInstance
+  var cal: Calendar = Calendar.getInstance
   protected var nextRolloverThreshold: Long = 0;
   protected var expectedFilenameList: List[String] = Nil
 
@@ -56,7 +60,7 @@ trait RollingScaffolding {
     if (gzExtension) {
       fn += ".gz"
     }
-    expectedFilenameList += fn
+    expectedFilenameList = expectedFilenameList ::: List(fn)
 
   }
 
@@ -96,7 +100,38 @@ trait RollingScaffolding {
   // =========================================================================
   private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String): Unit = {
     expectedFilenameList = expectedFilenameList.dropRight(1)
-    expectedFilenameList +=  (randomOutputDir + file)
+    expectedFilenameList =  expectedFilenameList ::: List(randomOutputDir + file)
   }
 
+  def existenceCheck(filenameList: List[String]): Unit = {
+    for (filename <- filenameList) {
+      assertTrue("File " + filename + " does not exist", new File(filename).exists)
+    }
+  }
+
+  def getFilesInDirectory(outputDirStr: String): Array[File] = {
+    var outputDir: File = new File(outputDirStr)
+    return outputDir.listFiles
+  }
+
+  def reverseSortedContentCheck(outputDirStr: String, runLength: Int, prefix: String): Unit = {
+    var fileArray: Array[File] = getFilesInDirectory(outputDirStr)
+    FileFilterUtil.reverseSortFileArrayByName(fileArray)
+    fileContentCheck(fileArray, runLength, prefix)
+  }
+
+  def fileContentCheck(fileArray: Array[File], runLength: Int, prefix: String): Unit = {
+    var stringList: ArrayList[String] = new ArrayList[String]
+
+    for (file <- fileArray) {
+      FileToBufferUtil.readIntoList(file, stringList)
+    }
+    var witnessList: List[String] = Nil
+    for(i <- 0 until runLength) {
+      witnessList = (prefix + i) :: witnessList
+    }
+    witnessList = witnessList.reverse
+    import scala.collection.JavaConversions.asScalaBuffer
+    assertEquals(witnessList, asScalaBuffer(stringList))
+  }
 }
