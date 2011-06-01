@@ -694,8 +694,7 @@ public class MyApp3 {
    
 
     <p>Since logback version 0.9.17, tag names pertaining to explicit
-    rules are case insensitive.  For example, both
-    <code>&lt;logger></code>, <code>&lt;Logger></code> and
+    rules are case insensitive.  For example, <code>&lt;logger></code>, <code>&lt;Logger></code> and
     <code>&lt;LOGGER></code> are valid configuration elements and will
     be interpreted in the same way. Note that XML well-formedness
     rules still apply, if you open a tag as <code>&lt;xyz></code> you
@@ -1555,7 +1554,7 @@ fileName=myApp.log
   or system properties are accessible. For a key passed as argument,
   the <code>property</code>() or its shorter equivalent
   <code>p</code>() methods return the String value of the property.
-  For example, to access the value a property with key "k", you would
+  For example, to access the value of a property with key "k", you would
   write <code>property("k")</code> or equivalently
   <code>p("k")</code>. If the property with key "k" is undefined, the
   property method will return the empty string and not null. This
