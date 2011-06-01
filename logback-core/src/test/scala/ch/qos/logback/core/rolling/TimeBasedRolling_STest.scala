@@ -85,7 +85,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
     }
 
     if (fileOptionIsSet) {
-      massageExpectedFilesToCorresponToCurrentTarget(testId + ".log")
+      massageExpectedFilesToCorresponToCurrentTarget(fileName)
     }
 
     checkFunction(testId, withCompression, compressionSuffix)

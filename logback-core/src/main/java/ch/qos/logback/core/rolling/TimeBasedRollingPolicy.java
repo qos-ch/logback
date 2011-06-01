@@ -19,7 +19,6 @@ import java.util.concurrent.Future;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.*;
-import ch.qos.logback.core.util.FileUtil;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite

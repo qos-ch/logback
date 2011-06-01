@@ -21,12 +21,16 @@ import org.junit.Assert._
 import java.io.File
 import ch.qos.logback.core.testUtil.{FileToBufferUtil, RandomUtil}
 import java.util.{ArrayList, Date, Calendar}
+import java.util.zip.{ZipEntry, ZipFile}
+import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing.Validation
 
 trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"
   final val SDF = new CachingDateFormatter(DATE_PATTERN_WITH_SECONDS)
 
-  var context: Context = new ContextBase
+  val context: Context = new ContextBase
+  val sm = context.getStatusManager()
+  
   var diff: Int = RandomUtil.getPositiveInt
 
   protected var currentTime: Long = 0L
@@ -43,7 +47,7 @@ trait RollingScaffolding {
     context.setName("test")
     cal.set(Calendar.MILLISECOND, 333)
     currentTime = cal.getTimeInMillis
-    nextRolloverThreshold = recomputeRolloverThreshold(currentTime)
+    recomputeRolloverThreshold(currentTime)
   }
 
   protected def incCurrentTime(increment: Long): Unit = {
@@ -69,10 +73,16 @@ trait RollingScaffolding {
 
   }
 
+  protected def addExpectedFileName_ByFileIndexCounter(randomOutputDir: String, testId: String, millis: Long, fileIndexCounter: Int, compressionSuffix: String): Unit = {
+    var fn: String = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt"+compressionSuffix
+    expectedFilenameList = expectedFilenameList ::: List(fn)
+  }
+
+    
   protected def addExpectedFileNamedIfItsTime_ByDate(outputDir: String, testId: String, gzExtension: Boolean): Unit = {
     if (passThresholdTime(nextRolloverThreshold)) {
       addExpectedFileName_ByDate(outputDir, testId, getMillisOfCurrentPeriodsStart, gzExtension)
-      nextRolloverThreshold = recomputeRolloverThreshold(currentTime)
+      recomputeRolloverThreshold(currentTime)
     }
   }
 
@@ -80,9 +90,9 @@ trait RollingScaffolding {
     return currentTime >= nextRolloverThreshold
   }
 
-  protected def recomputeRolloverThreshold(ct: Long): Long = {
+  protected def recomputeRolloverThreshold(ct: Long) {
     var delta: Long = ct % 1000
-    (ct - delta) + 1000
+    nextRolloverThreshold = (ct - delta) + 1000
   }
 
   private[rolling] def addGZIfNotLast(i: Int, suff: String): String = {
@@ -145,4 +155,30 @@ trait RollingScaffolding {
     import scala.collection.JavaConversions.asScalaBuffer
     assertEquals(witnessList, asScalaBuffer(stringList))
   }
+
+  def zipEntryNameCheck(expectedFilenameList: List[String], pattern: String): Unit = {
+    expectedFilenameList.foreach(filepath => checkZipEntryName(filepath, pattern))
+  }
+
+  def checkZipEntryMatchesZipFilename(expectedFilenameList: List[String], pattern: String): Unit = {
+    expectedFilenameList.foreach(filepath => checkZipEntryName(filepath, stripStemFromZipFilename(filepath)))
+
+    def stripStemFromZipFilename(filepath: String) = {
+      val filepathAsFile = new File(filepath)
+      val stem = filepathAsFile.getName
+      stem.dropRight(".zip".length)
+    }
+  }
+
+  def checkZipEntryName(filepath: String, pattern: String): Unit = {
+    System.out.println("Checking [" + filepath + "]")
+    var zf: ZipFile = new ZipFile(filepath)
+    var entries: java.util.Enumeration[_ <: ZipEntry] = zf.entries
+    assert((entries.hasMoreElements))
+    var firstZipEntry: ZipEntry = entries.nextElement
+    assert((!entries.hasMoreElements))
+    System.out.println("Testing zip entry [" + firstZipEntry.getName + "]")
+    assertTrue(firstZipEntry.getName.matches(pattern))
+  }
+
 }

@@ -20,7 +20,6 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
@@ -194,9 +193,15 @@ public class Compressor extends ContextAwareBase {
     int len = fileNamePatternStr.length();
     switch (compressionMode) {
       case GZ:
-        return fileNamePatternStr.substring(0, len - 3);
+    	  if(fileNamePatternStr.endsWith(".gz")) 
+            return fileNamePatternStr.substring(0, len - 3);
+    	  else 
+    		 return fileNamePatternStr;
       case ZIP:
-        return fileNamePatternStr.substring(0, len - 4);
+    	  if(fileNamePatternStr.endsWith(".zip")) 
+    	  return fileNamePatternStr.substring(0, len - 4);
+    	  else 
+    		return fileNamePatternStr;	  
       case NONE:
         return fileNamePatternStr;
     }

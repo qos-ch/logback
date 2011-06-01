@@ -50,7 +50,7 @@ public class AppenderAttachableImplLockTest {
   private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
 
   @SuppressWarnings("unchecked")
-  @Test(timeout = 1000)
+  @Test(timeout = 5000)
   public void getAppenderBoom() {
 
     Appender<Integer> mockAppender1 = EasyMock.createStrictMock(Appender.class);
