@@ -16,13 +16,13 @@ package ch.qos.logback.classic.turbo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.Random;
 
 import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import org.hsqldb.lib.StringInputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,6 +107,12 @@ public class ReconfigureOnChangeTest {
     jc.doConfigure(file);
   }
 
+  void configure(InputStream is) throws JoranException {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.setContext(loggerContext);
+    jc.doConfigure(is);
+  }
+
   void gConfigure(File file) throws JoranException {
     GafferConfigurator gc = new GafferConfigurator(loggerContext);
     gc.run(file);
@@ -122,8 +128,11 @@ public class ReconfigureOnChangeTest {
   }
 
 
-  void doScanTest(File topLevelFile, File fileToTouch) throws JoranException, IOException, InterruptedException {
-    configure(topLevelFile);
+  void doScanTest(File fileToTouch) throws JoranException, IOException, InterruptedException {
+    doScanTest(fileToTouch, false);
+  }
+
+  void doScanTest(File fileToTouch, boolean forcedReconfigurationSkip) throws JoranException, IOException, InterruptedException {
     RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(fileToTouch);
     harness.execute(runnableArray);
 
@@ -131,8 +140,10 @@ public class ReconfigureOnChangeTest {
             new InfoStatus("end of execution ", this));
 
     long expectedReconfigurations = runnableArray[0].getCounter();
-    verify(expectedReconfigurations);
+    if(forcedReconfigurationSkip)
+      expectedReconfigurations = 0;
 
+    verify(expectedReconfigurations);
   }
 
   // chose a test at random. These tests are rather long...
@@ -155,24 +166,39 @@ public class ReconfigureOnChangeTest {
   }
 
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
+  @Test
   public void scan1() throws JoranException, IOException, InterruptedException {
     File file = new File(SCAN1_FILE_AS_STR);
-    doScanTest(file, file);
+    configure(file);
+    doScanTest(file);
   }
 
+  @Test
   public void scanWithFileInclusion() throws JoranException, IOException, InterruptedException {
     File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
     File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
-    doScanTest(topLevelFile, innerFile);
+    configure(topLevelFile);
+    doScanTest(innerFile);
   }
 
+  @Test
   public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
     File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
     File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
-    doScanTest(topLevelFile, innerFile);
+    configure(topLevelFile);
+    doScanTest(innerFile);
   }
 
+  // See also http://jira.qos.ch/browse/LBCLASSIC-247
+  @Test
+  public void includeScanViaInputStreamSuppliedConfigFile() throws IOException, JoranException, InterruptedException {
+    String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
+    configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));
+    File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
+    doScanTest(innerFile, true);
+  }
 
+  @Test
   public void gscan1() throws JoranException, IOException, InterruptedException {
     File file = new File(G_SCAN1_FILE_AS_STR);
     gConfigure(file);
@@ -188,6 +214,7 @@ public class ReconfigureOnChangeTest {
 
   // check for deadlocks
   //Attr_Test(timeout = 20000)
+  @Test
   public void scan_lbclassic154() throws JoranException, IOException,
           InterruptedException {
     File file = new File(SCAN_LBCLASSIC_154_FILE_AS_STR);
@@ -203,14 +230,19 @@ public class ReconfigureOnChangeTest {
   }
 
 
+
+
   void verify(long expectedReconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
     assertTrue(checker.isErrorFree());
     int effectiveResets = checker
-            .matchCount("Resetting and reconfiguring context");
+            .matchCount("Will reset and reconfigure context");
     // the number of effective resets must be equal or less than
     // expectedReconfigurations
+    System.out.println("effectiveResets="+effectiveResets);
+
+    System.out.println("expectedReconfigurations="+expectedReconfigurations);
     assertTrue(effectiveResets <= expectedReconfigurations);
 
     // however, there should be some effective resets

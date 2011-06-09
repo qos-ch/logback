@@ -112,6 +112,7 @@ public class CoreConstants {
   static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
 
   public static String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
+  public static String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
 
 
   /**

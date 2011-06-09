@@ -46,6 +46,7 @@ public class ConfigurationWatchListUtil {
     } else {
       cwl.clear();
     }
+    setConfigurationWatchListResetFlag(context, true);
     cwl.setMainURL(url);
   }
 
@@ -57,6 +58,18 @@ public class ConfigurationWatchListUtil {
       addInfo(context, "Adding [" + url + "] to configuration watch list.");
       cwl.addToWatchList(url);
     }
+  }
+
+  public static boolean wasConfigurationWatchListReset(Context context) {
+    Object o = context.getObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET);
+    if(o == null)
+      return false;
+    else {
+      return ((Boolean) o).booleanValue();
+    }
+  }
+  public static void setConfigurationWatchListResetFlag(Context context, boolean val) {
+    context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET, new Boolean(val));
   }
 
   public static ConfigurationWatchList getConfigurationWatchList(Context context) {

@@ -110,7 +110,6 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // reader lock.
   private void detachReconfigurationToNewThread() {
     addInfo("Detected change in [" + cwl.getCopyOfFileWatchList() + "]");
-    addInfo("Resetting and reconfiguring context [" + context.getName() + "]");
     new ReconfiguringThread().start();
   }
 
@@ -141,17 +140,13 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
 
   class ReconfiguringThread extends Thread {
     public void run() {
+      if(mainConfigurationURL == null) {
+        addInfo("Due to missing top level configuration file, skipping reconfiguration");
+        return;
+      }
       LoggerContext lc = (LoggerContext) context;
-      if (mainConfigurationURL.toString().endsWith("groovy")) {
-        if (EnvUtil.isGroovyAvailable()) {
-          lc.reset();
-          // avoid directly referring to GafferConfigurator so as to avoid
-          // loading  groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-          GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
-        } else {
-          addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
-        }
-      } else if (mainConfigurationURL.toString().endsWith("xml")) {
+      addInfo("Will reset and reconfigure context named [" + context.getName() + "]");
+      if (mainConfigurationURL.toString().endsWith("xml")) {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         lc.reset();
@@ -161,6 +156,15 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
                   new InfoStatus("done resetting the logging context", this));
         } catch (JoranException e) {
           addError("Failure during reconfiguration", e);
+        }
+      } else if (mainConfigurationURL.toString().endsWith("groovy")) {
+        if (EnvUtil.isGroovyAvailable()) {
+          lc.reset();
+          // avoid directly referring to GafferConfigurator so as to avoid
+          // loading  groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
+          GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
+        } else {
+          addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
         }
       }
     }

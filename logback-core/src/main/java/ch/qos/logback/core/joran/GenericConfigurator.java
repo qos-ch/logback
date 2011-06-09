@@ -115,8 +115,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     addDefaultNestedComponentRegistryRules(ec.getDefaultNestedComponentRegistry());
   }
 
+  // this is the most inner form of doConfigure whereto other doConfigure
+  // methods ultimately delegate
   final public void doConfigure(final InputSource inputSource)
       throws JoranException {
+
+    if(!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
+      informContextOfURLUsedForConfiguration(null);
+    }
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
     recorder.recordEvents(inputSource);

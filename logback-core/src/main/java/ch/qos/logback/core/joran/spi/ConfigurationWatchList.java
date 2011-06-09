@@ -37,9 +37,15 @@ public class ConfigurationWatchList extends ContextAwareBase {
     fileWatchList.clear();
   }
 
+  /**
+   * The mainURL for the configuration file. Null values are allowed.
+   * @param mainURL
+   */
   public void setMainURL(URL mainURL) {
+    // main url can be null
     this.mainURL = mainURL;
-    addAsFileToWatch(mainURL);
+    if (mainURL != null)
+      addAsFileToWatch(mainURL);
   }
 
   private void addAsFileToWatch(URL url) {
@@ -58,9 +64,10 @@ public class ConfigurationWatchList extends ContextAwareBase {
     return mainURL;
   }
 
-  public List<File>  getCopyOfFileWatchList() {
+  public List<File> getCopyOfFileWatchList() {
     return new ArrayList<File>(fileWatchList);
   }
+
   public boolean changeDetected() {
     int len = fileWatchList.size();
     for (int i = 0; i < len; i++) {
