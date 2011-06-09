@@ -303,7 +303,7 @@ public class JoranConfiguratorTest {
     StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree());
-    assertTrue(checker.containsMatch("Resetting and reconfiguring context"));
+    assertTrue(checker.containsMatch("Will reset and reconfigure context"));
   }
 
   @Test
