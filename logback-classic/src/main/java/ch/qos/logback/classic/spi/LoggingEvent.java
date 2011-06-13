@@ -128,11 +128,6 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     timeStamp = System.currentTimeMillis();
-
-    // ugly but under the circumstances acceptable
-    LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC
-        .getMDCAdapter();
-    mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
 
   public void setArgumentArray(Object[] argArray) {
@@ -210,7 +205,7 @@ public class LoggingEvent implements ILoggingEvent {
     this.getThreadName();
     // fixes http://jira.qos.ch/browse/LBCLASSIC-104
     if (mdcPropertyMap != null) {
-      mdcPropertyMap = new HashMap<String, String>(mdcPropertyMap);
+        mdcPropertyMap = MDC.getCopyOfContextMap();
     }
   }
 
@@ -309,11 +304,18 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public Map<String, String> getMDCPropertyMap() {
+    if (mdcPropertyMap == null) {
+      MDCAdapter mdc = MDC.getMDCAdapter();
+      if (mdc instanceof LogbackMDCAdapter)
+        return ((LogbackMDCAdapter)mdc).getPropertyMap();
+      else
+        mdcPropertyMap = mdc.getCopyOfContextMap();
+    }
     return mdcPropertyMap;
   }
 
   public Map<String, String> getMdc() {
-    return mdcPropertyMap;
+      return getMDCPropertyMap();
   }
 
   @Override
