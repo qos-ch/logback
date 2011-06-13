@@ -204,7 +204,7 @@ public class LoggingEvent implements ILoggingEvent {
     this.getFormattedMessage();
     this.getThreadName();
     // fixes http://jira.qos.ch/browse/LBCLASSIC-104
-    if (mdcPropertyMap != null) {
+    if (mdcPropertyMap == null) {
         mdcPropertyMap = MDC.getCopyOfContextMap();
     }
   }
