@@ -89,6 +89,7 @@ public class LoggingEvent implements ILoggingEvent {
   private Marker marker;
 
   private Map<String, String> mdcPropertyMap;
+  private static final Map<String, String> CACHED_NULL_MAP = new HashMap<String, String>();
 
   /**
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -206,6 +207,8 @@ public class LoggingEvent implements ILoggingEvent {
     // fixes http://jira.qos.ch/browse/LBCLASSIC-104
     if (mdcPropertyMap == null) {
         mdcPropertyMap = MDC.getCopyOfContextMap();
+        if (mdcPropertyMap == null)
+          mdcPropertyMap = CACHED_NULL_MAP;
     }
   }
 
@@ -308,10 +311,13 @@ public class LoggingEvent implements ILoggingEvent {
       MDCAdapter mdc = MDC.getMDCAdapter();
       if (mdc instanceof LogbackMDCAdapter)
         return ((LogbackMDCAdapter)mdc).getPropertyMap();
-      else
+      else {
         mdcPropertyMap = mdc.getCopyOfContextMap();
+        if (mdcPropertyMap == null)
+          mdcPropertyMap = CACHED_NULL_MAP;
+      }
     }
-    return mdcPropertyMap;
+    return mdcPropertyMap == CACHED_NULL_MAP ? null : mdcPropertyMap;
   }
 
   public Map<String, String> getMdc() {
