@@ -75,7 +75,7 @@ public class ContextSelectorStaticBinder {
   }
   
   /**
-   * Intantiate the context selector class designated by the user. The selector
+   * Instantiate the context selector class designated by the user. The selector
    * must have a constructor taking a LoggerContext instance as an argument.
    * 
    * @param defaultLoggerContext

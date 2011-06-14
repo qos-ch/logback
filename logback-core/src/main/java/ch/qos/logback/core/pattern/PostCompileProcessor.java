@@ -17,7 +17,7 @@ package ch.qos.logback.core.pattern;
 /**
  * Implements this to perform post compile processing for a PatternLayout.
  * 
- * For example, PatternLayot in the classic module should add a converter for
+ * For example, PatternLayout in the classic module should add a converter for
  * exception handling (otherwise exceptions would not be printed).
  * 
  * @author Ceki Gulcu

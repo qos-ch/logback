@@ -17,7 +17,7 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * An abstract class containing support for {@link #onMatch} on {@link #onMismatch} 
- * attributes, shared by many but not all tubo filters.
+ * attributes, shared by many but not all turbo filters.
  *  
  * @author Ceki Gulcu
  */

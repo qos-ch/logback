@@ -92,7 +92,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   private int errorCount = 0;
 
   /**
-   * return a layout for the subjet string as appropriate for the module. If the
+   * return a layout for the subject string as appropriate for the module. If the
    * subjectStr parameter is null, then a default value for subjectStr should be
    * used.
    *
@@ -342,7 +342,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       mimeMsg.setSentDate(new Date());
       Transport.send(mimeMsg);
     } catch (Exception e) {
-      addError("Error occured while sending e-mail notification.", e);
+      addError("Error occurred while sending e-mail notification.", e);
     }
   }
 
