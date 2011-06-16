@@ -66,7 +66,7 @@
 
       <p>The <code>TeeFilter</code>, as any other servlet filter,
       needs to be declared in your web-application's <em>web.xml</em>
-      file. Here is the decleration to add to your web-application's
+      file. Here is the declaration to add to your web-application's
       <em>web.xml</em> file.
       </p>
 
@@ -149,8 +149,8 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
       <h3><a name="disabling" href="#disabling">Disabling
       <code>TeeFilter</code> in the production environment</a></h3>
 
-      <p>Due to its instrusive nature, <code>TeeFilter</code> can slow
-      down performance. Moreover, altough we have fixed all currently
+      <p>Due to its intrusive nature, <code>TeeFilter</code> can slow
+      down performance. Moreover, although we have fixed all currently
       known bugs, <code>TeeFilter</code> has broken otherwise
       correctly behaving applications in the past. Thus, while
       extremely useful during problem hunting, we do not recommend
@@ -178,7 +178,7 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
   &lt;/init-param>
 &lt;/filter>  </pre>
   
-      <p>If it is easier to exliclitly name the integration machines,
+      <p>If it is easier to explicitly name the integration machines,
       you could list them in the includes list and omit the excludes
       list.
       </p>
@@ -190,12 +190,12 @@ Set-Cookie: JSESSIONID=bgebt99ce9om;path=/logback-demo
       cluster. The cluster is located behind a load-balancer which
       probes each member of the cluster once or twice a second to
       check whether it is alive. Whenever a member becomes unavailable
-      the load-blancer will immediately (well, after at most one
+      the load-balancer will immediately (well, after at most one
       second) divert traffic from that member.
       </p>
 
       <p>While such a load-balancing strategy will ensure
-      high-availability of your web-applicaiton, it will also
+      high-availability of your web-application, it will also
       seriously pollute the access-logs with the contents of each
       probe made by the load-balancer.
       </p>
@@ -218,7 +218,7 @@ X-Powered-By: Servlet 2.4;
 Cache-Control: no-cache
 Pragma: No-cache </pre>
 
-      <p>From the above, we can see that the load-blancer probes
+      <p>From the above, we can see that the load-balancer probes
       employ the <a
       href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4">HTTP
       HEAD method</a> instead of the usual GET or POST. We can also

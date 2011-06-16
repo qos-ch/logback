@@ -126,8 +126,8 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
   }
 }</pre>
 
-		<p>The configutation files shown next attaches a
-		<code>SampleFilter</code> to a <code>ConsoleAppener</code>.
+		<p>The configuration files shown next attaches a
+		<code>SampleFilter</code> to a <code>ConsoleAppender</code>.
 		</p>
 
     <em>Example: SampleFilter configuration
@@ -151,7 +151,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 &lt;/configuration></pre>
 
 		<p>With the help of Joran, logback's configuration framework,
-		specifying properties or sub-componenets to filters is also
+		specifying properties or sub-components to filters is also
 		easy. After adding the corresponding setter method in the filter
 		class, specify the value of the property in an xml element named
 		after the property, nesting it within a <code>&lt;filter></code>
@@ -282,7 +282,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     filtering. <code>GEventEvaluator</code> requires the Groovy
     runtime. Please see the <a
     href="../setup.html#gEventEvaluator">corresponding section</a> of
-    the setup document on adding the Groovy runtinme to your class
+    the setup document on adding the Groovy runtime to your class
     path.
     </p>
 
@@ -384,7 +384,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <p>Evaluation expressions are compiled on-the-fly during the
     interpretation of the configuration file. As a user, you do not
     need to worry about the actual plumbing. However, it is your
-    reponsibility to ensure that the Java language expression returns
+    responsibility to ensure that the Java language expression returns
     a boolean, i.e. that it evaluates to true or false. </p>
 
 
@@ -422,7 +422,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
         message.</td> </tr>
 		
       <tr>
-				<td>formatedMessage</td>
+				<td>formattedMessage</td>
         <td><code>String</code></td>
         <td>The formatted message in the logging request. For some
         logger <em>l</em>, when you write l.info("Hello {}", name);
@@ -501,7 +501,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				value of the "throwable" variable will be null. Unfortunately,
 				"throwable" does not survive serialization. Thus, on remote
 				systems, its value will always be null. For location
-				independent expresisons, use the <code>throwableProxy</code>
+				independent expressions, use the <code>throwableProxy</code>
 				variable described next.
 				</td>
 			</tr>
@@ -572,7 +572,7 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 
 		<p>Given that the <span class="option">OnMismatch</span> property is
 		set to NEUTRAL and the <span class="option">OnMatch</span>
-		property set to DENY, this evalutor filter will drop all logging
+		property set to DENY, this evaluator filter will drop all logging
 		events whose message contains the string "billing".
     </p>
 
@@ -1113,7 +1113,7 @@ logger.debug("Hello {}.", name1);</pre>
     href="../xref/ch/qos/logback/access/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>.
     It takes arbitrary Java language boolean expressions as the
     evaluation criteria. We refer to such Java language blocks as
-    "<em>evaluation expresisons</em>". Evaluation expressions enable
+    "<em>evaluation expressions</em>". Evaluation expressions enable
     great flexibility in event
     filtering. <code>JaninoEventEvaluator</code> requires the <a
     href="http://docs.codehaus.org/display/JANINO/Home">Janino
@@ -1125,7 +1125,7 @@ logger.debug("Hello {}.", name1);</pre>
     <p>Evaluation expressions are compiled on-the-fly during the
     interpretation of the configuration file. As a user, you do not
     need to worry about the actual plumbing. However, it is your
-    reponsibility to ensure that the Java language expression returns
+    responsibility to ensure that the Java language expression returns
     a boolean, i.e. that it evaluates to true or false. </p>
 
 

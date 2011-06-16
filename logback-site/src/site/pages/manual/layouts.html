@@ -60,7 +60,7 @@
   String getContentType();
 }</pre>
 
-		<p>This interface is rather simple and yet is sufficent for many
+		<p>This interface is rather simple and yet is sufficient for many
 		formatting needs. The Texan developer from Texas, whom you might
 		know from Joseph Heller's <em>Catch-22</em>, might exclaim: it
 		just takes five methods to implement a layout!!?
@@ -919,7 +919,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
           <p>Logback goes to great lengths to ensure that the class
           packaging information it displays is correct, even in
-          arbirarily complex class loader hierarchies.  However, when
+          arbitrarily complex class loader hierarchies.  However, when
           it is unable to guarantee the absolute correctness of the
           information, then it will prefix the data with a tilde, i.e.
           the '~' character. Thus, it is theoretically possible for
@@ -950,7 +950,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
 
         <td>
-          <p>Altough it <em>pretends</em> to handle stack trace data,
+          <p>Although it <em>pretends</em> to handle stack trace data,
           this conversion word does not output any data, thus,
           effectively ignoring exceptions.
           </p>
@@ -1338,7 +1338,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
     are presented in a <a
     href="filters.html#evalutatorFilter">dedicated section of the
     chapter on filters</a> which you MUST read if you want to use
-    evaluators in any meaninful way. Also note that the examples below
+    evaluators in any meaningful way. Also note that the examples below
     are implicitly based on <code>JaninoEventEvaluator</code> which
     requires the <a
     href="http://docs.codehaus.org/display/JANINO/Home">Janino
@@ -1425,7 +1425,7 @@ public class CallerEvaluatorExample {
 
 		<p>The above application does nothing particularly fancy. Five
 		logging requests are issued, the third one emitting the message
-		"who calls theee?"
+		"who calls thee?"
 		</p>
 
 		<p>The command</p>
@@ -1464,7 +1464,7 @@ Caller+0   at chapters.layouts.CallerEvaluatorExample.main(CallerEvaluatorExampl
 
 		<p>Let us consider at a different situation. When exceptions are
 		included in a logging request, their stack trace is also
-		output. However, one might want to supress the stack trace for
+		output. However, one might want to suppress the stack trace for
 		some specific exceptions.
 		</p>
 
@@ -1521,7 +1521,7 @@ public class ExceptionEvaluatorExample {
 		<p>In the next configuration file, the evaluation expression
 		matches events containing a throwable of type
 		<code>chapters.layouts.TextException</code>, precisely the type of
-		exceptions we wish to supress.
+		exceptions we wish to suppress.
     </p>
 
 		<em>
@@ -1764,7 +1764,7 @@ public class MySampleConverter extends ClassicConverter {
    <p>The <a
    href="../xref/chapters/layouts/TrivialMain.html">TrivialMain</a>
    application logs a few messages finishing with an exception. The
-   commmand:</p>
+   command:</p>
 
    <p class="source">java chapters.layouts.TrivialMain src/main/java/chapters/layouts/htmlLayoutConfig1.xml</p>
 
@@ -1895,7 +1895,7 @@ public class MySampleConverter extends ClassicConverter {
 		<code>PatternLayout</code></a> in logback-access can be configured
 		in much the same way as its classic counterpart. However it
 		features additional conversion specifiers suited for logging
-		particular bits of information availalbe only in HTTP servlet
+		particular bits of information available only in HTTP servlet
 		requests and HTTP servlet responses.
     </p>
 
@@ -2118,7 +2118,7 @@ public class MySampleConverter extends ClassicConverter {
           <code>HttpServletResponse</code> by a <a
           href="../xref/ch/qos/logback/access/servlet/TeeHttpServletResponse.html">
           <code>TeeHttpServletResponse</code></a>. The latter object
-          allows access to the requet's <code>InputStream</code>
+          allows access to the request's <code>InputStream</code>
           multiple times without any loss of data.
           </p>
         </td>
@@ -2127,7 +2127,7 @@ public class MySampleConverter extends ClassicConverter {
         <td align="center"><b>fullResponse</b></td>
         <td>
           <p>This conversion word takes all the available data
-          associated with the response, inclusing all headers of the
+          associated with the response, including all headers of the
           response and response contents.
           </p>
         </td>
@@ -2190,7 +2190,7 @@ public class MySampleConverter extends ClassicConverter {
 		<p>What can be better than a real world example? Our own log4j
 		properties for logback <a
 		href="http://logback.qos.ch/translator/">translator</a> makes use
-		of logback-access to demonstrate live ouput from
+		of logback-access to demonstrate live output from
 		<code>RollingFileAppender</code> with <code>HTMLLayout</code>.</p>
 
 

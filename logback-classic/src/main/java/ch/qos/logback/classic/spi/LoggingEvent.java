@@ -66,7 +66,7 @@ public class LoggingEvent implements ILoggingEvent {
    * Level of logging event.
    * 
    * <p>
-   * This field should not be accessed directly. You shoud use the
+   * This field should not be accessed directly. You should use the
    * {@link #getLevel} method instead.
    * </p>
    * 
@@ -77,7 +77,7 @@ public class LoggingEvent implements ILoggingEvent {
 
   // we gain significant space at serialization time by marking
   // formattedMessage as transient and constructing it lazily in
-  // getFormmatedMessage()
+  // getFormattedMessage()
   private transient String formattedMessage;
 
   private transient Object[] argumentArray;

@@ -18,7 +18,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 /**
  * The first line of the request.
  * 
- * @author Ceki G&uumllc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class RequestURLConverter extends AccessConverter {
 

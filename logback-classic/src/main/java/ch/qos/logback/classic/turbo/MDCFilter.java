@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.FilterReply;
  * This class allows output for a given MDC value.
  * 
  * <p>
- * When the given value is identified by this TubroFilter, 
+ * When the given value is identified by this TurboFilter, 
  * the reply is based on the OnMatch option.
  * The information is taken from the MDC. For this TurboFilter to work,
  * one must set the key that will be used to 

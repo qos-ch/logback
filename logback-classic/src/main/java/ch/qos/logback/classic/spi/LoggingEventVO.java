@@ -48,7 +48,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
 
   // we gain significant space at serialization time by marking
   // formattedMessage as transient and constructing it lazily in
-  // getFormmatedMessage()
+  // getFormattedMessage()
   private transient String formattedMessage;
 
   private transient Object[] argumentArray;
