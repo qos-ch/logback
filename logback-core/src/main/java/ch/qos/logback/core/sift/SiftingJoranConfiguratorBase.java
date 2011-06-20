@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.sift;
 
+import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;
@@ -20,7 +21,9 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 public abstract class SiftingJoranConfiguratorBase<E> extends
     GenericConfigurator {
@@ -57,6 +60,9 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     if (errMsg != null && errorEmmissionCount < CoreConstants.MAX_ERROR_COUNT) {
       addError(errMsg);
     }
+  }
 
+  public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
+    super.doConfigure(eventList);
   }
 }

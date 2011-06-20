@@ -69,7 +69,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId
             + ".xml");
     StatusChecker sc = new StatusChecker(lc);
-    assertTrue(sc.isErrorFree());
+    assertTrue(sc.isErrorFree(0));
 
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
@@ -117,7 +117,7 @@ public class TimeBasedRollingWithConfigFileTest extends
             .getAppender("ROLLING");
 
     StatusChecker sc = new StatusChecker(lc);
-    assertTrue(sc.isErrorFree());
+    assertTrue(sc.isErrorFree(0));
 
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
             .getTriggeringPolicy();

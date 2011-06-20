@@ -235,7 +235,7 @@ public class ReconfigureOnChangeTest {
   void verify(long expectedReconfigurations) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
     int effectiveResets = checker
             .matchCount("Will reset and reconfigure context");
     // the number of effective resets must be equal or less than

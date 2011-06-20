@@ -22,6 +22,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.ThrowableToStringArray;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
 
 public class StatusPrinter {
@@ -51,7 +52,8 @@ public class StatusPrinter {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     } else {
-      if (sm.getLevel() == ErrorStatus.WARN || (sm.getLevel() == ErrorStatus.ERROR) ) {
+      StatusChecker sc = new StatusChecker(context);
+      if (sc.getHighestLevel(0) >= ErrorStatus.WARN) {
         print(sm);
       }
     }
@@ -73,7 +75,8 @@ public class StatusPrinter {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     } else {
-      if (sm.getLevel() == ErrorStatus.ERROR) {
+      StatusChecker sc = new StatusChecker(context);
+      if (sc.getHighestLevel(0) == ErrorStatus.ERROR) {
         print(sm);
       }
     }

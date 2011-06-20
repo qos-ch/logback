@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import ch.qos.logback.core.CoreConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -53,32 +54,36 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
   public List<SaxEvent> recordEvents(InputSource inputSource)
       throws JoranException {
-    SAXParser saxParser = null;
+    SAXParser saxParser = buildSaxParser();
+    try {
+      saxParser.parse(inputSource, this);
+      return saxEventList;
+    } catch (IOException ie) {
+      handleError(CoreConstants.XML_PARSING_ERROR+ ". I/O error occurred while parsing xml file", ie);
+    } catch(SAXException se) {
+      handleError(CoreConstants.XML_PARSING_ERROR+ ". Problem parsing XML document. See previously reported errors.", se);
+    } catch (Exception ex) {
+      handleError(CoreConstants.XML_PARSING_ERROR+ ". Unexpected exception while parsing XML document.", ex);
+    }
+    throw new IllegalStateException("This point can never be reached");
+  }
+
+  private void handleError(String errMsg, Throwable t) throws JoranException {
+    addError(errMsg, t);
+    throw new JoranException(errMsg, t);
+  }
+
+  private SAXParser buildSaxParser() throws JoranException {
     try {
       SAXParserFactory spf = SAXParserFactory.newInstance();
       spf.setValidating(false);
       spf.setNamespaceAware(true);
-      saxParser = spf.newSAXParser();
+      return spf.newSAXParser();
     } catch (Exception pce) {
       String errMsg = "Parser configuration error occured";
       addError(errMsg, pce);
       throw new JoranException(errMsg, pce);
     }
-
-    try {
-      saxParser.parse(inputSource, this);
-      return saxEventList;
-
-    } catch (IOException ie) {
-      String errMsg = "I/O error occurred while parsing xml file";
-      addError(errMsg, ie);
-      throw new JoranException(errMsg, ie);
-    } catch (Exception ex) {
-      String errMsg = "Problem parsing XML document. See previously reported errors. Abandoning all further processing.";
-      addError(errMsg, ex);
-      throw new JoranException(errMsg, ex);
-    }
-
   }
 
   public void startDocument() {

@@ -51,6 +51,7 @@ public class IncludeActionTest {
   final static String SECOND_FILE_KEY = "secondFileKey";
 
   Context context = new ContextBase();
+  StatusChecker statusChecker = new StatusChecker(context);
   TrivialConfigurator tc;
 
   static final String INCLUSION_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX
@@ -130,9 +131,8 @@ public class IncludeActionTest {
   public void noFileFound() throws JoranException {
     System.setProperty(INCLUDE_KEY, "toto");
     tc.doConfigure(TOP_BY_FILE);
-    assertEquals(Status.ERROR, context.getStatusManager().getLevel());
-    StatusChecker sc = new StatusChecker(context.getStatusManager());
-    assertTrue(sc.containsException(FileNotFoundException.class));
+    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+    assertTrue(statusChecker.containsException(FileNotFoundException.class));
   }
 
   @Test
@@ -140,9 +140,8 @@ public class IncludeActionTest {
     String tmpOut = copyToTemp(INVALID);
     System.setProperty(INCLUDE_KEY, tmpOut);
     tc.doConfigure(TOP_BY_FILE);
-    assertEquals(Status.ERROR, context.getStatusManager().getLevel());
-    StatusChecker sc = new StatusChecker(context.getStatusManager());
-    assertTrue(sc.containsException(SAXParseException.class));
+    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+    assertTrue(statusChecker.containsException(SAXParseException.class));
 
     // we like to erase the temp file in order to see
     // if http://jira.qos.ch/browse/LBCORE-122 was fixed
@@ -169,23 +168,20 @@ public class IncludeActionTest {
   public void malformedURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, "htp://logback.qos.ch");
     tc.doConfigure(TOP_BY_URL);
-    assertEquals(Status.ERROR, context.getStatusManager().getLevel());
-    StatusChecker sc = new StatusChecker(context.getStatusManager());
-    assertTrue(sc.containsException(MalformedURLException.class));
+    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+    assertTrue(statusChecker.containsException(MalformedURLException.class));
   }
 
   @Test
   public void unknownURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, "http://logback2345.qos.ch");
     tc.doConfigure(TOP_BY_URL);
-    assertEquals(Status.ERROR, context.getStatusManager().getLevel());
-    StatusChecker sc = new StatusChecker(context.getStatusManager()); 
-
+    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
     // OS X throws IOException instead of UnknownHostException
     // http://jira.qos.ch/browse/LBCORE-129
     // This behavior has been observed on Windows XP as well
-    assertTrue(sc.containsException(UnknownHostException.class)
-        || sc.containsException(IOException.class));
+    assertTrue(statusChecker.containsException(UnknownHostException.class)
+        || statusChecker.containsException(IOException.class));
   }
 
   @Test

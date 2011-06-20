@@ -68,7 +68,7 @@ public class RenameUtilTest {
 
     renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-    assertTrue(statusChecker.isErrorFree());
+    assertTrue(statusChecker.isErrorFree(0));
   }
 
 }

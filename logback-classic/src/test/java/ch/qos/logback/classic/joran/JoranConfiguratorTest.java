@@ -302,7 +302,7 @@ public class JoranConfiguratorTest {
 
     StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
     assertTrue(checker.containsMatch("Will reset and reconfigure context"));
   }
 
@@ -336,7 +336,7 @@ public class JoranConfiguratorTest {
     assertEquals("UTF-8", encoder.getCharset().displayName());
 
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
   }
 
   void verifyJULLevel(String loggerName, Level expectedLevel) {
@@ -363,7 +363,7 @@ public class JoranConfiguratorTest {
             + "/jul/levelChangePropagator0.xml";
     configure(configFileAsStr);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
     verifyJULLevel("xx", null);
     verifyJULLevel("a.b.c", Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
@@ -377,7 +377,7 @@ public class JoranConfiguratorTest {
             + "/jul/levelChangePropagator1.xml";
     configure(configFileAsStr);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
     verifyJULLevel("xx", Level.INFO);
     verifyJULLevel("a.b.c", Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);

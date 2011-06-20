@@ -95,7 +95,7 @@ public class IfThenElseTest {
     tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifWithoutElse.xml");
     verifyConfig(new String[] {"BEGIN", "END"});
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
   }
 
   

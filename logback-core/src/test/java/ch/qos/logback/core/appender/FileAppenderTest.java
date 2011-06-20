@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import ch.qos.logback.core.status.StatusChecker;
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
@@ -110,8 +111,9 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     assertTrue(appender.isAppend());
 
     StatusManager sm = context.getStatusManager();
-    StatusPrinter.print(context);
-    assertEquals(Status.WARN, sm.getLevel());
+    //StatusPrinter.print(context);
+    StatusChecker statusChecker = new StatusChecker(context);
+    assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
     List<Status> statusList = sm.getCopyOfStatusList();
     assertTrue("Expecting status list size to be 2 or larger, but was "
         + statusList.size(), statusList.size() >= 2);

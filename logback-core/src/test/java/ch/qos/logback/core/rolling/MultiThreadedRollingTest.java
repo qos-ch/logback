@@ -255,7 +255,7 @@ public class MultiThreadedRollingTest {
     multiThreadedHarness.execute(runnableArray);
 
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    if (!checker.isErrorFree()) {
+    if (!checker.isErrorFree(0)) {
       StatusPrinter.print(context);
       fail("errors reported");
     }

@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import ch.qos.logback.core.status.StatusChecker;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
@@ -38,7 +39,7 @@ import ch.qos.logback.core.util.CoreTestConstants;
 public class SaxEventRecorderTest {
 
   Context context =  new ContextBase();
-
+  StatusChecker statusChecker = new StatusChecker(context);
 
   SAXParser createParser() throws Exception {
     SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -65,8 +66,7 @@ public class SaxEventRecorderTest {
   @Test
   public void test1() throws Exception {
     List<SaxEvent> seList = doTest("event1.xml");
-    StatusManager sm = context.getStatusManager();
-    assertTrue(sm.getLevel() == Status.INFO);
+    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
     //dump(seList);  
     assertEquals(11, seList.size());
   }
@@ -75,7 +75,7 @@ public class SaxEventRecorderTest {
   public void test2() throws Exception {
     List<SaxEvent> seList = doTest("ampEvent.xml");
     StatusManager sm = context.getStatusManager();
-    assertTrue(sm.getLevel() == Status.INFO);
+    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
     //dump(seList);  
     assertEquals(3, seList.size());
     
@@ -87,8 +87,8 @@ public class SaxEventRecorderTest {
   public void test3() throws Exception {
     List<SaxEvent> seList = doTest("inc.xml");
     StatusManager sm = context.getStatusManager();
-    assertTrue(sm.getLevel() == Status.INFO);
-    //dump(seList);  
+    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+    //dump(seList);
     assertEquals(4, seList.size());
     
     StartEvent se = (StartEvent) seList.get(1);

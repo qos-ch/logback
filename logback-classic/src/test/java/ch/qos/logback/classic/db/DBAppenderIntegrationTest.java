@@ -110,7 +110,7 @@ public class DBAppenderIntegrationTest {
 
     // check that there were no errors
     StatusChecker checker = new StatusChecker(lc);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
    
   }
 

@@ -131,9 +131,11 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     synchronized (context.getConfigurationLock()) {
       interpreter.play(recorder.saxEventList);
     }
+
   }
 
-  public void doConfigure(final List<SaxEvent> eventList)
+  // protected since v0.9.30
+  protected void doConfigure(final List<SaxEvent> eventList)
       throws JoranException {
     buildInterpreter();
     EventPlayer player = new EventPlayer(interpreter);

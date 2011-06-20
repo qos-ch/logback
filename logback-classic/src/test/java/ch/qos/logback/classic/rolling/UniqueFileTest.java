@@ -56,7 +56,7 @@ public class UniqueFileTest {
     String timestamp = sdf.format(System.currentTimeMillis());
     
     StatusChecker sc = new StatusChecker(lc);
-    assertTrue(sc.isErrorFree());
+    assertTrue(sc.isErrorFree(0));
 
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.info("hello");

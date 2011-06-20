@@ -15,6 +15,7 @@ package org.slf4j.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import ch.qos.logback.core.status.StatusChecker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +57,8 @@ public class RecursiveInitializationTest {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory
         .getILoggerFactory();
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
-    StatusManager sm = loggerContext.getStatusManager();
-    assertEquals("Was expecting no errors", Status.WARN, sm.getLevel());
+    StatusChecker statusChecker = new StatusChecker(loggerContext);
+    assertEquals("Was expecting no errors", Status.WARN, statusChecker.getHighestLevel(0));
   }
 
 }

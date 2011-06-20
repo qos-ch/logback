@@ -41,7 +41,7 @@ public interface StatusManager {
    * 
    * @return
    */
-  public int getLevel();
+  //public int getLevel();
 
   /**
    * Return the number of status entries.

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 
 import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.core.status.StatusChecker;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class DBAppenderIntegrationTest {
 
   int diff = new Random(System.nanoTime()).nextInt(10000);
   AccessContext context = new AccessContext();
+  StatusChecker statusChecker = new StatusChecker(context);
   
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -74,7 +76,7 @@ public class DBAppenderIntegrationTest {
     StatusPrinter.print(context);
     
     // check that there were no errors
-    assertEquals(Status.INFO,  context.getStatusManager().getLevel());
+    assertEquals(Status.INFO,  statusChecker.getHighestLevel(0));
     
   }
   

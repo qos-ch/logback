@@ -66,7 +66,7 @@ public class GEventEvaluatorTest {
     gee.start();
 
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-    assertTrue(statusChecker.isErrorFree());
+    assertTrue(statusChecker.isErrorFree(0));
 
 
     boolean result = gee.evaluate(event);

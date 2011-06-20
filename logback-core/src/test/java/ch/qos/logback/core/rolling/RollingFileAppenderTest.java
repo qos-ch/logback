@@ -107,9 +107,9 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
     rfa.start();
 
-    StatusManager sm = context.getStatusManager();
+    StatusChecker checker = new StatusChecker(context);
     assertFalse(rfa.isStarted());
-    assertEquals(Status.ERROR, sm.getLevel());
+    assertEquals(Status.ERROR, checker.getHighestLevel(0));
   }
 
   @Test

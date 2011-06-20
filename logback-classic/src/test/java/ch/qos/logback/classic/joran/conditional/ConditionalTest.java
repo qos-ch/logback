@@ -80,7 +80,7 @@ public class ConditionalTest {
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNotNull(consoleAppender);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
   }
 
   @SuppressWarnings("rawtypes")
@@ -97,7 +97,7 @@ public class ConditionalTest {
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNull(consoleAppender);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
   }
 
   @SuppressWarnings("rawtypes")
@@ -120,7 +120,7 @@ public class ConditionalTest {
 
     // StatusPrinter.printIfErrorsOccured(context);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree());
+    assertTrue(checker.isErrorFree(0));
   }
 
 }

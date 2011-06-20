@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
+import ch.qos.logback.core.CoreConstants;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -99,8 +100,7 @@ public class TrivialConfiguratorTest {
     Status s1 = tsl.list.get(1);
     assertTrue(s1
         .getMessage()
-        .startsWith(
-            "Problem parsing XML document. See previously reported errors. Abandoning all further processing."));
+        .startsWith(CoreConstants.XML_PARSING_ERROR));
   }
 
   @Test
