@@ -69,7 +69,7 @@ public class IncludeAction extends Action {
     trimHeadAndTail(recorder);
 
     // offset = 2, because we need to get past this element as well as the end element
-    ec.getJoranInterpreter().addEventsDynamically(recorder.saxEventList, 2);
+    ec.getJoranInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
   }
 
   void close(InputStream in) {

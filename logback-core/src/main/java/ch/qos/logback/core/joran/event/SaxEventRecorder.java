@@ -59,11 +59,12 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
       saxParser.parse(inputSource, this);
       return saxEventList;
     } catch (IOException ie) {
-      handleError(CoreConstants.XML_PARSING_ERROR+ ". I/O error occurred while parsing xml file", ie);
+      handleError("I/O error occurred while parsing xml file", ie);
     } catch(SAXException se) {
-      handleError(CoreConstants.XML_PARSING_ERROR+ ". Problem parsing XML document. See previously reported errors.", se);
+      // Exception added into StatusManager via Sax error handling. No need to add it again
+      throw new JoranException("Problem parsing XML document. See previously reported errors.", se);
     } catch (Exception ex) {
-      handleError(CoreConstants.XML_PARSING_ERROR+ ". Unexpected exception while parsing XML document.", ex);
+      handleError("Unexpected exception while parsing XML document.", ex);
     }
     throw new IllegalStateException("This point can never be reached");
   }
@@ -80,7 +81,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
       spf.setNamespaceAware(true);
       return spf.newSAXParser();
     } catch (Exception pce) {
-      String errMsg = "Parser configuration error occured";
+      String errMsg = "Parser configuration error occurred";
       addError(errMsg, pce);
       throw new JoranException(errMsg, pce);
     }

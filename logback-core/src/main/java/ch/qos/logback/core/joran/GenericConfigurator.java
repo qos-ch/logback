@@ -21,6 +21,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
+
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.xml.sax.InputSource;
 
@@ -47,7 +49,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
       // per http://jira.qos.ch/browse/LBCORE-105
       // per http://jira.qos.ch/browse/LBCORE-127
       urlConnection.setUseCaches(false);
-      
+
       InputStream in = urlConnection.getInputStream();
       doConfigure(in);
       in.close();
@@ -69,7 +71,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
       fis = new FileInputStream(file);
       doConfigure(fis);
     } catch (IOException ioe) {
-      String errMsg = "Could not open [" + file.getName() + "].";
+      String errMsg = "Could not open [" + file.getPath() + "].";
       addError(errMsg, ioe);
       throw new JoranException(errMsg, ioe);
     } finally {
@@ -98,13 +100,13 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   abstract protected void addImplicitRules(Interpreter interpreter);
 
   protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-    
+
   }
-  
+
   protected Pattern initialPattern() {
     return new Pattern();
   }
-  
+
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
@@ -118,27 +120,43 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   // this is the most inner form of doConfigure whereto other doConfigure
   // methods ultimately delegate
   final public void doConfigure(final InputSource inputSource)
-      throws JoranException {
+          throws JoranException {
 
-    if(!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
+    if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
       informContextOfURLUsedForConfiguration(null);
     }
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
+    doConfigure(recorder.saxEventList);
+    // no exceptions a this level
+    addInfo("Registering current configuration as safe fallback point");
+    registerSafeConfiguration();
+  }
+
+  public void doConfigure(final List<SaxEvent> eventList)
+          throws JoranException {
     buildInterpreter();
     // disallow simultaneous configurations of the same context
     synchronized (context.getConfigurationLock()) {
-      interpreter.play(recorder.saxEventList);
+      interpreter.getEventPlayer().play(eventList);
     }
-
   }
 
-  // protected since v0.9.30
-  protected void doConfigure(final List<SaxEvent> eventList)
-      throws JoranException {
-    buildInterpreter();
-    EventPlayer player = new EventPlayer(interpreter);
-    player.play(eventList);
+  /**
+   * Register the current event list in currently in the interpreter as a safe
+   * configuration point.
+   *
+   * @since 0.9.30
+   */
+  public void registerSafeConfiguration() {
+    context.putObject(SAFE_JORAN_CONFIGURATION, interpreter.getEventPlayer().getCopyOfPlayerEventList());
+  }
+
+  /**
+   * Recall the event list previously registered as a safe point.
+   */
+  public List<SaxEvent> recallSafeConfiguration() {
+    return (List<SaxEvent>) context.getObject(SAFE_JORAN_CONFIGURATION);
   }
 }

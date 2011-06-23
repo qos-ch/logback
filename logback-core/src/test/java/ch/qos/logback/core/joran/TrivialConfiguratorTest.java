@@ -28,6 +28,8 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.db.dialect.SQLDialect;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -54,8 +56,7 @@ public class TrivialConfiguratorTest {
     TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
 
     trivialConfigurator.setContext(context);
-    trivialConfigurator.doConfigure(CoreTestConstants.TEST_DIR_PREFIX
-        + "input/joran/" + filename);
+    trivialConfigurator.doConfigure(filename);
   }
 
   @Test
@@ -63,7 +64,7 @@ public class TrivialConfiguratorTest {
     int oldBeginCount = IncAction.beginCount;
     int oldEndCount = IncAction.endCount;
     int oldErrorCount = IncAction.errorCount;
-    doTest("inc.xml");
+    doTest(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"+"inc.xml");
     assertEquals(oldErrorCount, IncAction.errorCount);
     assertEquals(oldBeginCount + 1, IncAction.beginCount);
     assertEquals(oldEndCount + 1, IncAction.endCount);
@@ -72,35 +73,33 @@ public class TrivialConfiguratorTest {
   @Test
   public void inexistentFile() {
     TrivialStatusListener tsl = new TrivialStatusListener();
-    String filename = "nothereBLAH.xml";
+    String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
+            + "nothereBLAH.xml";
     context.getStatusManager().add(tsl);
     try {
       doTest(filename);
     } catch (Exception e) {
+      assertTrue(e.getMessage().startsWith("Could not open ["));
     }
     assertTrue(tsl.list.size() + " should be greater than or equal to 1",
-        tsl.list.size() >= 1);
+            tsl.list.size() >= 1);
     Status s0 = tsl.list.get(0);
-    assertTrue(s0.getMessage().startsWith("Could not open [" + filename + "]"));
-  }
+    assertTrue(s0.getMessage().startsWith("Could not open ["));
+ }
 
   @Test
   public void illFormedXML() {
     TrivialStatusListener tsl = new TrivialStatusListener();
-    String filename = "illformed.xml";
+    String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/" + "illformed.xml";
     context.getStatusManager().add(tsl);
     try {
       doTest(filename);
     } catch (Exception e) {
     }
-    assertEquals(2, tsl.list.size());
+    assertEquals(1, tsl.list.size());
     Status s0 = tsl.list.get(0);
     assertTrue(s0.getMessage().startsWith(
-        "Parsing fatal error on line 5 and column 3"));
-    Status s1 = tsl.list.get(1);
-    assertTrue(s1
-        .getMessage()
-        .startsWith(CoreConstants.XML_PARSING_ERROR));
+            "Parsing fatal error on line 5 and column 3"));
   }
 
   @Test
@@ -131,7 +130,7 @@ public class TrivialConfiguratorTest {
     URLConnection urlConnection2 = url2.openConnection();
     urlConnection2.setUseCaches(false);
     InputStream is = urlConnection2.getInputStream();
-    
+
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
     tc.doConfigure(url1);
@@ -149,16 +148,16 @@ public class TrivialConfiguratorTest {
     outputDir.mkdirs();
     int randomPart = RandomUtil.getPositiveInt();
     return new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "foo-" + randomPart
-        + ".jar");
+            + ".jar");
   }
 
   private void fillInJarFile(File jarFile, String jarEntryName)
-      throws IOException {
+          throws IOException {
     fillInJarFile(jarFile, jarEntryName, null);
   }
 
   private void fillInJarFile(File jarFile, String jarEntryName1,
-      String jarEntryName2) throws IOException {
+                             String jarEntryName2) throws IOException {
     JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
     jos.putNextEntry(new ZipEntry(jarEntryName1));
     jos.write("<x/>".getBytes());

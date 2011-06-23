@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.turbo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.*;
@@ -22,7 +23,8 @@ import java.util.Random;
 
 import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import org.hsqldb.lib.StringInputStream;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.CoreTestConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +48,12 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;
   final static int LOOP_LEN = 1000 * 1000;
+
+  static final boolean  MUST_BE_ERROR_FREE = true;
+  static final boolean  ERRORS_EXPECTED = false;
+
+
+  int diff = RandomUtil.getPositiveInt();
 
   // the space in the file name mandated by
   // http://jira.qos.ch/browse/LBCORE-119
@@ -118,9 +126,9 @@ public class ReconfigureOnChangeTest {
     gc.run(file);
   }
 
-  RunnableWithCounterAndDone[] buildRunnableArray(File configFile) {
+  RunnableWithCounterAndDone[] buildRunnableArray(File configFile, UpdateType updateType) {
     RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
-    rArray[0] = new Updater(configFile);
+    rArray[0] = new Updater(configFile, updateType);
     for (int i = 1; i < THREAD_COUNT; i++) {
       rArray[i] = new LoggingRunnable(logger);
     }
@@ -129,11 +137,11 @@ public class ReconfigureOnChangeTest {
 
 
   void doScanTest(File fileToTouch) throws JoranException, IOException, InterruptedException {
-    doScanTest(fileToTouch, false);
+    doScanTest(fileToTouch, UpdateType.TOUCH, false, MUST_BE_ERROR_FREE);
   }
 
-  void doScanTest(File fileToTouch, boolean forcedReconfigurationSkip) throws JoranException, IOException, InterruptedException {
-    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(fileToTouch);
+  void doScanTest(File fileToTouch, UpdateType updateType, boolean forcedReconfigurationSkip, boolean mustBeErrorFree) throws JoranException, IOException, InterruptedException {
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(fileToTouch, updateType);
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
@@ -143,7 +151,7 @@ public class ReconfigureOnChangeTest {
     if(forcedReconfigurationSkip)
       expectedReconfigurations = 0;
 
-    verify(expectedReconfigurations);
+    verify(expectedReconfigurations, mustBeErrorFree);
   }
 
   // chose a test at random. These tests are rather long...
@@ -195,21 +203,31 @@ public class ReconfigureOnChangeTest {
     String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
     configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));
     File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
-    doScanTest(innerFile, true);
+    doScanTest(innerFile, UpdateType.TOUCH, true, MUST_BE_ERROR_FREE);
   }
+
+  @Test
+  public void fallbackToSafe() throws IOException, JoranException, InterruptedException {
+    String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig-"+diff + ".xml";
+    File file = new File(path);
+    writeToFile(file, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
+    configure(file);
+    doScanTest(file, UpdateType.MALFORMED, false, ERRORS_EXPECTED);
+  }
+
 
   @Test
   public void gscan1() throws JoranException, IOException, InterruptedException {
     File file = new File(G_SCAN1_FILE_AS_STR);
     gConfigure(file);
-    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file, UpdateType.TOUCH);
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
             new InfoStatus("end of execution ", this));
 
     long expectedRreconfigurations = runnableArray[0].getCounter();
-    verify(expectedRreconfigurations);
+    verify(expectedRreconfigurations, MUST_BE_ERROR_FREE);
   }
 
   // check for deadlocks
@@ -219,23 +237,27 @@ public class ReconfigureOnChangeTest {
           InterruptedException {
     File file = new File(SCAN_LBCLASSIC_154_FILE_AS_STR);
     configure(file);
-    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file);
+    RunnableWithCounterAndDone[] runnableArray = buildRunnableArray(file, UpdateType.TOUCH);
     harness.execute(runnableArray);
 
     loggerContext.getStatusManager().add(
             new InfoStatus("end of execution ", this));
 
     long expectedReconfigurations = runnableArray[0].getCounter();
-    verify(expectedReconfigurations);
+    verify(expectedReconfigurations, MUST_BE_ERROR_FREE);
   }
 
 
 
 
-  void verify(long expectedReconfigurations) {
+  void verify(long expectedReconfigurations, boolean errorFreeness) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
-    assertTrue(checker.isErrorFree(0));
+    if(errorFreeness == MUST_BE_ERROR_FREE) {
+      assertTrue(checker.isErrorFree(0));
+    } else {
+      assertFalse(checker.isErrorFree(0));
+    }
     int effectiveResets = checker
             .matchCount("Will reset and reconfigure context");
     // the number of effective resets must be equal or less than
@@ -329,11 +351,29 @@ public class ReconfigureOnChangeTest {
     return (end - start) / (1.0d * LOOP_LEN);
   }
 
+  enum UpdateType {TOUCH, MALFORMED}
+
+  void writeToFile(File file, String contents) {
+    try {
+      FileWriter fw = new FileWriter(file);
+      fw.write(contents);
+      fw.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   class Updater extends RunnableWithCounterAndDone {
     File configFile;
+    UpdateType updateType;
+
+    Updater(File configFile, UpdateType updateType) {
+      this.configFile = configFile;
+      this.updateType = updateType;
+    }
 
     Updater(File configFile) {
-      this.configFile = configFile;
+      this(configFile, UpdateType.TOUCH);
     }
 
     public void run() {
@@ -347,9 +387,25 @@ public class ReconfigureOnChangeTest {
         }
         counter++;
         ReconfigureOnChangeTest.this.addInfo("***settting last modified", this);
-        configFile.setLastModified(System.currentTimeMillis());
+        switch(updateType) {
+          case TOUCH: updateFile();
+            break;
+          case MALFORMED:
+            malformedUpdate(counter);
+        }
       }
     }
+
+    private void malformedUpdate(long counter) {
+      writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" +
+              "  <root level=\"ERROR\">\n" +
+              "</configuration>");
+    }
+    void updateFile() {
+      configFile.setLastModified(System.currentTimeMillis());
+    }
   }
+
+
 
 }

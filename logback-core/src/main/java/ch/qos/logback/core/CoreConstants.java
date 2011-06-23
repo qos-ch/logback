@@ -62,12 +62,12 @@ public class CoreConstants {
   /**
    * An empty string array.
    */
-  public final static String[] EMPTY_STRING_ARRAY = new String[] {};
+  public final static String[] EMPTY_STRING_ARRAY = new String[]{};
 
   /**
    * An empty Class array.
    */
-  public final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[] {};
+  public final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[]{};
   public final static String CAUSED_BY = "Caused by: ";
 
 
@@ -111,9 +111,10 @@ public class CoreConstants {
 
   static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
 
-  public static String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
-  public static String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
+  static public final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
+  static public final String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
 
+  static public final String SAFE_JORAN_CONFIGURATION = "SAFE_JORAN_CONFIGURATION";
 
   /**
    * The key under which the local host name is registered in the logger
@@ -123,12 +124,11 @@ public class CoreConstants {
 
   /**
    * The key under which the current context name is registered in the logger
-   * context. 
+   * context.
    */
   public static final String CONTEXT_NAME_KEY = "CONTEXT_NAME";
 
 
   public static int BYTES_PER_INT = 4;
   public static final int MILLIS_IN_ONE_SECOND = 1000;
-  public final static String XML_PARSING_ERROR = "XML PARSING ERROR";
 }

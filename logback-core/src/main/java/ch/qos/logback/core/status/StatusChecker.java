@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
 
 public class StatusChecker {
 
@@ -46,7 +47,7 @@ public class StatusChecker {
     List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
     int maxLevel = Status.INFO;
     for (Status s : filteredList) {
-      if(s.getLevel() > maxLevel)
+      if (s.getLevel() > maxLevel)
         maxLevel = s.getLevel();
     }
     return maxLevel;

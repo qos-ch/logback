@@ -112,7 +112,7 @@ public class IfAction extends Action {
     // if boolResult==false & missing else,  listToPlay may be null
     if(listToPlay != null) {
       // insert past this event
-      interpreter.addEventsDynamically(listToPlay, 1);
+      interpreter.getEventPlayer().addEventsDynamically(listToPlay, 1);
     }
 
   }

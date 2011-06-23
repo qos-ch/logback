@@ -19,8 +19,11 @@ import java.util.List;
 
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.status.WarnStatus;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
@@ -51,24 +54,31 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   URL mainConfigurationURL;
   protected volatile long nextCheck;
 
-  ConfigurationWatchList cwl;
+  ConfigurationWatchList configurationWatchList;
 
   @Override
   public void start() {
-    cwl = ConfigurationWatchListUtil.getConfigurationWatchList(context);
-    if (cwl != null) {
-      mainConfigurationURL = cwl.getMainURL();
-      List<File> watchList = cwl.getCopyOfFileWatchList();
+    configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(context);
+    if (configurationWatchList != null) {
+      mainConfigurationURL = configurationWatchList.getMainURL();
+      List<File> watchList = configurationWatchList.getCopyOfFileWatchList();
       long inSeconds = refreshPeriod / 1000;
       addInfo("Will scan for changes in [" + watchList + "] every "
               + inSeconds + " seconds. ");
-      synchronized (cwl) {
+      synchronized (configurationWatchList) {
         updateNextCheck(System.currentTimeMillis());
       }
       super.start();
-    }  else {
+    } else {
       addWarn("Empty ConfigurationWatchList in context");
     }
+  }
+
+  @Override
+  public String toString() {
+    return "ReconfigureOnChangeFilter{" +
+            "invocationCounter=" + invocationCounter +
+            '}';
   }
 
   // The next fields counts the number of time the decide method is called
@@ -91,7 +101,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    synchronized (cwl) {
+    synchronized (configurationWatchList) {
       if (changeDetected()) {
         // Even though reconfiguration involves resetting the loggerContext,
         // which clears the list of turbo filters including this instance, it is
@@ -109,7 +119,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // locks held by the current thread, in particular, the AppenderAttachable
   // reader lock.
   private void detachReconfigurationToNewThread() {
-    addInfo("Detected change in [" + cwl.getCopyOfFileWatchList() + "]");
+    addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
     new ReconfiguringThread().start();
   }
 
@@ -121,7 +131,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     long now = System.currentTimeMillis();
     if (now >= nextCheck) {
       updateNextCheck(now);
-      return cwl.changeDetected();
+      return configurationWatchList.changeDetected();
     }
     return false;
   }
@@ -140,23 +150,14 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
 
   class ReconfiguringThread extends Thread {
     public void run() {
-      if(mainConfigurationURL == null) {
+      if (mainConfigurationURL == null) {
         addInfo("Due to missing top level configuration file, skipping reconfiguration");
         return;
       }
       LoggerContext lc = (LoggerContext) context;
       addInfo("Will reset and reconfigure context named [" + context.getName() + "]");
       if (mainConfigurationURL.toString().endsWith("xml")) {
-        JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(context);
-        lc.reset();
-        try {
-          jc.doConfigure(mainConfigurationURL);
-          lc.getStatusManager().add(
-                  new InfoStatus("done resetting the logging context", this));
-        } catch (JoranException e) {
-          addError("Failure during reconfiguration", e);
-        }
+        performXMLConfiguration(lc);
       } else if (mainConfigurationURL.toString().endsWith("groovy")) {
         if (EnvUtil.isGroovyAvailable()) {
           lc.reset();
@@ -166,6 +167,42 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
         } else {
           addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
         }
+      }
+    }
+
+    private void performXMLConfiguration(LoggerContext lc) {
+      JoranConfigurator jc = new JoranConfigurator();
+      jc.setContext(context);
+      StatusChecker statusChecker = new StatusChecker(context);
+      List<SaxEvent> eventList = jc.recallSafeConfiguration();
+      lc.getStatusManager().add(
+              new InfoStatus("Resetting the logging ", this));
+      lc.reset();
+
+      try {
+        jc.doConfigure(mainConfigurationURL);
+      } catch (JoranException e) {
+        fallbackConfiguration(lc, eventList);
+      }
+    }
+
+    private void fallbackConfiguration(LoggerContext lc, List<SaxEvent> eventList) {
+      JoranConfigurator jc = new JoranConfigurator();
+      jc.setContext(context);
+      if (eventList != null) {
+        lc.getStatusManager().add(
+                new WarnStatus("Falling back to previously registered safe configuration.", this));
+        try {
+          jc.doConfigure(eventList);
+          addInfo("Re-registering previous fallback configuration as a fallback point");
+          jc.registerSafeConfiguration();
+        } catch (JoranException e) {
+          addError("Unexpected exception thrown by configuration considered as safes", e);
+        }
+      } else {
+        lc.getStatusManager().add(
+                new WarnStatus("No previous configuration to fall back to.", this));
+
       }
     }
   }
