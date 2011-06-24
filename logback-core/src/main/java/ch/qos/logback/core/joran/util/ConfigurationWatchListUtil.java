@@ -50,6 +50,15 @@ public class ConfigurationWatchListUtil {
     cwl.setMainURL(url);
   }
 
+  public static URL getMainWatchURL(Context context) {
+    ConfigurationWatchList cwl = getConfigurationWatchList(context);
+    if (cwl == null) {
+      return null;
+    } else {
+      return cwl.getMainURL();
+    }
+  }
+
   public static void addToWatchList(Context context, URL url) {
     ConfigurationWatchList cwl = getConfigurationWatchList(context);
     if (cwl == null) {
@@ -62,12 +71,13 @@ public class ConfigurationWatchListUtil {
 
   public static boolean wasConfigurationWatchListReset(Context context) {
     Object o = context.getObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET);
-    if(o == null)
+    if (o == null)
       return false;
     else {
       return ((Boolean) o).booleanValue();
     }
   }
+
   public static void setConfigurationWatchListResetFlag(Context context, boolean val) {
     context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET, new Boolean(val));
   }

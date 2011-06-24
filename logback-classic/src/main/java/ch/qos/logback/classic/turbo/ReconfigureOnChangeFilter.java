@@ -19,9 +19,11 @@ import java.util.List;
 
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.WarnStatus;
 import org.slf4j.Marker;
@@ -175,34 +177,35 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       jc.setContext(context);
       StatusChecker statusChecker = new StatusChecker(context);
       List<SaxEvent> eventList = jc.recallSafeConfiguration();
-      lc.getStatusManager().add(
-              new InfoStatus("Resetting the logging ", this));
+      URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
       lc.reset();
-
+      long threshold = System.currentTimeMillis();
       try {
         jc.doConfigure(mainConfigurationURL);
+        if (statusChecker.hasXMLParsingErrors(threshold)) {
+          fallbackConfiguration(lc, eventList, mainURL);
+        }
       } catch (JoranException e) {
-        fallbackConfiguration(lc, eventList);
+        fallbackConfiguration(lc, eventList, mainURL);
       }
     }
 
-    private void fallbackConfiguration(LoggerContext lc, List<SaxEvent> eventList) {
-      JoranConfigurator jc = new JoranConfigurator();
-      jc.setContext(context);
+    private void fallbackConfiguration(LoggerContext lc, List<SaxEvent> eventList, URL mainURL) {
+      JoranConfigurator joranConfigurator = new JoranConfigurator();
+      joranConfigurator.setContext(context);
       if (eventList != null) {
-        lc.getStatusManager().add(
-                new WarnStatus("Falling back to previously registered safe configuration.", this));
+        addWarn("Falling back to previously registered safe configuration.");
         try {
-          jc.doConfigure(eventList);
-          addInfo("Re-registering previous fallback configuration as a fallback point");
-          jc.registerSafeConfiguration();
+          lc.reset();
+          joranConfigurator.informContextOfURLUsedForConfiguration(context, mainURL);
+          joranConfigurator.doConfigure(eventList);
+          addInfo("Re-registering previous fallback configuration once more as a fallback configuration point");
+          joranConfigurator.registerSafeConfiguration();
         } catch (JoranException e) {
-          addError("Unexpected exception thrown by configuration considered as safes", e);
+          addError("Unexpected exception thrown by a configuration considered safe.", e);
         }
       } else {
-        lc.getStatusManager().add(
-                new WarnStatus("No previous configuration to fall back to.", this));
-
+        addWarn("No previous configuration to fall back to.");
       }
     }
   }

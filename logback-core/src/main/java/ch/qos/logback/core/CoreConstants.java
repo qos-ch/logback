@@ -115,6 +115,9 @@ public class CoreConstants {
   static public final String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
 
   static public final String SAFE_JORAN_CONFIGURATION = "SAFE_JORAN_CONFIGURATION";
+  static public final String XML_PARSING = "XML_PARSING";
+
+
 
   /**
    * The key under which the local host name is registered in the logger

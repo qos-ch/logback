@@ -21,7 +21,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import ch.qos.logback.core.CoreConstants;
+import static ch.qos.logback.core.CoreConstants.XML_PARSING;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -150,17 +150,17 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   }
 
   public void error(SAXParseException spe) throws SAXException {
-    addError("Parsing error on line " + spe.getLineNumber() + " and column "
+    addError(XML_PARSING +" - Parsing error on line " + spe.getLineNumber() + " and column "
         + spe.getColumnNumber(), spe);
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
-    addError("Parsing fatal error on line " + spe.getLineNumber()
+    addError(XML_PARSING +" - Parsing fatal error on line " + spe.getLineNumber()
         + " and column " + spe.getColumnNumber(), spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {
-    addWarn("Parsing warning on line " + spe.getLineNumber() + " and column "
+    addWarn(XML_PARSING +" - Parsing warning on line " + spe.getLineNumber() + " and column "
         + spe.getColumnNumber(), spe);
   }
 

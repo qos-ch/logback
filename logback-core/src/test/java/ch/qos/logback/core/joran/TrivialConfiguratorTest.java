@@ -64,7 +64,7 @@ public class TrivialConfiguratorTest {
     int oldBeginCount = IncAction.beginCount;
     int oldEndCount = IncAction.endCount;
     int oldErrorCount = IncAction.errorCount;
-    doTest(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"+"inc.xml");
+    doTest(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/" + "inc.xml");
     assertEquals(oldErrorCount, IncAction.errorCount);
     assertEquals(oldBeginCount + 1, IncAction.beginCount);
     assertEquals(oldEndCount + 1, IncAction.endCount);
@@ -85,7 +85,7 @@ public class TrivialConfiguratorTest {
             tsl.list.size() >= 1);
     Status s0 = tsl.list.get(0);
     assertTrue(s0.getMessage().startsWith("Could not open ["));
- }
+  }
 
   @Test
   public void illFormedXML() {
@@ -98,8 +98,7 @@ public class TrivialConfiguratorTest {
     }
     assertEquals(1, tsl.list.size());
     Status s0 = tsl.list.get(0);
-    assertTrue(s0.getMessage().startsWith(
-            "Parsing fatal error on line 5 and column 3"));
+    assertTrue(s0.getMessage().startsWith(CoreConstants.XML_PARSING));
   }
 
   @Test

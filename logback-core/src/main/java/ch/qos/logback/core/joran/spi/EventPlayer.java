@@ -40,8 +40,8 @@ public class EventPlayer {
     return new ArrayList<SaxEvent>(eventList);
   }
 
-  public void play(List<SaxEvent> seList) {
-    eventList = seList;
+  public void play(List<SaxEvent> aSaxEventList) {
+    eventList = aSaxEventList;
     SaxEvent se;
     for(currentIndex = 0; currentIndex < eventList.size(); currentIndex++) {
       se = eventList.get(currentIndex);

@@ -43,6 +43,13 @@ public class StatusChecker {
     return filteredList;
   }
 
+  public boolean hasXMLParsingErrors(long threshold) {
+    return containsMatch(threshold, Status.ERROR, CoreConstants.XML_PARSING);
+  }
+  public boolean noXMLParsingErrorsOccurred(long threshold) {
+    return !hasXMLParsingErrors(threshold);
+  }
+
   public int getHighestLevel(long threshold) {
     List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
     int maxLevel = Status.INFO;
@@ -57,10 +64,11 @@ public class StatusChecker {
     return Status.ERROR > getHighestLevel(threshold);
   }
 
-  public boolean containsMatch(int level, String regex) {
+  public boolean containsMatch(long threshold, int level, String regex) {
+    List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
     Pattern p = Pattern.compile(regex);
 
-    for (Status status : sm.getCopyOfStatusList()) {
+    for (Status status : filteredList) {
       if (level != status.getLevel()) {
         continue;
       }
@@ -72,6 +80,10 @@ public class StatusChecker {
     }
     return false;
 
+  }
+
+  public boolean containsMatch(int level, String regex) {
+    return containsMatch(0, level, regex);
   }
 
   public boolean containsMatch(String regex) {

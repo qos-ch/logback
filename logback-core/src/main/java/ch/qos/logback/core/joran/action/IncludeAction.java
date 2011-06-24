@@ -59,17 +59,18 @@ public class IncludeAction extends Action {
     try {
       if (in != null) {
         parseAndRecord(in, recorder);
+        // remove the <included> tag from the beginning and </included> from the end
+        trimHeadAndTail(recorder);
+
+        // offset = 2, because we need to get past this element as well as the end element
+        ec.getJoranInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
       }
     } catch (JoranException e) {
       addError("Error while parsing  " + attributeInUse, e);
     } finally {
       close(in);
     }
-    // remove the <included> tag from the beginning and </included> from the end
-    trimHeadAndTail(recorder);
 
-    // offset = 2, because we need to get past this element as well as the end element
-    ec.getJoranInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
   }
 
   void close(InputStream in) {
@@ -197,7 +198,7 @@ public class IncludeAction extends Action {
 
   InputStream getInputStream(InterpretationContext ec, Attributes attributes) {
     URL inputURL = getInputURL(ec, attributes);
-    if(inputURL == null)
+    if (inputURL == null)
       return null;
 
     ConfigurationWatchListUtil.addToWatchList(context, inputURL);

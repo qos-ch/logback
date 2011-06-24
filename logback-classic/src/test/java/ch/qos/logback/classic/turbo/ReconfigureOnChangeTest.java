@@ -44,13 +44,14 @@ import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.util.StatusPrinter;
+import sun.org.mozilla.javascript.internal.Context;
 
 public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;
   final static int LOOP_LEN = 1000 * 1000;
 
-  static final boolean  MUST_BE_ERROR_FREE = true;
-  static final boolean  ERRORS_EXPECTED = false;
+  static final boolean MUST_BE_ERROR_FREE = true;
+  static final boolean ERRORS_EXPECTED = false;
 
 
   int diff = RandomUtil.getPositiveInt();
@@ -69,12 +70,18 @@ public class ReconfigureOnChangeTest {
   final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/topLevel0.xml";
 
+  final static String INCLUSION_SCAN_TOPLEVEL2_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/inclusion/topLevel2.xml";
+
   final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/topByResource.xml";
 
 
   final static String INCLUSION_SCAN_INNER0_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/inner0.xml";
+  final static String INCLUSION_SCAN_INNER2_AS_STR = ClassicTestConstants.INPUT_PREFIX
+          + "turbo/inclusion/inner2.xml";
+
 
   final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 
@@ -148,27 +155,32 @@ public class ReconfigureOnChangeTest {
             new InfoStatus("end of execution ", this));
 
     long expectedReconfigurations = runnableArray[0].getCounter();
-    if(forcedReconfigurationSkip)
+    if (forcedReconfigurationSkip)
       expectedReconfigurations = 0;
 
     verify(expectedReconfigurations, mustBeErrorFree);
   }
 
   // chose a test at random. These tests are rather long...
-    // check for deadlocks
+  // check for deadlocks
   @Test(timeout = 20000)
-  public void randomTest()  throws JoranException, IOException, InterruptedException {
+  public void randomTest() throws JoranException, IOException, InterruptedException {
     Random rand = new Random(System.currentTimeMillis());
-    switch(rand.nextInt(5)) {
-      case 0: scan1();
+    switch (rand.nextInt(5)) {
+      case 0:
+        scan1();
         break;
-      case 1: scanWithFileInclusion();
+      case 1:
+        scanWithFileInclusion();
         break;
-      case 2: scanWithResourceInclusion();
+      case 2:
+        scanWithResourceInclusion();
         break;
-      case 3: scan_lbclassic154();
+      case 3:
+        scan_lbclassic154();
         break;
-      case 4: gscan1();
+      case 4:
+        gscan1();
         break;
     }
   }
@@ -208,11 +220,24 @@ public class ReconfigureOnChangeTest {
 
   @Test
   public void fallbackToSafe() throws IOException, JoranException, InterruptedException {
-    String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig-"+diff + ".xml";
+    String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
     File file = new File(path);
     writeToFile(file, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
     configure(file);
     doScanTest(file, UpdateType.MALFORMED, false, ERRORS_EXPECTED);
+  }
+
+  @Test
+  public void fallbackToSafeWithIncludedFile() throws IOException, JoranException, InterruptedException {
+    String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
+    String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
+    File topLevelFile = new File(topLevelFileAsStr);
+    writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include file=\""+innerFileAsStr+"\"/></configuration> ");
+
+    File innerFile = new File(innerFileAsStr);
+    writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
+    configure(topLevelFile);
+    doScanTest(innerFile, UpdateType.MALFORMED_INNER, false, ERRORS_EXPECTED);
   }
 
 
@@ -248,12 +273,10 @@ public class ReconfigureOnChangeTest {
   }
 
 
-
-
   void verify(long expectedReconfigurations, boolean errorFreeness) {
     StatusChecker checker = new StatusChecker(loggerContext);
     StatusPrinter.print(loggerContext);
-    if(errorFreeness == MUST_BE_ERROR_FREE) {
+    if (errorFreeness == MUST_BE_ERROR_FREE) {
       assertTrue(checker.isErrorFree(0));
     } else {
       assertFalse(checker.isErrorFree(0));
@@ -262,9 +285,9 @@ public class ReconfigureOnChangeTest {
             .matchCount("Will reset and reconfigure context");
     // the number of effective resets must be equal or less than
     // expectedReconfigurations
-    System.out.println("effectiveResets="+effectiveResets);
+    System.out.println("effectiveResets=" + effectiveResets);
 
-    System.out.println("expectedReconfigurations="+expectedReconfigurations);
+    System.out.println("expectedReconfigurations=" + expectedReconfigurations);
     assertTrue(effectiveResets <= expectedReconfigurations);
 
     // however, there should be some effective resets
@@ -351,7 +374,7 @@ public class ReconfigureOnChangeTest {
     return (end - start) / (1.0d * LOOP_LEN);
   }
 
-  enum UpdateType {TOUCH, MALFORMED}
+  enum UpdateType {TOUCH, MALFORMED, MALFORMED_INNER}
 
   void writeToFile(File file, String contents) {
     try {
@@ -387,11 +410,15 @@ public class ReconfigureOnChangeTest {
         }
         counter++;
         ReconfigureOnChangeTest.this.addInfo("***settting last modified", this);
-        switch(updateType) {
-          case TOUCH: updateFile();
+        switch (updateType) {
+          case TOUCH:
+            touchFile();
             break;
           case MALFORMED:
             malformedUpdate(counter);
+            break;
+          case MALFORMED_INNER:
+            malformedInnerUpdate(counter);
         }
       }
     }
@@ -401,11 +428,17 @@ public class ReconfigureOnChangeTest {
               "  <root level=\"ERROR\">\n" +
               "</configuration>");
     }
-    void updateFile() {
+
+    private void malformedInnerUpdate(long counter) {
+      writeToFile(configFile, "<included>\n" +
+              "  <root>\n" +
+              "</included>");
+    }
+
+    void touchFile() {
       configFile.setLastModified(System.currentTimeMillis());
     }
   }
-
 
 
 }

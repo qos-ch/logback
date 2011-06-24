@@ -23,7 +23,9 @@ import java.util.List;
 
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.status.StatusChecker;
 import org.xml.sax.InputSource;
 
 import ch.qos.logback.core.joran.event.SaxEvent;
@@ -44,7 +46,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   final public void doConfigure(URL url) throws JoranException {
     try {
-      informContextOfURLUsedForConfiguration(url);
+      informContextOfURLUsedForConfiguration(getContext(), url);
       URLConnection urlConnection = url.openConnection();
       // per http://jira.qos.ch/browse/LBCORE-105
       // per http://jira.qos.ch/browse/LBCORE-127
@@ -67,7 +69,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   final public void doConfigure(File file) throws JoranException {
     FileInputStream fis = null;
     try {
-      informContextOfURLUsedForConfiguration(file.toURI().toURL());
+      informContextOfURLUsedForConfiguration(getContext(), file.toURI().toURL());
       fis = new FileInputStream(file);
       doConfigure(fis);
     } catch (IOException ioe) {
@@ -87,7 +89,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
   }
 
-  protected void informContextOfURLUsedForConfiguration(URL url) {
+  static public void informContextOfURLUsedForConfiguration(Context context, URL url) {
     ConfigurationWatchListUtil.setMainWatchURL(context, url);
   }
 
@@ -122,16 +124,20 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   final public void doConfigure(final InputSource inputSource)
           throws JoranException {
 
+    long threshold = System.currentTimeMillis();
     if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
-      informContextOfURLUsedForConfiguration(null);
+      informContextOfURLUsedForConfiguration(getContext(), null);
     }
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
     recorder.recordEvents(inputSource);
     doConfigure(recorder.saxEventList);
     // no exceptions a this level
-    addInfo("Registering current configuration as safe fallback point");
-    registerSafeConfiguration();
+    StatusChecker statusChecker = new StatusChecker(context);
+    if(statusChecker.noXMLParsingErrorsOccurred(threshold)) {
+      addInfo("Registering current configuration as safe fallback point");
+      registerSafeConfiguration();
+    }
   }
 
   public void doConfigure(final List<SaxEvent> eventList)
