@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -266,8 +267,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
           continue;
         }
         InternetAddress[] tmp = InternetAddress.parse(email, true);
-        // one <To> element should contain one email address
-        iaList.add(tmp[0]);
+        iaList.addAll(Arrays.asList(tmp));
       } catch (AddressException e) {
         addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event + "]", e);
         return iaList;
