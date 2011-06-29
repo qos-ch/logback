@@ -1731,9 +1731,13 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         <td>The email address of the recipient as a
         <em>pattern</em>. The pattern is evaluated anew with the
         triggering event as input for each outgoing email. Multiple
-        recipients can be specified by using several
-        <code>&lt;to></code> elements.</td>
+        recipients can be specified by separating the destination
+        addresses with commas.  Alternatively, multiple recipients can
+        also be specified by using multiple <code>&lt;to></code>
+        elements. 
+        </td>
       </tr>
+
       <tr class="alt">
         <td><b><span class="option">from</span></b></td>
         <td><code>String</code></td>
