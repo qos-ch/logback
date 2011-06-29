@@ -307,6 +307,21 @@ public class SMTPAppender_SubethaSMTPTest {
 
     StatusPrinter.print(lc);
   }
+
+  @Test
+  public void testMultipleTo() throws Exception {
+    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.addTo("Test <test@example.com>, other-test@example.com");
+    smtpAppender.start();
+    Logger logger = lc.getLogger("test");
+    logger.addAppender(smtpAppender);
+    logger.debug("hello");
+    logger.error("en error", new Exception("an exception"));
+    List<WiserMessage> wiserMsgList = wiser.getMessages();
+
+    assertNotNull(wiserMsgList);
+    assertEquals(3, wiserMsgList.size());
+  }
   
   public class TrivialAuthHandlerFactory implements AuthenticationHandlerFactory {
     public AuthenticationHandler create() {

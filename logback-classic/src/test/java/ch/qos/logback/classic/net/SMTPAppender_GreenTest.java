@@ -233,5 +233,20 @@ public class SMTPAppender_GreenTest {
     assertEquals(msg, body);
   }
 
+  @Test
+  public void testMultipleTo() throws Exception {
+    buildSMTPAppender();
+    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.addTo("Test <test@example.com>, other-test@example.com");
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    logger.debug("hello");
+    logger.error("en error", new Exception("an exception"));
 
+    StatusPrinter.print(lc);
+
+    MimeMessage[] mma = greenMail.getReceivedMessages();
+    assertNotNull(mma);
+    assertEquals(3, mma.length);
+  }
 }
