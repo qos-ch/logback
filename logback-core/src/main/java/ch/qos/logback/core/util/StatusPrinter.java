@@ -25,6 +25,8 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusManager;
 
+import static ch.qos.logback.core.status.StatusUtil.filterStatusListByTimeThreshold;
+
 public class StatusPrinter {
 
   private static PrintStream ps = System.out;
@@ -88,25 +90,38 @@ public class StatusPrinter {
    * @param context
    */
   public static void print(Context context) {
-    if (context == null) {
-      throw new IllegalArgumentException("Context argument cannot be null");
-    }
-
-    StatusManager sm = context.getStatusManager();
-    if (sm == null) {
-      ps.println("WARN: Context named \"" + context.getName()
-          + "\" has no status manager");
-    } else {
-      print(sm);
-    }
-
+    print(context, 0);
   }
+
+   /**
+   * Print context's status data with a timestamp higher than the threshold.
+   * @param context
+   */
+   public static void print(Context context, long threshold) {
+     if (context == null) {
+       throw new IllegalArgumentException("Context argument cannot be null");
+     }
+
+     StatusManager sm = context.getStatusManager();
+     if (sm == null) {
+       ps.println("WARN: Context named \"" + context.getName()
+           + "\" has no status manager");
+     } else {
+       print(sm, threshold);
+     }
+   }
 
   public static void print(StatusManager sm) {
+    print(sm, 0);
+  }
+
+  public static void print(StatusManager sm, long threshold) {
     StringBuilder sb = new StringBuilder();
-    buildStrFromStatusManager(sb, sm);
+    List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
+    buildStrFromStatusList(sb, filteredList);
     ps.println(sb.toString());
   }
+
 
   public static void print(List<Status> statusList) {
     StringBuilder sb = new StringBuilder();
@@ -123,9 +138,9 @@ public class StatusPrinter {
     }
   }
 
-  private static void buildStrFromStatusManager(StringBuilder sb, StatusManager sm) {
-    buildStrFromStatusList(sb, sm.getCopyOfStatusList());
-  }
+//  private static void buildStrFromStatusManager(StringBuilder sb, StatusManager sm) {
+//  }
+
   
   private static void appendThrowable(StringBuilder sb, Throwable t) {
     String[] stringRep = ThrowableToStringArray.convert(t);

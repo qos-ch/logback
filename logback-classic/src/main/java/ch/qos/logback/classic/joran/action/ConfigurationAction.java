@@ -30,10 +30,11 @@ public class ConfigurationAction extends Action {
   static final String SCAN_PERIOD_ATTR = "scanPeriod";
 
   boolean debugMode = false;
+  long threshold = 0;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
-
+    threshold = System.currentTimeMillis();
     if (OptionHelper.isEmpty(debugAttrib)
         || debugAttrib.equalsIgnoreCase("false")
         || debugAttrib.equalsIgnoreCase("null")) {
@@ -79,7 +80,7 @@ public class ConfigurationAction extends Action {
     if (debugMode) {
       addInfo("End of configuration.");
       LoggerContext loggerContext = (LoggerContext) context;
-      StatusPrinter.print(loggerContext);
+      StatusPrinter.print(loggerContext, threshold);
     }
     ec.popObject();
   }

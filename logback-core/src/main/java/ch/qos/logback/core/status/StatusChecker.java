@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.status;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,6 +20,8 @@ import java.util.regex.Pattern;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
+
+import static ch.qos.logback.core.status.StatusUtil.filterStatusListByTimeThreshold;
 
 public class StatusChecker {
 
@@ -34,18 +35,10 @@ public class StatusChecker {
     this.sm = context.getStatusManager();
   }
 
-  private List<Status> filterStatusListByTimeThreshold(List<Status> rawList, long threshold) {
-    List<Status> filteredList = new ArrayList<Status>();
-    for (Status s : rawList) {
-      if (s.getDate() >= threshold)
-        filteredList.add(s);
-    }
-    return filteredList;
-  }
-
   public boolean hasXMLParsingErrors(long threshold) {
     return containsMatch(threshold, Status.ERROR, CoreConstants.XML_PARSING);
   }
+
   public boolean noXMLParsingErrorsOccurred(long threshold) {
     return !hasXMLParsingErrors(threshold);
   }

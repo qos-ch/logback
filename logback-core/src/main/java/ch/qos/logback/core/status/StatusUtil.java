@@ -15,7 +15,19 @@ package ch.qos.logback.core.status;
 
 import ch.qos.logback.core.Context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StatusUtil {
+
+  static public List<Status> filterStatusListByTimeThreshold(List<Status> rawList, long threshold) {
+    List<Status> filteredList = new ArrayList<Status>();
+    for (Status s : rawList) {
+      if (s.getDate() >= threshold)
+        filteredList.add(s);
+    }
+    return filteredList;
+  }
 
   static public void addStatus(Context context, Status status) {
     if (context == null) {

@@ -208,10 +208,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   /**
-   * This method clears all internal properties, closes all appenders, removes
-   * any turboFilters, fires an OnReset event, removes all status listeners,
-   * removes all context listeners (except those which are reset resistant).
-   */
+   * This method clears all internal properties, except internal status messages,
+   * closes all appenders, removes any turboFilters, fires an OnReset event,
+   * removes all status listeners, removes all context listeners
+   * (except those which are reset resistant).
+   * <p>
+   * As mentioned above, internal status messages survive resets.
+   * */
   @Override
   public void reset() {
     resetCount++;
