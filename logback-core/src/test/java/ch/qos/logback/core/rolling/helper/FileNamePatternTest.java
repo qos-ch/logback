@@ -126,12 +126,17 @@ public class FileNamePatternTest {
 
   @Test
   public void asRegex() {
-    Calendar cal = Calendar.getInstance();
-    cal.set(2003, 4, 20, 17, 55);
-    FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
-        context);
-    String regex = fnp.toRegex();
-    assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d{1,2}.txt", regex);
+    {
+      FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
+          context);
+      String regex = fnp.toRegex();
+      assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d{1,2}.txt", regex);
+    }
+    {
+      FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd'T'}-%i.txt",
+          context);
+      String regex = fnp.toRegex();
+      assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}T-\\d{1,2}.txt", regex);
+    }
   }
-
 }
