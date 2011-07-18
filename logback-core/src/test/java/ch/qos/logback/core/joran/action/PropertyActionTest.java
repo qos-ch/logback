@@ -146,6 +146,15 @@ public class PropertyActionTest  {
     assertEquals(1, context.getStatusManager().getCount());
     assertTrue(checkFileErrors());
   }
+
+  @Test
+  public void testLoadEnvironement() {
+    String prefix = "env"; 
+    atts.setValue("environment", prefix);
+    propertyAction.begin(ec, null, atts);
+    String varName = "PATH";
+    assertEquals(System.getenv(varName), ec.getProperty(prefix + "." + varName));
+  }
   
   private boolean checkError() {
     Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
