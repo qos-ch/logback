@@ -44,7 +44,6 @@ import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.util.StatusPrinter;
-import sun.org.mozilla.javascript.internal.Context;
 
 public class ReconfigureOnChangeTest {
   final static int THREAD_COUNT = 5;

@@ -102,7 +102,7 @@ trait RollingScaffolding {
 
   private[rolling] def waitForCompression(tbrp: TimeBasedRollingPolicy[AnyRef]): Unit = {
     if (tbrp.future != null && !tbrp.future.isDone) {
-      tbrp.future.get(200, TimeUnit.MILLISECONDS)
+      tbrp.future.get(400, TimeUnit.MILLISECONDS)
     }
   }
 
