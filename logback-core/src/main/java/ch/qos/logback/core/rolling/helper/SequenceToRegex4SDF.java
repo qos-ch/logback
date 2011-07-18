@@ -69,6 +69,11 @@ class SequenceToRegex4SDF {
       return "\\.";
     case '\\': 
       throw new IllegalStateException("Forward slashes are not allowed");
+    case '\'':
+      if (occurrences == 1) {
+        return "";
+      }
+      throw new IllegalStateException("Too many single quotes");
     default:
       if (occurrences == 1) {
         return "" + c;
