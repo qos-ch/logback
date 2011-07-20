@@ -57,11 +57,11 @@ abstract public class AccessConverter extends DynamicConverter<IAccessEvent> imp
   }
 
   public void addError(String msg) {
-    addError(msg);
+    cab.addError(msg);
   }
 
   public void addError(String msg, Throwable ex) {
-    addError(msg, ex);
+    cab.addError(msg, ex);
   }
   
 }
