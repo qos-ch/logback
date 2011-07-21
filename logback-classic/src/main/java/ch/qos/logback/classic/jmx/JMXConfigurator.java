@@ -270,7 +270,7 @@ public class JMXConfigurator extends ContextAwareBase implements
   }
 
   /**
-   * JMXConfigrator should not be removed subsequent to a LoggerContext reset.
+   * JMXConfigurator should not be removed subsequent to a LoggerContext reset.
    * 
    * @return
    */
