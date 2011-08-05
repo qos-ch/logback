@@ -14,7 +14,7 @@
 package ch.qos.logback.core.db.dialect;
 
 /**
- * The HSQLDB dialect.
+ * The H2 dialect.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
