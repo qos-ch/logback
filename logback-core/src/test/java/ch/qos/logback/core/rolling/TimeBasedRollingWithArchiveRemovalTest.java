@@ -29,10 +29,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.qos.logback.core.CoreConstants;
+import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -106,6 +107,7 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     System.out.println("randomOutputDir=" + randomOutputDir);
     // small maxHistory, many periods
     slashCount = computeSlashCount(MONTHLY_CROLOLOG_DATE_PATTERN);
+
     int numPeriods = 40;
     int maxHistory = 2;
 
@@ -113,15 +115,16 @@ public class TimeBasedRollingWithArchiveRemovalTest {
         + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods);
     int beginPeriod = Calendar.getInstance().get(Calendar.MONTH);
     boolean extraFolder = extraFolder(numPeriods, 12, beginPeriod, maxHistory);
+    System.out.println("xxxx slashCount="+slashCount+", extraFolder="+extraFolder);
     StatusPrinter.print(context);
     check(expectedCountWithFolders(2, extraFolder));
   }
 
   @Test
   public void dailyRollover() throws Exception {
-    slashCount = computeSlashCount(CoreConstants.DAILY_DATE_PATTERN);
+    slashCount = computeSlashCount(DAILY_DATE_PATTERN);
     doRollover(
-        randomOutputDir + "clean-%d{" + CoreConstants.DAILY_DATE_PATTERN + "}.txt.zip",
+        randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt.zip",
         MILLIS_IN_DAY, 5, 5 * 3);
     check(expectedCountWithoutFolders(5));
   }
@@ -144,9 +147,9 @@ public class TimeBasedRollingWithArchiveRemovalTest {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000");
     tbfnatp = sizeAndTimeBasedFNATP;
 
-    slashCount = computeSlashCount(CoreConstants.DAILY_DATE_PATTERN);
+    slashCount = computeSlashCount(DAILY_DATE_PATTERN);
     doRollover(
-        randomOutputDir + "/%d{" + CoreConstants.DAILY_DATE_PATTERN + "}-clean.%i.zip",
+        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip",
         MILLIS_IN_DAY, 5, 5 * 4);
 
     // make .zip optional so that if for one reason or another, no size-based
@@ -165,7 +168,22 @@ public class TimeBasedRollingWithArchiveRemovalTest {
 
     slashCount = 1;
     doRollover(
-        randomOutputDir + "/%d{" + CoreConstants.DAILY_DATE_PATTERN + "}/clean.%i.zip",
+        randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip",
+        MILLIS_IN_DAY, 5, 5 * 4);
+    checkDirPatternCompliance(6);
+  }
+
+
+  @Ignore
+  @Test
+  public void dailyChronologSizeBasedRolloverWhenLogFilenameDoesNotContainDirectory() throws Exception {
+    SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
+    sizeAndTimeBasedFNATP.setMaxFileSize("10000");
+    tbfnatp = sizeAndTimeBasedFNATP;
+
+    slashCount = 1;
+    doRollover(
+        "clean.%d{" + DAILY_DATE_PATTERN + "}.%i.zip",
         MILLIS_IN_DAY, 5, 5 * 4);
     checkDirPatternCompliance(6);
   }
@@ -294,9 +312,9 @@ public class TimeBasedRollingWithArchiveRemovalTest {
   // year is 2012, and not 2013 (the current year).
   boolean extraFolder(int numPeriods, int periodsPerEra, int beginPeriod,
       int maxHistory) {
-    int adjustedBegin = beginPeriod + 1;
-    int remainder = ((adjustedBegin) + numPeriods) % periodsPerEra;
-    return (remainder < maxHistory + 1);
+    // beginPeriod is 0 for JAN, 1 for FEB etc
+    int valueOfLastMonth = ((beginPeriod) + numPeriods) % periodsPerEra;
+    return (valueOfLastMonth < maxHistory);
   }
 
   int expectedCountWithFolders(int maxHistory, boolean extraFolder) {
