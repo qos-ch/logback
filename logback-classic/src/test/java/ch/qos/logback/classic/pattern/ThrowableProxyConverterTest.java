@@ -71,7 +71,6 @@ public class ThrowableProxyConverterTest {
 
   @Test
   public void withArgumentOfOne() throws Exception {
-    // given
     final Throwable t = TeztHelper.makeNestedException(0);
     t.printStackTrace(pw);
     final ILoggingEvent le = createLoggingEvent(t);
@@ -80,10 +79,8 @@ public class ThrowableProxyConverterTest {
     tpc.setOptionList(optionList);
     tpc.start();
 
-    // when
     final String result = tpc.convert(le);
 
-    // then
     final BufferedReader reader = new BufferedReader(new StringReader(result));
     assertTrue(reader.readLine().contains(t.getMessage()));
     assertNotNull(reader.readLine());
@@ -92,7 +89,6 @@ public class ThrowableProxyConverterTest {
 
   @Test
   public void withShortArgument() throws Exception {
-    // given
     final Throwable t = TeztHelper.makeNestedException(0);
     t.printStackTrace(pw);
     final ILoggingEvent le = createLoggingEvent(t);
@@ -101,10 +97,8 @@ public class ThrowableProxyConverterTest {
     tpc.setOptionList(options);
     tpc.start();
 
-    // when
     final String result = tpc.convert(le);
 
-    // then
     final BufferedReader reader = new BufferedReader(new StringReader(result));
     assertTrue(reader.readLine().contains(t.getMessage()));
     assertNotNull(reader.readLine());
