@@ -30,7 +30,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
   protected String elapsedPeriodsFileName;
   protected RollingCalendar rc;
 
-  protected long currentTime = -1;
+  protected long artificialCurrentTime = -1;
   protected Date dateInCurrentPeriod = null;
 
   protected long nextCheck;
@@ -95,13 +95,13 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
   }
 
   public void setCurrentTime(long timeInMillis) {
-    currentTime = timeInMillis;
+    artificialCurrentTime = timeInMillis;
   }
 
   public long getCurrentTime() {
     // if time is forced return the time set by user
-    if (currentTime >= 0) {
-      return currentTime;
+    if (artificialCurrentTime >= 0) {
+      return artificialCurrentTime;
     } else {
       return System.currentTimeMillis();
     }

@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Date;
 
 import ch.qos.logback.core.rolling.helper.DefaultArchiveRemover;
+import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
   @Override
   public void start() {
     super.start();
-    archiveRemover = new DefaultArchiveRemover(tbrp.fileNamePattern, rc);
+    archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc, getCurrentTime());
     archiveRemover.setContext(context);
     started = true;
   }

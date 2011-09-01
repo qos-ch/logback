@@ -35,31 +35,31 @@ public class RollingCalendarTest extends TestCase {
     {
       RollingCalendar rc = new RollingCalendar();
       assertEquals(PeriodicityType.TOP_OF_SECOND, rc
-          .computePeriodicity("yyyy-MM-dd_HH_mm_ss"));
+          .computePeriodicityType("yyyy-MM-dd_HH_mm_ss"));
     }
 
     {
       RollingCalendar rc = new RollingCalendar();
       assertEquals(PeriodicityType.TOP_OF_MINUTE, rc
-          .computePeriodicity("yyyy-MM-dd_HH_mm"));
+          .computePeriodicityType("yyyy-MM-dd_HH_mm"));
     }
 
     {
       RollingCalendar rc = new RollingCalendar();
       assertEquals(PeriodicityType.TOP_OF_HOUR, rc
-          .computePeriodicity("yyyy-MM-dd_HH"));
+          .computePeriodicityType("yyyy-MM-dd_HH"));
     }
 
     {
       RollingCalendar rc = new RollingCalendar();
       assertEquals(PeriodicityType.TOP_OF_DAY, rc
-          .computePeriodicity("yyyy-MM-dd"));
+          .computePeriodicityType("yyyy-MM-dd"));
     }
 
     {
       RollingCalendar rc = new RollingCalendar();
       assertEquals(PeriodicityType.TOP_OF_MONTH, rc
-          .computePeriodicity("yyyy-MM"));
+          .computePeriodicityType("yyyy-MM"));
     }
   }
 

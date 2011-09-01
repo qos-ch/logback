@@ -19,11 +19,10 @@ import java.util.Date;
 public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
 
   public SizeAndTimeBasedArchiveRemover(FileNamePattern fileNamePattern,
-      RollingCalendar rc) {
-    super(fileNamePattern, rc);
+      RollingCalendar rc, long currentTime) {
+    super(fileNamePattern, rc, currentTime);
   }
 
-  @Override
   public void clean(Date now) {
     Date dateOfPeriodToClean = rc.getRelativeDate(now, periodOffsetForDeletionTarget);
 
@@ -31,8 +30,11 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
     String stemRegex = FileFilterUtil.afterLastSlash(regex);
     File archive0 = new File(fileNamePattern.convertMultipleArguments(
         dateOfPeriodToClean, 0));
+    // in case the file has no directory part, i.e. if it's written into the
+    // user's current directory.
+    archive0 = archive0.getAbsoluteFile();
 
-    File parentDir = archive0.getParentFile();
+    File parentDir = archive0.getAbsoluteFile().getParentFile();
     File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(
         parentDir, stemRegex);
 
@@ -41,7 +43,7 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
     }
 
     if (parentClean) {
-      removeFolderIfEmpty(parentDir, 0);
+      removeFolderIfEmpty(parentDir);
     }
   }
 

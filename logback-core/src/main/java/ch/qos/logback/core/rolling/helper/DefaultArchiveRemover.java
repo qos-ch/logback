@@ -20,20 +20,24 @@ import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class DefaultArchiveRemover extends ContextAwareBase implements
+abstract public class DefaultArchiveRemover extends ContextAwareBase implements
     ArchiveRemover {
 
   final FileNamePattern fileNamePattern;
   final RollingCalendar rc;
   int periodOffsetForDeletionTarget;
   final boolean parentClean;
+  long lastHeartBeat;
 
   public DefaultArchiveRemover(FileNamePattern fileNamePattern,
-      RollingCalendar rc) {
+      RollingCalendar rc, long currentTime) {
     this.fileNamePattern = fileNamePattern;
     this.rc = rc;
     this.parentClean = computeParentCleaningFlag(fileNamePattern);
+    this.lastHeartBeat = currentTime;
   }
+
+
 
   boolean computeParentCleaningFlag(FileNamePattern fileNamePattern) {
     DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
@@ -68,17 +72,8 @@ public class DefaultArchiveRemover extends ContextAwareBase implements
     return false;
   }
 
-  public void clean(Date now) {
-    Date date2delete = rc.getRelativeDate(now, periodOffsetForDeletionTarget);
-    String filename = fileNamePattern.convert(date2delete);
-    File file2Delete = new File(filename);
-    if (file2Delete.exists() && file2Delete.isFile()) {
-      file2Delete.delete();
-      addInfo("deleting " + file2Delete);
-      if (parentClean) {
-        removeFolderIfEmpty(file2Delete.getParentFile(), 0);
-      }
-    }
+  void removeFolderIfEmpty(File dir) {
+    removeFolderIfEmpty(dir, 0);
   }
 
   /**
@@ -89,7 +84,7 @@ public class DefaultArchiveRemover extends ContextAwareBase implements
    * @param dir
    * @param depth
    */
-  void removeFolderIfEmpty(File dir, int depth) {
+  private void removeFolderIfEmpty(File dir, int depth) {
     // we should never go more than 3 levels higher
     if (depth >= 3) {
       return;
