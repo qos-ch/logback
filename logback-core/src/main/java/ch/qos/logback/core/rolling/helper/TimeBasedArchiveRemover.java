@@ -25,21 +25,7 @@ public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
 
   public TimeBasedArchiveRemover(FileNamePattern fileNamePattern,
                                  RollingCalendar rc, long currentTime) {
-    super(fileNamePattern, rc, currentTime);
-  }
-
-
-  public void clean(Date now) {
-    long nowInMillis = now.getTime();
-    int periodsElapsed = rc.periodsElapsed(lastHeartBeat, nowInMillis);
-    if(periodsElapsed < 1) {
-      addWarn("Unexpected periodsElapsed value "+periodsElapsed);
-      periodsElapsed = 1;
-    }
-    lastHeartBeat = nowInMillis;
-    for(int i=0; i < periodsElapsed; i++) {
-      cleanByPeriodOffset(now, periodOffsetForDeletionTarget-i);
-    }
+    super(fileNamePattern, rc);
   }
 
   protected void cleanByPeriodOffset(Date now, int periodOffset) {

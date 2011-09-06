@@ -140,7 +140,7 @@ public class RollingCalendar extends GregorianCalendar {
     }
   }
 
-  public int periodsElapsed(long start, long end) {
+  public long periodsElapsed(long start, long end) {
     if (start > end)
       throw new IllegalArgumentException("Start cannot come before end");
 
@@ -148,17 +148,17 @@ public class RollingCalendar extends GregorianCalendar {
     switch (periodicityType) {
 
       case TOP_OF_MILLISECOND:
-        return (int) diff;
+        return diff;
       case TOP_OF_SECOND:
-        return (int) diff / CoreConstants.MILLIS_IN_ONE_SECOND;
+        return diff / CoreConstants.MILLIS_IN_ONE_SECOND;
       case TOP_OF_MINUTE:
-        return (int) diff / CoreConstants.MILLIS_IN_ONE_MINUTE;
+        return diff / CoreConstants.MILLIS_IN_ONE_MINUTE;
       case TOP_OF_HOUR:
         return (int) diff / CoreConstants.MILLIS_IN_ONE_HOUR;
       case TOP_OF_DAY:
-        return (int) diff / CoreConstants.MILLIS_IN_ONE_DAY;
+        return diff / CoreConstants.MILLIS_IN_ONE_DAY;
       case TOP_OF_WEEK:
-        return (int) diff / CoreConstants.MILLIS_IN_ONE_WEEK;
+        return diff / CoreConstants.MILLIS_IN_ONE_WEEK;
       case TOP_OF_MONTH:
         return diffInMonths(start, end);
       default:
@@ -166,7 +166,7 @@ public class RollingCalendar extends GregorianCalendar {
     }
   }
 
-  public static int diffInMonths(Long startTime, Long endTime) {
+  public static int diffInMonths(long startTime, long endTime) {
     if (startTime > endTime)
       throw new IllegalArgumentException("startTime cannot be larger than endTime");
     Calendar startCal = Calendar.getInstance();

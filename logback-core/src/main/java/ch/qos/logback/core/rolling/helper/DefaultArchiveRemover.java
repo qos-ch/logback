@@ -16,28 +16,63 @@ package ch.qos.logback.core.rolling.helper;
 import java.io.File;
 import java.util.Date;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class DefaultArchiveRemover extends ContextAwareBase implements
-    ArchiveRemover {
+        ArchiveRemover {
+
+  static protected final long UNINITIALIZED = -1;
+  // aim for 64 days, except in case of hourly rollover
+  static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 64L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
+  static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
   final FileNamePattern fileNamePattern;
   final RollingCalendar rc;
   int periodOffsetForDeletionTarget;
   final boolean parentClean;
-  long lastHeartBeat;
+  long lastHeartBeat = UNINITIALIZED;
 
   public DefaultArchiveRemover(FileNamePattern fileNamePattern,
-      RollingCalendar rc, long currentTime) {
+                               RollingCalendar rc) {
     this.fileNamePattern = fileNamePattern;
     this.rc = rc;
     this.parentClean = computeParentCleaningFlag(fileNamePattern);
-    this.lastHeartBeat = currentTime;
   }
 
 
+  int computeElapsedPeriodsSinceLastClean(long nowInMillis) {
+    long periodsElapsed = 0;
+    if (lastHeartBeat == UNINITIALIZED) {
+      periodsElapsed = rc.periodsElapsed(nowInMillis, nowInMillis + INACTIVITY_TOLERANCE_IN_MILLIS);
+    } else {
+      periodsElapsed = rc.periodsElapsed(lastHeartBeat, nowInMillis);
+      if (periodsElapsed < 1) {
+        addWarn("Unexpected periodsElapsed value " + periodsElapsed);
+        periodsElapsed = 1;
+      }
+    }
+    if (periodsElapsed > MAX_VALUE_FOR_INACTIVITY_PERIODS)
+      periodsElapsed = MAX_VALUE_FOR_INACTIVITY_PERIODS;
+    return (int) periodsElapsed;
+  }
+
+  public void clean(Date now) {
+    long nowInMillis = now.getTime();
+    int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
+    lastHeartBeat = nowInMillis;
+    if (periodsElapsed > 1) {
+      addInfo("periodsElapsed = " + periodsElapsed);
+    }
+    for (int i = 0; i < periodsElapsed; i++) {
+      if (periodsElapsed > 1) addInfo("i = " + i);
+      cleanByPeriodOffset(now, periodOffsetForDeletionTarget - i);
+    }
+  }
+
+  abstract void cleanByPeriodOffset(Date now, int periodOffset);
 
   boolean computeParentCleaningFlag(FileNamePattern fileNamePattern) {
     DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
@@ -80,7 +115,7 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
    * Will remove the directory passed as parameter if empty. After that, if the
    * parent is also becomes empty, remove the parent dir as well but at most 3
    * times.
-   * 
+   *
    * @param dir
    * @param depth
    */
@@ -90,7 +125,7 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
       return;
     }
     if (dir.isDirectory() && FileFilterUtil.isEmptyDirectory(dir)) {
-      addInfo("deleting folder [" + dir +"]");
+      addInfo("deleting folder [" + dir + "]");
       dir.delete();
       removeFolderIfEmpty(dir.getParentFile(), depth + 1);
     }
