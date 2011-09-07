@@ -24,7 +24,7 @@ import org.codehaus.groovy.tools.shell.util.NoExitSecurityManager;
 public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
 
   public TimeBasedArchiveRemover(FileNamePattern fileNamePattern,
-                                 RollingCalendar rc, long currentTime) {
+                                 RollingCalendar rc) {
     super(fileNamePattern, rc);
   }
 

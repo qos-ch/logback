@@ -31,7 +31,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
   @Override
   public void start() {
     super.start();
-    archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc, getCurrentTime());
+    archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
     archiveRemover.setContext(context);
     started = true;
   }

@@ -47,6 +47,8 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
     long periodsElapsed = 0;
     if (lastHeartBeat == UNINITIALIZED) {
       periodsElapsed = rc.periodsElapsed(nowInMillis, nowInMillis + INACTIVITY_TOLERANCE_IN_MILLIS);
+      if (periodsElapsed > MAX_VALUE_FOR_INACTIVITY_PERIODS)
+        periodsElapsed = MAX_VALUE_FOR_INACTIVITY_PERIODS;
     } else {
       periodsElapsed = rc.periodsElapsed(lastHeartBeat, nowInMillis);
       if (periodsElapsed < 1) {
@@ -54,8 +56,6 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
         periodsElapsed = 1;
       }
     }
-    if (periodsElapsed > MAX_VALUE_FOR_INACTIVITY_PERIODS)
-      periodsElapsed = MAX_VALUE_FOR_INACTIVITY_PERIODS;
     return (int) periodsElapsed;
   }
 
