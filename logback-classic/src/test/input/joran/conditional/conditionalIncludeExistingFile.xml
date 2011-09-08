@@ -1,0 +1,14 @@
+
+<configuration>
+
+  <define name="INCLUDED_FILE_EXISTS" 
+          class="ch.qos.logback.core.property.FileExistsPropertyDefiner">
+      <path>src/test/input/joran/conditional/includedFile.xml</path>
+  </define>
+  
+   <if condition='property("INCLUDED_FILE_EXISTS").equals("true")'>
+    <then>
+        <include file="src/test/input/joran/conditional/includedFile.xml"/>
+    </then>
+  </if> 
+</configuration>

@@ -1,0 +1,10 @@
+<included>
+  <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %-5level %logger{35} - %msg %n</pattern>
+    </encoder>
+  </appender>
+  <root>
+    <appender-ref ref="CON"/>
+  </root>
+</included>

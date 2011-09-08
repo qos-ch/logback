@@ -15,6 +15,9 @@ package ch.qos.logback.core.util;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessControlException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -23,7 +26,7 @@ import ch.qos.logback.core.Context;
 
 /**
  * Load resources (or images) from various sources.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class Loader {
@@ -31,28 +34,41 @@ public class Loader {
 
   private static boolean ignoreTCL = false;
   public static final String IGNORE_TCL_PROPERTY_NAME = "logback.ignoreTCL";
+  private static boolean HAS_GET_CLASS_LOADER_PERMISSION = false;
 
   static {
-
     String ignoreTCLProp = OptionHelper.getSystemProperty(
-        IGNORE_TCL_PROPERTY_NAME, null);
+            IGNORE_TCL_PROPERTY_NAME, null);
 
     if (ignoreTCLProp != null) {
       ignoreTCL = OptionHelper.toBoolean(ignoreTCLProp, true);
     }
+
+    HAS_GET_CLASS_LOADER_PERMISSION =
+            AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+              public Boolean run() {
+                try {
+                  AccessController.checkPermission(
+                          new RuntimePermission("getClassLoader"));
+                  return true;
+                } catch (AccessControlException e) {
+                  return false;
+                }
+              }
+            });
   }
 
   /**
    * Compute the number of occurrences a resource can be found by a class
    * loader.
-   * 
+   *
    * @param resource
    * @param classLoader
    * @return
    * @throws IOException
    */
   public static List<URL> getResourceOccurenceCount(String resource,
-      ClassLoader classLoader) throws IOException {
+                                                    ClassLoader classLoader) throws IOException {
     List<URL> urlList = new ArrayList<URL>();
     Enumeration<URL> urlEnum = classLoader.getResources(resource);
     while (urlEnum.hasMoreElements()) {
@@ -65,11 +81,9 @@ public class Loader {
 
   /**
    * Search for a resource using the classloader passed as parameter.
-   * 
-   * @param resource
-   *                the resource name to look for
-   * @param classLoader
-   *                the classloader used for the search
+   *
+   * @param resource    the resource name to look for
+   * @param classLoader the classloader used for the search
    */
   public static URL getResource(String resource, ClassLoader classLoader) {
     try {
@@ -82,7 +96,7 @@ public class Loader {
   /**
    * Attempt to find a resource by using the classloader that loaded this class,
    * namely Loader.class.
-   * 
+   *
    * @param resource
    * @return
    */
@@ -98,14 +112,13 @@ public class Loader {
    * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
    * under JDK 1.1 or anything else goes wrong the method returns
    * <code>null<code>.
-   *
    */
   public static ClassLoader getTCL() {
     return Thread.currentThread().getContextClassLoader();
   }
 
   public static Class loadClass(String clazz, Context context)
-      throws ClassNotFoundException {
+          throws ClassNotFoundException {
     ClassLoader cl = getClassLoaderOfObject(context);
     return cl.loadClass(clazz);
   }
@@ -113,7 +126,7 @@ public class Loader {
   /**
    * Get the class loader of the object passed as argument. Return the system
    * class loader if appropriate.
-   * 
+   *
    * @param o
    * @return
    */
@@ -125,13 +138,30 @@ public class Loader {
   }
 
   /**
-   * Return the class loader which loaded the class passed as argument. Return
-   * the system class loader if appropriate.
-   * 
+   * Returns the class loader of clazz if
    * @param clazz
    * @return
    */
-  public static ClassLoader getClassLoaderOfClass(Class clazz) {
+  public static ClassLoader getClassLoaderAsPrivileged(final Class clazz) {
+    if (!HAS_GET_CLASS_LOADER_PERMISSION)
+      return null;
+    else
+      return AccessController.doPrivileged(
+              new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                  return clazz.getClassLoader();
+                }
+              });
+  }
+
+  /**
+   * Return the class loader which loaded the class passed as argument. Return
+   * the system class loader if appropriate.
+   *
+   * @param clazz
+   * @return
+   */
+  public static ClassLoader getClassLoaderOfClass(final Class clazz) {
     ClassLoader cl = clazz.getClassLoader();
     if (cl == null) {
       return ClassLoader.getSystemClassLoader();
@@ -144,7 +174,6 @@ public class Loader {
    * If running under JDK 1.2 load the specified class using the
    * <code>Thread</code> <code>contextClassLoader</code> if that fails try
    * Class.forname. Under JDK 1.1 only Class.forName is used.
-   * 
    */
   public static Class loadClass(String clazz) throws ClassNotFoundException {
     // Just call Class.forName(clazz) if we are running under JDK 1.1

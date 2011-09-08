@@ -16,12 +16,12 @@ package ch.qos.logback.classic.spi;
 import java.net.URL;
 import java.util.HashMap;
 
+import ch.qos.logback.core.util.Loader;
 import sun.reflect.Reflection;
-
+// import java.security.AccessControlException; import java.security.AccessController;import java.security.PrivilegedAction;
 /**
- * 
  * Given a classname locate associated PackageInfo (jar name, version name).
- * 
+ *
  * @author James Strachan
  * @Ceki G&uuml;lc&uuml;
  */
@@ -31,7 +31,7 @@ public class PackagingDataCalculator {
 
   HashMap<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
 
-  private static boolean GET_CALLER_CLASS_METHOD_AVAILABLE = false;
+  private static boolean GET_CALLER_CLASS_METHOD_AVAILABLE = false; //private static boolean HAS_GET_CLASS_LOADER_PERMISSION = false;
 
   static {
     // if either the Reflection class or the getCallerClass method
@@ -50,6 +50,7 @@ public class PackagingDataCalculator {
     }
   }
 
+
   public PackagingDataCalculator() {
   }
 
@@ -66,7 +67,7 @@ public class PackagingDataCalculator {
     final Throwable t = new Throwable("local stack reference");
     final StackTraceElement[] localteSTEArray = t.getStackTrace();
     final int commonFrames = STEUtil.findNumberOfCommonFrames(localteSTEArray,
-        stepArray);
+            stepArray);
     final int localFirstCommon = localteSTEArray.length - commonFrames;
     final int stepFirstCommon = stepArray.length - commonFrames;
 
@@ -78,12 +79,13 @@ public class PackagingDataCalculator {
       Class callerClass = null;
       if (GET_CALLER_CLASS_METHOD_AVAILABLE) {
         callerClass = Reflection.getCallerClass(localFirstCommon + i
-            - missfireCount + 1);
+                - missfireCount + 1);
       }
       StackTraceElementProxy step = stepArray[stepFirstCommon + i];
       String stepClassname = step.ste.getClassName();
 
       if (callerClass != null && stepClassname.equals(callerClass.getName())) {
+        // see also LBCLASSIC-263
         lastExactClassLoader = callerClass.getClassLoader();
         if (firsExactClassLoader == null) {
           firsExactClassLoader = lastExactClassLoader;
@@ -100,7 +102,7 @@ public class PackagingDataCalculator {
   }
 
   void populateUncommonFrames(int commonFrames,
-      StackTraceElementProxy[] stepArray, ClassLoader firstExactClassLoader) {
+                              StackTraceElementProxy[] stepArray, ClassLoader firstExactClassLoader) {
     int uncommonFrames = stepArray.length - commonFrames;
     for (int i = 0; i < uncommonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
@@ -123,7 +125,7 @@ public class PackagingDataCalculator {
   }
 
   private ClassPackagingData computeBySTEP(StackTraceElementProxy step,
-      ClassLoader lastExactClassLoader) {
+                                           ClassLoader lastExactClassLoader) {
     String className = step.ste.getClassName();
     ClassPackagingData cpd = cache.get(className);
     if (cpd != null) {
@@ -208,15 +210,12 @@ public class PackagingDataCalculator {
   }
 
   /**
-   * 
-   * @param lastGuaranteedClassLoader
-   *                may be null
-   * 
+   * @param lastGuaranteedClassLoader may be null
    * @param className
    * @return
    */
   private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader,
-      String className) {
+                                    String className) {
     Class result = loadClass(lastGuaranteedClassLoader, className);
     if (result != null) {
       return result;

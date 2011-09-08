@@ -91,8 +91,12 @@ public class DefinePropertyAction extends Action {
       addInfo("Popping property definer for property named [" + propertyName
           + "] from the object stack");
       ec.popObject();
-      // let's put defined property and value to context
-      context.putProperty(propertyName, definer.getPropertyValue());
+      // let's put defined property and value to context but only if it is
+      // not null
+      String propertyValue = definer.getPropertyValue();
+      if(propertyValue != null) {
+        context.putProperty(propertyName, propertyValue);
+      }
     }
   }
 }
