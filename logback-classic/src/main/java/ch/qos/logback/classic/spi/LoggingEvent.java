@@ -312,6 +312,10 @@ public class LoggingEvent implements ILoggingEvent {
     return mdcPropertyMap;
   }
 
+  /**
+   * Synonym for [@link #getMDCPropertyMap}.
+   * @deprecated  Replaced by [@link #getMDCPropertyMap}
+   */
   public Map<String, String> getMdc() {
     return mdcPropertyMap;
   }

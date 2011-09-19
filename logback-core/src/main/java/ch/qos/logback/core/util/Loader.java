@@ -138,7 +138,7 @@ public class Loader {
   }
 
   /**
-   * Returns the class loader of clazz if
+   * Returns the class loader of clazz in an access privileged section.
    * @param clazz
    * @return
    */

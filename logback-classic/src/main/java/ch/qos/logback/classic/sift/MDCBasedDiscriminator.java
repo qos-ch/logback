@@ -47,7 +47,7 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
    */
   public String getDiscriminatingValue(ILoggingEvent event) {
     // http://jira.qos.ch/browse/LBCLASSIC-213
-    Map<String, String> mdcMap = event.getMdc();
+    Map<String, String> mdcMap = event.getMDCPropertyMap();
     if (mdcMap == null) {
       return defaultValue;
     }

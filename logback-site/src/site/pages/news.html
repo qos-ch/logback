@@ -28,7 +28,21 @@
 
     <hr width="80%" align="center" />
 
-    <h3>July xxx, 2011 - Release of version 0.9.30</h3>
+    <h3>September xxx, 2011 - Release of version 0.9.30</h3>
+
+
+    <p>Archive removal can now deal with prolonged periods of
+    application inactivity and application stop and restarts. The
+    issue is described in <a
+    href="http://jira.qos.ch/browse/LBCORE-147">LBCORE-147</a>
+    reported by Rafael Diaz Maurin.
+    </p>
+
+    <p>In the <code>ILoggingEvent</code> interface the
+    <code>getMDC</code> method is now deprecated and replaced by
+    <code>getMDCPropertyMap</code>. The latter methof was already part
+    of the <code>ILoggingEvent</code> interface in prior versions of
+    logback-classic.</p>
 
     <p>It is now possible to specify multiple destination addresses
     separated by commas in the the <span class="option">to</span>

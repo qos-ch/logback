@@ -76,6 +76,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
   /**
    * Synonym for [@link #getMDCPropertyMap}.
+   * @deprecated  Replaced by [@link #getMDCPropertyMap}
    */
   public Map<String, String> getMdc();
   public long getTimeStamp();

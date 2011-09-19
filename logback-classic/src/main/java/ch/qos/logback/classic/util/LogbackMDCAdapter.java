@@ -37,6 +37,13 @@ import org.slf4j.spi.MDCAdapter;
  */
 public final class LogbackMDCAdapter implements MDCAdapter {
 
+  // We wish to avoid unnecessarily copying of the map. To ensure
+  // efficient/timely copying, we have a variable keeping track of the last
+  // operation. A copy is necessary on 'put' or 'remove' but only if the last
+  // operation was a 'get'. Get operations never necessitate a copy nor
+  // successive 'put/remove' operations, only a get followed by a 'put/remove'
+  // requires copying the map.
+  // See http://jira.qos.ch/browse/LBCLASSIC-254 for the original discussion.
 
   // We no longer use CopyOnInheritThreadLocal in order to solve LBCLASSIC-183
   // Initially the contents of the thread local in parent and child threads
@@ -170,6 +177,9 @@ public final class LogbackMDCAdapter implements MDCAdapter {
    * null.
    */
   public Map getCopyOfContextMap() {
+    // why aren't we setting lastOperation as follows?
+    // lastOperation.set(READ_OPERATION);
+
     HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
     if (hashMap == null) {
       return null;
