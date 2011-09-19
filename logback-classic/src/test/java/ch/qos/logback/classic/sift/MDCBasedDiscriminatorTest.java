@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import org.slf4j.MDC;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -71,7 +73,7 @@ public class MDCBasedDiscriminatorTest {
   @Test
   public void nullMDC() {
     event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
-    assertNull(event.getMdc());
+    assertEquals(new HashMap(), event.getMDCPropertyMap());
     String discriminatorValue = discriminator.getDiscriminatingValue(event);
     assertEquals(DEFAULT_VAL, discriminatorValue);
   }

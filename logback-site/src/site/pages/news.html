@@ -44,6 +44,13 @@
     of the <code>ILoggingEvent</code> interface in prior versions of
     logback-classic.</p>
 
+    <p><code>LoggingEvent</code> no longer assumes that
+    <code>LogbackMDCAdapter</code> is the only possible implementation
+    of the <code>MDCAdapter</code> interface. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-275">LBCLASSIC-275</a>
+    reported by Chris Dolan.
+    </p>
+
     <p>It is now possible to specify multiple destination addresses
     separated by commas in the the <span class="option">to</span>
     property of <code>SMTPAppender</code>. This fixes <a

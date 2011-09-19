@@ -25,6 +25,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -205,11 +206,7 @@ public class LoggingEvent implements ILoggingEvent {
     this.getFormattedMessage();
     this.getThreadName();
     // fixes http://jira.qos.ch/browse/LBCLASSIC-104
-    if (mdcPropertyMap == null) {
-        mdcPropertyMap = MDC.getCopyOfContextMap();
-        if (mdcPropertyMap == null)
-          mdcPropertyMap = CACHED_NULL_MAP;
-    }
+    this.getMDCPropertyMap();
   }
 
   public LoggerContextVO getLoggerContextVO() {
@@ -307,17 +304,19 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public Map<String, String> getMDCPropertyMap() {
+    // populate mdcPropertyMap if null
     if (mdcPropertyMap == null) {
       MDCAdapter mdc = MDC.getMDCAdapter();
       if (mdc instanceof LogbackMDCAdapter)
-        return ((LogbackMDCAdapter)mdc).getPropertyMap();
-      else {
+        mdcPropertyMap = ((LogbackMDCAdapter)mdc).getPropertyMap();
+      else
         mdcPropertyMap = mdc.getCopyOfContextMap();
-        if (mdcPropertyMap == null)
-          mdcPropertyMap = CACHED_NULL_MAP;
-      }
     }
-    return mdcPropertyMap == CACHED_NULL_MAP ? null : mdcPropertyMap;
+    // mdcPropertyMap still null, use CACHED_NULL_MAP
+    if (mdcPropertyMap == null)
+      mdcPropertyMap = CACHED_NULL_MAP;
+
+    return mdcPropertyMap;
   }
 
   /**

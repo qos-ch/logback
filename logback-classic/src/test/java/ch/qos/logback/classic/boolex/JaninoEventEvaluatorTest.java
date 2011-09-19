@@ -265,7 +265,7 @@ public class JaninoEventEvaluatorTest {
   @Test
   public void nullMDC() throws EvaluationException {
     MDC.clear();
-    jee.setExpression("mdc == null");
+    jee.setExpression("mdc.isEmpty()");
     jee.start();
 
     LoggingEvent event = makeLoggingEvent(null);

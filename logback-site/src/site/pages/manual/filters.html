@@ -479,9 +479,9 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
 				<td><code>Map</code></td>
 				<td>A map containing all the MDC values at the time of the
 				creation of the logging event. A value can be accessed by
-				using the following expression: <em>mdc.get("myKey")</em>. The
-				'mdc' variable can be null and this possibility should be
-				checked for in evaluator expressions.
+				using the following expression: <em>mdc.get("myKey")</em>. As
+				of logback-classic version 0.9.30, the 'mdc' variable will
+				never be null.
 
         <p>The <code>java.util.Map</code> type is non-parameterized
         because Janino does not support generics. It follows that the

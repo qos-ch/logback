@@ -100,7 +100,7 @@ public class LoggingEventSerializationPerfTest {
     long averageSize = (long) (noos.size() / (LOOP_LEN));
     System.out.println("noos size " + noos.size() + " average size="
         + averageSize);
-    double averageSizeLimit = 60;
+    double averageSizeLimit = 62.1;
 
     assertTrue("average size " + averageSize + " should be less than "
         + averageSizeLimit, averageSizeLimit > averageSize);
