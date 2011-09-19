@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.slf4j.MDC;
@@ -90,7 +90,6 @@ public class LoggingEvent implements ILoggingEvent {
   private Marker marker;
 
   private Map<String, String> mdcPropertyMap;
-  private static final Map<String, String> CACHED_NULL_MAP = new HashMap<String, String>();
 
   /**
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -312,9 +311,8 @@ public class LoggingEvent implements ILoggingEvent {
       else
         mdcPropertyMap = mdc.getCopyOfContextMap();
     }
-    // mdcPropertyMap still null, use CACHED_NULL_MAP
     if (mdcPropertyMap == null)
-      mdcPropertyMap = CACHED_NULL_MAP;
+      mdcPropertyMap = Collections.emptyMap();
 
     return mdcPropertyMap;
   }
