@@ -89,6 +89,7 @@ public class LoggingEvent implements ILoggingEvent {
   private Marker marker;
 
   private Map<String, String> mdcPropertyMap;
+  private static final Map<String, String> CACHED_NULL_MAP = new HashMap<String, String>();
 
   /**
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
@@ -128,11 +129,6 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     timeStamp = System.currentTimeMillis();
-
-    // ugly but under the circumstances acceptable
-    LogbackMDCAdapter logbackMDCAdapter = (LogbackMDCAdapter) MDC
-        .getMDCAdapter();
-    mdcPropertyMap = logbackMDCAdapter.getPropertyMap();
   }
 
   public void setArgumentArray(Object[] argArray) {
@@ -209,8 +205,10 @@ public class LoggingEvent implements ILoggingEvent {
     this.getFormattedMessage();
     this.getThreadName();
     // fixes http://jira.qos.ch/browse/LBCLASSIC-104
-    if (mdcPropertyMap != null) {
-      mdcPropertyMap = new HashMap<String, String>(mdcPropertyMap);
+    if (mdcPropertyMap == null) {
+        mdcPropertyMap = MDC.getCopyOfContextMap();
+        if (mdcPropertyMap == null)
+          mdcPropertyMap = CACHED_NULL_MAP;
     }
   }
 
@@ -309,7 +307,17 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public Map<String, String> getMDCPropertyMap() {
-    return mdcPropertyMap;
+    if (mdcPropertyMap == null) {
+      MDCAdapter mdc = MDC.getMDCAdapter();
+      if (mdc instanceof LogbackMDCAdapter)
+        return ((LogbackMDCAdapter)mdc).getPropertyMap();
+      else {
+        mdcPropertyMap = mdc.getCopyOfContextMap();
+        if (mdcPropertyMap == null)
+          mdcPropertyMap = CACHED_NULL_MAP;
+      }
+    }
+    return mdcPropertyMap == CACHED_NULL_MAP ? null : mdcPropertyMap;
   }
 
   /**
@@ -317,7 +325,7 @@ public class LoggingEvent implements ILoggingEvent {
    * @deprecated  Replaced by [@link #getMDCPropertyMap}
    */
   public Map<String, String> getMdc() {
-    return mdcPropertyMap;
+      return getMDCPropertyMap();
   }
 
   @Override
