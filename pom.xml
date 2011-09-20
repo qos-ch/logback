@@ -6,7 +6,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>0.9.30-SNAPSHOT</version>
+  <version>0.9.30</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
 
@@ -30,7 +30,7 @@
   <properties>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
-    <slf4j.version>1.6.1</slf4j.version>
+    <slf4j.version>1.6.2</slf4j.version>
     <junit.version>4.8.2</junit.version>
     <janino.version>2.5.10</janino.version>
     <scala.version>2.9.1</scala.version>
