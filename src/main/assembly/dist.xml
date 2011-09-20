@@ -24,6 +24,7 @@
 			<includes>
 				<include>pom.xml</include>
 				<include>osgi-build.xml</include>
+				<include>integration.xml</include>
 			</includes>
 			<excludes>
 				<exclude>*.bak</exclude>
