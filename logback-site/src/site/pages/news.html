@@ -40,9 +40,12 @@
 
     <p>In the <code>ILoggingEvent</code> interface the
     <code>getMDC</code> method is now deprecated and replaced by
-    <code>getMDCPropertyMap</code>. The latter methof was already part
+    <code>getMDCPropertyMap</code>. The latter method was already part
     of the <code>ILoggingEvent</code> interface in prior versions of
-    logback-classic.</p>
+    logback-classic. Furthermore, the value returned by
+    <code>ILoggingEvent.getMDCPropertyMap</code> can now be an empty
+    map but never null.</p>
+   
 
     <p><code>LoggingEvent</code> no longer assumes that
     <code>LogbackMDCAdapter</code> is the only possible implementation
@@ -50,6 +53,13 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-275">LBCLASSIC-275</a>
     reported by Chris Dolan.
     </p>
+
+    <p><code>LogbackMDCAdapter</code> now synchronizes over its thread
+    local map. This prevents
+    <code>ConcurrentModificationException</code> from occuring while a
+    child thread copies the map from the parent. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-289">LBCLASSIC-289</a>
+    reported by Josh Oddman.</p>
 
     <p>It is now possible to specify multiple destination addresses
     separated by commas in the the <span class="option">to</span>
@@ -60,7 +70,7 @@
     addresses could only be specified by using multiple <span
     class="option">to</span> properties. As of version 0.9.30 both
     comma separated addresses and multiple <span
-    class="option">to</span> properties are suported.
+    class="option">to</span> properties are supported.
     </p>
 
     <p>When debug attribute is set to true within the
