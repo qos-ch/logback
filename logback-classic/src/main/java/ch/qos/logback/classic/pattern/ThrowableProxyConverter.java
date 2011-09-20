@@ -29,7 +29,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 
 /**
  * Add a stack trace in case the event contains a Throwable.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ThrowableProxyConverter extends ThrowableHandlingConverter {
@@ -72,7 +72,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         Context context = getContext();
         Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
         EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
-            .get(evaluatorStr);
+                .get(evaluatorStr);
         addEvaluator(ee);
       }
     }
@@ -116,14 +116,14 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
           errorCount++;
           if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
             addError("Exception thrown for evaluator named [" + ee.getName()
-                + "]", eex);
+                    + "]", eex);
           } else if (errorCount == CoreConstants.MAX_ERROR_COUNT) {
             ErrorStatus errorStatus = new ErrorStatus(
-                "Exception thrown for evaluator named [" + ee.getName() + "].",
-                this, eex);
+                    "Exception thrown for evaluator named [" + ee.getName() + "].",
+                    this, eex);
             errorStatus.add(new ErrorStatus(
-                "This was the last warning about this evaluator's errors."
-                    + "We don't want the StatusManager to get flooded.", this));
+                    "This was the last warning about this evaluator's errors."
+                            + "We don't want the StatusManager to get flooded.", this));
             addStatus(errorStatus);
           }
         }
@@ -134,21 +134,21 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
     }
 
-    return printThrowableToString(tp);
-    }
+    return throwableProxyToString(tp);
+  }
 
-  protected String printThrowableToString(IThrowableProxy tp) {
-      StringBuilder buf = new StringBuilder(32);
-      IThrowableProxy currentThrowable = tp;
-      while (currentThrowable != null) {
-          printThrowableProxy(buf, currentThrowable);
-          currentThrowable = currentThrowable.getCause();
-      }
+  protected String throwableProxyToString(IThrowableProxy tp) {
+    StringBuilder buf = new StringBuilder(32);
+    IThrowableProxy currentThrowable = tp;
+    while (currentThrowable != null) {
+      subjoinThrowableProxy(buf, currentThrowable);
+      currentThrowable = currentThrowable.getCause();
+    }
     return buf.toString();
   }
 
-  void printThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
-    ThrowableProxyUtil.printFirstLine(buf, tp);
+  void subjoinThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
+    ThrowableProxyUtil.subjoinFirstLine(buf, tp);
     buf.append(CoreConstants.LINE_SEPARATOR);
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
@@ -172,7 +172,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
     if (commonFrames > 0 && unrestrictedPrinting) {
       buf.append("\t... ").append(tp.getCommonFrames()).append(
-          " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+              " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
     }
   }
 }
