@@ -69,7 +69,7 @@ public class CoreConstants {
    */
   public final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[]{};
   public final static String CAUSED_BY = "Caused by: ";
-
+  public final static String WRAPPED_BY = "Wrapped by: ";
 
   public final static char PERCENT_CHAR = '%';
   public static final char LEFT_PARENTHESIS_CHAR = '(';

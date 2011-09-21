@@ -22,7 +22,7 @@ public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
   @Override
   protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
     if (step != null) {
-      ThrowableProxyUtil.appendPackagingData(builder, step);
+      ThrowableProxyUtil.subjoinPackagingData(builder, step);
     }
   }
 

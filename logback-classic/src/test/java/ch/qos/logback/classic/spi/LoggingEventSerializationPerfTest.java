@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.MDC;
 import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.net.NOPOutputStream;
@@ -53,6 +54,7 @@ public class LoggingEventSerializationPerfTest {
 
   @Before
   public void setUp() throws Exception {
+    MDC.clear();
     oos = new ObjectOutputStream(noos);
   }
 
