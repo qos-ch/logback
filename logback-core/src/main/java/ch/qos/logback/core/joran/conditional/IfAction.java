@@ -63,7 +63,7 @@ public class IfAction extends Action {
       try {
         condition = pesb.build(conditionAttribute);
       } catch (Exception e) {
-        addError("Faield to parse condition ["+conditionAttribute+"]", e);
+        addError("Failed to parse condition ["+conditionAttribute+"]", e);
       }
      
       if(condition!=null) {
