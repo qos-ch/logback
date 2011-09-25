@@ -24,6 +24,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import ch.qos.logback.access.spi.IAccessEvent;
+//import org.apache.catalina.Lifecycle;
+import ch.qos.logback.core.spi.*;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Request;
@@ -39,11 +41,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.spi.AppenderAttachable;
-import ch.qos.logback.core.spi.AppenderAttachableImpl;
-import ch.qos.logback.core.spi.FilterAttachable;
-import ch.qos.logback.core.spi.FilterAttachableImpl;
-import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
@@ -91,7 +88,11 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
 
-  public void start() {
+  public boolean isStarted() {
+    return started;
+  }
+
+  public void startInternal() {
     if (filename == null) {
       String tomcatHomeProperty = OptionHelper
           .getSystemProperty("catalina.home");
@@ -172,7 +173,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
   }
 
-  public void stop() {
+  public void stopInternal() {
     started = false;
   }
 

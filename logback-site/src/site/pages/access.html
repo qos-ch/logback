@@ -164,18 +164,19 @@
 		<em>logback-core-VERSION.jar</em> and
 		<em>logback-access-VERSION.jar</em> under $JETTY_HOME/lib
 		directory, where $JETTY_HOME is the folder where you have
-		installed Jetty. We have tested logback-access module with Jetty
-		version 6.0 as well as 6.1.
+		installed Jetty. Versions of logback-access 0.9.31 and later taget
+		Jetty version 7.x as well as 8.x. Logback-access versions 0.9.30
+		and earlier target Jetty version 6.x.
 		</p>
 
 		<h3>Logback's implementation of
-		<code>org.mortbay.jetty.RequestLog</code> interface</h3>
+		<code>org.eclipse.jetty.server.RequestLog</code> interface</h3>
 
 		<p>The <a
 		href="xref/ch/qos/logback/access/jetty/RequestLogImpl.html">
 		<code>ch.qos.logback.access.jetty.RequestLogImpl</code></a> class
 		implements Jetty's <code><a
-		href="http://jetty.mortbay.org/apidocs/org/mortbay/jetty/RequestLog.html">RequestLog</a></code>
+		href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/server/RequestLog.html">RequestLog</a></code>
 		interface. Jetty delegates the management of access logging
 		functionality to implementations of this interface.
 		</p>
@@ -202,15 +203,14 @@
 		<p>By default, <code>RequestLogImpl</code> looks for a logback
 		configuration file called <em>logback-access.xml</em>, in the same
 		folder where <em>jetty.xml</em> is located. This configuration
-		file contains directives for configuring logback components. Among
-		others, you can specify the appenders where the logging requests
-		will be sent, and their format.
+		file contains directives for configuring logback components such
+		as appenders and layouts.
     </p>
 	
 		<p>As long the path is specified, you can place the logback
 		configuration file in any location. Here is another example of a
-		Jetty configuration file, including the path to the
-		<em>logback-access.xml</em> configuration file.
+		Jetty configuration file, including the path to the logback-access
+		configuration file here named <em>myaccess.xml</em>.
 		</p>
 		
     <pre class="prettyprint source">&lt;Ref id="requestLog"&gt;

@@ -17,10 +17,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.RequestLog;
-import org.mortbay.jetty.Response;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Response;
+
 
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
@@ -39,6 +42,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.OptionHelper;
+import org.eclipse.jetty.util.component.LifeCycle;
 
 /**
  * This class is logback's implementation of jetty's RequestLog interface. <p>
@@ -135,6 +139,8 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
 
   public void start() {
+    Properties p = System.getProperties();
+    System.out.println(p);
     if (filename == null) {
       String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
 
@@ -150,7 +156,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(this);
         jc.doConfigure(filename);
-
       } else {
         getStatusManager().add(
             new ErrorStatus("[" + filename + "] does not exist", this));
@@ -165,7 +170,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
               + getName(), this));
 
       started = true;
-
     } catch (JoranException e) {
       // errors have been registered as status messages
     }
@@ -203,6 +207,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   public boolean isFailed() {
     return false;
   }
+
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
@@ -247,6 +252,13 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   
   public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
+  }
+
+  public void addLifeCycleListener(Listener listener) {
+    // we'll implement this when asked
+  }
+  public void removeLifeCycleListener(Listener listener) {
+    // we'll implement this when asked
   }
 
 }

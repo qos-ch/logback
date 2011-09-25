@@ -17,11 +17,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mortbay.jetty.HttpFields;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Response;
+import org.eclipse.jetty.http.HttpFields;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 
 import ch.qos.logback.access.spi.ServerAdapter;
+import org.eclipse.jetty.server.Request;
 
 /**
  * A jetty specific implementation of the {@link ServerAdapter} interface.

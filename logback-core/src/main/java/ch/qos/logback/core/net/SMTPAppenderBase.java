@@ -128,7 +128,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       addError("Both SSL and StartTLS cannot be enabled simultaneously");
     } else {
       if (isSTARTTLS()) {
-        props.setProperty("mail.smtp.auth", "true");
+        //props.setProperty("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
       }
       if (isSSL()) {

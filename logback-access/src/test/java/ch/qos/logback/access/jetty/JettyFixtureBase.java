@@ -13,20 +13,29 @@
  */
 package ch.qos.logback.access.jetty;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ContextHandler;
-import org.mortbay.jetty.handler.RequestLogHandler;
-import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.util.ByteArrayISO8859Writer;
 
-abstract public class JettyFixtureBase {
-  protected RequestLogImpl requestLogImpl;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
+public class JettyFixtureBase {
+  final protected RequestLogImpl requestLogImpl;
+  protected Handler handler = new BasicHandler();
   private final int port;
   Server server;
-  String url;
-  
+  protected String url;
+
   public JettyFixtureBase(RequestLogImpl impl, int port) {
     requestLogImpl = impl;
     this.port = port;
@@ -45,32 +54,48 @@ abstract public class JettyFixtureBase {
     server = new Server();
     Connector connector = new SelectChannelConnector();
     connector.setPort(port);
-    server.setConnectors(new Connector[] { connector });
-
-    ContextHandler context = new ContextHandler();
-    context.setContextPath("/");
-    context.setResourceBase(".");
-    context.setClassLoader(Thread.currentThread().getContextClassLoader());
-    server.addHandler(context);
+    server.setConnectors(new Connector[]{connector});
 
     RequestLogHandler requestLogHandler = new RequestLogHandler();
-    buildContext();
+    configureRequestLogImpl();
     requestLogHandler.setRequestLog(requestLogImpl);
-    server.addHandler(requestLogHandler);
 
-    Handler handler = getHandler();
-    context.addHandler(handler);
+    HandlerList handlers = new HandlerList();
+    handlers.addHandler(requestLogHandler);
+    handlers.addHandler(getRequestHandler());
 
+    server.setHandler(handlers);
     server.start();
   }
 
   public void stop() throws Exception {
-    // System.out.println("into tearDown");
     server.stop();
     server = null;
-    requestLogImpl = null;
   }
 
-  abstract protected void buildContext();
-  abstract protected Handler getHandler();
+  protected void configureRequestLogImpl() {
+    requestLogImpl.start();
+  }
+
+  protected Handler getRequestHandler() {
+    return handler;
+  }
+
+
+  class BasicHandler extends AbstractHandler {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+      OutputStream out = response.getOutputStream();
+      ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();
+      writer.write("hello world");
+      writer.flush();
+      response.setContentLength(writer.size());
+      writer.writeTo(out);
+      out.flush();
+
+      baseRequest.setHandled(true);
+
+    }
+  }
 }
+
+

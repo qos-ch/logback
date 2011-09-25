@@ -15,9 +15,7 @@ package ch.qos.logback.access.dummy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -27,16 +25,17 @@ public class DummyResponse implements HttpServletResponse {
 
   public static final int DUMMY_DEFAULT_STATUS = 200;
   public static final int DUMMY_DEFAULT_CONTENT_COUNT = 1000;
-  public static final Map<String, String> DUMMY_DEFAULT_HDEADER_MAP = new HashMap<String, String>();;
-  
+  public static final Map<String, String> DUMMY_DEFAULT_HDEADER_MAP = new HashMap<String, String>();
+  ;
+
   static {
     DUMMY_DEFAULT_HDEADER_MAP.put("headerName1", "headerValue1");
     DUMMY_DEFAULT_HDEADER_MAP.put("headerName2", "headerValue2");
   }
-  
-  int status = DUMMY_DEFAULT_STATUS ;
+
+  int status = DUMMY_DEFAULT_STATUS;
   public Map<String, String> headerMap;
-  
+
   public DummyResponse() {
     headerMap = DUMMY_DEFAULT_HDEADER_MAP;
   }
@@ -145,15 +144,27 @@ public class DummyResponse implements HttpServletResponse {
 
   public void setLocale(Locale arg0) {
   }
-  
+
   public String getHeader(String key) {
     return headerMap.get(key);
   }
-  
+
+  public Collection<String> getHeaders(String name) {
+    String val = headerMap.get(name);
+    List list = new ArrayList();
+    if (val != null)
+      list.add(val);
+    return list;
+  }
+
+  public Collection<String> getHeaderNames() {
+    return headerMap.keySet();
+  }
+
   public long getContentCount() {
     return DUMMY_DEFAULT_CONTENT_COUNT;
   }
-  
+
   public int getStatus() {
     return status;
   }
@@ -161,5 +172,5 @@ public class DummyResponse implements HttpServletResponse {
   public void setStatus(int status) {
     this.status = status;
   }
-  
+
 }
