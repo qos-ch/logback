@@ -16,6 +16,7 @@ package ch.qos.logback.access.jetty;
 import java.util.HashMap;
 import java.util.Map;
 
+// this class is currently not used
 public class RequestLogRegistry {
   
   private static Map<String, RequestLogImpl> requestLogRegistry = new HashMap<String, RequestLogImpl>();
