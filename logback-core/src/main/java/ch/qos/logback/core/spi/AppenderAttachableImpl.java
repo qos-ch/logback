@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.joran.event.StartEvent;
 
 /**
  * A ReentrantReadWriteLock based implementation of the
@@ -40,6 +41,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * added again.
    */
   public void addAppender(Appender<E> newAppender) {
+    p("addAppender(Appender)");
     if (newAppender == null) {
       throw new IllegalArgumentException("Null argument disallowed");
     }
@@ -58,6 +60,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    */
   public int appendLoopOnAppenders(E e) {
     int size = 0;
+    p(" LOCK");
     r.lock();
     try {
       for (Appender<E> appender : appenderList) {
@@ -65,6 +68,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
         size++;
       }
     } finally {
+      p(" UNLOCK");
       r.unlock();
     }
     return size;
@@ -77,6 +81,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * @return Iterator An iterator of attached appenders.
    */
   public Iterator<Appender<E>> iteratorForAppenders() {
+    if(1==1) throw new IllegalStateException("");
     List<Appender<E>> copy;
     r.lock();
     try {
@@ -95,6 +100,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * 
    */
   public Appender<E> getAppender(String name) {
+    if(1==1) throw new IllegalStateException("");
     if (name == null) {
       return null;
     }
@@ -121,6 +127,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * @since 1.2
    */
   public boolean isAttached(Appender<E> appender) {
+    if(1==1) throw new IllegalStateException("");
     if (appender == null) {
       return false;
     }
@@ -143,6 +150,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * Remove and stop all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
+    if(1==1) throw new IllegalStateException("");
     w.lock();
     try {
       for (Appender<E> a : appenderList) {
@@ -154,11 +162,18 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     }
   }
 
+  static final long START = System.currentTimeMillis();
+  void p(String msg) {
+    System.out.println((System.currentTimeMillis()-START) + "  "+ Thread.currentThread().getName() + msg);
+    //System.out.println("------------------------");
+
+  }
   /**
    * Remove the appender passed as parameter form the list of attached
    * appenders.
    */
   public boolean detachAppender(Appender<E> appender) {
+    if(1==1) throw new IllegalStateException("");
     if (appender == null) {
       return false;
     }
@@ -177,6 +192,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
    * appenders.
    */
   public boolean detachAppender(String name) {
+    if(1==1) throw new IllegalStateException("");
+
     if (name == null) {
       return false;
     }
