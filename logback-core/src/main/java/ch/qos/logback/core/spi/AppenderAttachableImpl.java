@@ -21,7 +21,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.joran.event.StartEvent;
 
 /**
  * A ReentrantReadWriteLock based implementation of the
