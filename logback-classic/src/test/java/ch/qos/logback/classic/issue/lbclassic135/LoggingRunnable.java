@@ -13,15 +13,22 @@
  */
 package ch.qos.logback.classic.issue.lbclassic135;
 
-import ch.qos.logback.classic.Logger;
+import org.slf4j.Logger;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 
 public class LoggingRunnable extends RunnableWithCounterAndDone {
 
-  Logger logger;
+  final Logger logger;
+  final int burstLength;
+
+
+  public LoggingRunnable(Logger logger, int burstLength) {
+    this.logger = logger;
+    this.burstLength = burstLength;
+  }
 
   public LoggingRunnable(Logger logger) {
-    this.logger = logger;
+    this(logger, 100);
   }
 
   public void run() {
@@ -29,8 +36,12 @@ public class LoggingRunnable extends RunnableWithCounterAndDone {
       logger.info("hello world ABCDEFGHI");
       counter++;
       // don't hog the CPU forever
-      if (counter % 100 == 0) {
-        Thread.yield();
+      if (counter % burstLength == 0) {
+        try {
+          Thread.sleep(1);
+        } catch (InterruptedException e) {
+          e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
       }
     }
   }
