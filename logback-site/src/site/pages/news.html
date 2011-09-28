@@ -28,8 +28,16 @@
 
     <hr width="80%" align="center" />
 
-    <h3>September 21st, 2011 - Release of version 0.9.30</h3>
+    <h3>... .. , 2011 - Release of version 0.9.31</h3>
 
+    <p>Investigation of <a
+    href="http://jira.qos.ch/browse/LBCORE-224">LBCORE-224</a>
+    reported by Cesar Alvarez Nunez points to bug in the JVM rather
+    than in logbacl. A workaround has been found by using
+    <code>CopyOnWriteArrayList</code> instead of the apparently buggy
+    <code>ReadWriteLock</code>.</p>
+
+    <h3>September 21st, 2011 - Release of version 0.9.30</h3>
 
     <p>Archive removal can now deal with prolonged periods of
     application inactivity and application stop and restarts. The
