@@ -188,20 +188,20 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.zookeeper</groupId>
-      <artifactId>zookeeper</artifactId>
-      <version>3.4.0-SVN</version>
-      <scope>test</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.apache.zookeeper</groupId>-->
+      <!--<artifactId>zookeeper</artifactId>-->
+      <!--<version>3.4.0-SVN</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
 
-    <dependency>
-      <groupId>org.apache.zookeeper</groupId>
-      <artifactId>zookeeper</artifactId>
-      <version>3.4.0-SVN</version>
-      <scope>test</scope>
-      <classifier>test</classifier>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.apache.zookeeper</groupId>-->
+      <!--<artifactId>zookeeper</artifactId>-->
+      <!--<version>3.4.0-SVN</version>-->
+      <!--<scope>test</scope>-->
+      <!--<classifier>test</classifier>-->
+    <!--</dependency>-->
 
   </dependencies>
 
