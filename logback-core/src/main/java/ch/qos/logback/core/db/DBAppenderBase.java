@@ -102,12 +102,8 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
         insertStatement = connection.prepareStatement(getInsertSQL());
       }
 
-      long eventId;
-      // inserting an event and getting the result must be exclusive
-      synchronized (this) {
-        subAppend(eventObject, connection, insertStatement);
-        eventId = selectEventId(insertStatement, connection);
-      }
+      subAppend(eventObject, connection, insertStatement);
+      long eventId = selectEventId(insertStatement, connection);
       secondarySubAppend(eventObject, connection, eventId);
 
       // we no longer need the insertStatement
