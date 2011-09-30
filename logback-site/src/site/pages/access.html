@@ -164,8 +164,8 @@
 		<em>logback-core-VERSION.jar</em> and
 		<em>logback-access-VERSION.jar</em> under $JETTY_HOME/lib
 		directory, where $JETTY_HOME is the folder where you have
-		installed Jetty. Versions of logback-access 0.9.31 and later taget
-		Jetty version 7.x as well as 8.x. Logback-access versions 0.9.30
+		installed Jetty. Versions of logback-access 0.9.31 and later
+		target Jetty versions 7.x and 8.x. Logback-access versions 0.9.30
 		and earlier target Jetty version 6.x.
 		</p>
 
@@ -192,19 +192,48 @@
 		Jetty's main configuration file, namely
 		<em>$JETTY_HOME/etc/jetty.xml</em>:
 		</p>
-		<pre class="prettyprint source">&lt;Ref id="requestLog"&gt;
+		<pre class="prettyprint source">&lt;Ref id="RequestLogHandler"&gt;
   &lt;Set name="requestLog"&gt;
-    &lt;New id="requestLogImpl"
-      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+    &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
     &lt;/New&gt;
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre>
 
-		<p>By default, <code>RequestLogImpl</code> looks for a logback
-		configuration file called <em>logback-access.xml</em>, in the same
-		folder where <em>jetty.xml</em> is located. This configuration
-		file contains directives for configuring logback components such
-		as appenders and layouts.
+    <p>Please note that the above jetty configuration snippet makes
+    reference to "RequestLogHandler". Check your jetty.xml
+    configuration file and add a <code>RequestLogHandler</code> if it
+    has not been already added. Here is a configuration snipped to set
+    you on the right tract.</p>
+
+    <pre class="prettyprint source">&lt;Set name="handler">
+  &lt;New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
+    &lt;Set name="handlers">
+      &lt;Array type="org.eclipse.jetty.server.Handler">        
+        &lt;Item>
+          &lt;New id="Contexts" 
+               class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
+        &lt;/Item>
+        &lt;Item>
+          &lt;New id="DefaultHandler" 
+               class="org.eclipse.jetty.server.handler.DefaultHandler"/>
+        &lt;/Item>
+        <b>&lt;!-- add a RequestLogHandler --&gt;</b>
+        <b>&lt;Item></b>
+          <b>&lt;New id="RequestLogHandler"</b>
+               <b>class="org.eclipse.jetty.server.handler.RequestLogHandler"/></b>
+        <b>&lt;/Item></b>
+      &lt;/Array>
+    &lt;/Set>
+  &lt;/New>
+&lt;/Set></pre>
+
+
+    <p>By default, <code>RequestLogImpl</code> looks
+    for a logback configuration file called
+    <em>logback-access.xml</em>, in the same folder where
+    <em>jetty.xml</em> is located. This configuration file contains
+    directives for configuring logback components such as appenders
+    and layouts.
     </p>
 	
 		<p>As long the path is specified, you can place the logback
@@ -213,17 +242,17 @@
 		configuration file here named <em>myaccess.xml</em>.
 		</p>
 		
-    <pre class="prettyprint source">&lt;Ref id="requestLog"&gt;
+    <pre class="prettyprint source">&lt;Ref id="RequestLogHandler"&gt;
   &lt;Set name="requestLog"&gt;
-    &lt;New id="requestLogImpl"
-      class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
-    &lt;/New&gt;
-    &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
+    &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+       &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
+    &lt;/New&gt;   
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre>
 
-  <a name="configuration"></a>
-	<h1>Logback-access configuration</h1>
+  <h1><a name="configuration" href="#configuration">Logback-access
+  configuration</a></h1>
+	
 	
   <p>Although similar, the format of <em>logback-access.xml</em>
   configuration file is slightly different than the configuration file
