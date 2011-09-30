@@ -50,16 +50,17 @@
     level of a web-application.
     </p>
 
-    <a name="tomcat"></a>
-		<h1>Logback-access under Tomcat</h1>
+		<h1><a name="tomcat" href="#tomcat">Logback-access under Tomcat</a></h1>
 		
 		<p>To use logback-access with Tomcat, after downloading the
 		logback distribution, place the files
 		<em>logback-core-${project.version}.jar</em> and
 		<em>logback-access-${project.version}.jar</em> under
 		$TOMCAT_HOME/lib/ directory, where $TOMCAT_HOME is the folder
-		where you have installed Tomcat. We have tested logback-access
-		with Tomcat version 6.0.20.
+		where you have installed Tomcat. This version of logback-access
+		has been tested with Tomcat version 7.0.21. It will not work with
+		Tomcat 6.x. However, the target platform for logback-access
+		version 0.9.30 is Tomcat 6.x.
 		</p>
 
     <!--
@@ -157,8 +158,9 @@
     under the URL <code>http://host/yourWebapp/lbAccessStatus</code>
     </p>
     
-    <a name="jetty"></a>
-		<h1>Logback-access under Jetty</h1>
+    
+		<h1><a name="jetty" href="#jetty">Logback-access under
+		Jetty</a></h1>
 
 		<p>After downloading the logback distribution, place the files
 		<em>logback-core-VERSION.jar</em> and

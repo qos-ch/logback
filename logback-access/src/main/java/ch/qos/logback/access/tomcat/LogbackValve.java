@@ -27,7 +27,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
 //import org.apache.catalina.Lifecycle;
 import ch.qos.logback.core.spi.*;
 import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
@@ -92,7 +94,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return started;
   }
 
-  public void startInternal() {
+  public void startInternal() throws LifecycleException {
+    System.out.println("***startInternal() called");
     if (filename == null) {
       String tomcatHomeProperty = OptionHelper
           .getSystemProperty("catalina.home");
@@ -103,8 +106,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
               + "]", this));
     }
     File configFile = new File(filename);
+
     if (configFile.exists()) {
       try {
+        System.out.println("***startInternal() JoranConfigurator");
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(this);
         jc.doConfigure(filename);
@@ -122,6 +127,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
 
     started = true;
+    setState(LifecycleState.STARTING);
   }
 
   public String getFilename() {
@@ -173,8 +179,9 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
   }
 
-  public void stopInternal() {
+  protected void stopInternal() throws LifecycleException {
     started = false;
+    setState(LifecycleState.STOPPING);
   }
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
