@@ -38,9 +38,15 @@
     <p>Investigation of <a
     href="http://jira.qos.ch/browse/LBCORE-224">LBCORE-224</a>
     reported by Cesar Alvarez Nunez points to bug in the JVM rather
-    than in logbacl. A workaround has been found by using
+    than in logback. A workaround has been found by using
     <code>CopyOnWriteArrayList</code> instead of the apparently buggy
     <code>ReadWriteLock</code>.</p>
+
+    <p>Fixed infinitely recursive calls in
+    <code>AccessConverter#addError</code> methods as reported in <a
+    href="http://jira.qos.ch/browse/LBACCESS-25">LBACCESS-25</a> by
+    Pierre Queinnec.
+    </p>
 
     <h3>September 21st, 2011 - Release of version 0.9.30</h3>
 
