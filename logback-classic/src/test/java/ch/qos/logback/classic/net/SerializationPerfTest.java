@@ -104,7 +104,7 @@ public class SerializationPerfTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     if (runWithExternalMockServer) {
-      oos = new ObjectOutputStream(new Socket("pixie",
+      oos = new ObjectOutputStream(new Socket("localhost",
           ExternalMockSocketServer.PORT).getOutputStream());
     } else {
       oos = new ObjectOutputStream(new NOPOutputStream());
