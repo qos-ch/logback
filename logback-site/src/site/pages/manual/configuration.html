@@ -480,12 +480,12 @@ public class Foo {
    <h3><a name="joranDirectly" href="#joranDirectly">Invoking
    <code>JoranConfigurator</code> directly</a></h3>
 
-   <p>Logback relies on a configuration library called Joran which is
-   part of logback-core. Logback's default configuration mechanism
-   invokes <code>JoranConfigurator</code> on the default configuration
-   file it finds on the class path. If you wish to
-   override logback's default configuration mechanism for whatever reason, you can do so
-   by invoking <code>JoranConfigurator</code> directly. The next
+   <p>Logback relies on a configuration library called Joran, part of
+   logback-core. Logback's default configuration mechanism invokes
+   <code>JoranConfigurator</code> on the default configuration file it
+   finds on the class path. If you wish to override logback's default
+   configuration mechanism for whatever reason, you can do so by
+   invoking <code>JoranConfigurator</code> directly. The next
    application, <em>MyApp3</em>, invokes JoranConfigurator on a
    configuration file passed as a parameter.</p>
    
@@ -508,19 +508,19 @@ public class MyApp3 {
 
   public static void main(String[] args) {
     // assume SLF4J is bound to logback in the current environment
-    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    <b>LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
     
     <b>try {
       JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      // the context was probably already configured by default configuration 
-      // rules
-      lc.reset(); 
+      configurator.setContext(context);
+      // Call context.reset() to clear any previous configuration, e.g. default 
+      // configuration. For multi-step configuration, omit calling context.reset().
+      context.reset(); 
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
       // StatusPrinter will handle this
     }
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);</b>
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);</b>
 
     logger.info("Entering application.");
 
@@ -536,8 +536,8 @@ public class MyApp3 {
    context, and then finally asks the configurator to configure the
    context using the configuration file passed as a parameter to the
    application. Internal status data is printed in case of warnings or
-   errors.
-   </p>   
+   errors. Note that for multi-step configuration,
+   <code>context.reset()</code> invocation should be omitted.</p>
 
    <h3><a name="viewingStatusMessages"
    href="#viewingStatusMessages">Viewing status messages</a>
