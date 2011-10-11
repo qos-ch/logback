@@ -42,11 +42,18 @@
     <code>CopyOnWriteArrayList</code> instead of the apparently buggy
     <code>ReadWriteLock</code>.</p>
 
+    <p>In STARTTLS mode, "mail.smtp.auth" property is no longer set
+    automatically. This fixes <a
+    href="http://jira.qos.ch/browse/LBCORE-225">LBCORE-225</a>
+    reported by Mark Woon.</p>
+
     <p>Fixed infinitely recursive calls in
     <code>AccessConverter#addError</code> methods as reported in <a
     href="http://jira.qos.ch/browse/LBACCESS-25">LBACCESS-25</a> by
     Pierre Queinnec.
     </p>
+
+
 
     <h3>September 21st, 2011 - Release of version 0.9.30</h3>
 

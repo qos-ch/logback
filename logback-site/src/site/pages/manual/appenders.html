@@ -1775,10 +1775,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
           <p>By default, this option is set to "%logger{20} - %m".</p>
         </td>
+        
       </tr>
       <tr class="alt">
-
-
         <td><b><span class="option">discriminator</span></b></td>
         <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
@@ -1902,6 +1901,21 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
 
+
+      <tr class="alt">
+        <td><b>localhost</b></td>
+        <td><code>String</code></td>
+        <td>In case the hostname of the SMTP client is not properly
+        configured, e.g. if the client hostname is not fully
+        qualified, certain SMTP servers may reject the HELO/EHLO
+        commands sent by the client. To overcome this issue, you may
+        set the value of the <span class="option">localhost</span>
+        property to the fully qualified name of the client host. See
+        also the "mail.smtp.localhost" property in the documentation
+        for the <a
+        href="http://javamail.kenai.com/nonav/javadocs/com/sun/mail/smtp/package-summary.html">com.sun.mail.smtp</a>
+        package.</td>
+      </tr>
 
 		</table>		
 		
