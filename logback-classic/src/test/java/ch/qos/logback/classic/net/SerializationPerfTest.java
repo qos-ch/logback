@@ -19,8 +19,8 @@ import java.net.Socket;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
-import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
+import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventVOBuilder;
 
 public class SerializationPerfTest extends TestCase {
 
@@ -104,7 +104,7 @@ public class SerializationPerfTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     if (runWithExternalMockServer) {
-      oos = new ObjectOutputStream(new Socket("pixie",
+      oos = new ObjectOutputStream(new Socket("localhost",
           ExternalMockSocketServer.PORT).getOutputStream());
     } else {
       oos = new ObjectOutputStream(new NOPOutputStream());
@@ -194,8 +194,8 @@ public class SerializationPerfTest extends TestCase {
   // }
 
   public void testWithSerialization() throws Exception {
-    Builder builder = new TrivialLoggingEventBuilder();
-    runPerfTest(builder, "LoggingEvent object serialization");
+    Builder builder = new TrivialLoggingEventVOBuilder();
+    runPerfTest(builder, "LoggingEventVO object serialization");
   }
   
   

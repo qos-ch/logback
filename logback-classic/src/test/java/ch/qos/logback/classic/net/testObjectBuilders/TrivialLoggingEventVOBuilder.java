@@ -11,18 +11,21 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.db.dialect;
+package ch.qos.logback.classic.net.testObjectBuilders;
+
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEventVO;
 
 /**
- * The H2 dialect.
- * 
- * @author Ceki G&uuml;lc&uuml;
+ * @author Pierre Queinnec
  */
-public class H2Dialect implements SQLDialect {
-  public static final String SELECT_CURRVAL = "CALL IDENTITY()";
+public class TrivialLoggingEventVOBuilder implements Builder {
 
-  public String getSelectInsertId() {
-    return SELECT_CURRVAL;
+  public Object build(int i) {
+    TrivialLoggingEventBuilder loggingEventBuilder = new TrivialLoggingEventBuilder();
+    LoggingEvent event = (LoggingEvent) loggingEventBuilder.build(i);
+
+    return LoggingEventVO.build(event);
   }
-  
+
 }
