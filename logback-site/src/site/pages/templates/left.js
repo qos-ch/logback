@@ -20,5 +20,3 @@ document.write('<p class="menu"><a href="http://logback.qos.ch/translator/asGroo
 
 document.write('</p>');
 
-
-

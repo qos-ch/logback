@@ -3,9 +3,8 @@ document.write('<td><a href="http://logback.qos.ch/">');
 document.write('<img src="' + prefix + 'images/logos/lblogo.jpg" alt="" border="0"/>');
 document.write('</a></td>')
 
-document.write('<td align="right"><a id="job"  href="http://logback.qos.ch/job.html">');
-document.write('<img src="' + prefix + 'images/myjob.png" alt="" border="0"/>');
-document.write('</a></td>')
+document.write('<td>&nbsp;</td>');
+
 document.write('</tr></table>')
 
 
