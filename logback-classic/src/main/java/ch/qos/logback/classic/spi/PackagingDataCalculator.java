@@ -14,7 +14,9 @@
 package ch.qos.logback.classic.spi;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import ch.qos.logback.core.util.Loader;
 import sun.reflect.Reflection;
@@ -50,6 +52,17 @@ public class PackagingDataCalculator {
     }
   }
 
+  private static final PackagingDataStrategy[] dataStrategies;
+  static {
+    List<PackagingDataStrategy> strategies = new ArrayList<PackagingDataStrategy>();
+    try {
+      strategies.add(new OsgiPackagingDataStrategy());
+    } catch (Throwable t) {
+      // ignore, probably org.osgi.framework.* is simply not in the classpath
+    }
+    strategies.add(new DefaultPackagingDataStrategy());
+    dataStrategies = strategies.toArray(new PackagingDataStrategy[strategies.size()]);
+  }
 
   public PackagingDataCalculator() {
   }
@@ -117,11 +130,7 @@ public class PackagingDataCalculator {
     if (cpd != null) {
       return cpd;
     }
-    String version = getImplementationVersion(type);
-    String codeLocation = getCodeLocation(type);
-    cpd = new ClassPackagingData(codeLocation, version);
-    cache.put(className, cpd);
-    return cpd;
+    return makePackagingFromType(type, className);
   }
 
   private ClassPackagingData computeBySTEP(StackTraceElementProxy step,
@@ -132,64 +141,22 @@ public class PackagingDataCalculator {
       return cpd;
     }
     Class type = bestEffortLoadClass(lastExactClassLoader, className);
-    String version = getImplementationVersion(type);
-    String codeLocation = getCodeLocation(type);
-    cpd = new ClassPackagingData(codeLocation, version, false);
+    return makePackagingFromType(type, className);
+  }
+
+  private ClassPackagingData makePackagingFromType(Class type, String className) {
+    ClassPackagingData cpd = null;
+    if (type != null) {
+      for (PackagingDataStrategy strategy : dataStrategies) {
+        cpd = strategy.makePackagingFromType(type, className);
+        if (cpd != null)
+          break;
+      }
+    }
+    if (cpd == null) // should only happen if type == null
+      cpd = new ClassPackagingData("na", "na");
     cache.put(className, cpd);
     return cpd;
-  }
-
-  String getImplementationVersion(Class type) {
-    if (type == null) {
-      return "na";
-    }
-    Package aPackage = type.getPackage();
-    if (aPackage != null) {
-      String v = aPackage.getImplementationVersion();
-      if (v == null) {
-        return "na";
-      } else {
-        return v;
-      }
-    }
-    return "na";
-
-  }
-
-  String getCodeLocation(Class type) {
-    try {
-      if (type != null) {
-        // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
-        URL resource = type.getProtectionDomain().getCodeSource().getLocation();
-        if (resource != null) {
-          String locationStr = resource.toString();
-          // now lets remove all but the file name
-          String result = getCodeLocation(locationStr, '/');
-          if (result != null) {
-            return result;
-          }
-          return getCodeLocation(locationStr, '\\');
-        }
-      }
-    } catch (Exception e) {
-      // ignore
-    }
-    return "na";
-  }
-
-  private String getCodeLocation(String locationStr, char separator) {
-    int idx = locationStr.lastIndexOf(separator);
-    if (isFolder(idx, locationStr)) {
-      idx = locationStr.lastIndexOf(separator, idx - 1);
-      return locationStr.substring(idx + 1);
-    } else if (idx > 0) {
-      return locationStr.substring(idx + 1);
-    }
-    return null;
-  }
-
-  private boolean isFolder(int idx, String text) {
-    return (idx != -1 && idx + 1 == text.length());
   }
 
   private Class loadClass(ClassLoader cl, String className) {
@@ -240,4 +207,81 @@ public class PackagingDataCalculator {
     }
   }
 
+  public interface PackagingDataStrategy {
+    ClassPackagingData makePackagingFromType(Class type, String className);
+  }
+  private static final class DefaultPackagingDataStrategy implements PackagingDataStrategy {
+    public ClassPackagingData makePackagingFromType(Class type, String className) {
+      String version = getImplementationVersion(type);
+      String codeLocation = getCodeLocation(type);
+      return new ClassPackagingData(codeLocation, version);
+    }
+    private static String getImplementationVersion(Class type) {
+      if (type == null) {
+        return "na";
+      }
+      Package aPackage = type.getPackage();
+      if (aPackage != null) {
+        String v = aPackage.getImplementationVersion();
+        if (v == null) {
+          return "na";
+        } else {
+          return v;
+        }
+      }
+      return "na";
+    }
+
+    private String getCodeLocation(Class type) {
+      try {
+        if (type != null) {
+          // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
+          URL resource = type.getProtectionDomain().getCodeSource().getLocation();
+          if (resource != null) {
+            String locationStr = resource.toString();
+            // now lets remove all but the file name
+            String result = getCodeLocation(locationStr, '/');
+            if (result != null) {
+              return result;
+            }
+            return getCodeLocation(locationStr, '\\');
+          }
+        }
+      } catch (Exception e) {
+        // ignore
+      }
+      return "na";
+    }
+
+    private String getCodeLocation(String locationStr, char separator) {
+      int idx = locationStr.lastIndexOf(separator);
+      if (isFolder(idx, locationStr)) {
+        idx = locationStr.lastIndexOf(separator, idx - 1);
+        return locationStr.substring(idx + 1);
+      } else if (idx > 0) {
+        return locationStr.substring(idx + 1);
+      }
+      return null;
+    }
+
+    private boolean isFolder(int idx, String text) {
+      return (idx != -1 && idx + 1 == text.length());
+    }
+  }
+  private static final class OsgiPackagingDataStrategy implements PackagingDataStrategy {
+    public ClassPackagingData makePackagingFromType(Class type, String className) {
+      try {
+        org.osgi.framework.Bundle bundle = org.osgi.framework.FrameworkUtil.getBundle(type);
+        if (bundle != null) {
+          org.osgi.framework.Version bundleVersion = bundle.getVersion();
+          String version = bundleVersion == org.osgi.framework.Version.emptyVersion ? "na" : bundleVersion.toString();
+          String codeLocation = bundle.getSymbolicName();
+          return new ClassPackagingData(codeLocation, version);
+        }
+      } catch (RuntimeException e) {  // at minimum: IllegalStateException, SecurityException
+        // go on to next strategy
+      }
+      return null;
+    }
+  }
 }
