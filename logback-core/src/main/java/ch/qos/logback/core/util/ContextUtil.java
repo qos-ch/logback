@@ -15,6 +15,8 @@ package ch.qos.logback.core.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.Properties;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -42,6 +44,17 @@ public class ContextUtil extends ContextAwareBase {
       addError("Failed to get local hostname", e);
     } catch (SecurityException e) {
       addError("Failed to get local hostname", e);
+    }
+  }
+
+   public void addProperties(Properties props) {
+    if (props == null) {
+      return;
+    }
+    Iterator i = props.keySet().iterator();
+    while (i.hasNext()) {
+      String key = (String) i.next();
+      context.putProperty(key, props.getProperty(key));
     }
   }
 }

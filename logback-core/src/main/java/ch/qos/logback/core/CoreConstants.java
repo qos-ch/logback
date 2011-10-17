@@ -139,4 +139,5 @@ public class CoreConstants {
   public static final int MILLIS_IN_ONE_DAY = MILLIS_IN_ONE_HOUR*24;
   public static final int MILLIS_IN_ONE_WEEK = MILLIS_IN_ONE_DAY*7;
 
+  public static final String CONTEXT_SCOPE_VALUE = "context";
 }

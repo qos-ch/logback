@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.ContextUtil;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -39,21 +41,41 @@ import java.util.Properties;
  */
 public class PropertyAction extends Action {
 
+  enum Scope {LOCAL, CONTEXT, SYSTEM};
+
   static final String RESOURCE_ATTRIBUTE = "resource";
 
+
   static String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-      + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
+          + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
 
   /**
    * Add all the properties found in the argument named 'props' to an
    * InterpretationContext.
    */
-  public void setProperties(InterpretationContext ec, Properties props) {
-    ec.addSubstitutionProperties(props);
+  public void setProperties(InterpretationContext ec, Properties props, Scope scope) {
+    switch(scope) {
+      case LOCAL: ec.addSubstitutionProperties(props);
+        break;
+      case CONTEXT:
+        ContextUtil cu = new ContextUtil((context));
+        cu.addProperties(props);
+        break;
+      case SYSTEM:
+        OptionHelper.setSystemProperties(this, props);
+    }
   }
 
-  public void setProperty(InterpretationContext ec, String key, String value) {
-    ec.addSubstitutionProperty(key, value);
+  public void setProperty(InterpretationContext ec, String key, String value,  Scope scope) {
+     switch(scope) {
+      case LOCAL: ec.addSubstitutionProperty(key, value);
+        break;
+      case CONTEXT:
+        context.putProperty(key, value);
+        break;
+      case SYSTEM:
+        OptionHelper.setSystemProperty(this, key, value);
+    }
   }
 
   /**
@@ -70,13 +92,16 @@ public class PropertyAction extends Action {
 
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(VALUE_ATTRIBUTE);
+    String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
+
+    Scope scope = stringToScope(scopeStr);
 
     if (checkFileAttributeSanity(attributes)) {
       String file = attributes.getValue(FILE_ATTRIBUTE);
       file = ec.subst(file);
       try {
         FileInputStream istream = new FileInputStream(file);
-        loadAndSetProperties(ec, istream);
+        loadAndSetProperties(ec, istream, scope);
       } catch (IOException e) {
         addError("Could not read properties file [" + file + "].", e);
       }
@@ -89,7 +114,7 @@ public class PropertyAction extends Action {
       } else {
         try {
           InputStream istream = resourceURL.openStream();
-          loadAndSetProperties(ec, istream);
+          loadAndSetProperties(ec, istream, scope);
         } catch (IOException e) {
           addError("Could not read resource file [" + resource + "].", e);
         }
@@ -99,19 +124,28 @@ public class PropertyAction extends Action {
       // now remove both leading and trailing spaces
       value = value.trim();
       value = ec.subst(value);
-      setProperty(ec, name, value);
+      setProperty(ec, name, value, scope);
 
     } else {
       addError(INVALID_ATTRIBUTES);
     }
   }
 
-  void loadAndSetProperties(InterpretationContext ec, InputStream istream)
+  private Scope stringToScope(String scopeStr) {
+    if(Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr))
+      return Scope.SYSTEM;
+     if(Scope.CONTEXT.toString().equalsIgnoreCase(scopeStr))
+      return Scope.CONTEXT;
+
+    return Scope.LOCAL;
+  }
+
+  void loadAndSetProperties(InterpretationContext ec, InputStream istream, Scope scope)
       throws IOException {
     Properties props = new Properties();
     props.load(istream);
     istream.close();
-    setProperties(ec, props);
+    setProperties(ec, props, scope);
   }
 
   boolean checkFileAttributeSanity(Attributes attributes) {

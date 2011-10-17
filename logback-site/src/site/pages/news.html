@@ -28,12 +28,31 @@
 
     <hr width="80%" align="center" />
 
-    <h3>... .. , 2011 - Release of version 0.9.31</h3>
+    <h3>October 17th, 2011 - Release of version 1.0.0</h3>
 
     <p>The logback-access module now targets Tomcat 7.x and Jetty 7.x
     &amp; 8.x as its servlet container platforms. This fixes <a
     href="http://jira.qos.ch/browse/LBACCESS-17">LBACCESS-17</a>
     reported by Grzegorz Grzybek.</p>
+
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+    <h4>Breaking change: properties are no longer automatically
+    inserted into the context</h4>
+    
+    <p>Properties now have a scope. Previously, the definition of a
+    property added it to the context. As of version 1.0, properties
+    are local, i.e. transient by default. For further details, please
+    refer to the <a
+    href="manual/configuration.html#variableSubstitution">documentation
+    on properties</a>.</p>
+    </div>
+
+    <p>Environment variables are now looke up during property
+    substitution. This feature was requested in <a
+    href="http://jira.qos.ch/browse/LBCORE-212">LBCORE-212</a> by
+    Alexandre Garnier.
+    </p>
 
     <p>Investigation of <a
     href="http://jira.qos.ch/browse/LBCORE-224">LBCORE-224</a>

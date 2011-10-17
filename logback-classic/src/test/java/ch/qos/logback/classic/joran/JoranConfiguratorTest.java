@@ -404,7 +404,25 @@ public class JoranConfiguratorTest {
     StatusPrinter.print(loggerContext);
     sc.containsException(ScanException.class);
     sc.containsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
-    sc.containsMatch(Status.ERROR, "See also "+ Parser.MISSING_RIGHT_PARENTHESIS);
+    sc.containsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
   }
 
+
+  @Test
+  public void properties() throws JoranException {
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+            + "properties.xml";
+    assertNull(loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
+    assertNull(System.getProperty("sys"));
+
+    configure(configFileAsStr);
+    assertNotNull(loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
+    assertNull(loggerContext.getProperty("transientKey1"));
+    assertNull(loggerContext.getProperty("transientKey2"));
+    assertEquals("node0", loggerContext.getProperty("nodeId"));
+    assertEquals("tem", System.getProperty("sys"));
+    assertNotNull(loggerContext.getProperty("path"));
+    assertTrue(sc.isErrorFree(0));
+    StatusPrinter.print(loggerContext);
+  }
 }
