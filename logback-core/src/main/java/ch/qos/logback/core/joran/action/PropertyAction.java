@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -40,9 +41,12 @@ import java.util.Properties;
 public class PropertyAction extends Action {
 
   static final String RESOURCE_ATTRIBUTE = "resource";
+  static final String ENVIRONMENT_ATTRIBUTE = "environment";
 
-  static String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-      + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
+  static String INVALID_ATTRIBUTES = "In <property> element, either the \"" + FILE_ATTRIBUTE + "\" attribute alone, "
+      + "or the \"" + RESOURCE_ATTRIBUTE +"\" element alone, "
+      + "or the \"" + ENVIRONMENT_ATTRIBUTE +"\" element alone, "
+      + "or both the \"" + NAME_ATTRIBUTE + "\" and \"" + VALUE_ATTRIBUTE + "\" attributes must be set.";
 
   /**
    * Add all the properties found in the argument named 'props' to an
@@ -94,6 +98,12 @@ public class PropertyAction extends Action {
           addError("Could not read resource file [" + resource + "].", e);
         }
       }
+    } else if (checkEnvironmentAttributeSanity(attributes)) {
+      String environment = attributes.getValue(ENVIRONMENT_ATTRIBUTE);
+      environment = RegularEscapeUtil.basicEscape(environment);
+      for (Map.Entry<String, String> envVar : System.getenv().entrySet()) {
+        setProperty(ec, environment + "." + envVar.getKey(), envVar.getValue());
+      }
     } else if (checkValueNameAttributesSanity(attributes)) {
       value = RegularEscapeUtil.basicEscape(value);
       // now remove both leading and trailing spaces
@@ -119,10 +129,11 @@ public class PropertyAction extends Action {
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(VALUE_ATTRIBUTE);
     String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
+    String environment = attributes.getValue(ENVIRONMENT_ATTRIBUTE);
 
     return !(OptionHelper.isEmpty(file))
         && (OptionHelper.isEmpty(name) && OptionHelper.isEmpty(value) && OptionHelper
-            .isEmpty(resource));
+            .isEmpty(resource) && OptionHelper.isEmpty(environment));
   }
 
   boolean checkResourceAttributeSanity(Attributes attributes) {
@@ -130,10 +141,23 @@ public class PropertyAction extends Action {
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(VALUE_ATTRIBUTE);
     String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
+    String environment = attributes.getValue(ENVIRONMENT_ATTRIBUTE);
 
     return !(OptionHelper.isEmpty(resource))
         && (OptionHelper.isEmpty(name) && OptionHelper.isEmpty(value) && OptionHelper
-            .isEmpty(file));
+            .isEmpty(file) && OptionHelper.isEmpty(environment));
+  }
+
+  boolean checkEnvironmentAttributeSanity(Attributes attributes) {
+    String file = attributes.getValue(FILE_ATTRIBUTE);
+    String name = attributes.getValue(NAME_ATTRIBUTE);
+    String value = attributes.getValue(VALUE_ATTRIBUTE);
+    String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
+    String environment = attributes.getValue(ENVIRONMENT_ATTRIBUTE);
+
+    return !(OptionHelper.isEmpty(environment))
+        && (OptionHelper.isEmpty(name) && OptionHelper.isEmpty(value) && OptionHelper
+            .isEmpty(file) && OptionHelper.isEmpty(resource));
   }
 
   boolean checkValueNameAttributesSanity(Attributes attributes) {
@@ -141,9 +165,10 @@ public class PropertyAction extends Action {
     String name = attributes.getValue(NAME_ATTRIBUTE);
     String value = attributes.getValue(VALUE_ATTRIBUTE);
     String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
+    String environment = attributes.getValue(ENVIRONMENT_ATTRIBUTE);
 
     return (!(OptionHelper.isEmpty(name) || OptionHelper.isEmpty(value)) && (OptionHelper
-        .isEmpty(file) && OptionHelper.isEmpty(resource)));
+        .isEmpty(file) && OptionHelper.isEmpty(resource) && OptionHelper.isEmpty(environment)));
   }
 
   public void end(InterpretationContext ec, String name) {
