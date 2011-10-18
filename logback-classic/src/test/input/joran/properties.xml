@@ -1,0 +1,8 @@
+<configuration debug="false">
+  <property                 name="transientKey0" value="v"/>
+  <property scope="local"   name="transientKey1" value="v"/>
+  <property scope="context" name="nodeId" value="node0"/>
+  <property scope="system"  name="sys" value="tem"/>
+
+  <property scope="context" name="path" value ="${PATH}"/>
+</configuration>
