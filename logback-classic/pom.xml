@@ -308,7 +308,7 @@
             <phase>package</phase>
             <configuration>
               <tasks>      
-                <property name="currentVersion" value="${version}" />                            
+                <property name="currentVersion" value="${project.version}" />
                 <property name="slf4j.version" value="${slf4j.version}"/>
                 <property name="basedir" value="${basedir}"/>
                 <ant antfile="${basedir}/osgi-build.xml"/>
@@ -338,7 +338,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
         <configuration>
           <!-- once, never, -->
           <forkMode>once</forkMode>

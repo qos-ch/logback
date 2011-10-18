@@ -12,7 +12,6 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-examples</artifactId>
-  <version>${parent.version}</version>
   <packaging>jar</packaging>
   <name>Logback Examples Module</name>
 
