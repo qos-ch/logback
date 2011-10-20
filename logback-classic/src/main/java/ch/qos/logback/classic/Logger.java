@@ -192,7 +192,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * This method is invoked by parent logger to let this logger know that the
    * prent's levelInt changed.
    * 
-   * @param newParentLevel
+   * @param newParentLevelInt
    */
   private synchronized void handleParentLevelChange(int newParentLevelInt) {
     // changes in the parent levelInt affect children only if their levelInt is
