@@ -63,7 +63,7 @@ public class AppenderRefAction extends Action {
 
     if (appender == null) {
       String msg = "Could not find an appender named [" + appenderName
-          + "]. Did you define it below in the config file?";
+          + "]. Did you define it below instead of above in the configuration file?";
       inError = true;
       addError(msg);
       addError("See " + CoreConstants.CODES_URL

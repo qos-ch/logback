@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -532,6 +533,62 @@ return false;</pre>
    <b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\) </b>.
    </p>
   
+
+  <p>
+   </p>
+   <hr/>
+   <!-- ============================================================= -->
+   <p><a name="appender_order" href="#appender_order">Appenders must
+   be definied before they are referenced.</a>
+   </p>
+   
+   <p>In a configuration file, at the point where an appender is
+   referenced by name, it must be defined earlier in the configuration
+   file. Referencing an appender defined later in the file is not
+   allowed. Below are examples of correct and incorrect order of
+   definition and referece.
+   </p>
+
+
+  <p>Below is an example of a correct ordering, where appender
+  definition precedes references made to it.
+  </p>
+
+  <p class="green bold">CORRECT ORDER</p>
+  <pre class="prettyprint source">&lt;configuration>
+  <b>&lt;!-- definition of appender STDOUT --></b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;!-- appender referenced after it is defined -->
+    <b class="big">&lt;appender-ref ref="STDOUT"/></b>
+  &lt;/root> 
+&lt;/configuration></pre>
+
+  <p>Below is an example of an incorrect ordering, where appender
+  definition follows references made to it.
+  </p>
+
+   <p class="red bold">INCORRECT ORDER</p>
+   <pre class="prettyprint source">&lt;configuration>
+  &lt;root level="DEBUG">
+    &lt;!-- appender INCORRECTLY referenced before it is defined -->
+    <b class="big">&lt;appender-ref ref="STDOUT"/></b>
+  &lt;/root>
+
+  <b>&lt;!-- definition of appender STDOUT --></b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+&lt;/configuration>
+   </pre>
+
   <script src="templates/footer.js" type="text/javascript"></script>
   </div>
 </body>
