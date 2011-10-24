@@ -335,7 +335,7 @@
         <version>2.4</version>
         <reportSets>
           <reportSet>
-            <reports></reports>
+            <reports/>
           </reportSet>
         </reportSets>
       </plugin>
