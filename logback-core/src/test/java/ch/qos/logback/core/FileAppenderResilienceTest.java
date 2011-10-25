@@ -76,20 +76,25 @@ public class FileAppenderResilienceTest {
     Thread t = new Thread(runner);
     t.start();
 
-    double delayCoeff = 2.0;
-    for (int i = 0; i < 5; i++) {
-      Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoeff));
-      ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) fa
-          .getOutputStream();
-      FileChannel fileChannel = resilientFOS.getChannel();
-      fileChannel.close();
+    double delayCoefficient = 2.0;
+    for (int i = 0; i < 3; i++) {
+      Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient));
+      closeLogFileOnPurpose();
     }
     runner.setDone(true);
     t.join();
 
-    double bestCaseSuccessRatio = 1/delayCoeff;
+    double bestCaseSuccessRatio = 1/delayCoefficient;
+    double lossinessFactor = 0.5;
     ResilienceUtil
-        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio*0.8);
+        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
+  }
+
+  private void closeLogFileOnPurpose() throws IOException {
+    ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) fa
+      .getOutputStream();
+    FileChannel fileChannel = resilientFOS.getChannel();
+    fileChannel.close();
   }
 }
 
