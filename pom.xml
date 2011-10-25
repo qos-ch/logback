@@ -137,11 +137,7 @@
         <artifactId>tomcat-catalina</artifactId>
         <version>${tomcat.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty</artifactId>
-        <version>6.1.1</version>
-      </dependency>
+
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
@@ -178,9 +174,9 @@
   <build>
     <extensions>
       <extension>
-       <groupId>org.apache.maven.wagon</groupId>
-       <artifactId>wagon-ssh</artifactId>
-       <version>1.0-beta-1</version>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-1</version>
       </extension>
     </extensions>
 
@@ -253,17 +249,17 @@
           <buildcommands>
             <buildcommand>org.scala-ide.sdt.core.scalabuilder</buildcommand>
           </buildcommands>
-<!--          <classpathContainers>
+          <!--          <classpathContainers>
             <classpathContainer>org.scala-ide.sdt.launching.SCALA_CONTAINER</classpathContainer>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
             </classpathContainer>
           </classpathContainers>
           -->
-<!--          <excludes>
-            <exclude>org.scala-lang:scala-library</exclude>
-            <exclude>org.scala-lang:scala-compiler</exclude>
-          </excludes>
-    -->
+          <!--          <excludes>
+                  <exclude>org.scala-lang:scala-library</exclude>
+                  <exclude>org.scala-lang:scala-compiler</exclude>
+                </excludes>
+          -->
           <sourceIncludes>
             <sourceInclude>**/*.scala</sourceInclude>
             <sourceInclude>**/*.java</sourceInclude>
@@ -277,13 +273,9 @@
         <version>2.1</version>
         <configuration>
           <descriptors>
-            <descriptor>
-              src/main/assembly/dist.xml
-            </descriptor>
+            <descriptor>src/main/assembly/dist.xml</descriptor>
           </descriptors>
-          <finalName>
-            logback-${project.version}
-          </finalName>
+          <finalName>logback-${project.version}</finalName>
           <appendAssemblyId>false</appendAssemblyId>
           <outputDirectory>target/site/dist/</outputDirectory>
         </configuration>
@@ -299,89 +291,78 @@
         <artifactId>maven-scala-plugin</artifactId>
         <version>2.15.2</version>
       </plugin>
-       <plugin>
+      <plugin>
         <groupId>org.codehaus.groovy.maven</groupId>
         <artifactId>gmaven-plugin</artifactId>
         <version>1.0</version>
       </plugin>
-    </plugins>
-  </build>
 
-  <reporting>
-    <plugins>
+
+      <!-- ================ site plugin ==================== -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.0</version>
         <configuration>
-          <excludeModules>fml</excludeModules>
-          <excludeModules>apt</excludeModules>
-        </configuration>
-      </plugin>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jxr-plugin</artifactId>
+              <version>2.3</version>
+              <configuration>
+                <aggregate>true</aggregate>
+                <javadocDir>target/site/apidocs/</javadocDir>
+                <linkJavadoc>true</linkJavadoc>
+              </configuration>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <aggregate>true</aggregate>
-          <javadocDir>target/site/apidocs/</javadocDir>
-          <linkJavadoc>true</linkJavadoc>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
-        <reportSets>
-          <reportSet>
-            <reports/>
-          </reportSet>
-        </reportSets>
-      </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.8</version>
+              <configuration>
+                <aggregate>true</aggregate>
+                <!--<linksource>true</linksource>-->
+                <links>
+                  <link>
+                    http://java.sun.com/j2se/1.5.0/docs/api
+                  </link>
+                </links>
+                <groups>
+                  <group>
+                    <title>Logback Core</title>
+                    <packages>ch.qos.logback.core:ch.qos.logback.core.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>Logback Classic</title>
+                    <packages>
+                      ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>Logback Access</title>
+                    <packages>ch.qos.logback.access:ch.qos.logback.access.*
+                    </packages>
+                  </group>
+                  <group>
+                    <title>SLF4J</title>
+                    <packages>org.slf4j:org.slf4j.*</packages>
+                  </group>
+                  <group>
+                    <title>Examples</title>
+                    <packages>chapter*:joran*</packages>
+                  </group>
+                </groups>
+              </configuration>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8</version>
-        <configuration>
-          <aggregate>true</aggregate>
-          <!--<linksource>true</linksource>-->
-          <links>
-            <link>
-              http://java.sun.com/j2se/1.5.0/docs/api
-            </link>
-          </links>
-          <groups>
-            <group>
-              <title>Logback Core</title>
-              <packages>ch.qos.logback.core:ch.qos.logback.core.*</packages>
-            </group>
-            <group>
-              <title>Logback Classic</title>
-              <packages>
-                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
-              </packages>
-            </group>
-            <group>
-              <title>Logback Access</title>
-              <packages>ch.qos.logback.access:ch.qos.logback.access.*</packages>
-            </group>
-            <group>
-              <title>SLF4J</title>
-              <packages>org.slf4j:org.slf4j.*</packages>
-            </group>
-            <group>
-              <title>Examples</title>
-              <packages>chapter*:joran*</packages>
-            </group>
-          </groups>
+          </reportPlugins>
         </configuration>
       </plugin>
 
     </plugins>
-
-  </reporting>
+  </build>
 
   <distributionManagement>
     <site>
@@ -411,6 +392,7 @@
           <plugin>
             <groupId>com.google.code.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
+            <version>1.9.0</version>
             <configuration>
               <header>src/main/licenseHeader.txt</header>
               <quiet>false</quiet>
