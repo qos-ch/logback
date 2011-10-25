@@ -287,7 +287,7 @@ public class JoranConfiguratorTest {
 
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
-  public void scan1() throws JoranException, IOException, InterruptedException {
+  public void autoscanShouldReconfigureOnFileChange() throws Exception {
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
             + "scan1.xml";
@@ -296,7 +296,7 @@ public class JoranConfiguratorTest {
     File file = new File(configFileAsStr);
     file.setLastModified(System.currentTimeMillis());
 
-    Thread.sleep(100);
+    Thread.sleep(10);
     // scanning requires 16 logs
     for (int i = 0; i < 16; i++) {
       logger.debug("after " + i);
@@ -305,7 +305,7 @@ public class JoranConfiguratorTest {
     loggerContext.getExecutorService().shutdown();
     loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
 
-    StatusPrinter.print(loggerContext);
+    //StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree(0));
     assertTrue(checker.containsMatch("Will reset and reconfigure context"));
