@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
@@ -44,6 +45,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
+
 
 import static org.junit.Assert.*;
 
@@ -299,6 +301,9 @@ public class JoranConfiguratorTest {
     for (int i = 0; i < 16; i++) {
       logger.debug("after " + i);
     }
+
+    loggerContext.getExecutorService().shutdown();
+    loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
 
     StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);

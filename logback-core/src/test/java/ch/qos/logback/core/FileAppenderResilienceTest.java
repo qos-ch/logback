@@ -77,7 +77,7 @@ public class FileAppenderResilienceTest {
     t.start();
 
     double delayCoefficient = 2.0;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
       Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient));
       closeLogFileOnPurpose();
     }
@@ -85,7 +85,7 @@ public class FileAppenderResilienceTest {
     t.join();
 
     double bestCaseSuccessRatio = 1/delayCoefficient;
-    double lossinessFactor = 0.5;
+    double lossinessFactor = 0.8;
     ResilienceUtil
         .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
   }
@@ -109,7 +109,7 @@ class Runner extends RunnableWithCounterAndDone {
     while (!isDone()) {
       counter++;
       fa.doAppend("hello " + counter);
-      if (counter % 512 == 0) {
+      if (counter % 128 == 0) {
         try { Thread.sleep(10);
         } catch (InterruptedException e) { }
       }
