@@ -122,7 +122,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // reader lock.
   private void detachReconfigurationToNewThread() {
     addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
-    new ReconfiguringThread().start();
+    context.getExecutorService().submit(new ReconfiguringThread());
   }
 
   void updateNextCheck(long now) {
@@ -150,7 +150,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     this.refreshPeriod = refreshPeriod;
   }
 
-  class ReconfiguringThread extends Thread {
+  class ReconfiguringThread implements Runnable {
     public void run() {
       if (mainConfigurationURL == null) {
         addInfo("Due to missing top level configuration file, skipping reconfiguration");

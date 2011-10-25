@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
@@ -57,7 +59,7 @@ public class SMTPAppender_SubethaSMTPTest {
   Wiser wiser;
 
   SMTPAppender smtpAppender;
-  LoggerContext lc = new LoggerContext();
+  LoggerContext loggerContext = new LoggerContext();
 
   static final String TEST_SUBJECT = "test subject";
   static final String HEADER = "HEADER\n";
@@ -75,7 +77,7 @@ public class SMTPAppender_SubethaSMTPTest {
 
   void buildSMTPAppender() throws Exception {
     smtpAppender = new SMTPAppender();
-    smtpAppender.setContext(lc);
+    smtpAppender.setContext(loggerContext);
     smtpAppender.setName("smtp");
     smtpAppender.setFrom("user@host.dom");
     smtpAppender.setSMTPHost("localhost");
@@ -118,7 +120,12 @@ public class SMTPAppender_SubethaSMTPTest {
       throw new RuntimeException(e);
     }
   }
-  
+
+  void waitUntilEmailIsSent() throws Exception {
+    loggerContext.getExecutorService().shutdown();
+    loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
+  }
+
   private static String getBody(Part msg) {
     String all = getWholeMessage(msg);
     int i = all.indexOf("\r\n\r\n");
@@ -127,12 +134,15 @@ public class SMTPAppender_SubethaSMTPTest {
 
   @Test
   public void smoke() throws Exception {
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
+
+    waitUntilEmailIsSent();
+    System.out.println("*** "+((ThreadPoolExecutor)loggerContext.getExecutorService()).getCompletedTaskCount());
     List<WiserMessage> wiserMsgList = wiser.getMessages();
     
     assertNotNull(wiserMsgList);
@@ -151,13 +161,13 @@ public class SMTPAppender_SubethaSMTPTest {
 
   @Test
   public void html() throws Exception {
-    smtpAppender.setLayout(buildHTMLLayout(lc));
+    smtpAppender.setLayout(buildHTMLLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-    
+    waitUntilEmailIsSent();
     List<WiserMessage> wiserMsgList = wiser.getMessages();
     
     assertNotNull(wiserMsgList);
@@ -185,14 +195,15 @@ public class SMTPAppender_SubethaSMTPTest {
    * the generated output will be rather short.
    */
   public void htmlLong() throws Exception {
-    smtpAppender.setLayout(buildHTMLLayout(lc));
+    smtpAppender.setLayout(buildHTMLLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
       logger.debug("hello " + i);
     }
     logger.error("en error", new Exception("an exception"));
+    waitUntilEmailIsSent();
     List<WiserMessage> wiserMsgList = wiser.getMessages();
     
     assertNotNull(wiserMsgList);
@@ -218,13 +229,13 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setUsername("x");
     smtpAppender.setPassword("x");
     
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-
+    waitUntilEmailIsSent();
     List<WiserMessage> wiserMsgList = wiser.getMessages();
 
     assertNotNull(wiserMsgList);
@@ -252,14 +263,14 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setUsername("xx");
     smtpAppender.setPassword("xx");    
   
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-    StatusPrinter.print(lc);
+    waitUntilEmailIsSent();
     List<WiserMessage> wiserMsgList = wiser.getMessages();
 
     assertNotNull(wiserMsgList);
@@ -277,14 +288,14 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setUsername("XXX@gmail.com");
     smtpAppender.setPassword("XXX");    
   
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("authenticatedGmailSTARTTLS");
+    Logger logger = loggerContext.getLogger("authenticatedGmailSTARTTLS");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-    StatusPrinter.print(lc);
+    StatusPrinter.print(loggerContext);
   }
   
   @Test
@@ -298,25 +309,26 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setUsername("XXX@gmail.com");
     smtpAppender.setPassword("XXX");    
   
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.start();
-    Logger logger = lc.getLogger("authenticatedGmail_SSL");
+    Logger logger = loggerContext.getLogger("authenticatedGmail_SSL");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-    StatusPrinter.print(lc);
+    StatusPrinter.print(loggerContext);
   }
 
   @Test
   public void testMultipleTo() throws Exception {
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(loggerContext));
     smtpAppender.addTo("Test <test@example.com>, other-test@example.com");
     smtpAppender.start();
-    Logger logger = lc.getLogger("test");
+    Logger logger = loggerContext.getLogger("test");
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
+    waitUntilEmailIsSent();
     List<WiserMessage> wiserMsgList = wiser.getMessages();
 
     assertNotNull(wiserMsgList);

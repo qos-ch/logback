@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -85,6 +86,11 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean quiet;
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
+
+    // 0 idle threads, 2 maximum threads, no idle waiting
+  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
+          0L, TimeUnit.MILLISECONDS,
+          new LinkedBlockingQueue<Runnable>());
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -260,6 +266,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
+  }
+
+  public ExecutorService getExecutorService() {
+    return  executorService;
   }
 
   public String getName() {

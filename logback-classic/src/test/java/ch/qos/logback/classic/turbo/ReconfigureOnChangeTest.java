@@ -160,30 +160,6 @@ public class ReconfigureOnChangeTest {
     verify(expectedReconfigurations, mustBeErrorFree);
   }
 
-  // chose a test at random. These tests are rather long...
-  // check for deadlocks
-  @Test(timeout = 20000)
-  public void randomTest() throws JoranException, IOException, InterruptedException {
-    Random rand = new Random(System.currentTimeMillis());
-    switch (rand.nextInt(5)) {
-      case 0:
-        scan1();
-        break;
-      case 1:
-        scanWithFileInclusion();
-        break;
-      case 2:
-        scanWithResourceInclusion();
-        break;
-      case 3:
-        scan_lbclassic154();
-        break;
-      case 4:
-        gscan1();
-        break;
-    }
-  }
-
   // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
   @Test
   public void scan1() throws JoranException, IOException, InterruptedException {

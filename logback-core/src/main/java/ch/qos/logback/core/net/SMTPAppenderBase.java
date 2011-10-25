@@ -177,12 +177,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     String key = discriminator.getDiscriminatingValue(eventObject);
     long now = System.currentTimeMillis();
-    CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
+    final CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
     subAppend(cb, eventObject);
+
+    cb.asList();
 
     try {
       if (eventEvaluator.evaluate(eventObject)) {
-        sendBuffer(cb, eventObject);
+        // perform actual sending asynchronously
+        SenderRunnable senderRunnable = new SenderRunnable(new CyclicBuffer<E>(cb), eventObject);
+        context.getExecutorService().execute(senderRunnable);
       }
     } catch (EvaluationException ex) {
       errorCount++;
@@ -583,4 +587,17 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     this.layout = layout;
   }
 
+  class SenderRunnable implements Runnable {
+
+    final  CyclicBuffer<E> cyclicBuffer;
+    final E e;
+
+    SenderRunnable(CyclicBuffer<E> cyclicBuffer, E e) {
+      this.cyclicBuffer = cyclicBuffer;
+      this.e = e;
+    }
+    public void run() {
+      sendBuffer(cyclicBuffer, e);
+    }
+  }
 }
