@@ -1,0 +1,20 @@
+
+<configuration>
+
+  <if condition='property("HOSTNAME").contains("XYZ88")'>
+    <then>
+      <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+          <pattern>%h %l %u %user %date "%r" %s %b</pattern>
+        </encoder>
+      </appender>
+
+      <appender-ref ref="CON" />
+    </then>
+    <else>
+      <appender name="LIST" class="ch.qos.logback.core.read.ListAppender"/>
+      <appender-ref ref="LIST" />
+    </else>
+  </if>
+
+</configuration>

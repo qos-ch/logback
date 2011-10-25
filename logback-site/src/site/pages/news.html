@@ -66,6 +66,17 @@
     href="http://jira.qos.ch/browse/LBCORE-225">LBCORE-225</a>
     reported by Mark Woon.</p>
 
+    <p>Logback-access now supports conditional configuration. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LBACCESS-27">LBACCESS-27</a>
+    reported by Marshall Pierce.</p>
+
+    <p>Logback-access now supports inclusion of configuration
+    files. See the <a
+    href="manual/configuration.html#fileInclusion">chapter about
+    configuration</a> in the logback's online manual for more
+    information. </p>
+
     <p>Added <code>ch.qos.logback.core.read</code> to "Import-Package"
     declaration in logback-classic's manifest file. This fixes <a
     href="http://jira.qos.ch/browse/LBCLASSIC-131">LBCLASSIC-131</a>
@@ -1500,7 +1511,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   logback's configuration framework. A file can contain an
   <em>include</em> element that has a <em>file</em> or <em>url</em>
   attribute pointing to a configuration file.  See the <a
-  href="manual/configuration.html#Include">chapter about
+  href="manual/configuration.html#fileInclusion">chapter about
   configuration</a> in the logback's online manual for more
   information.
   </p>

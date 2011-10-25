@@ -373,9 +373,11 @@ public class JoranConfiguratorTest {
   public void levelChangePropagator1() throws JoranException, IOException,
           InterruptedException {
     java.util.logging.Logger.getLogger("xx").setLevel(java.util.logging.Level.INFO);
+    verifyJULLevel("xx", Level.INFO);
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
             + "/jul/levelChangePropagator1.xml";
     configure(configFileAsStr);
+    StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree(0));
     verifyJULLevel("xx", Level.INFO);
