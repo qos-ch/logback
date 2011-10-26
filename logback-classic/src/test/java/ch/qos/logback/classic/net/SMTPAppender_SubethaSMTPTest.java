@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.net.BindException;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -55,7 +56,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SMTPAppender_SubethaSMTPTest {
 
-  int diff = 1024 + new Random().nextInt(10000);
+  int diff = 1024 + new Random().nextInt(30000);
   Wiser wiser;
 
   SMTPAppender smtpAppender;
@@ -68,8 +69,7 @@ public class SMTPAppender_SubethaSMTPTest {
   @Before
   public void setUp() throws Exception { 
     wiser = new Wiser();
-    wiser.setPort(diff); 
-    wiser.getServer();
+    wiser.setPort(diff);
     wiser.start();
     //StartTLSCommand s;
     buildSMTPAppender();
@@ -81,6 +81,7 @@ public class SMTPAppender_SubethaSMTPTest {
     smtpAppender.setName("smtp");
     smtpAppender.setFrom("user@host.dom");
     smtpAppender.setSMTPHost("localhost");
+    System.out.println("diff="+diff);
     smtpAppender.setSMTPPort(diff);
     smtpAppender.setSubject(TEST_SUBJECT);
     smtpAppender.addTo("noreply@qos.ch");
