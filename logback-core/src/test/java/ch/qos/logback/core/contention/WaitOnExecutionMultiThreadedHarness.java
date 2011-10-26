@@ -13,8 +13,8 @@ public class WaitOnExecutionMultiThreadedHarness extends AbstractMultiThreadedHa
     }
     @Override
     void waitUntilEndCondition() throws InterruptedException {
-      while(threadPoolExecutor.getCompletedTaskCount() != count) {
-        Thread.sleep(100);
+      while(threadPoolExecutor.getCompletedTaskCount() < count) {
+        Thread.sleep(20);
       }
     }
 }

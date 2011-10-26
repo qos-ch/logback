@@ -261,7 +261,10 @@ public class ReconfigureOnChangeTest {
 
     String failMsg = "effective=" + effectiveResets + ", expected="
             + expected;
-    assertEquals(failMsg, expected, effectiveResets);
+
+    // there might be more effective resets than the expected amount
+    // since the harness may be sleeping while a reset occurs
+    assertTrue(failMsg, expected <= effectiveResets && (expected +2) >= effectiveResets);
 
   }
 
