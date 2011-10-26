@@ -48,8 +48,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   public static final String FQCN = ch.qos.logback.classic.Logger.class
       .getName();
 
-  static int instanceCount = 0;
-
   /**
    * The name of this logger
    */
@@ -114,7 +112,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     this.parent = parent;
     this.loggerContext = loggerContext;
     buildRemoteView();
-    instanceCount++;
   }
 
   public final Level getEffectiveLevel() {

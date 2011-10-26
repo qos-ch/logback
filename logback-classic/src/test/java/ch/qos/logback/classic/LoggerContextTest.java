@@ -32,7 +32,6 @@ public class LoggerContextTest {
 
   @Before
   public void setUp() throws Exception {
-    Logger.instanceCount = 0;
     lc = new LoggerContext();
     lc.setName("x");
   }
@@ -76,42 +75,47 @@ public class LoggerContextTest {
     // assertNull(dot.parent.parent.parent);
     LoggerTestHelper.assertLevels(null, dot, Level.DEBUG);
 
-    assertEquals(3, Logger.instanceCount);
+
+    assertEquals(3, lc.getLoggerList().size());
   }
 
   @Test
   public void testDotDot() {
     Logger dotdot = lc.getLogger("..");
-    assertEquals(4, Logger.instanceCount);
+    assertEquals(4, lc.getLoggerList().size());
     LoggerTestHelper.assertNameEquals(dotdot, "..");
     // LoggerTestHelper.assertNameEquals(dotdot.parent, ".");
     // LoggerTestHelper.assertNameEquals(dotdot.parent.parent, "");
     // LoggerTestHelper.assertNameEquals(dotdot.parent.parent.parent, "root");
   }
 
+  int instanceCount() {
+    return lc.getLoggerList().size();
+  }
+
   @Test
   public void testLoggerXY() {
-    assertEquals(1, Logger.instanceCount);
+    assertEquals(1, lc.getLoggerList().size());
 
     Logger xy = lc.getLogger("x.y");
-    assertEquals(3, Logger.instanceCount);
+    assertEquals(3, instanceCount());
     LoggerTestHelper.assertNameEquals(xy, "x.y");
     LoggerTestHelper.assertLevels(null, xy, Level.DEBUG);
 
     Logger x = lc.getLogger("x");
-    assertEquals(3, Logger.instanceCount);
+    assertEquals(3, instanceCount());
 
     Logger xy2 = lc.getLogger("x.y");
     assertEquals(xy, xy2);
 
     Logger x2 = lc.getLogger("x");
     assertEquals(x, x2);
-    assertEquals(3, Logger.instanceCount);
+    assertEquals(3, instanceCount());
   }
 
   @Test
   public void testLoggerMultipleChildren() {
-    assertEquals(1, Logger.instanceCount);
+    assertEquals(1, instanceCount());
     Logger xy0 = lc.getLogger("x.y0");
     LoggerTestHelper.assertNameEquals(xy0, "x.y0");
 
@@ -120,14 +124,14 @@ public class LoggerContextTest {
 
     LoggerTestHelper.assertLevels(null, xy0, Level.DEBUG);
     LoggerTestHelper.assertLevels(null, xy1, Level.DEBUG);
-    assertEquals(4, Logger.instanceCount);
+    assertEquals(4, instanceCount());
 
     for (int i = 0; i < 100; i++) {
       Logger xy_i = lc.getLogger("x.y" + i);
       LoggerTestHelper.assertNameEquals(xy_i, "x.y" + i);
       LoggerTestHelper.assertLevels(null, xy_i, Level.DEBUG);
     }
-    assertEquals(102, Logger.instanceCount);
+    assertEquals(102, instanceCount());
   }
 
   @Test

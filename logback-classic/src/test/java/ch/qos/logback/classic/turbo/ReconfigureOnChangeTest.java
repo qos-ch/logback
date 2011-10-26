@@ -26,12 +26,10 @@ import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.WaitOnExecutionMultiThreadedHarness;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.helpers.BogoPerf;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -106,6 +104,11 @@ public class ReconfigureOnChangeTest {
   ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getExecutorService();
 
   int expectedResets = 2;
+
+  @BeforeClass
+  static public void classSetup() {
+    FileTestUtil.makeTestOutputDir();
+  }
 
   @Before
   public void setUp() {
