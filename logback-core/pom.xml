@@ -124,7 +124,6 @@
                     <forkMode>once</forkMode>
                     <reportFormat>plain</reportFormat>
                     <parallel>classes</parallel>
-
                     <trimStackTrace>false</trimStackTrace>
                     <excludes>
                         <exclude>**/All*Test.java</exclude>
