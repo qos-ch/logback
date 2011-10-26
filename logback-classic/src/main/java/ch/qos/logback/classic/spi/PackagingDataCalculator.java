@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.qos.logback.core.util.Loader;
 import sun.reflect.Reflection;
-// import java.security.AccessControlException; import java.security.AccessController;import java.security.PrivilegedAction;
+
 /**
  * Given a classname locate associated PackageInfo (jar name, version name).
  *
@@ -58,7 +57,7 @@ public class PackagingDataCalculator {
     try {
       strategies.add(new OsgiPackagingDataStrategy());
     } catch (Throwable t) {
-      // ignore, probably org.osgi.framework.* is simply not in the classpath
+      // ignore, probably org.osgi.framework.* is simply not in the classpath, or it's too old (need v4.2.0)
     }
     strategies.add(new DefaultPackagingDataStrategy());
     dataStrategies = strategies.toArray(new PackagingDataStrategy[strategies.size()]);
@@ -278,6 +277,8 @@ public class PackagingDataCalculator {
           String codeLocation = bundle.getSymbolicName();
           return new ClassPackagingData(codeLocation, version);
         }
+      } catch (NoSuchMethodError e) {
+        // this means that FrameworkUtil is older than v4.2.0. Give up.
       } catch (RuntimeException e) {  // at minimum: IllegalStateException, SecurityException
         // go on to next strategy
       }
