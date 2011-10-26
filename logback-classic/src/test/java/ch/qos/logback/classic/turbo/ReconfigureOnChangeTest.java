@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -344,14 +344,10 @@ public class ReconfigureOnChangeTest {
 
   enum UpdateType {TOUCH, MALFORMED, MALFORMED_INNER}
 
-  void writeToFile(File file, String contents) {
-    try {
-      FileWriter fw = new FileWriter(file);
-      fw.write(contents);
-      fw.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  void writeToFile(File file, String contents) throws IOException {
+    FileWriter fw = new FileWriter(file);
+    fw.write(contents);
+    fw.close();
   }
 
   class Updater extends RunnableWithCounterAndDone {
@@ -383,21 +379,31 @@ public class ReconfigureOnChangeTest {
             touchFile();
             break;
           case MALFORMED:
-            malformedUpdate(counter);
+            try {
+              malformedUpdate(counter);
+            } catch (IOException e) {
+              e.printStackTrace();
+              fail("malformedUpdate failed");
+            }
             break;
           case MALFORMED_INNER:
-            malformedInnerUpdate(counter);
+            try {
+              malformedInnerUpdate(counter);
+            } catch (IOException e) {
+              e.printStackTrace();
+              fail("malformedInnerUpdate failed");
+            }
         }
       }
     }
 
-    private void malformedUpdate(long counter) {
+    private void malformedUpdate(long counter) throws IOException {
       writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" +
               "  <root level=\"ERROR\">\n" +
               "</configuration>");
     }
 
-    private void malformedInnerUpdate(long counter) {
+    private void malformedInnerUpdate(long counter)  throws IOException {
       writeToFile(configFile, "<included>\n" +
               "  <root>\n" +
               "</included>");
