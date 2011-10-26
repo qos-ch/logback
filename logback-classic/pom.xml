@@ -349,7 +349,12 @@
             <exclude>**/TestConstants.java</exclude>
             <exclude>**/test_osgi/BundleTest.java</exclude>
             <exclude>**/ch/qos/logback/classic/util/InitializationIntegrationTest.java</exclude>
+            <!-- next test requires a running simple server -->
             <exclude>**/SerializationPerfTest.java</exclude>
+            <!-- next test is fragile and anyhow will run as part of PackageTest -->
+            <exclude>**/LoggerPerfTest.java</exclude>
+            <!-- next test is fragile and anyhow will run as part of PackageTest -->
+            <exclude>**/LoggingEventSerializationPerfTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
