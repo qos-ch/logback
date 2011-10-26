@@ -240,15 +240,15 @@ public class HelloWorld2 {
   
   
   <p>As its build tool, logback relies on <a
-  href="http://maven.apache.org">Maven2</a>, a widely-used open-source
+  href="http://maven.apache.org">Maven</a>, a widely-used open-source
   build tool.
   </p>
 
-  <p>Once you have installed Maven2, building the logback project,
+  <p>Once you have installed Maven, building the logback project,
   including all its modules, should be as easy as issuing a <code>mvn
-  package</code> command from within the directory where you
+  install</code> command from within the directory where you
   unarchived the logback distribution. Maven will automatically
-  download the required external libraries. 
+  download the required external libraries.
   </p>
 
   <p>Logback distributions contain complete source code such that you
@@ -257,41 +257,18 @@ public class HelloWorld2 {
   adhere to the conditions of the LGPL license or the EPL license.
   </p>
 
-  <p>Logback has been built and tested with the following JDKs.</p>
+  <p>Certain logback <b>test cases</b> are written in Scala. Moreover,
+  logback offers a Groovy-based configurator. If you wish to hack
+  logback, you will probably want to import it as a project into your
+  favorite IDE. As of this writing (2011-10-26), the author was unable
+  to have the project build under Eclipse due to problems related to
+  Scala and/or Groovy support. Fortunately, assuming the Scala plugin
+  is installed, logback can be imported into IntelliJ IDEA within
+  seconds and builds just fine.</p>
 
-  <table class="bodyTable">
-    <tr>
-      <th>JDK</th>
-      <th>Operating System</th>
-    </tr>
-
-    <tr>
-      <td>Sun JDK 1.5.0.06</td>
-      <td>Windows XP</td>
-    </tr>
-
-    <tr class="alt">
-      <td>Sun JDK 1.5.0.08</td>
-      <td>Linux 64bit AMD</td>
-    </tr>
-
-    <tr>
-      <td>WebLogic JRockit 1.5.0.14</td>
-      <td>Linux 64bit AMD</td>
-    </tr>
-
-    <tr class="alt">
-      <td>IBM JDK 1.6.0.1</td>
-      <td>Linux 64bit AMD</td>
-    </tr>
-
-    <tr>
-      <td>Sun JDK 1.6.0.16 (64 bit)</td>
-      <td>Windows 7 (64 bit)</td>
-    </tr>
-
-  </table>
-
+  <p>If you are able to install both Scala and Groovy under Eclipse,
+  and thus presumably build logback under Eclipse, please report your
+  extraordinary technical feat on the logback-dev mailing list.</p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
