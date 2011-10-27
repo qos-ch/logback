@@ -15,6 +15,13 @@ package ch.qos.logback.core.joran.conditional;
 
 import static org.junit.Assert.*;
 
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.spi.PropertyContainer;
+import org.codehaus.janino.CompileException;
+import org.codehaus.janino.Parser;
+import org.codehaus.janino.Scanner;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,57 +29,93 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class PropertyEvalScriptBuilderTest {
 
-  
+
   Context context = new ContextBase();
-  PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder();
+  InterpretationContext localPropContainer = new InterpretationContext(context, null);
+  PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(localPropContainer);
   int diff = RandomUtil.getPositiveInt();
-  
+
+  String k = "ka" + diff;
+  String v = "va";
+  String containsScript = "p(\"" + k + "\").contains(\"" + v + "\")";
+
+  String isNullScriptStr = "isNull(\"" + k + "\")";
+
   @Before
   public void setUp() {
-    context.setName("c"+diff);
+    context.setName("c" + diff);
     pesb.setContext(context);
   }
-  
-  @Test
-  public void existing() throws Exception {
-    String k = "ka"+diff;
-    context.putProperty("ka"+diff, "va");
-    Condition condition = pesb.build("p(\""+k+"\").contains(\"va\")");
+
+  @After
+  public void tearDown() {
+    System.clearProperty(k);
+  }
+
+
+  void buildAndAssertTrue(String scriptStr) throws Exception {
+    Condition condition = pesb.build(scriptStr);
     assertNotNull(condition);
     assertTrue(condition.evaluate());
   }
 
-  @Test
-  public void isNullForExisting() throws Exception {
-    String k = "ka"+diff;
-    context.putProperty("ka"+diff, "va");
-    Condition condition = pesb.build("isNull(\""+k+"\")");
-    assertNotNull(condition);
-    assertFalse(condition.evaluate());
-  }
-
-  
-  @Test
-  public void inexistentProperty() throws Exception {
-    String k = "ka"+diff;
-    Condition condition = pesb.build("p(\""+k+"\").contains(\"va\")");
+  void buildAndAssertFalse(String scriptStr) throws Exception {
+    Condition condition = pesb.build(scriptStr);
     assertNotNull(condition);
     assertFalse(condition.evaluate());
   }
 
   @Test
-  public void isNullForInexistent() throws Exception {
-    String k = "ka"+diff;
-    Condition condition = pesb.build("isNull(\""+k+"\")");
-    assertNotNull(condition);
-    assertTrue(condition.evaluate());
+  public void existingLocalPropertyShouldEvaluateToTrue() throws Exception {
+    localPropContainer.addSubstitutionProperty(k, v);
+    buildAndAssertTrue(containsScript);
+  }
+
+  @Test
+  public void existingContextPropertyShouldEvaluateToTrue() throws Exception {
+    context.putProperty(k, v);
+    buildAndAssertTrue(containsScript);
+  }
+
+  @Test
+  public void existingSystemPropertyShouldEvaluateToTrue() throws Exception {
+    System.setProperty(k, v);
+    buildAndAssertTrue(containsScript);
+  }
+
+  @Test
+  public void isNullForExistingLocalProperty() throws Exception {
+    localPropContainer.addSubstitutionProperty(k, v);
+    buildAndAssertFalse(isNullScriptStr);
+  }
+  @Test
+  public void isNullForExistingContextProperty() throws Exception {
+    context.putProperty(k, v);
+    buildAndAssertFalse(isNullScriptStr);
+  }
+  @Test
+  public void isNullForExistingSystemProperty() throws Exception {
+    System.setProperty(k, v);
+    buildAndAssertFalse(isNullScriptStr);
+  }
+
+  @Test
+  public void inexistentPropertyShouldEvaluateToFalse() throws Exception {
+    buildAndAssertFalse(containsScript);
+  }
+
+  @Test
+  public void isNullForInexistentPropertyShouldEvaluateToTrue() throws Exception {
+    buildAndAssertTrue(isNullScriptStr);
   }
 
   @Test
   public void nameOK() throws Exception {
-    Condition condition = pesb.build("name.contains(\""+context.getName()+"\")");
+    Condition condition = pesb.build("name.contains(\"" + context.getName() + "\")");
     assertNotNull(condition);
     assertTrue(condition.evaluate());
   }
@@ -83,5 +126,5 @@ public class PropertyEvalScriptBuilderTest {
     assertNotNull(condition);
     assertFalse(condition.evaluate());
   }
-  
+
 }

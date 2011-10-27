@@ -104,14 +104,23 @@
    
     
 
-   <h3><a name="eclipse" href="#eclipse">Using an IDE,
-   e.g. Eclipse</a></h3>
+   <h3><a name="ide" href="#ide">Building with an IDE, e.g. IntelliJ
+   IDEA</a></h3>
    
-   <p>You can import the logback project into Eclipse. Since logback
-   uses maven as its build system, the "maven eclipse:eclipse" command
-   will create the <em>.classpath</em> and <em>.project</em> files for
-   Eclipse. You can then import the logback project into Eclipse in one
-   or two clicks.</p>
+   <p>Certain logback test cases are written in Scala. Moreover,
+   logback offers a Groovy-based configurator. If you wish to hack
+   logback, you will probably want to import it as a project into your
+   favorite IDE. As of this writing (2011-10-26), the author was
+   unable to have the project build under Eclipse due to problems
+   related to Scala and/or Groovy support. Fortunately, assuming the
+   Scala plugin is installed, logback can be imported into IntelliJ
+   IDEA within seconds and built just fine.
+   </p>
+
+   <p>If you are able to install both Scala and Groovy under Eclipse,
+   and thus presumably build logback under Eclipse, please report your
+   extraordinary technical feat on the logback-dev mailing list.
+   </p>
 
 	
    <script src="templates/footer.js" type="text/javascript"></script>

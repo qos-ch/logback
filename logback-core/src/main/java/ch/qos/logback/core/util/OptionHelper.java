@@ -129,7 +129,7 @@ public class OptionHelper {
           String key = extracted[0];
           String defaultReplacement = extracted[1]; // can be null
 
-          String replacement = lookup(key, pc1, pc2);
+          String replacement = propertyLookup(key, pc1, pc2);
 
           // if replacement is still null, use the defaultReplacement which
           // can be null as well
@@ -156,7 +156,7 @@ public class OptionHelper {
     }
   }
 
-  private static String lookup(String key, PropertyContainer pc1,
+  public static String propertyLookup(String key, PropertyContainer pc1,
                                PropertyContainer pc2) {
     String value = null;
     // first try the props passed as parameter
@@ -292,8 +292,8 @@ public class OptionHelper {
     return dEfault;
   }
 
-  public static boolean isEmpty(String val) {
-    return ((val == null) || CoreConstants.EMPTY_STRING.equals(val));
+  public static boolean isEmpty(String str) {
+    return ((str == null) || CoreConstants.EMPTY_STRING.equals(str));
   }
 
 

@@ -22,7 +22,6 @@ public class ThenAction  extends ThenOrElseActionBase {
   @Override
   void registerEventList(IfAction ifAction, List<SaxEvent> eventList) {
    ifAction.setThenSaxEventList(eventList);
-    
   }
 
 }

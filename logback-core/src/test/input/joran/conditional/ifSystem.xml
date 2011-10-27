@@ -2,9 +2,10 @@
 
 <x>
   <stack name="BEGIN"/>
-  <if condition='p("ki1").equals("val1")'>
+
+  <if condition='isNull("sysKey")'>
     <then>
-      <stack name="a"/>
+      <property scope="context" name="dynaKey" value="dynaVal"/>
     </then>   
   </if>
   <stack name="END"/>
