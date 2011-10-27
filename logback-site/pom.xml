@@ -39,18 +39,13 @@
     <resources>
       <resource>
         <directory>src/site/pages</directory>
-        <!--
-                      We're saving filtered html docs in a temporary folder
-                      and telling the site plug in to get the docs there.
-                  -->
+        <!-- We're saving filtered html docs in a temporary folder-->
+        <!-- and telling the site plug-in to get the docs there.-->
         <targetPath>../../../target/site</targetPath>
         <filtering>true</filtering>
       </resource>
     </resources>
 
-  </build>
-
-  <reporting>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -60,17 +55,8 @@
           </outputDirectory>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
     </plugins>
-  </reporting>
+
+  </build>
 
 </project>
