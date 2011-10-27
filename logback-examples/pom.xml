@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>ch.qos.logback</groupId>
@@ -94,12 +94,12 @@
               <tasks>
                 <mkdir dir="lib/"/>
                 <property name="slf4jJAR"
-                  value="${settings.localRepository}/org/slf4j/slf4j-api/${slf4j.version}/slf4j-api-${slf4j.version}.jar" />
+                          value="${settings.localRepository}/org/slf4j/slf4j-api/${slf4j.version}/slf4j-api-${slf4j.version}.jar"/>
                 <echo>Copying ${slf4jJAR} to lib/</echo>
                 <delete>
-                  <fileset dir="lib/" includes="slf4j-*SNAPSHOT.jar" />
+                  <fileset dir="lib/" includes="slf4j-*SNAPSHOT.jar"/>
                 </delete>
-                <copy file="${slf4jJAR}" todir="lib/" />
+                <copy file="${slf4jJAR}" todir="lib/"/>
               </tasks>
             </configuration>
             <goals>
