@@ -1612,24 +1612,22 @@ fileName=myApp.log
     &lt;/else>    
   &lt;/if></pre>  
 
-  <p>The condition is a Java expression in which only context properties
-  or system properties are accessible. For a key passed as argument,
-  the <code>property</code>() or its shorter equivalent
+  <p>The condition is a Java expression in which only context
+  properties or system properties are accessible. For a key passed as
+  argument, the <code>property</code>() or its shorter equivalent
   <code>p</code>() methods return the String value of the property.
-  For example, to access the value of a property with key "k", you would
-  write <code>property("k")</code> or equivalently
+  For example, to access the value of a property with key "k", you
+  would write <code>property("k")</code> or equivalently
   <code>p("k")</code>. If the property with key "k" is undefined, the
   property method will return the empty string and not null. This
-  avoids the need to check for null values. If you need to check
-  whether a property is null, the <code>isNull()</code> method is
-  provided. For example, you can write <code>isNull("k")</code>.</p>
+  avoids the need to check for null values.</p>
 
-  <p>In the next example, the <code>ConsoleAppender</code> will be
-  attached to the root logger, but only if the HOSTNAME is
-  "torino". Note that the <code>FileAppender</code> named "FILE" is
-  attached to the root logger in any case.
-  </p>
-
+  <p>The <code>isDefined()</code> method can be used to check whether
+  a property is defined. For example, to check whether the property
+  "k" is defined you would write <code>isDefined("k")</code>
+  Similarly, if you need to check whether a property is null, the
+  <code>isNull()</code> method is provided. Example:
+  <code>isNull("k")</code>.</p>
 
   <pre class="prettyprint source">&lt;configuration>
 

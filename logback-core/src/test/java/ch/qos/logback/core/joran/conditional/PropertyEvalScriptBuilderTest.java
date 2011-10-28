@@ -44,6 +44,7 @@ public class PropertyEvalScriptBuilderTest {
   String containsScript = "p(\"" + k + "\").contains(\"" + v + "\")";
 
   String isNullScriptStr = "isNull(\"" + k + "\")";
+  String isDefiedScriptStr = "isDefined(\"" + k + "\")";
 
   @Before
   public void setUp() {
@@ -113,18 +114,15 @@ public class PropertyEvalScriptBuilderTest {
     buildAndAssertTrue(isNullScriptStr);
   }
 
-  @Test
-  public void nameOK() throws Exception {
-    Condition condition = pesb.build("name.contains(\"" + context.getName() + "\")");
-    assertNotNull(condition);
-    assertTrue(condition.evaluate());
+  public void isDefinedForIExistimgtPropertyShouldEvaluateToTrue() throws Exception {
+    localPropContainer.addSubstitutionProperty(k, v);
+    buildAndAssertTrue(isDefiedScriptStr);
   }
 
   @Test
-  public void wrongName() throws Exception {
-    Condition condition = pesb.build("name.contains(\"x\")");
-    assertNotNull(condition);
-    assertFalse(condition.evaluate());
+  public void isDefinedForInexistentPropertyShouldEvaluateToTrue() throws Exception {
+    buildAndAssertFalse(isDefiedScriptStr);
   }
+
 
 }
