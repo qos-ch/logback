@@ -243,24 +243,6 @@
         <configuration>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>true</downloadJavadocs>
-          <projectnatures>
-            <projectnature>org.scala-ide.sdt.core.scalanature</projectnature>
-            <projectnature>org.eclipse.jdt.core.javanature</projectnature>
-          </projectnatures>
-          <buildcommands>
-            <buildcommand>org.scala-ide.sdt.core.scalabuilder</buildcommand>
-          </buildcommands>
-          <!--          <classpathContainers>
-            <classpathContainer>org.scala-ide.sdt.launching.SCALA_CONTAINER</classpathContainer>
-            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER
-            </classpathContainer>
-          </classpathContainers>
-          -->
-          <!--          <excludes>
-                  <exclude>org.scala-lang:scala-library</exclude>
-                  <exclude>org.scala-lang:scala-compiler</exclude>
-                </excludes>
-          -->
           <sourceIncludes>
             <sourceInclude>**/*.scala</sourceInclude>
             <sourceInclude>**/*.java</sourceInclude>
