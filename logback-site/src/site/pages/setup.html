@@ -104,22 +104,92 @@
    
     
 
-   <h3><a name="ide" href="#ide">Building with an IDE, e.g. IntelliJ
-   IDEA</a></h3>
+   <h3><a name="ide" href="#ide">Building with an IDE</a></h3>
    
    <p>Certain logback test cases are written in Scala. Moreover,
    logback offers a Groovy-based configurator. If you wish to hack
    logback, you will probably want to import it as a project into your
-   favorite IDE. As of this writing (2011-10-26), the author was
-   unable to have the project build under Eclipse due to problems
-   related to Scala and/or Groovy support. Fortunately, assuming the
-   Scala plugin is installed, logback can be imported into IntelliJ
-   IDEA within seconds and built just fine.
+   favorite IDE.</p>
+
+   <h3>Building logback with IntelliJ IDEA</h3>
+
+   <p>Assuming you have the latest version of IntelliJ IDEA installed,
+   you need add the Scala plugin. Once you have the Scala plugin
+   installed, you can import logback into IDEA. Select File -&gt; New
+   Project -&gt; Import from external model -&gt; Maven, then select
+   $LOGBACK_HOME as the Root directory. The import should finish
+   successfully in a few seconds.</p>
+
+   <h3>Building with Eclipse</h3>
+
+   <p>Building logback is a little trickier. Here are step by step
+   instruction for building logback under Eclipse in 61 easy steps.
    </p>
 
-   <p>If you are able to install both Scala and Groovy under Eclipse,
-   and thus presumably build logback under Eclipse, please report your
-   extraordinary technical feat on the logback-dev mailing list.
+   <p>It appears that the key to building logback under Eclipse is to
+   avoid using m2eclipse. If you have m2eclipse installed, you can
+   disable it by removing the Maven Nature for a given project.
+   </p>
+
+   <ol>
+     <li>Install Eclipse Indigo, aka Eclipse 3.7</li>
+     <li>in <em>eclipse.ini</em> file modify the parameter "mx",
+     i.e. change -Xmx384m to -Xmx1384m</li>
+
+     <li>Select Help -&gt; Intall new Software -> Work with <a
+     href="http://dist.springsource.org/release/GRECLIPSE/e3.7/">http://dist.springsource.org/release/GRECLIPSE/e3.7/</a>
+     and then Select "Groovy-Eclipse Feature". Installation of other
+     plugins in particular "m2e Configurator for Groovy-Eclipse" is
+     <b>not</b> necessary</li>
+
+     <li>Similar to the previous steps install Scala IDE for Eclipse
+     from <a
+     href="http://download.scala-ide.org/releases-29/2.0.0-beta">http://download.scala-ide.org/releases-29/2.0.0-beta</a>. Installation
+     of "JDT Weaving" or "Scala IDE for Eclipse Source feature" are
+     not necessary.</li>
+
+     <li><pre>cd $LOGBACK_HOME</pre>
+
+     where $LOGBACK_HOME stands for the location where you cloned the
+     logback project from github </li>
+
+     <li>In case they exist, remove <em>.settings</em>,
+     <em>.classpath</em>, <em>.project</em> directories (again if any)
+     under $LOGBACK_HOME and its sub-folders. Somehow, this step seems
+     to be crucial.</li>
+     
+     <li>Run 'mvn eclipse:eclipse' in $LOGBACK_HOME </li>
+
+     <li>In eclipse import the logback project: Import -&gt; General -&gt;
+     Existing Prokects into Workspace, select $LOGBACK_HOME folder for
+     the import
+     </li>   
+
+     
+     <li>add the scala nature to logback-core project: (right click on
+     logback-core project -&gt; Configure -&gt; Add Scala Nature) 
+     </li>   
+     
+     <li>remove the
+     logback-classic/target/generated-sources/groovy-sttubs/main
+     directory from the list of source folders (logback-classic -&gt;
+     project properties -&gt; Java Build Path)
+     </li>   
+
+     <li>clean all projects in Eclipse (Project -&gt; Clean) 
+     </li>   
+
+     <li>Select logback-classic project and convert it to "Groovy
+     project" (right click on logback-classic project -&gt; Configure -&gt;
+     Convert Groovy to Project)
+     </li>   
+     
+   </ol>
+
+   <p>The above should also work for Helios (Eclipse 3.6). The only
+   difference is that the Groovy-Eclipse feature needs to be installed
+   from <a
+   href="http://dist.springsource.org/release/GRECLIPSE/e3.6/">http://dist.springsource.org/release/GRECLIPSE/e3.6/</a>.
    </p>
 
 	
