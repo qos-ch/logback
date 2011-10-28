@@ -226,33 +226,23 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
-                <compilerId>groovy-eclipse-compiler</compilerId>
-      <verbose>true</verbose>
         </configuration>
-
-            <dependencies>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-eclipse-compiler</artifactId>
-        <version>2.5.2-01</version>
-      </dependency>
-    </dependencies>
       </plugin>
 
-      <!--<plugin>-->
-        <!--<groupId>org.codehaus.groovy.maven</groupId>-->
-        <!--<artifactId>gmaven-plugin</artifactId>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<goals>-->
-              <!--<goal>generateStubs</goal>-->
-              <!--<goal>compile</goal>-->
-              <!--<goal>generateTestStubs</goal>-->
-              <!--<goal>testCompile</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+      <plugin>
+      <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
          <groupId>org.scala-tools</groupId>
