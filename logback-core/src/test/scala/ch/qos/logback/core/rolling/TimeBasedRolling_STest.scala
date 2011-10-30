@@ -180,7 +180,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
   @Test
   def failed_rename: Unit = {
 
-    if(!Env.isWindows) return null
+    if(!Env.isWindows) null
 
     var fos: FileOutputStream = null
     try {

@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic.sift;
 
-import org.slf4j.MDC;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.ContextAwareBase;

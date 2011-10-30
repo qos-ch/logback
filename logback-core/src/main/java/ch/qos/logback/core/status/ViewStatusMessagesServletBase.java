@@ -18,7 +18,6 @@ import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;

@@ -14,9 +14,7 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 

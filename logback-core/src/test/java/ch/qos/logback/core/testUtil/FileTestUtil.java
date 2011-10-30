@@ -1,6 +1,5 @@
 package ch.qos.logback.core.testUtil;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 import java.io.File;

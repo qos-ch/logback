@@ -16,7 +16,6 @@ package ch.qos.logback.core.boolex;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.janino.ExpressionEvaluator;
 import org.codehaus.janino.ScriptEvaluator;
 
 /**

@@ -14,7 +14,6 @@
 package ch.qos.logback.core;
 
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 import ch.qos.logback.core.spi.PropertyContainer;

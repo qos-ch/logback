@@ -15,7 +15,6 @@ package ch.qos.logback.classic.boolex;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
-import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.boolex.EventEvaluatorBase;
 import ch.qos.logback.core.util.FileUtil;
 import groovy.lang.*;

@@ -19,13 +19,10 @@ import java.util.List;
 
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.status.WarnStatus;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
@@ -34,7 +31,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.status.InfoStatus;
 
 /**
  * Reconfigure a LoggerContext when the configuration file changes.

@@ -31,7 +31,6 @@ import org.xml.sax.InputSource;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;

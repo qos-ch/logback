@@ -16,11 +16,7 @@ package ch.qos.logback.core.joran.conditional;
 import static org.junit.Assert.*;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
-import ch.qos.logback.core.spi.PropertyContainer;
-import org.codehaus.janino.CompileException;
-import org.codehaus.janino.Parser;
-import org.codehaus.janino.Scanner;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +24,6 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.testUtil.RandomUtil;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class PropertyEvalScriptBuilderTest {
 

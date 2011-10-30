@@ -15,8 +15,6 @@ package ch.qos.logback.classic.joran;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 

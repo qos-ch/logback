@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;

@@ -13,20 +13,12 @@
  */
 package ch.qos.logback.classic.joran.action;
 
-import java.lang.management.ManagementFactory;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import ch.qos.logback.classic.spi.LoggerContextListener;
-import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.jmx.JMXConfigurator;
-import ch.qos.logback.classic.jmx.MBeanUtil;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;

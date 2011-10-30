@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.pattern.util;
 
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */

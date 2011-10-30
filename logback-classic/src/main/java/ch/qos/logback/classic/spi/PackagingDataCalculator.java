@@ -16,7 +16,6 @@ package ch.qos.logback.classic.spi;
 import java.net.URL;
 import java.util.HashMap;
 
-import ch.qos.logback.core.util.Loader;
 import sun.reflect.Reflection;
 // import java.security.AccessControlException; import java.security.AccessController;import java.security.PrivilegedAction;
 /**

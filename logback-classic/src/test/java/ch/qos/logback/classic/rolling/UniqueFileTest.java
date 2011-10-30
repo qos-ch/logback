@@ -15,9 +15,6 @@ package ch.qos.logback.classic.rolling;
 
 import static org.junit.Assert.assertTrue;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ch.qos.logback.core.util.CachingDateFormatter;
 import org.junit.Test;
 

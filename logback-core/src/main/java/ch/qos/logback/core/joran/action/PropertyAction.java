@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.ContextUtil;
 import org.xml.sax.Attributes;
 

@@ -13,14 +13,11 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -32,7 +29,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 public class RenameUtilTest {

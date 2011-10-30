@@ -13,13 +13,8 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggerContextAwareBase;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.DynamicConverter;
-import ch.qos.logback.core.status.Status;
-
 
 /**
  * This class serves the super-class of all converters in logback. It extends

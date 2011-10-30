@@ -16,9 +16,6 @@ package ch.qos.logback.core.joran.conditional;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PropertyWrapperForScripts {
 
   PropertyContainer local;

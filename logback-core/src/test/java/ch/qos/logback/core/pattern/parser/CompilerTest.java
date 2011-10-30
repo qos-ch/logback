@@ -29,7 +29,6 @@ import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
-import static ch.qos.logback.core.pattern.parser.Parser.DEFAULT_COMPOSITE_CONVERTER_MAP;
 
 public class CompilerTest  {
 

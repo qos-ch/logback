@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ch.qos.logback.core.util.CachingDateFormatter;
 import org.xml.sax.Attributes;
 

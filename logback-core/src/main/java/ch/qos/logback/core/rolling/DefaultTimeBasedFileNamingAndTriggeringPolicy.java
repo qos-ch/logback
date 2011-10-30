@@ -16,7 +16,6 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 import java.util.Date;
 
-import ch.qos.logback.core.rolling.helper.DefaultArchiveRemover;
 import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
 
 /**

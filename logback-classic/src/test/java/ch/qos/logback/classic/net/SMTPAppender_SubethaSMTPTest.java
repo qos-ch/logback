@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.net.BindException;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;

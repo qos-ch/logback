@@ -32,7 +32,6 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
