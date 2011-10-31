@@ -116,4 +116,22 @@ public class StatusChecker {
     return false;
   }
 
+  /**
+   * Return the time of last reset. -1 if last reset time could not be found
+   * @return  time of last reset or -1
+   */
+  public long timeOfLastReset() {
+    List<Status> statusList = sm.getCopyOfStatusList();
+    if(statusList == null)
+      return -1;
+
+    int len = statusList.size();
+    for(int i = len-1; i >= 0; i--) {
+      Status s = statusList.get(i);
+      if(CoreConstants.RESET_MSG_PREFIX.equals(s.getMessage())) {
+        return s.getDate();
+      }
+    }
+    return -1;
+  }
 }

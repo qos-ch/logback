@@ -260,7 +260,7 @@ public class ReconfigureOnChangeTest {
     }
 
     int effectiveResets = checker
-            .matchCount("Will reset and reconfigure context");
+            .matchCount(CoreConstants.RESET_MSG_PREFIX);
 
     String failMsg = "effective=" + effectiveResets + ", expected="
             + expected;

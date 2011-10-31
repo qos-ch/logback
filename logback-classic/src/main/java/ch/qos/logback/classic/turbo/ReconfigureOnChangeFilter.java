@@ -19,6 +19,7 @@ import java.util.List;
 
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
@@ -38,9 +39,6 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author Ceki Gulcu
  */
 public class ReconfigureOnChangeFilter extends TurboFilter {
-
-  final static long INIT = System.currentTimeMillis();
-  final static long SENTINEL = Long.MAX_VALUE;
 
   /**
    * Scan for changes in configuration file once every minute.
@@ -153,7 +151,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
         return;
       }
       LoggerContext lc = (LoggerContext) context;
-      addInfo("Will reset and reconfigure context named [" + context.getName() + "]");
+      addInfo(CoreConstants.RESET_MSG_PREFIX + "named ["+context.getName() + "]");
       if (mainConfigurationURL.toString().endsWith("xml")) {
         performXMLConfiguration(lc);
       } else if (mainConfigurationURL.toString().endsWith("groovy")) {

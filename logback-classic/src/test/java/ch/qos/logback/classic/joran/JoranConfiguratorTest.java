@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
+import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
 import ch.qos.logback.core.status.Status;
@@ -308,7 +309,7 @@ public class JoranConfiguratorTest {
     //StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
     assertTrue(checker.isErrorFree(0));
-    assertTrue(checker.containsMatch("Will reset and reconfigure context"));
+    assertTrue(checker.containsMatch(CoreConstants.RESET_MSG_PREFIX));
   }
 
   @Test
