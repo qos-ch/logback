@@ -103,8 +103,6 @@ public final class LogbackMDCAdapter implements MDCAdapter {
     }
 
     Map<String, String> oldMap = copyOnInheritThreadLocal.get();
-    //System.out.println(Thread.currentThread().toString()+", "+oldMap);
-
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
     if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
