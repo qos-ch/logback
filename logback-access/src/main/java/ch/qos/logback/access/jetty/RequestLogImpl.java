@@ -146,9 +146,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     getStatusManager().add(new InfoStatus(msg, this));
   }
 
-//  private void addWarn(String msg) {
-//    getStatusManager().add(new WarnStatus(msg, this));
-//  }
   private void addError(String msg) {
     getStatusManager().add(new ErrorStatus(msg, this));
   }
@@ -217,6 +214,10 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public void setResource(String resource) {
+    this.resource = resource;
   }
 
   public boolean isStarted() {
