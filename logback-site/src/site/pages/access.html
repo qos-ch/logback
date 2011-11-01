@@ -63,17 +63,6 @@
 		version 0.9.30 is Tomcat 6.x.
 		</p>
 
-    <!--
-    <p>If you placed logback-core and logback-access jars in
-    $TOMCAT_HOME/lib <em>and</em> your webapps do not use
-    logback-classic, then everything should be fine. If however your
-    webapps do indeed use logback-classic, in addition to
-    <em>logback-classic.jar</em>, make sure to bundle
-    <code>logback-core.jar</code> under your webapps' WEB-INF/lib
-    directory as well.
-    </p>
-    -->
-
 		<h2>LogbackValve</h2>
 
 		<p>The <a
@@ -248,6 +237,20 @@
   &lt;Set name="requestLog"&gt;
     &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
        &lt;Set name="fileName"&gt;path/to/myaccess.xml&lt;/Set&gt;
+    &lt;/New&gt;   
+  &lt;/Set&gt;
+&lt;/Ref&gt;</pre>
+
+   <p>For embedded Jetty, it is helpful to lookup for the
+   logback-access configuration file as a class path resource. This
+   can be accomplished by setting the <em>resource</em> property to
+   the file name to look up on the class path.
+   </p>
+
+   <pre class="prettyprint source">&lt;Ref id="RequestLogHandler"&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New id="requestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+       &lt;Set name="<span class="bold">resource</span>"&gt;as/classpath/resource/myaccess.xml&lt;/Set&gt;
     &lt;/New&gt;   
   &lt;/Set&gt;
 &lt;/Ref&gt;</pre>
