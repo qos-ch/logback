@@ -14,10 +14,15 @@
 package ch.qos.logback.access.jetty;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
@@ -118,6 +123,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
   FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
   String fileName;
+  String resource;
   boolean started = false;
   boolean quiet = false;
 
@@ -136,26 +142,23 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     aai.appendLoopOnAppenders(accessEvent);
   }
 
+  private void addInfo(String msg) {
+    getStatusManager().add(new InfoStatus(msg, this));
+  }
+
+//  private void addWarn(String msg) {
+//    getStatusManager().add(new WarnStatus(msg, this));
+//  }
+  private void addError(String msg) {
+    getStatusManager().add(new ErrorStatus(msg, this));
+  }
+
   public void start() {
-    if (fileName == null) {
-      String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
-      if (OptionHelper.isEmpty(jettyHomeProperty)) {
-        getStatusManager().add(
-                new WarnStatus("[jetty.home] system property not set.", this));
-        fileName = DEFAULT_CONFIG_FILE;
-      } else {
-        fileName = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
-      }
-      getStatusManager().add(
-              new WarnStatus("fileName property not set. Assuming [" + fileName
-                      + "]", this));
-    }
-    File configFile = new File(fileName);
-    if (configFile.exists()) {
-      runJoranOnFile(configFile);
+    URL configURL = getConfigurationFileURL();
+    if (configURL != null) {
+      runJoranOnFile(configURL);
     } else {
-      getStatusManager().add(
-              new ErrorStatus("Could not find logback-access configuration file [" + fileName + "]", this));
+      addError("Could not find configuration file for logback-access");
     }
     if (!isQuiet()) {
       StatusPrinter.print(getStatusManager());
@@ -163,11 +166,38 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     started = true;
   }
 
-  private void runJoranOnFile(File configFile) {
+  URL getConfigurationFileURL() {
+    if (fileName != null) {
+      addInfo("Will use configuration file [" + fileName + "]");
+      File file = new File(fileName);
+      if (!file.exists())
+        return null;
+      return FileUtil.fileToURL(file);
+    }
+    if (resource != null) {
+      addInfo("Will use configuration resource [" + resource + "]");
+      return this.getClass().getResource(resource);
+    }
+
+    String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
+    String defaultConfigFile = DEFAULT_CONFIG_FILE;
+    if (!OptionHelper.isEmpty(jettyHomeProperty)) {
+      defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+    } else {
+      addInfo("[jetty.home] system property not set.");
+    }
+    File file = new File(defaultConfigFile);
+    addInfo("Assuming default configuration file ["+defaultConfigFile+"]");
+    if (!file.exists())
+      return null;
+    return FileUtil.fileToURL(file);
+  }
+
+  private void runJoranOnFile(URL configURL) {
     try {
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(this);
-      jc.doConfigure(configFile);
+      jc.doConfigure(configURL);
       if (getName() == null) {
         setName("LogbackRequestLog");
       }
