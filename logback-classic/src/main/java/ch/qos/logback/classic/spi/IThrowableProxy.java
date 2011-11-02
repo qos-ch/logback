@@ -14,9 +14,10 @@
 package ch.qos.logback.classic.spi;
 
 public interface IThrowableProxy {
-  public String getMessage();
-  public String getClassName();
-  public StackTraceElementProxy[] getStackTraceElementProxyArray();
-  public int getCommonFrames();
-  public IThrowableProxy getCause();
+  String getMessage();
+  String getClassName();
+  StackTraceElementProxy[] getStackTraceElementProxyArray();
+  int getCommonFrames();
+  IThrowableProxy getCause();
+  IThrowableProxy[] getSuppressed();
 }

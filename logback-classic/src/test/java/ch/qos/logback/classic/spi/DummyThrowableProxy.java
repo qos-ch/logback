@@ -20,7 +20,7 @@ public class DummyThrowableProxy implements IThrowableProxy {
   private int commonFramesCount;
   private StackTraceElementProxy[] stackTraceElementProxyArray;
   private IThrowableProxy cause;
-  
+  private IThrowableProxy[] suppressed;
 
   public String getClassName() {
     return className;
@@ -54,8 +54,12 @@ public class DummyThrowableProxy implements IThrowableProxy {
   public void setCause(IThrowableProxy cause) {
     this.cause = cause;
   }
-  
-  
 
+  public IThrowableProxy[] getSuppressed() {
+    return suppressed;
+  }
 
+  public void setSuppressed(IThrowableProxy[] suppressed) {
+    this.suppressed = suppressed;
+  }
 }
