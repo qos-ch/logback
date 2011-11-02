@@ -224,14 +224,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     resetTurboFilterList();
     fireOnReset();
     resetListenersExceptResetResistant();
-    resetStatusListeners();
+    resetStatusManager();
   }
 
-  private void resetStatusListeners() {
+  /**
+   * Removes all status listeners and clears the status messages.
+   */
+  private void resetStatusManager() {
     StatusManager sm = getStatusManager();
     for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
       sm.remove(sl);
     }
+    sm.clear();
   }
 
   public TurboFilterList getTurboFilterList() {

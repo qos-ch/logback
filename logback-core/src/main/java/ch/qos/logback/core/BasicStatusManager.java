@@ -91,6 +91,7 @@ public class BasicStatusManager implements StatusManager {
   public void clear() {
     synchronized (statusListLock) {
       count = 0;
+      level = Status.INFO;
       statusList.clear();
       tailBuffer.clear();
     }
