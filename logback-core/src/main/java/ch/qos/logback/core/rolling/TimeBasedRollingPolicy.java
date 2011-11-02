@@ -33,7 +33,7 @@ import ch.qos.logback.core.rolling.helper.*;
 public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     TriggeringPolicy<E> {
   static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
-  static final int NO_DELETE_HISTORY = 0;
+  static final int INFINITE_HISTORY = 0;
 
   // WCS: without compression suffix
   FileNamePattern fileNamePatternWCS;
@@ -42,10 +42,12 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   private RenameUtil renameUtil = new RenameUtil();
   Future<?> future;
 
-  private int maxHistory = NO_DELETE_HISTORY;
+  private int maxHistory = INFINITE_HISTORY;
   private ArchiveRemover archiveRemover;
 
   TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
+
+  boolean cleanHistoryOnStart = false;
 
   public void start() {
     // set the LR for our utility object
@@ -87,9 +89,12 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     // the maxHistory property is given to TimeBasedRollingPolicy instead of to
     // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
     // for the user at the cost of inconsistency here.
-    if (maxHistory != NO_DELETE_HISTORY) {
+    if (maxHistory != INFINITE_HISTORY) {
       archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
       archiveRemover.setMaxHistory(maxHistory);
+      if(cleanHistoryOnStart) {
+        archiveRemover.clean(new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
+      }
     }
 
     super.start();
@@ -203,6 +208,21 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   public void setMaxHistory(int maxHistory) {
     this.maxHistory = maxHistory;
   }
+
+
+  public boolean isCleanHistoryOnStart() {
+    return cleanHistoryOnStart;
+  }
+
+  /**
+   * Should archive removal be attempted on application start up? Default is false.
+   * @since 1.0.1
+   * @param cleanHistoryOnStart
+   */
+  public void setCleanHistoryOnStart(boolean cleanHistoryOnStart) {
+    this.cleanHistoryOnStart = cleanHistoryOnStart;
+  }
+
 
   @Override
   public String toString() {
