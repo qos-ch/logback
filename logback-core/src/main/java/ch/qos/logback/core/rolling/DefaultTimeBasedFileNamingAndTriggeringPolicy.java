@@ -39,6 +39,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
     long time = getCurrentTime();
     if (time >= nextCheck) {
       Date dateOfElapsedPeriod = dateInCurrentPeriod;
+      addInfo("Elapsed period: "+dateOfElapsedPeriod);
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convert(dateOfElapsedPeriod);
       setDateInCurrentPeriod(time);

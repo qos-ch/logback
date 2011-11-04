@@ -8,12 +8,12 @@ import ch.qos.logback.core.encoder.EchoEncoder
 import java.util.concurrent.TimeUnit
 import java.io.{FileFilter, File}
 import collection.mutable.ListBuffer
-import java.util.Calendar
 import ch.qos.logback.core.util.{StatusPrinter, CoreTestConstants}
 import ch.qos.logback.core.CoreConstants._
 import java.util.regex.{Matcher, Pattern}
 import scala.collection.mutable.{Set, HashSet}
 import org.junit.{Ignore, Before, Test}
+import java.util.{Date, Calendar}
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,14 +61,15 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   def genMontlyRollover(maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int, numInactivityPeriods: Int) {
     slashCount = computeSlashCount(MONTHLY_DATE_PATTERN)
     doRollover(now, randomOutputDir + "clean-%d{" + MONTHLY_DATE_PATTERN + "}.txt", MILLIS_IN_MONTH, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods)
-    check(expectedCountWithoutFolders(maxHistory))
+    StatusPrinter.print(context)
+    check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity+numInactivityPeriods))
   }
 
   @Test
   def montlyRollover {
-    genMontlyRollover(maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
-    setUp
-    genMontlyRollover(maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
+//    genMontlyRollover(maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
+//    setUp
+//    genMontlyRollover(maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
     setUp
     genMontlyRollover(maxHistory = 6, simulatedNumberOfPeriods = 10, startInactivity = 3, numInactivityPeriods = 4)
 
@@ -111,7 +112,6 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     var expectedDirMin: Int = 9 + slashCount
     var expectDirMax: Int = expectedDirMin + 1 + 1
     expectedFileAndDirCount(9, expectedDirMin, expectDirMax)
-
   }
 
   @Test def dailySizeBasedRollover {
@@ -181,10 +181,10 @@ class TimeBasedRollingWithArchiveRemoval_STest {
 
   def doRollover(currentTime: Long, fileNamePattern: String, periodDurationInMillis: Long, maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int = 0, numInactivityPeriods: Int = 0): (Long, Long) = {
     val startTime = currentTime
-    var rfa: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
+    val rfa: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
     rfa.setContext(context)
     rfa.setEncoder(encoder)
-    var tbrp: TimeBasedRollingPolicy[AnyRef] = new TimeBasedRollingPolicy[AnyRef]
+    val tbrp: TimeBasedRollingPolicy[AnyRef] = new TimeBasedRollingPolicy[AnyRef]
     tbrp.setContext(context)
     tbrp.setFileNamePattern(fileNamePattern)
     tbrp.setMaxHistory(maxHistory)
@@ -194,22 +194,23 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     tbrp.start
     rfa.setRollingPolicy(tbrp)
     rfa.start
-    var ticksPerPeriod: Int = 512
-    var runLength = simulatedNumberOfPeriods * ticksPerPeriod
+    val ticksPerPeriod: Int = 512
+    val runLength = simulatedNumberOfPeriods * ticksPerPeriod
     val startInactivityIndex: Int = 1 + startInactivity * ticksPerPeriod
-    val endInactivityIndex = startInactivity + numInactivityPeriods * ticksPerPeriod
-
+    val endInactivityIndex = startInactivityIndex + numInactivityPeriods * ticksPerPeriod
+    val tickDuration = periodDurationInMillis / ticksPerPeriod
 
     for (i <- 0 to runLength) {
       if (i < startInactivityIndex || i > endInactivityIndex) {
         rfa.doAppend("Hello ----------------------------------------------------------" + i)
       }
-      tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime, periodDurationInMillis / ticksPerPeriod))
+      tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime, tickDuration))
       if (i % (ticksPerPeriod / 2) == 0) {
         waitForCompression(tbrp)
       }
     }
 
+    println("Last date"+new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
     waitForCompression(tbrp)
     rfa.stop
     (startTime, tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime)
@@ -219,10 +220,16 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     return maxHistory + 1
   }
 
+  def expectedCountWithoutFoldersWithInactivity(maxHistory: Int, totalPeriods: Int, endOfInactivity: Int): Int = {
+    val availableHistory = totalPeriods - endOfInactivity;
+    val actualHistory =  scala.math.min(availableHistory, maxHistory+1)
+    return actualHistory
+  }
+
 
   def genericFindMatching(matchFunc: (File, String) => Boolean, dir: File, fileList: ListBuffer[File], pattern: String = null, includeDirs: Boolean = false) {
     if (dir.isDirectory) {
-      var `match` : Array[File] = dir.listFiles(new FileFilter {
+      val `match` : Array[File] = dir.listFiles(new FileFilter {
         def accept(f: File): Boolean = {
           return f.isDirectory() || matchFunc(f, pattern)
         }
@@ -251,8 +258,8 @@ class TimeBasedRollingWithArchiveRemoval_STest {
 
 
   def expectedFileAndDirCount(expectedFileAndDirCount: Int, expectedDirCountMin: Int, expectedDirCountMax: Int): Unit = {
-    var dir: File = new File(randomOutputDir)
-    var fileList = new ListBuffer[File]
+    val dir: File = new File(randomOutputDir)
+    val fileList = new ListBuffer[File]
     findFilesInFolderRecursivelyByPatterMatch(dir, fileList, "clean")
     var dirList = new ListBuffer[File]
     findAllFoldersInFolderRecursively(dir, dirList)
@@ -260,14 +267,14 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   def check(expectedCount: Int): Unit = {
-    var dir: File = new File(randomOutputDir)
+    val dir: File = new File(randomOutputDir)
     val fileList = new ListBuffer[File]
     findAllDirsOrStringContainsFilesRecursively(dir, fileList, "clean")
     assertEquals(expectedCount, fileList.size)
   }
 
   def groupByClass(fileList: ListBuffer[File], regex: String): Set[String] = {
-    var p: Pattern = Pattern.compile(regex)
+    val p: Pattern = Pattern.compile(regex)
     val set = new HashSet[String]
     for (f <- fileList) {
       var n: String = f.getName
@@ -281,16 +288,16 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   def checkPatternCompliance(expectedClassCount: Int, regex: String) {
-    var dir: File = new File(randomOutputDir)
-    var fileList = new ListBuffer[File]
+    val dir: File = new File(randomOutputDir)
+    val fileList = new ListBuffer[File]
     findFilesInFolderRecursivelyByPatterMatch(dir, fileList, regex)
-    var set: Set[String] = groupByClass(fileList, regex)
+    val set: Set[String] = groupByClass(fileList, regex)
     assertEquals(expectedClassCount, set.size)
   }
 
   def checkDirPatternCompliance(expectedClassCount: Int): Unit = {
-    var dir: File = new File(randomOutputDir)
-    var fileList = new ListBuffer[File]
+    val dir: File = new File(randomOutputDir)
+    val fileList = new ListBuffer[File]
     findAllFoldersInFolderRecursively(dir, fileList)
     for (f <- fileList) {
       assertTrue(f.list.length >= 1)
