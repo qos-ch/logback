@@ -23,7 +23,7 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ThrowableProxyUtil {
 
-  static public void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
+  public static void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
       ThrowableProxy parentTP) {
 
     StackTraceElement[] nestedSTE = nestedThrowable.getStackTrace();
@@ -72,16 +72,34 @@ public class ThrowableProxyUtil {
     return count;
   }
 
-  static public String asString(IThrowableProxy tp) {
+  public static String asString(IThrowableProxy tp) {
     StringBuilder sb = new StringBuilder();
 
-    while (tp != null) {
-      subjoinFirstLine(sb, tp);
-      sb.append(CoreConstants.LINE_SEPARATOR);
-      subjoinSTEPArray(sb, tp);
-      tp = tp.getCause();
-    }
+    recursiveAppend(sb, null, 1, tp);
+
     return sb.toString();
+  }
+
+  private static void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
+    if(tp == null)
+      return;
+    subjoinFirstLine(sb, prefix, tp);
+    sb.append(CoreConstants.LINE_SEPARATOR);
+    subjoinSTEPArray(sb, indent, tp);
+    IThrowableProxy[] suppressed = tp.getSuppressed();
+    if(suppressed != null) {
+      for(IThrowableProxy current : suppressed) {
+        recursiveAppend(sb, CoreConstants.SUPPRESSED, 2, current);
+      }
+    }
+    recursiveAppend(sb, CoreConstants.CAUSED_BY, 1, tp.getCause());
+  }
+
+  private static void subjoinFirstLine(StringBuilder buf, String prefix, IThrowableProxy tp) {
+    if (prefix != null) {
+      buf.append(prefix);
+    }
+    subjoinExceptionMessage(buf, tp);
   }
 
   public static void subjoinPackagingData(StringBuilder builder, StackTraceElementProxy step) {
@@ -100,30 +118,40 @@ public class ThrowableProxyUtil {
     }
   }
   
-  static public void subjoinSTEP(StringBuilder sb, StackTraceElementProxy step) {
+  public static void subjoinSTEP(StringBuilder sb, StackTraceElementProxy step) {
     sb.append(step.toString());
     subjoinPackagingData(sb, step);
   }
-  
-  static public void subjoinSTEPArray(StringBuilder sb, IThrowableProxy tp) {
+
+  // not called anymore - but it is public
+  public static void subjoinSTEPArray(StringBuilder sb, IThrowableProxy tp) {
+    subjoinSTEPArray(sb, 1, tp);
+  }
+
+  private static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
-      sb.append(CoreConstants.TAB);
+      for(int j = 0; j < indentLevel ; j++) {
+        sb.append(CoreConstants.TAB);
+      }
       subjoinSTEP(sb, step);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
     
     if (commonFrames > 0) {
-      sb.append("\t... ").append(commonFrames).append(" common frames omitted")
+      for(int j = 0; j < indentLevel ; j++) {
+        sb.append(CoreConstants.TAB);
+      }
+      sb.append("... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
     
   }
 
-  static public void subjoinFirstLine(StringBuilder buf, IThrowableProxy tp) {
+  public static void subjoinFirstLine(StringBuilder buf, IThrowableProxy tp) {
     int commonFrames = tp.getCommonFrames();
     if (commonFrames > 0) {
       buf.append(CoreConstants.CAUSED_BY);
@@ -131,7 +159,7 @@ public class ThrowableProxyUtil {
     subjoinExceptionMessage(buf, tp);
   }
 
-  static public void subjoinFirstLineRootCauseFirst(StringBuilder buf, IThrowableProxy tp) {
+  public static void subjoinFirstLineRootCauseFirst(StringBuilder buf, IThrowableProxy tp) {
     if (tp.getCause() != null) {
       buf.append(CoreConstants.WRAPPED_BY);
     }
