@@ -28,13 +28,13 @@ import ch.qos.logback.classic.LoggerContext;
  */
 public interface ContextSelector {
 
-  public LoggerContext getLoggerContext();
+  LoggerContext getLoggerContext();
   
-  public LoggerContext getLoggerContext(String name);
+  LoggerContext getLoggerContext(String name);
   
-  public LoggerContext getDefaultLoggerContext();
+  LoggerContext getDefaultLoggerContext();
   
-  public LoggerContext detachLoggerContext(String loggerContextName);
+  LoggerContext detachLoggerContext(String loggerContextName);
   
-  public List<String> getContextNames();
+  List<String> getContextNames();
 }

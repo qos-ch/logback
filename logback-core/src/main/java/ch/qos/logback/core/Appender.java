@@ -23,7 +23,7 @@ public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E
   /**
    * Get the name of this appender. The name uniquely identifies the appender.
    */
-  public String getName();
+  String getName();
 
   /**
    * This is where an appender accomplishes its work. Note that the argument 
@@ -37,6 +37,6 @@ public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E
    * identify this appender.
    * 
    */
-  public void setName(String name);
+  void setName(String name);
   
 }

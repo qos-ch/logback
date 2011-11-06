@@ -53,7 +53,7 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends
   /**
    * Return the archive remover appropriate for this instance.
    */
-  public ArchiveRemover getArchiveRemover();
+  ArchiveRemover getArchiveRemover();
   
   /**
    * Return the current time which is usually the value returned by

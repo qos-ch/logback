@@ -15,10 +15,10 @@ package ch.qos.logback.classic.spi;
 
 public interface CPDCSpecial {
 
-  public abstract void doTest();
+  void doTest();
 
-  public abstract Throwable getThrowable();
+  Throwable getThrowable();
 
-  public abstract IThrowableProxy getThrowableProxy();
+  IThrowableProxy getThrowableProxy();
 
 }
