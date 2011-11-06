@@ -28,6 +28,6 @@ public interface LoggerContextAware extends ContextAware {
    * @throws IllegalStateException If you try to change the context after it
    * has been set.
    **/
-  public void setLoggerContext(LoggerContext context);
+  void setLoggerContext(LoggerContext context);
  
 }

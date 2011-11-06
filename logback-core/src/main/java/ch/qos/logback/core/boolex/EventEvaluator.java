@@ -51,10 +51,10 @@ public interface EventEvaluator<E> extends ContextAware, LifeCycle {
    * 
    * @return The name of this evaluator.
    */
-  public String getName();
+  String getName();
 
   /**
    * Evaluators are named entities.
    */
-  public void setName(String name);
+  void setName(String name);
 }

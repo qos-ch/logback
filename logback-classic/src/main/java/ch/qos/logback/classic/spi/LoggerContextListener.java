@@ -25,9 +25,9 @@ public interface LoggerContextListener {
    * reset. Such listeners are said to be reset resistant.
    * @return whether this listener is reset resistant or not.
    */
-  public boolean isResetResistant();
-  public void onStart(LoggerContext context);
-  public void onReset(LoggerContext context);
-  public void onStop(LoggerContext context);
-  public void onLevelChange(Logger logger, Level level);
+  boolean isResetResistant();
+  void onStart(LoggerContext context);
+  void onReset(LoggerContext context);
+  void onStop(LoggerContext context);
+  void onLevelChange(Logger logger, Level level);
 }

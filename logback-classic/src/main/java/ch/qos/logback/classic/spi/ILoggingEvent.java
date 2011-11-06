@@ -29,21 +29,21 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
  */
 public interface ILoggingEvent extends DeferredProcessingAware {
 
-  public String getThreadName();
+  String getThreadName();
 
-  public Level getLevel();
+  Level getLevel();
 
-  public String getMessage();
+  String getMessage();
 
-  public Object[] getArgumentArray();
+  Object[] getArgumentArray();
 
-  public String getFormattedMessage();
+  String getFormattedMessage();
 
-  public String getLoggerName();
+  String getLoggerName();
 
-  public LoggerContextVO getLoggerContextVO();
+  LoggerContextVO getLoggerContextVO();
 
-  public IThrowableProxy getThrowableProxy();
+  IThrowableProxy getThrowableProxy();
 
   /**
    * Return caller data associated with this event. Note that calling this event
@@ -53,7 +53,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
    * 
    * @see #hasCallerData()
    */
-  public StackTraceElement[] getCallerData();
+  StackTraceElement[] getCallerData();
 
   /**
    * If this event has caller data, then true is returned. Otherwise the
@@ -65,22 +65,22 @@ public interface ILoggingEvent extends DeferredProcessingAware {
    * 
    * @return whether this event has caller data
    */
-  public boolean hasCallerData();
+  boolean hasCallerData();
 
-  public Marker getMarker();
+  Marker getMarker();
 
   /**
    * Returns the MDC map. The returned value can be an empty map but not null.
    */
-  public Map<String, String> getMDCPropertyMap();
+  Map<String, String> getMDCPropertyMap();
 
   /**
    * Synonym for [@link #getMDCPropertyMap}.
    * @deprecated  Replaced by [@link #getMDCPropertyMap}
    */
-  public Map<String, String> getMdc();
-  public long getTimeStamp();
+  Map<String, String> getMdc();
+  long getTimeStamp();
 
-  public void prepareForDeferredProcessing();
+  void prepareForDeferredProcessing();
 
 }

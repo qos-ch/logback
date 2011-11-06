@@ -176,7 +176,7 @@ public class DateFormatOriginal_tzest extends TestCase {
 
   }
 
-  public static interface Formatter {
+  public interface Formatter {
     String format(Date date);
   }
 

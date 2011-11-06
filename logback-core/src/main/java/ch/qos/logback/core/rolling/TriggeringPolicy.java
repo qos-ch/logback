@@ -35,5 +35,5 @@ public interface TriggeringPolicy<E> extends LifeCycle {
    * @param event A reference to the currently event. 
    * @return true if a roll-over should occur.
    */
-  public boolean isTriggeringEvent(final File activeFile, final E event);
+  boolean isTriggeringEvent(final File activeFile, final E event);
 }

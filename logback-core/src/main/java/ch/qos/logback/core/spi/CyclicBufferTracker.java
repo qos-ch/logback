@@ -23,15 +23,15 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
  */
 public interface CyclicBufferTracker<E> {
 
-  public static int DEFAULT_BUFFER_SIZE = 256;
-  public static int DEFAULT_NUMBER_OF_BUFFERS = 64;
+  int DEFAULT_BUFFER_SIZE = 256;
+  int DEFAULT_NUMBER_OF_BUFFERS = 64;
 
-  static int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
 
-  public int getBufferSize();
+  int getBufferSize();
 
-  public void setBufferSize(int size);
-  public int getMaxNumberOfBuffers();
+  void setBufferSize(int size);
+  int getMaxNumberOfBuffers();
 
   /**
    * Set the maximum number of tracked buffers. After reaching the maximum number of
@@ -40,7 +40,7 @@ public interface CyclicBufferTracker<E> {
    *
    * @param maxNumBuffers
    */
-  public void setMaxNumberOfBuffers(int maxNumBuffers);
+  void setMaxNumberOfBuffers(int maxNumBuffers);
 
 
   /**

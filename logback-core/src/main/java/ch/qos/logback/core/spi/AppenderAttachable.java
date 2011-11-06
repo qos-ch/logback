@@ -26,23 +26,23 @@ public interface AppenderAttachable<E> {
   /**
    * Add an appender.
    */
-  public void addAppender(Appender<E> newAppender);
+  void addAppender(Appender<E> newAppender);
 
   /**
    * Get an iterator for appenders contained in the parent object.
    */
-  public Iterator<Appender<E>> iteratorForAppenders();
+  Iterator<Appender<E>> iteratorForAppenders();
 
   /**
    * Get an appender by name.
    */
-  public Appender<E> getAppender(String name);
+  Appender<E> getAppender(String name);
 
   /**
    * Returns <code>true</code> if the specified appender is in list of
    * attached attached, <code>false</code> otherwise.
    */
-  public boolean isAttached(Appender<E> appender);
+  boolean isAttached(Appender<E> appender);
 
   /**
    * Detach and stop all previously added appenders.

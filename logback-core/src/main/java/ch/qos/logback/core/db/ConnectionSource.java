@@ -56,6 +56,6 @@ public interface ConnectionSource extends LifeCycle {
   
   /**
    * If the connection does not support batch updates, we will avoid using them.
-   */  
-  public boolean supportsBatchUpdates();
+   */
+  boolean supportsBatchUpdates();
 }
