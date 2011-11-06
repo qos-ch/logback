@@ -20,5 +20,5 @@ package ch.qos.logback.classic.pattern;
  */
 public interface Abbreviator {
 
-  public String abbreviate(String in);
+  String abbreviate(String in);
 }

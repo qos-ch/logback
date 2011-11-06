@@ -32,7 +32,7 @@ public interface Context extends PropertyContainer {
    * 
    * @return the {@link StatusManager} instance in use.
    */
-  public StatusManager getStatusManager();
+  StatusManager getStatusManager();
 
   /**
    * A Context can act as a store for various objects used by LOGBack
@@ -40,7 +40,7 @@ public interface Context extends PropertyContainer {
    * 
    * @return The object stored under 'key'.
    */
-  public Object getObject(String key);
+  Object getObject(String key);
 
   /**
    * Store an object under 'key'. If no object can be found, null is returned.
@@ -48,7 +48,7 @@ public interface Context extends PropertyContainer {
    * @param key
    * @param value
    */
-  public void putObject(String key, Object value);
+  void putObject(String key, Object value);
 
   /**
    * Get all the properties for this context as a Map. Note that the returned
@@ -61,12 +61,12 @@ public interface Context extends PropertyContainer {
   /**
    * Get the property of this context.
    */
-  public String getProperty(String key);
+  String getProperty(String key);
 
   /**
    * Set a property of this context.
    */
-  public void putProperty(String key, String value);
+  void putProperty(String key, String value);
 
   
   /**
@@ -74,21 +74,21 @@ public interface Context extends PropertyContainer {
    * @return
    * @since 0.9.20
    */
-  public Map<String, String> getCopyOfPropertyMap();
+  Map<String, String> getCopyOfPropertyMap();
   
   /**
    * Contexts are named objects.
    * 
    * @return the name for this context
    */
-  public String getName();
+  String getName();
 
   /**
    * The name of the context can be set only once.
    * 
    * @param name
    */
-  public void setName(String name);
+  void setName(String name);
   
   /**
    * The time at which this context was created, expressed in
@@ -96,13 +96,13 @@ public interface Context extends PropertyContainer {
    * 
    * @return The time as measured when this class was created.
    */
-  public long getBirthTime();
+  long getBirthTime();
   
   /**
    * Object used for synchronization purposes. 
    * INTENDED FOR INTERNAL USAGE.
    */
-  public Object getConfigurationLock();
+  Object getConfigurationLock();
 
 
   /**
@@ -112,5 +112,5 @@ public interface Context extends PropertyContainer {
    * @return the executor for this context.
    * @since 1.0.0
    */
-  public ExecutorService getExecutorService();
+  ExecutorService getExecutorService();
 }

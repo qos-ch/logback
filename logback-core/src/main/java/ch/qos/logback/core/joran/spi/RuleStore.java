@@ -30,10 +30,10 @@ import ch.qos.logback.core.joran.action.Action;
  * 
  */
 public interface RuleStore {
-  public void addRule(Pattern pattern, String actionClassStr)
+  void addRule(Pattern pattern, String actionClassStr)
       throws ClassNotFoundException;
 
-  public void addRule(Pattern pattern, Action action);
+  void addRule(Pattern pattern, Action action);
 
-  public List matchActions(Pattern currentPatern);
+  List matchActions(Pattern currentPatern);
 }

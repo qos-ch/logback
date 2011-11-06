@@ -23,6 +23,6 @@ import ch.qos.logback.core.spi.ContextAware;
  * @author Ceki G&uuml;lc&uuml;
  */
 public interface ArchiveRemover extends ContextAware {
-  public void clean(Date now);
-  public void setMaxHistory(int maxHistory);
+  void clean(Date now);
+  void setMaxHistory(int maxHistory);
 } 

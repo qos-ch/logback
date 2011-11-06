@@ -20,7 +20,7 @@ import ch.qos.logback.core.CoreConstants;
 
 public interface AppenderTracker<E> {
 
-  static int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
 
   void put(String key, Appender<E> value, long timestamp);
   Appender<E> get(String key, long timestamp);
