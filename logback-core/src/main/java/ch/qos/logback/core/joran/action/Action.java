@@ -43,6 +43,8 @@ public abstract class Action extends ContextAwareBase {
   public static final String FILE_ATTRIBUTE = "file";
   public static final String CLASS_ATTRIBUTE = "class";
   public static final String PATTERN_ATTRIBUTE = "pattern";
+  public static final String SCOPE_ATTRIBUTE = "scope";
+
 
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 

@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

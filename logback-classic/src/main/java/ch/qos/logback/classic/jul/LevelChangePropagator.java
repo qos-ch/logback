@@ -70,7 +70,7 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
       String loggerName = (String) e.nextElement();
       java.util.logging.Logger julLogger = lm.getLogger(loggerName);
       if (JULHelper.isRegularNonRootLogger(julLogger) && julLogger.getLevel() != null) {
-        addInfo("Setting **** level of jul logger [" + loggerName + "] to null");
+        addInfo("Setting level of jul logger [" + loggerName + "] to null");
         julLogger.setLevel(null);
       }
     }

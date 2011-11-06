@@ -29,7 +29,6 @@ import ch.qos.logback.core.appender.AbstractAppenderTest;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;

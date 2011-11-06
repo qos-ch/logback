@@ -25,7 +25,11 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
+import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.conditional.ElseAction;
+import ch.qos.logback.core.joran.conditional.IfAction;
+import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -33,6 +37,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 
 
 /**
+ * This JoranConfiguratorclass adds rules specific to logback-access.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -49,6 +54,15 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());
     
     rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
+
+    // add if-then-else support
+    rs.addRule(new Pattern("*/if"), new IfAction());
+    rs.addRule(new Pattern("*/if/then"), new ThenAction());
+    rs.addRule(new Pattern("*/if/then/*"), new NOPAction());
+    rs.addRule(new Pattern("*/if/else"), new ElseAction());
+    rs.addRule(new Pattern("*/if/else/*"), new NOPAction());
+
+    rs.addRule(new Pattern("configuration/include"), new IncludeAction());
   }
 
   @Override

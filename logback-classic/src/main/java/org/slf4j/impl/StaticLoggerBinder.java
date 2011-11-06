@@ -30,8 +30,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * The binding of {@link LoggerFactory} class with an actual instance of
  * {@link ILoggerFactory} is performed using information returned by this class.
  * 
- * @author <a href="http://www.qos.ch/shop/products/log4jManual">Ceki
- *         G&uuml;lc&uuml;</a>
+ * @author Ceki G&uuml;lc&uuml;</a>
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 

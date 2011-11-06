@@ -86,6 +86,7 @@ public class DBUtil extends ContextAwareBase {
     
     case HSQL_DIALECT:
       sqlDialect = new HSQLDBDialect();
+      break;
 
     case H2_DIALECT:
       sqlDialect = new H2Dialect();

@@ -30,7 +30,6 @@ import static ch.qos.logback.classic.Level.ERROR;
  */
 public class EvaluatorTemplate implements IEvaluator {
 
-
   boolean doEvaluate(ILoggingEvent event) {
     ILoggingEvent e = event;
     //EXPRESSION

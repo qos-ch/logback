@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
 
 /**
@@ -80,54 +81,16 @@ public class OptionHelper {
   final static String _IS_UNDEFINED = "_IS_UNDEFINED";
 
   /**
-   * Perform variable substitution in string <code>val</code> from the values
-   * of keys found in context property map, and if that fails, then in the
-   * system properties.
-   * 
-   * <p> The variable substitution delimeters are <b>${</b> and <b>}</b>.
-   * 
-   * <p> For example, if the context property map contains a property "key1" set
-   * as "value1", then the call
-   * 
-   * <pre>
-   * String s = OptionConverter.substituteVars(&quot;Value of key is ${key1}.&quot;, context);</pre>
-   * 
-   * will set the variable <code>s</code> to "Value of key is value1.".
-   * 
-   * <p> If no value could be found for the specified key in the context map,
-   * then the system properties are searched, if that fails, then substitution
-   * defaults to appending "_IS_UNDEFINED" to the key name.
-   * 
-   * <p> For example, if not the context not the system properties contains no
-   * value for the key "inexistentKey", then the call
-   * 
-   * <pre>
-   * String s = OptionConverter.subsVars(
-   *     &quot;Value of inexistentKey is [${inexistentKey}]&quot;, context);</pre>
-   * 
-   * will set <code>s</code> to "Value of inexistentKey is
-   * [inexistentKey_IS_UNDEFINED]".
-   * 
-   * <p> Nevertheless, it is possible to specify a default substitution value
-   * using the ":-" operator. For example, the call
-   * 
-   * <pre>
-   * String s = OptionConverter.subsVars(&quot;Value of key is [${key2:-val2}]&quot;, context);</pre>
-   * 
-   * will set <code>s</code> to "Value of key is [val2]" even if the "key2"
-   * property is not set.
-   * 
-   * <p> An {@link java.lang.IllegalArgumentException} is thrown if
-   * <code>val</code> contains a start delimeter "${" which is not balanced by
-   * a stop delimeter "}". </p>
-   * 
-   * 
-   * @param val
-   *                The string on which variable substitution is performed.
-   * @throws IllegalArgumentException
-   *                 if <code>val</code> is malformed.
+   * @see  #substVars(String, PropertyContainer, PropertyContainer)
    */
-  public static String substVars(String val, PropertyContainer pc) {
+   public static String substVars(String val, PropertyContainer pc1) {
+     return substVars(val, pc1, null);
+   }
+
+  /**
+   * See  http://logback.qos.ch/manual/configuration.html#variableSubstitution
+   */
+  public static String substVars(String val, PropertyContainer pc1, PropertyContainer pc2) {
 
     StringBuffer sbuf = new StringBuffer();
 
@@ -166,15 +129,7 @@ public class OptionHelper {
           String key = extracted[0];
           String defaultReplacement = extracted[1]; // can be null
 
-          String replacement = null;
-
-          // first try the props passed as parameter
-          replacement = pc.getProperty(key);
-
-          // then try in System properties
-          if (replacement == null) {
-            replacement = getSystemProperty(key, null);
-          }
+          String replacement = propertyLookup(key, pc1, pc2);
 
           // if replacement is still null, use the defaultReplacement which
           // can be null as well
@@ -188,7 +143,7 @@ public class OptionHelper {
             // where the properties are
             // x1=p1
             // x2=${x1}
-            String recursiveReplacement = substVars(replacement, pc);
+            String recursiveReplacement = substVars(replacement, pc1, pc2);
             sbuf.append(recursiveReplacement);
           } else {
             // if we could not find a replacement, then signal the error
@@ -199,6 +154,26 @@ public class OptionHelper {
         }
       }
     }
+  }
+
+  public static String propertyLookup(String key, PropertyContainer pc1,
+                               PropertyContainer pc2) {
+    String value = null;
+    // first try the props passed as parameter
+    value = pc1.getProperty(key);
+
+    // then try  the pc2
+    if (value == null && pc2 != null) {
+      value = pc2.getProperty(key);
+    }
+    // then try in System properties
+    if (value == null) {
+      value = getSystemProperty(key, null);
+    }
+    if (value == null) {
+      value = getEnv(key);
+    }
+    return value;
   }
 
   /**
@@ -221,6 +196,20 @@ public class OptionHelper {
   }
 
   /**
+   * Lookup a key from the environment.
+   * @param key
+   * @return value corresponding to key from the OS environment
+   */
+  public static String getEnv(String key) {
+    try {
+      return System.getenv(key);
+    } catch (SecurityException e) {
+      return null;
+    }
+  }
+
+
+  /**
    * Very similar to <code>System.getProperty</code> except that the
    * {@link SecurityException} is absorbed.
    * 
@@ -234,6 +223,22 @@ public class OptionHelper {
       return System.getProperty(key);
     } catch (SecurityException e) {
       return null;
+    }
+  }
+
+  public static void setSystemProperties(ContextAware contextAware, Properties props) {
+    for(Object o: props.keySet()) {
+      String key = (String) o;
+      String value = props.getProperty(key);
+      setSystemProperty(contextAware, key, value);
+    }
+  }
+
+  public static void setSystemProperty(ContextAware contextAware, String key, String value) {
+    try {
+      System.setProperty(key, value);
+    } catch (SecurityException e) {
+      contextAware.addError("Failed to set system property ["+key+"]", e);
     }
   }
 
@@ -287,8 +292,9 @@ public class OptionHelper {
     return dEfault;
   }
 
-  public static boolean isEmpty(String val) {
-    return ((val == null) || CoreConstants.EMPTY_STRING.equals(val));
+  public static boolean isEmpty(String str) {
+    return ((str == null) || CoreConstants.EMPTY_STRING.equals(str));
   }
+
 
 }

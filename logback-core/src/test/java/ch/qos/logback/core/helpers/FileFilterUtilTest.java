@@ -20,10 +20,8 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import org.junit.Test;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 

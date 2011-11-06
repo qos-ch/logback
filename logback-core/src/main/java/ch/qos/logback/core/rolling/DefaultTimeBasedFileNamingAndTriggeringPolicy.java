@@ -16,7 +16,6 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 import java.util.Date;
 
-import ch.qos.logback.core.rolling.helper.DefaultArchiveRemover;
 import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
 
 /**
@@ -40,6 +39,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
     long time = getCurrentTime();
     if (time >= nextCheck) {
       Date dateOfElapsedPeriod = dateInCurrentPeriod;
+      addInfo("Elapsed period: "+dateOfElapsedPeriod);
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convert(dateOfElapsedPeriod);
       setDateInCurrentPeriod(time);

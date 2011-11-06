@@ -13,10 +13,8 @@
  */
 package ch.qos.logback.core.spi;
 
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
-import ch.qos.logback.core.sift.tracker.TEntry;
 
 import java.util.Collections;
 import java.util.LinkedList;

@@ -21,10 +21,6 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 
-import javax.security.auth.login.Configuration;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 /**

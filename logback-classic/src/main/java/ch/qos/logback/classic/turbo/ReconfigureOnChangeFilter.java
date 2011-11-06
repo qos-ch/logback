@@ -23,9 +23,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.status.WarnStatus;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
@@ -34,7 +32,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.status.InfoStatus;
 
 /**
  * Reconfigure a LoggerContext when the configuration file changes.
@@ -42,9 +39,6 @@ import ch.qos.logback.core.status.InfoStatus;
  * @author Ceki Gulcu
  */
 public class ReconfigureOnChangeFilter extends TurboFilter {
-
-  final static long INIT = System.currentTimeMillis();
-  final static long SENTINEL = Long.MAX_VALUE;
 
   /**
    * Scan for changes in configuration file once every minute.
@@ -122,7 +116,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // reader lock.
   private void detachReconfigurationToNewThread() {
     addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
-    new ReconfiguringThread().start();
+    context.getExecutorService().submit(new ReconfiguringThread());
   }
 
   void updateNextCheck(long now) {
@@ -150,14 +144,14 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     this.refreshPeriod = refreshPeriod;
   }
 
-  class ReconfiguringThread extends Thread {
+  class ReconfiguringThread implements Runnable {
     public void run() {
       if (mainConfigurationURL == null) {
         addInfo("Due to missing top level configuration file, skipping reconfiguration");
         return;
       }
       LoggerContext lc = (LoggerContext) context;
-      addInfo("Will reset and reconfigure context named [" + context.getName() + "]");
+      addInfo(CoreConstants.RESET_MSG_PREFIX + "named ["+context.getName() + "]");
       if (mainConfigurationURL.toString().endsWith("xml")) {
         performXMLConfiguration(lc);
       } else if (mainConfigurationURL.toString().endsWith("groovy")) {

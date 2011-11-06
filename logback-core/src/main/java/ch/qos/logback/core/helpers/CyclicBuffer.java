@@ -48,6 +48,15 @@ public class CyclicBuffer<E> {
     init(maxSize);
   }
 
+  public CyclicBuffer(CyclicBuffer<E> other) {
+   this.maxSize = other.maxSize;
+   ea = (E[]) new Object[maxSize];
+   System.arraycopy(other.ea, 0, this.ea, 0, maxSize);
+   this.last = other.last;
+   this.first = other.first;
+   this.numElems = other.numElems;
+  }
+
   @SuppressWarnings("unchecked")
   private void init(int maxSize) {
     this.maxSize = maxSize;

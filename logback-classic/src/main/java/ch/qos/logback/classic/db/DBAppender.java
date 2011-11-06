@@ -254,7 +254,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       throws SQLException {
 
     StringBuilder buf = new StringBuilder();
-    ThrowableProxyUtil.printFirstLine(buf, tp);
+    ThrowableProxyUtil.subjoinFirstLine(buf, tp);
     updateExceptionStatement(insertExceptionStatement, buf.toString(),
         baseIndex++, eventId);
 
@@ -263,7 +263,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StringBuilder sb = new StringBuilder();
       sb.append(CoreConstants.TAB);
-      ThrowableProxyUtil.printSTEP(sb, stepArray[i]);
+      ThrowableProxyUtil.subjoinSTEP(sb, stepArray[i]);
       updateExceptionStatement(insertExceptionStatement, sb.toString(),
           baseIndex++, eventId);
     }

@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.30-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>logback-access</artifactId>
@@ -16,10 +16,10 @@
 
   <url>http://logback.qos.ch</url>
 
-  <description>   
+  <description>
     Logback: the reliable, generic, fast and flexible logging library for Java.
   </description>
-  
+
   <licenses>
     <license>
       <name>Eclipse Public License - v 1.0</name>
@@ -48,17 +48,18 @@
 
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>catalina</artifactId>
+      <artifactId>tomcat-catalina</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>org.mortbay.jetty</groupId>-->
+    <!--<artifactId>jetty</artifactId>-->
+    <!--<scope>compile</scope>-->
+    <!--<optional>true</optional>-->
+    <!--</dependency>-->
+
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -67,12 +68,12 @@
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>servlet-api-2.5</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>org.mortbay.jetty</groupId>-->
+    <!--<artifactId>servlet-api-2.5</artifactId>-->
+    <!--<scope>compile</scope>-->
+    <!--<optional>true</optional>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>janino</groupId>
@@ -107,15 +108,6 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <fork>once</fork>
@@ -132,10 +124,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>          
-          <archive>  
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive> 
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF
+            </manifestFile>
+          </archive>
         </configuration>
         <executions>
           <execution>
@@ -156,15 +149,16 @@
           <execution>
             <id>bundle-manifest</id>
             <phase>process-classes</phase>
-            <goals>    
+            <goals>
               <goal>manifest</goal>
-            </goals>   
+            </goals>
           </execution>
         </executions>
         <configuration>
           <instructions>
             <Export-Package>ch.qos.logback.access.*</Export-Package>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5
+            </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>

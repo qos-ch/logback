@@ -1,0 +1,17 @@
+
+<configuration>
+
+  <if condition='property("HOSTNAME").contains("${aHost}")'>
+    <then>
+      <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+          <pattern>%h %l %u %user %date "%r" %s %b</pattern>
+        </encoder>
+      </appender>
+
+      <appender-ref ref="CON" />
+
+    </then>
+  </if>
+
+</configuration>

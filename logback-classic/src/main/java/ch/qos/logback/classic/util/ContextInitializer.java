@@ -21,10 +21,8 @@ import java.util.List;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;

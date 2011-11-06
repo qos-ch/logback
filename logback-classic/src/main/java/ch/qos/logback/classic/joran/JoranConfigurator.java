@@ -30,7 +30,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 
 /**
  * This JoranConfiguratorclass adds rules specific to logback-classic.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class JoranConfigurator extends JoranConfiguratorBase {

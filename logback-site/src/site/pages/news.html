@@ -26,10 +26,91 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+
     <hr width="80%" align="center" />
 
-    <h3>September xxx, 2011 - Release of version 0.9.30</h3>
+    <h3>xx of November, 2011 - Release of version 1.0.1</h3>
 
+    <p><code>RequestLogImpl</code> can now lookup for the
+    logback-access configuration file as a class path resource. This
+    feature was requested in <a
+    href="http://jira.qos.ch/browse/LBACCESS-26">LBACCESS-26</a> by
+    Marshall Pierce.
+    </p>
+
+    <hr width="80%" align="center" />
+
+    <h3>1st of November, 2011 - Release of version 1.0.0</h3>
+
+    <p>The logback-access module now targets Tomcat 7.x and Jetty 7.x
+    &amp; 8.x as its servlet container platforms. This fixes <a
+    href="http://jira.qos.ch/browse/LBACCESS-17">LBACCESS-17</a>
+    reported by Grzegorz Grzybek.</p>
+
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+    <h4>Breaking change: properties are no longer automatically
+    inserted into the context</h4>
+    
+    <p>Properties now have a scope. Previously, the definition of a
+    property added it to the context. As of version 1.0, properties
+    are local, i.e. transient by default. For further details, please
+    refer to the <a
+    href="manual/configuration.html#variableSubstitution">documentation
+    on properties</a>.</p>
+    </div>
+
+    <p>Environment variables are now looked up during property
+    substitution. This feature was requested in <a
+    href="http://jira.qos.ch/browse/LBCORE-212">LBCORE-212</a> by
+    Alexandre Garnier.
+    </p>
+
+    <p><code>SMTPAppender</code> now sends emails asynchronously.</p>
+
+    <p>Investigation of <a
+    href="http://jira.qos.ch/browse/LBCORE-224">LBCORE-224</a>
+    reported by Cesar Alvarez Nunez points to bug in the JVM rather
+    than in logback. A workaround has been found by using
+    <code>CopyOnWriteArrayList</code> instead of the apparently buggy
+    <code>ReadWriteLock</code>.</p>
+
+    <p>In STARTTLS mode, "mail.smtp.auth" property is no longer set
+    automatically. This fixes <a
+    href="http://jira.qos.ch/browse/LBCORE-225">LBCORE-225</a>
+    reported by Mark Woon.</p>
+
+    <p>Logback-access now supports conditional configuration. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LBACCESS-27">LBACCESS-27</a>
+    reported by Marshall Pierce.</p>
+
+    <p>Logback-access now supports inclusion of configuration
+    files. See the <a
+    href="manual/configuration.html#fileInclusion">chapter about
+    configuration</a> in the logback's online manual for more
+    information. </p>
+
+    <p>Added <code>ch.qos.logback.core.read</code> to "Import-Package"
+    declaration in logback-classic's manifest file. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-131">LBCLASSIC-131</a>
+    reported by Michal Prihoda and Thomas Jaeckle.</p>
+
+    <p>Fixed infinitely recursive calls in
+    <code>AccessConverter#addError</code> methods as reported in <a
+    href="http://jira.qos.ch/browse/LBACCESS-25">LBACCESS-25</a> by
+    Pierre Queinnec.
+    </p>
+
+    <p>Fixed incorrect switch fallthrough while selecting between the
+    H2 and HSQL dialects as reported in <a
+    href="http://jira.qos.ch/browse/LBCORE-218">LBCORE-218</a> by
+    Pierre Queinnec.
+    </p>
+
+    
+
+    <h3>September 21st, 2011 - Release of version 0.9.30</h3>
 
     <p>Archive removal can now deal with prolonged periods of
     application inactivity and application stop and restarts. The
@@ -38,11 +119,23 @@
     reported by Rafael Diaz Maurin.
     </p>
 
+    <p>Logback-classic now supports printing stack traces "root cause
+    first" instead of the standard "root cause last". See the
+    documentaiton for <a
+    href="manual/layouts.html#rootException">%rootException</a>
+    converter for further details. The <code>%rootException</code>
+    converter was contributed by Tomasz Nurkiewicz in relation with <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-217">LBCLASSIC-217</a>.
+    </p>
+
     <p>In the <code>ILoggingEvent</code> interface the
     <code>getMDC</code> method is now deprecated and replaced by
-    <code>getMDCPropertyMap</code>. The latter methof was already part
+    <code>getMDCPropertyMap</code>. The latter method was already part
     of the <code>ILoggingEvent</code> interface in prior versions of
-    logback-classic.</p>
+    logback-classic. Furthermore, the value returned by
+    <code>ILoggingEvent.getMDCPropertyMap</code> can now be an empty
+    map but never null.</p>
+   
 
     <p><code>LoggingEvent</code> no longer assumes that
     <code>LogbackMDCAdapter</code> is the only possible implementation
@@ -50,6 +143,13 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-275">LBCLASSIC-275</a>
     reported by Chris Dolan.
     </p>
+
+    <p><code>LogbackMDCAdapter</code> now synchronizes over its thread
+    local map. This prevents
+    <code>ConcurrentModificationException</code> from occuring while a
+    child thread copies the map from the parent. This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-289">LBCLASSIC-289</a>
+    reported by Josh Oddman.</p>
 
     <p>It is now possible to specify multiple destination addresses
     separated by commas in the the <span class="option">to</span>
@@ -60,7 +160,7 @@
     addresses could only be specified by using multiple <span
     class="option">to</span> properties. As of version 0.9.30 both
     comma separated addresses and multiple <span
-    class="option">to</span> properties are suported.
+    class="option">to</span> properties are supported.
     </p>
 
     <p>When debug attribute is set to true within the
@@ -1425,7 +1525,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
   logback's configuration framework. A file can contain an
   <em>include</em> element that has a <em>file</em> or <em>url</em>
   attribute pointing to a configuration file.  See the <a
-  href="manual/configuration.html#Include">chapter about
+  href="manual/configuration.html#fileInclusion">chapter about
   configuration</a> in the logback's online manual for more
   information.
   </p>

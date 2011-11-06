@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.qos.logback.core.CoreConstants;

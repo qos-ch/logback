@@ -80,6 +80,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   String username;
   String password;
+  String localhost;
 
   private String charsetEncoding = "UTF-8";
 
@@ -117,6 +118,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
     props.put("mail.smtp.port", Integer.toString(smtpPort));
 
+    if(localhost != null) {
+      props.put("mail.smtp.localhost", localhost);
+    }
+
     LoginAuthenticator loginAuthenticator = null;
 
     if (username != null) {
@@ -128,7 +133,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       addError("Both SSL and StartTLS cannot be enabled simultaneously");
     } else {
       if (isSTARTTLS()) {
-        props.setProperty("mail.smtp.auth", "true");
+        // see also http://jira.qos.ch/browse/LBCORE-225
         props.put("mail.smtp.starttls.enable", "true");
       }
       if (isSSL()) {
@@ -172,12 +177,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     String key = discriminator.getDiscriminatingValue(eventObject);
     long now = System.currentTimeMillis();
-    CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
+    final CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
     subAppend(cb, eventObject);
+
+    cb.asList();
 
     try {
       if (eventEvaluator.evaluate(eventObject)) {
-        sendBuffer(cb, eventObject);
+        // perform actual sending asynchronously
+        SenderRunnable senderRunnable = new SenderRunnable(new CyclicBuffer<E>(cb), eventObject);
+        context.getExecutorService().execute(senderRunnable);
       }
     } catch (EvaluationException ex) {
       errorCount++;
@@ -445,6 +454,24 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     return smtpPort;
   }
 
+  public String getLocalhost() {
+    return localhost;
+  }
+
+  /**
+   * Set the "mail.smtp.localhost" property to the value passed as parameter to
+   * this method.
+   *
+   * <p>Useful in case the hostname for the client host is not fully qualified
+   * and as a consequence the SMTP server rejects the clients HELO/EHLO command.
+   * </p>
+   *
+   * @param localhost
+   */
+  public void setLocalhost(String localhost) {
+    this.localhost = localhost;
+  }
+
   public CyclicBufferTracker<E> getCyclicBufferTracker() {
     return cbTracker;
   }
@@ -560,4 +587,17 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     this.layout = layout;
   }
 
+  class SenderRunnable implements Runnable {
+
+    final  CyclicBuffer<E> cyclicBuffer;
+    final E e;
+
+    SenderRunnable(CyclicBuffer<E> cyclicBuffer, E e) {
+      this.cyclicBuffer = cyclicBuffer;
+      this.e = e;
+    }
+    public void run() {
+      sendBuffer(cyclicBuffer, e);
+    }
+  }
 }

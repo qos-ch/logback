@@ -22,7 +22,6 @@ import java.io.File
 import ch.qos.logback.core.testUtil.{FileToBufferUtil, RandomUtil}
 import java.util.{ArrayList, Date, Calendar}
 import java.util.zip.{ZipEntry, ZipFile}
-import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing.Validation
 
 trait RollingScaffolding {
   final val DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss"

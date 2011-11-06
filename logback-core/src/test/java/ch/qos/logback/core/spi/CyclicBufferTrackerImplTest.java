@@ -18,7 +18,6 @@ import ch.qos.logback.core.sift.AppenderTrackerImpl;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertNotNull;
 
 /**

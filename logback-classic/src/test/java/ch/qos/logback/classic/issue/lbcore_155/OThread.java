@@ -14,8 +14,6 @@
 package ch.qos.logback.classic.issue.lbcore_155;
 
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,25 +15,19 @@ package ch.qos.logback.classic.turbo;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.testUtil.Env;
-
-import static org.junit.Assert.fail;
 
 public class ReconfigurePerf {
   final static int THREAD_COUNT = 50;

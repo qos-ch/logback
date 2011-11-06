@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.access.servlet;
 
-import ch.qos.logback.access.filter.StatsByDayTest;
 import junit.framework.TestCase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

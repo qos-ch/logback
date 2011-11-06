@@ -76,15 +76,15 @@ public class ThrowableProxyUtil {
     StringBuilder sb = new StringBuilder();
 
     while (tp != null) {
-      printFirstLine(sb, tp);
+      subjoinFirstLine(sb, tp);
       sb.append(CoreConstants.LINE_SEPARATOR);
-      printSTEPArray(sb, tp);
+      subjoinSTEPArray(sb, tp);
       tp = tp.getCause();
     }
     return sb.toString();
   }
 
-  public static void appendPackagingData(StringBuilder builder, StackTraceElementProxy step) {
+  public static void subjoinPackagingData(StringBuilder builder, StackTraceElementProxy step) {
     if (step != null) {
       ClassPackagingData cpd = step.getClassPackagingData();
       if (cpd != null) {
@@ -100,34 +100,45 @@ public class ThrowableProxyUtil {
     }
   }
   
-  static public void printSTEP(StringBuilder sb, StackTraceElementProxy step) {
+  static public void subjoinSTEP(StringBuilder sb, StackTraceElementProxy step) {
     sb.append(step.toString());
-    appendPackagingData(sb, step);
+    subjoinPackagingData(sb, step);
   }
   
-  static public void printSTEPArray(StringBuilder sb, IThrowableProxy tp) {
+  static public void subjoinSTEPArray(StringBuilder sb, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
       sb.append(CoreConstants.TAB);
-      printSTEP(sb, step);
+      subjoinSTEP(sb, step);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
     
     if (commonFrames > 0) {
-      sb.append("\t... " + commonFrames).append(" common frames omitted")
+      sb.append("\t... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
     
   }
 
-  static public void printFirstLine(StringBuilder buf, IThrowableProxy tp) {
+  static public void subjoinFirstLine(StringBuilder buf, IThrowableProxy tp) {
     int commonFrames = tp.getCommonFrames();
     if (commonFrames > 0) {
       buf.append(CoreConstants.CAUSED_BY);
     }
+    subjoinExceptionMessage(buf, tp);
+  }
+
+  static public void subjoinFirstLineRootCauseFirst(StringBuilder buf, IThrowableProxy tp) {
+    if (tp.getCause() != null) {
+      buf.append(CoreConstants.WRAPPED_BY);
+    }
+    subjoinExceptionMessage(buf, tp);
+  }
+
+  private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
     buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
   }
 }

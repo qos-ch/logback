@@ -76,20 +76,25 @@ public class FileAppenderResilienceTest {
     Thread t = new Thread(runner);
     t.start();
 
-    double delayCoeff = 2.0;
+    double delayCoefficient = 2.0;
     for (int i = 0; i < 5; i++) {
-      Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoeff));
-      ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) fa
-          .getOutputStream();
-      FileChannel fileChannel = resilientFOS.getChannel();
-      fileChannel.close();
+      Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient));
+      closeLogFileOnPurpose();
     }
     runner.setDone(true);
     t.join();
 
-    double bestCaseSuccessRatio = 1/delayCoeff;
+    double bestCaseSuccessRatio = 1/delayCoefficient;
+    double lossinessFactor = 0.8;
     ResilienceUtil
-        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio*0.8);
+        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
+  }
+
+  private void closeLogFileOnPurpose() throws IOException {
+    ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) fa
+      .getOutputStream();
+    FileChannel fileChannel = resilientFOS.getChannel();
+    fileChannel.close();
   }
 }
 
@@ -104,7 +109,7 @@ class Runner extends RunnableWithCounterAndDone {
     while (!isDone()) {
       counter++;
       fa.doAppend("hello " + counter);
-      if (counter % 512 == 0) {
+      if (counter % 128 == 0) {
         try { Thread.sleep(10);
         } catch (InterruptedException e) { }
       }

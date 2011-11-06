@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.pattern;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.spi.ContextAware;
-
 import java.util.List;
 import java.util.regex.Pattern;
 

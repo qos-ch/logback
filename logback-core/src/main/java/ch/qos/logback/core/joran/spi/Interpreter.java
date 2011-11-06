@@ -28,7 +28,6 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
-import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.StartEvent;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 

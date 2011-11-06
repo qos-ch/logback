@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactoryFriend;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 

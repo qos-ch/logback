@@ -15,8 +15,10 @@ package ch.qos.logback.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import ch.qos.logback.core.status.StatusManager;
+
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
 public class ContextBase implements Context {
@@ -33,6 +35,11 @@ public class ContextBase implements Context {
 
   Object configurationLock = new Object();
 
+  // 0 idle threads, 2 maximum threads, no idle waiting
+  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
+          0L, TimeUnit.MILLISECONDS,
+          new LinkedBlockingQueue<Runnable>());
+
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -41,12 +48,11 @@ public class ContextBase implements Context {
    * Set the {@link StatusManager} for this context. Note that by default this
    * context is initialized with a {@link BasicStatusManager}. A null value for
    * the 'statusManager' argument is not allowed.
-   *
+   * <p/>
    * <p> A malicious attacker can set the status manager to a dummy instance,
    * disabling internal error reporting.
    *
-   * @param statusManager
-   *                the new status manager
+   * @param statusManager the new status manager
    */
   public void setStatusManager(StatusManager statusManager) {
     // this method was added in response to http://jira.qos.ch/browse/LBCORE-35
@@ -72,8 +78,8 @@ public class ContextBase implements Context {
    * @return
    */
   public String getProperty(String key) {
-    if(CONTEXT_NAME_KEY.equals(key))
-          return getName();
+    if (CONTEXT_NAME_KEY.equals(key))
+      return getName();
 
     return (String) this.propertyMap.get(key);
   }
@@ -103,15 +109,14 @@ public class ContextBase implements Context {
    * current name is the default context name, namely "default", or if the
    * current name and the old name are the same.
    *
-   * @throws IllegalStateException
-   *                 if the context already has a name, other than "default".
+   * @throws IllegalStateException if the context already has a name, other than "default".
    */
   public void setName(String name) throws IllegalStateException {
     if (name != null && name.equals(this.name)) {
       return; // idempotent naming
     }
     if (this.name == null
-        || CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
+            || CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
       this.name = name;
     } else {
       throw new IllegalStateException("Context has been already given a name");
@@ -124,5 +129,9 @@ public class ContextBase implements Context {
 
   public Object getConfigurationLock() {
     return configurationLock;
+  }
+
+  public ExecutorService getExecutorService() {
+    return  executorService;
   }
 }

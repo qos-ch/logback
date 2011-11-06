@@ -15,7 +15,9 @@ package ch.qos.logback.classic.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 import java.util.Set;
+
 
 import org.slf4j.spi.MDCAdapter;
 
@@ -49,7 +51,7 @@ public final class LogbackMDCAdapter implements MDCAdapter {
   // Initially the contents of the thread local in parent and child threads
   // reference the same map. However, as soon as a thread invokes the put()
   // method, the maps diverge as they should.
-  final InheritableThreadLocal<HashMap<String, String>> copyOnInheritThreadLocal = new InheritableThreadLocal<HashMap<String, String>>();
+  final InheritableThreadLocal<Map<String, String>> copyOnInheritThreadLocal = new InheritableThreadLocal<Map<String, String>>();
 
   private static final int WRITE_OPERATION = 1;
   private static final int READ_OPERATION = 2;
@@ -70,11 +72,16 @@ public final class LogbackMDCAdapter implements MDCAdapter {
     return lastOp == null || lastOp.intValue() == READ_OPERATION;
   }
 
-  private HashMap<String, String> duplicateAndInsertNewMap(HashMap<String, String> oldMap) {
-    HashMap<String, String> newMap = new HashMap<String, String>();
-    if (oldMap != null)
-      newMap.putAll(oldMap);
-    // the newMap replaces the old one for serialisation's sake
+  private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
+    Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+    if (oldMap != null) {
+        // we don't want the parent thread modifying oldMap while we are
+        // iterating over it
+        synchronized (oldMap) {
+          newMap.putAll(oldMap);
+        }
+    }
+
     copyOnInheritThreadLocal.set(newMap);
     return newMap;
   }
@@ -95,11 +102,11 @@ public final class LogbackMDCAdapter implements MDCAdapter {
       throw new IllegalArgumentException("key cannot be null");
     }
 
-    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
+    Map<String, String> oldMap = copyOnInheritThreadLocal.get();
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
     if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
-      HashMap<String, String> newMap = duplicateAndInsertNewMap(oldMap);
+      Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
       newMap.put(key, val);
     } else {
       oldMap.put(key, val);
@@ -114,13 +121,13 @@ public final class LogbackMDCAdapter implements MDCAdapter {
     if (key == null) {
       return;
     }
-    HashMap<String, String> oldMap = copyOnInheritThreadLocal.get();
+    Map<String, String> oldMap = copyOnInheritThreadLocal.get();
     if (oldMap == null) return;
 
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
     if (wasLastOpReadOrNull(lastOp)) {
-      HashMap<String, String> newMap = duplicateAndInsertNewMap(oldMap);
+      Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
       newMap.remove(key);
     } else {
       oldMap.remove(key);
@@ -177,10 +184,8 @@ public final class LogbackMDCAdapter implements MDCAdapter {
    * null.
    */
   public Map getCopyOfContextMap() {
-    // why aren't we setting lastOperation as follows?
-    // lastOperation.set(READ_OPERATION);
-
-    HashMap<String, String> hashMap = copyOnInheritThreadLocal.get();
+    lastOperation.set(READ_OPERATION);
+    Map<String, String> hashMap = copyOnInheritThreadLocal.get();
     if (hashMap == null) {
       return null;
     } else {
@@ -192,7 +197,7 @@ public final class LogbackMDCAdapter implements MDCAdapter {
   public void setContextMap(Map contextMap) {
     lastOperation.set(WRITE_OPERATION);
 
-    HashMap<String, String> newMap = new HashMap<String, String>();
+    Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
     newMap.putAll(contextMap);
 
     // the newMap replaces the old one for serialisation's sake

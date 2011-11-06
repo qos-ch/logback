@@ -21,10 +21,8 @@ package ch.qos.logback.core.contention;
  * @author Ralph Goers
  * @author Ceki Gulcu
  */
-public class MultiThreadedHarness {
+public class MultiThreadedHarness extends AbstractMultiThreadedHarness {
 
-  RunnableWithCounterAndDone[] runnableArray;
-  Thread[] threadArray;
   final long overallDurationInMillis;
 
   public MultiThreadedHarness(long overallDurationInMillis) {
@@ -45,25 +43,7 @@ public class MultiThreadedHarness {
         + System.getProperty("os.version"));
   }
 
-  public void execute(RunnableWithCounterAndDone[] runnableArray)
-      throws InterruptedException {
-    this.runnableArray = runnableArray;
-    Thread[] threadArray = new Thread[runnableArray.length];
-
-    for (int i = 0; i < runnableArray.length; i++) {
-      threadArray[i] = new Thread(runnableArray[i], "Harness["+i+"]");
-    }
-    for (Thread t : threadArray) {
-      t.start();
-    }
-    // let the threads run for a while
+  void waitUntilEndCondition() throws InterruptedException {
     Thread.sleep(overallDurationInMillis);
-
-    for (RunnableWithCounterAndDone r : runnableArray) {
-      r.setDone(true);
-    }
-    for (Thread t : threadArray) {
-      t.join();
-    }
   }
 }

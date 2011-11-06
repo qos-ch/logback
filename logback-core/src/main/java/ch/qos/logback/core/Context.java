@@ -14,6 +14,7 @@
 package ch.qos.logback.core;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
@@ -103,4 +104,13 @@ public interface Context extends PropertyContainer {
    */
   public Object getConfigurationLock();
 
+
+  /**
+   * Every context has an ExecutorService which be invoked to execute certain
+   * tasks in a separate thread.
+   *
+   * @return the executor for this context.
+   * @since 1.0.0
+   */
+  public ExecutorService getExecutorService();
 }

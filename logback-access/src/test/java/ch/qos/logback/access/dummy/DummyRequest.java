@@ -17,16 +17,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import ch.qos.logback.access.AccessConstants;
 
@@ -141,6 +135,26 @@ public class DummyRequest implements HttpServletRequest {
     return false;
   }
 
+  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+    return false;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public void login(String username, String password) throws ServletException {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public void logout() throws ServletException {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public Collection<Part> getParts() throws IOException, IllegalStateException, ServletException {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public Part getPart(String name) throws IOException, IllegalStateException, ServletException {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
   public boolean isRequestedSessionIdValid() {
     return false;
   }
@@ -191,6 +205,34 @@ public class DummyRequest implements HttpServletRequest {
 
   public int getLocalPort() {
     return 11;
+  }
+
+  public ServletContext getServletContext() {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public AsyncContext startAsync() {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public boolean isAsyncStarted() {
+    return false;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public boolean isAsyncSupported() {
+    return false;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public AsyncContext getAsyncContext() {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  public DispatcherType getDispatcherType() {
+    return null;  //To change body of implemented methods use File | Settings | File Templates.
   }
 
   public Locale getLocale() {

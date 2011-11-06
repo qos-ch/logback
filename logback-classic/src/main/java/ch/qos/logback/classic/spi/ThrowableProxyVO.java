@@ -18,13 +18,14 @@ import java.util.Arrays;
 
 public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 
-  private static final long serialVersionUID = 685387990886325422L;
-  
+  private static final long serialVersionUID = -773438177285807139L;
+
   private String className;
   private String message;
   private int commonFramesCount;
   private StackTraceElementProxy[] stackTraceElementProxyArray;
   private IThrowableProxy cause;
+  private IThrowableProxy[] suppressed;
 
 
   public String getMessage() {
@@ -45,6 +46,10 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
   
   public StackTraceElementProxy[] getStackTraceElementProxyArray() {
     return stackTraceElementProxyArray;
+  }
+
+  public IThrowableProxy[] getSuppressed() {
+    return suppressed;
   }
 
   @Override
@@ -75,6 +80,9 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     if (!Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray))
       return false;
     
+    if (!Arrays.equals(suppressed, other.suppressed))
+      return false;
+
     if (cause == null) {
       if (other.cause != null)
         return false;
@@ -93,8 +101,16 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     tpvo.message = throwableProxy.getMessage();
     tpvo.commonFramesCount = throwableProxy.getCommonFrames();
     tpvo.stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
-    if(throwableProxy.getCause() != null) {
-      tpvo.cause = ThrowableProxyVO.build(throwableProxy.getCause());
+    IThrowableProxy cause = throwableProxy.getCause();
+    if(cause != null) {
+      tpvo.cause = ThrowableProxyVO.build(cause);
+    }
+    IThrowableProxy[] suppressed = throwableProxy.getSuppressed();
+    if(suppressed != null) {
+      tpvo.suppressed = new IThrowableProxy[suppressed.length];
+      for(int i = 0;i<suppressed.length;i++) {
+        tpvo.suppressed[i] = ThrowableProxyVO.build(suppressed[i]);
+      }
     }
     return tpvo;
   }

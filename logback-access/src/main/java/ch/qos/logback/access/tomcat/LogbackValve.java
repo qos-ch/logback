@@ -19,13 +19,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import ch.qos.logback.access.spi.IAccessEvent;
+//import org.apache.catalina.Lifecycle;
+import ch.qos.logback.core.spi.*;
 import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
@@ -39,11 +44,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.spi.AppenderAttachable;
-import ch.qos.logback.core.spi.AppenderAttachableImpl;
-import ch.qos.logback.core.spi.FilterAttachable;
-import ch.qos.logback.core.spi.FilterAttachableImpl;
-import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
@@ -87,11 +87,21 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
 
+    // 0 idle threads, 2 maximum threads, no idle waiting
+  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
+          0L, TimeUnit.MILLISECONDS,
+          new LinkedBlockingQueue<Runnable>());
+
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
 
-  public void start() {
+  public boolean isStarted() {
+    return started;
+  }
+
+  public void startInternal() throws LifecycleException {
+    System.out.println("***startInternal() called");
     if (filename == null) {
       String tomcatHomeProperty = OptionHelper
           .getSystemProperty("catalina.home");
@@ -102,8 +112,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
               + "]", this));
     }
     File configFile = new File(filename);
+
     if (configFile.exists()) {
       try {
+        System.out.println("***startInternal() JoranConfigurator");
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(this);
         jc.doConfigure(filename);
@@ -121,6 +133,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
 
     started = true;
+    setState(LifecycleState.STARTING);
   }
 
   public String getFilename() {
@@ -172,8 +185,9 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
   }
 
-  public void stop() {
+  protected void stopInternal() throws LifecycleException {
     started = false;
+    setState(LifecycleState.STOPPING);
   }
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
@@ -252,6 +266,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
+  }
+
+  public ExecutorService getExecutorService() {
+    return  executorService;
   }
 
   public String getName() {

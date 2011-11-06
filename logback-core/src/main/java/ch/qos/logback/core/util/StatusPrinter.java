@@ -37,14 +37,24 @@ public class StatusPrinter {
   public static void setPrintStream(PrintStream printStream) {
     ps = printStream;
   }
-  
+
   /**
    * Print the contents of the context statuses, but only if they contain
    * warnings or errors.
-   * 
+   *
    * @param context
    */
   public static void printInCaseOfErrorsOrWarnings(Context context) {
+    printInCaseOfErrorsOrWarnings(context, 0);
+  }
+
+  /**
+   * Print the contents of the context status, but only if they contain
+   * warnings or errors occurring later then the threshold.
+   *
+   * @param context
+   */
+  public static void printInCaseOfErrorsOrWarnings(Context context, long threshold) {
     if (context == null) {
       throw new IllegalArgumentException("Context argument cannot be null");
     }
@@ -55,8 +65,8 @@ public class StatusPrinter {
           + "\" has no status manager");
     } else {
       StatusChecker sc = new StatusChecker(context);
-      if (sc.getHighestLevel(0) >= ErrorStatus.WARN) {
-        print(sm);
+      if (sc.getHighestLevel(threshold) >= ErrorStatus.WARN) {
+        print(sm, threshold);
       }
     }
   }
@@ -64,7 +74,7 @@ public class StatusPrinter {
   /**
    * Print the contents of the context statuses, but only if they contain
    * errors.
-   * 
+   *
    * @param context
    */
   public static void printIfErrorsOccured(Context context) {
@@ -86,7 +96,7 @@ public class StatusPrinter {
 
   /**
    * Print the contents of the context's status data.
-   * 
+   *
    * @param context
    */
   public static void print(Context context) {
@@ -128,7 +138,7 @@ public class StatusPrinter {
     buildStrFromStatusList(sb, statusList);
     ps.println(sb.toString());
   }
-  
+
 
   private static void buildStrFromStatusList(StringBuilder sb, List<Status> statusList) {
     if(statusList == null)
@@ -141,7 +151,7 @@ public class StatusPrinter {
 //  private static void buildStrFromStatusManager(StringBuilder sb, StatusManager sm) {
 //  }
 
-  
+
   private static void appendThrowable(StringBuilder sb, Throwable t) {
     String[] stringRep = ThrowableToStringArray.convert(t);
 

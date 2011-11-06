@@ -17,7 +17,8 @@
        to true. See also http://jira.qos.ch/browse/LBCLASSIC-191 -->
 
 	<echo message="compile classpath: ${currentVersion}" />
-	<echo message="test classpath:    ${test_classpath}" />
+  	<echo message="slfj4:    ${org.slf4j:slf4j-api:jar}" />
+    <echo message="felix   ${org.apache.felix:org.apache.felix.main:jar}" />
 
 
 
@@ -33,11 +34,6 @@
     <pathelement location="${org.apache.felix:org.apache.felix.main:jar}" />    
     <pathelement location="target/classes/" />
     <pathelement location="target/test-classes" />  
-    <!--		
-      <pathelement location="${org.slf4j:slf4j-api:jar}" />
-      <pathelement location="../logback-core/target/classes/" />
-      <pathelement location="../logback-core/target/test-classes/" />	
-    -->
 	</path >
 
 

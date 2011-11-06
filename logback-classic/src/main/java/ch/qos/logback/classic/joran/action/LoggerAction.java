@@ -40,7 +40,7 @@ public class LoggerAction extends Action {
     
     LoggerContext loggerContext = (LoggerContext) this.context;
 
-    String loggerName = attributes.getValue(NAME_ATTRIBUTE);
+    String loggerName = ec.subst(attributes.getValue(NAME_ATTRIBUTE));
 
     if (OptionHelper.isEmpty(loggerName)) {
       inError = true;

@@ -18,7 +18,6 @@ import java.util.List;
 
 import ch.qos.logback.core.pattern.util.AsIsEscapeUtil;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 
 import static ch.qos.logback.core.CoreConstants.CURLY_RIGHT;
 

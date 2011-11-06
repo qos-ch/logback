@@ -28,8 +28,6 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.db.dialect.SQLDialect;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;

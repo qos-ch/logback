@@ -22,6 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ch.qos.logback.access.boolex.PackageTest.class,
     ch.qos.logback.access.net.PackageTest.class,
     ch.qos.logback.access.pattern.PackageTest.class,
+    ch.qos.logback.access.joran.PackageTest.class,
     ch.qos.logback.access.jetty.PackageTest.class,
     ch.qos.logback.access.filter.PackageTest.class,
     ch.qos.logback.access.servlet.PackageTest.class,

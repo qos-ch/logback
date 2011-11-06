@@ -242,12 +242,12 @@
           </p>
 
           <p class="source">  LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-  // inject the name of the current application as "application-name"
-  // property of the LoggerContext
-  <b>context.putProperty("application-name", NAME_OF_CURRENT_APPLICATION);</b>
   JoranConfigurator jc = new JoranConfigurator();
   jc.setContext(context);
   context.reset(); // override default configuration
+  // inject the name of the current application as "application-name"
+  // property of the LoggerContext
+  <b>context.putProperty("application-name", NAME_OF_CURRENT_APPLICATION);</b>
   jc.doConfigure("/path/to/the/above/configuration/file.xml"); </p>
 
           <hr/>

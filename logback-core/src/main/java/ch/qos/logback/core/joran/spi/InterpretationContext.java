@@ -48,7 +48,7 @@ public class InterpretationContext extends ContextAwareBase implements
   Interpreter joranInterpreter;
   final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
   DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
-  
+
   public InterpretationContext(Context context, Interpreter joranInterpreter) {
     this.context = context;
     this.joranInterpreter = joranInterpreter;
@@ -120,15 +120,9 @@ public class InterpretationContext extends ContextAwareBase implements
     if (key == null || value == null) {
       return;
     }
-    // if (substitutionProperties.contains(key)) {
-    // LogLog.warn(
-    // "key [" + key
-    // + "] already contained in the EC properties. Overwriting.");
-    // }
-
     // values with leading or trailing spaces are bad. We remove them now.
     value = value.trim();
-    context.putProperty(key, value);
+    propertiesMap.put(key, value);
   }
 
   public void addSubstitutionProperties(Properties props) {
@@ -139,17 +133,6 @@ public class InterpretationContext extends ContextAwareBase implements
     while (i.hasNext()) {
       String key = (String) i.next();
       addSubstitutionProperty(key, props.getProperty(key));
-    }
-  }
-
-  public void addSubstitutionProperties(Map<String, String> propertyMap) {
-    if (propertyMap == null) {
-      return;
-    }
-    Iterator i = propertyMap.keySet().iterator();
-    while (i.hasNext()) {
-      String key = (String) i.next();
-      addSubstitutionProperty(key, propertyMap.get(key));
     }
   }
 
@@ -170,7 +153,7 @@ public class InterpretationContext extends ContextAwareBase implements
     if (value == null) {
       return null;
     }
-    return OptionHelper.substVars(value, this);
+    return OptionHelper.substVars(value, this, context);
   }
 
 

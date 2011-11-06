@@ -7,7 +7,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>0.9.30-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>logback-classic</artifactId>
@@ -187,7 +187,25 @@
       <artifactId>scala-library</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.apache.zookeeper</groupId>-->
+      <!--<artifactId>zookeeper</artifactId>-->
+      <!--<version>3.4.0-SVN</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.apache.zookeeper</groupId>-->
+      <!--<artifactId>zookeeper</artifactId>-->
+      <!--<version>3.4.0-SVN</version>-->
+      <!--<scope>test</scope>-->
+      <!--<classifier>test</classifier>-->
+    <!--</dependency>-->
+
   </dependencies>
+
+
 
   <build>
 
@@ -212,7 +230,7 @@
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.groovy.maven</groupId>
+      <groupId>org.codehaus.groovy.maven</groupId>
         <artifactId>gmaven-plugin</artifactId>
         <executions>
           <execution>
@@ -290,7 +308,7 @@
             <phase>package</phase>
             <configuration>
               <tasks>      
-                <property name="currentVersion" value="${version}" />                            
+                <property name="currentVersion" value="${project.version}" />
                 <property name="slf4j.version" value="${slf4j.version}"/>
                 <property name="basedir" value="${basedir}"/>
                 <ant antfile="${basedir}/osgi-build.xml"/>
@@ -320,9 +338,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
         <configuration>
-          <!-- once, never, -->
+          <!-- once, never, pertest, always -->
           <forkMode>once</forkMode>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
@@ -332,10 +349,17 @@
             <exclude>**/TestConstants.java</exclude>
             <exclude>**/test_osgi/BundleTest.java</exclude>
             <exclude>**/ch/qos/logback/classic/util/InitializationIntegrationTest.java</exclude>
+            <!-- next test requires a running simple server -->
             <exclude>**/SerializationPerfTest.java</exclude>
+            <!-- next test is fragile and anyhow will run as part of PackageTest -->
+            <exclude>**/LoggerPerfTest.java</exclude>
+            <!-- next test is fragile and anyhow will run as part of PackageTest -->
+            <exclude>**/LoggingEventSerializationPerfTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
+
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -361,9 +385,11 @@
               sun.reflect;resolution:=optional, 
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
-              org.slf4j, ch.qos.logback.core.rolling, 
+              org.slf4j,
+              ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
               ch.qos.logback.core.util,
+              ch.qos.logback.core.read,
               org.codehaus.groovy.*;resolution:=optional,
               groovy.lang.*;resolution:=optional,
               org.osgi.framework;resolution:=optional,

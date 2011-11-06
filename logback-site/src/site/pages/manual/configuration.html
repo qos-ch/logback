@@ -480,12 +480,12 @@ public class Foo {
    <h3><a name="joranDirectly" href="#joranDirectly">Invoking
    <code>JoranConfigurator</code> directly</a></h3>
 
-   <p>Logback relies on a configuration library called Joran which is
-   part of logback-core. Logback's default configuration mechanism
-   invokes <code>JoranConfigurator</code> on the default configuration
-   file it finds on the class path. If you wish to
-   override logback's default configuration mechanism for whatever reason, you can do so
-   by invoking <code>JoranConfigurator</code> directly. The next
+   <p>Logback relies on a configuration library called Joran, part of
+   logback-core. Logback's default configuration mechanism invokes
+   <code>JoranConfigurator</code> on the default configuration file it
+   finds on the class path. If you wish to override logback's default
+   configuration mechanism for whatever reason, you can do so by
+   invoking <code>JoranConfigurator</code> directly. The next
    application, <em>MyApp3</em>, invokes JoranConfigurator on a
    configuration file passed as a parameter.</p>
    
@@ -508,19 +508,19 @@ public class MyApp3 {
 
   public static void main(String[] args) {
     // assume SLF4J is bound to logback in the current environment
-    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    <b>LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
     
     <b>try {
       JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      // the context was probably already configured by default configuration 
-      // rules
-      lc.reset(); 
+      configurator.setContext(context);
+      // Call context.reset() to clear any previous configuration, e.g. default 
+      // configuration. For multi-step configuration, omit calling context.reset().
+      context.reset(); 
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
       // StatusPrinter will handle this
     }
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);</b>
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);</b>
 
     logger.info("Entering application.");
 
@@ -536,8 +536,8 @@ public class MyApp3 {
    context, and then finally asks the configurator to configure the
    context using the configuration file passed as a parameter to the
    application. Internal status data is printed in case of warnings or
-   errors.
-   </p>   
+   errors. Note that for multi-step configuration,
+   <code>context.reset()</code> invocation should be omitted.</p>
 
    <h3><a name="viewingStatusMessages"
    href="#viewingStatusMessages">Viewing status messages</a>
@@ -1264,30 +1264,59 @@ public class MyApp3 {
   <!-- =============================================================== -->
  
 
-  <h4><a name="variableSubstitution"
-  href="#variableSubstitution">Variable substitution</a></h4>
+  <h3><a name="variableSubstitution"
+  href="#variableSubstitution">Property substitution</a></h3>
 
-  <p>In principle, variable substitution can occur at any point where
-  a value can be specified. The syntax of variable substitution is
-  similar to that of Unix shells. The string between an opening
-  <em>${</em> and closing <em>}</em> is interpreted as a key.  The
-  value of the substituted variable can be defined in the
-  configuration file itself, in an external properties file or as a
-  system property.  The corresponding value replaces <em>${aKey}</em>
-  sequence. For example, if the <em>java.home.dir</em> system property is
-  set to <em>/home/xyz</em>, then every occurrence of the sequence
-  <em>${java.home.dir}</em> will be interpreted as <em>/home/xyz</em>.
-  As they often come in handy, the ${HOSTNAME} and ${CONTEXT_NAME}
-  variables are automatically defined.</p>
+  <p>As in many scripting languages, logback configuration files support
+  definition and substitution of properties. Properties can be defined
+  within the configuration file itself, in an external file, in an
+  external resource or even computed and <a
+  href="#definingPropsOnTheFly">defined on the fly</a>.
+  </p>
 
-  <h4><a name="propsPartOfContext"
-  href="#propsPartOfContext">Properties are inserted into the context</a></h4>
+  <p>Property substitution can occur at any point where a value can be
+  specified. The syntax of property substitution is similar to that of
+  Unix shells. The string between an opening <em>${</em> and closing
+  <em>}</em> is interpreted as a reference to the <em>value</em> of
+  the property.  For property <em>aKey</em>, the string "${aKey}" will
+  be replaced the value held by the <em>aKey</em> property.
+  </p>
 
-  <p>Note that the values defined via <code>&lt;property></code>
-  element are actually inserted into the logger context. In other
-  words, they become properties of the logger context.  Consequently,
-  they will be available in all logging events, including those sent
-  to remote hosts via serialization.</p>
+  <p>A property can be defined in <em>local scope</em> (the default),
+  in <em>context scope</em>, or in <em>system scope</em>. Local scope
+  is the default.  A property with local scope exists from the point
+  of its definition until the end of configuration. A property with
+  context scope is inserted into the context and lasts as long as the
+  context or until it is cleared.  Once defined, a property in
+  context scope is part of the context. As such, it is available in
+  all logging events, including those sent to remote hosts via
+  serialization. A property with system scope is inserted into the
+  JVM's system properties and lasts as long as the JVM or until it is
+  cleared.
+  </p>
+
+  <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
+  properties are automatically defined and have context scope.</p>
+
+  <p class="highlight">Properties are looked up in the the local
+  scope first, in the context scope second, in the system properties
+  scope third, and in the OS environment last.
+  </p>
+
+  <p>During substitution, properties are looked up in the local scope
+  first, in the context scope second, in the system properties scope
+  third, and in the <a
+  href="http://download.oracle.com/javase/tutorial/essential/environment/env.html">OS
+  environment</a> fourth and last.
+  </p>
+
+ 
+  <h4><a name="definingProps" href="#definingProps">Defining
+  properties</a></h4>
+
+  <p>Properties can be defined one at a time in the configuration file
+  itself or loaded wholesale from an external properties file or an
+  external resource.</p>
 
   <p>The next example shows a variable, a.k.a. a substitution
   property, declared at the beginning of the configuration file. It is
@@ -1299,8 +1328,7 @@ public class MyApp3 {
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
   </p>
 
-  <span class="asGroovy" onclick="return
-  asGroovy('variableSubstitution1');">View as .groovy</span>
+  <span class="asGroovy" onclick="return asGroovy('variableSubstitution1');">View as .groovy</span>
   <pre id="variableSubstitution1" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
@@ -1316,7 +1344,6 @@ public class MyApp3 {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
-
 
   <p>The next example shows the use of a System property to achieve
   the same result. The property is not declared in the configuration
@@ -1354,8 +1381,8 @@ public class MyApp3 {
   separate file
   (logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml)
   </p>
-
-  <pre class="prettyprint source">&lt;configuration>
+  <span class="asGroovy" onclick="return asGroovy('variableSubstitution3');">View as .groovy</span>
+  <pre id="variableSubstitution3" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property file="src/main/java/chapters/configuration/variables1.properties" /></b>
 
@@ -1401,6 +1428,41 @@ public class MyApp3 {
      &lt;appender-ref ref="FILE" />
    &lt;/root>
 &lt;/configuration></pre>
+
+
+   <h4>Scopes</h4>
+
+   <p>The <span class="attr">scope</span> attribute of the
+   <code>&lt;property></code> element can be used to set the scope of
+   properties. The <span class="attr">scope</span> attribute admit the
+   "local", "context" and "system" strings as possible values.
+   </p>
+
+  <p class="example">Example: Simple Variable substitution
+  (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)
+  </p>
+
+  <span class="asGroovy" onclick="return
+  asGroovy('variableSubstitution4');">View as .groovy</span>
+  <pre id="variableSubstitution4" class="prettyprint source">&lt;configuration>
+
+  &lt;property <b class="big">scope="context"</b> name="nodeId" value="node1" />
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <b>&lt;file>/opt/${noteId}/myApp.log&lt;/file></b>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+   <p>In the above example, given that the <em>nodeId</em> property is
+   defined in the context scope, it will be available in every logging
+   event, even those sent to remote hosts via serialization.</p>
 
    <h4>Nested variable substitution</h4>
 
@@ -1550,24 +1612,22 @@ fileName=myApp.log
     &lt;/else>    
   &lt;/if></pre>  
 
-  <p>The condition is a Java expression in which only context properties
-  or system properties are accessible. For a key passed as argument,
-  the <code>property</code>() or its shorter equivalent
+  <p>The condition is a Java expression in which only context
+  properties or system properties are accessible. For a key passed as
+  argument, the <code>property</code>() or its shorter equivalent
   <code>p</code>() methods return the String value of the property.
-  For example, to access the value of a property with key "k", you would
-  write <code>property("k")</code> or equivalently
+  For example, to access the value of a property with key "k", you
+  would write <code>property("k")</code> or equivalently
   <code>p("k")</code>. If the property with key "k" is undefined, the
   property method will return the empty string and not null. This
-  avoids the need to check for null values. If you need to check
-  whether a property is null, the <code>isNull()</code> method is
-  provided. For example, you can write <code>isNull("k")</code>.</p>
+  avoids the need to check for null values.</p>
 
-  <p>In the next example, the <code>ConsoleAppender</code> will be
-  attached to the root logger, but only if the HOSTNAME is
-  "torino". Note that the <code>FileAppender</code> named "FILE" is
-  attached to the root logger in any case.
-  </p>
-
+  <p>The <code>isDefined()</code> method can be used to check whether
+  a property is defined. For example, to check whether the property
+  "k" is defined you would write <code>isDefined("k")</code>
+  Similarly, if you need to check whether a property is null, the
+  <code>isNull()</code> method is provided. Example:
+  <code>isNull("k")</code>.</p>
 
   <pre class="prettyprint source">&lt;configuration>
 

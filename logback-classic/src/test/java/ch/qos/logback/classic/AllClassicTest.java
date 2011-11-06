@@ -27,7 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ch.qos.logback.classic.jmx.PackageTest.class,
         ch.qos.logback.classic.boolex.PackageTest.class,
         ch.qos.logback.classic.selector.PackageTest.class,
-        ch.qos.logback.classic.html.PackageTest.class,
+        ch.qos.logback.classic.html.PackageTest.class, 
         ch.qos.logback.classic.net.PackageTest.class,
         ch.qos.logback.classic.pattern.PackageTest.class,
         ch.qos.logback.classic.encoder.PackageTest.class,

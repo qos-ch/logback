@@ -69,6 +69,12 @@ public class PackagingDataCalculator {
   public void calculate(IThrowableProxy tp) {
     while (tp != null) {
       populateFrames(tp.getStackTraceElementProxyArray());
+      IThrowableProxy[] suppressed = tp.getSuppressed();
+      if(suppressed != null) {
+        for(IThrowableProxy current:suppressed) {
+          populateFrames(current.getStackTraceElementProxyArray());
+        }
+      }
       tp = tp.getCause();
     }
   }

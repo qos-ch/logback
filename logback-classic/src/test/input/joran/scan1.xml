@@ -1,16 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration>
-
 <configuration scan="true" scanPeriod="1 millisecond">
 
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <Pattern>yx %d - %m%n"</Pattern>  
-    </encoder>
-  </appender>
+  <appender name="LIST" class="ch.qos.logback.core.read.ListAppender"/>
     
   <root level="TRACE">  
-    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="LIST" />
   </root>
   
 </configuration> 

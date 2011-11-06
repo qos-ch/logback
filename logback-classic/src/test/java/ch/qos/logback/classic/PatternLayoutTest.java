@@ -22,10 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.joran.JoranConfigurator;

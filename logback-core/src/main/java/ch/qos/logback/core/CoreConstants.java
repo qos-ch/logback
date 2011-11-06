@@ -69,7 +69,7 @@ public class CoreConstants {
    */
   public final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[]{};
   public final static String CAUSED_BY = "Caused by: ";
-
+  public final static String WRAPPED_BY = "Wrapped by: ";
 
   public final static char PERCENT_CHAR = '%';
   public static final char LEFT_PARENTHESIS_CHAR = '(';
@@ -81,7 +81,6 @@ public class CoreConstants {
   public static final char COMMA_CHAR = ',';
   public static final char DOUBLE_QUOTE_CHAR = '"';
   public static final char SINGLE_QUOTE_CHAR = '\'';
-
 
   /**
    * Number of rows before in an HTML table before,
@@ -139,4 +138,7 @@ public class CoreConstants {
   public static final int MILLIS_IN_ONE_DAY = MILLIS_IN_ONE_HOUR*24;
   public static final int MILLIS_IN_ONE_WEEK = MILLIS_IN_ONE_DAY*7;
 
+  public static final String CONTEXT_SCOPE_VALUE = "context";
+
+  final public static String RESET_MSG_PREFIX = "Will reset and reconfigure context ";
 }

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
+import ch.qos.logback.core.testUtil.FileTestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +88,7 @@ public class IncludeActionTest {
 
   @Before
   public void setUp() throws Exception {
+    FileTestUtil.makeTestOutputDir();
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("x"), new NOPAction());
     rulesMap.put(new Pattern("x/include"), new IncludeAction());

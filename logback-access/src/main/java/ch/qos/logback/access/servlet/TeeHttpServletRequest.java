@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import static ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER;
-import static ch.qos.logback.access.AccessConstants.X_WWW_FORM_URLECODED;
 /**
  * As the "tee" program on Unix, duplicate the request's input stream.
  *
