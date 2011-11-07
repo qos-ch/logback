@@ -51,7 +51,7 @@ public class TimestampAction extends Action {
     }
 
     String timeReferenceStr = attributes.getValue(TIME_REFERENCE_ATTRIBUTE);
-    long timeReference = -1;
+    long timeReference;
     if (CONTEXT_BIRTH.equalsIgnoreCase(timeReferenceStr)) {
       addInfo("Using context birth as time reference.");
       timeReference = context.getBirthTime();

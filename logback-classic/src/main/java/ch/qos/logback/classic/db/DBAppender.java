@@ -229,7 +229,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       }
 
       insertPropertiesStatement.close();
-      insertPropertiesStatement = null;
     }
   }
 
@@ -296,7 +295,5 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       exceptionStatement.executeBatch();
     }
     exceptionStatement.close();
-    exceptionStatement = null;
-
   }
 }

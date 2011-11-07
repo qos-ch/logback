@@ -130,7 +130,6 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
       }
 
       insertHeaderStatement.close();
-      insertHeaderStatement = null;
     }
   }
 

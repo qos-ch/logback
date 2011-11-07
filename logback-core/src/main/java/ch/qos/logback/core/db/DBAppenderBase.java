@@ -112,7 +112,6 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
 
       // we no longer need the insertStatement
       close(insertStatement);
-      insertStatement = null;
 
       connection.commit();
     } catch (Throwable sqle) {
@@ -166,7 +165,6 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
     rs.close();
 
     close(idStatement);
-    idStatement = null;
 
     return eventId;
   }
