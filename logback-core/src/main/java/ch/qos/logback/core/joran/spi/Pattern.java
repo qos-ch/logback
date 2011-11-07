@@ -237,11 +237,10 @@ public class Pattern {
 
   @Override
   public String toString() {
-    int size = partList.size();
-    String result = "";
-    for (int i = 0; i < size; i++) {
-      result += "[" + partList.get(i) + "]";
+    StringBuilder result = new StringBuilder();
+    for (String current : partList) {
+      result.append("[").append(current).append("]");
     }
-    return result;
+    return result.toString();
   }
 }

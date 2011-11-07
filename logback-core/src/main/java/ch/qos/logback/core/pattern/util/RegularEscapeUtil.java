@@ -50,11 +50,11 @@ public class RegularEscapeUtil implements IEscapeUtil {
   }
 
   String formatEscapeCharsForListing(String escapeChars) {
-    String commaSeperatedEscapeChars = "";
+    StringBuilder commaSeperatedEscapeChars = new StringBuilder();
     for (int i = 0; i < escapeChars.length(); i++) {
-      commaSeperatedEscapeChars += ", \\" + escapeChars.charAt(i);
+      commaSeperatedEscapeChars.append(", \\").append(escapeChars.charAt(i));
     }
-    return commaSeperatedEscapeChars;
+    return commaSeperatedEscapeChars.toString();
   }
 
   public static String basicEscape(String s) {
