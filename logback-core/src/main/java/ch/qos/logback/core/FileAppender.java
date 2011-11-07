@@ -139,15 +139,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
    * <b>Do not use this method directly. To configure a FileAppender or one of
    * its subclasses, set its properties one by one and then call start().</b>
    * 
-   * @param filename
+   * @param file_name
    *          The path to the log file.
-   * @param append
-   *          If true will append to fileName. Otherwise will truncate fileName.
-   * @param bufferedIO
-   * @param bufferSize
-   * 
-   * @throws IOException
-   * 
    */
   public void openFile(String file_name) throws IOException {
     synchronized (lock) {

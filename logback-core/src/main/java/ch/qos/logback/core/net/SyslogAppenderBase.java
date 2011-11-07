@@ -236,7 +236,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
    * The <b>suffixPattern</b> option specifies the format of the
    * non-standardized part of the message sent to the syslog server.
    * 
-   * @param pattern
+   * @param suffixPattern
    */
   public void setSuffixPattern(String suffixPattern) {
     this.suffixPattern = suffixPattern;

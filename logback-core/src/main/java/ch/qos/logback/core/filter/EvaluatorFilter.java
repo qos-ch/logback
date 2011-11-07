@@ -19,11 +19,11 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * The value of the {@link #onMatch} and {@link #onMismatch} attributes is set
- * to {@link Filter.NEUTRAL}, so that a badly configured evaluator filter does
+ * to {@link FilterReply#NEUTRAL}, so that a badly configured evaluator filter does
  * not disturb the functioning of the filter chain. 
  * 
  * <p>It is expected that one of the two attributes will have its value changed
- * to {@link Filter.ACCEPT} or {@link Filter.DENY}. That way, it is possible to
+ * to {@link FilterReply#ACCEPT} or {@link FilterReply#DENY}. That way, it is possible to
  * decide if a given result must be returned after the evaluation either failed
  * or succeeded.
  * 

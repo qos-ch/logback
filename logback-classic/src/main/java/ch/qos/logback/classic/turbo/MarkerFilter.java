@@ -57,7 +57,7 @@ public class MarkerFilter extends MatchingFilter {
   /**
    * The marker to match in the event.
    * 
-   * @param markerToMatch
+   * @param markerStr
    */
   public void setMarker(String markerStr) {
     if(markerStr != null) {
