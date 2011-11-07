@@ -79,7 +79,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
       if ((n % i) == 0) {
         logger.info("Found factor " + i);
-        factors.addElement(new Integer(i));
+        factors.addElement(i);
 
         do {
           n /= i;
@@ -93,7 +93,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
     if (n != 1) {
       logger.info("Found factor " + n);
-      factors.addElement(new Integer(n));
+      factors.addElement(n);
     }
 
     int len = factors.size();

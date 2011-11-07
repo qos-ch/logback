@@ -32,7 +32,7 @@ public class MultiplyAction extends Action {
   public void begin(InterpretationContext ic, String name, Attributes attributes) {
     int first = fetchInteger(ic);
     int second = fetchInteger(ic);
-    ic.pushObject(new Integer(first * second));
+    ic.pushObject(first * second);
   }
 
   /**

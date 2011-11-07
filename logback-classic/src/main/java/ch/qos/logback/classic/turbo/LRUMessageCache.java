@@ -46,7 +46,7 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
       if (i == null) {
         i = 0;
       } else {
-        i = new Integer(i.intValue() + 1);
+        i = i + 1;
       }
       super.put(msg, i);
     }

@@ -138,8 +138,7 @@ public class FileNamePattern extends ContextAwareBase {
   }
 
   public String convertInt(int i) {
-    Integer integerArg = new Integer(i);
-    return convert(integerArg);
+    return convert(i);
   }
 
   public void setPattern(String pattern) {

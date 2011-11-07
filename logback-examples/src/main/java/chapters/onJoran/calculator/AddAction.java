@@ -33,7 +33,7 @@ public class AddAction extends Action {
     int first = fetchInteger(ic);
     int second = fetchInteger(ic);
     // Push the result of the addition for the following actions.
-    ic.pushObject(new Integer(first + second));
+    ic.pushObject(first + second);
   }
 
   /**
