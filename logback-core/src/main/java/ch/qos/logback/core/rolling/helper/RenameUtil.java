@@ -14,6 +14,8 @@
 package ch.qos.logback.core.rolling.helper;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -75,18 +77,22 @@ public class RenameUtil extends ContextAwareBase {
 
   public void renameByCopying(String from, String to)
           throws RolloverFailure {
+    BufferedInputStream bis = null;
+    BufferedOutputStream bos = null;
     try {
-      FileInputStream fis = new FileInputStream(from);
-      FileOutputStream fos = new FileOutputStream(to);
+      bis = new BufferedInputStream(new FileInputStream(from));
+      bos = new BufferedOutputStream(new FileOutputStream(to));
       byte[] inbuf = new byte[BUF_SIZE];
       int n;
 
-      while ((n = fis.read(inbuf)) != -1) {
-        fos.write(inbuf, 0, n);
+      while ((n = bis.read(inbuf)) != -1) {
+        bos.write(inbuf, 0, n);
       }
 
-      fis.close();
-      fos.close();
+      bis.close();
+      bis = null;
+      bos.close();
+      bos = null;
 
       File fromFile = new File(from);
 
@@ -96,6 +102,21 @@ public class RenameUtil extends ContextAwareBase {
     } catch (IOException ioe) {
       addError("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
+    } finally {
+      if(bis != null) {
+        try {
+          bis.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
+      if(bos != null) {
+        try {
+          bos.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
     }
   }
 

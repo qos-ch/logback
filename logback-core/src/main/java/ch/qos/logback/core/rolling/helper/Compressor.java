@@ -13,9 +13,11 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -88,10 +90,11 @@ public class Compressor extends ContextAwareBase {
       return;
     }
 
+    BufferedInputStream bis = null;
+    ZipOutputStream zos = null;
     try {
-      FileOutputStream fos = new FileOutputStream(nameOfZippedFile);
-      ZipOutputStream zos = new ZipOutputStream(fos);
-      FileInputStream fis = new FileInputStream(nameOfFile2zip);
+      bis = new BufferedInputStream(new FileInputStream(nameOfFile2zip));
+      zos = new ZipOutputStream(new FileOutputStream(nameOfZippedFile));
 
       ZipEntry zipEntry = computeZipEntry(innerEntryName);
       zos.putNextEntry(zipEntry);
@@ -99,12 +102,14 @@ public class Compressor extends ContextAwareBase {
       byte[] inbuf = new byte[8102];
       int n;
 
-      while ((n = fis.read(inbuf)) != -1) {
+      while ((n = bis.read(inbuf)) != -1) {
         zos.write(inbuf, 0, n);
       }
 
-      fis.close();
+      bis.close();
+      bis = null;
       zos.close();
+      zos = null;
 
       if (!file2zip.delete()) {
         addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].",
@@ -113,7 +118,24 @@ public class Compressor extends ContextAwareBase {
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
           + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
+    } finally {
+      if(bis != null) {
+        try {
+          bis.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
+      if(zos != null) {
+        try {
+          zos.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
     }
+
+
   }
 
   // http://jira.qos.ch/browse/LBCORE-98
@@ -164,19 +186,22 @@ public class Compressor extends ContextAwareBase {
       return;
     }
 
+    BufferedInputStream bis = null;
+    GZIPOutputStream gzos = null;
     try {
-      FileOutputStream fos = new FileOutputStream(nameOfgzedFile);
-      GZIPOutputStream gzos = new GZIPOutputStream(fos);
-      FileInputStream fis = new FileInputStream(nameOfFile2gz);
+      bis = new BufferedInputStream(new FileInputStream(nameOfFile2gz));
+      gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile));
       byte[] inbuf = new byte[8102];
       int n;
 
-      while ((n = fis.read(inbuf)) != -1) {
+      while ((n = bis.read(inbuf)) != -1) {
         gzos.write(inbuf, 0, n);
       }
 
-      fis.close();
+      bis.close();
+      bis = null;
       gzos.close();
+      gzos = null;
 
       if (!file2gz.delete()) {
         addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].",
@@ -185,6 +210,21 @@ public class Compressor extends ContextAwareBase {
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
           + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
+    } finally {
+      if(bis != null) {
+        try {
+          bis.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
+      if(gzos != null) {
+        try {
+          gzos.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
     }
   }
 
