@@ -36,7 +36,6 @@ public class LevelToSyslogSeverity {
     case Level.INFO_INT:
       return SyslogConstants.INFO_SEVERITY;
     case Level.DEBUG_INT:
-      return SyslogConstants.DEBUG_SEVERITY;
     case Level.TRACE_INT:
       return SyslogConstants.DEBUG_SEVERITY;
     default:

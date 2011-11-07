@@ -36,6 +36,7 @@ class SequenceToRegex4SDF {
   String toRegex() {
     switch (c) {
     case 'G':
+    case 'z':
       return ".*";
     case 'M':
       if (occurrences >= 3) {
@@ -61,8 +62,6 @@ class SequenceToRegex4SDF {
       return ".{2,12}";
     case 'a':
       return ".{2}";
-    case 'z':
-      return ".*";
     case 'Z':
       return "(\\+|-)\\d{4}";
     case '.':

@@ -69,7 +69,6 @@ public class OptionTokenizer {
             case '\t':
             case '\r':
             case '\n':
-              break;
             case COMMA_CHAR:
               break;
             case SINGLE_QUOTE_CHAR:
