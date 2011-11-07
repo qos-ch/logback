@@ -378,7 +378,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * The default size of child list arrays. The JDK 1.5 default is 10. We use a
    * smaller value to save a little space.
    */
-  static private final int DEFAULT_CHILD_ARRAY_SIZE = 5;
+  private static final int DEFAULT_CHILD_ARRAY_SIZE = 5;
 
   Logger createChildByName(final String childName) {
     int i_index = getSeparatorIndexOf(childName, this.name.length() + 1);
@@ -510,11 +510,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
   }
 
-  final public boolean isDebugEnabled() {
+  public final boolean isDebugEnabled() {
     return isDebugEnabled(null);
   }
 
-  final public boolean isDebugEnabled(Marker marker) {
+  public final boolean isDebugEnabled(Marker marker) {
     final FilterReply decision = callTurboFilters(marker, Level.DEBUG);
     if (decision == FilterReply.NEUTRAL) {
       return effectiveLevelInt <= Level.DEBUG_INT;
@@ -527,19 +527,19 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     }
   }
 
-  final public void debug(String msg) {
+  public final void debug(String msg) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, null);
   }
 
-  final public void debug(String format, Object arg) {
+  public final void debug(String format, Object arg) {
     filterAndLog_1(FQCN, null, Level.DEBUG, format, arg, null);
   }
 
-  final public void debug(String format, Object arg1, Object arg2) {
+  public final void debug(String format, Object arg1, Object arg2) {
     filterAndLog_2(FQCN, null, Level.DEBUG, format, arg1, arg2, null);
   }
 
-  final public void debug(String format, Object[] argArray) {
+  public final void debug(String format, Object[] argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, format, argArray, null);
   }
 

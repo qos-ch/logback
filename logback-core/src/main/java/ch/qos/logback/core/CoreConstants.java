@@ -40,38 +40,38 @@ public class CoreConstants {
   /**
    * Time format used in Common Log Format
    */
-  static public final String CLF_DATE_PATTERN = "dd/MM/yyyy:HH:mm:ss Z";
+  public static final String CLF_DATE_PATTERN = "dd/MM/yyyy:HH:mm:ss Z";
 
   /**
    * The key used in locating the evaluator map in context's object map.
    */
-  static public final String EVALUATOR_MAP = "EVALUATOR_MAP";
+  public static final String EVALUATOR_MAP = "EVALUATOR_MAP";
 
   /**
    * By convention, we assume that the static method named "valueOf" taking
    * a string argument can restore a given object from its string
    * representation.
    */
-  static public final String VALUE_OF = "valueOf";
+  public static final String VALUE_OF = "valueOf";
 
   /**
    * An empty string.
    */
-  public final static String EMPTY_STRING = "";
+  public static final String EMPTY_STRING = "";
 
   /**
    * An empty string array.
    */
-  public final static String[] EMPTY_STRING_ARRAY = new String[]{};
+  public static final String[] EMPTY_STRING_ARRAY = new String[]{};
 
   /**
    * An empty Class array.
    */
-  public final static Class<?>[] EMPTY_CLASS_ARRAY = new Class[]{};
-  public final static String CAUSED_BY = "Caused by: ";
-  public final static String WRAPPED_BY = "Wrapped by: ";
+  public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[]{};
+  public static final String CAUSED_BY = "Caused by: ";
+  public static final String WRAPPED_BY = "Wrapped by: ";
 
-  public final static char PERCENT_CHAR = '%';
+  public static final char PERCENT_CHAR = '%';
   public static final char LEFT_PARENTHESIS_CHAR = '(';
   public static final char RIGHT_PARENTHESIS_CHAR = ')';
 
@@ -101,20 +101,20 @@ public class CoreConstants {
 
 
   // the max number of times an error should be reported
-  static public final int MAX_ERROR_COUNT = 4;
+  public static final int MAX_ERROR_COUNT = 4;
 
 
-  static public final char DOT = '.';
-  static public final char TAB = '\t';
-  static public final char DOLLAR = '$';
+  public static final char DOT = '.';
+  public static final char TAB = '\t';
+  public static final char DOLLAR = '$';
 
-  static public final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
+  public static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
 
-  static public final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
-  static public final String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
+  public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
+  public static final String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
 
-  static public final String SAFE_JORAN_CONFIGURATION = "SAFE_JORAN_CONFIGURATION";
-  static public final String XML_PARSING = "XML_PARSING";
+  public static final String SAFE_JORAN_CONFIGURATION = "SAFE_JORAN_CONFIGURATION";
+  public static final String XML_PARSING = "XML_PARSING";
 
 
 
@@ -140,5 +140,5 @@ public class CoreConstants {
 
   public static final String CONTEXT_SCOPE_VALUE = "context";
 
-  final public static String RESET_MSG_PREFIX = "Will reset and reconfigure context ";
+  public static final String RESET_MSG_PREFIX = "Will reset and reconfigure context ";
 }

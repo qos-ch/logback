@@ -43,7 +43,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   protected Interpreter interpreter;
 
-  final public void doConfigure(URL url) throws JoranException {
+  public final void doConfigure(URL url) throws JoranException {
     try {
       informContextOfURLUsedForConfiguration(getContext(), url);
       URLConnection urlConnection = url.openConnection();
@@ -61,11 +61,11 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
   }
 
-  final public void doConfigure(String filename) throws JoranException {
+  public final void doConfigure(String filename) throws JoranException {
     doConfigure(new File(filename));
   }
 
-  final public void doConfigure(File file) throws JoranException {
+  public final void doConfigure(File file) throws JoranException {
     FileInputStream fis = null;
     try {
       informContextOfURLUsedForConfiguration(getContext(), file.toURI().toURL());
@@ -88,17 +88,17 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
   }
 
-  static public void informContextOfURLUsedForConfiguration(Context context, URL url) {
+  public static void informContextOfURLUsedForConfiguration(Context context, URL url) {
     ConfigurationWatchListUtil.setMainWatchURL(context, url);
   }
 
-  final public void doConfigure(InputStream inputStream) throws JoranException {
+  public final void doConfigure(InputStream inputStream) throws JoranException {
     doConfigure(new InputSource(inputStream));
   }
 
-  abstract protected void addInstanceRules(RuleStore rs);
+  protected abstract void addInstanceRules(RuleStore rs);
 
-  abstract protected void addImplicitRules(Interpreter interpreter);
+  protected abstract void addImplicitRules(Interpreter interpreter);
 
   protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
 
@@ -120,7 +120,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   // this is the most inner form of doConfigure whereto other doConfigure
   // methods ultimately delegate
-  final public void doConfigure(final InputSource inputSource)
+  public final void doConfigure(final InputSource inputSource)
           throws JoranException {
 
     long threshold = System.currentTimeMillis();
