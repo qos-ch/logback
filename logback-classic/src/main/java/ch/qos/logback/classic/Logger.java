@@ -130,7 +130,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return name;
   }
 
-  private final boolean isRootLogger() {
+  private boolean isRootLogger() {
     // only the root logger has a null parent
     return parent == null;
   }
@@ -405,7 +405,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * logging by about 20 nanoseconds.
    */
 
-  private final void filterAndLog_0_Or3Plus(final String localFQCN,
+  private void filterAndLog_0_Or3Plus(final String localFQCN,
       final Marker marker, final Level level, final String msg,
       final Object[] params, final Throwable t) {
 
@@ -424,7 +424,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     buildLoggingEventAndAppend(localFQCN, marker, level, msg, params, t);
   }
 
-  private final void filterAndLog_1(final String localFQCN,
+  private void filterAndLog_1(final String localFQCN,
       final Marker marker, final Level level, final String msg,
       final Object param, final Throwable t) {
 
@@ -443,7 +443,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
         new Object[] { param }, t);
   }
 
-  private final void filterAndLog_2(final String localFQCN,
+  private void filterAndLog_2(final String localFQCN,
       final Marker marker, final Level level, final String msg,
       final Object param1, final Object param2, final Throwable t) {
 

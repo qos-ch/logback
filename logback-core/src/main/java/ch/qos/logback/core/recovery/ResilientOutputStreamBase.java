@@ -35,7 +35,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
   protected OutputStream os;
   protected boolean presumedClean = true;
 
-  final private boolean isPresumedInError() {
+  private boolean isPresumedInError() {
     // existence of recoveryCoordinator indicates failed state
     return (recoveryCoordinator != null && !presumedClean);
   }
@@ -88,7 +88,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
 
   abstract OutputStream openNewOutputStream() throws IOException;
 
-  final private void postSuccessfulWrite() {
+  private void postSuccessfulWrite() {
     if (recoveryCoordinator != null) {
       recoveryCoordinator = null;
       statusCount = 0;

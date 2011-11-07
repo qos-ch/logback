@@ -47,10 +47,10 @@ public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
   }
 
   /**
-   * If the decision is <code>{@link #DENY}</code>, then the event will be
-   * dropped. If the decision is <code>{@link #NEUTRAL}</code>, then the next
+   * If the decision is <code>{@link FilterReply#DENY}</code>, then the event will be
+   * dropped. If the decision is <code>{@link FilterReply#NEUTRAL}</code>, then the next
    * filter, if any, will be invoked. If the decision is
-   * <code>{@link #ACCEPT}</code> then the event will be logged without
+   * <code>{@link FilterReply#ACCEPT}</code> then the event will be logged without
    * consulting with other filters in the chain.
    * 
    * @param event
