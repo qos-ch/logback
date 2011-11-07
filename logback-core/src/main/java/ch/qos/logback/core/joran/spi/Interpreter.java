@@ -167,14 +167,14 @@ public class Interpreter {
     setDocumentLocator(be.locator);
 
     String body = be.getText();
-    List applicableActionList = (List) actionListStack.peek();
+    List applicableActionList = actionListStack.peek();
 
     if (body != null) {
       body = body.trim();
-    }
-    if (body.length() > 0) {
-      // System.out.println("calling body method with ["+body+ "]");
-      callBodyAction(applicableActionList, body);
+      if (body.length() > 0) {
+        // System.out.println("calling body method with ["+body+ "]");
+        callBodyAction(applicableActionList, body);
+      }
     }
   }
 
