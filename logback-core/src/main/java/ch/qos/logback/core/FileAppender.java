@@ -105,7 +105,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
       addInfo("File property is set to [" + fileName + "]");
 
       if (prudent) {
-        if (isAppend() == false) {
+        if (!isAppend()) {
           setAppend(true);
           addWarn("Setting \"Append\" property to true on account of \"Prudent\" mode");
         }
@@ -183,7 +183,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     this.append = append;
   }
 
-  final private void safeWrite(E event) throws IOException {
+  private void safeWrite(E event) throws IOException {
     ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) getOutputStream();
     FileChannel fileChannel = resilientFOS.getChannel();
     if (fileChannel == null) {

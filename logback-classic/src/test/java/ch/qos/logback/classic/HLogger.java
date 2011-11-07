@@ -87,7 +87,7 @@ public class HLogger extends MarkerIgnoringBase {
     return name;
   }
 
-  private final boolean isRootLogger() {
+  private boolean isRootLogger() {
     // only the root logger has a null parent
     return parent == null;
   }
