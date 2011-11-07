@@ -60,7 +60,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
   }
 
   /**
-   * @see ch.qos.logback.classic.db.ConnectionSource#getConnection()
+   * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
    */
   public Connection getConnection() throws SQLException {
     if (dataSource == null) {

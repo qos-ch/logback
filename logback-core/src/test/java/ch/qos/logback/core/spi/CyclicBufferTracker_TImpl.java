@@ -96,7 +96,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     }
   }
 
-  final private boolean isEntryStale(TEntry entry, long now) {
+  private boolean isEntryStale(TEntry entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 

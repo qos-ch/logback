@@ -145,7 +145,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
     return map.size();
   }
 
-  final private boolean isEntryStale(Entry entry, long now) {
+  private boolean isEntryStale(Entry entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 

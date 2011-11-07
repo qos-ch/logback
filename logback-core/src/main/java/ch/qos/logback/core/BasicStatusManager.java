@@ -50,7 +50,7 @@ public class BasicStatusManager implements StatusManager {
   /**
    * Add a new status object.
    * 
-   * @param Status
+   * @param newStatus
    *                the status message to add
    */
   public void add(Status newStatus) {

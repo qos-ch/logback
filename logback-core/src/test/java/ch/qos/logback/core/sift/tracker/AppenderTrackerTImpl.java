@@ -85,7 +85,7 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
 
   }
 
-  final private boolean isEntryStale(TEntry entry, long now) {
+  private boolean isEntryStale(TEntry entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 

@@ -107,7 +107,7 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
   }
   
   
-  final private boolean isEntryStale(Entry entry, long now) {
+  private boolean isEntryStale(Entry entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 
