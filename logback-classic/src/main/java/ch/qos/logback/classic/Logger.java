@@ -821,25 +821,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   public void log(Marker marker, String fqcn, int levelInt, String message,
       Object[] argArray, Throwable t) {
     Level level = null;
-    switch (levelInt) {
-    case LocationAwareLogger.TRACE_INT:
-      level = Level.TRACE;
-      break;
-    case LocationAwareLogger.DEBUG_INT:
-      level = Level.DEBUG;
-      break;
-    case LocationAwareLogger.INFO_INT:
-      level = Level.INFO;
-      break;
-    case LocationAwareLogger.WARN_INT:
-      level = Level.WARN;
-      break;
-    case LocationAwareLogger.ERROR_INT:
-      level = Level.ERROR;
-      break;
-    default:
-      throw new IllegalArgumentException(levelInt + " not a valid level value");
-    }
+    level = Level.locationAwareLoggerIntegerToLevel(levelInt);
     filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
   }
 

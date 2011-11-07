@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic;
 
+import org.slf4j.spi.LocationAwareLogger;
+
 /**
  * Defines the set of levels recognized by logback-classic, that is {@link #OFF},
  * {@link #ERROR}, {@link #WARN}, {@link #INFO}, {@link #DEBUG},
@@ -88,6 +90,38 @@ public final class Level implements java.io.Serializable {
   private Level(int levelInt, String levelStr) {
     this.levelInt = levelInt;
     this.levelStr = levelStr;
+  }
+
+  /**
+   * Convert one of the integer values defined in {@link LocationAwareLogger}
+   * interface to an instance of this class, i.e. a Level.
+   * @param levelInt An integer value representing a level as defined in LocationAwareLogger
+   * @return an instance of this class, i.e. a Level.
+   *
+   * @since 1.0.1
+   */
+  public static Level locationAwareLoggerIntegerToLevel(int levelInt) {
+    Level level;
+    switch (levelInt) {
+    case LocationAwareLogger.TRACE_INT:
+      level = TRACE;
+      break;
+    case LocationAwareLogger.DEBUG_INT:
+      level = DEBUG;
+      break;
+    case LocationAwareLogger.INFO_INT:
+      level = INFO;
+      break;
+    case LocationAwareLogger.WARN_INT:
+      level = WARN;
+      break;
+    case LocationAwareLogger.ERROR_INT:
+      level = ERROR;
+      break;
+    default:
+      throw new IllegalArgumentException(levelInt + " not a valid level value");
+    }
+    return level;
   }
 
   /**
