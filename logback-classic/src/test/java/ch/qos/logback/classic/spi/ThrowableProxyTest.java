@@ -14,9 +14,12 @@
 package ch.qos.logback.classic.spi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeNotNull;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +29,25 @@ public class ThrowableProxyTest {
 
   StringWriter sw = new StringWriter();
   PrintWriter pw = new PrintWriter(sw);
+
+  private static final Method ADD_SUPPRESSED_METHOD;
+
+  static {
+    Method method = null;
+    try {
+      method = Throwable.class.getMethod("addSuppressed", Throwable.class);
+    } catch (NoSuchMethodException e) {
+      // ignore, will get thrown in Java < 7
+    }
+    ADD_SUPPRESSED_METHOD = method;
+  }
+
+  private static void addSuppressed(Throwable outer, Throwable suppressed) throws InvocationTargetException, IllegalAccessException
+  {
+    if(ADD_SUPPRESSED_METHOD != null) {
+      ADD_SUPPRESSED_METHOD.invoke(outer, suppressed);
+    }
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -69,6 +91,40 @@ public class ThrowableProxyTest {
       w = new Exception("wrapping", e);
     }
     verify(w);
+  }
+
+  @Test
+  public void suppressed() throws InvocationTargetException, IllegalAccessException
+  {
+    assumeNotNull(ADD_SUPPRESSED_METHOD); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(e, fooException);
+      addSuppressed(e, barException);
+      ex = e;
+    }
+    verify(ex);
+  }
+
+  @Test
+  public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException
+  {
+    assumeNotNull(ADD_SUPPRESSED_METHOD); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      ex=new Exception("Wrapper", e);
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(ex, fooException);
+      addSuppressed(e, barException);
+    }
+    verify(ex);
   }
 
   // see also http://jira.qos.ch/browse/LBCLASSIC-216
