@@ -178,11 +178,10 @@ public class DBAppenderHSQLTest  {
     rs.close();
     stmt.close();
   }
-  
+
 
   private ILoggingEvent createLoggingEvent() {
-    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
-        Level.DEBUG, "test message", new Exception("test Ex"), new Integer[] {diff});
-    return le;
+    return new LoggingEvent(this.getClass().getName(), logger,
+        Level.DEBUG, "test message", new Exception("test Ex"), new Integer[]{diff});
   }
 }

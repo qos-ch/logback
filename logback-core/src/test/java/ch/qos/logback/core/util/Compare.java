@@ -37,8 +37,7 @@ public class Compare {
   static BufferedReader gzFileToBufferedReader(String file) throws IOException {
     FileInputStream fis = new FileInputStream(file);
     GZIPInputStream gzis = new GZIPInputStream(fis);
-    BufferedReader br = new BufferedReader(new InputStreamReader(gzis));
-    return br;
+    return new BufferedReader(new InputStreamReader(gzis));
   }
   
   public static boolean gzFileCompare(String file1, String file2) throws IOException {

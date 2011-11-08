@@ -25,8 +25,6 @@ public class TouchAction extends Action {
 
   public static final String KEY = "touched";
   
-  public TouchAction() {
-  }
   /**
    * Instantiates an layout of the given class and sets its name.
    *

@@ -59,9 +59,6 @@ public final class LogbackMDCAdapter implements MDCAdapter {
   // keeps track of the last operation performed
   final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
 
-  public LogbackMDCAdapter() {
-  }
-
   private Integer getAndSetLastOperation(int op) {
     Integer lastOp = lastOperation.get();
     lastOperation.set(op);

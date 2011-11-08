@@ -53,9 +53,6 @@ public class JMSTopicAppender extends JMSAppenderBase<ILoggingEvent> {
   
   private PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
   
-  public JMSTopicAppender() {
-  }
-
   /**
    * The <b>TopicConnectionFactoryBindingName</b> option takes a string value.
    * Its value will be used to lookup the appropriate

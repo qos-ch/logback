@@ -53,9 +53,6 @@ public class JMSQueueAppender extends JMSAppenderBase<ILoggingEvent> {
 
   private PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
   
-  public JMSQueueAppender() {
-  }
-
   /**
    * The <b>QueueConnectionFactoryBindingName</b> option takes a string value.
    * Its value will be used to lookup the appropriate

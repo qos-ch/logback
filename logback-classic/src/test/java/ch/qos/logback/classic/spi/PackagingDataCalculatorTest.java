@@ -101,9 +101,8 @@ public class PackagingDataCalculatorTest {
 
   private ClassLoader makeBogusClassLoader() throws MalformedURLException {
     ClassLoader currentClassLoader = this.getClass().getClassLoader();
-    BogusClassLoader bcl = new BogusClassLoader(new URL[] {},
+    return new BogusClassLoader(new URL[] {},
         currentClassLoader);
-    return bcl;
   }
 
   @Test

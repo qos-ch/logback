@@ -25,9 +25,6 @@ public class IntegerTokenConverter extends DynamicConverter implements MonoTyped
 
   public final static String CONVERTER_KEY = "i";
   
-  public IntegerTokenConverter() {
-  }
-
   public String convert(int i) {
     return Integer.toString(i);
   }

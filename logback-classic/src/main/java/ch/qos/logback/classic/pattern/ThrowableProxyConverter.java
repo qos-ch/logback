@@ -154,10 +154,9 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     int commonFrames = tp.getCommonFrames();
 
     boolean unrestrictedPrinting = lengthOption > stepArray.length;
-    int length = (unrestrictedPrinting) ? stepArray.length : lengthOption;
 
 
-    int maxIndex = length;
+    int maxIndex = (unrestrictedPrinting) ? stepArray.length : lengthOption;
     if (commonFrames > 0 && unrestrictedPrinting) {
       maxIndex -= commonFrames;
     }

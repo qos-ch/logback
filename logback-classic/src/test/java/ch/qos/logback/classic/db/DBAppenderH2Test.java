@@ -202,9 +202,8 @@ public class DBAppenderH2Test {
 
 
   private ILoggingEvent createLoggingEvent(String msg, Object[] args) {
-    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), logger,
+    return new LoggingEvent(this.getClass().getName(), logger,
             Level.DEBUG, msg, new Exception("test Ex"), args);
-    return le;
   }
 
 

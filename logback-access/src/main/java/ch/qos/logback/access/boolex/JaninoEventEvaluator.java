@@ -32,10 +32,6 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
   }
 
 
-  public JaninoEventEvaluator() {
-
-  }
-
   protected String getDecoratedExpression() {
     String expression = getExpression();
     if (!expression.contains("return")) {

@@ -215,9 +215,8 @@ public class HTMLLayoutTest {
   }
 
   private LoggingEvent createLoggingEvent() {
-    LoggingEvent le = new LoggingEvent(this.getClass().getName(), root,
+    return new LoggingEvent(this.getClass().getName(), root,
         Level.DEBUG, "test message", null, null);
-    return le;
   }
 
   Document parseOutput(String output) throws Exception {

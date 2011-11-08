@@ -67,8 +67,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
   public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
     Entry existing = map.get(key);
     if (existing == null) {
-      CyclicBuffer<E> cb = processNewEntry(key, timestamp);
-      return cb;
+      return processNewEntry(key, timestamp);
     } else {
       existing.setTimestamp(timestamp);
       moveToTail(existing);

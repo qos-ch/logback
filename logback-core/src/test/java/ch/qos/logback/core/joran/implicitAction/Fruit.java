@@ -22,9 +22,6 @@ public class Fruit {
   List<String> textList = new ArrayList<String>();
   List<Cake> cakeList = new ArrayList<Cake>();
   
-  public Fruit() {
-  }
-
   public void setName(String n) {
     this.name = n;
   }

@@ -25,8 +25,6 @@ public class HelloAction extends Action {
 
   static final public String PROPERTY_KEY = "name";
   
-  public HelloAction() {
-  }
   /**
    * Instantiates an layout of the given class and sets its name.
    *
