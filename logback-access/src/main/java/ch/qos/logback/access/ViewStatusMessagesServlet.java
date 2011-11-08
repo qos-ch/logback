@@ -29,9 +29,8 @@ public class ViewStatusMessagesServlet extends ViewStatusMessagesServletBase {
       HttpServletResponse resp) {
 
     ServletContext sc = getServletContext();
-    StatusManager result = (StatusManager) sc
+    return (StatusManager) sc
         .getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
-    return result;
     
 //    if (result != null) {
 //      System.out.println("from ServletContext");

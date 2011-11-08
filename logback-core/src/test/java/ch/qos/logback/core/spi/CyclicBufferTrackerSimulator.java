@@ -48,8 +48,7 @@ public class CyclicBufferTrackerSimulator {
 
   private String getRandomKeyStr() {
     int ri = randomKeyGen.nextInt();
-    String s = String.format("%X", ri);
-    return s;
+    return String.format("%X", ri);
   }
 
   void buildScenario(int simLen) {

@@ -55,8 +55,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     } else {
       // Trim spaces from both ends. The users probably does not want
       // trailing spaces in file names.
-      String val = file.trim();
-      fileName = val;
+      fileName = file.trim();
     }
   }
 
