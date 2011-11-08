@@ -134,4 +134,9 @@ public class ContextBase implements Context {
   public ExecutorService getExecutorService() {
     return  executorService;
   }
+
+  @Override
+  public String toString() {
+    return name;
+  }
 }

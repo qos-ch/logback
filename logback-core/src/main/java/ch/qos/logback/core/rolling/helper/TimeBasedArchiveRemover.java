@@ -35,4 +35,8 @@ public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
       }
     }
   }
+
+  public String toString() {
+    return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
+  }
 }

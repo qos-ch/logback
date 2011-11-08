@@ -31,6 +31,17 @@
 
     <h3>xx of November, 2011 - Release of version 1.0.1</h3>
 
+    <p>Added new property the <span
+    class="option">cleanHistoryOnStart</span> to <a
+    href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>.
+    By setting this property to <code>true</code>, history removal
+    will work as expected even in the case of short lived
+    applications. This fixes <a
+    href="http://jira.qos.ch/browse/LBCORE-226">LBCORE-226</a>
+    reported by Bruce E. Irving.
+    </p>
+
+
     <p><code>RequestLogImpl</code> can now lookup for the
     logback-access configuration file as a class path resource. This
     feature was requested in <a

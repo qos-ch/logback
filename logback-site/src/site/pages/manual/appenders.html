@@ -818,6 +818,24 @@ public interface RollingPolicy extends LifeCycle {
        archiving will be removed as appropriate.
        </td>
      </tr>
+
+     <tr  class="b">
+       <td><span class="option"><b>cleanHistoryOnStart</b></span></td>
+       <td>boolean</td>
+       <td>
+         <p>If set to true, archive removal will be executed on
+         appender start up. By default this property is set to
+         false. </p>
+
+         <p>Archive removal is normally performed during roll
+         over. However, some applications may not live long enough for
+         roll over to be triggered. It follows that for such
+         short-lived applications archive removal may never get a
+         chance to execute.  By setting <span
+         class="option">cleanHistoryOnStart</span> to true, archive
+         removal is performed at appender start up.</p>
+       </td>
+     </tr>
    </table>
 
 

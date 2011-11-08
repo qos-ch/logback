@@ -93,6 +93,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
       archiveRemover.setMaxHistory(maxHistory);
       if(cleanHistoryOnStart) {
+        addInfo("Cleaning on start up");
         archiveRemover.clean(new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
       }
     }
