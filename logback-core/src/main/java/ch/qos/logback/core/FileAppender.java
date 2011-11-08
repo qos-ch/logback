@@ -46,12 +46,6 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
   private boolean prudent = false;
 
   /**
-   * As in most cases, the default constructor does nothing.
-   */
-  public FileAppender() {
-  }
-
-  /**
    * The <b>File</b> property takes a string value which should be the name of
    * the file to append to.
    */
@@ -61,8 +55,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     } else {
       // Trim spaces from both ends. The users probably does not want
       // trailing spaces in file names.
-      String val = file.trim();
-      fileName = val;
+      fileName = file.trim();
     }
   }
 

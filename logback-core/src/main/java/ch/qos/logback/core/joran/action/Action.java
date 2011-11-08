@@ -22,18 +22,18 @@ import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * 
+ *
  * Most of the work for configuring logback is done by Actions.
- * 
+ *
  * <p>Action methods are invoked as the XML file is parsed.
- * 
+ *
  * <p>This class is largely inspired from the relevant class in the
  * commons-digester project of the Apache Software Foundation.
- * 
+ *
  * @author Craig McClanahan
  * @author Christopher Lenz
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public abstract class Action extends ContextAwareBase {
 
@@ -96,8 +96,7 @@ public abstract class Action extends ContextAwareBase {
   }
 
   protected String getLineColStr(InterpretationContext ic) {
-    String line = "line: " + getLineNumber(ic) + ", column: "
+    return "line: " + getLineNumber(ic) + ", column: "
         + getColumnNumber(ic);
-    return line;
   }
 }

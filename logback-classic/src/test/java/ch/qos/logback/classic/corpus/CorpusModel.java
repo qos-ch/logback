@@ -242,9 +242,8 @@ public class CorpusModel {
       throwableProxy = ThrowableProxyVO.build(new ThrowableProxy(t));
       pupulateWithPackagingData(throwableProxy.getStackTraceElementProxyArray());
     }
-    LogStatement logStatement = new LogStatement(loggerName, randomLevel, mat,
+    return new LogStatement(loggerName, randomLevel, mat,
         throwableProxy);
-    return logStatement;
   }
 
   private Throwable getRandomThrowable(Level level) {

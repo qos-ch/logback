@@ -24,9 +24,6 @@ public class MDCConverter extends ClassicConverter {
   String key;
   private static final String EMPTY_STRING = "";
 
-  public MDCConverter() {
-  }
-
   @Override
   public void start() {
     key = getFirstOption();

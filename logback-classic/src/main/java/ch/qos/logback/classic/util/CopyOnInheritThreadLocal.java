@@ -33,8 +33,7 @@ public class CopyOnInheritThreadLocal extends
     if (parentValue == null) {
       return null;
     } else {
-      HashMap<String, String> hm = new HashMap<String, String>(parentValue);
-      return hm;
+      return new HashMap<String, String>(parentValue);
     }
   }
 

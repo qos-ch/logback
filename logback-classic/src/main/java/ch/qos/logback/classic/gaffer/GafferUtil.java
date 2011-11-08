@@ -49,8 +49,7 @@ public class GafferUtil {
     try {
       Class gcClass = Class.forName(ClassicConstants.GAFFER_CONFIGURATOR_FQCN);
       Constructor c = gcClass.getConstructor(LoggerContext.class);
-      GafferConfigurator gafferConfigurator = (GafferConfigurator) c.newInstance(loggerContext);
-      return gafferConfigurator;
+      return (GafferConfigurator) c.newInstance(loggerContext);
     } catch (ClassNotFoundException e) {
       addError(loggerContext, origin, ERROR_MSG, e);
     } catch (NoSuchMethodException e) {

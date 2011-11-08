@@ -37,9 +37,6 @@ public class DBAppenderHSQLTestFixture  {
   // boolean isNetwork = true;
   HsqlMode mode = HsqlMode.MEM;
 
-  public DBAppenderHSQLTestFixture() {
-  }
-
   public void setUp() throws SQLException {
 
     switch (mode) {

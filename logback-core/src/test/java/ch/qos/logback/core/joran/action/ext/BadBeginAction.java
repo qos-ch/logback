@@ -30,9 +30,6 @@ public class BadBeginAction extends Action {
   
   int type;
   
-  public BadBeginAction() {
-  }
-
   public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
     
     String exType = attributes.getValue(EXCEPTION_TYPE);

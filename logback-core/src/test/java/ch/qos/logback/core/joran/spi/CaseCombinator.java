@@ -69,8 +69,7 @@ public class CaseCombinator {
       return c;
     }
     if ('a' <= c && c <= 'z') {
-      int ci = c;
-      return (char) (ci + 'A' - 'a');
+      return (char) ((int) c + 'A' - 'a');
     }
     // code should never reach this point
     return c;
@@ -81,8 +80,7 @@ public class CaseCombinator {
       return c;
     }
     if ('A' <= c && c <= 'Z') {
-      int ci = c;
-      return (char) (ci + 'a' - 'A');
+      return (char) ((int) c + 'a' - 'A');
     }
     // code should never reach this point
     return c;

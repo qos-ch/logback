@@ -50,10 +50,9 @@ public class ExtendedThrowableProxyConverterTest {
   }
 
   private ILoggingEvent createLoggingEvent(Throwable t) {
-    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
+    return new LoggingEvent(this.getClass().getName(), lc
         .getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t,
         null);
-    return le;
   }
 
   @Test

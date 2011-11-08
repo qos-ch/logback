@@ -23,9 +23,6 @@ public class EchoEncoder<E> extends EncoderBase<E> {
   String fileHeader;
   String fileFooter;
 
-  public EchoEncoder() {
-  }
-
   public void doEncode(E event) throws IOException {
     String val = event + CoreConstants.LINE_SEPARATOR;
     outputStream.write(val.getBytes());

@@ -131,8 +131,7 @@ public class MultiThreadedRollingTest {
   }
 
   OutputStream openScript() throws IOException {
-    FileOutputStream fos = new FileOutputStream(outputDirStr + VERIFY_SH);
-    return fos;
+    return new FileOutputStream(outputDirStr + VERIFY_SH);
   }
 
   @Test

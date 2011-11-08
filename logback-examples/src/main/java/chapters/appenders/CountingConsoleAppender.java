@@ -27,9 +27,6 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   
   PatternLayoutEncoder encoder;
   
-  public CountingConsoleAppender() {
-  }
-
   public void setLimit(int limit) {
     this.limit = limit;
   }

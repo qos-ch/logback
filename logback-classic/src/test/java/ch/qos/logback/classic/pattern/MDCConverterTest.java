@@ -70,9 +70,8 @@ public class MDCConverterTest {
   }
 
   private ILoggingEvent createLoggingEvent() {
-    ILoggingEvent le = new LoggingEvent(this.getClass().getName(), lc
+    return new LoggingEvent(this.getClass().getName(), lc
         .getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null,
         null);
-    return le;
   }
 }

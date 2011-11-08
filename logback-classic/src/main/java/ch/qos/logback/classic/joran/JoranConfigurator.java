@@ -35,9 +35,6 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  */
 public class JoranConfigurator extends JoranConfiguratorBase {
 
-  public JoranConfigurator() {
-  }
-
   @Override
   public void addInstanceRules(RuleStore rs) {
     // parent rules already added
