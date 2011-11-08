@@ -50,9 +50,6 @@ public class PackagingDataCalculator {
   }
 
 
-  public PackagingDataCalculator() {
-  }
-
   public void calculate(IThrowableProxy tp) {
     while (tp != null) {
       populateFrames(tp.getStackTraceElementProxyArray());

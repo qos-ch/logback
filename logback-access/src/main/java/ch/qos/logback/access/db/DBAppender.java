@@ -66,9 +66,6 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
     GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
   }
   
-  public DBAppender() {
-  }
-
   @Override
   protected void subAppend(IAccessEvent event, Connection connection,
       PreparedStatement insertStatement) throws Throwable {

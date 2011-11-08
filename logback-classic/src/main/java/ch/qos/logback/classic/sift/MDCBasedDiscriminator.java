@@ -35,9 +35,6 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
   private String defaultValue;
   private boolean started = false;
 
-  public MDCBasedDiscriminator() {
-  }
-
   /**
    * Return the value associated with an MDC entry designated by the Key
    * property. If that value is null, then return the value assigned to the

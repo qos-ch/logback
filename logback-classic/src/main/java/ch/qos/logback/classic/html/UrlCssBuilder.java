@@ -27,9 +27,6 @@ public class UrlCssBuilder implements CssBuilder {
 
   String url = "http://logback.qos.ch/css/classic.css";
   
-  public UrlCssBuilder() {  
-  }
-  
   public String getUrl() {
     return url;
   }

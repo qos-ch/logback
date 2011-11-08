@@ -21,10 +21,6 @@ public class Fruit {
   String name;
   List<String> textList = new ArrayList<String>();
   
-  public Fruit() {
-    // System.out.println("Fruit constructor called");
-  }
-
   public void setName(String name) {
     this.name = name;
   }
