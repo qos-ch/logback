@@ -81,7 +81,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
     }
     rfa1.stop
 
-    if (waitDuration != 0) {
+    if (waitDuration != NO_RESTART) {
       doRestart(testId, fileOptionIsSet, waitDuration);
     }
 
@@ -179,7 +179,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
 
   @Test
   def failed_rename: Unit = {
-    if(!Env.isWindows) null
+    if(!Env.isWindows) return
 
     var fos: FileOutputStream = null
     try {
