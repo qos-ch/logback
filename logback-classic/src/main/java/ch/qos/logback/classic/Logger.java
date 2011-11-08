@@ -820,8 +820,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
   public void log(Marker marker, String fqcn, int levelInt, String message,
       Object[] argArray, Throwable t) {
-    Level level = null;
-    level = Level.locationAwareLoggerIntegerToLevel(levelInt);
+    Level level = Level.fromLocationAwareLoggerInteger(levelInt);
     filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
   }
 
