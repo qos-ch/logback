@@ -15,14 +15,6 @@ import scala.collection.mutable.{Set, HashSet}
 import org.junit.{Ignore, Before, Test}
 import java.util.{Date, Calendar}
 
-/**
- * Created by IntelliJ IDEA.
- * User: ceki
- * Date: 29.08.11
- * Time: 18:08
- * To change this template use File | Settings | File Templates.
- */
-
 class TimeBasedRollingWithArchiveRemoval_STest {
   var context: Context = new ContextBase
   var encoder: EchoEncoder[AnyRef] = new EchoEncoder[AnyRef]
@@ -35,7 +27,8 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   val MILLIS_IN_MINUTE: Long = 60 * 1000
   val MILLIS_IN_HOUR: Long = 60 * MILLIS_IN_MINUTE
   val MILLIS_IN_DAY: Long = 24 * MILLIS_IN_HOUR
-  val MILLIS_IN_MONTH: Long = ((365.0 / 12) * MILLIS_IN_DAY).asInstanceOf[Long]
+  val MILLIS_IN_MONTH: Long = ((365.242199 / 12) * MILLIS_IN_DAY).asInstanceOf[Long]
+  val MONTHS_IN_YEAR = 12
 
   var diff: Int = _
   var randomOutputDir: String = _
@@ -58,35 +51,46 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     else datePattern.foldLeft(0)((count, c) => if (c == '/') count + 1 else count)
   }
 
-  def genMontlyRollover(maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int, numInactivityPeriods: Int) {
-    slashCount = computeSlashCount(MONTHLY_DATE_PATTERN)
-    doRollover(now, randomOutputDir + "clean-%d{" + MONTHLY_DATE_PATTERN + "}.txt", MILLIS_IN_MONTH, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods)
-    StatusPrinter.print(context)
-    check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity+numInactivityPeriods))
+  def generateDailyRollover(now: Long, maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int, numInactivityPeriods: Int) {
+    slashCount = computeSlashCount(DAILY_DATE_PATTERN)
+    doRollover(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods)
+    //StatusPrinter.print(context)
+    check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity + numInactivityPeriods))
   }
 
+
+  // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
+  // be conducted with daily rollover  not monthly
   @Test
-  def montlyRollover {
-//    genMontlyRollover(maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
-//    setUp
-//    genMontlyRollover(maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
-    setUp
-    genMontlyRollover(maxHistory = 6, simulatedNumberOfPeriods = 10, startInactivity = 3, numInactivityPeriods = 4)
-
+  def dailyRolloverWithInactivity20 {
+    generateDailyRollover(now, maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
   }
 
-  @Test def monthlyRolloverOverManyPeriods {
-    System.out.println("randomOutputDir=" + randomOutputDir)
+  @Test def dailyRolloverWithInactivity21 {
+    generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
+  }
+
+  @Test def dailyRolloverWithInactivity22 {
+    generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 10, startInactivity = 3, numInactivityPeriods = 4)
+  }
+
+
+  // test that the number of files at the end of the test is same as the expected number taking into account end dates
+  // near the beginning of a new year. This test has been run in a loop with start date varying over a two years
+  // with success.
+  @Test def monthlyRolloverOverManyPeriods() {
     slashCount = computeSlashCount(MONTHLY_CRONOLOG_DATE_PATTERN)
-    var numPeriods: Int = 40
-    var maxHistory: Int = 2
+    val numPeriods: Int = 40
+    val maxHistory: Int = 2
 
     val (startTime, endTime) = doRollover(now, randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods)
     val differenceInMonths = RollingCalendar.diffInMonths(startTime, endTime)
-    var indexOfStartPeriod: Int = Calendar.getInstance.get(Calendar.MONTH)
-    val withExtraFolder = extraFolder(differenceInMonths, 12, indexOfStartPeriod, maxHistory)
-    StatusPrinter.print(context)
-    check(expectedCountWithFolders(2, withExtraFolder))
+    val startTimeAsCalendar = Calendar.getInstance()
+    startTimeAsCalendar.setTimeInMillis(startTime)
+    val indexOfStartPeriod: Int = startTimeAsCalendar.get(Calendar.MONTH)
+    val withExtraFolder = extraFolder(differenceInMonths, MONTHS_IN_YEAR, indexOfStartPeriod, maxHistory)
+    //StatusPrinter.print(context)
+    check(expectedCountWithFolders(maxHistory, withExtraFolder))
   }
 
   @Test def dailyRollover {
@@ -140,8 +144,8 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     val maxHistory = 5
     val simulatedNumberOfPeriods = maxHistory * 4
     val (startTime, endTime) = doRollover(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY, maxHistory, 3)
-    doRollover(endTime+MILLIS_IN_DAY*7, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods)
-    checkDirPatternCompliance(maxHistory+1)
+    doRollover(endTime + MILLIS_IN_DAY * 7, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods)
+    checkDirPatternCompliance(maxHistory + 1)
   }
 
 
@@ -157,6 +161,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   def extraFolder(numPeriods: Int, periodsPerEra: Int, beginPeriod: Int, maxHistory: Int): Boolean = {
+    println("numPeriods=" + numPeriods + ", beginPeriod=" + beginPeriod + ", maxHistory=" + maxHistory)
     var valueOfLastMonth: Int = ((beginPeriod) + numPeriods) % periodsPerEra
     return (valueOfLastMonth < maxHistory)
   }
@@ -175,7 +180,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
 
   def waitForCompression(tbrp: TimeBasedRollingPolicy[AnyRef]): Unit = {
     if (tbrp.future != null && !tbrp.future.isDone) {
-      tbrp.future.get(800, TimeUnit.MILLISECONDS)
+      tbrp.future.get(1000, TimeUnit.MILLISECONDS)
     }
   }
 
@@ -210,7 +215,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
       }
     }
 
-    println("Last date"+new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
+    println("Last date" + new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
     waitForCompression(tbrp)
     rfa.stop
     (startTime, tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime)
@@ -221,8 +226,8 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   def expectedCountWithoutFoldersWithInactivity(maxHistory: Int, totalPeriods: Int, endOfInactivity: Int): Int = {
-    val availableHistory = totalPeriods - endOfInactivity;
-    val actualHistory =  scala.math.min(availableHistory, maxHistory+1)
+    val availableHistory = (totalPeriods + 1) - endOfInactivity;
+    val actualHistory = scala.math.min(availableHistory, maxHistory + 1)
     return actualHistory
   }
 
@@ -261,9 +266,10 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     val dir: File = new File(randomOutputDir)
     val fileList = new ListBuffer[File]
     findFilesInFolderRecursivelyByPatterMatch(dir, fileList, "clean")
-    var dirList = new ListBuffer[File]
+    val dirList = new ListBuffer[File]
     findAllFoldersInFolderRecursively(dir, dirList)
-    assertTrue("expectedDirCountMin=" + expectedDirCountMin + ", expectedDirCountMax=" + expectedDirCountMax + " actual value=" + dirList.size, expectedDirCountMin <= dirList.size && dirList.size <= expectedDirCountMax)
+    val msg = "expectedDirCountMin=" + expectedDirCountMin + ", expectedDirCountMax=" + expectedDirCountMax + " actual value=" + dirList.size
+    assertTrue(msg, expectedDirCountMin <= dirList.size && dirList.size <= expectedDirCountMax)
   }
 
   def check(expectedCount: Int): Unit = {
@@ -277,11 +283,11 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     val p: Pattern = Pattern.compile(regex)
     val set = new HashSet[String]
     for (f <- fileList) {
-      var n: String = f.getName
-      var m: Matcher = p.matcher(n)
+      val n: String = f.getName
+      val m: Matcher = p.matcher(n)
       m.matches
-      var begin: Int = m.start(1)
-      var reduced: String = n.substring(0, begin)
+      val begin: Int = m.start(1)
+      val reduced: String = n.substring(0, begin)
       set.add(reduced)
     }
     return set
