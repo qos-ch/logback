@@ -20,7 +20,7 @@ import ch.qos.logback.core.CoreConstants;
 
 /**
  * @author Tomasz Nurkiewicz
- * @since 2010-08-07, 14:07:10
+ * @since 0.9.30
  */
 public class RootCauseFirstThrowableProxyConverter extends ExtendedThrowableProxyConverter {
 
