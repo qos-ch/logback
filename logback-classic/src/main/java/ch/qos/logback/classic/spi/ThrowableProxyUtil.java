@@ -23,6 +23,9 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ThrowableProxyUtil {
 
+  public static final int REGULAR_EXCEPTION_INDENT = 1;
+  public static final int SUPPRESSED_EXCEPTION_INDENT = 2;
+
   public static void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
       ThrowableProxy parentTP) {
 
@@ -75,7 +78,7 @@ public class ThrowableProxyUtil {
   public static String asString(IThrowableProxy tp) {
     StringBuilder sb = new StringBuilder();
 
-    recursiveAppend(sb, null, 1, tp);
+    recursiveAppend(sb, null, REGULAR_EXCEPTION_INDENT, tp);
 
     return sb.toString();
   }
@@ -89,10 +92,10 @@ public class ThrowableProxyUtil {
     IThrowableProxy[] suppressed = tp.getSuppressed();
     if(suppressed != null) {
       for(IThrowableProxy current : suppressed) {
-        recursiveAppend(sb, CoreConstants.SUPPRESSED, 2, current);
+        recursiveAppend(sb, CoreConstants.SUPPRESSED, SUPPRESSED_EXCEPTION_INDENT, current);
       }
     }
-    recursiveAppend(sb, CoreConstants.CAUSED_BY, 1, tp.getCause());
+    recursiveAppend(sb, CoreConstants.CAUSED_BY, REGULAR_EXCEPTION_INDENT, tp.getCause());
   }
 
   private static void subjoinFirstLine(StringBuilder buf, String prefix, IThrowableProxy tp) {
@@ -123,11 +126,21 @@ public class ThrowableProxyUtil {
     subjoinPackagingData(sb, step);
   }
 
-  // not called anymore - but it is public
+  /**
+   * @param sb The StringBuilder the STEPs are appended to.
+   * @param tp the IThrowableProxy containing the STEPs.
+   * @deprecated Use subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) instead.
+   */
   public static void subjoinSTEPArray(StringBuilder sb, IThrowableProxy tp) {
-    subjoinSTEPArray(sb, 1, tp);
+    // not called anymore - but it is public
+    subjoinSTEPArray(sb, REGULAR_EXCEPTION_INDENT, tp);
   }
 
+  /**
+   * @param sb The StringBuilder the STEPs are appended to.
+   * @param indentLevel indentation level used for the STEPs, usually either REGULAR_EXCEPTION_INDENT or SUPPRESSED_EXCEPTION_INDENT.
+   * @param tp the IThrowableProxy containing the STEPs.
+   */
   private static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
