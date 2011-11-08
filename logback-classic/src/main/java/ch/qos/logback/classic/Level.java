@@ -95,14 +95,14 @@ public final class Level implements java.io.Serializable {
   /**
    * Returns the string representation of this Level.
    */
-  public final String toString() {
+  public String toString() {
     return levelStr;
   }
 
   /**
    * Returns the integer representation of this Level.
    */
-  public final int toInt() {
+  public int toInt() {
     return levelInt;
   }
 
@@ -111,7 +111,7 @@ public final class Level implements java.io.Serializable {
    *
    * @return This level's Integer mapping.
    */
-  public final Integer toInteger() {
+  public Integer toInteger() {
     switch (levelInt) {
       case ALL_INT:
         return ALL_INTEGER;
