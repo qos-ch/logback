@@ -34,9 +34,6 @@ public class ContextBasedDiscriminator extends ContextAwareBase implements
   private String defaultValue;
   private boolean started = false;
 
-  public ContextBasedDiscriminator() {
-  }
-
   /**
    * Return the name of the current context name as found in the logging event.
    */

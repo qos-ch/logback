@@ -73,10 +73,6 @@ public class JaninoEventEvaluator extends
     DEFAULT_PARAM_TYPE_LIST.add(Throwable.class);
   }
 
-  public JaninoEventEvaluator() {
-
-  }
-
   protected String getDecoratedExpression() {
     String expression = getExpression();
     if(!expression.contains("return")) {

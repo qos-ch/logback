@@ -36,9 +36,6 @@ public class ImplicitActionTest {
   FruitContext fruitContext = new FruitContext();
   SimpleConfigurator simpleConfigurator;
 
-  public ImplicitActionTest() {
-  }
-
   @Before
   public void setUp() throws Exception {
     fruitContext.setName("fruits");

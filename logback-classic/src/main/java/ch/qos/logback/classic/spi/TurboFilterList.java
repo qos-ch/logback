@@ -36,7 +36,7 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
    * ACCEPT or DENY, then that value is returned. If all of the filters return
    * NEUTRAL, then NEUTRAL is returned.
    */
-  public final FilterReply getTurboFilterChainDecision(final Marker marker,
+  public FilterReply getTurboFilterChainDecision(final Marker marker,
       final Logger logger, final Level level, final String format,
       final Object[] params, final Throwable t) {
     

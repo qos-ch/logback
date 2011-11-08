@@ -80,12 +80,11 @@ public class FileFilterUtil {
     if (!file.exists() || !file.isDirectory()) {
       return new File[0];
     }
-    File[] matchingFileArray = file.listFiles(new FilenameFilter() {
+    return file.listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.matches(stemRegex);
       }
     });
-    return matchingFileArray;
   }
 
   static public int findHighestCounter(File[] matchingFileArray, final String stemRegex) {
@@ -108,8 +107,7 @@ public class FileFilterUtil {
           + "] should match [" + lastFileName + "]");
     }
     String counterAsStr = m.group(1);
-    int counter = new Integer(counterAsStr).intValue();
-    return counter;
+    return new Integer(counterAsStr).intValue();
   }
 
   public static String slashify(String in) {

@@ -35,9 +35,6 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
   private String datePattern;
   private CachingDateFormatter cdf;
 
-  public DateTokenConverter() {
-  }
-
   public void start() {
     this.datePattern = getFirstOption();
     if (this.datePattern == null) {

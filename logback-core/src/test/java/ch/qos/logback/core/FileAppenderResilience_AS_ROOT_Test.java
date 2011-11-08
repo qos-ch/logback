@@ -132,7 +132,6 @@ public class FileAppenderResilience_AS_ROOT_Test {
     }
     ProcessBuilder pb = new ProcessBuilder();
     pb.command("/usr/bin/sudo", PATH_LOOPFS_SCRIPT, cmd.toString());
-    Process process = pb.start();
-    return process;
+    return pb.start();
   }
 }

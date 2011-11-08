@@ -35,13 +35,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   TriggeringPolicy<E> triggeringPolicy;
   RollingPolicy rollingPolicy;
 
-  /**
-   * The default constructor simply calls its {@link FileAppender#FileAppender
-   * parents constructor}.
-   */
-  public RollingFileAppender() {
-  }
-
   public void start() {
     if (triggeringPolicy == null) {
       addWarn("No TriggeringPolicy was set for the RollingFileAppender named "

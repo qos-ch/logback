@@ -24,10 +24,6 @@ public class StringListAppender<E> extends AppenderBase<E> {
   Layout<E> layout;
   public List<String> strList = new ArrayList<String>();
 
-  public StringListAppender() {
-
-  }
-
   public void start() {
     strList.clear();
 

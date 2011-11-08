@@ -28,9 +28,6 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator, Li
   String name;
   private List<String> URLList = new ArrayList<String>();
 
-  public URLEvaluator() {
-  }
-
   public void addURL(String url) {
     URLList.add(url);
   }

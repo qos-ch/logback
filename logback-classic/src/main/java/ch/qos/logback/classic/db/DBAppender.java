@@ -79,9 +79,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
   }
 
-  public DBAppender() {
-  }
-
   public void setDbNameResolver(DBNameResolver dbNameResolver) {
     this.dbNameResolver = dbNameResolver;
   }

@@ -40,9 +40,6 @@ public class DBAppenderH2TestFixture  {
 
   int diff = RandomUtil.getPositiveInt();
   
-  public DBAppenderH2TestFixture() {
-  }
-
   Connection connection;
   
   public void setUp() throws SQLException {

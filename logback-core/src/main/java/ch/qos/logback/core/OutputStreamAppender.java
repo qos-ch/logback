@@ -52,12 +52,6 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
   private OutputStream outputStream;
 
   /**
-   * The default constructor does nothing.
-   */
-  public OutputStreamAppender() {
-  }
-
-  /**
    * The underlying output stream used by this appender.
    * 
    * @return

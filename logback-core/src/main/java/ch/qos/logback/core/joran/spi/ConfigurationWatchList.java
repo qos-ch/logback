@@ -85,8 +85,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
   File convertToFile(URL url) {
     String protocol = url.getProtocol();
     if ("file".equals(protocol)) {
-      File file = new File(URLDecoder.decode(url.getFile()));
-      return file;
+      return new File(URLDecoder.decode(url.getFile()));
     } else {
       addInfo("URL [" + url + "] is not of type file");
       return null;
