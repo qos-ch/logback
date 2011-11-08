@@ -51,6 +51,34 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     else datePattern.foldLeft(0)((count, c) => if (c == '/') count + 1 else count)
   }
 
+
+  // test that the number of files at the end of the test is same as the expected number taking into account end dates
+  // near the beginning of a new year. This test has been run in a loop with start date varying over a two years
+  // with success.
+  @Test def monthlyRolloverOverManyPeriods() {
+
+    slashCount = computeSlashCount(MONTHLY_CRONOLOG_DATE_PATTERN)
+    val numPeriods: Int = 40
+    val maxHistory: Int = 2
+    val fileNamePattern = randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip"
+    val (startTime, endTime) = doRollover(now, fileNamePattern, MILLIS_IN_MONTH, maxHistory, numPeriods)
+    val differenceInMonths = RollingCalendar.diffInMonths(startTime, endTime)
+    val startTimeAsCalendar = Calendar.getInstance()
+    startTimeAsCalendar.setTimeInMillis(startTime)
+    val indexOfStartPeriod: Int = startTimeAsCalendar.get(Calendar.MONTH)
+    val withExtraFolder = extraFolder(differenceInMonths, MONTHS_IN_YEAR, indexOfStartPeriod, maxHistory)
+
+    def expectedCountWithFolders(): Int = {
+      val numLogFiles = (maxHistory + 1)
+      val numLogFilesAndFolders = numLogFiles * 2
+      var result: Int = numLogFilesAndFolders + slashCount
+      if (withExtraFolder) result += 1
+      result
+    }
+    //StatusPrinter.print(context)
+    check(expectedCountWithFolders())
+  }
+
   def generateDailyRollover(now: Long, maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int, numInactivityPeriods: Int) {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN)
     doRollover(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods)
@@ -58,47 +86,25 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity + numInactivityPeriods))
   }
 
-
-  // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
-  // be conducted with daily rollover  not monthly
   @Test
-  def dailyRolloverWithInactivity20 {
+  def basicDailyRollover {
     generateDailyRollover(now, maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
   }
 
-  @Test def dailyRolloverWithInactivity21 {
+  // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
+  // be conducted with daily rollover  not monthly
+  @Test def dailyRollover15 {
+    generateDailyRollover(now, maxHistory = 5, simulatedNumberOfPeriods = 15, startInactivity = 6, numInactivityPeriods = 3)
+  }
+
+  @Test def dailyRolloverWithInactivity70 {
     generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
   }
 
-  @Test def dailyRolloverWithInactivity22 {
+  @Test def dailyRolloverWithInactivity10 {
     generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 10, startInactivity = 3, numInactivityPeriods = 4)
   }
 
-
-  // test that the number of files at the end of the test is same as the expected number taking into account end dates
-  // near the beginning of a new year. This test has been run in a loop with start date varying over a two years
-  // with success.
-  @Test def monthlyRolloverOverManyPeriods() {
-    slashCount = computeSlashCount(MONTHLY_CRONOLOG_DATE_PATTERN)
-    val numPeriods: Int = 40
-    val maxHistory: Int = 2
-
-    val (startTime, endTime) = doRollover(now, randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip", MILLIS_IN_MONTH, maxHistory, numPeriods)
-    val differenceInMonths = RollingCalendar.diffInMonths(startTime, endTime)
-    val startTimeAsCalendar = Calendar.getInstance()
-    startTimeAsCalendar.setTimeInMillis(startTime)
-    val indexOfStartPeriod: Int = startTimeAsCalendar.get(Calendar.MONTH)
-    val withExtraFolder = extraFolder(differenceInMonths, MONTHS_IN_YEAR, indexOfStartPeriod, maxHistory)
-    //StatusPrinter.print(context)
-    check(expectedCountWithFolders(maxHistory, withExtraFolder))
-  }
-
-  @Test def dailyRollover {
-    slashCount = computeSlashCount(DAILY_DATE_PATTERN)
-    doRollover(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt.zip", MILLIS_IN_DAY, 5, 5 * 3, startInactivity = 6, numInactivityPeriods = 3)
-    StatusPrinter.print(context)
-    check(expectedCountWithoutFolders(5))
-  }
 
   @Test def dailyRolloverWithSecondPhase {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN)
@@ -166,13 +172,6 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     return (valueOfLastMonth < maxHistory)
   }
 
-  def expectedCountWithFolders(maxHistory: Int, extraFolder: Boolean): Int = {
-    val numLogFiles = (maxHistory + 1)
-    val numLogFilesAndFolders = numLogFiles * 2
-    var result: Int = numLogFilesAndFolders + slashCount
-    if (extraFolder) result += 1
-    result
-  }
 
   def addTime(currentTime: Long, timeToWait: Long): Long = {
     return currentTime + timeToWait
@@ -184,7 +183,9 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     }
   }
 
-  def doRollover(currentTime: Long, fileNamePattern: String, periodDurationInMillis: Long, maxHistory: Int, simulatedNumberOfPeriods: Int, startInactivity: Int = 0, numInactivityPeriods: Int = 0): (Long, Long) = {
+  def doRollover(currentTime: Long, fileNamePattern: String, periodDurationInMillis: Long, maxHistory: Int,
+                 simulatedNumberOfPeriods: Int, startInactivity: Int = 0,
+                 numInactivityPeriods: Int = 0): (Long, Long) = {
     val startTime = currentTime
     val rfa: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
     rfa.setContext(context)
