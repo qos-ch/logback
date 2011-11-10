@@ -53,8 +53,8 @@ public class SizeAndTimeBasedFNATP<E> extends
 
   void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
     File file = new File(getCurrentPeriodsFileNameWithoutCompressionSuffix());
-
     File parentDir = file.getParentFile();
+
     File[] matchingFileArray = FileFilterUtil
             .filesInFolderMatchingStemRegex(parentDir, stemRegex);
 
@@ -64,19 +64,11 @@ public class SizeAndTimeBasedFNATP<E> extends
     }
     currentPeriodsCounter = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
 
-
     // if parent raw file property is not null, then the next
     // counter is max  found counter+1
-    if (tbrp.getParentsRawFileProperty() != null) {
-      currentPeriodsCounter++;
-    } else if(tbrp.compressionMode != CompressionMode.NONE) {
-      // if raw file property == null, but compression is enabled
-      // we must check whether the last file whether the last file is
-      // compressed or not.
+    if (tbrp.getParentsRawFileProperty() != null || (tbrp.compressionMode != CompressionMode.NONE)) {
       // TODO test me
-      File fileCandidate = new File(getFileNameIncludingCompressionSuffix(dateInCurrentPeriod, currentPeriodsCounter));
-      if(fileCandidate.exists())
-        currentPeriodsCounter++;
+      currentPeriodsCounter++;
     }
   }
 
