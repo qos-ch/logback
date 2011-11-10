@@ -73,6 +73,7 @@ public class SizeAndTimeBasedFNATP<E> extends
       // if raw file property == null, but compression is enabled
       // we must check whether the last file whether the last file is
       // compressed or not.
+      // TODO test me
       File fileCandidate = new File(getFileNameIncludingCompressionSuffix(dateInCurrentPeriod, currentPeriodsCounter));
       if(fileCandidate.exists())
         currentPeriodsCounter++;
