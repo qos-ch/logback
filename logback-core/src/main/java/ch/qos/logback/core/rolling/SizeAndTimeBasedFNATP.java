@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
+import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.FileSize;
@@ -62,8 +63,19 @@ public class SizeAndTimeBasedFNATP<E> extends
       return;
     }
     currentPeriodsCounter = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
+
+
+    // if parent raw file property is not null, then the next
+    // counter is max  found counter+1
     if (tbrp.getParentsRawFileProperty() != null) {
       currentPeriodsCounter++;
+    } else if(tbrp.compressionMode != CompressionMode.NONE) {
+      // if raw file property == null, but compression is enabled
+      // we must check whether the last file whether the last file is
+      // compressed or not.
+      File fileCandidate = new File(getFileNameIncludingCompressionSuffix(dateInCurrentPeriod, currentPeriodsCounter));
+      if(fileCandidate.exists())
+        currentPeriodsCounter++;
     }
   }
 
@@ -104,6 +116,12 @@ public class SizeAndTimeBasedFNATP<E> extends
 
     return false;
   }
+
+  private String getFileNameIncludingCompressionSuffix(Date date, int counter) {
+    return tbrp.fileNamePattern.convertMultipleArguments(
+            dateInCurrentPeriod, counter);
+  }
+
 
   @Override
   public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
