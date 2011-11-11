@@ -14,8 +14,8 @@
 package ch.qos.logback.classic.issue.lbclassic36;
 
 import java.text.SimpleDateFormat;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+//import org.joda.time.format.DateTimeFormat;
+//import org.joda.time.format.DateTimeFormatter;
 
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 
@@ -38,8 +38,8 @@ public class SelectiveDateFormattingRunnable extends
   static long CACHE = 0;
 
   static SimpleDateFormat SDF = new SimpleDateFormat(ISO8601_PATTERN);
-  static final DateTimeFormatter JODA = DateTimeFormat
-      .forPattern(ISO8601_PATTERN);
+//  static final DateTimeFormatter JODA = DateTimeFormat
+//      .forPattern(ISO8601_PATTERN);
 
   SelectiveDateFormattingRunnable(FormattingModel model) {
     this.model = model;
@@ -77,7 +77,7 @@ public class SelectiveDateFormattingRunnable extends
     for (;;) {
       long now = System.currentTimeMillis();
       if (isCacheStale(now)) {
-        JODA.print(now);
+        //JODA.print(now);
       }
       counter++;
       if (done) {
@@ -87,12 +87,12 @@ public class SelectiveDateFormattingRunnable extends
   }
   
   private static boolean isCacheStale(long now) {
-    synchronized (JODA) {
-      if (CACHE != now) {
-        CACHE = now;
-        return true;
-      }
-    }
+//    synchronized (JODA) {
+//      if (CACHE != now) {
+//        CACHE = now;
+//        return true;
+//      }
+//    }
     return false;
   }
 
