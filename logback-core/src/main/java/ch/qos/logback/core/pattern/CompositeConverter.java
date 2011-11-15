@@ -27,7 +27,7 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
     return transform(intermediary);
   }
 
-  abstract String transform(String in);
+  protected abstract String transform(String in);
 
   public void setChildConverter(Converter<E> child) {
     childConverter = child;
