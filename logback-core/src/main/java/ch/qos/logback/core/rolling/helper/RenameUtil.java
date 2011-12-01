@@ -63,7 +63,8 @@ public class RenameUtil extends ContextAwareBase {
       boolean result = fromFile.renameTo(toFile);
 
       if (!result) {
-        addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "]. Attempting rename by copying.");
+        addInfo("Failed to rename file [" + fromFile.getAbsolutePath() + "] to [" + 
+          toFile.getAbsolutePath() + "]. Attempting rename by copying.");
         try {
           renameByCopying(from, to);
         } catch(RolloverFailure e) {
