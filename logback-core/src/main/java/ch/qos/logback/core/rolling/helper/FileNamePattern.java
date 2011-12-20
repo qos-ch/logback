@@ -81,12 +81,15 @@ public class FileNamePattern extends ContextAwareBase {
     return pattern;
   }
 
-  public DateTokenConverter getDateTokenConverter() {
+  public DateTokenConverter getPrimaryDateTokenConverter() {
     Converter p = headTokenConverter;
 
     while (p != null) {
       if (p instanceof DateTokenConverter) {
-        return (DateTokenConverter) p;
+        DateTokenConverter dtc = (DateTokenConverter) p;
+        // only primary converters should be returned as
+        if(dtc.isPrimary())
+          return dtc;
       }
 
       p = p.getNext();

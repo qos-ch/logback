@@ -1,0 +1,21 @@
+<configuration>
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>test.log</file>
+
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover every minute -->
+      <fileNamePattern>bla-%d{yyyy-MM-dd, SECONDARY}/app.%d{yyyy-MM-dd'T'HH_mm}.log</fileNamePattern>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] %-5level %logger{36} - %msg%n%xEx</pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>

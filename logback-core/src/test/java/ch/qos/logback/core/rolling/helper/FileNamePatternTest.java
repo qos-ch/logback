@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -138,5 +139,14 @@ public class FileNamePatternTest {
       String regex = fnp.toRegex();
       assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}T-\\d{1,2}.txt", regex);
     }
+  }
+
+  @Test
+  public void convertMultipleDates() {
+    Calendar cal = Calendar.getInstance();
+    cal.set(2003, 4, 20, 17, 55);
+    FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM, SECONDARY}/%d{yyyy.MM.dd}.txt", context);
+    assertEquals("foo2003.05/2003.05.20.txt", fnp.convert(cal.getTime()));
+
   }
 }
