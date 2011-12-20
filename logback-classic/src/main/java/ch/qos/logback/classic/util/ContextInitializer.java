@@ -23,6 +23,7 @@ import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -68,11 +69,12 @@ public class ContextInitializer {
         sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.",
                 loggerContext));
       }
-    }
-    if (url.toString().endsWith("xml")) {
+    } else if (url.toString().endsWith("xml")) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       configurator.doConfigure(url);
+    } else {
+      throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be either .groovy or .xml");
     }
   }
 
