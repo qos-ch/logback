@@ -238,7 +238,7 @@ table.bodyTable tr td p:first-child {
 
 }
 
-.option {
+.option, .prop {
   border-top: 1px dotted black;
   border-bottom: 1px dotted black;
   border-left: 1px dotted black;

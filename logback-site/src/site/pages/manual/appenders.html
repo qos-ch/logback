@@ -259,7 +259,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     </tr>
     
     <tr class="a">
-      <td><b><span class="option">encoder</span></b></td>
+      <td><b><span class="prop">encoder</span></b></td>
       <td><a
       href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a></td>
       
@@ -275,9 +275,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   we have conducted, it appears that turning off immediate flushing or
   buffering of character to byte conversions have rather small impact
   on performance. As such, as of logback version 0.9.19, the <span
-  class="option">ImmediateFlush</span>, <span
-  class="option">BufferedIO</span> and <span
-  class="option">BufferSize</span> properties have been removed
+  class="prop">ImmediateFlush</span>, <span
+  class="prop">BufferedIO</span> and <span
+  class="prop">BufferSize</span> properties have been removed
   without replacement.
   </p>
 
@@ -315,14 +315,14 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 			<th>Description</th>
 		</tr>
 		<tr class="b">
-			<td><b><span class="option">encoder</span></b></td>
+			<td><b><span class="prop">encoder</span></b></td>
       <td>
         <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
       </td>
 			<td>See <code>OutputStreamAppender</code> properties.</td>
 		</tr>
 		<tr class="a">
-			<td><b><span class="option">target</span></b></td>
+			<td><b><span class="prop">target</span></b></td>
 			<td><code>String</code></td>
 			<td>
 				One of the String values <em>System.out</em> or 
@@ -375,9 +375,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
    a subclass of <code>OutputStreamAppender</code>, appends log events into
    a file. The target file is specified by the <span
-   class="option">File</span> option.  If the file already exists, it
+   class="prop">File</span> option.  If the file already exists, it
    is either appended to, or truncated depending on the value of the
-   <span class="option">Append</span> option.   
+   <span class="prop">Append</span> option.   
    </p>
 	
    <table class="bodyTable properties">
@@ -387,17 +387,17 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        <th>Description</th>
      </tr>
      <tr class="alt">
-       <td><b><span class="option">append</span></b></td>
+       <td><b><span class="prop">append</span></b></td>
        <td><code>boolean</code></td>
        <td>If true, events are appended at the end of an existing
-       file.  Otherwise, if <span class="option">Append</span> is
+       file.  Otherwise, if <span class="prop">Append</span> is
        false, any existing file is truncated. The <span
-       class="option">Append</span> option is set to true by
+       class="prop">Append</span> option is set to true by
        default.
        </td>
      </tr>
      <tr >
-       <td><b><span class="option">encoder</span></b></td>
+       <td><b><span class="prop">encoder</span></b></td>
        <td>
          <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
        </td>
@@ -406,7 +406,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     
    
      <tr class="alt">
-       <td><b><span class="option">file</span></b></td>
+       <td><b><span class="prop">file</span></b></td>
        <td><code>String</code></td>
        <td>The name of the file to write to. If the file does not
        exist, it is created. On the MS Windows platform users
@@ -416,7 +416,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        a single tab character <em>(\u0009)</em>.  Correct values can
        be specified as <em>c:/temp/test.log</em> or alternatively as
        <em>c:\\temp\\test.log</em>.  The <span
-       class="option">File</span> option has no default value.
+       class="prop">File</span> option has no default value.
 
        <p>If the parent directory of the file does not exist,
        <code>FileAppender</code> will automatically create it,
@@ -438,7 +438,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          value for prudent mode is <code>false</code>.
 
          <p>Prudent mode implies that <span
-         class="option">Append</span> property is automatically set to
+         class="prop">Append</span> property is automatically set to
          true.
          </p>
 
@@ -461,7 +461,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          per second, the impact on performance should be
          negligible. Applications generating 100 or more I/O
          operations per second can see an impact on performance and
-         should avoid using <span class="option">prudent</span> mode.
+         should avoid using <span class="prop">prudent</span> mode.
          </p>
 
          <p>Prudent mode can be used in conjunction with
@@ -629,24 +629,24 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        <th>Description</th>
      </tr>
      <tr class="b">
-       <td><b><span class="option">file</span></b></td>
+       <td><b><span class="prop">file</span></b></td>
        <td><code>String</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
      <tr class="a">
-       <td><b><span class="option">append</span></b></td>
+       <td><b><span class="prop">append</span></b></td>
        <td><code>boolean</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
      <tr class="b">
-       <td><b><span class="option">encoder</span></b></td>
+       <td><b><span class="prop">encoder</span></b></td>
        <td>
          <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
        </td>
        <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>
      <tr class="a">
-       <td><b><span class="option">rollingPolicy</span></b></td>
+       <td><b><span class="prop">rollingPolicy</span></b></td>
        <td><code>RollingPolicy</code></td>
        <td>This option is the component that will dictate
        <code>RollingFileAppender</code>'s behavior when rollover
@@ -654,7 +654,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </td>
      </tr>	
      <tr class="b">
-       <td><b><span class="option">triggeringPolicy</span></b></td>
+       <td><b><span class="prop">triggeringPolicy</span></b></td>
        <td><code>TriggeringPolicy</code></td>
        <td>
          This option is the component that will tell 
@@ -663,7 +663,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </td>
      </tr>	
      <tr class="a">
-       <td valign="top"><span class="option"><a name="prudentWithRolling"
+       <td valign="top"><span class="prop"><a name="prudentWithRolling"
        href="#prudentWithRolling"><b>prudent</b></a></span></td>
 
        <td valign="top"><code>boolean</code></td>
@@ -687,7 +687,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
            allowed. (We can't have one JVM writing to a file while
            another JVM is compressing it.)  </li>
            
-           <li>The <span class="option">file</span> property of
+           <li>The <span class="prop">file</span> property of
            <code>FileAppender</code> cannot be set and must be left
            blank. Indeed, most operating systems do not allow renaming
            of a file while another process has it opened.
@@ -748,15 +748,14 @@ public interface RollingPolicy extends LifeCycle {
    for example by day or by month.
    <code>TimeBasedRollingPolicy</code> assumes the responsibility for
    rollover as well as for the triggering of said rollover. Indeed,
-   <code>TimeBasedTriggeringPolicy</code> implements both
+   <code>TimeBasedTriggeringPolicy</code> implements <em>both</em>
    <code>RollingPolicy</code> and <code>TriggeringPolicy</code>
    interfaces.
    </p>
 
-   <p><code>TimeBasedRollingPolicy</code>'s configuration has two
-   properties, the mandatory <span
-   class="option">fileNamePattern</span> property and the optional
-   <span class="option">maxHistory</span> property.
+   <p><code>TimeBasedRollingPolicy</code>'s configuration takes one
+   mandatory <span class="prop">fileNamePattern</span> property and
+   several optional properties.
    </p>
 
    <table class="bodyTable">
@@ -766,10 +765,10 @@ public interface RollingPolicy extends LifeCycle {
        <th>Description</th>
      </tr>
      <tr class="b">
-       <td><b><span class="option">fileNamePattern</span></b></td>
+       <td><b><span class="prop">fileNamePattern</span></b></td>
        <td><code>String</code></td>
        <td>
-         The mandatory <span class="option">fileNamePattern</span>
+         The mandatory <span class="prop">fileNamePattern</span>
          property defines the name of the rolled-over (archived) log
          files. Its value should consist of the name of the file, plus
          a suitably placed <em>%d</em> conversion specifier.  The
@@ -777,23 +776,26 @@ public interface RollingPolicy extends LifeCycle {
          pattern as specified by the
          <code>java.text.SimpleDateFormat</code> class.  If the
          date-and-time pattern is omitted, then the default pattern
-         <em>yyyy-MM-dd</em> is assumed. The <span
-         class="option">File</span> property in
+         <em>yyyy-MM-dd</em> is assumed. <b>The rollover period is
+         inferred from the value of <span
+         class="prop">fileNamePattern</span>.</b>
+
+
+         <p>Note that the <span class="prop">file</span> property in
          <code>RollingFileAppender</code> (the parent of
          <code>TimeBasedRollingPolicy</code>) can be either set or
-         omitted.
-         
-         <p>By setting the <span class="option">file</span> property
-         of the containing <code>FileAppender</code>, you can decouple
-         the location of the active log file and the location of the
-         archived log files. The current logs will be always targeted
-         at the file specified by the <span class="option">file</span>
-         property. It follows that the name of the currently active
-         log file will not change over time. However, if you choose to
-         omit the <span class="option">file</span> property, then the
-         active file will be computed anew for each period based on
-         the value of <span class="option">fileNamePattern</span>.
-         The examples below should clarify the point. 
+         omitted. By setting the <span class="prop">file</span>
+         property of the containing <code>FileAppender</code>, you can
+         decouple the location of the active log file and the location
+         of the archived log files. The current logs will be always
+         targeted at the file specified by the <span
+         class="prop">file</span> property. It follows that the name
+         of the currently active log file will not change over
+         time. However, if you choose to omit the <span
+         class="prop">file</span> property, then the active file
+         will be computed anew for each period based on the value of
+         <span class="prop">fileNamePattern</span>.  The examples
+         below should clarify this point.
          </p>
 
          <p>The date-and-time pattern, as found within the accolades
@@ -803,12 +805,17 @@ public interface RollingPolicy extends LifeCycle {
          date-and-time pattern will be interpreted as directory
          separators.
          </p>
+
+         <p>It is possible to specify multiple %d tokens but only one
+         of which can be primary, i.e. used to infer the rollover
+         period. All other tokens <em>must</em> be marked as auxiliary
+         by passing the AUX paramater (see examples below).</p>
        </td>
      </tr>
      <tr  class="a">
-       <td><span class="option"><b>maxHistory</b></span></td>
+       <td><span class="prop"><b>maxHistory</b></span></td>
        <td>int</td>
-       <td>The optional <span class="option">maxHistory</span>
+       <td>The optional <span class="prop">maxHistory</span>
        property controls the maximum number of archive files to keep,
        deleting older files. For example, if you specify monthly
        rollover, and set maxHistory to 6, then 6 months worth of
@@ -820,7 +827,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
 
      <tr  class="b">
-       <td><span class="option"><b>cleanHistoryOnStart</b></span></td>
+       <td><span class="prop"><b>cleanHistoryOnStart</b></span></td>
        <td>boolean</td>
        <td>
          <p>If set to true, archive removal will be executed on
@@ -832,7 +839,7 @@ public interface RollingPolicy extends LifeCycle {
          roll over to be triggered. It follows that for such
          short-lived applications archive removal may never get a
          chance to execute.  By setting <span
-         class="option">cleanHistoryOnStart</span> to true, archive
+         class="prop">cleanHistoryOnStart</span> to true, archive
          removal is performed at appender start up.</p>
        </td>
      </tr>
@@ -847,7 +854,7 @@ public interface RollingPolicy extends LifeCycle {
    <table class="bodyTable">
      <tr class="a">
        <th>
-         <span class="option">fileNamePattern</span>
+         <span class="prop">fileNamePattern</span>
        </th>
        <th>Rollover schedule</th>
        <th>Example</th>
@@ -863,14 +870,14 @@ public interface RollingPolicy extends LifeCycle {
        </td>
 
        <td>
-         <p><span class="option">file</span> property not set: During November
+         <p><span class="prop">file</span> property not set: During November
          23rd, 2006, logging output will go to the file
          <em>/wombat/foo.2006-11-23</em>.  At midnight and for the
          rest of the 24th, logging output will be directed to
          <em>/wombat/foo.2006-11-24</em>.
        </p>
 
-         <p><span class="option">file</span> property set to
+         <p><span class="prop">file</span> property set to
          <em>/wombat/foo.txt</em>: During November 23rd, 2006, logging
          output will go to the file <em>/wombat/foo.txt</em>. At
          midnight, <em>foo.txt</em> will be renamed as
@@ -890,14 +897,14 @@ public interface RollingPolicy extends LifeCycle {
        </td>
        <td>Rollover at the beginning of each month.</td>
        <td>
-         <p><span class="option">file</span> property not set: During
+         <p><span class="prop">file</span> property not set: During
          the month of October 2006, logging output will go to
          <em>/wombat/2006/10/foo.txt</em>.  After midnight of October
          31st and for the rest of November, logging output will be
          directed to <em>/wombat/2006/11/foo.txt</em>.
          </p>
 
-         <p><span class="option">file</span> property set to
+         <p><span class="prop">file</span> property set to
          <em>/wombat/foo.txt</em>: The active log file will always be
          <em>/wombat/foo.txt</em>. During the month of October 2006,
          logging output will go to <em>/wombat/foo.txt</em>. At
@@ -924,7 +931,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>	
      <tr class="a">
        <td class="small">
-         <em>/wombat/foo.  &nbsp;&nbsp;/<br/>%d{yyyy-MM-dd_HH}.log</em>
+         <em>/wombat/foo%d{yyyy-MM-dd_HH}.log</em>
        </td>
        <td>Rollover at the top of each hour.</td>
        <td>Similar to previous cases, except that rollover will occur
@@ -933,12 +940,31 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
      <tr class="b">
        <td class="small">
-         <em>/wombat/foo. &nbsp;&nbsp; /<br/>%d{yyyy-MM-dd_HH-mm}.log</em>
+         <em>/wombat/foo%d{yyyy-MM-dd_HH-mm}.log</em>
        </td>
        <td>Rollover at the beginning of every minute.</td>
        <td>Similar to previous cases, except that rollover will occur
        at the beginning of every minute.  
        </td>     
+     </tr>
+
+
+     <tr class="a">
+       <td class="small">
+         <em>/foo/%d{yyyy-MM,<b>aux</b>}/%d.log</em>
+       </td>
+       <td>Rollover daily. Archives located under a folder contaning
+       year and month.
+       </td>
+       <td>In this example, the first %d token is marked as
+       <b>aux</b>iliary. The second %d token, with time and date
+       pattern omitted, is then assumed to be primary. Thus, rollover
+       will occur daily (default for %d) and the folder name will
+       depend on the year and month. For example, during the month of
+       November 2006, archived files will all placed under the
+       /foo/2006-11/ folder, e.g <em>/foo/2006-11/2006-11-14.log</em>.
+       </td>     
+       
      </tr>
    </table>
    
@@ -952,13 +978,13 @@ public interface RollingPolicy extends LifeCycle {
  	 <p>Just like <code>FixedWindowRollingPolicy</code>,
  	 <code>TimeBasedRollingPolicy</code> supports automatic file
  	 compression.  This feature is enabled if the value of the <span
- 	 class="option">fileNamePattern</span> option ends with <em>.gz</em>
+ 	 class="prop">fileNamePattern</span> option ends with <em>.gz</em>
  	 or <em>.zip</em>.
    </p>
 
    <table class="bodyTable">
      <tr class="a">
-       <th><span class="option">fileNamePattern</span></th>
+       <th><span class="prop">fileNamePattern</span></th>
        <th>Rollover schedule</th>
        <th>Example</th>
      </tr>
@@ -967,7 +993,7 @@ public interface RollingPolicy extends LifeCycle {
        <td>Daily rollover (at midnight) with automatic GZIP compression of the 
        archived files.</td>
        <td>
-         <p><span class="option">file</span> property not set: During
+         <p><span class="prop">file</span> property not set: During
          November 23rd, 2009, logging output will go to the file
          <em>/wombat/foo.2009-11-23</em>. However, at midnight that
          file will be compressed to become
@@ -977,7 +1003,7 @@ public interface RollingPolicy extends LifeCycle {
          at the beginning of the next day.
          </p>
          
-         <p><span class="option">file</span> property set to
+         <p><span class="prop">file</span> property set to
          /wombat/foo.txt: During November 23rd, 2009, logging output
          will go to the file <em>/wombat/foo.txt</em>. At midnight that
          file will be compressed and renamed as
@@ -991,7 +1017,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
    </table>
    
-   <p>The <span class="option">fileNamePattern</span> serves a dual
+   <p>The <span class="prop">fileNamePattern</span> serves a dual
    purpose. First, by studying the pattern, logback computes the
    requested rollover periodicity. Second, it computes each archived
    file's name. Note that it is possible for two different patterns to
@@ -1000,25 +1026,25 @@ public interface RollingPolicy extends LifeCycle {
    resulting archive files will carry different names.
    </p>
 
-	 <p>By setting the <span class="option">file</span> property you can
+	 <p>By setting the <span class="prop">file</span> property you can
 	 decouple the location of the active log file and the location of
 	 the archived log files. The logging output will be targeted into
-	 the file specified by the <span class="option">file</span>
+	 the file specified by the <span class="prop">file</span>
 	 property. It follows that the name of the active log file will not
 	 change over time. However, if you choose to omit the <span
-	 class="option">file</span> property, then the active file will be
+	 class="prop">file</span> property, then the active file will be
 	 computed anew for each period based on the value of <span
-	 class="option">fileNamePattern</span>. By leaving the <span
-	 class="option">file</span> option unset you can avoid file <a
+	 class="prop">fileNamePattern</span>. By leaving the <span
+	 class="prop">file</span> option unset you can avoid file <a
 	 href="../codes.html#renamingError">renaming errors</a> which occur
 	 while there exist external file handles referencing log files during
 	 roll over.
    </p>
 	
-   <p>The <span class="option">maxHistory</span> property controls the
+   <p>The <span class="prop">maxHistory</span> property controls the
    maximum number of archive files to keep, deleting older files. For
    example, if you specify monthly rollover, and set <span
-   class="option">maxHistory</span> to 6, then 6 months worth of
+   class="prop">maxHistory</span> to 6, then 6 months worth of
    archives files will be kept with files older than 6 months
    deleted. Note as old archived log files are removed, any folders
    which were created for the purpose of log file archiving will be
@@ -1028,7 +1054,7 @@ public interface RollingPolicy extends LifeCycle {
    <p>For various technical reasons, rollovers are not clock-driven
    but depend on the arrival of logging events. For example, on 8th of
    March 2002, assuming the <span
-   class="option">fileNamePattern</span> is set to <em>yyyy-MM-dd</em>
+   class="prop">fileNamePattern</span> is set to <em>yyyy-MM-dd</em>
    (daily rollover), the arrival of the first event after midnight
    will trigger a rollover. If there are no logging events during, say
    23 minutes and 47 seconds after midnight, then rollover will
@@ -1074,7 +1100,7 @@ public interface RollingPolicy extends LifeCycle {
 
     <p>The next configuration sample illustrates the use of
     <code>RollingFileAppender</code> associated with
-    <code>TimeBasedRollingPolicy</code> in <span class="option">prudent</span>
+    <code>TimeBasedRollingPolicy</code> in <span class="prop">prudent</span>
     mode.
     </p>
 
@@ -1115,7 +1141,7 @@ public interface RollingPolicy extends LifeCycle {
    to a fixed window algorithm as described below.
    </p>
 
-   <p>The <span class="option">fileNamePattern</span> option
+   <p>The <span class="prop">fileNamePattern</span> option
    represents the file name pattern for the archived (rolled over) log
    files.  This option is required and must include an integer token
    <em>%i</em> somewhere within the pattern.
@@ -1132,7 +1158,7 @@ public interface RollingPolicy extends LifeCycle {
        <th>Description</th>
      </tr>
      <tr class="b">
-       <td><b><span class="option">minIndex</span></b></td>
+       <td><b><span class="prop">minIndex</span></b></td>
        <td><code>int</code></td>
        <td>
          <p>This option represents the lower bound for the window's
@@ -1141,7 +1167,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
      <tr class="a">
-       <td><b><span class="option">maxIndex</span></b></td>
+       <td><b><span class="prop">maxIndex</span></b></td>
        <td><code>int</code></td>
        <td>
          <p>This option represents the upper bound for the window's
@@ -1150,7 +1176,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
      <tr class="b">
-       <td><b><span class="option">fileNamePattern</span></b></td>
+       <td><b><span class="prop">fileNamePattern</span></b></td>
        <td><code>String</code></td>
        <td>
          <p>This option represents the pattern that will be followed
@@ -1166,7 +1192,7 @@ public interface RollingPolicy extends LifeCycle {
          </p>
          <p>Note that file compression is also specified via this
          property. For example, <span
-         class="option">fileNamePattern</span> set to
+         class="prop">fileNamePattern</span> set to
          <em>MyLogFile%i.log.zip</em> means that archived files must be
          compressed using the <em>zip</em> format; <em>gz</em> format
          is also supported.
@@ -1183,11 +1209,11 @@ public interface RollingPolicy extends LifeCycle {
    </p>
 
    <p>Let us go over a more concrete example of the fixed window
-   rollover policy. Suppose that <span class="option">minIndex</span>
-   is set to <em>1</em>, <span class="option">maxIndex</span> set to
-   <em>3</em>, <span class="option">fileNamePattern</span> property
+   rollover policy. Suppose that <span class="prop">minIndex</span>
+   is set to <em>1</em>, <span class="prop">maxIndex</span> set to
+   <em>3</em>, <span class="prop">fileNamePattern</span> property
    set to <em>foo%i.log</em>, and that <span
-   class="option">fileNamePattern</span> property is set to
+   class="prop">fileNamePattern</span> property is set to
    <em>foo.log</em>.
    </p>
 	
@@ -1252,9 +1278,9 @@ public interface RollingPolicy extends LifeCycle {
    <p>The configuration file below gives an example of configuring
    <code>RollingFileAppender</code> and
    <code>FixedWindowRollingPolicy</code>. Note that the <span
-   class="option">File</span> option is mandatory even if it contains
+   class="prop">File</span> option is mandatory even if it contains
    some of the same information as conveyed with the <span
-   class="option">fileNamePattern</span> option.
+   class="prop">fileNamePattern</span> option.
    </p>
 	
    <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
@@ -1332,13 +1358,13 @@ public interface RollingPolicy extends LifeCycle {
     
     <p>Note the "%i" conversion token in addition to "%d". Each time
     the current log file reaches <span
-    class="option">maxFileSize</span> before the current time period
+    class="prop">maxFileSize</span> before the current time period
     ends, it will be archived with an increasing index, starting at
     0.</p>
 
     <p>Size and time based archiving supports deletion of old archive
     files. You need to specify the number of periods to preserve with
-    the <span class="option">maxHistory</span> property. When your
+    the <span class="prop">maxHistory</span> property. When your
     application is stopped and restarted, logging will continue at the
     correct location, i.e. at the largest index number for the current
     period.
@@ -1391,11 +1417,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 
 		<p><code>SizeBasedTriggeringPolicy</code> accepts only one
-		parameter, namely <span class="option">maxFileSize</span>, with a
+		parameter, namely <span class="prop">maxFileSize</span>, with a
 		default value of 10 MB.
 		</p>
 
-		<p>The <span class="option">maxFileSize</span> option can be
+		<p>The <span class="prop">maxFileSize</span> option can be
 		specified in bytes, kilobytes, megabytes or gigabytes by suffixing
 		a numeric value with <em>KB</em>, <em>MB</em> and respectively
 		<em>GB</em>. For example, <em>5000000</em>, <em>5000KB</em>,
@@ -1517,8 +1543,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		<p>The remote server is identified by the <span
-		class="option">remoteHost</span> and <span
-		class="option">port</span> properties.
+		class="prop">remoteHost</span> and <span
+		class="prop">port</span> properties.
 		<code>SocketAppender</code> properties are listed in the following
 		table.
 		</p>
@@ -1530,18 +1556,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			<th>Description</th>
       </tr>
       <tr class="b">
-        <td><b><span class="option">includeCallerData</span></b></td>
+        <td><b><span class="prop">includeCallerData</span></b></td>
         <td><code>boolean</code></td>
         <td>
           <p>
-            The <span class="option">includeCallerData</span> option takes a boolean value. 
+            The <span class="prop">includeCallerData</span> option takes a boolean value. 
             If true, the caller data will be available to the remote host. 
             By default no caller data is sent to the server.
           </p>
         </td>
       </tr>
       <tr class="a">
-        <td><b><span class="option">port</span></b></td>
+        <td><b><span class="prop">port</span></b></td>
         <td><code>int</code></td>
         <td>
           <p>
@@ -1550,10 +1576,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>	
       <tr class="b">
-        <td><b><span class="option">reconnectionDelay</span></b></td>
+        <td><b><span class="prop">reconnectionDelay</span></b></td>
         <td><code>int</code></td>
         <td>
-          The <span class="option">reconnectionDelay</span> option takes a 
+          The <span class="prop">reconnectionDelay</span> option takes a 
           positive integer representing the number of milliseconds to wait between 
           each failed connection attempt to the server. 
           The default value of this option is 30'000 which corresponds to 30 seconds. 
@@ -1563,7 +1589,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr class="a">
-        <td><b><span class="option">remoteHost</span></b></td>
+        <td><b><span class="prop">remoteHost</span></b></td>
         <td><code>String</code></td>
         <td>
           The host name of the server.
@@ -1653,8 +1679,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 	
 		<p>
 			Note that in the above configuration scripts the values for the 
-			<span class="option">remoteHost</span>, <span class="option">port</span> and
-			<span class="option">includeCallerData</span> properties
+			<span class="prop">remoteHost</span>, <span class="prop">port</span> and
+			<span class="prop">includeCallerData</span> properties
 			are not given directly but as substituted variable keys. The values for the variables 
 			can be specified as system properties: 
 		</p>
@@ -1693,7 +1719,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<p>The outcome can be easily changed by instructing the
 		<code>SocketAppender</code> to include caller data by setting the
-		<span class="option">includeCallerData</span> option to
+		<span class="prop">includeCallerData</span> option to
 		true. Using the following command will do the trick:
 		</p>
 
@@ -1732,20 +1758,20 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="option">smtpHost</span></b></td>
+        <td><b><span class="prop">smtpHost</span></b></td>
         <td><code>String</code></td>
         <td>The host name of the SMTP server. This parameter is mandatory.</td>
       </tr>
       
       <tr class="alt">
-        <td><b><span class="option">smtpPort</span></b></td>
+        <td><b><span class="prop">smtpPort</span></b></td>
         <td><code>int</code></td>
         <td>The port where the SMTP server is listening. Defaults to
         25.</td>
       </tr>
       
       <tr>
-        <td><a name="smtpTo" href="#smtpTo"><b><span class="option">to</span></b></a></td>
+        <td><a name="smtpTo" href="#smtpTo"><b><span class="prop">to</span></b></a></td>
         <td><code>String</code></td>
         <td>The email address of the recipient as a
         <em>pattern</em>. The pattern is evaluated anew with the
@@ -1758,7 +1784,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr class="alt">
-        <td><b><span class="option">from</span></b></td>
+        <td><b><span class="prop">from</span></b></td>
         <td><code>String</code></td>
         <td>The originator of the email messages sent by
         <code>SMTPAppender</code> in the <a
@@ -1771,7 +1797,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr>
-        <td><b><span class="option">subject</span></b></td>
+        <td><b><span class="prop">subject</span></b></td>
         <td><code>String</code></td>
         <td> 
           <p>The subject of the email. It can be any value accepted as
@@ -1785,7 +1811,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           that triggered the email message.
           </p>
 
-          <p>Assuming the <span class="option">subject</span> option
+          <p>Assuming the <span class="prop">subject</span> option
           is set to "Log: %logger - %msg" and the triggering event's
           logger is named "com.foo.Bar", and contains the message
           "Hello world", then the outgoing email will have the subject
@@ -1797,11 +1823,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         
       </tr>
       <tr class="alt">
-        <td><b><span class="option">discriminator</span></b></td>
+        <td><b><span class="prop">discriminator</span></b></td>
         <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
           <p>With the help of a <span
-          class="option">Discriminator</span>,
+          class="prop">Discriminator</span>,
           <code>SMTPAppender</code> can scatter incoming events into
           different buffers according to the value returned by the
           discriminator. The default discriminator always returns the
@@ -1816,7 +1842,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr >
-        <td><b><span class="option"><a name="smtpAppender_Evaluator"
+        <td><b><span class="prop"><a name="smtpAppender_Evaluator"
         href="#smtpAppender_Evaluator">evaluator</a></span></b></td>
         <td><code><a
         href="../xref/ch/qos/logback/classic/boolex/IEvaluator.html">IEvaluator</a></code></td>
@@ -1859,7 +1885,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr class="alt">
-        <td  valign="top"><b><span class="option">cyclicBufferTracker</span></b>
+        <td  valign="top"><b><span class="prop">cyclicBufferTracker</span></b>
         </td>
         <td><a href="../xref/ch/qos/logback/core/spi/CyclicBufferTracker.html"><code>CyclicBufferTracker</code></a>
         </td>
@@ -1867,33 +1893,33 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           <p>As the name indicates, an instance of the
           <code>CyclicBufferTracker</code> class tracks cyclic
           buffers. It does so based on the keys returned by the <span
-          class="option">discriminator</span> (see above).
+          class="prop">discriminator</span> (see above).
           </p>
           <p>If you don't specify a <span
-          class="option">cyclicBufferTracker</span>, an instance of <a
+          class="prop">cyclicBufferTracker</span>, an instance of <a
           href="../xref/ch/qos/logback/core/spi/CyclicBufferTrackerImpl.html">CyclicBufferTrackerImpl</a>
           will be automatically created. By default, this instance
           will keep events in a cyclic buffer of size 256. You may
           change the size with the help of the <span
-          class="option">bufferSize</span> option (see below).</p>
+          class="prop">bufferSize</span> option (see below).</p>
         </td>
         
       </tr>
       <tr>
-        <td><b><span class="option">username</span></b></td>
+        <td><b><span class="prop">username</span></b></td>
         <td><code>String</code></td> <td>The username value to use
         during plain user/password authentication. By default, this
         parameter is null.  </td> 
       </tr> 
       <tr class="alt">
-        <td><b><span class="option">password</span></b></td>
+        <td><b><span class="prop">password</span></b></td>
         <td><code>String</code></td>
         <td>The password value to use for plain user/password
         authentication. By default, this parameter is null.  
         </td>
       </tr>
       <tr> 
-        <td><b><span class="option">STARTTLS</span></b> </td>
+        <td><b><span class="prop">STARTTLS</span></b> </td>
         <td><code>boolean</code></td> 
         <td>If this parameter is set to true, then this appender
         will issue the STARTTLS command (if the server supports it)
@@ -1903,14 +1929,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td> 
       </tr>
       <tr class="alt">
-        <td><b><span class="option">SSL</span></b></td>
+        <td><b><span class="prop">SSL</span></b></td>
         <td><code>boolean</code></td> <td>If this parameter is set to
         true, then this appender will open an SSL connection to the
         server. By default, this parameter is set to false.  </td>
       </tr>
 
       <tr>
-        <td><b><span class="option">charsetEncoding</span></b></td>
+        <td><b><span class="prop">charsetEncoding</span></b></td>
         <td><code>String</code></td>
         <td>The outgoing email message will be encoded in the
         designated <a
@@ -1928,7 +1954,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         configured, e.g. if the client hostname is not fully
         qualified, certain SMTP servers may reject the HELO/EHLO
         commands sent by the client. To overcome this issue, you may
-        set the value of the <span class="option">localhost</span>
+        set the value of the <span class="prop">localhost</span>
         property to the fully qualified name of the client host. See
         also the "mail.smtp.localhost" property in the documentation
         for the <a
@@ -1994,8 +2020,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<p>Before trying out <code>chapters.appenders.mail.Email</code> application
 		with the above configuration file, you must set the <span
-		class="option">smtpHost</span>, <span class="option">to</span> and
-		<span class="option">from</span> properties to values appropriate for
+		class="prop">smtpHost</span>, <span class="prop">to</span> and
+		<span class="prop">from</span> properties to values appropriate for
 		your environment. Once you have set the correct values in the
 		configuration file, execute the following command:
 		</p>
@@ -2011,8 +2037,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p><img src="images/chapters/appenders/smtpAppender1.jpg" alt="resulting email"/></p>
 		
 		<p>In the next example configuration file <em>mail2.xml</em>, the
-		values for the <span class="option">smtpHost</span>, <span
-		class="option">to</span> and <span class="option">from</span>
+		values for the <span class="prop">smtpHost</span>, <span
+		class="prop">to</span> and <span class="prop">from</span>
 		properties are determined by variable substitution. Here is the
 		relevant part of <em>mail2.xml</em>.
 		</p>		
@@ -2161,7 +2187,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		common functionality.
 		</p>
 
-		<p>Setting the <span class="option">Evaluator</span> option of
+		<p>Setting the <span class="prop">Evaluator</span> option of
 		<code>SMTPAppender</code> instructs it to use a custom evaluator.
 		The next configuration file attaches a <code>SMTPAppender</code>
 		to the root logger.  This appender uses a
@@ -2445,16 +2471,16 @@ logger.error(<b>notifyAdmin</b>,
 
     <p>Internally, each distinct value returned by the discriminator
     will cause the creation of a new cyclic buffer. However, at most
-    <span class="option">maxNumberOfBuffers</span> (by default 64)
+    <span class="prop">maxNumberOfBuffers</span> (by default 64)
     will be maintained.  Whenever the number of buffers rises above
-    <span class="option">maxNumberOfBuffers</span>, the least recently
+    <span class="prop">maxNumberOfBuffers</span>, the least recently
     updated buffer is automatically discarded. As a second safety
     measure, any buffer which has not been updated in the last 30
     minutes will be automatically discarded as well.</p>
 
     <p>On systems serving a large number of transactions per minute,
     allowing only a small number for <span
-    class="option">maxNumberOfBuffers</span> (by default 64) will
+    class="prop">maxNumberOfBuffers</span> (by default 64) will
     often cause the number of events in the outgoing email to be
     unnecessarily small. Indeed, in the presence of a large number of
     transactions, there will be more than one buffer associated with
@@ -2462,7 +2488,7 @@ logger.error(<b>notifyAdmin</b>,
     succession for the same discriminator value (or transaction). Note
     that in even such very busy systems, the maximum number of cyclic
     buffers is capped by <span
-    class="option">maxNumberOfBuffers</span>.
+    class="prop">maxNumberOfBuffers</span>.
     </p>
 
     <p>To avoid such yo-yo effects, <code>SMTPAppender</code> will
@@ -2470,7 +2496,7 @@ logger.error(<b>notifyAdmin</b>,
     soon as it sees an event marked as "FINALIZE_SESSION". This will
     cause the appropriate buffer to be discarded at the end of each
     transaction. You can then safely increase the value of <span
-    class="option">maxNumberOfBuffers</span> to a larger value such as
+    class="prop">maxNumberOfBuffers</span> to a larger value such as
     512 or 1024 without risking running out of memory.
     </p>
 
@@ -2795,7 +2821,7 @@ logger.error(<b>notifyAdmin</b>,
 
 		<p>
 			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
-			class is used. The <span class="option">url</span> must begin with <em>jdbc:myslq://</em>.
+			class is used. The <span class="prop">url</span> must begin with <em>jdbc:myslq://</em>.
 		</p>
 		
 		<p>
@@ -3060,7 +3086,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="b">
 				<td>
 					<b>
-						<span class="option">syslogHost</span>
+						<span class="prop">syslogHost</span>
 					</b>
 				</td>
 				<td>
@@ -3073,7 +3099,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="a">
 				<td>
 					<b>
-						<span class="option">port</span>
+						<span class="prop">port</span>
 					</b>
 				</td>
 				<td>
@@ -3087,7 +3113,7 @@ logger.error(<b>notifyAdmin</b>,
 			<tr class="b">
 				<td>
 					<b>
-						<span class="option">facility</span>
+						<span class="prop">facility</span>
 					</b>
 				</td>
 				<td>
@@ -3095,11 +3121,11 @@ logger.error(<b>notifyAdmin</b>,
 				</td>
 				<td>
 					<p>
-						The <span class="option">facility</span> is meant to identify 
+						The <span class="prop">facility</span> is meant to identify 
 						the source of a message.
 					</p>
 					<p>
-						The <span class="option">facility</span> option must be set to one
+						The <span class="prop">facility</span> option must be set to one
 						of the strings <em>KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, 
 						CRON, AUTHPRIV, FTP, NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, 
 						LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.
@@ -3109,19 +3135,19 @@ logger.error(<b>notifyAdmin</b>,
       <tr class="a">
         <td>
           <b>
-            <span class="option">suffixPattern</span>
+            <span class="prop">suffixPattern</span>
           </b>
 				</td>
 				<td>
 					<code>String</code>
 				</td>
 				<td>
-					<p>The <span class="option">suffixPattern</span> option
+					<p>The <span class="prop">suffixPattern</span> option
 					specifies the format of the non-standardized part of the
 					message sent to the syslog server. By default, its value is
 					<em>[%thread] %logger %msg</em>. Any value that a
 					<code>PatternLayout</code> could use is a correct <span
-					class="option">suffixPattern</span> value.
+					class="prop">suffixPattern</span> value.
 					</p>
 				</td>
 			</tr>
@@ -3137,7 +3163,7 @@ logger.error(<b>notifyAdmin</b>,
 		<p>
 			Since the format of a syslog request follows rather strict rules, there is no layout
 			to be used with <code>SyslogAppender</code>. However, using the
-			<span class="option">suffixPattern</span> option lets the user display whatever
+			<span class="prop">suffixPattern</span> option lets the user display whatever
 			information she wishes.
 		</p>
 		
@@ -3238,9 +3264,9 @@ logger.debug("Alice says hello"); </p>
     discriminator type is <a
     href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>. It
     will use the MDC value associated with the <span
-    class="option">Key</span> property as a discriminator. If that
+    class="prop">Key</span> property as a discriminator. If that
     value is null, then the value associated with the <span
-    class="option">defaultValue</span> property will be used.
+    class="prop">defaultValue</span> property will be used.
     </p>
 
     <p>The <code>SiftingAppender</code> is unique in its capacity to
@@ -3403,7 +3429,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		<p>
 			Access' <a href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
 			<code>SMTPAppender</code></a> works in the same way as its Classic counterpart.
-			However, the <span class="option">evaluator</span> option is rather different. 
+			However, the <span class="prop">evaluator</span> option is rather different. 
 			By default, a <code>URLEvaluator</code> object
 			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
 			checked against the current request's URL. When one of the pages given to the
@@ -3566,7 +3592,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			<tr class="b">
 				<td>
 					<b>
-						<span class="option">insertHeaders</span>
+						<span class="prop">insertHeaders</span>
 					</b>
 				</td>
 				<td>
@@ -3610,13 +3636,13 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     uses a designated field in AccessEvent as the basis for selecting a
     nested appender. If the value of the designated field is null,
     then the value specified in the <span
-    class="option">defaultValue</span> property is used.
+    class="prop">defaultValue</span> property is used.
     </p>
 
     <p>The designated AccessEvent field can be one of COOKIE,
     REQUEST_ATTRIBUTE, SESSION_ATTRIBUTE, REMOTE_ADDRESS, LOCAL_PORT,
     REQUEST_URI. Note that the first three fields require that the
-    <span class="option">AdditionalKey</span> property also be
+    <span class="prop">AdditionalKey</span> property also be
     specified.</p>
     
     <p>Below is an example configuration file.</p>
