@@ -31,14 +31,14 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
    * The conversion word/character with which this converter is registered.
    */
   public final static String CONVERTER_KEY = "d";
-  public final static String SECONDARY_TOKEN = "SECONDARY";
+  public final static String AUXILIARY_TOKEN = "AUX";
   public static final String DEFAULT_DATE_PATTERN = CoreConstants.DAILY_DATE_PATTERN;
 
   private String datePattern;
   private CachingDateFormatter cdf;
-  // is this token converter primary or secondary? Only the primary converter
+  // is this token converter primary or auxiliary? Only the primary converter
   // determines the rolling period
-  private boolean secondary = false;
+  private boolean primary = true;
   public void start() {
     this.datePattern = getFirstOption();
     if (this.datePattern == null) {
@@ -48,8 +48,8 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
     final List<String> optionList = getOptionList();
     if(optionList != null && optionList.size()> 1) {
       String secondOption = optionList.get(1);
-      if(SECONDARY_TOKEN.equalsIgnoreCase(secondOption)) {
-        secondary = true;
+      if(AUXILIARY_TOKEN.equalsIgnoreCase(secondOption)) {
+        primary = false;
       }
     }
     cdf = new CachingDateFormatter(datePattern);
@@ -86,6 +86,6 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
   }
 
   public boolean isPrimary() {
-    return !secondary;
+    return primary;
   }
 }
