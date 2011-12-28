@@ -7,3 +7,5 @@ target
 *.iml
 *.ipr
 *.iws
+logback-classic/jdbc:hsqldb:mem:test.log
+logback-classic/jdbc:hsqldb:mem:test.properties
