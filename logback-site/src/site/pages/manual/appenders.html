@@ -251,7 +251,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	lacks configurable properties.  These properties are described next.
 	</p>
 	
-  <table class="bodyTable">
+  <table class="bodyTable striped">
     <tr class="a">
       <th>Property Name</th>
       <th>Type</th>
@@ -308,13 +308,13 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   I/O operations.
 	</p>
 	
-	<table class="bodyTable">
+	<table class="bodyTable striped">
 			<tr class="a">
 			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
 		</tr>
-		<tr class="b">
+		<tr>
 			<td><b><span class="prop">encoder</span></b></td>
       <td>
         <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
@@ -380,13 +380,13 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <span class="prop">Append</span> option.   
    </p>
 	
-   <table class="bodyTable properties">
+   <table class="bodyTable properties striped">
      <tr>
        <th>Property Name</th>
        <th>Type</th>
        <th>Description</th>
      </tr>
-     <tr class="alt">
+     <tr>
        <td><b><span class="prop">append</span></b></td>
        <td><code>boolean</code></td>
        <td>If true, events are appended at the end of an existing
@@ -405,7 +405,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
     
    
-     <tr class="alt">
+     <tr>
        <td><b><span class="prop">file</span></b></td>
        <td><code>String</code></td>
        <td>The name of the file to write to. If the file does not
@@ -426,7 +426,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    
 
-     <tr >
+     <tr>
        <td><b><span class="option bold"><a name="prudent"
        href="#prudent">prudent</a></span></b></td>
        <td><code>boolean</code></td>
@@ -464,10 +464,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          should avoid using <span class="prop">prudent</span> mode.
          </p>
 
-         <p>Prudent mode can be used in conjunction with
+         Prudent mode can be used in conjunction with
          <code>RollingFileAppender</code> although some <a
          href="#prudentWithRolling">restrictions apply</a>.
-         </p>
        </td>
        
      </tr>
@@ -622,30 +621,30 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
    <p>Here are the available properties for <code>RollingFileAppender</code>:</p>
 	
-   <table class="bodyTable">
-     <tr class="a">
+   <table class="bodyTable striped">
+     <tr>
        <th>Property Name</th>
        <th>Type</th>
        <th>Description</th>
      </tr>
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">file</span></b></td>
        <td><code>String</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
-     <tr class="a">
+     <tr>
        <td><b><span class="prop">append</span></b></td>
        <td><code>boolean</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">encoder</span></b></td>
        <td>
          <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
        </td>
        <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>
-     <tr class="a">
+     <tr>
        <td><b><span class="prop">rollingPolicy</span></b></td>
        <td><code>RollingPolicy</code></td>
        <td>This option is the component that will dictate
@@ -653,7 +652,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        occurs. See more information below.
        </td>
      </tr>	
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">triggeringPolicy</span></b></td>
        <td><code>TriggeringPolicy</code></td>
        <td>
@@ -662,16 +661,13 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          procedure. See more information below.
        </td>
      </tr>	
-     <tr class="a">
+     <tr>
        <td valign="top"><span class="prop"><a name="prudentWithRolling"
        href="#prudentWithRolling"><b>prudent</b></a></span></td>
 
        <td valign="top"><code>boolean</code></td>
 
-    
-
        <td  valign="top">
-
          <a
          href="#FixedWindowRollingPolicy"><code>FixedWindowRollingPolicy</code></a>
          is not supported in prudent mode.
@@ -695,7 +691,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
            
          </ol>
 
-         <p>See also <code>FileAppender</code> properties.</p>
+         See also properties for <code>FileAppender</code>.
        </td>
      </tr>
    </table>
@@ -758,13 +754,13 @@ public interface RollingPolicy extends LifeCycle {
    several optional properties.
    </p>
 
-   <table class="bodyTable">
-     <tr class="a">
+   <table class="bodyTable striped">
+     <tr>
        <th>Property Name</th>
        <th>Type</th>
        <th>Description</th>
      </tr>
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">fileNamePattern</span></b></td>
        <td><code>String</code></td>
        <td>
@@ -812,7 +808,7 @@ public interface RollingPolicy extends LifeCycle {
          by passing the AUX paramater (see examples below).</p>
        </td>
      </tr>
-     <tr  class="a">
+     <tr>
        <td><span class="prop"><b>maxHistory</b></span></td>
        <td>int</td>
        <td>The optional <span class="prop">maxHistory</span>
@@ -826,7 +822,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
 
-     <tr  class="b">
+     <tr >
        <td><span class="prop"><b>cleanHistoryOnStart</b></span></td>
        <td>boolean</td>
        <td>
@@ -851,15 +847,15 @@ public interface RollingPolicy extends LifeCycle {
 
   
    
-   <table class="bodyTable">
-     <tr class="a">
+   <table class="bodyTable striped">
+     <tr>
        <th>
          <span class="prop">fileNamePattern</span>
        </th>
        <th>Rollover schedule</th>
        <th>Example</th>
      </tr>
-     <tr class="b">
+     <tr>
        <td class="small">
          <em>/wombat/foo.%d</em>
        </td>
@@ -891,7 +887,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
      
 
-     <tr class="a">
+     <tr>
        <td class="small">
          <em>/wombat/%d{yyyy/MM}/foo.txt</em>
        </td>
@@ -917,7 +913,7 @@ public interface RollingPolicy extends LifeCycle {
          </p>
        </td>
      </tr>
-     <tr class="b">
+     <tr>
        <td class="small">
          <em>/wombat/foo.%d{yyyy-ww}.log</em>
        </td>
@@ -929,7 +925,7 @@ public interface RollingPolicy extends LifeCycle {
        at the beginning of every new week.  
        </td>     
      </tr>	
-     <tr class="a">
+     <tr>
        <td class="small">
          <em>/wombat/foo%d{yyyy-MM-dd_HH}.log</em>
        </td>
@@ -938,7 +934,7 @@ public interface RollingPolicy extends LifeCycle {
        at the top of every hour.
        </td>
      </tr>
-     <tr class="b">
+     <tr>
        <td class="small">
          <em>/wombat/foo%d{yyyy-MM-dd_HH-mm}.log</em>
        </td>
@@ -949,7 +945,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
 
 
-     <tr class="a">
+     <tr>
        <td class="small">
          <em>/foo/%d{yyyy-MM,<b>aux</b>}/%d.log</em>
        </td>
@@ -982,13 +978,13 @@ public interface RollingPolicy extends LifeCycle {
  	 or <em>.zip</em>.
    </p>
 
-   <table class="bodyTable">
+   <table class="bodyTable striped">
      <tr class="a">
        <th><span class="prop">fileNamePattern</span></th>
        <th>Rollover schedule</th>
        <th>Example</th>
      </tr>
-     <tr class="b">
+     <tr>
        <td><em>/wombat/foo.%d.gz</em></td>
        <td>Daily rollover (at midnight) with automatic GZIP compression of the 
        archived files.</td>
@@ -1151,13 +1147,13 @@ public interface RollingPolicy extends LifeCycle {
    <code>FixedWindowRollingPolicy</code>
    </p>
 	
-   <table class="bodyTable">
+   <table class="bodyTable striped">
      <tr class="a">
        <th>Property Name</th>
        <th>Type</th>
        <th>Description</th>
      </tr>
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">minIndex</span></b></td>
        <td><code>int</code></td>
        <td>
@@ -1166,7 +1162,7 @@ public interface RollingPolicy extends LifeCycle {
          </p>
        </td>
      </tr>
-     <tr class="a">
+     <tr>
        <td><b><span class="prop">maxIndex</span></b></td>
        <td><code>int</code></td>
        <td>
@@ -1175,7 +1171,7 @@ public interface RollingPolicy extends LifeCycle {
          </p>
        </td>
      </tr>
-     <tr class="b">
+     <tr>
        <td><b><span class="prop">fileNamePattern</span></b></td>
        <td><code>String</code></td>
        <td>
@@ -1217,14 +1213,14 @@ public interface RollingPolicy extends LifeCycle {
    <em>foo.log</em>.
    </p>
 	
-   <table class="bodyTable">
-     <tr class="a">
+   <table class="bodyTable striped">
+     <tr>
        <th>Number of rollovers</th>
        <th>Active output target</th>
        <th>Archived log files</th>
        <th>Description</th>
      </tr>
-		<tr class="b">
+		<tr>
 			<td>0</td>
 			<td>foo.log</td>
 			<td>-</td>
@@ -1232,7 +1228,7 @@ public interface RollingPolicy extends LifeCycle {
 			file.
 			</td>
      </tr>		
-     <tr class="a">
+     <tr>
        <td>1</td>
        <td>foo.log</td>
        <td>foo1.log</td>
@@ -1241,7 +1237,7 @@ public interface RollingPolicy extends LifeCycle {
        becomes the active output target.
        </td>
      </tr>
-     <tr class="b">
+     <tr>
        <td>2</td>
        <td>foo.log</td>
        <td>foo1.log, foo2.log</td>
@@ -1251,7 +1247,7 @@ public interface RollingPolicy extends LifeCycle {
        becomes the active output target.
        </td>
      </tr>
-     <tr class="a">
+     <tr>
        <td>3</td>
        <td>foo.log</td>
        <td>foo1.log, foo2.log, foo3.log</td>
@@ -1262,7 +1258,7 @@ public interface RollingPolicy extends LifeCycle {
        becomes the active output target.
        </td>
      </tr>
-     <tr class="b">
+     <tr>
        <td>4</td>
        <td>foo.log</td>
        <td>foo1.log, foo2.log, foo3.log</td>
@@ -1549,13 +1545,13 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		table.
 		</p>
 
-    <table class="bodyTable">
-      <tr class="a">
+    <table class="bodyTable striped">
+      <tr>
 			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
       </tr>
-      <tr class="b">
+      <tr>
         <td><b><span class="prop">includeCallerData</span></b></td>
         <td><code>boolean</code></td>
         <td>
@@ -1566,7 +1562,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           </p>
         </td>
       </tr>
-      <tr class="a">
+      <tr>
         <td><b><span class="prop">port</span></b></td>
         <td><code>int</code></td>
         <td>
@@ -1575,7 +1571,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           </p>
         </td>
       </tr>	
-      <tr class="b">
+      <tr>
         <td><b><span class="prop">reconnectionDelay</span></b></td>
         <td><code>int</code></td>
         <td>
@@ -1588,7 +1584,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           connector thread present.
         </td>
       </tr>
-      <tr class="a">
+      <tr>
         <td><b><span class="prop">remoteHost</span></b></td>
         <td><code>String</code></td>
         <td>
@@ -1750,8 +1746,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
    summarized in the following table.
 	 </p>
 		
-		<table class="bodyTable">
-      <tr class="a">
+		<table class="bodyTable striped">
+      <tr>
         <th>Property Name</th>
         <th>Type</th>
         <th>Description</th>
@@ -2547,8 +2543,8 @@ logger.error(<b>notifyAdmin</b>,
 		of the <code>getGeneratedKeys()</code> method.
 		</p>
 
-		<table class="bodyTable" border="1" cellpadding="4">
-			<tr class="a">
+		<table class="bodyTable striped" border="1" cellpadding="4">
+			<tr>
 				<th>RDBMS</th>
         <th>tested version(s)
         </th>
@@ -2633,18 +2629,18 @@ logger.error(<b>notifyAdmin</b>,
 		<p>
 			The <em>logging_event</em> table contains the following fields:
 		</p>
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Field</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>timestamp</b></td>
 				<td><code>big int</code></td>
 				<td>The timestamp that was valid at the logging event's creation.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>formatted_message</b></td>
 				<td><code>text</code></td>
 
@@ -2653,17 +2649,17 @@ logger.error(<b>notifyAdmin</b>,
 				<code>org.slf4j.impl.MessageFormatter</code>, in case objects
 				were passed along with the message.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>logger_name</b></td>
 				<td><code>varchar</code></td>
 				<td>The name of the logger used to issue the logging request.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>level_string</b></td>
 				<td><code>varchar</code></td>
 				<td>The level of the logging event.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>reference_flag</b></td>
 				<td><code>smallint</code></td>
 				<td>
@@ -2682,27 +2678,27 @@ logger.error(<b>notifyAdmin</b>,
 					</p>
 				</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>caller_filename</b></td>
 				<td><code>varchar</code></td>
 				<td>The name of the file where the logging request was issued.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>caller_class</b></td>
 				<td><code>varchar</code></td>
 				<td>The class where the logging request was issued.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>caller_method</b></td>
 				<td><code>varchar</code></td>
 				<td>The name of the method where the logging request was issued.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>caller_line</b></td>
 				<td><code>char</code></td>
 				<td>The line number where the logging request was issued.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>event_id</b></td>
 				<td><code>int</code></td>
 				<td>The database id of the logging event.</td>
@@ -2715,23 +2711,23 @@ logger.error(<b>notifyAdmin</b>,
 			It contains these fields:
 		</p>
 
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Field</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>event_id</b></td>
 				<td><code>int</code></td>
 				<td>The database id of the logging event.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>mapped_key</b></td>
 				<td><code>varchar</code></td>
 				<td>The key of the <code>MDC</code> property</td>
 			</tr>		
-			<tr class="b">
+			<tr>
 				<td><b>mapped_value</b></td>
 				<td><code>text</code></td>
 				<td>The value of the <code>MDC</code> property</td>
@@ -2742,23 +2738,23 @@ logger.error(<b>notifyAdmin</b>,
 			The <em>logging_event_exception</em> table contains the following fields:
 		</p>
 		
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Field</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>event_id</b></td>
 				<td><code>int</code></td>
 				<td>The database id of the logging event.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>i</b></td>
 				<td><code>smallint</code></td>
 				<td>The index of the line in the full stack trace.</td>
 			</tr>		
-			<tr class="b">
+			<tr>
 				<td><b>trace_line</b></td>
 				<td><code>varchar</code></td>
 				<td>The corresponding line</td>
@@ -3077,13 +3073,13 @@ logger.error(<b>notifyAdmin</b>,
 		
 		<p>Here are the properties you can pass to a SyslogAppender.</p>
 
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Property Name</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td>
 					<b>
 						<span class="prop">syslogHost</span>
@@ -3096,7 +3092,7 @@ logger.error(<b>notifyAdmin</b>,
 					The host name of the syslog server.
 				</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td>
 					<b>
 						<span class="prop">port</span>
@@ -3110,7 +3106,7 @@ logger.error(<b>notifyAdmin</b>,
 					to change the default value of <em>514</em>.
 				</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td>
 					<b>
 						<span class="prop">facility</span>
@@ -3132,7 +3128,7 @@ logger.error(<b>notifyAdmin</b>,
 					</p>
 				</td>
 			</tr>
-      <tr class="a">
+      <tr>
         <td>
           <b>
             <span class="prop">suffixPattern</span>
@@ -3488,62 +3484,62 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		
 		<p>The <em>access_event</em> table's fields are described below:</p>
 
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Field</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>timestamp</b></td>
 				<td><code>big int</code></td>
 				<td>The timestamp that was valid at the access event's creation.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>requestURI</b></td>
 				<td><code>varchar</code></td>
 				<td>The URI that was requested.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>requestURL</b></td>
 				<td><code>varchar</code></td>
 				<td>The URL that was requested. This is a string composed of the request method,
 				the request URI and the request protocol.
 				</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>remoteHost</b></td>
 				<td><code>varchar</code></td>
 				<td>The name of the remote host.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>remoteUser</b></td>
 				<td><code>varchar</code></td>
 				<td>
 					The name of the remote user.
 				</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>remoteAddr</b></td>
 				<td><code>varchar</code></td>
 				<td>The remote IP address.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>protocol</b></td>
 				<td><code>varchar</code></td>
 				<td>The request protocol, like <em>HTTP</em> or <em>HTTPS</em>.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>method</b></td>
 				<td><code>varchar</code></td>
 				<td>The request method, usually <em>GET</em> or <em>POST</em>.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>serverName</b></td>
 				<td><code>varchar</code></td>
 				<td>The name of the server that issued the request.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>event_id</b></td>
 				<td><code>int</code></td>
 				<td>The database id of the access event.</td>
@@ -3555,23 +3551,23 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			request. The information is organised as shown below:
 		</p>
 
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Field</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>event_id</b></td>
 				<td><code>int</code></td>
 				<td>The database id of the corresponding access event.</td>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td><b>header_key</b></td>
 				<td><code>varchar</code></td>
 				<td>The header name, for example <em>User-Agent</em>.</td>
 			</tr>
-			<tr class="a">
+			<tr>
 				<td><b>header_value</b></td>
 				<td><code>varchar</code></td>
 				<td>The header value, for example <em>Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8.1) Gecko/20061010 Firefox/2.0</em></td>
@@ -3583,13 +3579,13 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			described below.
 		</p>
 		
-		<table class="bodyTable">
-			<tr class="a">
+		<table class="bodyTable striped">
+			<tr>
 				<th>Property Name</th>
 				<th>Type</th>
 				<th>Description</th>
 			</tr>
-			<tr class="b">
+			<tr>
 				<td>
 					<b>
 						<span class="prop">insertHeaders</span>

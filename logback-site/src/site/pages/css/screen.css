@@ -41,14 +41,17 @@ p.menu {
 
 #left {
   position: absolute;
+  font-size: 80%;
   left: 0px;
   width: 15em;
   color: #564b47;
   margin: 4px 0px 0px 4px; 
   padding: 0px;
   border: 1px solid #cccccc;
-  background-color: #ffffff;
-  font-size: 80%;
+  background-color: #fff8e8;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 
 #left a, #right a {
@@ -56,7 +59,7 @@ p.menu {
   width: 95.5%; 
   margin: 0px; 
   padding: 2px; 
-  border: solid 1px #FFFFFF; 
+  border: solid 1px #fff8e8; 
   color: #0066cc; 
   text-decoration: none;
 }
@@ -74,6 +77,9 @@ p.menu_header {
   border: solid 1px #FFFFFF; 
   background-color: #3333CC; 
   color: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 
 #left a:hover.x {
@@ -113,6 +119,7 @@ p.menu_header {
   margin: 0px 15em 0px 15em;
   padding: 0px;
   background-color: #ffffff;  
+  line-height: 130%;
 }
 
 #content img {
