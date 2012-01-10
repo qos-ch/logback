@@ -141,7 +141,7 @@ public class ThrowableProxyUtil {
    * @param indentLevel indentation level used for the STEPs, usually either REGULAR_EXCEPTION_INDENT or SUPPRESSED_EXCEPTION_INDENT.
    * @param tp the IThrowableProxy containing the STEPs.
    */
-  private static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
+  public static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
