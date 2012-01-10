@@ -92,7 +92,8 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    // for performance reasons, check for changes every 16 invocations
+    // for performance reasons, skip any type of computation 15 times out of 16.
+    // Only once every 16 calls is the check for elapsed type is performed
     if (((invocationCounter++) & 0xF) != 0xF) {
       return FilterReply.NEUTRAL;
     }
