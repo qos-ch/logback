@@ -63,7 +63,6 @@ public class AsyncAppenderTest extends AbstractAppenderTest<Object> {
 
     // Check if the status manager has the exception logged
     StatusManager manager = context.getStatusManager();
-    assertEquals(Status.ERROR, manager.getLevel());
     assertEquals(1, manager.getCount());
   }
 
@@ -92,7 +91,6 @@ public class AsyncAppenderTest extends AbstractAppenderTest<Object> {
 
     // Check if the status manager has the exceptions logged
     StatusManager manager = context.getStatusManager();
-    assertEquals(Status.ERROR, manager.getLevel());
     assertEquals(3, manager.getCount());
 
     // Stop AsyncAppender
@@ -115,7 +113,6 @@ public class AsyncAppenderTest extends AbstractAppenderTest<Object> {
 
     // Check if the status manager has the exception logged
     StatusManager manager = context.getStatusManager();
-    assertEquals(Status.ERROR, manager.getLevel());
     assertEquals(1, manager.getCount());
   }
 
