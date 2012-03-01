@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +44,8 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 
+import static org.junit.Assert.*;
+
 public class SMTPAppender_GreenTest {
 
   int port = RandomUtil.getRandomServerPort();
@@ -64,7 +62,7 @@ public class SMTPAppender_GreenTest {
   public void setUp() throws Exception {
     MDC.clear();
     ServerSetup serverSetup = new ServerSetup(port, "localhost",
-        ServerSetup.PROTOCOL_SMTP);
+            ServerSetup.PROTOCOL_SMTP);
     greenMail = new GreenMail(serverSetup);
     greenMail.start();
     // let the grean mail server get a head start
@@ -109,7 +107,7 @@ public class SMTPAppender_GreenTest {
   }
 
   private MimeMultipart verify(String subject) throws MessagingException,
-      IOException {
+          IOException {
     MimeMessage[] mma = greenMail.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(1, mma.length);
@@ -123,6 +121,7 @@ public class SMTPAppender_GreenTest {
     lc.getExecutorService().shutdown();
     lc.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
   }
+
   @Test
   public void smoke() throws Exception {
     buildSMTPAppender();
@@ -132,7 +131,7 @@ public class SMTPAppender_GreenTest {
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-     waitUntilEmailIsSent();
+    waitUntilEmailIsSent();
 //    synchronized (smtpAppender) {
 //      smtpAppender.wait();
 //    }
@@ -187,7 +186,7 @@ public class SMTPAppender_GreenTest {
   /**
    * Checks that even when many events are processed, the output is still
    * conforms to xhtml-strict.dtd.
-   * 
+   *
    * Note that SMTPAppender only keeps only 500 or so (=buffer size) events. So
    * the generated output will be rather short.
    */
@@ -201,7 +200,7 @@ public class SMTPAppender_GreenTest {
     }
     logger.error("en error", new Exception("an exception"));
 
-     waitUntilEmailIsSent();
+    waitUntilEmailIsSent();
     MimeMultipart mp = verify(TEST_SUBJECT);
 
     // verify strict adherence to xhtml1-strict.dtd
@@ -222,7 +221,7 @@ public class SMTPAppender_GreenTest {
   @Test
   public void testCustomEvaluator() throws Exception {
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "smtp/customEvaluator.xml");
+            + "smtp/customEvaluator.xml");
 
     logger.debug("hello");
     String msg2 = "world";
@@ -237,7 +236,7 @@ public class SMTPAppender_GreenTest {
   @Test
   public void testCustomBufferSize() throws Exception {
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "smtp/customBufferSize.xml");
+            + "smtp/customBufferSize.xml");
 
     logger.debug("invisible1");
     logger.debug("invisible2");
@@ -263,5 +262,41 @@ public class SMTPAppender_GreenTest {
     MimeMessage[] mma = greenMail.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(3, mma.length);
+  }
+
+
+  // http://jira.qos.ch/browse/LBCLASSIC-221
+  @Test
+  public void bufferShouldBeResetBetweenMessages() throws Exception {
+    buildSMTPAppender();
+    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    String h1 = "hello one";
+    logger.debug(h1);
+    logger.error("error one");
+
+    String h2 = "hello two";
+    logger.debug(h2);
+    logger.error("error two");
+
+    waitUntilEmailIsSent();
+
+    MimeMessage[] mma = greenMail.getReceivedMessages();
+    assertNotNull(mma);
+    assertEquals(2, mma.length);
+
+    MimeMessage mm0 = mma[0];
+    MimeMultipart content0 = (MimeMultipart) mm0.getContent();
+    String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
+    System.out.println(body0);
+
+    MimeMessage mm1 = mma[1];
+    MimeMultipart content1 = (MimeMultipart) mm1.getContent();
+    String body1 = GreenMailUtil.getBody(content1.getBodyPart(0));
+    assertFalse(body1.contains(h1));
+    System.out.println(body1);
+
+
   }
 }
