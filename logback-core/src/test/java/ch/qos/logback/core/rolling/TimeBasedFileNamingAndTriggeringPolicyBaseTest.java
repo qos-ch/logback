@@ -49,11 +49,14 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
     assertEquals("foo-2011-12T59.log", elapsedPeriodsFileName);
   }
 
-@Test
+  // see "log rollover should be configurable using %d multiple times in file name pattern"
+  // http://jira.qos.ch/browse/LBCORE-242
+
+  @Test
   public void multiDate() {
     // Tuesday December 20th 17:59:01 CET 2011
     long startTime = 1324400341553L;
-    tbrp.setFileNamePattern("foo-%d{yyyy-MM, SECONDARY}/%d{mm}.log");
+    tbrp.setFileNamePattern("foo-%d{yyyy-MM, AUX}/%d{mm}.log");
     tbrp.start();
 
     timeBasedFNATP.setCurrentTime(startTime);
