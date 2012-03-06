@@ -60,6 +60,12 @@
     as reported by Chris Cheshire.
     </p>
 
+    <p>SiftingAppender will consider stale and consequently remove
+    nested appenders which are closed or improperly started. This
+    caters for the use case described in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-316">LBCLASSIC-316</a>
+    by Guus Bloemsma.</p>
+
     <p><code>RequestLogImpl</code> can now lookup for the
     logback-access configuration file as a class path resource. This
     feature was requested in <a

@@ -116,6 +116,7 @@ public class Simulator {
     Appender<Object> appender = appenderTracker.get(key, timestamp);
     if (appender == null) {
       appender = new NOPAppender<Object>();
+      appender.start();
       appenderTracker.put(key, appender, timestamp);
     }
     appenderTracker.stopStaleAppenders(timestamp);
