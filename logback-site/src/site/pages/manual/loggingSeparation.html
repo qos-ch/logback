@@ -252,6 +252,11 @@
   &lt;listener-class>ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class>
 &lt;/listener></pre>
 
+    <p><span class="label notice">Note</span> If you have multiple
+    <code>ServletContextListener</code> instances declared in
+    <em>web.xml</em>, then declaring <code>ContextDetachingSCL</code>
+    last usually works best.</p>
+
     <h3><a name="betterPerf" href="betterPerf">Better
     performance</a></h3>
 
