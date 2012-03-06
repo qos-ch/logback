@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ThrowableToStringArrayTest.class, FileUtilTest.class})
+@SuiteClasses({ThrowableToStringArrayTest.class, FileUtilTest.class, CyclicBufferTest.class})
 public class PackageTest {
 
 }

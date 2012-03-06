@@ -272,13 +272,13 @@ public class SMTPAppender_GreenTest {
     smtpAppender.setLayout(buildPatternLayout(lc));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
-    String h1 = "hello one";
-    logger.debug(h1);
-    logger.error("error one");
+    String msg0 = "hello zero";
+    logger.debug(msg0);
+    logger.error("error zero");
 
-    String h2 = "hello two";
-    logger.debug(h2);
-    logger.error("error two");
+    String msg1 = "hello one";
+    logger.debug(msg1);
+    logger.error("error one");
 
     waitUntilEmailIsSent();
 
@@ -290,12 +290,14 @@ public class SMTPAppender_GreenTest {
     MimeMultipart content0 = (MimeMultipart) mm0.getContent();
     String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
     System.out.println(body0);
+    System.out.println("--------------");
 
     MimeMessage mm1 = mma[1];
     MimeMultipart content1 = (MimeMultipart) mm1.getContent();
     String body1 = GreenMailUtil.getBody(content1.getBodyPart(0));
-    assertFalse(body1.contains(h1));
     System.out.println(body1);
+    // second body should not contain content from first message
+    assertFalse(body1.contains(msg0));
 
 
   }

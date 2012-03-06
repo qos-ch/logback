@@ -54,6 +54,12 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-276">LBCLASSIC-276</a>.
     </p>
 
+    <p><code>SMTPAppender</code> clears the relevant cyclic buffer
+    before asynchronous transmission. This corrects <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-221">LBCLASSIC-221</a>
+    as reported by Chris Cheshire.
+    </p>
+
     <p><code>RequestLogImpl</code> can now lookup for the
     logback-access configuration file as a class path resource. This
     feature was requested in <a

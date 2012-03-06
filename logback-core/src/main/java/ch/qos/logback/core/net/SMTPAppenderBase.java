@@ -184,8 +184,13 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     try {
       if (eventEvaluator.evaluate(eventObject)) {
+        // clone the CyclicBuffer before sending out asynchronously
+        CyclicBuffer<E> cbClone = new CyclicBuffer<E>(cb);
+        // see http://jira.qos.ch/browse/LBCLASSIC-221
+        cb.clear();
+
         // perform actual sending asynchronously
-        SenderRunnable senderRunnable = new SenderRunnable(new CyclicBuffer<E>(cb), eventObject);
+        SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
         context.getExecutorService().execute(senderRunnable);
       }
     } catch (EvaluationException ex) {
