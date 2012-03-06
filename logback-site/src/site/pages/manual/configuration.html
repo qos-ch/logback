@@ -368,21 +368,24 @@ public class Foo {
    </ol>
      
    <p>If any of these two conditions is not fulfilled, Joran cannot
-   interpret the <code>debug</code> attribute since the configuration file
-   cannot be read. If the configuration file is found but is
-   malformed, then logback will detect the error condition and
-   automatically print its internal status on the console. However, if
-   the configuration file cannot be found, logback will not automatically
-   print its status data, since this is not necessarily an error condition. Programmatically invoking
+   interpret the <span class="attr">debug</span> attribute since the
+   configuration file cannot be read. If the configuration file is
+   found but is malformed, then logback will detect the error
+   condition and automatically print its internal status on the
+   console. However, if the configuration file cannot be found,
+   logback will not automatically print its status data, since this is
+   not necessarily an error condition. Programmatically invoking
    <code>StatusPrinter.print()</code> as in the <em>MyApp2</em>
    application above ensures that status information is always
    printed.
    </p>
 
-   <p>It is strongly recommended to register a status listener,
-   e.g. <code>OnConsoleStatusListener</code>, so that problems
-   occurring during the lifetime of your application, well after
-   logback is initialized, can be reported. See the section on <a
+   <p>As of version 1.0.1, setting the <span class="attr">debug</span>
+   attribute is equivalent to registering an
+   <code>OnConsoleStatusListener</code> with the
+   <code>StatusManager</code>. Thus, problems occurring during the
+   lifetime of your application, well after logback is initialized,
+   can be reported.  Refer to the section on <a
    href="#statusListener">status listeners</a> further below.</p>
 
    <h3><a name="configFileProperty"

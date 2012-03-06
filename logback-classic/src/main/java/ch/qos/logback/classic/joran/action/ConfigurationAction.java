@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -29,7 +30,6 @@ public class ConfigurationAction extends Action {
   static final String SCAN_ATTR = "scan";
   static final String SCAN_PERIOD_ATTR = "scanPeriod";
 
-  boolean debugMode = false;
   long threshold = 0;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
@@ -40,7 +40,7 @@ public class ConfigurationAction extends Action {
         || debugAttrib.equalsIgnoreCase("null")) {
       addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
-      debugMode = true;
+      OnConsoleStatusListener.addNewInstanceToContext(context);
     }
 
     processScanAttrib(attributes);
@@ -77,11 +77,7 @@ public class ConfigurationAction extends Action {
   }
 
   public void end(InterpretationContext ec, String name) {
-    if (debugMode) {
-      addInfo("End of configuration.");
-      LoggerContext loggerContext = (LoggerContext) context;
-      StatusPrinter.print(loggerContext, threshold);
-    }
+    addInfo("End of configuration.");
     ec.popObject();
   }
 }

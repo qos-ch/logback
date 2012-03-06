@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.access.joran.action;
 
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
@@ -24,7 +25,6 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
-  boolean debugMode = false;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
     String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
@@ -33,8 +33,8 @@ public class ConfigurationAction extends Action {
       (debugAttrib == null) || debugAttrib.equals("")
         || debugAttrib.equals("false") || debugAttrib.equals("null")) {
       addInfo("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
-    } else { 
-      debugMode = true;
+    } else {
+      OnConsoleStatusListener.addNewInstanceToContext(context);
     }
 
     new ContextUtil(context).addHostNameAsProperty();
@@ -45,10 +45,6 @@ public class ConfigurationAction extends Action {
 
   public void end(InterpretationContext ec, String name) {
     addInfo("End of configuration.");
-    if (debugMode) {
-      StatusPrinter.print(context);
-    }
-    
     ec.popObject();
   }
 }

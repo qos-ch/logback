@@ -33,9 +33,8 @@ public class StatusListenerAction extends Action {
     inError = false;
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     if (OptionHelper.isEmpty(className)) {
-      addError(
-              "Missing class name for statusListener. Near ["
-                      + name + "] line " + getLineNumber(ec));
+      addError("Missing class name for statusListener. Near ["
+              + name + "] line " + getLineNumber(ec));
       inError = true;
       return;
     }
@@ -43,11 +42,11 @@ public class StatusListenerAction extends Action {
     try {
       statusListener = (StatusListener) OptionHelper.instantiateByClassName(
               className, StatusListener.class, context);
-      addInfo("Adding status listener of type ["+className+"]");
       ec.getContext().getStatusManager().add(statusListener);
       if (statusListener instanceof ContextAware) {
         ((ContextAware) statusListener).setContext(context);
       }
+      addInfo("Added status listener of type [" + className + "]");
       ec.pushObject(statusListener);
     } catch (Exception e) {
       inError = true;
@@ -70,8 +69,7 @@ public class StatusListenerAction extends Action {
     }
     Object o = ec.peekObject();
     if (o != statusListener) {
-      addWarn(
-              "The object at the of the stack is not the statusListener pushed earlier.");
+      addWarn("The object at the of the stack is not the statusListener pushed earlier.");
     } else {
       ec.popObject();
     }
