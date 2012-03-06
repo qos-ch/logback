@@ -253,14 +253,15 @@
 &lt;/listener></pre>
 
     <p><span class="label notice">Note</span> Most containers invoke
-    the <code>contextInitialized</code> method of listeners in the
+    the <code>contextInitialized()</code> method of listeners in the
     order in which they are declared but invoke their
-    <code>contextDestroyed</code> method reverse order. It follows
-    that if you have multiple <code>ServletContextListener</code>
-    declarations in your <em>web.xml</em>, then
-    <code>ContextDetachingSCL</code> should be declared <em>first</em>
-    so that its <code>contextDestroyed</code> method is invoked
-    <em>last</em> during application shutdown. </p>
+    <code>contextDestroyed()</code> method in reverse order. It
+    follows that if you have multiple
+    <code>ServletContextListener</code> declarations in your
+    <em>web.xml</em>, then <code>ContextDetachingSCL</code> should be
+    declared <em>first</em> so that its
+    <code>contextDestroyed()</code> method is invoked <em>last</em>
+    during application shutdown. </p>
 
     <h3><a name="betterPerf" href="betterPerf">Better
     performance</a></h3>
