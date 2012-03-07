@@ -63,6 +63,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
 public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
+  public static final String HEADER_PREFIX = "#logback.access pattern: ";
 
   public static String CLF_PATTERN = "%h %l %u %t \"%r\" %s %b";
   public static String CLF_PATTERN_NAME = "common";
@@ -183,5 +184,11 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
       setPattern(COMBINED_PATTERN);
     }
     super.start();
+  }
+
+
+  @Override
+  protected String getPresentationHeaderPrefix() {
+    return HEADER_PREFIX;
   }
 }

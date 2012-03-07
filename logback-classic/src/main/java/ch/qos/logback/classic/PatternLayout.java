@@ -58,7 +58,8 @@ import ch.qos.logback.core.pattern.parser.Parser;
 public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
-
+  public static final String HEADER_PREFIX = "#logback.classic pattern: ";
+  
   static {
     defaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
 
@@ -144,5 +145,10 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
       return CoreConstants.EMPTY_STRING;
     }
     return writeLoopOnConverters(event);
+  }
+
+  @Override
+  protected String getPresentationHeaderPrefix() {
+    return HEADER_PREFIX;
   }
 }
