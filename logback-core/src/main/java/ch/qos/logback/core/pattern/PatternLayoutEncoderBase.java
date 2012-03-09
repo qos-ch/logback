@@ -19,6 +19,8 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
 
   String pattern;
+
+  for reasons of consistency  following attribute should be removed
   protected boolean outputPatternAsPresentationHeader = true;
 
   public String getPattern() {
