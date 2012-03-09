@@ -11,6 +11,7 @@
     </evaluator>
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%message</Pattern>
+      <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
     </layout>
   </appender>
 

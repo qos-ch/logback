@@ -8,11 +8,12 @@
     <Subject>%logger - %m</Subject>
 
     <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
-      <BufferSize>1</BufferSize>
+      <bufferSize>1</bufferSize>
     </CyclicBufferTracker>
     
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%message</Pattern>
+      <pattern>%message</pattern>
+      <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
     </layout>
   </appender>
 

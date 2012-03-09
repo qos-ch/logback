@@ -108,6 +108,8 @@ public class OutputStreamAppenderTest {
     String result = baos.toString();
 
     String expectedHeader = emtptyIfNull(fileHeader) + emtptyIfNull(presentationHeader);
+
+    System.out.println(result);
     assertTrue(result, result.startsWith(expectedHeader));
 
     String expectedFooter = emtptyIfNull(presentationFooter) + emtptyIfNull(fileFooter);

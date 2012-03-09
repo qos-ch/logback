@@ -19,6 +19,7 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
 
   String pattern;
+  protected boolean outputPatternAsPresentationHeader = true;
 
   public String getPattern() {
     return pattern;
@@ -26,6 +27,14 @@ public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
 
   public void setPattern(String pattern) {
     this.pattern = pattern;
+  }
+
+  public boolean isOutputPatternAsPresentationHeader() {
+    return outputPatternAsPresentationHeader;
+  }
+
+  public void setOutputPatternAsPresentationHeader(boolean outputPatternAsPresentationHeader) {
+    this.outputPatternAsPresentationHeader = outputPatternAsPresentationHeader;
   }
 
   @Override

@@ -39,6 +39,7 @@ public class PatternLayoutEncoderTest {
   @Before
   public void setUp() {
     ple.setPattern("%m");
+    ple.setOutputPatternAsPresentationHeader(false);
     ple.setContext(context);
   }
 

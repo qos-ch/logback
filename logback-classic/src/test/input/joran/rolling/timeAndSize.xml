@@ -15,6 +15,7 @@
     </rollingPolicy>
     <encoder>
       <Pattern>%msg%n</Pattern>
+      <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
     </encoder>
   </appender>
 
