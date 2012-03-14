@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,6 +70,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId
             + ".xml");
     StatusChecker sc = new StatusChecker(lc);
+    StatusPrinter.print(lc  );
     assertTrue(sc.isErrorFree(0));
 
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);

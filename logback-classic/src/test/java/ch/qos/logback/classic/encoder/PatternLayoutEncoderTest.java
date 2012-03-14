@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import ch.qos.logback.classic.PatternLayout;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +40,6 @@ public class PatternLayoutEncoderTest {
   @Before
   public void setUp() {
     ple.setPattern("%m");
-    ple.setOutputPatternAsPresentationHeader(false);
     ple.setContext(context);
   }
 
@@ -49,8 +49,7 @@ public class PatternLayoutEncoderTest {
 
   @Test
   public void smoke() throws IOException {
-    ple.start();
-    ple.init(baos);
+    init(baos);
     String msg = "hello";
     ILoggingEvent event = makeLoggingEvent(msg);
     ple.doEncode(event);
@@ -58,11 +57,16 @@ public class PatternLayoutEncoderTest {
     assertEquals(msg, baos.toString());
   }
 
+  void init(ByteArrayOutputStream baos) throws IOException {
+    ple.start();
+    ((PatternLayout) ple.getLayout()).setOutputPatternAsPresentationHeader(false);
+    ple.init(baos);
+  }
+
   @Test
   public void charset() throws IOException {
     ple.setCharset(utf8Charset);
-    ple.start();
-    ple.init(baos);
+    init(baos);
     String msg = "\u03b1";
     ILoggingEvent event = makeLoggingEvent(msg);
     ple.doEncode(event);
