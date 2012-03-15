@@ -10,10 +10,8 @@
       </FileNamePattern>
     </rollingPolicy>
     <encoder>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-          <pattern>%msg%n</pattern>
-          <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
-        </layout>
+      <pattern>%msg%n</pattern>
+      <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
     </encoder>
   </appender>
 

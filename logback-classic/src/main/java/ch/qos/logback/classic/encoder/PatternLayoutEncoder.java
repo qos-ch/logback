@@ -24,7 +24,7 @@ public class PatternLayoutEncoder extends PatternLayoutEncoderBase<ILoggingEvent
     PatternLayout patternLayout = new PatternLayout();
     patternLayout.setContext(context);
     patternLayout.setPattern(getPattern());
-    //patternLayout.setOutputPatternAsPresentationHeader(outputPatternAsPresentationHeader);
+    patternLayout.setOutputPatternAsPresentationHeader(outputPatternAsPresentationHeader);
     patternLayout.start();
     this.layout = patternLayout;
     super.start();
