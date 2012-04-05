@@ -91,7 +91,7 @@ public class OnConsoleStatusListener extends ContextAwareBase implements StatusL
   static public void addNewInstanceToContext(Context context) {
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
     onConsoleStatusListener.setContext(context);
+    onConsoleStatusListener.start();
     context.getStatusManager().add(onConsoleStatusListener);
-	onConsoleStatusListener.start();
   }
 }
