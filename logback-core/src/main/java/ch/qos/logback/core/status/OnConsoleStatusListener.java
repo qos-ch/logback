@@ -14,7 +14,6 @@
 package ch.qos.logback.core.status;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -93,5 +92,6 @@ public class OnConsoleStatusListener extends ContextAwareBase implements StatusL
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
     onConsoleStatusListener.setContext(context);
     context.getStatusManager().add(onConsoleStatusListener);
+	onConsoleStatusListener.start();
   }
 }
