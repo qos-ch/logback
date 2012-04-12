@@ -36,6 +36,7 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
+  static final public String DEFAULT_STACKTRACE_SUFFIX_PATTERN = ""+CoreConstants.TAB;
 
   PatternLayout prefixLayout = new PatternLayout();
 
@@ -55,6 +56,9 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     if (suffixPattern == null) {
       suffixPattern = DEFAULT_SUFFIX_PATTERN;
     }
+    if (stacktraceSuffixPattern == null) {
+  	  stacktraceSuffixPattern = DEFAULT_STACKTRACE_SUFFIX_PATTERN;
+    }          
 
     fullLayout.setPattern(prefixPattern + suffixPattern);
     fullLayout.setContext(getContext());
@@ -86,7 +90,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       try {
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
-          sb.append(prefix).append(CoreConstants.TAB).append(step);
+          sb.append(prefix).append(stacktraceSuffixPattern).append(step);
           sw.write(sb.toString().getBytes());
           sw.flush();
         }

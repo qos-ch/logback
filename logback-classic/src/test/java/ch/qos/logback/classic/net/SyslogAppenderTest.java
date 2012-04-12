@@ -26,6 +26,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.net.mock.MockSyslogServer;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.recovery.RecoveryCoordinator;
@@ -64,6 +65,7 @@ public class SyslogAppenderTest {
     sa.setFacility("MAIL");
     sa.setPort(port);
     sa.setSuffixPattern("[%thread] %logger %msg");
+    sa.setStacktraceSuffixPattern(""+CoreConstants.TAB);
     sa.start();
     assertTrue(sa.isStarted());
 
