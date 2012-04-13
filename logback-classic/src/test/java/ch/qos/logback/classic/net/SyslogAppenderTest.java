@@ -65,7 +65,7 @@ public class SyslogAppenderTest {
     sa.setFacility("MAIL");
     sa.setPort(port);
     sa.setSuffixPattern("[%thread] %logger %msg");
-    sa.setStacktraceSuffixPattern(""+CoreConstants.TAB);
+    sa.setStacktraceSuffixPattern("[%thread] foo "+CoreConstants.TAB);
     sa.start();
     assertTrue(sa.isStarted());
 
@@ -133,6 +133,11 @@ public class SyslogAppenderTest {
     String threadName = Thread.currentThread().getName();
     String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
         + " " + logMsg;
+    checkRegexMatch(msg, regex);
+
+    msg = mockServer.getMessageList().get(1);
+    assertTrue(msg.startsWith(expected));
+    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo "+CoreConstants.TAB + "at ch\\.qos.*";
     checkRegexMatch(msg, regex);
   }
 
