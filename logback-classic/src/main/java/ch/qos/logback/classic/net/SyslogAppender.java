@@ -40,7 +40,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   PatternLayout prefixLayout = new PatternLayout();
 
   public Layout<ILoggingEvent> buildLayout(String facilityStr) {
-    String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
+    String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex{}";
 
     prefixLayout.getInstanceConverterMap().put("syslogStart",
         SyslogStartConverter.class.getName());
