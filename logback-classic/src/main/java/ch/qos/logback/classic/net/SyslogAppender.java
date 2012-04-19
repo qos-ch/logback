@@ -20,7 +20,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
@@ -77,23 +77,26 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   @Override
   protected void postProcess(Object eventObject, OutputStream sw) {
     ILoggingEvent event = (ILoggingEvent) eventObject;
+    IThrowableProxy tp = event.getThrowableProxy();
+    if (tp == null)
+      return;
+
+    // Although line-separator-splitting is not very pretty, this
+    // avoids duplicating quite complex logic from ThrowableProxyUtil
+    // (such as omitting common stack frames, dealing with suppressed
+    // exceptions, etc).
 
     String prefix = prefixLayout.doLayout(event);
-
-    IThrowableProxy tp = event.getThrowableProxy();
-    while (tp != null) {
-      StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
+    String lines[] = ThrowableProxyUtil.asString(tp).split(CoreConstants.LINE_SEPARATOR);
+    for (String line : lines) {
       try {
-        for (StackTraceElementProxy step : stepArray) {
-          StringBuilder sb = new StringBuilder();
-          sb.append(prefix).append(CoreConstants.TAB).append(step);
-          sw.write(sb.toString().getBytes());
-          sw.flush();
-        }
+	StringBuilder sb = new StringBuilder();
+        sb.append(prefix).append(line);
+        sw.write(sb.toString().getBytes());
+        sw.flush();	
       } catch (IOException e) {
         break;
       }
-      tp = tp.getCause();
     }
   }
 }

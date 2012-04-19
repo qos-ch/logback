@@ -132,6 +132,10 @@ public class SyslogAppenderTest {
     String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
         + " " + logMsg;
     checkRegexMatch(msg, regex);
+
+    msg = mockServer.getMessageList().get(1);
+    assertTrue(msg.contains(ex.getClass().getName()));
+    assertTrue(msg.contains(ex.getMessage()));
   }
 
   private void checkRegexMatch(String s, String regex) {
