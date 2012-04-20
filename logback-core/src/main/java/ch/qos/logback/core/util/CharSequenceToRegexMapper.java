@@ -11,36 +11,27 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.rolling.helper;
+package ch.qos.logback.core.util;
 
 /**
- * This class supports mapping tokens (set of same character sequences) to
+ * This class supports mapping character sequences to
  * regular expressions as appropriate for SimpleDateFormatter.
  * 
- * @author ceki
+ * @author Ceki
  * 
  */
-class SequenceToRegex4SDF {
-  final char c;
-  int occurrences;
+class CharSequenceToRegexMapper {
 
-  public SequenceToRegex4SDF(char c) {
-    this.c = c;
-    this.occurrences = 1;
-  }
-
-  void inc() {
-    occurrences++;
-  }
-
-  String toRegex() {
-    switch (c) {
+  String toRegex(CharSequenceState css) {
+    final int occurrences = css.occurrences;
+    final char c = css.c;
+    switch (css.c) {
     case 'G':
     case 'z':
       return ".*";
     case 'M':
       if (occurrences >= 3) {
-        return ".*";
+        return ".\\{3,12}";
       } else {
         return number(occurrences);
       }
@@ -82,12 +73,7 @@ class SequenceToRegex4SDF {
     }
   }
 
-  @Override
-  public String toString() {
-    return c + "(" + occurrences + ")";
-  }
-
-  private String number(int occurences) {
+  private String number(int occurrences) {
     return "\\d{" + occurrences + "}";
   }
 }

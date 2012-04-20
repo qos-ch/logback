@@ -19,6 +19,7 @@ import java.util.List;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.util.DatePatternToRegexUtil;
 
 /**
  * Returns a date formatted by SimpleDateFormatter.

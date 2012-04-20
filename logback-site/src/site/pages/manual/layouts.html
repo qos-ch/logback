@@ -2174,7 +2174,7 @@ public class MySampleConverter extends ClassicConverter {
     </table>
 		
 		<p>Logback access' <code>PatternLayout</code> also recognizes three keywords, which
-		act like shortcuts to a certain pattern.</p>
+		act like shortcuts.</p>
 
     <table  class="bodyTable">
       <tr>
@@ -2183,22 +2183,22 @@ public class MySampleConverter extends ClassicConverter {
       </tr>
       <tr class="a">
         <td><em>common</em> or <em>CLF</em></td>
-        <td><em>%h %l %u %t \"%r\" %s %b</em></td>
+        <td><em>%h %l %u [%t] "%r" %s %b</em></td>
       </tr>
       <tr class="b">
         <td><em>combined</em></td>
-        <td><em>%h %l %u %t \"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em></td>
+        <td><em>%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}"</em></td>
       </tr>
 
     </table>
 
  	
-	 	<p>The <em>common</em> keyword corresponds to the pattern <em>%h %l %u %t \"%r\" %s %b</em>
+	 	<p>The <em>common</em> keyword corresponds to the pattern <em>'%h %l %u [%t] "%r" %s %b'</em>
 	 	which displays client host, remote log name, user, date, requested URL, status code 
 	 	and response's content length</p>
 	 	
-	 	<p>The <em>combined</em> keyword is a shortcut for <em>%h %l %u %t
-	 	\"%r\" %s %b \"%i{Referer}\" \"%i{User-Agent}\"</em>. This pattern
+	 	<p>The <em>combined</em> keyword is a shortcut for <em>'%h %l %u [%t]
+	 	"%r" %s %b "%i{Referer}" "%i{User-Agent}"'</em>. This pattern
 	 	begins much like the <em>common</em> pattern but also displays two
 	 	request headers, namely referer, and user-agent.</p>
 
