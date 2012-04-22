@@ -797,15 +797,15 @@ public interface RollingPolicy extends LifeCycle {
          <p>The date-and-time pattern, as found within the accolades
          of %d{} follow java.text.SimpleDateFormat conventions. The
          forward slash '/' or backward slash '\' characters anywhere
-         within the fileNamePattern property or within the
-         date-and-time pattern will be interpreted as directory
-         separators.
+         within the <span class="option">fileNamePattern</span>
+         property or within the date-and-time pattern will be
+         interpreted as directory separators.
          </p>
 
          <p>It is possible to specify multiple %d tokens but only one
          of which can be primary, i.e. used to infer the rollover
          period. All other tokens <em>must</em> be marked as auxiliary
-         by passing the AUX paramater (see examples below).</p>
+         by passing the 'aux' parameter (see examples below).</p>
        </td>
      </tr>
      <tr>
