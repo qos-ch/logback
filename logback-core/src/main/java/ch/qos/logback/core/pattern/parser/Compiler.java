@@ -15,7 +15,10 @@ package ch.qos.logback.core.pattern.parser;
 
 import java.util.Map;
 
-import ch.qos.logback.core.pattern.*;
+import ch.qos.logback.core.pattern.CompositeConverter;
+import ch.qos.logback.core.pattern.Converter;
+import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.util.OptionHelper;

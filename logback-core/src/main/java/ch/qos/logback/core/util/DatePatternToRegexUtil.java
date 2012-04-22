@@ -29,12 +29,12 @@ public class DatePatternToRegexUtil {
   final int datePatternLength;
   final CharSequenceToRegexMapper regexMapper = new CharSequenceToRegexMapper();
 
-  DatePatternToRegexUtil(String datePattern) {
+  public DatePatternToRegexUtil(String datePattern) {
     this.datePattern = datePattern;
     datePatternLength = datePattern.length();
   }
 
-  String toRegex() {
+  public String toRegex() {
     List<CharSequenceState> charSequenceList = tokenize();
     StringBuilder sb = new StringBuilder();
     for (CharSequenceState seq : charSequenceList) {

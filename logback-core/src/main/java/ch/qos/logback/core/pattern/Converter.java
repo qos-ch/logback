@@ -29,7 +29,7 @@ abstract public class Converter<E> {
    * 
    * @param event
    */
-  public abstract String  convert(E event);
+  public abstract String convert(E event);
 
   /**
    * In its simplest incarnation, a convert simply appends the data extracted from

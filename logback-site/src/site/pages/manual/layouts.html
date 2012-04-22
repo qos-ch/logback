@@ -774,14 +774,14 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				<td>
 
 					<p>
-						Outputs the MDC (mapped diagnostic
-						context) associated with the thread that
-						generated the logging event.
+						Outputs the MDC (mapped diagnostic context) associated
+						with the thread that generated the logging event.
 					</p>
 
 					<p>If the <b>mdc</b> conversion word is followed by a key
-					between braces, as in <b>%mdc{clientNumber}</b>, then the
-					value in the MDC corresponding to the key will be output.
+					between braces, as in <b>%mdc{userid}</b>, then the MDC
+					value corresponding to the key 'userid' will be output. If
+					the that value is null, the empty string is output.
 					</p>
 
 					<p>If no option is given, then the entire content of the MDC
@@ -789,7 +789,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					</p>
 
 					<p>See the <a href="mdc.html">chapter on MDC</a> for more
-					details.
+					details on the subject.
 					</p>
 
 				</td>

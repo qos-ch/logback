@@ -82,8 +82,8 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
   }
 
   public String toRegex() {
-    DatePatternToRegexUtil toRegex = new DatePatternToRegexUtil(datePattern);
-    return toRegex.toRegex();
+    DatePatternToRegexUtil datePatternToRegexUtil = new DatePatternToRegexUtil(datePattern);
+    return datePatternToRegexUtil.toRegex();
   }
 
   public boolean isPrimary() {

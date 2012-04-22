@@ -45,27 +45,34 @@ public class MDCConverter extends ClassicConverter {
     }
 
     if (key == null) {
-      // if no key is specified, return all the
-      // values present in the MDC, separated with a single space.
-      StringBuilder buf = new StringBuilder();
-      boolean first = true;
-      for(Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
-        if(first) {
-          first = false;
-        } else {
-          buf.append(", ");
-        }
-        //format: {testKey=testValue, testKey2=testValue2}
-        buf.append(entry.getKey()).append('=').append(entry.getValue());
-      }
-      return buf.toString();
-    }
-
-    String value = event.getMDCPropertyMap().get(key);
-    if (value != null) {
-      return value;
+      return outputMDCForAllKeys(mdcPropertyMap);
     } else {
-      return EMPTY_STRING;
+
+      String value = event.getMDCPropertyMap().get(key);
+      if (value != null) {
+        return value;
+      } else {
+        return EMPTY_STRING;
+      }
     }
+  }
+
+  /**
+   * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
+   */
+
+  private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
+    StringBuilder buf = new StringBuilder();
+    boolean first = true;
+    for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
+      if (first) {
+        first = false;
+      } else {
+        buf.append(", ");
+      }
+      //format: key0=value0, key1=value1
+      buf.append(entry.getKey()).append('=').append(entry.getValue());
+    }
+    return buf.toString();
   }
 }

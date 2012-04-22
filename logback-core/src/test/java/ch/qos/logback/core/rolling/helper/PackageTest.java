@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import ch.qos.logback.core.util.DatePatternToRegexTest;
 import junit.framework.TestCase;
 
 import org.junit.runner.RunWith;
