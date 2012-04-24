@@ -22,14 +22,16 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.FileUtil;
 
 /**
  * The <code>Compression</code> class implements ZIP and GZ file
  * compression/decompression methods.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class Compressor extends ContextAwareBase {
@@ -40,25 +42,22 @@ public class Compressor extends ContextAwareBase {
     this.compressionMode = compressionMode;
   }
 
-    /**
-     *
-     * @param nameOfFile2Compress
-     * @param nameOfCompressedFile
-     * @param innerEntryName The name of the file within the zip file. Use for ZIP compression.
-     */
+  /**
+   * @param nameOfFile2Compress
+   * @param nameOfCompressedFile
+   * @param innerEntryName       The name of the file within the zip file. Use for ZIP compression.
+   */
   public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
     switch (compressionMode) {
-    case GZ:
-      addInfo("GZ compressing [" + nameOfFile2Compress + "].");
-      gzCompress(nameOfFile2Compress, nameOfCompressedFile);
-      break;
-    case ZIP:
-      addInfo("ZIP compressing [" + nameOfFile2Compress + "].");
-      zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-      break;
-    case NONE:
-      throw new UnsupportedOperationException(
-          "compress method called in NONE compression mode");
+      case GZ:
+        gzCompress(nameOfFile2Compress, nameOfCompressedFile);
+        break;
+      case ZIP:
+        zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+        break;
+      case NONE:
+        throw new UnsupportedOperationException(
+                "compress method called in NONE compression mode");
     }
   }
 
@@ -67,12 +66,12 @@ public class Compressor extends ContextAwareBase {
 
     if (!file2zip.exists()) {
       addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip
-          + "] does not exist.", this));
+              + "] does not exist.", this));
 
       return;
     }
 
-    if(innerEntryName == null) {
+    if (innerEntryName == null) {
       addStatus(new WarnStatus("The innerEntryName parameter cannot be null", this));
       return;
     }
@@ -85,10 +84,13 @@ public class Compressor extends ContextAwareBase {
 
     if (zippedFile.exists()) {
       addStatus(new WarnStatus("The target compressed file named ["
-          + nameOfZippedFile + "] exist already.", this));
+              + nameOfZippedFile + "] exist already.", this));
 
       return;
     }
+
+    addInfo("ZIP compressing [" + file2zip + "] as ["+zippedFile+"]");
+    createMissingTargetDirsIfNecessary(zippedFile);
 
     BufferedInputStream bis = null;
     ZipOutputStream zos = null;
@@ -113,20 +115,20 @@ public class Compressor extends ContextAwareBase {
 
       if (!file2zip.delete()) {
         addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].",
-            this));
+                this));
       }
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
-          + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
+              + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
     } finally {
-      if(bis != null) {
+      if (bis != null) {
         try {
           bis.close();
         } catch (IOException e) {
           // ignore
         }
       }
-      if(zos != null) {
+      if (zos != null) {
         try {
           zos.close();
         } catch (IOException e) {
@@ -168,10 +170,11 @@ public class Compressor extends ContextAwareBase {
 
     if (!file2gz.exists()) {
       addStatus(new WarnStatus("The file to compress named [" + nameOfFile2gz
-          + "] does not exist.", this));
+              + "] does not exist.", this));
 
       return;
     }
+
 
     if (!nameOfgzedFile.endsWith(".gz")) {
       nameOfgzedFile = nameOfgzedFile + ".gz";
@@ -180,11 +183,13 @@ public class Compressor extends ContextAwareBase {
     File gzedFile = new File(nameOfgzedFile);
 
     if (gzedFile.exists()) {
-      addStatus(new WarnStatus("The target compressed file named ["
-          + nameOfgzedFile + "] exist already.", this));
-
+      addWarn("The target compressed file named ["
+              + nameOfgzedFile + "] exist already. Aborting file compression.");
       return;
     }
+
+    addInfo("GZ compressing [" + file2gz + "] as ["+gzedFile+"]");
+    createMissingTargetDirsIfNecessary(gzedFile);
 
     BufferedInputStream bis = null;
     GZIPOutputStream gzos = null;
@@ -205,20 +210,20 @@ public class Compressor extends ContextAwareBase {
 
       if (!file2gz.delete()) {
         addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].",
-            this));
+                this));
       }
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
-          + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
+              + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
     } finally {
-      if(bis != null) {
+      if (bis != null) {
         try {
           bis.close();
         } catch (IOException e) {
           // ignore
         }
       }
-      if(gzos != null) {
+      if (gzos != null) {
         try {
           gzos.close();
         } catch (IOException e) {
@@ -233,24 +238,38 @@ public class Compressor extends ContextAwareBase {
     int len = fileNamePatternStr.length();
     switch (compressionMode) {
       case GZ:
-    	  if(fileNamePatternStr.endsWith(".gz")) 
-            return fileNamePatternStr.substring(0, len - 3);
-    	  else 
-    		 return fileNamePatternStr;
+        if (fileNamePatternStr.endsWith(".gz"))
+          return fileNamePatternStr.substring(0, len - 3);
+        else
+          return fileNamePatternStr;
       case ZIP:
-    	  if(fileNamePatternStr.endsWith(".zip")) 
-    	  return fileNamePatternStr.substring(0, len - 4);
-    	  else 
-    		return fileNamePatternStr;	  
+        if (fileNamePatternStr.endsWith(".zip"))
+          return fileNamePatternStr.substring(0, len - 4);
+        else
+          return fileNamePatternStr;
       case NONE:
         return fileNamePatternStr;
     }
     throw new IllegalStateException("Execution should not reach this point");
   }
 
+
+  void createMissingTargetDirsIfNecessary(File file) {
+    if (FileUtil.isParentDirectoryCreationRequired(file)) {
+      boolean result = FileUtil.createMissingParentDirectories(file);
+      if (!result) {
+        addError("Failed to create parent directories for ["
+                + file.getAbsolutePath() + "]");
+      } else {
+        addInfo("Created missing parent directories for ["
+                + file.getAbsolutePath() + "]");
+      }
+    }
+  }
+
   @Override
   public String toString() {
-    return "c.q.l.core.rolling.helper.Compress";
+    return this.getClass().getName();
   }
 
 }

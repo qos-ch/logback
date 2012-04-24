@@ -57,23 +57,24 @@ class TimeBasedRolling_STest extends RollingScaffolding {
   }
 
   type CheckFunction = ((String, Boolean, String) => Unit)
-  def genericTest(checkFunction: CheckFunction)(testId: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int): Unit = {
+  def genericTest(checkFunction: CheckFunction)(testId: String, patternPrefix: String, compressionSuffix: String, fileOptionIsSet: Boolean, waitDuration: Int): Unit = {
     val withCompression = compressionSuffix.length > 0
     val fileName = if (fileOptionIsSet) testId2FileName(testId) else null;
     initRFA(rfa1, fileName);
 
-    initTRBP(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
-      + DATE_PATTERN_WITH_SECONDS + "}" + compressionSuffix, currentTime);
+    val fileNamePatternStr = randomOutputDir + patternPrefix + "-%d{"+ DATE_PATTERN_WITH_SECONDS + "}"+compressionSuffix
+
+    initTRBP(rfa1, tbrp1, fileNamePatternStr, currentTime);
 
     // compute the current filename
-    addExpectedFileName_ByDate(randomOutputDir, testId, getMillisOfCurrentPeriodsStart, withCompression);
+    addExpectedFileName_ByDate(fileNamePatternStr, getMillisOfCurrentPeriodsStart);
 
     incCurrentTime(1100);
     tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
 
     for (i <- 0 until 3) {
       rfa1.doAppend("Hello---" + i);
-      addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, withCompression && (i != 2))
+      addExpectedFileNamedIfItsTime_ByDate(fileNamePatternStr) //, withCompression && (i != 2))
       incCurrentTime(500);
       tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime)
       if (withCompression)
@@ -82,13 +83,12 @@ class TimeBasedRolling_STest extends RollingScaffolding {
     rfa1.stop
 
     if (waitDuration != NO_RESTART) {
-      doRestart(testId, fileOptionIsSet, waitDuration);
+      doRestart(testId, patternPrefix, fileOptionIsSet, waitDuration);
     }
 
-    if (fileOptionIsSet) {
-      massageExpectedFilesToCorresponToCurrentTarget(fileName)
-    }
+    massageExpectedFilesToCorresponToCurrentTarget(fileName, fileOptionIsSet)
 
+    StatusPrinter.print(context)
     checkFunction(testId, withCompression, compressionSuffix)
   }
 
@@ -114,19 +114,21 @@ class TimeBasedRolling_STest extends RollingScaffolding {
 
 
 
-  def doRestart(testId: String, fileOptionIsSet: Boolean, waitDuration: Int) {
+  def doRestart(testId: String, patternPart: String, fileOptionIsSet: Boolean, waitDuration: Int) {
     // change the timestamp of the currently actively file
     var activeFile: File = new File(rfa1.getFile)
     activeFile.setLastModified(currentTime)
 
     incCurrentTime(waitDuration)
 
+    val filePatternStr = randomOutputDir + patternPart + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}"
+
     val fileName = if (fileOptionIsSet) testId2FileName(testId) else null;
     initRFA(rfa2, fileName)
-    initTRBP(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}", currentTime)
+    initTRBP(rfa2, tbrp2, filePatternStr, currentTime)
     for (i <- 0 until 3) {
       rfa2.doAppend("World---" + i)
-      addExpectedFileNamedIfItsTime_ByDate(randomOutputDir, testId, false)
+      addExpectedFileNamedIfItsTime_ByDate(filePatternStr)
       incCurrentTime(100)
       tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime)
     }
@@ -138,44 +140,49 @@ class TimeBasedRolling_STest extends RollingScaffolding {
 
   @Test
   def noCompression_FileBlank_NoRestart_1 = {
-    defaultTest("test1", "", FILE_OPTION_BLANK, NO_RESTART)
+    defaultTest("test1", "test1", "", FILE_OPTION_BLANK, NO_RESTART)
   }
 
   @Test
   def withCompression_FileBlank_NoRestart_2 = {
-    defaultTest("test2", ".gz", FILE_OPTION_BLANK, NO_RESTART);
+    defaultTest("test2", "test2", ".gz", FILE_OPTION_BLANK, NO_RESTART);
   }
 
   @Test
   def noCompression_FileBlank_StopRestart_3 = {
-    defaultTest("test3", "", FILE_OPTION_BLANK, WITH_RESTART);
+    defaultTest("test3", "test3", "", FILE_OPTION_BLANK, WITH_RESTART);
   }
 
   @Test
   def noCompression_FileSet_StopRestart_4 = {
-    defaultTest("test4", "", FILE_OPTION_SET, WITH_RESTART);
+    defaultTest("test4", "test4", "", FILE_OPTION_SET, WITH_RESTART);
   }
 
   @Test
   def noCompression_FileSet_StopRestart_WithLongWait_4B = {
-    defaultTest("test4B", "", FILE_OPTION_SET, WITH_RESTART_AND_LONG_WAIT);
+    defaultTest("test4B", "test4B", "", FILE_OPTION_SET, WITH_RESTART_AND_LONG_WAIT);
   }
 
   @Test
   def noCompression_FileSet_NoRestart_5 = {
-    defaultTest("test5", "", FILE_OPTION_SET, NO_RESTART);
+    defaultTest("test5", "test6", "", FILE_OPTION_SET, NO_RESTART);
   }
 
   @Test
   def withCompression_FileSet_NoRestart_6 = {
-    defaultTest("test6", ".gz", FILE_OPTION_SET, NO_RESTART);
+    defaultTest("test6", "test6", ".gz", FILE_OPTION_SET, NO_RESTART);
+  }
+
+  // LBCORE-169
+  @Test
+  def withMissingTargetDirWithCompression = {
+    defaultTest("test7", "%d{yyyy-MM-dd, aux}/", ".gz", FILE_OPTION_SET, NO_RESTART);
   }
 
   @Test
-  def withMissingTargetDir = {
-    defaultTest("missingTargetDir", "", FILE_OPTION_SET, NO_RESTART);
+  def withMissingTargetDirWithZipCompression = {
+    defaultTest("test8", "%d{yyyy-MM-dd, aux}/", ".zip", FILE_OPTION_SET, NO_RESTART);
   }
-
 
   @Test
   def failed_rename: Unit = {
@@ -188,7 +195,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
       file.getParentFile.mkdirs
 
       fos = new FileOutputStream(fileName)
-      genericTest(zCheck)("failed_rename", "", FILE_OPTION_SET, NO_RESTART)
+      genericTest(zCheck)("failed_rename", "failed_rename", "", FILE_OPTION_SET, NO_RESTART)
 
     } finally {
       StatusPrinter.print(context)

@@ -106,9 +106,9 @@ class SizeAndTimeBasedFNATP_STest extends RollingScaffolding {
       secondPhase
       runLength = runLength*2
     }
-    
+
     if (stem != null)
-      massageExpectedFilesToCorresponToCurrentTarget(file)
+      massageExpectedFilesToCorresponToCurrentTarget(file, true)
 
     Thread.sleep(20)
     // wait for compression to finish

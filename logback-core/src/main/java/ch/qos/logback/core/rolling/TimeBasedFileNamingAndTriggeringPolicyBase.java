@@ -55,7 +55,6 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
             + "'.");
     rc.printPeriodicity(this);
 
-
     setDateInCurrentPeriod(new Date(getCurrentTime()));
     if (tbrp.getParentsRawFileProperty() != null) {
       File currentFile = new File(tbrp.getParentsRawFileProperty());

@@ -19,7 +19,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class Compare {
   static final int B1_NULL = -1;
@@ -27,8 +31,9 @@ public class Compare {
 
   public static boolean compare(String file1, String file2) throws FileNotFoundException, IOException {
     if (file1.endsWith(".gz")) {
-      //System.out.println(file1 +" is a gz file");
       return gzFileCompare(file1, file2);
+    } else if(file1.endsWith(".zip")) {
+      return zipFileCompare(file1, file2);
     } else {
       return regularFileCompare(file1, file2);
     }
@@ -39,13 +44,24 @@ public class Compare {
     GZIPInputStream gzis = new GZIPInputStream(fis);
     return new BufferedReader(new InputStreamReader(gzis));
   }
-  
+
+  static BufferedReader zipFileToBufferedReader(String file) throws IOException {
+    FileInputStream fis = new FileInputStream(file);
+    ZipInputStream zis = new  ZipInputStream(fis);
+    zis.getNextEntry();
+    return new BufferedReader(new InputStreamReader(zis));
+  }
   public static boolean gzFileCompare(String file1, String file2) throws IOException {
     BufferedReader in1 = gzFileToBufferedReader(file1);
     BufferedReader in2 = gzFileToBufferedReader(file2);
     return bufferCompare(in1, in2, file1, file2);
   }
 
+  public static boolean zipFileCompare(String file1, String file2) throws IOException {
+    BufferedReader in1 = zipFileToBufferedReader(file1);
+    BufferedReader in2 = zipFileToBufferedReader(file2);
+    return bufferCompare(in1, in2, file1, file2);
+  }
   public static boolean regularFileCompare(String file1, String file2)
       throws FileNotFoundException, IOException {
     BufferedReader in1 = new BufferedReader(new FileReader(file1));

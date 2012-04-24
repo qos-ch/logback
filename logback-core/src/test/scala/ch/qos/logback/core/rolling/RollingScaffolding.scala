@@ -6,7 +6,7 @@
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
@@ -14,7 +14,7 @@
 package ch.qos.logback.core.rolling
 
 import ch.qos.logback.core.{ContextBase, Context}
-import helper.FileFilterUtil
+import helper.{FileNamePattern, FileFilterUtil}
 import java.util.concurrent.TimeUnit
 import ch.qos.logback.core.util.{CachingDateFormatter, CoreTestConstants}
 import org.junit.Assert._
@@ -29,7 +29,7 @@ trait RollingScaffolding {
 
   val context: Context = new ContextBase
   val sm = context.getStatusManager()
-  
+
   var diff: Int = RandomUtil.getPositiveInt
 
   protected var currentTime: Long = 0L
@@ -63,24 +63,23 @@ trait RollingScaffolding {
     return new Date(currentTime - delta)
   }
 
-  protected def addExpectedFileName_ByDate(outputDir: String, testId: String, millis: Long, gzExtension: Boolean): Unit = {
-    var fn: String = outputDir + testId + "-" + SDF.format(millis)
-    if (gzExtension) {
-      fn += ".gz"
-    }
+  protected def addExpectedFileName_ByDate(patternStr: String, millis: Long): Unit = {
+    val fileNamePattern = new FileNamePattern(patternStr, context)
+    var fn: String = fileNamePattern.convert(new Date(millis))
+    println("fn=" + fn)
     expectedFilenameList = expectedFilenameList ::: List(fn)
 
   }
 
   protected def addExpectedFileName_ByFileIndexCounter(randomOutputDir: String, testId: String, millis: Long, fileIndexCounter: Int, compressionSuffix: String): Unit = {
-    var fn: String = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt"+compressionSuffix
+    var fn: String = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt" + compressionSuffix
     expectedFilenameList = expectedFilenameList ::: List(fn)
   }
 
-    
-  protected def addExpectedFileNamedIfItsTime_ByDate(outputDir: String, testId: String, gzExtension: Boolean): Unit = {
+
+  protected def addExpectedFileNamedIfItsTime_ByDate(fileNamePatternStr: String): Unit = {
     if (passThresholdTime(nextRolloverThreshold)) {
-      addExpectedFileName_ByDate(outputDir, testId, getMillisOfCurrentPeriodsStart, gzExtension)
+      addExpectedFileName_ByDate(fileNamePatternStr, getMillisOfCurrentPeriodsStart)
       recomputeRolloverThreshold(currentTime)
     }
   }
@@ -112,9 +111,16 @@ trait RollingScaffolding {
   // =========================================================================
   // utility methods
   // =========================================================================
-  private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String): Unit = {
+  private[rolling] def massageExpectedFilesToCorresponToCurrentTarget(file: String, fileOptionIsSet: Boolean): Unit = {
+    val last: String = expectedFilenameList.last
     expectedFilenameList = expectedFilenameList.dropRight(1)
-    expectedFilenameList = expectedFilenameList ::: List(file) 
+
+    if (fileOptionIsSet) {
+      expectedFilenameList = expectedFilenameList ::: List(file)
+    } else if (last.endsWith(".gz")) {
+      val stem = last.dropRight(3)
+      expectedFilenameList = expectedFilenameList ::: List(stem)
+    }
   }
 
   def existenceCheck(filenameList: List[String]): Unit = {
@@ -133,7 +139,7 @@ trait RollingScaffolding {
     FileFilterUtil.sortFileArrayByName(fileArray)
     fileContentCheck(fileArray, runLength, prefix)
   }
-   
+
   def reverseSortedContentCheck(outputDirStr: String, runLength: Int, prefix: String) {
     var fileArray: Array[File] = getFilesInDirectory(outputDirStr)
     FileFilterUtil.reverseSortFileArrayByName(fileArray)
