@@ -22,6 +22,7 @@ import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -101,8 +102,10 @@ public class PropertyAction extends Action {
       try {
         FileInputStream istream = new FileInputStream(file);
         loadAndSetProperties(ec, istream, scope);
-      } catch (IOException e) {
-        addError("Could not read properties file [" + file + "].", e);
+      } catch (FileNotFoundException e) {
+        addError("Could not find properties file [" + file + "].");
+      } catch (IOException e1) {
+        addError("Could not read properties file [" + file + "].", e1);
       }
     } else if (checkResourceAttributeSanity(attributes)) {
       String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
