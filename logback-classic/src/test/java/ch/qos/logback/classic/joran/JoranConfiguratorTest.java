@@ -437,6 +437,7 @@ public class JoranConfiguratorTest {
   }
 
 
+  // see also http://jira.qos.ch/browse/LBCORE-254
   @Test
   public void sysProps() throws JoranException {
     System.setProperty("k.lbcore254", ClassicTestConstants.ISSUES_PREFIX+"lbcore254");
@@ -445,6 +446,5 @@ public class JoranConfiguratorTest {
     configurator.doConfigure(ClassicTestConstants.ISSUES_PREFIX+"lbcore254.xml");
 
     checker.isErrorFree(0);
-
-  }
+ }
 }
