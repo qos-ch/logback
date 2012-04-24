@@ -86,7 +86,7 @@ public class PropertyAction extends Action {
       Attributes attributes) {
 
     if ("substitutionProperty".equals(localName)) {
-      addWarn("[substitutionProperty] element has been deprecated. Plase use the [property] element instead.");
+      addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
     }
 
     String name = attributes.getValue(NAME_ATTRIBUTE);
