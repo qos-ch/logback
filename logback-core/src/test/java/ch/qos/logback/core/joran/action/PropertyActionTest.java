@@ -156,6 +156,6 @@ public class PropertyActionTest  {
   private boolean checkFileErrors() {
     Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
     ErrorStatus es1 = (ErrorStatus)it.next();
-    return "Could not read properties file [toto].".equals(es1.getMessage());
+    return "Could not find properties file [toto].".equals(es1.getMessage());
   }
 }
