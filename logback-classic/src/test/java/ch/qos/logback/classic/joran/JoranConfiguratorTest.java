@@ -410,7 +410,7 @@ public class JoranConfiguratorTest {
   @Test
   public void lbcore193() throws JoranException {
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
-            + "lbcore193.xml";
+            + "issues/lbcore193.xml";
     configure(configFileAsStr);
     StatusPrinter.print(loggerContext);
     sc.containsException(ScanException.class);

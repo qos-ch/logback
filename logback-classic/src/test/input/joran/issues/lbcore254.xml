@@ -1,0 +1,4 @@
+<configuration>
+
+  <property file="${k.lbcore254}.properties"/>
+</configuration>
