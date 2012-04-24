@@ -54,7 +54,7 @@ public class JoranConfiguratorTest {
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-  StatusChecker sc = new StatusChecker(loggerContext);
+  StatusChecker checker = new StatusChecker(loggerContext);
   int diff = RandomUtil.getPositiveInt();
 
   void configure(String file) throws JoranException {
@@ -409,13 +409,12 @@ public class JoranConfiguratorTest {
 
   @Test
   public void lbcore193() throws JoranException {
-    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
-            + "issues/lbcore193.xml";
+    String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
     configure(configFileAsStr);
-    StatusPrinter.print(loggerContext);
-    sc.containsException(ScanException.class);
-    sc.containsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
-    sc.containsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
+    //StatusPrinter.print(loggerContext);
+    checker.containsException(ScanException.class);
+    checker.containsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
+    checker.containsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
   }
 
 
@@ -433,7 +432,19 @@ public class JoranConfiguratorTest {
     assertEquals("node0", loggerContext.getProperty("nodeId"));
     assertEquals("tem", System.getProperty("sys"));
     assertNotNull(loggerContext.getProperty("path"));
-    assertTrue(sc.isErrorFree(0));
+    assertTrue(checker.isErrorFree(0));
     StatusPrinter.print(loggerContext);
+  }
+
+
+  @Test
+  public void sysProps() throws JoranException {
+    System.setProperty("k.lbcore254", ClassicTestConstants.ISSUES_PREFIX+"lbcore254");
+    JoranConfigurator configurator = new JoranConfigurator();
+    configurator.setContext(loggerContext);
+    configurator.doConfigure(ClassicTestConstants.ISSUES_PREFIX+"lbcore254.xml");
+
+    checker.isErrorFree(0);
+
   }
 }

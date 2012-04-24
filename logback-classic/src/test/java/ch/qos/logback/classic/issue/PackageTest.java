@@ -21,7 +21,6 @@ import ch.qos.logback.classic.issue.lbclassic135.lbclassic139.LB139_DeadlockTest
 
 @RunWith(Suite.class)
 @SuiteClasses({LB139_DeadlockTest.class,
-        LBCORE_254.class,
         ch.qos.logback.classic.issue.lbclassic135.lbclassic139.PackageTest.class,
         ch.qos.logback.classic.issue.lbclassic203.PackageTest.class})
 public class PackageTest {
