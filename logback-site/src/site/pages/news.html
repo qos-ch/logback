@@ -31,12 +31,27 @@
 
     <h3>Xth of April, 2012 - Release of version 1.0.2</h3>
 
+
+    <p><code>ReconfigureOnChangeFilter</code> will avoid excessive
+    syncronization in case of CPU intensive applications. This fixes
+    <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-234">LBCLASSIC-234</a>,
+    a recalcitrant bug reported by Uri Unger who also provided the key
+    steps for reproducing it.
+    </p>
+
     <p><code>RollingFileAppender</code> now creates missing
     directories for compressed archive files. This fixes <a
     href="http://jira.qos.ch/browse/LBCORE-169">LBCORE-169</a>
-    reported by Tomasz Nurkiewicz with patchessupplied by Paulo
+    reported by Tomasz Nurkiewicz with patches supplied by Paulo
     Andrade and Mats Henrikson.
     </p>
+
+    <p><code>SizeAndTimeBasedFNATP</code> will now remove files with
+    indexes higher than 99. It will also correctly compute the highest
+    index value when an application is restarted. This fixes bug <a
+    href="http://jira.qos.ch/browse/LBCORE-221">LBCORE-221</a>
+    reported by Dieter Mueller and Dawid Chodura.</p>
   
 
     <hr width="80%" align="center" />

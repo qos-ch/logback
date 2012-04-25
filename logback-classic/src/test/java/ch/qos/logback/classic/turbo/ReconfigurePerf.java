@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -29,14 +30,15 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.Env;
 
+@Ignore
 public class ReconfigurePerf {
-  final static int THREAD_COUNT = 50;
+  final static int THREAD_COUNT = 500;
   //final static int LOOP_LEN = 1000 * 1000;
 
   // the space in the file name mandated by
   // http://jira.qos.ch/browse/LBCORE-119
   final static String CONF_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX
-      + "turbo/scan_perf_barebones.xml";
+      + "turbo/scan_perf.xml";
 
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
@@ -45,6 +47,7 @@ public class ReconfigurePerf {
 
   int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
 
+  static int numberOfCycles = 150;
   static int totalTestDuration;
 
   LoggerContext loggerContext = new LoggerContext();
@@ -56,9 +59,9 @@ public class ReconfigurePerf {
     // take into account propagation latency occurs on Linux
     if (Env.isLinux()) {
       sleepBetweenUpdates = 850;
-      totalTestDuration = sleepBetweenUpdates * 25;
+      totalTestDuration = sleepBetweenUpdates * numberOfCycles;
     } else {
-      totalTestDuration = sleepBetweenUpdates * 50;
+      totalTestDuration = sleepBetweenUpdates * numberOfCycles * 2;
     }
     harness = new MultiThreadedHarness(totalTestDuration);
   }
@@ -82,11 +85,7 @@ public class ReconfigurePerf {
   public void scan1() throws JoranException, IOException, InterruptedException {
     File file = new File(CONF_FILE_AS_STR);
     configure(file);
-    //doRun();
-    //doRun();
-    //doRun();
-    System.out.println("ENTER :");
-    //System.in.read();
+    System.out.println("Running scan1()");
     doRun();
   }
 
@@ -94,29 +93,4 @@ public class ReconfigurePerf {
     RunnableWithCounterAndDone[] runnableArray = buildRunnableArray();
     harness.execute(runnableArray);
   }
-  
-//  ReconfigureOnChangeFilter initROCF() throws MalformedURLException {
-//    ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-//    rocf.setContext(loggerContext);
-//    File file = new File(CONF_FILE_AS_STR);
-//    loggerContext.putObject(CoreConstants.URL_OF_LAST_CONFIGURATION_VIA_JORAN,
-//        file.toURI().toURL());
-//    rocf.start();
-//    return rocf;
-//  }
-
-
-//  public double directLoop(ReconfigureOnChangeFilter rocf) {
-//    long start = System.nanoTime();
-//    for (int i = 0; i < LOOP_LEN; i++) {
-//      rocf.decide(null, logger, Level.DEBUG, " ", null, null);
-//    }
-//    long end = System.nanoTime();
-//    return (end - start) / (1.0d * LOOP_LEN);
-//  }
-//
-//  void addInfo(String msg, Object o) {
-//    loggerContext.getStatusManager().add(new InfoStatus(msg, o));
-//  }
-
 }

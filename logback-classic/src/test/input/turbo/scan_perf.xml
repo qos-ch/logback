@@ -13,7 +13,8 @@
   </appender>
 
 
-  <root level="DEBUG">    
+  <!-- level should be ERROR so as not to incur IO -->
+  <root level="ERROR">
     <appender-ref ref="FILE"/>
   </root> 
 
