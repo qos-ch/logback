@@ -84,7 +84,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // IMPORTANT: This field can be updated by multiple threads. It follows that
   // its values may *not* be incremented sequentially. However, we don't care
   // about the actual value of the field except that from time to time the
-  // expression (invocationCounter++ & 0xF) == 0xF) should be true.
+  // expression (invocationCounter++ & mask) == mask) should be true.
   private long invocationCounter = 0;
 
   private volatile long mask = 0xF;
@@ -98,8 +98,9 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
       return FilterReply.NEUTRAL;
     }
 
-    // for performance reasons, skip any type of computation (MASK-1) times out of MASK.
-    // Only once every MASK calls is the check for elapsed time is performed
+    // for performance reasons, skip change detection (MASK-1) times out of MASK.
+    // Only once every MASK calls is change detection code executed
+    // Note that MASK is a variable itself.
     if (((invocationCounter++) & mask) != mask) {
       return FilterReply.NEUTRAL;
     }
@@ -124,15 +125,16 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // for CPU intensive applications with 200 or more threads MASK values in the order of 0xFFFF is appropriate
   private static final int MAX_MASK = 0xFFFF;
 
+  // update the mask so as to execute change detection code about once every 1s.
   private void updateMaskIfNecessary(long now) {
-    if (now - lastMaskCheck < MILLIS_IN_ONE_SECOND) {
-      if (mask < MAX_MASK) {
+    // if less than 1s elapsed since last maskUpdate double the mask size and add 1
+    final long timeElapsedSinceLastCheck = now - lastMaskCheck;
+    lastMaskCheck = now;
+    if (timeElapsedSinceLastCheck < MILLIS_IN_ONE_SECOND && (mask < MAX_MASK)) {
         mask = (mask << 1) | 1;
-      }
-    } else {
+    } else if (timeElapsedSinceLastCheck > 8*MILLIS_IN_ONE_SECOND) {
       mask = mask >>> 2;
     }
-    lastMaskCheck = now;
   }
 
   // by detaching reconfiguration to a new thread, we release the various
