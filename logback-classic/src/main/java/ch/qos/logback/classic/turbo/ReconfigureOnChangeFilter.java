@@ -32,6 +32,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
+import scala.xml.factory.LoggedNodeFactory;
 
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
 
@@ -88,7 +89,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   private long invocationCounter = 0;
 
   private volatile long mask = 0xF;
-  private long lastMaskCheck = System.currentTimeMillis();
+  private volatile long lastMaskCheck = System.currentTimeMillis();
 
 
   @Override
@@ -122,17 +123,26 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     return FilterReply.NEUTRAL;
   }
 
-  // for CPU intensive applications with 200 or more threads MASK values in the order of 0xFFFF is appropriate
+  // experiments indicate that even for CPU intensive applications with 200 or more threads MASK
+  // values in the order of 0xFFFF is appropriate
   private static final int MAX_MASK = 0xFFFF;
 
-  // update the mask so as to execute change detection code about once every 1 to 8 seconds.
+
+  // if less  than MASK_INCREASE_THRESHOLD milliseconds elapse between invocations of updateMaskIfNecessary() method,
+  // then the mask should be increased
+  private static final long MASK_INCREASE_THRESHOLD = 100;
+
+  // if more than MASK_DECREASE_THRESHOLD milliseconds elapse between invocations of updateMaskIfNecessary() method,
+  // then the mask should be decreased
+  private static final long MASK_DECREASE_THRESHOLD = MASK_INCREASE_THRESHOLD*8;
+
+  // update the mask so as to execute change detection code about once every 100 to 8000 milliseconds.
   private void updateMaskIfNecessary(long now) {
-    // if less than 1s elapsed since last maskUpdate double the mask size and add 1
-    final long timeElapsedSinceLastCheck = now - lastMaskCheck;
+    final long timeElapsedSinceLastMaskUpdateCheck = now - lastMaskCheck;
     lastMaskCheck = now;
-    if (timeElapsedSinceLastCheck < MILLIS_IN_ONE_SECOND && (mask < MAX_MASK)) {
+    if (timeElapsedSinceLastMaskUpdateCheck < MASK_INCREASE_THRESHOLD && (mask < MAX_MASK)) {
         mask = (mask << 1) | 1;
-    } else if (timeElapsedSinceLastCheck > 8*MILLIS_IN_ONE_SECOND) {
+    } else if (timeElapsedSinceLastMaskUpdateCheck > MASK_DECREASE_THRESHOLD) {
       mask = mask >>> 2;
     }
   }

@@ -40,7 +40,7 @@ public class LoggingRunnable extends RunnableWithCounterAndDone {
         try {
           Thread.sleep(1);
         } catch (InterruptedException e) {
-          e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+          e.printStackTrace();
         }
       }
     }

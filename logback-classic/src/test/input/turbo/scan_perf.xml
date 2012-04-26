@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration>
 
-<configuration scan="true" scanPeriod="50 millisecond">
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
    <File>target/test-output/testFile.log</File>

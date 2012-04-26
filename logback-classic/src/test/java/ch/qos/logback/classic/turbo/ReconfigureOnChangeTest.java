@@ -73,18 +73,11 @@ public class ReconfigureOnChangeTest {
   final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/topLevel0.xml";
 
-  final static String INCLUSION_SCAN_TOPLEVEL2_AS_STR = ClassicTestConstants.INPUT_PREFIX
-          + "turbo/inclusion/topLevel2.xml";
-
   final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/topByResource.xml";
 
-
   final static String INCLUSION_SCAN_INNER0_AS_STR = ClassicTestConstants.INPUT_PREFIX
           + "turbo/inclusion/inner0.xml";
-  final static String INCLUSION_SCAN_INNER2_AS_STR = ClassicTestConstants.INPUT_PREFIX
-          + "turbo/inclusion/inner2.xml";
-
 
   final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 

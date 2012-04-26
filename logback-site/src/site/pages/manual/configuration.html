@@ -448,10 +448,10 @@ public class Foo {
   ...
 &lt;/configuration> </pre>
 
-   <p>If no unit of time is specified, then the unit of time is
-   assumed to be milliseconds, which is usually inappropriate. If you
-   change the default scanning period, do not forget to specify a time
-   unit.
+   <p><span class="label">Note</span> If no unit of time is specified,
+   then the unit of time is assumed to be milliseconds, which is
+   usually inappropriate. If you change the default scanning period,
+   do not forget to specify a time unit.
    </p>
 
    <p>Behind the scenes, when you set the scan attribute to true, a
@@ -465,17 +465,25 @@ public class Foo {
    "myLogger.debug("hello");", and if the scan attribute is set to
    true, then <code>ReconfigureOnChangeFilter</code> will be
    invoked. Moreover, the said filter will be invoked even if
-   <code>myLogger</code> is disabled for the debug level.
+   <code>myLogger</code> is disabled for the DEBUG level.
    </p>
 
    <p>Given that <code>ReconfigureOnChangeFilter</code> is invoked
-   every time <em>any</em> logger is invoked, the filter is
-   performance critical. In order to improve performance, instead of
-   checking whether to scan or not on every logger invocation,
+   every time <em>any</em> logger is invoked, regardless of logger
+   level, <code>ReconfigureOnChangeFilter</code> is absolutely
+   performance critical. So much so that in fact, the check whether
+   the scan period has elapsed or not, is too costly in itself. In
+   order to improve performance,
    <code>ReconfigureOnChangeFilter</code> is in reality "alive" only
-   once every 16 logging operations. In short, when a configuration
-   file changes, it will be automatically reloaded after a delay
-   determined by the scanning period and several logger invocations.
+   once every <em>N</em> logging operations.  Depending on how often
+   your application logs, the value of <em>N</em> can be modified on
+   the fly by logback. By default N is 16, altough it can go as high
+   as 2^16 (=&nbsp;65536) for CPU-intensive applications.
+   </p>
+   
+   <p>In short, when a configuration file changes, it will be
+   automatically reloaded but only after several logger invocations
+   <em>and</em> after a delay determined by the scanning period.
    </p>
 
    

@@ -29,9 +29,31 @@
 
     <hr width="80%" align="center" />
 
-    <h3>Xth of April, 2012 - Release of version 1.0.2</h3>
+    <h3>26th of April, 2012 - Release of version 1.0.2</h3>
 
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
 
+    <h4>Breaking change: <code>PatternLayout</code> will now output
+    its pattern at the top of log files</h4>
+
+    <p>In order to facilitate parsing of log files, logback now
+    inserts the pattern used for the log output at the top of each log
+    file. This feature was requested by James Strachan in <a
+    href="http://jira.qos.ch/browse/LBCORE-234">LBCORE-234</a>.
+    </p>
+
+    <p>Here an example:</p>
+
+    <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hello world
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hi again
+...</pre>
+
+     <p>The line starting with "#logback.classic pattern" is newly
+     inserted pattern line.</p>
+
+    </div>
+    
     <p><code>ReconfigureOnChangeFilter</code> will avoid excessive
     syncronization in case of CPU intensive applications. This fixes
     <a

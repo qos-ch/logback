@@ -2,7 +2,7 @@
 <!DOCTYPE x>
 
 
-<configuration scan="true" scanPeriod="50 millisecond">
+<configuration scan="true" scanPeriod="50 milliseconds">
   <include resource="asResource/inner1.xml"/>
 </configuration> 
        

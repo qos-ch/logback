@@ -47,7 +47,7 @@ public class ReconfigurePerf {
 
   int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
 
-  static int numberOfCycles = 150;
+  static int numberOfCycles = 100;
   static int totalTestDuration;
 
   LoggerContext loggerContext = new LoggerContext();
