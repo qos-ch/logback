@@ -6,9 +6,10 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
+  <description>logback project pom.xml file</description>
 
   <url>http://logback.qos.ch</url>
 
@@ -18,6 +19,24 @@
   </organization>
   <inceptionYear>2005</inceptionYear>
 
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/ceki/logback</url>
+    <connection>git@github.com:ceki/logback.git</connection> 
+  </scm>
+
+  
 
   <modules>
     <module>logback-core</module>
@@ -41,6 +60,21 @@
     <jetty.version>7.5.1.v20110908</jetty.version>
     <!--<jetty.version>8.0.1.v20110908</jetty.version>-->
   </properties>
+
+  <developers>
+    <developer>
+      <id>ceki</id>
+      <name>Ceki Gulcu</name>
+      <email>ceki@qos.ch</email>
+    </developer>
+
+    <developer>
+      <id>hixi</id>
+      <name>Joern Huxhorn</name>
+      <email>huxi@undisclosed.org</email>
+    </developer>
+
+  </developers>
 
   <dependencies>
     <dependency>
@@ -354,8 +388,11 @@
     </site>
 
     <repository>
-      <id>pixie</id>
-      <url>scp://pixie.qos.ch/var/mvnrepo/</url>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+
+      <!--<id>pixie</id>-->
+      <!--<url>scp://pixie.qos.ch/var/mvnrepo/</url>-->
     </repository>
 
   </distributionManagement>
@@ -432,6 +469,30 @@
         </plugins>
       </build>
     </profile>
+
+
+    <profile>
+      <id>sign-artifacts</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile> 
+
 
   </profiles>
 

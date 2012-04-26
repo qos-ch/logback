@@ -7,18 +7,15 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
   </parent>
 
   <artifactId>logback-access</artifactId>
   <packaging>jar</packaging>
   <name>Logback Access Module</name>
+  <description>logback-access module</description>
 
   <url>http://logback.qos.ch</url>
-
-  <description>
-    Logback: the reliable, generic, fast and flexible logging library for Java.
-  </description>
 
   <licenses>
     <license>
