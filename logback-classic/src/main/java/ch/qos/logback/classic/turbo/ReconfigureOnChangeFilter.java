@@ -32,7 +32,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.FilterReply;
-import scala.xml.factory.LoggedNodeFactory;
 
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
 
