@@ -125,7 +125,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // for CPU intensive applications with 200 or more threads MASK values in the order of 0xFFFF is appropriate
   private static final int MAX_MASK = 0xFFFF;
 
-  // update the mask so as to execute change detection code about once every 1s.
+  // update the mask so as to execute change detection code about once every 1 to 8 seconds.
   private void updateMaskIfNecessary(long now) {
     // if less than 1s elapsed since last maskUpdate double the mask size and add 1
     final long timeElapsedSinceLastCheck = now - lastMaskCheck;
