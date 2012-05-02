@@ -52,6 +52,18 @@
      <p>The line starting with "#logback.classic pattern" is newly
      inserted pattern line.</p>
 
+     <p>If you wish to disable printing this line, set the
+     <span class="option">outputPatternAsPresentationHeader</span> option to false for the
+     relevant encoder. Here is an example:</p>
+
+<pre>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  &lt;encoder>
+    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
+   <b>&lt;-- do not print pattern as a header --></b>
+   <b>&lt;outputPatternAsPresentationHeader>false&lt;/outputPatternAsPresentationHeader></b>
+  &lt;/encoder>
+&lt;/appender> </pre>
+
     </div>
     
     <p><code>ReconfigureOnChangeFilter</code> will avoid excessive
