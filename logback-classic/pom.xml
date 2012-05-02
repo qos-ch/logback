@@ -170,7 +170,7 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.main</artifactId>
       <version>2.0.2</version>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -383,6 +383,7 @@
               ch.qos.logback.core.read,
               org.codehaus.groovy.*;resolution:=optional,
               groovy.lang.*;resolution:=optional,
+              org.osgi.framework;resolution:=optional,
               *
             </Import-Package>
 

@@ -13,12 +13,19 @@
  */
 package ch.qos.logback.classic.spi;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -123,4 +130,38 @@ public class PackagingDataCalculatorTest {
 
   }
 
+  @Test
+  public void osgi_Test() throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
+    boolean hasOsgi = false;
+    for (Object strategy : getStrategiesViaReflection(getClass().getClassLoader())) {
+      if (strategy.getClass().getName().toLowerCase(Locale.ENGLISH).contains("osgi"))
+        hasOsgi = true;
+    }
+    assertTrue("strategies should include OSGi", hasOsgi);
+  }
+  @Test
+  public void noOsgi_Test() throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
+    // I want to test static initialization of the class, but WITHOUT any OSGi jars in the classpath
+    // So make a new classloader just like the current one but without those jars and based on the boot loader
+    List<URL> urls = new ArrayList<URL>(Arrays.asList(((URLClassLoader) getClass().getClassLoader()).getURLs()));
+    for (Iterator<URL> it = urls.iterator(); it.hasNext(); ) {
+      URL url = it.next();
+      if (url.getPath().contains("felix") || url.getPath().contains("osgi"))
+        it.remove();
+    }
+    ClassLoader loader = new URLClassLoader(urls.toArray(new URL[urls.size()]), null);// null means bootclassloader
+
+    for (Object strategy : getStrategiesViaReflection(loader)) {
+      assertFalse("strategy should not use OSGi: " + strategy.getClass().getName(),
+              strategy.getClass().getName().toLowerCase(Locale.ENGLISH).contains("osgi"));
+    }
+  }
+
+  // use Object[] instead of PackagingDataStrategy[] to avoid ClassCastException from other classloader
+  private Object[] getStrategiesViaReflection(ClassLoader loader) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    Class<?> pdcClass = loader.loadClass(PackagingDataCalculator.class.getName());
+    Field dataStrategiesField = pdcClass.getDeclaredField("dataStrategies");
+    dataStrategiesField.setAccessible(true);
+    return (Object[]) dataStrategiesField.get(null);
+  }
 }
