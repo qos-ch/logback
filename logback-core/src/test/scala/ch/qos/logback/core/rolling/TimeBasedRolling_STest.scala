@@ -132,6 +132,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
       incCurrentTime(100)
       tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime)
     }
+    rfa2.stop();
   }
 
   val NO_RESTART = 0

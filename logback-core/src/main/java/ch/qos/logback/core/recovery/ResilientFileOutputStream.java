@@ -13,21 +13,20 @@
  */
 package ch.qos.logback.core.recovery;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.channels.FileChannel;
 
 public class ResilientFileOutputStream extends ResilientOutputStreamBase {
 
-  File file;
+  private File file;
+  private FileOutputStream fos;
+
 
   public ResilientFileOutputStream(File file, boolean append)
       throws FileNotFoundException {
     this.file = file;
-    this.os = new FileOutputStream(file, append);
+    fos = new FileOutputStream(file, append);
+    this.os = new BufferedOutputStream(fos);
     this.presumedClean = true;
   }
 
@@ -35,7 +34,6 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     if (os == null) {
       return null;
     }
-    final FileOutputStream fos = (FileOutputStream) os;
     return fos.getChannel();
   }
 

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -86,8 +87,9 @@ public class FileAppenderResilienceTest {
 
     double bestCaseSuccessRatio = 1/delayCoefficient;
     double lossinessFactor = 0.8;
+
     ResilienceUtil
-        .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
+              .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
   }
 
   private void closeLogFileOnPurpose() throws IOException {

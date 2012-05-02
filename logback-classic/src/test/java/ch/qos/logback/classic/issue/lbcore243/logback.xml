@@ -1,0 +1,22 @@
+<configuration>
+  <appender name="TestLogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>d:/test/logback_without_flush.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>d:/test/logback_without_flush.log.%i</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>1</maxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>1000KB</maxFileSize>
+    </triggeringPolicy>
+    <encoder>
+      <Pattern>%d{ISO8601} %5p [%t] %c - %m%n</Pattern>
+      <immediateFlush>false</immediateFlush>
+      <!--<charset>UTF-8</charset>-->
+    </encoder>
+  </appender>
+  <root>
+    <level value="debug"/>
+    <appender-ref ref="TestLogfile"/>
+  </root>
+</configuration>

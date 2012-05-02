@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 
 import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.InvocationGate;
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
@@ -46,17 +47,14 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
     setMaxFileSize(maxFileSize);
   }
 
-  // IMPORTANT: This field can be updated by multiple threads. It follows that
-  // its values may *not* be incremented sequentially. However, we don't care
-  // about the actual value of the field except that from time to time the
-  // expression (invocationCounter++ & 0xF) == 0xF) should be true.
-  private int invocationCounter = 0xF;
+  private InvocationGate invocationGate = new InvocationGate();
 
   public boolean isTriggeringEvent(final File activeFile, final E event) {
-    // for performance reasons, check for changes every 16 invocations
-    if (((invocationCounter++) & 0xF) != 0xF) {
+  if(invocationGate.skipFurtherWork())
       return false;
-    }
+
+    long now = System.currentTimeMillis();
+    invocationGate.updateMaskIfNecessary(now);
 
     return (activeFile.length() >= maxFileSize.getSize());
   }

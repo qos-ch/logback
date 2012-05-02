@@ -80,6 +80,7 @@ class SizeBasedRolling_STest extends RollingScaffolding {
       Thread.sleep(10)
       rfa.doAppend(prefix + i)
     }
+    rfa.stop()
 
     existenceCheck(expectedFilenameList)
     reverseSortedContentCheck(randomOutputDir, runLength, prefix)

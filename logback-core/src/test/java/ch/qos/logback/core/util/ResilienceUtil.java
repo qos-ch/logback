@@ -39,7 +39,7 @@ public class ResilienceUtil {
         totalLines++;
         String g = m.group(1);
         int num = Integer.parseInt(g);
-        if(num != oldNum+1) {
+        if(oldNum != -1 && num != oldNum+1) {
           gaps++;
         }
         oldNum = num;
@@ -51,8 +51,8 @@ public class ResilienceUtil {
     int lowerLimit = (int) (totalSteps*successRatioLowerBound);
     assertTrue("totalLines="+totalLines+" less than "+lowerLimit, totalLines > lowerLimit);
     
-    // we want some gaps which indicate recuperation
-    assertTrue("gaps="+gaps+" less than 3", gaps >= 3);
+    // we want at least one gap indicating recuperation
+    assertTrue("gaps="+gaps+" less than 1", gaps >= 1);
     
   }
 }

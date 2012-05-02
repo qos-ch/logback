@@ -27,12 +27,32 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
   /**
    * The charset to use when converting a String into bytes.
-   * <p>
+   * <p/>
    * By default this property has the value
-   * <code>null</null> which corresponds to 
+   * <code>null</null> which corresponds to
    * the system's default charset.
    */
   private Charset charset;
+
+  private boolean immediateFlush = true;
+
+
+  /**
+   * Sets the immediateFlush option. The default value for immediateFlush is 'true'. If set to true,
+   * the doEncode() method will immediately flush the underlying OutputStream. Although immediate flushing
+   * is safer, it also significantly degrades logging throughput.
+   *
+   * @since 1.0.3
+   */
+  public void setImmediateFlush(boolean immediateFlush) {
+    this.immediateFlush = immediateFlush;
+  }
+
+
+  public boolean isImmediateFlush() {
+    return immediateFlush;
+  }
+
 
   public Layout<E> getLayout() {
     return layout;
@@ -49,11 +69,11 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
   /**
    * Set the charset to use when converting the string returned by the layout
    * into bytes.
-   * <p>
+   * <p/>
    * By default this property has the value
-   * <code>null</null> which corresponds to 
+   * <code>null</null> which corresponds to
    * the system's default charset.
-   * 
+   *
    * @param charset
    */
   public void setCharset(Charset charset) {
@@ -94,7 +114,6 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         outputStream.write(convertToBytes(sb.toString()));
         outputStream.flush();
       }
-
     }
   }
 
@@ -106,7 +125,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         return s.getBytes(charset.name());
       } catch (UnsupportedEncodingException e) {
         throw new IllegalStateException(
-            "An existing charset cannot possibly be unsupported.");
+                "An existing charset cannot possibly be unsupported.");
       }
     }
   }
@@ -114,7 +133,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
   public void doEncode(E event) throws IOException {
     String txt = layout.doLayout(event);
     outputStream.write(convertToBytes(txt));
-    outputStream.flush();
+    if (immediateFlush)
+      outputStream.flush();
   }
 
   public boolean isStarted() {
@@ -127,6 +147,12 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
   public void stop() {
     started = false;
+    if(outputStream != null) {
+      try {
+        outputStream.flush();
+      } catch (IOException e) {
+      }
+    }
   }
 
   private void appendIfNotNull(StringBuilder sb, String s) {
