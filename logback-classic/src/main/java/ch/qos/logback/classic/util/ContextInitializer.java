@@ -13,16 +13,11 @@
  */
 package ch.qos.logback.classic.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
@@ -30,6 +25,12 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -69,10 +70,13 @@ public class ContextInitializer {
                 loggerContext));
       }
     }
-    if (url.toString().endsWith("xml")) {
+    else if (url.toString().endsWith("xml")) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       configurator.doConfigure(url);
+    }
+    else {
+      throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be either .groovy or .xml");
     }
   }
 
