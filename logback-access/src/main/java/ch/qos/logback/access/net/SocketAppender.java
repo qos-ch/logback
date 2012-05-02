@@ -43,18 +43,15 @@ public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
   public SocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.remoteHost = address.getHostName();
-    this.port = port;
+    this(address.getHostName(), port);
   }
 
   /**
    * Connects to remote server at <code>host</code> and <code>port</code>.
    */
   public SocketAppender(String host, int port) {
-    this.port = port;
-    this.address = getAddressByName(host);
     this.remoteHost = host;
+    this.port = port;
   }
   
   @Override
