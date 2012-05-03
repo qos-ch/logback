@@ -34,7 +34,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
 
   Map<String, String> instanceConverterMap = new HashMap<String, String>();
-  protected boolean outputPatternAsPresentationHeader = true;
+  protected boolean outputPatternAsHeader = true;
 
   /**
    * Concrete implementations of this class are responsible for elaborating the
@@ -144,20 +144,19 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     return CoreConstants.EMPTY_STRING;
   }
 
-  public boolean isOutputPatternAsPresentationHeader() {
-    return outputPatternAsPresentationHeader;
+  public boolean isOutputPatternAsHeader() {
+    return outputPatternAsHeader;
   }
 
-  public void setOutputPatternAsPresentationHeader(boolean outputPatternAsPresentationHeader) {
-    this.outputPatternAsPresentationHeader = outputPatternAsPresentationHeader;
+  public void setOutputPatternAsHeader(boolean outputPatternAsHeader) {
+    this.outputPatternAsHeader = outputPatternAsHeader;
   }
-  
+
   @Override
   public String getPresentationHeader() {
-    if(outputPatternAsPresentationHeader)
+    if(outputPatternAsHeader)
       return getPresentationHeaderPrefix()+pattern;
     else
       return super.getPresentationHeader();
-
   }
 }

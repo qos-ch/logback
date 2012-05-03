@@ -1,18 +1,16 @@
 package ch.qos.logback.classic.issue.lbcore243;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ceki
- * Date: 26.04.12
- * Time: 21:52
- * To change this template use File | Settings | File Templates.
- */
+
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
+// WARNING This code compiles but does not measure anything useful because log4j-over-slf4j is a dependency. Log4j
+// should be used instead
 
 public class PerformanceComparatorLog4j {
 
@@ -23,7 +21,6 @@ public class PerformanceComparatorLog4j {
 
      // Let's run once for Just In Time compiler
      log4jDirectDebugCall();
-
 
      System.out.println("###############################################");
      System.out.println("Log4j    without immediate flush: " + log4jDirectDebugCall()+ " nanos per call");

@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="css/common.css" />
     <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="css/prettify.css" media="screen" />    
   </head>
-  <body>
-    <script type="text/javascript">prefix='';</script>
 
+  <body onload="prettyPrint()">
+    <script type="text/javascript">prefix='';</script>
+    <script type="text/javascript" src="js/prettify.js"></script>
     <script src="templates/header.js" type="text/javascript"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
@@ -29,20 +30,35 @@
 
     <hr width="80%" align="center" />
 
-    <h3>26th of April, 2012 - Release of version 1.0.2</h3>
+    <h3>3rd of May, 2012 - Release of version 1.0.3</h3>
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
-
-    <h4>Breaking change: <code>PatternLayout</code> will now output
-    its pattern at the top of log files</h4>
-
-    <p>In order to facilitate parsing of log files, logback now
-    inserts the pattern used for the log output at the top of each log
-    file. This feature was requested by James Strachan in <a
-    href="http://jira.qos.ch/browse/LBCORE-234">LBCORE-234</a>.
+    <p><code>PatternLayoutEncoder</code> now admits the <span
+    class="option">immediateFlush</span> option (set to true by
+    default). By setting this option to false, logging throughput can
+    be quadrupled, although your mileage may vary. This option was
+    requested in <a
+    href="http://jira.qos.ch/browse/LBCORE-243">LBCORE-243</a>.
     </p>
 
-    <p>Here an example:</p>
+
+    <p>In order to facilitate parsing of log files, logback can now
+    insert the pattern used for the log output at the top of log
+    files. This feature was requested by James Strachan in <a
+    href="http://jira.qos.ch/browse/LBCORE-234">LBCORE-234</a>.
+    However, this feature is <b>not</b> enabled by default. It can be
+    enabled by setting the <span
+    class="option">outputPatternAsHeader</span> option to 'true' for
+    the relevant encoder. Here is an example:</p>
+
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
+  &lt;file>foo.log&lt;/file>
+  &lt;encoder>
+    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
+    <b>&lt;outputPatternAsHeader>true&lt;/outputPatternAsHeader></b>
+  &lt;/encoder> 
+&lt;/appender></pre>
+    
+    <p>This will result output akin to the following in the log file:</p>
 
     <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
 2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hello world
@@ -52,17 +68,18 @@
      <p>The line starting with "#logback.classic pattern" is newly
      inserted pattern line.</p>
 
-     <p>If you wish to disable printing this line, set the
-     <span class="option">outputPatternAsPresentationHeader</span> option to false for the
-     relevant encoder. Here is an example:</p>
+    <h3>26th of April, 2012 - Release of version 1.0.2</h3>
 
-<pre>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-  &lt;encoder>
-    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
-   <b>&lt;-- do not print pattern as a header --></b>
-   <b>&lt;outputPatternAsPresentationHeader>false&lt;/outputPatternAsPresentationHeader></b>
-  &lt;/encoder>
-&lt;/appender> </pre>
+    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+
+    <h4><span class="label">Breaking change partially reverted in
+    1.0.3</span><br/>By default <code>PatternLayout</code> will now output
+    its pattern at the top of log files</h4>
+
+    <p>This feature, although still available, is no longer enabled by
+    default. See release 1.0.3 for details.
+    </p>
+
 
     </div>
     

@@ -14,6 +14,10 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// Results AMD Phenom II X6 1110T processor and SSD disk
+//Logback  with    immediate flush: 8356 nanos per call
+//Logback  without immediate flush: 1758 nanos per call
+
 public class PerformanceComparatorLogback {
   static Logger logbacklogger = LoggerFactory.getLogger(PerformanceComparatorLogback.class);
 
@@ -21,8 +25,14 @@ public class PerformanceComparatorLogback {
     initLogbackWithoutImmediateFlush();
     logbackParametrizedDebugCall();
 
+    initLogbackWithImmediateFlush();
+    logbackParametrizedDebugCall();
     System.out.println("###############################################");
+    System.out.println("Logback  with    immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
+
+    initLogbackWithoutImmediateFlush();
     System.out.println("Logback  without immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
+
     System.out.println("###############################################");
   }
 
@@ -38,13 +48,21 @@ public class PerformanceComparatorLogback {
 
   static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbcore243/";
 
-  private static void initLogbackWithoutImmediateFlush() throws JoranException {
+
+  static void configure(String file)  throws JoranException {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(loggerContext);
-    loggerContext.reset();
-    jc.doConfigure(DIR_PREFIX + "logback.xml");
+      JoranConfigurator jc = new JoranConfigurator();
+      jc.setContext(loggerContext);
+      loggerContext.reset();
+      jc.doConfigure(file);
   }
 
 
+  private static void initLogbackWithoutImmediateFlush() throws JoranException {
+    configure(DIR_PREFIX + "logback_without_immediateFlush.xml");
+  }
+
+  private static void initLogbackWithImmediateFlush() throws JoranException {
+    configure(DIR_PREFIX + "logback_with_immediateFlush.xml");
+  }
 }

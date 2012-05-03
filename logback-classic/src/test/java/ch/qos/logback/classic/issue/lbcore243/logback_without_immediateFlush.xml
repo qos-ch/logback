@@ -1,8 +1,8 @@
 <configuration>
   <appender name="TestLogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>d:/test/logback_without_flush.log</file>
+    <file>target/test-output/perf/logback_without_flush.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>d:/test/logback_without_flush.log.%i</fileNamePattern>
+      <fileNamePattern>target/test-output/perf/logback_without_flush.log.%i</fileNamePattern>
       <minIndex>1</minIndex>
       <maxIndex>1</maxIndex>
     </rollingPolicy>
