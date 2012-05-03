@@ -1,12 +1,5 @@
 package ch.qos.logback.classic.issue.lbcore243;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ceki
- * Date: 26.04.12
- * Time: 21:52
- * To change this template use File | Settings | File Templates.
- */
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;

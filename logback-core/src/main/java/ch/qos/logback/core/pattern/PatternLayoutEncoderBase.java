@@ -55,7 +55,7 @@ public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
    * @deprecated replaced by {@link #setOutputPatternAsHeader(boolean)}
    */
   public void setOutputPatternAsPresentationHeader(boolean outputPatternAsHeader) {
-    addWarn("outputPatternAsPresentationHeader option is deprecated. Use outputPatternAsHeader option instead.");
+    addWarn("[outputPatternAsPresentationHeader] property is deprecated. Please use [outputPatternAsHeader] option instead.");
     this.outputPatternAsHeader = outputPatternAsHeader;
   }
 

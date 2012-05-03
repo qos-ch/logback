@@ -377,7 +377,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    a file. The target file is specified by the <span
    class="prop">File</span> option.  If the file already exists, it
    is either appended to, or truncated depending on the value of the
-   <span class="prop">Append</span> option.   
+   <span class="prop">append</span> property.   
    </p>
 	
    <table class="bodyTable properties striped">
@@ -390,10 +390,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        <td><b><span class="prop">append</span></b></td>
        <td><code>boolean</code></td>
        <td>If true, events are appended at the end of an existing
-       file.  Otherwise, if <span class="prop">Append</span> is
-       false, any existing file is truncated. The <span
-       class="prop">Append</span> option is set to true by
-       default.
+       file.  Otherwise, if <span class="prop">append</span> is false,
+       any existing file is truncated. The <span
+       class="option">append</span> option is set to true by default.
        </td>
      </tr>
      <tr >
@@ -472,6 +471,15 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    </table>
 	
+   <p><span class="label notice">Immediate Flush</span> By default,
+   each log event is immediately flushed to the underlying output
+   stream. For significantly increased logging throughput, you may
+   want to set the <span class="prop">immediateFlush</span> property
+   to <code>false</code> of the underlying encoder. Encoders and in
+   particular <a
+   href="encoders.html#LayoutWrappingEncoder"><code>LayoutWrappingEncoder</code></a>
+   are described in a separate chapter.</p>
+
    <p>Below is an example of a configuration file for
    <code>FileAppender</code>:
 	 </p>

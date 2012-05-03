@@ -46,7 +46,6 @@ public class BasicConfigurator {
     ca.setName("console");
     PatternLayoutEncoder pl = new PatternLayoutEncoder();
     pl.setContext(lc);
-    pl.setOutputPatternAsPresentationHeader(false);
     pl.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
     pl.start();
 

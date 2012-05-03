@@ -142,11 +142,13 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
 
   protected Layout&lt;E> layout;
   private Charset charset;
+  private boolean immediateFlush = true;
 
   public void doEncode(E event) throws IOException {
     String txt = layout.doLayout(event);
     outputStream.write(convertToBytes(txt));
-    outputStream.flush();
+    if (immediateFlush)
+      outputStream.flush();
   }
 
   private byte[] convertToBytes(String s) {
@@ -162,10 +164,15 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     layout convert the incoming event into string. The resulting text
     string is converted to bytes according to the charset encoding
     chosen by the user. Those bytes are then written to the
-    <code>OutputStream</code> given by the owning appender and the
-    <code>OutputStream</code> is immediately flushed.
+    <code>OutputStream</code> given by the owning appender. By
+    default, the <code>OutputStream</code> is immediately flushed,
+    unless the <span class="prop">immediateFlush</span> property is
+    explicitly set to false.  Setting the <span
+    class="prop">immediateFlush</span> property to false can
+    significantly improve logging throughput. See
+    <code>PatternLayoutEncoder</code> below for example.
     </p>
-
+    
 
     <h2><a name="PatternLayoutEncoder"
     href="#PatternLayoutEncoder">PatternLayoutEncoder</a></h2>
@@ -186,9 +193,61 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     logback error codes</a>.
     </p>
 
+    <h4><a name="outputPatternAsHeader" href="#outputPatternAsHeader">Output pattern string as header</a></h4>
 
+    <p>In order to facilitate parsing of log files, logback can insert
+    the pattern used for the log output at the top of log files.  This
+    feature is <b>disabled</b> by default. It can be enabled by
+    setting the <span class="prop">outputPatternAsHeader</span>
+    property to 'true' for relevant
+    <code>PatternLayoutEncoder</code>. Here is an example:</p>
 
-     <script src="../templates/footer.js" type="text/javascript"></script>
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
+  &lt;file>foo.log&lt;/file>
+  &lt;encoder>
+    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
+    <b>&lt;outputPatternAsHeader>true&lt;/outputPatternAsHeader></b>
+  &lt;/encoder> 
+&lt;/appender></pre>
+    
+    <p>This will result output akin to the following in the log file:</p>
+
+    <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hello world
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hi again
+...</pre>
+
+     <p>The line starting with "#logback.classic pattern" is newly
+     inserted pattern line.</p>
+
+     <h4><span class="prop">immediateFlush</span> property</h4>
+
+     <p>As a sub-class of <a
+     href="../xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html"><code>LayoutWrappingEncoder</code></a>,
+     <code>PatternLayoutEncoder</code> admits the <span
+     class="prop">immediateFlush</span> property. The default value
+     for <span class="prop">immediateFlush</span> is 'false'. However,
+     by setting this property to 'false', logging throughput can be
+     quadrupled although your mileage may vary.
+     </p>
+
+     <p>Below is a sample configuration for a
+     <code>FileAppender</code> containing a
+     <code>PatternLayoutEncoder</code> with its <span
+     class="prop">immediateFlush</span> property set to 'false'.</p>
+
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
+  &lt;file>foo.log&lt;/file>
+  &lt;encoder>
+    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
+    &lt;!-- this quadruples logging throughput --&gt;
+    <b>&lt;immediateFlush>false&lt;/immediateFlush></b>
+  &lt;/encoder> 
+&lt;/appender></pre>
+    
+     
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
 
     </div>
   </body>

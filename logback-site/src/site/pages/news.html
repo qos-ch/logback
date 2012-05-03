@@ -32,41 +32,30 @@
 
     <h3>3rd of May, 2012 - Release of version 1.0.3</h3>
 
-    <p><code>PatternLayoutEncoder</code> now admits the <span
-    class="option">immediateFlush</span> option (set to true by
-    default). By setting this option to false, logging throughput can
-    be quadrupled, although your mileage may vary. This option was
-    requested in <a
+    <p><code>PatternLayoutEncoder</code> class now admits the <span
+    class="prop"><a
+    href="manual/encoders.html#LayoutWrappingEncoder">immediateFlush</a></span>
+    property (set to true by default). By setting this property to
+    'false', logging throughput can be quadrupled, although your
+    mileage may vary. This enhancement was requested in <a
     href="http://jira.qos.ch/browse/LBCORE-243">LBCORE-243</a>.
     </p>
 
 
-    <p>In order to facilitate parsing of log files, logback can now
-    insert the pattern used for the log output at the top of log
-    files. This feature was requested by James Strachan in <a
+    <p>In order to facilitate parsing of log files, logback can now <a
+    href="manual/encoders.html#outputPatternAsHeader">output the
+    pattern</a> used for the log output at the top of log files as a
+    header. This feature was requested by James Strachan in <a
     href="http://jira.qos.ch/browse/LBCORE-234">LBCORE-234</a>.
-    However, this feature is <b>not</b> enabled by default. It can be
-    enabled by setting the <span
-    class="option">outputPatternAsHeader</span> option to 'true' for
-    the relevant encoder. Here is an example:</p>
+    </p>
 
-<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
-  &lt;file>foo.log&lt;/file>
-  &lt;encoder>
-    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
-    <b>&lt;outputPatternAsHeader>true&lt;/outputPatternAsHeader></b>
-  &lt;/encoder> 
-&lt;/appender></pre>
+    <p><code>LevelChangePropagator</code> now retains references to
+    j.u.l. loggers whose level it sets. This fixes garbage collection
+    issues reported in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-256">LBCLASSIC-256</a>
+    by Samuel Stanojevic who also provided the appropriate patch.
+    </p>
     
-    <p>This will result output akin to the following in the log file:</p>
-
-    <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
-2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hello world
-2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hi again
-...</pre>
-
-     <p>The line starting with "#logback.classic pattern" is newly
-     inserted pattern line.</p>
 
     <h3>26th of April, 2012 - Release of version 1.0.2</h3>
 
@@ -77,7 +66,7 @@
     its pattern at the top of log files</h4>
 
     <p>This feature, although still available, is no longer enabled by
-    default. See release 1.0.3 for details.
+    default. See release notes for version 1.0.3 for details.
     </p>
 
 
@@ -119,7 +108,7 @@
     </p>
 
     <p>Added new property the <span
-    class="option">cleanHistoryOnStart</span> to <a
+    class="prop">cleanHistoryOnStart</span> to <a
     href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>.
     By setting this property to <code>true</code>, history removal
     will work as expected even in the case of short lived
@@ -237,8 +226,6 @@
     Pierre Queinnec.
     </p>
 
-    
-
     <h3>September 21st, 2011 - Release of version 0.9.30</h3>
 
     <p>Archive removal can now deal with prolonged periods of
@@ -281,15 +268,15 @@
     reported by Josh Oddman.</p>
 
     <p>It is now possible to specify multiple destination addresses
-    separated by commas in the the <span class="option">to</span>
+    separated by commas in the the <span class="prop">to</span>
     property of <code>SMTPAppender</code>. This fixes <a
     href="http://jira.qos.ch/browse/LBCORE-213">LBCORE-213</a>
     reported by Alexandre Garnier who also provided the relevant
     patch. In previous versions of logback multiple destination
     addresses could only be specified by using multiple <span
-    class="option">to</span> properties. As of version 0.9.30 both
+    class="prop">to</span> properties. As of version 0.9.30 both
     comma separated addresses and multiple <span
-    class="option">to</span> properties are supported.
+    class="prop">to</span> properties are supported.
     </p>
 
     <p>When debug attribute is set to true within the
@@ -420,7 +407,7 @@
     </p>
 
     <p>The <a href="manual/appenders.html#smtpTo"><span
-    class="option">to</span></a> option of SMTPAppender now admits a
+    class="prop">to</span></a> option of SMTPAppender now admits a
     pattern and is evaluated dynamically.</p>
 
     <p><code>TeeServletInputStream</code> no longer chokes on input
@@ -740,7 +727,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
     special.
     </p>
 
-    <p>The <span class="option">CharsetEncoder</span> property in
+    <p>The <span class="prop">CharsetEncoder</span> property in
     <code>SMTPAppender</code> can now be accessed and set from
     configuration files. This fixes <a
     href="http://jira.qos.ch/browse/LBCLASSIC-194">LBCLASSIC-194</a>.

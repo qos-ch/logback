@@ -90,7 +90,7 @@ public class SMTPAppender_GreenTest {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader(HEADER);
-    layout.setOutputPatternAsPresentationHeader(false);
+    layout.setOutputPatternAsHeader(false);
     layout.setPattern("%-4relative %mdc [%thread] %-5level %class - %msg%n");
     layout.setFileFooter(FOOTER);
     layout.start();

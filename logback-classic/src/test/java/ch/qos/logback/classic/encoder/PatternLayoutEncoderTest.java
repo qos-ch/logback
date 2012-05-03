@@ -59,7 +59,7 @@ public class PatternLayoutEncoderTest {
 
   void init(ByteArrayOutputStream baos) throws IOException {
     ple.start();
-    ((PatternLayout) ple.getLayout()).setOutputPatternAsPresentationHeader(false);
+    ((PatternLayout) ple.getLayout()).setOutputPatternAsHeader(false);
     ple.init(baos);
   }
 

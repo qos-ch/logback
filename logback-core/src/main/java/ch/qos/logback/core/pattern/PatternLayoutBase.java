@@ -34,7 +34,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
 
   Map<String, String> instanceConverterMap = new HashMap<String, String>();
-  protected boolean outputPatternAsHeader = true;
+  protected boolean outputPatternAsHeader = false;
 
   /**
    * Concrete implementations of this class are responsible for elaborating the

@@ -60,7 +60,7 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
   private void propagate(Logger logger, Level level) {
     addInfo("Propagating " + level + " level on " + logger + " onto the JUL framework");
     java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
-    // prevent garbage collection of jul loggers levels were propagated to
+    // prevent garbage collection of jul loggers whose level we set
     // see also  http://jira.qos.ch/browse/LBCLASSIC-256
     julLoggerSet.add(julLogger);
     java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
