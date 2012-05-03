@@ -19,16 +19,17 @@ package ch.qos.logback.core.util;
 public class EnvUtil {
 
 
-  static public boolean isGroovyAvailable() {
-    ClassLoader classLoader = EnvUtil.class.getClassLoader();
-    try {
-      Class bindingClass = classLoader.loadClass("groovy.lang.Binding");
-      return (bindingClass != null);
-    } catch (ClassNotFoundException e) {
+  static public boolean isJDK5() {
+    String javaVersion = System.getProperty("java.version");
+    if (javaVersion == null) {
+      return false;
+    }
+    if (javaVersion.startsWith("1.5")) {
+      return true;
+    } else {
       return false;
     }
   }
-
 
   static public boolean isJaninoAvailable() {
     ClassLoader classLoader = EnvUtil.class.getClassLoader();
