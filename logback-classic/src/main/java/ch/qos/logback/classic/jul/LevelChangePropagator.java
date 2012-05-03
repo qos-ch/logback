@@ -21,7 +21,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.LogManager;
 
 
@@ -30,8 +32,8 @@ import java.util.logging.LogManager;
  */
 public class LevelChangePropagator extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 
+  private Set julLoggerSet = new HashSet();
   boolean isStarted = false;
-
   boolean resetJUL = false;
 
   public void setResetJUL(boolean resetJUL) {
@@ -58,6 +60,9 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
   private void propagate(Logger logger, Level level) {
     addInfo("Propagating " + level + " level on " + logger + " onto the JUL framework");
     java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
+    // prevent garbage collection of jul loggers levels were propagated to
+    // see also  http://jira.qos.ch/browse/LBCLASSIC-256
+    julLoggerSet.add(julLogger);
     java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
     julLogger.setLevel(julLevel);
   }
