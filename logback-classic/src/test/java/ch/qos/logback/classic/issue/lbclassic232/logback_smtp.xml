@@ -1,0 +1,18 @@
+<configuration scan="true" scanPeriod="3 seconds" debug="true">
+  <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+    <smtpHost>smtp.gmail.com</smtpHost>
+    <smtpPort>465</smtpPort>
+    <to>${destination}</to>
+    <password>${password}</password>
+    <from>noreply@qos.ch</from>
+    <subject>%logger{20} - %m</subject>
+    <username>${destination}</username>
+    <SSL>true</SSL>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%date %-5level %logger{35} - %message%n</pattern>
+    </layout>
+  </appender>
+  <root level="DEBUG">
+    <appender-ref ref="EMAIL"/>
+  </root>
+</configuration>

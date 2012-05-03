@@ -82,6 +82,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   String password;
   String localhost;
 
+  boolean asynchronousSending = true;
+
   private String charsetEncoding = "UTF-8";
 
   protected MimeMessage mimeMsg;
