@@ -36,6 +36,8 @@ public class ContextBase implements Context {
 
   Object configurationLock = new Object();
 
+  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JD 1.6 or higher it's set to 0
+  // so that there are no idle threads
   private static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
 
   // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, 2 maximum threads, no idle waiting
