@@ -41,12 +41,21 @@
     href="http://jira.qos.ch/browse/LBCORE-243">LBCORE-243</a>.
     </p>
 
-
     <p>In order to facilitate parsing of log files, logback can now <a
     href="manual/encoders.html#outputPatternAsHeader">output the
     pattern</a> used for the log output at the top of log files as a
     header. This feature was requested by James Strachan in <a
     href="http://jira.qos.ch/browse/LBCORE-234">LBCORE-234</a>.
+    </p>
+
+    <p><code>SMTPAppender</code> failed to transmit messages under JDK
+    1.5. After some investigation, Dave dicovered that this was due to
+    setting the <code>corePoolSize</code> parameter of the relavant
+    <code>ThreadPoolExecutor</code> to 0. Setting
+    <code>corePoolSize</code> to a higher value, e.g. 1, under JDK 1.5
+    solves the problem and fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-323">LBCLASSIC-323</a>
+    reported by Lutz Huehnken.
     </p>
 
     <p><code>LevelChangePropagator</code> now retains references to
