@@ -271,16 +271,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
 	</table>
     
-  <p>Given the structure of current hard drives and performance tests
-  we have conducted, it appears that turning off immediate flushing or
-  buffering of character to byte conversions have rather small impact
-  on performance. As such, as of logback version 0.9.19, the <span
-  class="prop">ImmediateFlush</span>, <span
-  class="prop">BufferedIO</span> and <span
-  class="prop">BufferSize</span> properties have been removed
-  without replacement.
-  </p>
-
   <p>The <code>OutputStreamAppender</code> is the super-class of three other
 	appenders, namely <code>ConsoleAppender</code>,
 	<code>FileAppender</code> which in turn is the super class of
@@ -473,9 +463,12 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	
    <p><span class="label notice">Immediate Flush</span> By default,
    each log event is immediately flushed to the underlying output
-   stream. For significantly increased logging throughput, you may
-   want to set the <span class="prop">immediateFlush</span> property
-   to <code>false</code> of the underlying encoder. Encoders and in
+   stream. This default approach is safer in the sense that logging
+   events are not lost in case your applicaiton exits without properly
+   closing appenders. However, for significantly increased logging
+   throughput, you may want to set the <span
+   class="prop">immediateFlush</span> property of the underlying
+   <code>Encoder</code> to <code>false</code> . Encoders and in
    particular <a
    href="encoders.html#LayoutWrappingEncoder"><code>LayoutWrappingEncoder</code></a>
    are described in a separate chapter.</p>

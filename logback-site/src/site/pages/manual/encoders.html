@@ -65,21 +65,20 @@
     out.
     </p>
 
-    <p>At the present time (2010-03-08),
-    <code>PatternLayoutEncoder</code> is the only really useful
-    encoder. It merely wraps a <code>PatternLayout</code> which does
-    most of the work. Thus, it may seem that encoders do not bring much
-    to the table except needless complexity. However, we hope that
-    with the advent of new and powerful encoders this impression will
-    change.</p>
+    <p>At the present time, <code>PatternLayoutEncoder</code> is the
+    only really useful encoder. It merely wraps a
+    <code>PatternLayout</code> which does most of the work. Thus, it
+    may seem that encoders do not bring much to the table except
+    needless complexity. However, we hope that with the advent of new
+    and powerful encoders this impression will change.</p>
 
     <h2><a name="interface" href="#interface">Encoder
     interface</a></h2>
 
     <p>Encoders are responsible for transforming an incoming event
     into a byte array <b>and</b> writing out the resulting byte array
-    onto the appropriate OutputStream.  Thus, encoders have total
-    control of what and when bytes gets written to the
+    onto the appropriate <code>OutputStream</code>.  Thus, encoders
+    have total control of what and when bytes gets written to the
     <code>OutputStream</code> maintained by the owning appender. Here
     is the <a
     href="../xref/ch/qos/logback/core/encoder/Encoder.html">Encoder
@@ -113,19 +112,18 @@ public interface Encoder&lt;E> extends ContextAware, LifeCycle {
   void close() throws IOException;
 }</pre>
 
-    <p>As you can see, the Encoder interface consists of few methods,
-    but surprisingly many useful things can be accomplished with
-    those methods.
+    <p>As you can see, the <code>Encoder</code> interface consists of
+    few methods, but surprisingly many useful things can be
+    accomplished with these methods.
     </p>
 
     <h2><a name="LayoutWrappingEncoder"
     href="#LayoutWrappingEncoder">LayoutWrappingEncoder</a></h2>
 
-    <p>Until logback version 0.9.19, appenders which offered
-    flexibility with respect to the output format relied on
-    layouts. As there exists a substantial body of code based on the
-    layout interface, we need a way for encoders inter-operate with
-    layouts. <a
+    <p>Until logback version 0.9.19, many appenders relied on the
+    Layout instances to control the format of log output. As there
+    exists substantial amount of code based on the layout interface,
+    we needed a way for encoders to inter-operate with layouts. <a
     href="../xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html">LayoutWrappingEncoder</a>
     bridges the gap between encoders and layouts. It implements the
     encoder interface and wraps a layout to which it delegates the
@@ -167,10 +165,10 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     <code>OutputStream</code> given by the owning appender. By
     default, the <code>OutputStream</code> is immediately flushed,
     unless the <span class="prop">immediateFlush</span> property is
-    explicitly set to false.  Setting the <span
+    explicitly set to 'false'.  Setting the <span
     class="prop">immediateFlush</span> property to false can
     significantly improve logging throughput. See
-    <code>PatternLayoutEncoder</code> below for example.
+    <code>PatternLayoutEncoder</code> below for sample configuration..
     </p>
     
 
@@ -178,7 +176,7 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     href="#PatternLayoutEncoder">PatternLayoutEncoder</a></h2>
 
     <p>Given that <code>PatternLayout</code> is the most commonly used
-    layout, logback caters for this common use case with
+    layout, logback caters for this common use-case with
     <code>PatternLayoutEncoder</code>, an extension of
     <code>LayoutWrappingEncoder</code> restricted to wrapping
     instances of <code>PatternLayout</code>.
@@ -192,6 +190,39 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     href="../codes.html#layoutInsteadOfEncoder">relevant entry in the
     logback error codes</a>.
     </p>
+
+     <h4><span class="prop">immediateFlush</span> property</h4>
+
+     <p>As a sub-class of <a
+     href="../xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html"><code>LayoutWrappingEncoder</code></a>,
+     <code>PatternLayoutEncoder</code> admits the <span
+     class="prop">immediateFlush</span> property. The default value
+     for <span class="prop">immediateFlush</span> is 'true'. Immediate
+     flushing of the output stream ensures that logging events are
+     immediately written to disk and will be not lost in case your
+     application exits without properly closing appenders. On the
+     other hand, setting this property to 'false' is likely to
+     quadruple (your mileage may vary) logging throughput. As
+     mentioned previously, if <span class="prop">immediateFlush</span>
+     is set to 'false' and if appenders are not closed properly when
+     your application exits, then logging events not yet written to
+     disk may be lost.
+     </p>
+
+     <p>Below is a sample configuration for a
+     <code>FileAppender</code> containing a
+     <code>PatternLayoutEncoder</code> with its <span
+     class="prop">immediateFlush</span> property set to 'false'.</p>
+
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
+  &lt;file>foo.log&lt;/file>
+  &lt;encoder>
+    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
+    &lt;!-- this quadruples logging throughput --&gt;
+    <b>&lt;immediateFlush>false&lt;/immediateFlush></b>
+  &lt;/encoder> 
+&lt;/appender></pre>
+
 
     <h4><a name="outputPatternAsHeader" href="#outputPatternAsHeader">Output pattern string as header</a></h4>
 
@@ -220,30 +251,6 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
      <p>The line starting with "#logback.classic pattern" is newly
      inserted pattern line.</p>
 
-     <h4><span class="prop">immediateFlush</span> property</h4>
-
-     <p>As a sub-class of <a
-     href="../xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html"><code>LayoutWrappingEncoder</code></a>,
-     <code>PatternLayoutEncoder</code> admits the <span
-     class="prop">immediateFlush</span> property. The default value
-     for <span class="prop">immediateFlush</span> is 'false'. However,
-     by setting this property to 'false', logging throughput can be
-     quadrupled although your mileage may vary.
-     </p>
-
-     <p>Below is a sample configuration for a
-     <code>FileAppender</code> containing a
-     <code>PatternLayoutEncoder</code> with its <span
-     class="prop">immediateFlush</span> property set to 'false'.</p>
-
-<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
-  &lt;file>foo.log&lt;/file>
-  &lt;encoder>
-    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
-    &lt;!-- this quadruples logging throughput --&gt;
-    <b>&lt;immediateFlush>false&lt;/immediateFlush></b>
-  &lt;/encoder> 
-&lt;/appender></pre>
     
      
 
