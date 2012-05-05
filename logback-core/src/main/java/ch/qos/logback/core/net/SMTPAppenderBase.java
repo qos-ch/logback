@@ -191,9 +191,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         // see http://jira.qos.ch/browse/LBCLASSIC-221
         cb.clear();
 
-        // perform actual sending asynchronously
-        SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
-        context.getExecutorService().execute(senderRunnable);
+        if(asynchronousSending) {
+          // perform actual sending asynchronously
+          SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
+          context.getExecutorService().execute(senderRunnable);
+        } else {
+          // synchronous sending
+          sendBuffer(cbClone, eventObject);
+        }
       }
     } catch (EvaluationException ex) {
       errorCount++;
@@ -497,6 +502,20 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   public void setDiscriminator(Discriminator<E> discriminator) {
     this.discriminator = discriminator;
+  }
+
+  public boolean isAsynchronousSending() {
+    return asynchronousSending;
+  }
+
+  /**
+   * By default, SMTAppender transmits emails asynchronously. For synchronous email transmission set
+   * asynchronousSending to 'false'.
+   * @param asynchronousSending  determines whether sending is done asynchronously or not
+   * @since 1.0.4
+   */
+  public void setAsynchronousSending(boolean asynchronousSending) {
+    this.asynchronousSending = asynchronousSending;
   }
 
   public void addTo(String to) {

@@ -8,6 +8,7 @@
     <subject>%logger{20} - %m</subject>
     <username>${destination}</username>
     <SSL>true</SSL>
+    <asynchronousSending>true</asynchronousSending>
     <layout class="ch.qos.logback.classic.PatternLayout">
       <pattern>%date %-5level %logger{35} - %message%n</pattern>
     </layout>

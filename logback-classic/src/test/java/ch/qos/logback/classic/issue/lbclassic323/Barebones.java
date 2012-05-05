@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.issue.lbclassic232;
+package ch.qos.logback.classic.issue.lbclassic323;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;

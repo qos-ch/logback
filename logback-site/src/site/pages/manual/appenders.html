@@ -1767,7 +1767,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         <td>The host name of the SMTP server. This parameter is mandatory.</td>
       </tr>
       
-      <tr class="alt">
+      <tr>
         <td><b><span class="prop">smtpPort</span></b></td>
         <td><code>int</code></td>
         <td>The port where the SMTP server is listening. Defaults to
@@ -1787,7 +1787,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
 
-      <tr class="alt">
+      <tr>
         <td><b><span class="prop">from</span></b></td>
         <td><code>String</code></td>
         <td>The originator of the email messages sent by
@@ -1826,7 +1826,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
         
       </tr>
-      <tr class="alt">
+      <tr>
         <td><b><span class="prop">discriminator</span></b></td>
         <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
@@ -1845,7 +1845,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           </p>
         </td>
       </tr>
-      <tr >
+      <tr>
         <td><b><span class="prop"><a name="smtpAppender_Evaluator"
         href="#smtpAppender_Evaluator">evaluator</a></span></b></td>
         <td><code><a
@@ -1888,9 +1888,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
 
-      <tr class="alt">
-        <td  valign="top"><b><span class="prop">cyclicBufferTracker</span></b>
-        </td>
+      <tr>
+        <td  valign="top"><b><span class="prop">cyclicBufferTracker</span></b></td>
         <td><a href="../xref/ch/qos/logback/core/spi/CyclicBufferTracker.html"><code>CyclicBufferTracker</code></a>
         </td>
         <td>
@@ -1906,8 +1905,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           will keep events in a cyclic buffer of size 256. You may
           change the size with the help of the <span
           class="prop">bufferSize</span> option (see below).</p>
-        </td>
-        
+        </td>        
       </tr>
       <tr>
         <td><b><span class="prop">username</span></b></td>
@@ -1932,7 +1930,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         parameter is set to false.
         </td> 
       </tr>
-      <tr class="alt">
+      <tr>
         <td><b><span class="prop">SSL</span></b></td>
         <td><code>boolean</code></td> <td>If this parameter is set to
         true, then this appender will open an SSL connection to the
@@ -1951,7 +1949,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
 
-      <tr class="alt">
+      <tr>
         <td><b>localhost</b></td>
         <td><code>String</code></td>
         <td>In case the hostname of the SMTP client is not properly
@@ -1964,6 +1962,22 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         for the <a
         href="http://javamail.kenai.com/nonav/javadocs/com/sun/mail/smtp/package-summary.html">com.sun.mail.smtp</a>
         package.</td>
+      </tr>
+
+      <tr>
+        <td><b>asynchronousSending</b></td>
+        <td><code>boolean</code></td>
+        <td>This property determines whether email transmission is
+        done asynchronously or not. By default, the <span
+        class="prop">asynchronousSending</span> property is
+        'true'. However, under certain circumstances asynchronous
+        sending may be inappropriate. For example if your application
+        uses <code>SMTPAppender</code> to send alerts in response to a
+        fatal error, and then exits, the relevant thread may not have
+        the time to send the alert email. In this case, set <span
+        class="prop">asynchronousSending</span> property to 'false'
+        for synchronous email transmission.
+        </td>
       </tr>
 
 		</table>		
