@@ -6,6 +6,9 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ */
 public class Simple {
 
   static Logger logger = LoggerFactory.getLogger(Simple.class);
