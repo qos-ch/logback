@@ -1,0 +1,35 @@
+<configuration scan="true" scanPeriod="30 seconds" debug="true">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.out</target>
+    <encoder>
+      <pattern>| [%-5level] [%date{ISO8601}] [%logger] [%thread] [%X{akkaSource}] - %msg %rootException %n</pattern>
+    </encoder>
+    sdfsadf
+  </appender>
+
+  <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>server.log</file>
+
+    <!-- only keep 3 -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>server.%i.log</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>3</maxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>1MB</maxFileSize>
+    </triggeringPolicy>
+
+    <encoder>
+      <pattern>| [%-5level] [%date{ISO8601}] [%logger] [%thread] [%X{akkaSource}] - %msg %rootException %n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="ROLLING"/>
+  </root>
+
+</configuration>

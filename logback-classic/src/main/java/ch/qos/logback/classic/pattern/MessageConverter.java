@@ -16,7 +16,7 @@ package ch.qos.logback.classic.pattern;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
- * Return the event's message.
+ * Return the event's formatted message.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

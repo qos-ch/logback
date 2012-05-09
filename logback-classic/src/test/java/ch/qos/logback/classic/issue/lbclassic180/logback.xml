@@ -1,0 +1,16 @@
+<configuration debug="true">
+
+  <conversionRule conversionWord="htmlEscapedMessage"
+                  converterClass="ch.qos.logback.classic.issue.lbclassic180.HtmlEscapedMessageConverter"/>
+
+  <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="ch.qos.logback.classic.html.HTMLLayout">
+        <pattern>%d{HH:mm:ss.SSS}%logger{1}%htmlEscapedMessage</pattern>
+      </layout>
+    </encoder>
+  </appender>
+  <root level="DEBUG">
+    <appender-ref ref="CON"/>
+  </root>
+</configuration>

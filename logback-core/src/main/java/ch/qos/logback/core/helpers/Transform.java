@@ -36,8 +36,7 @@ public class Transform {
    *          The text to be converted.
    */
   public static String escapeTags(final String input) {
-    // Check if the string is null or zero length -- if so, return
-    // what was sent in.
+    // if input is null or zero length or contains no < and > characters, return it as is
     if ((input == null) || (input.length() == 0)
         || (input.indexOf("<") == -1 && input.indexOf(">") == -1)) {
       return input;
@@ -52,7 +51,7 @@ public class Transform {
    * This method takes a StringBuilder which may contain HTML tags (ie, &lt;b&gt;,
    * &lt;table&gt;, etc) and replaces any '<' and '>' characters with
    * respective predefined entity references.
-   * @param buf
+   * @param buf StringBuffer to transform
    * @return
    */
   public static String escapeTags(final StringBuffer buf) {

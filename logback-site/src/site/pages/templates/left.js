@@ -9,10 +9,10 @@ document.write('<p class="menu"><a href="' + prefix + 'news.html">News</a></p>')
 document.write('<p class="menu_header">Support</p>');
 document.write('<p class="menu"><a href="' + prefix + 'mailinglist.html">Mailing Lists</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'bugreport.html">Bug Report</a></p>');
-document.write('<p class="menu"><a href="' + prefix + 'repos.html">Source Repository</a></p>');
+document.write('<p class="menu"><a href="http://github.com/qos-ch/logback">Source Repository</a></p>');
 
 document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/professionalSupport">Support offerings</a>');
-document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
+//document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
 
 document.write('<p class="menu_header">Sister projects</p>');
 document.write('<p class="menu"><a href="http://audit.qos.ch/">Logback-audit</a>');
