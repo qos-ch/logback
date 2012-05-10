@@ -2535,7 +2535,7 @@ logger.error(<b>notifyAdmin</b>,
 		<em>logging_event_exception</em>. They must exist before
 		<code>DBAppender</code> can be used. Logback ships with SQL
 		scripts that will create the tables.  They can be found in the
-		<em>logback-classic/src/main/java/ch/qos/logback/classic/db/dialect</em>
+		<em>logback-classic/src/main/java/ch/qos/logback/classic/db/script</em>
 		directory. There is a specific script for each of the most popular
 		database systems.  If the script for your particular type of
 		database system is missing, it should be quite easy to write one,
@@ -2546,13 +2546,10 @@ logger.error(<b>notifyAdmin</b>,
 		<p>If your JDBC driver supports the <code>getGeneratedKeys</code>
 		method introduced in JDBC 3.0 specification, assuming you have
 		created the appropriate database tables as mentioned above, then
-		no more steps are required, except for the usual logback
-		configuration.
-		</p>
-
-    <p>Otherwise, there must be an <code>SQLDialect</code> appropriate
-    for your database system. Currently, we have dialects for
-    PostgreSQL, MySQL, Oracle and MS SQL Server. </p>
+		no additional steps are required. Otherwise, there must be an
+		<code>SQLDialect</code> appropriate for your database
+		system. Currently, logback has dialects for H2, HSQL, MS SQL
+		Server, MySQL, Oracle, PostgreSQL, SQLLite and Sybase. </p>
 
 		<p>The table below summarizes the database types and their support
 		of the <code>getGeneratedKeys()</code> method.
@@ -2570,55 +2567,85 @@ logger.error(<b>notifyAdmin</b>,
 					<br />
 					<code>getGeneratedKeys()</code>
 					method
-				</th>			
+				</th>		
+
+        <th>is a dialect <br/>provided by logback</th>
 			</tr>
 
-      <tr >
+      <tr>
 				<td>DB2</td>
         <td>untested</td>
 				<td>untested</td>
 				<td>unknown</td>
+        <td>NO</td>
 			</tr>
 
-      <tr class="alt">
+      <tr>
+        <td>H2</td>
+        <td>1.2.132</td>
+        <td>-</td>
+				<td>unknown</td>
+        <td>YES</td>
+			</tr>
+
+      <tr>
         <td>HSQL</td>
         <td>1.8.0.7</td>
         <td>-</td>
-				<td>NO</td>
+				<td>NO </td>
+        <td>YES</td>
 			</tr>
 
-      <tr >
+      <tr>
         <td>Microsoft SQL Server</td>
         <td>2005</td>
         <td>2.0.1008.2 (sqljdbc.jar)</td>
 				<td>YES</td>
+        <td>YES</td>
 			</tr>
 
-      <tr class="alt">
+      <tr>
 				<td>MySQL</td>
         <td>5.0.22</td>
         <td>5.0.8 (mysql-connector.jar)</td>        
 				<td>YES</td>
+        <td>YES</td>
 			</tr>
 
 			<tr>
 				<td>PostgreSQL</td>
-        <td>
-        </td>
-        <td>
-        </td>
+        <td>8.x</td>
+        <td>8.4-701.jdbc4</td>
 				<td>NO</td>
+        <td>YES</td>
+
 			</tr>
 		
-			<tr >
+			<tr>
 				<td>Oracle</td>
         <td>10g</td>
         <td>10.2.0.1 (ojdbc14.jar)</td>
-				<td>YES (10.2.0.1)</td>
+				<td>YES</td>
+        <td>YES</td>
 			</tr>
 	
+      <tr>
+        <td>SQLLite</td>
+        <td>3.7.4</td>
+        <td>-</td>
+        <td>unknown</td>
+        <td>YES</td>
+      </tr>
 	
 			
+      <tr>
+        <td>Sybase SQLAnywhere</td>
+        <td>10.0.1</td>
+        <td>-</td>
+        <td>unknown</td>
+        <td>YES</td>
+      </tr>
+
 		</table>
 		
 		<p>Experiments show that writing a single event into the database
@@ -2636,9 +2663,10 @@ logger.error(<b>notifyAdmin</b>,
 		shortly.
 		</p>
 		
-		<p>Once logback is configured properly, the logging events are
-		sent to the specified database. As stated previously, there are
-		three tables used by logback to store logging event data.
+		<p>Once <code>DBAppender</code> is configured for your database,
+		logging events are sent to the specified database. As stated
+		previously, there are three tables used by logback to store
+		logging event data.
 		</p>
 		
 		<p>
@@ -3489,7 +3517,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		must exist before <code>DBAppender</code> can be used. Logback
 		ships with SQL scripts that will create the tables.  They can be
 		found in the
-		<em>logback-access/src/main/java/ch/qos/logback/access/db/dialect</em>
+		<em>logback-access/src/main/java/ch/qos/logback/access/db/script</em>
 		directory. There is a specific script for each of the most popular
 		database systems.  If the script for your particular type of
 		database system is missing, it should be quite easy to write one,

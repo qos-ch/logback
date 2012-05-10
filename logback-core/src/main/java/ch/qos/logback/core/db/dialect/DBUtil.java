@@ -32,6 +32,7 @@ public class DBUtil extends ContextAwareBase {
   private static final String HSQL_PART = "hsql";
   private static final String H2_PART = "h2";
   private static final String SYBASE_SQLANY_PART = "sql anywhere";
+  private static final String SQLITE_PART = "sqlite";
 
   public static SQLDialectCode discoverSQLDialect(DatabaseMetaData meta) {
     SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
@@ -54,6 +55,8 @@ public class DBUtil extends ContextAwareBase {
         return SQLDialectCode.H2_DIALECT;
       } else if (dbName.indexOf(SYBASE_SQLANY_PART) != -1) {
         return SQLDialectCode.SYBASE_SQLANYWHERE_DIALECT;
+      } else if (dbName.indexOf(SQLITE_PART) != -1) {
+        return SQLDialectCode.SQLITE_DIALECT;
       } else {
         return SQLDialectCode.UNKNOWN_DIALECT;
       }
@@ -96,6 +99,9 @@ public class DBUtil extends ContextAwareBase {
       sqlDialect = new SybaseSqlAnywhereDialect();
       break;
 
+    case SQLITE_DIALECT:
+      sqlDialect = new SQLiteDialect();
+      break;
     }
     return sqlDialect;
   }
