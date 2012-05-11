@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <param name="Pattern" value="TEST %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    </layout>
+  </appender>
+
+  <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+    <param name="QueueCapacity" value="5000"/>
+    <!-- Default is 1000 -->
+    <param name="IncludeCallerData" value="true"/>
+    <!-- Default is false -->
+    <appender-ref ref="STDOUT"/>
+  </appender>
+
+  <root>
+    <level value="ERROR"/>
+    <appender-ref ref="ASYNC"/>
+  </root>
+</configuration>
