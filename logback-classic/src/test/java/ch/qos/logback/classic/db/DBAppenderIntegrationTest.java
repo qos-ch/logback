@@ -48,7 +48,7 @@ public class DBAppenderIntegrationTest {
   static String LOCAL_HOST_NAME;
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
   static String[] POSTGRES_CONFORMING_HOST_LIST = new String[] { "haro" };
-  static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "hetz", "xharo" };
+  static String[] MYSQL_CONFORMING_HOST_LIST = new String[] { "xharo" };
   static String[] ORACLE_CONFORMING_HOST_LIST = new String[] { "xharo" };
 
   int diff = RandomUtil.getPositiveInt();

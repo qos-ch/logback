@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
@@ -32,13 +33,13 @@ public class BasicStatusManager implements StatusManager {
   final protected List<Status> statusList = new ArrayList<Status>();
   final protected CyclicBuffer<Status> tailBuffer = new CyclicBuffer<Status>(
       TAIL_SIZE);
-  final protected Object statusListLock = new Object();
+  final protected LogbackLock statusListLock = new LogbackLock();
 
   int level = Status.INFO;
 
   // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
   final protected List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
-  final protected Object statusListenerListLock = new Object();
+  final protected LogbackLock statusListenerListLock = new LogbackLock();
 
   // Note on synchronization
   // This class contains two separate locks statusListLock and

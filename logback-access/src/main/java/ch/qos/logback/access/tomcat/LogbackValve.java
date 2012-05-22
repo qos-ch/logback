@@ -69,7 +69,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       + "logback-access.xml";
 
   private long birthTime = System.currentTimeMillis();
-  Object configurationLock = new Object();
+  LogbackLock configurationLock = new LogbackLock();
 
   // Attributes from ContextBase:
   private String name;

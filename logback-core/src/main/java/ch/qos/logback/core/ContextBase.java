@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
+import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.EnvUtil;
 
@@ -34,7 +35,7 @@ public class ContextBase implements Context {
   Map<String, String> propertyMap = new HashMap<String, String>();
   Map<String, Object> objectMap = new HashMap<String, Object>();
 
-  Object configurationLock = new Object();
+  LogbackLock configurationLock = new LogbackLock();
 
   // CORE_POOL_SIZE must be 1 for JDK 1.5. For JD 1.6 or higher it's set to 0
   // so that there are no idle threads

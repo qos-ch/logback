@@ -20,6 +20,7 @@ import java.io.OutputStream;
 
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
 
@@ -44,7 +45,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
   /**
    * All synchronization in this class is done via the lock object.
    */
-  protected Object lock = new Object();
+  protected LogbackLock lock = new LogbackLock();
 
   /**
    * This is the {@link OutputStream outputStream} where output will be written.
