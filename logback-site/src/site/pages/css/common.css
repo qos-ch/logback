@@ -259,18 +259,25 @@ table.bodyTable tr td p:first-child {
   font-family: Arial, sans-serif;
 }
 
+/*  background:#FFCC99;	*/
 .highlight {
-  width: 300px;
+  width: 18em;
   float: right;	
   display: inline;
-  font-weight: bolder;
-  border:1px solid #000;
-  background:#FFCC99;	
-  padding-top: 0px;
+  font-size: 110%;
+
+  border: 2px solid #711;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background:#FFE0B0;	
+  padding-top: 1ex;
   padding-left: 1ex;
   padding-right: 1ex;
-  margin-left: 3em;
-  margin-right: 3em;
+  padding-bottom: 1ex;
+  margin-left: 1em;
+  margin-right: 0em;
+  margin-bottom: 1ex;
 }
 
 .quote {

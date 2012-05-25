@@ -210,14 +210,11 @@ public class Foo {
 16:06:09.046 [main] INFO  chapters.configuration.MyApp1 - Exiting application.</p>
 
 
-   <div class="highlight">
-      <p>
-        Except code that configures logback (if such code exists)
-        client code does not need to depend on logback. Applications
-        that use logback as their logging framework will have a
-        compile-time dependency on SLF4J but not logback.
-      </p>
-    </div>   
+   <p class="highlight">Except code that configures logback (if such
+   code exists) client code does not need to depend on
+   logback. Applications that use logback as their logging framework
+   will have a compile-time dependency on SLF4J but not logback.
+   </p>
 
    <p>The <code>MyApp1</code> application links to logback via calls
    to <code>org.slf4j.LoggerFactory</code> and
@@ -271,12 +268,9 @@ public class Foo {
    href="#automaticStatusPrinting">Automatic printing of status
    messages in case of warning or errors</a></h4>
 
-   <div class="highlight">
-     <p>If warning or errors occur during the parsing of the
-     configuration file, logback will automatically print its internal
-     status messages on the console.
-     </p>
-   </div>
+   <p class="highlight">If warning or errors occur during the parsing
+   of the configuration file, logback will automatically print its
+   internal status messages on the console.</p>
 
    <p>If warnings or errors occur during the parsing of the
    configuration file, logback will automatically print status data on
@@ -405,12 +399,9 @@ public class Foo {
    <h3><a name="autoScan" href="#autoScan">Automatically reloading
    configuration file upon modification</a></h3>
 
-   <div class="highlight">
-     <p>Logback-classic can scan for changes in its configuration file
-     and automatically reconfigure itself when the configuration
-     file changes.
-     </p>
-   </div>
+   <p class="highlight">Logback-classic can scan for changes in its
+   configuration file and automatically reconfigure itself when the
+   configuration file changes.</p>
 
    <p>If instructed to do so, logback-classic will scan for changes in
    its configuration file and automatically reconfigure itself when
@@ -693,12 +684,10 @@ public class MyApp3 {
   </p>
 
 
-  <div class="highlight">
-    <p>If you are unsure which case to use for a given tag name, just
-    follow the <a
+    <p class="highlight">If you are unsure which case to use for a
+    given tag name, just follow the <a
     href="http://en.wikipedia.org/wiki/CamelCase">camelCase
     convention</a> which is almost always the correct convention.</p>
-    </div>
 
     <h4><a name="caseSensitivity" href="#caseSensitivity">Case
     sensitivity of tag names</a></h4>

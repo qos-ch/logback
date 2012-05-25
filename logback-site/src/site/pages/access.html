@@ -52,6 +52,14 @@
 
 		<h1><a name="tomcat" href="#tomcat">Logback-access under Tomcat</a></h1>
 		
+
+
+     <div class="highlight">
+        Deploying logback-access version ${project.version} on
+        Tomcat 6.x (instead of Tomcat 7.x) is likely to cause the
+        server to crash.
+     </div>
+
 		<p>To use logback-access with Tomcat, after downloading the
 		logback distribution, place the files
 		<em>logback-core-${project.version}.jar</em> and
@@ -62,7 +70,7 @@
 		Tomcat 6.x. However, the target platform for logback-access
 		version 0.9.30 is Tomcat 6.x.
 		</p>
-
+   
 		<h2>LogbackValve</h2>
 
 		<p>The <a
