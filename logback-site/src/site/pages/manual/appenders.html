@@ -426,15 +426,20 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          JVMs, potentially running on different hosts. The default
          value for prudent mode is <code>false</code>.
 
+         <p>Prudent mode can be used in conjunction with
+         <code>RollingFileAppender</code> although some <a
+         href="#prudentWithRolling">restrictions apply</a>.</p>
+
          <p>Prudent mode implies that <span
-         class="prop">Append</span> property is automatically set to
+         class="prop">append</span> property is automatically set to
          true.
          </p>
 
-         <p>Prudent mode will approximately triple (x3) the cost of
+         <p>Produdent more relies on exclusive file locks. Experiments
+         show that file locks approximately triple (x3) the cost of
          writing a logging event. On an "average" PC writing to a file
-         located on a local hard disk, when prudent mode is off, it
-         takes about 10 microseconds to write a single logging
+         located on a <b>local</b> hard disk, when prudent mode is
+         off, it takes about 10 microseconds to write a single logging
          event. When prudent mode is on, it takes approximately 30
          microseconds to output a single logging event. This
          translates to logging throughput of 100'000 events per second
@@ -442,9 +447,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          second in prudent mode.
          </p>
 
-         <p>Prudent mode effectively serializes IO operations between
+         <p>Prudent mode effectively serializes I/O operations between
          all JVMs writing to the same file. Thus, as the number of
-         JVMs competing to access the file increases so will the delay
+         JVMs competing to access a file increases so will the delay
          incurred by each I/O operation. As long as the <em>total</em>
          number of I/O operations is in the order of 20 log requests
          per second, the impact on performance should be
@@ -453,9 +458,25 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
          should avoid using <span class="prop">prudent</span> mode.
          </p>
 
-         Prudent mode can be used in conjunction with
-         <code>RollingFileAppender</code> although some <a
-         href="#prudentWithRolling">restrictions apply</a>.
+         <p><span class="label">Networked file locks</span> When the
+         log file is located on a networked file system, the cost of
+         prudent mode is even greater. Just as importantly, file locks
+         over a networked file system can be sometimes strongly biased
+         such that the process currently owning the lock immediately
+         re-obtains the lock upon its release. Thus, while one process
+         hogs the lock for the log file, other processes starve
+         waiting for the lock to the point of appearing deadlocked.
+         </p>
+         
+         <p>The impact of prudent mode is highly dependent on network
+         speed as well as the OS implementation details. We provide an
+         very small application called <a
+         href="https://gist.github.com/2794241">FileLockSimulator</a>
+         which can help you simulate the behavior of prudent mode in
+         your environment.
+         </p>
+
+
        </td>
        
      </tr>
