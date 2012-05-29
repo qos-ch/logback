@@ -38,6 +38,8 @@ public class Compressor extends ContextAwareBase {
 
   final CompressionMode compressionMode;
 
+  static final int BUFFER_SIZE = 8192;
+
   public Compressor(CompressionMode compressionMode) {
     this.compressionMode = compressionMode;
   }
@@ -101,7 +103,7 @@ public class Compressor extends ContextAwareBase {
       ZipEntry zipEntry = computeZipEntry(innerEntryName);
       zos.putNextEntry(zipEntry);
 
-      byte[] inbuf = new byte[8102];
+      byte[] inbuf = new byte[BUFFER_SIZE];
       int n;
 
       while ((n = bis.read(inbuf)) != -1) {
@@ -196,7 +198,7 @@ public class Compressor extends ContextAwareBase {
     try {
       bis = new BufferedInputStream(new FileInputStream(nameOfFile2gz));
       gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile));
-      byte[] inbuf = new byte[8102];
+      byte[] inbuf = new byte[BUFFER_SIZE];
       int n;
 
       while ((n = bis.read(inbuf)) != -1) {
