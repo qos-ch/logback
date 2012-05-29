@@ -25,10 +25,11 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class MarkerFilterTest {
 
-  static String MARKER_NAME = "toto";
-  
-  Marker totoMarker = MarkerFactory.getMarker(MARKER_NAME);
-  
+  static String TOTO = "TOTO";
+  static String COMPOSITE = "COMPOSITE";
+
+  Marker totoMarker = MarkerFactory.getMarker(TOTO);
+
 
   @Test
   public void testNoMarker() {
@@ -44,7 +45,7 @@ public class MarkerFilterTest {
   @Test
   public void testBasic() {
     MarkerFilter mkt = new MarkerFilter();
-    mkt.setMarker(MARKER_NAME);
+    mkt.setMarker(TOTO);
     mkt.setOnMatch("ACCEPT");
     mkt.setOnMismatch("DENY");
 
@@ -53,5 +54,24 @@ public class MarkerFilterTest {
     assertEquals(FilterReply.DENY, mkt.decide(null, null, null, null, null, null));
     assertEquals(FilterReply.ACCEPT, mkt.decide(totoMarker, null, null, null, null, null));
   }
-  
+
+  @Test
+  public void testComposite() {
+    String compositeMarkerName = COMPOSITE;
+    Marker compositeMarker = MarkerFactory.getMarker(compositeMarkerName);
+    compositeMarker.add(totoMarker);
+
+    MarkerFilter mkt = new MarkerFilter();
+    mkt.setMarker(TOTO);
+    mkt.setOnMatch("ACCEPT");
+    mkt.setOnMismatch("DENY");
+
+    mkt.start();
+
+    assertTrue(mkt.isStarted());
+    assertEquals(FilterReply.DENY, mkt.decide(null, null, null, null, null, null));
+    assertEquals(FilterReply.ACCEPT, mkt.decide(totoMarker, null, null, null, null, null));
+    assertEquals(FilterReply.ACCEPT, mkt.decide(compositeMarker, null, null, null, null, null));
+  }
+
 }

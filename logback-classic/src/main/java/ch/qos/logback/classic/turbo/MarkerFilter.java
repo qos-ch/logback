@@ -47,7 +47,7 @@ public class MarkerFilter extends MatchingFilter {
       return onMismatch;
     } 
     
-    if(markerToMatch.contains(marker)) {
+    if(marker.contains(markerToMatch)) {
       return onMatch;
     } else {
       return onMismatch;
