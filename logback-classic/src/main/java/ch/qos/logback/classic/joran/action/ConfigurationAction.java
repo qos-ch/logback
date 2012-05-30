@@ -38,7 +38,7 @@ public class ConfigurationAction extends Action {
 
     // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
     // the equivalent property in the config file. This reversal of scope priority is justified
-    // by the use case: the admin trying to chase rougue config file
+    // by the use case: the admin trying to chase rogue config file
     String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
     if (debugAttrib == null) {
       debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
