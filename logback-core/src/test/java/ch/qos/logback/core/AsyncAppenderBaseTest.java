@@ -56,7 +56,7 @@ public class AsyncAppenderBaseTest {
   }
 
 
-  @Test
+  @Test(timeout = 2000)
   public void smoke() {
     asyncAppenderBase.addAppender(listAppender);
     asyncAppenderBase.start();
@@ -76,7 +76,7 @@ public class AsyncAppenderBaseTest {
     assertTrue(delayingListAppender.interrupted);
   }
 
-  @Test
+  @Test(timeout = 2000)
   public void noEventLoss() {
     int bufferSize = 10;
     int loopLen = bufferSize * 2;
@@ -90,7 +90,7 @@ public class AsyncAppenderBaseTest {
     verify(delayingListAppender, loopLen);
   }
 
-  @Test
+  @Test(timeout = 2000)
   public void lossyAppenderShouldOnlyLooseCertainEvents() {
     int bufferSize = 5;
     int loopLen = bufferSize * 2;
@@ -105,7 +105,7 @@ public class AsyncAppenderBaseTest {
     verify(delayingListAppender, loopLen-2);
   }
 
-  @Test
+  @Test(timeout = 2000)
   public void lossyAppenderShouldLooseNoneIfDiscardingThresholdIsZero() {
     int bufferSize = 5;
     int loopLen = bufferSize * 2;
