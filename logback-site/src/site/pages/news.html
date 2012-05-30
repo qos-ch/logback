@@ -46,6 +46,18 @@
     href="http://jira.qos.ch/browse/LBCLASSIC-323">LBCLASSIC-323</a>
     by Patrick Houk.</p>
 
+    <p>It is now possible to set a system property called <a
+    href="manual/configuration.html#automaticStatusPrinting">"logback.debug"</a>
+    in order to force printing of internal status messages on the
+    console regardless of the value of the <span
+    class="attr">debug</span> attribute found within the
+    <code>&lt;configuration></code> element. This behavior was
+    requested in <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-225">LBCLASSIC-225</a>
+    by Aaron Digulla with the relevant patch kindly provided by Antony
+    Stubbs.
+    </p>
+
     <p><code>MarkerFilter</code> now correctly recognizes nested
     markers. This issue was reported in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-295">LBCLASSIC-295</a>

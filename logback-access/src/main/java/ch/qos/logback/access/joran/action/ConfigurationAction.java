@@ -14,6 +14,7 @@
 package ch.qos.logback.access.joran.action;
 
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.util.OptionHelper;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
@@ -22,17 +23,22 @@ import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
-
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
+  static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback-access.debug";
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
 
-    if (
-      (debugAttrib == null) || debugAttrib.equals("")
-        || debugAttrib.equals("false") || debugAttrib.equals("null")) {
-      addInfo("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
+    // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
+    // the equivalent property in the config file. This reversal of scope priority is justified
+    // by the use case: the admin trying to chase rougue config file
+    String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+    if (debugAttrib == null) {
+      debugAttrib =  attributes.getValue(INTERNAL_DEBUG_ATTR);
+    }
+
+    if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equals("false") || debugAttrib.equals("null")) {
+      addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
       OnConsoleStatusListener.addNewInstanceToContext(context);
     }

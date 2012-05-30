@@ -29,17 +29,23 @@ public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
   static final String SCAN_ATTR = "scan";
   static final String SCAN_PERIOD_ATTR = "scanPeriod";
+  static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 
   long threshold = 0;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    String debugAttrib = System.getProperty("logback.debug");
-    if(debugAttrib == null)
-        debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
     threshold = System.currentTimeMillis();
-    if (OptionHelper.isEmpty(debugAttrib)
-        || debugAttrib.equalsIgnoreCase("false")
-        || debugAttrib.equalsIgnoreCase("null")) {
+
+    // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
+    // the equivalent property in the config file. This reversal of scope priority is justified
+    // by the use case: the admin trying to chase rougue config file
+    String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+    if (debugAttrib == null) {
+      debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
+    }
+
+    if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
+            || debugAttrib.equalsIgnoreCase("null")) {
       addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
       OnConsoleStatusListener.addNewInstanceToContext(context);
@@ -57,7 +63,7 @@ public class ConfigurationAction extends Action {
   void processScanAttrib(Attributes attributes) {
     String scanAttrib = attributes.getValue(SCAN_ATTR);
     if (!OptionHelper.isEmpty(scanAttrib)
-        && !"false".equalsIgnoreCase(scanAttrib)) {
+            && !"false".equalsIgnoreCase(scanAttrib)) {
       ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
       rocf.setContext(context);
       String scanPeriodAttrib = attributes.getValue(SCAN_PERIOD_ATTR);
@@ -66,7 +72,7 @@ public class ConfigurationAction extends Action {
           Duration duration = Duration.valueOf(scanPeriodAttrib);
           rocf.setRefreshPeriod(duration.getMilliseconds());
           addInfo("Setting ReconfigureOnChangeFilter scanning period to "
-              + duration);
+                  + duration);
         } catch (NumberFormatException nfe) {
           addError("Error while converting [" + scanAttrib + "] to long", nfe);
         }
