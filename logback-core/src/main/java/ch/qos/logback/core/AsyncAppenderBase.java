@@ -21,29 +21,33 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * AsyncAppender lets users log events asynchronously. It uses a
- * bounded buffer to store logging events. By default, if buffer is 80% full it will drop
- * events meeting criteria as determined by the {@link #isDiscardable(Object)} method.
+ * This appender and derived classes, log events asynchronously.  In order to avoid loss of logging events, this
+ * appender should be closed. It is the user's  responsibility to close appenders, typically at the end of the
+ * application lifecycle.
+ * <p/>
+ * This appender buffers events in a {@link BlockingQueue}. {@link Worker} thread created by this appender takes
+ * events from the head of the queue, and dispatches them to the single appender attached to this appender.
+ * <p/>
+ * <p>Please refer to the <a href="http://logback.qos.ch/manual/appenders.html#AsyncAppender">logback manual</a> for
+ * further information about this appender.</p>
  *
- * <p>The AsyncAppender will collect the events sent to it and then
- * dispatch them to all the appenders that are attached to it. You can
- * attach multiple appenders to an AsyncAppender.
- *
- * <p>The AsyncAppender uses a separate thread to serve the events in
- * its bounded buffer.
- *
- * @author Ceki G&uuml;lc&uuml;
  * @param <E>
+ * @author Ceki G&uuml;lc&uuml;
+ * @author Torsten Juergeleit
+ * @since 1.0.4
  */
 public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implements AppenderAttachable<E> {
 
   AppenderAttachableImpl<E> aai = new AppenderAttachableImpl<E>();
   BlockingQueue<E> blockingQueue;
 
-  /** The default buffer size. */
+  /**
+   * The default buffer size.
+   */
   public static final int DEFAULT_BUFFER_SIZE = 256;
   int bufferSize = DEFAULT_BUFFER_SIZE;
 
+  int appenderCount = 0;
 
   static final int UNDEFINED = -1;
   int discardingThreshold = UNDEFINED;
@@ -53,7 +57,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   /**
    * Is the eventObject passed as parameter discardable? The base class's implementation of this method always returns
    * 'false' but sub-classes may (and do) override this method.
-   *
+   * <p/>
    * <p>Note that only if the buffer is nearly full are events discarded. Otherwise, when the buffer is "not full"
    * all events are logged.
    *
@@ -71,20 +75,21 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
    *
    * @param eventObject
    */
-  protected void preprocess(E eventObject) {}
+  protected void preprocess(E eventObject) {
+  }
 
 
   @Override
   public void start() {
-    if(numberOfAttachedAppenders() == 0) {
+    if (appenderCount == 0) {
       addError("No attached appenders found.");
       return;
     }
     blockingQueue = new ArrayBlockingQueue<E>(bufferSize);
     addInfo("in start");
-    if(discardingThreshold == UNDEFINED)
+    if (discardingThreshold == UNDEFINED)
       discardingThreshold = bufferSize / 5;
-
+    addInfo("Setting discardingThreshold to "+discardingThreshold);
     worker.setDaemon(true);
     worker.setName("AsyncAppender-Worker-" + worker.getName());
     worker.start();
@@ -93,15 +98,15 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
   @Override
   public void stop() {
-    if(!isStarted())
+    if (!isStarted())
       return;
 
     // mark this appender as stopped so that Worker can also stop if it is invoking aii.appendLoopOnAppenders
     // and sub-appenders consume the interruption
     super.stop();
 
-    // interrupt the worker thread so that it can terminate
-    // interruption can be consumed by sub-appenders
+    // interrupt the worker thread so that it can terminate. Note that the interruption can be consumed
+    // by sub-appenders
     worker.interrupt();
     try {
       worker.join(1000);
@@ -110,24 +115,18 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     }
   }
 
-  private int numberOfAttachedAppenders() {
-    int i = 0;
-    Iterator it = aai.iteratorForAppenders();
-    while(it.hasNext()) {
-      it.next();
-      i++;
-    }
-    return i;
-  }
-
 
   @Override
   protected void append(E eventObject) {
-    if(blockingQueue.remainingCapacity() < discardingThreshold && isDiscardable(eventObject)) {
-     return;
+    if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
+      return;
     }
     preprocess(eventObject);
     put(eventObject);
+  }
+
+  private boolean isQueueBelowDiscardingThreshold() {
+    return (blockingQueue.remainingCapacity() < discardingThreshold);
   }
 
   private void put(E eventObject) {
@@ -145,6 +144,25 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     this.bufferSize = bufferSize;
   }
 
+
+  /**
+   * @return
+   */
+  public int getBlockingQueueSize() {
+    return blockingQueue.size();
+  }
+
+  /**
+   * The remaining capacity available in the blocking queue.
+   *
+   * @return the remaining capacity
+   * @see {@link java.util.concurrent.BlockingQueue#remainingCapacity()}
+   */
+  public int getRemainingCapacity() {
+    return blockingQueue.remainingCapacity();
+  }
+
+
   public int getDiscardingThreshold() {
     return discardingThreshold;
   }
@@ -154,7 +172,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   }
 
   public void addAppender(Appender<E> newAppender) {
-    aai.addAppender(newAppender);
+    if (appenderCount == 0) {
+      appenderCount++;
+      aai.addAppender(newAppender);
+    } else {
+      addWarn("One and only one appender may be attached to AsyncAppender.");
+      addWarn("Ignoring additional appender named [" + newAppender.getName() + "]");
+    }
   }
 
   public Iterator<Appender<E>> iteratorForAppenders() {
@@ -178,7 +202,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   }
 
   public boolean detachAppender(String name) {
-   return aai.detachAppender(name);
+    return aai.detachAppender(name);
   }
 
   class Worker extends Thread {
@@ -186,7 +210,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     public void run() {
       AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
       AppenderAttachableImpl<E> aai = parent.aai;
-      while(parent.isStarted()) {
+      while (parent.isStarted()) {
         try {
           E e = parent.blockingQueue.take();
           aai.appendLoopOnAppenders(e);
@@ -196,7 +220,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       }
 
       addInfo("Worker thread will flush remaining events before exiting. ");
-      for(E e: parent.blockingQueue) {
+      for (E e : parent.blockingQueue) {
         aai.appendLoopOnAppenders(e);
       }
 

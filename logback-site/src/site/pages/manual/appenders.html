@@ -3372,6 +3372,136 @@ logger.debug("Alice says hello"); </p>
     distinct log files, "unknown.log" and "Alice.log".
 		</p>
 
+    <h3><a name="AsyncAppender"
+    href="#AsyncAppender">AsyncAppender</a></h3>
+
+    <p>AsyncAppender logs <a
+    href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>s
+    asynchronously. It acts solely as an event dispatcher and must
+    therefore reference another appender in order to do anything
+    useful. In order to avoid loss of logging events, this appender
+    should be closed. It is the user's responsibility to close
+    appenders, typically at the end of the application lifecycle.
+    </p>
+
+    <p><span class="label notice">Lossy by default if 80% full</span>
+    AsyncAppender buffers events in a <a
+    href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/BlockingQueue.html">
+    BlockingQueue</a>. A worker thread created by
+    <code>AsyncAppender</code> takes events from the head of the
+    queue, and dispatches them to the single appender attached to
+    <code>AsyncAppender</code>. Note that by default,
+    <code>AsyncAppender</code> will drop events of level TRACE, DEBUG
+    and INFO if its queue is 80% full. This strategy has an amazingly
+    favorable effect on performance at the cost of event loss.
+    </p>
+
+    <p>Here is the list of properties admitted by
+    <code>AsyncAppender:</code></p>
+
+		<table class="bodyTable striped">
+      <tr>
+        <th>Property Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+			<tr>
+        <td><b><span class="prop">bufferSize</span></b></td>
+        <td><code>int</code></td>
+        <td>The maximum capacity of the blocking buffer. By default,
+        <span class="prop">bufferSize</span> is set to 256.
+				</td>
+			</tr>
+      <tr>
+        <td><b><span class="prop">discardingThreshold</span></b></td>
+        <td><code>int</code></td>
+        <td>By default, when the blocking queue has 20% capacity
+        remaining, it will drop events of level TRACE, DEBUG and INFO,
+        keeping only events of level WARN and ERROR. To keep all
+        events, set <span class="prop">discardingThreshold</span> to
+        0.
+			</td>
+			</tr>
+      <tr>
+        <td><b><span class="prop">includeCallerData</span></b></td>
+        <td><code>boolean</code></td>
+        <td>Extracting caller data can be rather expensive. To improve
+        performance, by default, caller data associated with an event
+        is not extracted when the event added to the event queue. By
+        default, only "cheap" data like the thread name and the <a
+        href="mdc.html">MDC</a> are copied. You can direct this
+        appender to include caller data by setting the <span
+        class="prop">includeCallerData</span> property to true.
+        </td>
+      </tr>
+    </table>
+
+    <p>By default, event queue is configured with a maximum capacity
+    of 256 events.  If the queue is filled up, then application
+    threads are blocked from logging new events until the worker
+    thread has had a chance to dispatch one or more events. When the
+    queue is no longer at its maximum capacity, application threads
+    are able to start logging events once again. Asynchronous logging
+    therefore becomes pseudo-synchronous when the appender is
+    operating at or near the capacity of its event buffer. This is not
+    necessarily a bad thing. The appender is designed to allow the
+    application to keep on running, albeit taking slightly more time
+    to log events until the pressure on the appenders buffer eases.
+    </p>
+
+    <p>Optimally tuning the size of the appenders event queue for
+    maximum application throughput depends upon several factors. Any
+    or all of the following factors are likely to cause
+    pseudo-synchronous behavior to be exhibited:</p>
+  
+    <ul>
+      <li>Large numbers of application threads</li>
+      <li>Large numbers of logging events per application call</li>
+      <li>Large amounts of data per logging event</li>
+      <li>High latency of child appenders</li>
+    </ul>
+
+    <p>To keep things moving, increasing the size of the appenders
+    queue will generally help, at the expense of heap available to the
+    application.
+    </p>
+
+    
+    <p><span class="label notice">Lossy behavior</span> In light of
+    the discussion above and in order to avoid blocking, by default,
+    when less than 20% of the buffer capacilty is available,
+    <code>AsyncAppender</code> will drop events of level TRACE, DEBUG
+    and INFO keeping only events of level WARN and ERROR. This
+    strategy guarantees non-blocking behavior good performance at the
+    cost loosing events of level TRACE, DEBUG and INFO when the queue
+    has less than 20% capacity. Event loss can be prevented by setting
+    the <span class="prop">discardingThreshold</span> property to 0
+    (zero).
+    </p>
+
+    <p class="example">Example: <code>AsyncAppender</code>
+    configuration
+    (logback-examples/src/main/java/chapters/appenders/conc/logback-async.xml)</p>
+
+    <span class="asGroovy" onclick="return asGroovy('asyncAppender');">View as .groovy</span>
+
+    <pre id="asyncAppender" class="prettyprint source">&lt;configuration>
+  &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
+    &lt;file>myapp.log&lt;/file>
+    &lt;encoder>
+      &lt;pattern>%logger{35} - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  <b>&lt;appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender"></b>
+    <b>&lt;appender-ref ref="FILE" /></b>
+  <b>&lt;/appender></b>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="<b>ASYNC</b>" />
+  &lt;/root>
+&lt;/configuration></pre>
+  
 
 		<h3><a name="WriteYourOwnAppender"
 		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>

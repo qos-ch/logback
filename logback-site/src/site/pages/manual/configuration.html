@@ -372,13 +372,20 @@ public class Foo {
    <code>StatusPrinter.print()</code> as shown in the <a
    href="../xref/chapters/configuration/MyApp2.html"><em>MyApp2</em></a>
    application above ensures that status information is printed in
-   every case. If you are trying to track down a rogue
-   <em>logback.xml</em> configuration file in production where java
-   source files cannot be modified, setting the <span
+   every case.</p>
+
+ 
+   <p><span class="label">Forcing status output</span> In the absence
+   of status messages, tracking down a rogue <em>logback.xml</em>
+   configuration file can be difficult, especially in production where
+   the application source cannot be easily modified. To help identify
+   the location of a rogue configuration file, you can set the <span
    class="prop">logback.debug</span> system property to
-   <code>true</code> will print internal status on the console
-   regardless of the value of the <span class="attr">debug</span>
-   attribute found within the <code>&lt;configuration></code> element.
+   <code>true</code> to force printing internal status messages on the
+   console regardless of the value of the <span
+   class="attr">debug</span> attribute found within the
+   <code>&lt;configuration></code> element, in any configuration file,
+   including in the rogue <em>logback.xml</em> file.
    </p>
 
    <p>As of version 1.0.1, setting the <span class="attr">debug</span>
