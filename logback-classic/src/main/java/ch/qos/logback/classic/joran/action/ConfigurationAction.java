@@ -33,7 +33,9 @@ public class ConfigurationAction extends Action {
   long threshold = 0;
 
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    String debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
+    String debugAttrib = System.getProperty("logback.debug");
+    if(debugAttrib == null)
+        debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
     threshold = System.currentTimeMillis();
     if (OptionHelper.isEmpty(debugAttrib)
         || debugAttrib.equalsIgnoreCase("false")
