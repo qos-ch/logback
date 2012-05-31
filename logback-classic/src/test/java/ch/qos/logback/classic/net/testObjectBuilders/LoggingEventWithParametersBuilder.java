@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -18,14 +18,14 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
-public class LoggingEventWithParametersBuilder implements Builder {
+public class LoggingEventWithParametersBuilder implements Builder<LoggingEvent> {
 
   final String MSG = "aaaaabbbbbcccc {} cdddddaaaaabbbbbcccccdddddaaaa {}";
 
   private Logger logger = new LoggerContext()
       .getLogger(Logger.ROOT_LOGGER_NAME);
 
-  public Object build(int i) {
+  public LoggingEvent build(int i) {
 
     LoggingEvent le = new LoggingEvent();
     le.setTimeStamp(System.currentTimeMillis());
@@ -44,7 +44,6 @@ public class LoggingEventWithParametersBuilder implements Builder {
     le.setLoggerName(logger.getName());
     le.setLoggerContextRemoteView(logger.getLoggerRemoteView().getLoggerContextView());
     le.setThreadName("threadName");
-
     return le;
   }
 }

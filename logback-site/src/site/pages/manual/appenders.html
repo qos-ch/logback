@@ -3406,10 +3406,10 @@ logger.debug("Alice says hello"); </p>
         <th>Description</th>
       </tr>
 			<tr>
-        <td><b><span class="prop">bufferSize</span></b></td>
+        <td><b><span class="prop">queueSize</span></b></td>
         <td><code>int</code></td>
-        <td>The maximum capacity of the blocking buffer. By default,
-        <span class="prop">bufferSize</span> is set to 256.
+        <td>The maximum capacity of the blocking queue. By default,
+        <span class="prop">queueSize</span> is set to 256.
 				</td>
 			</tr>
       <tr>
@@ -3461,22 +3461,22 @@ logger.debug("Alice says hello"); </p>
       <li>High latency of child appenders</li>
     </ul>
 
-    <p>To keep things moving, increasing the size of the appenders
-    queue will generally help, at the expense of heap available to the
+    <p>To keep things moving, increasing the size of the queue will
+    generally help, at the expense of heap available to the
     application.
     </p>
 
     
     <p><span class="label notice">Lossy behavior</span> In light of
-    the discussion above and in order to avoid blocking, by default,
-    when less than 20% of the buffer capacilty is available,
+    the discussion above and in order to reduce blocking, by default,
+    when less than 20% of the queue capacilty remains,
     <code>AsyncAppender</code> will drop events of level TRACE, DEBUG
     and INFO keeping only events of level WARN and ERROR. This
-    strategy guarantees non-blocking behavior good performance at the
-    cost loosing events of level TRACE, DEBUG and INFO when the queue
-    has less than 20% capacity. Event loss can be prevented by setting
-    the <span class="prop">discardingThreshold</span> property to 0
-    (zero).
+    strategy ensures non-blocking handling of logging events (hence
+    excellent performance) at the cost loosing events of level TRACE,
+    DEBUG and INFO when the queue has less than 20% capacity. Event
+    loss can be prevented by setting the <span
+    class="prop">discardingThreshold</span> property to 0 (zero).
     </p>
 
     <p class="example">Example: <code>AsyncAppender</code>

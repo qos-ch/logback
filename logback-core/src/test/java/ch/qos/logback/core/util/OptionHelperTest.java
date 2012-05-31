@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -107,5 +108,17 @@ public class OptionHelperTest  {
     String result = OptionHelper.substVars(text, context);
     assertEquals(expected, result); 
   }
+
+
+  @Ignore
+  @Test
+  public void defaultValueReferencingAVariable() {
+    context.putProperty("v1", "k1");
+    String result = OptionHelper.substVars("${undef:-${v1}}", context);
+    assertEquals("k1", result);
+  }
+
+
+
   
 }

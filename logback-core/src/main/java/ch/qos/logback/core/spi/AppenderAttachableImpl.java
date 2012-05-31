@@ -28,16 +28,11 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
   final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
 
-//  volatile private ReadWriteLock rwLock = new ReentrantReadWriteLock();
-//  private Lock r = rwLock.readLock();
-//  private Lock w = rwLock.writeLock();
-
   /**
    * Attach an appender. If the appender is already in the list in won't be
    * added again.
    */
   public void addAppender(Appender<E> newAppender) {
-    p("addAppender(Appender)");
     if (newAppender == null) {
       throw new IllegalArgumentException("Null argument disallowed");
     }
@@ -112,12 +107,6 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
   }
 
   static final long START = System.currentTimeMillis();
-
-  void p(String msg) {
-    //System.out.println((System.currentTimeMillis()-START) + "  "+ Thread.currentThread().getName() + msg);
-    //System.out.println("------------------------");
-
-  }
 
   /**
    * Remove the appender passed as parameter form the list of attached

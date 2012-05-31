@@ -44,8 +44,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   /**
    * The default buffer size.
    */
-  public static final int DEFAULT_BUFFER_SIZE = 256;
-  int bufferSize = DEFAULT_BUFFER_SIZE;
+  public static final int DEFAULT_QUEUE_SIZE = 256;
+  int queueSize = DEFAULT_QUEUE_SIZE;
 
   int appenderCount = 0;
 
@@ -85,11 +85,15 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       addError("No attached appenders found.");
       return;
     }
-    blockingQueue = new ArrayBlockingQueue<E>(bufferSize);
-    addInfo("in start");
+    if (queueSize < 1) {
+      addError("Invalid queue size [" + queueSize + "]");
+      return;
+    }
+    blockingQueue = new ArrayBlockingQueue<E>(queueSize);
+
     if (discardingThreshold == UNDEFINED)
-      discardingThreshold = bufferSize / 5;
-    addInfo("Setting discardingThreshold to "+discardingThreshold);
+      discardingThreshold = queueSize / 5;
+    addInfo("Setting discardingThreshold to " + discardingThreshold);
     worker.setDaemon(true);
     worker.setName("AsyncAppender-Worker-" + worker.getName());
     worker.start();
@@ -111,7 +115,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     try {
       worker.join(1000);
     } catch (InterruptedException e) {
-      addError("Failed to join worker thread", e);  //To change body of catch statement use File | Settings | File Templates.
+      addError("Failed to join worker thread", e);
     }
   }
 
@@ -136,19 +140,28 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     }
   }
 
-  public int getBufferSize() {
-    return bufferSize;
+  public int getQueueSize() {
+    return queueSize;
   }
 
-  public void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
+  public void setQueueSize(int queueSize) {
+    this.queueSize = queueSize;
   }
 
+  public int getDiscardingThreshold() {
+    return discardingThreshold;
+  }
+
+  public void setDiscardingThreshold(int discardingThreshold) {
+    this.discardingThreshold = discardingThreshold;
+  }
 
   /**
-   * @return
+   * Returns the number of elements currently in the blocking queue.
+   *
+   * @return number of elements currently in the queue.
    */
-  public int getBlockingQueueSize() {
+  public int getNumberOfElementsInQueue() {
     return blockingQueue.size();
   }
 
@@ -163,17 +176,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   }
 
 
-  public int getDiscardingThreshold() {
-    return discardingThreshold;
-  }
-
-  public void setDiscardingThreshold(int discardingThreshold) {
-    this.discardingThreshold = discardingThreshold;
-  }
 
   public void addAppender(Appender<E> newAppender) {
     if (appenderCount == 0) {
       appenderCount++;
+      addInfo("Attaching appender named ["+newAppender.getName()+"] to AsyncAppender.");
       aai.addAppender(newAppender);
     } else {
       addWarn("One and only one appender may be attached to AsyncAppender.");
@@ -210,6 +217,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     public void run() {
       AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
       AppenderAttachableImpl<E> aai = parent.aai;
+
+      // loop while the parent is started
       while (parent.isStarted()) {
         try {
           E e = parent.blockingQueue.take();

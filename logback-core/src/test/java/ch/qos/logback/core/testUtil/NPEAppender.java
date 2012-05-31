@@ -11,14 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.testObjectBuilders;
+package ch.qos.logback.core.testUtil;
 
-public interface Builder<E> {
+import ch.qos.logback.core.AppenderBase;
 
-  // 45 characters message
-  String MSG_PREFIX = "aaaaabbbbbcccccdddddaaaaabbbbbcccccdddddaaaa";
-
-  // final String MSG_PREFIX = "a";
-
-  E build(int i);
+public class NPEAppender<E> extends AppenderBase<E> {
+  @Override
+  protected void append(E eventObject) {
+     throw new NullPointerException();
+  }
 }
