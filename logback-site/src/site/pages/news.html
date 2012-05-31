@@ -70,6 +70,24 @@
     provided by Derek Mahar.
     </p>
 
+    <p><a
+    href="manual/appenders.html#SyslogAppender"><code>SyslogAppender</code></a>
+    now admits the <span class="prop">throwableExcluded</span>
+    property allowing the exclusion of throwable data if so
+    desired. This solves <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-327">LBCLASSIC-327</a>
+    reported by Don Faulkner.
+    </p>
+
+    <p><a
+    href="manual/appenders.html#SyslogAppender"><code>SyslogAppender</code></a>
+    now admits the <span class="prop">stackTracePattern</span>
+    property allowing the customization of the string appearing just
+    before each stack trace line.  This fixes <a
+    href="http://jira.qos.ch/browse/LBCLASSIC-333">LBCLASSIC-333</a>
+    reported by Ingebrigt Berg who also provided the relavant patch.
+    </p>
+
     <p><code>DBAppender</code> now supports SQLite. This feature was
     requested in <a
     href="http://jira.qos.ch/browse/LBGENERAL-53">LBGENERAL-53</a> by

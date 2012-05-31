@@ -30,22 +30,27 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
  * This appender can be used to send messages to a remote syslog daemon. <p> For
  * more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SyslogAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
-  static final public String DEFAULT_STACKTRACE_SUFFIX_PATTERN = ""+CoreConstants.TAB;
+  static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
 
-  PatternLayout prefixLayout = new PatternLayout();
-  PatternLayout stacktraceLayout = new PatternLayout();
+  PatternLayout stackTraceLayout = new PatternLayout();
+  String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
 
-  public Layout<ILoggingEvent> buildLayout(String facilityStr) {
-    String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
-    setupPrefixLayout(prefixPattern);
-    setupStacktraceLayout(prefixPattern);
-    return setupFullLayout(prefixPattern);
+  boolean throwableExcluded = false;
+
+
+  public void start() {
+    super.start();
+    setupStackTraceLayout();
+  }
+
+  String getPrefixPattern() {
+    return "%syslogStart{" + getFacility() + "}%nopex";
   }
 
   /*
@@ -62,9 +67,12 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   @Override
   protected void postProcess(Object eventObject, OutputStream sw) {
+    if (throwableExcluded)
+      return;
+
     ILoggingEvent event = (ILoggingEvent) eventObject;
 
-    String layout = stacktraceLayout.doLayout(event);
+    String stackTracePrefix = stackTraceLayout.doLayout(event);
 
     IThrowableProxy tp = event.getThrowableProxy();
     while (tp != null) {
@@ -72,7 +80,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       try {
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
-          sb.append(layout).append(step);
+          sb.append(stackTracePrefix).append(step);
           sw.write(sb.toString().getBytes());
           sw.flush();
         }
@@ -83,36 +91,63 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
   }
 
-  private Layout<ILoggingEvent> setupFullLayout(String prefixPattern) {
-	PatternLayout fullLayout = new PatternLayout();
-	fullLayout.getInstanceConverterMap().put("syslogStart",
-	  SyslogStartConverter.class.getName());
-	if (suffixPattern == null) {
-	  suffixPattern = DEFAULT_SUFFIX_PATTERN;
-	}
-	fullLayout.setPattern(prefixPattern + suffixPattern);
-	fullLayout.setContext(getContext());
-	fullLayout.start();
-	return fullLayout;
+  public Layout<ILoggingEvent> buildLayout() {
+    PatternLayout layout = new PatternLayout();
+    layout.getInstanceConverterMap().put("syslogStart",
+            SyslogStartConverter.class.getName());
+    if (suffixPattern == null) {
+      suffixPattern = DEFAULT_SUFFIX_PATTERN;
+    }
+    layout.setPattern(getPrefixPattern() + suffixPattern);
+    layout.setContext(getContext());
+    layout.start();
+    return layout;
+   }
+
+  private void setupStackTraceLayout() {
+    stackTraceLayout.getInstanceConverterMap().put("syslogStart",
+            SyslogStartConverter.class.getName());
+
+    stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
+    stackTraceLayout.setContext(getContext());
+    stackTraceLayout.start();
   }
 
-  private void setupStacktraceLayout(String prefixPattern) {
-	stacktraceLayout.getInstanceConverterMap().put("syslogStart",
-	  SyslogStartConverter.class.getName());
-	if (stacktraceSuffixPattern == null) {
-	  stacktraceSuffixPattern = DEFAULT_STACKTRACE_SUFFIX_PATTERN;
-	}          
-	stacktraceLayout.setPattern(prefixPattern + stacktraceSuffixPattern);
-	stacktraceLayout.setContext(getContext());
-	stacktraceLayout.start();
+  public boolean isThrowableExcluded() {
+    return throwableExcluded;
   }
 
-  private void setupPrefixLayout(String prefixPattern) {
-	prefixLayout.getInstanceConverterMap().put("syslogStart",
-	  SyslogStartConverter.class.getName());
-	prefixLayout.setPattern(prefixPattern);
-    prefixLayout.setContext(getContext());
-    prefixLayout.start();
+  /**
+   * Setting throwableExcluded to true causes no Throwable's stack trace data to be sent to
+   * the syslog daemon. By default, stack trace data is sent to syslog daemon.
+   *
+   * @param throwableExcluded
+   * @since 1.0.4
+   */
+  public void setThrowableExcluded(boolean throwableExcluded) {
+    this.throwableExcluded = throwableExcluded;
   }
 
+  /**
+   * See {@link #setStackTracePattern(String).
+   *
+   * @return the stackTraceSuffixPattern
+   * @since 1.0.4
+   */
+  public String getStackTracePattern() {
+    return stackTracePattern;
+  }
+
+  /**
+   * Stack trace lines are sent to the syslog server separately from the main message
+   * For stack trace lines, the stackTracePattern is used instead of {@link #suffixPattern}.
+   * The <b>stackTracePattern</b> option allows specification of a separately format for the
+   * non-standardized part of stack trace lines.
+   *
+   * @param stackTracePattern
+   * @since 1.0.4
+   */
+  public void setStackTracePattern(String stackTracePattern) {
+    this.stackTracePattern = stackTracePattern;
+  }
 }

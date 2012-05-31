@@ -65,7 +65,7 @@ public class SyslogAppenderTest {
     sa.setFacility("MAIL");
     sa.setPort(port);
     sa.setSuffixPattern("[%thread] %logger %msg");
-    sa.setStacktraceSuffixPattern("[%thread] foo "+CoreConstants.TAB);
+    sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
     sa.start();
     assertTrue(sa.isStarted());
 

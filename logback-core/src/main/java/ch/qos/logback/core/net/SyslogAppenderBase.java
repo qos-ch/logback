@@ -39,7 +39,6 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   String facilityStr;
   String syslogHost;
   protected String suffixPattern;
-  protected String stacktraceSuffixPattern;
   SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
 
@@ -62,7 +61,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     if (layout == null) {
-      layout = buildLayout(facilityStr);
+      layout = buildLayout();
     }
 
     if (errorCount == 0) {
@@ -70,7 +69,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  abstract public Layout<E> buildLayout(String facilityStr);
+  abstract public Layout<E> buildLayout();
 
   abstract public int getSeverityForEvent(Object eventObject);
 
@@ -245,26 +244,4 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   public void setSuffixPattern(String suffixPattern) {
     this.suffixPattern = suffixPattern;
   }
-
-  /**
-   * See {@link #setStacktraceSuffixPattern(String).
-   * 
-   * @return
-   */
-  public String getStacktraceSuffixPattern() {
-    return stacktraceSuffixPattern;
-  }
-
-  /**
-   * Stacktrace lines are sent to the syslog server seperately from the main message
-   * For stacktrace lines, no suffixPattern is added. 
-   * The <b>stacktraceSuffixPattern</b> option allows specification of a seperate format for the
-   * non-standardized part of stacktrace lines.
-   * 
-   * @param stacktraceSuffixPattern
-   */
-  public void setStacktraceSuffixPattern(String stacktraceSuffixPattern) {
-    this.stacktraceSuffixPattern = stacktraceSuffixPattern;
-  }
-
 }

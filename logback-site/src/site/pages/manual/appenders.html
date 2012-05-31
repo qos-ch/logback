@@ -3144,92 +3144,86 @@ logger.error(<b>notifyAdmin</b>,
 				<th>Description</th>
 			</tr>
 			<tr>
-				<td>
-					<b>
-						<span class="prop">syslogHost</span>
-					</b>
-				</td>
-				<td>
-					<code>String</code>
-				</td>
-				<td>
-					The host name of the syslog server.
+				<td><b><span class="prop">syslogHost</span></b></td>
+				<td><code>String</code></td>
+				<td>The host name of the syslog server.</td>
+			</tr>
+			<tr>
+				<td><b><span class="prop">port</span></b></td>
+				<td><code>String</code></td>
+				<td>The port number on the syslog server to connect
+				to. Normally, one would not want to change the default value
+				of <em>514</em>.
 				</td>
 			</tr>
 			<tr>
+				<td><b><span class="prop">facility</span></b></td>
+				<td><code>String</code></td>
 				<td>
-					<b>
-						<span class="prop">port</span>
-					</b>
-				</td>
-				<td>
-					<code>String</code>
-				</td>
-				<td>
-					The port number on the syslog server to connect to. Normally, one would not want 
-					to change the default value of <em>514</em>.
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b>
-						<span class="prop">facility</span>
-					</b>
-				</td>
-				<td>
-					<code>String</code>
-				</td>
-				<td>
-					<p>
-						The <span class="prop">facility</span> is meant to identify 
-						the source of a message.
-					</p>
-					<p>
-						The <span class="prop">facility</span> option must be set to one
-						of the strings <em>KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, 
-						CRON, AUTHPRIV, FTP, NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, 
-						LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.
-					</p>
+					<p>The <span class="prop">facility</span> is meant to identify 
+						the source of a message.</p>
+					<p>The <span class="prop">facility</span> option must be set
+					to one of the strings <em>KERN, USER, MAIL, DAEMON, AUTH,
+					SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
+					ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
+					LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.</p>
 				</td>
 			</tr>
       <tr>
-        <td>
-          <b>
-            <span class="prop">suffixPattern</span>
-          </b>
-				</td>
-				<td>
-					<code>String</code>
-				</td>
-				<td>
-					<p>The <span class="prop">suffixPattern</span> option
-					specifies the format of the non-standardized part of the
-					message sent to the syslog server. By default, its value is
-					<em>[%thread] %logger %msg</em>. Any value that a
-					<code>PatternLayout</code> could use is a correct <span
-					class="prop">suffixPattern</span> value.
+        <td><b><span class="prop">suffixPattern</span></b></td>
+				<td><code>String</code></td>
+				<td><p>The <span class="prop">suffixPattern</span> option
+				specifies the format of the non-standardized part of the
+				message sent to the syslog server. By default, its value is
+				<em>[%thread] %logger %msg</em>. Any value that a
+				<code>PatternLayout</code> could use is a correct <span
+				class="prop">suffixPattern</span> value.
 					</p>
 				</td>
 			</tr>
+
+      <tr>
+        <td><b><span class="prop">stackTracePattern</span></b></td>
+				<td><code>String</code></td>
+				<td><p>The <span class="prop">stackTracePattern</span>
+				property allows the customization of the string appearing just
+				before each stack trace line. The default value for this
+				property is "\t", i.e. the tab character. Any value accepted
+				by <code>PatternLayout</code> is a valid value for <span
+				class="prop">stackTracePattern</span>.</p>
+				</td>
+			</tr>
+
+			<tr>
+				<td><b><span class="prop">throwableExcluded</span></b></td>
+				<td><code>boolean</code></td>
+				<td>Setting <span class="prop">throwableExcluded</span> to
+				<code>true</code> will cause stack trace data associated with
+				a Throwable to be omitted. By default, <span
+				class="prop">throwableExcluded</span> is set to
+				<code>false</code> so that stack trace data is sent to the
+				syslog server. </td>
+			</tr>
+
+
 		</table>
 		
-		<p>
-			The syslog severity of a logging event is converted from the level of the logging event.
-			The <em>DEBUG</em> level is converted to <em>7</em>, <em>INFO</em> is converted to
-			<em>6</em>, <em>WARN</em> is converted to <em>4</em> and <em>ERROR</em> is converted
-			to <em>3</em>.
+		<p>The syslog severity of a logging event is converted from the
+		level of the logging event.  The <em>DEBUG</em> level is converted
+		to <em>7</em>, <em>INFO</em> is converted to <em>6</em>,
+		<em>WARN</em> is converted to <em>4</em> and <em>ERROR</em> is
+		converted to <em>3</em>.
 		</p>
 		
-		<p>
-			Since the format of a syslog request follows rather strict rules, there is no layout
-			to be used with <code>SyslogAppender</code>. However, using the
-			<span class="prop">suffixPattern</span> option lets the user display whatever
-			information she wishes.
+		<p>Since the format of a syslog request follows rather strict
+		rules, there is no layout to be used with
+		<code>SyslogAppender</code>. However, using the <span
+		class="prop">suffixPattern</span> option lets the user display
+		whatever information she wishes.
 		</p>
 		
-		<p>
-			Here is a sample configuration using a <code>SyslogAppender</code>.
-		</p>
+		<p>Here is a sample configuration using a
+		<code>SyslogAppender</code>.</p>
 		
     <p class="example">Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-syslog.xml)</p>	
     <span class="asGroovy" onclick="return asGroovy('logback-syslog');">View as .groovy</span>	
