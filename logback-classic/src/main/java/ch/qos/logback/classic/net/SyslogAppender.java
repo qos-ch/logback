@@ -71,10 +71,14 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       return;
 
     ILoggingEvent event = (ILoggingEvent) eventObject;
+    IThrowableProxy tp = event.getThrowableProxy();
+
+    if(tp == null)
+      return;
+
 
     String stackTracePrefix = stackTraceLayout.doLayout(event);
 
-    IThrowableProxy tp = event.getThrowableProxy();
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
