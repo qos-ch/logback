@@ -36,30 +36,16 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
+  static final public String DEFAULT_STACKTRACE_SUFFIX_PATTERN = ""+CoreConstants.TAB;
 
   PatternLayout prefixLayout = new PatternLayout();
+  PatternLayout stacktraceLayout = new PatternLayout();
 
   public Layout<ILoggingEvent> buildLayout(String facilityStr) {
     String prefixPattern = "%syslogStart{" + facilityStr + "}%nopex";
-
-    prefixLayout.getInstanceConverterMap().put("syslogStart",
-        SyslogStartConverter.class.getName());
-    prefixLayout.setPattern(prefixPattern);
-    prefixLayout.setContext(getContext());
-    prefixLayout.start();
-
-    PatternLayout fullLayout = new PatternLayout();
-    fullLayout.getInstanceConverterMap().put("syslogStart",
-        SyslogStartConverter.class.getName());
-
-    if (suffixPattern == null) {
-      suffixPattern = DEFAULT_SUFFIX_PATTERN;
-    }
-
-    fullLayout.setPattern(prefixPattern + suffixPattern);
-    fullLayout.setContext(getContext());
-    fullLayout.start();
-    return fullLayout;
+    setupPrefixLayout(prefixPattern);
+    setupStacktraceLayout(prefixPattern);
+    return setupFullLayout(prefixPattern);
   }
 
   /*
@@ -78,7 +64,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   protected void postProcess(Object eventObject, OutputStream sw) {
     ILoggingEvent event = (ILoggingEvent) eventObject;
 
-    String prefix = prefixLayout.doLayout(event);
+    String layout = stacktraceLayout.doLayout(event);
 
     IThrowableProxy tp = event.getThrowableProxy();
     while (tp != null) {
@@ -86,7 +72,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       try {
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
-          sb.append(prefix).append(CoreConstants.TAB).append(step);
+          sb.append(layout).append(step);
           sw.write(sb.toString().getBytes());
           sw.flush();
         }
@@ -96,4 +82,37 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
       tp = tp.getCause();
     }
   }
+
+  private Layout<ILoggingEvent> setupFullLayout(String prefixPattern) {
+	PatternLayout fullLayout = new PatternLayout();
+	fullLayout.getInstanceConverterMap().put("syslogStart",
+	  SyslogStartConverter.class.getName());
+	if (suffixPattern == null) {
+	  suffixPattern = DEFAULT_SUFFIX_PATTERN;
+	}
+	fullLayout.setPattern(prefixPattern + suffixPattern);
+	fullLayout.setContext(getContext());
+	fullLayout.start();
+	return fullLayout;
+  }
+
+  private void setupStacktraceLayout(String prefixPattern) {
+	stacktraceLayout.getInstanceConverterMap().put("syslogStart",
+	  SyslogStartConverter.class.getName());
+	if (stacktraceSuffixPattern == null) {
+	  stacktraceSuffixPattern = DEFAULT_STACKTRACE_SUFFIX_PATTERN;
+	}          
+	stacktraceLayout.setPattern(prefixPattern + stacktraceSuffixPattern);
+	stacktraceLayout.setContext(getContext());
+	stacktraceLayout.start();
+  }
+
+  private void setupPrefixLayout(String prefixPattern) {
+	prefixLayout.getInstanceConverterMap().put("syslogStart",
+	  SyslogStartConverter.class.getName());
+	prefixLayout.setPattern(prefixPattern);
+    prefixLayout.setContext(getContext());
+    prefixLayout.start();
+  }
+
 }
