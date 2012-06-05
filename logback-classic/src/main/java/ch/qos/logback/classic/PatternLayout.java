@@ -41,6 +41,7 @@ import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
+import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
@@ -128,8 +129,22 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
     defaultConverterMap.put("property", PropertyConverter.class.getName());
 
-    
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
+
+    defaultConverterMap.put("black", BlackCompositeConverter.class.getName());
+    defaultConverterMap.put("red", RedCompositeConverter.class.getName());
+    defaultConverterMap.put("green", GreenCompositeConverter.class.getName());
+    defaultConverterMap.put("yellow", YellowCompositeConverter.class.getName());
+    defaultConverterMap.put("blue", BlueCompositeConverter.class.getName());
+    defaultConverterMap.put("magenta", MagentaCompositeConverter.class.getName());
+    defaultConverterMap.put("cyan", CyanCompositeConverter.class.getName());
+    defaultConverterMap.put("white", WhiteCompositeConverter.class.getName());
+
+
+
+
+
+
   }
 
   public PatternLayout() {

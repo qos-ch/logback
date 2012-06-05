@@ -24,10 +24,10 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
       c.write(buf, event);
     }
     String intermediary = buf.toString();
-    return transform(intermediary);
+    return transform(event, intermediary);
   }
 
-  abstract protected String transform(String in);
+  abstract protected String transform(E event, String in);
 
   public void setChildConverter(Converter<E> child) {
     childConverter = child;

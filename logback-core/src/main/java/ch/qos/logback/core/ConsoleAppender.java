@@ -80,8 +80,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   @Override
   public void start() {
     OutputStream targetStream = target.getStream();
+    // enable jansi only on Windows and only if withJansi set to true
     if (EnvUtil.isWindows() && withJansi) {
-      System.out.println("with hanso");
       targetStream = getTargetStreamForWindows(targetStream);
     }
     setOutputStream(targetStream);
@@ -90,12 +90,12 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
   private OutputStream getTargetStreamForWindows(OutputStream targetStream) {
     try {
+      addInfo("Enabling JANSI WindowsAnsiOutputStream for the console.");
       Object windowsAnsiOutputStream = OptionHelper.instantiateByClassNameAndParameter(WindowsAnsiOutputStream_CLASS_NAME, Object.class, context,
               OutputStream.class, targetStream);
-      addInfo("Will use JANSI WindowsAnsiOutputStream for the console");
       return (OutputStream) windowsAnsiOutputStream;
     } catch (Exception e) {
-      addWarn("Failed to create WindowsAnsiOutputStream. Will use the default stream.", e);
+      addWarn("Failed to create WindowsAnsiOutputStream. Falling back on the default stream.", e);
     }
     return targetStream;
   }
