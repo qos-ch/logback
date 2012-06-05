@@ -1,11 +1,11 @@
 <configuration>
 
-	<conversionRule conversionWord="sample" 
+	<conversionRule conversionWord="nano" 
                   converterClass="chapters.layouts.MySampleConverter" />
 	
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%-4relative [%thread] %sample - %msg%n</pattern>
+      <pattern>%-6nano [%thread] %level - %msg%n</pattern>
     </encoder>
   </appender>
 

@@ -281,10 +281,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing OutputStreamAppender and sub-classes"/>
 	
 
-	<h2>	
-    <a name="ConsoleAppender"
-    href="#ConsoleAppender">ConsoleAppender</a>
-  </h2>
+	<h2><a name="ConsoleAppender"	href="#ConsoleAppender">ConsoleAppender</a></h2>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
@@ -299,7 +296,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	<table class="bodyTable striped">
-			<tr class="a">
+			<tr>
 			<th>Property Name</th>
 			<th>Type</th>
 			<th>Description</th>
@@ -311,7 +308,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
       </td>
 			<td>See <code>OutputStreamAppender</code> properties.</td>
 		</tr>
-		<tr class="a">
+		<tr>
 			<td><b><span class="prop">target</span></b></td>
 			<td><code>String</code></td>
 			<td>
@@ -319,6 +316,22 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 				<em>System.err</em>. The default target is <em>System.out</em>.
 			</td>
 		</tr>
+
+		<tr>
+			<td><b><span class="prop">withJansi</span></b></td>
+			<td><code>boolean</code></td>
+			<td>By the default <span class="prop">withJansi</span> property
+			is set to <code>false</code>.  Setting <span
+			class="prop">withJansi</span> to <code>true</code> activates the
+			<a href="http://jansi.fusesource.org/">Jansi</a> library which
+			provides support for ANSI color codes on Windows machines.  On a
+			Windows host, if this property is set to true, then you should
+			put "org.fusesource.jansi:jansi:1.8" on the class path. Note
+			that Unix-based operating systems such as Linux and Mac OS X
+			support ANSI color codes by default.
+			</td>
+		</tr>
+
 	</table>
 	
 	<p>Here is a sample configuration that uses

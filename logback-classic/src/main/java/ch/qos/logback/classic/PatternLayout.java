@@ -38,6 +38,7 @@ import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
+import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
@@ -139,9 +140,14 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("magenta", MagentaCompositeConverter.class.getName());
     defaultConverterMap.put("cyan", CyanCompositeConverter.class.getName());
     defaultConverterMap.put("white", WhiteCompositeConverter.class.getName());
-
-
-
+    defaultConverterMap.put("boldRed", BoldRedCompositeConverter.class.getName());
+    defaultConverterMap.put("boldGreen", BoldGreenCompositeConverter.class.getName());
+    defaultConverterMap.put("boldYellow", BoldYellowCompositeConverter.class.getName());
+    defaultConverterMap.put("boldBlue", BoldBlueCompositeConverter.class.getName());
+    defaultConverterMap.put("boldMagenta", BoldMagentaCompositeConverter.class.getName());
+    defaultConverterMap.put("boldCyan", BoldCyanCompositeConverter.class.getName());
+    defaultConverterMap.put("boldWhite", BoldWhiteCompositeConverter.class.getName());
+    defaultConverterMap.put("highlight", HighlightingCompositeConverter.class.getName());
 
 
 

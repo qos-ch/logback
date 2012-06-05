@@ -1349,6 +1349,67 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
     [%thread]<b>\)</b>. 
     </p>
 
+    <h2><a name="coloring" href="#coloring">Coloring</a></h2>
+
+    <p>Grouping by <a href="#Parentheses">parentheses</a> as explained
+    above allows coloring of sub-patterns. As of version 1.0.5,
+    <code>PatternLayout</code> recognizes "%black", "%red",
+    "%green","%yellow","%blue", "%magenta","%cyan", "%white",
+    "%boldRed","%boldGreen", "%boldYellow", "%boldBlue",
+    "%boldMagenta""%boldCyan", "%boldWhite" and "%highlight" as
+    conversion words. These conversion words are intended to contain a
+    sub-pattern. Any sub-pattern enclosed by a coloring word will be
+    output in the specified color.
+    </p>
+
+    <p>Below is a configuration file illustrating coloring. Note the
+    %cyan conversion specifier enclosing "%logger{15}". This will
+    output the logger name abreviated to 15 characters in cyan. The
+    %highlight conversion specifier prints its sub-pattern in bold-red
+    for events of level ERROR, in red for WARN, in BLUE for INFO, and
+    in the default color for other levels.</p>
+
+		<em>
+			Example: Highlighting levels
+			(logback-examples/src/main/java/chapters/layouts/highlighted.xml)
+		</em>
+
+    <span class="asGroovy" onclick="return asGroovy('highlighted');">View as .groovy</span>
+
+
+<pre id="highlighted" class="prettyprint">&lt;configuration debug="true">
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;!-- On Windows machines setting withJansi to true enables ANSI
+         color code interpretation by the Jansi library. This requires
+         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
+         Unix-based operating systems such as Linux and Mac OS X
+         support ANSI color codes by default. --&gt;
+    <b>&lt;withJansi>true&lt;/withJansi></b>
+    &lt;encoder>
+      &lt;pattern>[%thread] <b>%highlight(%-5level)</b> <b>%cyan(%logger{15})</b> - %msg %n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="STDOUT" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+     <p>Here is the corresponding output:</p>
+
+<pre class="source">[main] <span style="color:#611">WARN</span>  <span style="color:#2bd">c.l.TrivialMain</span> - a warning message 0
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number1
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number2
+[main] <span style="color:#00F">INFO</span>  <span style="color:#2bd">c.l.TrivialMain</span> - hello world number3
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number4
+[main] <span style="color:#611">WARN</span>  <span style="color:#2bd">c.l.TrivialMain</span> - a warning message 5
+[main] <span style="color:#F00">ERROR</span> <span style="color:#2bd">c.l.TrivialMain</span> - Finish off with fireworks</pre>
+
+    <p>It takes very few lines of code to create a coloring conversion
+    word. The section entitled <a
+    href="#customConversionSpecifier">creating a custom conversion
+    specifier</a> discusses the steps necessary for registering a
+    conversion word in your configuration file.</p>
+   
 		<h2><a name="Evaluators" href="#Evaluators">Evaluators</a></h2>
 
 		<p>As mentioned above, option lists come in handy when a
@@ -1648,50 +1709,22 @@ java.lang.Exception: display
 <em> Example: Sample Converter Example 
 <a href="../xref/chapters/layouts/MySampleConverter.html">
 (src/main/java/chapters/layouts/MySampleConverter.java)</a></em>
-<pre class="prettyprint source">package chapters.layouts;
+<pre class="prettyprint source">public class MySampleConverter extends ClassicConverter {
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.pattern.ClassicConverter;
-import ch.qos.logback.classic.spi.ILoggingEvent;
+  long start = System.nanoTime();
 
-public class MySampleConverter extends ClassicConverter {
-
-  private static final String END_COLOR = "\u001b[m";
-
-  private static final String ERROR_COLOR = "\u001b[0;31m";
-  private static final String WARN_COLOR = "\u001b[0;33m";
-
-  @Override
-  <b>public String convert(ILoggingEvent event) {
-    StringBuffer sbuf = new StringBuffer();
-    sbuf.append(getColor(event.getLevel()));
-    sbuf.append(event.getLevel());
-    sbuf.append(END_COLOR);
-    return sbuf.toString();
-  }</b>
-
-  /**
-   * Returns the appropriate characters to change the color for the specified
-   * logging level.
-   */
-  private String getColor(Level level) {
-    switch (level.toInt()) {
-    case Level.ERROR_INT:
-      return ERROR_COLOR;
-    case Level.WARN_INT:
-      return WARN_COLOR;
-    default:
-      return "";
-    }
-  }
-}
-</pre>
+  <b>@Override</b>
+  <b>public String convert(ILoggingEvent event) {</b>
+    <b>long nowInNanos = System.nanoTime();</b>
+    <b>return Long.toString(nowInNanos-start);</b>
+  <b>}</b>
+}</pre>
 
 		<p>This implementation is relatively straightforward. The
 		<code>MySampleConverter</code> class extends
 		<code>ClassicConverter</code>, and implements the
-		<code>convert</code> method where it returns a level string
-		decorated with ANSI coloring codes.
+		<code>convert</code> method which returns the number of
+		nano-seconds elapsed since its creation.
 		</p>
 
 		<p>In the second step, we must let logback know about the new
@@ -1702,12 +1735,12 @@ public class MySampleConverter extends ClassicConverter {
  <span class="asGroovy" onclick="return asGroovy('mySampleConverterConfig');">View as .groovy</span>
 <pre id="mySampleConverterConfig" class="prettyprint source">&lt;configuration>
 
-  <b>&lt;conversionRule conversionWord="sample" 
+  <b>&lt;conversionRule conversionWord="nanos" 
                   converterClass="chapters.layouts.MySampleConverter" /></b>
 	
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
-      &lt;pattern>%-4relative [%thread] <b>%sample</b> - %msg%n&lt;/pattern>
+      &lt;pattern><b>%-6nanos</b> [%thread] - %msg%n&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
 
@@ -1721,16 +1754,14 @@ public class MySampleConverter extends ClassicConverter {
 		<code>PatternLayout</code> pattern, as with any other
 		conversion word.</p>
 		
-    <p>Given that ANSI terminal codes do not work on Windows, you can
-    view the results on non-Windows platforms such as Linux or
-    Mac. The following command:</p>
+    <p>The command:</p>
 
     <div class="source">java chapters.layouts.SampleLogging src/main/java/chapters/layouts/mySampleConverterConfig.xml </div>
 
-    <p>should yield:</p>
+    <p>should yield output akin to:</p>
     
-    <p class="source">0    [main] DEBUG - Everything's going well
-3    [main] <span class="red">ERROR</span> - maybe not quite... </p>
+    <pre class="source">4868695 [main] DEBUG - Everything's going well
+5758748 [main] ERROR - maybe not quite...</pre>
 
 
     <p>Please note that the string "ERROR" is highlighted in red,
@@ -1740,7 +1771,9 @@ public class MySampleConverter extends ClassicConverter {
 		<code>Converter</code> implementations such as
 		<a href="../xref/ch/qos/logback/classic/pattern/MDCConverter.html">
 		<code>MDCConverter</code></a> to learn about more complex
-		behaviours, such as option handling.
+		behaviours, such as option handling. For creating your own
+		coloring schemes have a look at <a
+		href="../xref/ch/qos/logback/classic/pattern/color/HighlightingCompositeConverter.html"><code>HighlightingCompositeConverter</code></a>.
 		</p>
 
    	

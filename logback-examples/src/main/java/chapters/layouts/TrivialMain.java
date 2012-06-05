@@ -39,6 +39,8 @@ public class TrivialMain {
     for (int i = 0; i < 6; i++) {
       if (i % 5 == 0) {
         logger.warn("a warning message " + i);
+      } else if(i % 3 == 0) {
+        logger.info("hello world number" + i);
       } else {
         logger.debug("hello world number" + i);
       }
