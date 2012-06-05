@@ -32,7 +32,7 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E>
   /**
    * Is this component active?
    */
-  boolean started = false;
+  protected boolean started = false;
 
   /**
    * Components that depend on options passed during configuration can override

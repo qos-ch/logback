@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.util;
 
+import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
@@ -26,40 +27,56 @@ import ch.qos.logback.core.spi.PropertyContainer;
 public class OptionHelper {
 
   public static Object instantiateByClassName(String className,
-      Class superClass, Context context) throws IncompatibleClassException,
-      DynamicClassLoadingException {
+                                              Class superClass, Context context) throws IncompatibleClassException,
+          DynamicClassLoadingException {
     ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
     return instantiateByClassName(className, superClass, classLoader);
   }
 
+  public static Object instantiateByClassNameAndParameter(String className,
+                                              Class superClass, Context context, Class type, Object param) throws IncompatibleClassException,
+          DynamicClassLoadingException {
+    ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
+    return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
+  }
+
   @SuppressWarnings("unchecked")
   public static Object instantiateByClassName(String className,
-      Class superClass, ClassLoader classLoader)
-      throws IncompatibleClassException, DynamicClassLoadingException {
+                                              Class superClass, ClassLoader classLoader)
+          throws IncompatibleClassException, DynamicClassLoadingException {
+    return instantiateByClassNameAndParameter(className, superClass, classLoader, null, null);
+  }
+
+  public static Object instantiateByClassNameAndParameter(String className,
+                                                          Class superClass, ClassLoader classLoader, Class type, Object parameter)
+          throws IncompatibleClassException, DynamicClassLoadingException {
 
     if (className == null) {
       throw new NullPointerException();
     }
-
     try {
       Class classObj = null;
       classObj = classLoader.loadClass(className);
       if (!superClass.isAssignableFrom(classObj)) {
         throw new IncompatibleClassException(superClass, classObj);
       }
-      return classObj.newInstance();
+      if (type == null) {
+        return classObj.newInstance();
+      } else {
+        Constructor constructor = classObj.getConstructor(type);
+        return constructor.newInstance(parameter);
+      }
     } catch (IncompatibleClassException ice) {
       throw ice;
     } catch (Throwable t) {
       throw new DynamicClassLoadingException("Failed to instantiate type "
-          + className, t);
+              + className, t);
     }
   }
 
   /**
    * Find the value corresponding to <code>key</code> in <code>props</code>.
    * Then perform variable substitution on the found value.
-   * 
    */
   // public static String findAndSubst(String key, Properties props) {
   // String value = props.getProperty(key);
@@ -81,11 +98,11 @@ public class OptionHelper {
   final static String _IS_UNDEFINED = "_IS_UNDEFINED";
 
   /**
-   * @see  #substVars(String, PropertyContainer, PropertyContainer)
+   * @see #substVars(String, PropertyContainer, PropertyContainer)
    */
-   public static String substVars(String val, PropertyContainer pc1) {
-     return substVars(val, pc1, null);
-   }
+  public static String substVars(String val, PropertyContainer pc1) {
+    return substVars(val, pc1, null);
+  }
 
   /**
    * See  http://logback.qos.ch/manual/configuration.html#variableSubstitution
@@ -118,7 +135,7 @@ public class OptionHelper {
 
         if (k == -1) {
           throw new IllegalArgumentException('"' + val
-              + "\" has no closing brace. Opening brace at position " + j + '.');
+                  + "\" has no closing brace. Opening brace at position " + j + '.');
         } else {
           j += DELIM_START_LEN;
 
@@ -157,7 +174,7 @@ public class OptionHelper {
   }
 
   public static String propertyLookup(String key, PropertyContainer pc1,
-                               PropertyContainer pc2) {
+                                      PropertyContainer pc2) {
     String value = null;
     // first try the props passed as parameter
     value = pc1.getProperty(key);
@@ -179,11 +196,9 @@ public class OptionHelper {
   /**
    * Very similar to <code>System.getProperty</code> except that the
    * {@link SecurityException} is absorbed.
-   * 
-   * @param key
-   *                The key to search for.
-   * @param def
-   *                The default value to return.
+   *
+   * @param key The key to search for.
+   * @param def The default value to return.
    * @return the string value of the system property, or the default value if
    *         there is no property with that key.
    */
@@ -197,6 +212,7 @@ public class OptionHelper {
 
   /**
    * Lookup a key from the environment.
+   *
    * @param key
    * @return value corresponding to key from the OS environment
    */
@@ -212,10 +228,8 @@ public class OptionHelper {
   /**
    * Very similar to <code>System.getProperty</code> except that the
    * {@link SecurityException} is absorbed.
-   * 
-   * @param key
-   *                The key to search for.
-   * 
+   *
+   * @param key The key to search for.
    * @return the string value of the system property.
    */
   public static String getSystemProperty(String key) {
@@ -227,7 +241,7 @@ public class OptionHelper {
   }
 
   public static void setSystemProperties(ContextAware contextAware, Properties props) {
-    for(Object o: props.keySet()) {
+    for (Object o : props.keySet()) {
       String key = (String) o;
       String value = props.getProperty(key);
       setSystemProperty(contextAware, key, value);
@@ -238,14 +252,14 @@ public class OptionHelper {
     try {
       System.setProperty(key, value);
     } catch (SecurityException e) {
-      contextAware.addError("Failed to set system property ["+key+"]", e);
+      contextAware.addError("Failed to set system property [" + key + "]", e);
     }
   }
 
   /**
    * Very similar to {@link System#getProperties()} except that the
    * {@link SecurityException} is absorbed.
-   * 
+   *
    * @return the system properties
    */
   public static Properties getSystemProperties() {
@@ -271,7 +285,7 @@ public class OptionHelper {
    * If <code>value</code> is "true", then <code>true</code> is returned. If
    * <code>value</code> is "false", then <code>true</code> is returned.
    * Otherwise, <code>default</code> is returned.
-   * 
+   * <p/>
    * <p> Case of value is unimportant.
    */
   public static boolean toBoolean(String value, boolean dEfault) {

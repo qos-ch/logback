@@ -42,7 +42,7 @@ public class ReplacingCompositeConverter<E> extends CompositeConverter<E> {
   }
 
   @Override
-  String transform(String in) {
+  protected String transform(String in) {
     if (!started)
       return in;
     return pattern.matcher(in).replaceAll(replacement);

@@ -40,4 +40,10 @@ public class EnvUtil {
       return false;
     }
   }
+
+  public static boolean isWindows() {
+    String os = System.getProperty("os.name");
+    return os.startsWith("Windows");
+  }
+
 }

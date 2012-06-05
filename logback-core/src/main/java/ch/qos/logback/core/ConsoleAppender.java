@@ -13,20 +13,27 @@
  */
 package ch.qos.logback.core;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.DynamicClassLoadingException;
+import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.IncompatibleClassException;
+import ch.qos.logback.core.util.OptionHelper;
+import org.fusesource.jansi.WindowsAnsiOutputStream;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The default
  * target is <code>System.out</code>.
- * 
+ * <p/>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#ConsoleAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author Ruediger Dohna
@@ -35,6 +42,9 @@ import ch.qos.logback.core.status.WarnStatus;
 public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
   protected ConsoleTarget target = ConsoleTarget.SystemOut;
+  protected boolean withJansi = false;
+
+  private final static String WindowsAnsiOutputStream_CLASS_NAME = "org.fusesource.jansi.WindowsAnsiOutputStream";
 
   /**
    * Sets the value of the <b>Target</b> option. Recognized values are
@@ -52,7 +62,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
   /**
    * Returns the current value of the <b>target</b> property. The default value
    * of the option is "System.out".
-   * 
+   * <p/>
    * See also {@link #setTarget}.
    */
   public String getTarget() {
@@ -61,15 +71,50 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
   private void targetWarn(String val) {
     Status status = new WarnStatus("[" + val + "] should be one of "
-        + Arrays.toString(ConsoleTarget.values()), this);
+            + Arrays.toString(ConsoleTarget.values()), this);
     status.add(new WarnStatus(
-        "Using previously set target, System.out by default.", this));
+            "Using previously set target, System.out by default.", this));
     addStatus(status);
   }
 
   @Override
   public void start() {
-    setOutputStream(target.getStream());
+    OutputStream targetStream = target.getStream();
+    if (EnvUtil.isWindows() && withJansi) {
+      System.out.println("with hanso");
+      targetStream = getTargetStreamForWindows(targetStream);
+    }
+    setOutputStream(targetStream);
     super.start();
   }
+
+  private OutputStream getTargetStreamForWindows(OutputStream targetStream) {
+    try {
+      Object windowsAnsiOutputStream = OptionHelper.instantiateByClassNameAndParameter(WindowsAnsiOutputStream_CLASS_NAME, Object.class, context,
+              OutputStream.class, targetStream);
+      addInfo("Will use JANSI WindowsAnsiOutputStream for the console");
+      return (OutputStream) windowsAnsiOutputStream;
+    } catch (Exception e) {
+      addWarn("Failed to create WindowsAnsiOutputStream. Will use the default stream.", e);
+    }
+    return targetStream;
+  }
+
+  /**
+   * @return
+   */
+  public boolean isWithJansi() {
+    return withJansi;
+  }
+
+  /**
+   * If true, this appender will output to a stream which
+   *
+   * @param withJansi
+   * @since 1.0.5
+   */
+  public void setWithJansi(boolean withJansi) {
+    this.withJansi = withJansi;
+  }
+
 }

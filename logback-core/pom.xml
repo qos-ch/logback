@@ -45,6 +45,11 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <optional>true</optional>      
+    </dependency>
 
     <dependency>
       <groupId>javax.mail</groupId>
@@ -168,6 +173,7 @@
             <Import-Package>
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
+              org.fusesource.jansi;resolution:=optional,
               org.codehaus.janino;resolution:=optional,
               *
             </Import-Package>

@@ -16,7 +16,7 @@ package ch.qos.logback.core.pattern;
 public class IdentityCompositeConverter<E> extends CompositeConverter<E> {
 
   @Override
-  String transform(String in) {
+  protected String transform(String in) {
     return in;
   }
 }
