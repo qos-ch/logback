@@ -142,4 +142,7 @@ public class CoreConstants {
   public static final String CONTEXT_SCOPE_VALUE = "context";
 
   public static final String RESET_MSG_PREFIX = "Will reset and reconfigure context ";
+
+
+  public static final String JNDI_COMP_PREFIX = "java:comp/env";
 }

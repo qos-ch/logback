@@ -1982,7 +1982,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 
       <tr>
-        <td><b>localhost</b></td>
+        <td><b><span class="prop">localhost</span></b></td>
         <td><code>String</code></td>
         <td>In case the hostname of the SMTP client is not properly
         configured, e.g. if the client hostname is not fully
@@ -1997,7 +1997,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b>asynchronousSending</b></td>
+        <td><b><span class="prop">asynchronousSending</span></b></td>
         <td><code>boolean</code></td>
         <td>This property determines whether email transmission is
         done asynchronously or not. By default, the <span
@@ -2011,6 +2011,45 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         for synchronous email transmission.
         </td>
       </tr>
+
+      <tr>
+        <td><b><span class="prop">sessionByJNDI</span></b></td>
+        <td><code>boolean</code></td>
+        <td><code>SMTPAppender</code> relies on
+        <code>javax.mail.Session</code> to send out email messages. By
+        default, <span class="prop">sessionByJNDI</span> is set to
+        <code>false</code> so the <code>javax.mail.Session</code>
+        instance is built by <code>SMTPAppender</code> itself with the
+        properties specified by the user. If the <span
+        class="prop">sessionByJNDI</span> property is set to
+        <code>true</code>, the <code>javax.mail.Session</code> object
+        will be retrieved via JNDI. See also the <span
+        class="prop">jndiLocation</span> property.
+
+        <p>Retrieving the <code>Session</code> via JNDI can reduce the
+        number of places you need to configure/reconfigure the same
+        information, making your application <a
+        href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">dryer</a>. For
+        more information on configuring resources in Tomcat see <a
+        href="http://tomcat.apache.org/tomcat-6.0-doc/jndi-resources-howto.html#JavaMail_Sessions">JNDI
+        Resources How-to</a>. <span class="label">beware</span> As
+        noted in that document, make sure to remove <em>mail.jar</em>
+        and <em>activation.jar</em> from your web-applications
+        <em>WEB-INF/lib</em> folder when retrieving the
+        <code>Session</code> from JNDI.
+        </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td><b><span class="prop">jndiLocation</span></b></td>
+        <td><code>String</code></td>
+        <td>The location where the javax.mail.Session is placed in
+        JNDI. By default, <span class="prop">jndiLocation</span> is
+        set to "java:comp/env/mail/Session".
+        </td>
+      </tr>
+
 
 		</table>		
 		

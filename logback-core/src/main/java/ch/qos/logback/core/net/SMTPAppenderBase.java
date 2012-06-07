@@ -29,6 +29,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
@@ -77,6 +79,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   private int smtpPort = 25;
   private boolean starttls = false;
   private boolean ssl = false;
+  private boolean sessionViaJNDI = false;
+  private String jndiLocation = CoreConstants.JNDI_COMP_PREFIX + "/mail/Session";
+
 
   String username;
   String password;
@@ -114,13 +119,54 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       cbTracker = new CyclicBufferTrackerImpl<E>();
     }
 
+    Session session = null;
+    if (sessionViaJNDI)
+      session = lookupSessionInJNDI();
+    else
+      session = buildSessionFromProperties();
+
+    if (session == null) {
+      addError("Failed to obtain javax.mail.Session. Cannot start.");
+      return;
+    }
+    mimeMsg = new MimeMessage(session);
+
+    try {
+      if (from != null) {
+        mimeMsg.setFrom(getAddress(from));
+      } else {
+        mimeMsg.setFrom();
+      }
+
+      subjectLayout = makeSubjectLayout(subjectStr);
+
+      started = true;
+
+    } catch (MessagingException e) {
+      addError("Could not activate SMTPAppender options.", e);
+    }
+  }
+
+  private Session lookupSessionInJNDI() {
+    addInfo("Looking up javax.mail.Session at JNDI location [" + jndiLocation + "]");
+    try {
+      Context initialContext = new InitialContext();
+      Object obj = initialContext.lookup(jndiLocation);
+      return (Session) obj;
+    } catch (Exception e) {
+      addError("Failed to obtain javax.mail.Session from JNDI location [" + jndiLocation+"]");
+      return null;
+    }
+  }
+
+  private Session buildSessionFromProperties() {
     Properties props = new Properties(OptionHelper.getSystemProperties());
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);
     }
     props.put("mail.smtp.port", Integer.toString(smtpPort));
 
-    if(localhost != null) {
+    if (localhost != null) {
       props.put("mail.smtp.localhost", localhost);
     }
 
@@ -148,23 +194,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     // props.put("mail.debug", "true");
 
-    Session session = Session.getInstance(props, loginAuthenticator);
-    mimeMsg = new MimeMessage(session);
-
-    try {
-      if (from != null) {
-        mimeMsg.setFrom(getAddress(from));
-      } else {
-        mimeMsg.setFrom();
-      }
-
-      subjectLayout = makeSubjectLayout(subjectStr);
-
-      started = true;
-
-    } catch (MessagingException e) {
-      addError("Could not activate SMTPAppender options.", e);
-    }
+    return Session.getInstance(props, loginAuthenticator);
   }
 
   /**
@@ -191,7 +221,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         // see http://jira.qos.ch/browse/LBCLASSIC-221
         cb.clear();
 
-        if(asynchronousSending) {
+        if (asynchronousSending) {
           // perform actual sending asynchronously
           SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
           context.getExecutorService().execute(senderRunnable);
@@ -365,7 +395,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
       mimeMsg.setSentDate(new Date());
       Transport.send(mimeMsg);
-      addInfo("Sent out SMTP message \""+subjectStr+"\" to "+Arrays.toString(toAddressArray));
+      addInfo("Sent out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
     } catch (Exception e) {
       addError("Error occurred while sending e-mail notification.", e);
     }
@@ -477,7 +507,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   /**
    * Set the "mail.smtp.localhost" property to the value passed as parameter to
    * this method.
-   *
+   * <p/>
    * <p>Useful in case the hostname for the client host is not fully qualified
    * and as a consequence the SMTP server rejects the clients HELO/EHLO command.
    * </p>
@@ -511,7 +541,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   /**
    * By default, SMTAppender transmits emails asynchronously. For synchronous email transmission set
    * asynchronousSending to 'false'.
-   * @param asynchronousSending  determines whether sending is done asynchronously or not
+   *
+   * @param asynchronousSending determines whether sending is done asynchronously or not
    * @since 1.0.4
    */
   public void setAsynchronousSending(boolean asynchronousSending) {
@@ -599,6 +630,36 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     return charsetEncoding;
   }
 
+
+  public String getJndiLocation() {
+    return jndiLocation;
+  }
+
+  /**
+   * Set the location where a {@link javax.mail.Session} resource is located in JNDI. Default value is
+   * "java:comp/env/mail/Session".
+   *
+   * @param jndiLocation
+   * @since 1.0.6
+   */
+  public void setJndiLocation(String jndiLocation) {
+    this.jndiLocation = jndiLocation;
+  }
+
+  public boolean isSessionViaJNDI() {
+    return sessionViaJNDI;
+  }
+
+  /**
+   * If set to true, a {@link javax.mail.Session} resource will be retrieved from JNDI. Default is false.
+   *
+   * @param sessionViaJNDI whether to obtain a javax.mail.Session by JNDI
+   * @since 1.0.6
+   */
+  public void setSessionViaJNDI(boolean sessionViaJNDI) {
+    this.sessionViaJNDI = sessionViaJNDI;
+  }
+
   /**
    * Set the character set encoding of the outgoing email messages. The default
    * encoding is "UTF-8" which usually works well for most purposes.
@@ -619,13 +680,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   class SenderRunnable implements Runnable {
 
-    final  CyclicBuffer<E> cyclicBuffer;
+    final CyclicBuffer<E> cyclicBuffer;
     final E e;
 
     SenderRunnable(CyclicBuffer<E> cyclicBuffer, E e) {
       this.cyclicBuffer = cyclicBuffer;
       this.e = e;
     }
+
     public void run() {
       sendBuffer(cyclicBuffer, e);
     }

@@ -13,25 +13,20 @@
  */
 package ch.qos.logback.classic.gaffer;
 
-import ch.qos.logback.core.util.Duration;
-import groovy.lang.Closure;
 
-import java.util.Map
-import ch.qos.logback.core.Context
-import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
-import ch.qos.logback.classic.LoggerContext
-import ch.qos.logback.core.spi.ContextAwareImpl
-import ch.qos.logback.core.spi.ContextAwareBase
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
-import ch.qos.logback.core.Appender
-import ch.qos.logback.core.status.StatusListener
-import java.text.SimpleDateFormat
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
 import ch.qos.logback.classic.turbo.TurboFilter
+import ch.qos.logback.core.Appender
 import ch.qos.logback.core.CoreConstants
-import ch.qos.logback.core.util.ContextUtil
-import ch.qos.logback.core.joran.action.TimestampAction
-import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.spi.ContextAwareBase
+import ch.qos.logback.core.status.StatusListener
+import ch.qos.logback.core.util.CachingDateFormatter
+import ch.qos.logback.core.util.Duration
+import ch.qos.logback.core.spi.LifeCycle
+import ch.qos.logback.core.spi.ContextAware
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -66,6 +61,12 @@ public class ConfigurationDelegate extends ContextAwareBase {
   void statusListener(Class listenerClass) {
     StatusListener statusListener = listenerClass.newInstance()
     context.statusManager.add(statusListener)
+    if(statusListener instanceof ContextAware) {
+      ((ContextAware) statusListener).setContext(context);
+    }
+    if(statusListener instanceof LifeCycle) {
+      ((LifeCycle) statusListener).start();
+    }
     addInfo("Added status listener of type [${listenerClass.canonicalName}]");
   }
 
@@ -129,14 +130,18 @@ public class ConfigurationDelegate extends ContextAwareBase {
       closure.resolveStrategy = Closure.DELEGATE_FIRST
       closure();
     }
-    appender.start();
+    try {
+      appender.start()
+    } catch (RuntimeException e) {
+      addError("Failed to start apppender named [" + name + "]", e)
+    }
   }
 
   private void copyContributions(AppenderDelegate appenderDelegate, Appender appender) {
-    if(appender instanceof ConfigurationContributor) {
+    if (appender instanceof ConfigurationContributor) {
       ConfigurationContributor cc = (ConfigurationContributor) appender;
       cc.getMappings().each() { oldName, newName ->
-         appenderDelegate.metaClass."${newName}" = appender.&"$oldName"
+        appenderDelegate.metaClass."${newName}" = appender.&"$oldName"
       }
     }
   }
@@ -161,12 +166,12 @@ public class ConfigurationDelegate extends ContextAwareBase {
   String timestamp(String datePattern, long timeReference = -1) {
     long now = -1;
 
-    if(timeReference == -1) {
+    if (timeReference == -1) {
       addInfo("Using current interpretation time, i.e. now, as time reference.");
       now = System.currentTimeMillis()
     } else {
       now = timeReference
-      addInfo("Using " + now +" as time reference.");
+      addInfo("Using " + now + " as time reference.");
     }
     CachingDateFormatter sdf = new CachingDateFormatter(datePattern);
     sdf.format(now)
