@@ -1,0 +1,11 @@
+<configuration debug="true">
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    <connectionSource class="ch.qos.logback.core.db.JNDIConnectionSource">
+      <!-- please note the "java:comp/env/" prefix -->
+      <jndiLocation>java:comp/env/jdbc/logging</jndiLocation>
+    </connectionSource>
+  </appender>
+  <root level="DEBUG">
+    <appender-ref ref="DB"/>
+  </root>
+</configuration>

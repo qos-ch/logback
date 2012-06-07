@@ -27,9 +27,9 @@
     </p>
 
     <ul>
-      <li>logback-core-${version}.jar</li>
-      <li>logback-classic-${version}.jar</li>
-      <li>logback-examples-${version}.jar</li>
+      <li>logback-core-${project.version}.jar</li>
+      <li>logback-classic-${project.version}.jar</li>
+      <li>logback-examples-${project.version}.jar</li>
       <li>slf4j-api-${slf4j.version}.jar</li>
     </ul>
     
@@ -49,8 +49,8 @@
     <em>chapters.introduction.HelloWord1</em> with the following command:
     </p>
 
-    <p class="source">java -cp lib/slf4j-api-${slf4j.version}.jar;../logback-core-${version}.jar;\
- ../logback-classic-${version}.jar;logback-examples-${version}.jar\
+    <p class="source">java -cp lib/slf4j-api-${slf4j.version}.jar;../logback-core-${project.version}.jar;\
+ ../logback-classic-${project.version}.jar;logback-examples-${project.version}.jar\
  chapters.introduction.HelloWorld1</p>
 
    <p>It is more convenient to set the CLASSPATH environment variable
