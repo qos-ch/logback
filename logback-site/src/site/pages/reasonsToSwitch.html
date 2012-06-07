@@ -21,11 +21,14 @@
 		
 		<h2>Reasons to prefer logback over log4j</h2>
 
-    <p>Here is a non-exhaustive list of reasons for switching to
-    logback from log4j. Keep in mind that logback is conceptually very
-    similar to log4j as both projects were founded by the same
-    developer. If you are already familiar with log4j, you will
-    quickly feel at home using logback.</p>
+    <p>Logback brings a very large number of improvements over log4j,
+    big and small. There are way too numerous to enumerate
+    exhaustively.  Nevertheless, here is a non-exhaustive list of
+    reasons for switching to logback from log4j. Keep in mind that
+    logback is conceptually very similar to log4j as both projects
+    were founded by the same developer. If you are already familiar
+    with log4j, you will quickly feel at home using logback. If you
+    like log4j, you will probably love logback.</p>
 
     <h3><a name="fasterImpl" href="#fasterImpl">Faster implementation</a></h3>
 
@@ -61,7 +64,7 @@
     
     <h3><a name="docs" href="#docs">Extensive documentation</a></h3>
     
-    <p>Logback ships with over two hundred pages of constantly updated
+    <p>Logback ships with detailed and constantly updated
     documentation.</p>
 
     <h3><a name="DSL" href="#DSL">Configuration files in XML or
@@ -72,8 +75,8 @@
     syntax. However, as of logback version 0.9.22, <a
     href="manual/groovy.html">configuration files written in
     Groovy</a> are also supported. Compared to XML, Groovy-style
-    configuration is more intuitive, consistent and has a much
-    shorter syntax.
+    configuration is more intuitive, consistent and has a shorter
+    syntax.
     </p>
 
     <p>
@@ -83,20 +86,18 @@
     logback.groovy</a>.
     </p>
 
-    <p>We also plan to support configuration files written in
-    Scala.</p>
-    
-
     <h3><a name="autoScan" href="#autoScan">Automatic reloading of
     configuration files</a></h3>
 
     <p>Logback-classic can <a
     href="manual/configuration.html#autoScan">automatically reload its
     configuration file upon modification</a>. The scanning process is
-    both fast and safe as it does <em>not</em> involve the creation of
-    a separate thread for scanning. This technical subtlety ensures
-    that logback plays well within application servers and more
-    generally within the JEE environment.</p>
+    fast, contention-free, and dynamically scales to millions of
+    invocations per second spread over hunders of threads. It also
+    plays well within application servers and more generally within
+    the JEE environment as it does <em>not</em> involve the creation
+    of a separate thread for scanning.
+   </p>
 
     <h3><a name="grace" href="#grace">Graceful recovery from I/O
     failures</a></h3>
