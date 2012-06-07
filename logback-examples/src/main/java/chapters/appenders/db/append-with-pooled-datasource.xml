@@ -6,10 +6,8 @@
      <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
        
        <dataSource class="${pooledDataSourceClass}">
-         <!-- Joran cannot substitute variables
-       	 that are not attribute values. Therefore, we cannot
-       	 declare the next parameter like the others. 
-       	 -->
+         <!-- Joran cannot handle element names which are variables themselves. In order to let  -->
+         <!-- the property name vary, we use the <param> element.-->
          <param name="${url-key:-url}" value="${url}"/>
          <serverName>${serverName}</serverName>
          <databaseName>${databaseName}</databaseName>

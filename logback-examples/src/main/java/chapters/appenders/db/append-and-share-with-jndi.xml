@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-	  
+
+<!-- WARNING -->
+<!-- WARNING BindDataSourceToJNDIAction is both untested and undocumented.  -->
+<!-- WARNING Just ignore this configuration file. -->
+<!-- WARNING -->
+
 <configuration>
   <!-- We create a joran rule that will instance and bind the appropriate
-       data source instance to JNDI. -->   
-  <newRule pattern="configuration/bindDataSourceToJNDI" 
+       data source instance to JNDI. -->
+  <newRule pattern="configuration/bindDataSourceToJNDI"
            actionClass="ch.qos.logback.core.db.BindDataSourceToJNDIAction"/>
-  	    
-  <bindDataSourceToJNDI />
-  
+
+  <bindDataSourceToJNDI/>
+
   <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-     <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
-       
-       <dataSource class="${dataSourceClass}">
-          <!-- Joran cannot substitute variables
-       	 that are not attribute values. Therefore, we cannot
-       	 declare the next parameter like the others. 
-       	 -->
-         <param name="${url-key:-url}" value="${url}"/>
-         <serverName>${serverName}</serverName>
-         <databaseName>${databaseName}</databaseName>   
-       </dataSource>
-       
-       <user>${user}</user>
-       <password>${password}</password>>
-     </connectionSource>
+    <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+
+      <dataSource class="${dataSourceClass}">
+        <!-- Joran cannot handle element names which are variables themselves. In order to let  -->
+        <!-- the property name vary, we use the <param> element.-->
+        <param name="${url-key:-url}" value="${url}"/>
+        <serverName>${serverName}</serverName>
+        <databaseName>${databaseName}</databaseName>
+      </dataSource>
+
+      <user>${user}</user>
+      <password>${password}</password>>
+    </connectionSource>
   </appender>
-  
+
   <root>
-    <level value ="debug"/>
-    <appender-ref ref="DB" />
-  </root>  
-  
+    <level value="debug"/>
+    <appender-ref ref="DB"/>
+  </root>
+
 </configuration>
 
 

@@ -5,7 +5,7 @@
          org.fusesource.jansi:jansi:1.8 on the class path.  Note that
          Unix-based operating systems such as Linux and Mac OS X
          support ANSI color codes by default.  codes.-->
-    <withJansi>true</withJansi>
+    <withJansi>false</withJansi>
     <encoder>
       <pattern>%date [%thread] %highlight(%-5level) %cyan(%-15logger{15}) %X - %msg %n</pattern>
     </encoder>

@@ -32,7 +32,7 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
   private String user = null;
   private String password = null;
 
-  // initially we have an unkonw dialect
+  // initially we have an unknown dialect
   private SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
   private boolean supportsGetGeneratedKeys = false;
   private boolean supportsBatchUpdates = false;
@@ -42,7 +42,7 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
    * Learn relevant information about this connection source.
    *
    */
-  public void discoverConnnectionProperties() {
+  public void discoverConnectionProperties() {
     try {
       Connection connection = getConnection();
       if (connection == null) {

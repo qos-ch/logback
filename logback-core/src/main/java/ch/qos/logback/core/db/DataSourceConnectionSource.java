@@ -49,7 +49,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
             se);
       }
       if (connection != null) {
-        discoverConnnectionProperties();
+        discoverConnectionProperties();
       }
       if (!supportsGetGeneratedKeys()
           && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {

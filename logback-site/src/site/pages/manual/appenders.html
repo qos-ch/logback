@@ -329,6 +329,11 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 			put "org.fusesource.jansi:jansi:1.8" on the class path. Note
 			that Unix-based operating systems such as Linux and Mac OS X
 			support ANSI color codes by default.
+
+      <p>Under the Eclipse IDE, you might want to try the <a
+      href="http://www.mihai-nita.net/eclipse/">ANSI in Eclipse
+      Console</a> plugin.
+      </p>
 			</td>
 		</tr>
 
@@ -2568,9 +2573,9 @@ logger.error(<b>notifyAdmin</b>,
 		<em>logging_event_property</em> and
 		<em>logging_event_exception</em>. They must exist before
 		<code>DBAppender</code> can be used. Logback ships with SQL
-		scripts that will create the tables.  They can be found in the
+		scripts that will create the tables.  They can be found under the
 		<em>logback-classic/src/main/java/ch/qos/logback/classic/db/script</em>
-		directory. There is a specific script for each of the most popular
+		folder. There is a specific script for each of the most popular
 		database systems.  If the script for your particular type of
 		database system is missing, it should be quite easy to write one,
 		taking example on the already existing scripts. If you send them
@@ -2589,7 +2594,7 @@ logger.error(<b>notifyAdmin</b>,
 		of the <code>getGeneratedKeys()</code> method.
 		</p>
 
-		<table class="bodyTable striped" border="1" cellpadding="4">
+		<table class="bodyTable striped" border="0" cellpadding="4">
 			<tr>
 				<th>RDBMS</th>
         <th>tested version(s)
@@ -2905,15 +2910,17 @@ logger.error(<b>notifyAdmin</b>,
 			traditional JDBC manner based on the connection URL.
 		</p>
 		<p>
-			Note that this class will establish a new <code>Connection</code> for
-			each call to <code>getConnection()</code>. It is recommended
-			that you either use a JDBC driver that natively supports
-			connection pooling or that you create your own
-			implementation of <code>ConnectionSource</code> that taps into
-			whatever pooling mechanism you are already using. (If you
-			have access to a JNDI implementation that supports
-			<code>javax.sql.DataSource</code>, e.g. within a J2EE application
-			server, see <code>JNDIConnectionSource</code>).
+			Note that this class will establish a new
+			<code>Connection</code> for each call to
+			<code>getConnection()</code>. It is recommended that you either
+			use a JDBC driver that natively supports connection pooling or
+			that you create your own implementation of
+			<code>ConnectionSource</code> that taps into whatever pooling
+			mechanism you are already using. If you have access to a JNDI
+			implementation that supports <code>javax.sql.DataSource</code>,
+			e.g. within a J2EE application server, see <a
+			href="#JNDIConnectionSource"><code>JNDIConnectionSource</code></a>
+			below.
 		</p>
 <!-- 
 		
@@ -2943,21 +2950,20 @@ logger.error(<b>notifyAdmin</b>,
 		</p>
  -->
  
-		<p>
-			Connecting to a database using a <code>DataSource</code> is rather similar.
-			The configuration now uses 
-			<a href="../xref/ch/qos/logback/core/db/DataSourceConnectionSource.html">
-			<code>DataSourceConnectionSource</code></a>, 
-			which is an implementation of <code>ConnectionSource</code> that obtains the 
-			<code>Connection</code> in the recommended JDBC manner based on a 
-			<code>javax.sql.DataSource</code>.
+		<p>Connecting to a database using a <code>DataSource</code> is
+		rather similar.  The configuration now uses <a
+		href="../xref/ch/qos/logback/core/db/DataSourceConnectionSource.html">
+		<code>DataSourceConnectionSource</code></a>, which is an
+		implementation of <code>ConnectionSource</code> that obtains the
+		<code>Connection</code> in the recommended JDBC manner based on a
+		<code>javax.sql.DataSource</code>.
 		</p>
 	
     <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-with-datasource.xml)</p>	
 
 
     <span class="asGroovy" onclick="return asGroovy('append-with-datasource');">View as .groovy</span>	
-    <pre id="append-with-datasource" class="prettyprint source">&lt;configuration>
+    <pre id="append-with-datasource" class="prettyprint source">&lt;configuration  debug="true">
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
      <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -2977,24 +2983,25 @@ logger.error(<b>notifyAdmin</b>,
      &lt;/connectionSource>
   &lt;/appender>
 
-  &lt;root level="DEBUG">
+  &lt;root level="INFO">
     &lt;appender-ref ref="DB" />
   &lt;/root>  
 &lt;/configuration></pre>
 
-		<p>
-			Note that in this configuration sample, we make heavy use of substitution variables.
-			They are sometimes handy when connection details have to be centralized in a
-			single configuration file and shared by logback and other frameworks.
+		<p>Note that in this configuration sample, we make heavy use of
+		substitution variables.  They are sometimes handy when connection
+		details have to be centralized in a single configuration file and
+		shared by logback and other frameworks.
 		</p>	
 		
-<!-- 		TO BE TESTED		
-		<p>
-			The connection created by <code>DataSourceConnectionSource</code> can be placed in a JNDI
-			context by using <code>BindDataSourceToJNDIAction</code>. In that case, one has to specify
-			the use of this class by adding a new rule to Joran, logback's configuration framework. Here
-			is an excerpt of such a configuration file.
-		</p>
+<!-- TO BE TESTED 
+
+     <p>The connection created by
+     <code>DataSourceConnectionSource</code> can be placed in a JNDI
+     context by using <code>BindDataSourceToJNDIAction</code>. In that
+     case, one has to specify the use of this class by adding a new
+     rule to Joran, logback's configuration framework. Here is an
+     excerpt of such a configuration file.  </p>
 		
 <div class="source"><pre>&lt;configuration>
   ..
@@ -3005,43 +3012,78 @@ logger.error(<b>notifyAdmin</b>,
   ..
 &lt;/configuration></pre></div>
 
-		<p>
-			The <em>newRule</em> element teaches Joran to use specified action class with the given pattern.
-			Then, we simply declare the given element. The action class will be called and our connection
-			source will be bound to a JNDI context.
-		</p>
+		<p> The <em>newRule</em> element teaches Joran to use specified
+		action class with the given pattern.  Then, we simply declare the
+		given element. The action class will be called and our connection
+		source will be bound to a JNDI context.  </p>
 
 		<p>This is a very powerful capability of Joran. If you'd like to
-			read more about Joran, please see the <a
-			href="onJoran.html">chapter to Joran</a>.
-		</p>
+		read more about Joran, please see the <a
+		href="onJoran.html">chapter to Joran</a>.  </p>
 		
 		-->
 
-		<p>
-			The third implementation of <code>ConnectionSource</code> that is shipped with
-			logback is the <code>JNDIConnectionSource</code>.
-		</p>
+    <h4><a name="JNDIConnectionSource"
+    href="#JNDIConnectionSource">JNDIConnectionSource</a></h4>
 
-		<p>
-			The
-			<a href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">
-			<code>JNDIConnectionSource</code></a>
-			is an implementation of <code>ConnectionSource</code> that
-			obtains a <code>javax.sql.DataSource</code> from a JNDI provider
-			and uses it to obtain a <code>java.sql.Connection</code>. It is
-			primarily designed to be used inside of J2EE application
-			servers or application server clients, assuming the
-			application server supports remote access of <code>javax.sql.DataSource</code>. 
-			In this way one can take advantage of connection pooling and whatever other goodies the
-			application server provides.
-		</p>
+		<p><a
+		href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">
+		<code>JNDIConnectionSource</code></a> is another
+		<code>ConnectionSource</code> implementation shipping in logback.
+		As its name indicates, it retrieves a
+		<code>javax.sql.DataSource</code> from a JNDI and then leverages
+		it to obtain a <code>java.sql.Connection</code>
+		instance. <code>JNDIConnectionSource</code> is primarily designed
+		to be used inside J2EE application servers or by application
+		server clients, assuming the application server supports remote
+		access of <code>javax.sql.DataSource</code>.  Thus, one can take
+		advantage of connection pooling and whatever other goodies the
+		application server provides. More importantly, your application
+		will be <a
+		href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">dryer</a>
+		as it will be no longer necessary to define a
+		<code>DataSource</code> in <em>logback.xml</em>.</p>
+
+    <p>For example, here is a configuration snippet for Tomcat. It
+    assumes PostgreSQL as the database although any of the supported
+    database systems (listed above) would work.</p>
+
+<pre  class="prettyprint source">&lt;Context docBase="/path/to/app.war" path="/myapp">
+  ...
+  &lt;Resource <b>name="jdbc/logging"</b>
+               auth="Container"
+               type="javax.sql.DataSource"
+               username="..."
+               password="..."
+               driverClassName="org.postgresql.Driver"
+               url="jdbc:postgresql://localhost/..."
+               maxActive="8"
+               maxIdle="4"/>
+  ...
+&lt;/Context></pre>
 		
-<pre class="prettyprint source">&lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
-  &lt;param name=&quot;jndiLocation&quot; value=&quot;jdbc/MySQLDS&quot; /&gt;
-  &lt;param name=&quot;username&quot; value=&quot;myUser&quot; /&gt;
-  &lt;param name=&quot;password&quot; value=&quot;myPassword&quot; /&gt;
-&lt;/connectionSource&gt;</pre>
+   <p>Once a <code>DataSource</code> is defined in the J2EE server, it
+   can be easily referenced by your logback configuration file, as
+   shown in the next example.</p>
+   
+   <p class="example">Example: <code>DBAppender</code> configuration
+   by <code>JNDIConnectionSource</code>
+   (logback-examples/src/main/java/chapters/appenders/db/append-via-jndi.xml)</p>
+
+    <span class="asGroovy" onclick="return asGroovy('append-via-jndi');">View as .groovy</span>	
+ 
+
+<pre id="append-via-jndi" class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    &lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
+      <b>&lt;!-- please note the "java:comp/env/" prefix --&gt;</b>
+      <b>&lt;jndiLocation>java:comp/env/jdbc/logging&lt;/jndiLocation></b>
+    &lt;/connectionSource&gt;
+  &lt;/appender>
+  &lt;root level="INFO">
+    &lt;appender-ref ref="DB" />
+  &lt;/root>  
+&lt;/configuration></pre>
 
 		<p>
 			Note that this class will obtain an

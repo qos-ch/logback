@@ -43,33 +43,24 @@ public class JNDIConnectionSource extends ConnectionSourceBase {
   private String jndiLocation = null;
   private DataSource dataSource = null;
 
-  /**
-   * @see org.apache.log4j.spi.OptionHandler#activateOptions()
-   */
   public void start() {
     if (jndiLocation == null) {
       addError("No JNDI location specified for JNDIConnectionSource.");
     }
-
-    discoverConnnectionProperties();
-
+    discoverConnectionProperties();
   }
 
-  /**
-   * @see org.apache.log4j.db.ConnectionSource#getConnection()
-   */
+
   public Connection getConnection() throws SQLException {
     Connection conn = null;
     try {
-
       if (dataSource == null) {
         dataSource = lookupDataSource();
       }
-      if (getUser() == null) {
-        conn = dataSource.getConnection();
-      } else {
-        conn = dataSource.getConnection(getUser(), getPassword());
+      if(getUser() != null) {
+        addWarn("Ignoring property [user] with value ["+getUser()+"] for obtaining a connection from a DataSource.");
       }
+      conn = dataSource.getConnection();
     } catch (final NamingException ne) {
       addError("Error while getting data source", ne);
       throw new SQLException("NamingException while looking up DataSource: "
@@ -103,9 +94,10 @@ public class JNDIConnectionSource extends ConnectionSourceBase {
   }
 
   private DataSource lookupDataSource() throws NamingException, SQLException {
+    addInfo("Looking up ["+jndiLocation+"] in JNDI");
     DataSource ds;
-    Context ctx = new InitialContext();
-    Object obj = ctx.lookup(jndiLocation);
+    Context initialContext = new InitialContext();
+    Object obj = initialContext.lookup(jndiLocation);
 
     // PortableRemoteObject was introduced in JDK 1.3. We won't use it.
     // ds = (DataSource)PortableRemoteObject.narrow(obj, DataSource.class);

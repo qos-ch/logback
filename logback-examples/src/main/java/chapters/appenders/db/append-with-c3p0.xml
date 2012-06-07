@@ -11,14 +11,6 @@
          <databaseName>${databaseName}</databaseName>
          <user>${user}</user>
          <password>${password}</password>
-         <!--
-         <param name="initialConnections" value="10"/>
-         <param name="maxConnections" value="10"/>
-       
-         <param name="max-connections" value="100"/>                                                    
-         <param name="min-connections" value="5" />                                                     
-         <param name="inactivity-timeout" value="200"/>        
-         -->                                         
        </dataSource>
 
      </connectionSource>

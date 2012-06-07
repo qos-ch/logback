@@ -35,7 +35,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
     try {
       if (driverClass != null) {
         Class.forName(driverClass);
-        discoverConnnectionProperties();
+        discoverConnectionProperties();
       } else {
         addError("WARNING: No JDBC driver specified for logback DriverManagerConnectionSource.");
       }

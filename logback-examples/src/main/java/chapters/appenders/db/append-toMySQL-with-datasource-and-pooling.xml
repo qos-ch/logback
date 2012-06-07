@@ -1,19 +1,17 @@
 <configuration>
 
-	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-		<connectionSource
-			class="ch.qos.logback.core.db.DataSourceConnectionSource">
-			<dataSource
-				class="com.mchange.v2.c3p0.ComboPooledDataSource">
-				<driverClass>com.mysql.jdbc.Driver</driverClass>
-				<jdbcUrl>jdbc:mysql://localhost:3306/logbackdb</jdbcUrl>
-				<user>logback</user>
-				<password>logback</password>
-			</dataSource>
-		</connectionSource>
-	</appender>
+  <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+    <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+      <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <driverClass>com.mysql.jdbc.Driver</driverClass>
+        <jdbcUrl>jdbc:mysql://localhost:3306/logbackdb</jdbcUrl>
+        <user>logback</user>
+        <password>logback</password>
+      </dataSource>
+    </connectionSource>
+  </appender>
 
-	<root level="debug">
-		<appender-ref ref="DB" />
-	</root>
+  <root level="debug">
+    <appender-ref ref="DB"/>
+  </root>
 </configuration>
