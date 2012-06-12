@@ -106,21 +106,20 @@
 
    <h3><a name="ide" href="#ide">Building with an IDE</a></h3>
    
-   <p>If you wish to contribute to hack to the project or just hack it
-   for your own needs, you will probably want to import logback as a
-   project into your favorite IDE. Logback uses Maven as its build
-   tool. The Scala language is used in certain logback test
-   cases. Moreover, logback offers a Groovy-based configurator so
-   there is a dependency on the Groovy language as well. It follows
-   that your IDE should have plugins for Maven, Scala and Groovy in
-   order to <em>build</em> logback from your within IDE. The
-   Scala+Groovy dependecy just mentioned are <em>build-time</em>
-   dependencies. The only mandatory logback dependency at runrime is
-   the JRE, unless of course you wish to use the Groovy configurator
-   in which case Groovy runtime will be a required dependency as
-   well. Also note that building from the command line is fairly
-   trivial, the command 'mvn install' given from $LOGBACK_HOME folder
-   should suffice. </p>
+   <p>If you wish to contribute to the project or just hack for fun,
+   you will probably want to import logback as a project into your
+   favorite IDE. Logback uses Maven as its build tool. The Scala
+   language is used in certain logback test cases. Moreover, logback
+   offers a Groovy-based configurator so there is a dependency on the
+   Groovy language as well. It follows that your IDE should have
+   plugins for Maven, Scala and Groovy in order to <em>build</em>
+   logback from your within IDE. The Scala+Groovy dependecy just
+   mentioned are <em>build-time</em> dependencies. The only mandatory
+   logback dependency at runrime is the JRE, unless of course you wish
+   to use the Groovy configurator in which case Groovy runtime will be
+   a required dependency as well. Also note that building from the
+   command line is fairly trivial, the command 'mvn install' given
+   from $LOGBACK_HOME folder should suffice. </p>
 
    <p class="highlight">If you can't be bothered with installing the
    Scala plugin for your IDE, just remove the ".scala" files from the
