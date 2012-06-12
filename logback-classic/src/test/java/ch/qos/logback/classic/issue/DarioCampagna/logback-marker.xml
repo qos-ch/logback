@@ -1,0 +1,19 @@
+<configuration debug="true">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%level - %date - %marker - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    <Marker>ALWAYS</Marker>
+    <OnMatch>ACCEPT</OnMatch>
+    <OnMismatch>NEUTRAL</OnMismatch>
+  </turboFilter>
+
+  <root level="WARN">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>
