@@ -33,7 +33,7 @@ public class ConfigurationAction extends Action {
 
   long threshold = 0;
 
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
+  public void begin(InterpretationContext ic, String name, Attributes attributes) {
     threshold = System.currentTimeMillis();
 
     // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
@@ -41,7 +41,7 @@ public class ConfigurationAction extends Action {
     // by the use case: the admin trying to chase rogue config file
     String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
     if (debugAttrib == null) {
-      debugAttrib = ec.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
+      debugAttrib = ic.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
     }
 
     if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
@@ -51,22 +51,22 @@ public class ConfigurationAction extends Action {
       OnConsoleStatusListener.addNewInstanceToContext(context);
     }
 
-    processScanAttrib(attributes);
+    processScanAttrib(ic, attributes);
 
     new ContextUtil(context).addHostNameAsProperty();
 
     // the context is turbo filter attachable, so it is pushed on top of the
     // stack
-    ec.pushObject(getContext());
+    ic.pushObject(getContext());
   }
 
-  void processScanAttrib(Attributes attributes) {
-    String scanAttrib = attributes.getValue(SCAN_ATTR);
+  void processScanAttrib(InterpretationContext ic, Attributes attributes) {
+    String scanAttrib = ic.subst(attributes.getValue(SCAN_ATTR));
     if (!OptionHelper.isEmpty(scanAttrib)
             && !"false".equalsIgnoreCase(scanAttrib)) {
       ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
       rocf.setContext(context);
-      String scanPeriodAttrib = attributes.getValue(SCAN_PERIOD_ATTR);
+      String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
       if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
         try {
           Duration duration = Duration.valueOf(scanPeriodAttrib);
