@@ -108,7 +108,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   public String getLoggerFactoryClassStr() {
-    return contextSelectorBinder.getContextSelector().getClass().getName();
+    return contextSelectorBinder.getClass().getName();
   }
 
 }
