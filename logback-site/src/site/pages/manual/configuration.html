@@ -747,12 +747,16 @@ public class MyApp3 {
     it should inherit its level.
     </p>
 
+    <p class="highlight"> Note that unlike log4j, logback-classic does
+    <em>not</em> close nor remove any previously referenced appenders
+    when configuring a given logger.
+    </p>
+
     <p>The <code>&lt;logger></code> element may contain zero or more
     <code>&lt;appender-ref></code> elements; each appender thus
-    referenced is added to the named logger. Note that unlike
-    log4j, logback-classic does <em>not</em> close or remove any
-    previously referenced appenders before adding the new appender
-    reference.
+    referenced is added to the named logger. Note that unlike log4j,
+    logback-classic does <em>not</em> close nor remove any previously
+    referenced appenders when configuring a given logger.
     </p>
 
 
@@ -771,15 +775,16 @@ public class MyApp3 {
    root logger cannot be set to INHERITED or NULL.
    </p>
 
+   <p class="highlight">Note that unlike log4j, logback-classic does
+   <em>not</em> close nor remove any previously referenced appenders
+   when configuring the root logger.</p>
 
-   <p> Similarly to the
-   <code>&lt;logger></code> element, the <code>&lt;root></code>
-   element may contain zero or more <code>&lt;appender-ref></code>
-   elements; each appender thus referenced is added to the root
-   logger. Note that unlike log4j, logback-classic does
-   <em>not</em> close or remove any previously referenced appenders
-   before adding the new appender reference to the root logger.
-   </p>
+   <p> Similarly to the <code>&lt;logger></code> element, the
+   <code>&lt;root></code> element may contain zero or more
+   <code>&lt;appender-ref></code> elements; each appender thus
+   referenced is added to the root logger. Note that unlike log4j,
+   logback-classic does <em>not</em> close nor remove any previously
+   referenced appenders when configuring the root logger.  </p>
 
    <h4>Example</h4>
 
@@ -1636,7 +1641,7 @@ fileName=myApp.log
   <code>isNull()</code> method is provided. Example:
   <code>isNull("k")</code>.</p>
 
-  <pre class="prettyprint source">&lt;configuration>
+  <pre class="prettyprint source">&lt;configuration debug="true">
 
   <b>&lt;if condition='property("HOSTNAME").contains("torino")'></b>
     <b>&lt;then></b>
