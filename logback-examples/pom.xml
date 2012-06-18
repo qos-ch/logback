@@ -67,6 +67,12 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <optional>true</optional>
+    </dependency>
+
   </dependencies>
 
   <build>
