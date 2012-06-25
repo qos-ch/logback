@@ -48,7 +48,7 @@ public class NewRuleCalculator {
     // org.apache.joran.action package.
     // 
     // We will let the XML file to teach the Joran interpreter about new rules
-    ruleMap.put(new Pattern("/computation/new-rule"), new NewRuleAction());
+    ruleMap.put(new Pattern("/computation/newRule"), new NewRuleAction());
 
     SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
     // link the configurator with its context

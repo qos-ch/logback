@@ -76,7 +76,7 @@
     configuration file, expressed in XML format. Annotations available
     in JDK 1.5 and heavily used in EJB 3.0 replace many directives
     previously found in XML files. Joran also makes use of annotations
-    but to a much smaller extent. Due to the dynamic nature of logback
+    but at a much smaller extent. Due to the dynamic nature of logback
     configuration data (compared to EJBs) Joran's use of annotations
     is rather limited.
     </p>
@@ -137,12 +137,10 @@
     order.</em>
     </p>
 
-    <p>Joran was first implemented in DOM. However, the author
-    migrated to SAX in order to benefit from element location
-    information, available only with the SAX API. Location information
+    <p>Moreover, the SAX API offers element location information which
     allows Joran to display the exact line and column number where an
-    error occurred, which comes in very handy in identifying parsing
-    problems.
+    error occurred. Location information comes in very handy in the
+    identification of parsing problems.
     </p>
     
     <h3>Non goals</h3>
@@ -722,13 +720,13 @@ Element [abc] asked to be printed.
   </p>
 
   <pre class="prettyprint source">ruleMap.put(new Pattern("*/computation"), new ComputationAction1());
-<b>ruleStore.addRule(new Pattern("/computation/new-rule"), new NewRuleAction());</b></pre>
+<b>ruleStore.addRule(new Pattern("/computation/newRule"), new NewRuleAction());</b></pre>
 
   <p><a
   href="../xref/ch/qos/logback/core/joran/action/NewRuleAction.html"><code>NewRuleAction</code></a>,
   part of logback-core, works pretty much like the other actions.  It
   has a <code>begin()</code> and <code>end()</code> method, and is
-  called each time the parser finds a <em>new-rule</em> element. When
+  called each time the parser finds a <em>newRule</em> element. When
   invoked, the <code>begin()</code> method looks for <em>pattern</em>
   and <em>actionClass</em> attributes. It then instantiates the
   corresponding action class and adds the pattern/action association
@@ -737,24 +735,24 @@ Element [abc] asked to be printed.
 
   <p>Here is how new rules can be declared in an xml file:</p>
 
-  <pre class="prettyprint source">&lt;new-rule pattern="*/computation/literal"
+  <pre class="prettyprint source">&lt;newRule pattern="*/computation/literal"
           actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;</pre>
 
-  <p>Using such new-rule declarations, we can transform
+  <p>Using such newRule declarations, we can transform
   <code>NewRuleCalculator</code> to behave like the
   <code>Calculator1</code> application we saw earlier.  involving the
   calculation, could be expressed this way:</p>
 
   <em>Example 10..<span class="autoEx"/>: Configuration file using new
   rules on the fly
-  (logback-examples/src/main/java/chapters/onJoran/newrule/new-rule.xml)</em>
+  (logback-examples/src/main/java/chapters/onJoran/newrule/newRule.xml)</em>
 
   <pre class="prettyprint source">&lt;computation name="toto"&gt;
-  &lt;new-rule pattern="*/computation/literal" 
+  &lt;newRule pattern="*/computation/literal" 
             actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;
-  &lt;new-rule pattern="*/computation/add" 
+  &lt;newRule pattern="*/computation/add" 
             actionClass="chapters.onJoran.calculator.AddAction"/&gt;
-  &lt;new-rule pattern="*/computation/multiply" 
+  &lt;newRule pattern="*/computation/multiply" 
             actionClass="chapters.onJoran.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
@@ -768,7 +766,7 @@ Element [abc] asked to be printed.
 &lt;/computation&gt;</pre>
 
 
-  <p class="command">java java chapters.onJoran.newRule.NewRuleCalculator src/main/java/chapters/onJoran/newRule/new-rule.xml</p>
+  <p class="command">java java chapters.onJoran.newRule.NewRuleCalculator src/main/java/chapters/onJoran/newRule/newRule.xml</p>
 
   <p>yields</p>
 
