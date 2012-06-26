@@ -1821,7 +1821,7 @@ fileName=myApp.log
 
   <p>The contextListener element can be used to install <code>LevelChangePropagator</code> as shown next.</p>
   
-  <pre class="prettyprint source">&lt;configuration debug="false">
+  <pre class="prettyprint source">&lt;configuration debug="true">
   <b>&lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/></b>
   .... 
 &lt;/configuration></pre>
@@ -1831,7 +1831,7 @@ fileName=myApp.log
   of all j.u.l. loggers. However, previously installed handlers will be
   left untouched.</p>
 
-  <pre class="prettyprint source">&lt;configuration debug="false">
+  <pre class="prettyprint source">&lt;configuration debug="true">
   &lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
     <b>&lt;resetJUL>true&lt;/resetJUL></b>
   &lt;/contextListener>
