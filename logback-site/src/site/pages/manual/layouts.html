@@ -432,14 +432,14 @@ WARN  [main]: Message 2</p>
           event.
 					
 
-					<p>This conversion word can take an integer as its first and
+					<p>This conversion word takes an integer as its first and
 					only option. The converter's abbreviation algorithm will
 					shorten the logger name, usually without significant loss of
-					meaning. Setting the value of this option to zero has
-					special meaning. It will cause the conversion word to return
-					the sub-string right to the rightmost dot character in the
-					logger name. The next table provides examples of the
-					abbreviation algorithm in action.
+					meaning. Setting the value of length option to zero
+					constitutes an exception. It will cause the conversion word
+					to return the sub-string right to the rightmost dot
+					character in the logger name. The next table provides
+					examples of the abbreviation algorithm in action.
           </p>
 
 					<table class="bodyTable dark" border="0" cellpadding="8">
@@ -499,7 +499,7 @@ WARN  [main]: Message 2</p>
 				</td>
 			</tr>
 
-			<tr class="alt">
+			<tr>
 				<td align="center">
 					<b>C</b>{<em>length</em>} <br /> 
 					<b>class</b>{<em>length</em>} <br />
@@ -531,7 +531,7 @@ WARN  [main]: Message 2</p>
           <td>Outputs the name of the logger context to which the
           logger at the origin of the event was attached to. </td>
       </tr>
-			<tr class="alt">
+			<tr>
         <td align="center">
           <b>d</b>{<em>pattern</em>} <br /> 
           <b>date</b>{<em>pattern</em>} <br />
@@ -615,7 +615,7 @@ WARN  [main]: Message 2</p>
 				</td>
 			</tr>
 
-			<tr class="alt">
+			<tr >
 				<td align="center">
 					<b>caller{depth}</b>
 					<b>caller{depth, evaluator-1, ... evaluator-n}</b>
@@ -652,8 +652,8 @@ Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
 Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					
 					<p>This conversion word can also use evaluators to test
-					logging events against a given criterion before creating the
-					output. For example, using <b>%caller{3,
+					logging events against a given criterion before computing
+					caller data. For example, using <b>%caller{3,
 					CALLER_DISPLAY_EVAL}</b> will display three lines of
 					stacktrace, only if the evaluator called
 					<em>CALLER_DISPLAY_EVAL</em> returns a <b>positive</b>
@@ -682,7 +682,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 			</tr>
 
 
-			<tr class="alt">
+			<tr>
 				<td align="center">
 					<b>m / msg / message</b>
 				</td>
@@ -711,7 +711,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 			</tr>
 
-			<tr class="alt">
+			<tr>
 				<td align="center">
 					<b>n</b>
 				</td>
@@ -754,7 +754,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 
 			<tr>
-				<td align="center">
+				<td>
 					<b>t / thread</b>
 				</td>
 
@@ -765,7 +765,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 			</tr>
 
-			<tr  class="alt">
+			<tr>
 				<td align="center">
 					<b>X</b>{<em>key</em>} <br /> 
 					<b>mdc</b>{<em>key</em>} <br />
@@ -865,7 +865,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 				</td>
 			</tr>
       
-      <tr class="alt">
+      <tr>
 				<td align="center">
           <a name="xThrowable" href="#xThrowable">
 					<b>xEx</b>{<em>depth</em>} <br /> 
@@ -962,7 +962,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
       </tr>
 
-      <tr class="alt">
+      <tr >
         <td align="center">
           <b>marker</b>
         </td>
@@ -1001,7 +1001,7 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
         </td>
       </tr>
 
-      <tr class="alt">
+      <tr>
         <td align="center">
           <a name="replace" href="#replace"><b>replace(<em>p</em>){r, t}</b></a>
         </td>
