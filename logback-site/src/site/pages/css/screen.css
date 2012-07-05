@@ -150,3 +150,24 @@ span.asGroovy:hover {
    cursor: pointer;
 }
 
+/* ------------------------------------ */
+
+.anchor { display:none; }
+
+h1 .anchor:before {content:url(anchor24.png);}
+h2 .anchor:before {content:url(anchor20.png);}
+h3 .anchor:before {content:url(anchor16.png);}
+h4 .anchor:before {content:url(anchor12.png);}
+
+h1:hover a.alink .anchor { margin-left: -24px; }
+h2:hover a.alink .anchor { margin-left: -20px; }
+h3:hover a.alink .anchor { margin-left: -16px; }
+h4:hover a.alink .anchor { margin-left: -12px; }
+
+
+
+h1:hover a.alink .anchor, h2:hover a.alink .anchor,  
+h3:hover a.alink .anchor, h4:hover a.alink .anchor  {
+  display: inline-block;
+  text-decoration: none;
+}
