@@ -46,17 +46,11 @@
     project.  It was designed by Ceki G&#252;lc&#252;, log4j's
     founder.  It builds upon a decade of experience gained in
     designing industrial-strength logging systems. The resulting
-    product logback is faster and has a smaller footprint than all
-    existing logging systems, sometimes by a wide margin. Logback also
-    offers unique and rather useful features such as Markers,
-    parameterized logging statements, conditional stack tracing and
-    powerful event filtering. These are only a few examples of the useful
-    features logback has to offer. For its own error reporting,
-    logback relies on <code>Status</code> objects, which greatly
-    facilitate troubleshooting. You may wish to rely on Status objects
-    in contexts other than logging. Logback-core bundles Joran, a
-    powerful and generic configuration system, which can be put to use
-    in your own projects to great effect.
+    product, i.e. logback, is faster and has a smaller footprint than
+    all existing logging systems, sometimes by a wide margin. Just as
+    importantly, logback offers <a
+    href="../reasonsToSwitch.html">unique and rather useful
+    features</a> missing in other logging systems.
     </p>
 
     <h2>First Baby Step</h2>
@@ -170,6 +164,7 @@ public class HelloWorld2 {
    the following output:</p>
 
 <div class="source longline"><pre>12:49:22.203 [main] DEBUG chapters.introduction.HelloWorld2 - Hello world.
+12:49:22,076 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
 12:49:22,078 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
 12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.xml]
 12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Setting up default configuration.
