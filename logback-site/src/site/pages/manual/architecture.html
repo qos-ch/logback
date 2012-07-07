@@ -44,8 +44,9 @@
     <h2>Logback's architecture</h2>
 
     <p>Logback's basic architecture is sufficiently generic so as to
-	apply under different circumstances. At the present time, logback is
-    	divided into three modules, Core, Classic and Access.
+    apply under different circumstances. At the present time, logback
+    is divided into three modules, logback-core, logback-classic and
+    logback-access.
     </p>
 
     <p>The <em>core</em> module lays the groundwork for the other two
@@ -57,8 +58,8 @@
     such as log4j or java.util.logging (JUL) introduced in JDK
     1.4. The third module called <em>access</em> integrates with
     Servlet containers to provide HTTP-access log functionality. A
-    separate document covers
-    <a href="../access.html">access module documentation</a>.
+    separate document covers <a href="../access.html">access module
+    documentation</a>.
     </p>
 
     <p>In the remainder of this document, we will write "logback" to
@@ -81,8 +82,8 @@
 		loggers.
 		</p>
     
-    <h3><a name="LoggerContext" href="#LoggerContext">Logger
-    context</a></h3>
+    <h3><a name="LoggerContext" href="#LoggerContext"><span
+    class="anchor"/></a>Logger context</h3>
 
 		<p>The first and foremost advantage of any logging API over plain
 		<code>System.out.println</code> resides in its ability to disable
@@ -148,8 +149,8 @@ public interface Logger {
 
 
 
-    <h3><a name="effectiveLevel"
-			href="#effectiveLevel">Effective Level aka Level Inheritance</a>
+    <h3><a name="effectiveLevel" href="#effectiveLevel"><span
+    class="anchor"/></a>Effective Level aka Level Inheritance
     </h3>
 
 		<p>Loggers may be assigned levels. The set of possible levels
@@ -329,8 +330,9 @@ public interface Logger {
 		parent <code>X</code>, which has an assigned level.
 		</p>
 
-    <h3><a name="basic_selection" href="#basic_selection">Printing
-    methods and the basic selection rule</a></h3>
+    <h3><a name="basic_selection" href="#basic_selection"><span
+    class="anchor"/></a>Printing methods and the basic selection
+    rule</h3>
 
 		<p>By definition, the printing method determines the level of a
 		logging request. For example, if <code>L</code> is a logger
@@ -547,7 +549,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		</p>
 		<div class="definition">
 
-			<div class="deftitle"><a name="additivity" href="#additivity">Appender Additivity</a></div>
+			<h4 class="deftitle"><a name="additivity"
+			href="#additivity"><span class="anchor"/></a>Appender
+			Additivity</h4>
 
 			<p>The output of a log statement of logger <em>L</em> will go to
 			all the appenders in <em>L</em> and its ancestors. This is the
@@ -657,8 +661,9 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		request. The text after the '-' is the message of the request.
 		</p>
 
-    <a name="ParametrizedLogging"></a>
-		<h3>Parameterized logging</h3>
+
+		<h3><a name="parametrized" href="#parametrized"><span
+		class="anchor"/></a>Parameterized logging</h3>
 
 		<p>Given that loggers in logback-classic implement the <a
 		href="http://www.slf4j.org/api/org/slf4j/Logger.html">SLF4J's
@@ -835,39 +840,39 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
          alt="underTheHoodSequence2_small.gif"/>
   </a>
 
-  <a name="Performance"></a>
-  <h3>Performance</h3>
+  
+  <h3><a name="performance" href="#performance"><span
+  class="anchor"/></a>Performance</h3>
 
   <p>One of the often-cited arguments against logging is its
-  computational cost.  This is a legitimate concern as even moderately
-  sized applications can generate thousands of log requests. Much
-  effort is spent measuring and tweaking logging performance.
-  Independently of these efforts, the user should still be aware of
-  the following performance issues.
+  computational cost.  This is a legitimate concern as even
+  moderately-sized applications can generate thousands of log
+  requests. Much of our development effort is spent measuring and
+  tweaking logback's performance.  Independently of these efforts, the
+  user should still be aware of the following performance issues.
   </p>
 
   <h4>1. Logging performance when logging is turned off entirely</h4>
 
-  <p>
-    You can turn off logging entirely by setting the level of the root logger
-    to <code>Level.OFF</code>, the highest possible level. 
-    When logging is turned off entirely, 
-    the cost of a log request consists of a method invocation plus an 
-    integer comparison. On a 3.2Ghz Pentium D machine this cost is typically 
-    around 20 nanoseconds. 
+  <p>You can turn off logging entirely by setting the level of the
+  root logger to <code>Level.OFF</code>, the highest possible level.
+  When logging is turned off entirely, the cost of a log request
+  consists of a method invocation plus an integer comparison. On a
+  3.2Ghz Pentium D machine this cost is typically around 20
+  nanoseconds.
   </p>
 
-  <p>
-    However, any method invocation involves the "hidden" cost of parameter construction. 
-    For example, for some logger <em>x</em> writing, 
+  <p>However, any method invocation involves the "hidden" cost of
+  parameter construction.  For example, for some logger <em>x</em>
+  writing,
   </p>
   
   <pre class="prettyprint source">x.debug("Entry number: " + i + "is " + entry[i]);</pre>
 
-  <p>
-    incurs the cost of constructing the message parameter, i.e. converting both 
-    integer <code>i</code> and <code>entry[i]</code> to a string, and concatenating 
-    intermediate strings, regardless of whether the message will be logged or not. 
+  <p>incurs the cost of constructing the message parameter,
+  i.e. converting both integer <code>i</code> and
+  <code>entry[i]</code> to a string, and concatenating intermediate
+  strings, regardless of whether the message will be logged or not.
   </p>
 
   <p>The cost of parameter construction can be quite high and depends
@@ -878,21 +883,17 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
 
   <pre class="prettyprint source">x.debug("Entry number: {} is {}", i, entry[i]);</pre>
 
-  <p>
-    This variant will not incur the cost of parameter
-    construction. Compared to the previous call to the
-    <code>debug()</code> method, it will be faster by a very wide
-    margin.  The message will be formatted only if the request is
-    processed to the appenders.  If it is processed, the component
-    that formats the message offers high performance and does not
-    negatively impact the overall process.  It takes 2
-    and 4 microseconds respectively to format a message with 1 and 3 parameters.
+  <p>This variant will not incur the cost of parameter
+  construction. Compared to the previous call to the
+  <code>debug()</code> method, it will be faster by a wide margin.
+  The message will be formatted only if the logging request is to be
+  sent to attached appenders. Moreover, the component that formats
+  messages is highly optimized.
   </p>
 
-  <p> Please notice that, despite the performance points just
-  discussed, inserting logging statements in tight loops (very
-  frequently invoked code) is a lose-lose proposal and is likely to
-  result in degraded performance.  Logging in tight loops will slow
+  <p>Notwithstanding the above placing log statements in tight loops,
+  i.e. very frequently invoked code, is a lose-lose proposal, likely
+  to result in degraded performance.  Logging in tight loops will slow
   down your application even if logging is turned off, and if logging
   is turned on, will generate massive (and hence useless) output.
   </p>
@@ -900,15 +901,14 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   <h4>2. The performance of deciding whether to log or not to log when
   logging is turned on.</h4>
 
-  <p>
-    In logback, there is no need to walk the logger hierarchy. A
-    logger knows its effective level (that is, its level, once level
-    inheritance has been taken into consideration) when it is
-    created. Should the level of a parent logger be changed, then all
-    child loggers are contacted to take notice of the change. Thus,
-    before accepting or denying a request based on the effective
-    level, the logger can make a quasi-instantaneous decision,
-    without needing to consult its ancestors.
+  <p>In logback, there is no need to walk the logger hierarchy. A
+  logger knows its effective level (that is, its level, once level
+  inheritance has been taken into consideration) when it is
+  created. Should the level of a parent logger be changed, then all
+  child loggers are contacted to take notice of the change. Thus,
+  before accepting or denying a request based on the effective level,
+  the logger can make a quasi-instantaneous decision, without needing
+  to consult its ancestors.
   </p>
 
 
