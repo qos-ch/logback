@@ -43,17 +43,14 @@
 
 
     <p>We start by presenting ways for configuring logback, with many
-    example configuration scripts.  <a href="#Joran">Joran</a>, the
-    configuration framework upon which logback relies will be
-    presented in a later chapter.
+    example configuration scripts.  Joran, the configuration framework
+    upon which logback relies will be presented in <a
+    href="onJoran.html">a later chapter</a>.
     </p>
 
 
-    <h2>    
-      <a name="auto_configuration" href="#auto_configuration">
-        Configuration in logback
-      </a>
-    </h2>
+    <h2><a name="auto_configuration" href="#auto_configuration"><span
+    class="anchor"/></a>Configuration in logback</h2>
     
     <p>Inserting log requests into the application code requires a
     fair amount of planning and effort. Observation shows that
@@ -123,7 +120,8 @@
     </p>
 
 
-    <h3><a name="automaticConf" href="#automaticConf">Automatically configuring logback</a></h3>
+    <h3><a name="automaticConf" href="#automaticConf"><span
+    class="anchor"/></a>Automatically configuring logback</h3>
 
     <p>The simplest way to configure logback is by letting logback
     fall back to its default configuration. Let us give a taste of how
@@ -258,8 +256,8 @@ public class Foo {
    application should give identical results to its previous run.</p>
 
    <h4><a name="automaticStatusPrinting"
-   href="#automaticStatusPrinting">Automatic printing of status
-   messages in case of warning or errors</a></h4>
+   href="#automaticStatusPrinting"><span class="anchor"/></a>Automatic
+   printing of status messages in case of warning or errors</h4>
 
    <p class="highlight">If warning or errors occur during the parsing
    of the configuration file, logback will automatically print its
@@ -389,9 +387,9 @@ public class Foo {
    can be reported.  Refer to the section on <a
    href="#statusListener">status listeners</a> further below.</p>
 
-   <h3><a name="configFileProperty"
-   href="#configFileProperty">Specifying the location of the default
-   configuration file as a system property</a></h3>
+   <h3><a name="configFileProperty" href="#configFileProperty"><span
+   class="anchor"/></a>Specifying the location of the default
+   configuration file as a system property</h3>
 
    <p>If you wish, you can specify the location of the default
    configuration file with a system property named
@@ -403,8 +401,9 @@ public class Foo {
    <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
 
 
-   <h3><a name="autoScan" href="#autoScan">Automatically reloading
-   configuration file upon modification</a></h3>
+   <h3><a name="autoScan" href="#autoScan"><span
+   class="anchor"/></a>Automatically reloading configuration file upon
+   modification</h3>
 
    <p class="highlight">Logback-classic can scan for changes in its
    configuration file and automatically reconfigure itself when the
@@ -486,8 +485,9 @@ public class Foo {
 
    
 
-   <h3><a name="joranDirectly" href="#joranDirectly">Invoking
-   <code>JoranConfigurator</code> directly</a></h3>
+   <h3><a name="joranDirectly" href="#joranDirectly"><span
+   class="anchor"/></a>Invoking <code>JoranConfigurator</code>
+   directly</h3>
 
    <p>Logback relies on a configuration library called Joran, part of
    logback-core. Logback's default configuration mechanism invokes
@@ -549,7 +549,8 @@ public class MyApp3 {
    <code>context.reset()</code> invocation should be omitted.</p>
 
    <h3><a name="viewingStatusMessages"
-   href="#viewingStatusMessages">Viewing status messages</a>
+   href="#viewingStatusMessages"><span class="anchor"/></a>Viewing
+   status messages
    </h3>
 
 
@@ -595,12 +596,9 @@ public class MyApp3 {
    the URL <code>http://host/yourWebapp/lbClassicStatus</code>
    </p>
 
-   <h3>
-     <a name="statusListener" href="#statusListener">Listening to
-     status messages</a>
+   <h3><a name="statusListener" href="#statusListener"><span
+   class="anchor"/></a>Listening to status messages
    </h3>
-
-
 
    <p>You may also attach a <code>StatusListener</code> to a
    <code>StatusManager</code> so that you can take immediate action in
@@ -655,8 +653,8 @@ public class MyApp3 {
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
    
 
-   <h2>
-     <a name="syntax" href="#syntax">Configuration file syntax</a>
+   <h2><a name="syntax" href="#syntax"><span
+   class="anchor"/></a>Configuration file syntax
    </h2>
 
    <p>As you have seen thus far in the manual with plenty of examples
@@ -696,8 +694,8 @@ public class MyApp3 {
     href="http://en.wikipedia.org/wiki/CamelCase">camelCase
     convention</a> which is almost always the correct convention.</p>
 
-    <h4><a name="caseSensitivity" href="#caseSensitivity">Case
-    sensitivity of tag names</a></h4>
+    <h4><a name="caseSensitivity" href="#caseSensitivity"><span
+    class="anchor"/></a>Case sensitivity of tag names</h4>
    
 
     <p>Since logback version 0.9.17, tag names pertaining to explicit
@@ -720,9 +718,9 @@ public class MyApp3 {
     is almost always the correct convention.
     </p>
 
-    <h4><a name="loggerElement"
-    href="#loggerElement">Configuring loggers, or the
-    <code>&lt;logger></code> element</a></h4>
+    <h4><a name="loggerElement" href="#loggerElement"><span
+    class="anchor"/></a>Configuring loggers, or the
+    <code>&lt;logger></code> element</h4>
 
     <p>At this point you should have at least some understanding of <a
     href="architecture.html#effectiveLevel">level inheritance</a> and
@@ -761,8 +759,9 @@ public class MyApp3 {
 
 
 
-   <h4><a name="rootElement" href="#rootElement">Configuring the root
-   logger, or the <code>&lt;root></code> element</a></h4>
+   <h4><a name="rootElement" href="#rootElement"><span
+   class="anchor"/></a>Configuring the root logger, or the
+   <code>&lt;root></code> element</h4>
 
    <p>The <code>&lt;root></code> element configures the root
    logger. It supports a single attribute, namely the <span
@@ -993,7 +992,8 @@ public class MyApp3 {
   </p>
 
   <h4><a name="configuringAppenders"
-  href="#configuringAppenders">Configuring Appenders</a></h4>
+  href="#configuringAppenders"><span class="anchor"/></a>Configuring
+  Appenders</h4>
 
   <p>An appender is configured with the <code>&lt;appender></code>
   element, which takes two mandatory attributes <span
@@ -1089,7 +1089,8 @@ public class MyApp3 {
   means for sharing encoders or layouts.
   </p>
 
-  <h4><a name="cumulative" href="#cumulative">Appenders accumulate</a>
+  <h4><a name="cumulative" href="#cumulative"><span
+  class="anchor"/></a>Appenders accumulate
   </h4>
 
   <p>By default, <b>appenders are cumulative</b>: a logger will log to
@@ -1182,11 +1183,9 @@ public class MyApp3 {
   children will go into the <em>myApp.log</em> file.
   </p>
 	
-  <h4>
-    <a name="overrridingCumulativity" href="#overrridingCumulativity">
-      Overriding the default cumulative behaviour
-    </a>
-  </h4>
+  <h4><a name="overrridingCumulativity"
+  href="#overrridingCumulativity"><span class="anchor"/></a>Overriding
+  the default cumulative behaviour</h4>
 
   <p>In case the default cumulative behavior turns out to be
   unsuitable for your needs, you can override it by setting the
@@ -1237,7 +1236,8 @@ public class MyApp3 {
   </p>
 
 
-  <h3><a name="contextName" href="#contextName">Setting the context name</a></h3>
+  <h3><a name="contextName" href="#contextName"><span
+  class="anchor"/></a>Setting the context name</h3>
 
   <p>As mentioned <a href="architecture.html#LoggerContext">in an
   earlier chapter</a>, every logger is attached to a logger
@@ -1277,7 +1277,8 @@ public class MyApp3 {
  
 
   <h3><a name="variableSubstitution"
-  href="#variableSubstitution">Property substitution</a></h3>
+  href="#variableSubstitution"><span class="anchor"/></a>Property
+  substitution</h3>
 
   <p>As in many scripting languages, logback configuration files support
   definition and substitution of properties. Properties can be defined
@@ -1323,8 +1324,8 @@ public class MyApp3 {
   </p>
 
  
-  <h4><a name="definingProps" href="#definingProps">Defining
-  properties</a></h4>
+  <h4><a name="definingProps" href="#definingProps"><span
+  class="anchor"/></a>Defining properties</h4>
 
   <p>Properties can be defined one at a time in the configuration file
   itself or loaded wholesale from an external properties file or an
@@ -1442,7 +1443,8 @@ public class MyApp3 {
 &lt;/configuration></pre>
 
 
-   <h4>Scopes</h4>
+   <h4><a name="scopes" href="#scopes"><span
+   class="anchor"/></a>Scopes</h4>
 
    <p>The <span class="attr">scope</span> attribute of the
    <code>&lt;property></code> element can be used to set the scope of
@@ -1476,7 +1478,8 @@ public class MyApp3 {
    defined in the context scope, it will be available in every logging
    event, even those sent to remote hosts via serialization.</p>
 
-   <h4>Nested variable substitution</h4>
+   <h4><a name="nestedSubst" href="#nestedSubst"><span
+   class="anchor"/></a>Nested variable substitution</h4>
 
    <p>Nested variable substitution is also supported. By nested, we
    mean that the value definition of a variable contains references to
@@ -1519,8 +1522,8 @@ fileName=myApp.log
 &lt;/configuration></pre>
 
   <h3><a name="defaultValuesForVariables"
-  href="#defaultValuesForVariables">Default substitution values for
-  variables</a></h3>
+  href="#defaultValuesForVariables"><span class="anchor"/></a>Default
+  substitution values for variables</h3>
 
   <p>Under certain circumstances, it may be desirable for a variable
   to have a default value if it is not declared or its value is
@@ -1533,20 +1536,23 @@ fileName=myApp.log
 
 
   <!-- ============================================================== -->
-  <h3><a name="hostname" href="#hostname">HOSTNAME property</a></h3>
+  <h3><a name="hostname" href="#hostname"><span
+  class="anchor"/></a>HOSTNAME property</h3>
 
   <p>As it often comes in handy, the <code>HOSTNAME</code> property is
   defined automatically during configuration.</p>
 
   <!-- ============================================================== -->
-  <h3><a name="context_name" href="#context_name">CONTEXT_NAME property</a></h3>
+  <h3><a name="context_name" href="#context_name"><span
+  class="anchor"/></a>CONTEXT_NAME property</h3>
 
   <p>When a context is asked for a property named
   <code>CONTEXT_NAME</code> it returns with its own name.</p>
 
   <!-- ============================================================== -->
   
-  <h3><a name="timestamp" href="#timestamp">Setting a timestamp</a></h3>
+  <h3><a name="timestamp" href="#timestamp"><span
+  class="anchor"/></a>Setting a timestamp</h3>
 
   <p>The <em>timestamp</em> element can define a property according to
   current date and time. The <em>timestamp</em> element is <a
@@ -1555,8 +1561,8 @@ fileName=myApp.log
 
   <!-- ============================================================== -->
   <h3><a name="definingPropsOnTheFly"
-  href="#definingPropsOnTheFly">Defining properties on the
-  fly</a></h3>
+  href="#definingPropsOnTheFly"><span class="anchor"/></a>Defining
+  properties on the fly</h3>
 
   <p>You may define properties dynamically using the
   <code>&lt;define></code> element. The define element takes two
@@ -1589,8 +1595,9 @@ fileName=myApp.log
 
   <!-- ============================================================== -->
 
-  <h3><a name="conditional" href="#conditional">Conditional
-  processing of configuration files</a></h3>
+  <h3><a name="conditional" href="#conditional"><span
+  class="anchor"/></a>Conditional processing of configuration
+  files</h3>
   
   <p>Developers often need to juggle between several logback
   configuration files targeting different environments such as
@@ -1681,8 +1688,8 @@ fileName=myApp.log
 
   <!-- ============================================================== -->
 
-   <h3><a name="insertFromJNDI" href="#insertFromJNDI">Obtaining
-   variables from JNDI</a></h3>
+   <h3><a name="insertFromJNDI" href="#insertFromJNDI"><span
+   class="anchor"/></a>Obtaining variables from JNDI</h3>
 
    <p>Under certain circumstances, you may want to make use of
    env-entries stored in JNDI. The <code>&lt;insertFromJNDI></code>
@@ -1718,8 +1725,8 @@ fileName=myApp.log
   directive.
   </p>
 
-  <h3><a name="fileInclusion" href="#fileInclusion">File
-  inclusion</a></h3>
+  <h3><a name="fileInclusion" href="#fileInclusion"><span
+  class="anchor"/></a>File inclusion</h3>
 
   <p>Joran supports including parts of a configuration file from
   another file. This is done by declaring a <code>&lt;include></code>
@@ -1785,9 +1792,9 @@ fileName=myApp.log
     </li>
   </ul>
 
-
   <!-- ==================== ContextListener =================== -->
-  <h2><a name="contextListener" href="#contextListener">Adding a context listener</a></h2>
+  <h2><a name="contextListener" href="#contextListener"><span
+  class="anchor"/></a>Adding a context listener</h2>
 
   <p>Instances of the <a
   href="../xref/ch/qos/logback/classic/spi/LoggerContextListener.html">LoggerContextListener</a>
@@ -1802,7 +1809,8 @@ fileName=myApp.log
   </p>
 
   <h3><a name="LevelChangePropagator"
-  href="#LevelChangePropagator">LevelChangePropagator</a></h3>
+  href="#LevelChangePropagator"><span
+  class="anchor"/></a>LevelChangePropagator</h3>
 
   <p>As of version 0.9.25, logback-classic ships with <a
   href="../xref/ch/qos/logback/classic/jul/LevelChangePropagator.html">LevelChangePropagator</a>,

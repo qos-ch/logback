@@ -9,11 +9,13 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"/>    
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
     <div id="left">      
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -40,8 +42,8 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
     <script src="../templates/setup.js" type="text/javascript"></script>
     
-    <h2><a name="whatIsAnAppender" href="#whatIsAnAppender">What is an
-    Appender?</a></h2>
+    <h2><a name="whatIsAnAppender" href="#whatIsAnAppender"><span
+    class="anchor"/></a>What is an Appender?</h2>
     
 		<p>Logback delegates the task of writing a logging event to
 		components called appenders.  Appenders must implement the <a
@@ -97,7 +99,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	
-	<h2><a name="AppenderBase" href="#AppenderBase">AppenderBase</a></h2>
+	<h2><a name="AppenderBase" href="#AppenderBase"><span
+	class="anchor"/></a>AppenderBase</h2>
 	
 	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
 	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
@@ -233,8 +236,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
 	
-	<h2>
-    <a name="OutputStreamAppender" href="#OutputStreamAppender">OutputStreamAppender</a>
+	<h2><a name="OutputStreamAppender" href="#OutputStreamAppender"><span
+	class="anchor"/></a>OutputStreamAppender
   </h2>
 	
 	<p><a
@@ -252,17 +255,18 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
   <table class="bodyTable striped">
-    <tr class="a">
+    <tr>
       <th>Property Name</th>
       <th>Type</th>
       <th>Description</th>
     </tr>
     
-    <tr class="a">
-      <td><b><span class="prop">encoder</span></b></td>
+    <tr>
+      <td><span class="prop" name="osaEncoder">encoder</span></td>
+
       <td><a
       href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a></td>
-      
+
       <td>Determines the manner in which an event is written to the
       underlying <code>OutputStreamAppender</code>. Encoders are
       described in a <a href="encoders.html">dedicated chapter</a>.
@@ -281,7 +285,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing OutputStreamAppender and sub-classes"/>
 	
 
-	<h2><a name="ConsoleAppender"	href="#ConsoleAppender">ConsoleAppender</a></h2>
+	<h2><a name="ConsoleAppender" href="#ConsoleAppender"><span
+	class="anchor"/></a>ConsoleAppender</h2>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
@@ -302,14 +307,14 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 			<th>Description</th>
 		</tr>
 		<tr>
-			<td><b><span class="prop">encoder</span></b></td>
+			<td><span class="prop" container="conApp">encoder</span></td>
       <td>
         <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
       </td>
 			<td>See <code>OutputStreamAppender</code> properties.</td>
 		</tr>
 		<tr>
-			<td><b><span class="prop">target</span></b></td>
+			<td><span class="prop" container="conApp">target</span></td>
 			<td><code>String</code></td>
 			<td>
 				One of the String values <em>System.out</em> or 
@@ -318,7 +323,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 		</tr>
 
 		<tr>
-			<td><b><span class="prop">withJansi</span></b></td>
+			<td><span class="prop" container="conApp">withJansi</span></td>
 			<td><code>boolean</code></td>
 			<td>By the default <span class="prop">withJansi</span> property
 			is set to <code>false</code>.  Setting <span
@@ -375,9 +380,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    href="../xref/chapters/appenders/ConfigurationTester.html">chapters.appenders.ConfigurationTester</a> src/main/java/chapters/appenders/conf/logback-Console.xml</p>
 	
 	
-   <h2>
-     <a name="FileAppender" href="#FileAppender">FileAppender</a>
-   </h2>
+   <h2><a name="FileAppender" href="#FileAppender"><span
+   class="anchor"/></a>FileAppender</h2>
 	
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
@@ -395,7 +399,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        <th>Description</th>
      </tr>
      <tr>
-       <td><b><span class="prop">append</span></b></td>
+       <td><span class="prop" container="fileApppender">append</span></td>
        <td><code>boolean</code></td>
        <td>If true, events are appended at the end of an existing
        file.  Otherwise, if <span class="prop">append</span> is false,
@@ -404,7 +408,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </td>
      </tr>
      <tr >
-       <td><b><span class="prop">encoder</span></b></td>
+       <td><span class="prop" container="fileApppender">encoder</span></td>
        <td>
          <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
        </td>
@@ -413,7 +417,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     
    
      <tr>
-       <td><b><span class="prop">file</span></b></td>
+       <td><span class="prop"
+       container="fileApppender">file</span></td>
        <td><code>String</code></td>
        <td>The name of the file to write to. If the file does not
        exist, it is created. On the MS Windows platform users
@@ -434,8 +439,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    
 
      <tr>
-       <td><b><span class="option bold"><a name="prudent"
-       href="#prudent">prudent</a></span></b></td>
+       <td><span class="prop" name="prudent">prudent</span></td>
        <td><code>boolean</code></td>
 
        <td>In prudent mode, <code>FileAppender</code> will safely
@@ -546,10 +550,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    src/main/java/chapters/appenders/conf/logback-fileAppender.xml</p>
 	
 	
-   <h3>
-     <a name="uniquelyNamed" href="#uniquelyNamed">Uniquely named
-     files (by timestamp)</a>
-   </h3>
+   <h3><a name="uniquelyNamed" href="#uniquelyNamed"><span
+   class="anchor"/></a>Uniquely named files (by timestamp)</h3>
    
    <p>During the application development phase or in the case of
    short-lived applications, e.g. batch applications, it is desirable
@@ -626,8 +628,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   ...
 &lt;/configuration></pre>
 
-   <h2>
-     <a name="RollingFileAppender" href="#RollingFileAppender">RollingFileAppender</a>
+   <h2><a name="RollingFileAppender" href="#RollingFileAppender"><span
+   class="anchor"/></a>RollingFileAppender
    </h2>
    
    <p><a
@@ -668,24 +670,24 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        <th>Description</th>
      </tr>
      <tr>
-       <td><b><span class="prop">file</span></b></td>
+       <td><span class="prop" container="rfa">file</span></td>
        <td><code>String</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
      <tr>
-       <td><b><span class="prop">append</span></b></td>
+       <td><span class="prop" container="rfa">append</span></td>
        <td><code>boolean</code></td>
        <td>See <code>FileAppender</code> properties.</td>
      </tr>	
      <tr>
-       <td><b><span class="prop">encoder</span></b></td>
+       <td><span class="prop" container="rfa">encoder</span></td>
        <td>
          <a href="../xref/ch/qos/logback/core/encoder/Encoder.html"><code>Encoder</code></a>
        </td>
        <td>See <code>OutputStreamAppender</code> properties.</td>
      </tr>
      <tr>
-       <td><b><span class="prop">rollingPolicy</span></b></td>
+       <td><span class="prop" container="rfa">rollingPolicy</span></td>
        <td><code>RollingPolicy</code></td>
        <td>This option is the component that will dictate
        <code>RollingFileAppender</code>'s behavior when rollover
@@ -693,7 +695,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </td>
      </tr>	
      <tr>
-       <td><b><span class="prop">triggeringPolicy</span></b></td>
+       <td><span class="prop" container="rfa">triggeringPolicy</span></td>
        <td><code>TriggeringPolicy</code></td>
        <td>
          This option is the component that will tell 
@@ -702,8 +704,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </td>
      </tr>	
      <tr>
-       <td valign="top"><span class="prop"><a name="prudentWithRolling"
-       href="#prudentWithRolling"><b>prudent</b></a></span></td>
+       <td valign="top"><span class="prop" name="prudentWithRolling">prudent</span></td>
 
        <td valign="top"><code>boolean</code></td>
 
@@ -736,8 +737,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    </table>
 	
-   <h3><a name="onRollingPolicies" href="#onRollingPolicies">Overview
-   of rolling policies</a></h3>
+   <h3><a name="onRollingPolicies" href="#onRollingPolicies"><span
+   class="anchor"/></a>Overview of rolling policies</h3>
 	
    <p><a
    href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
@@ -774,7 +775,9 @@ public interface RollingPolicy extends LifeCycle {
 
 	
    <h4>
-     <a name="TimeBasedRollingPolicy" href="#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
+     <a name="TimeBasedRollingPolicy"
+     href="#TimeBasedRollingPolicy"><span
+     class="anchor"/></a>TimeBasedRollingPolicy
    </h4>
 
    <p><a
@@ -801,7 +804,7 @@ public interface RollingPolicy extends LifeCycle {
        <th>Description</th>
      </tr>
      <tr>
-       <td><b><span class="prop">fileNamePattern</span></b></td>
+       <td><span class="prop" container="tbrp">fileNamePattern</span></td>
        <td><code>String</code></td>
        <td>
          The mandatory <span class="prop">fileNamePattern</span>
@@ -849,7 +852,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
      <tr>
-       <td><span class="prop"><b>maxHistory</b></span></td>
+       <td><span class="prop" container="tbrp">maxHistory</span></td>
        <td>int</td>
        <td>The optional <span class="prop">maxHistory</span>
        property controls the maximum number of archive files to keep,
@@ -863,7 +866,7 @@ public interface RollingPolicy extends LifeCycle {
      </tr>
 
      <tr >
-       <td><span class="prop"><b>cleanHistoryOnStart</b></span></td>
+       <td><span class="prop" container="tbrp">cleanHistoryOnStart</span></td>
        <td>boolean</td>
        <td>
          <p>If set to true, archive removal will be executed on
@@ -1166,9 +1169,9 @@ public interface RollingPolicy extends LifeCycle {
 &lt;/configuration></pre>
 
 
-   <h4>	
-     <a name="FixedWindowRollingPolicy" 
-     href="#FixedWindowRollingPolicy">FixedWindowRollingPolicy</a>
+   <h4><a name="FixedWindowRollingPolicy"
+   href="#FixedWindowRollingPolicy"><span
+   class="anchor"/></a>FixedWindowRollingPolicy
    </h4>
 
    <p>When rolling over, <a
@@ -1188,13 +1191,13 @@ public interface RollingPolicy extends LifeCycle {
    </p>
 	
    <table class="bodyTable striped">
-     <tr class="a">
+     <tr>
        <th>Property Name</th>
        <th>Type</th>
        <th>Description</th>
      </tr>
      <tr>
-       <td><b><span class="prop">minIndex</span></b></td>
+       <td><span class="prop" container="fwrp">minIndex</span></td>
        <td><code>int</code></td>
        <td>
          <p>This option represents the lower bound for the window's
@@ -1203,7 +1206,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
      <tr>
-       <td><b><span class="prop">maxIndex</span></b></td>
+       <td><span class="prop" container="fwrp">maxIndex</span></td>
        <td><code>int</code></td>
        <td>
          <p>This option represents the upper bound for the window's
@@ -1212,7 +1215,7 @@ public interface RollingPolicy extends LifeCycle {
        </td>
      </tr>
      <tr>
-       <td><b><span class="prop">fileNamePattern</span></b></td>
+       <td><span class="prop" container="fwrp">fileNamePattern</span></td>
        <td><code>String</code></td>
        <td>
          <p>This option represents the pattern that will be followed
@@ -1349,7 +1352,8 @@ public interface RollingPolicy extends LifeCycle {
 
     <h3>
       <a name="SizeAndTimeBasedFNATP"
-      href="#SizeAndTimeBasedFNATP">Size <b>and</b> time based archiving</a>
+      href="#SizeAndTimeBasedFNATP"><span class="anchor"/></a>Size
+      <b>and</b> time based archiving
     </h3>
 
     <p>Sometimes you may wish to archive files essentially by date but
@@ -1514,7 +1518,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
 
 		<h3> 
-      <a name="SocketAppender" href="#SocketAppender">SocketAppender</a>
+      <a name="SocketAppender" href="#SocketAppender"><span
+      class="anchor"/></a>SocketAppender
     </h3>
 		
 		<p>The appenders covered thus far are only able to log to local
@@ -1592,18 +1597,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			<th>Description</th>
       </tr>
       <tr>
-        <td><b><span class="prop">includeCallerData</span></b></td>
+        <td><span class="prop" container="socket">includeCallerData</span></td>
         <td><code>boolean</code></td>
         <td>
           <p>
-            The <span class="prop">includeCallerData</span> option takes a boolean value. 
+            The <span class="prop" container="socket">includeCallerData</span> option takes a boolean value. 
             If true, the caller data will be available to the remote host. 
             By default no caller data is sent to the server.
           </p>
         </td>
       </tr>
       <tr>
-        <td><b><span class="prop">port</span></b></td>
+        <td><span class="prop" container="socket">port</span></td>
         <td><code>int</code></td>
         <td>
           <p>
@@ -1612,7 +1617,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>	
       <tr>
-        <td><b><span class="prop">reconnectionDelay</span></b></td>
+        <td><span class="prop" container="socket">reconnectionDelay</span></td>
         <td><code>int</code></td>
         <td>
           The <span class="prop">reconnectionDelay</span> option takes a 
@@ -1625,7 +1630,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr>
-        <td><b><span class="prop">remoteHost</span></b></td>
+        <td><span class="prop" container="socket">remoteHost</span></td>
         <td><code>String</code></td>
         <td>
           The host name of the server.
@@ -1770,7 +1775,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 		
 		
-   <h3><a name="SMTPAppender" href="#SMTPAppender">SMTPAppender</a></h3>
+   <h3 class="doAnchor">SMTPAppender</h3>
 
    <p>The <a
    href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
@@ -1794,20 +1799,20 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="prop">smtpHost</span></b></td>
+        <td><span class="prop" container="smtp">smtpHost</span></td>
         <td><code>String</code></td>
         <td>The host name of the SMTP server. This parameter is mandatory.</td>
       </tr>
       
       <tr>
-        <td><b><span class="prop">smtpPort</span></b></td>
+        <td><span class="prop" container="smtp">smtpPort</span></td>
         <td><code>int</code></td>
         <td>The port where the SMTP server is listening. Defaults to
         25.</td>
       </tr>
       
       <tr>
-        <td><a name="smtpTo" href="#smtpTo"><b><span class="prop">to</span></b></a></td>
+        <td><span class="prop" name="smtpTo">to</span></td>
         <td><code>String</code></td>
         <td>The email address of the recipient as a
         <em>pattern</em>. The pattern is evaluated anew with the
@@ -1820,7 +1825,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="prop">from</span></b></td>
+        <td><span class="prop" container="smtp">from</span></td>
         <td><code>String</code></td>
         <td>The originator of the email messages sent by
         <code>SMTPAppender</code> in the <a
@@ -1833,7 +1838,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr>
-        <td><b><span class="prop">subject</span></b></td>
+        <td><span class="prop">subject</span></td>
         <td><code>String</code></td>
         <td> 
           <p>The subject of the email. It can be any value accepted as
@@ -1859,7 +1864,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         
       </tr>
       <tr>
-        <td><b><span class="prop">discriminator</span></b></td>
+        <td><span class="prop" container="smtp">discriminator</span></td>
         <td><code><a href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code></td>
         <td>
           <p>With the help of a <span
@@ -1878,8 +1883,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr>
-        <td><b><span class="prop"><a name="smtpAppender_Evaluator"
-        href="#smtpAppender_Evaluator">evaluator</a></span></b></td>
+        <td><span class="prop" name="smtpAppender_Evaluator">evaluator</span></td>
         <td><code><a
         href="../xref/ch/qos/logback/classic/boolex/IEvaluator.html">IEvaluator</a></code></td>
         <td>
@@ -1921,7 +1925,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td  valign="top"><b><span class="prop">cyclicBufferTracker</span></b></td>
+        <td  valign="top"><span class="prop" container="smtp">cyclicBufferTracker</span></td>
         <td><a href="../xref/ch/qos/logback/core/spi/CyclicBufferTracker.html"><code>CyclicBufferTracker</code></a>
         </td>
         <td>
@@ -1940,20 +1944,20 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>        
       </tr>
       <tr>
-        <td><b><span class="prop">username</span></b></td>
+        <td><span class="prop" container="smtp">username</span></td>
         <td><code>String</code></td> <td>The username value to use
         during plain user/password authentication. By default, this
         parameter is null.  </td> 
       </tr> 
       <tr class="alt">
-        <td><b><span class="prop">password</span></b></td>
+        <td><span class="prop" container="smtp">password</span></td>
         <td><code>String</code></td>
         <td>The password value to use for plain user/password
         authentication. By default, this parameter is null.  
         </td>
       </tr>
       <tr> 
-        <td><b><span class="prop">STARTTLS</span></b> </td>
+        <td><span class="prop" container="smtp">STARTTLS</span> </td>
         <td><code>boolean</code></td> 
         <td>If this parameter is set to true, then this appender
         will issue the STARTTLS command (if the server supports it)
@@ -1963,14 +1967,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td> 
       </tr>
       <tr>
-        <td><b><span class="prop">SSL</span></b></td>
+        <td><span class="prop" container="smtp">SSL</span></td>
         <td><code>boolean</code></td> <td>If this parameter is set to
         true, then this appender will open an SSL connection to the
         server. By default, this parameter is set to false.  </td>
       </tr>
 
       <tr>
-        <td><b><span class="prop">charsetEncoding</span></b></td>
+        <td><span class="prop" container="smtp">charsetEncoding</span></td>
         <td><code>String</code></td>
         <td>The outgoing email message will be encoded in the
         designated <a
@@ -1982,7 +1986,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 
       <tr>
-        <td><b><span class="prop">localhost</span></b></td>
+        <td><span class="prop" container="smtp">localhost</span></td>
         <td><code>String</code></td>
         <td>In case the hostname of the SMTP client is not properly
         configured, e.g. if the client hostname is not fully
@@ -1997,7 +2001,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="prop">asynchronousSending</span></b></td>
+        <td><span class="prop" container="smtp">asynchronousSending</span></td>
         <td><code>boolean</code></td>
         <td>This property determines whether email transmission is
         done asynchronously or not. By default, the <span
@@ -2013,7 +2017,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="prop">sessionByJNDI</span></b></td>
+        <td><span class="prop" container="smtp">sessionByJNDI</span></td>
         <td><code>boolean</code></td>
         <td><code>SMTPAppender</code> relies on
         <code>javax.mail.Session</code> to send out email messages. By
@@ -2042,11 +2046,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><b><span class="prop">jndiLocation</span></b></td>
+        <td><span class="prop" container="smtp">jndiLocation</span></td>
         <td><code>String</code></td>
         <td>The location where the javax.mail.Session is placed in
         JNDI. By default, <span class="prop">jndiLocation</span> is
-        set to "java:comp/env/mail/Session".
+        set to <span style="white-space:nowrap">"java:comp/env/mail/Session"</span>.
         </td>
       </tr>
 
@@ -2180,7 +2184,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>HTMLLayout</code> does not use inline CSS.
     </p>
 
-    <h3><a name="cyclicBufferSize" href="#cyclicBufferSize">Custom buffer size</a></h3>
+    <h3><a name="cyclicBufferSize" href="#cyclicBufferSize"><span
+    class="anchor"/></a>Custom buffer size</h3>
 
     <p>By default, the outgoing message will contain the last 256
     messages seen by <code>SMTPAppender</code>. If your heart so
@@ -2208,7 +2213,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 &lt;/configuration>    </pre>
     
 
-    <h3>Triggering event</h3>
+    <h3 class="doAnchor">Triggering event</h3>
 
     <p>If the Evaluator property is not set, the
     <code>SMTPAppender</code> defaults to an <a
@@ -2304,9 +2309,8 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 &lt;/configuration></pre>
     
 
-    <h3><a name="OnMarkerEvaluator" href="#OnMarkerEvaluator">Marker
-    based triggering</a> 
-    </h3>
+    <h3 class="doAnchor" name="OnMarkerEvaluator">Marker based
+    triggering </h3>
 
     <p>Although reasonable, the default triggering policy whereby every
     event of level ERROR triggers an outgoing email may result in too
@@ -2365,8 +2369,9 @@ logger.error(<b>notifyAdmin</b>,
 
 
   <h4><a name="marker_JaninoEventEvaluator"
-    href="#marker_GEventEvaluator">Marker-based triggering with
-    JaninoEventEvaluator</a></h4>
+  href="#marker_JaninoEventEvaluator"><span
+  class="anchor"/></a>Marker-based triggering with
+  JaninoEventEvaluator</h4>
 
     <p>Note that instead of using the marker-centric
     <code>OnMarkerEvaluator</code>, we could use the much more generic
@@ -2397,8 +2402,10 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
     <h4><a name="marker_GEventEvaluator"
-    href="#marker_GEventEvaluator">Marker-based triggering with
-    GEventEvaluator</a></h4>
+    href="#marker_GEventEvaluator"><span
+    class="anchor"/></a>Marker-based triggering with
+    GEventEvaluator</h4>
+
     <p>Here is the equivalent evaluator using <a
     href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
 
@@ -2425,8 +2432,8 @@ logger.error(<b>notifyAdmin</b>,
 
 
 
-    <h3><a name="smtpAuthentication"
-    href="#smtpAuthentication">Authentication/STARTTLS/SSL</a></h3>
+    <h3><a name="smtpAuthentication" href="#smtpAuthentication"><span
+    class="anchor"/></a>Authentication/STARTTLS/SSL</h3>
 
     <p><code>SMTPAppender</code> supports authentication via plain
     user passwords as well as both the STARTTLS and SSL
@@ -2437,8 +2444,9 @@ logger.error(<b>notifyAdmin</b>,
     connection is encrypted right from the start.
     </p>
 
-    <h3><a name="gmailSSL" href="#gmailSSL">SMTPAppender configuration
-    for Gmail (SSL)</a></h3>
+    <h3><a name="gmailSSL" href="#gmailSSL"><span
+    class="anchor"/></a>SMTPAppender configuration for Gmail
+    (SSL)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail with the SSL protocol. </p>
@@ -2447,8 +2455,8 @@ logger.error(<b>notifyAdmin</b>,
     using SSL
     (logback-examples/src/main/java/chapters/appenders/mail/gmailSSL.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('gmailSSL');">View as .groovy</span>	
-    <pre id="gmailSSL" class="prettyprint source">&lt;configuration>
+    <span class="asGroovy" onclick="return asGroovy('gmailSSLExample');">View as .groovy</span>	
+    <pre id="gmailSSLExample" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;smtpHost>smtp.gmail.com&lt;/smtpHost></b>
     <b>&lt;smtpPort>465&lt;/smtpPort></b>
@@ -2471,16 +2479,16 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS">SMTPAppender for Gmail
-    (STARTTLS)</a></h3>
+    <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS"><span
+    class="anchor"/></a>SMTPAppender for Gmail (STARTTLS)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
 
     <p class="example">Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapters/appenders/mail/gmailSTARTTLS.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLS');">View as .groovy</span>	
-    <pre id="gmailSTARTTLS" class="prettyprint source">&lt;configuration>	  
+    <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLSExample');">View as .groovy</span>	
+    <pre id="gmailSTARTTLSExample" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>smtp.gmail.com&lt;/smtpHost>
     &lt;smtpPort>587&lt;/smtpPort>
@@ -2503,9 +2511,8 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="smtpDiscriminator"
-    href="#smtpDiscriminator">SMTPAppender with
-    MDCDiscriminator</a></h3>
+    <h3><a name="smtpDiscriminator" href="#smtpDiscriminator"><span
+    class="anchor"/></a>SMTPAppender with MDCDiscriminator</h3>
 
     <p>As mentioned earlier, by specifying a discriminator other than
     the default one, <code>SMTPAppender</code> will generate email
@@ -2555,8 +2562,8 @@ logger.error(<b>notifyAdmin</b>,
     host, greatly facilitating problem diagnosis.
     </p>
     
-    <h4><a name= "bufferManagement" href="#bufferManagement">Buffer
-    management in very busy systems</a></h4>
+    <h4><a name= "bufferManagement" href="#bufferManagement"><span
+    class="anchor"/></a>Buffer management in very busy systems</h4>
 
     <p>Internally, each distinct value returned by the discriminator
     will cause the creation of a new cyclic buffer. However, at most
@@ -2598,8 +2605,8 @@ logger.error(<b>notifyAdmin</b>,
     <!-- =========================================================== -->
 
 
-    <h3>
-      <a name="DBAppender" href="#DBAppender">DBAppender</a>
+    <h3><a name="DBAppender" href="#DBAppender"><span
+    class="anchor"/></a>DBAppender
 		</h3>
 		
 		<p>The <a
@@ -3063,7 +3070,8 @@ logger.error(<b>notifyAdmin</b>,
 		-->
 
     <h4><a name="JNDIConnectionSource"
-    href="#JNDIConnectionSource">JNDIConnectionSource</a></h4>
+    href="#JNDIConnectionSource"><span
+    class="anchor"/></a>JNDIConnectionSource</h4>
 
 		<p><a
 		href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">
@@ -3134,13 +3142,12 @@ logger.error(<b>notifyAdmin</b>,
 			file as described by your JNDI provider's documentation.
 		</p>
 		
-		<h4>Connection pooling</h4>
+		<h4 class="doAnchor">Connection pooling</h4>
 		
-		<p>
-			Logging events can be created at a rather fast pace. To keep up
-			with the flow of events that must be inserted into a database, 
-			it is recommended to use connection pooling with
-			<code>DBAppender</code>.
+		<p>Logging events can be created at a rather fast pace. To keep up
+		with the flow of events that must be inserted into a database, it
+		is recommended to use connection pooling with
+		<code>DBAppender</code>.
 		</p>
 		
 		<p>
@@ -3217,9 +3224,7 @@ logger.error(<b>notifyAdmin</b>,
 		improvement in performance.
 		</p>
 
-		<h3><a name="SyslogAppender"
-		href="#SyslogAppender">SyslogAppender</a>
-    </h3>
+		<h3 class="doAnchor" name="SyslogAppender">SyslogAppender</h3>
 
 		<p>The syslog protocol is a very simple protocol: a syslog sender
 		sends a small message to a syslog receiver.  The receiver is
@@ -3238,12 +3243,12 @@ logger.error(<b>notifyAdmin</b>,
 				<th>Description</th>
 			</tr>
 			<tr>
-				<td><b><span class="prop">syslogHost</span></b></td>
+				<td><span class="prop" container="syslog">syslogHost</span></td>
 				<td><code>String</code></td>
 				<td>The host name of the syslog server.</td>
 			</tr>
 			<tr>
-				<td><b><span class="prop">port</span></b></td>
+				<td><span class="prop" container="syslog">port</span></td>
 				<td><code>String</code></td>
 				<td>The port number on the syslog server to connect
 				to. Normally, one would not want to change the default value
@@ -3251,7 +3256,7 @@ logger.error(<b>notifyAdmin</b>,
 				</td>
 			</tr>
 			<tr>
-				<td><b><span class="prop">facility</span></b></td>
+				<td><span class="prop" container="syslog">facility</span></td>
 				<td><code>String</code></td>
 				<td>
 					<p>The <span class="prop">facility</span> is meant to identify 
@@ -3264,7 +3269,7 @@ logger.error(<b>notifyAdmin</b>,
 				</td>
 			</tr>
       <tr>
-        <td><b><span class="prop">suffixPattern</span></b></td>
+        <td><span class="prop" container="syslog">suffixPattern</span></td>
 				<td><code>String</code></td>
 				<td><p>The <span class="prop">suffixPattern</span> option
 				specifies the format of the non-standardized part of the
@@ -3277,7 +3282,8 @@ logger.error(<b>notifyAdmin</b>,
 			</tr>
 
       <tr>
-        <td><b><span class="prop">stackTracePattern</span></b></td>
+        <td><span class="prop"
+        container="syslog">stackTracePattern</span></td>
 				<td><code>String</code></td>
 				<td><p>The <span class="prop">stackTracePattern</span>
 				property allows the customization of the string appearing just
@@ -3289,7 +3295,7 @@ logger.error(<b>notifyAdmin</b>,
 			</tr>
 
 			<tr>
-				<td><b><span class="prop">throwableExcluded</span></b></td>
+				<td><span class="prop" container="syslog">throwableExcluded</span></td>
 				<td><code>boolean</code></td>
 				<td>Setting <span class="prop">throwableExcluded</span> to
 				<code>true</code> will cause stack trace data associated with
@@ -3341,8 +3347,7 @@ logger.error(<b>notifyAdmin</b>,
 		</p>
 		
 
-    <h3><a name="SiftingAppender"
-    href="#SiftingAppender">SiftingAppender</a></h3>
+    <h3 class="doAnchor" name="SiftingAppender">SiftingAppender</h3>
 
     <p>As its name implies, a <code>SiftingAppender</code> can be used
     to separate (or sift) logging according to a given runtime
@@ -3494,14 +3499,14 @@ logger.debug("Alice says hello"); </p>
         <th>Description</th>
       </tr>
 			<tr>
-        <td><b><span class="prop">queueSize</span></b></td>
+        <td><span class="prop" container="async">queueSize</span></td>
         <td><code>int</code></td>
         <td>The maximum capacity of the blocking queue. By default,
         <span class="prop">queueSize</span> is set to 256.
 				</td>
 			</tr>
       <tr>
-        <td><b><span class="prop">discardingThreshold</span></b></td>
+        <td><span class="prop" container="async">discardingThreshold</span></td>
         <td><code>int</code></td>
         <td>By default, when the blocking queue has 20% capacity
         remaining, it will drop events of level TRACE, DEBUG and INFO,
@@ -3511,7 +3516,7 @@ logger.debug("Alice says hello"); </p>
 			</td>
 			</tr>
       <tr>
-        <td><b><span class="prop">includeCallerData</span></b></td>
+        <td><span class="prop" container="async">includeCallerData</span></td>
         <td><code>boolean</code></td>
         <td>Extracting caller data can be rather expensive. To improve
         performance, by default, caller data associated with an event
