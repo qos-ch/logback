@@ -6,6 +6,7 @@
 function decorate() {
   decoratePropertiesInTables();
   decorateDoAnchor();
+  decorateConversionWordInTables();
 }
 
 function decoratePropertiesInTables() {
@@ -34,6 +35,20 @@ function decoratePropertiesInTables() {
  } // for 
 }
 
+function decorateConversionWordInTables() {
+ var elems = $('tr td.word');
+ for(var i = 0; i < elems.length; i++) {
+   var e = elems[i];
+   var tmpHTML = e.innerHTML;
+   var nameAttr = $(e).attr('name')
+   if(nameAttr == null) 
+     continue;
+   e.innerHTML = "<a name='" + nameAttr + "' href='#" + nameAttr +
+                "'><span class='anchor'/></a>" +tmpHTML;
+ }
+}
+
+
 function decorateDoAnchor() {
    var elems = $('.doAnchor');
    for(var i = 0; i < elems.length; i++) {
@@ -57,6 +72,6 @@ function camelCase(str) {
   var res = str.trim().replace(/\s\w/g, function(match) {
               return match.trim().toUpperCase();
             });
-  return res.charAt(0).toLowerCase() + res.slice(1);
+  return res;
 }
 

@@ -146,24 +146,15 @@ table[class="bodyTable properties"] tr {
 	vertical-align: top;
 }
 
-table.bodyTable tr.a {
-	background-color: #ddd;
-}
-
-table.bodyTable tr.b {
-	background-color: #eee;
-}
-
-table.bodyTable tr.alt {
-	background-color: #eee;
-}
+/* table.bodyTable tr.a { 	background-color: #ddd; } */
+/* table.bodyTable tr.b {	background-color: #eee; } */
+/* table.bodyTable tr.alt {	background-color: #eee;} */
 
 /* we don't want the first p under td to appear indented */
 table.bodyTable tr td p:first-child {
   padding-top: 0px;
   margin-top: 0px;
 }
-
 
 .striped tr:nth-child(odd) td {
   background-color: #f9f9f9;
@@ -173,6 +164,10 @@ table.bodyTable tr td p:first-child {
 }
 .striped tr:last-child td {
   border-bottom: 1px solid #ddd;
+}
+
+td.word {
+  text-align: right;
 }
 
 /* EOF =============== bodyTable =============== */
