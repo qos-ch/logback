@@ -10,10 +10,13 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body  onload="prettyPrint()">
+  <body  onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript"> src="../templates/header.js"</script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -65,7 +68,7 @@
     <em>logback-core-${project.version}.jar</em> to your
     classpath.</p>
     
-    <h2>Historical perspective</h2>
+    <h2 class="doAnchor">Historical perspective</h2>
 
     <p>Reflection is a powerful feature of the Java language, making
     it possible to configure software systems declaratively. For
@@ -117,7 +120,7 @@
     exact matches and wildcard matches.
     </p>
 
-    <h3>SAX or DOM?</h3>
+    <h3 class="doAnchor" name="saxOrDom">SAX or DOM?</h3>
 
     <p>Due to the event-based architecture of the SAX API, a tool based
     on SAX cannot easily deal with forward references, that is,
@@ -151,7 +154,7 @@
     </p>
 
 
-    <h3><a name="pattern" href="#pattern">Pattern</a></h3>
+    <h3 class="doAnchor" name="pattern">Pattern</h3>
 
     <p>A Joran pattern is essentially a string. There are two kind of
     patterns, <em>exact</em> and <em>wildcard</em>. The pattern "a/b"
@@ -168,7 +171,7 @@
     <code>&lt;a></code> element.
     </p>
 
-    <h3><a name="action" href="#action">Actions</a></h3>
+    <h3 class="doAnchor" name="action">Actions</h3>
     
     <p>As mentioned above, Joran parsing rules consists of the
     association of patterns. Actions extend the <a
@@ -213,7 +216,7 @@ public abstract class Action {
    empty/nop implementation provided by <code>Action</code>.</p>
 
 
-   <h3><a name="ruleStore" href="#ruleStore">RuleStore</a> </h3>
+   <h3 class="doAnchor" name="ruleStore">RuleStore </h3>
 
    <p>As mentioned previously, the invocation of actions according to
    matching patterns is a central concept in Joran. A rule is an
@@ -240,8 +243,8 @@ public abstract class Action {
    </p>
    
 
-   <h3><a name="interpretationContext"
-   href="#interpretationContext">Interpretation context</a></h3>
+   <h3 class="doAnchor" name="interpretationContext">Interpretation
+   context</h3>
 
    <p>To allow various actions to collaborate, the invocation of begin
    and end methods include an interpretation context as the first
@@ -260,7 +263,7 @@ public abstract class Action {
    <code>StatusManager</code>.
    </p>
    
-   <h3><a name="helloWorld" href="#helloWorld">Hello world</a></h3>
+   <h3 class="doAnchor" name="helloWorld">Hello world</h3>
    
    <p>The first example in this chapter illustrates the minimal
    plumbing required for using Joran. The example consists of a
@@ -309,8 +312,7 @@ public abstract class Action {
 
     <!-- ====================================================== -->
 
-    <h3><a name="calculator" href="#calculator">Collaborating
-    actions</a></h3>
+    <h3 class="doAnchor" name="calculator">Collaborating actions</h3>
    
     <p>The <em>logback-examples/src/main/java/joran/calculator/</em>
     directory includes several actions which collaborate together
@@ -477,7 +479,7 @@ public abstract class Action {
   <code>end()</code> method.</p>
   -->
 
-  <h3><a name="implicit" href="#implicit">Implicit actions</a></h3>
+  <h3 class="doAnchor" name="implicit">Implicit actions</h3>
 
   <p>The rules defined thus far are called explicit actions because an
   pattern/action association could be found in the rule store for the
@@ -578,8 +580,8 @@ Element [abc] asked to be printed.
   above (see previous paragraph).
   </p>
 
-  <h3><a name="iaPractice" href="#iaPractice">Implicit actions in
-  practice</a></h3>
+  <h3 class="doAnchor" name="iaPractice">Implicit actions in
+  practice</h3>
   
   <p>The respective Joran configurators of logback-classic and
   logback-access include just two implicit actions, namely <a
@@ -637,8 +639,8 @@ Element [abc] asked to be printed.
     </li>
   </ol>
 
-  <h4><a name="defaultClassMapping"
-  href="#defaultClassMapping">Default class mapping</a></h4>
+  <h4 class="doAnchor" name="defaultClassMapping">Default class
+  mapping</h4>
 
   <p>In logback-classic, there are a handful of internal rules mapping
   parent class/property name pairs to a default class. These are
@@ -697,7 +699,7 @@ Element [abc] asked to be printed.
   latest rules.
   </p>
   
-  <h4>Collection of properties</h4>
+  <h4 class="doAnchor">Collection of properties</h4>
 
   
   <p>Note that in addition to single simple properties or single
@@ -705,7 +707,7 @@ Element [abc] asked to be printed.
   properties, be they simple or complex. Instead of a setter method,
   the property is specified by an "adder" method.</p>
 
-  <h3><a name="newRule" href="#newRule">New rules on the fly</a></h3>
+  <h3 class="doAnchor" name="newRule">New rules on the fly</h3>
 
   <p>Joran includes an action which allows the Joran interpreter to
   learn new rules on the fly, that is while interpreting an XML

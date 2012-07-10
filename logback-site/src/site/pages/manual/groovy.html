@@ -12,12 +12,15 @@
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
 
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
 
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -27,7 +30,7 @@
     </div>
     <div id="content" class="chapter">
       
-      <h1>Chapter 12: Groovy Configuration</h1>
+    <h1>Chapter 12: Groovy Configuration</h1>
       
       <div class="quote">
       <p><em>It is better to be a human being dissatisfied than a pig
@@ -64,7 +67,7 @@
     </p>
 
 
-    <h2>General philosophy</h2>
+    <h2 class="doAnchor">General philosophy</h2>
     
     <p>As a general rule, <em>logback.groovy</em> files are Groovy
     programs. And since Groovy is a super-set of Java, whatever
@@ -88,7 +91,7 @@
     (GStrings), and if-else statements are available in
     <em>logback.groovy</em> files.</p>
 
-    <h2>Extensions specific to <em>logback.groovy</em></h2>
+    <h2 class="doAnchor" name="entensions">Extensions specific to <em>logback.groovy</em></h2>
 
     <p><span class="green">Essentially, <em>Logback.groovy</em> syntax
     consists of half a dozen methods described next; in the reverse
@@ -326,7 +329,8 @@ root(DEBUG, ["STDOUT"])</pre>
 
     <!-- ========================================================== -->
 
-    <h2>Internal DSL, i.e. it's all groovy baby!</h2>
+    <h2 class="doAnchor" name="internalDSL">Internal DSL, i.e. it's
+    all groovy baby!</h2>
 
     <p>The <em>logback.groovy</em> is an internal DSL meaning that its
     contents are executed as a Groovy script. Thus, all the usual
@@ -339,7 +343,8 @@ root(DEBUG, ["STDOUT"])</pre>
     </p>
 
 
-    <h3>Variable definitions and GStrings</h3>
+    <h3 class="doAnchor" name="varedef">Variable definitions and
+    GStrings</h3>
 
     <p>You can define variables anywhere within a
     <em>logback.groovy</em> file, then use the variable within a
@@ -365,7 +370,7 @@ appender("FILE", FileAppender) {
 root(DEBUG, ["FILE"])</pre>
 
 
-    <h3>Printing on the console</h3>
+    <h3 class="doAnchor" name="printing">Printing on the console</h3>
 
     <p>You can invoke Groovy's <code>println</code> method to print on
     the console. Here is an example.</p>
@@ -388,9 +393,10 @@ appender("FILE", FileAppender) {
 root(DEBUG, ["FILE"])</pre>
 
 
-   <h3>Automatically exported fields</h3>
+   <h3 class="doAnchor" name="automaticallyExported">Automatically
+   exported fields</h3>
 
-   <h4><a name="hostname" href="#hostname">'hostname' variable</a></h4>
+   <h4 class="doAnchor" name="hostname">'hostname' variable</h4>
 
    <p>The 'hostname' variable contains the name of the current
    host. However, due to scoping rules that the authors cannot fully
@@ -432,8 +438,8 @@ appender("STDOUT", ConsoleAppender) {
 }</pre>
 
 
-   <h3>Everything is context aware with a reference to the current
-   context</h3>
+   <h3 class="doAnchor" name="everythingIsContext">Everything is
+   context aware with a reference to the current context</h3>
 
    <p>The execution of the <em>logback.groovy</em> script is done
    within the scope of a <a
@@ -473,7 +479,7 @@ appender("FILE", FileAppender) {
 root(DEBUG, ["FILE"])</pre>
 
 
-   <h3>Conditional configuration</h3>
+   <h3 class="doAnchor">Conditional configuration</h3>
    
    <p>Given that Groovy is a fully-fledged programming language,
    conditional statements allow for a single <em>logback.groovy</em>

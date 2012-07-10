@@ -10,10 +10,13 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -66,8 +69,8 @@
     of the container itself.
     </p>
 
-    <h2><a name="easy" href="#easy">The simplest and easiest
-    approach</a></h2>
+    <h2 class="doAnchor" name="easy">The simplest and easiest
+    approach</h2>
 
     <p>Assuming your container supports child-first class loading,
     separation of logging can be accomplished by embedding a copy of
@@ -97,8 +100,8 @@
     separation impossible. All hope is not lost. Please read on.
     </p>
 
-    <h2><a name="contextSelectors" href="#contextSelectors">Context
-    Selectors</a></h2>
+    <h2 class="doAnchor" name="contextSelectors">Context
+    Selectors</h2>
 
     <p>Logback provides a mechanism for a single instance of SLF4J and
     logback classes loaded into memory to provide multiple logger
@@ -141,8 +144,8 @@
     </p>
 
 
-    <h3><a name="ContextJNDISelector"
-    href="#ContextJNDISelector">ContextJNDISelector</a></h3>
+    <h3 class="doAnchor"
+    name="ContextJNDISelector">ContextJNDISelector</h3>
 
     <p>Logback-classic ships with a selector called
     <code>ContextJNDISelector</code> which selects the logger context
@@ -166,9 +169,8 @@
     for
     <code>ch.qos.logback.classic.selector.ContextJNDISelector</code>.</p>
 
-    <h3><a name="settingJNDIVariables"
-    href="#settingJNDIVariables">Setting JNDI variables in
-    applications</a></h3>
+    <h3 class="doAnchor" name="settingJNDIVariables">Setting JNDI
+    variables in applications</h3>
     
     <p>In each of your applications, you need to name the logging
     context for the application. For a web-application, JNDI
@@ -215,8 +217,8 @@
     </p>
     
 
-    <h3><a name="jndiTomcat" href="#jndiTomcat">Configuring Tomcat for
-    ContextJNDISelector</a></h3>
+    <h3 class="doAnchor" name="jndiTomcat">Configuring Tomcat for
+    ContextJNDISelector</h3>
 
     <p>First, place the logback jars (that is
     logback-classic-${project.version}.jar,
@@ -234,8 +236,8 @@
     <p class="source">JAVA_OPTS="$JAVA_OPTS -Dlogback.ContextSelector=JNDI"</p>
 
 
-    <h3><a name="hotDeploy" href="#hotDeploy">Hot deploying
-    applications</a></h3>
+    <h3 class="doAnchor" name="hotDeploy">Hot deploying
+    applications</h3>
 
     <p>When the web-application is recycled or shutdown, we strongly
     recommend that the incumbent <code>LoggerContext</code> be closed
@@ -263,8 +265,7 @@
     <code>contextDestroyed()</code> method is invoked <em>last</em>
     during application shutdown. </p>
 
-    <h3><a name="betterPerf" href="betterPerf">Better
-    performance</a></h3>
+    <h3 class="doAnchor" name="betterPerf">Better performance</h3>
 
     <p>When <code>ContextJNDISelector</code> is active, each time a
     logger is retrieved, a JNDI lookup must be performed. This can
@@ -301,8 +302,8 @@
    recycled.</p>
 
 
-   <h2><a name="tamingStaticRefs" href="#tamingStaticRefs">Taming
-   static references in shared libraries</a></h2>
+   <h2 class="doAnchor" name="tamingStaticRefs">Taming static
+   references in shared libraries</h2>
 
    <p><code>ContextJNDISelector</code> works nicely to create logging
    separation when SLF4J and logback artifacts are shared by all

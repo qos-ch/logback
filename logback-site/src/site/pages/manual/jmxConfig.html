@@ -12,10 +12,13 @@
 
     <title>Chapter 10: JMX Configuration</title>
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -67,9 +70,9 @@
     in the figure below:
     </p>
     
-    <p><a name="jmxConfigurator" href="#jmxConfigurator">Screen-shot
-    of <code>JMXConfigurator</code> viewed in
-    <code>jconsole</code></a></p>
+    <h3 class="doAnchor" name="jmxConfigurator">Screen-shot of
+    <code>JMXConfigurator</code> viewed in <code>jconsole</code></h3>
+
     <img src="images/chapters/jmxConfigurator/jmxConfigurator.gif" alt="jmxConfigurator"/>   
 
 		<p>Thus, you can</p>
@@ -97,7 +100,7 @@
 
     <img src="images/chapters/jmxConfigurator/statusList.gif" alt="statusList.gif"/>   
 
-    <h3><a name="leak" href="#leak">Avoiding memory leaks</a></h3>
+    <h3 class="doAnchor" name="leak">Avoiding memory leaks</h3>
 
     <p>If your application is deployed in a web-server or an
     application server, the registration of an
@@ -137,10 +140,8 @@ public class MyContextListener implements ServletContextListener {
     <!-- ============ Multiple web-applications  ================== -->
 
     
-    <h2>
-      <a name="multiple" href="#multiple"><code>JMXConfigurator</code>
-      with multiple web-applications</a>
-    </h2>
+    <h2 class="doAnchor" name="multiple"><code>JMXConfigurator</code>
+    with multiple web-applications</h2>
 
     <p>If you deploy multiple web-applications in the same server,
     and if you have not overridden the default <a
@@ -191,10 +192,8 @@ public class MyContextListener implements ServletContextListener {
     
     <!-- ============ JMX enabling your  server ================== -->
 
-    <h3>
-      <a name="jmxEnablingServer" href="#jmxEnablingServer">JMX enabling your
-      server</a>
-    </h3>
+    <h3 class="doAnchor" name="jmxEnablingServer">JMX enabling your
+    server</h3>
 
     <p>If your server runs with JDK 1.6 or later, your server should
     be JMX enabled by default.</p>

@@ -10,10 +10,13 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body onload="prettyPrint();">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -65,7 +68,7 @@
     </p>
 
     
-    <h3>Migrating a log4j layout</h3>
+    <h3 class="doAnchor" name="log4jLayout">Migrating a log4j layout</h3>
 
     <p>Let us begin by migrating a hypothetical and trivially simple
     log4j layout named <a
@@ -136,7 +139,8 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent></b> {
    <code>activateOptions</code>() method.
    </p>
 
-   <h3>Migrating a log4j appender</h3>
+   <h3 class="doAnchor" name="log4jAppender">Migrating a log4j
+   appender</h3>
    
    <p>Migrating an appender is quite similar to migrating a
    layout. Here is a trivially simple appender called <a

@@ -10,10 +10,13 @@
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -187,7 +190,7 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		invocations.
 		</p>
 		
-		<h3>Advanced Use</h3>
+		<h3 class="doAnchor">Advanced Use</h3>
 		
 		<p>Mapped Diagnostic Contexts shine brightest within client server
 		architectures.  Typically, multiple clients will be served by
@@ -501,7 +504,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		
 		
 		
-		<h3>Automating access to the <code>MDC</code></h3>
+		<h3 class="doAnchor" name="autoMDC">Automating access to the <code>MDC</code></h3>
 		
 		<p>As we've seen, the <code>MDC</code> is very useful when dealing
 			with multiple clients. In the case of a web application that
@@ -619,8 +622,8 @@ public class UserServletFilter implements Filter {
 		
 
 
-  <h3><a name="managedThreads" href="#managedThreads">MDC And Managed
-  Threads</a></h3>
+  <h3 class="doAnchor" name="managedThreads">MDC And Managed
+  Threads</h3>
 
   <p>A copy of the mapped diagnostic context can not always be
   inherited by worker threads from the initiating thread. This is the
@@ -639,8 +642,7 @@ public class UserServletFilter implements Filter {
   managed thread.
   </p>
 
-  <h2><a name="mis"
-  href="#mis"><code>MDCInsertingServletFilter</code></a></h2>
+  <h3 class="doAnchor" name="mis">MDCInsertingServletFilter</h3>
 
   <p>Within web applications, it often proves helpful to know the
   hostname, request uri and user-agent associated with a given HTTP
