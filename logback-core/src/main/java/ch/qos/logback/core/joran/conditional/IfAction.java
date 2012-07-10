@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.conditional;
 import java.util.List;
 import java.util.Stack;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
 import org.xml.sax.Attributes;
 
@@ -30,6 +31,7 @@ public class IfAction extends Action {
   private static final String CONDITION_ATTR = "condition";
 
   public static String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
+  public static String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
 
   Stack<IfState> stack = new Stack<IfState>();
   
@@ -48,6 +50,7 @@ public class IfAction extends Action {
     ic.pushObject(this);
     if(!EnvUtil.isJaninoAvailable()) {
        addError(MISSING_JANINO_MSG);
+       addError(MISSING_JANINO_SEE);
        return;
      }
 

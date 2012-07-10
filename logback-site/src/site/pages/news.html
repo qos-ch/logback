@@ -31,6 +31,15 @@
 
     <h3>10th of July, 2012 - Release of version 1.0.7</h3>
 
+    <div class="breaking">
+      <h4>Janino library upgraded to version 2.6.1.</h4>
+
+      <p>As of Janino version 2.6.0, in addition to
+      <em>janino.jar</em>, <em>commons-compiler.jar</em> needs to be
+      on the class path as well. Please see the <a
+      href="setup.html#janino">Janino setup</a> instructions.</p>
+    </div>
+
     <p>Substitution properties are now correctly recognized by <span
     class="attr">scan</span> and <span class="attr">scanPeriod</span>
     attributes of <code>&lt;configuration></code> element in
@@ -177,7 +186,7 @@
 
     <h3>26th of April, 2012 - Release of version 1.0.2</h3>
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+    <div class="breaking">
 
     <h4><span class="label">Breaking change partially reverted in
     1.0.3</span><br/>By default <code>PatternLayout</code> will now output
@@ -283,7 +292,7 @@
     href="http://jira.qos.ch/browse/LBACCESS-17">LBACCESS-17</a>
     reported by Grzegorz Grzybek.</p>
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+    <div class="breaking">
 
     <h4>Breaking change: properties are no longer automatically
     inserted into the context</h4>
@@ -466,19 +475,19 @@
 
     <h3>January 25th, 2011 - Release of version 0.9.28</h3>
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
-  
-    <h4>Breaking change: In the Context interface, the previously
-    misspelled property <code>bithTime</code> is now renamed as
-    <code>birthTime</code>.</h4>
-
-    <p>In the <a
-    href="apidocs/ch/qos/logback/core/Context.html">Context</a>
-    interface, the previously misspelled property
-    <code>bithTime</code> is now renamed as
-    <code>birthTime</code>. This is a backward-incompatible
-    change. All pre-existing references to "bithTime" property now
-    need to referenced as "birthTime".</p>
+    <div class="breaking">
+ 
+      <h4>Breaking change: In the Context interface, the previously
+      misspelled property <code>bithTime</code> is now renamed as
+      <code>birthTime</code>.</h4>
+      
+      <p>In the <a
+      href="apidocs/ch/qos/logback/core/Context.html">Context</a>
+      interface, the previously misspelled property
+      <code>bithTime</code> is now renamed as
+      <code>birthTime</code>. This is a backward-incompatible
+      change. All pre-existing references to "bithTime" property now
+      need to referenced as "birthTime".</p>
     </div>
 
     <p>Fixed <a href="http://jira.qos.ch/browse/LBCLASSIC-238">issue
@@ -722,7 +731,7 @@
     <h3>March 24, 2010 - Release of version 0.9.19</h3>
 
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+    <div class="breaking">
 
     <h4>Breaking change: FileAppender now expects an Encoder</h4>
 
@@ -754,7 +763,8 @@
 
     <br/>
 
-    <div style="border: 1px solid #F44; background-color: #FED; padding-left: 1ex; padding-right: 1ex;">
+    <div class="breaking">
+
 
       <h4>Breaking change: DBAppender in logback-classic expects four
       additional columns

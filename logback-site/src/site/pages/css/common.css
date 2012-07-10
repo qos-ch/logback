@@ -24,6 +24,13 @@ div.source {
  margin-top: 1em;
 }
 
+div.breaking {
+   border: 1px solid #F44; 
+   background-color: #FED; 
+   padding-left: 1ex; 
+   padding-right: 1ex;
+}
+
 .longline {
   overflow: scroll;
 }

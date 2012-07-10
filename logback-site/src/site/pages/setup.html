@@ -7,20 +7,24 @@
     <link rel="stylesheet" type="text/css" href="css/common.css" />
     <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
-
+    <link rel="stylesheet" type="text/css" href="css/prettify.css" media="screen" />
   </head>
-  <body>
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='';	</script>
 
-    <script src="templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="templates/header.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script type="text/javascript" src="js/jquery-min.js"></script>
+    <script type="text/javascript" src="js/decorator.js"></script>
+    
     <div id="left">
-      <script src="templates/left.js" type="text/javascript"></script>
+      <script type="text/javascript" src="templates/left.js"></script>
     </div>
   
     <div id="content">
 	
 	
-    <h2>Classpath Setup</h2>
+    <h2 class="doAnchor">Classpath Setup</h2>
 
     <p>In order to run the examples provided in the documentation, you
     need to add the following jars to your class path:
@@ -40,7 +44,8 @@
     
 
 
-    <h3><a href="">Running from the command line</a></h3>
+    <h3 class="doAnchor" name="commandLine">Running from the command
+    line</h3>
     
     <p>Assuming your current directory is
     <em>$LOGBACK_HOME/logback-examples</em>, where
@@ -73,8 +78,8 @@
    <em>$LOGBACK_HOME/logback-examples</em> directory.
    </p>
 
-   <h3><a name="SMTP" href="#SMTP"><code>SMTPAppender</code> requires
-   JavaMail API</a></h3>
+   <h3 class="doAnchor" name="SMTP"><code>SMTPAppender</code> requires
+   JavaMail API</h3>
 
    <p><code>SMTPAppender</code> related examples require the JavaMail
    API version 1.4 or later. Once you <a
@@ -82,29 +87,76 @@
    JavaMail</a>, you need to place <em>mail.jar</em> on your class
    path.</p>
    
+   <p>Here is the corresponding Maven dependency declaration for your
+   convenience.</p>
 
-   <h3><a name="gEventEvaluator"
-   href="#gEventEvaluator"><code>GEventEvaluator</code> requires the
-   Groovy runtime</a></h3>
+
+
+   <pre class="prettyprint source">&lt;!-- The javax.activation:activation:1.1 dependency will be --&gt;
+&lt;!-- automatically pulled in by Maven's transitivity rules --&gt;
+&lt;dependency>
+  &lt;groupId>javax.mail&lt;/groupId>
+  &lt;artifactId>mail&lt;/artifactId>
+  &lt;version>${javax.mail.version}&lt;/version>
+&lt;/dependency></pre>
+
+   <h3 class="doAnchor" name="groovy"><code>GEventEvaluator</code> and
+   <em>logback.groovy</em> configuration files require the Groovy
+   runtime</h3>
    
    <p><code>GEventEvaluator</code> depends on the Groovy runtime. It
-   was tested with Groovy version 1.7.2.
+   was tested with Groovy version ${groovy.version}. Similarly, as the
+   name indicates <a href="manual/groovy.html">groovy
+   configuration</a> files require the groovy runtime to be present on
+   your class path.
    </p>
    
+   <p>Here is the corresponding Maven dependency declaration for your
+   convenience.
+   </p>
 
-   <h3><a name="janino" href="#janino">Evaluators and more
-   specifically <code>JaninoEventEvaluator</code> require
-   Janino</a></h3>
+
+   <pre class="prettyprint source">&lt;dependency>
+  &lt;groupId>org.codehaus.groovy&lt;/groupId>
+  &lt;artifactId>groovy-all&lt;/artifactId>
+  &lt;version>${groovy.version}&lt;/version>
+&lt;/dependency></pre>
+
+
+   <h3 class="doAnchor" name="janino">Conditional processing and
+   <code>JaninoEventEvaluator</code> require the Janino library</h3>
    
-   <p>The evaluator examples which are mostly based on
-   <code>JaninoEventEvaluator</code> require <a
-   href="http://docs.codehaus.org/display/JANINO/Home"><b>Janino</b></a>
-   version 2.5.10 or later. Once you have downloaded Janino, you need to
-   place <em>janino.jar</em> on your class path.</p>
+   <p><a href="manual/configuration.html#conditional">Conditional
+   processing</a> in configuration files requires the <a
+   href="http://docs.codehaus.org/display/JANINO/Home"><b>Janino
+   library</b></a>. Moreover, the evaluator examples based on
+   <code>JaninoEventEvaluator</code> require Janino as well.  Once you
+   download Janino, simply place <em>commons-compiler.jar</em> and
+   <em>janino.jar</em> on your application's class path.
+   </p>
+
+   <p><span class="label notice">Don't forget</span> As of Janino
+   version 2.6.0, in addition to <em>janino.jar</em>,
+   <em>commons-compiler.jar</em> needs to be on the class path as well.</p>
+
+   <p>Here is the corresponding Maven dependency declaration for your
+   convenience.
+   </p>
+
+   <pre class="prettyprint source">&lt;!-- The org.codehaus.janino:commons-compiler:${janino.version} dependency --&gt;
+&lt;!-- will be automatically pulled in by Maven's transitivity rules --&gt;
+&lt;dependency>
+  &lt;groupId>org.codehaus.janino&lt;/groupId>
+  &lt;artifactId>janino&lt;/artifactId>
+  &lt;version>${janino.version}&lt;/version>
+&lt;/dependency></pre>
+
+
+
    
     
 
-   <h3><a name="ide" href="#ide">Building with an IDE</a></h3>
+   <h3 class="doAnchor" name="ide">Building with an IDE</h3>
    
    <p>If you wish to contribute to the project or just hack for fun,
    you will probably want to import logback as a project into your
@@ -139,7 +191,8 @@
    instructions below, if you have trouble building logback from the
    sources, just ask for help on the logback-dev mailing list.</p>
 
-   <h3>Building logback with IntelliJ IDEA</h3>
+   <h3 class="doAnchor" name="idea">Building logback with IntelliJ
+   IDEA</h3>
 
    <p>Assuming you have the latest version of IntelliJ IDEA installed,
    the only required additional plugin is the Scala plugin. IntelliJ
@@ -152,16 +205,16 @@
    installed, you would need to re-import logback as a project after
    the Scala plugin is installed.</p>
 
-   <h3>Building with Eclipse</h3>
+   <h3 class="doAnchor" name="eclipse">Building with Eclipse</h3>
 
    <p>Building logback under Eclipse is a little trickier. Here are
    instructions for building logback under Eclipse in 61 easy steps.
    </p>
 
    <p>The author does not wish to unduly disparage
-   <code>m2eclipse</code>. However, as of this writing that is October
-   2011, it appears that the key to building logback under Eclipse is
-   to avoid using <code>m2eclipse</code>. If you have
+   <code>m2eclipse</code>. However, as of this writing, that is
+   October 2011, it appears that the key to building logback under
+   Eclipse is to avoid using <code>m2eclipse</code>. If you have
    <code>m2eclipse</code> installed, you can disable it by removing
    the Maven Nature for a given project. And without further ado here
    are the steps:

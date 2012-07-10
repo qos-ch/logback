@@ -52,7 +52,8 @@
          logback-classic/pom.xml and in setClasspath.cmd -->
     <slf4j.version>1.6.6</slf4j.version>
     <junit.version>4.10</junit.version>
-    <janino.version>2.5.16</janino.version>
+    <javax.mail.version>1.4</javax.mail.version>
+    <janino.version>2.6.1</janino.version>
     <scala.version>2.9.1</scala.version>
     <groovy.version>1.7.6</groovy.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
@@ -144,7 +145,7 @@
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>mail</artifactId>
-        <version>1.4</version>
+        <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
         <groupId>dom4j</groupId>

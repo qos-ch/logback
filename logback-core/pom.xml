@@ -175,6 +175,7 @@
               org.xml.*;resolution:=optional,
               org.fusesource.jansi;resolution:=optional,
               org.codehaus.janino;resolution:=optional,
+              org.codehaus.commons.compiler;resolution:=optional,
               *
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>J2SE-1.5

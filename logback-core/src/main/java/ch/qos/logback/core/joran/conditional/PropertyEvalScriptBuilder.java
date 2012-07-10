@@ -19,10 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.spi.PropertyContainer;
+import org.codehaus.commons.compiler.CompileException;
 import org.codehaus.janino.ClassBodyEvaluator;
-import org.codehaus.janino.CompileException;
-import org.codehaus.janino.Parser.ParseException;
-import org.codehaus.janino.Scanner.ScanException;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -41,13 +39,14 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
   Map<String, String> map = new HashMap<String, String>();
 
   public Condition build(String script) throws IllegalAccessException,
-          CompileException, ParseException, ScanException, InstantiationException,
+          CompileException,
+          InstantiationException,
           SecurityException, NoSuchMethodException, IllegalArgumentException,
           InvocationTargetException {
 
     ClassBodyEvaluator cbe = new ClassBodyEvaluator();
-    cbe.setImplementedTypes(new Class[]{Condition.class});
-    cbe.setExtendedType(PropertyWrapperForScripts.class);
+    cbe.setImplementedInterfaces(new Class[]{Condition.class});
+    cbe.setExtendedClass(PropertyWrapperForScripts.class);
     cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
 
     Class<?> clazz = cbe.getClazz();
