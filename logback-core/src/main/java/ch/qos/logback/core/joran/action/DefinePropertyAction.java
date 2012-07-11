@@ -15,6 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.ActionException;
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.spi.PropertyDefiner;
 import org.xml.sax.Attributes;
@@ -64,6 +65,9 @@ public class DefinePropertyAction extends Action {
       definer = (PropertyDefiner) OptionHelper.instantiateByClassName(
           className, PropertyDefiner.class, context);
       definer.setContext(context);
+      if(definer instanceof LifeCycle) {
+        ((LifeCycle) definer).start();
+      }
       ec.pushObject(definer);
     } catch (Exception oops) {
       inError = true;

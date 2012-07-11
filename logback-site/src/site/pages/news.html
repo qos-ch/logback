@@ -39,6 +39,17 @@
       on the class path as well. Please see the <a
       href="setup.html#janino">Janino setup</a> instructions.</p>
     </div>
+    
+    <p>
+    </p>
+
+    <div class="breaking">
+      <h4>Groovy dependency upgraded to version 2.0.0.</h4>
+
+      <p>Please see the <a href="setup.html#groovy">Groovy setup</a>
+      instructions.</p>
+    </div>
+
 
     <p>Substitution properties are now correctly recognized by <span
     class="attr">scan</span> and <span class="attr">scanPeriod</span>
@@ -50,7 +61,11 @@
     <p>The color-related conversion words now set the default color
     correctly. Xu Huisheng provided the relavant patch.
     </p>
-
+    
+    <p>If a <code>PropertyDefiner</code> implements
+    <code>LifeCycle</code>, then its <code>start()</code> method will
+    now be invoked.</p>
+    
     <hr width="80%" align="center" />
 
     <h3>7th of June, 2012 - Release of version 1.0.6</h3>
