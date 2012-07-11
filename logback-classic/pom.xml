@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -86,14 +86,14 @@
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <scope>test</scope>      
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.9</version>
-      <scope>test</scope>      
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -124,7 +124,7 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>integration</artifactId>
@@ -180,22 +180,21 @@
     </dependency>
 
     <!--<dependency>-->
-      <!--<groupId>org.apache.zookeeper</groupId>-->
-      <!--<artifactId>zookeeper</artifactId>-->
-      <!--<version>3.4.0-SVN</version>-->
-      <!--<scope>test</scope>-->
+    <!--<groupId>org.apache.zookeeper</groupId>-->
+    <!--<artifactId>zookeeper</artifactId>-->
+    <!--<version>3.4.0-SVN</version>-->
+    <!--<scope>test</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.apache.zookeeper</groupId>-->
-      <!--<artifactId>zookeeper</artifactId>-->
-      <!--<version>3.4.0-SVN</version>-->
-      <!--<scope>test</scope>-->
-      <!--<classifier>test</classifier>-->
+    <!--<groupId>org.apache.zookeeper</groupId>-->
+    <!--<artifactId>zookeeper</artifactId>-->
+    <!--<version>3.4.0-SVN</version>-->
+    <!--<scope>test</scope>-->
+    <!--<classifier>test</classifier>-->
     <!--</dependency>-->
 
   </dependencies>
-
 
 
   <build>
@@ -209,7 +208,7 @@
       </resource>
     </resources>
 
-  
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -221,10 +220,21 @@
       </plugin>
 
       <plugin>
-      <groupId>org.codehaus.groovy.maven</groupId>
+        <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
+            <configuration>
+              <providerSelection>1.8</providerSelection>
+            </configuration>
             <goals>
               <goal>generateStubs</goal>
               <goal>compile</goal>
@@ -233,6 +243,7 @@
             </goals>
           </execution>
         </executions>
+
       </plugin>
 
       <plugin>
@@ -257,7 +268,7 @@
         </executions>
       </plugin>
 
-      
+
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.4</version>
@@ -274,14 +285,14 @@
           </dependency>
 
         </dependencies>
-        
+
         <executions>
           <execution>
             <id>ant-osgi-test</id>
             <phase>package</phase>
             <configuration>
-              <tasks>      
-                <property name="currentVersion" value="${project.version}" />
+              <tasks>
+                <property name="currentVersion" value="${project.version}"/>
                 <property name="slf4j.version" value="${slf4j.version}"/>
                 <property name="basedir" value="${basedir}"/>
                 <ant antfile="${basedir}/osgi-build.xml"/>
@@ -296,7 +307,7 @@
             <id>ant-integration-test</id>
             <phase>package</phase>
             <configuration>
-              <tasks>      
+              <tasks>
                 <property name="slf4j.version" value="${slf4j.version}"/>
                 <ant antfile="${basedir}/integration.xml"/>
               </tasks>
@@ -355,7 +366,7 @@
                  of java code. -->
 
             <Import-Package>
-              sun.reflect;resolution:=optional, 
+              sun.reflect;resolution:=optional,
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               org.slf4j,

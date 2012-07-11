@@ -68,11 +68,9 @@ class GSiftingAppender extends AppenderBase implements ConfigurationContributor 
     }
   }
 
-  @Override
   protected long getTimestamp(ILoggingEvent event) {
     return event.getTimeStamp();
   }
-
 
   Appender buildAppender(String value) {
     String key = getDiscriminatorKey()
