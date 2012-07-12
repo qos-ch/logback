@@ -1,15 +1,11 @@
 package chapters.appenders.socket;
 
-import ch.qos.logback.classic.Level;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
-
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 /**
  * Created with IntelliJ IDEA. User: ceki Date: 27.06.12 Time: 19:35 To change
@@ -32,7 +28,7 @@ public class ConsolePluginClient {
 		socketAppender.setContext(lc);
 
 		lc.reset();
-		
+
 		lc.getStatusManager().add(new OnConsoleStatusListener());
 		// SocketAppender options become active only after the execution
 		// of the next statement.
@@ -42,28 +38,45 @@ public class ConsolePluginClient {
 				.getLogger(ConsolePluginClient.class);
 		logger.addAppender(socketAppender);
 
+		UglyBetty ub = new UglyBetty("ugly-better-thread-234");
+		ub.start();
 		for (int i = 0; i < 1000; i++) {
 			if (i % 3 == 0) {
 				logger.warn(i + " is divisible by 3");
-			} else if (i % 11 == 0) {
-				logger.error("this is an exception", new Exception("test"));
 			} else {
-				logger.debug("this is message number " + i);
+				toto(logger, i);
 			}
-			Thread.sleep(100);
+			Thread.sleep(50);
+		}
+		ub.join();
+
+	}
+
+	static void toto(Logger logger, int i) {
+		logger.debug("this is message number " + i);
+	}
+
+	static class UglyBetty extends Thread {
+		org.slf4j.Logger logger = LoggerFactory.getLogger(UglyBetty.class);
+
+		public UglyBetty(String name) {
+			super(name);
 		}
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				System.in));
-
-		while (true) {
-			System.out.println("Type a message to send to log server at "
-					+ hostname + ":" + port + ". Type 'q' to quit.");
-
-			String s = reader.readLine();
-
-			if (s.equals("q")) {
-				break;
+		public void run() {
+			for (int i = 0; i < 1000; i++) {
+				if (i % 5 == 0) {
+					logger.warn(i + " is divisible by 5");
+				} else if (i % 47 == 0) {
+					logger.error("this is an exception", new Exception("test"));
+				} else {
+					logger.debug("this is message number " + i);
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
