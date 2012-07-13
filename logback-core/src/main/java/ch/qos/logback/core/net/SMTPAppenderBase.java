@@ -212,8 +212,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     final CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
     subAppend(cb, eventObject);
 
-    cb.asList();
-
     try {
       if (eventEvaluator.evaluate(eventObject)) {
         // clone the CyclicBuffer before sending out asynchronously
