@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Created with IntelliJ IDEA. User: ceki Date: 27.06.12 Time: 19:35 To change
@@ -30,6 +31,7 @@ public class ConsolePluginClient {
 		socketAppender.setReconnectionDelay(10000);
 
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		
 		socketAppender.setContext(lc);
 
 		lc.reset();
@@ -56,7 +58,8 @@ public class ConsolePluginClient {
 			Thread.sleep(SLEEP);
 		}
 		ub.join();
-
+		
+		StatusPrinter.print(lc);
 	}
 
 	static void toto(Logger logger, int i) {

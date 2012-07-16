@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core.pattern;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAware;
+
 public class ConverterUtil {
 
   /**
@@ -49,5 +52,15 @@ public class ConverterUtil {
       }
     }
     return p;
+  }
+
+  public static <E> void setContextForConverters(Context context, Converter<E> head) {
+    Converter c = head;
+    while (c != null) {
+      if (c instanceof ContextAware) {
+        ((ContextAware) c).setContext(context);
+      }
+      c = c.getNext();
+    }
   }
 }

@@ -13,18 +13,18 @@
  */
 package ch.qos.logback.core.pattern;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.pattern.parser.ScanException;
-import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
@@ -87,7 +87,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       if (postCompileProcessor != null) {
         postCompileProcessor.process(head);
       }
-      setContextForConverters(head);
+      ConverterUtil.setContextForConverters(getContext(), head);
       ConverterUtil.startConverters(this.head);
       super.start();
     } catch (ScanException sce) {
@@ -102,15 +102,14 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     this.postCompileProcessor = postCompileProcessor;
   }
 
+  /**
+   *
+   * @param head
+   * @deprecated  Use {@link ConverterUtil#setContextForConverters} instead. This method will
+   *  be removed in future releases.
+   */
   protected void setContextForConverters(Converter<E> head) {
-    Context context = getContext();
-    Converter c = head;
-    while (c != null) {
-      if (c instanceof ContextAware) {
-        ((ContextAware) c).setContext(context);
-      }
-      c = c.getNext();
-    }
+    ConverterUtil.setContextForConverters(getContext(), head);
   }
 
   protected String writeLoopOnConverters(E event) {
