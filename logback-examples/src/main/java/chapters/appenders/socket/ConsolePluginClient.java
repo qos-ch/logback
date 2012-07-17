@@ -15,9 +15,12 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class ConsolePluginClient {
 
+	static String LONG_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lectus augue, pulvinar quis cursus nec, imperdiet nec ante. Cras sit amet arcu et enim adipiscing pellentesque. Suspendisse mi felis, dictum a lobortis nec, placerat in diam. Proin lobortis tortor at nunc facilisis aliquet. Praesent eget dignissim orci. Ut iaculis bibendum.";
+	
 	static String LOGGER_NAME = "com.acme.myapp.foo";
 	static String UGLY_BETTY_LOGGER_NAME = "com.acme.myapp.UglyBetty";
-	static long SLEEP = 10;
+	static long SLEEP = 1;
+	static long RUN_LENGTH = 20000;
 
 	static public void main(String[] args) throws Exception {
 		// Create a SocketAppender connected to hostname:port with a
@@ -49,7 +52,7 @@ public class ConsolePluginClient {
 
 		UglyBetty ub = new UglyBetty("ugly-betty-thread-234");
 		ub.start();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < RUN_LENGTH; i++) {
 			if (i % 3 == 0) {
 				logger.warn(i + " is divisible by 3");
 			} else {
@@ -74,9 +77,9 @@ public class ConsolePluginClient {
 		}
 
 		public void run() {
-			for (int i = 0; i < 1000; i++) {
-				if (i % 5 == 0) {
-					logger.warn(i + " is divisible by 5");
+			for (int i = 0; i < RUN_LENGTH; i++) {
+				if (i % 23 == 0) {
+					logger.warn(LONG_TEXT);
 				} else if (i % 47 == 0) {
 					logger.error("this is an exception", new Exception("test"));
 				} else {

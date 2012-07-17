@@ -54,7 +54,7 @@
     <junit.version>4.10</junit.version>
     <javax.mail.version>1.4</javax.mail.version>
     <janino.version>2.6.1</janino.version>
-    <scala.version>2.9.1</scala.version>
+    <scala.version>2.9.2</scala.version>
     <!--<groovy.version>1.7.6</groovy.version>-->
     <groovy.version>2.0.0</groovy.version>
 

@@ -29,6 +29,10 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
 
   abstract protected String transform(E event, String in);
 
+  public Converter<E> getChildConverter() {
+    return childConverter;
+  }
+
   public void setChildConverter(Converter<E> child) {
     childConverter = child;
   }
@@ -36,10 +40,10 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
   public String toString() {
     StringBuilder buf = new StringBuilder();
     buf.append("CompositeConverter<");
-    
-    if(formattingInfo != null)
-    buf.append(formattingInfo);
-    
+
+    if (formattingInfo != null)
+      buf.append(formattingInfo);
+
     if (childConverter != null) {
       buf.append(", children: ").append(childConverter);
     }

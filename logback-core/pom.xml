@@ -176,6 +176,32 @@
           </instructions>
         </configuration>
       </plugin>
+
+      <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#ignore_plugin_goal -->
+      <plugin>
+        <groupId>org.eclipse.m2e</groupId>
+        <artifactId>lifecycle-mapping</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+          <lifecycleMappingMetadata>
+            <pluginExecutions>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>some-group-id</groupId>
+                  <artifactId>some-artifact-id</artifactId>
+                  <versionRange>[1.0.0,)</versionRange>
+                  <goals>
+                    <goal>some-goal</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <ignore />
+                </action>
+              </pluginExecution>
+            </pluginExecutions>
+          </lifecycleMappingMetadata>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
