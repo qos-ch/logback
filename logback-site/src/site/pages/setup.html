@@ -216,8 +216,15 @@
    October 2011, it appears that the key to building logback under
    Eclipse is to avoid using <code>m2eclipse</code>. If you have
    <code>m2eclipse</code> installed, you can disable it by removing
-   the Maven Nature for a given project. And without further ado here
-   are the steps:
+   the Maven Nature for a given project. In later versions of Eclipse,
+   m2eclipse is installed bu default. As of logback version 1.0.7, the
+   <em>pom.xml</em> file for logback-core now deactivates m2eclipse as
+   explained in <a
+   href="http://wiki.eclipse.org/M2E_plugin_execution_not_covered#ignore_plugin_goal">M2E
+   plugin wiki</a>.
+   </p>
+
+   <p>And without further ado here are the steps:
    </p>
    
 
@@ -234,10 +241,10 @@
      <b>not</b> necessary</li>
 
      <li>Similar to the previous step, install Scala IDE for Eclipse
-     plugin from <a
-     href="http://download.scala-ide.org/releases-29/2.0.0-beta">http://download.scala-ide.org/releases-29/2.0.0-beta</a>. Installation
-     of "JDT Weaving" or "Scala IDE for Eclipse Source feature" are
-     not necessary.</li>
+     plugin as explained on the <a
+     href="http://scala-ide.org/download/current.html">Scala IDE</a>
+     web-site. Installation of "JDT Weaving" or "Scala IDE for Eclipse
+     Source feature" are not necessary.</li>
 
      <li><pre>cd $LOGBACK_HOME</pre>
 
@@ -279,12 +286,6 @@
      </li>   
      
    </ol>
-
-   <p>The above should also work for Helios (Eclipse 3.6). The only
-   difference is that the Groovy-Eclipse feature needs to be installed
-   from <a
-   href="http://dist.springsource.org/release/GRECLIPSE/e3.6/">http://dist.springsource.org/release/GRECLIPSE/e3.6/</a>.
-   </p>  
 
    <script src="templates/footer.js" type="text/javascript"></script>
 </div>

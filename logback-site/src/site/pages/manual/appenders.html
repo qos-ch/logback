@@ -2017,15 +2017,15 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
-        <td><span class="prop" container="smtp">sessionByJNDI</span></td>
+        <td><span class="prop" container="smtp">sessionViaJNDI</span></td>
         <td><code>boolean</code></td>
         <td><code>SMTPAppender</code> relies on
         <code>javax.mail.Session</code> to send out email messages. By
-        default, <span class="prop">sessionByJNDI</span> is set to
+        default, <span class="prop">sessionViaJNDI</span> is set to
         <code>false</code> so the <code>javax.mail.Session</code>
         instance is built by <code>SMTPAppender</code> itself with the
         properties specified by the user. If the <span
-        class="prop">sessionByJNDI</span> property is set to
+        class="prop">sessionViaJNDI</span> property is set to
         <code>true</code>, the <code>javax.mail.Session</code> object
         will be retrieved via JNDI. See also the <span
         class="prop">jndiLocation</span> property.
