@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -29,6 +30,8 @@ import org.xml.sax.Attributes;
  */
 public class DefinePropertyAction extends Action {
 
+  String scopeStr;
+  Scope scope;
   String propertyName;
   PropertyDefiner definer;
   boolean inError;
@@ -36,12 +39,17 @@ public class DefinePropertyAction extends Action {
   public void begin(InterpretationContext ec, String localName,
       Attributes attributes) throws ActionException {
     // reset variables
+    scopeStr = null;
+    scope = null;
     propertyName = null;
     definer = null;
     inError = false;
-
+    
     // read future property name
     propertyName = attributes.getValue(NAME_ATTRIBUTE);
+    scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
+    
+    scope = ActionUtil.stringToScope(scopeStr);
     if (OptionHelper.isEmpty(propertyName)) {
       addError("Missing property name for property definer. Near [" + localName
           + "] line " + getLineNumber(ec));
@@ -99,7 +107,7 @@ public class DefinePropertyAction extends Action {
       // not null
       String propertyValue = definer.getPropertyValue();
       if(propertyValue != null) {
-        context.putProperty(propertyName, propertyValue);
+        ActionUtil.setProperty(ec, propertyName, propertyValue, scope);
       }
     }
   }

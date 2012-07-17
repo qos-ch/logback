@@ -1448,7 +1448,7 @@ public class MyApp3 {
 
    <p>The <span class="attr">scope</span> attribute of the
    <code>&lt;property></code> element can be used to set the scope of
-   properties. The <span class="attr">scope</span> attribute admit the
+   properties. The <span class="attr">scope</span> attribute admits
    "local", "context" and "system" strings as possible values.
    </p>
 
@@ -1694,8 +1694,10 @@ fileName=myApp.log
    <p>Under certain circumstances, you may want to make use of
    env-entries stored in JNDI. The <code>&lt;insertFromJNDI></code>
    configuration directive extracts an env-entry stored in JNDI and
-   inserts it as a variable whose key is as specified by the <span
-   class="attr">as</span> attribute.
+   inserts the property in local scope with key specified by the <span
+   class="attr">as</span> attribute. As all properties, it is possible
+   to insert the new property into a <a href="#scopes">different
+   scope</a> with the help of the <em>scope</em> attribute.
    </p>
 
    <p class="example">Example: Insert as properties env-entries

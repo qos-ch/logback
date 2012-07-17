@@ -13,21 +13,20 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import ch.qos.logback.core.util.ContextUtil;
-import org.xml.sax.Attributes;
-
-import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.OptionHelper;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
 import java.util.Properties;
+
+import org.xml.sax.Attributes;
+
+import ch.qos.logback.core.joran.action.ActionUtil.Scope;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
+import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * This class serves as a base for other actions, which similar to the ANT
@@ -41,42 +40,12 @@ import java.util.Properties;
  */
 public class PropertyAction extends Action {
 
-  enum Scope {LOCAL, CONTEXT, SYSTEM};
-
   static final String RESOURCE_ATTRIBUTE = "resource";
 
 
   static String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
           + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
 
-  /**
-   * Add all the properties found in the argument named 'props' to an
-   * InterpretationContext.
-   */
-  public void setProperties(InterpretationContext ec, Properties props, Scope scope) {
-    switch(scope) {
-      case LOCAL: ec.addSubstitutionProperties(props);
-        break;
-      case CONTEXT:
-        ContextUtil cu = new ContextUtil((context));
-        cu.addProperties(props);
-        break;
-      case SYSTEM:
-        OptionHelper.setSystemProperties(this, props);
-    }
-  }
-
-  public void setProperty(InterpretationContext ec, String key, String value,  Scope scope) {
-     switch(scope) {
-      case LOCAL: ec.addSubstitutionProperty(key, value);
-        break;
-      case CONTEXT:
-        context.putProperty(key, value);
-        break;
-      case SYSTEM:
-        OptionHelper.setSystemProperty(this, key, value);
-    }
-  }
 
   /**
    * Set a new property for the execution context by name, value pair, or adds
@@ -94,7 +63,7 @@ public class PropertyAction extends Action {
     String value = attributes.getValue(VALUE_ATTRIBUTE);
     String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
 
-    Scope scope = stringToScope(scopeStr);
+    Scope scope = ActionUtil.stringToScope(scopeStr);
 
     if (checkFileAttributeSanity(attributes)) {
       String file = attributes.getValue(FILE_ATTRIBUTE);
@@ -126,20 +95,11 @@ public class PropertyAction extends Action {
       // now remove both leading and trailing spaces
       value = value.trim();
       value = ec.subst(value);
-      setProperty(ec, name, value, scope);
+      ActionUtil.setProperty(ec, name, value, scope);
 
     } else {
       addError(INVALID_ATTRIBUTES);
     }
-  }
-
-  private Scope stringToScope(String scopeStr) {
-    if(Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr))
-      return Scope.SYSTEM;
-     if(Scope.CONTEXT.toString().equalsIgnoreCase(scopeStr))
-      return Scope.CONTEXT;
-
-    return Scope.LOCAL;
   }
 
   void loadAndSetProperties(InterpretationContext ec, InputStream istream, Scope scope)
@@ -147,7 +107,7 @@ public class PropertyAction extends Action {
     Properties props = new Properties();
     props.load(istream);
     istream.close();
-    setProperties(ec, props, scope);
+    ActionUtil.setProperties(ec, props, scope);
   }
 
   boolean checkFileAttributeSanity(Attributes attributes) {

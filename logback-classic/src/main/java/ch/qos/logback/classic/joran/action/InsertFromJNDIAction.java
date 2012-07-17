@@ -20,6 +20,8 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.util.JNDIUtil;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.ActionUtil;
+import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -37,8 +39,12 @@ public class InsertFromJNDIAction extends Action {
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
 
     int errorCount = 0;
-    String envEntryName = attributes.getValue(ENV_ENTRY_NAME_ATTR);
-    String asName = attributes.getValue(AS_ATTR);
+    String envEntryName = ec.subst(attributes.getValue(ENV_ENTRY_NAME_ATTR));
+    String asKey = ec.subst(attributes.getValue(AS_ATTR));
+
+    String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
+    Scope scope = ActionUtil.stringToScope(scopeStr);
+
     String envEntryValue;
     
     if(OptionHelper.isEmpty(envEntryName)) {
@@ -47,7 +53,7 @@ public class InsertFromJNDIAction extends Action {
       errorCount++;
     }
     
-    if(OptionHelper.isEmpty(asName)) {
+    if(OptionHelper.isEmpty(asKey)) {
       String lineColStr = getLineColStr(ec);
       addError("["+AS_ATTR+"] missing, around "+lineColStr);
       errorCount++;
@@ -63,8 +69,8 @@ public class InsertFromJNDIAction extends Action {
       if(OptionHelper.isEmpty(envEntryValue)) {
         addError("["+envEntryName+"] has null or empty value");
       } else {
-        addInfo("Setting context variable ["+asName+"] to ["+envEntryValue+"]");
-        context.putProperty(asName, envEntryValue);
+        addInfo("Setting variable ["+asKey+"] to ["+envEntryValue+"] in ["+scope+"] scope");
+        ActionUtil.setProperty(ec, asKey, envEntryValue, scope);
       }
     } catch (NamingException e) {
       addError("Failed to lookup JNDI env-entry ["+envEntryName+"]");
