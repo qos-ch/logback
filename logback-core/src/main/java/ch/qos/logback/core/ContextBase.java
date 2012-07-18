@@ -29,6 +29,10 @@ public class ContextBase implements Context {
 
   private String name;
   private StatusManager sm = new BasicStatusManager();
+  /**
+   * Configuration factory name
+   */
+  private String cf = null;
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
   // serialized. For the time being, we ignore this shortcoming.
@@ -66,6 +70,14 @@ public class ContextBase implements Context {
       throw new IllegalArgumentException("null StatusManager not allowed");
     }
     this.sm = statusManager;
+  }
+  
+  public String getComponentFactory() {
+      return cf;
+  }
+  
+  public void setComponentFactory(String configurationFactory) {
+      cf = configurationFactory;
   }
 
   public Map<String, String> getCopyOfPropertyMap() {

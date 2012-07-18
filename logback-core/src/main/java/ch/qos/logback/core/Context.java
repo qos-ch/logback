@@ -113,4 +113,22 @@ public interface Context extends PropertyContainer {
    * @since 1.0.0
    */
   ExecutorService getExecutorService();
+  
+  /**
+   * The name of the class used to instantiate components such as
+   * appenders and filters.
+   * 
+   * @return The component factory class name
+   * @since 1.0.7
+   */
+  String getComponentFactory();
+  
+  /**
+   * Used to specify the name of the class to be used as the
+   * component factory.
+   * 
+   * @param componentFactory The component factory class name
+   * @since 1.0.7
+   */
+  void setComponentFactory(String componentFactory);
 }

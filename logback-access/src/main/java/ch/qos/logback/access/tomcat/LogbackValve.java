@@ -73,6 +73,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   // Attributes from ContextBase:
   private String name;
+  private String componentFactory;
   StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
@@ -282,6 +283,17 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
           "LogbackValve has been already given a name");
     }
     this.name = name;
+  }
+  
+
+  @Override
+  public String getComponentFactory() {
+    return componentFactory;
+  }
+
+  @Override
+  public void setComponentFactory(String componentFactory) {
+    this.componentFactory = componentFactory;
   }
 
   public long getBirthTime() {

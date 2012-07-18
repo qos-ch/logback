@@ -20,6 +20,7 @@ import java.util.Map;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
+import ch.qos.logback.core.joran.action.ComponentFactoryAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
 import ch.qos.logback.core.joran.action.DefinePropertyAction;
@@ -81,6 +82,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
     rs.addRule(new Pattern("configuration/appender/appender-ref"),
         new AppenderRefAction());
     rs.addRule(new Pattern("configuration/newRule"), new NewRuleAction());
+    rs.addRule(new Pattern("configuration/componentFactory"), new ComponentFactoryAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
   }
 
