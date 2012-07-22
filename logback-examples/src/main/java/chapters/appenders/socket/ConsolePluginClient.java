@@ -16,11 +16,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class ConsolePluginClient {
 
 	static String LONG_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lectus augue, pulvinar quis cursus nec, imperdiet nec ante. Cras sit amet arcu et enim adipiscing pellentesque. Suspendisse mi felis, dictum a lobortis nec, placerat in diam. Proin lobortis tortor at nunc facilisis aliquet. Praesent eget dignissim orci. Ut iaculis bibendum.";
-	
+
 	static String LOGGER_NAME = "com.acme.myapp.foo";
 	static String UGLY_BETTY_LOGGER_NAME = "com.acme.myapp.UglyBetty";
 	static long SLEEP = 1;
-	static long RUN_LENGTH = 20000;
+	static long RUN_LENGTH = 2000;
 
 	static public void main(String[] args) throws Exception {
 		// Create a SocketAppender connected to hostname:port with a
@@ -34,7 +34,7 @@ public class ConsolePluginClient {
 		socketAppender.setReconnectionDelay(10000);
 
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		
+
 		socketAppender.setContext(lc);
 
 		lc.reset();
@@ -56,15 +56,24 @@ public class ConsolePluginClient {
 			if (i % 3 == 0) {
 				logger.warn(i + " is divisible by 3");
 			} else {
+				System.out.println("i="+i);
 				toto(logger, i);
 			}
 			Thread.sleep(SLEEP);
 		}
 		ub.join();
-		
+
 		StatusPrinter.print(lc);
 	}
 
+	/**
+	 * @param logger
+	 * @param i
+	 */
+	/**
+	 * @param logger
+	 * @param i
+	 */
 	static void toto(Logger logger, int i) {
 		logger.debug("this is message number " + i);
 	}
