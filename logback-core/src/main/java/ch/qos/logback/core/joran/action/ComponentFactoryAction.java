@@ -18,6 +18,10 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.util.ComponentFactory;
+import ch.qos.logback.core.util.DynamicClassLoadingException;
+import ch.qos.logback.core.util.IncompatibleClassException;
+import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -43,11 +47,19 @@ public class ComponentFactoryAction extends Action {
             throws ActionException {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
         if (OptionHelper.isEmpty(className)) {
-            addError("Attribute named [" + CLASS_ATTRIBUTE + "] cannot be empty");
-            return;
+          addError("Attribute named [" + CLASS_ATTRIBUTE + "] cannot be empty");
+          return;
         }
+        
+        try {
+          ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
+          ComponentFactory factory = (ComponentFactory) OptionHelper.instantiateByClassName(className,
+                ComponentFactory.class, classLoader);
 
-        context.setComponentFactory(className);
+          context.setComponentFactory(factory);
+        } catch (Exception e) {
+          addError("Could not create a ComponentFactory of type [" + className + "].");
+        }
     }
 
     /**

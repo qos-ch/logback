@@ -54,16 +54,13 @@ public class OptionHelper {
         if (className == null) {
             throw new NullPointerException();
         }
-        String factoryClassName = context.getComponentFactory();
+        ComponentFactory factory = context.getComponentFactory();
         Object obj = null;
         boolean tryDefault = false;
-        if (factoryClassName != null) {
-            ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-            ComponentFactory odof = (ComponentFactory) instantiateByClassName(factoryClassName,
-                    ComponentFactory.class, classLoader);
-
+        
+        if (factory != null) {
             try {
-                obj = odof.getInstance(className);
+                obj = factory.getInstance(className);
 
                 if (obj == null) {
                     throw new NullPointerException();
@@ -73,7 +70,7 @@ public class OptionHelper {
             }
         }
 
-        if (factoryClassName == null || tryDefault) {
+        if (factory == null || tryDefault) {
             ComponentFactory dcf = new ContextComponentFactory(context);
             try {
                 obj = dcf.getInstance(className);
