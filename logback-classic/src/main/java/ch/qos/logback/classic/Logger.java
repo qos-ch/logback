@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
@@ -134,9 +135,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     // only the root logger has a null parent
     return parent == null;
   }
-
-  // Logger getChildBySuffix(final String suffix) method was here and got
-  // removed.
 
   Logger getChildByName(final String childName) {
     if (childrenList == null) {
@@ -295,26 +293,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     return aai.detachAppender(appender);
   }
 
-  static int getSeparatorIndexOf(String name) {
-    return getSeparatorIndexOf(name, 0);
-  }
 
-  /**
-   * Get the position of the separator character, if any, starting at position
-   * 'fromIndex'.
-   * 
-   * @param name
-   * @param fromIndex
-   * @return
-   */
-  static int getSeparatorIndexOf(String name, int fromIndex) {
-    int i = name.indexOf(CoreConstants.DOT, fromIndex);
-    if (i != -1) {
-      return i;
-    } else {
-      return name.indexOf(CoreConstants.DOLLAR, fromIndex);
-    }
-  }
 
   /**
    * Create a child of this logger by suffix, that is, the part of the name
@@ -332,7 +311,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * @return
    */
   Logger createChildByLastNamePart(final String lastPart) {
-    int i_index = getSeparatorIndexOf(lastPart);
+    int i_index = LoggerNameUtil.getFirstSeparatorIndexOf(lastPart);
     if (i_index != -1) {
       throw new IllegalArgumentException("Child name [" + lastPart
           + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
@@ -381,7 +360,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   private static final int DEFAULT_CHILD_ARRAY_SIZE = 5;
 
   Logger createChildByName(final String childName) {
-    int i_index = getSeparatorIndexOf(childName, this.name.length() + 1);
+    int i_index = LoggerNameUtil.getSeparatorIndexOf(childName, this.name.length() + 1);
     if (i_index != -1) {
       throw new IllegalArgumentException("For logger [" + this.name
           + "] child name [" + childName

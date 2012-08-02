@@ -122,10 +122,10 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
     this.interpreter = new Interpreter(context, rs, initialPattern());
-    InterpretationContext ec = interpreter.getInterpretationContext();
-    ec.setContext(context);
+    InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+    interpretationContext.setContext(context);
     addImplicitRules(interpreter);
-    addDefaultNestedComponentRegistryRules(ec.getDefaultNestedComponentRegistry());
+    addDefaultNestedComponentRegistryRules(interpretationContext.getDefaultNestedComponentRegistry());
   }
 
   // this is the most inner form of doConfigure whereto other doConfigure

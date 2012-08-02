@@ -47,7 +47,7 @@ public class DefinePropertyActionTest {
   private static final String NOCLASS_XML = "noclass.xml";
   private static final String BADCLASS_XML = "badclass.xml";
 
-  SimpleConfigurator sc;
+  SimpleConfigurator simpleConfigurator;
   Context context = new ContextBase();
   DefinePropertyAction definerAction;
   InterpretationContext ic;
@@ -58,8 +58,8 @@ public class DefinePropertyActionTest {
 
     HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
     rulesMap.put(new Pattern("define"), new DefinePropertyAction());
-    sc = new SimpleConfigurator(rulesMap);
-    sc.setContext(context);
+    simpleConfigurator = new SimpleConfigurator(rulesMap);
+    simpleConfigurator.setContext(context);
   }
 
   @After
@@ -69,15 +69,16 @@ public class DefinePropertyActionTest {
 
   @Test
   public void good() throws JoranException {
-    sc.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
-    // get from context
-    String inContextFoo = context.getProperty("foo");
+    simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
+    InterpretationContext ic = simpleConfigurator.getInterpreter().getInterpretationContext();
+    // get from the InterpretationContext
+    String inContextFoo = ic.getProperty("foo");
     assertEquals("monster", inContextFoo);
   }
 
   @Test
   public void noName() throws JoranException {
-    sc.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+    simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
     // get from context
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);
@@ -88,7 +89,7 @@ public class DefinePropertyActionTest {
 
   @Test
   public void noClass() throws JoranException {
-    sc.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
+    simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);
     assertTrue(checker.containsMatch(Status.ERROR,
@@ -97,7 +98,7 @@ public class DefinePropertyActionTest {
 
   @Test
   public void testBadClass() throws JoranException {
-    sc.doConfigure(DEFINE_INPUT_DIR + BADCLASS_XML);
+    simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + BADCLASS_XML);
     // get from context
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);

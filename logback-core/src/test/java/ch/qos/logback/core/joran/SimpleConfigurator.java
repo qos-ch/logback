@@ -42,6 +42,10 @@ public class SimpleConfigurator extends GenericConfigurator {
     interpreter.addImplicitAction(nestedSimpleIA);
   }
 
+  public Interpreter getInterpreter() {
+    return interpreter;
+  }
+
   @Override
   protected void addInstanceRules(RuleStore rs) {
     for(Pattern pattern : rulesMap.keySet()) {

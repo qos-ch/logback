@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
+import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
@@ -138,7 +139,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     // in between as well (if they don't already exist)
     String childName;
     while (true) {
-      int h = Logger.getSeparatorIndexOf(name, i);
+      int h = LoggerNameUtil.getSeparatorIndexOf(name, i);
       if (h == -1) {
         childName = name;
       } else {
