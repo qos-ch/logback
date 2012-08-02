@@ -1295,33 +1295,10 @@ public class MyApp3 {
   be replaced with the value held by the <em>aKey</em> property.
   </p>
 
-  <p>A property can be defined in <em>local scope</em> (the default),
-  in <em>context scope</em>, or in <em>system scope</em>. Local scope
-  is the default.  A property with local scope exists from the point
-  of its definition until the end of configuration. A property with
-  context scope is inserted into the context and lasts as long as the
-  context or until it is cleared.  Once defined, a property in
-  context scope is part of the context. As such, it is available in
-  all logging events, including those sent to remote hosts via
-  serialization. A property with system scope is inserted into the
-  JVM's system properties and lasts as long as the JVM or until it is
-  cleared.
-  </p>
+  <p>Properties have a <a href="#scopes">scope</a> (see below).</p>
 
   <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
   properties are automatically defined and have context scope.</p>
-
-  <p class="highlight">Properties are looked up in the the local
-  scope first, in the context scope second, in the system properties
-  scope third, and in the OS environment last.
-  </p>
-
-  <p>During substitution, properties are looked up in the local scope
-  first, in the context scope second, in the system properties scope
-  third, and in the <a
-  href="http://download.oracle.com/javase/tutorial/essential/environment/env.html">OS
-  environment</a> fourth and last.
-  </p>
 
  
   <h4><a name="definingProps" href="#definingProps"><span
@@ -1446,15 +1423,43 @@ public class MyApp3 {
    <h4><a name="scopes" href="#scopes"><span
    class="anchor"/></a>Scopes</h4>
 
-   <p>The <span class="attr">scope</span> attribute of the
-   <code>&lt;property></code> element can be used to set the scope of
-   properties. The <span class="attr">scope</span> attribute admits
-   "local", "context" and "system" strings as possible values.
+   <p class="highlight">Properties are looked up in the the local
+   scope first, in the context scope second, in the system properties
+   scope third, and in the OS environment last.
    </p>
 
-  <p class="example">Example: Simple Variable substitution
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)
-  </p>
+   <p>A property can be defined in <em>local scope</em> (the default),
+   in <em>context scope</em>, or in <em>system scope</em>. Local scope
+   is the default.  A property with local scope exists from the point
+   of its definition until the end of configuration. A property with
+   context scope is inserted into the context and lasts as long as the
+   context or until it is cleared.  Once defined, a property in
+   context scope is part of the context. As such, it is available in
+   all logging events, including those sent to remote hosts via
+   serialization. A property with system scope is inserted into the
+   JVM's system properties and lasts as long as the JVM or until it is
+   cleared.
+   </p>
+ 
+   <p>During substitution, properties are looked up in the local scope
+   first, in the context scope second, in the system properties scope
+   third, and in the <a
+   href="http://docs.oracle.com/javase/tutorial/essential/environment/env.html">OS
+   environment</a> fourth and last.
+   </p>
+
+   <p>The <span class="attr">scope</span> attribute of the
+   <code>&lt;property></code> element, <code>&lt;define></code>
+   element or the <code>&lt;insertFromJNDI></code> element can be used
+   to set the scope of a property. The <span class="attr">scope</span>
+   attribute admits "local", "context" and "system" strings as
+   possible values. If not specified, the scope is always assumed to
+   be "local".
+   </p>
+
+   <p class="example">Example: Simple Variable substitution
+   (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)
+   </p>
 
   <span class="asGroovy" onclick="return
   asGroovy('variableSubstitution4');">View as .groovy</span>
@@ -1574,7 +1579,9 @@ fileName=myApp.log
   href="../xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>
   interface. The value returned by the <code>getPropertyValue</code>()
   method of the <code>PropertyDefiner</code> instance will be the
-  value of the named property.
+  value of the named property. You may also specify a <a
+  href="#scopes">scope</a> for the named property by specifying a
+  <span class="attr">scope</span> attribute.
   </p>
 
   <p>Here is an example.</p>
@@ -1582,15 +1589,26 @@ fileName=myApp.log
   <pre class="prettyprint source">&lt;configuration>
 
   &lt;define name="rootLevel" class="a.class.implementing.PropertyDefiner">
-    &lt;aProperty>of a.class.implementing.PropertyDefiner&lt;/aProperty>
+    &lt;shape>round&lt;/shape>
+    &lt;color>brown&lt;/color>
+    &lt;size>24&lt;/size>
   &lt;/define>
-  
+ 
   &lt;root level="${rootLevel}"/>
 &lt;/configuration></pre>
 
+  <p>In the above example, shape, color and size are properties of
+  "a.class.implementing.PropertyDefiner". As long as there is a setter
+  for a given property in your implementation of the
+  <code>PropertyDefiner</code> instance, logback will inject the
+  appropriate values as specified in the configuration file. </p>
+
+ 
+
   <p>At the present time, logback does not ship with any classes
   implementing <code>PropertyDefiner</code>. We merely provide an
-  extension point so that you may define properties dynamically.
+  extension point so that you (the user) may define properties
+  dynamically.
   </p>
 
   <!-- ============================================================== -->
