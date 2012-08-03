@@ -137,9 +137,15 @@ public class OptionHelper {
           throw new IllegalArgumentException('"' + val
                   + "\" has no closing brace. Opening brace at position " + j + '.');
         } else {
+
+          String rawKey = null;
           j += DELIM_START_LEN;
 
-          String rawKey = val.substring(j, k);
+          // recurse through inner substitutions, example: ${${${x1}def}abc}
+          //                                                 j   k
+          String innerTotal = getInnerTotal(val, j);
+          rawKey = substVars(innerTotal, pc1, pc2); //ex: ${x1}abc
+          k = j + innerTotal.length();
 
           // Massage the key to extract a default replacement if there is one
           String[] extracted = extractDefaultReplacement(rawKey);
@@ -171,6 +177,38 @@ public class OptionHelper {
         }
       }
     }
+  }
+
+  // looking for one more DELIM_STOP than DELIM_START
+  private static String getInnerTotal(String val, int start) {
+
+    int startCount = 0;
+    int stopCount = 0;
+    int i = start;
+    int startDelim = -1;
+    int stopDelim = -1;
+    while(i < val.length()) {
+      startDelim = val.indexOf(DELIM_START, i);
+      stopDelim = val.indexOf(DELIM_STOP, i);
+
+      if(stopDelim == -1) {
+        // should never not find a delim_stop in this loop (unless props are malformed)
+        return val;
+      }
+
+      if(startDelim == -1 || stopDelim < startDelim) {
+        stopCount++;
+        i = stopDelim + DELIM_STOP_LEN;
+      } else {
+        startCount++;
+        i = startDelim + DELIM_START_LEN;
+      }
+
+      if(stopCount > startCount) {
+        i = val.length();
+      }
+    }
+    return val.substring(start, stopDelim);
   }
 
   public static String propertyLookup(String key, PropertyContainer pc1,
