@@ -25,6 +25,7 @@ import ch.qos.logback.core.pattern.ReplacingCompositeConverter;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ScanException;
 
 // ~=lamda
 // E = TE|T

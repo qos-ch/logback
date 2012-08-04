@@ -19,9 +19,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
-import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter;
 import ch.qos.logback.core.pattern.parser.Parser;
-import ch.qos.logback.core.pattern.parser.ScanException;
+import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CachingDateFormatter;

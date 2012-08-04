@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.pattern.parser;
+package ch.qos.logback.core.spi;
 
 public class ScanException extends Exception {
 

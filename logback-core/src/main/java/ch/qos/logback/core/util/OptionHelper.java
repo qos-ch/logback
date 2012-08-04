@@ -93,8 +93,12 @@ public class OptionHelper {
   // }
   final static String DELIM_START = "${";
   final static char DELIM_STOP = '}';
+  final static String DELIM_DEFAULT = ":-";
+
   final static int DELIM_START_LEN = 2;
   final static int DELIM_STOP_LEN = 1;
+  final static int DELIM_DEFAULT_LEN = 2;
+
   final static String _IS_UNDEFINED = "_IS_UNDEFINED";
 
   /**
@@ -145,6 +149,9 @@ public class OptionHelper {
           String[] extracted = extractDefaultReplacement(rawKey);
           String key = extracted[0];
           String defaultReplacement = extracted[1]; // can be null
+
+          // recurse on the key to see if it needs replacement
+          key = substVars(key, pc1, pc2);
 
           String replacement = propertyLookup(key, pc1, pc2);
 
@@ -273,10 +280,10 @@ public class OptionHelper {
   static public String[] extractDefaultReplacement(String key) {
     String[] result = new String[2];
     result[0] = key;
-    int d = key.indexOf(":-");
+    int d = key.indexOf(DELIM_DEFAULT);
     if (d != -1) {
       result[0] = key.substring(0, d);
-      result[1] = key.substring(d + 2);
+      result[1] = key.substring(d + DELIM_DEFAULT_LEN);
     }
     return result;
   }

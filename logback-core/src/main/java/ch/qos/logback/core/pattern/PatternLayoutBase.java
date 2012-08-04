@@ -18,7 +18,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
-import ch.qos.logback.core.pattern.parser.ScanException;
+import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
 

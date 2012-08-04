@@ -29,6 +29,7 @@ import static ch.qos.logback.core.CoreConstants.DOUBLE_QUOTE_CHAR;
 
 
 import ch.qos.logback.core.pattern.parser.TokenStream.TokenizerState;
+import ch.qos.logback.core.spi.ScanException;
 
 public class OptionTokenizer {
 

@@ -23,6 +23,7 @@ import static ch.qos.logback.core.CoreConstants.ESCAPE_CHAR;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
+import ch.qos.logback.core.spi.ScanException;
 
 /**
  * <p>

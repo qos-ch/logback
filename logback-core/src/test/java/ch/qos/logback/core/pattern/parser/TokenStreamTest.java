@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.spi.ScanException;
 import org.junit.Test;
 
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
