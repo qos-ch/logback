@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Tokenizer {
 
-  enum TokenizerState {LITERAL_STATE, START_STATE}
+  enum TokenizerState {LITERAL_STATE, START_STATE, DEFAULT_VAL_STATE}
 
   final String pattern;
   final int patternLength;
@@ -49,10 +49,12 @@ public class Tokenizer {
         case START_STATE:
           handleStartState(c, tokenList, buf);
           break;
+        case DEFAULT_VAL_STATE:
+          handleDefaultValueState(c, tokenList, buf);
         default:
       }
     }
-     // EOS
+    // EOS
     switch (state) {
       case LITERAL_STATE:
         addLiteralToken(tokenList, buf);
@@ -63,8 +65,17 @@ public class Tokenizer {
     return tokenList;
   }
 
+  private void handleDefaultValueState(char c, List<Token> tokenList, StringBuilder stringBuilder) {
+    if (c == CoreConstants.DASH_CHAR) {
+      tokenList.add(Token.DEFAULT_SEP_TOKEN);
+    } else {
+      stringBuilder.append(CoreConstants.COLON_CHAR).append(c);
+    }
+    state = TokenizerState.LITERAL_STATE;
+  }
+
   private void handleStartState(char c, List<Token> tokenList, StringBuilder stringBuilder) {
-    if(c == CoreConstants.CURLY_LEFT) {
+    if (c == CoreConstants.CURLY_LEFT) {
       tokenList.add(Token.START_TOKEN);
     } else {
       stringBuilder.append(CoreConstants.DOLLAR).append(c);
@@ -77,6 +88,10 @@ public class Tokenizer {
       addLiteralToken(tokenList, stringBuilder);
       stringBuilder.setLength(0);
       state = TokenizerState.START_STATE;
+    } else if (c == CoreConstants.COLON_CHAR) {
+      addLiteralToken(tokenList, stringBuilder);
+      stringBuilder.setLength(0);
+      state = TokenizerState.DEFAULT_VAL_STATE;
     } else if (c == CoreConstants.CURLY_RIGHT) {
       addLiteralToken(tokenList, stringBuilder);
       tokenList.add(Token.STOP_TOKEN);

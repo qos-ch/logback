@@ -4,7 +4,9 @@ public class Token {
 
   static public Token START_TOKEN = new Token(Type.START, null);
   static public Token STOP_TOKEN = new Token(Type.STOP, null);
-  public enum Type {LITERAL, START, STOP}
+  static public Token DEFAULT_SEP_TOKEN = new Token(Type.DEFAULT, null);
+
+  public enum Type {LITERAL, START, STOP, DEFAULT}
 
   Type type;
   String payload;
@@ -31,6 +33,17 @@ public class Token {
   public int hashCode() {
     int result = type != null ? type.hashCode() : 0;
     result = 31 * result + (payload != null ? payload.hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    String result = "Token{" +
+            "type=" + type;
+    if (payload != null)
+      result += ", payload='" + payload + '\'';
+
+    result += '}';
     return result;
   }
 }

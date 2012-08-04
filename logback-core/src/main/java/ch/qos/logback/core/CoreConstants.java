@@ -82,6 +82,9 @@ public class CoreConstants {
   public static final char COMMA_CHAR = ',';
   public static final char DOUBLE_QUOTE_CHAR = '"';
   public static final char SINGLE_QUOTE_CHAR = '\'';
+  public static final char COLON_CHAR = ':';
+  public static final char DASH_CHAR = '-';
+
 
   /**
    * Number of rows before in an HTML table before,
