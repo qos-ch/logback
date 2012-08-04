@@ -1,0 +1,75 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
+package ch.qos.logback.core.subst;
+
+import ch.qos.logback.core.spi.ScanException;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
+public class TokenizerTest {
+
+  List<Token> witnessList = new ArrayList<Token>();
+
+  @Test
+  public void literalOnly() throws ScanException {
+    String input = "abc";
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(new Token(Token.Type.LITERAL, input));
+    assertEquals(witnessList, tokenList);
+  }
+
+  @Test
+  public void simleVariable() throws ScanException {
+    String input = "${abc}";
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(Token.START_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "abc"));
+    witnessList.add(Token.STOP_TOKEN);
+    assertEquals(witnessList, tokenList);
+  }
+
+  @Test
+  public void mix() throws ScanException {
+    String input = "a${b}c";
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(new Token(Token.Type.LITERAL, "a"));
+    witnessList.add(Token.START_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "b"));
+    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "c"));
+    assertEquals(witnessList, tokenList);
+  }
+
+  @Test
+  public void nested() throws ScanException {
+    String input = "a${b${c}}";
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(new Token(Token.Type.LITERAL, "a"));
+    witnessList.add(Token.START_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "b"));
+    witnessList.add(Token.START_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "c"));
+    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.STOP_TOKEN);
+    assertEquals(witnessList, tokenList);
+  }
+}
