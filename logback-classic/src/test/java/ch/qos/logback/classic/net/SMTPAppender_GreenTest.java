@@ -166,13 +166,13 @@ public class SMTPAppender_GreenTest {
   @Test
   public void html() throws Exception {
     buildSMTPAppender();
+    smtpAppender.setAsynchronousSending(false);
     smtpAppender.setLayout(buildHTMLLayout(lc));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-    waitUntilEmailIsSent();
     MimeMultipart mp = verify(TEST_SUBJECT);
 
     // verify strict adherence to xhtml1-strict.dtd
@@ -193,15 +193,15 @@ public class SMTPAppender_GreenTest {
    */
   public void htmlLong() throws Exception {
     buildSMTPAppender();
+    smtpAppender.setAsynchronousSending(false);
     smtpAppender.setLayout(buildHTMLLayout(lc));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
-    for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
+    for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 1.5; i++) {
       logger.debug("hello " + i);
     }
     logger.error("en error", new Exception("an exception"));
 
-    waitUntilEmailIsSent();
     MimeMultipart mp = verify(TEST_SUBJECT);
 
     // verify strict adherence to xhtml1-strict.dtd

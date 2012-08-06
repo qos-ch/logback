@@ -84,11 +84,9 @@ public class ReconfigureOnChangeTest {
   // it actually takes time for Windows to propagate file modification changes
   // values below 100 milliseconds can be problematic the same propagation
   // latency occurs in Linux but is even larger (>600 ms)
-  final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 60;
+  // final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 60;
 
-  int sleepBetweenUpdates = 100;//DEFAULT_SLEEP_BETWEEN_UPDATES;
-
-//  static int totalTestDuration;
+  int sleepBetweenUpdates = 100;
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass());
@@ -183,7 +181,7 @@ public class ReconfigureOnChangeTest {
 
   // See also http://jira.qos.ch/browse/LBCLASSIC-247
   @Test(timeout = 4000L)
-  public void includeScanViaInputStreamSuppliedConfigFile() throws IOException, JoranException, InterruptedException {
+  public void  includeScanViaInputStreamSuppliedConfigFile() throws IOException, JoranException, InterruptedException {
     harness = new MultiThreadedHarness(1000);
     String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
     configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));

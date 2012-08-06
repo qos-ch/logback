@@ -19,10 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.concurrent.*;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -33,57 +33,72 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class SocketAppenderTest {
 
-  static final String LIST_APPENDER_NAME = "la";
-  static final int JOIN_OR_WAIT_TIMEOUT = 200;
-  static final int SLEEP_AFTER_LOG = 100;
+  static final String LIST_APPENDER_NAME = "list";
+  static final int RECONNECT_DELAY = 1;
 
-  int diff = RandomUtil.getPositiveInt();
+  static int diff = RandomUtil.getPositiveInt();
 
-  int port = 1024+(diff%30000);
-  String mdcKey = "key"+diff;
+  static int PORT = 1024 + (diff % 30000);
+  String mdcKey = "key" + diff;
 
-  LoggerContext lc = new LoggerContext();
-  LoggerContext serverLC = new LoggerContext();
-  ListAppender<ILoggingEvent> la = new ListAppender<ILoggingEvent>();
+  LoggerContext loggerContext = new LoggerContext();
+  static LoggerContext serverLoggerContext = new LoggerContext();
+  static CountDownLatch LIST_APPENDER_COUNTDOWN_LATCH;
+  static ListAppenderWithLatch<ILoggingEvent> LIST_APPENDER = new ListAppenderWithLatch<ILoggingEvent>();
   SocketAppender socketAppender = new SocketAppender();
   private boolean includeCallerData = false;
-  private SimpleSocketServer simpleSocketServer;
+  static private SimpleSocketServer SIMPLE_SOCKET_SERVER;
+
+  @BeforeClass
+  public static void beforeClass() throws InterruptedException {
+    fireServer();
+    waitForServerToStart();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    closeServer();
+  }
+  private static void closeServer() {SIMPLE_SOCKET_SERVER.close();}
 
   @Before
   public void setUp() {
-    System.out.println("SocketAppenderTest, start at "+System.currentTimeMillis()+", port="+port);
+    //System.out.println("SocketAppenderTest, start at "+System.currentTimeMillis()+", port="+port);
+  }
+
+  @After
+  public void tearDown() {
+    LIST_APPENDER.list.clear();
   }
 
   @Test
   public void startFailNoRemoteHost() {
     SocketAppender appender = new SocketAppender();
-    appender.setContext(lc);
-    appender.setPort(port);
+    appender.setContext(loggerContext);
+    appender.setPort(PORT);
     appender.start();
-    assertEquals(1, lc.getStatusManager().getCount());
+    assertEquals(1, loggerContext.getStatusManager().getCount());
   }
 
   @Test
   public void receiveMessage() throws InterruptedException {
-    fireServer();
-    waitForServerToStart();
+    updateListAppenderLatch(1);
     configureClient();
 
-    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
 
-    Thread.sleep(SLEEP_AFTER_LOG);
+    waitForListAppenderLatch();
 
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    assertEquals(1, la.list.size());
+    //simpleSocketServer.close();
+    //simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
+    //assertTrue(simpleSocketServer.isClosed());
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
     assertNull(remoteEvent.getCallerData());
     assertEquals("test msg", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
@@ -91,27 +106,23 @@ public class SocketAppenderTest {
 
   @Test
   public void receiveWithContext() throws InterruptedException {
-    fireServer();
-    waitForServerToStart();
+    updateListAppenderLatch(1);
     configureClient();
 
-    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
-    Thread.sleep(SLEEP_AFTER_LOG);
+    waitForListAppenderLatch();
 
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    assertEquals(1, la.list.size());
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
 
     String loggerName = remoteEvent.getLoggerName();
     assertNotNull(loggerName);
     assertEquals(Logger.ROOT_LOGGER_NAME, loggerName);
 
     LoggerContextVO loggerContextRemoteView = remoteEvent
-        .getLoggerContextVO();
+            .getLoggerContextVO();
     assertNull(remoteEvent.getCallerData());
     assertNotNull(loggerContextRemoteView);
     assertEquals("test", loggerContextRemoteView.getName());
@@ -121,23 +132,18 @@ public class SocketAppenderTest {
 
   @Test
   public void messageWithMDC() throws InterruptedException {
-    fireServer();
-    waitForServerToStart();
+    updateListAppenderLatch(1);
     configureClient();
 
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
     MDC.put(mdcKey, "testValue");
     root.debug("test msg");
 
-    Thread.sleep(SLEEP_AFTER_LOG);
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    ListAppender<ILoggingEvent> la = getListAppender();
-    assertEquals(1, la.list.size());
+    waitForListAppenderLatch();
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("testValue", MDCPropertyMap.get(mdcKey));
     assertNull(remoteEvent.getCallerData());
@@ -146,141 +152,142 @@ public class SocketAppenderTest {
   // test http://jira.qos.ch/browse/LBCLASSIC-145
   @Test
   public void withCallerData() throws InterruptedException {
+    updateListAppenderLatch(1);
     includeCallerData = true;
-    fireServer();
-    waitForServerToStart();
+//    fireServer();
+//    waitForServerToStart();
     configureClient();
 
-    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
 
-    Thread.sleep(SLEEP_AFTER_LOG);
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    ListAppender<ILoggingEvent> la = getListAppender();
-    assertEquals(1, la.list.size());
+    waitForListAppenderLatch();
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
     assertNotNull(remoteEvent.getCallerData());
   }
-  
+
   @Test
   public void messageWithMarker() throws InterruptedException {
-    fireServer();
-    waitForServerToStart();
-
-    // Thread.sleep(SLEEP_AFTER_SERVER_START);
+    updateListAppenderLatch(1);
     configureClient();
 
-    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
     Marker marker = MarkerFactory.getMarker("testMarker");
     logger.debug(marker, "test msg");
-    Thread.sleep(SLEEP_AFTER_LOG);
+    waitForListAppenderLatch();
 
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    assertEquals(1, la.list.size());
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
     assertEquals("testMarker", remoteEvent.getMarker().getName());
   }
 
   @Test
   public void messageWithUpdatedMDC() throws InterruptedException {
-    fireServer();
-    waitForServerToStart();
-
+    updateListAppenderLatch(2);
     configureClient();
 
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
     MDC.put(mdcKey, "testValue");
     root.debug("test msg");
 
     MDC.put(mdcKey, "updatedTestValue");
     root.debug("test msg 2");
-    Thread.sleep(SLEEP_AFTER_LOG);
 
-    simpleSocketServer.close();
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    assertTrue(simpleSocketServer.isClosed());
-    ListAppender<ILoggingEvent> la = getListAppender();
-
-    assertEquals(2, la.list.size());
+    waitForListAppenderLatch();
+    assertEquals(2, LIST_APPENDER.list.size());
 
     // We observe the second logging event. It should provide us with
     // the updated MDC property.
-    ILoggingEvent remoteEvent = la.list.get(1);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(1);
     Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
     assertEquals("updatedTestValue", MDCPropertyMap.get(mdcKey));
   }
 
   @Test
   public void lateServerLaunch() throws InterruptedException {
-    socketAppender.setReconnectionDelay(20);
+    closeServer();
+    socketAppender.setReconnectionDelay(RECONNECT_DELAY);
     configureClient();
-    Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.debug("test msg");
 
     fireServer();
     waitForServerToStart();
-    Thread.sleep(SLEEP_AFTER_LOG); // allow time for client and server to
-                                    // connect
+    updateListAppenderLatch(1);
+    Thread.sleep(200);
+    // connect
     logger.debug("test msg 2");
-    Thread.sleep(SLEEP_AFTER_LOG);
+    waitForListAppenderLatch();
 
-    simpleSocketServer.close();
-    Thread.sleep(SLEEP_AFTER_LOG);
-    simpleSocketServer.join(JOIN_OR_WAIT_TIMEOUT);
-    StatusPrinter.print(lc);
-    assertTrue(simpleSocketServer.isClosed());
-    assertEquals(1, la.list.size());
+    assertEquals(1, LIST_APPENDER.list.size());
 
-    ILoggingEvent remoteEvent = la.list.get(0);
+    ILoggingEvent remoteEvent = LIST_APPENDER.list.get(0);
     assertEquals("test msg 2", remoteEvent.getMessage());
     assertEquals(Level.DEBUG, remoteEvent.getLevel());
   }
 
-  private void waitForServerToStart() throws InterruptedException {
-    synchronized (simpleSocketServer) {
-      simpleSocketServer.wait(JOIN_OR_WAIT_TIMEOUT);
-    }
+  private static void waitForServerToStart() throws InterruptedException {
+    SIMPLE_SOCKET_SERVER.getLatch().await(100, TimeUnit.MILLISECONDS);
   }
 
-  private void fireServer() throws InterruptedException {
-    Logger root = serverLC.getLogger("root");
-    Logger socketNodeLogger = serverLC.getLogger(SocketNode.class);
+  private static void fireServer() throws InterruptedException {
+    serverLoggerContext.reset();
+
+    Logger root = serverLoggerContext.getLogger("root");
+    Logger socketNodeLogger = serverLoggerContext.getLogger(SocketNode.class);
     socketNodeLogger.setLevel(Level.WARN);
 
-    la.setName(LIST_APPENDER_NAME);
-    la.setContext(serverLC);
-    la.start();
-    root.addAppender(la);
-    simpleSocketServer = new SimpleSocketServer(serverLC, port);
-    simpleSocketServer.start();
-    Thread.yield();
-    Thread.sleep(50);
+    LIST_APPENDER.setName(LIST_APPENDER_NAME);
+    LIST_APPENDER.setContext(serverLoggerContext);
+    LIST_APPENDER.start();
+
+    root.addAppender(LIST_APPENDER);
+    SIMPLE_SOCKET_SERVER = new SimpleSocketServer(serverLoggerContext, PORT);
+    SIMPLE_SOCKET_SERVER.setLatch(new CountDownLatch(1));
+    SIMPLE_SOCKET_SERVER.start();
   }
 
-  ListAppender<ILoggingEvent> getListAppender() {
-    Logger root = serverLC.getLogger("root");
-    return (ListAppender<ILoggingEvent>) root.getAppender(LIST_APPENDER_NAME);
+  private void updateListAppenderLatch(int count) {
+    LIST_APPENDER_COUNTDOWN_LATCH = new CountDownLatch(count);
   }
 
+  private void waitForListAppenderLatch() {
+    try {
+      LIST_APPENDER_COUNTDOWN_LATCH.await(100, TimeUnit.MILLISECONDS);
+    } catch (Exception e) {
+      throw new RuntimeException("problem while waiting for barrier", e);
+    }
+  }
   private void configureClient() {
-    lc = new LoggerContext();
-    lc.setName("test");
-    lc.putProperty("testKey", "testValue");
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    socketAppender.setContext(lc);
+    loggerContext = new LoggerContext();
+    loggerContext.setName("test");
+    loggerContext.putProperty("testKey", "testValue");
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    socketAppender.setContext(loggerContext);
     socketAppender.setName("socket");
-    socketAppender.setPort(port);
+    socketAppender.setPort(PORT);
     socketAppender.setRemoteHost("localhost");
     socketAppender.setIncludeCallerData(includeCallerData);
     root.addAppender(socketAppender);
     socketAppender.start();
   }
+
+  public static class ListAppenderWithLatch<E> extends ListAppender<E> {
+
+    protected void append(E event) {
+      System.out.println("got: " + event);
+      super.append(event);
+      try {
+        LIST_APPENDER_COUNTDOWN_LATCH.countDown();
+      } catch (Exception exeption) {
+        exeption.printStackTrace();
+      }
+    }
+  }
+
 }

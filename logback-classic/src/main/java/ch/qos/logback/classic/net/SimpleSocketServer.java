@@ -18,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,9 @@ public class SimpleSocketServer extends Thread {
   private ServerSocket serverSocket;
   private List<SocketNode> socketNodeList = new ArrayList<SocketNode>();
 
+  // used for testing purposes
+  private CountDownLatch latch;
+
   public static void main(String argv[]) throws Exception {
     int port = -1;
     if (argv.length == 2) {
@@ -74,6 +78,7 @@ public class SimpleSocketServer extends Thread {
     this.lc = lc;
     this.port = port;
   }
+
 
   public void run() {
     try {
@@ -105,9 +110,22 @@ public class SimpleSocketServer extends Thread {
    *  This is useful for testing purposes.
    */
   void signalAlmostReadiness() {
-    synchronized(this) {
-      this.notifyAll();
-    }
+    if(latch != null)
+      latch.countDown();
+  }
+
+  /**
+   * Used for testing purposes
+   * @param latch
+   */
+  void setLatch(CountDownLatch latch) {
+    this.latch = latch;
+  }
+  /**
+    * Used for testing purposes
+    */
+  public CountDownLatch getLatch() {
+    return latch;
   }
   public boolean isClosed() {
     return closed;

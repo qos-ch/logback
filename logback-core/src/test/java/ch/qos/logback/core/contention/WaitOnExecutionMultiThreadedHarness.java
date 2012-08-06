@@ -8,13 +8,13 @@ public class WaitOnExecutionMultiThreadedHarness extends AbstractMultiThreadedHa
 
     public WaitOnExecutionMultiThreadedHarness(ThreadPoolExecutor threadPoolExecutor, int count) {
         this.threadPoolExecutor = threadPoolExecutor;
-        this.count =count;
+        this.count = count;
 
     }
     @Override
     void waitUntilEndCondition() throws InterruptedException {
       while(threadPoolExecutor.getCompletedTaskCount() < count) {
-        Thread.sleep(20);
+        Thread.yield();
       }
     }
 }

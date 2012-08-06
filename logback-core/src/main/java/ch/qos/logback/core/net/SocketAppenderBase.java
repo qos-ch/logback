@@ -298,11 +298,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       }
       // addInfo("Exiting Connector.run() method.");
     }
-
-    /**
-     * public void finalize() { LogLog.debug("Connector finalize() has been
-     * called."); }
-     */
   }
 
 }
