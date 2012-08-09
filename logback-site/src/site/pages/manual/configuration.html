@@ -1457,18 +1457,18 @@ public class MyApp3 {
    be "local".
    </p>
 
-   <p class="example">Example: Simple Variable substitution
-   (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)
+   <p class="example">Example: A variable defined in "context" scope
+   (logback-examples/src/main/java/chapters/configuration/contextScopedVariable.xml)
    </p>
 
   <span class="asGroovy" onclick="return
-  asGroovy('variableSubstitution4');">View as .groovy</span>
-  <pre id="variableSubstitution4" class="prettyprint source">&lt;configuration>
+  asGroovy('contextScopedVariable');">View as .groovy</span>
+  <pre id="contextScopedVariable" class="prettyprint source">&lt;configuration>
 
-  &lt;property <b class="big">scope="context"</b> name="nodeId" value="node1" />
+  &lt;property <b class="big">scope="context"</b> name="nodeId" value="firstNode" />
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <b>&lt;file>/opt/${noteId}/myApp.log&lt;/file></b>
+    <b>&lt;file>/opt/${nodeId}/myApp.log&lt;/file></b>
     &lt;encoder>
       &lt;pattern>%msg%n&lt;/pattern>
     &lt;/encoder>
