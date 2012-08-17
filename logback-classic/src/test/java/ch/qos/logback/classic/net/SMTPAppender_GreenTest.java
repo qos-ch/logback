@@ -57,6 +57,9 @@ public class SMTPAppender_GreenTest {
   static final String TEST_SUBJECT = "test subject";
   static final String HEADER = "HEADER\n";
   static final String FOOTER = "FOOTER\n";
+  static final String DEFAULT_PATTERN = "%-4relative %mdc [%thread] %-5level %class - %msg%n";
+
+
 
   int oldCount;
 
@@ -67,6 +70,7 @@ public class SMTPAppender_GreenTest {
     GREEN_MAIL_SERVER = new GreenMail(serverSetup);
     GREEN_MAIL_SERVER.start();
   }
+
   @Before
   public void setUp() throws Exception {
     MDC.clear();
@@ -91,12 +95,12 @@ public class SMTPAppender_GreenTest {
     // smtpAppender.start();
   }
 
-  private Layout<ILoggingEvent> buildPatternLayout(LoggerContext lc) {
+  private Layout<ILoggingEvent> buildPatternLayout(LoggerContext lc, String pattern) {
     PatternLayout layout = new PatternLayout();
     layout.setContext(lc);
     layout.setFileHeader(HEADER);
     layout.setOutputPatternAsHeader(false);
-    layout.setPattern("%-4relative %mdc [%thread] %-5level %class - %msg%n");
+    layout.setPattern(pattern);
     layout.setFileFooter(FOOTER);
     layout.start();
     return layout;
@@ -138,7 +142,7 @@ public class SMTPAppender_GreenTest {
   public void syncronousSmoke() throws Exception {
     buildSMTPAppender(SYNCHRONOUS);
 
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     logger.debug("hello");
@@ -152,10 +156,8 @@ public class SMTPAppender_GreenTest {
 
   @Test
   public void asyncronousSmoke() throws Exception {
-
     buildSMTPAppender(ASYNCHRONOUS);
-
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     logger.debug("hello");
@@ -168,12 +170,28 @@ public class SMTPAppender_GreenTest {
     assertTrue(body.endsWith(FOOTER.trim()));
   }
 
+  // See also http://jira.qos.ch/browse/LOGBACK-734
+  @Test
+  public void callerDataShouldBeCorrectlySetWithAsyncronousSending() throws Exception {
+    buildSMTPAppender(ASYNCHRONOUS);
+    smtpAppender.setLayout(buildPatternLayout(lc,DEFAULT_PATTERN));
+    smtpAppender.setIncludeCallerData(true);
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    logger.debug("hello");
+    logger.error("en error", new Exception("an exception"));
+
+    waitUntilEmailIsSent();
+    MimeMultipart mp = verify(TEST_SUBJECT);
+    String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+    assertTrue(body.contains("DEBUG "+this.getClass().getName()+" - hello"));
+  }
   // lost MDC
   @Test
   public void LBCLASSIC_104() throws Exception {
     buildSMTPAppender(SYNCHRONOUS);
     smtpAppender.setAsynchronousSending(false);
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     MDC.put("key", "val");
@@ -249,7 +267,7 @@ public class SMTPAppender_GreenTest {
   @Test
   public void testMultipleTo() throws Exception {
     buildSMTPAppender(SYNCHRONOUS);
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.addTo("Test <test@example.com>, other-test@example.com");
     smtpAppender.start();
     logger.addAppender(smtpAppender);
@@ -265,7 +283,7 @@ public class SMTPAppender_GreenTest {
   @Test
   public void bufferShouldBeResetBetweenMessages() throws Exception {
     buildSMTPAppender(SYNCHRONOUS);
-    smtpAppender.setLayout(buildPatternLayout(lc));
+    smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     String msg0 = "hello zero";

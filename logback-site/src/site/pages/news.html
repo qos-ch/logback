@@ -65,6 +65,13 @@
     <p>If a <code>PropertyDefiner</code> implements
     <code>LifeCycle</code>, then its <code>start()</code> method will
     now be invoked.</p>
+
+    <p>Added the <code>includeCallerData</code> property in
+    <code>SMTPAppender</code> to precompute caller data before storing
+    events for future transmission. This property adresses <a
+    href="http://jira.qos.ch/browse/LOGBACK-734">LOGBACK-734</a>
+    reported by Patrick Hogarty.
+    </p>
     
     <hr width="80%" align="center" />
 

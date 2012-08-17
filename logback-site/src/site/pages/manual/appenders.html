@@ -2017,6 +2017,16 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>
 
       <tr>
+        <td><span class="prop" container="smtp">includeCallerData</span></td>
+        <td><code>boolean</code></td>
+        <td>By default, <span class="prop">includeCallerData</span> is
+        set to <code>false</code>. You should set <span
+        class="prop">includeCallerData</span> to <code>true</code> if
+        <span class="prop">asynchronousSending</span> is enabled and
+        you wish to include caller data in the logs. </td>
+      </tr>
+
+      <tr>
         <td><span class="prop" container="smtp">sessionViaJNDI</span></td>
         <td><code>boolean</code></td>
         <td><code>SMTPAppender</code> relies on

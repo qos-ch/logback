@@ -40,7 +40,9 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
   static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
   
   private int bufferSize = 512;
-  //protected CyclicBuffer<ILoggingEvent> cb = new CyclicBuffer<ILoggingEvent>(bufferSize);
+  private boolean includeCallerData = false;
+
+
 
   /**
    * The default constructor will instantiate the appender with a
@@ -75,6 +77,9 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
    * a cyclic buffer.
    */
   protected void subAppend(CyclicBuffer<ILoggingEvent> cb, ILoggingEvent event) {
+    if(includeCallerData) {
+      event.getCallerData();
+    }
     event.prepareForDeferredProcessing();
     cb.add(event);
   }
@@ -118,5 +123,13 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     PatternLayout pl = new PatternLayout();
     pl.setPattern(toPattern+"%nopex");
     return pl;
+  }
+
+  public boolean isIncludeCallerData() {
+    return includeCallerData;
+  }
+
+  public void setIncludeCallerData(boolean includeCallerData) {
+    this.includeCallerData = includeCallerData;
   }
 }
