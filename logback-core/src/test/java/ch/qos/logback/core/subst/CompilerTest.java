@@ -64,7 +64,7 @@ public class CompilerTest {
 
   @Test
   public void withDefault() throws ScanException {
-    String input = "${k67:-b}}c";
+    String input = "${k67:-b}c";
     Node node = makeNode(input);
     Compiler compiler = new Compiler(node, propertyContainer0);
     assertEquals("bc", compiler.compile());

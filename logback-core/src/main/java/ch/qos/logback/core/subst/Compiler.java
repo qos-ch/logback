@@ -16,8 +16,6 @@ package ch.qos.logback.core.subst;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PropertyContainer;
 
-import java.util.List;
-
 /**
  * @author Ceki G&uuml;c&uuml;
  */
@@ -35,12 +33,12 @@ public class Compiler {
 
   String compile() {
     StringBuilder stringBuilder = new StringBuilder();
-    compileSomeNode(node, stringBuilder);
+    compileNode(node, stringBuilder);
     return stringBuilder.toString();
 
   }
 
-  void compileSomeNode(Node inputNode, StringBuilder stringBuilder) {
+  void compileNode(Node inputNode, StringBuilder stringBuilder) {
     Node n = inputNode;
     while (n != null) {
       switch (n.type) {
@@ -50,9 +48,6 @@ public class Compiler {
         case VARIABLE:
           handleVariable(n, stringBuilder);
           break;
-        case VARIABLE2:
-          handleVariable2(n, stringBuilder);
-          break;
       }
       n = n.next;
     }
@@ -61,38 +56,24 @@ public class Compiler {
   private void handleVariable(Node n, StringBuilder stringBuilder) {
     StringBuilder keyBuffer = new StringBuilder();
     Node payload = (Node) n.payload;
-    compileSomeNode(payload, keyBuffer);
+    compileNode(payload, keyBuffer);
     String key = keyBuffer.toString();
-    String value = lookupKey(key);
-    if (value != null) {
-      stringBuilder.append(value);
-    } else {
-      stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
-    }
-  }
-
-  private void handleVariable2(Node n, StringBuilder stringBuilder) {
-    StringBuilder keyBuffer = new StringBuilder();
-    StringBuilder defaultPartBuffer = new StringBuilder();
-    Node payload = (Node) n.payload;
-    Node defaultPart = (Node) n.defaultPart;
-    compileSomeNode(payload, keyBuffer);
-    String key = keyBuffer.toString();
-
-    compileSomeNode(defaultPart, defaultPartBuffer);
-    String defaultVal = defaultPartBuffer.toString();
-
     String value = lookupKey(key);
     if (value != null) {
       stringBuilder.append(value);
       return;
     }
 
-    if(defaultVal != null) {
-      stringBuilder.append(defaultVal);
-    }  else {
+    if(n.defaultPart == null) {
       stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
+      return;
     }
+
+    Node defaultPart = (Node) n.defaultPart;
+    StringBuilder defaultPartBuffer = new StringBuilder();
+    compileNode(defaultPart, defaultPartBuffer);
+    String defaultVal = defaultPartBuffer.toString();
+    stringBuilder.append(defaultVal);
   }
 
   private String lookupKey(String key) {

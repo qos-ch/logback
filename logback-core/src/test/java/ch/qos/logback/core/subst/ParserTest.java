@@ -16,6 +16,8 @@ package ch.qos.logback.core.subst;
 import ch.qos.logback.core.spi.ScanException;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ceki
@@ -31,7 +33,8 @@ public class ParserTest {
     Tokenizer tokenizer = new Tokenizer("abc");
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
-    dump(node);
+    Node witness = new Node(Node.Type.LITERAL, "abc");
+    assertEquals(witness, node);
   }
 
   @Test
@@ -39,7 +42,8 @@ public class ParserTest {
     Tokenizer tokenizer = new Tokenizer("${abc}");
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
-    dump(node);
+    Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "abc"));
+    assertEquals(witness, node);
   }
 
   @Test
@@ -47,7 +51,10 @@ public class ParserTest {
     Tokenizer tokenizer = new Tokenizer("a${b}c");
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
-    dump(node);
+    Node witness = new Node(Node.Type.LITERAL, "a");
+    witness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+    witness.next.next = new Node(Node.Type.LITERAL, "c");
+    assertEquals(witness, node);
   }
 
   @Test
@@ -55,7 +62,12 @@ public class ParserTest {
     Tokenizer tokenizer = new Tokenizer("a${b${c}}d");
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
-    dump(node);
+    Node witness = new Node(Node.Type.LITERAL, "a");
+    Node nestedWitness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+    nestedWitness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "c"));
+    witness.next = nestedWitness;
+    witness.next.next = new Node(Node.Type.LITERAL, "c");
+    //dump(node);
   }
 
   @Test
@@ -63,7 +75,9 @@ public class ParserTest {
     Tokenizer tokenizer = new Tokenizer("${b:-c}");
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
-    dump(node);
+    Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+    witness.defaultPart =   new Node(Node.Type.LITERAL, "c");
+    //dump(node);
   }
 
 

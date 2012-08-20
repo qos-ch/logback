@@ -10,8 +10,8 @@ import java.util.List;
 //   = T(E|~)
 // E = TEopt where Eopt = E|~
 // T = LITERAL | '${' V '}'
-// V = (E|E := E)
-//   = E(':='E|~)
+// V = (E|E :- E)
+//   = E(':-'E|~)
 public class Parser {
 
   final List<Token> tokenList;
@@ -63,7 +63,7 @@ public class Parser {
         expectNotNull(w, "}");
         if (w.type == Token.Type.STOP) {
           advanceTokenPointer();
-          return new Node(Node.Type.VARIABLE, v);
+          return v;
         } else {
           throw new ScanException("Expecting }");
         }
@@ -76,14 +76,15 @@ public class Parser {
   // V = E(':='E|~)
   private Node V() throws ScanException {
     Node e = E();
+    Node variable = new Node(Node.Type.VARIABLE, e);
     Token t = getCurentToken();
     if(t != null && t.type == Token.Type.DEFAULT) {
       advanceTokenPointer();
-      Node d = E();
-      return new Node(Node.Type.VARIABLE2, e, d);
-    } else {
-      return e;
+      Node def = E();
+      variable.defaultPart = def;
     }
+    return variable;
+
   }
 
   void advanceTokenPointer() {

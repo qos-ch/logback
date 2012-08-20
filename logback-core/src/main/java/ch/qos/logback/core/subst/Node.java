@@ -2,7 +2,7 @@ package ch.qos.logback.core.subst;
 
 public class Node {
 
-  enum Type {LITERAL, VARIABLE, VARIABLE2}
+  enum Type {LITERAL, VARIABLE}
 
   Type type;
   Object payload;
@@ -33,20 +33,16 @@ public class Node {
                 '}';
       case VARIABLE:
         StringBuilder payloadBuf = new StringBuilder();
-        recursive((Node) payload, payloadBuf);
-        return "Node{" +
-                "type=" + type +
-                ", payload=" + payloadBuf.toString() + "}";
-
-      case VARIABLE2:
-        StringBuilder payloadBuf2 = new StringBuilder();
         StringBuilder defaultPartBuf2 = new StringBuilder();
-        recursive((Node) payload, payloadBuf2);
-        recursive((Node) defaultPart, defaultPartBuf2);
+        if (defaultPart != null)
+          recursive((Node) defaultPart, defaultPartBuf2);
+
+        recursive((Node) payload, payloadBuf);
         String r = "Node{" +
                 "type=" + type +
-                ", payload=" + payloadBuf2.toString();
-        r += ", defaultPart=" + defaultPartBuf2.toString();
+                ", payload=" + payloadBuf.toString();
+        if (defaultPart != null)
+          r += ", defaultPart=" + defaultPartBuf2.toString();
         r += '}';
         return r;
     }
@@ -64,5 +60,30 @@ public class Node {
 
   public void setNext(Node next) {
     this.next = next;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Node node = (Node) o;
+
+    if (type != node.type) return false;
+    if (payload != null ? !payload.equals(node.payload) : node.payload != null) return false;
+    if (defaultPart != null ? !defaultPart.equals(node.defaultPart) : node.defaultPart != null) return false;
+    if (next != null ? !next.equals(node.next) : node.next != null) return false;
+
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = type != null ? type.hashCode() : 0;
+    result = 31 * result + (payload != null ? payload.hashCode() : 0);
+    result = 31 * result + (defaultPart != null ? defaultPart.hashCode() : 0);
+    result = 31 * result + (next != null ? next.hashCode() : 0);
+    return result;
   }
 }
