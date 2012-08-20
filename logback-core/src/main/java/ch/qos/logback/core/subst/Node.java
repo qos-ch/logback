@@ -6,7 +6,7 @@ public class Node {
 
   Type type;
   Object payload;
-  Object defaultValue;
+  Object defaultPart;
   Node next;
 
 
@@ -16,10 +16,10 @@ public class Node {
   }
 
 
-  public Node(Type type, Object payload, Object defaultValue) {
+  public Node(Type type, Object payload, Object defaultPart) {
     this.type = type;
     this.payload = payload;
-    this.defaultValue = defaultValue;
+    this.defaultPart = defaultPart;
   }
 
 
@@ -40,13 +40,13 @@ public class Node {
 
       case VARIABLE2:
         StringBuilder payloadBuf2 = new StringBuilder();
-        StringBuilder defaultValBuf2 = new StringBuilder();
+        StringBuilder defaultPartBuf2 = new StringBuilder();
         recursive((Node) payload, payloadBuf2);
-        recursive((Node) defaultValue, defaultValBuf2);
+        recursive((Node) defaultPart, defaultPartBuf2);
         String r = "Node{" +
                 "type=" + type +
                 ", payload=" + payloadBuf2.toString();
-        r += ", default=" + defaultValBuf2.toString();
+        r += ", defaultPart=" + defaultPartBuf2.toString();
         r += '}';
         return r;
     }

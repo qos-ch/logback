@@ -1423,24 +1423,37 @@ public class MyApp3 {
    <h4><a name="scopes" href="#scopes"><span
    class="anchor"/></a>Scopes</h4>
 
+   <p>A property can be defined for insertion in <em>local scope</em>,
+   in <em>context scope</em>, or in <em>system scope</em>. Local scope
+   is the default. Although it is possible to read variables from the
+   OS environment, it is not possible to write into the OS
+   environment.</p>
+
+
+   <p><span class="label">local scope</span> A property with local
+   scope exists from the point of its definition in a configuration
+   file until the end of interpretation/execution of said
+   configuration file. As a corollary, each time a configuration file
+   is parsed and executed, variables in local scope are defined
+   anew.</p>
+
+   <p><span class="label">context scope</span> A property with context
+   scope is inserted into the context and lasts as long as the context
+   or until it is cleared.  Once defined, a property in context scope
+   is part of the context. As such, it is available in all logging
+   events, including those sent to remote hosts via serialization. 
+   </p>
+
+   <p><span class="label">system scope</span> A property with system
+   scope is inserted into the JVM's system properties and lasts as
+   long as the JVM or until it is cleared.
+   </p>
+ 
    <p class="highlight">Properties are looked up in the the local
    scope first, in the context scope second, in the system properties
    scope third, and in the OS environment last.
    </p>
 
-   <p>A property can be defined in <em>local scope</em> (the default),
-   in <em>context scope</em>, or in <em>system scope</em>. Local scope
-   is the default.  A property with local scope exists from the point
-   of its definition until the end of configuration. A property with
-   context scope is inserted into the context and lasts as long as the
-   context or until it is cleared.  Once defined, a property in
-   context scope is part of the context. As such, it is available in
-   all logging events, including those sent to remote hosts via
-   serialization. A property with system scope is inserted into the
-   JVM's system properties and lasts as long as the JVM or until it is
-   cleared.
-   </p>
- 
    <p>During substitution, properties are looked up in the local scope
    first, in the context scope second, in the system properties scope
    third, and in the <a
