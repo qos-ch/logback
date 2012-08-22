@@ -20,6 +20,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
+import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.subst.NodeToStringTransformer;
 
 /**
  * @author Ceki Gulcu
@@ -34,7 +36,7 @@ public class OptionHelper {
   }
 
   public static Object instantiateByClassNameAndParameter(String className,
-                                              Class superClass, Context context, Class type, Object param) throws IncompatibleClassException,
+                                                          Class superClass, Context context, Class type, Object param) throws IncompatibleClassException,
           DynamicClassLoadingException {
     ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
     return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
@@ -111,72 +113,16 @@ public class OptionHelper {
   /**
    * See  http://logback.qos.ch/manual/configuration.html#variableSubstitution
    */
-  public static String substVars(String val, PropertyContainer pc1, PropertyContainer pc2) {
-
-    StringBuffer sbuf = new StringBuffer();
-
-    int i = 0;
-    int j;
-    int k;
-
-    while (true) {
-      j = val.indexOf(DELIM_START, i);
-
-      if (j == -1) {
-        // no more variables
-        if (i == 0) { // this is a simple string
-
-          return val;
-        } else { // add the tail string which contains no variables and return
-          // the result.
-          sbuf.append(val.substring(i, val.length()));
-
-          return sbuf.toString();
-        }
-      } else {
-        sbuf.append(val.substring(i, j));
-        k = val.indexOf(DELIM_STOP, j);
-
-        if (k == -1) {
-          throw new IllegalArgumentException('"' + val
-                  + "\" has no closing brace. Opening brace at position " + j + '.');
-        } else {
-          j += DELIM_START_LEN;
-
-          String rawKey = val.substring(j, k);
-
-          // Massage the key to extract a default replacement if there is one
-          String[] extracted = extractDefaultReplacement(rawKey);
-          String key = extracted[0];
-          String defaultReplacement = extracted[1]; // can be null
-
-          // recurse on the key to see if it needs replacement
-          key = substVars(key, pc1, pc2);
-
-          String replacement = propertyLookup(key, pc1, pc2);
-
-          // if replacement is still null, use the defaultReplacement which
-          // can be null as well
-          if (replacement == null) {
-            replacement = defaultReplacement;
-          }
-
-          if (replacement != null) {
-            // Do variable substitution on the replacement string
-            // such that we can solve "Hello ${x2}" as "Hello p1"
-            // where the properties are
-            // x1=p1
-            // x2=${x1}
-            String recursiveReplacement = substVars(replacement, pc1, pc2);
-            sbuf.append(recursiveReplacement);
-          } else {
-            // if we could not find a replacement, then signal the error
-            sbuf.append(key + "_IS_UNDEFINED");
-          }
-
-          i = k + DELIM_STOP_LEN;
-        }
+  public static String substVars(String input, PropertyContainer pc0, PropertyContainer pc1) {
+    try {
+      String replacement = NodeToStringTransformer.substituteVariable(input, pc0, pc1);
+      // for backward compatibility sake, perform one level of recursion
+      if(replacement.contains(DELIM_START)) {
+        replacement =  NodeToStringTransformer.substituteVariable(replacement, pc0, pc1);
       }
+      return replacement;
+    } catch (ScanException e) {
+      throw new IllegalArgumentException("Failed to parse input [" + input + "]", e);
     }
   }
 
@@ -277,6 +223,7 @@ public class OptionHelper {
     }
   }
 
+  @Deprecated
   static public String[] extractDefaultReplacement(String key) {
     String[] result = new String[2];
     result[0] = key;

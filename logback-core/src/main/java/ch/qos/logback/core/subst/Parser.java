@@ -1,6 +1,7 @@
 package ch.qos.logback.core.subst;
 
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ScanException;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 // E = TE|T
 //   = T(E|~)
 // E = TEopt where Eopt = E|~
-// T = LITERAL | '${' V '}'
+// T = LITERAL | '}' | '${' V '}'
 // V = (E|E :- E)
 //   = E(':-'E|~)
 public class Parser {
@@ -67,6 +68,9 @@ public class Parser {
         } else {
           throw new ScanException("Expecting }");
         }
+      //case STOP:
+      //   advanceTokenPointer();
+      //   return new Node(Node.Type.LITERAL, CoreConstants.RIGHT_ACCOLADE);
       default:
         return null;
     }
@@ -93,8 +97,8 @@ public class Parser {
 
   void expectNotNull(Token t, String expected) {
     if (t == null) {
-      throw new IllegalStateException("All tokens consumed but was expecting "
-              + expected);
+      throw new IllegalArgumentException("All tokens consumed but was expecting \""
+              + expected+"\"");
     }
   }
 

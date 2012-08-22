@@ -35,6 +35,20 @@ public class TokenizerTest {
   }
 
   @Test
+  public void literalWithAccolades() throws ScanException {
+    String input0 = "%logger{24";
+    String input1 = " - %m";
+    String input = input0+"}"+input1;
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(new Token(Token.Type.LITERAL, input0));
+    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, input1));
+    assertEquals(witnessList, tokenList);
+  }
+
+
+  @Test
   public void simleVariable() throws ScanException {
     String input = "${abc}";
     Tokenizer tokenizer = new Tokenizer(input);

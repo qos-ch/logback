@@ -16,6 +16,7 @@ package ch.qos.logback.classic.rolling;
 import static org.junit.Assert.assertTrue;
 
 import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -51,7 +52,8 @@ public class UniqueFileTest {
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "unique.xml");
     CachingDateFormatter sdf = new CachingDateFormatter("yyyyMMdd'T'HHmmss");
     String timestamp = sdf.format(System.currentTimeMillis());
-    
+
+    StatusPrinter.print(lc);
     StatusChecker sc = new StatusChecker(lc);
     assertTrue(sc.isErrorFree(0));
 

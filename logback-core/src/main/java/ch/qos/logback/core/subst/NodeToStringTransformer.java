@@ -15,30 +15,45 @@ package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PropertyContainer;
+import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
+ * Compiles a previously parsed Node chain into a String.
+ *
  * @author Ceki G&uuml;c&uuml;
  */
-public class Compiler {
-
+public class NodeToStringTransformer {
 
   final Node node;
   final PropertyContainer propertyContainer0;
+  final PropertyContainer propertyContainer1;
 
-  public Compiler(Node node, PropertyContainer propertyContainer0) {
+  public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0, PropertyContainer propertyContainer1) {
     this.node = node;
     this.propertyContainer0 = propertyContainer0;
+    this.propertyContainer1 = propertyContainer1;
   }
 
+  public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0) {
+    this(node, propertyContainer0, null);
+  }
 
-  String compile() {
+  public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1) throws ScanException {
+    Tokenizer tokenizer = new Tokenizer(input);
+    Parser parser = new Parser(tokenizer.tokenize());
+    Node node = parser.parse();
+    NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, pc0, pc1);
+    return nodeToStringTransformer.transform();
+  }
+
+  public String transform() {
     StringBuilder stringBuilder = new StringBuilder();
     compileNode(node, stringBuilder);
     return stringBuilder.toString();
-
   }
 
-  void compileNode(Node inputNode, StringBuilder stringBuilder) {
+  private void compileNode(Node inputNode, StringBuilder stringBuilder) {
     Node n = inputNode;
     while (n != null) {
       switch (n.type) {
@@ -64,7 +79,7 @@ public class Compiler {
       return;
     }
 
-    if(n.defaultPart == null) {
+    if (n.defaultPart == null) {
       stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
       return;
     }
@@ -78,7 +93,25 @@ public class Compiler {
 
   private String lookupKey(String key) {
     String value = propertyContainer0.getProperty(key);
-    return value;
+    if (value != null)
+      return value;
+
+    if (propertyContainer1 != null) {
+      value = propertyContainer1.getProperty(key);
+      if (value != null)
+        return value;
+    }
+
+    value = OptionHelper.getSystemProperty(key, null);
+    if (value != null)
+      return value;
+
+    value = OptionHelper.getEnv(key);
+    if (value != null) {
+      return value;
+    }
+
+    return null;
   }
 
 

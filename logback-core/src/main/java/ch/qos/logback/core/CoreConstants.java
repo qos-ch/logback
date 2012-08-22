@@ -150,4 +150,6 @@ public class CoreConstants {
   public static final String JNDI_COMP_PREFIX = "java:comp/env";
 
   public static final String UNDEFINED_PROPERTY_SUFFIX = "_IS_UNDEFINED";
+
+  public static final String RIGHT_ACCOLADE = new String(new char[] {CURLY_RIGHT});
 }

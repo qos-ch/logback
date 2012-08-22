@@ -38,6 +38,16 @@ public class ParserTest {
   }
 
   @Test
+  public void literalWithAccolade() throws ScanException {
+    Tokenizer tokenizer = new Tokenizer("}");
+    Parser parser = new Parser(tokenizer.tokenize());
+    Node node = parser.parse();
+    Node witness = new Node(Node.Type.LITERAL, "{b");
+    witness.next = new Node(Node.Type.LITERAL, "}");
+    assertEquals(witness, node);
+  }
+
+  @Test
   public void variable() throws ScanException {
     Tokenizer tokenizer = new Tokenizer("${abc}");
     Parser parser = new Parser(tokenizer.tokenize());
