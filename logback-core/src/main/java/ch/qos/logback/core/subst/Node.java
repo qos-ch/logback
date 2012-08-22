@@ -29,8 +29,8 @@ public class Node {
       case LITERAL:
         return "Node{" +
                 "type=" + type +
-                ", payload=" + payload +
-                '}';
+                ", payload='" + payload +
+                "'}";
       case VARIABLE:
         StringBuilder payloadBuf = new StringBuilder();
         StringBuilder defaultPartBuf2 = new StringBuilder();
@@ -40,13 +40,23 @@ public class Node {
         recursive((Node) payload, payloadBuf);
         String r = "Node{" +
                 "type=" + type +
-                ", payload=" + payloadBuf.toString();
+                ", payload='" + payloadBuf.toString()+"'";
         if (defaultPart != null)
           r += ", defaultPart=" + defaultPartBuf2.toString();
         r += '}';
         return r;
     }
     return null;
+  }
+
+  public void dump() {
+    System.out.print(this.toString());
+    System.out.print(" -> ");
+    if(next != null) {
+      next.dump();
+    }  else {
+      System.out.print(" null");
+    }
   }
 
   void recursive(Node n, StringBuilder sb) {
@@ -58,8 +68,8 @@ public class Node {
     sb.append("null ");
   }
 
-  public void setNext(Node next) {
-    this.next = next;
+  public void setNext(Node n) {
+    this.next = n;
   }
 
   @Override

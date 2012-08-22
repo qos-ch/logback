@@ -89,7 +89,8 @@ public class ParserTest {
 
     t.next =  new Node(Node.Type.LITERAL, " c");
 
-    System.out.println("x"+node);
+    node.dump();
+    System.out.println("");
     assertEquals(witness, node);
   }
 

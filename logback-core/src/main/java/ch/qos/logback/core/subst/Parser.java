@@ -32,7 +32,7 @@ public class Parser {
     }
     Node eOpt = Eopt();
     if (eOpt != null) {
-      t.setNext(eOpt);
+      appendNode(t, eOpt);
     }
     return t;
   }
@@ -82,8 +82,8 @@ public class Parser {
     }
   }
 
-  private void appendNode(Node inner, Node additionalNode) {
-     Node n = inner;
+  private void appendNode(Node node, Node additionalNode) {
+     Node n = node;
      while(true) {
        if(n.next == null) {
          n.next = additionalNode;
