@@ -23,9 +23,7 @@ import java.sql.Statement;
 import java.util.Map;
 
 import org.apache.log4j.MDC;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -43,14 +41,24 @@ public class DBAppenderHSQLTest  {
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  DBAppenderHSQLTestFixture dbAppenderHSQLTestFixture;
+  static DBAppenderHSQLTestFixture DB_APPENDER_HSQL_TEST_FIXTURE;
   int diff = RandomUtil.getPositiveInt();
-  
+  int existingRowCount;
+  Statement stmt;
+
+  @BeforeClass
+  public static void beforeClass() throws SQLException {
+    DB_APPENDER_HSQL_TEST_FIXTURE = new DBAppenderHSQLTestFixture();
+    DB_APPENDER_HSQL_TEST_FIXTURE.setUp();
+  }
+
+  @AfterClass
+  public static void afterClass() throws SQLException {
+    DB_APPENDER_HSQL_TEST_FIXTURE.tearDown();
+  }
+
   @Before
   public void setUp() throws SQLException {
-    dbAppenderHSQLTestFixture = new DBAppenderHSQLTestFixture();
-    dbAppenderHSQLTestFixture.setUp();
-
     lc = new LoggerContext();
     lc.setName("default");
     logger = lc.getLogger("root");
@@ -60,33 +68,49 @@ public class DBAppenderHSQLTest  {
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(lc);
     connectionSource.setDriverClass(DBAppenderHSQLTestFixture.HSQLDB_DRIVER_CLASS);
-    connectionSource.setUrl(dbAppenderHSQLTestFixture.url);
-    connectionSource.setUser(dbAppenderHSQLTestFixture.user);
-    connectionSource.setPassword(dbAppenderHSQLTestFixture.password);
+    connectionSource.setUrl(DB_APPENDER_HSQL_TEST_FIXTURE.url);
+    connectionSource.setUser(DB_APPENDER_HSQL_TEST_FIXTURE.user);
+    connectionSource.setPassword(DB_APPENDER_HSQL_TEST_FIXTURE.password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
     appender.start();
+
+    stmt = connectionSource.getConnection().createStatement();
+    existingRowCount = existingRowCount(stmt);
+
   }
   
+
+
   @After
   public void tearDown() throws SQLException {
     logger = null;
     lc = null;
     appender = null;
     connectionSource = null;
-    dbAppenderHSQLTestFixture.tearDown();
+    stmt.close();
+  }
+
+  int existingRowCount(Statement stmt) throws SQLException {
+    ResultSet rs = stmt.executeQuery("SELECT count(*) FROM logging_event");
+    int result = -1;
+    if (rs.next()) {
+      result = rs.getInt(1);
+    }
+    rs.close();
+    return result;
   }
 
   @Test
   public void testAppendLoggingEvent() throws SQLException {
-    ILoggingEvent event = createLoggingEvent();
 
+
+    ILoggingEvent event = createLoggingEvent();
     appender.append(event);
     StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
-    Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event");
+    rs = stmt.executeQuery("SELECT * FROM logging_event where EVENT_ID = "+ existingRowCount);
     if (rs.next()) {
       assertEquals(event.getTimeStamp(), rs.getLong(DBAppender.TIMESTMP_INDEX));
       assertEquals(event.getFormattedMessage(), rs.getString(DBAppender.FORMATTED_MESSAGE_INDEX));
@@ -102,20 +126,18 @@ public class DBAppenderHSQLTest  {
     } else {
       fail("No row was inserted in the database");
     }
-    
     rs.close();
-    stmt.close();
   }
+
+
   
   @Test
   public void testAppendThrowable() throws SQLException {
     ILoggingEvent event = createLoggingEvent();
-
     appender.append(event);
     
-    Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION where EVENT_ID = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION where EVENT_ID = "+ existingRowCount);
     
     rs.next();
     String expected = "java.lang.Exception: test Ex";
@@ -131,7 +153,6 @@ public class DBAppenderHSQLTest  {
     }
     assertTrue(i != 0);
     rs.close();
-    stmt.close();
   }
   
   @Test
@@ -144,7 +165,7 @@ public class DBAppenderHSQLTest  {
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_PROPERTY  WHERE EVENT_ID = 0");
+    rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_PROPERTY  WHERE EVENT_ID = "+ existingRowCount);
     Map<String, String> map = appender.mergePropertyMaps(event);
     System.out.println("ma.size="+map.size());
     int i = 0;
@@ -156,27 +177,25 @@ public class DBAppenderHSQLTest  {
     assertTrue(map.size() != 0);
     assertEquals(map.size(), i);
     rs.close();
-    stmt.close();
   }
   
   @Test
   public void testAppendMultipleEvents() throws SQLException {
-    for (int i = 0; i < 10; i++) {
+    int numEvents = 3;
+    for (int i = 0; i < numEvents; i++) {
       ILoggingEvent event = createLoggingEvent();
       appender.append(event);
     }
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM logging_event");
+    rs = stmt.executeQuery("SELECT * FROM logging_event WHERE EVENT_ID >="+ existingRowCount);
     int count = 0;
     while (rs.next()) {
       count++;
     }
-    assertEquals(10, count);
-    
+    assertEquals(numEvents, count);
     rs.close();
-    stmt.close();
   }
 
 
