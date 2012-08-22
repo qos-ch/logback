@@ -92,9 +92,13 @@ public class Tokenizer {
       addLiteralToken(tokenList, stringBuilder);
       stringBuilder.setLength(0);
       state = TokenizerState.DEFAULT_VAL_STATE;
-    } else if (c == CoreConstants.CURLY_RIGHT) {
+    } else if (c == CoreConstants.CURLY_LEFT) {
       addLiteralToken(tokenList, stringBuilder);
-      tokenList.add(Token.STOP_TOKEN);
+      tokenList.add(Token.CURLY_LEFT_TOKEN);
+      stringBuilder.setLength(0);
+    } else  if (c == CoreConstants.CURLY_RIGHT) {
+      addLiteralToken(tokenList, stringBuilder);
+      tokenList.add(Token.CURLY_RIGHT_TOKEN);
       stringBuilder.setLength(0);
     } else {
       stringBuilder.append(c);

@@ -36,14 +36,18 @@ public class TokenizerTest {
 
   @Test
   public void literalWithAccolades() throws ScanException {
-    String input0 = "%logger{24";
-    String input1 = " - %m";
-    String input = input0+"}"+input1;
+    String input0 = "%logger";
+    String input1 = "24";
+   String input2 = " - %m";
+    String input = input0+"{"+input1+"}"+input2;
     Tokenizer tokenizer = new Tokenizer(input);
     List<Token> tokenList = tokenizer.tokenize();
     witnessList.add(new Token(Token.Type.LITERAL, input0));
-    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.CURLY_LEFT_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, input1));
+
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, input2));
     assertEquals(witnessList, tokenList);
   }
 
@@ -55,7 +59,7 @@ public class TokenizerTest {
     List<Token> tokenList = tokenizer.tokenize();
     witnessList.add(Token.START_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, "abc"));
-    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
     assertEquals(witnessList, tokenList);
   }
 
@@ -67,7 +71,7 @@ public class TokenizerTest {
     witnessList.add(new Token(Token.Type.LITERAL, "a"));
     witnessList.add(Token.START_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, "b"));
-    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, "c"));
     assertEquals(witnessList, tokenList);
   }
@@ -82,8 +86,8 @@ public class TokenizerTest {
     witnessList.add(new Token(Token.Type.LITERAL, "b"));
     witnessList.add(Token.START_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, "c"));
-    witnessList.add(Token.STOP_TOKEN);
-    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
     assertEquals(witnessList, tokenList);
   }
 
@@ -97,7 +101,7 @@ public class TokenizerTest {
     witnessList.add(new Token(Token.Type.LITERAL, "a"));
     witnessList.add(Token.DEFAULT_SEP_TOKEN);
     witnessList.add(new Token(Token.Type.LITERAL, "b"));
-    witnessList.add(Token.STOP_TOKEN);
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
     assertEquals(witnessList, tokenList);
   }
 

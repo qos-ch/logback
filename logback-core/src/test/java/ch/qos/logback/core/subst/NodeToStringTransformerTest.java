@@ -37,17 +37,20 @@ public class NodeToStringTransformerTest {
     assertEquals(input, nodeToStringTransformer.transform());
   }
 
-  @Test
-  public void literalWithAccolades() throws ScanException {
-    String input = "%logger{35}";
+
+  void checkInputEqualsOutput(String input) throws ScanException {
     Node node = makeNode(input);
-    System.out.println(node);
     NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
     assertEquals(input, nodeToStringTransformer.transform());
   }
 
-
- // %-4relative [%thread] %-5level %logger{35} - %msg%n
+  @Test
+  public void literalWithNestedAccolades() throws ScanException {
+    checkInputEqualsOutput("%logger{35}");
+    checkInputEqualsOutput("%a{35} %b{35} c");
+    checkInputEqualsOutput("%replace(%msg){'\\d{14,16}', 'XXXX'}");
+    checkInputEqualsOutput("TEST %d{HHmmssSSS} [%thread] %-5level %logger{36} - %msg%n");
+  }
 
   @Test
   public void variable() throws ScanException {

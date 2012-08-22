@@ -4,13 +4,12 @@ package ch.qos.logback.core.subst;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ScanException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // E = TE|T
 //   = T(E|~)
 // E = TEopt where Eopt = E|~
-// T = LITERAL | '}' | '${' V '}'
+// T = LITERAL | { E } |'${' V '}'
 // V = (E|E :- E)
 //   = E(':-'E|~)
 public class Parser {
@@ -57,23 +56,41 @@ public class Parser {
       case LITERAL:
         advanceTokenPointer();
         return new Node(Node.Type.LITERAL, t.payload);
+      case CURLY_LEFT:
+        advanceTokenPointer();
+        Node inner = E();
+        Token right = getCurentToken();
+        expectCurlyRight(right);
+        advanceTokenPointer();
+        Node curlyLeft = new Node(Node.Type.LITERAL, CoreConstants.LEFT_ACCOLADE);
+        curlyLeft.next = inner;
+        Node curlyRightNode = new Node(Node.Type.LITERAL, CoreConstants.RIGHT_ACCOLADE);
+        if(inner == null)
+          curlyLeft.next = curlyRightNode;
+        else
+          appendNode(inner, curlyRightNode);
+        return curlyLeft;
       case START:
         advanceTokenPointer();
         Node v = V();
         Token w = getCurentToken();
-        expectNotNull(w, "}");
-        if (w.type == Token.Type.STOP) {
-          advanceTokenPointer();
-          return v;
-        } else {
-          throw new ScanException("Expecting }");
-        }
-      //case STOP:
-      //   advanceTokenPointer();
-      //   return new Node(Node.Type.LITERAL, CoreConstants.RIGHT_ACCOLADE);
+        expectCurlyRight(w);
+        advanceTokenPointer();
+        return v;
       default:
         return null;
     }
+  }
+
+  private void appendNode(Node inner, Node additionalNode) {
+     Node n = inner;
+     while(true) {
+       if(n.next == null) {
+         n.next = additionalNode;
+         return;
+       }
+       n = n.next;
+     }
   }
 
 
@@ -82,7 +99,7 @@ public class Parser {
     Node e = E();
     Node variable = new Node(Node.Type.VARIABLE, e);
     Token t = getCurentToken();
-    if(t != null && t.type == Token.Type.DEFAULT) {
+    if (t != null && t.type == Token.Type.DEFAULT) {
       advanceTokenPointer();
       Node def = E();
       variable.defaultPart = def;
@@ -98,7 +115,14 @@ public class Parser {
   void expectNotNull(Token t, String expected) {
     if (t == null) {
       throw new IllegalArgumentException("All tokens consumed but was expecting \""
-              + expected+"\"");
+              + expected + "\"");
+    }
+  }
+
+  void expectCurlyRight(Token t) throws ScanException {
+    expectNotNull(t, "}");
+    if (t.type != Token.Type.CURLY_RIGHT) {
+      throw new ScanException("Expecting }");
     }
   }
 
