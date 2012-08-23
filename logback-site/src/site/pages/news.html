@@ -50,6 +50,18 @@
       instructions.</p>
     </div>
 
+    <p>The code handling variable substitution has been completely
+    re-written. As requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-729">LOGBACK-729</a>,
+    variables can be now be nested arbitrarily, even within the
+    default value section. For example,
+    <code>${a${b:-c}:-${d:-e}}</code> is now a valid logback variable
+    expression yielding "e", assuming variables with the keys 'd', 'b'
+    and 'ac' are undefined. The new variable substitution code is
+    designed to be backward compatible with existing configuration
+    files.
+    </p>
+    
 
     <p>Substitution properties are now correctly recognized by <span
     class="attr">scan</span> and <span class="attr">scanPeriod</span>

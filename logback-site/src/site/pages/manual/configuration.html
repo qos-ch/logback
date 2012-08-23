@@ -1277,41 +1277,53 @@ public class MyApp3 {
  
 
   <h3><a name="variableSubstitution"
-  href="#variableSubstitution"><span class="anchor"/></a>Property
+  href="#variableSubstitution"><span class="anchor"/></a>Variable
   substitution</h3>
 
-  <p>As in many scripting languages, logback configuration files support
-  definition and substitution of properties. Properties can be defined
-  within the configuration file itself, in an external file, in an
-  external resource or even computed and <a
-  href="#definingPropsOnTheFly">defined on the fly</a>.
+  <p><span class="label">Note</span> Earlier versions of this document
+  used the term "property substitution" instead of the term
+  "variable". Please consider both terms interchangeable although the
+  latter term conveys a clearer meaning.
   </p>
 
-  <p>Property substitution can occur at any point where a value can be
-  specified. The syntax of property substitution is similar to that of
-  Unix shells. The string between an opening <em>${</em> and closing
-  <em>}</em> is interpreted as a reference to the <em>value</em> of
-  the property.  For property <em>aKey</em>, the string "${aKey}" will
-  be replaced with the value held by the <em>aKey</em> property.
+  <p>As in many scripting languages, logback configuration files
+  support definition and substitution of variables. Variables can be
+  defined within the configuration file itself, in an external file,
+  in an external resource or even computed and <a
+  href="#definingPropsOnTheFly">defined on the fly</a>. 
   </p>
 
-  <p>Properties have a <a href="#scopes">scope</a> (see below).</p>
+  <p class="highlight">Variable substitution can occur at any point in
+  a configuration file where a value can be specified.</p>
+
+  <p>Variable substitution can occur at any point in a configuration
+  file where a value can be specified. The syntax of variable
+  substitution is similar to that of Unix shells. The string between
+  an opening <em>${</em> and closing <em>}</em> is interpreted as a
+  reference to the <em>value</em> of the property.  For property
+  <em>aName</em>, the string "${aName}" will be replaced with the
+  value held by the <em>aName</em> property.
+  </p>
+
+  <p>Variables have a <a href="#scopes">scope</a> (see below).</p>
 
   <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
-  properties are automatically defined and have context scope.</p>
+  variables are automatically defined and have context scope.</p>
 
  
   <h4><a name="definingProps" href="#definingProps"><span
-  class="anchor"/></a>Defining properties</h4>
+  class="anchor"/></a>Defining variables</h4>
 
-  <p>Properties can be defined one at a time in the configuration file
+  <p>Variables can be defined one at a time in the configuration file
   itself or loaded wholesale from an external properties file or an
-  external resource.</p>
+  external resource. For historical reasons, the XML element for
+  defining variables is <code>&lt;property&gt;</code> altough in
+  logback 1.0.7 and later the element <code>&lt;variable></code> can
+  be used interchangeably.</p>
 
-  <p>The next example shows a variable, a.k.a. a substitution
-  property, declared at the beginning of the configuration file. It is
-  then used further down the file to specify the location of the
-  output file.
+  <p>The next example shows a variable declared at the beginning of
+  the configuration file. It is then used further down the file to
+  specify the location of the output file.
   </p>
 
   <p class="example">Example: Simple Variable substitution
@@ -1338,7 +1350,7 @@ public class MyApp3 {
   <p>The next example shows the use of a System property to achieve
   the same result. The property is not declared in the configuration
   file, thus logback will look for it in the System properties. Java
-  system properties can be set on the command line.
+  system properties can be set on the command line as shown next:
   </p>
   
   <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
@@ -1390,9 +1402,8 @@ public class MyApp3 {
 
    <p>This configuration file contains a reference to a file named
    <em>variables1.properties</em>.  The variables contained in that
-   file will be read and then defined within the context of the
-   logback configuration file. Here is what the
-   <em>variable.properties</em> file might look like.
+   file will be read and then defined within local scope. Here is what
+   the <em>variable.properties</em> file might look like.
    </p>
 
    <em>Example: Variable file
@@ -1496,11 +1507,30 @@ public class MyApp3 {
    defined in the context scope, it will be available in every logging
    event, even those sent to remote hosts via serialization.</p>
 
-   <h4><a name="nestedSubst" href="#nestedSubst"><span
-   class="anchor"/></a>Nested variable substitution</h4>
 
-   <p>Nested variable substitution is also supported. By nested, we
-   mean that the value definition of a variable contains references to
+  <h3><a name="defaultValuesForVariables"
+  href="#defaultValuesForVariables"><span class="anchor"/></a>Default
+  values for variables</h3>
+
+  <p>Under certain circumstances, it may be desirable for a variable
+  to have a default value if it is not declared or its value is
+  null. As in the <a
+  href="http://tldp.org/LDP/abs/html/parameter-substitution.html">Bash
+  shell</a>, default values can be specified using the <b>":-"</b>
+  operator. For example, assuming the variable named <em>aName</em> is
+  not defined, <code>"${aName<b>:-golden</b>}"</code> will be
+  interpreted as "golden".</p>
+
+   <h3><a name="nestedSubst" href="#nestedSubst"><span
+   class="anchor"/></a>Nested variables</h3>
+
+   <p>Variable nesting is fully supported. Both the name,
+   default-value and value definition of a variable can reference
+   other variables.</p>
+
+
+   <h4>value nesting</h4>
+   <p>The value definition of a variable can contain references to
    other variables. Suppose you wish to use variables to specify not
    only the destination directory but also the file name, and combine
    those two variables in a third variable called "destination". The
@@ -1539,21 +1569,26 @@ fileName=myApp.log
   &lt;/root>
 &lt;/configuration></pre>
 
-  <h3><a name="defaultValuesForVariables"
-  href="#defaultValuesForVariables"><span class="anchor"/></a>Default
-  substitution values for variables</h3>
 
-  <p>Under certain circumstances, it may be desirable for a variable
-  to have a default value if it is not declared or its value is
-  null. As in the <a
-  href="http://tldp.org/LDP/abs/html/parameter-substitution.html">Bash
-  shell</a>, default values can be specified using the <b>":-"</b>
-  operator. For example, assuming <em>aKey</em> is not defined,
-  <code>"${aKey<b>:-golden</b>}"</code> will be interpreted as
-  "golden".</p>
+   <h4>name nesting</h4>
+
+   <p>When referencing a variable, the variable name may contain a
+   reference to another variable. For example, if the variable named
+   "userid" is assigned the value "alice", then
+   "${${userid}.password}" references the variable with the name
+   "alice.password".</p>
+
+   <h4>default value nesting</h4>
+
+   <p>The default value of a variable can reference a another
+   variable.  For example, assuming the variable 'id' is unassigned
+   and the variable 'userid' is assigned the value "alice", then the
+   expression "${id<b>:-</b>${userid}}" will return "alice".
+   </p>
 
 
-  <!-- ============================================================== -->
+  <!-- ==============================================================
+       -->
   <h3><a name="hostname" href="#hostname"><span
   class="anchor"/></a>HOSTNAME property</h3>
 
