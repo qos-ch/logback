@@ -96,8 +96,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     addInfo("Setting discardingThreshold to " + discardingThreshold);
     worker.setDaemon(true);
     worker.setName("AsyncAppender-Worker-" + worker.getName());
-    worker.start();
+    // make sure this instance is marked as "started" before staring the worker Thread
     super.start();
+    worker.start();
   }
 
   @Override
