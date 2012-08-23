@@ -29,7 +29,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>10th of July, 2012 - Release of version 1.0.7</h3>
+    <h3>24th of August, 2012 - Release of version 1.0.7</h3>
 
     <div class="breaking">
       <h4>Janino library upgraded to version 2.6.1.</h4>
@@ -74,6 +74,12 @@
     correctly. Xu Huisheng provided the relavant patch.
     </p>
     
+    <p>Fixed a race-condition in <code>AsyncAppender</code> and its
+    worker thread. This issue was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-720">LOGBACK-720</a> by
+    Arnd Hannemann who also supplied the relevant patch.</p>
+
+
     <p>If a <code>PropertyDefiner</code> implements
     <code>LifeCycle</code>, then its <code>start()</code> method will
     now be invoked.</p>
