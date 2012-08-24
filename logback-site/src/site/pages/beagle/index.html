@@ -62,28 +62,40 @@
   
       <li>Change the output format on-the-fly</li>
 
+      <li>quickly filter-out events by setting the level of existing
+      loggers</li>
+
       <li>Measure the time elapsed between any two lines of log</li>
     </ul>
 
 
     <h2 class="doAnchor">Plug-in Installation</h2>
 
+    <p>The logback-beagle plug-in requires the Nebula Grid plug-in
+    which must be installed first.</p>
 
-    <table>
-      <tr>          
-        <td valign="top">
-          <a href='http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=324625'
-             title='Drag and drop into a running Eclipse Indigo workspace to install logback-beagle'><img
-             src='http://marketplace.eclipse.org/misc/installbutton.png' alt=""/>
-          </a>
+    <dl>
+      <dt>Step 1: Nebula Grid</dt>
+      
+      <dd>
+      <p>The Nebula Grid plug-in which can be installed from
+      <b>http://download.eclipse.org/technology/nebula/snapshot/</b>. Only
+      the "Nebula Grid Feature" needs to be installed.</p>
+      
+      <p><img src="images/nebulaFeature.png" alt=""/></p>
+      
+      </dd>
 
-        </td>
-        <td>The logback-beagle plug-in can be installed in Eclipse by
-        adding the URL <b>http://logback.qos.ch/p2/</b> as a new
-        Eclipse software site under the "Intall New Software" page.
-        </td>
-      </tr>
-    </table>
+      <dt>Step 2: Logbak-beagle</dt>
+      
+      <dd><p>The logback-beagle plug-in can be installed from
+      <b>http://logback.qos.ch/p2/</b>. You need to select "Logback",
+      "Logback Beagle" and "SLF4J" bundles for installation as shown
+      below.</p>
+
+      <p><img src="images/beagleFeature.png" alt=""/></p>
+      </dd>
+    </dl>
         
     
     <p>Restarting Eclipse should load the plugin. To access the Beagle
