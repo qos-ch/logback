@@ -1,2 +1,3 @@
-Redirect jmxConfig.html http://logback.qos.ch/manual/jmxConfig.html
-Redirect joran.html http://logback.qos.ch/manual/onJoran.html
+Redirect permanent /jmxConfig.html http://logback.qos.ch/manual/jmxConfig.html
+Redirect permanent /joran.html http://logback.qos.ch/manual/onJoran.html
+Redirect permanent /consolePlugin.html http://logback.qos.ch/beagle/
