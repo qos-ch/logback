@@ -37,7 +37,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   RenameUtil util = new RenameUtil();
   Compressor compressor;
 
-  public static String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
+  public static final String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
 
   /**
    * It's almost always a bad idea to have a large window size, say over 12.

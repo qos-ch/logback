@@ -33,8 +33,8 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class InsertFromJNDIAction extends Action {
 
-  public static String ENV_ENTRY_NAME_ATTR="env-entry-name";
-  public static String AS_ATTR="as";
+  public static final String ENV_ENTRY_NAME_ATTR="env-entry-name";
+  public static final String AS_ATTR="as";
   
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
 

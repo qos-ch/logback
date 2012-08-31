@@ -31,10 +31,8 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ObjectStreamEncoder<E> extends EncoderBase<E> {
 
-  static public int START_PEBBLE = 1853421169;
-  //static public int START_PEBBLE = 1;
-  
-  static public int STOP_PEBBLE = 640373619;
+  static public final int START_PEBBLE = 1853421169;
+  static public final int STOP_PEBBLE = 640373619;
 
   private int MAX_BUFFER_SIZE = 100;
 

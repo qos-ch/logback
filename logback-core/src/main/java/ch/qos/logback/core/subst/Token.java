@@ -2,10 +2,10 @@ package ch.qos.logback.core.subst;
 
 public class Token {
 
-  static public Token START_TOKEN = new Token(Type.START, null);
-  static public Token CURLY_LEFT_TOKEN = new Token(Type.CURLY_LEFT, null);
-  static public Token CURLY_RIGHT_TOKEN = new Token(Type.CURLY_RIGHT, null);
-  static public Token DEFAULT_SEP_TOKEN = new Token(Type.DEFAULT, null);
+  static public final Token START_TOKEN = new Token(Type.START, null);
+  static public final Token CURLY_LEFT_TOKEN = new Token(Type.CURLY_LEFT, null);
+  static public final Token CURLY_RIGHT_TOKEN = new Token(Type.CURLY_RIGHT, null);
+  static public final Token DEFAULT_SEP_TOKEN = new Token(Type.DEFAULT, null);
 
   public enum Type {LITERAL, START, CURLY_LEFT, CURLY_RIGHT, DEFAULT}
 

@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LiteralAction extends Action {
-  public static String VALUE_ATR = "value";
+  public static final String VALUE_ATR = "value";
 
   public void begin(InterpretationContext ic, String name, Attributes attributes) {
     String valueStr = attributes.getValue(VALUE_ATR);

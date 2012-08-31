@@ -59,7 +59,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ComputationAction2 extends Action {
-  public static String NAME_ATR = "name";
+  public static final String NAME_ATR = "name";
 
   Stack<String> nameStrStack = new Stack<String>();
   

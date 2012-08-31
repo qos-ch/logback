@@ -155,7 +155,7 @@ public class ContextInitializer {
     Set<URL> urlSet = null;
     StatusManager sm = loggerContext.getStatusManager();
     try {
-      urlSet = Loader.getResourceOccurenceCount(resourceName, classLoader);
+      urlSet = Loader.getResourceOccurrenceCount(resourceName, classLoader);
     } catch (IOException e) {
       sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]",
               loggerContext, e));

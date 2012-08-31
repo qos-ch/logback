@@ -39,12 +39,12 @@ public class CallerData {
    */
   public static final int LINE_NA = -1;
 
-  public static String CALLER_DATA_NA = "?#?:?" + CoreConstants.LINE_SEPARATOR;
+  public static final String CALLER_DATA_NA = "?#?:?" + CoreConstants.LINE_SEPARATOR;
 
   /**
    * This value is returned in case no caller data could be extracted.
    */
-  public static StackTraceElement[] EMPTY_CALLER_DATA_ARRAY = new StackTraceElement[0];
+  public static final StackTraceElement[] EMPTY_CALLER_DATA_ARRAY = new StackTraceElement[0];
 
 
   /**

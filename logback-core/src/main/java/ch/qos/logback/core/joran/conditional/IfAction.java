@@ -30,8 +30,8 @@ import ch.qos.logback.core.util.OptionHelper;
 public class IfAction extends Action {
   private static final String CONDITION_ATTR = "condition";
 
-  public static String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
-  public static String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
+  public static final String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
+  public static final String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
 
   Stack<IfState> stack = new Stack<IfState>();
   
