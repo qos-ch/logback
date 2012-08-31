@@ -67,7 +67,14 @@ public class Node {
 				&& (next != null ? next.equals(r.next) : r.next == null);
 	}
 
-	String printNext() {
+  @Override
+  public int hashCode() {
+    int result = type;
+    result = 31 * result + (value != null ? value.hashCode() : 0);
+    return result;
+  }
+
+  String printNext() {
 		if (next != null) {
 			return " -> " + next;
 		} else {

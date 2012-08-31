@@ -139,6 +139,15 @@ public class FormatInfo {
         && (leftTruncate == r.leftTruncate);
   }
 
+  @Override
+  public int hashCode() {
+    int result = min;
+    result = 31 * result + max;
+    result = 31 * result + (leftPad ? 1 : 0);
+    result = 31 * result + (leftTruncate ? 1 : 0);
+    return result;
+  }
+
   public String toString() {
     return "FormatInfo(" + min + ", " + max + ", " + leftPad + ", "
         + leftTruncate + ")";

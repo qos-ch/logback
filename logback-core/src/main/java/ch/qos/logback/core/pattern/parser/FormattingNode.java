@@ -48,4 +48,11 @@ public class FormattingNode extends Node {
     return (formatInfo != null ? formatInfo.equals(r.formatInfo)
         : r.formatInfo == null);
   }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (formatInfo != null ? formatInfo.hashCode() : 0);
+    return result;
+  }
 }

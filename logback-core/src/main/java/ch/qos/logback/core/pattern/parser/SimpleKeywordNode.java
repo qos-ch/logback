@@ -36,7 +36,6 @@ public class SimpleKeywordNode extends FormattingNode {
   }
 
   public boolean equals(Object o) {
-    // System.out.println("Keyword.equals()");
     if (!super.equals(o)) {
       return false;
     }
@@ -48,6 +47,11 @@ public class SimpleKeywordNode extends FormattingNode {
 
     return (optionList != null ? optionList.equals(r.optionList)
         : r.optionList == null);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 
   public String toString() {

@@ -25,14 +25,14 @@ public class EnsureLineSeparation implements PostCompileProcessor<IAccessEvent> 
    * line.
    */
   public void process(Converter<IAccessEvent> head) {
+    if(head == null)
+      throw new IllegalArgumentException("Empty converter chain");
+
+    // if head != null, then tail != null as well
     Converter<IAccessEvent> tail = ConverterUtil.findTail(head);
     Converter<IAccessEvent> newLineConverter = new LineSeparatorConverter();
-    if (tail == null) {
-      head = newLineConverter;
-    } else {
-      if (!(tail instanceof LineSeparatorConverter)) {
+    if (!(tail instanceof LineSeparatorConverter)) {
         tail.setNext(newLineConverter);
-      }
     }
   }
 }

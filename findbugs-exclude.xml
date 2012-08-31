@@ -1,0 +1,71 @@
+<FindBugsFilter>
+
+ <Match>
+    <Class name="ch.qos.logback.core.util.Loader" />
+    <Bug pattern="DMI_COLLECTION_OF_URLS" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.core.encoder.LayoutWrappingEncoder" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.core.net.SyslogAppenderBase" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.core.util.FileUtil" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.classic.net.SyslogAppender" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.classic.net.JMSQueueSink" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.classic.net.JMSTopicSink" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+  <Match>
+    <Class name="ch.qos.logback.access.servlet.TeeHttpServletRequest" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  
+  <Match>
+    <Class name="ch.qos.logback.access.servlet.TeeHttpServletResponse" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  
+  <Match>
+    <Class name="ch.qos.logback.access.spi.AccessEvent" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  
+  <Match>
+    <Class name="ch.qos.logback.access.spi.Util" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  
+  
+  <Match>
+    <Class name="~chapters.*" />
+  </Match>
+
+  <!-- ========= Safely ignorable ====== -->
+  
+  <Match>
+    <Class name="ch.qos.logback.core.encoder.EchoEncoder" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+
+</FindBugsFilter>
+

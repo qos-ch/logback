@@ -30,7 +30,6 @@ public class CompositeNode extends SimpleKeywordNode {
 	}
 
 	public boolean equals(Object o) {
-		//System.out.println("CompositeNode.equals()");
     if(!super.equals(o)) {
       return false;
     }
@@ -42,8 +41,13 @@ public class CompositeNode extends SimpleKeywordNode {
 		return (childNode != null) ? childNode.equals(r.childNode)
 						: (r.childNode == null);
 	}
-	
-	public String toString() {
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  public String toString() {
 		StringBuffer buf = new StringBuffer();
 		if(childNode != null) {
 		 buf.append("CompositeNode("+childNode+")");

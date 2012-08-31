@@ -320,6 +320,16 @@
         <version>2.15.2</version>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs.version}</version>
+        <configuration>
+          <threshold>High</threshold>
+          <!--<trace>true</trace>-->
+          <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
 
       <!-- ================ site plugin ==================== -->
       <plugin>
