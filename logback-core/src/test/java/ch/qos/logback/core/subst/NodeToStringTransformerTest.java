@@ -20,10 +20,11 @@ public class NodeToStringTransformerTest {
     propertyContainer0.putProperty("k0", "v0");
     propertyContainer0.putProperty("zero", "0");
     propertyContainer0.putProperty("v0.jdbc.url", "http://..");
+    propertyContainer0.putProperty("host", "local");
 
   }
 
-  private Node  makeNode(String input) throws ScanException {
+  private Node makeNode(String input) throws ScanException {
     Tokenizer tokenizer = new Tokenizer(input);
     Parser parser = new Parser(tokenizer.tokenize());
     return parser.parse();
@@ -52,6 +53,7 @@ public class NodeToStringTransformerTest {
     checkInputEqualsOutput("TEST %d{HHmmssSSS} [%thread] %-5level %logger{36} - %msg%n");
   }
 
+
   @Test
   public void variable() throws ScanException {
     String input = "${k0}";
@@ -77,12 +79,21 @@ public class NodeToStringTransformerTest {
   }
 
   @Test
-   public void LOGBACK729() throws ScanException {
-     String input = "${${k0}.jdbc.url}";
-     Node node = makeNode(input);
-     NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-     assertEquals("http://..", nodeToStringTransformer.transform());
-   }
+  public void LOGBACK729() throws ScanException {
+    String input = "${${k0}.jdbc.url}";
+    Node node = makeNode(input);
+    NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+    assertEquals("http://..", nodeToStringTransformer.transform());
+  }
+
+  @Test
+  public void LOGBACK744_withColon() throws ScanException {
+    String input = "%d{HH:mm:ss.SSS} host:${host} %logger{36} - %msg%n";
+    Node node = makeNode(input);
+    NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+    System.out.println(nodeToStringTransformer.transform());
+    assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
+  }
 
 
   @Test
@@ -100,10 +111,6 @@ public class NodeToStringTransformerTest {
     NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
     assertEquals("axv0c", nodeToStringTransformer.transform());
   }
-
-
-
-
 
 
 }

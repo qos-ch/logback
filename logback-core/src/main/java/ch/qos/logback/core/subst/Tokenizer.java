@@ -66,12 +66,22 @@ public class Tokenizer {
   }
 
   private void handleDefaultValueState(char c, List<Token> tokenList, StringBuilder stringBuilder) {
-    if (c == CoreConstants.DASH_CHAR) {
-      tokenList.add(Token.DEFAULT_SEP_TOKEN);
-    } else {
-      stringBuilder.append(CoreConstants.COLON_CHAR).append(c);
+    switch(c) {
+      case  CoreConstants.DASH_CHAR:
+        tokenList.add(Token.DEFAULT_SEP_TOKEN);
+        state = TokenizerState.LITERAL_STATE;
+        break;
+      case CoreConstants.DOLLAR:
+        stringBuilder.append(CoreConstants.COLON_CHAR);
+        addLiteralToken(tokenList, stringBuilder);
+        stringBuilder.setLength(0);
+        state = TokenizerState.START_STATE;
+        break;
+      default:
+        stringBuilder.append(CoreConstants.COLON_CHAR).append(c);
+        state = TokenizerState.LITERAL_STATE;
+        break;
     }
-    state = TokenizerState.LITERAL_STATE;
   }
 
   private void handleStartState(char c, List<Token> tokenList, StringBuilder stringBuilder) {

@@ -114,6 +114,19 @@ public class ParserTest {
     assertEquals(witness, node);
   }
 
+
+  // /LOGBACK-744
+  @Test
+  public void withColon() throws ScanException {
+    Tokenizer tokenizer = new Tokenizer("a:${b}");
+    Parser parser = new Parser(tokenizer.tokenize());
+    Node node = parser.parse();
+    Node witness = new Node(Node.Type.LITERAL, "a");
+    Node t = witness.next = new Node(Node.Type.LITERAL, ":");
+    t.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+    assertEquals(witness, node);
+  }
+
   @Test
   public void nested() throws ScanException {
     Tokenizer tokenizer = new Tokenizer("a${b${c}}d");
@@ -124,7 +137,6 @@ public class ParserTest {
     nestedWitness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "c"));
     witness.next = nestedWitness;
     witness.next.next = new Node(Node.Type.LITERAL, "c");
-    //dump(node);
   }
 
   @Test
