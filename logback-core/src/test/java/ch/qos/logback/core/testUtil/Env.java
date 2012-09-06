@@ -72,7 +72,7 @@ public class Env {
     if(Env.isLinux()) {
       return CoreTestConstants.BASH_PATH_ON_LINUX;
     }
-    if(Env.isLocalHostNameInList(new String[] {"hetz"})) {
+    if(Env.isLocalHostNameInList(new String[] {"hetz", "het"})) {
       return CoreTestConstants.BASH_PATH_ON_CYGWIN;
     }
     return null;
