@@ -1,0 +1,57 @@
+
+Here is a list of persons who have signed a CLA [1] in file.
+
+Name                     Location              Date
+----                     --------              ----
+Maarten Bosteels         Heverlee, Belgium     2007-01-15
+John E. Conlon           WI, USA               2007-02-08
+Ralph W. Goers Jr.       CA, USA               2008-07-24
+Matt Humphreys           London, UK            2008-08-16
+Thorbjorn Ravn Andersen  Hammel, Denmark       2008-08-16
+Chad LaVigne             MN, USA               2009-03-25
+Joern Huxhorn            Pfungstadt, Germany   2009-04-29
+Thorsten Moeller         Basel, Switzerland    2009-11-16
+Robert Elliot            Twickenham, UK        2010-03-08
+Tomasz Nurkiewicz        Wegrow, Poland        2010-03-19
+Aleksey Didik            S.Putilovskay, Russia 2010-03-26
+Heiko Seeberger          Schondorf , Germany   2010-09-06
+Ryan Cogswell            MN, USA               2011-07-07
+Pierre Queinnec          Paris, France         2011-07-20
+Antony Trinh             MA, USA               2012-05-10
+Torsten Juergeleit       Liederbach, Germany   2012-05-13
+Cedric Lime              Levallois-Perret, FR  2012-06-08
+Christian Trutz          Mark, Germany         2012-04-14
+Les Hazlewood            CA, USA               2012-09-10
+
+
+Justification for CLAs
+----------------------
+
+There is no denying that the CLA requirement adds overhead. However,
+the CLA offers several advantages:
+
+advantage 1) having a CLA on file for all contributors provides
+reassurance to downstream users. For example, IP officers from Eclipse
+contact QOS.ch at regular intervals asking whether QOS.ch has CLA for
+all SLF4J and logback contributions.
+
+advantage 2) allows QOS.ch to change the software license as long as
+the change is not contrary to public interest. This allowed QOS.ch to
+add Eclipse Public License 1.0 (in addition to LGPL) in logback
+version 0.9.18. This was undoubtedly a net gain for those wishing to
+use logback and it was a fairly painless process. Without the CLA on
+file, dual-licensing logback would have been near impossible.
+
+advantage 3) by virtue of clause 3 of the CLA, the contributor vouches
+for his/her contributions as his/her own. Thus, QOS.ch takes a lesser
+risk when distributing software because QOS.ch can claim that some
+vetting has been performed (due dillegence).
+
+A more neutral discussion of CLAs can be found at [2].
+
+BTW, the CLA can be sent to Ceki directly by email (a scanned copy is
+fine).
+
+[1] http://logback.qos.ch/cla.txt
+[2] http://www.oss-watch.ac.uk/resources/cla.xml
+
