@@ -22,7 +22,7 @@ Torsten Juergeleit       Liederbach, Germany   2012-05-13
 Cedric Lime              Levallois-Perret, FR  2012-06-08
 Christian Trutz          Mark, Germany         2012-04-14
 Les Hazlewood            CA, USA               2012-09-10
-
+Libor Jelinek            Czech Republic        2012-09-17
 
 Justification for CLAs
 ----------------------
