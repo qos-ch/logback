@@ -17,7 +17,7 @@ Aleksey Didik            S.Putilovskay, Russia 2010-03-26
 Heiko Seeberger          Schondorf , Germany   2010-09-06
 Ryan Cogswell            MN, USA               2011-07-07
 Pierre Queinnec          Paris, France         2011-07-20
-Antony Trinh             MA, USA               2012-05-10
+Anthony Trinh            MA, USA               2012-05-10
 Torsten Juergeleit       Liederbach, Germany   2012-05-13
 Cedric Lime              Levallois-Perret, FR  2012-06-08
 Christian Trutz          Mark, Germany         2012-06-14
