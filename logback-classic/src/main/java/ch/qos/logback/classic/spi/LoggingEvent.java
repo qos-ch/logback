@@ -31,7 +31,7 @@ import org.slf4j.spi.MDCAdapter;
  * The internal representation of logging events. When an affirmative decision
  * is made to log then a <code>LoggingEvent</code> instance is created. This
  * instance is passed around to the different logback-classic components.
- * 
+ * <p/>
  * <p>
  * Writers of logback-classic components such as appenders should be aware of
  * that some of the LoggingEvent fields are initialized lazily. Therefore, an
@@ -39,7 +39,7 @@ import org.slf4j.spi.MDCAdapter;
  * must initialize "lazy" fields prior to writing them out. See the
  * {@link #prepareForDeferredProcessing()} method for the exact list.
  * </p>
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -48,8 +48,8 @@ public class LoggingEvent implements ILoggingEvent {
   /**
    * Fully qualified name of the calling Logger class. This field does not
    * survive serialization.
-   * 
-   * <p>
+   * <p/>
+   * <p/>
    * Note that the getCallerInformation() method relies on this fact.
    */
   transient String fqnOfLoggerClass;
@@ -65,12 +65,11 @@ public class LoggingEvent implements ILoggingEvent {
 
   /**
    * Level of logging event.
-   * 
+   * <p/>
    * <p>
    * This field should not be accessed directly. You should use the
    * {@link #getLevel} method instead.
    * </p>
-   * 
    */
   private transient Level level;
 
@@ -102,7 +101,7 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   public LoggingEvent(String fqcn, Logger logger, Level level, String message,
-      Throwable throwable, Object[] argArray) {
+                      Throwable throwable, Object[] argArray) {
     this.fqnOfLoggerClass = fqcn;
     this.loggerName = logger.getName();
     this.loggerContext = logger.getLoggerContext();
@@ -163,10 +162,8 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   /**
-   * @param threadName
-   *          The threadName to set.
-   * @throws IllegalStateException
-   *           If threadName has been already set.
+   * @param threadName The threadName to set.
+   * @throws IllegalStateException If threadName has been already set.
    */
   public void setThreadName(String threadName) throws IllegalStateException {
     if (this.threadName != null) {
@@ -197,8 +194,8 @@ public class LoggingEvent implements ILoggingEvent {
   /**
    * This method should be called prior to serializing an event. It should also
    * be called when using asynchronous or deferred logging.
-   * 
-   * <p>
+   * <p/>
+   * <p/>
    * Note that due to performance concerns, this method does NOT extract caller
    * data. It is the responsibility of the caller to extract caller information.
    */
@@ -224,7 +221,7 @@ public class LoggingEvent implements ILoggingEvent {
   public void setMessage(String message) {
     if (this.message != null) {
       throw new IllegalStateException(
-          "The message for this event has been set already.");
+              "The message for this event has been set already.");
     }
     this.message = message;
   }
@@ -240,7 +237,7 @@ public class LoggingEvent implements ILoggingEvent {
   public void setLevel(Level level) {
     if (this.level != null) {
       throw new IllegalStateException(
-          "The level has been already set for this event.");
+              "The level has been already set for this event.");
     }
     this.level = level;
   }
@@ -249,7 +246,7 @@ public class LoggingEvent implements ILoggingEvent {
    * Get the caller information for this logging event. If caller information is
    * null at the time of its invocation, this method extracts location
    * information. The collected information is cached for future use.
-   * 
+   * <p/>
    * <p>
    * Note that after serialization it is impossible to correctly extract caller
    * information.
@@ -258,7 +255,7 @@ public class LoggingEvent implements ILoggingEvent {
   public StackTraceElement[] getCallerData() {
     if (callerDataArray == null) {
       callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass,
-          loggerContext.getMaxCallerDataDepth());
+              loggerContext.getMaxCallerDataDepth());
     }
     return callerDataArray;
   }
@@ -278,7 +275,7 @@ public class LoggingEvent implements ILoggingEvent {
   public void setMarker(Marker marker) {
     if (this.marker != null) {
       throw new IllegalStateException(
-          "The marker has been already set for this event.");
+              "The marker has been already set for this event.");
     }
     this.marker = marker;
   }
@@ -295,7 +292,7 @@ public class LoggingEvent implements ILoggingEvent {
     }
     if (argumentArray != null) {
       formattedMessage = MessageFormatter.arrayFormat(message, argumentArray)
-          .getMessage();
+              .getMessage();
     } else {
       formattedMessage = message;
     }
@@ -308,7 +305,7 @@ public class LoggingEvent implements ILoggingEvent {
     if (mdcPropertyMap == null) {
       MDCAdapter mdc = MDC.getMDCAdapter();
       if (mdc instanceof LogbackMDCAdapter)
-        mdcPropertyMap = ((LogbackMDCAdapter)mdc).getPropertyMap();
+        mdcPropertyMap = ((LogbackMDCAdapter) mdc).getPropertyMap();
       else
         mdcPropertyMap = mdc.getCopyOfContextMap();
     }
@@ -320,11 +317,27 @@ public class LoggingEvent implements ILoggingEvent {
   }
 
   /**
+   * Set the MDC map for this event.
+   *
+   * @param map
+   * @since 1.0.8
+   */
+  public void setMDCPropertyMap(Map<String, String> map) {
+    if (mdcPropertyMap != null) {
+      throw new IllegalStateException(
+              "The MDCPropertyMap has been already set for this event.");
+    }
+    this.mdcPropertyMap = map;
+
+  }
+
+  /**
    * Synonym for [@link #getMDCPropertyMap}.
-   * @deprecated  Replaced by [@link #getMDCPropertyMap}
+   *
+   * @deprecated Replaced by [@link #getMDCPropertyMap}
    */
   public Map<String, String> getMdc() {
-      return getMDCPropertyMap();
+    return getMDCPropertyMap();
   }
 
   @Override
