@@ -37,15 +37,20 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
   static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
+  static final public String DEFAULT_STACKTRACE_HEADER_PATTERN = "";
 
+  PatternLayout stackTraceHeaderLayout = new PatternLayout();
+  String stackTraceHeaderPattern = DEFAULT_STACKTRACE_HEADER_PATTERN;
+  
   PatternLayout stackTraceLayout = new PatternLayout();
   String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
 
   boolean throwableExcluded = false;
 
-
+  
   public void start() {
     super.start();
+    setupStackTraceHeaderLayout();
     setupStackTraceLayout();
   }
 
@@ -67,41 +72,42 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   @Override
   protected void postProcess(Object eventObject, OutputStream sw) {
-    if (throwableExcluded)
-      return;
+	    if (throwableExcluded)
+	      return;
 
-    ILoggingEvent event = (ILoggingEvent) eventObject;
-    IThrowableProxy tp = event.getThrowableProxy();
+	    ILoggingEvent event = (ILoggingEvent) eventObject;
+	    IThrowableProxy tp = event.getThrowableProxy();
 
-    if(tp == null)
-      return;
+	    if(tp == null)
+	      return;
 
-    String stackTracePrefix = stackTraceLayout.doLayout(event);
-    boolean topException = true;
-    while (tp != null) {
-      StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
-      try {
-    	StringBuilder stackTraceHeaderLine = new StringBuilder().append(stackTracePrefix);
-    	if (topException) {
-    		topException = false;
-    	} else {
-    		stackTraceHeaderLine = stackTraceHeaderLine.append(CoreConstants.CAUSED_BY);
-    	}
-    	stackTraceHeaderLine.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    	sw.write(stackTraceHeaderLine.toString().getBytes());
-    	sw.flush();
-        for (StackTraceElementProxy step : stepArray) {
-          StringBuilder sb = new StringBuilder();
-          sb.append(stackTracePrefix).append(step);
-          sw.write(sb.toString().getBytes());
-          sw.flush();
-        }
-      } catch (IOException e) {
-        break;
-      }
-      tp = tp.getCause();
-    }
-  }
+	    String stackTracePrefix = stackTraceLayout.doLayout(event);
+	    String stackTraceHeaderPrefix = stackTraceHeaderLayout.doLayout(event);
+	    boolean topException = true;
+	    while (tp != null) {
+	      StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
+	      try {
+	    	StringBuilder stackTraceHeaderLine = new StringBuilder().append(stackTraceHeaderPrefix);
+	    	if (topException) {
+	    		topException = false;
+	    	} else {
+	    		stackTraceHeaderLine.append(CoreConstants.CAUSED_BY);
+	    	}
+	    	stackTraceHeaderLine.append(tp.getClassName()).append(": ").append(tp.getMessage());
+	    	sw.write(stackTraceHeaderLine.toString().getBytes());
+	    	sw.flush();
+	        for (StackTraceElementProxy step : stepArray) {
+	          StringBuilder sb = new StringBuilder();
+	          sb.append(stackTracePrefix).append(step);
+	          sw.write(sb.toString().getBytes());
+	          sw.flush();
+	        }
+	      } catch (IOException e) {
+	        break;
+	      }
+	      tp = tp.getCause();
+	    }
+	  }
 
   public Layout<ILoggingEvent> buildLayout() {
     PatternLayout layout = new PatternLayout();
@@ -120,9 +126,18 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     stackTraceLayout.getInstanceConverterMap().put("syslogStart",
             SyslogStartConverter.class.getName());
 
-    stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
+    stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern + " ");
     stackTraceLayout.setContext(getContext());
     stackTraceLayout.start();
+  }
+
+  private void setupStackTraceHeaderLayout() {
+	  stackTraceHeaderLayout.getInstanceConverterMap().put("syslogStart",
+	            SyslogStartConverter.class.getName());
+
+	  stackTraceHeaderLayout.setPattern(getPrefixPattern() + stackTraceHeaderPattern + " ");
+	  stackTraceHeaderLayout.setContext(getContext());
+	  stackTraceHeaderLayout.start();
   }
 
   public boolean isThrowableExcluded() {
@@ -138,6 +153,33 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
    */
   public void setThrowableExcluded(boolean throwableExcluded) {
     this.throwableExcluded = throwableExcluded;
+  }
+
+  /**
+   * See {@link #setStackTraceHeaderPattern(String).
+   *
+   * @return the stackTraceHeaderPattern
+   * @since 1.0.x
+   */
+  public String getStackTraceHeaderPattern() {
+    return stackTraceHeaderPattern;
+  }
+
+  /**
+   * Stack trace lines are sent to the syslog server separately from the main message
+   * Preceding each block of stack trace lines, there is a special header line for that stacktrace block
+   * When stacktraces are nested, each nested block of stacktraces is headed by a special header line.
+   * Nested block header lines differ slightly from the initial stracktrace header line, they contain the additional text "Caused by: "
+
+   * For stacktrace header lines, the stackTraceHeaderPattern is used instead of {@link #suffixPattern} or {@link #stackTracePattern}.
+   * The <b>stackTraceHeaderPattern</b> option allows specification of a separate format for the
+   * non-standardized part of these header lines.
+   *
+   * @param stackTraceHeaderPattern
+   * @since 1.0.x
+   */
+  public void setStackTraceHeaderPattern(String stackTraceHeaderPattern) {
+    this.stackTraceHeaderPattern = stackTraceHeaderPattern;
   }
 
   /**
