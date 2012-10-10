@@ -101,6 +101,14 @@ public abstract class SiftingAppenderBase<E> extends
   public void setDiscriminator(Discriminator<E> discriminator) {
     this.discriminator = discriminator;
   }
+
+  public void setTimeout(int threshold) {
+    appenderTracker.setTimeout(threshold);
+  }
+
+  public void setMaxAppenders(int maxAppenders) {
+    appenderTracker.setMaxAppenders(maxAppenders);
+  }
   
   
   int nopaWarningCount = 0;
