@@ -9,3 +9,4 @@ target
 *.iws
 logback-classic/jdbc:hsqldb:mem:test.log
 logback-classic/jdbc:hsqldb:mem:test.properties
+logback-classic/jdbc:hsqldb:mem:test.script
