@@ -121,7 +121,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("nopexception",
         NopThrowableInformationConverter.class.getName());
 
-    defaultConverterMap.put("cn", ContextNameAction.class.getName());
+    defaultConverterMap.put("cn", ContextNameConverter.class.getName());
     defaultConverterMap.put("contextName", ContextNameConverter.class.getName());
     
     defaultConverterMap.put("caller", CallerDataConverter.class.getName());
