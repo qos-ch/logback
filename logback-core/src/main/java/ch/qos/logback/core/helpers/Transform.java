@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.helpers;
 
+import java.util.regex.Pattern;
+
 /**
  * Utility class for transforming strings.
  * 
@@ -26,22 +28,21 @@ public class Transform {
   private static final String CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END
       + CDATA_START;
   private static final int CDATA_END_LEN = CDATA_END.length();
+  private static final Pattern UNSAFE_XML_CHARS =
+      Pattern.compile("[\u0000-\u0008\u000b\u000c\u000e-\u001f<>&'\"]");
 
   /**
    * This method takes a string which may contain HTML tags (ie, &lt;b&gt;,
-   * &lt;table&gt;, etc) and replaces any '<' and '>' characters with
+   * &lt;table&gt;, etc) and replaces any '<','>' ... characters with
    * respective predefined entity references.
    * 
    * @param input
    *          The text to be converted.
    */
   public static String escapeTags(final String input) {
-    // if input is null or zero length or contains no < and > characters, return it as is
-    if ((input == null) || (input.length() == 0)
-        || (input.indexOf("<") == -1 && input.indexOf(">") == -1)) {
+    if (input == null || input.length() == 0 || !UNSAFE_XML_CHARS.matcher(input).find()) {
       return input;
     }
-
     StringBuffer buf = new StringBuffer(input);
     return escapeTags(buf);
   }
@@ -57,10 +58,34 @@ public class Transform {
   public static String escapeTags(final StringBuffer buf) {
     for (int i = 0; i < buf.length(); i++) {
       char ch = buf.charAt(i);
-      if (ch == '<') {
-        buf.replace(i, i + 1, "&lt;");
-      } else if (ch == '>') {
-        buf.replace(i, i + 1, "&gt;");
+      switch (ch) {
+      case '\t':
+      case '\n':
+      case '\r':
+          // These characters are below '\u0020' but are allowed:
+          break;
+      case '&':
+          buf.replace(i, i + 1, "&amp;");
+          break;
+      case '<':
+          buf.replace(i, i + 1, "&lt;");
+          break;
+      case '>':
+          buf.replace(i, i + 1, "&gt;");
+          break;
+      case '"':
+          buf.replace(i, i + 1, "&quot;");
+          break;
+      case '\'':
+          buf.replace(i, i + 1, "&#39;");
+          break;
+      default:
+          if (ch<'\u0020') {
+            // These characters are not allowed,
+            // replace them with "Object replacement character":
+            buf.replace(i, i + 1, "\uFFFD");
+          }
+          break;
       }
     }
     return buf.toString();

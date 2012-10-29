@@ -51,6 +51,15 @@
       <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Must be after log4j-over-slf4j:
+         * we want to use the classes from log4j-over-slf4j (so it must come first);
+         * we want to use log4j.dtd from log4j. -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>

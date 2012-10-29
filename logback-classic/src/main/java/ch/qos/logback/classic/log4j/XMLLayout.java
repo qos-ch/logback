@@ -107,21 +107,19 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     // We yield to the \r\n heresy.
 
     buf.append("<log4j:event logger=\"");
-    buf.append(event.getLoggerName());
+    buf.append(Transform.escapeTags(event.getLoggerName()));
     buf.append("\"\r\n");
     buf.append("             timestamp=\"");
     buf.append(event.getTimeStamp());
     buf.append("\" level=\"");
     buf.append(event.getLevel());
     buf.append("\" thread=\"");
-    buf.append(event.getThreadName());
+    buf.append(Transform.escapeTags(event.getThreadName()));
     buf.append("\">\r\n");
 
-    buf.append("  <log4j:message><![CDATA[");
-    // Append the rendered message. Also make sure to escape any
-    // existing CDATA sections.
-    Transform.appendEscapingCDATA(buf, event.getFormattedMessage());
-    buf.append("]]></log4j:message>\r\n");
+    buf.append("  <log4j:message>");
+    buf.append(Transform.escapeTags(event.getFormattedMessage()));
+    buf.append("</log4j:message>\r\n");
 
     // logback does not support NDC
     // String ndc = event.getNDC();
@@ -149,7 +147,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
         buf.append("                      method=\"");
         buf.append(Transform.escapeTags(immediateCallerData.getMethodName()));
         buf.append("\" file=\"");
-        buf.append(immediateCallerData.getFileName());
+        buf.append(Transform.escapeTags(immediateCallerData.getFileName()));
         buf.append("\" line=\"");
         buf.append(immediateCallerData.getLineNumber());
         buf.append("\"/>\r\n");
