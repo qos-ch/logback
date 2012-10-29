@@ -16,7 +16,6 @@ package ch.qos.logback.classic;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.joran.action.ContextNameAction;
 import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.ContextNameConverter;
