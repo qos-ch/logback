@@ -13,6 +13,7 @@
  */
 package org.slf4j.impl;
 
+import ch.qos.logback.core.status.StatusUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.Util;
@@ -85,7 +86,9 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       } catch (JoranException je) {
         Util.report("Failed to auto configure default logger context", je);
       }
-      StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
+      if(!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
+        StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
+      }
       contextSelectorBinder.init(defaultLoggerContext, KEY);
       initialized = true;
     } catch (Throwable t) {

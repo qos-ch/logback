@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import ch.qos.logback.classic.LoggerPerfTest;
 
 @RunWith(Suite.class)
-@SuiteClasses( { RecursiveInitializationTest.class, LoggerPerfTest.class})
+@SuiteClasses( { RecursiveInitializationTest.class, LoggerPerfTest.class, InitializationOutputTest.class})
 public class PackageTest {
 
 }
