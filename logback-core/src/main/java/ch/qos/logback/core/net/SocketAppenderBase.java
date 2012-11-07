@@ -277,7 +277,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       while (!interrupted) {
         try {
           sleep(reconnectionDelay);
-          addInfo("Attempting connection to " + address.getHostName());
+          SocketAppenderBase.this.addInfo("Attempting connection to " + address.getHostName());
           socket = new Socket(address, port);
           synchronized (this) {
             oos = new ObjectOutputStream(socket.getOutputStream());

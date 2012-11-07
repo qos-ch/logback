@@ -48,6 +48,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <surefire.version>2.12.4</surefire.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
     <slf4j.version>1.7.2</slf4j.version>

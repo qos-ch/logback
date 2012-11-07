@@ -107,11 +107,13 @@ public class SimpleSocketServer extends Thread {
 
   /**
    * Signal another thread that we have established a connection
-   *  This is useful for testing purposes.
+   * This is useful for testing purposes.
    */
   void signalAlmostReadiness() {
-    if(latch != null)
+    if(latch != null && latch.getCount() != 0) {
+      //System.out.println("signalAlmostReadiness() with latch "+latch);
       latch.countDown();
+    }
   }
 
   /**
@@ -141,14 +143,18 @@ public class SimpleSocketServer extends Thread {
       } finally {
         serverSocket = null;
       }
-    } 
-    
+    }
+
+    logger.info("closing this server");
     synchronized (socketNodeList) {
       for(SocketNode sn: socketNodeList) {
         sn.close();
-      }      
-      socketNodeList.clear();
+      }
     }
+    if(socketNodeList.size() != 0) {
+      logger.warn("Was expecting a 0-sized socketNodeList after server shutdown");
+    }
+
   }
 
   public void socketNodeClosing(SocketNode sn) {
@@ -158,9 +164,10 @@ public class SimpleSocketServer extends Thread {
     // (e.g. removal whole iterating on the list causes
     // java.util.ConcurrentModificationException
     synchronized (socketNodeList) {
-      socketNodeList.remove(sn);      
+      socketNodeList.remove(sn);
     }
   }
+
   static void usage(String msg) {
     System.err.println(msg);
     System.err.println("Usage: java " + SimpleSocketServer.class.getName()
