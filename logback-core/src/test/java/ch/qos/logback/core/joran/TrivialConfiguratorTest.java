@@ -71,6 +71,7 @@ public class TrivialConfiguratorTest {
   @Test
   public void inexistentFile() {
     TrivialStatusListener tsl = new TrivialStatusListener();
+    tsl.start();
     String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
             + "nothereBLAH.xml";
     context.getStatusManager().add(tsl);
@@ -88,6 +89,7 @@ public class TrivialConfiguratorTest {
   @Test
   public void illFormedXML() {
     TrivialStatusListener tsl = new TrivialStatusListener();
+    tsl.start();
     String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/" + "illformed.xml";
     context.getStatusManager().add(tsl);
     try {

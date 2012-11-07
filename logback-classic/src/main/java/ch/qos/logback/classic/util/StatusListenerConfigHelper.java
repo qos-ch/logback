@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.util.OptionHelper;
@@ -37,6 +38,9 @@ public class StatusListenerConfigHelper {
       try {
         listener = (StatusListener) OptionHelper.instantiateByClassName(
             listenerClass, StatusListener.class, loggerContext);
+        if(listener instanceof LifeCycle) {
+          ((LifeCycle) listener).start();
+        }
       } catch (Exception e) {
         // printing on the console is the best we can do
         e.printStackTrace();
