@@ -38,9 +38,8 @@ public class StatusListenerConfigHelper {
       try {
         listener = (StatusListener) OptionHelper.instantiateByClassName(
             listenerClass, StatusListener.class, loggerContext);
-        if(listener instanceof LifeCycle) {
+        if(listener instanceof LifeCycle)  // LOGBACK-767
           ((LifeCycle) listener).start();
-        }
       } catch (Exception e) {
         // printing on the console is the best we can do
         e.printStackTrace();

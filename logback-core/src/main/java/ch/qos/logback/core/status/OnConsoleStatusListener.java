@@ -14,76 +14,24 @@
 package ch.qos.logback.core.status;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.util.StatusPrinter;
 
-import java.util.List;
+import java.io.PrintStream;
 
 /**
- * Print all new incoming status messages on the console.
+ * Print all new incoming status messages on the console (System.out).
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class OnConsoleStatusListener extends ContextAwareBase implements StatusListener, LifeCycle {
+public class OnConsoleStatusListener extends OnPrintStreamStatusListenerBase {
 
-
-  static final long DEFAULT_RESTROSPECTIVE = 300;
-  boolean isStarted = false;
-  long retrospective = DEFAULT_RESTROSPECTIVE;
-
-  private void print(Status status) {
-    StringBuilder sb = new StringBuilder();
-    StatusPrinter.buildStr(sb, "", status);
-    System.out.print(sb);
-  }
-
-  public void addStatusEvent(Status status) {
-    if (!isStarted)
-      return;
-    print(status);
+  @Override
+  protected PrintStream getPrintStream() {
+    return System.out;
   }
 
   /**
-   * Print status messages retrospectively
-   */
-  private void retrospectivePrint() {
-    long now = System.currentTimeMillis();
-    StatusManager sm = context.getStatusManager();
-    List<Status> statusList = sm.getCopyOfStatusList();
-    for (Status status : statusList) {
-      long timestamp = status.getDate();
-      if (now - timestamp < retrospective) {
-        print(status);
-      }
-    }
-  }
-
-  public void start() {
-    isStarted = true;
-    if (retrospective > 0) {
-      retrospectivePrint();
-    }
-  }
-
-  public void setRetrospective(long retrospective) {
-    this.retrospective = retrospective;
-  }
-
-  public long getRetrospective() {
-    return retrospective;
-  }
-
-  public void stop() {
-    isStarted = false;
-  }
-
-  public boolean isStarted() {
-    return isStarted;
-  }
-
-  /**
-   * This utility method adds a new OnConsoleStatusListener to the context passed as parameter.
+   * This utility method adds a new OnConsoleStatusListener to the context
+   * passed as parameter.
    *
    * @param context
    * @since 1.0.1
@@ -94,4 +42,6 @@ public class OnConsoleStatusListener extends ContextAwareBase implements StatusL
     onConsoleStatusListener.start();
     context.getStatusManager().add(onConsoleStatusListener);
   }
+
+
 }
