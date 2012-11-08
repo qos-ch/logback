@@ -86,6 +86,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
       } catch (JoranException je) {
         Util.report("Failed to auto configure default logger context", je);
       }
+      // logback-292
       if(!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
         StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
       }

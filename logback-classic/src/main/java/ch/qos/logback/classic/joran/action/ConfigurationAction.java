@@ -36,7 +36,7 @@ public class ConfigurationAction extends Action {
   public void begin(InterpretationContext ic, String name, Attributes attributes) {
     threshold = System.currentTimeMillis();
 
-    // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
+    // See LOGBACK-527 (the system property is looked up first. Thus, it overrides
     // the equivalent property in the config file. This reversal of scope priority is justified
     // by the use case: the admin trying to chase rogue config file
     String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
