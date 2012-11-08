@@ -44,11 +44,22 @@
     Adam Sokowicz.
     </p>
 
-    <p>The newly added OnErrorConsoleStatusListener prints status
+    <p>In order to avoid duplication, automatic status printing will
+    be disabled if the user explicitly registers a status
+    listerner.</p>
+
+    <p>Added <code>OnErrorConsoleStatusListener</code> to print status
     messages on the error console, i.e. on System.err. This feature
     was requested in <a
     href="http://jira.qos.ch/browse/LOGBACK-292">LOGBACK-292</a> by
     Abraham Lin. </p>
+
+    <p>Added <code>NopStatusListener</code> class which simply drops
+    incoming status messages. By <a
+    href="manual/configuration.html#logback.statusLC">explicitly
+    registering</a> a <code>NopStatusListener</code> listener,
+    automatic status printing can be turned off.
+    </p>
 
 
     <hr width="80%" align="center" />

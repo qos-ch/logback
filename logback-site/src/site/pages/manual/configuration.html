@@ -385,14 +385,19 @@ public class Foo {
    class="anchor"/></a>Specifying the location of the default
    configuration file as a system property</h3>
 
-   <p>If you wish, you can specify the location of the default
-   configuration file with a system property named
-   <code>logback.configurationFile</code>. The value of this
+   <p>You may specify the location of the default configuration file
+   with a system property named
+   <code>"logback.configurationFile"</code>. The value of this
    property can be a URL, a resource on the class path or a path to a
    file external to the application.
    </p>
 
    <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
+
+   <p>Note that the file extension must be ".xml" or ".groovy". Other
+   extensions are ignored. <a href="#logback.statusLC">Explicitly
+   registering a status listener</a> may help debugging issues
+   locating the configuration file.</p>
 
 
    <h3><a name="autoScan" href="#autoScan"><span

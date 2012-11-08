@@ -970,10 +970,18 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
           <b>property{key}</b>
         </td>
         
-        <td><p>Outputs the value associated with a context property
-        named <em>key</em>. If <em>key</em> is not a property of the
-        logger context, then <em>key</em> will be looked up in the
-        System properties. </p>
+        <td><p>Outputs the value associated with a property named
+        <em>key</em>. The the relevant docs on how to define ion
+        entitled <a
+        href="configuration.html#variableSubstitution">define
+        variables</a> and <a href="configuration.html#scopes">variable
+        scopes</a>. 
+
+        <!-- XXXXXXXXXXXX -->
+
+        If <em>key</em> is not a property of
+        the logger context, then <em>key</em> will be looked up in the
+        System properties.</p>
 
 
          <p>There is no default value for <em>key</em>. If it is
