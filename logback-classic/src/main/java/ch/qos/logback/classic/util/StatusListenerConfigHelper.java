@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
@@ -38,6 +39,8 @@ public class StatusListenerConfigHelper {
       try {
         listener = (StatusListener) OptionHelper.instantiateByClassName(
             listenerClass, StatusListener.class, loggerContext);
+        if(listener instanceof ContextAware) // LOGBACK-767
+          ((ContextAware) listener).setContext(loggerContext);
         if(listener instanceof LifeCycle)  // LOGBACK-767
           ((LifeCycle) listener).start();
       } catch (Exception e) {

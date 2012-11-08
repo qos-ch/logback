@@ -41,6 +41,8 @@ abstract class OnPrintStreamStatusListenerBase extends ContextAwareBase implemen
    * Print status messages retrospectively
    */
   private void retrospectivePrint() {
+    if(context == null)
+      return;
     long now = System.currentTimeMillis();
     StatusManager sm = context.getStatusManager();
     List<Status> statusList = sm.getCopyOfStatusList();
