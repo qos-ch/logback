@@ -81,7 +81,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
-        writeHeaderLine(sw, tp, stackTracePrefix, isRootException);
+        handleThrowableFirstLine(sw, tp, stackTracePrefix, isRootException);
         isRootException = false;
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
@@ -96,7 +96,8 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
   }
 
-  private void writeHeaderLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
+  // LOGBACK-411 and  LOGBACK-750
+  private void handleThrowableFirstLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
     StringBuilder sb = new StringBuilder().append(stackTracePrefix);
 
     if (!isRootException) {
