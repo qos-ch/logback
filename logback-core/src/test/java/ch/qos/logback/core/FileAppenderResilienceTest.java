@@ -56,7 +56,6 @@ public class FileAppenderResilienceTest {
     fa.setEncoder(new EchoEncoder<Object>());
     fa.setFile(logfileStr);
     fa.start();
-
   }
 
   @Test

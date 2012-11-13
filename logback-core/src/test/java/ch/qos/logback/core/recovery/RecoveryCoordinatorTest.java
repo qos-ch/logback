@@ -46,14 +46,13 @@ public class RecoveryCoordinatorTest {
       rc.setCurrentTime(now+offset);
      
       if(rc.isTooSoon()) {
-        //System.out.println("is     too soon at "+(offset));
+        System.out.println("isTooSoon successful at "+(offset));
         tooSoonCount++;
       } else {
         //System.out.println("is NOT too soon at "+(offset));
     }
       offset *= 2;
     }
-    assertEquals(7, tooSoonCount);
-    
+    assertEquals(8, tooSoonCount);
   }
 }
