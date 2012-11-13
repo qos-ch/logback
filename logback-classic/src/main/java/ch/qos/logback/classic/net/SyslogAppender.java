@@ -73,23 +73,16 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     ILoggingEvent event = (ILoggingEvent) eventObject;
     IThrowableProxy tp = event.getThrowableProxy();
 
-    if(tp == null)
+    if (tp == null)
       return;
 
     String stackTracePrefix = stackTraceLayout.doLayout(event);
-    boolean topException = true;
+    boolean isRootException = true;
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
-    	StringBuilder stackTraceHeaderLine = new StringBuilder().append(stackTracePrefix);
-    	if (topException) {
-    		topException = false;
-    	} else {
-    		stackTraceHeaderLine = stackTraceHeaderLine.append(CoreConstants.CAUSED_BY);
-    	}
-    	stackTraceHeaderLine.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    	sw.write(stackTraceHeaderLine.toString().getBytes());
-    	sw.flush();
+        writeHeaderLine(sw, tp, stackTracePrefix, isRootException);
+        isRootException = false;
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
           sb.append(stackTracePrefix).append(step);
@@ -103,6 +96,22 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
   }
 
+  private void writeHeaderLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
+    StringBuilder sb = new StringBuilder().append(stackTracePrefix);
+
+    if (!isRootException) {
+      sb.append(CoreConstants.CAUSED_BY);
+    }
+    sb.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    sw.write(sb.toString().getBytes());
+    sw.flush();
+  }
+
+  boolean stackTraceHeaderLine(StringBuilder sb, boolean topException) {
+
+    return false;
+  }
+
   public Layout<ILoggingEvent> buildLayout() {
     PatternLayout layout = new PatternLayout();
     layout.getInstanceConverterMap().put("syslogStart",
@@ -114,7 +123,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     layout.setContext(getContext());
     layout.start();
     return layout;
-   }
+  }
 
   private void setupStackTraceLayout() {
     stackTraceLayout.getInstanceConverterMap().put("syslogStart",
