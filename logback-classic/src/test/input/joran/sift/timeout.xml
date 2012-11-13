@@ -9,7 +9,8 @@
       <Key>userid</Key>
       <defaultValue>smoke</defaultValue>
     </discriminator>
-    <sift timeout="1">
+    <timeout>1</timeout>
+    <sift>
       <appender name="list-${userid}"
         class="ch.qos.logback.core.read.ListAppender" />
     </sift>

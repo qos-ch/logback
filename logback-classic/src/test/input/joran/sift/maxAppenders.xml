@@ -9,7 +9,8 @@
       <Key>userid</Key>
       <defaultValue>smoke</defaultValue>
     </discriminator>
-    <sift maxAppenders="5">
+    <maxAppenders>5</maxAppenders>
+    <sift>
       <appender name="list-${userid}"
         class="ch.qos.logback.core.read.ListAppender" />
     </sift>
