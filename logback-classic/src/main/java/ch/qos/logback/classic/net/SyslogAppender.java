@@ -73,15 +73,16 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     ILoggingEvent event = (ILoggingEvent) eventObject;
     IThrowableProxy tp = event.getThrowableProxy();
 
-    if(tp == null)
+    if (tp == null)
       return;
 
-
     String stackTracePrefix = stackTraceLayout.doLayout(event);
-
+    boolean isRootException = true;
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
+        handleThrowableFirstLine(sw, tp, stackTracePrefix, isRootException);
+        isRootException = false;
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
           sb.append(stackTracePrefix).append(step);
@@ -95,6 +96,23 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
   }
 
+  // LOGBACK-411 and  LOGBACK-750
+  private void handleThrowableFirstLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
+    StringBuilder sb = new StringBuilder().append(stackTracePrefix);
+
+    if (!isRootException) {
+      sb.append(CoreConstants.CAUSED_BY);
+    }
+    sb.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    sw.write(sb.toString().getBytes());
+    sw.flush();
+  }
+
+  boolean stackTraceHeaderLine(StringBuilder sb, boolean topException) {
+
+    return false;
+  }
+
   public Layout<ILoggingEvent> buildLayout() {
     PatternLayout layout = new PatternLayout();
     layout.getInstanceConverterMap().put("syslogStart",
@@ -106,7 +124,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     layout.setContext(getContext());
     layout.start();
     return layout;
-   }
+  }
 
   private void setupStackTraceLayout() {
     stackTraceLayout.getInstanceConverterMap().put("syslogStart",

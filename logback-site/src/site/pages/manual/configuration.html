@@ -262,16 +262,19 @@ public class Foo {
    <p class="highlight">If warning or errors occur during the parsing
    of the configuration file, logback will automatically print its
    internal status messages on the console.</p>
-
+ 
    <p>If warnings or errors occur during the parsing of the
-   configuration file, logback will automatically print status data on
-   the console. In the absence of warnings or errors, if you still
-   wish to inspect logback's internal status, then you can instruct
-   logback to print status data by invoking the <code>print()</code>
-   of the <code>StatusPrinter</code> class. The <em>MyApp2</em>
-   application shown below is identical to <em>MyApp1</em> except for the
-   addition of two lines of code for printing internal status
-   data.</p>
+   configuration file, logback will automatically print its internal
+   status data on the console. Note that to avoid duplication,
+   automatic status printing is disabled if the user explicitly
+   registers a status listener (defined below).</p>
+
+   <p>In the absence of warnings or errors, if you still wish to
+   inspect logback's internal status, then you can instruct logback to
+   print status data by invoking the <code>print()</code> of the
+   <code>StatusPrinter</code> class. The <em>MyApp2</em> application
+   shown below is identical to <em>MyApp1</em> except for the addition
+   of two lines of code for printing internal status data.</p>
 
     <p class="example">Example: Print logback's internal status
     information <a
@@ -328,7 +331,7 @@ public class Foo {
    <span class="asGroovy" onclick="return asGroovy('sample1');">View as .groovy</span>
 
    <pre id="sample1" class="prettyprint source">
-&lt;configuration <b>debug="true"</b>> 
+&lt;configuration <span class="big bold">debug="true"</span>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
     &lt;!-- encoders are  by default assigned the type
@@ -370,35 +373,31 @@ public class Foo {
    of status messages, tracking down a rogue <em>logback.xml</em>
    configuration file can be difficult, especially in production where
    the application source cannot be easily modified. To help identify
-   the location of a rogue configuration file, you can set the <span
-   class="prop">logback.debug</span> system property to
-   <code>true</code> to force printing internal status messages on the
-   console regardless of the value of the <span
-   class="attr">debug</span> attribute found within the
-   <code>&lt;configuration></code> element, in any configuration file,
-   including in the rogue <em>logback.xml</em> file.
+   the location of a rogue configuration file, you can set a
+   <code>StatusListener</code> via the "logback.statusListenerClass"
+   system property (<a href="#logback.statusLC">defined below</a>) to
+   force output of status messages. The "logback.statusListenerClass"
+   system property can also be used to silence output automatically
+   generated in case of errors.
    </p>
-
-   <p>As of version 1.0.1, setting the <span class="attr">debug</span>
-   attribute is equivalent to registering an
-   <code>OnConsoleStatusListener</code> with the
-   <code>StatusManager</code>. Thus, problems occurring during the
-   lifetime of your application, well after logback is initialized,
-   can be reported.  Refer to the section on <a
-   href="#statusListener">status listeners</a> further below.</p>
 
    <h3><a name="configFileProperty" href="#configFileProperty"><span
    class="anchor"/></a>Specifying the location of the default
    configuration file as a system property</h3>
 
-   <p>If you wish, you can specify the location of the default
-   configuration file with a system property named
-   <code>logback.configurationFile</code>. The value of this
+   <p>You may specify the location of the default configuration file
+   with a system property named
+   <code>"logback.configurationFile"</code>. The value of this
    property can be a URL, a resource on the class path or a path to a
    file external to the application.
    </p>
 
    <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
+
+   <p>Note that the file extension must be ".xml" or ".groovy". Other
+   extensions are ignored. <a href="#logback.statusLC">Explicitly
+   registering a status listener</a> may help debugging issues
+   locating the configuration file.</p>
 
 
    <h3><a name="autoScan" href="#autoScan"><span
@@ -645,6 +644,10 @@ public class MyApp3 {
   ... the rest of the configuration file  
 &lt;/configuration></pre>
 
+   <h3><a name="logback.statusLC" href="#logback.statusLC"><span
+   class="anchor"/></a>"logback.statusListenerClass" system property
+   </h3>
+
    <p>One may also register a status listener by setting the
    "logback.statusListenerClass" Java system property to the name of
    the listener class you wish to register. For example,
@@ -652,6 +655,24 @@ public class MyApp3 {
 
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
    
+   <p>Logback ships with several status listener implementations. <a
+   href="../xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a>
+   prints incoming status messages on the console, i.e. on
+   System.out. <a
+   href="../xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html">OnErrorConsoleStatusListener</a>
+   prints incoming status messages on System.err. <a
+   href="../xref/ch/qos/logback/core/status/NopStatusListener.html">NopStatusListener</a>
+   drops incoming status messages.</p>
+   
+
+   <p>Note that <a href="#automaticStatusPrinting">automatic status
+   printing</a> (in case of errors) is disabled if any status listener
+   is registered during configuration and in particular if the user
+   specifies a status listener via the "logback.statusListenerClass"
+   system. Thus, by setting <code>NopStatusListener</code> as a status
+   listener, you can silence internal status printing altogether. </p>
+   
+   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener&nbsp;...</p>
 
    <h2><a name="syntax" href="#syntax"><span
    class="anchor"/></a>Configuration file syntax

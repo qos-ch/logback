@@ -16,15 +16,30 @@ package ch.qos.logback.core.status;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusListener;
 
-public class TrivialStatusListener implements StatusListener {
+public class TrivialStatusListener implements StatusListener, LifeCycle {
 
   public List<Status> list = new ArrayList<Status>();
-  
+  boolean start = false;
+
   public void addStatusEvent(Status status) {
+    if(!isStarted())
+      return;
     list.add(status);
   }
 
+  public void start() {
+    start = true;
+  }
+
+  public void stop() {
+    start = false;
+  }
+
+  public boolean isStarted() {
+    return start;
+  }
 }

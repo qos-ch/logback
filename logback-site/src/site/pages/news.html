@@ -30,13 +30,51 @@
 
      <hr width="80%" align="center" />
 
-    <h3>September, 2012 - Release of version 1.0.8</h3>
+    <h3>November 13th, 2012 - Release of version 1.0.8</h3>
+
+    <p>Fixed incorrect <code>BufferStream</code> assignment after
+    recovery in <code>ResilientFileOutputStream</code>. This issue was
+    reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-765">LOGBACK-765</a> by
+    David Markwick.
+    </p>
 
     <p>Fixed incorrect parsing of variables in case of colon character
     followed by a dollar character. This issue was reported in <a
-    href="http://jira.qos.ch/browse/LOGBACK-744">LOGBACK-744</a>.
+    href="http://jira.qos.ch/browse/LOGBACK-744">LOGBACK-744</a>.</p>
 
+    <p><code>SyslogAppender</code> now sends out the header line of
+    stack traces. This issue was reported <a
+    href="http://jira.qos.ch/browse/LOGBACK-411">LOGBACK-411</a> and
+    separately as <a
+    href="http://jira.qos.ch/browse/LOGBACK-750">LOGBACK-750</a>.</p>
+
+    <p>A <code>StatusListener</code> implementing
+    <code>LifeCycle</code> interface was not started if specified via
+    the <code>logback.statusListenerClass</code> system property. This
+    issue was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-767">LOGBACK-767</a> by
+    Adam Sokowicz.
     </p>
+
+    <p>In order to avoid duplication, automatic status printing will
+    be disabled if the user explicitly registers a status
+    listerner.</p>
+
+    <p>Added <code>OnErrorConsoleStatusListener</code> to print status
+    messages on the error console, i.e. on System.err. This feature
+    was requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-292">LOGBACK-292</a> by
+    Abraham Lin. </p>
+
+    <p>Added <code>NopStatusListener</code> class which simply drops
+    incoming status messages. By <a
+    href="manual/configuration.html#logback.statusLC">explicitly
+    registering</a> a <code>NopStatusListener</code> listener,
+    automatic status printing can be turned off.
+    </p>
+
+
     <hr width="80%" align="center" />
 
     <h3>24th of August, 2012 - Release of version 1.0.7</h3>

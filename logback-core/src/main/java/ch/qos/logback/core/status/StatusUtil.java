@@ -20,6 +20,26 @@ import java.util.List;
 
 public class StatusUtil {
 
+  /**
+   * Returns true if the StatusManager associated with the context passed
+   * as parameter has one or more StatusListener instances registered. Returns
+   * false otherwise.
+   *
+   * @param context
+   * @return true if one or more StatusListeners registered, false otherwise
+   * @since 1.0.8
+   */
+  static public boolean contextHasStatusListener(Context context) {
+    StatusManager sm = context.getStatusManager();
+    if(sm == null)
+      return false;
+    List<StatusListener> listeners = sm.getCopyOfStatusListenerList();
+    if(listeners == null || listeners.size() == 0)
+      return false;
+    else
+      return true;
+  }
+
   static public List<Status> filterStatusListByTimeThreshold(List<Status> rawList, long threshold) {
     List<Status> filteredList = new ArrayList<Status>();
     for (Status s : rawList) {

@@ -136,6 +136,10 @@ public class SyslogAppenderTest {
     checkRegexMatch(msg, regex);
 
     msg = mockServer.getMessageList().get(1);
+    assertTrue(msg.contains(ex.getClass().getName()));
+    assertTrue(msg.contains(ex.getMessage()));
+
+    msg = mockServer.getMessageList().get(2);
     assertTrue(msg.startsWith(expected));
     regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo "+CoreConstants.TAB + "at ch\\.qos.*";
     checkRegexMatch(msg, regex);

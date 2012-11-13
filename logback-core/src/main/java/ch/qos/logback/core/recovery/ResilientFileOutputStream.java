@@ -41,7 +41,6 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     return file;
   }
 
-
   @Override
   String getDescription() {
     return "file ["+file+"]";
@@ -49,7 +48,9 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
 
   @Override
   OutputStream openNewOutputStream() throws IOException {
-    return  new FileOutputStream(file, true);
+    // see LOGBACK-765
+    fos = new FileOutputStream(file, true);
+    return new BufferedOutputStream(fos);
   }
   
   @Override

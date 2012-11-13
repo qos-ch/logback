@@ -109,6 +109,9 @@ public class ContextInitializerTest {
     doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
     sll = lc.getStatusManager().getCopyOfStatusListenerList();
     assertTrue(sll.size() +" should be 1", sll.size() == 1);
+    // LOGBACK-767
+    TrivialStatusListener tsl = (TrivialStatusListener) sll.get(0);
+    assertTrue("expecting at least one event in list", tsl.list.size() > 0);
   }
   
   @Test
