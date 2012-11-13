@@ -25,30 +25,11 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class SiftAction extends Action implements InPlayListener {
-  private static final String TIMEOUT_ATTR = "timeout";
-  private static final String MAX_APPENDERS_ATTR = "maxAppenders";
-
   List<SaxEvent> seList;
 
   @Override
   public void begin(InterpretationContext ic, String name, Attributes attributes)
       throws ActionException {
-    Object o = ec.peekObject();
-    if (o instanceof SiftingAppender) {
-      SiftingAppender sa = (SiftingAppender) o;
-      String timeoutAttr = attributes.getValue(TIMEOUT_ATTR);
-      if (timeoutAttr != null && !timeoutAttr.isEmpty()) {
-        int timeout = Integer.parseInt(timeoutAttr);
-        sa.setTimeout(timeout);
-        addInfo("Sub-appenders will timeout after " + timeout + " seconds");
-      }
-      String maxAppendersAttr = attributes.getValue(MAX_APPENDERS_ATTR);
-      if (maxAppendersAttr != null && !maxAppendersAttr.isEmpty()) {
-        int maxAppenders = Integer.parseInt(maxAppendersAttr);
-        sa.setMaxAppenders(maxAppenders);
-        addInfo("Will keep a maximum of " + maxAppenders + " sub-appenders");
-      }
-    }
     seList = new ArrayList<SaxEvent>();
     ic.addInPlayListener(this);
   }
