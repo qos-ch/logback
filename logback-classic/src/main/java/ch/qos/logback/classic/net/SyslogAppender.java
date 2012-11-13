@@ -76,12 +76,20 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     if(tp == null)
       return;
 
-
     String stackTracePrefix = stackTraceLayout.doLayout(event);
-
+    boolean topException = true;
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
+    	StringBuilder stackTraceHeaderLine = new StringBuilder().append(stackTracePrefix);
+    	if (topException) {
+    		topException = false;
+    	} else {
+    		stackTraceHeaderLine = stackTraceHeaderLine.append(CoreConstants.CAUSED_BY);
+    	}
+    	stackTraceHeaderLine.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    	sw.write(stackTraceHeaderLine.toString().getBytes());
+    	sw.flush();
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
           sb.append(stackTracePrefix).append(step);
