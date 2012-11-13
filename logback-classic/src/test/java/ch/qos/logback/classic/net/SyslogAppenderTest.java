@@ -65,7 +65,8 @@ public class SyslogAppenderTest {
     sa.setFacility("MAIL");
     sa.setPort(port);
     sa.setSuffixPattern("[%thread] %logger %msg");
-    sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
+    sa.setStackTraceHeaderPattern("[%thread] foo ");
+    sa.setStackTracePattern("[%thread] bar "+CoreConstants.TAB);
     sa.start();
     assertTrue(sa.isStarted());
 
@@ -104,11 +105,13 @@ public class SyslogAppenderTest {
 
   @Test
   public void tException() throws InterruptedException {
-    setMockServerAndConfigure(21);
+    setMockServerAndConfigure(40);
 
+    String causeMsg = "just a test cause";
+    Exception cause = new Exception(causeMsg);
     String logMsg = "hello";
     String exMsg = "just testing";
-    Exception ex = new Exception(exMsg);
+    Exception ex = new Exception(exMsg, cause);
     logger.debug(logMsg, ex);
     StatusPrinter.print(lc);
 
@@ -118,12 +121,13 @@ public class SyslogAppenderTest {
     assertTrue(mockServer.isFinished());
 
     // message + 20 lines of stacktrace
-    assertEquals(21, mockServer.getMessageList().size());
-    // int i = 0;
-    // for (String line: mockServer.msgList) {
-    // System.out.println(i++ + ": " + line);
-    // }
+//    assertEquals(21, mockServer.getMessageList().size());
+     int i = 0;
+     for (String line: mockServer.getMessageList()) {
+     System.out.println(i++ + ": " + line);
+     }
 
+    // test main log line
     String msg = mockServer.getMessageList().get(0);
     String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
@@ -135,9 +139,23 @@ public class SyslogAppenderTest {
         + " " + logMsg;
     checkRegexMatch(msg, regex);
 
+    // test stacktrace header line
     msg = mockServer.getMessageList().get(1);
+    assertTrue(msg.contains(ex.getClass().getName()));
+    assertTrue(msg.contains(ex.getMessage()));
+    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo  java.lang.*"+exMsg;
+    checkRegexMatch(msg, regex);
+    
+    // test stacktrace line
+    msg = mockServer.getMessageList().get(2);
     assertTrue(msg.startsWith(expected));
-    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo "+CoreConstants.TAB + "at ch\\.qos.*";
+    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "bar "+CoreConstants.TAB + " at ch\\.qos.*";
+    checkRegexMatch(msg, regex);
+    
+    // test stacktrace cause header line
+    msg = mockServer.getMessageList().get(28);
+    assertTrue(msg.startsWith(expected));
+    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo  "+ CoreConstants.CAUSED_BY+ "java.lang.*"+causeMsg;
     checkRegexMatch(msg, regex);
   }
 
