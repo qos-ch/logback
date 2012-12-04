@@ -26,4 +26,6 @@ document.write('<p class="menu"><a href="http://logback.qos.ch/translator/asGroo
 document.write('</p>');
 document.write('</div>');
 
-document.write('<div><p>assgggdfdasd</p></div>');
+document.write('<p/>');
+
+document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');
