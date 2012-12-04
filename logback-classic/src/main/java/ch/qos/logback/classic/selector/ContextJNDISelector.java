@@ -33,6 +33,7 @@ import ch.qos.logback.classic.util.JNDIUtil;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -40,11 +41,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 /**
  * A class that allows the LoggerFactory to access an environment-based
  * LoggerContext.
- * 
+ * <p/>
  * To add in catalina.sh
- * 
+ * <p/>
  * JAVA_OPTS="$JAVA_OPTS "-Dlogback.ContextSelector=JNDI""
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -57,7 +58,7 @@ public class ContextJNDISelector implements ContextSelector {
 
   public ContextJNDISelector(LoggerContext context) {
     synchronizedContextMap = Collections
-        .synchronizedMap(new HashMap<String, LoggerContext>());
+            .synchronizedMap(new HashMap<String, LoggerContext>());
     defaultContext = context;
   }
 
@@ -109,7 +110,9 @@ public class ContextJNDISelector implements ContextSelector {
           } catch (JoranException je) {
           }
         }
-        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+        // logback-292
+        if (!StatusUtil.contextHasStatusListener(loggerContext))
+          StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
       }
       return loggerContext;
     }
@@ -123,29 +126,29 @@ public class ContextJNDISelector implements ContextSelector {
     StatusManager sm = loggerContext.getStatusManager();
 
     String jndiEntryForConfigResource = JNDIUtil.lookup(ctx,
-        JNDI_CONFIGURATION_RESOURCE);
+            JNDI_CONFIGURATION_RESOURCE);
     // Do we have a dedicated configuration file?
     if (jndiEntryForConfigResource != null) {
       sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource
-          + "]", this));
+              + "]", this));
       URL url = urlByResourceName(sm, jndiEntryForConfigResource);
       if (url == null) {
         String msg = "The jndi resource [" + jndiEntryForConfigResource
-            + "] for context [" + loggerContext.getName()
-            + "] does not lead to a valid file";
+                + "] for context [" + loggerContext.getName()
+                + "] does not lead to a valid file";
         sm.add(new WarnStatus(msg, this));
       }
       return url;
     } else {
       String resourceByConvention = conventionalConfigFileName(loggerContext
-          .getName());
+              .getName());
       return urlByResourceName(sm, resourceByConvention);
     }
   }
 
   private URL urlByResourceName(StatusManager sm, String resourceName) {
     sm.add(new InfoStatus("Searching for [" + resourceName + "]",
-        this));
+            this));
     URL url = Loader.getResource(resourceName, Loader.getTCL());
     if (url != null) {
       return url;
@@ -176,7 +179,7 @@ public class ContextJNDISelector implements ContextSelector {
 
   /**
    * Returns the number of managed contexts Used for testing purposes
-   * 
+   *
    * @return the number of managed contexts
    */
   public int getCount() {
@@ -185,10 +188,10 @@ public class ContextJNDISelector implements ContextSelector {
 
   /**
    * These methods are used by the LoggerContextFilter.
-   * 
+   * <p/>
    * They provide a way to tell the selector which context to use, thus saving
    * the cost of a JNDI call at each new request.
-   * 
+   *
    * @param context
    */
   public void setLocalContext(LoggerContext context) {

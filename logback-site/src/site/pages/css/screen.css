@@ -39,7 +39,7 @@ p.menu {
 }
 
 
-#left {
+#leftOld {
   position: absolute;
   font-size: 80%;
   left: 0px;
@@ -49,6 +49,26 @@ p.menu {
   padding: 0px;
   border: 1px solid #cccccc;
   background-color: #fff8e8;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+#left {
+  position: absolute;
+  left: 0px;
+  width: 15em;
+  margin: 4px 0px 0px 4px; 
+  padding: 0px;
+  font-size: 80%;
+  background-color: #ffffff;
+}
+
+.menuGroup {
+  border: 1px solid #cccccc;  
+  background-color: #fff8e8;
+  color: #564b47;
+  border: 1px solid #cccccc;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
