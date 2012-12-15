@@ -102,10 +102,10 @@ p.menu_header {
 }
 
 #left div.jobadd {
-  font-size: 160%;
+  font-size: 140%;
   color: #fff;
   margin: 0px;
-  padding: 1ex;
+  padding: 0px;
 
   text-align: center;
   -webkit-border-radius: 3px;
