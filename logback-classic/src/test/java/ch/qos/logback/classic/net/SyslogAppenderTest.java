@@ -51,7 +51,7 @@ public class SyslogAppenderTest {
   public void tearDown() throws Exception {
   }
 
-  public void setMockServerAndConfigure(int expectedCount)
+  public void setMockServerAndConfigure(int expectedCount, String suffixPattern)
       throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
 
@@ -64,7 +64,7 @@ public class SyslogAppenderTest {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
-    sa.setSuffixPattern("[%thread] %logger %msg");
+    sa.setSuffixPattern(suffixPattern);
     sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
     sa.start();
     assertTrue(sa.isStarted());
@@ -73,6 +73,11 @@ public class SyslogAppenderTest {
     Logger logger = lc.getLogger(loggerName);
     logger.addAppender(sa);
 
+  }
+  
+  public void setMockServerAndConfigure(int expectedCount)
+	      throws InterruptedException {
+	 this.setMockServerAndConfigure(expectedCount, "[%thread] %logger %msg");   
   }
 
   @Test
@@ -99,6 +104,32 @@ public class SyslogAppenderTest {
     String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
     checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
         + logMsg);
+
+  }
+  
+  @Test
+  public void suffixPatternWithTag() throws InterruptedException {
+    setMockServerAndConfigure(1, "test/something [%thread] %logger %msg");
+    String logMsg = "hello";
+    logger.debug(logMsg);
+
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(8000);
+
+    assertTrue(mockServer.isFinished());
+    assertEquals(1, mockServer.getMessageList().size());
+    String msg = mockServer.getMessageList().get(0);
+
+    String threadName = Thread.currentThread().getName();
+
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
+    assertTrue(msg.startsWith(expected));
+
+    String first = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
+    checkRegexMatch(msg, first + "test/something \\[" + threadName + "\\] " + loggerName + " "
+            + logMsg);
 
   }
 
