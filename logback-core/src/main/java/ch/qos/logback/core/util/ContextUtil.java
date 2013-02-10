@@ -28,7 +28,7 @@ public class ContextUtil extends ContextAwareBase {
     setContext(context);
   }
 
-  static String getLocalHostName() throws UnknownHostException {
+  public static String getLocalHostName() throws UnknownHostException {
     InetAddress localhost = InetAddress.getLocalHost();
     return localhost.getHostName();
   }
