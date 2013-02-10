@@ -17,6 +17,8 @@ package ch.qos.logback.classic.gaffer;
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.jmx.JMXConfigurator
+import ch.qos.logback.classic.jmx.MBeanUtil
 import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
 import ch.qos.logback.classic.turbo.TurboFilter
 import ch.qos.logback.core.Appender
@@ -27,6 +29,10 @@ import ch.qos.logback.core.util.CachingDateFormatter
 import ch.qos.logback.core.util.Duration
 import ch.qos.logback.core.spi.LifeCycle
 import ch.qos.logback.core.spi.ContextAware
+
+import javax.management.MalformedObjectNameException
+import javax.management.ObjectName
+import java.lang.management.ManagementFactory
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -176,5 +182,43 @@ public class ConfigurationDelegate extends ContextAwareBase {
     CachingDateFormatter sdf = new CachingDateFormatter(datePattern);
     sdf.format(now)
   }
-}
 
+    /**
+     * Creates and registers a {@link JMXConfigurator} with the platform MBean Server.
+     * Allows specifying a custom context name to derive the used ObjectName, or a complete
+     * ObjectName string representation to determine your own (the syntax automatically determines the intent).
+     *
+     * @param name custom context name or full ObjectName string representation (defaults to null)
+     */
+  void jmxConfigurator(String name = null) {
+    def objectName = null
+    def contextName = context.name
+    if (name != null) {
+      // check if this is a valid ObjectName
+      try {
+        objectName = new ObjectName(name)
+      } catch (MalformedObjectNameException e) {
+        contextName = name
+      }
+    }
+    if (objectName == null) {
+      def objectNameAsStr = MBeanUtil.getObjectNameFor(contextName, JMXConfigurator.class)
+      objectName = MBeanUtil.string2ObjectName(context, this, objectNameAsStr)
+      if (objectName == null) {
+        addError("Failed to construct ObjectName for [${objectNameAsStr}]")
+        return
+      }
+    }
+
+    def platformMBeanServer = ManagementFactory.platformMBeanServer
+    if (!MBeanUtil.isRegistered(platformMBeanServer, objectName)) {
+      JMXConfigurator jmxConfigurator = new JMXConfigurator((LoggerContext) context, platformMBeanServer, objectName)
+      try {
+        platformMBeanServer.registerMBean(jmxConfigurator, objectName)
+      } catch (all) {
+        addError("Failed to create mbean", all)
+      }
+    }
+  }
+
+}
