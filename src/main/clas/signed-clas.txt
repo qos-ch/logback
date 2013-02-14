@@ -24,6 +24,7 @@ Christian Trutz          Mark, Germany         2012-06-14
 Les Hazlewood            CA, USA               2012-09-10
 Libor Jelinek            Czech Republic        2012-09-17
 Matthew Bishop           Vancouver, Canada     2012-09-18
+Joris Kuipers            Amstelveen, NL        2013-02-11
 
 Justification for CLAs
 ----------------------
@@ -50,8 +51,8 @@ vetting has been performed (due dillegence).
 
 A more neutral discussion of CLAs can be found at [2].
 
-BTW, the CLA can be sent to Ceki directly by email (a scanned copy is
-fine).
+BTW, the CLA can be sent to Ceki directly by email (a scanned copy on
+two separate pages is fine).
 
 [1] http://logback.qos.ch/cla.txt
 [2] http://www.oss-watch.ac.uk/resources/cla.xml
