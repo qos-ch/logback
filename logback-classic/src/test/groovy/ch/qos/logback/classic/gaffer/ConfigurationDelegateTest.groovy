@@ -3,6 +3,11 @@ package ch.qos.logback.classic.gaffer
 import ch.qos.logback.classic.LoggerContext
 import org.junit.Before
 import org.junit.Test
+
+import javax.management.InstanceNotFoundException
+import javax.management.ObjectName
+import java.lang.management.ManagementFactory
+
 import static org.junit.Assert.*
 import ch.qos.logback.core.status.StatusChecker
 import ch.qos.logback.classic.turbo.TurboFilter
@@ -244,4 +249,46 @@ class ConfigurationDelegateTest {
     assertEquals(logFile, back.rollingPolicy.getParentsRawFileProperty())
     assertTrue(back.rollingPolicy.timeBasedFileNamingAndTriggeringPolicy.isStarted())
   }
+
+  @Test
+  void jmxConfiguratorWithDefaults() {
+    ObjectName name = new ObjectName(
+            "ch.qos.logback.classic:Name=ConfigurationDelegateTest,Type=ch.qos.logback.classic.jmx.JMXConfigurator")
+    try {
+       ManagementFactory.platformMBeanServer.getObjectInstance(name)
+       fail("Should not have found JMXConfigurator MBean")
+    } catch (InstanceNotFoundException expected) {
+    }
+    configurationDelegate.jmxConfigurator()
+    def mbean = ManagementFactory.platformMBeanServer.getObjectInstance(name)
+    assertNotNull(mbean)
+  }
+
+    @Test
+    void jmxConfiguratorWithNonDefaultContextName() {
+        ObjectName name = new ObjectName(
+                "ch.qos.logback.classic:Name=CustomName,Type=ch.qos.logback.classic.jmx.JMXConfigurator")
+        try {
+            ManagementFactory.platformMBeanServer.getObjectInstance(name)
+            fail("Should not have found JMXConfigurator MBean")
+        } catch (InstanceNotFoundException expected) {
+        }
+        configurationDelegate.jmxConfigurator("CustomName")
+        def mbean = ManagementFactory.platformMBeanServer.getObjectInstance(name)
+        assertNotNull(mbean)
+    }
+
+    @Test
+    void jmxConfiguratorWithNonDefaultObjectName() {
+        ObjectName name = new ObjectName("customDomain:Name=JMX")
+        try {
+            ManagementFactory.platformMBeanServer.getObjectInstance(name)
+            fail("Should not have found JMXConfigurator MBean")
+        } catch (InstanceNotFoundException expected) {
+        }
+        configurationDelegate.jmxConfigurator("customDomain:Name=JMX")
+        def mbean = ManagementFactory.platformMBeanServer.getObjectInstance(name)
+        assertNotNull(mbean)
+    }
+
 }
