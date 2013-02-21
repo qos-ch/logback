@@ -37,6 +37,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
   static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
+  static final public String OPTIONS_DELIM = ",";
 
   PatternLayout stackTraceLayout = new PatternLayout();
   String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
@@ -44,13 +45,20 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   boolean throwableExcluded = false;
 
 
-  public void start() {
+  @Override
+public void start() {
     super.start();
     setupStackTraceLayout();
   }
 
   String getPrefixPattern() {
-    return "%syslogStart{" + getFacility() + "}%nopex{}";
+    StringBuilder options = new StringBuilder();
+    options.append(getFacility());
+    options.append(OPTIONS_DELIM).append(isRfc5424());
+    options.append(OPTIONS_DELIM).append(getAppName());
+    options.append(OPTIONS_DELIM).append(getMessageId());
+    options.append(OPTIONS_DELIM).append(getStructuredDataId());
+    return "%syslogStart{" + options.toString() + "}%nopex{}";
   }
 
   /*
@@ -113,7 +121,8 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     return false;
   }
 
-  public Layout<ILoggingEvent> buildLayout() {
+  @Override
+public Layout<ILoggingEvent> buildLayout() {
     PatternLayout layout = new PatternLayout();
     layout.getInstanceConverterMap().put("syslogStart",
             SyslogStartConverter.class.getName());

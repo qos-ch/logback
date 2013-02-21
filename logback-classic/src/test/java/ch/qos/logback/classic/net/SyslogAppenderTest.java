@@ -16,6 +16,7 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class SyslogAppenderTest {
   public void tearDown() throws Exception {
   }
 
-  public void setMockServerAndConfigure(int expectedCount, String suffixPattern)
+  public void setMockServerAndConfigure(int expectedCount, String suffixPattern, boolean iso8601)
       throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
 
@@ -64,6 +65,12 @@ public class SyslogAppenderTest {
     sa.setSyslogHost("localhost");
     sa.setFacility("MAIL");
     sa.setPort(port);
+    if (iso8601) {
+      sa.setRfc5424(true);
+      sa.setAppName("theappname");
+      sa.setMessageId("themsgid");
+      sa.setStructuredDataId("thesdid");
+    }
     sa.setSuffixPattern(suffixPattern);
     sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
     sa.start();
@@ -74,10 +81,20 @@ public class SyslogAppenderTest {
     logger.addAppender(sa);
 
   }
+
+  public void setMockServerAndConfigure(int expectedCount, String suffixPattern)
+          throws InterruptedException {
+      this.setMockServerAndConfigure(expectedCount, suffixPattern, false);
+  }
   
-  public void setMockServerAndConfigure(int expectedCount)
+  public void setMockServerAndConfigure(int expectedCount, boolean iso8601)
 	      throws InterruptedException {
-	 this.setMockServerAndConfigure(expectedCount, "[%thread] %logger %msg");   
+	 this.setMockServerAndConfigure(expectedCount, "[%thread] %logger %msg", iso8601);   
+  }
+
+  public void setMockServerAndConfigure(int expectedCount)
+          throws InterruptedException {
+     this.setMockServerAndConfigure(expectedCount, false);   
   }
 
   @Test
@@ -105,6 +122,35 @@ public class SyslogAppenderTest {
     checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
         + logMsg);
 
+  }
+  
+  @Test
+  public void basicISO8601() throws InterruptedException {
+
+    setMockServerAndConfigure(1, true);
+    MDC.put("thekey", "theval");
+    String logMsg = "hello";
+    logger.debug(logMsg);
+
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(8000);
+
+    assertTrue(mockServer.isFinished());
+    assertEquals(1, mockServer.getMessageList().size());
+    String msg = mockServer.getMessageList().get(0);
+
+    String threadName = Thread.currentThread().getName();
+
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
+    assertTrue(msg.startsWith(expected));
+
+    // NOTE: there is another MDC.put call made upstream which adds to our
+    // structured data. 
+    String first = "<\\d{2}>1 \\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z [\\w.-]* theappname \\d+ themsgid \\[thesdid .*?thekey=\"theval\".*?\\] ";
+    checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
+        + logMsg);
   }
   
   @Test

@@ -13,25 +13,69 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 
 public class SyslogStartConverter extends ClassicConverter {
-
+  public static final String RFC5424_NILVALUE = "-";
+  public static final String TIMESTAMP_FORMAT_NAME_DEFAULT = "simple";
+  public static final String TIMESTAMP_FORMAT_RFC3164 = "MMM dd HH:mm:ss";
+  public static final String TIMESTAMP_FORMAT_RFC5424 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  public static final int SDNAME_MAXCHARS = 32;
   long lastTimestamp = -1;
   String timesmapStr = null;
-  SimpleDateFormat simpleFormat;
+  SimpleDateFormat timestampFormat;
   String localHostName;
   int facility;
+  boolean rfc5424 = false;
+  String appName;
+  String messageId;
+  String structuredDataId;
+  Pid pid;
+  
+  public static class Pid {
+    private String pid;
+    public Pid() {
+      // try to obtain from system property
+      pid = System.getProperty("pid");
+      if (pid != null) {
+        pid = pid.trim();
+        if (pid.isEmpty()) {
+          pid = null;
+        }
+      }
+      if (pid == null) {
+        try {
+          // try to obtain by exec'ing shell
+          byte[] bo = new byte[100];
+          String[] cmd = {"bash", "-c", "echo $PPID"};
+          Process p = Runtime.getRuntime().exec(cmd);
+          int len = p.getInputStream().read(bo);
+          pid = new String(bo, 0, len).trim();
+          if (pid.isEmpty()) {
+            pid = null;
+          }
+        } catch (IOException e) {
+        }
+      }
+    }
+    @Override
+    public String toString() {
+      return pid == null ? RFC5424_NILVALUE : pid;
+    }
+  }
 
+  @Override
   public void start() {
     int errorCount = 0;
     
@@ -40,37 +84,118 @@ public class SyslogStartConverter extends ClassicConverter {
       addError("was expecting a facility string as an option");
       return;
     }
-
     facility = SyslogAppenderBase.facilityStringToint(facilityStr);
-  
-    localHostName = getLocalHostname();
+    setupRFC5424();
     try {
-      // hours should be in 0-23, see also http://jira.qos.ch/browse/LBCLASSIC-48
-      simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss", new DateFormatSymbols(Locale.US));
+      String format = rfc5424 ? TIMESTAMP_FORMAT_RFC5424 : TIMESTAMP_FORMAT_RFC3164;
+      timestampFormat = new SimpleDateFormat(format, new DateFormatSymbols(Locale.US));
     } catch (IllegalArgumentException e) {
       addError("Could not instantiate SimpleDateFormat", e);
       errorCount++;
     }
+    localHostName = getLocalHostname();
 
     if(errorCount == 0) {
       super.start();
     }
   }
+  
+  private void setupRFC5424() {
+    if (getOptionList().size() < 2) {
+      return;
+    }
+    String s = getOptionList().get(1);
+    if (s == null) {
+      return;
+    }
+    s = s.trim().toLowerCase();
+    if (s.isEmpty()) {
+      return;
+    }
+    if (s.equals("true") || s.equals("1")) {
+      rfc5424 = true;
+      appName = getRFC5424Option(2, SyslogAppenderBase.APPNAME_MAXCHARS);
+      messageId = getRFC5424Option(3, SyslogAppenderBase.MSGID_MAXCHARS);
+      structuredDataId = getRFC5424Option(4, SyslogAppenderBase.STRUCTUREDDATAID_MAXCHARS);
+      pid = new Pid();
+    }
+  }
+  
+  private String getRFC5424Option(int i, int maxChars) {
+    if (i < getOptionList().size()) {
+      String s = getOptionList().get(i);
+      if (s != null) {
+        s = s.trim();
+        if (!s.isEmpty()) {
+          return s.substring(0, Math.min(s.length(), maxChars));
+        }
+      }
+    }
+    return RFC5424_NILVALUE;
+  }
 
+  @Override
   public String convert(ILoggingEvent event) {
     StringBuilder sb = new StringBuilder();
-
     int pri = facility + LevelToSyslogSeverity.convert(event);
-  
     sb.append("<");
     sb.append(pri);
     sb.append(">");
-    sb.append(computeTimeStampString(event.getTimeStamp()));
-    sb.append(' ');
-    sb.append(localHostName);
-    sb.append(' ');
-
+    if (rfc5424) {
+      sb.append("1 "); // version
+      sb.append(computeTimeStampString(event.getTimeStamp()));
+      sb.append(' ');
+      sb.append(localHostName);
+      sb.append(' ');
+      sb.append(appName);
+      sb.append(' ');
+      sb.append(pid);
+      sb.append(' ');
+      sb.append(messageId);
+      sb.append(' ');
+      convertStructuredData(event, sb);
+      sb.append(' ');
+    } else {
+      sb.append(computeTimeStampString(event.getTimeStamp()));
+      sb.append(' ');
+      sb.append(localHostName);
+      sb.append(' ');
+    }
     return sb.toString();
+  }
+  
+  public void convertStructuredData(ILoggingEvent event, StringBuilder sb) {
+    if (structuredDataId.equals(RFC5424_NILVALUE)) {
+      sb.append(RFC5424_NILVALUE);
+      return;
+    }
+    // converts all key/values in MDC map to structured data string.
+    Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
+    if (mdcPropertyMap == null || mdcPropertyMap.isEmpty()) {
+      sb.append(RFC5424_NILVALUE);
+      return;
+    }
+    sb.append('[');
+    sb.append(structuredDataId);
+    for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
+      sb.append(' ');
+      String s = entry.getKey();
+      sb.append(s.substring(0, Math.min(s.length(), SDNAME_MAXCHARS)));
+      sb.append("=\"");
+      convertParamValue(entry.getValue(), sb);
+      sb.append('"');
+    }
+    sb.append(']');
+  }
+  
+  public static void convertParamValue(String value, StringBuilder sb) {
+    for (int i = 0; i < value.length(); ++i) {
+      char c = value.charAt(i);
+      if (c == '\\' || c == '"' || c == ']') {
+        sb.append('\\');
+      }
+      sb.append(c);
+    }
   }
 
   /**
@@ -93,7 +218,7 @@ public class SyslogStartConverter extends ClassicConverter {
     synchronized (this) {
       if (now != lastTimestamp) {
         lastTimestamp = now;
-        timesmapStr = simpleFormat.format(new Date(now));
+        timesmapStr = timestampFormat.format(new Date(now));
       }
       return timesmapStr;
     }

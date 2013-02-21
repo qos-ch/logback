@@ -34,14 +34,22 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL
       + "#syslog_layout";
   final static int MSG_SIZE_LIMIT = 256 * 1024;
+  public static final int APPNAME_MAXCHARS = 48;
+  public static final int MSGID_MAXCHARS = 32;
+  public static final int STRUCTUREDDATAID_MAXCHARS = 32;
 
   Layout<E> layout;
   String facilityStr;
+  boolean rfc5424 = false;
+  String appName;
+  String messageId;
+  String structuredDataId;
   String syslogHost;
   protected String suffixPattern;
   SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
 
+  @Override
   public void start() {
     int errorCount = 0;
     if (facilityStr == null) {
@@ -193,6 +201,78 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       facilityStr = facilityStr.trim();
     }
     this.facilityStr = facilityStr;
+  }
+  
+  /**
+   * Returns the boolean value of <b>Rfc5424</b> option.
+   * See {@link #setRfc5424}.
+   */
+  public boolean isRfc5424() {
+    return rfc5424;
+  }
+
+  /**
+   * The <b>Rfc5424</b> option when "true" will format the syslog message
+   * in compliance with <a href="http://tools.ietf.org/html/rfc5424">RFC5424</a>.
+   * Otherwise, the legacy <a href="http://tools.ietf.org/html/rfc3164>RFC3164</a>
+   * format is used.
+   * @param rfc5424
+   */
+  public void setRfc5424(boolean rfc5424) {
+    this.rfc5424 = rfc5424;
+  }
+
+  /**
+   * Returns the string value of <b>AppName</b> option.
+   */
+  public String getAppName() {
+    return appName;
+  }
+
+  /**
+   * The <b>AppName</b> option is only used when the <b>Rfc5424</b> option is
+   * enabled. This is intended to identify the application source of the
+   * log message, limited to 48 characters.
+   * See {@link #setRfc5424}.
+   * @param appName
+   */
+  public void setAppName(String appName) {
+    this.appName = appName;
+  }
+
+  /**
+   * Returns the string value of the <b>MesageId</b> option.
+   */
+  public String getMessageId() {
+    return messageId;
+  }
+
+  /**
+   * The <b>MesageId</b> option is only used when the <b>Rfc5424</b> option is
+   * enabled. This is intended to identify the type of the
+   * log message, limited to 32 characters.
+   * See {@link #setRfc5424}.
+   */
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
+
+  /**
+   * Returns the string value of <b>StructuredDataId</b> option.
+   */
+  public String getStructuredDataId() {
+    return structuredDataId;
+  }
+
+  /**
+   * The <b>StructuredDataId</b> option is only used when the <b>Rfc5424</b> 
+   * option is enabled. When this option is set it used as the structured data id
+   * and all key/value pairs of the MDC data are placed into the log message
+   * as structured data parameters. Id is limited to 32 characters.
+   * See {@link #setRfc5424}.
+   */
+  public void setStructuredDataId(String structuredDataId) {
+    this.structuredDataId = structuredDataId;
   }
 
   /**
