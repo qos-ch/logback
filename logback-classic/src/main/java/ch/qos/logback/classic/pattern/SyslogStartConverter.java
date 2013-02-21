@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
@@ -89,6 +90,9 @@ public class SyslogStartConverter extends ClassicConverter {
     try {
       String format = rfc5424 ? TIMESTAMP_FORMAT_RFC5424 : TIMESTAMP_FORMAT_RFC3164;
       timestampFormat = new SimpleDateFormat(format, new DateFormatSymbols(Locale.US));
+      if (rfc5424) {
+          timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+      }
     } catch (IllegalArgumentException e) {
       addError("Could not instantiate SimpleDateFormat", e);
       errorCount++;
