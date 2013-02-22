@@ -18,9 +18,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -173,20 +175,27 @@ public class SyslogStartConverter extends ClassicConverter {
       sb.append(RFC5424_NILVALUE);
       return;
     }
-    // converts all key/values in MDC map to structured data string.
     Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
     if (mdcPropertyMap == null || mdcPropertyMap.isEmpty()) {
       sb.append(RFC5424_NILVALUE);
       return;
     }
+    // Converts all key/values in MDC map to structured data string.
+    // Sort keys so output is in consistent order (easier for parsing).
+    Set<String> keySet = mdcPropertyMap.keySet();
+    String[] keys = new String[keySet.size()];
+    int i = 0;
+    for (String key : keySet) {
+        keys[i++] = key;
+    }
+    Arrays.sort(keys);
     sb.append('[');
     sb.append(structuredDataId);
-    for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
+    for (String key : keys) {
       sb.append(' ');
-      String s = entry.getKey();
-      sb.append(s.substring(0, Math.min(s.length(), SDNAME_MAXCHARS)));
+      sb.append(key.substring(0, Math.min(key.length(), SDNAME_MAXCHARS)));
       sb.append("=\"");
-      convertParamValue(entry.getValue(), sb);
+      convertParamValue(mdcPropertyMap.get(key), sb);
       sb.append('"');
     }
     sb.append(']');
