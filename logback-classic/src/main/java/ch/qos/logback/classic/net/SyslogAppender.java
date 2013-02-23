@@ -38,6 +38,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
   static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
   static final public String OPTIONS_DELIM = ",";
+  static final public String OPTION_SDKEY_DELIM = "|";
 
   PatternLayout stackTraceLayout = new PatternLayout();
   String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
@@ -58,6 +59,20 @@ public void start() {
     options.append(OPTIONS_DELIM).append(getAppName());
     options.append(OPTIONS_DELIM).append(getMessageId());
     options.append(OPTIONS_DELIM).append(getStructuredDataId());
+    options.append(OPTIONS_DELIM);
+    if (getStructuredDataKeysAsListOfStrings().isEmpty()) {
+      options.append("" + null);
+    } else {
+      boolean first = true;
+      for (String key : getStructuredDataKeysAsListOfStrings()) {
+        if (first) {
+          first = false;
+        } else {
+          options.append(OPTION_SDKEY_DELIM);
+        }
+        options.append(key);
+      }
+    }
     return "%syslogStart{" + options.toString() + "}%nopex{}";
   }
 

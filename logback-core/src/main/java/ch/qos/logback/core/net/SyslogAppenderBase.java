@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
@@ -35,8 +37,10 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       + "#syslog_layout";
   final static int MSG_SIZE_LIMIT = 256 * 1024;
   public static final int APPNAME_MAXCHARS = 48;
-  public static final int MSGID_MAXCHARS = 32;
+  public static final int MESSAGEID_MAXCHARS = 32;
   public static final int STRUCTUREDDATAID_MAXCHARS = 32;
+  public static final String STRUCTUREDDATAKEYS_DELIM = ",";
+  public static final int SDNAME_MAXCHARS = 32;
 
   Layout<E> layout;
   String facilityStr;
@@ -44,6 +48,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   String appName;
   String messageId;
   String structuredDataId;
+  List<String> structuredDataKeyList = new ArrayList<String>();
   String syslogHost;
   protected String suffixPattern;
   SyslogOutputStream sos;
@@ -237,6 +242,12 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
    * @param appName
    */
   public void setAppName(String appName) {
+    if (appName == null || appName.length() == 0) {
+      throw new IllegalArgumentException("Null or empty <appName> property");
+    }
+    if (APPNAME_MAXCHARS < appName.length()) {
+      throw new IllegalArgumentException("<appName> length limited to " + APPNAME_MAXCHARS);
+    }
     this.appName = appName;
   }
 
@@ -254,6 +265,12 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
    * See {@link #setRfc5424}.
    */
   public void setMessageId(String messageId) {
+    if (messageId == null || messageId.length() == 0) {
+      throw new IllegalArgumentException("Null or empty <messageId> property");
+    }
+    if (MESSAGEID_MAXCHARS < messageId.length()) {
+      throw new IllegalArgumentException("<messageId> length limited to " + MESSAGEID_MAXCHARS);
+    }
     this.messageId = messageId;
   }
 
@@ -267,12 +284,54 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   /**
    * The <b>StructuredDataId</b> option is only used when the <b>Rfc5424</b> 
    * option is enabled. When this option is set it used as the structured data id
-   * and all key/value pairs of the MDC data are placed into the log message
-   * as structured data parameters. Id is limited to 32 characters.
+   * and key/value pairs of the MDC data are placed into the log message
+   * as structured data parameters. If the <b>StructuredDataKey</b> option 
+   * is not specified then all MDC data is output. Id is limited to 32 characters.
    * See {@link #setRfc5424}.
    */
   public void setStructuredDataId(String structuredDataId) {
+    if (structuredDataId == null || structuredDataId.length() == 0) {
+      throw new IllegalArgumentException("Null or empty <structuredDataId> property");
+    }
+    if (STRUCTUREDDATAID_MAXCHARS < structuredDataId.length()) {
+      throw new IllegalArgumentException("<structuredDataId> length limited to " + STRUCTUREDDATAID_MAXCHARS);
+    }
     this.structuredDataId = structuredDataId;
+  }
+  
+  public List<String> getStructuredDataKeysAsListOfStrings() {
+    return structuredDataKeyList;
+  }
+  
+  public String getStructuredDataKeys() {
+    StringBuilder sb = new StringBuilder();
+    for (String key : structuredDataKeyList) {
+      if (0 < sb.length()) {
+        sb.append(STRUCTUREDDATAKEYS_DELIM);
+      }
+      sb.append(key);
+    }
+    return sb.toString();
+  }
+  
+  /**
+   * The <b>StructuredDataKeys</b> option is only used when the <b>Rfc5424</b> 
+   * option is enabled. This specifies which keys from the MDC are output
+   * in the structured data. Multiple keys can be specified by separating the 
+   * keys with commas. Keys are limited to 32 characters.
+   */
+  public void setStructuredDataKeys(String structuredDataKeys) {
+    if (structuredDataKeys == null || structuredDataKeys.length() == 0) {
+      throw new IllegalArgumentException("Null or empty <structuredDataKeys> property");
+    }
+    String[] keys = structuredDataKeys.split(STRUCTUREDDATAKEYS_DELIM);
+    for (String key : keys) {
+      key = key.trim();
+      if (SDNAME_MAXCHARS < key.length()) {
+        throw new IllegalArgumentException("<structuredDataKeys> key length limited to " + SDNAME_MAXCHARS);
+      }
+      structuredDataKeyList.add(key);
+    }
   }
 
   /**
