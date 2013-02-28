@@ -75,6 +75,10 @@ public class SyslogAppenderTest {
       sa.setAppName("theappname");
       sa.setStructuredDataId("thesdid");
       sa.setStructuredDataKeys("thekey, missingkey");
+    } else if (iso8601 == 3) {
+        sa.setRfc5424(true);
+        sa.setAppName("theappname");
+        sa.setMessageIdInSuffix(true);
     }
     sa.setSuffixPattern(suffixPattern);
     sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
@@ -131,7 +135,6 @@ public class SyslogAppenderTest {
   
   @Test
   public void basicISO8601_1() throws InterruptedException {
-
     setMockServerAndConfigure(1, 1);
     MDC.put("thekey", "theval");
     String logMsg = "hello";
@@ -160,7 +163,6 @@ public class SyslogAppenderTest {
   
   @Test
   public void basicISO8601_2() throws InterruptedException {
-
     setMockServerAndConfigure(1, 2);
     MDC.put("thekey", "theval");
     String logMsg = "hello";
@@ -180,9 +182,33 @@ public class SyslogAppenderTest {
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
-    // NOTE: there is another MDC.put call made upstream which adds to our
-    // structured data. 
     String first = "<\\d{2}>1 \\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z [\\w.-]* theappname \\d+ \\- \\[thesdid thekey=\"theval\" missingkey=\"\"\\] ";
+    checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
+        + logMsg);
+  }
+  
+  @Test
+  public void basicISO8601_3() throws InterruptedException {
+    setMockServerAndConfigure(1, 3);
+    MDC.put("thekey", "theval");
+    String logMsg = "hello";
+    logger.debug(logMsg);
+
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(8000);
+
+    assertTrue(mockServer.isFinished());
+    assertEquals(1, mockServer.getMessageList().size());
+    String msg = mockServer.getMessageList().get(0);
+
+    String threadName = Thread.currentThread().getName();
+
+    String expected = "<"
+        + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
+    assertTrue(msg.startsWith(expected));
+
+    String first = "<\\d{2}>1 \\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z [\\w.-]* theappname \\d+ ";
     checkRegexMatch(msg, first + "\\[" + threadName + "\\] " + loggerName + " "
         + logMsg);
   }

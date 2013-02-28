@@ -73,6 +73,7 @@ public void start() {
         options.append(key);
       }
     }
+    options.append(OPTIONS_DELIM).append(isMessageIdInSuffix());
     return "%syslogStart{" + options.toString() + "}%nopex{}";
   }
 

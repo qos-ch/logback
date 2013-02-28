@@ -46,6 +46,7 @@ public class SyslogStartConverter extends ClassicConverter {
   String messageId;
   String structuredDataId;
   String[] structuredDataKeys;
+  boolean messageIdInSuffix;
   Pid pid;
   
   public static class Pid {
@@ -133,6 +134,8 @@ public class SyslogStartConverter extends ClassicConverter {
           structuredDataKeys[i] = tokenizer.nextToken();
         }
       }
+      s = getRFC5424Option(6);
+      messageIdInSuffix = (s.equals("true") || s.equals("1"));
       pid = new Pid();
     }
   }
@@ -167,10 +170,12 @@ public class SyslogStartConverter extends ClassicConverter {
       sb.append(' ');
       sb.append(pid);
       sb.append(' ');
-      sb.append(messageId);
-      sb.append(' ');
-      convertStructuredData(event, sb);
-      sb.append(' ');
+      if (!messageIdInSuffix) {
+          sb.append(messageId);
+          sb.append(' ');
+          convertEventStructuredData(event, sb);
+          sb.append(' ');
+      }
     } else {
       sb.append(computeTimeStampString(event.getTimeStamp()));
       sb.append(' ');
@@ -180,7 +185,7 @@ public class SyslogStartConverter extends ClassicConverter {
     return sb.toString();
   }
   
-  public void convertStructuredData(ILoggingEvent event, StringBuilder sb) {
+  private void convertEventStructuredData(ILoggingEvent event, StringBuilder sb) {
     if (structuredDataId.equals(RFC5424_NILVALUE)) {
       sb.append(RFC5424_NILVALUE);
       return;
@@ -190,37 +195,52 @@ public class SyslogStartConverter extends ClassicConverter {
       sb.append(RFC5424_NILVALUE);
       return;
     }
-    sb.append('[');
-    sb.append(structuredDataId);
-    if (structuredDataKeys == null) {
-      // Converts all key/values in MDC map to structured data string.
-      // Sort keys so output is in consistent order (easier for parsing).
-      Set<String> keySet = mdcPropertyMap.keySet();
-      String[] keys = new String[keySet.size()];
-      int i = 0;
-      for (String key : keySet) {
-          keys[i++] = key;
-      }
-      Arrays.sort(keys);
-      for (String key : keys) {
-        key = key.substring(0, Math.min(key.length(), SyslogAppenderBase.SDNAME_MAXCHARS));
-        convertParamKeyValue(key, mdcPropertyMap.get(key), sb);
-      }
-    } else {
-      // Convert configured key/values only, in configuration order.
-      for (String key : structuredDataKeys) {
-        String value = mdcPropertyMap.get(key);
-        if (value == null) {
-          value = "";
-        }
-        convertParamKeyValue(key, value, sb);
-      }
-    }
-    sb.append(']');
+    convertStructuredDataMap(sb, structuredDataId, mdcPropertyMap, structuredDataKeys);
   }
   
-  public static void convertParamKeyValue(String key, String value, StringBuilder sb) {
+  public static void convertStructuredDataMap(StringBuilder sb, String id, Map<String, String> keyValues, String[] keys) {
+      sb.append('[');
+      id = id.substring(0, Math.min(id.length(), SyslogAppenderBase.STRUCTUREDDATAID_MAXCHARS));
+      sb.append(id);
+      if (keys == null) {
+        // Converts all key/values in MDC map to structured data string.
+        // Sort keys so output is in consistent order (easier for parsing).
+        Set<String> keySet = keyValues.keySet();
+        String[] sortedKeys = new String[keySet.size()];
+        int i = 0;
+        for (String key : keySet) {
+            sortedKeys[i++] = key;
+        }
+        Arrays.sort(sortedKeys);
+        for (String key : sortedKeys) {
+          convertParamKeyValue(sb, key, keyValues.get(key));
+        }
+      } else {
+        // Convert configured key/values only, in configuration order.
+        for (String key : keys) {
+          String value = keyValues.get(key);
+          if (value == null) {
+            value = "";
+          }
+          convertParamKeyValue(sb, key, value);
+        }
+      }
+      sb.append(']');
+  }
+  
+  public static void convertStructuredDataArgs(StringBuilder sb, String id, String...keyValues) {
+      sb.append('[');
+      id = id.substring(0, Math.min(id.length(), SyslogAppenderBase.STRUCTUREDDATAID_MAXCHARS));
+      sb.append(id);
+      for (int i = 0; i < keyValues.length; i += 2) {
+          convertParamKeyValue(sb, keyValues[i], keyValues[i + 1]);
+      }
+      sb.append(']');
+  }
+  
+  public static void convertParamKeyValue(StringBuilder sb, String key, String value) {
     sb.append(' ');
+    key = key.substring(0, Math.min(key.length(), SyslogAppenderBase.SDNAME_MAXCHARS));
     sb.append(key);
     sb.append("=\"");
     for (int i = 0; i < value.length(); ++i) {

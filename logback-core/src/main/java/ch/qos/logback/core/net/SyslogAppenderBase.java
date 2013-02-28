@@ -49,6 +49,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   String messageId;
   String structuredDataId;
   List<String> structuredDataKeyList = new ArrayList<String>();
+  boolean messageIdInSuffix = false;
   String syslogHost;
   protected String suffixPattern;
   SyslogOutputStream sos;
@@ -332,6 +333,27 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       }
       structuredDataKeyList.add(key);
     }
+  }
+  
+  /**
+   * Returns the boolean value of <b>MessageIdInSuffix</b> option.
+   */
+  public boolean isMessageIdInSuffix() {
+    return messageIdInSuffix;
+  }
+  
+  /**
+   * The <b>MessageIdInSuffix</b> option is only used when the <b>Rfc5424</b> 
+   * option is enabled. This specifies that the message id and structured data
+   * portions of the syslog message will be supplied in the suffix. This is
+   * convenient if the suffix is set to "%msg" and the program places the
+   * message id and structured data at the start of the message. It provides
+   * the program more flexibility with the structured data.Note that
+   * the suffix must follow the RFC5424 standard with respect to formatting.
+   * See SyslogStartConverter for formatting helper methods.
+   */
+  public void setMessageIdInSuffix(boolean messageIdInSuffix) {
+    this.messageIdInSuffix = messageIdInSuffix;
   }
 
   /**
