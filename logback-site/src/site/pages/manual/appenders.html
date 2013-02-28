@@ -3367,6 +3367,17 @@ logger.error(<b>notifyAdmin</b>,
 				are output. Keys are limited to 32 
 				characters.</td>
 			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">messageIdInSuffix</span></td>
+				<td><code>boolean</code></td>
+				<td>For RFC5424, specifies that the message id and structured data
+				portions of the syslog message will be supplied in the suffix. This is
+				convenient if the suffix pattern is set to "%msg" and the program places the
+				message id and structured data at the start of the message. It provides
+				the program more flexibility with the structured data. Note that
+				the suffix must follow the RFC5424 standard with respect to formatting.
+				See SyslogStartConverter for formatting helper methods.</td>
+			</tr>
 
 
 		</table>
