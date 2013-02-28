@@ -18,11 +18,20 @@ public class RecoveryCoordinator {
   public final static long BACKOFF_COEFFICIENT_MIN = 20;
   static long BACKOFF_COEFFICIENT_MAX = 327680;  // BACKOFF_COEFFICIENT_MIN * 4^7
   
-  private long backOffCoefficient = BACKOFF_COEFFICIENT_MIN;
+  private long backOffCoefficient;
   
   private static long UNSET = -1;
   private long currentTime = UNSET;
-  long next = System.currentTimeMillis()+getBackoffCoefficient();
+  long next;
+  
+  public RecoveryCoordinator() {
+    this(BACKOFF_COEFFICIENT_MIN);
+  }
+
+  public RecoveryCoordinator(long backOffCoefficient) {
+    this.backOffCoefficient = backOffCoefficient;
+    next = System.currentTimeMillis()+getBackoffCoefficient();
+  }
   
   public boolean isTooSoon() {
     long now = getCurrentTime();

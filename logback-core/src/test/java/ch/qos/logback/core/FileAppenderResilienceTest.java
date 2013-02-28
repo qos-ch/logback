@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,7 +75,7 @@ public class FileAppenderResilienceTest {
     Thread t = new Thread(runner);
     t.start();
 
-    double delayCoefficient = 2.0;
+    double delayCoefficient = 4.0;
     for (int i = 0; i < 5; i++) {
       Thread.sleep((int)(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient));
       closeLogFileOnPurpose();
