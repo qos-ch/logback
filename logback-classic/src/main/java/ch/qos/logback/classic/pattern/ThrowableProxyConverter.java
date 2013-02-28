@@ -57,7 +57,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
           // we add one because, printing starts at offset 1
           lengthOption = Integer.parseInt(lengthStr) + 1;
         } catch (NumberFormatException nfe) {
-          addError("Could not parser [" + lengthStr + " as an integer");
+          addError("Could not parse [" + lengthStr + "] as an integer");
           lengthOption = Integer.MAX_VALUE;
         }
       }
