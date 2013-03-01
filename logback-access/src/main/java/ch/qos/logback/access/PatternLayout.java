@@ -161,6 +161,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("magenta", MagentaCompositeConverter.class.getName());
     defaultConverterMap.put("cyan", CyanCompositeConverter.class.getName());
     defaultConverterMap.put("white", WhiteCompositeConverter.class.getName());
+    defaultConverterMap.put("gray", GrayCompositeConverter.class.getName());
     defaultConverterMap.put("boldRed", BoldRedCompositeConverter.class.getName());
     defaultConverterMap.put("boldGreen", BoldGreenCompositeConverter.class.getName());
     defaultConverterMap.put("boldYellow", BoldYellowCompositeConverter.class.getName());
