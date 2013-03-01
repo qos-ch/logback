@@ -20,12 +20,12 @@ import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
+import org.slf4j.spi.MDCAdapter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
-import org.slf4j.spi.MDCAdapter;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -58,6 +58,7 @@ public class LoggingEvent implements ILoggingEvent {
    * The name of thread in which this logging event was generated.
    */
   private String threadName;
+  private String threadId;
 
   private String loggerName;
   private LoggerContext loggerContext;
@@ -160,7 +161,7 @@ public class LoggingEvent implements ILoggingEvent {
     }
     return threadName;
   }
-
+  
   /**
    * @param threadName The threadName to set.
    * @throws IllegalStateException If threadName has been already set.
@@ -172,6 +173,13 @@ public class LoggingEvent implements ILoggingEvent {
     this.threadName = threadName;
   }
 
+  public String getThreadId() {
+    if (threadId == null) {
+      threadId = Long.toString((Thread.currentThread()).getId());
+    }
+    return threadId;
+  }
+    
   /**
    * Returns the throwable information contained within this event. May be
    * <code>null</code> if there is no such information.
@@ -336,6 +344,7 @@ public class LoggingEvent implements ILoggingEvent {
    *
    * @deprecated Replaced by [@link #getMDCPropertyMap}
    */
+  @Deprecated
   public Map<String, String> getMdc() {
     return getMDCPropertyMap();
   }

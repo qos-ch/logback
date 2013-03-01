@@ -37,6 +37,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
   public String threadName;
+  public String threadId;
   public String loggerName;
   public LoggerContextVO loggerContextVO;
 
@@ -55,6 +56,10 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
   public String getThreadName() {
     return threadName;
+  }
+
+  public String getThreadId() {
+    return threadId;
   }
 
   public LoggerContextVO getLoggerContextVO() {
@@ -174,7 +179,8 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     int result = 1;
     result = prime * result + ((message == null) ? 0 : message.hashCode());
     result = prime * result
-        + ((threadName == null) ? 0 : threadName.hashCode());
+        + ((threadName == null) ? 0 : threadName.hashCode())
+        + ((threadId == null) ? 0 : threadId.hashCode());
     result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
     return result;
   }
@@ -205,6 +211,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         return false;
     } else if (!threadName.equals(other.threadName))
       return false;
+    if (threadId == null) {
+      if (other.threadId != null)
+        return false;
+    } else if (!threadId.equals(other.threadId))
+      return false;
     if (timeStamp != other.timeStamp)
       return false;
 
@@ -222,6 +233,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     return true;
   }
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(timeStamp);
