@@ -32,6 +32,8 @@ public class CallerData {
 
   // All logger call's in log4j-over-slf4j use the Category class
   private static final String LOG4J_CATEGORY = "org.apache.log4j.Category";
+  private static final String GROOVY_BOUNDARY = "org.codehaus.groovy";
+  private static final String SLF4J_BOUNDARY = "org.slf4j.Logger";
 
   /**
    * When caller information is not available this constant is used for the line
@@ -94,7 +96,8 @@ public class CallerData {
     // log4j-over-slf4j
     // it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
     if (currentClass.equals(fqnOfInvokingClass)
-        || currentClass.equals(LOG4J_CATEGORY)) {
+        || currentClass.equals(LOG4J_CATEGORY)
+            || currentClass.startsWith(GROOVY_BOUNDARY) || currentClass.startsWith(SLF4J_BOUNDARY)) {
       return true;
     } else {
       return false;
