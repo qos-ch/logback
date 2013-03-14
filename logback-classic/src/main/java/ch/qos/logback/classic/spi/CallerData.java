@@ -15,10 +15,12 @@ package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
 
+import java.util.List;
+
 /**
  * This class computes caller data returning the result in the form
  * of a StackTraceElement array.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class CallerData {
@@ -32,7 +34,6 @@ public class CallerData {
 
   // All logger call's in log4j-over-slf4j use the Category class
   private static final String LOG4J_CATEGORY = "org.apache.log4j.Category";
-  private static final String GROOVY_BOUNDARY = "org.codehaus.groovy";
   private static final String SLF4J_BOUNDARY = "org.slf4j.Logger";
 
   /**
@@ -54,7 +55,8 @@ public class CallerData {
    * parameter
    */
   public static StackTraceElement[] extract(Throwable t,
-      String fqnOfInvokingClass, final int maxDepth) {
+                                            String fqnOfInvokingClass, final int maxDepth,
+                                            List<String> frameworkPackageList) {
     if (t == null) {
       return null;
     }
@@ -64,8 +66,8 @@ public class CallerData {
 
     int found = LINE_NA;
     for (int i = 0; i < steArray.length; i++) {
-      if (isDirectlyInvokingClass(steArray[i].getClassName(),
-          fqnOfInvokingClass)) {
+      if (isInFrameworkSpace(steArray[i].getClassName(),
+              fqnOfInvokingClass, frameworkPackageList)) {
         // the caller is assumed to be the next stack frame, hence the +1.
         found = i + 1;
       } else {
@@ -90,18 +92,30 @@ public class CallerData {
     return callerDataArray;
   }
 
-  public static boolean isDirectlyInvokingClass(String currentClass,
-      String fqnOfInvokingClass) {
-    // the check for org.apachje.log4j.Category class is intended to support
-    // log4j-over-slf4j
-    // it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
-    if (currentClass.equals(fqnOfInvokingClass)
-        || currentClass.equals(LOG4J_CATEGORY)
-            || currentClass.startsWith(GROOVY_BOUNDARY) || currentClass.startsWith(SLF4J_BOUNDARY)) {
+  static boolean isInFrameworkSpace(String currentClass,
+                                    String fqnOfInvokingClass, List<String> frameworkPackageList) {
+    // the check for org.apache.log4j.Category class is intended to support
+    // log4j-over-slf4j. it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
+    if (currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY)
+            || currentClass.startsWith(SLF4J_BOUNDARY) || isInFrameworkSpaceList(currentClass, frameworkPackageList)) {
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+   * Is currentClass present in the list of packages considered part of the logging framework?
+   */
+  private static boolean isInFrameworkSpaceList(String currentClass, List<String> frameworkPackageList) {
+    if(frameworkPackageList == null)
+      return false;
+
+    for (String s : frameworkPackageList) {
+      if (currentClass.startsWith(s))
+        return true;
+    }
+    return false;
   }
 
 }

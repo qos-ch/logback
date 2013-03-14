@@ -43,11 +43,11 @@ import ch.qos.logback.core.status.WarnStatus;
  * directly or indirectly to a LoggerContext instance. Just as importantly
  * LoggerContext implements the {@link ILoggerFactory} acting as the
  * manufacturing source of {@link Logger} instances.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory,
-    LifeCycle {
+        LifeCycle {
 
   final Logger root;
   private int size;
@@ -69,6 +69,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   boolean started = false;
 
   int resetCount = 0;
+  private List<String> frameworkPackages;
 
   public LoggerContext() {
     super();
@@ -79,12 +80,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     loggerCache.put(Logger.ROOT_LOGGER_NAME, root);
     initEvaluatorMap();
     size = 1;
+    this.frameworkPackages = new ArrayList<String>();
   }
 
   void initEvaluatorMap() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
-  
+
   /**
    * A new instance of LoggerContextRemoteView needs to be created each time the
    * name or propertyMap (including keys or values) changes.
@@ -173,9 +175,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   /**
    * Check if the named logger exists in the hierarchy. If so return its
    * reference, otherwise returns <code>null</code>.
-   * 
-   * @param name
-   *          the name of the logger to search for.
+   *
+   * @param name the name of the logger to search for.
    */
   public Logger exists(String name) {
     return (Logger) loggerCache.get(name);
@@ -184,8 +185,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   final void noAppenderDefinedWarning(final Logger logger) {
     if (noAppenderWarning++ == 0) {
       getStatusManager().add(
-          new WarnStatus("No appenders present in context [" + getName()
-              + "] for logger [" + logger.getName() + "].", logger));
+              new WarnStatus("No appenders present in context [" + getName()
+                      + "] for logger [" + logger.getName() + "].", logger));
     }
   }
 
@@ -213,9 +214,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * closes all appenders, removes any turboFilters, fires an OnReset event,
    * removes all status listeners, removes all context listeners
    * (except those which are reset resistant).
-   * <p>
+   * <p/>
    * As mentioned above, internal status messages survive resets.
-   * */
+   */
   @Override
   public void reset() {
     resetCount++;
@@ -255,33 +256,33 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object[] params, final Throwable t) {
+                                                          final Logger logger, final Level level, final String format,
+                                                          final Object[] params, final Throwable t) {
     if (turboFilterList.size() == 0) {
       return FilterReply.NEUTRAL;
     }
     return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, params, t);
+            format, params, t);
   }
 
   final FilterReply getTurboFilterChainDecision_1(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object param, final Throwable t) {
+                                                  final Logger logger, final Level level, final String format,
+                                                  final Object param, final Throwable t) {
     if (turboFilterList.size() == 0) {
       return FilterReply.NEUTRAL;
     }
     return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, new Object[] { param }, t);
+            format, new Object[]{param}, t);
   }
 
   final FilterReply getTurboFilterChainDecision_2(final Marker marker,
-      final Logger logger, final Level level, final String format,
-      final Object param1, final Object param2, final Throwable t) {
+                                                  final Logger logger, final Level level, final String format,
+                                                  final Object param1, final Object param2, final Throwable t) {
     if (turboFilterList.size() == 0) {
       return FilterReply.NEUTRAL;
     }
     return turboFilterList.getTurboFilterChainDecision(marker, logger, level,
-        format, new Object[] { param1, param2 }, t);
+            format, new Object[]{param1, param2}, t);
   }
 
   // === start listeners ==============================================
@@ -365,5 +366,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
     this.maxCallerDataDepth = maxCallerDataDepth;
+  }
+
+  /**
+   * List of packages considered part of the logging framework such that they are never considered
+   * as callers of the logging framework. This list used to compute the caller for logging events.
+   * <p/>
+   * To designate package "com.foo" as well as all its subpackages as being part of the logging framework, simply add
+   * "com.foo" to this list.
+   *
+   * @return list of framework packages
+   */
+  public List<String> getFrameworkPackages() {
+    return frameworkPackages;
   }
 }

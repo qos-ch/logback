@@ -11,29 +11,20 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.gaffer
+package issues.logback811
 
+import ch.qos.logback.core.util.StatusPrinter
 import org.junit.Test
-import static junit.framework.Assert.assertEquals
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-/**
- * @author Ceki G&uuml;c&uuml;
- */
-class PropertyUtilTest {
+class LineNumTest {
 
-
-  @Test
-  void empty() {
-    assertEquals("", PropertyUtil.upperCaseFirstLetter(""));
-    assertEquals(null, PropertyUtil.upperCaseFirstLetter(null));
-  }
-
-
+  // move logback.groovy to src/test/resources and runManually()
 
   @Test
-  void smoke() {
-    assertEquals("Hello", PropertyUtil.upperCaseFirstLetter("hello"));
+  void runMannually() {
+    Logger logger = LoggerFactory.getLogger(this.class)
+    logger.debug("hello from logger on line 28")
   }
-
-
 }

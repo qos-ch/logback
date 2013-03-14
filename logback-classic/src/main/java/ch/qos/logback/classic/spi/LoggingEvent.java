@@ -255,7 +255,7 @@ public class LoggingEvent implements ILoggingEvent {
   public StackTraceElement[] getCallerData() {
     if (callerDataArray == null) {
       callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass,
-              loggerContext.getMaxCallerDataDepth());
+              loggerContext.getMaxCallerDataDepth(), loggerContext.getFrameworkPackages());
     }
     return callerDataArray;
   }

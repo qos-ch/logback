@@ -46,6 +46,9 @@ public class ConfigurationDelegate extends ContextAwareBase {
     return this;
   }
 
+
+
+
   void scan(String scanPeriodStr = null) {
     ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
     rocf.setContext(context);

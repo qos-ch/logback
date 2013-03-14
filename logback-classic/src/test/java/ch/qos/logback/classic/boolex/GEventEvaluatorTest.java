@@ -22,6 +22,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +69,9 @@ public class GEventEvaluatorTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     assertTrue(statusChecker.isErrorFree(0));
 
+    ContextUtil contextUtil = new ContextUtil(context);
+    contextUtil.addGroovyPackages(context.getFrameworkPackages());
+    contextUtil.addFrameworkPackage(context.getFrameworkPackages(), "ch.qos.logback.classic.boolex");
 
     boolean result = gee.evaluate(event);
     assertEquals(expected, result);
@@ -128,13 +132,11 @@ public class GEventEvaluatorTest {
     MDC.clear();
   }
 
-
   @Test
   public void callerData() throws EvaluationException {
     LoggingEvent event = makeEvent("x");
     doEvaluateAndCheck("e.callerData.find{ it.className =~ /junit/ }", event, true);
   }
-
 
   double loop(GEventEvaluator gee) throws EvaluationException {
     long start = System.nanoTime();

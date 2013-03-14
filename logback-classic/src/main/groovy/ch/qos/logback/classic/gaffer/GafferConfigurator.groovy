@@ -26,11 +26,9 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer
 class GafferConfigurator {
 
   LoggerContext context
-  //ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
                          
   GafferConfigurator(LoggerContext context) {
     this.context = context
-    //configurationDelegate.context = context;
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
@@ -54,16 +52,14 @@ class GafferConfigurator {
     def configuration = new CompilerConfiguration()
     configuration.addCompilationCustomizers(importCustomizer())
 
+    // caller data should take into account groovy frames
+    new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
+
     Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
 
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
     dslScript.metaClass.getDeclaredOrigin = { dslScript }
-//    metaClass.statusListener = configurationDelegate.&statusListener
-//    dslScript.metaClass.scan = configurationDelegate.&scan
-//    dslScript.metaClass.appender = configurationDelegate.&appender
-//    dslScript.metaClass.root = configurationDelegate.&root
-//    dslScript.metaClass.logger = configurationDelegate.&logger
 
     dslScript.run()
   }
