@@ -13,12 +13,8 @@
  */
 package ch.qos.logback.classic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.ILoggerFactory;
@@ -58,7 +54,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   // practice, it performs a little faster than the map returned by
   // Collections.synchronizedMap at the cost of a very slightly higher memory
   // footprint.
-  private Hashtable<String, Logger> loggerCache;
+  private Map<String, Logger> loggerCache;
 
   private LoggerContextVO loggerContextRemoteView;
   private final TurboFilterList turboFilterList = new TurboFilterList();
@@ -73,6 +69,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public LoggerContext() {
     super();
+    //this.loggerCache = new ConcurrentHashMap<String, Logger>();
     this.loggerCache = new Hashtable<String, Logger>();
     this.loggerContextRemoteView = new LoggerContextVO(this);
     this.root = new Logger(Logger.ROOT_LOGGER_NAME, null, this);

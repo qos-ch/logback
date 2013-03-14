@@ -164,10 +164,10 @@ public class LoggerContextTest {
 
     StatusManager sm = lc.getStatusManager();
     assertTrue("StatusManager has recieved too many messages",
-        sm.getCount() == 1);
+            sm.getCount() == 1);
   }
 
-  
+
   @Test
   public void resetTest() {
 
@@ -182,12 +182,12 @@ public class LoggerContextTest {
     assertTrue(root.isDebugEnabled());
     assertEquals(Level.DEBUG, a.getEffectiveLevel());
     assertEquals(Level.DEBUG, ab.getEffectiveLevel());
-    
-    assertEquals(Level.DEBUG, root.getLevel());    
+
+    assertEquals(Level.DEBUG, root.getLevel());
     assertNull(a.getLevel());
     assertNull(ab.getLevel());
   }
-  
+
   // http://jira.qos.ch/browse/LBCLASSIC-89
   @Test
   public void turboFilterStopOnReset() {
@@ -198,7 +198,7 @@ public class LoggerContextTest {
     lc.reset();
     assertFalse(nopTF.isStarted());
   }
-  
+
   @Test
   public void resetTest_LBCORE_104() {
     lc.putProperty("keyA", "valA");
@@ -209,7 +209,7 @@ public class LoggerContextTest {
     assertNull(lc.getProperty("keyA"));
     assertNull(lc.getObject("keyA"));
   }
-  
+
   @Test
   public void levelResetTest() {
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -219,11 +219,32 @@ public class LoggerContextTest {
     assertFalse(root.isTraceEnabled());
     assertTrue(root.isDebugEnabled());
   }
-  
+
   @Test
   public void evaluatorMapPostReset() {
     lc.reset();
     assertNotNull(lc.getObject(CoreConstants.EVALUATOR_MAP));
   }
-  
+
+  // http://jira.qos.ch/browse/LOGBACK-142
+  @Test
+  public void concurrentModification() {
+    final int runLen = 100;
+    Thread thread = new Thread(new Runnable() {
+      public void run() {
+        for (int i = 0; i < runLen; i++)  {
+          lc.getLogger("a" + i);
+          Thread.yield();
+        }
+      }
+    });
+    thread.start();
+
+    for (int i = 0; i < runLen; i++) {
+      lc.putProperty("a" + i, "val");
+      Thread.yield();
+    }
+
+  }
+
 }
