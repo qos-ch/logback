@@ -91,34 +91,36 @@
     (GStrings), and if-else statements are available in
     <em>logback.groovy</em> files.</p>
 
-    <h2 class="doAnchor">Imports added automatically to <em>logback.groovy</em></h2>
+    <h2 class="doAnchor">Automatic imports</h2>
 
-    <p>To make the config file look more like an actual configuration file
-    and less like a Groovy program, imports for several common types, 
-    packages and statics are added automatically as of logback 1.0.10. 
-    That means that as long as you're only defining built-in appenders,
-    lay-outs etc. you don't need to add any import statements to your
-    script. You will need them for types not covered by the default
-    imports, of course.</p>
-    <p>The following types and packages are imported automatically:
+    <p><span class="label">Since 1.0.10</span> In order to reduce
+    unnecessary boilerplace several common types and packages are
+    imported automatically.  Thus, as long as you are only configuring
+    built-in appenders, layouts etc. you do not need to add the
+    corresponding import statement into your script. You will need
+    them for types not covered by the default imports, of course.</p>
+
+    <p>Here is the list of default imports:</p>
+
     <ul>
-    <li><span class="code">ch.qos.logback.classic.encoder.PatternLayoutEncoder</span></li>
-    <li><span class="code">ch.qos.logback.classic.sift.SiftingAppender</span></li>
-    <li><span class="code">ch.qos.logback.core.*</span></li>
-    <li><span class="code">ch.qos.logback.core.encoder.*</span></li>
-    <li><span class="code">ch.qos.logback.core.read.*</span></li>
-    <li><span class="code">ch.qos.logback.core.rolling.*</span></li>
-    <li><span class="code">ch.qos.logback.core.status.*</span></li>
-    <li><span class="code">ch.qos.logback.classic.net.*</span></li>
+      <li><span class="code">import ch.qos.logback.core.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.encoder.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.read.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.rolling.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.status.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.net.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.encoder.PatternLayoutEncoder;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.sift.SiftingAppender;</span></li>
     </ul>
-    </p>
-    <p>In addition to this, static imports for all constants in
-    <span class="code">ch.qos.logback.classic.Level</span> are added
-    as well as lowercased aliases for all these levels.
-    This means that in your script you can either use <em>INFO</em>
-    or <em>info</em> to refer to <span class="code">Logger.INFO</span>.</p>
 
-    <h2 class="doAnchor" name="entensions">Extensions specific to <em>logback.groovy</em></h2>
+    <p>In addition, all constants in <span
+    class="code">ch.qos.logback.classic.Level</span> are statically
+    imported as is (uppercase) and as lowercased aliases. It follows
+    that your scripts can reference both <em>INFO</em> or
+    <em>info</em> without a static import statement.</p>
+
+    <h2 class="doAnchor" name="entensions">Extensions specific to
+    <em>logback.groovy</em></h2>
 
     <p><span class="green">Essentially, <em>Logback.groovy</em> syntax
     consists of half a dozen methods described next; in the reverse
