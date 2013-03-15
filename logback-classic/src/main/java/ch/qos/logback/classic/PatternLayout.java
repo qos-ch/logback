@@ -16,7 +16,6 @@ package ch.qos.logback.classic;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.joran.action.ContextNameAction;
 import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.ContextNameConverter;
@@ -121,7 +120,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("nopexception",
         NopThrowableInformationConverter.class.getName());
 
-    defaultConverterMap.put("cn", ContextNameAction.class.getName());
+    defaultConverterMap.put("cn", ContextNameConverter.class.getName());
     defaultConverterMap.put("contextName", ContextNameConverter.class.getName());
     
     defaultConverterMap.put("caller", CallerDataConverter.class.getName());
