@@ -34,7 +34,14 @@
     <p>Upgraded the (optional) groovy dependency to version 2.0.7
     (from 2.0.0).</p>
 
-    <p>In <code>SyslogAppender</code>, allow <a
+    <p>The logger cache field in <code>LoggerContext</code> now uses a
+    <code>ConcurrentHashMap</code> instead of a regular
+    <code>HashMap</code>. This dramatically improves the speed of
+    logger retrieval and incidentally fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-142">LOGBACK-142</a>.
+    </p>
+
+    <p>In <code>SyslogAppender</code> allow <a
     href="manual/appenders.html#syslogSuffixPattern">suffixPattern</a>
     to begin with literal text. This issue was reported Bruno Polaco
     in <a href="http://jira.qos.ch/browse/LOGBACK-782">LOGBACK-782</a>
@@ -51,12 +58,7 @@
     frames (if nunning under Groovy). This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-811">LOGBACK-811</a>.</p>
 
-    <p>The logger cache field in <code>LoggerContext</code> now uses a
-    <code>ConcurrentHashMap</code> instead of a regular
-    <code>HashMap</code>. This dramatically improves the speed of
-    logger retrieval and incidentally fixes <a
-    href="http://jira.qos.ch/browse/LOGBACK-142">LOGBACK-142</a>.
-    </p>
+  
   
     <hr width="80%" align="center" />
 
