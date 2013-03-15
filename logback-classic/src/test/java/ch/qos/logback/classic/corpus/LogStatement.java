@@ -39,4 +39,8 @@ public class LogStatement {
     this.throwableProxy = tp;
   }
 
+
+  public String getLoggerName() {
+    return loggerName;
+  }
 }

@@ -25,7 +25,7 @@ import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
  * 
  * @author Ceki Gulcu
  */
-public class LoggingToFileThrouhput {
+public class LoggingToFileThroughput {
 
   static int THREAD_COUNT = 1;
   static long OVERALL_DURATION_IN_MILLIS = 5000;
@@ -62,7 +62,7 @@ public class LoggingToFileThrouhput {
     fileAppender.setAppend(false);
     fileAppender.start();
     root.addAppender(fileAppender);
-    return lc.getLogger(LoggingToFileThrouhput.class);
+    return lc.getLogger(LoggingToFileThroughput.class);
   }
 
   static LoggingRunnable[] buildArray(Logger logger) {

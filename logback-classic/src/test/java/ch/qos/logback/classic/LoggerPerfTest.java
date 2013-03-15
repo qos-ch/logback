@@ -26,6 +26,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.Env;
 
+
 public class LoggerPerfTest {
 
   static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;

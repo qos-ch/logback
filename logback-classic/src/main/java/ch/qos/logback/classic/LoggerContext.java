@@ -50,10 +50,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   private int noAppenderWarning = 0;
   final private List<LoggerContextListener> loggerContextListenerList = new ArrayList<LoggerContextListener>();
 
-  // We want loggerCache to be synchronized so Hashtable is a good choice. In
-  // practice, it performs a little faster than the map returned by
-  // Collections.synchronizedMap at the cost of a very slightly higher memory
-  // footprint.
   private Map<String, Logger> loggerCache;
 
   private LoggerContextVO loggerContextRemoteView;
@@ -69,8 +65,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public LoggerContext() {
     super();
-    //this.loggerCache = new ConcurrentHashMap<String, Logger>();
-    this.loggerCache = new Hashtable<String, Logger>();
+    this.loggerCache = new ConcurrentHashMap<String, Logger>();
+
     this.loggerContextRemoteView = new LoggerContextVO(this);
     this.root = new Logger(Logger.ROOT_LOGGER_NAME, null, this);
     this.root.setLevel(Level.DEBUG);

@@ -17,6 +17,9 @@
 
   <url>http://logback.qos.ch</url>
 
+  <properties>
+    <scala.version>2.10.1</scala.version>
+  </properties>
 
   <licenses>
     <license>
@@ -75,6 +78,7 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
       <scope>test</scope>
     </dependency>
 

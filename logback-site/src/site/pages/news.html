@@ -29,7 +29,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>, 2013 - Release of version 1.0.10</h3>
+    <h3>15th of March, 2013 - Release of version 1.0.10</h3>
 
     <p>Upgraded the (optional) groovy dependency to version 2.0.7
     (from 2.0.0).</p>
@@ -51,6 +51,12 @@
     frames (if nunning under Groovy). This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-811">LOGBACK-811</a>.</p>
 
+    <p>The logger cache field in <code>LoggerContext</code> now uses a
+    <code>ConcurrentHashMap</code> instead of a regular
+    <code>HashMap</code>. This dramatically improves the speed of
+    logger retrieval and incidentally fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-142">LOGBACK-142</a>.
+    </p>
   
     <hr width="80%" align="center" />
 
