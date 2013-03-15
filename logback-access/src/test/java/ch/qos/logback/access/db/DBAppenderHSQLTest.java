@@ -37,23 +37,26 @@ import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class DBAppenderTest  {
+public class DBAppenderHSQLTest {
+  static DBAppenderHSQLTestFixture DB_APPENDER_HSQL_TEST_FIXTURE;
+
 
   AccessContext context;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  static DBAppenderTestFixture DB_APPENDER_TEST_FIXTURE;
-  
+  int existingRowCount;
+  Statement stmt;
+
   @BeforeClass
   static public void fixtureSetUp() throws SQLException {
-    DB_APPENDER_TEST_FIXTURE = new DBAppenderTestFixture();
-    DB_APPENDER_TEST_FIXTURE.setUp();
+    DB_APPENDER_HSQL_TEST_FIXTURE = new DBAppenderHSQLTestFixture();
+    DB_APPENDER_HSQL_TEST_FIXTURE.setUp();
   } 
   
   @AfterClass
   static public  void fixtureTearDown()  throws SQLException {
-    DB_APPENDER_TEST_FIXTURE.tearDown();
+    DB_APPENDER_HSQL_TEST_FIXTURE.tearDown();
   }
   
   @Before
@@ -65,17 +68,15 @@ public class DBAppenderTest  {
     appender.setContext(context);
     connectionSource = new DriverManagerConnectionSource();
     connectionSource.setContext(context);
-    connectionSource.setDriverClass(DBAppenderTestFixture.DRIVER_CLASS);
-    connectionSource.setUrl(DB_APPENDER_TEST_FIXTURE.url);
-    connectionSource.setUser(DB_APPENDER_TEST_FIXTURE.user);
-    connectionSource.setPassword(DB_APPENDER_TEST_FIXTURE.password);
+    connectionSource.setDriverClass(DBAppenderHSQLTestFixture.DRIVER_CLASS);
+    connectionSource.setUrl(DB_APPENDER_HSQL_TEST_FIXTURE.url);
+    connectionSource.setUser(DB_APPENDER_HSQL_TEST_FIXTURE.user);
+    connectionSource.setPassword(DB_APPENDER_HSQL_TEST_FIXTURE.password);
     connectionSource.start();
     appender.setConnectionSource(connectionSource);
-  }
-  
-  private void setInsertHeadersAndStart(boolean insert) {
-    appender.setInsertHeaders(insert);
-    appender.start();
+
+    stmt = connectionSource.getConnection().createStatement();
+    existingRowCount = existingRowCount(stmt);
   }
 
   @After
@@ -83,7 +84,24 @@ public class DBAppenderTest  {
     context = null;
     appender = null;
     connectionSource = null;
+    stmt.close();
   }
+
+  int existingRowCount(Statement stmt) throws SQLException {
+    ResultSet rs = stmt.executeQuery("SELECT count(*) FROM access_event");
+    int result = -1;
+    if (rs.next()) {
+      result = rs.getInt(1);
+    }
+    rs.close();
+    return result;
+  }
+
+  private void setInsertHeadersAndStart(boolean insert) {
+    appender.setInsertHeaders(insert);
+    appender.start();
+  }
+
 
   @Test
   public void testAppendAccessEvent() throws SQLException {
@@ -94,7 +112,7 @@ public class DBAppenderTest  {
     
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM access_event");
+    rs = stmt.executeQuery("SELECT * FROM access_event where EVENT_ID = "+ existingRowCount);
     if (rs.next()) {
       assertEquals(event.getTimeStamp(), rs.getLong(1));
       assertEquals(event.getRequestURI(), rs.getString(2));
@@ -109,7 +127,6 @@ public class DBAppenderTest  {
     } else {
       fail("No row was inserted in the database");
     }
-
     rs.close();
     stmt.close();
   }

@@ -19,7 +19,7 @@ public class PackageTest extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(DBAppenderTest.class));
+    suite.addTest(new JUnit4TestAdapter(DBAppenderHSQLTest.class));
     suite.addTest(new JUnit4TestAdapter(DBAppenderIntegrationTest.class));
     return suite;
   }

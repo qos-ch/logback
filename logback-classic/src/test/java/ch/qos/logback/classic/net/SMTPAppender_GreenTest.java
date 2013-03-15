@@ -13,7 +13,9 @@
  */
 package ch.qos.logback.classic.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
@@ -32,7 +34,6 @@ import ch.qos.logback.classic.html.HTMLLayout;
 import ch.qos.logback.classic.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -48,7 +49,7 @@ public class SMTPAppender_GreenTest {
   static boolean SYNCHRONOUS = false;
   static boolean ASYNCHRONOUS = true;
   static int port = RandomUtil.getRandomServerPort();
-  static GreenMail GREEN_MAIL_SERVER;
+  static GreenMail greenMailServer;
 
   SMTPAppender smtpAppender;
   LoggerContext lc = new LoggerContext();
@@ -63,23 +64,20 @@ public class SMTPAppender_GreenTest {
 
   int oldCount;
 
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    ServerSetup serverSetup = new ServerSetup(port, "localhost",
-            ServerSetup.PROTOCOL_SMTP);
-    GREEN_MAIL_SERVER = new GreenMail(serverSetup);
-    GREEN_MAIL_SERVER.start();
-  }
-
   @Before
   public void setUp() throws Exception {
+    ServerSetup serverSetup = new ServerSetup(port, "localhost",
+            ServerSetup.PROTOCOL_SMTP);
+    greenMailServer = new GreenMail(serverSetup);
+    greenMailServer.start();
+
     MDC.clear();
     oldCount = messageCount();
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
-    GREEN_MAIL_SERVER.stop();
+  @After
+  public void tearDown() throws Exception {
+    greenMailServer.stop();
   }
 
   void buildSMTPAppender(boolean synchronicity) throws Exception {
@@ -117,14 +115,14 @@ public class SMTPAppender_GreenTest {
   }
 
   private int messageCount() throws MessagingException, IOException {
-    MimeMessage[] mma = GREEN_MAIL_SERVER.getReceivedMessages();
+    MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
     return mma.length;
   }
 
   private MimeMultipart verify(String subject) throws MessagingException,
           IOException {
-    MimeMessage[] mma = GREEN_MAIL_SERVER.getReceivedMessages();
+    MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(oldCount + 1, mma.length);
     MimeMessage mm = mma[oldCount];
@@ -195,13 +193,14 @@ public class SMTPAppender_GreenTest {
     smtpAppender.start();
     logger.addAppender(smtpAppender);
     MDC.put("key", "val");
-    logger.debug("hello");
+    logger.debug("LBCLASSIC_104");
     MDC.clear();
     logger.error("en error", new Exception("an exception"));
 
     MimeMultipart mp = verify(TEST_SUBJECT);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertTrue(body.startsWith(HEADER.trim()));
+    System.out.println(body);
     assertTrue(body.contains("key=val"));
     assertTrue(body.endsWith(FOOTER.trim()));
   }
@@ -213,7 +212,7 @@ public class SMTPAppender_GreenTest {
     smtpAppender.setLayout(buildHTMLLayout(lc));
     smtpAppender.start();
     logger.addAppender(smtpAppender);
-    logger.debug("hello");
+    logger.debug("html");
     logger.error("en error", new Exception("an exception"));
 
     MimeMultipart mp = verify(TEST_SUBJECT);
@@ -224,6 +223,17 @@ public class SMTPAppender_GreenTest {
     reader.setEntityResolver(new XHTMLEntityResolver());
     reader.read(mp.getBodyPart(0).getInputStream());
 
+  }
+
+  private byte[] getAsByteArray(InputStream inputStream) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    byte[] buffer = new byte[1024];
+    int n = -1;
+    while((n = inputStream.read(buffer)) != -1) {
+      baos.write(buffer, 0, n);
+    }
+    return baos.toByteArray();
   }
 
   private void configure(String file) throws JoranException {
@@ -274,7 +284,7 @@ public class SMTPAppender_GreenTest {
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
-    MimeMessage[] mma = GREEN_MAIL_SERVER.getReceivedMessages();
+    MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(oldCount+3, mma.length);
   }
@@ -296,7 +306,7 @@ public class SMTPAppender_GreenTest {
 
     waitUntilEmailIsSent();
 
-    MimeMessage[] mma = GREEN_MAIL_SERVER.getReceivedMessages();
+    MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(oldCount+2, mma.length);
 
