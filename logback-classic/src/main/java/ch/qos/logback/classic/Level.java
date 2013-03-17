@@ -277,7 +277,7 @@ public final class Level implements java.io.Serializable {
    * @return int An integer corresponding to this level as defined in LocationAwareLogger
    * @since 1.0.1
    */
-  public int toLocationAwareLoggerInteger(Level level) {
+  public static int toLocationAwareLoggerInteger(Level level) {
     if (level == null)
       throw new IllegalArgumentException("null level parameter is not admitted");
     switch (level.toInt()) {
