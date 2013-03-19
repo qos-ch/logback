@@ -17,8 +17,10 @@ package ch.qos.logback.classic;
 import ch.qos.logback.classic.corpus.CorpusModel;
 import ch.qos.logback.core.contention.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
 
 public class LoggerContextPerfTest {
 
