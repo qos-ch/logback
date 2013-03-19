@@ -16,6 +16,7 @@ package ch.qos.logback.classic;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.helpers.BogoPerf;
 
@@ -27,6 +28,7 @@ import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.Env;
 
 
+@Ignore
 public class LoggerPerfTest {
 
   static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
