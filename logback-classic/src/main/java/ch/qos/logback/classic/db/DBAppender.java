@@ -162,12 +162,21 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   
   void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
       StackTraceElement[] callerDataArray) throws SQLException {
-    StackTraceElement callerData = callerDataArray[0];
-    if (callerData != null) {
+        
+    if (callerDataArray!=null && callerDataArray[0]!=null)
+    {
+      StackTraceElement callerData = callerDataArray[0];
       stmt.setString(CALLER_FILENAME_INDEX, callerData.getFileName());
       stmt.setString(CALLER_CLASS_INDEX, callerData.getClassName());
       stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
-      stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));
+      stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));          
+    }
+    else
+    {
+      stmt.setString(CALLER_FILENAME_INDEX, "");
+      stmt.setString(CALLER_CLASS_INDEX, "");
+      stmt.setString(CALLER_METHOD_INDEX, "");
+      stmt.setString(CALLER_LINE_INDEX, "0");      
     }
   }
 
