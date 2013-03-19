@@ -16,7 +16,9 @@ package ch.qos.logback.core.pattern.color;
 import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
 
 /**
- * Encloses a given set of converter output in gray using the appropriate ANSI escape codes.
+ * Encloses a given set of converter output in gray using the appropriate ANSI
+ * escape codes.
+ *
  * @param <E>
  * @author  Ceki G&uuml;lc&uuml;
  * @since 1.0.5
