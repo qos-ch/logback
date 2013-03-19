@@ -54,12 +54,16 @@ public class CyclicBufferAppender<E> extends AppenderBase<E> {
     }
   }
 
-  public Object get(int i) {
+  public E get(int i) {
     if (isStarted()) {
       return cb.get(i);
     } else {
       return null;
     }
+  }
+
+  public void reset() {
+    cb.clear();
   }
 
   /**
