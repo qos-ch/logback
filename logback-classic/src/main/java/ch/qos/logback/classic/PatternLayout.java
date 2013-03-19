@@ -19,7 +19,6 @@ import java.util.Map;
 import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import ch.qos.logback.classic.pattern.ContextNameConverter;
-import ch.qos.logback.classic.pattern.PropertyConverter;
 import ch.qos.logback.classic.pattern.DateConverter;
 import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
 import ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter;
@@ -33,15 +32,31 @@ import ch.qos.logback.classic.pattern.MarkerConverter;
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
+import ch.qos.logback.classic.pattern.PropertyConverter;
 import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
 import ch.qos.logback.classic.pattern.ThreadConverter;
+import ch.qos.logback.classic.pattern.ThreadIdConverter;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
-import ch.qos.logback.core.pattern.color.*;
+import ch.qos.logback.core.pattern.color.BlackCompositeConverter;
+import ch.qos.logback.core.pattern.color.BlueCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldBlueCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldCyanCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldGreenCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldMagentaCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldRedCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldWhiteCompositeConverter;
+import ch.qos.logback.core.pattern.color.BoldYellowCompositeConverter;
+import ch.qos.logback.core.pattern.color.CyanCompositeConverter;
+import ch.qos.logback.core.pattern.color.GreenCompositeConverter;
+import ch.qos.logback.core.pattern.color.MagentaCompositeConverter;
+import ch.qos.logback.core.pattern.color.RedCompositeConverter;
+import ch.qos.logback.core.pattern.color.WhiteCompositeConverter;
+import ch.qos.logback.core.pattern.color.YellowCompositeConverter;
 import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
@@ -76,6 +91,9 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
     defaultConverterMap.put("t", ThreadConverter.class.getName());
     defaultConverterMap.put("thread", ThreadConverter.class.getName());
+
+    defaultConverterMap.put("tid", ThreadIdConverter.class.getName());
+    defaultConverterMap.put("threadId", ThreadIdConverter.class.getName());
 
     defaultConverterMap.put("lo", LoggerConverter.class.getName());
     defaultConverterMap.put("logger", LoggerConverter.class.getName());
@@ -157,6 +175,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     this.postCompileProcessor = new EnsureExceptionHandling();
   }
 
+  @Override
   public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
   }

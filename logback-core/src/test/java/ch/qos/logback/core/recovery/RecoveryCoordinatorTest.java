@@ -13,19 +13,22 @@
  */
 package ch.qos.logback.core.recovery;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 public class RecoveryCoordinatorTest {
 
-  RecoveryCoordinator rc = new RecoveryCoordinator();
+  long backoff = RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * 10; // increase for testing in case of slow machines
+  RecoveryCoordinator rc = new RecoveryCoordinator(backoff);
   long now = System.currentTimeMillis();
 
   @Test
   public void actualTime() throws InterruptedException {
     assertTrue(rc.isTooSoon());
-    Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+20);
+    Thread.sleep(backoff+20-(System.currentTimeMillis()-now));
     assertFalse(rc.isTooSoon());
   }
   
@@ -34,13 +37,13 @@ public class RecoveryCoordinatorTest {
     // if the machine is really too busy or too slow, rc.isTooSoon can
     // return false, hence we comment out the next line
     // assertTrue(rc.isTooSoon());
-    rc.setCurrentTime(now+RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+1);
+    rc.setCurrentTime(now+backoff+1);
     assertFalse(rc.isTooSoon());
   }
   
   @Test
   public void longTermFailure() {
-    long offset = RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN;
+    long offset = backoff;
     int tooSoonCount = 0;
     for(int i = 0; i < 16; i++) {
       rc.setCurrentTime(now+offset);
@@ -53,6 +56,7 @@ public class RecoveryCoordinatorTest {
     }
       offset *= 2;
     }
-    assertEquals(8, tooSoonCount);
+    // this test is entered with backoff at backoff * 4**3
+    assertEquals(7, tooSoonCount);
   }
 }

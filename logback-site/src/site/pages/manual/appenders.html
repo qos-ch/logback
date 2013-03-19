@@ -3243,6 +3243,21 @@ logger.error(<b>notifyAdmin</b>,
 		achieved by using <a
 		href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
 		</p>
+
+		<p>The appender supports two syslog protocol standards: the
+		original <a href="http://tools.ietf.org/html/rfc3164">RFC3164</a>,
+		and the newer <a href="http://tools.ietf.org/html/rfc5424">RFC5424</a>.
+		The difference between the standards is the information and formatting
+		of the information that is automatically prefixed by the appender.
+		Among other changes, the new standard includes millisecond timestamp
+		precision, structured data, and the process id (configure using
+		"-Dpid=..." if not working using the default method).
+		The appender can be configured to format messages to the syslog
+		daemon in one standard or the other. The formats are quite
+		different, newer daemons may include support for both
+		(e.g. <a href="http://www.balabit.com/network-security/syslog-ng/">syslog-ng</a>
+		and <a href="http://www.rsyslog.com/">rsyslog</a>).
+		The appender default is RFC3164.</p>
 		
 		<p>Here are the properties you can pass to a SyslogAppender.</p>
 
@@ -3313,6 +3328,55 @@ logger.error(<b>notifyAdmin</b>,
 				class="prop">throwableExcluded</span> is set to
 				<code>false</code> so that stack trace data is sent to the
 				syslog server. </td>
+			</tr>
+
+			<tr>
+				<td><span class="prop" container="syslog">rfc5424</span></td>
+				<td><code>boolean</code></td>
+				<td>Setting to <code>true</code> formats the message 
+				prefix information according to RFC5424.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">appName</span></td>
+				<td><code>String</code></td>
+				<td>For RFC5424, placed in the prefix to identify the application 
+				source of the log message, limited to 48 characters.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">messageId</span></td>
+				<td><code>String</code></td>
+				<td>For RFC5424, placed in the prefix to identify the type of the
+				log message, limited to 32 characters.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">structuredDataId</span></td>
+				<td><code>String</code></td>
+				<td>For RFC5424, used as the structured data id
+				and triggers the placement of key/value pairs of the MDC data 
+				into the log message prefix as structured data parameters. 
+				If the <code>structuredDataKey</code> option 
+				is not specified then all MDC key/values are output.  Id is limited 
+				to 32 characters.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">structuredDataKeys</span></td>
+				<td><code>String</code></td>
+				<td>For RFC5424, specifies which keys from the MDC are output
+				in the structured data. Multiple keys can be specified by separating the 
+				keys with commas. If this option is not configured then all MDC key/values 
+				are output. Keys are limited to 32 
+				characters.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="syslog">messageIdInSuffix</span></td>
+				<td><code>boolean</code></td>
+				<td>For RFC5424, specifies that the message id and structured data
+				portions of the syslog message will be supplied in the suffix. This is
+				convenient if the suffix pattern is set to "%msg" and the program places the
+				message id and structured data at the start of the message. It provides
+				the program more flexibility with the structured data. Note that
+				the suffix must follow the RFC5424 standard with respect to formatting.
+				See SyslogStartConverter for formatting helper methods.</td>
 			</tr>
 
 

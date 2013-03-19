@@ -31,6 +31,8 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
   String getThreadName();
 
+  String getThreadId();
+
   Level getLevel();
 
   String getMessage();
@@ -78,7 +80,8 @@ public interface ILoggingEvent extends DeferredProcessingAware {
    * Synonym for [@link #getMDCPropertyMap}.
    * @deprecated  Replaced by [@link #getMDCPropertyMap}
    */
-  Map<String, String> getMdc();
+  @Deprecated
+Map<String, String> getMdc();
   long getTimeStamp();
 
   void prepareForDeferredProcessing();

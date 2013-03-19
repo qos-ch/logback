@@ -40,6 +40,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
   private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
   private String threadName;
+  private String threadId;
   private String loggerName;
   private LoggerContextVO loggerContextVO;
 
@@ -64,6 +65,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     ledo.loggerName = le.getLoggerName();
     ledo.loggerContextVO = le.getLoggerContextVO();
     ledo.threadName = le.getThreadName();
+    ledo.threadId = le.getThreadId();
     ledo.level = (le.getLevel());
     ledo.message = (le.getMessage());
     ledo.argumentArray = (le.getArgumentArray());
@@ -81,6 +83,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
 
   public String getThreadName() {
     return threadName;
+  }
+
+  public String getThreadId() {
+    return threadId;
   }
 
   public LoggerContextVO getLoggerContextVO() {
@@ -199,7 +205,8 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     int result = 1;
     result = prime * result + ((message == null) ? 0 : message.hashCode());
     result = prime * result
-        + ((threadName == null) ? 0 : threadName.hashCode());
+        + ((threadName == null) ? 0 : threadName.hashCode())
+        + ((threadId == null) ? 0 : threadId.hashCode());
     result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
     return result;
   }
@@ -229,6 +236,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
       if (other.threadName != null)
         return false;
     } else if (!threadName.equals(other.threadName))
+      return false;
+    if (threadId == null) {
+      if (other.threadId != null)
+        return false;
+    } else if (!threadId.equals(other.threadId))
       return false;
     if (timeStamp != other.timeStamp)
       return false;

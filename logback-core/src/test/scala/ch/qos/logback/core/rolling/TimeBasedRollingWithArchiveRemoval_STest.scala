@@ -37,7 +37,6 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   // by default tbfnatp is an instance of DefaultTimeBasedFileNamingAndTriggeringPolicy
   var tbfnatp: TimeBasedFileNamingAndTriggeringPolicy[AnyRef] = new DefaultTimeBasedFileNamingAndTriggeringPolicy[AnyRef]
 
-  val now = System.currentTimeMillis
 
 
   @Before def setUp {
@@ -61,6 +60,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     val numPeriods: Int = 40
     val maxHistory: Int = 2
     val fileNamePattern = randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip"
+    val now = System.currentTimeMillis
     val (startTime, endTime) = logOverMultiplePeriods(now, fileNamePattern, MILLIS_IN_MONTH, maxHistory, numPeriods)
     val differenceInMonths = RollingCalendar.diffInMonths(startTime, endTime)
     val startTimeAsCalendar = Calendar.getInstance()
@@ -88,20 +88,24 @@ class TimeBasedRollingWithArchiveRemoval_STest {
 
   @Test
   def basicDailyRollover {
+    val now = System.currentTimeMillis
     generateDailyRollover(now, maxHistory = 20, simulatedNumberOfPeriods = 20 * 3, startInactivity = 0, numInactivityPeriods = 0)
   }
 
   // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
   // be conducted with daily rollover  not monthly
   @Test def dailyRollover15 {
+    val now = System.currentTimeMillis
     generateDailyRollover(now, maxHistory = 5, simulatedNumberOfPeriods = 15, startInactivity = 6, numInactivityPeriods = 3)
   }
 
   @Test def dailyRolloverWithInactivity70 {
+    val now = System.currentTimeMillis
     generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 70, startInactivity = 30, numInactivityPeriods = 1)
   }
 
   @Test def dailyRolloverWithInactivity10 {
+    val now = System.currentTimeMillis
     generateDailyRollover(now, maxHistory = 6, simulatedNumberOfPeriods = 10, startInactivity = 3, numInactivityPeriods = 4)
   }
 
@@ -110,6 +114,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN)
     val maxHistory = 5
     val simulatedNumberOfPeriods = maxHistory * 2
+    val now = System.currentTimeMillis
     val (startTime, endTime) = logOverMultiplePeriods(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt", MILLIS_IN_DAY, maxHistory, maxHistory * 2)
     logOverMultiplePeriods(endTime + MILLIS_IN_DAY * 10, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt", MILLIS_IN_DAY, maxHistory, maxHistory)
     check(expectedCountWithoutFolders(maxHistory))
@@ -118,6 +123,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
 
   @Test def dailyCronologRollover {
     slashCount = computeSlashCount(DAILY_CRONOLOG_DATE_PATTERN)
+    val now = System.currentTimeMillis
     logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip", MILLIS_IN_DAY, 8, 8 * 3)
     var expectedDirMin: Int = 9 + slashCount
     var expectDirMax: Int = expectedDirMin + 1 + 1
@@ -129,6 +135,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000")
     tbfnatp = sizeAndTimeBasedFNATP
     slashCount = computeSlashCount(DAILY_DATE_PATTERN)
+    val now = System.currentTimeMillis
     logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4)
     checkPatternCompliance(5 + 1 + slashCount, "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?")
   }
@@ -138,6 +145,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000")
     tbfnatp = sizeAndTimeBasedFNATP
     slashCount = 1
+    val now = System.currentTimeMillis
     logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4)
     checkDirPatternCompliance(6)
   }
@@ -149,6 +157,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
     slashCount = 1
     val maxHistory = 5
     val simulatedNumberOfPeriods = maxHistory * 4
+    val now = System.currentTimeMillis
     val (startTime, endTime) = logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY, maxHistory, 3)
     logOverMultiplePeriods(endTime + MILLIS_IN_DAY * 7, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods)
     checkDirPatternCompliance(maxHistory + 1)
@@ -162,7 +171,7 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   @Test def cleanHistoryOnStart {
-    var now = this.now
+    var now = System.currentTimeMillis
     val fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt"
     val maxHistory = 3
     for (i <- 0 to 5) {
