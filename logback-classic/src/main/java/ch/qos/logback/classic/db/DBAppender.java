@@ -24,20 +24,18 @@ import java.util.Set;
 
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.classic.spi.*;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.db.DBAppenderBase;
+import static ch.qos.logback.core.CoreConstants.EMPTY_STRING;
 
 /**
  * The DBAppender inserts logging events into three database tables in a format
  * independent of the Java programming language.
- * 
+ *
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#DBAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
@@ -65,7 +63,9 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   static final int  CALLER_METHOD_INDEX = 13;
   static final int  CALLER_LINE_INDEX = 14;
   static final int  EVENT_ID_INDEX  = 15;
-  
+
+  static final StackTraceElement EMPTY_CALLER_DATA = CallerData.naInstance();
+
   static {
     // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
     Method getGeneratedKeysMethod;
@@ -99,7 +99,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
     bindLoggingEventWithInsertStatement(insertStatement, event);
     bindLoggingEventArgumentsWithPreparedStatement(insertStatement, event.getArgumentArray());
-    
+
     // This is expensive... should we do it every time?
     bindCallerDataWithPreparedStatement(insertStatement, event.getCallerData());
 
@@ -108,7 +108,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       addWarn("Failed to insert loggingEvent");
     }
   }
-  
+
   protected void secondarySubAppend(ILoggingEvent event, Connection connection,
       long eventId) throws Throwable {
     Map<String, String> mergedMap = mergePropertyMaps(event);
@@ -131,9 +131,9 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
   void bindLoggingEventArgumentsWithPreparedStatement(PreparedStatement stmt,
       Object[] argArray) throws SQLException {
-    
+
     int arrayLen = argArray != null ? argArray.length : 0;
-    
+
     for(int i = 0; i < arrayLen && i < 4; i++) {
       stmt.setString(ARG0_INDEX+i, asStringTruncatedTo254(argArray[i]));
     }
@@ -159,25 +159,18 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       return s.substring(0, 254);
     }
   }
-  
+
   void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
       StackTraceElement[] callerDataArray) throws SQLException {
-        
-    if (callerDataArray!=null && callerDataArray[0]!=null)
-    {
-      StackTraceElement callerData = callerDataArray[0];
-      stmt.setString(CALLER_FILENAME_INDEX, callerData.getFileName());
-      stmt.setString(CALLER_CLASS_INDEX, callerData.getClassName());
-      stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
-      stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));          
-    }
-    else
-    {
-      stmt.setString(CALLER_FILENAME_INDEX, "");
-      stmt.setString(CALLER_CLASS_INDEX, "");
-      stmt.setString(CALLER_METHOD_INDEX, "");
-      stmt.setString(CALLER_LINE_INDEX, "0");      
-    }
+
+    StackTraceElement callerData = EMPTY_CALLER_DATA;
+    if(callerDataArray != null && callerDataArray[0] != null)
+      callerData = callerDataArray[0];
+
+    stmt.setString(CALLER_FILENAME_INDEX, callerData.getFileName());
+    stmt.setString(CALLER_CLASS_INDEX, callerData.getClassName());
+    stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
+    stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));
   }
 
   Map<String, String> mergePropertyMaps(ILoggingEvent event) {

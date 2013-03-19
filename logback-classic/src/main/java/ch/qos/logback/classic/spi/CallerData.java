@@ -108,7 +108,7 @@ public class CallerData {
    * Is currentClass present in the list of packages considered part of the logging framework?
    */
   private static boolean isInFrameworkSpaceList(String currentClass, List<String> frameworkPackageList) {
-    if(frameworkPackageList == null)
+    if (frameworkPackageList == null)
       return false;
 
     for (String s : frameworkPackageList) {
@@ -116,6 +116,16 @@ public class CallerData {
         return true;
     }
     return false;
+  }
+
+  /**
+   * Returns a StackTraceElement where all string fields are set to {@link #NA} and line number is set to {@link #LINE_NA}.
+   *
+   * @return StackTraceElement with values set to NA constants.
+   * @since 1.0.10
+   */
+  public static StackTraceElement naInstance() {
+    return new StackTraceElement(NA, NA, NA, LINE_NA);
   }
 
 }
