@@ -22,7 +22,7 @@ public class Util {
 
   public static boolean isFormUrlEncoded(HttpServletRequest request) {
     if ("POST".equalsIgnoreCase(request.getMethod())
-        && AccessConstants.X_WWW_FORM_URLECODED.equals(request.getContentType())) {
+        && request.getContentType().startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
       return true;
     } else {
       return false;
