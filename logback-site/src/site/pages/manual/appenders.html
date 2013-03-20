@@ -3620,8 +3620,11 @@ logger.debug("Alice says hello"); </p>
     <p>The <code>CountingConsoleAppender</code>, which we list next,
     appends a limited number of incoming events on the console. It
     shuts down after the limit is reached.  It uses a
-    <code>Layout</code> to format the events and accepts a parameter.
-    Thus, a few more methods are needed.
+    <code>PatternLayoutEncoder</code> to format the events and accepts
+    a parameter named <code>limit</code>. Therefore, a few more
+    methods beyond <code>append(Object eventObject)</code> are
+    needed. As shown below, these parameters are handles
+    auto-magically by logback's various configuration mechanisms.
     </p>
     
     <em>Example 4.<span class="autoExec"/>:
@@ -3654,7 +3657,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   @Override
   public void start() {
     if (this.encoder == null) {
-      addError("No layout set for the appender named ["+ name +"].");
+      addError("No encoder set for the appender named ["+ name +"].");
       return;
     }
     
@@ -3686,13 +3689,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
   public void setEncoder(PatternLayoutEncoder encoder) {
     this.encoder = encoder;
   }
-  
-  
 }</pre>
 
 		<p>The <code>start()</code> method checks for the presence of a
-		<code>Layout</code>.  In case the layout is not set, the appender
-		fails to start with an error message.
+		<code>PatternLayoutEncoder</code>.  In case the encoder is not
+		set, the appender fails to start and emits an error message.
 		</p>
 		
 		<p>This custom appender illustrates two points:</p>
@@ -3700,10 +3701,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		<ul>
 
       <li>All properties that follow the setter/getter JavaBeans
-      conventions are handled transparently. The <code>start()</code>
-      method, which is called automatically during logback
-      configuration, has the responsibility of verifying that the
-      various properties of the appender are coherent.
+      conventions are handled transparently by logback
+      configurators. The <code>start()</code> method, which is called
+      automatically during logback configuration, has the
+      responsibility of verifying that the various properties of the
+      appender are set and are coherent.
 			</li>
 
 			<li>The <code>AppenderBase.doAppend()</code> method invokes the
