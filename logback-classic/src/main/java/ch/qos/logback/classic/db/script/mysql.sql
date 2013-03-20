@@ -34,7 +34,8 @@ CREATE TABLE logging_event
     caller_class      VARCHAR(254) NOT NULL,
     caller_method     VARCHAR(254) NOT NULL,
     caller_line       CHAR(4) NOT NULL,
-    event_id          BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
+    event_id          BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    origin           VARCHAR()254)
   );
 COMMIT;
 

@@ -28,6 +28,7 @@ CREATE TABLE logging_event
   caller_method     VARCHAR(254) NOT NULL,
   caller_line       varCHAR(4) NOT NULL,
   event_id          int NOT NULL DEFAULT AUTOINCREMENT,
+  origin           VARCHAR(254)
   PRIMARY KEY(event_id) 
 ) 			
 

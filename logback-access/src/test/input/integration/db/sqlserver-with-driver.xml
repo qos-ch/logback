@@ -9,6 +9,7 @@
 			<user>logback</user>
 			<password>logback</password>
 		</connectionSource>
+        <origin>Integration Test</origin>
 	</appender>
 	
 

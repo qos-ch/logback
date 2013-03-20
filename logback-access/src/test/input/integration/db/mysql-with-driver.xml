@@ -10,6 +10,7 @@
 			<user>root</user>
 			<password></password>
 		</connectionSource>
+        <origin>Integration Test</origin>
 	</appender>
 
 

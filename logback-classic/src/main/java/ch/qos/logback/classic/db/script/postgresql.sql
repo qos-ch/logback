@@ -33,7 +33,8 @@ CREATE TABLE logging_event
     caller_class      VARCHAR(254) NOT NULL,
     caller_method     VARCHAR(254) NOT NULL,
     caller_line       CHAR(4) NOT NULL,
-    event_id          BIGINT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
+    event_id          BIGINT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY,
+    origin           VARCHAR(254)
   );
 
 CREATE TABLE logging_event_property

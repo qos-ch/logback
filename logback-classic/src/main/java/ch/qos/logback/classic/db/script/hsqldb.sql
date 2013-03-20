@@ -28,7 +28,8 @@ CREATE TABLE logging_event (
   caller_class VARCHAR(256), 
   caller_method VARCHAR(256), 
   caller_line CHAR(4),
-  event_id BIGINT NOT NULL IDENTITY);
+  event_id BIGINT NOT NULL IDENTITY,
+  origin VARCHAR(256));
 
 
 CREATE TABLE logging_event_property (

@@ -28,7 +28,8 @@ CREATE TABLE logging_event (
   caller_class VARCHAR(256), 
   caller_method VARCHAR(256), 
   caller_line CHAR(4),
-  event_id IDENTITY NOT NULL);
+  event_id IDENTITY NOT NULL,
+  origin VARCHAR(256));
 
 
 CREATE TABLE logging_event_property (

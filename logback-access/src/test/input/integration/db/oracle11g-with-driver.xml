@@ -9,6 +9,7 @@
 			<user>SCOTT</user>
 			<password>SCOTT</password>
 		</connectionSource>
+        <origin>Integration Test</origin>
 	</appender>
 	
 	

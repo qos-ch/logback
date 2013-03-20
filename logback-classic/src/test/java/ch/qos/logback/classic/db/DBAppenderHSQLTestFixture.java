@@ -112,18 +112,19 @@ public class DBAppenderHSQLTestFixture  {
     buf.append("LEVEL_STRING VARCHAR(256) NOT NULL,");
     buf.append("THREAD_NAME VARCHAR(256),");
     buf.append("REFERENCE_FLAG SMALLINT,");
-    
+
     buf.append("ARG0 VARCHAR(256),");
     buf.append("ARG1 VARCHAR(256),");
     buf.append("ARG2 VARCHAR(256),");
     buf.append("ARG3 VARCHAR(256),");
-    
-    
+
+
     buf.append("CALLER_FILENAME VARCHAR(256), ");
     buf.append("CALLER_CLASS VARCHAR(256), ");
     buf.append("CALLER_METHOD VARCHAR(256), ");
     buf.append("CALLER_LINE CHAR(4), ");
-    buf.append("EVENT_ID BIGINT NOT NULL IDENTITY);");
+    buf.append("EVENT_ID BIGINT NOT NULL IDENTITY, ");
+    buf.append("ORIGIN VARCHAR(256) );") ;
     query(conn, buf.toString());
 
     buf = new StringBuffer();

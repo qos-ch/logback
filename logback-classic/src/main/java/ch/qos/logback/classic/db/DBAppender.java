@@ -45,6 +45,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   protected String insertExceptionSQL;
   protected String insertSQL;
   protected static final Method GET_GENERATED_KEYS_METHOD;
+  protected String origin;
 
   private DBNameResolver dbNameResolver;
 
@@ -62,7 +63,8 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   static final int  CALLER_CLASS_INDEX = 12;
   static final int  CALLER_METHOD_INDEX = 13;
   static final int  CALLER_LINE_INDEX = 14;
-  static final int  EVENT_ID_INDEX  = 15;
+  static final int  ORIGIN = 15;
+  static final int  EVENT_ID_INDEX  = 16;
 
   static final StackTraceElement EMPTY_CALLER_DATA = CallerData.naInstance();
 
@@ -83,7 +85,15 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     this.dbNameResolver = dbNameResolver;
   }
 
-  @Override
+  public String getOrigin() {
+    return origin;
+  }
+
+  public void setOrigin(String origin) {
+    this.origin = origin;
+  }
+
+@Override
   public void start() {
     if (dbNameResolver == null)
       dbNameResolver = new DefaultDBNameResolver();
@@ -127,6 +137,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     stmt.setString(LEVEL_STRING_INDEX, event.getLevel().toString());
     stmt.setString(THREAD_NAME_INDEX, event.getThreadName());
     stmt.setShort(REFERENCE_FLAG_INDEX, DBHelper.computeReferenceMask(event));
+    stmt.setString(ORIGIN, getOrigin()) ;
   }
 
   void bindLoggingEventArgumentsWithPreparedStatement(PreparedStatement stmt,
@@ -210,7 +221,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
       for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
         String key = (String) i.next();
-        String value = (String) mergedMap.get(key);
+        String value = mergedMap.get(key);
 
         insertPropertiesStatement.setLong(1, eventId);
         insertPropertiesStatement.setString(2, key);
@@ -295,4 +306,5 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
     exceptionStatement.close();
   }
+
 }
