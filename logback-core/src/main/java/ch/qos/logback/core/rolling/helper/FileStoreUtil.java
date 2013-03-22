@@ -63,7 +63,7 @@ public class FileStoreUtil {
 
 
       Object pathA = toPath.invoke(a);
-      Object pathB = b.toPath();
+      Object pathB = toPath.invoke(b);
 
       Object fileStoreA = getFileStoreMethod.invoke(null, pathA);
       Object fileStoreB = getFileStoreMethod.invoke(null, pathB);
