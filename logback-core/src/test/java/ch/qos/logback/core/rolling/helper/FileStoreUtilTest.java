@@ -1,5 +1,6 @@
 package ch.qos.logback.core.rolling.helper;
 
+import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.EnvUtil;
@@ -8,6 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +21,7 @@ public class FileStoreUtilTest {
   String pathPrefix = CoreTestConstants.OUTPUT_DIR_PREFIX+"fs"+diff+"/";
 
   @Test
-  public void filesOnSameFolderShouldBeOnTheSameFileStore() throws Exception {
+  public void filesOnSameFolderShouldBeOnTheSameFileStore() throws RolloverFailure, IOException {
     if(!EnvUtil.isJDK7OrHigher())
       return;
 
@@ -34,7 +36,7 @@ public class FileStoreUtilTest {
   // test should be run manually
   @Ignore
   @Test
-  public void manual_filesOnDifferentVolumesShouldBeDetectedAsSuch() throws Exception {
+  public void manual_filesOnDifferentVolumesShouldBeDetectedAsSuch() throws RolloverFailure {
     if(!EnvUtil.isJDK7OrHigher())
       return;
 

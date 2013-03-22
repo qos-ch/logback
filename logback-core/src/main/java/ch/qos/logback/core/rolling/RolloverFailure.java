@@ -26,4 +26,8 @@ public class RolloverFailure extends Exception {
   public RolloverFailure(String msg) {
     super(msg);
   }
+
+  public RolloverFailure(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

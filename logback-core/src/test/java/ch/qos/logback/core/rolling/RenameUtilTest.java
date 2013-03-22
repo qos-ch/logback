@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ch.qos.logback.core.rolling.helper.RenameUtil;
@@ -67,8 +68,22 @@ public class RenameUtilTest {
     assertTrue(statusChecker.isErrorFree(0));
   }
 
-  @Test
+
   public void renamingOnDifferentVolumes() throws IOException, RolloverFailure {
+    RenameUtil renameUtil = new RenameUtil();
+    renameUtil.setContext(context);
+
+    String src = "/tmp/foo.txt";
+    FileOutputStream fis = new FileOutputStream(src);
+    fis.write(("hello" + diff).getBytes());
+
+    renameUtil.rename(src, "/run/foo" + diff + ".txt");
+    StatusPrinter.print(context);
+  }
+
+
+  @Test
+  public void renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);
 

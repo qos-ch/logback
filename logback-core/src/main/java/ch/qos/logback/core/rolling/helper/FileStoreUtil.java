@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import ch.qos.logback.core.rolling.RolloverFailure;
+
 import java.io.File;
 import java.lang.reflect.Method;
 
@@ -27,9 +29,23 @@ public class FileStoreUtil {
   static final String PATH_CLASS_STR = "java.nio.file.Path";
   static final String FILES_CLASS_STR = "java.nio.file.Files";
 
-  static public boolean areOnSameFileStore(File a, File b) throws Exception {
+  /**
+   * This method assumes that both files a and b exists.
+   *
+   * @param a
+   * @param b
+   * @return
+   * @throws Exception
+   */
+  static public boolean areOnSameFileStore(File a, File b) throws RolloverFailure {
+    if (!a.exists()) {
+      throw new IllegalArgumentException("File [" + a + "] does not exist.");
+    }
+    if (!b.exists()) {
+      throw new IllegalArgumentException("File [" + b + "] does not exist.");
+    }
 
-// Implement the following by reflection
+// Implements the following by reflection
 //    Path pathA = a.toPath();
 //    Path pathB = b.toPath();
 //
@@ -38,18 +54,22 @@ public class FileStoreUtil {
 //
 //    return fileStoreA.equals(fileStoreB);
 
-    Class pathClass = Class.forName(PATH_CLASS_STR);
-    Class filesClass = Class.forName(FILES_CLASS_STR);
+    try {
+      Class pathClass = Class.forName(PATH_CLASS_STR);
+      Class filesClass = Class.forName(FILES_CLASS_STR);
 
-    Method toPath = File.class.getMethod("toPath");
-    Method getFileStoreMethod = filesClass.getMethod("getFileStore", pathClass);
+      Method toPath = File.class.getMethod("toPath");
+      Method getFileStoreMethod = filesClass.getMethod("getFileStore", pathClass);
 
 
-    Object pathA = toPath.invoke(a);
-    Object pathB = b.toPath();
+      Object pathA = toPath.invoke(a);
+      Object pathB = b.toPath();
 
-    Object fileStoreA = getFileStoreMethod.invoke(null, pathA);
-    Object fileStoreB = getFileStoreMethod.invoke(null, pathB);
-    return fileStoreA.equals(fileStoreB);
+      Object fileStoreA = getFileStoreMethod.invoke(null, pathA);
+      Object fileStoreB = getFileStoreMethod.invoke(null, pathB);
+      return fileStoreA.equals(fileStoreB);
+    } catch (Exception e) {
+      throw new RolloverFailure("Failed to check file store equality for [" + a + "] and [" + b + "]", e);
+    }
   }
 }

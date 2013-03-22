@@ -36,7 +36,7 @@ import ch.qos.logback.core.util.FileUtil;
  */
 public class RenameUtil extends ContextAwareBase {
 
-  static String RENAMING_ERROR_URL = CoreConstants.CODES_URL+"#renamingError";
+  static String RENAMING_ERROR_URL = CoreConstants.CODES_URL + "#renamingError";
 
   /**
    * A robust file renaming method which in case of failure falls back to
@@ -44,35 +44,38 @@ public class RenameUtil extends ContextAwareBase {
    * process, renaming by copying will succeed whereas regular renaming will
    * fail. However, renaming by copying is much slower.
    *
-   * @param from
-   * @param to
+   * @param src
+   * @param target
    * @throws RolloverFailure
    */
-  public void rename(String from, String to) throws RolloverFailure {
-    if (from.equals(to)) {
-      addWarn("From and to file are the same [" + from + "]. Skipping.");
+  public void rename(String src, String target) throws RolloverFailure {
+    if (src.equals(target)) {
+      addWarn("Source and target files are the same [" + src + "]. Skipping.");
       return;
     }
-    File fromFile = new File(from);
+    File srcFile = new File(src);
 
-    if (fromFile.exists()) {
-      File toFile = new File(to);
-      createMissingTargetDirsIfNecessary(toFile);
+    if (srcFile.exists()) {
+      File targetFile = new File(target);
+      createMissingTargetDirsIfNecessary(targetFile);
 
-      addInfo("Renaming file [" + fromFile + "] to [" + toFile + "]");
+      addInfo("Renaming file [" + srcFile + "] to [" + targetFile + "]");
 
-      boolean result = fromFile.renameTo(toFile);
+      boolean result = srcFile.renameTo(targetFile);
 
       if (!result) {
-        addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "].");
-        if(attemptVolumeDetermination(fromFile, toFile)) {
-          renameByCopying(from, to);
+        addWarn("Failed to rename file [" + srcFile + "] to [" + targetFile + "].");
+        if (attemptVolumeDetermination(srcFile, targetFile)) {
+          addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
+          renameByCopying(src, target);
+          return;
+        } else {
+          addWarn("Please consider leaving the [file] option of " + RollingFileAppender.class.getSimpleName() + " empty.");
+          addWarn("See also " + RENAMING_ERROR_URL);
         }
-        addWarn("Please consider leaving the [file] option of "+ RollingFileAppender.class.getSimpleName()+" empty.");
-        addWarn("See also "+ RENAMING_ERROR_URL);
       }
     } else {
-      throw new RolloverFailure("File [" + from + "] does not exist.");
+      throw new RolloverFailure("File [" + src + "] does not exist.");
     }
   }
 
@@ -81,18 +84,21 @@ public class RenameUtil extends ContextAwareBase {
    * Attempts tp determine whether both files are on different volumes. Returns true if we could determine that
    * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
    *
-   * @param fromFile
-   * @param toFile
+   * @param srcFile
+   * @param targetFile
    * @return true if on different volumes, false otherwise or if an error occurred
    */
-  static boolean attemptVolumeDetermination(File fromFile, File toFile) {
-    if(!EnvUtil.isJDK7OrHigher())
+   boolean attemptVolumeDetermination(File srcFile, File targetFile) {
+    if (!EnvUtil.isJDK7OrHigher())
       return false;
 
+    File parentOfTarget = targetFile.getParentFile();
+
     try {
-      boolean result = FileStoreUtil.areOnSameFileStore(fromFile, toFile);
+      boolean result = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
       return result;
-    } catch(Exception e) {
+    } catch (RolloverFailure rf) {
+      addWarn("Error while checking file store equality", rf);
       return false;
     }
   }
@@ -128,14 +134,14 @@ public class RenameUtil extends ContextAwareBase {
       addError("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
     } finally {
-      if(bis != null) {
+      if (bis != null) {
         try {
           bis.close();
         } catch (IOException e) {
           // ignore
         }
       }
-      if(bos != null) {
+      if (bos != null) {
         try {
           bos.close();
         } catch (IOException e) {
