@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import javax.net.ServerSocketFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class SimpleSocketServer extends Thread {
   public void run() {
     try {
       logger.info("Listening on port " + port);
-      serverSocket = new ServerSocket(port);
+      serverSocket = getServerSocketFactory().createServerSocket(port);
       while (!closed) {
         logger.info("Waiting to accept a new client.");
         signalAlmostReadiness();
@@ -103,6 +104,15 @@ public class SimpleSocketServer extends Thread {
         logger.error("Unexpected failure in run method", e);
       }
     }
+  }
+
+  /**
+   * Gets the platform default {@link ServerSocketFactory}.
+   * <p>
+   * Subclasses may override to provide a custom server socket factory.
+   */
+  protected ServerSocketFactory getServerSocketFactory() {
+    return ServerSocketFactory.getDefault();
   }
 
   /**

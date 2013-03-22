@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
+import javax.net.SocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
@@ -127,7 +128,8 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     try {
       // First, close the previous connection if any.
       cleanUp();
-      oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
+      oos = new ObjectOutputStream(getSocketFactory()
+          .createSocket(address, port).getOutputStream());
     } catch (IOException e) {
 
       String msg = "Could not connect to remote logback server at ["
@@ -138,6 +140,15 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
       }
       addInfo(msg, e);
     }
+  }
+
+  /**
+   * Gets the default {@link SocketFactory} for the platform.
+   * <p>
+   * Subclasses may override to provide a custom socket factory.
+   */
+  protected SocketFactory getSocketFactory() {
+    return SocketFactory.getDefault();
   }
 
   @Override
