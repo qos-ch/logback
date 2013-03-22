@@ -13,26 +13,29 @@
  */
 package ch.qos.logback.access.servlet;
 
+import ch.qos.logback.access.AccessConstants;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import ch.qos.logback.access.AccessConstants;
 
 public class Util {
 
   public static boolean isFormUrlEncoded(HttpServletRequest request) {
+
+    String contentTypeStr = request.getContentType();
     if ("POST".equalsIgnoreCase(request.getMethod())
-        && request.getContentType().startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
+            && contentTypeStr != null
+            && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
       return true;
     } else {
       return false;
     }
   }
-  
+
   public static boolean isImageResponse(HttpServletResponse response) {
-    
+
     String responseType = response.getContentType();
-    
+
     if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
       return true;
     } else {
