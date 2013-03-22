@@ -65,7 +65,7 @@ public class RenameUtil extends ContextAwareBase {
 
       if (!result) {
         addWarn("Failed to rename file [" + srcFile + "] to [" + targetFile + "].");
-        if (attemptVolumeDetermination(srcFile, targetFile)) {
+        if (areOnDifferentVolumes(srcFile, targetFile)) {
           addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
           renameByCopying(src, target);
           return;
@@ -88,15 +88,15 @@ public class RenameUtil extends ContextAwareBase {
    * @param targetFile
    * @return true if on different volumes, false otherwise or if an error occurred
    */
-   boolean attemptVolumeDetermination(File srcFile, File targetFile) {
+   boolean areOnDifferentVolumes(File srcFile, File targetFile) {
     if (!EnvUtil.isJDK7OrHigher())
       return false;
 
     File parentOfTarget = targetFile.getParentFile();
 
     try {
-      boolean result = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
-      return result;
+      boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
+      return !onSameFileStore;
     } catch (RolloverFailure rf) {
       addWarn("Error while checking file store equality", rf);
       return false;

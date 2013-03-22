@@ -87,7 +87,12 @@ public class RenameUtilTest {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);
 
-    renameUtil.rename("c:/tmp/foo.txt", "d:/tmp/foo" + diff + ".txt");
+    String src = "c:/tmp/foo.txt";
+     FileOutputStream fis = new FileOutputStream(src);
+     fis.write(("hello" + diff).getBytes());
+     fis.close();
+
+    renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
     StatusPrinter.print(context);
     assertTrue(statusChecker.isErrorFree(0));
   }
