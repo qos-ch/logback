@@ -24,6 +24,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,6 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -57,7 +57,7 @@ public class MultiThreadedRollingTest {
 
   RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
 
-  String pathToBash = Env.getPathToBash();
+  String pathToBash = EnvUtilForTests.getPathToBash();
   OutputStream scriptOS;
 
   @Before

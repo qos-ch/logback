@@ -25,6 +25,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.FileUtil;
 
 
@@ -64,14 +65,38 @@ public class RenameUtil extends ContextAwareBase {
 
       if (!result) {
         addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "].");
+        if(attemptVolumeDetermination(fromFile, toFile)) {
+          renameByCopying(from, to);
+        }
         addWarn("Please consider leaving the [file] option of "+ RollingFileAppender.class.getSimpleName()+" empty.");
         addWarn("See also "+ RENAMING_ERROR_URL);
-
       }
     } else {
       throw new RolloverFailure("File [" + from + "] does not exist.");
     }
   }
+
+
+  /**
+   * Attempts tp determine whether both files are on different volumes. Returns true if we could determine that
+   * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
+   *
+   * @param fromFile
+   * @param toFile
+   * @return true if on different volumes, false otherwise or if an error occurred
+   */
+  static boolean attemptVolumeDetermination(File fromFile, File toFile) {
+    if(!EnvUtil.isJDK7OrHigher())
+      return false;
+
+    try {
+      boolean result = FileStoreUtil.areOnSameFileStore(fromFile, toFile);
+      return result;
+    } catch(Exception e) {
+      return false;
+    }
+  }
+
 
   static final int BUF_SIZE = 32 * 1024;
 

@@ -14,10 +14,7 @@
 package ch.qos.logback.core.rolling.helper;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileStore;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.lang.reflect.Method;
 
 /**
  * A utility class using functionality available since JDK 1.7.
@@ -27,13 +24,32 @@ import java.nio.file.Path;
  */
 public class FileStoreUtil {
 
-  static boolean areOnSameFileStore(File a, File b) throws IOException {
-    Path pathA = a.toPath();
-    Path pathB = b.toPath();
+  static final String PATH_CLASS_STR = "java.nio.file.Path";
+  static final String FILES_CLASS_STR = "java.nio.file.Files";
 
-    FileStore fileStoreA = Files.getFileStore(pathA);
-    FileStore fileStoreB = Files.getFileStore(pathB);
+  static public boolean areOnSameFileStore(File a, File b) throws Exception {
 
+// Implement the following by reflection
+//    Path pathA = a.toPath();
+//    Path pathB = b.toPath();
+//
+//    FileStore fileStoreA = Files.getFileStore(pathA);
+//    FileStore fileStoreB = Files.getFileStore(pathB);
+//
+//    return fileStoreA.equals(fileStoreB);
+
+    Class pathClass = Class.forName(PATH_CLASS_STR);
+    Class filesClass = Class.forName(FILES_CLASS_STR);
+
+    Method toPath = File.class.getMethod("toPath");
+    Method getFileStoreMethod = filesClass.getMethod("getFileStore", pathClass);
+
+
+    Object pathA = toPath.invoke(a);
+    Object pathB = b.toPath();
+
+    Object fileStoreA = getFileStoreMethod.invoke(null, pathA);
+    Object fileStoreB = getFileStoreMethod.invoke(null, pathB);
     return fileStoreA.equals(fileStoreB);
   }
 }

@@ -29,7 +29,8 @@ import org.junit.Test;
 public class FileUtilTest {
 
   List<File> cleanupList = new ArrayList<File>();
-  
+  int diff =  new Random().nextInt(100);
+
   @Before
   public void setUp() throws Exception {
     
@@ -44,8 +45,7 @@ public class FileUtilTest {
 
   
   @Test
-  public void smoke() {
-    int diff =  new Random().nextInt(100);
+  public void checkParentCreationInquiryAndSubsequentCreation() {
     File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/testing.txt");
     // these will be deleted later
     cleanupList.add(file);
@@ -57,8 +57,8 @@ public class FileUtilTest {
   }
   
   @Test
-  public void smokeII() {
-    int diff =  new Random().nextInt(100);
+  public void checkDeeperParentCreationInquiryAndSubsequentCreation() {
+
     File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/bla/testing.txt");
     // these will be deleted later
     cleanupList.add(file);
@@ -69,4 +69,5 @@ public class FileUtilTest {
     assertTrue(FileUtil.createMissingParentDirectories(file));
     assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
   }
+
 }

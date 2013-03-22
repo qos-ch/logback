@@ -51,7 +51,7 @@ public class RenameUtilTest {
     randomOutputDir.mkdirs();
   }
 
- @Test
+  @Test
   public void renameToNonExistingDirectory() throws IOException, RolloverFailure {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);
@@ -60,10 +60,20 @@ public class RenameUtilTest {
     File fromFile = File.createTempFile("from" + diff, "test",
             randomOutputDir);
 
-    String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX+diff2;
+    String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff2;
 
     renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+    assertTrue(statusChecker.isErrorFree(0));
+  }
+
+  @Test
+  public void renamingOnDifferentVolumes() throws IOException, RolloverFailure {
+    RenameUtil renameUtil = new RenameUtil();
+    renameUtil.setContext(context);
+
+    renameUtil.rename("c:/tmp/foo.txt", "d:/tmp/foo" + diff + ".txt");
+    StatusPrinter.print(context);
     assertTrue(statusChecker.isErrorFree(0));
   }
 

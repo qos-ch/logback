@@ -17,12 +17,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.ResilienceUtil;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -47,7 +47,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
   FileAppender<Object> fa = new FileAppender<Object>();
 
   static boolean isConformingHost() {
-    return Env.isLocalHostNameInList(new String[] { "haro" });
+    return EnvUtilForTests.isLocalHostNameInList(new String[]{"haro"});
   }
 
   @Before
