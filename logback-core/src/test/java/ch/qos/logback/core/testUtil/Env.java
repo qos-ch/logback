@@ -32,6 +32,18 @@ public class Env {
     return System.getProperty("os.name").indexOf("Linux") != -1;
   }
 
+  static private boolean isJDKXOrHigher(String ) {
+    String javaVersion = System.getProperty("java.version");
+    if (javaVersion == null) {
+      return false;
+    }
+    if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static public boolean isJDK6OrHigher() {
     String javaVersion = System.getProperty("java.version");
     if (javaVersion == null) {
