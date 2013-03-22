@@ -69,6 +69,7 @@ public class RenameUtilTest {
   }
 
 
+  @Test
   public void renamingOnDifferentVolumes() throws IOException, RolloverFailure {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);

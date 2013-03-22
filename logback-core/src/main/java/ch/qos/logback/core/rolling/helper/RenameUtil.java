@@ -88,7 +88,7 @@ public class RenameUtil extends ContextAwareBase {
    * @param targetFile
    * @return true if on different volumes, false otherwise or if an error occurred
    */
-   boolean areOnDifferentVolumes(File srcFile, File targetFile) {
+   boolean areOnDifferentVolumes(File srcFile, File targetFile) throws RolloverFailure {
     if (!EnvUtil.isJDK7OrHigher())
       return false;
 
