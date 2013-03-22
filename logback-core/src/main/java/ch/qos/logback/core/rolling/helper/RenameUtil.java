@@ -63,10 +63,14 @@ public class RenameUtil extends ContextAwareBase {
       boolean result = fromFile.renameTo(toFile);
 
       if (!result) {
-        addWarn("Failed to rename file [" + fromFile + "] to [" + toFile + "].");
-        addWarn("Please consider leaving the [file] option of "+ RollingFileAppender.class.getSimpleName()+" empty.");
-        addWarn("See also "+ RENAMING_ERROR_URL);
-
+        addInfo("Failed to rename file [" + fromFile.getAbsolutePath() + "] to [" + 
+          toFile.getAbsolutePath() + "]. Attempting rename by copying.");
+        try {
+          renameByCopying(from, to);
+        } catch(RolloverFailure e) {
+          addWarn("Please consider leaving the [file] option of "+ RollingFileAppender.class.getSimpleName()+" empty.");
+          addWarn("See also "+ RENAMING_ERROR_URL);
+        }
       }
     } else {
       throw new RolloverFailure("File [" + from + "] does not exist.");
@@ -100,7 +104,7 @@ public class RenameUtil extends ContextAwareBase {
         addWarn("Could not delete " + from);
       }
     } catch (IOException ioe) {
-      addError("Failed to rename file by copying", ioe);
+      addWarn("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
     } finally {
       if(bis != null) {
