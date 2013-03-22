@@ -15,6 +15,8 @@ package ch.qos.logback.core.testUtil;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.qos.logback.core.util.CoreTestConstants;
 
@@ -32,28 +34,31 @@ public class Env {
     return System.getProperty("os.name").indexOf("Linux") != -1;
   }
 
-  static private boolean isJDKXOrHigher(String ) {
+  static private boolean isJDK_N_OrHigher(int n) {
+    List<String> versionList = new ArrayList<String>();
+
+    // this code should work at least until JDK 10 (assuming n parameter is
+    // always 6 or more)
+    for(int i = 0; i < 5; i++) {
+      versionList.add("1."+(n+i));
+
+    }
+
     String javaVersion = System.getProperty("java.version");
     if (javaVersion == null) {
       return false;
     }
-    if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
-      return true;
-    } else {
-      return false;
+    for(String v: versionList) {
+      if(javaVersion.startsWith(v))
+        return true;
     }
+
+    //
+    return false;
   }
 
   static public boolean isJDK6OrHigher() {
-    String javaVersion = System.getProperty("java.version");
-    if (javaVersion == null) {
-      return false;
-    }
-    if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
-      return true;
-    } else {
-      return false;
-    }
+    return isJDK_N_OrHigher(6);
   }
 
   static public String getLocalHostName() {
