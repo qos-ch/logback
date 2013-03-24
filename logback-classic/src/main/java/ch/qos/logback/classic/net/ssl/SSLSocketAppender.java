@@ -22,7 +22,7 @@ import javax.net.ssl.SSLParameters;
 import ch.qos.logback.classic.net.SocketAppender;
 
 /**
- * A SocketAppender that supports SSL.
+ * A {@link SocketAppender} that supports SSL.
  * <p>
  * For more information on this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#SSLSocketAppender
@@ -31,8 +31,7 @@ import ch.qos.logback.classic.net.SocketAppender;
  */
 public class SSLSocketAppender extends SocketAppender {
 
-  private SSLContextFactoryBean sslContext;
-  private SSLParametersFactoryBean sslParameters;
+  private SSLConfiguration ssl;
 
   private SocketFactory socketFactory;
   
@@ -87,8 +86,8 @@ public class SSLSocketAppender extends SocketAppender {
    * @throws Exception if any error occurs in creating the context
    */
   private SSLContext createContext() throws Exception {
-    if (getSslContext() != null) {
-      return getSslContext().createContext();
+    if (getSsl() != null) {
+      return getSsl().createContext();
     }
     return SSLContext.getDefault();
   }
@@ -101,43 +100,27 @@ public class SSLSocketAppender extends SocketAppender {
    * @return parameters object
    */
   private SSLParameters createParameters(SSLContext context) {
-    if (getSslParameters() != null) {
-      return getSslParameters().createSSLParameters(
+    if (getSsl().getParameters() != null) {
+      return getSsl().getParameters().createSSLParameters(
         context.getDefaultSSLParameters());
     }
     return context.getDefaultSSLParameters();
   }
-    
+
   /**
-   * Gets the SSL context configuration.
-   * @return SSL context configurator
+   * Gets the SSL configuration.
+   * @return SSL configuration
    */
-  public SSLContextFactoryBean getSslContext() {
-    return sslContext;
+  public SSLConfiguration getSsl() {
+    return ssl;
   }
 
   /**
-   * Sets the SSL context configuration.
-   * @param sslContext the SSL context configurator to set
+   * Sets the SSL configuration.
+   * @param ssl the SSL configuration to set
    */
-  public void setSslContext(SSLContextFactoryBean sslContext) {
-    this.sslContext = sslContext;
+  public void setSsl(SSLConfiguration ssl) {
+    this.ssl = ssl;
   }
-
-  /**
-   * Gets the SSL parameters configuration.
-   * @return SSL parameters configurator
-   */
-  public SSLParametersFactoryBean getSslParameters() {
-    return sslParameters;
-  }
-
-  /**
-   * Sets the SSL parameters configuration.
-   * @param sslParameters the SSL parameters configurator to set
-   */
-  public void setSslParameters(SSLParametersFactoryBean sslParameters) {
-    this.sslParameters = sslParameters;
-  }  
-  
+      
 }
