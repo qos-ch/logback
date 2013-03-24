@@ -15,6 +15,7 @@ package ch.qos.logback.classic.net.server;
 
 import ch.qos.logback.classic.net.ssl.KeyManagerFactoryFactoryBean;
 import ch.qos.logback.classic.net.ssl.KeyStoreFactoryBean;
+import ch.qos.logback.classic.net.ssl.SSLConfiguration;
 import ch.qos.logback.classic.net.ssl.SSLParametersFactoryBean;
 import ch.qos.logback.classic.net.ssl.SecureRandomFactoryBean;
 import ch.qos.logback.classic.net.ssl.TrustManagerFactoryFactoryBean;

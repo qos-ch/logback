@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.net.server;
 
+import ch.qos.logback.classic.net.ssl.SSLConfiguration;
+
 /**
  * A configuration for a {@link LogbackSocketServer}.
  *
