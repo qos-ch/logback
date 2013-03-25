@@ -289,7 +289,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
         try {
           sleep(reconnectionDelay);
           SocketAppenderBase.this.addInfo("Attempting connection to " + address.getHostName());
-          socket = getSocketFactory().createSocket(address, port);
+          socket = new Socket(address, port);
           synchronized (this) {
             oos = new ObjectOutputStream(socket.getOutputStream());
             connector = null;
