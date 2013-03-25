@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
+import ch.qos.logback.core.util.EnvUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +41,6 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -187,7 +188,7 @@ public class DBAppenderIntegrationTest {
   }
 
   static boolean isConformingHostAndJDK16OrHigher(String[] conformingHostList) {
-    if (!Env.isJDK6OrHigher()) {
+    if (!EnvUtil.isJDK6OrHigher()) {
       return false;
     }
     for (String conformingHost : conformingHostList) {

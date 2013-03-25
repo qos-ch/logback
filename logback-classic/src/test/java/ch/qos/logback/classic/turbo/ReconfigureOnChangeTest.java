@@ -31,7 +31,7 @@ import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.Env;
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
@@ -311,7 +311,7 @@ public class ReconfigureOnChangeTest {
   @Test
   @Ignore
   public void directPerfTest() throws MalformedURLException {
-    if (Env.isLinux()) {
+    if (EnvUtilForTests.isLinux()) {
       // for some reason this test does not pass on Linux (AMD 64 bit,
       // Dual Core Opteron 170)
       return;
@@ -339,7 +339,7 @@ public class ReconfigureOnChangeTest {
   @Ignore
   @Test
   public void indirectPerfTest() throws MalformedURLException {
-    if (Env.isLinux()) {
+    if (EnvUtilForTests.isLinux()) {
       // for some reason this test does not pass on Linux (AMD 64 bit,
       // Dual Core
       // Opteron 170)

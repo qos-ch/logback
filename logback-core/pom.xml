@@ -7,7 +7,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.12-SNAPSHOT</version>
   </parent>
 
   <artifactId>logback-core</artifactId>
@@ -18,7 +18,7 @@
   <url>http://logback.qos.ch</url>
 
   <properties>
-    <scala.version>2.10.1</scala.version>
+    <scala.version>2.9.1</scala.version>
   </properties>
 
   <licenses>

@@ -33,7 +33,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class LayoutInsteadOfEncoderTest {
 
-  // TeztConstants.TEST_DIR_PREFIX + "input/joran/ignore.xml"
+  // TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml"
   JoranConfigurator jc = new JoranConfigurator();
   LoggerContext loggerContext = new LoggerContext();
 
@@ -43,7 +43,7 @@ public class LayoutInsteadOfEncoderTest {
 
   }
 
-  // jc.doConfigure(TeztConstants.TEST_DIR_PREFIX + "input/joran/ignore.xml");
+  // jc.doConfigure(TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml");
 
   @Test
   public void layoutInsteadOfEncoer() throws JoranException {

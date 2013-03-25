@@ -49,7 +49,7 @@ public class SaxEventRecorderTest {
   public List<SaxEvent> doTest(String filename) throws Exception {
     SaxEventRecorder recorder = new SaxEventRecorder();
     recorder.setContext(context);
-    FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_DIR_PREFIX
+    FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_SRC_PREFIX
         + "input/joran/"+ filename);
     recorder.recordEvents(fis);
     return  recorder.getSaxEventList();

@@ -15,8 +15,8 @@ abstract class OnPrintStreamStatusListenerBase extends ContextAwareBase implemen
 
   boolean isStarted = false;
 
-  static final long DEFAULT_RESTROSPECTIVE = 300;
-  long retrospective = DEFAULT_RESTROSPECTIVE;
+  static final long DEFAULT_RETROSPECTIVE = 300;
+  long retrospective = DEFAULT_RETROSPECTIVE;
 
 
   /**

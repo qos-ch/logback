@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class ImplicitActionTest {
 
-  static final String IMPLCIT_DIR = CoreTestConstants.TEST_DIR_PREFIX
+  static final String IMPLCIT_DIR = CoreTestConstants.TEST_SRC_PREFIX
       + "input/joran/implicitAction/";
 
   FruitContext fruitContext = new FruitContext();
