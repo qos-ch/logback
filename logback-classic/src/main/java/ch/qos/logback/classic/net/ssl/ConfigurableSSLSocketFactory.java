@@ -34,7 +34,7 @@ import javax.net.ssl.SSLSocketFactory;
  *
  * @author Carl Harris
  */
-public class ConfigurableSSLSocketFactory extends SocketFactory {
+class ConfigurableSSLSocketFactory extends SocketFactory {
 
   private final SSLParameters parameters;
   private final SSLSocketFactory delegate;

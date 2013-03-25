@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net;
+package ch.qos.logback.classic.net.ssl;
 
 import java.net.InetAddress;
 
@@ -19,8 +19,7 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 
-import ch.qos.logback.classic.net.ssl.ConfigurableSSLSocketFactory;
-import ch.qos.logback.classic.net.ssl.SSLConfiguration;
+import ch.qos.logback.classic.net.SocketAppender;
 
 /**
  * A {@link SocketAppender} that supports SSL.

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.ssl.SSLConfiguration;
 import ch.qos.logback.classic.net.ssl.SSLParametersFactoryBean;
+import ch.qos.logback.classic.net.ssl.SimpleSSLSocketServer;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
