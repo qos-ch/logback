@@ -99,7 +99,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
     var i = 0;
     for (fn <- expectedFilenameList) {
       val suffix: String = if (withCompression) addGZIfNotLast(i, compressionSuffix) else ""
-      val witnessFileName: String = CoreTestConstants.TEST_DIR_PREFIX + "witness/rolling/tbr-" + testId + "." + i.toString + suffix
+      val witnessFileName: String = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i.toString + suffix
       assertTrue(Compare.compare(fn, witnessFileName));
       i += 1
     }
@@ -107,7 +107,7 @@ class TimeBasedRolling_STest extends RollingScaffolding {
 
   def zCheck(testId: String, withCompression: Boolean, compressionSuffix:String) = {
     val lastFile = expectedFilenameList.last
-    val witnessFileName: String = CoreTestConstants.TEST_DIR_PREFIX + "witness/rolling/tbr-" + testId
+    val witnessFileName: String = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId
     println(lastFile+"  "+witnessFileName)
     assertTrue(Compare.compare(lastFile, witnessFileName));
   }

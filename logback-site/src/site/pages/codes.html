@@ -361,15 +361,17 @@
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]
-  to [y].</h3>
+  as [y].</h3>
 
-  <p>A log file cannot be renamed if there are handles referencing
-  that file. For example, when the file is read by another process
-  such as <code>less</code>, <code>tail</code>, etc. During
-  application hot-redeployment, the old instance of the application
-  will have open references to log files until the old instance is
-  completely shutdown or until the <code>stop()</code> method on its
-  <a
+  <b>On Windows</b>
+
+  <p>On certain platforms, e.g. Windows, a log file cannot be renamed
+  if there are handles referencing it. For example, when the file is
+  read by another process such as <code>less</code>,
+  <code>tail</code>, etc. During application hot-redeployment, the old
+  instance of the application will have open references to log files
+  until the old instance is completely shutdown or until the
+  <code>stop()</code> method on its <a
   href="apidocs/ch/qos/logback/classic/LoggerContext.html"><code>LoggerContext</code></a>
   is invoked.
   </p>
@@ -409,8 +411,26 @@
    class="option">file</span> property is mandatory.
    </p>
  
+   <h4 class="doAnchor" name="renamingErrorOnUnix">On Unix-*</h4>
   
-  
+   <p>On the Unix flatform, the basic/quick rename method supplied by
+   the JDK does not work if the source and target files are located on
+   different file systems. In order to deal with this contingency,
+   logback will resort to renaming by copying if all following three
+   conditions are met:</p>
+
+   <ol>
+     <li>quick renaming fails, </li>
+     <li>source and destination files for the rename are on different
+     file systems,
+     </li>
+
+     <li>the host JVM platform runs Java 7 or later.</li>
+   </ol>
+
+   <p>The code for determining the file system of a file requires Java
+   7. No rename by copying will be performed on Java 6 or earlier.</p>
+   
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="fwrp_parentFileName_not_set">The <span

@@ -111,7 +111,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -141,7 +141,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
       i++;
     }
@@ -187,7 +187,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -238,7 +238,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-" + testId + "." + i++));
     }
   }
@@ -286,7 +286,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-test4B." + i++));
     }
 
@@ -319,7 +319,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-test5." + i++));
     }
   }
@@ -353,7 +353,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
 
     int i = 0;
     for (String fn : expectedFilenameList) {
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-" + testId + "." + i + addGZIfNotLast(i)));
       i++;
     }
@@ -388,7 +388,7 @@ public class TimeBasedRollingDest extends ScaffoldingForRollingTests {
     int i = 0;
     for (String fn : expectedFilenameList) {
       System.out.println("expectedFile="+fn);
-      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_DIR_PREFIX
+      assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
               + "witness/rolling/tbr-test5." + i++));
     }
 

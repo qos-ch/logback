@@ -39,10 +39,9 @@ public class RenameUtil extends ContextAwareBase {
   static String RENAMING_ERROR_URL = CoreConstants.CODES_URL + "#renamingError";
 
   /**
-   * A robust file renaming method which in case of failure falls back to
-   * renaming by copying. In case, the file to be renamed is open by another
-   * process, renaming by copying will succeed whereas regular renaming will
-   * fail. However, renaming by copying is much slower.
+   * A relatively robust file renaming method which in case of failure due to
+   * src and target being on different volumes, falls back onto
+   * renaming by copying.
    *
    * @param src
    * @param target
@@ -64,7 +63,7 @@ public class RenameUtil extends ContextAwareBase {
       boolean result = srcFile.renameTo(targetFile);
 
       if (!result) {
-        addWarn("Failed to rename file [" + srcFile + "] to [" + targetFile + "].");
+        addWarn("Failed to rename file [" + srcFile + "] as [" + targetFile + "].");
         if (areOnDifferentVolumes(srcFile, targetFile)) {
           addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
           renameByCopying(src, target);
@@ -104,51 +103,19 @@ public class RenameUtil extends ContextAwareBase {
   }
 
 
-  static final int BUF_SIZE = 32 * 1024;
 
-  public void renameByCopying(String from, String to)
+
+  public void renameByCopying(String src, String target)
           throws RolloverFailure {
-    BufferedInputStream bis = null;
-    BufferedOutputStream bos = null;
-    try {
-      bis = new BufferedInputStream(new FileInputStream(from));
-      bos = new BufferedOutputStream(new FileOutputStream(to));
-      byte[] inbuf = new byte[BUF_SIZE];
-      int n;
 
-      while ((n = bis.read(inbuf)) != -1) {
-        bos.write(inbuf, 0, n);
-      }
+    FileUtil fileUtil = new FileUtil(getContext());
+    fileUtil.copy(src, target);
 
-      bis.close();
-      bis = null;
-      bos.close();
-      bos = null;
-
-      File fromFile = new File(from);
-
-      if (!fromFile.delete()) {
-        addWarn("Could not delete " + from);
-      }
-    } catch (IOException ioe) {
-      addError("Failed to rename file by copying", ioe);
-      throw new RolloverFailure("Failed to rename file by copying");
-    } finally {
-      if (bis != null) {
-        try {
-          bis.close();
-        } catch (IOException e) {
-          // ignore
-        }
-      }
-      if (bos != null) {
-        try {
-          bos.close();
-        } catch (IOException e) {
-          // ignore
-        }
-      }
+    File srcFile = new File(src);
+   if (!srcFile.delete()) {
+      addWarn("Could not delete " + src);
     }
+
   }
 
   void createMissingTargetDirsIfNecessary(File toFile) throws RolloverFailure {

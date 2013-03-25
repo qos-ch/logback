@@ -41,7 +41,7 @@ public class InPlayFireTest  {
     TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
     gc.setContext(context);
-    gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
+    gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
     
     //for(SaxEvent se: listenAction.getSeList()) {
     //  System.out.println(se);
@@ -61,7 +61,7 @@ public class InPlayFireTest  {
     TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
     gc.setContext(context);
-    gc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/fire1.xml");
+    gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
     
 //    for(SaxEvent se: listenAction.getSeList()) {
 //      System.out.println(se);

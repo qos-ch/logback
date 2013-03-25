@@ -18,16 +18,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class FileUtilTest {
 
+  Context context = new ContextBase();
+  FileUtil fileUtil = new FileUtil(context);
   List<File> cleanupList = new ArrayList<File>();
   int diff =  new Random().nextInt(100);
 
@@ -43,7 +49,6 @@ public class FileUtilTest {
     }
   }
 
-  
   @Test
   public void checkParentCreationInquiryAndSubsequentCreation() {
     File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/testing.txt");
@@ -69,5 +74,20 @@ public class FileUtilTest {
     assertTrue(FileUtil.createMissingParentDirectories(file));
     assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
   }
+
+  @Test
+  public void basicCopyingWorks() throws IOException {
+    String dir = CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff;
+
+    File dirFile  = new File(dir);
+    dirFile.mkdir();
+
+    String src = CoreTestConstants.TEST_INPUT_PREFIX + "compress1.txt";
+    String target = CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+diff+"/copyingWorks.txt";
+
+    fileUtil.copy(src, target);
+    Compare.compare(src, target);
+  }
+
 
 }

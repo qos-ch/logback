@@ -30,7 +30,19 @@
 
     <hr width="80%" align="center" />
 
-    <h3>, 2013 - Release of version 1.0.11</h3>
+    <h3>25th of March, 2013 - Release of version 1.0.11</h3>
+
+
+    <p>Under Unix*, the basic/quick file rename method supplied by
+    Java does not work if the source and target files are on different
+    file systems. This problem was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-108">LOGBACK-108</a> by
+    Daniel Potter. In order to deal with this issue, logback now will
+    perform rename by copying if the source and target files are on
+    different file systems and the host JDK is version 1.7 or
+    later. See also the related <a
+    href="codes.html#renamingError">error code</a>.</p>
+
 
     <p>The "cn" conversion word now correctly maps to
     <code>ContextNameConverter</code> class. This fixes <a

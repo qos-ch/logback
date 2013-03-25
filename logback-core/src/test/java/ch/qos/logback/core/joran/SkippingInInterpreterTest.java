@@ -74,7 +74,7 @@ public class SkippingInInterpreterTest {
 
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);
-    tc.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/skip/" + filename);
+    tc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/skip/" + filename);
 
     String str = context.getProperty(HelloAction.PROPERTY_KEY);
     assertEquals("Hello John Doe.", str);

@@ -14,12 +14,14 @@
 package ch.qos.logback.core.rolling;
 
 
+import ch.qos.logback.core.LogbackException;
+
 /**
  * A RolloverFailure occurs if, for whatever reason a rollover fails.
  *
  * @author Ceki Gulcu
  */
-public class RolloverFailure extends Exception {
+public class RolloverFailure extends LogbackException {
 
   private static final long serialVersionUID = -4407533730831239458L;
 
