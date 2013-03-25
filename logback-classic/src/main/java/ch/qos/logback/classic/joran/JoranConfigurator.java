@@ -13,7 +13,17 @@
  */
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.joran.action.*;
+import ch.qos.logback.classic.joran.action.ConfigurationAction;
+import ch.qos.logback.classic.joran.action.ConsolePluginAction;
+import ch.qos.logback.classic.joran.action.ContextNameAction;
+import ch.qos.logback.classic.joran.action.EvaluatorAction;
+import ch.qos.logback.classic.joran.action.InsertFromJNDIAction;
+import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
+import ch.qos.logback.classic.joran.action.LevelAction;
+import ch.qos.logback.classic.joran.action.LoggerAction;
+import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
+import ch.qos.logback.classic.joran.action.RootLoggerAction;
+import ch.qos.logback.classic.joran.action.ServerAction;
 import ch.qos.logback.classic.sift.SiftAction;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
@@ -81,6 +91,9 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
     rs.addRule(new Pattern("configuration/consolePlugin"),
         new ConsolePluginAction());
+    
+    rs.addRule(new Pattern("configuration/server"), 
+        new ServerAction());
   }
 
   @Override
