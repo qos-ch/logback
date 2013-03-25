@@ -20,9 +20,9 @@ package ch.qos.logback.classic.net.ssl;
  */
 public interface SSLTestConstants {
 
-  String KEYSTORE_JKS_RESOURCE = "net/ssl/keystore.jks";
+  String KEYSTORE_JKS_RESOURCE = "ssl/keystore.jks";
   
-  String KEYSTORE_PKCS12_RESOURCE = "net/ssl/keystore.p12";
+  String KEYSTORE_PKCS12_RESOURCE = "ssl/keystore.p12";
 
   String PKCS12_TYPE = "PKCS12";
 
