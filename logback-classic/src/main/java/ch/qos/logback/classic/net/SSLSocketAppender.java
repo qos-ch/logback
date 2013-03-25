@@ -68,8 +68,8 @@ public class SSLSocketAppender extends SocketAppender {
   @Override
   public void start() {
     try {
-      SSLContext sslContext = getSsl().createContext(this);
-      SSLParameters parameters = getSsl().createParameters(sslContext, this);
+      SSLContext sslContext = createContext();
+      SSLParameters parameters = createParameters(sslContext);
       socketFactory = new ConfigurableSSLSocketFactory(parameters, 
           sslContext.getSocketFactory());
       super.start();
@@ -77,6 +77,35 @@ public class SSLSocketAppender extends SocketAppender {
     catch (Exception ex) {
       addError(ex.getMessage(), ex);
     }
+  }
+
+  /**
+   * Creates an {@link SSLContext} according to the receiver's
+   * SSL context configuration or a default context if no configuration
+   * has been specified.
+   * @return SSL context object
+   * @throws Exception if any error occurs in creating the context
+   */
+  private SSLContext createContext() throws Exception {
+    if (getSsl() != null) {
+      return getSsl().createContext(this);
+    }
+    return SSLContext.getDefault();
+  }
+
+  /**
+   * Creates an {@link SSLParameters} according to the receiver's 
+   * SSL parameters configuration or the context's default parameters if
+   * no configuration has been specified.
+   * @param sslContext SSL context
+   * @return parameters object
+   */
+  private SSLParameters createParameters(SSLContext sslContext) {
+    if (getSsl().getParameters() != null) {
+      return getSsl().getParameters().createSSLParameters(
+        sslContext.getDefaultSSLParameters(), this);
+    }
+    return sslContext.getDefaultSSLParameters();
   }
 
   /**
