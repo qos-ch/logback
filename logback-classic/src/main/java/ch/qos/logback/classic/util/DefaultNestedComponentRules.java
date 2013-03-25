@@ -16,14 +16,6 @@ package ch.qos.logback.classic.util;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.net.SocketServer;
-import ch.qos.logback.classic.net.ssl.KeyManagerFactoryFactoryBean;
-import ch.qos.logback.classic.net.ssl.KeyStoreFactoryBean;
-import ch.qos.logback.classic.net.ssl.SSLConfiguration;
-import ch.qos.logback.classic.net.ssl.SSLParametersFactoryBean;
-import ch.qos.logback.classic.net.ssl.SSLSocketAppender;
-import ch.qos.logback.classic.net.ssl.SecureRandomFactoryBean;
-import ch.qos.logback.classic.net.ssl.TrustManagerFactoryFactoryBean;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
@@ -49,21 +41,6 @@ public class DefaultNestedComponentRules {
     registry
         .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
-    registry.add(SocketServer.class, "ssl", SSLConfiguration.class);
-    registry.add(SSLSocketAppender.class, "ssl", SSLConfiguration.class);
-    
-    registry.add(SSLConfiguration.class, "parameters", 
-        SSLParametersFactoryBean.class);
-    registry.add(SSLConfiguration.class, "keyStore", 
-        KeyStoreFactoryBean.class);
-    registry.add(SSLConfiguration.class, "keyManagerFactory", 
-        KeyManagerFactoryFactoryBean.class);
-    registry.add(SSLConfiguration.class, "trustStore", 
-        KeyStoreFactoryBean.class);
-    registry.add(SSLConfiguration.class, "trustManagerFactory", 
-        TrustManagerFactoryFactoryBean.class);
-    registry.add(SSLConfiguration.class, "secureRandom", 
-        SecureRandomFactoryBean.class);
   }
 
 }
