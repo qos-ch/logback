@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.ssl;
+package ch.qos.logback.classic.net;
 
 import java.net.InetAddress;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +22,7 @@ import javax.net.ssl.SSLParameters;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.net.SimpleSocketServer;
+import ch.qos.logback.classic.net.ssl.ConfigurableSSLServerSocketFactory;
 
 /**
  * A {@link SimpleSocketServer} that supports SSL.
