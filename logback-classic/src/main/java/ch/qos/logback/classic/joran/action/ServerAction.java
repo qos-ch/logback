@@ -19,7 +19,6 @@ import ch.qos.logback.classic.net.SocketServer;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * A Joran {@link Action} for the server configuration.
@@ -29,35 +28,17 @@ import ch.qos.logback.core.util.OptionHelper;
 public class ServerAction extends Action {
 
   private SocketServer server;
-  private boolean inError;
-  
+    
   @Override
   public void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException {
-    String className = attributes.getValue(CLASS_ATTRIBUTE);
-    if (OptionHelper.isEmpty(className)) {
-      className = SocketServer.class.getCanonicalName();
-    }
-    try {
-      addInfo("About to instantiate server of type [" + className + "]");
-
-      server = (SocketServer) OptionHelper.instantiateByClassName(className,
-          SocketServer.class, context);
-      server.setContext(context);
-      ic.pushObject(server);
-    }
-    catch (Exception ex) {
-      inError = true;
-      addError("Could not create a server of type [" + className + "].", ex);
-      throw new ActionException(ex);
-    }
+    server = new SocketServer(this);
+    ic.pushObject(server);
   }
 
   @Override
   public void end(InterpretationContext ic, String name)
       throws ActionException {
-    
-    if (inError) return;
     
     server.start();
 
