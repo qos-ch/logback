@@ -11,9 +11,10 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.ssl;
+package ch.qos.logback.classic.net.server;
 
-import javax.net.ssl.SSLContext;
+import ch.qos.logback.classic.net.ssl.SSLContextFactoryBean;
+import ch.qos.logback.classic.net.ssl.SSLParametersFactoryBean;
 
 /**
  * A configuration for an {@link SSLContext}.
