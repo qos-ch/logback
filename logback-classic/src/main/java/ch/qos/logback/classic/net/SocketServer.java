@@ -16,15 +16,10 @@ package ch.qos.logback.classic.net;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.net.ssl.SSLConfiguration;
-import ch.qos.logback.classic.net.ssl.SSLParametersFactoryBean;
-import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
@@ -32,30 +27,21 @@ import ch.qos.logback.core.spi.LifeCycle;
  *
  * @author Carl Harris
  */
-public class SocketServer implements LifeCycle {
+public class SocketServer extends ContextAwareBase implements LifeCycle {
 
-  private ContextAware context;
   private int port;
   private int backlog = SimpleSocketServer.DEFAULT_BACKLOG;
   private String address;
-  private SSLConfiguration ssl;
   private SimpleSocketServer server;
   private boolean started;
   
   /**
-   * Constructs a new instance.
-   * @param context context for status messages
-   */
-  public SocketServer(ContextAware context) {
-    this.context = context;    
-  }
-  
-  /**
    * Starts the server.
    */
-  public void start() {
+  public final void start() {
     if (isStarted()) return;
-    server = createServer();
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    server = createSocketServer(lc);
     server.start();
     started = true;
   }
@@ -63,18 +49,18 @@ public class SocketServer implements LifeCycle {
   /**
    * Stops the server.
    */
-  public void stop() {
+  public final void stop() {
     if (!isStarted()) return;
     server.interrupt();
     try {
       server.join(5000);
       started = server.isAlive();
       if (started) {
-        context.addWarn("server is still running");
+        addWarn("server is still running");
       }
     }
     catch (InterruptedException ex) {
-      context.addWarn("interrupted while stopping server");
+      addWarn("interrupted while stopping server");
     }
   }
 
@@ -82,19 +68,8 @@ public class SocketServer implements LifeCycle {
    * Gets a flag indicating whether the server is running.
    * @return flag state
    */
-  public boolean isStarted() {
+  public final boolean isStarted() {
     return started;
-  }
-
-  /**
-   * Creates a new socket server configured via a Joran configuration.
-   * @return socket server or {@code null} if a server socket could not
-   *    be created due to an error
-   */
-  public SimpleSocketServer createServer() {    
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    return getSsl() != null ? 
-        createSSLSocketServer(lc) : createSocketServer(lc);
   }
 
   /**
@@ -103,41 +78,13 @@ public class SocketServer implements LifeCycle {
    * @return socket server or {@code null} if a server socket could not
    *    be created due to an error
    */
-  private SimpleSocketServer createSocketServer(LoggerContext lc) {
+  protected SimpleSocketServer createSocketServer(LoggerContext lc) {
     try {
       return new SimpleSocketServer(lc, getPort(), getBacklog(), 
           getInetAddress());
     }
     catch (UnknownHostException ex) {
-      context.addError(getAddress() + ": unknown host");
-      return null;
-    }
-  }
-  
-  /**
-   * Creates a secure (SSL) socket server.
-   * @param lc logger context for the server
-   * @return socket server or {@code null} if a server socket could not
-   *    be created due to an error
-   */
-  private SimpleSocketServer createSSLSocketServer(
-      LoggerContext lc) {
-    try {
-      SSLContext sslContext = getSsl().createContext(context);
-      SSLParameters sslParameters = sslContext.getDefaultSSLParameters();
-      SSLParametersFactoryBean parameters = getSsl().getParameters();
-      if (parameters != null) {
-        sslParameters = parameters.createSSLParameters(sslParameters, context);
-      }
-      return new SimpleSSLSocketServer(lc, getPort(), getBacklog(), 
-          getInetAddress(), sslContext, sslParameters);
-    }
-    catch (UnknownHostException ex) {
-      context.addError(getAddress() + ": unknown host");
-      return null;
-    }
-    catch (Exception ex) {
-      context.addError(ex.getMessage());
+      addError(getAddress() + ": unknown host");
       return null;
     }
   }
@@ -147,7 +94,7 @@ public class SocketServer implements LifeCycle {
    * @return an {@link InetAddress} representation of the local address.
    * @throws UnknownHostException
    */
-  private InetAddress getInetAddress() throws UnknownHostException {
+  protected InetAddress getInetAddress() throws UnknownHostException {
     if (getAddress() == null) return null;
     return InetAddress.getByName(getAddress());
   }
@@ -206,23 +153,6 @@ public class SocketServer implements LifeCycle {
    */
   public void setAddress(String address) {
     this.address = address;
-  }
-
-  /**
-   * Sets the server's SSL configuration.
-   * @return SSL configuration or {@code null} if no SSL configuration was
-   *    provided
-   */
-  public SSLConfiguration getSsl() {
-    return ssl;
-  }
-
-  /**
-   * Gets the server's SSL configuration.
-   * @param ssl the SSL configuration to set.
-   */
-  public void setSsl(SSLConfiguration ssl) {
-    this.ssl = ssl;
   }
 
 }
