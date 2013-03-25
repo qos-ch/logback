@@ -14,13 +14,11 @@
 package ch.qos.logback.classic.net;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.net.ServerSocketFactory;
 
 import org.slf4j.Logger;
@@ -50,14 +48,9 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public class SimpleSocketServer extends Thread {
 
-  /** Default socket accept queue length*/
-  public static final int DEFAULT_BACKLOG = 50;
-  
   Logger logger = LoggerFactory.getLogger(SimpleSocketServer.class);
 
-  private final InetAddress address;
   private final int port;
-  private final int backlog;
   private final LoggerContext lc;
   private boolean closed = false;
   private ServerSocket serverSocket;
@@ -83,22 +76,15 @@ public class SimpleSocketServer extends Thread {
   }
 
   public SimpleSocketServer(LoggerContext lc, int port) {
-    this(lc, port, DEFAULT_BACKLOG, null);
-  }
-  
-  public SimpleSocketServer(LoggerContext lc, int port, int backlog, 
-      InetAddress address) {
     this.lc = lc;
     this.port = port;
-    this.backlog = backlog;
-    this.address = address;
   }
+
 
   public void run() {
     try {
-      serverSocket = getServerSocketFactory().createServerSocket(
-          port, backlog, address);
-      logger.info("Listening on " + serverSocket.getLocalSocketAddress());
+      logger.info("Listening on port " + port);
+      serverSocket = getServerSocketFactory().createServerSocket(port);
       while (!closed) {
         logger.info("Waiting to accept a new client.");
         signalAlmostReadiness();
