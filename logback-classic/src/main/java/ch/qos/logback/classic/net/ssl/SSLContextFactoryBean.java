@@ -28,8 +28,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import ch.qos.logback.core.spi.ContextAware;
-
 /**
  * A factory bean for a JSSE {@link SSLContext}.
  * <p>
@@ -50,7 +48,6 @@ public class SSLContextFactoryBean {
 
   /**
    * Creates a new {@link SSLContext} using the receiver's configuration.
-   * @param context context for status messages
    * @return {@link SSLContext} object
    * @throws NoSuchProviderException if a provider specified for one of the
    *    JCA or JSSE components utilized in creating the context is not
@@ -68,60 +65,29 @@ public class SSLContextFactoryBean {
    * @throws CertificateException if an error occurs in reading the
    *    contents of a certificate
    */
-  public SSLContext createContext(ContextAware context) throws NoSuchProviderException, 
+  public SSLContext createContext() throws NoSuchProviderException, 
       NoSuchAlgorithmException, KeyManagementException, 
       UnrecoverableKeyException, KeyStoreException, CertificateException {
     
-    SSLContext sslContext = getProvider() != null ?
-        SSLContext.getInstance(getProtocol(), getProvider())
-        : SSLContext.getInstance(getProtocol());
+    SSLContext context = null;
+    if (getProvider() != null) {
+      context = SSLContext.getInstance(getProtocol(), getProvider());
+      SSL.logger.info("SSL provider: {}", getProvider());
+    }
+    else {
+      context = SSLContext.getInstance(getProtocol());
+    }
+    SSL.logger.info("SSL protocol: {}", getProtocol());
     
-    context.addInfo("SSL protocol '" + sslContext.getProtocol() 
-        + "' provider '" + sslContext.getProvider() + "'");
-    
-    KeyManager[] keyManagers = createKeyManagers(context);
-    TrustManager[] trustManagers = createTrustManagers(context);
-    SecureRandom secureRandom = createSecureRandom(context);
-    sslContext.init(keyManagers, trustManagers, secureRandom);
-    return sslContext;
-  }
-  
-  /**
-   * Creates key managers using the receiver's key store configuration.
-   * @param context context for status messages
-   * @return an array of key managers or {@code null} if no key store
-   *    configuration was provided
-   * @throws NoSuchProviderException if a provider specified for one
-   *    of the key manager components is not known to the platform
-   * @throws NoSuchAlgorithmException if an algorithm specified for
-   *    one of the key manager components is not known to the relevant
-   *    provider
-   * @throws KeyStoreException if an error occurs in reading a key store
-   */
-  private KeyManager[] createKeyManagers(ContextAware context) 
-      throws NoSuchProviderException, NoSuchAlgorithmException, 
-      UnrecoverableKeyException, KeyStoreException {
-    
-    if (getKeyStore() == null) return null;
-    
-    KeyStore keyStore = getKeyStore().createKeyStore();
-    context.addInfo(
-        "key store of type '" + keyStore.getType() 
-        + "' provider '" + keyStore.getProvider()
-        + "': " + getKeyStore().getLocation());          
-
-    KeyManagerFactory kmf = getKeyManagerFactory().createKeyManagerFactory();
-    context.addInfo("key manager algorithm '" + kmf.getAlgorithm() 
-        + "' provider '" + kmf.getProvider() + "'");
-    
-    char[] passphrase = getKeyStore().getPassphrase().toCharArray();
-    kmf.init(keyStore, passphrase);
-    return kmf.getKeyManagers();
+    KeyManager[] keyManagers = createKeyManagers();
+    TrustManager[] trustManagers = createTrustManagers();
+    SecureRandom secureRandom = getSecureRandom().createSecureRandom();
+    context.init(keyManagers, trustManagers, secureRandom);
+    return context;
   }
   
   /**
    * Creates trust managers using the receiver's trust store configuration.
-   * @param context context for status messages
    * @return an array of trust managers or {@code null} if no trust store
    *    configuration was provided
    * @throws NoSuchProviderException if a provider specified for one
@@ -132,37 +98,48 @@ public class SSLContextFactoryBean {
    * @throws KeyStoreException if an error occurs in reading a key
    *    store containing trust anchors 
    */
-  private TrustManager[] createTrustManagers(ContextAware context) 
+  private TrustManager[] createTrustManagers() 
       throws NoSuchProviderException, NoSuchAlgorithmException, 
       KeyStoreException {
-    
     if (getTrustStore() == null) return null;
-    
     KeyStore trustStore = getTrustStore().createKeyStore();
-    context.addInfo(
+    SSL.logger.info(
         "trust store of type '" + trustStore.getType() 
         + "' provider '" + trustStore.getProvider()
         + "': " + getTrustStore().getLocation());          
     
-    TrustManagerFactory tmf = getTrustManagerFactory()
-        .createTrustManagerFactory();
-    context.addInfo("trust manager algorithm '" + tmf.getAlgorithm() 
-        + "' provider '" + tmf.getProvider());
-    
+    TrustManagerFactory tmf = getTrustManagerFactory().createTrustManagerFactory();
     tmf.init(trustStore);
     return tmf.getTrustManagers();
   }
+  
+  /**
+   * Creates key managers using the receiver's key store configuration.
+   * @return an array of key managers or {@code null} if no key store
+   *    configuration was provided
+   * @throws NoSuchProviderException if a provider specified for one
+   *    of the key manager components is not known to the platform
+   * @throws NoSuchAlgorithmException if an algorithm specified for
+   *    one of the key manager components is not known to the relevant
+   *    provider
+   * @throws KeyStoreException if an error occurs in reading a key store
+   */
+  private KeyManager[] createKeyManagers() 
+      throws NoSuchProviderException, NoSuchAlgorithmException, 
+      UnrecoverableKeyException, KeyStoreException {
+    if (getKeyStore() == null) return null;
+    KeyStore keyStore = getKeyStore().createKeyStore();
+    SSL.logger.info(
+        "key store of type '" + keyStore.getType() 
+        + "' provider '" + keyStore.getProvider()
+        + "': " + getKeyStore().getLocation());          
 
-  private SecureRandom createSecureRandom(ContextAware context) 
-      throws NoSuchProviderException, NoSuchAlgorithmException {
-    
-    SecureRandom secureRandom = getSecureRandom().createSecureRandom();
-    context.addInfo("secure random algorithm '" + secureRandom.getAlgorithm()
-        + "' provider '" + secureRandom.getProvider() + "'");
-    
-    return secureRandom;
+    KeyManagerFactory kmf = getKeyManagerFactory().createKeyManagerFactory();
+    char[] passphrase = getKeyStore().getPassphrase().toCharArray();
+    kmf.init(keyStore, passphrase);
+    return kmf.getKeyManagers();
   }
-
+  
   /**
    * Gets the key store configuration.
    * @return key store factory bean or {@code null} if no key store 

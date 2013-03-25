@@ -44,9 +44,14 @@ public class SecureRandomFactoryBean {
   public SecureRandom createSecureRandom() throws NoSuchProviderException, 
       NoSuchAlgorithmException {
     try {
-      return getProvider() != null ?
+      SecureRandom secureRandom = getProvider() != null ?
           SecureRandom.getInstance(getAlgorithm(), getProvider())
           : SecureRandom.getInstance(getAlgorithm());
+
+      SSL.logger.debug("secure random algorithm '{}' provider '{}'", 
+          secureRandom.getAlgorithm(), secureRandom.getProvider());
+
+      return secureRandom;
     }
     catch (NoSuchProviderException ex) {
       throw new NoSuchProviderException("no such secure random provider: "

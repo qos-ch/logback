@@ -43,9 +43,14 @@ public class KeyManagerFactoryFactoryBean {
   public KeyManagerFactory createKeyManagerFactory() 
       throws NoSuchProviderException, NoSuchAlgorithmException {
     
-    return getProvider() != null ?
+    KeyManagerFactory kmf = getProvider() != null ?
         KeyManagerFactory.getInstance(getAlgorithm(), getProvider())
         : KeyManagerFactory.getInstance(getAlgorithm());
+    
+    SSL.logger.debug("key manager algorithm '{}' provider '{}'", 
+        getAlgorithm(), getProvider());
+
+    return kmf;
   }
   
   /**
