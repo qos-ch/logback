@@ -43,14 +43,9 @@ public class TrustManagerFactoryFactoryBean {
   public TrustManagerFactory createTrustManagerFactory() 
       throws NoSuchProviderException, NoSuchAlgorithmException {
     
-    TrustManagerFactory tmf = getProvider() != null ?
+    return getProvider() != null ?
         TrustManagerFactory.getInstance(getAlgorithm(), getProvider())
         : TrustManagerFactory.getInstance(getAlgorithm());
-
-    SSL.logger.debug("trust manager algorithm '{}' provider '{}'", 
-        tmf.getAlgorithm(), tmf.getProvider());
-    
-    return tmf;
   }
   
   /**

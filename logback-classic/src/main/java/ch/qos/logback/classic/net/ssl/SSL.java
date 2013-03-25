@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic.net.ssl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Various constants used by the SSL implementation.
@@ -22,8 +20,6 @@ import org.slf4j.LoggerFactory;
  * @author Carl Harris
  */
 public interface SSL {
-
-  Logger logger = LoggerFactory.getLogger(SSL.class.getPackage().getName());
 
   /** Default secure transport protocol */
   String DEFAULT_PROTOCOL = "SSL";

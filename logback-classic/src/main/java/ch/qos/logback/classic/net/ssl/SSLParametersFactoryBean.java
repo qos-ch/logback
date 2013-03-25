@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLParameters;
 
+import ch.qos.logback.core.spi.ContextAware;
+
 
 /**
  * A factory bean for an {@link SSLParameters} object instance.
@@ -43,9 +45,11 @@ public class SSLParametersFactoryBean {
    * Creates an {@link SSLParameters} instance using the receiver's 
    * configuration.
    * @param defaults default SSL parameter values
+   * @param context context for status messages
    * @return parameters object
    */
-  public SSLParameters createSSLParameters(SSLParameters defaults) {
+  public SSLParameters createSSLParameters(SSLParameters defaults, 
+      ContextAware context) {
     
     defaults.setProtocols(includedStrings(defaults.getProtocols(), 
           getIncludedProtocols(), getExcludedProtocols()));
@@ -58,24 +62,25 @@ public class SSLParametersFactoryBean {
       defaults.setWantClientAuth(isWantClientAuth());
     }
 
-    log(defaults);
+    report(defaults, context);
     return defaults;
   }
   
   /**
-   * Logs a parameters configuration.
+   * Produces a parameters configuration status report.
    * @param params the subject parameters
+   * @param context context for status messages
    */
-  private void log(SSLParameters params) {
+  private void report(SSLParameters params, ContextAware context) {
     for (String protocol : params.getProtocols()) {
-      SSL.logger.debug("enabled protocol: {}", protocol);
+      context.addInfo("enabled protocol: " + protocol);
     }
     for (String cipherSuite : params.getCipherSuites()) {
-      SSL.logger.debug("enabled cipher suite: {}", cipherSuite);
+      context.addInfo("enabled cipher suite: " + cipherSuite);
     }
-    SSL.logger.info("client authentication: {}", 
-        params.getNeedClientAuth() ? "required"
-            : params.getWantClientAuth() ? "desired" : "none");
+    context.addInfo("client authentication: " +  
+        (params.getNeedClientAuth() ? "required"
+            : params.getWantClientAuth() ? "desired" : "none"));
   }
   
   /**
