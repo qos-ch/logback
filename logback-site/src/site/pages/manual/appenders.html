@@ -1774,6 +1774,66 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		its clients to a second server.
 		</p>
 		
+    <h3> 
+      <a name="SSLSocketAppender" href="#SSLSocketAppender"><span
+      class="anchor"/></a>SSLSocketAppender
+    </h3>
+    
+    <p>The <a 
+    href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic <a
+    href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
+    <code>SocketAppender</code></a> allowing
+    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
+    when using the basic <code>SocketAppender</code>, log events are delivered
+    by transmitting serialized <code>ILoggingEvent</code> instances.  However,
+    when using <code>SSLSocketAppender</code>, the serialized object stream 
+    is sent over an encrypted session.
+    </p>
+    
+    <p>
+    Using this appender not only provides confidentiality and integrity 
+    of log messages on the wire, it also allows for the authentication of
+    both senders and receivers of log messages.  Configuration of this appender
+    includes all of the relevant SSL parameters for validating peer trust,
+    specifying a credential, and controlling various aspects of the
+    SSL protocol.  For information on specifying the SSL configuration for
+    <code>SSLSocketAppender</code> see <a href="usingSSL.html">Using SSL</a>.
+    </p>
+        
+    <p>The standard logback distribution includes a SSL-enabled simple log 
+    server application named
+    <code>ch.qos.logback.classic.net.SimpleSSLSocketServer</code> with the same
+    command-line syntax as the basic <code>SimpleSocketServer</code>.  When using
+    <code>SimpleSSLSocketServer</code> you must provide the following system
+    properties using the <code>-D</code> JVM argument on the command line:
+    </p>
+    
+    <table class="bodyTable striped">
+      <tr>
+        <th>Property Name</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><code>javax.net.ssl.keyStore</code></td>
+        <td>path to the key store containing your server's X.509 certificate
+            and private key</td>
+      </tr>
+      <tr>
+        <td><code>javax.net.ssl.keyStorePassword</code></td>
+        <td>password for the key store</td>
+      </tr>
+    </table>
+		
+		<p>For example, if your server's key is stored in a JKS keystore located at
+       <code>/etc/logback-server.jks</code> you could run the server using the
+       following command line:
+    </p>
+     
+    <p class="source">java ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
+    src/main/java/chapters/appenders/socket/server2.xml \
+    -Djavax.net.ssl.keyStore=/etc/logback-server.jks 
+    -Djavax.net.ssl.keyStorePassword=changeit</p>
 		
    <h3 class="doAnchor">SMTPAppender</h3>
 
@@ -3751,6 +3811,26 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			for classic's <code>SocketAppender</code>.
 		</p>
 
+    <a name="AccessSSLSocketAppender"></a>
+    <h3>SSLSocketAppender</h3>
+
+    <p>The <a 
+    href="../xref/ch/qos/logback/access/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic <a
+    href="../xref/ch/qos/logback/access/net/SocketAppender.html">
+    <code>SocketAppender</code></a> allowing
+    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
+    when using the basic <code>SocketAppender</code>, log events are delivered
+    by transmitting serialized <code>AccessEvent</code> instances.  However,
+    when using <code>SSLSocketAppender</code>, the serialized object stream 
+    is sent over an encrypted session.
+    </p>
+    
+    <p>
+      The properties of access' <code>SSLSocketAppender</code> are the same as 
+      those available for classic's <code>SSLSocketAppender</code>.
+    </p>
+    
 	 	<a name="AccessSMTPAppender"></a>	
 		<h3>SMTPAppender</h3>
 		
