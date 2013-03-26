@@ -17,11 +17,11 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.net.ssl.ConfigurableSSLServerSocketFactory;
+import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
  * A {@link SimpleSocketServer} that supports SSL.
@@ -78,31 +78,19 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
    * Creates a new server using a custom SSL context.
    * @param lc logger context for received events
    * @param port port on which the server is to listen
-   * @param context custom SSL context
+   * @param sslContext custom SSL context
    */
-  public SimpleSSLSocketServer(LoggerContext lc, int port, SSLContext context) {
-    this(lc, port, context, context.getDefaultSSLParameters());
-  }
-
-  /**
-   * Creates a new server using custom SSL context and parameters.
-   * @param lc logger context for received events
-   * @param port port on which the server is to listen
-   * @param context custom SSL context
-   * @param parameters custom SSL parameters
-   */
-  public SimpleSSLSocketServer(LoggerContext lc, int port,
-      SSLContext context, SSLParameters parameters) {
+  public SimpleSSLSocketServer(LoggerContext lc, int port, 
+      SSLContext sslContext) {
     super(lc, port);
-    if (context == null) {
+    if (sslContext == null) {
       throw new NullPointerException("SSL context required");
     }
-    if (parameters == null) {
-      throw new NullPointerException("SSL parameters required");
-    }
-    this.socketFactory =
-        new ConfigurableSSLServerSocketFactory(parameters,
-            context.getServerSocketFactory());
+    SSLParametersConfiguration parameters = new SSLParametersConfiguration();
+    
+    parameters.setContext(lc);
+    this.socketFactory = new ConfigurableSSLServerSocketFactory(
+        parameters, sslContext.getServerSocketFactory());
   }
 
   @Override

@@ -21,7 +21,7 @@ import javax.net.ssl.SSLEngine;
 
 import org.codehaus.janino.Java;
 
-import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StringCollectionUtil;
 
@@ -31,7 +31,7 @@ import ch.qos.logback.core.util.StringCollectionUtil;
  *
  * @author Carl Harris
  */
-public class SSLParametersConfiguration {
+public class SSLParametersConfiguration extends ContextAwareBase {
 
   private String includedProtocols;
   private String excludedProtocols;
@@ -41,12 +41,6 @@ public class SSLParametersConfiguration {
   private Boolean wantClientAuth;
   private String[] enabledProtocols;
   private String[] enabledCipherSuites;
-
-  private ContextAware context;
-  
-  public void setContext(ContextAware context) {
-    this.context = context;
-  }
   
   /**
    * Configures SSL parameters on an {@link SSLConfigurable}.
@@ -86,7 +80,7 @@ public class SSLParametersConfiguration {
             getIncludedProtocols(), getExcludedProtocols());
       }
       for (String protocol : enabledProtocols) {
-        context.addInfo("enabled protocol: " + protocol);
+        addInfo("enabled protocol: " + protocol);
        }
     }
     return enabledProtocols;
@@ -113,7 +107,7 @@ public class SSLParametersConfiguration {
             getIncludedCipherSuites(), getExcludedCipherSuites());
       }
       for (String cipherSuite : enabledCipherSuites) {
-        context.addInfo("enabled cipher suite: " + cipherSuite);
+        addInfo("enabled cipher suite: " + cipherSuite);
       }
     }
     return enabledCipherSuites;

@@ -47,7 +47,7 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E> {
     try {
       SSLContext sslContext = getSsl().createContext(this);
       SSLParametersConfiguration parameters = getSsl().getParameters();
-      parameters.setContext(this);
+      parameters.setContext(getContext());
       socketFactory = new ConfigurableSSLSocketFactory(parameters, 
           sslContext.getSocketFactory());
       super.start();
