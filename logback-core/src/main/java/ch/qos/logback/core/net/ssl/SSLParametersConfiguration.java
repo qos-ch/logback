@@ -17,23 +17,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLEngine;
 
 import org.codehaus.janino.Java;
 
 import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StringCollectionUtil;
 
 
 /**
- * A factory bean for an {@link SSLParameters} object instance.
- * <p>
- * The primary function of this factory bean is to allow protocols and
- * cipher suites to be specified as a comma-separated string.
+ * A configuration of SSL parameters for an {@link SSLEngine}.
  *
  * @author Carl Harris
  */
-public class SSLParametersFactoryBean {
+public class SSLParametersConfiguration {
 
   private String includedProtocols;
   private String excludedProtocols;
@@ -41,47 +39,84 @@ public class SSLParametersFactoryBean {
   private String excludedCipherSuites;
   private Boolean needClientAuth;
   private Boolean wantClientAuth;
+  private String[] enabledProtocols;
+  private String[] enabledCipherSuites;
 
-  /**
-   * Creates an {@link SSLParameters} instance using the receiver's 
-   * configuration.
-   * @param defaults default SSL parameter values
-   * @param context context for status messages
-   * @return parameters object
-   */
-  public SSLParameters createSSLParameters(SSLParameters defaults, 
-      ContextAware context) {
-    
-    defaults.setProtocols(includedStrings(defaults.getProtocols(), 
-          getIncludedProtocols(), getExcludedProtocols()));
-    defaults.setCipherSuites(includedStrings(defaults.getCipherSuites(),
-        getIncludedCipherSuites(), getExcludedCipherSuites()));
-    if (isNeedClientAuth() != null) {
-      defaults.setNeedClientAuth(isNeedClientAuth());
-    }
-    if (isWantClientAuth() != null) {
-      defaults.setWantClientAuth(isWantClientAuth());
-    }
-
-    report(defaults, context);
-    return defaults;
+  private ContextAware context;
+  
+  public void setContext(ContextAware context) {
+    this.context = context;
   }
   
   /**
-   * Produces a parameters configuration status report.
-   * @param params the subject parameters
-   * @param context context for status messages
+   * Configures SSL parameters on an {@link SSLConfigurable}.
+   * @param socket the subject configurable
    */
-  private void report(SSLParameters params, ContextAware context) {
-    for (String protocol : params.getProtocols()) {
-      context.addInfo("enabled protocol: " + protocol);
+  public void configure(SSLConfigurable socket) {
+    socket.setEnabledProtocols(enabledProtocols(
+        socket.getSupportedProtocols(), socket.getDefaultProtocols()));
+    socket.setEnabledCipherSuites(enabledCipherSuites(
+        socket.getSupportedCipherSuites(), socket.getDefaultCipherSuites()));
+    if (isNeedClientAuth() != null) {
+      socket.setNeedClientAuth(isNeedClientAuth());
     }
-    for (String cipherSuite : params.getCipherSuites()) {
-      context.addInfo("enabled cipher suite: " + cipherSuite);
+    if (isWantClientAuth() != null) {
+      socket.setWantClientAuth(isWantClientAuth());
     }
-    context.addInfo("client authentication: " +  
-        (params.getNeedClientAuth() ? "required"
-            : params.getWantClientAuth() ? "desired" : "none"));
+  }
+  
+  /**
+   * Gets the set of enabled protocols based on the configuration.
+   * @param supportedProtocols protocols supported by the SSL engine 
+   * @param defaultProtocols default protocols enabled by the SSL engine
+   * @return enabled protocols
+   */
+  private String[] enabledProtocols(String[] supportedProtocols,
+      String[] defaultProtocols) {
+    if (enabledProtocols == null) {
+      // we're assuming that the same engine is used for all configurables
+      // so once we determine the enabled set, we won't do it again
+      if (OptionHelper.isEmpty(getIncludedProtocols())
+          && OptionHelper.isEmpty(getExcludedProtocols())) {
+        enabledProtocols = Arrays.copyOf(defaultProtocols, 
+            defaultProtocols.length);
+      }
+      else {
+        enabledProtocols = includedStrings(supportedProtocols, 
+            getIncludedProtocols(), getExcludedProtocols());
+      }
+      for (String protocol : enabledProtocols) {
+        context.addInfo("enabled protocol: " + protocol);
+       }
+    }
+    return enabledProtocols;
+  }
+  
+  /**
+   * Gets the set of enabled cipher suites based on the configuration.
+   * @param supportedCipherSuites cipher suites supported by the SSL engine 
+   * @param defaultCipherSuites default cipher suites enabled by the SSL engine
+   * @return enabled cipher suites
+   */
+  private String[] enabledCipherSuites(String[] supportedCipherSuites,
+      String[] defaultCipherSuites) {
+    if (enabledCipherSuites == null) {
+      // we're assuming that the same engine is used for all configurables
+      // so once we determine the enabled set, we won't do it again
+      if (OptionHelper.isEmpty(getIncludedCipherSuites())
+          && OptionHelper.isEmpty(getExcludedCipherSuites())) {
+        enabledCipherSuites = Arrays.copyOf(defaultCipherSuites, 
+            defaultCipherSuites.length);
+      }
+      else {
+        enabledCipherSuites = includedStrings(supportedCipherSuites, 
+            getIncludedCipherSuites(), getExcludedCipherSuites());
+      }
+      for (String cipherSuite : enabledCipherSuites) {
+        context.addInfo("enabled cipher suite: " + cipherSuite);
+      }
+    }
+    return enabledCipherSuites;
   }
   
   /**

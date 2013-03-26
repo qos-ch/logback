@@ -18,13 +18,13 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
 /**
  * An {@link SSLServerSocketFactory} that configures SSL parameters 
- * (those covered by {@link SSLParameters}) on each newly created socket. 
+ * (those specified in {@link SSLParametersConfiguration) on each newly 
+ * created socket. 
  * <p>
  * When any of this factory's {@code createServerSocket} methods are invoked, 
  * it calls on a delegate {@link SSLServerSocketFactory} to create the socket, 
@@ -35,7 +35,7 @@ import javax.net.ssl.SSLServerSocketFactory;
  */
 public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
 
-  private final SSLParameters parameters;
+  private final SSLParametersConfiguration parameters;
   private final SSLServerSocketFactory delegate;
 
   /**
@@ -45,8 +45,8 @@ public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
    * @param delegate socket factory that will be called upon to create
    *    server sockets before configuration
    */
-  public ConfigurableSSLServerSocketFactory(SSLParameters parameters,
-      SSLServerSocketFactory delegate) {
+  public ConfigurableSSLServerSocketFactory(
+      SSLParametersConfiguration parameters, SSLServerSocketFactory delegate) {
     this.parameters = parameters;
     this.delegate = delegate;
   }
@@ -59,7 +59,7 @@ public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
       throws IOException {
     SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(
         port, backlog, ifAddress);
-    configureSocket(socket);
+    parameters.configure(new SSLConfigurableServerSocket(socket));
     return socket;
   }
 
@@ -71,7 +71,7 @@ public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
       throws IOException {
     SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(
         port, backlog);
-    configureSocket(socket);
+    parameters.configure(new SSLConfigurableServerSocket(socket));
     return socket;
   }
 
@@ -82,20 +82,8 @@ public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
   public ServerSocket createServerSocket(int port) throws IOException {
     SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(
         port);
-    configureSocket(socket);
+    parameters.configure(new SSLConfigurableServerSocket(socket));
     return socket;
   }
 
-  /**
-   * Configures a server socket using the parameters associated with
-   * this factory.
-   * @param socket the socket to configure
-   */
-  private void configureSocket(SSLServerSocket socket) {
-    socket.setEnabledCipherSuites(parameters.getCipherSuites());
-    socket.setEnabledProtocols(parameters.getProtocols());
-    socket.setNeedClientAuth(parameters.getNeedClientAuth());
-    socket.setWantClientAuth(parameters.getWantClientAuth());
-  }
-  
 }

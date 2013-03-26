@@ -15,10 +15,10 @@ package ch.qos.logback.core.net;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 
 import ch.qos.logback.core.net.ssl.ConfigurableSSLSocketFactory;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
+import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
  * 
@@ -46,7 +46,8 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E> {
   public void start() {
     try {
       SSLContext sslContext = getSsl().createContext(this);
-      SSLParameters parameters = getSsl().createParameters(sslContext, this);
+      SSLParametersConfiguration parameters = getSsl().getParameters();
+      parameters.setContext(this);
       socketFactory = new ConfigurableSSLSocketFactory(parameters, 
           sslContext.getSocketFactory());
       super.start();

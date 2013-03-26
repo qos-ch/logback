@@ -7,7 +7,7 @@ public class SSLNestedComponentRegistryRules {
   static public void addDefaultNestedComponentRegistryRules(
       DefaultNestedComponentRegistry registry) {
     registry.add(SSLConfiguration.class, "parameters", 
-        SSLParametersFactoryBean.class);
+        SSLParametersConfiguration.class);
     registry.add(SSLConfiguration.class, "keyStore", 
         KeyStoreFactoryBean.class);
     registry.add(SSLConfiguration.class, "trustStore", 

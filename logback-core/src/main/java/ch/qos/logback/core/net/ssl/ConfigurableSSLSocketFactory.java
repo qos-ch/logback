@@ -36,7 +36,7 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class ConfigurableSSLSocketFactory extends SocketFactory {
 
-  private final SSLParameters parameters;
+  private final SSLParametersConfiguration parameters;
   private final SSLSocketFactory delegate;
 
   /**
@@ -46,7 +46,7 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
    * @param delegate socket factory that will be called upon to create
    *    sockets before configuration
    */
-  public ConfigurableSSLSocketFactory(SSLParameters parameters,
+  public ConfigurableSSLSocketFactory(SSLParametersConfiguration parameters,
       SSLSocketFactory delegate) {
     this.parameters = parameters;
     this.delegate = delegate;
@@ -60,7 +60,7 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
       InetAddress localAddress, int localPort) throws IOException {
     SSLSocket socket = (SSLSocket) delegate.createSocket(address, port, 
         localAddress, localPort);
-    socket.setSSLParameters(parameters);
+    parameters.configure(new SSLConfigurableSocket(socket));
     return socket;
   }
 
@@ -70,7 +70,7 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
   @Override
   public Socket createSocket(InetAddress host, int port) throws IOException {
     SSLSocket socket = (SSLSocket) delegate.createSocket(host, port);
-    socket.setSSLParameters(parameters);
+    parameters.configure(new SSLConfigurableSocket(socket));
     return socket;
   }
 
@@ -82,7 +82,7 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
       int localPort) throws IOException, UnknownHostException {
     SSLSocket socket = (SSLSocket) delegate.createSocket(host, port, 
         localHost, localPort);
-    socket.setSSLParameters(parameters);
+    parameters.configure(new SSLConfigurableSocket(socket));
     return socket;
   }
 
@@ -93,7 +93,7 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
   public Socket createSocket(String host, int port) throws IOException,
       UnknownHostException {
     SSLSocket socket = (SSLSocket) delegate.createSocket(host, port);
-    socket.setSSLParameters(parameters);
+    parameters.configure(new SSLConfigurableSocket(socket));
     return socket;
   }
   

@@ -14,9 +14,6 @@
 package ch.qos.logback.core.net.ssl;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-
-import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * A configuration for an {@link SSLContext}.
@@ -26,13 +23,13 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public class SSLConfiguration extends SSLContextFactoryBean {
 
-  private SSLParametersFactoryBean parameters;
+  private SSLParametersConfiguration parameters;
 
   /**
    * Gets the SSL parameters configuration.
    * @return parameters configuration
    */
-  public SSLParametersFactoryBean getParameters() {
+  public SSLParametersConfiguration getParameters() {
     return parameters;
   }
 
@@ -40,24 +37,8 @@ public class SSLConfiguration extends SSLContextFactoryBean {
    * Sets the SSL parameters configuration.
    * @param parameters the parameters configuration to set
    */
-  public void setParameters(SSLParametersFactoryBean parameters) {
+  public void setParameters(SSLParametersConfiguration parameters) {
     this.parameters = parameters;
-  }
-
-  /**
-   * Creates an {@link SSLParameters} according to the receiver's 
-   * SSL parameters configuration or the context's default parameters if
-   * no configuration has been specified.
-   * @param sslContext SSL context
-   * @return parameters object
-   */
-  public SSLParameters createParameters(SSLContext sslContext,
-      ContextAware context) {
-    if (getParameters() != null) {
-      return getParameters().createSSLParameters(
-        sslContext.getDefaultSSLParameters(), context);
-    }
-    return sslContext.getDefaultSSLParameters();
   }
 
 }
