@@ -25,6 +25,8 @@ Les Hazlewood            CA, USA               2012-09-10
 Libor Jelinek            Czech Republic        2012-09-17
 Matthew Bishop           Vancouver, Canada     2012-09-18
 Joris Kuipers            Amstelveen, NL        2013-02-11
+Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26 
+
 
 Justification for CLAs
 ----------------------
