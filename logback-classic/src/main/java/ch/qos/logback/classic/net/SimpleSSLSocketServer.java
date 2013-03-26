@@ -34,7 +34,23 @@ import ch.qos.logback.core.net.ssl.ConfigurableSSLServerSocketFactory;
  * <em>configFile</em> is an xml configuration file fed to
  * {@link JoranConfigurator}.
  * 
- * </pre>
+ * When running the SimpleSSLServerFactory as shown above, it is necessary to
+ * configure JSSE system properties using {@code -Dname=value} on the
+ * command-line when starting the server. In particular, you will probably
+ * want/need to configure the following system properties:
+ * <ul>
+ * <li>javax.net.ssl.keyStore</li>
+ * <li>javax.net.ssl.keyStorePassword</li>
+ * <li>javax.net.ssl.keyStoreType</li>
+ * <li>javax.net.ssl.trustStore</li>
+ * <li>javax.net.ssl.trustStorePassword</li>
+ * <li>javax.net.ssl.trustStoreType</li>
+ * </ul>
+ * <p>
+ * See the <a href=
+ * "http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">
+ * Customizing the JSSE</a> in the JSSE Reference Guide for details on how to
+ * set these system properties.
  * 
  * @author Carl Harris
  */
@@ -42,31 +58,6 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
 
   private final ServerSocketFactory socketFactory;
 
-  /**
-   * Runs a SimpleSSLSocketServer using the default SSL context.
-   * <p>
-   * When running the SimpleSSLServerFactory, it is necessary to configure 
-   * JSSE system properties using {@code -Dname=value} on the command-line 
-   * when starting the server.  In particular, you will probably want/need
-   * to configure the following system properties:
-   * <ul>
-   *   <li>javax.net.ssl.keyStore</li>
-   *   <li>javax.net.ssl.keyStorePassword</li>
-   *   <li>javax.net.ssl.keyStoreType</li>
-   *   <li>javax.net.ssl.trustStore</li>
-   *   <li>javax.net.ssl.trustStorePassword</li>
-   *   <li>javax.net.ssl.trustStoreType</li>
-   * </ul>
-   * <p>
-   * See the <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">
-   * Customizing the JSSE</a> in the JSSE Reference Guide for details on
-   * how to set these system properties.
-   * 
-   * @param argv command line arguments;
-   *    {@code argv[0]} is the port on which the server should listen
-   *    {@code argv[1]} is a path to the logger configuration file
-   * @throws Exception
-   */
   public static void main(String argv[]) throws Exception {
     doMain(SimpleSSLSocketServer.class, argv);
   }
@@ -75,10 +66,10 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
    * Creates a new server using the default SSL context.
    * @param lc logger context for received events
    * @param port port on which the server is to listen
-   * @throws NoSuchAlgorithmException if the default SSL context cannot
-   *    be created
+   * @throws NoSuchAlgorithmException if the default SSL context cannot be
+   *         created
    */
-  public SimpleSSLSocketServer(LoggerContext lc, int port) 
+  public SimpleSSLSocketServer(LoggerContext lc, int port)
       throws NoSuchAlgorithmException {
     this(lc, port, SSLContext.getDefault());
   }
@@ -89,11 +80,10 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
    * @param port port on which the server is to listen
    * @param context custom SSL context
    */
-  public SimpleSSLSocketServer(LoggerContext lc, int port,
-      SSLContext context) {
+  public SimpleSSLSocketServer(LoggerContext lc, int port, SSLContext context) {
     this(lc, port, context, context.getDefaultSSLParameters());
   }
-  
+
   /**
    * Creates a new server using custom SSL context and parameters.
    * @param lc logger context for received events
@@ -110,10 +100,11 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
     if (parameters == null) {
       throw new NullPointerException("SSL parameters required");
     }
-    this.socketFactory = new ConfigurableSSLServerSocketFactory(
-        parameters, context.getServerSocketFactory());
+    this.socketFactory =
+        new ConfigurableSSLServerSocketFactory(parameters,
+            context.getServerSocketFactory());
   }
-  
+
   @Override
   protected ServerSocketFactory getServerSocketFactory() {
     return socketFactory;
