@@ -15,13 +15,14 @@ package ch.qos.logback.core.net.ssl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLParameters;
 
+import org.codehaus.janino.Java;
+
 import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.util.StringCollectionUtil;
 
 
 /**
@@ -98,62 +99,14 @@ public class SSLParametersFactoryBean {
     List<String> values = new ArrayList<String>(defaults.length);
     values.addAll(Arrays.asList(defaults));
     if (included != null) {
-      retainMatching(values, stringToArray(included));
+      StringCollectionUtil.retainMatching(values, stringToArray(included));
     }
     if (excluded != null) {
-      removeMatching(values, stringToArray(excluded));
+      StringCollectionUtil.removeMatching(values, stringToArray(excluded));
     }
     return values.toArray(new String[values.size()]);
   }
   
-  /**
-   * Retains all values in the subject collection that are matched by
-   * at least one of a collection of regular expressions.
-   * <p>
-   * The semantics of this method are conceptually similar to
-   * {@link Collection#retainAll(Collection)}, but uses pattern matching
-   * instead of exact matching.
-   * 
-   * @param values subject value collection 
-   * @param patterns patterns to match
-   */
-  private void retainMatching(Collection<String> values, String[] patterns) {
-    List<String> matches = new ArrayList<String>(values.size());
-    for (String p : patterns) {
-      Pattern pattern = Pattern.compile(p);
-      for (String value : values) {
-        if (pattern.matcher(value).matches()) {
-          matches.add(value);
-        }
-      }
-    }
-    values.retainAll(matches);
-  }
-
-  /**
-   * Removes all values in the subject collection that are matched by
-   * at least one of a collection of regular expressions.
-   * <p>
-   * The semantics of this method are conceptually similar to
-   * {@link Collection#removeAll(Collection)}, but uses pattern matching
-   * instead of exact matching.
-   * 
-   * @param values subject value collection 
-   * @param patterns patterns to match
-   */
-  private void removeMatching(Collection<String> values, String[] patterns) {
-    List<String> matches = new ArrayList<String>(values.size());
-    for (String p : patterns) {
-      Pattern pattern = Pattern.compile(p);
-      for (String value : values) {
-        if (pattern.matcher(value).matches()) {
-          matches.add(value);
-        }
-      }
-    }
-    values.removeAll(matches);
-  }
-
   /**
    * Splits a string containing comma-separated values into an array.
    * @param s the subject string
