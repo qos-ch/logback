@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.net.ssl.mock.MockSSLConfigurable;
-import ch.qos.logback.core.spi.ContextAwareBase;
 
 
 /**
@@ -32,8 +31,6 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class SSLParametersConfigurationTest {
 
-  private ContextAwareBase context = new ContextAwareBase();
-  
   private MockSSLConfigurable configurable = new MockSSLConfigurable();
   
   private SSLParametersConfiguration configuration = 
@@ -41,8 +38,7 @@ public class SSLParametersConfigurationTest {
  
   @Before
   public void setUp() throws Exception {
-    context.setContext(new ContextBase());
-    configuration.setContext(context);
+    configuration.setContext(new ContextBase());
   }
   
   @Test
