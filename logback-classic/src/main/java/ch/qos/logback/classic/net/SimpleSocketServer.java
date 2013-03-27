@@ -14,11 +14,13 @@
 package ch.qos.logback.classic.net;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
 import javax.net.ServerSocketFactory;
 
 import org.slf4j.Logger;
@@ -60,6 +62,11 @@ public class SimpleSocketServer extends Thread {
   private CountDownLatch latch;
 
   public static void main(String argv[]) throws Exception {
+    doMain(SimpleSocketServer.class, argv);
+  }
+
+  protected static void doMain(Class<? extends SimpleSocketServer> serverClass,
+      String argv[]) throws Exception {
     int port = -1;
     if (argv.length == 2) {
       port = parsePortNumber(argv[0]);
@@ -71,10 +78,20 @@ public class SimpleSocketServer extends Thread {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     configureLC(lc, configFile);
 
-    SimpleSocketServer sss = new SimpleSocketServer(lc, port);
+    SimpleSocketServer sss = createServer(serverClass, lc, port);
     sss.start();
   }
 
+  private static SimpleSocketServer createServer(
+      Class<? extends SimpleSocketServer> serverClass,
+      LoggerContext lc, int port) throws Exception {
+    
+    Constructor<? extends SimpleSocketServer> constructor = 
+        serverClass.getConstructor(LoggerContext.class, int.class);
+    
+    return constructor.newInstance(lc, port);
+  }
+  
   public SimpleSocketServer(LoggerContext lc, int port) {
     this.lc = lc;
     this.port = port;
