@@ -157,8 +157,11 @@ public class FileNamePattern extends ContextAwareBase {
 
   /**
    * Given date, convert this instance to a regular expression.
+   *
+   * Used to compute sub-regex when the pattern has both %d and %i, and the
+   * date is known.
    */
-  public String toRegex(Date date) {
+  public String toRegexForFixedDate(Date date) {
     StringBuilder buf = new StringBuilder();
     Converter<Object> p = headTokenConverter;
     while (p != null) {

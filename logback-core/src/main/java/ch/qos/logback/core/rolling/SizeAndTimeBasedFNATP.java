@@ -42,7 +42,7 @@ public class SizeAndTimeBasedFNATP<E> extends
     // we need to get the correct value of currentPeriodsCounter.
     // usually the value is 0, unless the appender or the application
     // is stopped and restarted within the same period
-    String regex = tbrp.fileNamePattern.toRegex(dateInCurrentPeriod);
+    String regex = tbrp.fileNamePattern.toRegexForFixedDate(dateInCurrentPeriod);
     String stemRegex = FileFilterUtil.afterLastSlash(regex);
 
 
