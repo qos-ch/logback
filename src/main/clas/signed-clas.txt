@@ -26,7 +26,7 @@ Libor Jelinek            Czech Republic        2012-09-17
 Matthew Bishop           Vancouver, Canada     2012-09-18
 Joris Kuipers            Amstelveen, NL        2013-02-11
 Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26 
-Carl E. Harris Jr.       VA, USA               2012-03-27
+Carl E. Harris Jr.       VA, USA               2013-03-27
 
 Justification for CLAs
 ----------------------
