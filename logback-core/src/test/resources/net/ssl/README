@@ -1,0 +1,11 @@
+These resources are used by the SSL support tests in package
+ch.qos.logback.classic.net.ssl.
+
+The key.pem and cert.pem are a private key and corresponding self-signed
+certificate.  The keystore.jks and keystore.p12 files are keystores of type
+JKS and PKCS12, respectively, containing the private key and self-signed
+certificates given in key.pem and cert.pem.  The passphrase for both keystore
+files is "changeit".
+ 
+NOTE: The resources in this directory MUST be excluded from maven resource
+filtering, if it is enabled in the build.
