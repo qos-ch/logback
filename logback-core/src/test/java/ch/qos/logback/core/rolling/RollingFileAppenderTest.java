@@ -128,8 +128,9 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setTriggeringPolicy(new SizeBasedTriggeringPolicy<Object>());
     rfa.setFile("x");
     StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
-    statusChecker.containsMatch(Status.ERROR,
+    boolean containsMatch = statusChecker.containsMatch(Status.ERROR,
             "File property must be set before any triggeringPolicy ");
+    assertTrue(containsMatch);
   }
 
   @Test
@@ -191,6 +192,22 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     assertFalse(fwRollingPolicy.isStarted());
     assertFalse(sbTriggeringPolicy.isStarted());
 
+  }
+  
+  /**
+   * Test for http://jira.qos.ch/browse/LOGBACK-796
+   */
+  @Test
+  public void testFileShouldNotMatchFileNamePattern() {
+    rfa.setContext(context);
+    rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-2012.log");
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-%d{yyyy}.log");
+    rfa.setTriggeringPolicy(tbrp);
+    rfa.start();
+    StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
+    final String msg = "File property must not match fileNamePattern";
+	boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
+    assertTrue("Missing error: " + msg, containsMatch);
   }
 
 }

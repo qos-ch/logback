@@ -19,6 +19,7 @@ import java.io.IOException;
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
@@ -41,6 +42,16 @@ public class RollingFileAppender<E> extends FileAppender<E> {
           + getName());
       addWarn("For more information, please visit "+CODES_URL+"#rfa_no_tp");
       return;
+    }
+    
+    // sanity check for http://jira.qos.ch/browse/LOGBACK-796
+    if (triggeringPolicy instanceof RollingPolicyBase) {
+    	final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
+        final FileNamePattern pattern = new FileNamePattern(base.getFileNamePattern(), getContext());
+		final String activeFileName = base.getActiveFileName();
+		if (activeFileName.matches(pattern.toRegex())) {
+        	addError("File property must not match fileNamePattern");
+        }
     }
 
     // we don't want to void existing log files
