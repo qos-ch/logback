@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
+import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
@@ -36,8 +37,9 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
    */
   public static final int DEFAULT_BACKLOG = 50;
 
-  private int port;
+  private int port = SocketAppenderBase.DEFAULT_PORT;
   private int backlog = DEFAULT_BACKLOG;
+  
   private String address;
   private ThreadPoolFactoryBean threadPool;
 
