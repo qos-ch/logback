@@ -147,7 +147,7 @@ public class SSLContextFactoryBean {
     TrustManagerFactory tmf = getTrustManagerFactory()
         .createTrustManagerFactory();
     context.addInfo("trust manager algorithm '" + tmf.getAlgorithm() 
-        + "' provider '" + tmf.getProvider());
+        + "' provider '" + tmf.getProvider() + "'");
     
     tmf.init(trustStore);
     return tmf.getTrustManagers();

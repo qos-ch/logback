@@ -27,9 +27,13 @@ public class SSLConfiguration extends SSLContextFactoryBean {
 
   /**
    * Gets the SSL parameters configuration.
-   * @return parameters configuration
+   * @return parameters configuration; if no parameters object was
+   *    configured, a default parameters object is returned
    */
   public SSLParametersConfiguration getParameters() {
+    if (parameters == null) {
+      parameters = new SSLParametersConfiguration();
+    }
     return parameters;
   }
 
