@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.net.server;
 
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.net.ssl.SSLConfiguration;
 
 /**
  * Nested component registry rules for {@link SocketServer}.
@@ -27,7 +28,8 @@ public class SocketServerNestedComponentRegistryRules {
     
     registry.add(SocketServer.class, "threadPool", 
         ThreadPoolFactoryBean.class);
-    
+    registry.add(SSLSocketServer.class, "ssl",
+        SSLConfiguration.class);
   }
 
 }
