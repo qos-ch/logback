@@ -32,7 +32,9 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E> {
   private SocketFactory socketFactory;
 
   /**
-   * {@inheritDoc}
+   * Gets an {@link SocketFactory} that produces SSL sockets using an
+   * {@link SSLContext} that is derived from the appender's configuration.
+   * @return socket factory
    */
   @Override
   protected SocketFactory getSocketFactory() {
