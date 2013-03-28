@@ -86,17 +86,19 @@ class StreamClient implements Client {
       }
     }
     catch (EOFException ex) {
-      logger.info(this + ": connection closed");
+      // this is normal and expected
+      assert true;    
     }
     catch (IOException ex) {
-      logger.info(this + ": I/O exception -- closing connection");
+      logger.info(this + ": " + ex);
     }
     catch (ClassNotFoundException ex) {
-      logger.error(this + ": unknown event class -- closing connection");      
+      logger.error(this + ": unknown event class");      
     }
     catch (RuntimeException ex) {
-      logger.error(this + ": " + ex.getMessage() + " -- closing connection");
+      logger.error(this + ": " + ex);
     }
+    logger.info(this + ": connection closed");
     close();
   }
 
