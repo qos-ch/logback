@@ -34,16 +34,32 @@ public class ThreadPoolFactoryBean {
   private int corePoolSize = DEFAULT_POOL_SIZE;  
   private int maximumPoolSize;
   private long keepAliveTime;
-  private int queueSize;
+  private int queueSize = 1;
   
   public Executor createExecutor() {
-    BlockingQueue<Runnable> queue = 
-        new ArrayBlockingQueue<Runnable>(getQueueSize());
-    
-    return new ThreadPoolExecutor(getCorePoolSize(), getMaximumPoolSize(),
-        getKeepAliveTime(), TimeUnit.MILLISECONDS, queue);
+    BlockingQueue<Runnable> queue = createQueue();
+    return createThreadPool(queue);
   }
 
+  private BlockingQueue<Runnable> createQueue() {
+    try {
+      return new ArrayBlockingQueue<Runnable>(getQueueSize()); 
+    }
+    catch (IllegalArgumentException ex) {
+      throw new IllegalArgumentException("illegal threadPool.queueSize");
+    }
+  }
+  
+  private Executor createThreadPool(BlockingQueue<Runnable> queue) {
+    try {
+      return new ThreadPoolExecutor(getCorePoolSize(), getMaximumPoolSize(), 
+          getKeepAliveTime(), TimeUnit.MILLISECONDS, queue);
+    }
+    catch (IllegalArgumentException ex) {
+      throw new IllegalArgumentException("illegal thread pool configuration: " + ex, ex);
+    }
+  }
+  
   public int getCorePoolSize() {
     return corePoolSize;
   }
