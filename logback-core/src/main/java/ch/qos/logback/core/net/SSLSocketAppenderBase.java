@@ -59,9 +59,13 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E> {
 
   /**
    * Gets the SSL configuration.
-   * @return SSL configuration
+   * @return SSL configuration; if no configuration has been set, a
+   *    default configuration is returned
    */
   public SSLConfiguration getSsl() {
+    if (ssl == null) {
+      ssl = new SSLConfiguration();
+    }
     return ssl;
   }
 
