@@ -13,33 +13,31 @@
  */
 package ch.qos.logback.core.net.ssl.mock;
 
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import javax.net.ssl.TrustManagerFactory;
-
-import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
+import ch.qos.logback.core.net.ssl.KeyStoreFactoryBean;
 
 /**
- * A {@link TrustManagerFactoryFactoryBean} with test instrumentation.
+ * A {@link KeyStoreFactoryBean} with test instrumentation. 
  *
  * @author Carl Harris
  */
-public class MockTrustManagerFactoryConfigurator 
-    extends TrustManagerFactoryFactoryBean {
+public class MockKeyStoreFactoryBean extends KeyStoreFactoryBean {
 
-  private boolean factoryCreated;
-
+  private boolean keyStoreCreated;
+  
   @Override
-  public TrustManagerFactory createTrustManagerFactory()
-      throws NoSuchProviderException, NoSuchAlgorithmException {
-    factoryCreated = true;
-    return super.createTrustManagerFactory();
+  public KeyStore createKeyStore() throws NoSuchProviderException,
+      NoSuchAlgorithmException, KeyStoreException {
+    keyStoreCreated = true;
+    return super.createKeyStore();
   }
 
-  public boolean isFactoryCreated() {
-    return factoryCreated;
+  public boolean isKeyStoreCreated() {
+    return keyStoreCreated;
   }
-  
-  
+
 }
