@@ -16,10 +16,12 @@ package ch.qos.logback.classic.sift;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Test;
 import org.slf4j.MDC;
 
@@ -30,6 +32,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
@@ -54,6 +57,11 @@ public class SiftingAppenderTest {
     jc.doConfigure(file);
   }
 
+  @After
+  public void tearDown() {
+    MDC.clear();
+  }
+
   @Test
   public void unsetDefaultValueProperty() throws JoranException {
     configure(SIFT_FOLDER_PREFIX + "unsetDefaultValueProperty.xml");
@@ -74,6 +82,46 @@ public class SiftingAppenderTest {
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
+  }
+
+  @Test
+  public void maxAppenders() throws JoranException {
+    configure(SIFT_FOLDER_PREFIX + "maxAppenders.xml");
+    long timestamp = 0;
+    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
+    String mdcKey = "userid";
+    MDC.put(mdcKey, "1");
+    logger.debug("hello");
+    Appender<?> appender = ha.getAppenderTracker().get("1", timestamp);
+    assertTrue(appender.isStarted());
+    MDC.put(mdcKey, "2");
+    logger.debug("hello");
+    MDC.put(mdcKey, "3");
+    logger.debug("hello");
+    MDC.put(mdcKey, "4");
+    logger.debug("hello");
+    MDC.put(mdcKey, "5");
+    logger.debug("hello");
+    MDC.put(mdcKey, "6");
+    logger.debug("hello");
+    assertFalse(appender.isStarted());
+    appender = ha.getAppenderTracker().get("1", timestamp);
+    assertNull(appender);
+  }
+
+  @Test
+  public void timeout() throws JoranException, InterruptedException {
+    configure(SIFT_FOLDER_PREFIX + "timeout.xml");
+    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
+    logger.debug("hello");
+    Appender<?> appender = ha.getAppenderTracker().get("smoke", System.currentTimeMillis());
+    assertTrue(appender.isStarted());
+    Thread.sleep(1000L);
+    String mdcKey = "userid";
+    MDC.put(mdcKey, "1");
+    logger.debug("hello");
+    assertFalse(appender.isStarted());
+    assertNull(ha.getAppenderTracker().get("smoke", System.currentTimeMillis()));
   }
 
   @Test
@@ -150,7 +198,7 @@ public class SiftingAppenderTest {
     MDC.remove(mdcKey);
     LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null,
         null);
-    le.setTimeStamp(timestamp + AppenderTracker.THRESHOLD * 2);
+    le.setTimeStamp(timestamp + AppenderTracker.DEFAULT_TIMEOUT * 2);
     ha.doAppend(le);
     assertFalse(listAppender.isStarted());
     assertEquals(1, ha.getAppenderTracker().keyList().size());
