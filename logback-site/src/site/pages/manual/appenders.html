@@ -1519,7 +1519,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<h3> 
       <a name="SocketAppender" href="#SocketAppender"><span
-      class="anchor"/></a>SocketAppender
+      class="anchor"/></a>SocketAppender and SSLSocketAppender
     </h3>
 		
 		<p>The appenders covered thus far are only able to log to local
@@ -1527,7 +1527,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
 		<code>SocketAppender</code></a> is designed to log to a remote
 		entity by transmitting serialized <code>ILoggingEvent</code>
-		instances over the wire.  The actual type of the serialized event
+		instances over the wire.  When using <code>SocketAppender</code>
+		logging events on the wire are sent in the clear.  However, when
+		using  <a href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
+		<code>SSLSocketAppender</code></a>, logging events are delivered over
+		a secure channel.</p>
+
+    <p>
+		The actual type of the serialized event
 		is <a
 		href="../xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>
 		which implements the <code>ILoggingEvent</code>
@@ -1587,7 +1594,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		class="prop">remoteHost</span> and <span
 		class="prop">port</span> properties.
 		<code>SocketAppender</code> properties are listed in the following
-		table.
+		table.  <code>SSLSocketAppender</code> supports many additional
+		configuration properties, which are detailed in the section 
+		entitled <a href="usingSSL.html">Using SSL</a>.
 		</p>
 
     <table class="bodyTable striped">
@@ -1638,16 +1647,34 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </tr>		
     </table>
     
-    <p>The standard logback distribution includes a simple log server
-    application named
-    <code>ch.qos.logback.classic.net.SimpleSocketServer</code> that
-    can service multiple <code>SocketAppender</code> clients. It waits
-    for logging events from <code>SocketAppender</code> clients. After
-    reception by <code>SimpleSocketServer</code>, the events are
-    logged according to local server policy.  The
-    <code>SimpleSocketServer</code> application takes two parameters:
-    port and configFile; where port is the port to listen on and
-    configFile is a configuration script in XML format.
+    <h4>Logging Server Options</h4>
+    <p>The standard Logback Classic distribution includes two options
+    for servers that can be used to receive logging events from
+    <code>SocketAppender</code> or <code>SSLSocketAppender</code>.
+    <ul>
+      <li><code>SimpleSocketServer</code> and its SSL-enabled counterpart
+      <code>SimpleSSLSocketServer</code>, which both offer an 
+      easy-to-use standalone Java application that is designed to
+      be configured and run from your shell's command line interface.
+      These applications simply wait for logging events from 
+      <code>SocketAppender</code> or <code>SSLSocketAppender</code>
+      clients.  Each received event is logged according to local server 
+      policy.    
+      </li>
+      <li><code>SocketServer</code> and its SSL-enabled counterpart
+      <code>SSLSocketServer</code> which can be configured in the
+      <em>logback.xml</em> configuration file of <em>any</em> application
+      that uses Logback Classic, allowing any application to be a 
+      receiver for remote logging events.
+      </li>
+    </ul>
+    
+    <h4><a name="simpleSocketServer"></a>Using SimpleSocketServer</h4>
+    
+    The <code>SimpleSocketServer</code> application takes command-line
+    arguments: <em>port</em> and <em>configFile</em>; 
+    where <em>port</em> is the port to listen on and
+    <em>configFile</em> is a configuration script in XML format.
     </p>
 	
     <p>
@@ -1717,7 +1744,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 &lt;/configuration></pre>
 	
-	
 		<p>
 			Note that in the above configuration scripts the values for the 
 			<span class="prop">remoteHost</span>, <span class="prop">port</span> and
@@ -1774,69 +1800,268 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		its clients to a second server.
 		</p>
 		
-    <h3> 
-      <a name="SSLSocketAppender" href="#SSLSocketAppender"><span
-      class="anchor"/></a>SSLSocketAppender
-    </h3>
-    
-    <p>The <a 
-    href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
-    <code>SSLSocketAppender</code></a> extends the basic <a
-    href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
-    <code>SocketAppender</code></a> allowing
-    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
-    when using the basic <code>SocketAppender</code>, log events are delivered
-    by transmitting serialized <code>ILoggingEvent</code> instances.  However,
-    when using <code>SSLSocketAppender</code>, the serialized object stream 
-    is sent over an encrypted session.
+		<h4><a name="simpleSSLSocketServer"></a>Using SimpleSSLSocketServer</h4>
+
+    <p>The <code>SimpleSSLSocketServer</code> requires the same
+    <em>port</em> and <em>configFile</em> command-line arguments used
+    by <code>SimpleSocketServer</code>.  Additionally, you must provide
+    the location and password for your logging server's X.509 credential
+    using system properties specified on the command line.
     </p>
     
-    <p>
-    Using this appender not only provides confidentiality and integrity 
-    of log messages on the wire, it also allows for the authentication of
-    both senders and receivers of log messages.  Configuration of this appender
-    includes all of the relevant SSL parameters for validating peer trust,
-    specifying a credential, and controlling various aspects of the
-    SSL protocol.  For information on specifying the SSL configuration for
-    <code>SSLSocketAppender</code> see <a href="usingSSL.html">Using SSL</a>.
+    <p>Assuming you are in the <em>logback-examples/</em> directory, 
+    start <code>SimpleSSLSocketServer</code> with the following command:
     </p>
-        
-    <p>The standard logback distribution includes a SSL-enabled simple log 
-    server application named
-    <code>ch.qos.logback.classic.net.SimpleSSLSocketServer</code> with the same
-    command-line syntax as the basic <code>SimpleSocketServer</code>.  When using
-    <code>SimpleSSLSocketServer</code> you must provide the following system
-    properties using the <code>-D</code> JVM argument on the command line:
+
+    <p class="source">java -Djavax.net.ssl.keyStore=src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Djavax.net.ssl.keyStorePassword=changeit \
+    ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
+    src/main/java/chapters/appenders/socket/ssl/server1.xml
+</p>
+	
+    <p>This example runs <code>SimpleSSLSocketServer</code> using an
+    X.509 credential that is suitable for testing and experimentation, 
+    only.  <strong>Before using <code>SimpleSSLSocketServer</code> in a
+    production setting you should obtain an appropriate X.509 credential
+    to identify your logging server</strong>.  See 
+    <a href="usingSSL.html">Using SSL</a> for more details.
+
+    <p>With <code>SimpleSSLSocketServer</code> running, you can connect
+    to the server using an <code>SSLSocketAppender</code>.  The following
+    example shows the appender configuration needed:
+      
+   	<p class="example">Example: SSLSocketAppender configuration
+		(logback-examples/src/main/java/chapters/appenders/socket/ssl/client.xml)</p>
+    <span class="asGroovy" onclick="return asGroovy('sslclient');">View as .groovy</span>
+<pre id="sslclient" class="prettyprint source">&lt;configuration>
+	  
+  &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
+    &lt;remoteHost>${host}&lt;/remoteHost>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+    &lt;ssl>
+      &lt;trustStore>
+        &lt;location>${truststore}&lt;/location>
+        &lt;passphrase>${passphrase}&lt;/passphrase>
+      &lt;/trustStore>
+    &lt;/ssl>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SOCKET" />
+  &lt;/root>  
+
+&lt;/configuration></pre>
+	  
+	  <p>Note that, just as in the previous example, the values for
+	  <span class="prop">remoteHost</span>, <span class="prop">port</span>
+	  are specified using substituted variable keys.  Additionally, note
+	  the presence of the <span class="prop">ssl</span> property and its
+	  nested <span class="prop">trustStore</span> property, which specifies
+	  the location and passphrase of a trust store using substituted
+	  variables.  This configuration is necessary because our example
+	  server is using a self-signed certificate.  See 
+	  <a href="usingSSL.html">Using SSL</a> for more information on 
+	  SSL configuration properties for <code>SSLSocketAppender</code>.
+	  </p>
+
+    <p>We can run a client application using this configuration by
+    specifying the substitution variable values on the command line as
+    system properties:</p>
+    	  	
+    <p class="source">java -Dhost=localhost -Dport=6000 \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dpassphrase=changeit \
+    chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml</p>
+ 	  </p>
+ 	  
+ 	  <p>As in the previous examples, you can type in a message when 
+ 	  prompted by the client application, and the message will be delivered
+ 	  to the logging server (now over a secure channel) where it will be
+ 	  displayed on the console.
+ 	  </p>
+ 	  
+ 	  <p>Note that the <em>truststore</em> property given on the command
+ 	  line specifies a file URL that identifies the location of the trust 
+ 	  store.  You may also use a classpath URL as described in 
+ 	  <a href="usingSSL.html">Using SSL</a>.
+ 	  </p>
+ 
+    <p>Note also that the trust store specified on the comamnd-line 
+    is the same file we referenced when starting the server.  This is a 
+    convenience made possible by the fact that we are utilizing a 
+    self-signed certificate suitable for testing and experimentation, only.  
+    <strong>In a production setting you would not want to install 
+    your server's X.509 credential (consisting of a private key and 
+    certificate) in each of your client applications</strong>.  You 
+    would instead utilize a trust store containing only trusted root
+    certificate(s) as described in <a href="usingSSL.html">Using SSL</a>.
+ 	 
+ 	  <h4>Using SocketServer and SSLSocketServer</h4>
+ 	  <p>While <code>SimpleSocketServer</code> and 
+ 	  <code>SimpleSSLSocketServer</code> both provide an easy-to-use 
+ 	  standalone logging server application, you may wish instead to 
+ 	  integrate logging server functionality into an existing application
+    utilizing Logback Classic.  This ability is provided by
+    <a href="../xref/ch/qos/logback/classic/net/server/SocketServer.html">
+    <code>SocketServer</code></a> and its SSL-enabled counterpart
+    <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
+    <code>SSLSocketServer</code></a>.
     </p>
+    
+    <p><code>SocketServer</code> and <code>SSLSocketServer</code> are 
+    components that are configured in the same manner as appenders,
+    loggers, and the like &mdash; by placing the appropriate configuration
+    properties in your application's <em>logback.xml</em> configuration
+    file.  This allows <em>any</em> application using Logback Classic
+    to be a receiver for remote logging events.
+    </p>
+    
+    <p>For example, the following configuration uses the 
+    <code>SocketServer</code> component with a minimal appender and 
+    logger configuration.
+
+   	<p class="example">Example: Basic SocketServer Configuration
+		(logback-examples/src/main/java/chapters/appenders/socket/server3.xml)</p>
+    <span class="asGroovy" onclick="return asGroovy('server3');">View as .groovy</span>
+<pre id="server3" class="prettyprint source">&lt;configuration debug="true">
+  
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+
+  &lt;server class="ch.qos.logback.classic.net.server.SocketServer">
+    &lt;port>${port}&lt;/port>
+  &lt;/server>
+  
+&lt;/configuration></pre>
+  
+    <p>Note that the <span class="prop">server</span> configuration 
+    property identifies the server class that we wish to use.  Either
+    <code>SocketServer</code> or <code>SSLSocketServer</code> may be
+    specified here.
+    </p>
+    
+    <p>Our example server application is very similar in function and
+    design to <code>SimpleSocketServer</code>.  It simply accepts a
+    path for a logback configuration file as a command line argument,
+    and runs the given configuration.  While our example is somewhat
+    trivial, keep in mind that you can configure logback's 
+    <code>SocketServer</code> (and <code>SSLSocketServer</code>) 
+    component in <em>any</em> application.
+    </p>
+    
+    <p>We can run our example server application as follows:</p>
+    <p class="source">java -Dport=6000 chapters.appenders.socket.SocketServer \
+    src/main/java/chapters/appenders/socket/server3.xml</p>
+ 	  </p>
+  
+    <p>We can connect to the running server just as shown in the previous
+    examples for using <a href="#simpleSocketServer">SimpleSocketServer</a>.
+    </p>
+    
+    <p>The <code>SocketServer</code> component provides the following 
+    configurable properties:</p>
     
     <table class="bodyTable striped">
       <tr>
         <th>Property Name</th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
       <tr>
-        <td><code>javax.net.ssl.keyStore</code></td>
-        <td>path to the key store containing your server's X.509 certificate
-            and private key</td>
+        <td><span class="prop" container="socketServer">address</span></td>
+        <td><code>String</code></td>
+        <td>The local network interface address on which the server
+        will listen.  If this property is not specified, the server
+        will listen on all network interfaces.</td>
       </tr>
       <tr>
-        <td><code>javax.net.ssl.keyStorePassword</code></td>
-        <td>password for the key store</td>
+        <td><span class="prop" container="socketServer">port</span></td>
+        <td><code>int</code></td>
+        <td>The TCP port on which the server will listen.  If this
+        property is not specified, a default value will be used.</td>
       </tr>
     </table>
-		
-		<p>For example, if your server's key is stored in a JKS keystore located at
-       <code>/etc/logback-server.jks</code> you could run the server using the
-       following command line:
-    </p>
-     
-    <p class="source">java ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
-    src/main/java/chapters/appenders/socket/server2.xml \
-    -Djavax.net.ssl.keyStore=/etc/logback-server.jks 
-    -Djavax.net.ssl.keyStorePassword=changeit</p>
-		
-   <h3 class="doAnchor">SMTPAppender</h3>
+    
+    <p>A minimal server configuration using <code>SSLSocketServer</code>
+    follows.</p>
 
+   	<p class="example">Example: Basic SSLSocketServer Configuration
+		(logback-examples/src/main/java/chapters/appenders/socket/ssl/server2.xml)</p>
+    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
+<pre id="sslserver2" class="prettyprint source">&lt;configuration debug="true">
+  
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+
+  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+    &lt;port>${port}&lt;/port>
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>${keystore}&lt;/location>
+        &lt;passphrase>${passphrase}&lt;/passphrase>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/server>
+  
+&lt;/configuration></pre>
+
+    <p>The essential differences between this configuration and the
+    previous example using <code>SocketServer</code> are the specification
+    of <code>SSLSocketServer</code> in the <em>class</em> attribute and
+    the presence of the nested <span class="prop">ssl</span> property,
+    which is used here to specify the location and passphrase for the
+    key store containing the server's private key and certificate, using
+    substitution variables.
+    </p>    
+   
+    <p>We can now run our SSL-enabled server configuration using the 
+    same example server application, by specifying values for the
+    substitution variables in our configuration and referencing the
+    appropriate configuration file:</p>
+   
+    <p class="source">java -Dport=6000 \
+    -Dkeystore=src/main/java/chapters/appenders/socket/ssl/keystore.jks
+    -Dpassphrase=changeit \
+    chapters.appenders.socket.SocketServer \
+    src/main/java/chapters/appenders/socket/ssl/server2.xml</p>
+ 	  </p>
+  
+    <p>Note once again that we are specifying the location of a keystore
+    containing an X.509 credential that is suitable for testing and
+    experimentation, only.  <strong>In a production setting, you should
+    obtain an appropriate X.509 credential to identify your logging
+    server</strong>.  See <a href="usingSSL.html">Using SSL</a> for more
+    information.
+    
+    <p>Once our server is started, we can connect to it just as shown in 
+    the previous examples for using 
+    <a href="#simpleSSLSocketServer">SimpleSSLSocketServer</a>.
+    </p>
+    
+    <p>The <span class="prop">ssl</span> property of the server component
+    accepts the same nested configuration properties as those accepted
+    by <code>SSLSocketAppender</code>.  <strong>See 
+    <a href="usingSSL.html">Using SSL</a> for details on configuring 
+    the SSL properties for <code>SSLSocketServer</code></strong>.
+    
+   
+   <h3 class="doAnchor">SMTPAppender</h3>
+   
    <p>The <a
    href="../xref/ch/qos/logback/classic/net/SMTPAppender.html"><code>SMTPAppender</code></a>
    accumulates logging events in one or more fixed-size buffers and

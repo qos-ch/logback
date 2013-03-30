@@ -10,14 +10,17 @@
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />    
 
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script src="../templates/header.js" type="text/javascript"> </script>
-    <div id="left">
+    <script type="text/javascript" src="../templates/header.js"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">      
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
-    </div>
+    </div>    
     <div id="right">
       <script src="menu.js" type="text/javascript"></script>
     </div>
@@ -60,12 +63,11 @@
       <h2 class="doAnchor">SSL and X.509 Certificates</h2>
       <p>In order to use SSL-enabled Logback components, you will need an
          X.509 credential (a private key, corresponding certificate,
-         and CA certification chain) to identify your Logback server.  If 
+         and CA certification chain) to identify your logging server.  If 
          you wish to use mutual authentication, you will also need credentials 
-         for your Logback clients (such as <code>SSLSocketAppender</code>).  
+         for your Logback appender clients using <code>SSLSocketAppender</code>.  
       </p>      
-      <p>You can use almost any valid X.509 credential for your Logback
-         server.  While you can use a credential issued by a commercial
+      <p>While you can use a credential issued by a commercial
          certification authority (CA), you can also use a certificate issued
          from your own internal CA or even a self-signed certificate.  The
          following is all that is required:
@@ -80,11 +82,6 @@
             signed root certificate.
         </li>
       </ol>
-
-      <p>TODO: provide some examples of creating key stores and trust stores
-         using self-signed certificates.  Meanwhile there are lots of examples
-         to be found out there on the web...
-      </p>
           
       <h2 class="doAnchor">Configuring Logback Components for SSL</h2>
       <p>The Java Secure Sockets Extension (JSSE) and Java Cryptography 
@@ -247,7 +244,7 @@
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
-      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
   
@@ -272,9 +269,6 @@
       <span class="asGroovy" onclick="return asGroovy('logback-ssl-clientTrustStore');">View as .groovy</span>
       <pre id="logback-ssl-clientTrustStore" class="prettyprint source">&lt;configuration>
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
-    &lt;encoder>
-      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
-    &lt;/encoder>
     &lt;ssl>
       &lt;trustStore>
         &lt;location>classpath:/logging-server-truststore.jks&lt;/location>
@@ -283,7 +277,7 @@
   &lt;/appender>
   
   &lt;root level="debug">
-    &lt;appender-ref ref="CONSOLE" />
+    &lt;appender-ref ref="SOCKET" />
   &lt;/root>
 
 &lt;/configuration></pre>
@@ -766,7 +760,7 @@
       </table>
       
       <h3>Examples</h3>
-      <p>TODO</p>
+      TODO
       
       <h2>Resolving SSL Exceptions</h2>
       <p>When using <code>SSLSocketAppender</code>, the appender acts
@@ -789,8 +783,8 @@
       <p>When starting the logging server, you
          see the following exception in the log:</p>
          
-      <p><strong>javax.net.ssl.SSLException: No available certificate or 
-         key corresponds to the SSL cipher suites which are enabled</strong>
+      <p><em>javax.net.ssl.SSLException: No available certificate or 
+         key corresponds to the SSL cipher suites which are enabled</em>
       </p>
       
       <p>In most cases this means that you have not configured 
@@ -812,18 +806,18 @@
       <p>When the appender client attempts to connect to the logging
          server, you see the following exception in the log:
       </p>
-      <p><strong>javax.net.ssl.SSLHandshakeException: 
+      <p><em>javax.net.ssl.SSLHandshakeException: 
               sun.security.validator.ValidatorException: 
-              PKIX path building failed</strong>
+              PKIX path building failed</em>
       </p>
       <p>This problem is the result of the server presenting a certificate
          the client does not trust.  The most common cause is that you 
          are using a self-signed server certificate (or a server 
          certificate that was signed by your organization's internal
-         certification authority) and you have not provided a trust
-         store containing the server's self-signed certificate (or
-         the trusted root certificate(s) for the CA that signed your
-         server certificate).         
+         certification authority) and you have not configured the client
+         so that it references a trust store containing the server's 
+         self-signed certificate (or the trusted root certificate(s) for 
+         the CA that signed your server certificate).         
       </p> 
       <p>This problem can also occur if your server certificate has
          expired or has been revoked.  If you have access to the server
@@ -831,7 +825,7 @@
          each time the client attempts to connect:
       </p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException: Received fatal alert: ...</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException: Received fatal alert: ...</em>
       </p>
       
       <p>The remainder of the exception message will usually provide a
@@ -897,8 +891,8 @@
          server, you see the following exception in the client's log:
       </p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException:  Received fatal 
-         alert: ...</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: ...</em>
       </p>
 
       <p>The remainder of the exception message will usually provide a
@@ -964,14 +958,14 @@
          server, you see the following exception in the log:
       </p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException:  Received fatal 
-         alert: handshake_failure</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: handshake_failure</em>
       </p>
       
       <p>The server's log message is usually more descriptive.  For
          example:</p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException: SSLv2Hello is disabled</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException: SSLv2Hello is disabled</em>
       </p>
       
       <p>Generally, this means that you have excluded a protocol from
@@ -996,14 +990,14 @@
          server, you see the following exception in the log:
       </p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException:  Received fatal 
-         alert: handshake_failure</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: handshake_failure</em>
       </p>
       
       <p>The server's log message is usually more descriptive:
       </p>
       
-      <p><strong>javax.net.ssl.SSLHandshakeException: no cipher suites in common</strong>
+      <p><em>javax.net.ssl.SSLHandshakeException: no cipher suites in common</em>
       </p>
       
       <p>This means that you have configured the cipher suites on the
