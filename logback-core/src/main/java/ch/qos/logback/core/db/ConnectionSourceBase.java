@@ -43,8 +43,9 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
    *
    */
   public void discoverConnectionProperties() {
+    Connection connection = null;
     try {
-      Connection connection = getConnection();
+      connection = getConnection();
       if (connection == null) {
         addWarn("Could not get a connection");
         return;
@@ -61,6 +62,8 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
       
     } catch (SQLException se) {
       addWarn("Could not discover the dialect to use.", se);
+    } finally {
+      DBHelper.closeConnection(connection);
     }
   }
 

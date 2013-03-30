@@ -48,7 +48,7 @@ public class FileFilterUtilTest {
     FileNamePattern fnp = new FileNamePattern("c:/log/debug-old-%d{yyyy-MM-dd}.%i.log", context);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String rexexp = null;
-    rexexp = fnp.toRegex(sdf.parse("2010-08-10"));
+    rexexp = fnp.toRegexForFixedDate(sdf.parse("2010-08-10"));
     String stemRegex = FileFilterUtil.afterLastSlash(rexexp);
     int result = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
     assertEquals(12, result);

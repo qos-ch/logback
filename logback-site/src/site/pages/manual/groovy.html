@@ -91,7 +91,36 @@
     (GStrings), and if-else statements are available in
     <em>logback.groovy</em> files.</p>
 
-    <h2 class="doAnchor" name="entensions">Extensions specific to <em>logback.groovy</em></h2>
+    <h2 class="doAnchor">Automatic imports</h2>
+
+    <p><span class="label">Since 1.0.10</span> In order to reduce
+    unnecessary boilerplace several common types and packages are
+    imported automatically.  Thus, as long as you are only configuring
+    built-in appenders, layouts etc. you do not need to add the
+    corresponding import statement into your script. You will need
+    them for types not covered by the default imports, of course.</p>
+
+    <p>Here is the list of default imports:</p>
+
+    <ul>
+      <li><span class="code">import ch.qos.logback.core.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.encoder.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.read.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.rolling.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.status.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.net.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.encoder.PatternLayoutEncoder;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.sift.SiftingAppender;</span></li>
+    </ul>
+
+    <p>In addition, all constants in <span
+    class="code">ch.qos.logback.classic.Level</span> are statically
+    imported as is (uppercase) and as lowercased aliases. It follows
+    that your scripts can reference both <em>INFO</em> or
+    <em>info</em> without a static import statement.</p>
+
+    <h2 class="doAnchor" name="entensions">Extensions specific to
+    <em>logback.groovy</em></h2>
 
     <p><span class="green">Essentially, <em>Logback.groovy</em> syntax
     consists of half a dozen methods described next; in the reverse
@@ -113,16 +142,12 @@
 
     <p>To set the level of the root logger to WARN, you would write:</p>
 
-    <pre class="prettyprint source">import static ch.qos.logback.classic.Level.WARN
-
-root(WARN)</pre>
+    <pre class="prettyprint source">root(WARN)</pre>
 
     <p>To set the level of the root logger to INFO, and attach 
     appenders named "CONSOLE" and "FILE" to root, you would write:</p>
 
-    <pre class="prettyprint source">import static ch.qos.logback.classic.Level.INFO
-
-root(INFO, ["CONSOLE", "FILE"])</pre>
+    <pre class="prettyprint source">root(INFO, ["CONSOLE", "FILE"])</pre>
 
     <p>In the previous example, it is assumed that the appenders named
     "CONSOLE" and "FILE" were already defined. Defining appenders will
@@ -151,24 +176,18 @@ root(INFO, ["CONSOLE", "FILE"])</pre>
     <p>For example, the following script sets the level of the
     "com.foo" logger to INFO.</p>
 
-       <pre class="prettyprint source">import static ch.qos.logback.classic.Level.INFO
-
-logger("com.foo", INFO)</pre>
+       <pre class="prettyprint source">logger("com.foo", INFO)</pre>
 
     <p>The next script sets the level of the "com.foo" logger to
     DEBUG, and attaches the appender named "CONSOLE" to it.</p>
 
-  <pre class="prettyprint source">import static ch.qos.logback.classic.Level.DEBUG
-
-logger("com.foo", DEBUG, ["CONSOLE"])</pre>
+  <pre class="prettyprint source">logger("com.foo", DEBUG, ["CONSOLE"])</pre>
     
    <p>The next script is similiar to the previous one, except that it
    also sets the the additivity flag of the "com.foo" logger to
    false.</p>
 
-  <pre class="prettyprint source">import static ch.qos.logback.classic.Level.DEBUG
-
-logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
+  <pre class="prettyprint source">logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
 
 
     <!-- ========================================================== -->
@@ -199,12 +218,7 @@ logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
     %logger - %msg%n". The appender is then attached to the root
     logger.</p>
 
-    <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-import ch.qos.logback.core.FileAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-appender("FILE", FileAppender) {
+    <pre class="prettyprint source">appender("FILE", FileAppender) {
   file = "testFile.log"
   append = true
   encoder(PatternLayoutEncoder) {
@@ -240,13 +254,7 @@ root(DEBUG, ["FILE"])</pre>
     class="option">file</span> property.
     </p>
 
-<pre class="prettyprint source">import
-ch.qos.logback.classic.encoder.PatternLayoutEncoder import
-ch.qos.logback.core.FileAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-<b>def bySecond = timestamp("yyyyMMdd'T'HHmmss")</b>
+<pre class="prettyprint source"><b>def bySecond = timestamp("yyyyMMdd'T'HHmmss")</b>
 
 appender("FILE", FileAppender) {
   <b>file = "log-${bySecond}.txt"</b>
@@ -268,11 +276,7 @@ root(DEBUG, ["FILE"])</pre>
     </p>
 
     <pre class="prettyprint source">
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
 import chapters.layouts.MySampleConverter
-
-import static ch.qos.logback.classic.Level.DEBUG
 
 conversionRule("sample", MySampleConverter)
 appender("STDOUT", ConsoleAppender) {
@@ -316,7 +320,7 @@ root(DEBUG, ["STDOUT"])</pre>
     <code>statusListener</code> method and passing a listener class as
     an argument. Here is an example:</p>
 
-    <pre class="prettyprint source">import ch.qos.logback.core.status.OnConsoleStatusListener
+    <pre class="prettyprint source">import chapters.layouts.MySampleConverter
 
 <b>// We highly recommended that you always add a status listener just</b>
 <b>// after the last import statement and before all other statements</b>
@@ -325,7 +329,30 @@ root(DEBUG, ["STDOUT"])</pre>
     <p><a href="configuration.html#statusListener">Status listeners</a> were described in an earlier
     chapter.</p>
 
+    <h3>&#8226; <span class="code">jmxConfigurator(String name)</span></h3>
 
+    <p>You can register a <a href="jmxConfig.html"><code>JMXConfigurator</code></a>
+    MBean with this method. Invoke it without any parameters to use Logback's
+    default ObjectName
+    (<code>ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator</code>)
+    for the registered MBean:</p>
+
+    <pre class="prettyprint source">jmxConfigurator()</pre>
+
+    <p>To change the value of the <code>Name</code> key to something other than "default",
+    simply pass in a different name as the parameter for the <code>jmxConfigurator</code>
+    method:</p>
+
+    <pre class="prettyprint source">jmxConfigurator('MyName')</pre>
+
+    <p>If you want define the ObjectName completely, use the same syntax but
+    pass in a valid ObjectName string representation as the parameter:</p>
+
+    <pre class="prettyprint source">jmxConfigurator('myApp:type=LoggerManager')</pre>
+
+    <p>The method will first attempt to use the parameter as an ObjectName,
+    and falls back to treating it as the value for the "Name" key if it doesn't
+    represent a valid ObjectName.</p>
 
     <!-- ========================================================== -->
 
@@ -350,13 +377,7 @@ root(DEBUG, ["STDOUT"])</pre>
     <em>logback.groovy</em> file, then use the variable within a
     GString. Here is an example.</p>
 
-    <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.FileAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-
-// define the USER_HOME variable setting its value 
+    <pre class="prettyprint source">// define the USER_HOME variable setting its value 
 // to that of the "user.home" system property
 <b>def USER_HOME = System.getProperty("user.home")</b>
 
@@ -375,12 +396,7 @@ root(DEBUG, ["FILE"])</pre>
     <p>You can invoke Groovy's <code>println</code> method to print on
     the console. Here is an example.</p>
 
-    <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.FileAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-def USER_HOME = System.getProperty("user.home");
+    <pre class="prettyprint source">def USER_HOME = System.getProperty("user.home");
 <b>println "USER_HOME=${USER_HOME}"</b>
 
 appender("FILE", FileAppender) {
@@ -405,12 +421,7 @@ root(DEBUG, ["FILE"])</pre>
    point across.
    </p>
 
- <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-// will print "hostname is x" where x is the current host's name
+ <pre class="prettyprint source">// will print "hostname is x" where x is the current host's name
 println "Hostname is ${hostname}"
 
 appender("STDOUT", ConsoleAppender) {
@@ -422,12 +433,7 @@ appender("STDOUT", ConsoleAppender) {
    you need to define another variable and assign it the value of
    'hostname' as shown next.</p>
 
- <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-// define HOSTNAME by assigning it hostname
+ <pre class="prettyprint source">// define HOSTNAME by assigning it hostname
 def HOSTNAME=hostname
 // will print "hostname is x" where x is the current host's name
 println "Hostname is ${HOSTNAME}"
@@ -450,13 +456,7 @@ appender("STDOUT", ConsoleAppender) {
    <code>addError</code>() methods to send status messages to the
    context's <code>StatusManager</code>.</p>
 
-   <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.FileAppender
-import ch.qos.logback.core.status.OnConsoleStatusListener
-
-import static ch.qos.logback.classic.Level.DEBUG
-
-// always a good idea to add an on console status listener
+   <pre class="prettyprint source">// always a good idea to add an on console status listener
 statusListener(OnConsoleStatusListener)
 
 // set the context's name to wombat
@@ -491,15 +491,7 @@ root(DEBUG, ["FILE"])</pre>
    output directory of the rolling file appender also depends on the
    host.</p>
    
-   <pre class="prettyprint source">import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.rolling.RollingFileAppender
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
-import ch.qos.logback.core.ConsoleAppender
-import ch.qos.logback.core.status.OnConsoleStatusListener
-
-import static ch.qos.logback.classic.Level.INFO
-
-// always a good idea to add an on console status listener
+   <pre class="prettyprint source">// always a good idea to add an on console status listener
 statusListener(OnConsoleStatusListener)
 
 def appenderList = ["ROLLING"]

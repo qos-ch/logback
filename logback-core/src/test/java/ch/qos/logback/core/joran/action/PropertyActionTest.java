@@ -107,7 +107,7 @@ public class PropertyActionTest  {
   
   @Test
   public void testLoadFileWithPrerequisiteSubsitution() {
-    context.putProperty("STEM", CoreTestConstants.TEST_DIR_PREFIX + "input/joran");
+    context.putProperty("STEM", CoreTestConstants.TEST_SRC_PREFIX + "input/joran");
     atts.setValue("file", "${STEM}/propertyActionTest.properties");
     propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
@@ -116,7 +116,7 @@ public class PropertyActionTest  {
 
   @Test
   public void testLoadFile() {
-    atts.setValue("file", CoreTestConstants.TEST_DIR_PREFIX + "input/joran/propertyActionTest.properties");
+    atts.setValue("file", CoreTestConstants.TEST_SRC_PREFIX + "input/joran/propertyActionTest.properties");
     propertyAction.begin(ec, null, atts);
     assertEquals("tata", ec.getProperty("v1"));
     assertEquals("toto", ec.getProperty("v2"));

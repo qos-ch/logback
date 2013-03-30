@@ -38,7 +38,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   @Override
   public void start() {
     if (this.encoder == null) {
-      addError("No layout set for the appender named ["+ name +"].");
+      addError("No encoder set for the appender named ["+ name +"].");
       return;
     }
     
@@ -53,13 +53,13 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
     if (counter >= limit) {
       return;
     }
-    // output the events as formatted by our layout
+    // output the events as formatted by the wrapped layout
     try {
       this.encoder.doEncode(event);
     } catch (IOException e) {
     }
 
-    // prepare for next event
+   // prepare for next event
     counter++;
   }
 
@@ -70,6 +70,4 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
   public void setEncoder(PatternLayoutEncoder encoder) {
     this.encoder = encoder;
   }
-  
-  
 }

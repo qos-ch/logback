@@ -7,7 +7,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.12-SNAPSHOT</version>
   </parent>
 
   <artifactId>logback-classic</artifactId>
@@ -71,18 +71,6 @@
       <scope>test</scope>
     </dependency>
 
-
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-juli</artifactId>
-      <version>7.0.29</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-util</artifactId>
-      <version>7.0.29</version>
-    </dependency>
 
     <dependency>
       <groupId>dom4j</groupId>
@@ -332,12 +320,8 @@
             <exclude>**/TestConstants.java</exclude>
             <exclude>**/test_osgi/BundleTest.java</exclude>
             <exclude>**/ch/qos/logback/classic/util/InitializationIntegrationTest.java</exclude>
-            <!-- next test requires a running simple server -->
-            <exclude>**/SerializationPerfTest.java</exclude>
-            <!-- next test is fragile and anyhow will run as part of PackageTest -->
-            <exclude>**/LoggerPerfTest.java</exclude>
-            <!-- next test is fragile and anyhow will run as part of PackageTest -->
-            <exclude>**/LoggingEventSerializationPerfTest.java</exclude>
+            <!-- skip performance tests -->
+            <exclude>**/*PerfTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

@@ -1,4 +1,5 @@
 
+document.write('<div class="menuGroup">');
 document.write('<p class="menu_header">Logback project</p>');
 document.write('<p class="menu"><a href="' + prefix + 'index.html">Introduction</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'download.html">Download</a></p>');
@@ -23,4 +24,8 @@ document.write('<p class="menu"><a href="http://logback.qos.ch/translator/">log4
 document.write('<p class="menu"><a href="http://logback.qos.ch/translator/asGroovy.html">logback.XML to Groovy</a>');
 
 document.write('</p>');
+document.write('</div>');
 
+document.write('<p/>');
+
+document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');

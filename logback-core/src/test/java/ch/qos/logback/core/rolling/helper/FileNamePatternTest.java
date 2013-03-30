@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -114,13 +113,13 @@ public class FileNamePatternTest {
     {
       FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt",
           context);
-      String regex = fnp.toRegex(cal.getTime());
+      String regex = fnp.toRegexForFixedDate(cal.getTime());
       assertEquals("foo-2003.05.20-(\\d{1,3}).txt", regex);
     }
     {
       FileNamePattern fnp = new FileNamePattern("\\toto\\foo-%d{yyyy\\MM\\dd}-%i.txt",
           context);
-      String regex = fnp.toRegex(cal.getTime());
+      String regex = fnp.toRegexForFixedDate(cal.getTime());
       assertEquals("/toto/foo-2003/05/20-(\\d{1,3}).txt", regex);
     }
   }

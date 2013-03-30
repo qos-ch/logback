@@ -52,7 +52,8 @@ public class GEventEvaluator extends EventEvaluatorBase<ILoggingEvent> {
     String currentPackageName = this.getClass().getPackage().getName();
     currentPackageName = currentPackageName.replace('.', '/');
 
-    String scriptText = FileUtil.resourceAsString(this, classLoader, currentPackageName + "/EvaluatorTemplate.groovy");
+    FileUtil fileUtil = new FileUtil(getContext());
+    String scriptText = fileUtil.resourceAsString(classLoader, currentPackageName + "/EvaluatorTemplate.groovy");
     if (scriptText == null) {
       return;
     }

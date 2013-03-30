@@ -62,7 +62,7 @@ public class TrivialConfiguratorTest {
     int oldBeginCount = IncAction.beginCount;
     int oldEndCount = IncAction.endCount;
     int oldErrorCount = IncAction.errorCount;
-    doTest(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/" + "inc.xml");
+    doTest(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "inc.xml");
     assertEquals(oldErrorCount, IncAction.errorCount);
     assertEquals(oldBeginCount + 1, IncAction.beginCount);
     assertEquals(oldEndCount + 1, IncAction.endCount);
@@ -72,7 +72,7 @@ public class TrivialConfiguratorTest {
   public void inexistentFile() {
     TrivialStatusListener tsl = new TrivialStatusListener();
     tsl.start();
-    String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/"
+    String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/"
             + "nothereBLAH.xml";
     context.getStatusManager().add(tsl);
     try {
@@ -90,7 +90,7 @@ public class TrivialConfiguratorTest {
   public void illFormedXML() {
     TrivialStatusListener tsl = new TrivialStatusListener();
     tsl.start();
-    String filename = CoreTestConstants.TEST_DIR_PREFIX + "input/joran/" + "illformed.xml";
+    String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "illformed.xml";
     context.getStatusManager().add(tsl);
     try {
       doTest(filename);

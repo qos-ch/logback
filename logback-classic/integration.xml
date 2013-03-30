@@ -21,12 +21,9 @@
 	</path >
 
 
-
-
 	<target name="testAll" depends="testWithoutGroovy, testConditionalsWithoutJanino" 
           unless="maven.test.skip">
 	</target>
-
 
 
 	<target name="testWithoutGroovy" unless="maven.test.skip">
@@ -38,7 +35,6 @@
             name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
 		</junit>
 	</target>
-
 
 	<target name="testConditionalsWithoutJanino" unless="maven.test.skip">
 		<junit printsummary="yes" fork="no" haltonfailure="yes">

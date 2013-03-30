@@ -20,7 +20,7 @@ import java.sql.Statement;
 
 import org.hsqldb.Server;
 
-public class DBAppenderTestFixture  {
+public class DBAppenderHSQLTestFixture {
 
   public static final String DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   String serverProps;

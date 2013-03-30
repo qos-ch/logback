@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -36,50 +37,38 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.TrivialStatusListener;
+import sun.security.jca.ProviderList;
 
 public class ContextInitializerTest {
 
-  org.slf4j.Logger logger = LoggerFactory.getLogger(ContextInitializerTest.class);
-  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-  Logger root = (Logger) LoggerFactory.getLogger("root");
+  LoggerContext loggerContext = new LoggerContext();
+  Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
   @Before
   public void setUp() throws Exception {
-    logger.debug("Hello-didily-odily");
   }
 
   @After
   public void tearDown() throws Exception {
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
     System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
-    lc.reset(); // we are going to need this context
   }
 
-  @Test
-  @Ignore
-  // this test works only if logback-test.xml or logback.xml files are on the classpath. 
-  // However, this is something we try to avoid in order to simplify the life
-  // of users trying to follows the manual and logback-examples from an IDE
-  public void atoconfig() {
-    Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
-    assertNotNull(appender);
-    assertTrue(appender instanceof ConsoleAppender);
-  }
 
   @Test
   @Ignore  
   // this test works only if logback-test.xml or logback.xml files are on the classpath. 
   // However, this is something we try to avoid in order to simplify the life
-  // of users trying to follows the manual and logback-examples from an IDE
+  // of users trying to follow the manual and logback-examples from an IDE
   public void reset() throws JoranException {
     {
-      new ContextInitializer(lc).autoConfig();
+      new ContextInitializer(loggerContext).autoConfig();
       Appender appender = root.getAppender("STDOUT");
       assertNotNull(appender);
       assertTrue(appender instanceof ConsoleAppender);
     }
     {
-      lc.stop();
+      loggerContext.stop();
       Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
       assertNull(appender);
     }
@@ -96,7 +85,7 @@ public class ContextInitializerTest {
   public void doAutoConfigFromSystemProperties(String val) throws JoranException {
     //lc.reset();
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
-    new ContextInitializer(lc).autoConfig();
+    new ContextInitializer(loggerContext).autoConfig();
     Appender<ILoggingEvent> appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
     assertNotNull(appender);
   }
@@ -104,23 +93,23 @@ public class ContextInitializerTest {
   @Test
   public void autoStatusListener() throws JoranException {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS, TrivialStatusListener.class.getName());
-    List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
-    assertEquals(0, sll.size());
+    List<StatusListener> statusListenerList = loggerContext.getStatusManager().getCopyOfStatusListenerList();
+    assertEquals(0, statusListenerList.size());
     doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
-    sll = lc.getStatusManager().getCopyOfStatusListenerList();
-    assertTrue(sll.size() +" should be 1", sll.size() == 1);
+    statusListenerList = loggerContext.getStatusManager().getCopyOfStatusListenerList();
+    assertTrue(statusListenerList.size() +" should be 1", statusListenerList.size() == 1);
     // LOGBACK-767
-    TrivialStatusListener tsl = (TrivialStatusListener) sll.get(0);
+    TrivialStatusListener tsl = (TrivialStatusListener) statusListenerList.get(0);
     assertTrue("expecting at least one event in list", tsl.list.size() > 0);
   }
   
   @Test
   public void autoOnConsoleStatusListener() throws JoranException {
     System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS,  ContextInitializer.SYSOUT);
-    List<StatusListener> sll = lc.getStatusManager().getCopyOfStatusListenerList();
+    List<StatusListener> sll = loggerContext.getStatusManager().getCopyOfStatusListenerList();
     assertEquals(0, sll.size());
     doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
-    sll = lc.getStatusManager().getCopyOfStatusListenerList();
+    sll = loggerContext.getStatusManager().getCopyOfStatusListenerList();
     assertTrue(sll.size() +" should be 1", sll.size() == 1);
   }
 }

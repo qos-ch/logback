@@ -393,8 +393,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
       }
       requestContent = buf.toString();
     } else {
-
-      // retreive the byte array placed by TeeFilter
+      // retrieve the byte array placed by TeeFilter
       byte[] inputBuffer = (byte[]) httpRequest
           .getAttribute(AccessConstants.LB_INPUT_BUFFER);
 

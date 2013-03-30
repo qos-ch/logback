@@ -13,23 +13,24 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-
-import ch.qos.logback.core.rolling.helper.RenameUtil;
-import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
+import ch.qos.logback.core.rolling.helper.RenameUtil;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 public class RenameUtilTest {
 
@@ -51,7 +52,7 @@ public class RenameUtilTest {
     randomOutputDir.mkdirs();
   }
 
- @Test
+  @Test
   public void renameToNonExistingDirectory() throws IOException, RolloverFailure {
     RenameUtil renameUtil = new RenameUtil();
     renameUtil.setContext(context);
@@ -60,11 +61,48 @@ public class RenameUtilTest {
     File fromFile = File.createTempFile("from" + diff, "test",
             randomOutputDir);
 
-    String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX+diff2;
+    String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff2;
 
     renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     assertTrue(statusChecker.isErrorFree(0));
+  }
+
+
+  @Test
+  @Ignore
+  public void MANUAL_renamingOnDifferentVolumesOnLinux() throws IOException, RolloverFailure {
+    RenameUtil renameUtil = new RenameUtil();
+    renameUtil.setContext(context);
+
+    String src = "/tmp/ramdisk/foo.txt";
+    FileOutputStream fis = new FileOutputStream(src);
+    fis.write(("hello" + diff).getBytes());
+
+    renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
+    StatusPrinter.print(context);
+  }
+
+
+  @Test
+  @Ignore
+  public void MANUAL_renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
+    RenameUtil renameUtil = new RenameUtil();
+    renameUtil.setContext(context);
+
+    String src = "c:/tmp/foo.txt";
+    FileOutputStream fis = new FileOutputStream(src);
+    fis.write(("hello" + diff).getBytes());
+    fis.close();
+
+    renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
+    StatusPrinter.print(context);
+    assertTrue(statusChecker.isErrorFree(0));
+  }
+
+  @Test
+  public void renameByCopying() {
+
   }
 
 }

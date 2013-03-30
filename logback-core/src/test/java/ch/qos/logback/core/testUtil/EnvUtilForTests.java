@@ -15,10 +15,12 @@ package ch.qos.logback.core.testUtil;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.qos.logback.core.util.CoreTestConstants;
 
-public class Env {
+public class EnvUtilForTests {
 
   static public boolean isWindows() {
     return System.getProperty("os.name").indexOf("Windows") != -1;
@@ -32,17 +34,7 @@ public class Env {
     return System.getProperty("os.name").indexOf("Linux") != -1;
   }
 
-  static public boolean isJDK6OrHigher() {
-    String javaVersion = System.getProperty("java.version");
-    if (javaVersion == null) {
-      return false;
-    }
-    if (javaVersion.startsWith("1.6") || javaVersion.startsWith("1.7")) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+
 
   static public String getLocalHostName() {
     InetAddress localhostIA;
@@ -66,13 +58,13 @@ public class Env {
     }
     return false;
   }
-  
+
 
   public static String getPathToBash() {
-    if(Env.isLinux()) {
+    if (EnvUtilForTests.isLinux()) {
       return CoreTestConstants.BASH_PATH_ON_LINUX;
     }
-    if(Env.isLocalHostNameInList(new String[] {"hetz", "het"})) {
+    if (EnvUtilForTests.isLocalHostNameInList(new String[]{"hetz", "het"})) {
       return CoreTestConstants.BASH_PATH_ON_CYGWIN;
     }
     return null;

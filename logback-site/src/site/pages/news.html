@@ -28,9 +28,115 @@
     announce</a> mailing list.</p>
 
 
-     <hr width="80%" align="center" />
+    <hr width="80%" align="center" />
 
-    <h3>November 13th, 2012 - Release of version 1.0.8</h3>
+    <h3>25th of March, 2013 - Release of version 1.0.11</h3>
+
+
+    <p>Under Unix*, the basic/quick file rename method supplied by
+    Java does not work if the source and target files are on different
+    file systems. This problem was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-108">LOGBACK-108</a> by
+    Daniel Potter. In order to deal with this issue, logback now will
+    perform rename by copying if the source and target files are on
+    different file systems and the host JDK is version 1.7 or
+    later. See also the related <a
+    href="codes.html#renamingError">error code</a>.</p>
+
+
+    <p>The "cn" conversion word now correctly maps to
+    <code>ContextNameConverter</code> class. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-463">LOGBACK-463</a>
+    reported by Michael Osipov with Mark A. Ziesemer providing the
+    appropriate patch.
+    </p>
+
+    <p>Added gray to the list of <a
+    href="manual/layouts.html#coloring">ANSI colors supported by
+    logback</a>. The relevant pull request was kindly provided by
+    Craig P. Motlin.</p>
+
+    <p>The <code>discoverConnectionProperties()</code> method in class
+    <code>ConnectionSourceBase</code> no longer leaks
+    connections. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-798">LOGBACK-798</a>
+    reported by Sayevskiy Viacheslav. Many thanks to Ivan
+    (Wee-Willie-Winkie) who contributed the appropriate fix.
+    </p>
+
+    <p><code>DBAppender</code> in logback-classic module no longer
+    assumes that caller information is always available. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-805">LOGBACK-805</a>
+    reported by Daris Cooper who also provided a corrective patch.</p>
+
+    <p>In logback-access, more correct determination of whether
+    contents of an <code>HttpServletRequest</code> are URL encoded or
+    not. The <a href="https://github.com/qos-ch/logback/pull/71">bug
+    fix</a> was submitted by David Schneider. The same issue was later
+    independently reported by Grzegorz Kuligowski in <a
+    href="http://jira.qos.ch/browse/LOGBACK-814">LOGBACK-814</a>.</p>
+
+    <p>Both <code>SocketAppenderBase</code> and
+    <code>SimpleSocketServer</code> now use a socket factory to create
+    sockets. These changes were asked in <a
+    href="http://jira.qos.ch/browse/LOGBACK-815">LOGBACK-815</a> and
+    <a href="http://jira.qos.ch/browse/LOGBACK-816">LOGBACK-816</a> by
+    Carl Harris who also contributed the relevant patch.
+    </p>
+
+    <hr width="80%" align="center" />
+
+    <h3>15th of March, 2013 - Release of version 1.0.10</h3>
+
+    <p>Upgraded the (optional) groovy dependency to version 2.0.7
+    (from 2.0.0).</p>
+
+    <p>The logger cache field in <code>LoggerContext</code> now uses a
+    <code>ConcurrentHashMap</code> instead of a regular
+    <code>HashMap</code>. This dramatically improves the speed of
+    logger retrieval and incidentally fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-142">LOGBACK-142</a>.
+    </p>
+
+    <p>In <code>SyslogAppender</code> allow <a
+    href="manual/appenders.html#syslogSuffixPattern">suffixPattern</a>
+    to begin with literal text. This issue was reported Bruno Polaco
+    in <a href="http://jira.qos.ch/browse/LOGBACK-782">LOGBACK-782</a>
+    who also provided the relevant patch.
+    </p>
+    
+    <p>In order to reduce unnecessary boilerplate several common types
+    and packages are now <a
+    href="manual/groovy.html#AutomaticImports">imported
+    automatically</a>. This feature was contributed by Joris
+    Kuipers.</p>
+
+    <p>Computation of caller information now takes into account Groovy
+    frames (if nunning under Groovy). This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-811">LOGBACK-811</a>.</p>
+
+  
+  
+    <hr width="80%" align="center" />
+
+    <h3>December 5th, 2012 - Release of version 1.0.9</h3>
+
+    <p>Removed an erroneous compile-time dependency on Tomcat in the
+    logback-classic module. This issue was reported by Arnaud
+    Heritier.</p>
+
+    <hr width="80%" align="center" />
+
+    <h3>December 4th, 2012 - Release of version 1.0.8</h3>
+
+    <div class="breaking">
+      <h4>logback-classic updated to use SLF4J version 1.7.2 instead
+      of version 1.6.6.</h4>
+      <p>The logback-classic module now uses SLF4J version 1.7.2
+      instead of version 1.6.6. This only impacts projects running
+      under an OSGi platform as SLF4J versions 1.7.x and 1.6.x are
+      100% binary compatible.</p>
+    </div>
 
     <p>Fixed incorrect <code>BufferStream</code> assignment after
     recovery in <code>ResilientFileOutputStream</code>. This issue was

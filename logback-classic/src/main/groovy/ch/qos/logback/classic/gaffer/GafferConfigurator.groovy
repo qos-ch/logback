@@ -13,19 +13,22 @@
  */
 package ch.qos.logback.classic.gaffer
 
+import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.classic.sift.SiftingAppender
 import ch.qos.logback.core.util.ContextUtil
 
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.control.customizers.ImportCustomizer
 
 class GafferConfigurator {
 
   LoggerContext context
-  //ConfigurationDelegate configurationDelegate = new ConfigurationDelegate();
                          
   GafferConfigurator(LoggerContext context) {
     this.context = context
-    //configurationDelegate.context = context;
   }
 
   protected void informContextOfURLUsedForConfiguration(URL url) {
@@ -44,19 +47,43 @@ class GafferConfigurator {
 
   void run(String dslText) {
     Binding binding = new Binding();
-    binding.setProperty("hostname", ContextUtil.getLocalHostName());
-    Script dslScript = new GroovyShell(binding).parse(dslText)
+    binding.setProperty("hostname", ContextUtil.localHostName);
+
+    def configuration = new CompilerConfiguration()
+    configuration.addCompilationCustomizers(importCustomizer())
+
+    // caller data should take into account groovy frames
+    new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
+
+    Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
 
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
     dslScript.metaClass.getDeclaredOrigin = { dslScript }
-//    metaClass.statusListener = configurationDelegate.&statusListener
-//    dslScript.metaClass.scan = configurationDelegate.&scan
-//    dslScript.metaClass.appender = configurationDelegate.&appender
-//    dslScript.metaClass.root = configurationDelegate.&root
-//    dslScript.metaClass.logger = configurationDelegate.&logger
 
     dslScript.run()
+  }
+
+  protected ImportCustomizer importCustomizer() {
+    def customizer = new ImportCustomizer()
+
+    customizer.addImports(PatternLayoutEncoder.class.name, SiftingAppender.class.name)
+
+    def core = 'ch.qos.logback.core'
+    customizer.addStarImports(core, "${core}.encoder", "${core}.read", "${core}.rolling", "${core}.status",
+            "ch.qos.logback.classic.net")
+
+    customizer.addStaticStars(Level.class.name)
+
+    customizer.addStaticImport('off', Level.class.name, 'OFF')
+    customizer.addStaticImport('error', Level.class.name, 'ERROR')
+    customizer.addStaticImport('warn', Level.class.name, 'WARN')
+    customizer.addStaticImport('info', Level.class.name, 'INFO')
+    customizer.addStaticImport('debug', Level.class.name, 'DEBUG')
+    customizer.addStaticImport('trace', Level.class.name, 'TRACE')
+    customizer.addStaticImport('all', Level.class.name, 'ALL')
+
+    customizer
   }
 
 }

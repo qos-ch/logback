@@ -16,6 +16,7 @@ package ch.qos.logback.classic.turbo;
 import java.io.File;
 import java.io.IOException;
 
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,7 +29,6 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.testUtil.Env;
 
 @Ignore
 public class ReconfigurePerf {
@@ -57,7 +57,7 @@ public class ReconfigurePerf {
   @Before
   public void setUp() {
     // take into account propagation latency occurs on Linux
-    if (Env.isLinux()) {
+    if (EnvUtilForTests.isLinux()) {
       sleepBetweenUpdates = 850;
       totalTestDuration = sleepBetweenUpdates * numberOfCycles;
     } else {

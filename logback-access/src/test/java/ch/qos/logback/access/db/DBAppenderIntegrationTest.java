@@ -19,6 +19,8 @@ import java.util.Random;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
+import ch.qos.logback.core.util.EnvUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,12 +34,11 @@ import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.Env;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderIntegrationTest {
 
-  static String LOCAL_HOST_NAME = Env.getLocalHostName();
+  static String LOCAL_HOST_NAME = EnvUtilForTests.getLocalHostName();
   static String[] CONFORMING_HOST_LIST = new String[] { "Orion" };
 
   int diff = new Random(System.nanoTime()).nextInt(10000);
@@ -81,10 +82,10 @@ public class DBAppenderIntegrationTest {
   }
   
   static boolean isConformingHostAndJDK16OrHigher() {
-    if(!Env.isJDK6OrHigher()) {
+    if(!EnvUtil.isJDK6OrHigher()) {
       return false;
     }
-    return Env.isLocalHostNameInList(CONFORMING_HOST_LIST);
+    return EnvUtilForTests.isLocalHostNameInList(CONFORMING_HOST_LIST);
   }
 
   @Test

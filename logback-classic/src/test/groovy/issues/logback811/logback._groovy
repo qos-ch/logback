@@ -1,0 +1,12 @@
+
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.core.ConsoleAppender
+import static ch.qos.logback.classic.Level.*
+
+appender("STDOUT", ConsoleAppender) {
+   encoder(PatternLayoutEncoder) {
+     pattern = "%date [%-5level] [%4.4line] - %msg%n"
+   }
+}
+
+root(DEBUG, ["STDOUT"])

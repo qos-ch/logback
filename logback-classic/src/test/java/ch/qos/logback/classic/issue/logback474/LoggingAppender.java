@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.issue.lbclassic154;
+package ch.qos.logback.classic.issue.logback474;
 
 import org.slf4j.Logger;
 

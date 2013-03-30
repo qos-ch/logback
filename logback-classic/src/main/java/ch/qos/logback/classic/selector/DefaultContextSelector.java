@@ -20,10 +20,10 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class DefaultContextSelector implements ContextSelector {
 
-  private LoggerContext context;
+  private LoggerContext defaultLoggerContext;
   
   public DefaultContextSelector(LoggerContext context) {
-    this.context = context;
+    this.defaultLoggerContext = context;
   }
   
   public LoggerContext getLoggerContext() {
@@ -31,20 +31,20 @@ public class DefaultContextSelector implements ContextSelector {
   }
 
   public LoggerContext getDefaultLoggerContext() {
-    return context;
+    return defaultLoggerContext;
   }
 
   public LoggerContext detachLoggerContext(String loggerContextName) {
-    return context;
+    return defaultLoggerContext;
   }
   
   public List<String> getContextNames() {
-    return Arrays.asList(context.getName());
+    return Arrays.asList(defaultLoggerContext.getName());
   }
   
   public LoggerContext getLoggerContext(String name) {
-    if (context.getName().equals(name)) {
-      return context;
+    if (defaultLoggerContext.getName().equals(name)) {
+      return defaultLoggerContext;
     } else {
       return null;
     }

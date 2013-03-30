@@ -1774,6 +1774,66 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		its clients to a second server.
 		</p>
 		
+    <h3> 
+      <a name="SSLSocketAppender" href="#SSLSocketAppender"><span
+      class="anchor"/></a>SSLSocketAppender
+    </h3>
+    
+    <p>The <a 
+    href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic <a
+    href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
+    <code>SocketAppender</code></a> allowing
+    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
+    when using the basic <code>SocketAppender</code>, log events are delivered
+    by transmitting serialized <code>ILoggingEvent</code> instances.  However,
+    when using <code>SSLSocketAppender</code>, the serialized object stream 
+    is sent over an encrypted session.
+    </p>
+    
+    <p>
+    Using this appender not only provides confidentiality and integrity 
+    of log messages on the wire, it also allows for the authentication of
+    both senders and receivers of log messages.  Configuration of this appender
+    includes all of the relevant SSL parameters for validating peer trust,
+    specifying a credential, and controlling various aspects of the
+    SSL protocol.  For information on specifying the SSL configuration for
+    <code>SSLSocketAppender</code> see <a href="usingSSL.html">Using SSL</a>.
+    </p>
+        
+    <p>The standard logback distribution includes a SSL-enabled simple log 
+    server application named
+    <code>ch.qos.logback.classic.net.SimpleSSLSocketServer</code> with the same
+    command-line syntax as the basic <code>SimpleSocketServer</code>.  When using
+    <code>SimpleSSLSocketServer</code> you must provide the following system
+    properties using the <code>-D</code> JVM argument on the command line:
+    </p>
+    
+    <table class="bodyTable striped">
+      <tr>
+        <th>Property Name</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><code>javax.net.ssl.keyStore</code></td>
+        <td>path to the key store containing your server's X.509 certificate
+            and private key</td>
+      </tr>
+      <tr>
+        <td><code>javax.net.ssl.keyStorePassword</code></td>
+        <td>password for the key store</td>
+      </tr>
+    </table>
+		
+		<p>For example, if your server's key is stored in a JKS keystore located at
+       <code>/etc/logback-server.jks</code> you could run the server using the
+       following command line:
+    </p>
+     
+    <p class="source">java ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
+    src/main/java/chapters/appenders/socket/server2.xml \
+    -Djavax.net.ssl.keyStore=/etc/logback-server.jks 
+    -Djavax.net.ssl.keyStorePassword=changeit</p>
 		
    <h3 class="doAnchor">SMTPAppender</h3>
 
@@ -3620,8 +3680,11 @@ logger.debug("Alice says hello"); </p>
     <p>The <code>CountingConsoleAppender</code>, which we list next,
     appends a limited number of incoming events on the console. It
     shuts down after the limit is reached.  It uses a
-    <code>Layout</code> to format the events and accepts a parameter.
-    Thus, a few more methods are needed.
+    <code>PatternLayoutEncoder</code> to format the events and accepts
+    a parameter named <code>limit</code>. Therefore, a few more
+    methods beyond <code>append(Object eventObject)</code> are
+    needed. As shown below, these parameters are handles
+    auto-magically by logback's various configuration mechanisms.
     </p>
     
     <em>Example 4.<span class="autoExec"/>:
@@ -3629,54 +3692,68 @@ logger.debug("Alice says hello"); </p>
     (logback-examples/src/main/java/chapters/appenders/CountingConsoleAppender.java)</em>
     <pre class="prettyprint source">package chapters.appenders;
 
+import java.io.IOException;
+
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
 
 
 public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
-  static int DEFAULT_LIMIT = 16;
+  static int DEFAULT_LIMIT = 10;
   int counter = 0;
   int limit = DEFAULT_LIMIT;
-
-  public CountingConsoleAppender() {
-  }
-
+  
+  PatternLayoutEncoder encoder;
+  
   public void setLimit(int limit) {
     this.limit = limit;
   }
 
   public int getLimit() {
     return limit;
-  }  
+  }
   
   @Override
   public void start() {
-    if (this.layout == null) {
-      addError("No layout set for the appender named ["+ name +"].");
+    if (this.encoder == null) {
+      addError("No encoder set for the appender named ["+ name +"].");
       return;
     }
     
+    try {
+      encoder.init(System.out);
+    } catch (IOException e) {
+    }
     super.start();
   }
 
   public void append(ILoggingEvent event) {
-
     if (counter >= limit) {
       return;
     }
-
     // output the events as formatted by our layout
-    System.out.print(this.layout.doLayout(event));
+    try {
+      this.encoder.doEncode(event);
+    } catch (IOException e) {
+    }
 
     // prepare for next event
     counter++;
   }
 
+  public PatternLayoutEncoder getEncoder() {
+    return encoder;
+  }
+
+  public void setEncoder(PatternLayoutEncoder encoder) {
+    this.encoder = encoder;
+  }
 }</pre>
 
 		<p>The <code>start()</code> method checks for the presence of a
-		<code>Layout</code>.  In case the layout is not set, the appender
-		fails to start with an error message.
+		<code>PatternLayoutEncoder</code>.  In case the encoder is not
+		set, the appender fails to start and emits an error message.
 		</p>
 		
 		<p>This custom appender illustrates two points:</p>
@@ -3684,10 +3761,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		<ul>
 
       <li>All properties that follow the setter/getter JavaBeans
-      conventions are handled transparently. The <code>start()</code>
-      method, which is called automatically during logback
-      configuration, has the responsibility of verifying that the
-      various properties of the appender are coherent.
+      conventions are handled transparently by logback
+      configurators. The <code>start()</code> method, which is called
+      automatically during logback configuration, has the
+      responsibility of verifying that the various properties of the
+      appender are set and are coherent.
 			</li>
 
 			<li>The <code>AppenderBase.doAppend()</code> method invokes the
@@ -3733,6 +3811,26 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			for classic's <code>SocketAppender</code>.
 		</p>
 
+    <a name="AccessSSLSocketAppender"></a>
+    <h3>SSLSocketAppender</h3>
+
+    <p>The <a 
+    href="../xref/ch/qos/logback/access/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic <a
+    href="../xref/ch/qos/logback/access/net/SocketAppender.html">
+    <code>SocketAppender</code></a> allowing
+    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
+    when using the basic <code>SocketAppender</code>, log events are delivered
+    by transmitting serialized <code>AccessEvent</code> instances.  However,
+    when using <code>SSLSocketAppender</code>, the serialized object stream 
+    is sent over an encrypted session.
+    </p>
+    
+    <p>
+      The properties of access' <code>SSLSocketAppender</code> are the same as 
+      those available for classic's <code>SSLSocketAppender</code>.
+    </p>
+    
 	 	<a name="AccessSMTPAppender"></a>	
 		<h3>SMTPAppender</h3>
 		

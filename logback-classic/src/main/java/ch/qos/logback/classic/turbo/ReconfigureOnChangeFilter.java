@@ -59,6 +59,10 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(context);
     if (configurationWatchList != null) {
       mainConfigurationURL = configurationWatchList.getMainURL();
+      if(mainConfigurationURL == null) {
+        addWarn("Due to missing top level configuration file, automatic reconfiguration is impossible.");
+        return;
+      }
       List<File> watchList = configurationWatchList.getCopyOfFileWatchList();
       long inSeconds = refreshPeriod / 1000;
       addInfo("Will scan for changes in [" + watchList + "] every "
@@ -149,7 +153,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
   // by detaching reconfiguration to a new thread, we release the various
   // locks held by the current thread, in particular, the AppenderAttachable
   // reader lock.
-  private void detachReconfigurationToNewThread() {
+  void detachReconfigurationToNewThread() {
     addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
     context.getExecutorService().submit(new ReconfiguringThread());
   }
@@ -233,7 +237,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
           addError("Unexpected exception thrown by a configuration considered safe.", e);
         }
       } else {
-        addWarn("No previous configuration to fall back to.");
+        addWarn("No previous configuration to fall back on.");
       }
     }
   }

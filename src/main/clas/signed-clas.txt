@@ -24,6 +24,9 @@ Christian Trutz          Mark, Germany         2012-06-14
 Les Hazlewood            CA, USA               2012-09-10
 Libor Jelinek            Czech Republic        2012-09-17
 Matthew Bishop           Vancouver, Canada     2012-09-18
+Joris Kuipers            Amstelveen, NL        2013-02-11
+Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26 
+Carl E. Harris Jr.       VA, USA               2013-03-27
 
 Justification for CLAs
 ----------------------
@@ -50,8 +53,10 @@ vetting has been performed (due dillegence).
 
 A more neutral discussion of CLAs can be found at [2].
 
-BTW, the CLA can be sent to Ceki directly by email (a scanned copy is
-fine).
+BTW, the CLA can be sent to Ceki directly by email. A scanned copy on
+two separate pages is OK but please make sure that the images render
+reasonably well when printed on a laser printer. Images taken by
+cellphone cameras often render as a large gray smudge when printed.
 
 [1] http://logback.qos.ch/cla.txt
 [2] http://www.oss-watch.ac.uk/resources/cla.xml

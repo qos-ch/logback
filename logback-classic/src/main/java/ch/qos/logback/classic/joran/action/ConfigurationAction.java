@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import org.xml.sax.Attributes;
 
@@ -23,7 +24,6 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
@@ -53,7 +53,13 @@ public class ConfigurationAction extends Action {
 
     processScanAttrib(ic, attributes);
 
-    new ContextUtil(context).addHostNameAsProperty();
+    ContextUtil contextUtil = new ContextUtil(context);
+    contextUtil.addHostNameAsProperty();
+
+    if(EnvUtil.isGroovyAvailable()) {
+      LoggerContext lc = (LoggerContext) context;
+      contextUtil.addGroovyPackages(lc.getFrameworkPackages());
+    }
 
     // the context is turbo filter attachable, so it is pushed on top of the
     // stack

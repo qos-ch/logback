@@ -48,7 +48,7 @@ public class FruitConfigurationTest  {
 
       simpleConfigurator.setContext(fruitContext);
 
-      simpleConfigurator.doConfigure(CoreTestConstants.TEST_DIR_PREFIX + "input/joran/replay/"
+      simpleConfigurator.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/replay/"
           + filename);
 
       return fruitContext.getFruitShellList();
