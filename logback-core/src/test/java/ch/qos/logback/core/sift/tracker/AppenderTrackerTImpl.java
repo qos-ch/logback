@@ -32,6 +32,8 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
 
   List<TEntry> entryList = new LinkedList<TEntry>();
   long lastCheck = 0;
+  int timeout = DEFAULT_TIMEOUT;
+  int maxAppenders = DEFAULT_MAX_APPENDERS;
 
   @SuppressWarnings("unchecked")
   synchronized public void put(String k, Appender<Object> appender,
@@ -44,6 +46,9 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
       entryList.add(te);
     }
     Collections.sort(entryList);
+    if (entryList.size() > maxAppenders) {
+      entryList.remove(entryList.size() - 1);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -83,7 +88,7 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
   }
 
   private boolean isEntryStale(TEntry entry, long now) {
-    return ((entry.timestamp + THRESHOLD) < now);
+    return ((entry.timestamp + timeout) < now);
   }
 
   synchronized public List<String> keyList() {
@@ -102,7 +107,15 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
     return appenderList;
   }
 
-  private TEntry getEntry(String k) {
+    public void setTimeout(int timeout) {
+      this.timeout = timeout;
+    }
+
+    public void setMaxAppenders(int maxAppenders) {
+      this.maxAppenders = maxAppenders;
+    }
+
+    private TEntry getEntry(String k) {
     for (int i = 0; i < entryList.size(); i++) {
       TEntry te = entryList.get(i);
       if (te.key.equals(k)) {
