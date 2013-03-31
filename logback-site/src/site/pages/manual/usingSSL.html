@@ -759,8 +759,207 @@
         </tr>
       </table>
       
-      <h3>Examples</h3>
-      TODO
+      <h2>Examples</h2>
+
+      <h3>Creating and Using a Self-Signed Logging Server Credential</h3>
+      <p>To generate a self-signed certificate, you can use the <em>keytool</em>
+      utility that is shipped with the Java Runtime Environment (JRE).
+      The instructions below walk through the process of creating a
+      self-signed X.509 credential in a key store for your logging server 
+      and creating a trust store for use with your appender clients.
+      </p>
+      
+      <h4>Creating the logging server credential:</h4>
+      <p>The following command will generate the self-signed client
+      credential in a file named <em>server.keystore</em>.
+      <pre class="source">keytool -genkey -alias server -dname "CN=my-logging-server" \
+    -keyalg RSA -validity 365 -keystore server.keystore
+Enter keystore password: &lt;Enter password of your choosing>
+Re-enter new password: &lt;Re-enter same password>
+Enter key password for <my-logging-server>
+	(RETURN if same as keystore password):  &lt;Press RETURN>
+</pre>
+
+      <p>The name <em>my-logging-server</em> used in the <em>dname</em>
+      may be any valid name of your choosing.  You may wish to use the
+      fully-qualified domain name of the logging server host. The
+      <em>validity</em> argument specifies the number of calendar days
+      from the present date until the credential expires.</p>
+      
+      <p>In production settings, it is especially important to choose a
+      strong password for the key store containing your server credential.
+      This password protects the server's private key, preventing it
+      from being used by an authorized party.  Make note of the
+      password, because you will need it in subsequent steps and when
+      configuring your logging server.
+      </p>
+
+      <h4>Creating a trust store for appender clients:</h4>
+      <p>For use in the configuration of your appender clients, the 
+      server's certificate needs to be exported from the key store
+      created in the previous step, and imported into a trust store.  The
+      following commands will export the certificate and import it into
+      a trust store named <em>server.truststore</em>.
+      
+      <pre class="source">keytool -export -rfc -alias server -keystore server.keystore \
+    -file server.crt
+Enter keystore password: &lt;Enter password you chose for in previous step>
+
+keytool -import -alias server -file server.crt -keystore server.truststore
+Enter keystore password: &lt;Enter password of your choosing>
+Re-enter new password: &lt;Re-enter same password>
+Owner: CN=my-logging-server
+Issuer: CN=my-logging-server
+Serial number: 6e7eea40
+Valid from: Sun Mar 31 07:57:29 EDT 2013 until: Mon Mar 31 07:57:29 EDT 2014
+
+   ...
+
+Trust this certificate? [no]:  &lt;Enter "yes">
+</pre>
+
+      <p>The first command exports the server's certificate (but not the
+      server's private key) from the key store and into a file named
+      <em>server.crt</em>.  The second step creates a new trust store
+      named <em>server.truststore</em> containing the server certificate.
+      </p>
+      
+      <p>In production settings, it is especially important to choose a
+      strong password for the trust store that is different from the 
+      password you chose of the server key store.  Make note of this
+      password, because you will need it when configuring your appender
+      clients.
+      </p>
+          
+      <h4>Configuring the logging server:</h4>
+      <p>You will need to copy the <em>server.keystore</em> file into your 
+      server application's configuration.  The key store can be placed
+      with your application's classpath resources, or it may simply be
+      placed somewhere on the server host's filesystem.  When specifying
+      the location of the key store in the configuration, you will use
+      either a <code>classpath:</code> URL or <code>file:</code> URL, as
+      appropriate.  A example server configuration follows:</p>
+
+      <p class="example">Example: Logging Server Configuration</p>
+      <pre class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+
+  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>classpath:server.keystore&lt;/location>
+        &lt;passphrase>${server.keystore.password}&lt;/passphrase>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/server>
+&lt;/configuration></pre>
+      
+      <p>This example assumes that the key store is located at the root
+      of the application's classpath.</p>
+      
+      <p>Note that this configuration specifies the key store password
+      using the <em>server.keystore.password</em> substitution variable.
+      This approach would allow you to avoid storing the password in
+      any configuration file.  For example, your application could
+      prompt for this password on the console at startup, and then 
+      set the <em>server.keystore.password</em> as a system property 
+      using the entered password before configuring the logging system.
+      </p>
+      
+      <h4>Configuring appender clients:</h4>
+      <p>You will need to copy the <em>server.truststore</em> file into
+      the application configuration of each application that uses 
+      <code>SSLSocketAppender</code> to send logging events to your 
+      server.  The trust store can be placed with your application's
+      classpath resources, or it may simply be placed somewhere on the
+      filesystem.  When specifying the location of the trust
+      store in the configuration, you will use either a
+      <code>classpath:</code> URL or <code>file:</code> URL, as
+      appropriate.  A example appender client configuration follows:</p>
+
+      <p class="example">Example: Appender Client Configuration</p>
+
+      <pre class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
+    &lt;remoteHost>${host}&lt;/remoteHost>
+    &lt;ssl>
+      &lt;trustStore>
+        &lt;location>classpath:server.truststore&lt;/location>
+        &lt;passphrase>${server.truststore.password}&lt;/passphrase>
+      &lt;/trustStore>
+    &lt;/ssl>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="SOCKET" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+      <p>This example assumes that the trust store is located at the root
+      of the application's classpath.</p>
+      
+      <p>Note that this configuration specifies the trust store password
+      using the <em>server.truststore.password</em> substitution variable.
+      This approach would allow you to avoid storing the password in
+      any configuration file.  For example, your application could
+      prompt for this password on the console at startup, and then 
+      set the <em>server.truststore.password</em> as a system property 
+      using the entered password before configuring the logging system.
+      </p>
+
+      <h2>Auditing the SSL Configuration</h2>
+      <p>In settings where secure communications are required, it is often
+      necessary to audit the configuration of components that use SSL to
+      validate conformance with local security policies.  The SSL
+      support in Logback Classic addresses this need by providing detailed
+      logging of SSL configuration when the logback configuration is
+      initialized.  You can enable audit logging using the
+      <code>debug</code> property in the configuration:</p>
+      
+      <pre class="prettyprint source">&lt;configuration debug="true">
+  
+  ...
+  
+&lt;/configuration></pre>
+
+      <p>With the debug property enabled, all of the relevant aspects of
+      the resulting SSL configuration will be logged when the logging
+      system is initialized.  A representative example of the information
+      logged for SSL follows.</p>
+      
+      <p class="example">Example: SSL Configuration Audit Logging</p>
+      
+      <pre>06:46:31,941 |-INFO in SSLSocketServer@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
+06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
+06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
+06:46:31,973 |-INFO in SSLSocketServer@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv2Hello
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv3
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: TLSv1
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: SSL_RSA_WITH_RC4_128_MD5
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: SSL_RSA_WITH_RC4_128_SHA
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: TLS_RSA_WITH_AES_256_CBC_SHA
+</pre>
+
+      <p>The output shown here has been truncated for brevity's sake, 
+      but would typically include the complete list of protocols, 
+      providers, algorithms, and cipher suites, as well as the location
+      of key store and trust store resources utilized in the configuration.
+      </p>
+      
+      <p>While none of this audit logging is particularly sensitive,
+      best practices for security would suggest that this logging should
+      not remain enabled in production settings after the configuration
+      has been validated.  Audit logging is disabled when the 
+      <code>debug</code> property is removed or set to <code>false</code>.
       
       <h2>Resolving SSL Exceptions</h2>
       <p>When using <code>SSLSocketAppender</code>, the appender acts
