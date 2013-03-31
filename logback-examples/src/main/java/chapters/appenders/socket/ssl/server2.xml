@@ -21,7 +21,7 @@
     <ssl>
       <keyStore>
         <location>${keystore}</location>
-        <passphrase>${passphrase}</passphrase>
+        <password>${password}</password>
       </keyStore>
     </ssl>
   </server>

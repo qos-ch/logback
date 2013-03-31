@@ -13,7 +13,7 @@
     <ssl>
       <trustStore>
         <location>${truststore}</location>
-        <passphrase>${passphrase}</passphrase>
+        <password>${password}</password>
       </trustStore>
     </ssl>
   </appender>
