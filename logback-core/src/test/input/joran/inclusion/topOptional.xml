@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE x>
+
+<x>
+  <include optional="true" file="nonExistentFile.xml" />
+
+  <stack name="IA"/>
+  <stack name="IB"/>
+</x>
