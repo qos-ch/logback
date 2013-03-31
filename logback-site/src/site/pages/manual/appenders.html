@@ -1817,7 +1817,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     -Djavax.net.ssl.keyStorePassword=changeit \
     ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
     src/main/java/chapters/appenders/socket/ssl/server1.xml
-</p>
+    </p>
 	
     <p>This example runs <code>SimpleSSLSocketServer</code> using an
     X.509 credential that is suitable for testing and experimentation, 
@@ -1825,15 +1825,24 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     production setting you should obtain an appropriate X.509 credential
     to identify your logging server</strong>.  See 
     <a href="usingSSL.html">Using SSL</a> for more details.
+    </p>
+    
+    <p>Because the server configuration has <code>debug="true"</code>
+    specified on the root element, you'll will see in the server's
+    startup logging the SSL configuration that will be used.  This is
+    useful in validating that local security policies are properly
+    implemented.
+    </p>
 
     <p>With <code>SimpleSSLSocketServer</code> running, you can connect
     to the server using an <code>SSLSocketAppender</code>.  The following
     example shows the appender configuration needed:
+    </p>
       
    	<p class="example">Example: SSLSocketAppender configuration
 		(logback-examples/src/main/java/chapters/appenders/socket/ssl/client.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('sslclient');">View as .groovy</span>
-<pre id="sslclient" class="prettyprint source">&lt;configuration>
+<pre id="sslclient" class="prettyprint source">&lt;configuration debug="true">
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
     &lt;remoteHost>${host}&lt;/remoteHost>
@@ -1867,7 +1876,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <p>We can run a client application using this configuration by
     specifying the substitution variable values on the command line as
-    system properties:</p>
+    system properties:
+    </p>
     	  	
     <p class="source">java -Dhost=localhost -Dport=6000 \
     -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
@@ -1896,7 +1906,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     certificate) in each of your client applications</strong>.  You 
     would instead utilize a trust store containing only trusted root
     certificate(s) as described in <a href="usingSSL.html">Using SSL</a>.
- 	 
+ 	  </p>
+ 	   
+    <p>As we saw previously at server startup, because the 
+    client configuration has <code>debug="true"</code> specified on the
+    root element, the client's startup logging includes the details of
+    the SSL configuration as aid to auditing local policy conformance.
+    </p>
+ 	  
  	  <h4>Using SocketServer and SSLSocketServer</h4>
  	  <p>While <code>SimpleSocketServer</code> and 
  	  <code>SimpleSSLSocketServer</code> both provide an easy-to-use 
@@ -1920,7 +1937,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p>For example, the following configuration uses the 
     <code>SocketServer</code> component with a minimal appender and 
     logger configuration.
-
+    </p>
+    
    	<p class="example">Example: Basic SocketServer Configuration
 		(logback-examples/src/main/java/chapters/appenders/socket/server3.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('server3');">View as .groovy</span>
@@ -2035,19 +2053,24 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     appropriate configuration file:</p>
    
     <p class="source">java -Dport=6000 \
-    -Dkeystore=src/main/java/chapters/appenders/socket/ssl/keystore.jks
+    -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
     -Dpassphrase=changeit \
     chapters.appenders.socket.SocketServer \
     src/main/java/chapters/appenders/socket/ssl/server2.xml</p>
  	  </p>
   
-    <p>Note once again that we are specifying the location of a keystore
-    containing an X.509 credential that is suitable for testing and
-    experimentation, only.  <strong>In a production setting, you should
-    obtain an appropriate X.509 credential to identify your logging
-    server</strong>.  See <a href="usingSSL.html">Using SSL</a> for more
-    information.
+ 	  <p>Note that the <em>keystore</em> property given on the command
+ 	  line specifies a file URL that identifies the location of the key 
+ 	  store.  You may also use a classpath URL as described in 
+ 	  <a href="usingSSL.html">Using SSL</a>.
+ 	  </p>
     
+    <p>Also we must point out once again that our example X.509
+    credential is suitable for testing and experimentation, only. 
+    <strong>In a production setting, you should obtain an appropriate
+    X.509 credential to identify your logging server</strong>.  See <a
+    href="usingSSL.html">Using SSL</a> for more information.</p>
+
     <p>Once our server is started, we can connect to it just as shown in 
     the previous examples for using 
     <a href="#simpleSSLSocketServer">SimpleSSLSocketServer</a>.
@@ -2058,7 +2081,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     by <code>SSLSocketAppender</code>.  <strong>See 
     <a href="usingSSL.html">Using SSL</a> for details on configuring 
     the SSL properties for <code>SSLSocketServer</code></strong>.
-    
+    </p>
    
    <h3 class="doAnchor">SMTPAppender</h3>
    
