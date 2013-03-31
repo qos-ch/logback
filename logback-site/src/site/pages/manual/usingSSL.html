@@ -37,29 +37,28 @@
          logging events over the network.
       </p>
       
-      <p>Logback Classic supports two SSL-enabled logging servers.
-        <ul>
-          <li>The <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
-              <code>SSLSocketServer</code></a> is a logging server component
-              that can be added to any Logback configuration file (e.g.
-              <em>logback.xml</em>) to allow logging events to be
-              received from a remote logger and logged according to the
-              local configuration.
-          </li>
-          <li>For those who are presently using 
-              <a href="../xref/ch/qos/logback/classic/net/SimpleSocketServer.html">
-              <code>SimpleSocketServer</code></a> and simply want to start 
-              using <code>SSLSocketAppender</code> to deliver logging
-              events over a secure channel, Logback Classic provides the
-              <a href="../xref/ch/qos/logback/classic/net/SimpleSSLSocketServer.html">
-              <code>SimpleSSLSocketServer</code></a>.  This server 
-              supports the same command line interface as the plain old
-              <code>SimpleSocketServer</code>, while offering secure
-              transport for logging events over the network.
-          </li>
-        </ul>
-      </p>
-      
+      <p>Logback Classic supports two SSL-enabled logging servers.</p>
+      <ul>
+        <li>The <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
+            <code>SSLSocketServer</code></a> is a logging server component
+            that can be added to any Logback configuration file (e.g.
+            <em>logback.xml</em>) to allow logging events to be
+            received from a remote logger and logged according to the
+            local configuration.
+        </li>
+        <li>For those who are presently using 
+            <a href="../xref/ch/qos/logback/classic/net/SimpleSocketServer.html">
+            <code>SimpleSocketServer</code></a> and simply want to start 
+            using <code>SSLSocketAppender</code> to deliver logging
+            events over a secure channel, Logback Classic provides the
+            <a href="../xref/ch/qos/logback/classic/net/SimpleSSLSocketServer.html">
+            <code>SimpleSSLSocketServer</code></a>.  This server 
+            supports the same command line interface as the plain old
+            <code>SimpleSocketServer</code>, while offering secure
+            transport for logging events over the network.
+        </li>
+      </ul>
+s      
       <h2 class="doAnchor">SSL and X.509 Certificates</h2>
       <p>In order to use SSL-enabled Logback components, you will need an
          X.509 credential (a private key, corresponding certificate,
@@ -259,6 +258,7 @@
          the application's classpath.  You could alternatively 
          specify a <code>file:</code> URL to identify the location of
          the key store.
+      </p>
       <p>If you wanted to use <code>SSLSocketAppender</code> in your
          application's logback configuration, but did not want to change
          the application's default trust store using the JSSE
@@ -295,7 +295,7 @@
          Logback's SSL support makes nearly all of them available for
          you to specify in your server or appender configuration.  
          When using XML configuration, SSL properties are introduced to 
-         these components by nesting an &lt;<ssl> element in the appender
+         these components by nesting an &lt;ssl> element in the appender
          or server configuration.  This configuration element corresponds 
          to the 
          <a href="../xref/ch/qos/logback/core/net/ssl/SSLConfiguration.html">
@@ -332,7 +332,6 @@
               <a href="#KeyManagerFactoryFactoryBean">Key Manager Factory
               Configuration</a>
               below. 
-            </p>
           </td>
         </tr>
         <tr>
@@ -391,7 +390,6 @@
               <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">
               JSSE Reference Guide</a>.  The Java platform's default protocol 
               will be used if this property is not configured.
-            </p>
           </td>
         </tr>
         <tr>
@@ -402,7 +400,6 @@
               <a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/SSLContext.html">
               <code>SSLContext</code></a>.  The Java platform's default JSSE 
               provider will be used if this property is not configured.
-            </p>
           </td>
         </tr>
         <tr>
@@ -417,7 +414,6 @@
               if this property is not configured.  See
               <a href="#SecureRandomFactoryBean">Secure Random Generator
               Configuration</a> below. 
-            </p>
           </td>
         </tr>
         <tr>
@@ -431,7 +427,6 @@
               factory will be used if this property is not configured.  See
               <a href="#TrustManagerFactoryFactoryBean">Trust Manager Factory</a>
               below. 
-            </p>
           </td>
         </tr>
         <tr>
@@ -504,6 +499,7 @@
               platform's default key store provider will be used if this 
               property is not configured.
           </td>
+        </tr>
         <tr>
           <td><span class="prop" container="keyStore">type</span></td>
           <td><code>String</code></td>
@@ -515,7 +511,6 @@
               platform's default key store type will be used  if this property 
               is not configured.
           </td>
-        </tr>
         </tr>
       </table>
       
@@ -771,12 +766,12 @@
       
       <h4>Creating the logging server credential:</h4>
       <p>The following command will generate the self-signed client
-      credential in a file named <em>server.keystore</em>.
-      <pre class="source">keytool -genkey -alias server -dname "CN=my-logging-server" \
+      credential in a file named <em>server.keystore</em>.</p>
+      <pre class="source">keytool -genkey -alias server -dname &quot;CN=my-logging-server&quot; \
     -keyalg RSA -validity 365 -keystore server.keystore
 Enter keystore password: &lt;Enter password of your choosing>
 Re-enter new password: &lt;Re-enter same password>
-Enter key password for <my-logging-server>
+Enter key password for &lt;my-logging-server>
 	(RETURN if same as keystore password):  &lt;Press RETURN>
 </pre>
 
@@ -799,7 +794,7 @@ Enter key password for <my-logging-server>
       server's certificate needs to be exported from the key store
       created in the previous step, and imported into a trust store.  The
       following commands will export the certificate and import it into
-      a trust store named <em>server.truststore</em>.
+      a trust store named <em>server.truststore</em>.</p>
       
       <pre class="source">keytool -export -rfc -alias server -keystore server.keystore \
     -file server.crt
@@ -960,6 +955,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       not remain enabled in production settings after the configuration
       has been validated.  Audit logging is disabled when the 
       <code>debug</code> property is removed or set to <code>false</code>.
+      </p>
       
       <h2>Resolving SSL Exceptions</h2>
       <p>When using <code>SSLSocketAppender</code>, the appender acts

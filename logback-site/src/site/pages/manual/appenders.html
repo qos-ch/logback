@@ -1650,7 +1650,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <h4>Logging Server Options</h4>
     <p>The standard Logback Classic distribution includes two options
     for servers that can be used to receive logging events from
-    <code>SocketAppender</code> or <code>SSLSocketAppender</code>.
+    <code>SocketAppender</code> or <code>SSLSocketAppender</code>.</p>
     <ul>
       <li><code>SimpleSocketServer</code> and its SSL-enabled counterpart
       <code>SimpleSSLSocketServer</code>, which both offer an 
@@ -1670,8 +1670,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </ul>
     
     <h4><a name="simpleSocketServer"></a>Using SimpleSocketServer</h4>
-    
-    The <code>SimpleSocketServer</code> application takes command-line
+    <p>
+    The <code>SimpleSocketServer</code> application takes two command-line
     arguments: <em>port</em> and <em>configFile</em>; 
     where <em>port</em> is the port to listen on and
     <em>configFile</em> is a configuration script in XML format.
@@ -1882,7 +1882,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p class="source">java -Dhost=localhost -Dport=6000 \
     -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
     -Dpassphrase=changeit \
-    chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml</p>
+    chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml
  	  </p>
  	  
  	  <p>As in the previous examples, you can type in a message when 
@@ -1977,7 +1977,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     
     <p>We can run our example server application as follows:</p>
     <p class="source">java -Dport=6000 chapters.appenders.socket.SocketServer \
-    src/main/java/chapters/appenders/socket/server3.xml</p>
+    src/main/java/chapters/appenders/socket/server3.xml
  	  </p>
   
     <p>We can connect to the running server just as shown in the previous
@@ -2056,7 +2056,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
     -Dpassphrase=changeit \
     chapters.appenders.socket.SocketServer \
-    src/main/java/chapters/appenders/socket/ssl/server2.xml</p>
+    src/main/java/chapters/appenders/socket/ssl/server2.xml
  	  </p>
   
  	  <p>Note that the <em>keystore</em> property given on the command
@@ -4303,7 +4303,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     
     <p>Below is an example configuration file.</p>
 
-    <p class="example">Example: SiftingAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/sift/access-siftingFile.xml)</em>		
+    <p class="example">Example: SiftingAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/sift/access-siftingFile.xml)</p>
     
     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">
