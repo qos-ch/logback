@@ -236,7 +236,7 @@ s
     &lt;ssl>
       &lt;keyStore>
         &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
-        &lt;passphrase>changeit&lt;/passphrase>
+        &lt;password>changeit&lt;/password>
       &lt;/keyStore>
     &lt;/ssl>
   &lt;/server> 
@@ -487,9 +487,9 @@ s
               is assumed.</td>
         </tr>
         <tr>
-          <td><span class="prop" container="keyStore">passphrase</span></td>
+          <td><span class="prop" container="keyStore">password</span></td>
           <td><code>String</code></td>
-          <td>Specifies the passphrase needed to access the key store.</td>
+          <td>Specifies the password needed to access the key store.</td>
         </tr>
         <tr>
           <td><span class="prop" container="keyStore">provider</span></td>
@@ -851,7 +851,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
     &lt;ssl>
       &lt;keyStore>
         &lt;location>classpath:server.keystore&lt;/location>
-        &lt;passphrase>${server.keystore.password}&lt;/passphrase>
+        &lt;password>${server.keystore.password}&lt;/password>
       &lt;/keyStore>
     &lt;/ssl>
   &lt;/server>
@@ -888,7 +888,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
     &lt;ssl>
       &lt;trustStore>
         &lt;location>classpath:server.truststore&lt;/location>
-        &lt;passphrase>${server.truststore.password}&lt;/passphrase>
+        &lt;password>${server.truststore.password}&lt;/password>
       &lt;/trustStore>
     &lt;/ssl>
   &lt;/appender>
@@ -993,7 +993,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          properties</a> or the <a href="#ssl.keyStore">
          <span class="prop">keyStore</span></a> property of the 
          server component's <span class="prop">ssl</span> property, 
-         you must specify the location and passphrase for the key store 
+         you must specify the location and password for the key store 
          containing the server's private key and certificate.
       </p>
       
@@ -1059,7 +1059,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          properties</a> or the <a href="#ssl.trustStore">
          <span class="prop">trustStore</span></a> property of the 
          appender component's <span class="prop">ssl</span> property, 
-         you must specify the location and passphrase for the trust 
+         you must specify the location and password for the trust 
          store containing the server's self-signed certificate or
          the issuing certificate authority's root certificate.
       </p>
@@ -1126,7 +1126,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          properties</a> or the <a href="#ssl.trustStore">
          <span class="prop">trustStore</span></a> property of the 
          server component's <span class="prop">ssl</span> property, 
-         you must specify the location and passphrase for the trust 
+         you must specify the location and password for the trust 
          store containing the client's self-signed certificate or
          the issuing certificate authority's root certificate.
       </p>

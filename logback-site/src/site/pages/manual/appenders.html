@@ -1851,7 +1851,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;ssl>
       &lt;trustStore>
         &lt;location>${truststore}&lt;/location>
-        &lt;passphrase>${passphrase}&lt;/passphrase>
+        &lt;password>${password}&lt;/password>
       &lt;/trustStore>
     &lt;/ssl>
   &lt;/appender>
@@ -1867,7 +1867,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 	  are specified using substituted variable keys.  Additionally, note
 	  the presence of the <span class="prop">ssl</span> property and its
 	  nested <span class="prop">trustStore</span> property, which specifies
-	  the location and passphrase of a trust store using substituted
+	  the location and password of a trust store using substituted
 	  variables.  This configuration is necessary because our example
 	  server is using a self-signed certificate.  See 
 	  <a href="usingSSL.html">Using SSL</a> for more information on 
@@ -1881,7 +1881,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     	  	
     <p class="source">java -Dhost=localhost -Dport=6000 \
     -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
-    -Dpassphrase=changeit \
+    -Dpassword=changeit \
     chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml
  	  </p>
  	  
@@ -2031,7 +2031,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;ssl>
       &lt;keyStore>
         &lt;location>${keystore}&lt;/location>
-        &lt;passphrase>${passphrase}&lt;/passphrase>
+        &lt;password>${password}&lt;/password>
       &lt;/keyStore>
     &lt;/ssl>
   &lt;/server>
@@ -2042,7 +2042,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     previous example using <code>SocketServer</code> are the specification
     of <code>SSLSocketServer</code> in the <em>class</em> attribute and
     the presence of the nested <span class="prop">ssl</span> property,
-    which is used here to specify the location and passphrase for the
+    which is used here to specify the location and password for the
     key store containing the server's private key and certificate, using
     substitution variables.
     </p>    
@@ -2054,7 +2054,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
    
     <p class="source">java -Dport=6000 \
     -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
-    -Dpassphrase=changeit \
+    -Dpassword=changeit \
     chapters.appenders.socket.SocketServer \
     src/main/java/chapters/appenders/socket/ssl/server2.xml
  	  </p>
