@@ -114,7 +114,7 @@ public class SSLContextFactoryBean {
     context.addInfo("key manager algorithm '" + kmf.getAlgorithm() 
         + "' provider '" + kmf.getProvider() + "'");
     
-    char[] passphrase = getKeyStore().getPassphrase().toCharArray();
+    char[] passphrase = getKeyStore().getPassword().toCharArray();
     kmf.init(keyStore, passphrase);
     return kmf.getKeyManagers();
   }
