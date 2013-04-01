@@ -19,6 +19,7 @@ import java.util.concurrent.*;
 
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.ComponentFactory;
 import ch.qos.logback.core.util.EnvUtil;
 
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
@@ -29,6 +30,10 @@ public class ContextBase implements Context {
 
   private String name;
   private StatusManager sm = new BasicStatusManager();
+  /**
+   * Configuration factory name
+   */
+  private ComponentFactory cf = null;
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
   // serialized. For the time being, we ignore this shortcoming.
@@ -66,6 +71,14 @@ public class ContextBase implements Context {
       throw new IllegalArgumentException("null StatusManager not allowed");
     }
     this.sm = statusManager;
+  }
+  
+  public ComponentFactory getComponentFactory() {
+      return cf;
+  }
+  
+  public void setComponentFactory(ComponentFactory configurationFactory) {
+      cf = configurationFactory;
   }
 
   public Map<String, String> getCopyOfPropertyMap() {

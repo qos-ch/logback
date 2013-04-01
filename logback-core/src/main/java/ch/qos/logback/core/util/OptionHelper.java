@@ -28,16 +28,70 @@ import ch.qos.logback.core.subst.NodeToStringTransformer;
  */
 public class OptionHelper {
 
-  public static Object instantiateByClassName(String className,
-                                              Class superClass, Context context) throws IncompatibleClassException,
-          DynamicClassLoadingException {
-    ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-    return instantiateByClassName(className, superClass, classLoader);
-  }
+    /**
+     * Creates an instance of the named class. If the context was configured with a named component
+     * factory then we will get the component factory and use it to instantiate the object. If the
+     * component factory cannot resolve to the class name then we will fall back to using the
+     * default component factory, which uses the class loader of the context.
+     * 
+     * If the context was not configured with a component factory (the default) then we will just
+     * use the default component factory.
+     * 
+     * @param className
+     *            The class name of an object to instantiate.
+     * @param superClass
+     *            The instance we create must be assignable to this class.
+     * @param context
+     *            The logback context under which we will be creating the object.
+     * @return
+     * @throws IncompatibleClassException
+     *             We could create an instance of the named class however it was not of a compatible
+     *             type.
+     * @throws DynamicClassLoadingException
+     *             We ran into any number of problems resolving to the named class or instantiating
+     *             an object of that class.
+     */
+    public static Object instantiateByClassName(String className, Class superClass, Context context)
+            throws IncompatibleClassException, DynamicClassLoadingException {
+        if (className == null) {
+            throw new NullPointerException();
+        }
+        ComponentFactory factory = context.getComponentFactory();
+        Object obj = null;
+        boolean tryDefault = false;
+        
+        if (factory != null) {
+            try {
+                obj = factory.getInstance(className);
+
+                if (obj == null) {
+                    throw new NullPointerException();
+                }
+            } catch (ClassNotFoundException e) {
+                tryDefault = true;
+            }
+        }
+
+        if (factory == null || tryDefault) {
+            ComponentFactory dcf = new ContextComponentFactory(context);
+            try {
+                obj = dcf.getInstance(className);
+            } catch (ClassNotFoundException e) {
+                throw new DynamicClassLoadingException("Failed to instantiate type " + className, e);
+            }
+        }
+
+        if (!superClass.isAssignableFrom(obj.getClass())) {
+            throw new IncompatibleClassException(superClass, obj.getClass());
+        }
+
+        return obj;
+    }
 
   public static Object instantiateByClassNameAndParameter(String className,
                                                           Class superClass, Context context, Class type, Object param) throws IncompatibleClassException,
           DynamicClassLoadingException {
+
     ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
     return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
   }

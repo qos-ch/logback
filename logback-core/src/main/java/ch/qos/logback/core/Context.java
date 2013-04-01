@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.ComponentFactory;
 
 /**
  * A context is the main anchorage point of all logback components.
@@ -113,4 +114,22 @@ public interface Context extends PropertyContainer {
    * @since 1.0.0
    */
   ExecutorService getExecutorService();
+  
+  /**
+   * The name of the class used to instantiate components such as
+   * appenders and filters.
+   * 
+   * @return The component factory class name
+   * @since 1.0.7
+   */
+  ComponentFactory getComponentFactory();
+  
+  /**
+   * Used to specify the name of the class to be used as the
+   * component factory.
+   * 
+   * @param componentFactory The component factory class name
+   * @since 1.0.7
+   */
+  void setComponentFactory(ComponentFactory componentFactory);
 }

@@ -47,6 +47,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.ComponentFactory;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -73,6 +74,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   // Attributes from ContextBase:
   private String name;
+  private ComponentFactory componentFactory;
   StatusManager sm = new BasicStatusManager();
   // TODO propertyMap should be observable so that we can be notified
   // when it changes so that a new instance of propertyMap can be
@@ -282,6 +284,17 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
           "LogbackValve has been already given a name");
     }
     this.name = name;
+  }
+  
+
+  @Override
+  public ComponentFactory getComponentFactory() {
+    return componentFactory;
+  }
+
+  @Override
+  public void setComponentFactory(ComponentFactory componentFactory) {
+    this.componentFactory = componentFactory;
   }
 
   public long getBirthTime() {
