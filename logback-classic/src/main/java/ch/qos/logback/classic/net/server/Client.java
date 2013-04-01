@@ -18,12 +18,12 @@ import java.io.Closeable;
 import ch.qos.logback.classic.LoggerContext;
 
 /**
- * A client of a {@link ConcurrentServerRunner}.
+ * A client of a {@link ServerRunner}.
  * <p>
  * This interface exists primarily to abstract away the details of the
  * client's underlying {@code Socket} and the concurrency associated with
  * handling multiple clients.  Such realities make it difficult to create 
- * effective unit tests for the {@link ConcurrentServerRunner} that are easy to 
+ * effective unit tests for the {@link ServerRunner} that are easy to 
  * understand and maintain.
  * <p>
  * This interface captures the only those details about a client that

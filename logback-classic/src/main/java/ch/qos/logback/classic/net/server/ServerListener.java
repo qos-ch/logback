@@ -18,12 +18,12 @@ import java.io.IOException;
 
 /**
  * A listener that accepts {@link Client} connections on behalf of a
- * {@link ConcurrentServerRunner}.
+ * {@link ServerRunner}.
  * <p>
  * This interface exists primarily to abstract away the details of the
  * listener's underlying {@code ServerSocket} and the concurrency associated
  * with handling multiple clients. Such realities make it difficult to create
- * effective unit tests for the {@link ConcurrentServerRunner} that are easy to 
+ * effective unit tests for the {@link ServerRunner} that are easy to 
  * understand and maintain.
  * <p>
  * This interface captures the only those details about the listener that the
