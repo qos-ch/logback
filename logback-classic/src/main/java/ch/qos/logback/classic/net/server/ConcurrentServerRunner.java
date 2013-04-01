@@ -28,7 +28,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * A runner for a {@link SocketServer}.
+ * A concurrent {@link ServerRunner}.
  * <p>
  * An instance of this object is created with a {@link ServerListener} and
  * an {@link Executor}.  On invocation of the {@link #start()} method, it
@@ -42,7 +42,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * On invocation of the {@link #stop()} method, the runner closes the listener
  * and each of the connected clients (by invoking {@link Client#close()} 
  * effectively interrupting any blocked I/O calls and causing these concurrent
- * subtasks to exit gracefully.  This ensures that before the {@link #stop()}
+ * subtasks to exit gracefully).  This ensures that before the {@link #stop()}
  * method returns (1) all I/O resources have been released and (2) all 
  * of the threads of the {@code Executor} are idle.
  *
