@@ -46,20 +46,6 @@ class ServerSocketListener implements ServerListener {
   }
 
   /**
-   * Converts a socket address to a reasonable display string.
-   * @param address the subject socket address
-   * @return display string
-   */
-  private String socketAddressToString(SocketAddress address) {
-    String addr = address.toString();
-    int i = addr.indexOf("/");
-    if (i >= 0) {
-      addr = addr.substring(i + 1);
-    }
-    return addr;
-  }
-  
-  /**
    * {@inheritDoc}
    */
   public void close() {
@@ -76,7 +62,21 @@ class ServerSocketListener implements ServerListener {
    */
   @Override
   public String toString() {
-    return serverSocket.getLocalSocketAddress().toString();
+    return socketAddressToString(serverSocket.getLocalSocketAddress());
+  }
+
+  /**
+   * Converts a socket address to a reasonable display string.
+   * @param address the subject socket address
+   * @return display string
+   */
+  private String socketAddressToString(SocketAddress address) {
+    String addr = address.toString();
+    int i = addr.indexOf("/");
+    if (i >= 0) {
+      addr = addr.substring(i + 1);
+    }
+    return addr;
   }
 
 }
