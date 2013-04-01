@@ -15,28 +15,30 @@ package ch.qos.logback.core.net.ssl.mock;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 
-import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
+import javax.net.ssl.KeyManagerFactory;
+
+import ch.qos.logback.core.net.ssl.KeyManagerFactoryFactoryBean;
 
 /**
- * A {@link SecureRandomFactoryBean} with test instrumentation.
+ * A {@link KeyManagerFactoryFactoryBean} with test instrumentation.
  *
  * @author Carl Harris
  */
-public class MockSecureRandomConfigurator extends SecureRandomFactoryBean {
+public class MockKeyManagerFactoryFactoryBean 
+    extends KeyManagerFactoryFactoryBean {
 
-  private boolean secureRandomCreated;
+  private boolean factoryCreated;
 
   @Override
-  public SecureRandom createSecureRandom() throws NoSuchProviderException,
-      NoSuchAlgorithmException {
-    secureRandomCreated = true;
-    return super.createSecureRandom();
+  public KeyManagerFactory createKeyManagerFactory()
+      throws NoSuchProviderException, NoSuchAlgorithmException {
+    factoryCreated = true;
+    return super.createKeyManagerFactory();
   }
 
-  public boolean isSecureRandomCreated() {
-    return secureRandomCreated;
+  public boolean isFactoryCreated() {
+    return factoryCreated;
   }
-    
+  
 }
