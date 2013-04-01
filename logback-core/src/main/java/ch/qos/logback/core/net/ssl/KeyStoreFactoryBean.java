@@ -38,7 +38,7 @@ public class KeyStoreFactoryBean {
   private String location;
   private String provider;
   private String type;
-  private String passphrase;
+  private String password;
 
   /**
    * Creates a new {@link KeyStore} using the receiver's configuration.
@@ -64,7 +64,7 @@ public class KeyStoreFactoryBean {
       URL url = LocationUtil.urlForResource(getLocation());
       inputStream = url.openStream();
       KeyStore keyStore = newKeyStore();
-      keyStore.load(inputStream, getPassphrase().toCharArray());
+      keyStore.load(inputStream, getPassword().toCharArray());
       return keyStore;
     }
     catch (NoSuchProviderException ex) {
@@ -164,23 +164,23 @@ public class KeyStoreFactoryBean {
   }
 
   /**
-   * Gets the passphrase to use to access the key store.
-   * @return passphrase string; the {@link SSL#DEFAULT_KEYSTORE_PASSPHRASE} is returned
-   *    if no passphrase has been configured
+   * Gets the password to use to access the key store.
+   * @return password string; the {@link SSL#DEFAULT_KEYSTORE_PASSWORD} is returned
+   *    if no password has been configured
    */
-  public String getPassphrase() {
-    if (passphrase == null) {
-      return SSL.DEFAULT_KEYSTORE_PASSPHRASE;
+  public String getPassword() {
+    if (password == null) {
+      return SSL.DEFAULT_KEYSTORE_PASSWORD;
     }
-    return passphrase;
+    return password;
   }
 
   /**
-   * Sets the passphrase to use to access the keystore.
-   * @param passphrase the passphrase to set
+   * Sets the password to use to access the keystore.
+   * @param password the password to set
    */
-  public void setPassphrase(String passphrase) {
-    this.passphrase = passphrase;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
 }
