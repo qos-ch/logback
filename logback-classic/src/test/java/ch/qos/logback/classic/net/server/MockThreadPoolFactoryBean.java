@@ -11,26 +11,31 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.net.ssl;
+package ch.qos.logback.classic.net.server;
 
+import java.util.concurrent.Executor;
 
 /**
- * Various constants used by the SSL implementation.
+ * A mock {@link ThreadPoolFactoryBean} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
-public interface SSL {
+class MockThreadPoolFactoryBean extends ThreadPoolFactoryBean 
+    implements Executor {
 
-  /** Default secure transport protocol */
-  String DEFAULT_PROTOCOL = "SSL";
+  private Runnable lastCommand;
   
-  /** Default key store type */ 
-  String DEFAULT_KEYSTORE_TYPE = "JKS";
-  
-  /** Default key store passphrase */
-  String DEFAULT_KEYSTORE_PASSWORD = "changeit";
+  @Override
+  public Executor createExecutor() {
+    return this;
+  }
 
-  /** Default secure random generator algorithm */
-  String DEFAULT_SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
+  public void execute(Runnable command) {
+    lastCommand = command;    
+  }
+
+  public Runnable getLastCommand() {
+    return lastCommand;
+  }
   
 }
