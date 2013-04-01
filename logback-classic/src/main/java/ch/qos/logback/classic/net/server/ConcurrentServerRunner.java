@@ -143,7 +143,9 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
     if (logger != null) {
       logger.info(message);
     }
-    addInfo(message);
+    else {
+      addInfo(message);
+    }
   }
   
   private void logError(String message) {
@@ -151,7 +153,9 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
     if (logger != null) {
       logger.error(message);
     }
-    addError(message);
+    else {
+      addError(message);
+    }
   }
   
   private Logger getLogger() {
