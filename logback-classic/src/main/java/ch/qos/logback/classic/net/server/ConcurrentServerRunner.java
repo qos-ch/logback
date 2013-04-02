@@ -21,11 +21,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -60,8 +55,6 @@ public abstract class ConcurrentServerRunner<T extends Client>
   private final ServerListener<T> listener;
   private final Executor executor;
   
-  private LoggerContext lc;
-  private Logger logger;
   private boolean started;
   
   /**
@@ -139,45 +132,9 @@ public abstract class ConcurrentServerRunner<T extends Client>
   
   protected abstract boolean configureClient(T client);
   
-  protected void logInfo(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.info(message);
-    }
-    else {
-      addInfo(message);
-    }
-  }
+  protected abstract void logInfo(String message);
   
-  protected void logError(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.error(message);
-    }
-    else {
-      addError(message);
-    }
-  }
-  
-  protected Logger getLogger() {
-    if (logger == null) {
-      LoggerContext lc = getLoggerContext();
-      if (lc != null) {
-        logger = lc.getLogger(getClass().getPackage().getName());
-      }
-    }
-    return logger;
-  }
-  
-  protected LoggerContext getLoggerContext() {
-    if (lc == null) {   
-      ILoggerFactory factory = LoggerFactory.getILoggerFactory();
-      if (factory instanceof LoggerContext) {
-        lc = (LoggerContext) factory;
-      }
-    }
-    return lc;
-  }
+  protected abstract void logError(String message);
   
   private void addClient(T client) {
     clientsLock.lock();

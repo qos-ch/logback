@@ -16,6 +16,10 @@ package ch.qos.logback.classic.net.server;
 
 import java.util.concurrent.Executor;
 
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
 /**
@@ -26,6 +30,9 @@ import ch.qos.logback.classic.LoggerContext;
  */
 class RemoteAppenderServerRunner
     extends ConcurrentServerRunner<RemoteAppenderClient> {
+
+  private LoggerContext lc;
+  private Logger logger;
 
   /**
    * Constructs a new server runner.
@@ -49,6 +56,46 @@ class RemoteAppenderServerRunner
     
     client.setLoggerContext(lc);
     return true;
+  }
+
+  protected void logInfo(String message) {
+    Logger logger = getLogger();
+    if (logger != null) {
+      logger.info(message);
+    }
+    else {
+      addInfo(message);
+    }
+  }
+  
+  protected void logError(String message) {
+    Logger logger = getLogger();
+    if (logger != null) {
+      logger.error(message);
+    }
+    else {
+      addError(message);
+    }
+  }
+  
+  protected Logger getLogger() {
+    if (logger == null) {
+      LoggerContext lc = getLoggerContext();
+      if (lc != null) {
+        logger = lc.getLogger(getClass().getPackage().getName());
+      }
+    }
+    return logger;
+  }
+  
+  protected LoggerContext getLoggerContext() {
+    if (lc == null) {   
+      ILoggerFactory factory = LoggerFactory.getILoggerFactory();
+      if (factory instanceof LoggerContext) {
+        lc = (LoggerContext) factory;
+      }
+    }
+    return lc;
   }
 
 }
