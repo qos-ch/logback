@@ -32,7 +32,7 @@ import java.io.IOException;
  * listener is discarded.
  * </ol>
  */
-interface ServerListener extends Closeable {
+interface ServerListener<T extends Client> extends Closeable {
 
   /**
    * Accepts the next client that appears on this listener.
@@ -44,7 +44,7 @@ interface ServerListener extends Closeable {
    * @throws IOException
    * @throws InterruptedException
    */
-  Client acceptClient() throws IOException, InterruptedException;
+  T acceptClient() throws IOException, InterruptedException;
   
   /**
    * Closes any underlying {@link Closeable} resources associated with this

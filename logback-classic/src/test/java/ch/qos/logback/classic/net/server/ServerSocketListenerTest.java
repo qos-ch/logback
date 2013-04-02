@@ -24,8 +24,6 @@ import java.net.Socket;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.classic.LoggerContext;
-
 /**
  * Unit tests for {@link ServerSocketListener}.
  *
@@ -40,7 +38,7 @@ public class ServerSocketListenerTest {
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     assertNotNull(serverSocket);
-    listener = new ServerSocketListener(serverSocket);
+    listener = new InstrumentedServerSocketListener(serverSocket);
   }
   
   @Test
@@ -62,6 +60,43 @@ public class ServerSocketListenerTest {
     Client client = listener.acceptClient();
     assertNotNull(client);
     client.close();
+  }
+  
+  private static class InstrumentedServerSocketListener 
+      extends ServerSocketListener<RemoteClient> {
+
+    public InstrumentedServerSocketListener(ServerSocket serverSocket) {
+      super(serverSocket);
+    }
+
+    @Override
+    protected RemoteClient createClient(String id, Socket socket)
+        throws IOException {
+      return new RemoteClient(socket);
+    }
+    
+  }
+  
+  private static class RemoteClient implements Client {
+   
+    private final Socket socket;
+    
+    public RemoteClient(Socket socket) {
+      this.socket = socket;
+    }
+
+    public void run() {
+    }
+    
+    public void close() {
+      try {
+        socket.close();
+      }
+      catch (IOException ex) {
+        ex.printStackTrace(System.err);
+      }
+    }
+    
   }
   
   private static class RunnableClient implements Client {
@@ -105,9 +140,6 @@ public class ServerSocketListenerTest {
       catch (IOException ex) {
         ex.printStackTrace(System.err);
       }
-    }
-
-    public void setLoggerContext(LoggerContext lc) {
     }
 
     public synchronized void close() {

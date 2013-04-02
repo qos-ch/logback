@@ -39,7 +39,8 @@ public class SocketServerTest {
   private MockContext context = new MockContext();
   
   private MockServerRunner runner = new MockServerRunner();
-  private MockServerListener listener = new MockServerListener();
+  private MockServerListener<RemoteAppenderClient> listener = 
+      new MockServerListener<RemoteAppenderClient>();
   
   private MockThreadPoolFactoryBean threadPool = 
       new MockThreadPoolFactoryBean();

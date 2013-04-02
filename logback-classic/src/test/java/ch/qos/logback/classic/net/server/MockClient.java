@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.net.server;
 
-import ch.qos.logback.classic.LoggerContext;
 
 /**
  *
@@ -40,9 +39,6 @@ class MockClient implements Client {
         }
       }
     }
-  }
-
-  public void setLoggerContext(LoggerContext lc) {
   }
 
   public void close() {

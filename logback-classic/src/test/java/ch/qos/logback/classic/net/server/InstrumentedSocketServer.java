@@ -28,18 +28,18 @@ import javax.net.ServerSocketFactory;
 class InstrumentedSocketServer extends SocketServer {
   
   private final ServerSocket serverSocket;
-  private final ServerListener listener;
+  private final ServerListener<RemoteAppenderClient> listener;
   private final ServerRunner runner;
   
   private ServerListener lastListener;
   private Executor lastExecutor;
   
   public InstrumentedSocketServer(ServerSocket serverSocket) {
-    this(serverSocket, new ServerSocketListener(serverSocket), null);
+    this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
   }
   
   public InstrumentedSocketServer(ServerSocket serverSocket,
-      ServerListener listener, ServerRunner runner) {
+      ServerListener<RemoteAppenderClient> listener, ServerRunner runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
@@ -69,7 +69,8 @@ class InstrumentedSocketServer extends SocketServer {
   }
 
   @Override
-  protected ServerRunner createServerRunner(ServerListener listener,
+  protected ServerRunner createServerRunner(
+      ServerListener<RemoteAppenderClient> listener,
       Executor executor) {
     lastListener = listener;
     lastExecutor = executor;
@@ -77,7 +78,8 @@ class InstrumentedSocketServer extends SocketServer {
   }
 
   @Override
-  protected ServerListener createServerListener(ServerSocket socket) {
+  protected ServerListener<RemoteAppenderClient> createServerListener(
+      ServerSocket socket) {
     return listener;
   }
 

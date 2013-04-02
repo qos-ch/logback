@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,9 +31,12 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class ConcurrentServerRunnerTest {
 
-  private MockServerListener listener = new MockServerListener();
+  private MockServerListener<MockClient> listener = 
+      new MockServerListener<MockClient>();
+  
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private ConcurrentServerRunner runner = new ConcurrentServerRunner(listener, executor);
+  private ConcurrentServerRunner runner = 
+      new InstrumentedConcurrentServerRunner(listener, executor);
 
   @Before
   public void setUp() throws Exception {
@@ -96,4 +100,18 @@ public class ConcurrentServerRunnerTest {
     assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
 
+  static class InstrumentedConcurrentServerRunner 
+      extends ConcurrentServerRunner<MockClient> {
+
+    public InstrumentedConcurrentServerRunner(
+        ServerListener<MockClient> listener, Executor executor) {
+      super(listener, executor);
+    }
+
+    @Override
+    protected boolean configureClient(MockClient client) {
+      return true;
+    }
+    
+  }
 }

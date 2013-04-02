@@ -53,7 +53,7 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     try {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener listener = createServerListener(socket);
+      ServerListener<RemoteAppenderClient> listener = createServerListener(socket);
       runner = createServerRunner(listener, getThreadPool().createExecutor());
       runner.setContext(getContext());
       runner.start();
@@ -63,13 +63,15 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     }
   }
 
-  protected ServerListener createServerListener(ServerSocket socket) {
-    return new ServerSocketListener(socket);
+  protected ServerListener<RemoteAppenderClient> createServerListener(
+      ServerSocket socket) {
+    return new RemoteAppenderServerListener(socket);
   }
   
-  protected ServerRunner createServerRunner(ServerListener listener,
+  protected ServerRunner createServerRunner(
+      ServerListener<RemoteAppenderClient> listener,
       Executor executor) {
-    return new ConcurrentServerRunner(listener, executor);
+    return new RemoteAppenderServerRunner(listener, executor);
   }
   
   /**

@@ -23,7 +23,8 @@ import java.net.SocketAddress;
  *
  * @author Carl Harris
  */
-class ServerSocketListener implements ServerListener {
+abstract class ServerSocketListener<T extends Client> 
+    implements ServerListener<T> {
 
   private final ServerSocket serverSocket;
 
@@ -38,13 +39,22 @@ class ServerSocketListener implements ServerListener {
   /**
    * {@inheritDoc}
    */
-  public Client acceptClient() throws IOException {
+  public T acceptClient() throws IOException {
     Socket socket = serverSocket.accept();
-    return new StreamClient(
-        socketAddressToString(socket.getRemoteSocketAddress()), 
-        socket.getInputStream());
+    return createClient(
+        socketAddressToString(socket.getRemoteSocketAddress()), socket);
   }
 
+  /**
+   * Creates the client object for a new socket connection
+   * @param id identifier string for the client
+   * @param socket client's socket connection
+   * @return client object
+   * @throws IOException
+   */
+  protected abstract T createClient(String id, Socket socket) 
+      throws IOException;
+  
   /**
    * {@inheritDoc}
    */

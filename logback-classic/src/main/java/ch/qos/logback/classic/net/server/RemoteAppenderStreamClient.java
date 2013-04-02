@@ -23,12 +23,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
- * A {@link Client} that reads serialized {@link ILoggingEvent} objects
- * from an {@link InputStream}.
+ * A {@link RemoteAppenderClient} that reads serialized {@link ILoggingEvent} 
+ * objects from an {@link InputStream}.
  *
  * @author Carl Harris
  */
-class StreamClient implements Client {
+class RemoteAppenderStreamClient implements RemoteAppenderClient {
 
   private final String id;
   private final InputStream inputStream;
@@ -40,7 +40,7 @@ class StreamClient implements Client {
    * @param id a display name for the client
    * @param inputStream input stream from which events will be read
    */
-  public StreamClient(String id, InputStream inputStream) {
+  public RemoteAppenderStreamClient(String id, InputStream inputStream) {
     this.id = id;
     this.inputStream = inputStream;
   }

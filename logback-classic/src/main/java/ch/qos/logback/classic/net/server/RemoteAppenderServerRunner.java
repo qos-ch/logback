@@ -1,0 +1,54 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
+
+package ch.qos.logback.classic.net.server;
+
+import java.util.concurrent.Executor;
+
+import ch.qos.logback.classic.LoggerContext;
+
+/**
+ * A {@link ServerRunner} that receives logging events from remote appender
+ * clients.
+ *
+ * @author Carl Harris
+ */
+class RemoteAppenderServerRunner
+    extends ConcurrentServerRunner<RemoteAppenderClient> {
+
+  /**
+   * Constructs a new server runner.
+   * @param listener the listener from which the server will accept new
+   *    clients
+   * @param executor that will be used to execute asynchronous tasks 
+   *    on behalf of the runner.
+   */
+  public RemoteAppenderServerRunner(
+      ServerListener<RemoteAppenderClient> listener, Executor executor) {
+    super(listener, executor);
+  }
+
+  @Override
+  protected boolean configureClient(RemoteAppenderClient client) {
+    LoggerContext lc = getLoggerContext();
+    if (lc == null) {
+      logError("logger context not yet available");
+      return false;
+    }
+    
+    client.setLoggerContext(lc);
+    return true;
+  }
+
+}

@@ -14,8 +14,7 @@
 package ch.qos.logback.classic.net.server;
 
 import java.io.Closeable;
-
-import ch.qos.logback.classic.LoggerContext;
+import java.io.IOException;
 
 /**
  * A client of a {@link ServerRunner}.
@@ -29,7 +28,6 @@ import ch.qos.logback.classic.LoggerContext;
  * This interface captures the only those details about a client that
  * the {@code ServerRunner} cares about; namely, that it is something that
  * <ol>
- *   <li>has (needs) a {@link LoggerContext}</li>
  *   <li>is Runnable &mdash; i.e. it can be executed concurrently</li>
  *   <li>holds resources that need to be closed before the client is
  *       discarded</li>
@@ -39,14 +37,6 @@ import ch.qos.logback.classic.LoggerContext;
  */
 interface Client extends Runnable, Closeable {
 
-  /**
-   * Sets the client's logger context.
-   * <p>
-   * This method <em>must</em> be invoked before the {@link #run()} method.
-   * @param lc the logger context to set
-   */
-  void setLoggerContext(LoggerContext lc);
-  
   /**
    * Closes any resources that are held by the client.
    * <p>
