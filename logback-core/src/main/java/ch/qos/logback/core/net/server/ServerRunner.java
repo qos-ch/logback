@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 
@@ -19,14 +19,14 @@ import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * An object that is responsible for the asynchronous execution of a
- * {@link SocketServer}.
+ * socket server.
  * <p>
  * This interface exists primarily to allow the runner to be mocked for
- * the purpose of unit testing the {@link SocketServer} implementation.
+ * the purpose of unit testing the socket server implementation.
  * 
  * @author Carl Harris
  */
-interface ServerRunner extends ContextAware {
+public interface ServerRunner<T extends Client> extends ContextAware {
 
   /**
    * Starts execution of the runner.
@@ -54,4 +54,10 @@ interface ServerRunner extends ContextAware {
    */
   boolean isStarted();
 
+  /**
+   * Presents each connected client to the given visitor.   
+   * @param visitor the subject visitor
+   */
+  void accept(ClientVisitor<T> visitor);
+  
 }

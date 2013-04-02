@@ -32,16 +32,16 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 
 /**
- * Unit tests for {@link StreamClient}.
+ * Unit tests for {@link RemoteAppenderStreamClient}.
  *
  * @author Carl Harris
  */
-public class StreamClientTest {
+public class RemoteAppenderStreamClientTest {
 
   private MockAppender appender;
   private Logger logger;
   private LoggingEvent event;
-  private StreamClient client;
+  private RemoteAppenderStreamClient client;
 
   @Before
   public void setUp() throws Exception {
@@ -64,7 +64,7 @@ public class StreamClientTest {
     oos.close();
    
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    client = new StreamClient("some client ID", bis);
+    client = new RemoteAppenderStreamClient("some client ID", bis);
     client.setLoggerContext(lc);
   }
   

@@ -21,6 +21,8 @@ import javax.net.ServerSocketFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.net.server.MockContext;
+
 /**
  * Unit tests for {@link SSLSocketServer}.
  *

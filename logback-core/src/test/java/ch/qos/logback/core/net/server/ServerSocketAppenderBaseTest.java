@@ -11,7 +11,8 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+
+package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,40 +27,37 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.net.server.MockContext;
-import ch.qos.logback.core.net.server.MockServerListener;
-import ch.qos.logback.core.net.server.MockServerRunner;
-import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 
 /**
- * Unit tests for {@link SocketServer}.
+ * Unit tests for {@link ServerSocketAppenderBase}.
  *
  * @author Carl Harris
  */
-public class SocketServerTest {
+public class ServerSocketAppenderBaseTest {
+
 
   private MockContext context = new MockContext();
   
-  private MockServerRunner<RemoteAppenderClient> runner = 
-      new MockServerRunner<RemoteAppenderClient>();
+  private MockServerRunner<RemoteLoggerClient> runner = 
+      new MockServerRunner<RemoteLoggerClient>();
   
-  private MockServerListener<RemoteAppenderClient> listener = 
-      new MockServerListener<RemoteAppenderClient>();
+  private MockServerListener<RemoteLoggerClient> listener = 
+      new MockServerListener<RemoteLoggerClient>();
   
   private MockThreadPoolFactoryBean threadPool = 
       new MockThreadPoolFactoryBean();
   
   private ServerSocket serverSocket;
-  private InstrumentedSocketServer socketServer;
+  private InstrumentedServerSocketAppenderBase appender;
   
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
-    socketServer = new InstrumentedSocketServer(serverSocket, listener, runner);
-    socketServer.setThreadPool(threadPool);
-    socketServer.setContext(context);
+    appender = new InstrumentedServerSocketAppenderBase(serverSocket, listener, runner);
+    appender.setThreadPool(threadPool);
+    appender.setContext(context);
   }
   
   @After
@@ -69,12 +67,12 @@ public class SocketServerTest {
   
   @Test
   public void testStartStop() throws Exception {
-    socketServer.start();
+    appender.start();
     assertTrue(runner.isContextInjected());
     assertTrue(runner.isStarted());
-    assertSame(listener, socketServer.getLastListener());
+    assertSame(listener, appender.getLastListener());
     
-    socketServer.stop();
+    appender.stop();
     assertFalse(runner.isStarted());
   }
 
@@ -82,8 +80,8 @@ public class SocketServerTest {
   public void testStartThrowsException() throws Exception {
     IOException ex = new IOException("test exception");
     runner.setStartException(ex);
-    socketServer.start();
-    assertFalse(socketServer.isStarted());
+    appender.start();
+    assertFalse(appender.isStarted());
     Status status = context.getLastStatus();
     assertNotNull(status);    
     assertTrue(status instanceof ErrorStatus);
@@ -93,18 +91,18 @@ public class SocketServerTest {
 
   @Test
   public void testStartWhenAlreadyStarted() throws Exception {
-    socketServer.start();
-    socketServer.start();
+    appender.start();
+    appender.start();
     assertEquals(1, runner.getStartCount());
   }
 
   @Test
   public void testStopThrowsException() throws Exception {
-    socketServer.start();
-    assertTrue(socketServer.isStarted());
+    appender.start();
+    assertTrue(appender.isStarted());
     IOException ex = new IOException("test exception");
     runner.setStopException(ex);
-    socketServer.stop();
+    appender.stop();
     
     Status status = context.getLastStatus();
     assertNotNull(status);    
@@ -115,7 +113,7 @@ public class SocketServerTest {
 
   @Test
   public void testStopWhenNotStarted() throws Exception {
-    socketServer.stop();
+    appender.stop();
     assertEquals(0, runner.getStartCount());
   }
 

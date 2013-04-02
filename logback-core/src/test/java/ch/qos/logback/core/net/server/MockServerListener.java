@@ -11,14 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import ch.qos.logback.classic.net.server.Client;
-import ch.qos.logback.classic.net.server.ServerListener;
+import ch.qos.logback.core.net.server.Client;
+import ch.qos.logback.core.net.server.ServerListener;
+
 
 /**
  * A mock {@link ServerListener} that has a blocking queue to pass a client
@@ -28,9 +29,11 @@ import ch.qos.logback.classic.net.server.ServerListener;
  *
  * @author Carl Harris
  */
-class MockServerListener implements ServerListener {
+public class MockServerListener<T extends Client> implements ServerListener<T> {
 
-  private final BlockingQueue<Client> queue = new LinkedBlockingQueue<Client>();
+  private final BlockingQueue<T> queue = 
+      new LinkedBlockingQueue<T>();
+  
   private boolean closed;
   private Thread waiter;
   
@@ -50,7 +53,7 @@ class MockServerListener implements ServerListener {
     this.closed = closed;
   }
 
-  public Client acceptClient() throws IOException, InterruptedException {
+  public T acceptClient() throws IOException, InterruptedException {
     if (isClosed()) {
       throw new IOException("closed");
     }
@@ -63,7 +66,7 @@ class MockServerListener implements ServerListener {
     }
   }
 
-  public void addClient(MockClient client) {
+  public void addClient(T client) {
     queue.offer(client);
   }
   

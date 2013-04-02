@@ -11,9 +11,10 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
@@ -22,43 +23,46 @@ import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
+import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.net.SocketAppenderBase;
-import ch.qos.logback.core.net.server.ServerListener;
-import ch.qos.logback.core.net.server.ServerRunner;
-import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * A logging socket server that is configurable using Joran.
- *
+ * 
+ * This is the base class for module specific ServerSocketAppender 
+ * implementations.
+ * 
  * @author Carl Harris
  */
-public class SocketServer extends ContextAwareBase implements LifeCycle {
-  
+public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
+
   /**
    * Default {@link ServerSocket} backlog
    */
   public static final int DEFAULT_BACKLOG = 50;
 
+  /** 
+   * Default queue size used for each client
+   */
+  public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
+  
   private int port = SocketAppenderBase.DEFAULT_PORT;
   private int backlog = DEFAULT_BACKLOG;
+  private int clientQueueSize = DEFAULT_CLIENT_QUEUE_SIZE;
   
   private String address;
   private ThreadPoolFactoryBean threadPool;
 
-  private ServerRunner runner;
   private ExecutorService executor;
-  
-  /**
-   * Starts the server.
-   */
-  public final void start() {
+  private ServerRunner<RemoteLoggerClient> runner;
+
+  @Override
+  public void start() {
     if (isStarted()) return;
     try {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteAppenderClient> listener = createServerListener(socket);
+      ServerListener<RemoteLoggerClient> listener = createServerListener(socket);
       executor = getThreadPool().createExecutor();
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
@@ -68,22 +72,21 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
       addError("server startup error: " + ex, ex);
     }
   }
-
-  protected ServerListener<RemoteAppenderClient> createServerListener(
+  
+  protected ServerListener<RemoteLoggerClient> createServerListener(
       ServerSocket socket) {
-    return new RemoteAppenderServerListener(socket);
+    return new RemoteLoggerServerListener(socket);
   }
   
-  protected ServerRunner createServerRunner(
-      ServerListener<RemoteAppenderClient> listener,
+  protected ServerRunner<RemoteLoggerClient> createServerRunner(
+      ServerListener<RemoteLoggerClient> listener,
       Executor executor) {
-    return new RemoteAppenderServerRunner(listener, executor);
+    return new RemoteLoggerServerRunner(listener, executor, 
+        getClientQueueSize());
   }
   
-  /**
-   * Stops the server.
-   */
-  public final void stop() {
+  @Override
+  public void stop() {
     if (!isStarted()) return;
     try {
       runner.stop();
@@ -98,21 +101,49 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
    * Gets a flag indicating whether the server is running.
    * @return flag state
    */
+  @Override
   public final boolean isStarted() {
     return runner != null && runner.isStarted();
   }
 
+  @Override
+  protected void append(E event) {
+    if (event == null) return;
+    postProcessEvent(event);
+    final Serializable serEvent = getPST().transform(event);
+    runner.accept(new ClientVisitor<RemoteLoggerClient>() {
+      public void visit(RemoteLoggerClient client) {
+        client.offer(serEvent);
+      }      
+    });
+  }
+
   /**
-   * Gets the server socket factory.
+   * Post process an event received via {@link #append(E)}.
+   * @param event
+   */
+  protected abstract void postProcessEvent(E event);
+
+  /**
+   * Gets a transformer that will be used to convert a received event
+   * to a {@link Serializable} form.
+   * @return
+   */
+  protected abstract PreSerializationTransformer<E> getPST();
+
+  /**
+   * Gets the factory used to create {@link ServerSocket} objects.
    * <p>
-   * Subclasses may override to provide a custom factory.
-   * @return server socket factory
-   * @throws Exception
+   * The default implementation delegates to 
+   * {@link ServerSocketFactory#getDefault()}.  Subclasses may override to
+   * private a different socket factory implementation.
+   * 
+   * @return socket factory.
    */
   protected ServerSocketFactory getServerSocketFactory() throws Exception {
     return ServerSocketFactory.getDefault();
   }
-    
+
   /**
    * Gets the local address for the listener.
    * @return an {@link InetAddress} representation of the local address.
@@ -178,6 +209,22 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
   public void setAddress(String address) {
     this.address = address;
   }
+  
+  /**
+   * Gets the event queue size used for each client connection. 
+   * @return queue size
+   */
+  public int getClientQueueSize() {
+    return clientQueueSize;
+  }
+
+  /**
+   * Sets the event queue size used for each client connection.
+   * @param clientQueueSize the queue size to set
+   */
+  public void setClientQueueSize(int clientQueueSize) {
+    this.clientQueueSize = clientQueueSize;
+  }
 
   /**
    * Gets the server's thread pool configuration.
@@ -200,3 +247,4 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
   }
 
 }
+

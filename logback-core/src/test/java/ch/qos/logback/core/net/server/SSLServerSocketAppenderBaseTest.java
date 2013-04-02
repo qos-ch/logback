@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.net;
+package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -22,16 +22,15 @@ import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * Unit tests for {@link SSLSocketAppenderBase}.
+ * Unit tests for {@link SSLServerSocketAppenderBase}.
  *
  * @author Carl Harris
  */
-public class SSLSocketAppenderBaseTest {
-  
-  private MockContext context = new MockContext();
+public class SSLServerSocketAppenderBaseTest {
 
-  private InstrumentedSSLSocketAppenderBase appender =
-      new InstrumentedSSLSocketAppenderBase();
+  private MockContext context = new MockContext();
+  private SSLServerSocketAppenderBase appender =
+      new InstrumentedSSLServerSocketAppenderBase();
   
   @Before
   public void setUp() throws Exception {
@@ -42,11 +41,11 @@ public class SSLSocketAppenderBaseTest {
   public void testUsingDefaultConfig() throws Exception {
     // should be able to start successfully with no SSL configuration at all
     appender.start();
-    assertNotNull(appender.getSocketFactory());
+    assertNotNull(appender.getServerSocketFactory());
   }
-  
-  private static class InstrumentedSSLSocketAppenderBase 
-      extends SSLSocketAppenderBase<Object> {
+
+  private static class InstrumentedSSLServerSocketAppenderBase 
+      extends SSLServerSocketAppenderBase<Object> {
 
     @Override
     protected void postProcessEvent(Object event) {
@@ -59,4 +58,5 @@ public class SSLSocketAppenderBaseTest {
     }
     
   }
+  
 }
