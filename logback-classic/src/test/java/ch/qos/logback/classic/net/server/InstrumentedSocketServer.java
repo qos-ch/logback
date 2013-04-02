@@ -36,7 +36,7 @@ public class InstrumentedSocketServer extends SocketServer {
   
   private final ServerSocket serverSocket;
   private final ServerListener<RemoteAppenderClient> listener;
-  private final ServerRunner runner;
+  private final ServerRunner<RemoteAppenderClient> runner;
   
   private ServerListener lastListener;
   private Executor lastExecutor;
@@ -46,7 +46,8 @@ public class InstrumentedSocketServer extends SocketServer {
   }
   
   public InstrumentedSocketServer(ServerSocket serverSocket,
-      ServerListener<RemoteAppenderClient> listener, ServerRunner runner) {
+      ServerListener<RemoteAppenderClient> listener, 
+      ServerRunner<RemoteAppenderClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
