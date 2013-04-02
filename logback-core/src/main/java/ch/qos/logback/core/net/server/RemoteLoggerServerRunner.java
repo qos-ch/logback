@@ -14,6 +14,8 @@
 
 package ch.qos.logback.core.net.server;
 
+import java.io.Serializable;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
 
 /**
@@ -49,7 +51,7 @@ public class RemoteLoggerServerRunner
   @Override
   protected boolean configureClient(RemoteLoggerClient client) {
     client.setContext(getContext());
-    client.setQueueSize(clientQueueSize);
+    client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
     return true;
   }
 
