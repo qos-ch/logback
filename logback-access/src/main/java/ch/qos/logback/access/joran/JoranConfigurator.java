@@ -20,6 +20,7 @@ import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.joran.action.EvaluatorAction;
 import ch.qos.logback.access.net.SSLSocketAppender;
+import ch.qos.logback.access.net.server.SSLServerSocketAppender;
 import ch.qos.logback.access.sift.SiftAction;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
@@ -78,6 +79,7 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
     registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
     registry.add(SSLSocketAppender.class, "ssl", SSLConfiguration.class);
+    registry.add(SSLServerSocketAppender.class, "ssl", SSLConfiguration.class);
     SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
   }
 
