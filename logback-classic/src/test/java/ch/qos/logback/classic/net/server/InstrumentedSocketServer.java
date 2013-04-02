@@ -20,12 +20,19 @@ import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
+import ch.qos.logback.classic.net.server.RemoteAppenderClient;
+import ch.qos.logback.classic.net.server.RemoteAppenderServerListener;
+import ch.qos.logback.classic.net.server.SocketServer;
+import ch.qos.logback.core.net.server.ServerListener;
+import ch.qos.logback.core.net.server.ServerRunner;
+
+
 /**
  * A {@link SocketServer} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
-class InstrumentedSocketServer extends SocketServer {
+public class InstrumentedSocketServer extends SocketServer {
   
   private final ServerSocket serverSocket;
   private final ServerListener<RemoteAppenderClient> listener;

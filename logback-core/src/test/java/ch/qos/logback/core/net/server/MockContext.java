@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import ch.qos.logback.core.status.StatusManager;
  *
  * @author Carl Harris
  */
-class MockContext extends ContextBase {
+public class MockContext extends ContextBase {
 
   private final MockStatusManager statusManager = new MockStatusManager();
   

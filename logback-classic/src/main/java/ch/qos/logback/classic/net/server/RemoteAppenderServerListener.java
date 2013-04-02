@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import ch.qos.logback.core.net.server.ServerListener;
+import ch.qos.logback.core.net.server.ServerSocketListener;
+
 /**
  * A {@link ServerListener} for remote appenders.
  *

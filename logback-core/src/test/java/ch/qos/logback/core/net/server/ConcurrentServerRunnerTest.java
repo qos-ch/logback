@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,15 +24,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.net.server.ConcurrentServerRunner;
-import ch.qos.logback.core.net.server.ServerListener;
 
 
 public class ConcurrentServerRunnerTest {
 
+  private MockContext context = new MockContext();
   private MockServerListener<MockClient> listener = 
       new MockServerListener<MockClient>();
   
@@ -42,7 +38,7 @@ public class ConcurrentServerRunnerTest {
 
   @Before
   public void setUp() throws Exception {
-    runner.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+    runner.setContext(context);
   }
 
   @Test

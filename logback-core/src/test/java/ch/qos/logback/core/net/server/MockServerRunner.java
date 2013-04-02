@@ -11,11 +11,12 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.net.server.ServerRunner;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -23,7 +24,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-class MockServerRunner extends ContextAwareBase implements ServerRunner {
+public class MockServerRunner extends ContextAwareBase implements ServerRunner {
 
   private IOException startException;
   private IOException stopException;
