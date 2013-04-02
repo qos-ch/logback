@@ -23,7 +23,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-public class MockServerRunner extends ContextAwareBase implements ServerRunner {
+public class MockServerRunner<T extends Client> extends ContextAwareBase 
+    implements ServerRunner<T> {
 
   private IOException startException;
   private IOException stopException;
