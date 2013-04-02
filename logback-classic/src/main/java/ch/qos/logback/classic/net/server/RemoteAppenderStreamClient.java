@@ -17,6 +17,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.Socket;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -31,17 +32,35 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 class RemoteAppenderStreamClient implements RemoteAppenderClient {
 
   private final String id;
+  private final Socket socket;
   private final InputStream inputStream;
+  
   private LoggerContext lc;
   private Logger logger;
   
   /**
+   * Constructs a new client.  
+   * @param id a display name for the client
+   * @param inputStream input stream from which events will be read
+   */
+  public RemoteAppenderStreamClient(String id, Socket socket) {
+    this.id = id;
+    this.socket = socket;
+    this.inputStream = null;
+  }
+
+  /**
    * Constructs a new client.
+   * <p>
+   * This constructor is provided primarily to support unit tests for which
+   * it is inconvenient to create a socket.
+   *  
    * @param id a display name for the client
    * @param inputStream input stream from which events will be read
    */
   public RemoteAppenderStreamClient(String id, InputStream inputStream) {
     this.id = id;
+    this.socket = null;
     this.inputStream = inputStream;
   }
 
@@ -57,8 +76,9 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
    * {@inheritDoc}
    */
   public void close() {
+    if (socket == null) return;
     try {
-      inputStream.close();
+      socket.close();
     }
     catch (IOException ex) {
       ex.printStackTrace(System.err);
@@ -70,8 +90,9 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
    */
   public void run() {
     logger.info(this + ": connected"); 
+    ObjectInputStream ois = null;
     try {
-      ObjectInputStream ois = new ObjectInputStream(inputStream);
+      ois = createObjectInputStream();
       while (true) {
         // read an event from the wire
         ILoggingEvent event = (ILoggingEvent) ois.readObject();
@@ -98,10 +119,25 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
     catch (RuntimeException ex) {
       logger.error(this + ": " + ex);
     }
-    logger.info(this + ": connection closed");
-    close();
+    finally {
+      try {
+        ois.close();
+      }
+      catch (IOException ex) {
+        assert true;   // safe to ignore exception on close
+      }
+      close();
+      logger.info(this + ": connection closed");
+    }
   }
 
+  private ObjectInputStream createObjectInputStream() throws IOException {
+    if (inputStream != null) {
+      return new ObjectInputStream(inputStream);
+    }
+    return new ObjectInputStream(socket.getInputStream());
+  }
+  
   /**
    * {@inheritDoc}
    */

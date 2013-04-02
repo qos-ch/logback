@@ -44,7 +44,7 @@ class RemoteAppenderServerListener
   @Override
   protected RemoteAppenderClient createClient(String id, Socket socket) 
       throws IOException {
-    return new RemoteAppenderStreamClient(id, socket.getInputStream());
+    return new RemoteAppenderStreamClient(id, socket);
   }
 
 }
