@@ -15,6 +15,8 @@ package ch.qos.logback.classic.net.server;
 
 import java.util.concurrent.Executor;
 
+import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
+
 /**
  * A mock {@link ThreadPoolFactoryBean} with instrumentation for unit testing.
  *

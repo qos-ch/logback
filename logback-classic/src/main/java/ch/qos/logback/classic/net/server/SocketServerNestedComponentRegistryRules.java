@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.net.server;
 
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 
 /**

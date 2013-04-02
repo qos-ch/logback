@@ -24,6 +24,7 @@ import javax.net.ServerSocketFactory;
 import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
+import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
