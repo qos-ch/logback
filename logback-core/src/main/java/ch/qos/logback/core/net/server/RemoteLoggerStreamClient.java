@@ -100,7 +100,6 @@ class RemoteLoggerStreamClient
    * {@inheritDoc}
    */
   public void run() {
-    System.err.println(getContext().getName());
     if (getContext() == null) {
       throw new IllegalStateException("context is not configured");
     }
