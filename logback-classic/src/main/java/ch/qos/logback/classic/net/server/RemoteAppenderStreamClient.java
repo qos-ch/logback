@@ -120,11 +120,13 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
       logger.error(this + ": " + ex);
     }
     finally {
-      try {
-        ois.close();
-      }
-      catch (IOException ex) {
-        assert true;   // safe to ignore exception on close
+      if (ois != null) {
+        try {
+          ois.close();
+        }
+        catch (IOException ex) {
+          assert true;   // safe to ignore exception on close
+        }
       }
       close();
       logger.info(this + ": connection closed");
