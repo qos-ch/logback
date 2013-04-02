@@ -36,7 +36,7 @@ import ch.qos.logback.classic.spi.LoggingEventVO;
  *
  * @author Carl Harris
  */
-public class StreamClientTest {
+public class RemoteAppenderStreamClientTest {
 
   private MockAppender appender;
   private Logger logger;
