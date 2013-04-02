@@ -99,14 +99,7 @@ class RemoteLoggerStreamClient
   /**
    * {@inheritDoc}
    */
-  public void run() {
-    if (getContext() == null) {
-      throw new IllegalStateException("context is not configured");
-    }
-    if (queue == null) {
-      throw new IllegalStateException("client has no event queue");
-    }
-  
+  public void run() {  
     addInfo(clientId + "connected"); 
 
     ObjectOutputStream oos = null;
