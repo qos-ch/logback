@@ -46,7 +46,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public abstract class ConcurrentServerRunner<T extends Client> 
     extends ContextAwareBase 
-    implements Runnable, ServerRunner {
+    implements Runnable, ServerRunner<T> {
 
   private final Lock clientsLock = new ReentrantLock();
   
@@ -103,6 +103,32 @@ public abstract class ConcurrentServerRunner<T extends Client>
     return started;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public void accept(ClientVisitor<T> visitor) {
+    Collection<T> clients = copyClients();
+    for (T client : clients) {
+      try {
+        visitor.visit(client);
+      }
+      catch (RuntimeException ex) {
+        logError(client + ": " + ex);
+      }
+    }
+  }
+
+  private Collection<T> copyClients() {
+    clientsLock.lock();
+    try {
+      Collection<T> copy = new ArrayList<T>(clients);
+      return copy;
+    }
+    finally {
+      clientsLock.unlock();
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */

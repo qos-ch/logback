@@ -16,7 +16,6 @@ package ch.qos.logback.core.net.server;
 import java.io.IOException;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.net.server.ServerRunner;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -53,6 +52,10 @@ public class MockServerRunner extends ContextAwareBase implements ServerRunner {
 
   public boolean isStarted() {
     return startCount > 0;
+  }
+
+  public void accept(ClientVisitor visitor) {
+    throw new UnsupportedOperationException();
   }
 
   public int getStartCount() {

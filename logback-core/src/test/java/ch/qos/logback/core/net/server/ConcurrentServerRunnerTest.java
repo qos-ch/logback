@@ -15,6 +15,7 @@ package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Executor;
@@ -22,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +35,7 @@ public class ConcurrentServerRunnerTest {
       new MockServerListener<MockClient>();
   
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private ConcurrentServerRunner runner = 
+  private ConcurrentServerRunner<MockClient> runner = 
       new InstrumentedConcurrentServerRunner(listener, executor);
 
   @Before
@@ -41,6 +43,12 @@ public class ConcurrentServerRunnerTest {
     runner.setContext(context);
   }
 
+  @After
+  public void tearDown() throws Exception {
+    executor.shutdown();
+    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+  }
+  
   @Test
   public void testStartStop() throws Exception {
     assertFalse(runner.isStarted());
@@ -74,8 +82,6 @@ public class ConcurrentServerRunnerTest {
     assertTrue(client.isRunning());
     client.close();
     runner.stop();
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
 
   @Test
@@ -94,10 +100,27 @@ public class ConcurrentServerRunnerTest {
       assertTrue(client.isRunning());
     }
     runner.stop();
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
 
+  @Test
+  public void testRunClientAndVisit() throws Exception {
+    runner.start();
+    MockClient client = new MockClient();
+    listener.addClient(client);
+    int retries = 200;
+    synchronized (client) {
+      while (retries-- > 0 && !client.isRunning()) {
+        client.wait(10);
+      }
+    }
+    assertTrue(client.isRunning());
+    MockClientVisitor visitor = new MockClientVisitor();
+    runner.accept(visitor);
+    assertSame(client, visitor.getLastVisited());
+    runner.stop();    
+  }
+
+  
   static class InstrumentedConcurrentServerRunner 
       extends ConcurrentServerRunner<MockClient> {
 

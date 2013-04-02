@@ -26,7 +26,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * 
  * @author Carl Harris
  */
-public interface ServerRunner extends ContextAware {
+public interface ServerRunner<T extends Client> extends ContextAware {
 
   /**
    * Starts execution of the runner.
@@ -54,4 +54,10 @@ public interface ServerRunner extends ContextAware {
    */
   boolean isStarted();
 
+  /**
+   * Presents each connected client to the given visitor.   
+   * @param visitor the subject visitor
+   */
+  void accept(ClientVisitor<T> visitor);
+  
 }
