@@ -49,7 +49,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-abstract class ConcurrentServerRunner<T extends Client> 
+public abstract class ConcurrentServerRunner<T extends Client> 
     extends ContextAwareBase 
     implements Runnable, ServerRunner {
 

@@ -23,7 +23,7 @@ import java.net.SocketAddress;
  *
  * @author Carl Harris
  */
-abstract class ServerSocketListener<T extends Client> 
+public abstract class ServerSocketListener<T extends Client> 
     implements ServerListener<T> {
 
   private final ServerSocket serverSocket;

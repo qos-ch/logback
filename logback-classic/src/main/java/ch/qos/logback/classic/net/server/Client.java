@@ -35,7 +35,7 @@ import java.io.IOException;
  * 
  * @author Carl Harris
  */
-interface Client extends Runnable, Closeable {
+public interface Client extends Runnable, Closeable {
 
   /**
    * Closes any resources that are held by the client.

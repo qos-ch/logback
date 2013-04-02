@@ -26,7 +26,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * 
  * @author Carl Harris
  */
-interface ServerRunner extends ContextAware {
+public interface ServerRunner extends ContextAware {
 
   /**
    * Starts execution of the runner.
